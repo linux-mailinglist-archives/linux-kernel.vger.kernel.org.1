@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5D11D8104
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378631D8170
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729682AbgERRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42032 "EHLO mail.kernel.org"
+        id S1730311AbgERRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:48:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729650AbgERRoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:01 -0400
+        id S1730303AbgERRr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43F52207C4;
-        Mon, 18 May 2020 17:44:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3630420671;
+        Mon, 18 May 2020 17:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823840;
-        bh=55PKlhmg1rmfRguUkGNgpg1h9UfCnaM6roGxuu9k3bA=;
+        s=default; t=1589824077;
+        bh=qulwPbZkzE4NFTAAUi2Qdb36dRGHKbHi3E8aGXOWyBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MeHs8rx51KjpLOeGLfBxFioS3orUU6j2CSay1DozoCbChJywlgKCCmz9snO9MUwaF
-         LfVXiL52tr45QpJW3xGzbZaiRnhd6hQlhBKlrmr0p0p3X0PCd/nY4RFa8PTdkCBxTt
-         q+cAICmtfaFPawRxwTKaPo6LGXBT26BFuUyWaqAo=
+        b=kkux48fqKuoTGh/ndKiTmx973F92g+k/Uk3bXTIZzHs0dzxxxYXx06vsES+fuw7Yg
+         T9UJvCCEZDWP8VPt7C+lY3da6YLE6nWGxuIb7bO+futcp8yyBG67JJfd0JITlkdMCl
+         V1WUXHVOGHhUqhDqF9MTbxIupBjb2TzqxHqQChBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vince Weaver <vincent.weaver@maine.edu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 56/90] netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+Subject: [PATCH 4.14 062/114] x86/entry/64: Fix unwind hints in register clearing code
 Date:   Mon, 18 May 2020 19:36:34 +0200
-Message-Id: <20200518173502.512499313@linuxfoundation.org>
+Message-Id: <20200518173514.308786054@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +50,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 2c407aca64977ede9b9f35158e919773cae2082f ]
+[ Upstream commit 06a9750edcffa808494d56da939085c35904e618 ]
 
-gcc-10 warns around a suspicious access to an empty struct member:
+The PUSH_AND_CLEAR_REGS macro zeroes each register immediately after
+pushing it.  If an NMI or exception hits after a register is cleared,
+but before the UNWIND_HINT_REGS annotation, the ORC unwinder will
+wrongly think the previous value of the register was zero.  This can
+confuse the unwinding process and cause it to exit early.
 
-net/netfilter/nf_conntrack_core.c: In function '__nf_conntrack_alloc':
-net/netfilter/nf_conntrack_core.c:1522:9: warning: array subscript 0 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
- 1522 |  memset(&ct->__nfct_init_offset[0], 0,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from net/netfilter/nf_conntrack_core.c:37:
-include/net/netfilter/nf_conntrack.h:90:5: note: while referencing '__nfct_init_offset'
-   90 |  u8 __nfct_init_offset[0];
-      |     ^~~~~~~~~~~~~~~~~~
+Because ORC is simpler than DWARF, there are a limited number of unwind
+annotation states, so it's not possible to add an individual unwind hint
+after each push/clear combination.  Instead, the register clearing
+instructions need to be consolidated and moved to after the
+UNWIND_HINT_REGS annotation.
 
-The code is correct but a bit unusual. Rework it slightly in a way that
-does not trigger the warning, using an empty struct instead of an empty
-array. There are probably more elegant ways to do this, but this is the
-smallest change.
-
-Fixes: c41884ce0562 ("netfilter: conntrack: avoid zeroing timer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 3f01daecd545 ("x86/entry/64: Introduce the PUSH_AND_CLEAN_REGS macro")
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Jones <dsj@fb.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vince Weaver <vincent.weaver@maine.edu>
+Link: https://lore.kernel.org/r/68fd3d0bc92ae2d62ff7879d15d3684217d51f08.1587808742.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/netfilter/nf_conntrack.h | 2 +-
- net/netfilter/nf_conntrack_core.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/entry/calling.h | 38 +++++++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index b57a9f37c297b..7befec513295d 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -103,7 +103,7 @@ struct nf_conn {
- 	struct hlist_node	nat_bysource;
- #endif
- 	/* all members below initialized via memset */
--	u8 __nfct_init_offset[0];
-+	struct { } __nfct_init_offset;
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index 557c1bdda311b..1dbc62a96b859 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -98,13 +98,6 @@ For 32-bit we have the following conventions - kernel is built with
+ #define SIZEOF_PTREGS	21*8
  
- 	/* If we were expected by an expectation, this will be it */
- 	struct nf_conn *master;
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 1bdae8f188e1f..d507d0fc7858a 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1124,9 +1124,9 @@ __nf_conntrack_alloc(struct net *net,
- 	*(unsigned long *)(&ct->tuplehash[IP_CT_DIR_REPLY].hnnode.pprev) = hash;
- 	ct->status = 0;
- 	write_pnet(&ct->ct_net, net);
--	memset(&ct->__nfct_init_offset[0], 0,
-+	memset(&ct->__nfct_init_offset, 0,
- 	       offsetof(struct nf_conn, proto) -
--	       offsetof(struct nf_conn, __nfct_init_offset[0]));
-+	       offsetof(struct nf_conn, __nfct_init_offset));
+ .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
+-	/*
+-	 * Push registers and sanitize registers of values that a
+-	 * speculation attack might otherwise want to exploit. The
+-	 * lower registers are likely clobbered well before they
+-	 * could be put to use in a speculative execution gadget.
+-	 * Interleave XOR with PUSH for better uop scheduling:
+-	 */
+ 	.if \save_ret
+ 	pushq	%rsi		/* pt_regs->si */
+ 	movq	8(%rsp), %rsi	/* temporarily store the return address in %rsi */
+@@ -117,29 +110,40 @@ For 32-bit we have the following conventions - kernel is built with
+ 	pushq   %rcx		/* pt_regs->cx */
+ 	pushq   \rax		/* pt_regs->ax */
+ 	pushq   %r8		/* pt_regs->r8 */
+-	xorl	%r8d, %r8d	/* nospec   r8 */
+ 	pushq   %r9		/* pt_regs->r9 */
+-	xorl	%r9d, %r9d	/* nospec   r9 */
+ 	pushq   %r10		/* pt_regs->r10 */
+-	xorl	%r10d, %r10d	/* nospec   r10 */
+ 	pushq   %r11		/* pt_regs->r11 */
+-	xorl	%r11d, %r11d	/* nospec   r11*/
+ 	pushq	%rbx		/* pt_regs->rbx */
+-	xorl    %ebx, %ebx	/* nospec   rbx*/
+ 	pushq	%rbp		/* pt_regs->rbp */
+-	xorl    %ebp, %ebp	/* nospec   rbp*/
+ 	pushq	%r12		/* pt_regs->r12 */
+-	xorl	%r12d, %r12d	/* nospec   r12*/
+ 	pushq	%r13		/* pt_regs->r13 */
+-	xorl	%r13d, %r13d	/* nospec   r13*/
+ 	pushq	%r14		/* pt_regs->r14 */
+-	xorl	%r14d, %r14d	/* nospec   r14*/
+ 	pushq	%r15		/* pt_regs->r15 */
+-	xorl	%r15d, %r15d	/* nospec   r15*/
+ 	UNWIND_HINT_REGS
++
+ 	.if \save_ret
+ 	pushq	%rsi		/* return address on top of stack */
+ 	.endif
++
++	/*
++	 * Sanitize registers of values that a speculation attack might
++	 * otherwise want to exploit. The lower registers are likely clobbered
++	 * well before they could be put to use in a speculative execution
++	 * gadget.
++	 */
++	xorl	%edx,  %edx	/* nospec dx  */
++	xorl	%ecx,  %ecx	/* nospec cx  */
++	xorl	%r8d,  %r8d	/* nospec r8  */
++	xorl	%r9d,  %r9d	/* nospec r9  */
++	xorl	%r10d, %r10d	/* nospec r10 */
++	xorl	%r11d, %r11d	/* nospec r11 */
++	xorl	%ebx,  %ebx	/* nospec rbx */
++	xorl	%ebp,  %ebp	/* nospec rbp */
++	xorl	%r12d, %r12d	/* nospec r12 */
++	xorl	%r13d, %r13d	/* nospec r13 */
++	xorl	%r14d, %r14d	/* nospec r14 */
++	xorl	%r15d, %r15d	/* nospec r15 */
++
+ .endm
  
- 	nf_ct_zone_add(ct, zone);
- 
+ .macro POP_REGS pop_rdi=1 skip_r11rcx=0
 -- 
 2.20.1
 
