@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBCB1D85DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326571D8707
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387854AbgERSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:21:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25025 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731059AbgERSV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:21:29 -0400
-IronPort-SDR: /CHKg+F+kKGPVhSLo5QVa8NT/C4QeeL8zcA+KvNC2sJooXBo+ZFotMUkp+WY6UWpdPTQBR0rl7
- BFP1fzmiTZwA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:21:28 -0700
-IronPort-SDR: aLZL/bfb/qZo1KU95odrebxhUWR287im03hp/XSbmZhst44S5LoX7sXcy3LR78oZi5T9kBe7tL
- QDLzyr6iUcXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="411353713"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga004.jf.intel.com with ESMTP; 18 May 2020 11:21:28 -0700
-Date:   Mon, 18 May 2020 11:21:28 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
-        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
- PTE tables
-Message-ID: <20200518182127.GC3028105@iweiny-DESK2.sc.intel.com>
-References: <20200511204150.27858-1-will@kernel.org>
- <20200511204150.27858-5-will@kernel.org>
- <20200517000050.GA87467@roeck-us.net>
- <20200517000750.GA157503@roeck-us.net>
- <20200518083715.GA31383@willie-the-truck>
- <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
- <20200518142310.GC1118872@kernel.org>
- <b171fbbd-f5b2-ac17-24e5-7188f6ce80f0@roeck-us.net>
+        id S2388016AbgERS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729420AbgERS25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:28:57 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6DBC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:28:57 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u35so5226245pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B7TcTnxdgBKTVFL5gUH9Cy+Jbda1czl9E/pUOuzMN/k=;
+        b=Evwhtrr7DfFquZt/cm+QLYTGVqidVIKhvJS22rNpNJk94fG/F9IzQhDU4y/bCEU4cH
+         xd+K0m6JnG5eb4d5M7YXq22v9ymYRgljTktq1YE98d9c1ZmfHOsOmS8lske6MfpztrSe
+         NRMzZXp+d2uuIbdUtV6Dcuz5dAbQ4ji99HeIk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B7TcTnxdgBKTVFL5gUH9Cy+Jbda1czl9E/pUOuzMN/k=;
+        b=jZYfhxFsLW+iIWAPcXon89/zswiY6dlpqDT+UtLPrUA46uyfFDnW0pBnq0I3crnhhP
+         hPx1LzMVHMjzzCYadcxfnTnWUSR52GVc1MelnupYuz5mxpyTqcJXT55qp1pMV2udTeM8
+         x/mhDh9ZAZ/vTydnITdVNqhP68lc/p/pBrluqFbzy7V9sXRL375VXAWUhTxJ6LqPKQi6
+         IDjjioefVvALzRarFtvEPO4mCwpyQX6dBONUFQLJ3EfZRjKGX9gkpeatAuCfJIrb93aB
+         /Ztgkp3+tKNxqR9AtdyWqKrNZh/L40aM9w4qvRX7RH6Wyd85N3LQesn4jDkus8G7SZgF
+         1w9Q==
+X-Gm-Message-State: AOAM532XqeNwKMnuRaybvjqZu2srdiE9gH65Niu3xLG5RyS3vbSoe98Y
+        8RzHVg0BvzD9NX4PkAGLD9XgXBxI8Rc=
+X-Google-Smtp-Source: ABdhPJw3/2Xp/R1HnQ+kB5Y6oOzLGx0iJJNyb0SKhYm0sW1E3i03qvSm1fcancEYIjJhXEsOEXv+DQ==
+X-Received: by 2002:a62:3c5:: with SMTP id 188mr17329329pfd.41.1589826536395;
+        Mon, 18 May 2020 11:28:56 -0700 (PDT)
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com. [209.85.215.170])
+        by smtp.gmail.com with ESMTPSA id n9sm210504pjt.29.2020.05.18.11.28.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 11:28:56 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id u5so5233827pgn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:28:56 -0700 (PDT)
+X-Received: by 2002:a67:d199:: with SMTP id w25mr5312377vsi.169.1589826154516;
+ Mon, 18 May 2020 11:22:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b171fbbd-f5b2-ac17-24e5-7188f6ce80f0@roeck-us.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200506140208.v2.1.Ibc8eeddcee94984a608d6900b46f9ffde4045da4@changeid>
+ <CAF6AEGvXkeOrHGMHo=C1zXhDc9rquQJc8oGDB4VDfhTfdtqyTg@mail.gmail.com>
+In-Reply-To: <CAF6AEGvXkeOrHGMHo=C1zXhDc9rquQJc8oGDB4VDfhTfdtqyTg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 18 May 2020 11:22:22 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V9Aphv=sV36CcK=ka2zNh7Hwiog4qiUEC7wpgjqYSi5Q@mail.gmail.com>
+Message-ID: <CAD=FV=V9Aphv=sV36CcK=ka2zNh7Hwiog4qiUEC7wpgjqYSi5Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] drm/bridge: ti-sn65dsi86: Implement lane
+ reordering + polarity
+To:     Rob Clark <robdclark@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 11:09:46AM -0700, Guenter Roeck wrote:
-> On 5/18/20 7:23 AM, Mike Rapoport wrote:
-> > On Mon, May 18, 2020 at 02:48:18AM -0700, Guenter Roeck wrote:
-> >> On 5/18/20 1:37 AM, Will Deacon wrote:
-> >>> On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
-> >>>> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
-> >>>>> On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
-> >>>>>> Now that the page table allocator can free page table allocations
-> >>>>>> smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
-> >>>>>> to avoid needlessly wasting memory.
-> >>>>>>
-> >>>>>> Cc: "David S. Miller" <davem@davemloft.net>
-> >>>>>> Cc: Peter Zijlstra <peterz@infradead.org>
-> >>>>>> Signed-off-by: Will Deacon <will@kernel.org>
-> >>>>>
-> >>>>> Something in the sparc32 patches in linux-next causes all my sparc32 emulations
-> >>>>> to crash. bisect points to this patch, but reverting it doesn't help, and neither
-> >>>>> does reverting the rest of the series.
-> >>>>>
-> >>>> Actually, turns out I see the same pattern (lots of scheduling while atomic
-> >>>> followed by 'killing interrupt handler' in cryptomgr_test) with several
-> >>>> powerpc boot tests.  I am currently bisecting those crashes. I'll report
-> >>>> the results here as well as soon as I have it.
-> >>>
-> >>> FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
-> >>> issues. However, linux-next is a different story, where I don't get very far
-> >>> at all:
-> >>>
-> >>> BUG: Bad page state in process swapper  pfn:005b4
-> > 
-> > This one seems to be due to commit 24aab577764f ("mm: memmap_init:
-> > iterate over memblock regions rather that check each PFN") and reverting
-> > it and partially reverting the next cleanup commits makes those
-> > dissapear. sparc32 boot still fails on today's linux-next and mmotm for me with
-> > 
-> > Run /sbin/init as init process
-> >   with arguments:
-> >     /sbin/init
-> >   with environment:
-> >     HOME=/
-> >     TERM=linux
-> > Starting init: /sbin/init exists but couldn't execute it (error -14)
-> > 
-> > I've tried to bisect mmotm and I've got the first bad commits in
-> > different places in the middle of arch/kmap series [1] so I've added Ira
-> > to CC as well :)
-> > 
-> > I'll continue to look into "bad page" on sparc32
+Sam,
 
-mips is broken too.
+On Fri, May 15, 2020 at 2:43 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Wed, May 6, 2020 at 2:03 PM Douglas Anderson <dianders@chromium.org> wrote:
+> >
+> > The ti-sn65dsi86 MIPI DSI to eDP bridge chip supports arbitrary
+> > remapping of eDP lanes and also polarity inversion.  Both of these
+> > features have been described in the device tree bindings for the
+> > device since the beginning but were never implemented in the driver.
+> > Implement both of them.
+> >
+> > Part of this change also allows you to (via the same device tree
+> > bindings) specify to use fewer than the max number of DP lanes that
+> > the panel reports.  This could be useful if your display supports more
+> > lanes but only a few are hooked up on your board.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>
+> Reviewed-by: Rob Clark <robdclark@gmail.com>
 
-Does anyone know what this FIXME was for?
+I guess get_maintainer is somehow not tagging you and I haven't got it
+through my thick skull to CC you each time.  If you're willing, I
+think this patch is ready too.  Happy to re-post it with you in the To
+list if it helps.
 
-...
-        if (vaddr < FIXADDR_START) { // FIXME
-...
-
-I'm going to remove it...
-
-Ira
-
+-Doug
