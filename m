@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1801D822A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62361D8694
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbgERRx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
+        id S2387917AbgERSZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731195AbgERRxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:53:53 -0400
+        id S1730209AbgERRrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A2AF20715;
-        Mon, 18 May 2020 17:53:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F1D820657;
+        Mon, 18 May 2020 17:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824432;
-        bh=e923IeQUkDFGtCFMSIPljVav9gG9Zf2cBBiEpAXaqGA=;
+        s=default; t=1589824035;
+        bh=Dxtp7wZr+KCgB4BFiDjfvZsiwpeRcjrdT8Aibw8qr8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BMyKWB/qmGrpgNfHqpwXO87ICT86JvGrRISHUOAmzj9jwwnsrLnr9X25lI5qO5JGv
-         cZLGvFHPuVVA6ovYmoOeDdx1UWqMrcPCmSDpJz9tgDyhx3yTkKZLnMQekAR+i0ntAl
-         YvlMz5hWPdAKigmqv7+155bu3k7KbhQqVr05IzRs=
+        b=Xg5JNgUWrh3g/aY0xzNefQXq01Ca/JSjo6C3mU3+VBUIuek7vWvTR1Jg0dVVhALJ7
+         jloYq4AKrj+FV9JVAJF71sFsHHBbG1rYmOr0Ft4CBFOANRmhrEHHgNNfXMDg3znVlm
+         jd2nwpfpvJjO/kxLM31/wOi5udHBjTq7INheIB+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 010/147] ftrace/selftests: workaround cgroup RT scheduling issues
+        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 001/114] USB: serial: qcserial: Add DW5816e support
 Date:   Mon, 18 May 2020 19:35:33 +0200
-Message-Id: <20200518173514.751474980@linuxfoundation.org>
+Message-Id: <20200518173503.301392253@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,87 +45,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Matt Jolly <Kangie@footclan.ninja>
 
-[ Upstream commit 57c4cfd4a2eef8f94052bd7c0fce0981f74fb213 ]
+commit 78d6de3cfbd342918d31cf68d0d2eda401338aef upstream.
 
-wakeup_rt.tc and wakeup.tc tests in tracers/ subdirectory
-fail due to the chrt command returning:
+Add support for Dell Wireless 5816e to drivers/usb/serial/qcserial.c
 
- chrt: failed to set pid 0's policy: Operation not permitted.
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-To work around this, temporarily disable grout RT scheduling
-during ftracetest execution.  Restore original value on
-test run completion.  With these changes in place, both
-tests consistently pass.
-
-Fixes: c575dea2c1a5 ("selftests/ftrace: Add wakeup_rt tracer testcase")
-Fixes: c1edd060b413 ("selftests/ftrace: Add wakeup tracer testcase")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/ftrace/ftracetest | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
-index 063ecb290a5a3..144308a757b70 100755
---- a/tools/testing/selftests/ftrace/ftracetest
-+++ b/tools/testing/selftests/ftrace/ftracetest
-@@ -29,8 +29,25 @@ err_ret=1
- # kselftest skip code is 4
- err_skip=4
- 
-+# cgroup RT scheduling prevents chrt commands from succeeding, which
-+# induces failures in test wakeup tests.  Disable for the duration of
-+# the tests.
-+
-+readonly sched_rt_runtime=/proc/sys/kernel/sched_rt_runtime_us
-+
-+sched_rt_runtime_orig=$(cat $sched_rt_runtime)
-+
-+setup() {
-+  echo -1 > $sched_rt_runtime
-+}
-+
-+cleanup() {
-+  echo $sched_rt_runtime_orig > $sched_rt_runtime
-+}
-+
- errexit() { # message
-   echo "Error: $1" 1>&2
-+  cleanup
-   exit $err_ret
- }
- 
-@@ -39,6 +56,8 @@ if [ `id -u` -ne 0 ]; then
-   errexit "this must be run by root user"
- fi
- 
-+setup
-+
- # Utilities
- absdir() { # file_path
-   (cd `dirname $1`; pwd)
-@@ -235,6 +254,7 @@ TOTAL_RESULT=0
- 
- INSTANCE=
- CASENO=0
-+
- testcase() { # testfile
-   CASENO=$((CASENO+1))
-   desc=`grep "^#[ \t]*description:" $1 | cut -f2 -d:`
-@@ -406,5 +426,7 @@ prlog "# of unsupported: " `echo $UNSUPPORTED_CASES | wc -w`
- prlog "# of xfailed: " `echo $XFAILED_CASES | wc -w`
- prlog "# of undefined(test bug): " `echo $UNDEFINED_CASES | wc -w`
- 
-+cleanup
-+
- # if no error, return 0
- exit $TOTAL_RESULT
--- 
-2.20.1
-
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -177,6 +177,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x413c, 0x81b3)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{DEVICE_SWI(0x413c, 0x81b5)},	/* Dell Wireless 5811e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81b6)},	/* Dell Wireless 5811e QDL */
++	{DEVICE_SWI(0x413c, 0x81cc)},	/* Dell Wireless 5816e */
+ 	{DEVICE_SWI(0x413c, 0x81cf)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d0)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d1)},   /* Dell Wireless 5818 */
 
 
