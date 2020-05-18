@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E6F1D8168
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C8B1D8684
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbgERRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgERRro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:44 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1199AC05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:47:44 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id e125so8068888lfd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ilFS0djlykVy1P5eI7mmIHkWUV2TLGO3S4u/3xid4pg=;
-        b=f+uZ9XMvjcg7Pj2CajPFupJFIDSr9ddFhQhrxBb0RA/bsuI7ZzuATo0+/ylZltsOVJ
-         R22A7vytwMouhLrIf/3AATPF8b9+0quvf7roPc6/setO6Sv4SVM72UAdlF/UGkInI0XA
-         1uTfX87HNlIdTTPW3uw5dFcty9O5kBfWhOOwA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ilFS0djlykVy1P5eI7mmIHkWUV2TLGO3S4u/3xid4pg=;
-        b=mlsoYA1UGBLZE1nTwKX8a4/KlmbjVa6gfTUWpCZVAKg0cT3CoUHFUl9nECcPmv7oQq
-         O9oeeqhr4ZtSEfCRMr9h2qpiVHiggAYRbT8naE+blde0FbBD3CjezSs6qJyxBXhyOlAo
-         SOLShwOEhrzfDrMo6H/Rq7xkKo2xI3niBnQ425D303az2C3N9nk5lrIJxmSlErRddt9x
-         3VjwanENYt4aHX0/mfhei9twzS4QiqPeXo8rYaLKVzM0O6kN/ojxmz6dPy/rnY9eWrXK
-         nF5kona3NqE0VDXQbM7x5bjn1M2EXG59YimaJz6+xBs6JVCPznwTjwux9jSmxAsdKiuH
-         WkYw==
-X-Gm-Message-State: AOAM532m27Etzq8F2Mn9WsZZ8LgRrWPm6pGvLsq9LNPLKhRqFuqw0cpS
-        B+kbmRsWy3H0oO85ftMwkbYsEkqXId4=
-X-Google-Smtp-Source: ABdhPJxSp7kLskwBsTm70S8pxaDfwcw5kJh96xNKxi06BGkf4+DDuSsonn2bjPnzRYJDZFfQO3K9XQ==
-X-Received: by 2002:ac2:46c1:: with SMTP id p1mr11727121lfo.25.1589824061988;
-        Mon, 18 May 2020 10:47:41 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id v28sm1295914lfd.35.2020.05.18.10.47.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 10:47:41 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id v5so8819277lfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:47:40 -0700 (PDT)
-X-Received: by 2002:a19:d52:: with SMTP id 79mr11576675lfn.125.1589824060570;
- Mon, 18 May 2020 10:47:40 -0700 (PDT)
+        id S1729693AbgERRrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:47:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729715AbgERRra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 027DCACE6;
+        Mon, 18 May 2020 17:47:30 +0000 (UTC)
+Received: from localhost (webern.olymp [local])
+        by webern.olymp (OpenSMTPD) with ESMTPA id 1911f9ee;
+        Mon, 18 May 2020 18:47:26 +0100 (WEST)
+Date:   Mon, 18 May 2020 18:47:26 +0100
+From:   Luis Henriques <lhenriques@suse.com>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ceph: don't return -ESTALE if there's still an open file
+Message-ID: <20200518174726.GA84496@suse.com>
 MIME-Version: 1.0
-References: <1589816971.5111.113.camel@linux.ibm.com>
-In-Reply-To: <1589816971.5111.113.camel@linux.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 May 2020 10:47:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
-Message-ID: <CAHk-=wh_Zw7ug+iMALAKfQkdyVAUWC0UB0bfRRPMOCC7U5uTFQ@mail.gmail.com>
-Subject: Re: [GIT PULL] integrity subsystem fixes for v5.7
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 8:49 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity.fixes
+Similarly to commit 03f219041fdb ("ceph: check i_nlink while converting
+a file handle to dentry"), this fixes another corner case with
+name_to_handle_at/open_by_handle_at.  The issue has been detected by
+xfstest generic/467, when doing:
 
-No such head.
+ - name_to_handle_at("/cephfs/myfile")
+ - open("/cephfs/myfile")
+ - unlink("/cephfs/myfile")
+ - sync; sync;
+ - drop caches
+ - open_by_handle_at()
 
-It looks like the plain 'fixes' branch has the same commit ID, but
-there's no next-integrity.fixes.
+The call to open_by_handle_at should not fail because the file hasn't been
+deleted yet (only unlinked) and we do have a valid handle to it.  -ESTALE
+shall be returned only if i_nlink is 0 *and* i_count is 1.
 
-Btw, any chance you could start using signed tags? I've been
-encouraging people to do that even on kernel.org, and we've got fairly
-high coverage these days..
+This patch also makes sure we have LINK caps before checking i_nlink.
 
-             Linus
+Signed-off-by: Luis Henriques <lhenriques@suse.com>
+---
+Hi!
+
+(and sorry for the delay in my reply!)
+
+So, from the discussion thread and some IRC chat with Jeff, I'm sending
+v2.  What changed?  Everything! :-)
+
+- Use i_count instead of __ceph_is_file_opened to check for open files
+- Add call to ceph_do_getattr to make sure we have LINK caps before
+  accessing i_nlink
+
+Cheers,
+--
+Luis
+
+ fs/ceph/export.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ceph/export.c b/fs/ceph/export.c
+index 79dc06881e78..e088843a7734 100644
+--- a/fs/ceph/export.c
++++ b/fs/ceph/export.c
+@@ -172,9 +172,16 @@ struct inode *ceph_lookup_inode(struct super_block *sb, u64 ino)
+ static struct dentry *__fh_to_dentry(struct super_block *sb, u64 ino)
+ {
+ 	struct inode *inode = __lookup_inode(sb, ino);
++	int err;
++
+ 	if (IS_ERR(inode))
+ 		return ERR_CAST(inode);
+-	if (inode->i_nlink == 0) {
++	/* We need LINK caps to reliably check i_nlink */
++	err = ceph_do_getattr(inode, CEPH_CAP_LINK_SHARED, false);
++	if (err)
++		return ERR_PTR(err);
++	/* -ESTALE if inode as been unlinked and no file is open */
++	if ((inode->i_nlink == 0) && (atomic_read(&inode->i_count) == 1)) {
+ 		iput(inode);
+ 		return ERR_PTR(-ESTALE);
+ 	}
+
