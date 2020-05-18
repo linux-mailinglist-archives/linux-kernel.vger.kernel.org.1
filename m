@@ -2,48 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C1A1D8564
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B06A1D8077
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731540AbgERRzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32818 "EHLO mail.kernel.org"
+        id S1728939AbgERRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731454AbgERRzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:32 -0400
+        id S1728915AbgERRjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14FA3207C4;
-        Mon, 18 May 2020 17:55:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E04512086A;
+        Mon, 18 May 2020 17:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824532;
-        bh=BEUWMUQxwatFeo/5l8VvlQUF3ITZ2kX7a3zK9Hqp7dw=;
+        s=default; t=1589823593;
+        bh=21RvU87suyQJ5Bno2TZaPg+6cnc/R8INOsdBybhJ+a4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5tWIC67FPjwt1xw9fyhBcv4lGi5Etoza48WISMRGyZN8+KSVKig9k7eo5F9lssKh
-         3hdGv13IKYtnyMWEhKqqRBLDlMQuRrNBr6Q+dC/veOaw2Ow+GtAI/LLXWyF6nsZD5w
-         FZWuN5v3r8gty2pO0kHihu/bHTPGPFhzO8drWow8=
+        b=EzckmMIint4WAj6+lhtT0GgKR2VNBJ1gLmkqxmH8810lBqh/3JLY9J4sgGfC/J+Tw
+         /CpaYxQ1ZqXPuq6zugs19L2Ryew/YDm6SJ7LLkHnAyOPQncjls9+Jd2znwYpUCrU9B
+         9qOtRBdCSGdIKtINn2CNeukgCZA8N5SnzOJhiaP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Schwab <schwab@suse.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Waiman Long <longman@redhat.com>, NeilBrown <neilb@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/147] ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
-Date:   Mon, 18 May 2020 19:36:13 +0200
-Message-Id: <20200518173520.206794779@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 43/86] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+Date:   Mon, 18 May 2020 19:36:14 +0200
+Message-Id: <20200518173459.156844096@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,123 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit 5e698222c70257d13ae0816720dde57c56f81e15 ]
+[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
 
-Commit 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase
-position index") is causing this bug (seen on 5.6.8):
+pd->dma.dev is read in irq handler pd_irq().
+However, it is set to pdev->dev after request_irq().
+Therefore, set pd->dma.dev to pdev->dev before request_irq() to
+avoid data race between pch_dma_probe() and pd_irq().
 
-   # ipcs -q
+Found by Linux Driver Verification project (linuxtesting.org).
 
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-
-   # ipcmk -Q
-   Message queue id: 0
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x82db8127 0          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 1
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x82db8127 0          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcrm -q 0
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x76d1fb2a 1          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 2
-   # ipcrm -q 2
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x76d1fb2a 1          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 3
-   # ipcrm -q 1
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-
-Whenever an IPC item with a low id is deleted, the items with higher ids
-are duplicated, as if filling a hole.
-
-new_pos should jump through hole of unused ids, pos can be updated
-inside "for" cycle.
-
-Fixes: 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase position index")
-Reported-by: Andreas Schwab <schwab@suse.de>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Cc: NeilBrown <neilb@suse.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Manfred Spraul <manfred@colorfullife.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- ipc/util.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/dma/pch_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/ipc/util.c b/ipc/util.c
-index 594871610d454..1821b6386d3b4 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -764,21 +764,21 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
- 			total++;
+diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
+index 113605f6fe208..32517003e118e 100644
+--- a/drivers/dma/pch_dma.c
++++ b/drivers/dma/pch_dma.c
+@@ -877,6 +877,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
  	}
  
--	*new_pos = pos + 1;
-+	ipc = NULL;
- 	if (total >= ids->in_use)
--		return NULL;
-+		goto out;
+ 	pci_set_master(pdev);
++	pd->dma.dev = &pdev->dev;
  
- 	for (; pos < ipc_mni; pos++) {
- 		ipc = idr_find(&ids->ipcs_idr, pos);
- 		if (ipc != NULL) {
- 			rcu_read_lock();
- 			ipc_lock_object(ipc);
--			return ipc;
-+			break;
- 		}
+ 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
+ 	if (err) {
+@@ -892,7 +893,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
+ 		goto err_free_irq;
  	}
--
--	/* Out of range - return NULL to terminate iteration */
--	return NULL;
-+out:
-+	*new_pos = pos + 1;
-+	return ipc;
- }
  
- static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
+-	pd->dma.dev = &pdev->dev;
+ 
+ 	INIT_LIST_HEAD(&pd->dma.channels);
+ 
 -- 
 2.20.1
 
