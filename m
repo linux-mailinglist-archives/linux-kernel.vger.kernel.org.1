@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAFE1D82C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE571D82C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731554AbgERR7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:59:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39368 "EHLO mail.kernel.org"
+        id S1732034AbgERR7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732014AbgERR7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:59:12 -0400
+        id S1732014AbgERR7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:59:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAEA0207D3;
-        Mon, 18 May 2020 17:59:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F458207C4;
+        Mon, 18 May 2020 17:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824752;
-        bh=ZHobTLHe8zeHCbBSAE8eFwEmwmHHNRo2N/t8g3ZARIA=;
+        s=default; t=1589824754;
+        bh=eV3kUzzlf5OSTxkiuVstu95fzxA6qQ/NqCtoRjvFgUE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URPEvkfHjU3yi62gkhA8H7aGKVRSua9Nkk3EsOZ2iUj9Zw0FfYfRgSCevr8rKCI0M
-         b2eBQFq5W1O9DxlaccRpnlVZICL5VMLCiA15ujz0S55ea2xvQCQzIDJ+TOboOrVV0J
-         hqzXOpcEkfDTJmlrrfh27UiMcM2I75ftOgIGMUAg=
+        b=Uym2KRsHpfJH/l52ORPpwCaKzCm17ERxvRj+u2EeTM3rAys5zwJtR3WQF+OGclJu/
+         ZNmFmx97MtPoPlGkbCZ/fTTNIKRCbKiV5KsGOC+lXk+jCKvQ2646tkZ05cWb5SAAjz
+         1kyts8NnNi2eVFufm3myp10n/8Fl7EnMiGP7S/8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 137/147] arm64: dts: imx8mn: Change SDMA1 ahb clock for imx8mn
-Date:   Mon, 18 May 2020 19:37:40 +0200
-Message-Id: <20200518173530.237924524@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 5.4 138/147] ARM: dts: r8a73a4: Add missing CMT1 interrupts
+Date:   Mon, 18 May 2020 19:37:41 +0200
+Message-Id: <20200518173530.326943987@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
 References: <20200518173513.009514388@linuxfoundation.org>
@@ -43,34 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 15ddc3e17aec0de4c69d595b873e184432b9791d upstream.
+commit 0f739fdfe9e5ce668bd6d3210f310df282321837 upstream.
 
-Using SDMA1 with UART1 is causing a "Timeout waiting for CH0" error.
-This patch changes to ahb clock from SDMA1_ROOT to AHB which fixes the
-timeout error.
+The R-Mobile APE6 Compare Match Timer 1 generates 8 interrupts, one for
+each channel, but currently only 1 is described.
+Fix this by adding the missing interrupts.
 
-Fixes: 6c3debcbae47 ("arm64: dts: freescale: Add i.MX8MN dtsi support")
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: f7b65230019b9dac ("ARM: shmobile: r8a73a4: Add CMT1 node")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200408090926.25201-1-geert+renesas@glider.be
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/freescale/imx8mn.dtsi |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/r8a73a4.dtsi |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -616,7 +616,7 @@
- 				reg = <0x30bd0000 0x10000>;
- 				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX8MN_CLK_SDMA1_ROOT>,
--					 <&clk IMX8MN_CLK_SDMA1_ROOT>;
-+					 <&clk IMX8MN_CLK_AHB>;
- 				clock-names = "ipg", "ahb";
- 				#dma-cells = <3>;
- 				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx7d.bin";
+--- a/arch/arm/boot/dts/r8a73a4.dtsi
++++ b/arch/arm/boot/dts/r8a73a4.dtsi
+@@ -131,7 +131,14 @@
+ 	cmt1: timer@e6130000 {
+ 		compatible = "renesas,r8a73a4-cmt1", "renesas,rcar-gen2-cmt1";
+ 		reg = <0 0xe6130000 0 0x1004>;
+-		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
++		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&mstp3_clks R8A73A4_CLK_CMT1>;
+ 		clock-names = "fck";
+ 		power-domains = <&pd_c5>;
 
 
