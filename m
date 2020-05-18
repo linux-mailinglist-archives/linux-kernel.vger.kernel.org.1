@@ -2,110 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737901D75BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A761E1D75C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgERLAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:00:08 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2258 "EHLO mga12.intel.com"
+        id S1726889AbgERLAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726499AbgERLAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:00:07 -0400
-IronPort-SDR: D7O++Fu3RnV3NEH+9Wam9rpicUSEOjobnARVNMOq7FokPj5qEp2u+pudJVqj3oGmWfgoxbZSrq
- 8u2L+IqtKFoQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 04:00:07 -0700
-IronPort-SDR: aKcaZ1vbO9Y+Pw38A4DR+r+cMf54BrnU9FSzgbihFrsRh7ZSK3XynoJGRv7/lzlWh9TxWwR5Vp
- ReoEmWfYeYmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="254413961"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008.fm.intel.com with ESMTP; 18 May 2020 04:00:02 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jadV6-007PLQ-Tv; Mon, 18 May 2020 14:00:04 +0300
-Date:   Mon, 18 May 2020 14:00:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuxu.wu" <wuxu.wu@huawei.com>, Clement Leger <cleger@kalray.eu>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/19] spi: dw: Discard static DW DMA slave structures
-Message-ID: <20200518110004.GW1634618@smile.fi.intel.com>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-7-Sergey.Semin@baikalelectronics.ru>
- <20200515123422.GZ185537@smile.fi.intel.com>
- <20200516142030.kburieaxjg4n7c42@mobilestation>
+        id S1726302AbgERLAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:00:34 -0400
+Received: from earth.universe (dyndsl-037-138-186-253.ewe-ip-backbone.de [37.138.186.253])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8803B20709;
+        Mon, 18 May 2020 11:00:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589799633;
+        bh=wyGwJMp6JDvi1pxR/6oXX1BgJr9jWtaMspgSnt4Ppa4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PEWVpH2WCVwuzKm3cA49Pj6GlmuHjTAgIsG00SquIYG1ByF0c8wW4Wh0eONK45KfE
+         6VllZWVL5SM+EFySBFS/yet6ysdAEZcOO5zxlzSUlAWRl/Z9EZn3aHvXSqVA0qoTit
+         o8ji85g/r2LyktcsUdUP0D+blllZ6+goPlWj7FNY=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 30ED23C08C6; Mon, 18 May 2020 13:00:31 +0200 (CEST)
+Date:   Mon, 18 May 2020 13:00:31 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [not urgent] ROHM PMIC/Charger IC driver maintenance.
+Message-ID: <20200518110031.tthams2r7tkcytie@earth.universe>
+References: <18838efd9341c953fb6aabe9536786de3f1150ae.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cddvtyzylvcawpye"
 Content-Disposition: inline
-In-Reply-To: <20200516142030.kburieaxjg4n7c42@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <18838efd9341c953fb6aabe9536786de3f1150ae.camel@fi.rohmeurope.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 05:20:30PM +0300, Serge Semin wrote:
-> On Fri, May 15, 2020 at 03:34:22PM +0300, Andy Shevchenko wrote:
-> > On Fri, May 15, 2020 at 01:47:45PM +0300, Serge Semin wrote:
-> > > Having them declared is redundant since each struct dw_dma_chan has
-> > > the same structure embedded and the structure from the passed dma_chan
-> > > private pointer will be copied there as a result of the next calls
-> > > chain:
-> > > dma_request_channel() -> find_candidate() -> dma_chan_get() ->
-> > > device_alloc_chan_resources() = dwc_alloc_chan_resources() ->
-> > > dw_dma_filter().
-> > > So just remove the static dw_dma_chan structures and use a locally
-> > > declared data instance with dst_id/src_id set to the same values as
-> > > the static copies used to have.
-> > 
-> > ...
-> > 
-> > > -static struct dw_dma_slave mid_dma_tx = { .dst_id = 1 };
-> > > -static struct dw_dma_slave mid_dma_rx = { .src_id = 0 };
-> > 
-> > > +	struct dw_dma_slave slave = {0};
-> > 
-> > I really would like to leave them separated and as in the original form, i.e.
-> > 
-> > 	struct dw_dma_slave tx = { .dst_id = 1 };
-> > 	struct dw_dma_slave rx = { .src_id = 0 };
-> > 
-> > those src and dst IDs are put in that form on purpose...
-> 
-> As long as you don't tell us what purpose it is, my position won't change.
 
-It's not the way when your changes makes this the older (upstreamed) stuff's
-issue, it's an opposite. But I will help you here...
+--cddvtyzylvcawpye
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> These structures declared here just hold the static memory and nothing
-> else. Allocating them on stack is better.
+Hi,
 
-I'm not talking about stack, it's fine for me, what I'm talking about is *how*
-they are being initialized. Read my message again carefully, please.
+On Mon, May 18, 2020 at 07:38:25AM +0000, Vaittinen, Matti wrote:
+> Hello All,
+>=20
+> In short - I consider adding myself in MAINTAINERs for the ROHM IC
+> drivers I've authored. I would like to get your opinion as subsystem
+> maintainers on the area where these driver belong. If you don't care -
+> then no need to read further :) If you do read, then I would appreciate
+> hearing about your expectations regarding reviews, ACKs etc.
+>=20
+> Longer story, I have contributed drivers for ROHM PMICs
+> BD71837/BD71847/BD71850, BD70528, BD71828/BD71878 and ROHM charger IC
+> BD99954. I did also refactor the linear_ranges code out of the
+> regulator framework. Now I am working on with another PMIC driver
+> (regulators/watchdog) which I hope to end up in upstream at autumn
+> after the proper testing. There is also some pieces in regmap-irq which
+> I have added.
+>=20
+> I would like to participate in reviewing work for patches to these
+> drivers (and perhaps the linear_ranges) and possibly set up some test
+> jobs where I can run some tests involving some of the PMICs. I hope
+> this helps the community too.
+>=20
+> I would also benefit from being informed when a fix is sent to one of
+> these areas as I am anyways paid to be hosting some out-of-tree
+> additions to these drivers. So my git tree would benefit from getting
+> the odd fixes upstream is getting. Reviewing mails would serve as a
+> heads up for me.
+>=20
+> Thus I consider adding few entries to MAINTAINERs in order to be
+> getting the patches for review/test. What I don't consider doing is
+> integrating the patches in "official Linux" - Eg. all patches should
+> still go upstream via your trees.
+>=20
+> What kind of participation would you expect/appreciate from me if I
+> added myself in MAINTAINERS for these drivers I authored? Any
+> objections to that? (I don't really know how MAINTAINERs entries should
+> be added - and I didn't [easily] find up-to-date explanation to that).
+> For where I can be of help - I believe I am technically competent for
+> reviewing C-code. I am not competent for reviewing all styling details
+> - and I am not too useful what comes to YAML - this syntax is still
+> really alien to me. Yet I think I have some insight to things the DT
+> yaml is describing (meaning ROHM HW) :)
+>=20
+> I add below the list of files / subsystem.
+>=20
+> Regulator:
+> bd70528-regulator.c
+> bd71828-regulator.c
+> bd718x7-regulator.c
+> rohm-regulator.c
+> (lib/linear_ranges.c
+> lib/test_linear_ranges.c?
+> include/linux/linear_range.h - Who should maintain these?)
+>=20
+> Power-supply:
+> bd70528-charger.c
+> bd71827-power.c
+> bd99954-charger.c
+> bd99954-charger.h
+>=20
+> MFD:
+> rohm-bd70528.c
+> rohm-bd71828.c
+> rohm-bd718x7.c
+> include/linux/mfd/rohm-shared.h
+> include/linux/mfd/rohm-bd71828.h
+> include/linux/mfd/rohm-bd70528.h
+> include/linux/mfd/rohm-generic.h
+> include/linux/mfd/rohm-bd718x7.h
+>=20
+> GPIO:
+> gpio-bd70528.c
+> gpio-bd71828.c
+>=20
+> RTC:
+> rtc-bd70528.c
+>=20
+> Watchdog:
+> bd70528_wdt.c
+>=20
+> Clk:
+> clk-bd718x7.c
+>=20
+> DT:
+> Documentation/devicetree/bindings/power/supply/rohm,bd99954.yaml
+> Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
+> Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
+> Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
+> Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
+> Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> Documentation/devicetree/bindings/leds/rohm,bd71828-leds.yaml
+> Documentation/devicetree/bindings/regulator/rohm,bd71828-regulator.yaml
+> Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
+> Documentation/devicetree/bindings/regulator/rohm,bd70528-regulator.txt
+>=20
+> Best Regards
+> 	Matti Vaittinen
 
--- 
-With Best Regards,
-Andy Shevchenko
+I suggest to just send something like this entry adapted to the ROHM
+drivers:
 
+------------------------------------------------------------
+TI BQ27XXX POWER SUPPLY DRIVER
+R:      Andrew F. Davis <afd@ti.com>
+F:      drivers/power/supply/bq27xxx_battery.c
+F:      drivers/power/supply/bq27xxx_battery_i2c.c
+F:      include/linux/power/bq27xxx_battery.h
+------------------------------------------------------------
 
+It will result in get_maintainer.pl to output this:
+
+$ ./scripts/get_maintainer.pl -f drivers/power/supply/bq27xxx_battery.c
+"Andrew F. Davis" <afd@ti.com> (reviewer:TI BQ27XXX POWER SUPPLY DRIVER)
+"Pali Roh=E1r" <pali@kernel.org> (reviewer:NOKIA N900 POWER SUPPLY DRIVERS)
+Sebastian Reichel <sre@kernel.org> (maintainer:POWER SUPPLY CLASS/SUBSYSTEM=
+ and DRIVERS)
+linux-pm@vger.kernel.org (open list:POWER SUPPLY CLASS/SUBSYSTEM and DRIVER=
+S)
+linux-kernel@vger.kernel.org (open list)
+
+For drivers with a dedicated reviewer I wait some time for their
+feedback.
+
+For the DT YAML bindings you don't need to do anything:
+
+https://lore.kernel.org/lkml/e85006456d9dbae55286c67ac5263668a72f5b58.15880=
+22228.git.joe@perches.com/
+
+-- Sebastian
+
+--cddvtyzylvcawpye
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7CascACgkQ2O7X88g7
++pq1zA//cxJzaXoirmekFTa4rdDkDs9iinYvoN1j3hqvuCO9he6IcSs3w+0vzPSm
+Vi9lTdohxM0KsNP01lEmc6PnlU9jEHqiQAFDMJZ3+WsBAD48MmLHk/GuCKRdSuHo
+OBH0YEamwveu7YOqS934HjywHd1tYciiwDU/xOCZENNoR8TS53LuuXEya98uhtxJ
+juZ7qc5fLs1K/xKxHCR80gUjQhgKR/BOyY+/vpsL00GTRzIA6pkOmziSHo7Alhml
+WNIR40TjBmRE4dKPepxHJXd0jL7XN4gSzn5ZJuF7Gx06yhENE/sapleGB0V2plEy
+SF4sbkYNRZv+uSjl8Be5MjYmGojCDHCWijmxtguyN2/QR3/XKl1k1rHRq9agGKb9
+GYE3WZpJFUsLPV9X4uDxyuskYKFVk6ylJwZJvbkHvK7gkzclgYG+B1SvJQzltkLS
+436IejS7NDIAJAGnGrTyKWJMOz0Zt36GulQeviSenknPzMydhWI/p887CutWMCIb
+lMTM2A7gNspoWMvNGrO1MvmwHayji4nfgddEwQhIvhAoLz2SBCttnq/roaJyBh3Y
+zyDa7bmp9CD0UAWL3j6UWUArsxfyTD/Eg/3Va3UYfkrMXm+3q9DnqEEFRZrA7mrB
+gREFOTMvPNsMrlLeEIRp5gll7TX4Vtp6IQ8RndHmJnPXR/KMfuA=
+=X4FG
+-----END PGP SIGNATURE-----
+
+--cddvtyzylvcawpye--
