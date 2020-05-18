@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E3D1D8154
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC2F1D830E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgERRrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47180 "EHLO mail.kernel.org"
+        id S1732284AbgERSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730174AbgERRrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:04 -0400
+        id S1732415AbgERSBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21CB9207C4;
-        Mon, 18 May 2020 17:47:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39893207C4;
+        Mon, 18 May 2020 18:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824023;
-        bh=8MovxxCcEK1CGKWHnV9yi9bYCAtEDPUYWRFY7IJQFGY=;
+        s=default; t=1589824896;
+        bh=E62aFs6PBTk5tFC7+VokOo5cOK1GtOKO7f7fTsT5TE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndu0kMir0bUwWMKNCU+n3M58X6tVR0Z+hBuzT/qe5gJiUsV9sRZDL9dYm2nnWvlAg
-         fXCBtEmyDShcR/phBoAAD2ffUkI+ZjotgiVWDjJiXE0IFrbBg/VnlZKTNK3xpSIW8g
-         2zmsXic0bnSUrBPlbq28YD5Rp0T/RqX0ThRoS8hk=
+        b=LpDj2PErEKeCQALJhG3WOeJnWboS3j3vEvxtNXf12/oFTBgav8KWA8msPNeJvcCUr
+         mDuZKjc8urpD6G+9IkG+xO/4seoG5gLqw4/NZ1mGqi96uw7zqBJPCA3V0NsNHbWA8N
+         QS9rNqoxJCN5X9X/FeTNHngjRVMYrqDAie2FH7RY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Jolly <Kangie@footclan.ninja>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 006/114] net: usb: qmi_wwan: add support for DW5816e
+        stable@vger.kernel.org,
+        =?UTF-8?q?Camale=C3=B3n?= <noelamac@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.6 048/194] r8169: re-establish support for RTL8401 chip version
 Date:   Mon, 18 May 2020 19:35:38 +0200
-Message-Id: <20200518173504.264566242@linuxfoundation.org>
+Message-Id: <20200518173535.816265470@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,29 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Jolly <Kangie@footclan.ninja>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 57c7f2bd758eed867295c81d3527fff4fab1ed74 ]
+[ Upstream commit 1f8492df081bd66255764f3ce82ba1b2c37def49 ]
 
-Add support for Dell Wireless 5816e to drivers/net/usb/qmi_wwan.c
+r8169 never had native support for the RTL8401, however it reportedly
+worked with the fallback to RTL8101e [0]. Therefore let's add this
+as an explicit assignment.
 
-Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[0] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956868
+
+Fixes: b4cc2dcc9c7c ("r8169: remove default chip versions")
+Reported-by: Camaleón <noelamac@gmail.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/realtek/r8169_main.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1283,6 +1283,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x413c, 0x81b3, 8)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 8)},	/* Dell Wireless 5811e */
- 	{QMI_FIXED_INTF(0x413c, 0x81b6, 10)},	/* Dell Wireless 5811e */
-+	{QMI_FIXED_INTF(0x413c, 0x81cc, 8)},	/* Dell Wireless 5816e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 0)},	/* Dell Wireless 5821e */
- 	{QMI_FIXED_INTF(0x413c, 0x81d7, 1)},	/* Dell Wireless 5821e preproduction config */
- 	{QMI_FIXED_INTF(0x413c, 0x81e0, 0)},	/* Dell Wireless 5821e with eSIM support*/
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -2127,6 +2127,8 @@ static void rtl8169_get_mac_version(stru
+ 		{ 0x7cf, 0x348,	RTL_GIGA_MAC_VER_07 },
+ 		{ 0x7cf, 0x248,	RTL_GIGA_MAC_VER_07 },
+ 		{ 0x7cf, 0x340,	RTL_GIGA_MAC_VER_13 },
++		/* RTL8401, reportedly works if treated as RTL8101e */
++		{ 0x7cf, 0x240,	RTL_GIGA_MAC_VER_13 },
+ 		{ 0x7cf, 0x343,	RTL_GIGA_MAC_VER_10 },
+ 		{ 0x7cf, 0x342,	RTL_GIGA_MAC_VER_16 },
+ 		{ 0x7c8, 0x348,	RTL_GIGA_MAC_VER_09 },
 
 
