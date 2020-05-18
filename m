@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F121D8352
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156911D81D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732696AbgERSDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49070 "EHLO mail.kernel.org"
+        id S1730854AbgERRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732660AbgERSDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:34 -0400
+        id S1730842AbgERRvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DEE320826;
-        Mon, 18 May 2020 18:03:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3AF4207F5;
+        Mon, 18 May 2020 17:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825012;
-        bh=ZqQ6gElMZ/x2TaD1DB0XdqW3oRJNriZd1+VAyLuW2yI=;
+        s=default; t=1589824277;
+        bh=lQkgXxAC3/8ipYcxvuOZxxEdiDVgNUeppmkPLjRdlOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTXv23UK3yFXZQtEbJ/gSz8WJgSph2x1jogtIFX9M8roFN8i7YkpDzauSrlZuPfEE
-         obAP8Q+tcA0ue8iHFxalip4ZjvhnmCTHpiJmZDDKoYUzsWc//xQYbTRZwDLaT+Ylhg
-         Oy8SQMXrCiDc3GjCuiRkDPrM8oeFtY1TtBhwiQhQ=
+        b=KtWLswkLYrr5QXaFRlczUqVSRHeGN9Iu51lF3DpqchtW71mOq8X2SbET0xuebAt6m
+         yPUdAysgGgF+6PakjQLhRYwQQUozQFEAntfMAr2lMO5YrNdDKXTWX2mT0ujh7CTcyL
+         gNUp9UsCqwK7++LC9p+LpsBL0oQ/xS//PEXcpZuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Stancek <jstancek@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Florian Weimer <fw@deneb.enyo.de>, libc-alpha@sourceware.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 095/194] fork: prevent accidental access to clone3 features
+        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
+        Wu Bo <wubo40@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 07/80] scsi: sg: add sg_remove_request in sg_write
 Date:   Mon, 18 May 2020 19:36:25 +0200
-Message-Id: <20200518173540.020913971@linuxfoundation.org>
+Message-Id: <20200518173451.642074954@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,133 +46,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+From: Wu Bo <wubo40@huawei.com>
 
-[ Upstream commit 3f2c788a13143620c5471ac96ac4f033fc9ac3f3 ]
+commit 83c6f2390040f188cc25b270b4befeb5628c1aee upstream.
 
-Jan reported an issue where an interaction between sign-extending clone's
-flag argument on ppc64le and the new CLONE_INTO_CGROUP feature causes
-clone() to consistently fail with EBADF.
+If the __copy_from_user function failed we need to call sg_remove_request
+in sg_write.
 
-The whole story is a little longer. The legacy clone() syscall is odd in a
-bunch of ways and here two things interact. First, legacy clone's flag
-argument is word-size dependent, i.e. it's an unsigned long whereas most
-system calls with flag arguments use int or unsigned int. Second, legacy
-clone() ignores unknown and deprecated flags. The two of them taken
-together means that users on 64bit systems can pass garbage for the upper
-32bit of the clone() syscall since forever and things would just work fine.
-Just try this on a 64bit kernel prior to v5.7-rc1 where this will succeed
-and on v5.7-rc1 where this will fail with EBADF:
-
-int main(int argc, char *argv[])
-{
-        pid_t pid;
-
-        /* Note that legacy clone() has different argument ordering on
-         * different architectures so this won't work everywhere.
-         *
-         * Only set the upper 32 bits.
-         */
-        pid = syscall(__NR_clone, 0xffffffff00000000 | SIGCHLD,
-                      NULL, NULL, NULL, NULL);
-        if (pid < 0)
-                exit(EXIT_FAILURE);
-        if (pid == 0)
-                exit(EXIT_SUCCESS);
-        if (wait(NULL) != pid)
-                exit(EXIT_FAILURE);
-
-        exit(EXIT_SUCCESS);
-}
-
-Since legacy clone() couldn't be extended this was not a problem so far and
-nobody really noticed or cared since nothing in the kernel ever bothered to
-look at the upper 32 bits.
-
-But once we introduced clone3() and expanded the flag argument in struct
-clone_args to 64 bit we opened this can of worms. With the first flag-based
-extension to clone3() making use of the upper 32 bits of the flag argument
-we've effectively made it possible for the legacy clone() syscall to reach
-clone3() only flags. The sign extension scenario is just the odd
-corner-case that we needed to figure this out.
-
-The reason we just realized this now and not already when we introduced
-CLONE_CLEAR_SIGHAND was that CLONE_INTO_CGROUP assumes that a valid cgroup
-file descriptor has been given. So the sign extension (or the user
-accidently passing garbage for the upper 32 bits) caused the
-CLONE_INTO_CGROUP bit to be raised and the kernel to error out when it
-didn't find a valid cgroup file descriptor.
-
-Let's fix this by always capping the upper 32 bits for all codepaths that
-are not aware of clone3() features. This ensures that we can't reach
-clone3() only features by accident via legacy clone as with the sign
-extension case and also that legacy clone() works exactly like before, i.e.
-ignoring any unknown flags.  This solution risks no regressions and is also
-pretty clean.
-
-Fixes: 7f192e3cd316 ("fork: add clone3")
-Fixes: ef2c41cf38a7 ("clone3: allow spawning processes into cgroups")
-Reported-by: Jan Stancek <jstancek@redhat.com>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dmitry V. Levin <ldv@altlinux.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: libc-alpha@sourceware.org
-Cc: stable@vger.kernel.org # 5.3+
-Link: https://sourceware.org/pipermail/libc-alpha/2020-May/113596.html
-Link: https://lore.kernel.org/r/20200507103214.77218-1-christian.brauner@ubuntu.com
+Link: https://lore.kernel.org/r/610618d9-e983-fd56-ed0f-639428343af7@huawei.com
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+[groeck: Backport to v5.4.y and older kernels]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/fork.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/scsi/sg.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index d90af13431c7e..c9ba2b7bfef9d 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2486,11 +2486,11 @@ long do_fork(unsigned long clone_flags,
- 	      int __user *child_tidptr)
- {
- 	struct kernel_clone_args args = {
--		.flags		= (clone_flags & ~CSIGNAL),
-+		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
- 		.pidfd		= parent_tidptr,
- 		.child_tid	= child_tidptr,
- 		.parent_tid	= parent_tidptr,
--		.exit_signal	= (clone_flags & CSIGNAL),
-+		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
- 		.stack		= stack_start,
- 		.stack_size	= stack_size,
- 	};
-@@ -2508,8 +2508,9 @@ long do_fork(unsigned long clone_flags,
- pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
- {
- 	struct kernel_clone_args args = {
--		.flags		= ((flags | CLONE_VM | CLONE_UNTRACED) & ~CSIGNAL),
--		.exit_signal	= (flags & CSIGNAL),
-+		.flags		= ((lower_32_bits(flags) | CLONE_VM |
-+				    CLONE_UNTRACED) & ~CSIGNAL),
-+		.exit_signal	= (lower_32_bits(flags) & CSIGNAL),
- 		.stack		= (unsigned long)fn,
- 		.stack_size	= (unsigned long)arg,
- 	};
-@@ -2570,11 +2571,11 @@ SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
- #endif
- {
- 	struct kernel_clone_args args = {
--		.flags		= (clone_flags & ~CSIGNAL),
-+		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
- 		.pidfd		= parent_tidptr,
- 		.child_tid	= child_tidptr,
- 		.parent_tid	= parent_tidptr,
--		.exit_signal	= (clone_flags & CSIGNAL),
-+		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
- 		.stack		= newsp,
- 		.tls		= tls,
- 	};
--- 
-2.20.1
-
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -694,8 +694,10 @@ sg_write(struct file *filp, const char _
+ 	hp->flags = input_size;	/* structure abuse ... */
+ 	hp->pack_id = old_hdr.pack_id;
+ 	hp->usr_ptr = NULL;
+-	if (__copy_from_user(cmnd, buf, cmd_size))
++	if (__copy_from_user(cmnd, buf, cmd_size)) {
++		sg_remove_request(sfp, srp);
+ 		return -EFAULT;
++	}
+ 	/*
+ 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
+ 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
 
 
