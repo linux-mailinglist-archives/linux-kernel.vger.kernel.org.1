@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70FE1D8057
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8463B1D80D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgERRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
+        id S1728659AbgERRmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:42:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728657AbgERRjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:02 -0400
+        id S1728830AbgERRmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:42:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D554020829;
-        Mon, 18 May 2020 17:39:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85CCC20657;
+        Mon, 18 May 2020 17:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823541;
-        bh=96uFTrB1wUL2K5VRxCTmC0WiSXnmT6PY0ZcORRRnhfA=;
+        s=default; t=1589823739;
+        bh=yKwxbu0ssZHksUJJ8DfAuGLrwFXRBVCuaG65HeQ1Mrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Hnkk3XdYoT1aw9tr75odNeZB1cHO8bAaP588ePGw/fo4PcSOeBxliUGM1jm+tlL9
-         2GTEWHkCi+eTBsuIufhLEe3HnZCR6DE3y7JyRqw9DbtBKc97Zx0opfgJeT1kJ2FSa/
-         BK8wmOd8Zimth7QziFRg992zwAlENSKyWEcePArw=
+        b=OnWslDzmTkVZltiqYLAsLHOngorH2ZJKoa1HJNqrpQ1ZGDTQbqb+K2bJqQt5aIENl
+         I1PwU9BikTfCftJ+94S0CikaJDz6yt8IK4fKOIKOVe9Pyzem7IglcgMu4DmJ93NuD0
+         i/9ubWsG/ppzgAZb5gZk8mL5RnSCKvLZ5LAIBKWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 24/86] blktrace: fix unlocked access to init/start-stop/teardown
+        stable@vger.kernel.org,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 17/90] tracing: Add a vmalloc_sync_mappings() for safe measure
 Date:   Mon, 18 May 2020 19:35:55 +0200
-Message-Id: <20200518173455.336819399@linuxfoundation.org>
+Message-Id: <20200518173454.769765722@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,151 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 1f2cac107c591c24b60b115d6050adc213d10fc0 upstream.
+commit 11f5efc3ab66284f7aaacc926e9351d658e2577b upstream.
 
-sg.c calls into the blktrace functions without holding the proper queue
-mutex for doing setup, start/stop, or teardown.
+x86_64 lazily maps in the vmalloc pages, and the way this works with per_cpu
+areas can be complex, to say the least. Mappings may happen at boot up, and
+if nothing synchronizes the page tables, those page mappings may not be
+synced till they are used. This causes issues for anything that might touch
+one of those mappings in the path of the page fault handler. When one of
+those unmapped mappings is touched in the page fault handler, it will cause
+another page fault, which in turn will cause a page fault, and leave us in
+a loop of page faults.
 
-Add internal unlocked variants, and export the ones that do the proper
-locking.
+Commit 763802b53a42 ("x86/mm: split vmalloc_sync_all()") split
+vmalloc_sync_all() into vmalloc_sync_unmappings() and
+vmalloc_sync_mappings(), as on system exit, it did not need to do a full
+sync on x86_64 (although it still needed to be done on x86_32). By chance,
+the vmalloc_sync_all() would synchronize the page mappings done at boot up
+and prevent the per cpu area from being a problem for tracing in the page
+fault handler. But when that synchronization in the exit of a task became a
+nop, it caused the problem to appear.
 
-Fixes: 6da127ad0918 ("blktrace: Add blktrace ioctls to SCSI generic devices")
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Link: https://lore.kernel.org/r/20200429054857.66e8e333@oasis.local.home
+
+Cc: stable@vger.kernel.org
+Fixes: 737223fbca3b1 ("tracing: Consolidate buffer allocation code")
+Reported-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Suggested-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/trace/blktrace.c |   58 +++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 10 deletions(-)
 
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -323,7 +323,7 @@ static void blk_trace_cleanup(struct blk
- 	put_probe_ref();
- }
- 
--int blk_trace_remove(struct request_queue *q)
-+static int __blk_trace_remove(struct request_queue *q)
- {
- 	struct blk_trace *bt;
- 
-@@ -336,6 +336,17 @@ int blk_trace_remove(struct request_queu
- 
- 	return 0;
- }
-+
-+int blk_trace_remove(struct request_queue *q)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_remove(q);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_remove);
- 
- static ssize_t blk_dropped_read(struct file *filp, char __user *buffer,
-@@ -546,9 +557,8 @@ err:
- 	return ret;
- }
- 
--int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
--		    struct block_device *bdev,
--		    char __user *arg)
-+static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+			     struct block_device *bdev, char __user *arg)
- {
- 	struct blk_user_trace_setup buts;
- 	int ret;
-@@ -567,6 +577,19 @@ int blk_trace_setup(struct request_queue
- 	}
- 	return 0;
- }
-+
-+int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+		    struct block_device *bdev,
-+		    char __user *arg)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_setup(q, name, dev, bdev, arg);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_setup);
- 
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
-@@ -603,7 +626,7 @@ static int compat_blk_trace_setup(struct
- }
+---
+ kernel/trace/trace.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7032,6 +7032,19 @@ static int allocate_trace_buffers(struct
+ 	 */
+ 	allocate_snapshot = false;
  #endif
- 
--int blk_trace_startstop(struct request_queue *q, int start)
-+static int __blk_trace_startstop(struct request_queue *q, int start)
- {
- 	int ret;
- 	struct blk_trace *bt = q->blk_trace;
-@@ -642,6 +665,17 @@ int blk_trace_startstop(struct request_q
- 
- 	return ret;
- }
 +
-+int blk_trace_startstop(struct request_queue *q, int start)
-+{
-+	int ret;
++	/*
++	 * Because of some magic with the way alloc_percpu() works on
++	 * x86_64, we need to synchronize the pgd of all the tables,
++	 * otherwise the trace events that happen in x86_64 page fault
++	 * handlers can't cope with accessing the chance that a
++	 * alloc_percpu()'d memory might be touched in the page fault trace
++	 * event. Oh, and we need to audit all other alloc_percpu() and vmalloc()
++	 * calls in tracing, because something might get triggered within a
++	 * page fault trace event!
++	 */
++	vmalloc_sync_mappings();
 +
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_startstop(q, start);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_startstop);
- 
- /*
-@@ -672,7 +706,7 @@ int blk_trace_ioctl(struct block_device
- 	switch (cmd) {
- 	case BLKTRACESETUP:
- 		bdevname(bdev, b);
--		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
-+		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
- 	case BLKTRACESETUP32:
-@@ -683,10 +717,10 @@ int blk_trace_ioctl(struct block_device
- 	case BLKTRACESTART:
- 		start = 1;
- 	case BLKTRACESTOP:
--		ret = blk_trace_startstop(q, start);
-+		ret = __blk_trace_startstop(q, start);
- 		break;
- 	case BLKTRACETEARDOWN:
--		ret = blk_trace_remove(q);
-+		ret = __blk_trace_remove(q);
- 		break;
- 	default:
- 		ret = -ENOTTY;
-@@ -704,10 +738,14 @@ int blk_trace_ioctl(struct block_device
-  **/
- void blk_trace_shutdown(struct request_queue *q)
- {
-+	mutex_lock(&q->blk_trace_mutex);
-+
- 	if (q->blk_trace) {
--		blk_trace_startstop(q, 0);
--		blk_trace_remove(q);
-+		__blk_trace_startstop(q, 0);
-+		__blk_trace_remove(q);
- 	}
-+
-+	mutex_unlock(&q->blk_trace_mutex);
+ 	return 0;
  }
  
- /*
 
 
