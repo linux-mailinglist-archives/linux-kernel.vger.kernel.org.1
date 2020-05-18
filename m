@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0E91D8368
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC051D8290
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732788AbgERSEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51230 "EHLO mail.kernel.org"
+        id S1731098AbgERR5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732765AbgERSES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:04:18 -0400
+        id S1731791AbgERR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 709ED20715;
-        Mon, 18 May 2020 18:04:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E76B20674;
+        Mon, 18 May 2020 17:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825057;
-        bh=wjNCLJm8je2dfTo3Dnvetm+uHr8DjiIVmachTBfbvW4=;
+        s=default; t=1589824647;
+        bh=u9Dmuq/K6ryDJMtzgJQEABHCn0tfGryZO0R5fm4zHtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OS2lbltMMlra5FU+Bc4AQlNDZxqNz+PmsOT+xSydwlczd9vvbpIb0kpZHdRUax1mO
-         OZ5K0NhEiz7HYsHIYPWUS/+zaXcvkt3AKLpp4ojQ4Nnj6ApeqlA1R8dJXpKnmcZNGy
-         RgyPhFPcXwctjsL7VWf31NSRKtti+1m05agmzLG0=
+        b=bl+bgb47g1si813xS79UDlBTQmwDHNmKeqUNMmzdp79NfWXE54TK4K74lRFAfBEV6
+         Mj11z2oC4e/3YnrCFKk5xjqJQadQTsZDfbscsRdw4G6idXnC048/lyYQ0+Whk/nZRd
+         v0iMOMQx+EsO3Q96jNzUtJLO8gdtZ7czTlXNzJC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org, Xiong Zhang <xiong.y.zhang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 111/194] RDMA/rxe: Always return ERR_PTR from rxe_create_mmap_info()
+Subject: [PATCH 5.4 078/147] drm/i915/gvt: Fix kernel oops for 3-level ppgtt guest
 Date:   Mon, 18 May 2020 19:36:41 +0200
-Message-Id: <20200518173541.021424362@linuxfoundation.org>
+Message-Id: <20200518173523.488172832@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,75 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Zhenyu Wang <zhenyuw@linux.intel.com>
 
-[ Upstream commit bb43c8e382e5da0ee253e3105d4099820ff4d922 ]
+[ Upstream commit 72a7a9925e2beea09b109dffb3384c9bf920d9da ]
 
-The commit below modified rxe_create_mmap_info() to return ERR_PTR's but
-didn't update the callers to handle them. Modify rxe_create_mmap_info() to
-only return ERR_PTR and fix all error checking after
-rxe_create_mmap_info() is called.
+As i915 won't allocate extra PDP for current default PML4 table,
+so for 3-level ppgtt guest, we would hit kernel pointer access
+failure on extra PDP pointers. So this trys to bypass that now.
+It won't impact real shadow PPGTT setup, so guest context still
+works.
 
-Ensure that all other exit paths properly set the error return.
+This is verified on 4.15 guest kernel with i915.enable_ppgtt=1
+to force on old aliasing ppgtt behavior.
 
-Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
-Link: https://lore.kernel.org/r/20200425233545.17210-1-sudipm.mukherjee@gmail.com
-Link: https://lore.kernel.org/r/20200511183742.GB225608@mwanda
-Cc: stable@vger.kernel.org [5.4+]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 4f15665ccbba ("drm/i915: Add ppgtt to GVT GEM context")
+Reviewed-by: Xiong Zhang <xiong.y.zhang@intel.com>
+Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20200506095918.124913-1-zhenyuw@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mmap.c  |  2 +-
- drivers/infiniband/sw/rxe/rxe_queue.c | 11 +++++++----
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/i915/gvt/scheduler.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
-index 48f48122ddcb8..6a413d73b95dd 100644
---- a/drivers/infiniband/sw/rxe/rxe_mmap.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
-@@ -151,7 +151,7 @@ struct rxe_mmap_info *rxe_create_mmap_info(struct rxe_dev *rxe, u32 size,
- 
- 	ip = kmalloc(sizeof(*ip), GFP_KERNEL);
- 	if (!ip)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	size = PAGE_ALIGN(size);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
-index ff92704de32ff..245040c3a35d0 100644
---- a/drivers/infiniband/sw/rxe/rxe_queue.c
-+++ b/drivers/infiniband/sw/rxe/rxe_queue.c
-@@ -45,12 +45,15 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
- 
- 	if (outbuf) {
- 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
--		if (!ip)
-+		if (IS_ERR(ip)) {
-+			err = PTR_ERR(ip);
- 			goto err1;
-+		}
- 
--		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
--		if (err)
-+		if (copy_to_user(outbuf, &ip->info, sizeof(ip->info))) {
-+			err = -EFAULT;
- 			goto err2;
-+		}
- 
- 		spin_lock_bh(&rxe->pending_lock);
- 		list_add(&ip->pending_mmaps, &rxe->pending_mmaps);
-@@ -64,7 +67,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
- err2:
- 	kfree(ip);
- err1:
--	return -EINVAL;
-+	return err;
- }
- 
- inline void rxe_queue_reset(struct rxe_queue *q)
+diff --git a/drivers/gpu/drm/i915/gvt/scheduler.c b/drivers/gpu/drm/i915/gvt/scheduler.c
+index 6c79d16b381ea..058dcd5416440 100644
+--- a/drivers/gpu/drm/i915/gvt/scheduler.c
++++ b/drivers/gpu/drm/i915/gvt/scheduler.c
+@@ -374,7 +374,11 @@ static void set_context_ppgtt_from_shadow(struct intel_vgpu_workload *workload,
+ 		for (i = 0; i < GVT_RING_CTX_NR_PDPS; i++) {
+ 			struct i915_page_directory * const pd =
+ 				i915_pd_entry(ppgtt->pd, i);
+-
++			/* skip now as current i915 ppgtt alloc won't allocate
++			   top level pdp for non 4-level table, won't impact
++			   shadow ppgtt. */
++			if (!pd)
++				break;
+ 			px_dma(pd) = mm->ppgtt_mm.shadow_pdps[i];
+ 		}
+ 	}
 -- 
 2.20.1
 
