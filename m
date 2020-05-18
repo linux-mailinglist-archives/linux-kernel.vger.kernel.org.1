@@ -2,182 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5161D8540
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C884E1D851A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732351AbgERSRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:17:25 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4311 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387708AbgERSRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:17:16 -0400
-IronPort-SDR: LY2Y3jS9dbOsSl3+eYMXaT1KLYCCoAPA6BXHMMlgZTXG8OgDyiZE1BTcbaSfBjSNi0DNERSl9m
- RK+HO67MV9lw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:17:00 -0700
-IronPort-SDR: PAwDrgNRP1Ncjz2kbPqMHISLy9Kar/H5aZuyTOFnX0CtQSi3ykE0pSYFWB3LcoEqARCGaX1d2o
- y+f2e/JFkV3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="267610670"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 18 May 2020 11:16:59 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jakJu-0000o1-9j; Tue, 19 May 2020 02:16:58 +0800
-Date:   Tue, 19 May 2020 02:16:02 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:objtool/core] BUILD SUCCESS
- 7c0577f4e609f7278ebd6d21e2de82b42f110944
-Message-ID: <5ec2d0e2.WyrMOaW3wMFEYqiR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1732522AbgERSQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:16:19 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:40973 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728495AbgERSQL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:16:11 -0400
+Received: by mail-io1-f66.google.com with SMTP id o5so11639463iow.8;
+        Mon, 18 May 2020 11:16:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JxKTb/ih7EghROppADNjlOVB+kg2oy5PArakgj5co0c=;
+        b=b4pKtkyKuylJ172oadLkhVcZXgzemMtdsJWWEfLVoVM67jdOEWMMUsqpaa9TZJSnGr
+         W2x1/CvP5GjenbcGZ5DyizNDE/iaWoIeH62ZhWZNS82ibXmNPC7kcHPtvTO4SzET6naz
+         TcZT4E3mzUzmvzrdWEQkNki6YicmEhyvCCQp1eB0Leh7/cLFZyfX9OGFc7DbfUecj8Xn
+         A70eLDljCgSdOctTuhg19uyLfZDVsKkYA6L+xSyPUb6XuAWIjcr6aQ4yW8y/BI2183+d
+         vKhb7J39keJ96Oo5Ej7FVqURAZaMwQp3i6v/QrVFA3AhplszJKVtc8mHfAitpJdOKqZV
+         5i3Q==
+X-Gm-Message-State: AOAM533XMKwcjxAbOGFo+fTZN90jwiZZZfQMqCqBi4JXbBbB95IBKPMU
+        PZNl/TvXy6nhwyG6NsBJiA==
+X-Google-Smtp-Source: ABdhPJwaG2BHJYsZV6exPs1IolUMSH1wW79sjo0+RjhAoR1r4RC0RhVxxgFAh3EpsyttWNjrpD2baw==
+X-Received: by 2002:a02:7a1d:: with SMTP id a29mr16632302jac.3.1589825769856;
+        Mon, 18 May 2020 11:16:09 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id g65sm4585993ila.21.2020.05.18.11.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 11:16:08 -0700 (PDT)
+Received: (nullmailer pid 20581 invoked by uid 1000);
+        Mon, 18 May 2020 18:16:07 -0000
+Date:   Mon, 18 May 2020 12:16:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     jassisinghbrar@gmail.com, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: mailbox: Add devicetree binding for
+ Qcom IPCC
+Message-ID: <20200518181607.GA15578@bogus>
+References: <20200508182703.29021-1-manivannan.sadhasivam@linaro.org>
+ <20200508182703.29021-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200508182703.29021-2-manivannan.sadhasivam@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  objtool/core
-branch HEAD: 7c0577f4e609f7278ebd6d21e2de82b42f110944  Merge tag 'v5.7-rc6' into objtool/core, to pick up fixes and resolve semantic conflict
+On Fri, May 08, 2020 at 11:57:01PM +0530, Manivannan Sadhasivam wrote:
+> Add devicetree YAML binding for Qualcomm Inter-Processor Communication
+> Controller (IPCC) block.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  .../bindings/mailbox/qcom-ipcc.yaml           | 77 +++++++++++++++++++
+>  include/dt-bindings/mailbox/qcom-ipcc.h       | 33 ++++++++
+>  2 files changed, 110 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+>  create mode 100644 include/dt-bindings/mailbox/qcom-ipcc.h
+> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+> new file mode 100644
+> index 000000000000..62e7bc8ceb0b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/qcom-ipcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. Inter-Processor Communication Controller
+> +
+> +maintainers:
+> +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> +
+> +description:
+> +  The Inter-Processor Communication Controller (IPCC) is a centralized hardware
+> +  to route interrupts across various subsystems. It involves a three-level
+> +  addressing scheme called protocol, client and signal. For example, consider an
+> +  entity on the Application Processor Subsystem (APSS) that wants to listen to
+> +  Modem's interrupts via Shared Memory Point to Point (SMP2P) interface. In such
+> +  a case, the client would be Modem (client-id is 2) and the signal would be
+> +  SMP2P (signal-id is 2). The SMP2P itself falls under the Multiprocessor (MPROC)
+> +  protocol (protocol-id is 0). Refer include/dt-bindings/mailbox/qcom-ipcc.h
+> +  for the list of such IDs.
+> +
+> +properties:
+> +  compatible:
+> +    const: "qcom,ipcc"
 
-i386-tinyconfig vmlinux size:
+Need SoC specific compatible(s).
 
-=====================================================================================================================
- TOTAL  TEXT  DATA  noop_backing_dev_info                                                                            
-=====================================================================================================================
-  +397  +321   +72                    +64  7c0577f4e609 Merge tag 'v5.7-rc6' into objtool/core, to pick up fixes and 
-  +397  +321   +72                    +64  6b5dd716da8f..7c0577f4e609 (ALL COMMITS)                                  
-=====================================================================================================================
+No need for quotes.
 
-elapsed time: 482m
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  "#interrupt-cells":
+> +    const: 3
+> +    description:
+> +      The first cell is the client-id, the second cell is the signal-id and the
+> +      third cell is the interrupt type.
+> +
+> +  "#mbox-cells":
+> +    const: 2
+> +    description:
+> +      The first cell is the client-id, and the second cell is the signal-id.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - "#interrupt-cells"
+> +  - "#mbox-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        #include <dt-bindings/mailbox/qcom-ipcc.h>
+> +
+> +        mailbox: qcom,ipcc@408000 {
 
-configs tested: 114
-configs skipped: 6
+mailbox@408000
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> +                compatible = "qcom,ipcc";
+> +                reg = <0x408000 0x1000>;
+> +                interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>;
+> +                interrupt-controller;
+> +                #interrupt-cells = <3>;
+> +                #mbox-cells = <2>;
+> +        };
+> +
+> +        smp2p-modem {
+> +                compatible = "qcom,smp2p";
+> +                interrupts-extended = <&ipcc_mproc IPCC_CLIENT_MPSS
+> +                                IPCC_MPROC_SIGNAL_SMP2P IRQ_TYPE_EDGE_RISING>;
+> +                mboxes = <&ipcc_mproc IPCC_CLIENT_MPSS IPCC_MPROC_SIGNAL_SMP2P>;
+> +
+> +                /* Other SMP2P fields */
+> +        };
+> diff --git a/include/dt-bindings/mailbox/qcom-ipcc.h b/include/dt-bindings/mailbox/qcom-ipcc.h
+> new file mode 100644
+> index 000000000000..b8c04f6df57c
+> --- /dev/null
+> +++ b/include/dt-bindings/mailbox/qcom-ipcc.h
+> @@ -0,0 +1,33 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
 
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-nios2                            alldefconfig
-sparc                       sparc32_defconfig
-ia64                         bigsur_defconfig
-ia64                      gensparse_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                      tqm8xx_defconfig
-arm                       omap2plus_defconfig
-sh                         apsh4a3a_defconfig
-mips                   sb1250_swarm_defconfig
-c6x                        evmc6457_defconfig
-arm                           corgi_defconfig
-mips                     cu1000-neo_defconfig
-mips                           xway_defconfig
-arm                          ixp4xx_defconfig
-arm                            mps2_defconfig
-mips                 pnx8335_stb225_defconfig
-arc                              alldefconfig
-sh                          lboxre2_defconfig
-mips                           gcw0_defconfig
-ia64                        generic_defconfig
-powerpc                  storcenter_defconfig
-arm                       multi_v4t_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200518
-i386                 randconfig-a005-20200518
-i386                 randconfig-a001-20200518
-i386                 randconfig-a003-20200518
-i386                 randconfig-a004-20200518
-i386                 randconfig-a002-20200518
-i386                 randconfig-a012-20200518
-i386                 randconfig-a014-20200518
-i386                 randconfig-a016-20200518
-i386                 randconfig-a011-20200518
-i386                 randconfig-a015-20200518
-i386                 randconfig-a013-20200518
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+Dual license please. I'm pretty sure your employer has an opinion on 
+this.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +/*
+> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_MAILBOX_IPCC_H
+> +#define __DT_BINDINGS_MAILBOX_IPCC_H
+> +
+> +/* Signal IDs for MPROC protocol */
+> +#define IPCC_MPROC_SIGNAL_GLINK_QMP	0
+> +#define IPCC_MPROC_SIGNAL_SMP2P		2
+> +#define IPCC_MPROC_SIGNAL_PING		3
+> +
+> +/* Client IDs */
+> +#define IPCC_CLIENT_AOP			0
+> +#define IPCC_CLIENT_TZ			1
+> +#define IPCC_CLIENT_MPSS		2
+> +#define IPCC_CLIENT_LPASS		3
+> +#define IPCC_CLIENT_SLPI		4
+> +#define IPCC_CLIENT_SDC			5
+> +#define IPCC_CLIENT_CDSP		6
+> +#define IPCC_CLIENT_NPU			7
+> +#define IPCC_CLIENT_APSS		8
+> +#define IPCC_CLIENT_GPU			9
+> +#define IPCC_CLIENT_CVP			10
+> +#define IPCC_CLIENT_CAM			11
+> +#define IPCC_CLIENT_VPU			12
+> +#define IPCC_CLIENT_PCIE0		13
+> +#define IPCC_CLIENT_PCIE1		14
+> +#define IPCC_CLIENT_PCIE2		15
+> +#define IPCC_CLIENT_SPSS		16
+> +
+> +#endif
+> -- 
+> 2.17.1
+> 
