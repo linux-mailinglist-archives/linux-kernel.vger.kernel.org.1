@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F42C1D86FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAD51D84B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgERS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S1732512AbgERSNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:13:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729448AbgERRmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:36 -0400
+        id S1732431AbgERSBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:01:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C868320715;
-        Mon, 18 May 2020 17:42:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0CEE207C4;
+        Mon, 18 May 2020 18:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823756;
-        bh=92C6p6tlwbBMVt5XS+W92fxk5AXDJDTfJrbzkbFQ0D8=;
+        s=default; t=1589824904;
+        bh=nldiJ+MHYYN+kjgAX5mo6jUIk7pC/Xc/j4g2G7Uco6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PjyqmiU8iJm+kQtk8g2XYxZiqXDlGTOtlN/KEyQHMq5VieT5STm9FL4k6AwLqI6Hv
-         d1aFxYvY7ckmLp7kF4wCQmGFHayK8NZFYLsDQYyV6Mk6pSwDVGuKU0StFZINCi3C2o
-         17zOftUZPdlfBvj1qpHPC2KasOSN6IyOpl+ZJWX8=
+        b=1V64h9R8tJeA+oRv4V4475RcnLMubl5Cqruxp/xKZqRfCJz/bWXSwJsE4waw7KDt0
+         eoSRoMrh0cczvmBktBp3n3blwZQLq3ubF/wqRAYvrHnhgDGaM+m6EpdcAbsIbfFX9G
+         4i4JOR3ElIjiW8kjRPrtCzmXZAweLOG2sqe+SYFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 03/90] fq_codel: fix TCA_FQ_CODEL_DROP_BATCH_SIZE sanity checks
+        stable@vger.kernel.org, Sebastian von Ohr <vonohr@smaract.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 051/194] dmaengine: xilinx_dma: Add missing check for empty list
 Date:   Mon, 18 May 2020 19:35:41 +0200
-Message-Id: <20200518173451.710909306@linuxfoundation.org>
+Message-Id: <20200518173536.041075342@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,32 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Sebastian von Ohr <vonohr@smaract.com>
 
-[ Upstream commit 14695212d4cd8b0c997f6121b6df8520038ce076 ]
+[ Upstream commit b269426011bcfd97b7c3101abfe1a99147b6f40b ]
 
-My intent was to not let users set a zero drop_batch_size,
-it seems I once again messed with min()/max().
+The DMA transfer might finish just after checking the state with
+dma_cookie_status, but before the lock is acquired. Not checking
+for an empty list in xilinx_dma_tx_status may result in reading
+random data or data corruption when desc is written to. This can
+be reliably triggered by using dma_sync_wait to wait for DMA
+completion.
 
-Fixes: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sebastian von Ohr <vonohr@smaract.com>
+Tested-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Link: https://lore.kernel.org/r/20200303130518.333-1-vonohr@smaract.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_fq_codel.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/xilinx/xilinx_dma.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---- a/net/sched/sch_fq_codel.c
-+++ b/net/sched/sch_fq_codel.c
-@@ -428,7 +428,7 @@ static int fq_codel_change(struct Qdisc
- 		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index a9c5d5cc9f2bd..5d5f1d0ce16cb 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -1229,16 +1229,16 @@ static enum dma_status xilinx_dma_tx_status(struct dma_chan *dchan,
+ 		return ret;
  
- 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
--		q->drop_batch_size = min(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
-+		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
+ 	spin_lock_irqsave(&chan->lock, flags);
+-
+-	desc = list_last_entry(&chan->active_list,
+-			       struct xilinx_dma_tx_descriptor, node);
+-	/*
+-	 * VDMA and simple mode do not support residue reporting, so the
+-	 * residue field will always be 0.
+-	 */
+-	if (chan->has_sg && chan->xdev->dma_config->dmatype != XDMA_TYPE_VDMA)
+-		residue = xilinx_dma_get_residue(chan, desc);
+-
++	if (!list_empty(&chan->active_list)) {
++		desc = list_last_entry(&chan->active_list,
++				       struct xilinx_dma_tx_descriptor, node);
++		/*
++		 * VDMA and simple mode do not support residue reporting, so the
++		 * residue field will always be 0.
++		 */
++		if (chan->has_sg && chan->xdev->dma_config->dmatype != XDMA_TYPE_VDMA)
++			residue = xilinx_dma_get_residue(chan, desc);
++	}
+ 	spin_unlock_irqrestore(&chan->lock, flags);
  
- 	if (tb[TCA_FQ_CODEL_MEMORY_LIMIT])
- 		q->memory_limit = min(1U << 31, nla_get_u32(tb[TCA_FQ_CODEL_MEMORY_LIMIT]));
+ 	dma_set_residue(txstate, residue);
+-- 
+2.20.1
+
 
 
