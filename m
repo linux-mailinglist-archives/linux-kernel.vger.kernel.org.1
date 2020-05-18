@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4223B1D827A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936071D869A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731691AbgERR4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34876 "EHLO mail.kernel.org"
+        id S2387922AbgERSZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731676AbgERR4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:45 -0400
+        id S1729583AbgERRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CD8F20674;
-        Mon, 18 May 2020 17:56:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D07FE20671;
+        Mon, 18 May 2020 17:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824604;
-        bh=iI6/4pieNmhea6dG1LXDMXm/LdTJkwUeGnsdS5TIGu4=;
+        s=default; t=1589824006;
+        bh=iZoVEaznfcLc5KPtg9brvQf4P2LvgoMn81YSjkt2QUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TlCLRf37lLqyYWzsJ4t5SJokgztIOOzWFnjh3txmZ4/UpwFjWWnftqZovTr7fBbQI
-         NRC2NFDnNCJVdmooFB1hMJayehdSYcFnWABfQpQFtEr5Op3QU8kmIlp2G7Hj2U/6gg
-         7K69CXTI1Xn7rjE0YtP1UTGTLbIoBEVAa/TqWbMo=
+        b=kw+dJuUPLd7EvWTkVGYk6T2v6cKVuk8WFplHQW4+wOvMWUFqa8LGI3xNeLCGOhI66
+         O4TYFK8OLp/HVm/Sakd36Gdmzm5wgnQOlhUO3N1/xPiE6XbqBvYiBAq15kDNMgayWs
+         slA9ZCJtGVal9y4c/Udv2TAx+7m4V3p/0dMAlDU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiao Yang <yangx.jy@cn.fujitsu.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/147] selftests/ftrace: Check the first record for kprobe_args_type.tc
+        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vince Weaver <vincent.weaver@maine.edu>
+Subject: [PATCH 4.14 032/114] x86/unwind/orc: Prevent unwinding before ORC initialization
 Date:   Mon, 18 May 2020 19:36:04 +0200
-Message-Id: <20200518173519.175651703@linuxfoundation.org>
+Message-Id: <20200518173509.513162349@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +49,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba ]
+commit 98d0c8ebf77e0ba7c54a9ae05ea588f0e9e3f46e upstream.
 
-It is possible to get multiple records from trace during test and then more
-than 4 arguments are assigned to ARGS.  This situation results in the failure
-of kprobe_args_type.tc.  For example:
------------------------------------------------------------
-grep testprobe trace
-   ftracetest-5902  [001] d... 111195.682227: testprobe: (_do_fork+0x0/0x460) arg1=334823024 arg2=334823024 arg3=0x13f4fe70 arg4=7
-     pmlogger-5949  [000] d... 111195.709898: testprobe: (_do_fork+0x0/0x460) arg1=345308784 arg2=345308784 arg3=0x1494fe70 arg4=7
- grep testprobe trace
- sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'
-ARGS='334823024 334823024 0x13f4fe70 7
-345308784 345308784 0x1494fe70 7'
------------------------------------------------------------
+If the unwinder is called before the ORC data has been initialized,
+orc_find() returns NULL, and it tries to fall back to using frame
+pointers.  This can cause some unexpected warnings during boot.
 
-We don't care which process calls do_fork so just check the first record to
-fix the issue.
+Move the 'orc_init' check from orc_find() to __unwind_init(), so that it
+doesn't even try to unwind from an uninitialized state.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Jones <dsj@fb.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vince Weaver <vincent.weaver@maine.edu>
+Link: https://lore.kernel.org/r/069d1499ad606d85532eb32ce39b2441679667d5.1587808742.git.jpoimboe@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc  | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/unwind_orc.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-index 1bcb67dcae267..81490ecaaa927 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-@@ -38,7 +38,7 @@ for width in 64 32 16 8; do
-   echo 0 > events/kprobes/testprobe/enable
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -90,9 +90,6 @@ static struct orc_entry null_orc_entry =
  
-   : "Confirm the arguments is recorded in given types correctly"
--  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-+  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-   check_types $ARGS $width
+ static struct orc_entry *orc_find(unsigned long ip)
+ {
+-	if (!orc_init)
+-		return NULL;
+-
+ 	if (ip == 0)
+ 		return &null_orc_entry;
  
-   : "Clear event for next loop"
--- 
-2.20.1
-
+@@ -508,6 +505,9 @@ EXPORT_SYMBOL_GPL(unwind_next_frame);
+ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+ 		    struct pt_regs *regs, unsigned long *first_frame)
+ {
++	if (!orc_init)
++		goto done;
++
+ 	memset(state, 0, sizeof(*state));
+ 	state->task = task;
+ 
 
 
