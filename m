@@ -2,243 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A13F1D8822
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7AF1D882A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgERTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 15:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727856AbgERTXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 15:23:09 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2775C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:23:08 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id y13so6309345vsk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f3ILiyk30wRbfK23dh/O9xFsFphYtNDbVYfVZgp73Oc=;
-        b=ArinD1zH1rcDoD3eiWAyIe2Q8HfWaY+YmTtTgigWn7pciUtEgLRFTDSawEinY3f1nN
-         xZhZxUiZXPT2usRKyRNF3hC0LmKdyukGGtkPwogqkCY2DZnD974VBZuJNfzTSbn+Cm+P
-         8ztyv1L7mnw/E2+5qty9azyOElIkgEY9hr0g7cmXvZtYE2gWUUBbRJ0optWiBxptKwFf
-         mc/zbsIdcaW4V/4P59+fMlSPgWvLUhA3WdIOzan5elDVqy6tUSDUQOkpemo/AWTCcbJr
-         Tka2KsAzTztWVAJFwqnVxia8oin4uiGg/nGkuvNPuWjIXwPG0PdVpxKRCbiSpNuzv9ej
-         n66g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f3ILiyk30wRbfK23dh/O9xFsFphYtNDbVYfVZgp73Oc=;
-        b=l/3alzlWoe5BWwDPyO91Pm1Y5W8uaMLWo/X7t7cp/hGrcyeVcHLd/K8h1fSauuCuK1
-         m8Z2gsipHqJsVnpVPHtnIsFgZoK6zkkGo9gBF+XS6rxAn7QjjqUILcS7JGOpHx5YU+tx
-         OX0hLU7Z/yB3IN5ciceEqMFwl+pAd3EuinF2MeIYW1+JNtoujjpcZ8PYnK/06DnpzvM4
-         H8FwfGY41tCKWaI3m+82/ngw8duuzmusbk8wTG0T2EvdrZRTqyK9zHBgM7K1kBNnQMqU
-         iJoNxO4xTE1zEjm//9df/OxPlL9mwTmRnhZQmyPc+DniSGrMuRxc/awtOwr7EOoCpS5t
-         gAvg==
-X-Gm-Message-State: AOAM532P1zKkVYvkiZzrFh9lGxzmqXR1SMc3xXM/3oEcJ8oZ0OxQMdb+
-        Am2hAsWdF5Q8/xu/3AAgmfJYumFsGwmfMmB/jt+Vsw==
-X-Google-Smtp-Source: ABdhPJxDL/9YgOnqV3iWJOuJCL8QuNnztjnS6s28kHehJj8idXehTbtn/Sfp0ou+w9qe7XSEVPhnR2x3JXc5/5UqawY=
-X-Received: by 2002:a67:f883:: with SMTP id h3mr7772716vso.239.1589829787468;
- Mon, 18 May 2020 12:23:07 -0700 (PDT)
+        id S1728073AbgERTYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:24:07 -0400
+Received: from mout.web.de ([212.227.15.14]:44749 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727856AbgERTYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 15:24:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1589829816;
+        bh=4p69O51PNXbOaGofqEGICiYCEctSXqV9dh5c7B6HOXM=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=JiXE+5asY0MTzWVDisXNQLLcskDxST5m92wm2H4ORk+HTbRy0+2dmBuKATt9dNo2c
+         vSnGv0tu+z6dl5d61aDgQzgQlh4IFl/gMv4Ca6SF87+9eR9Esgh+jn8WfiiPyyIHmx
+         rpyfv/awSoQ4L+NrPH+KKskjKjQrcTqiVzxXLWa4=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.132.105.123]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0Lylol-1ixm2y46fH-0167qg; Mon, 18
+ May 2020 21:23:36 +0200
+To:     Dejin Zheng <zhengdejin5@gmail.com>, linux-i2c@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Barry Song <baohua@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Fabio Estevam <festevam@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Radu Pirea <radu_nicolae.pirea@upb.ro>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Scott Branden <sbranden@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH 1/2] drivers: provide devm_platform_request_irq()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <e679788a-d616-a45d-f12d-20485aad2f43@web.de>
+Date:   Mon, 18 May 2020 21:23:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200516012055.126205-1-minchan@kernel.org>
-In-Reply-To: <20200516012055.126205-1-minchan@kernel.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 18 May 2020 12:22:56 -0700
-Message-ID: <CAJuCfpGbPUpWLDgwt5ZP4Uf8fp6ht_6eqUypMVYYh3btJdz_8Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: use only pidfd for process_madvise syscall
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        Oleksandr Natalenko <oleksandr@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        Daniel Colascione <dancol@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com,
-        SeongJae Park <sjpark@amazon.com>,
-        David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dtjqk0vd7wSzBubXB3rn+UWKtMvfrfnVBwPt0yEKLNN59noL1nk
+ fucEjf6s9fc0jz8bf0GHwg2gGsev68SaTaqobO4SjID/YWvX9p2efb0bsZ5YUBSdfR/juhv
+ pNxs7KkFcnoVktsOpzHm5TH3pe9Zfc+dt7m9Zsh0EvDq5hSvE+iGvbB4IzJINTUUf5jJxFk
+ bHhjY1KYlEiY8nygVTxuQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1dxI5VD8FLc=:GsTzuLVZBGzNVnNHXhsyE9
+ vG5sT/SiA6JZ8cykx0anlo3KT7l3GeYm5qomVy7VaEhqYpa9AMgDNJkv6+6zIaAS33rOyDMxW
+ b+PikVLNRWgCqAv/1fEE4PzQ1U9LK4pMzjLC4kYI4oQeHwj7yHSYFXpXHLWhkGDt47sFw4/Yk
+ b+khY1ex4ufytIebrnqdXWEyO6X7uDK3w4y9P3FLtrpGXiufB3zGRHz6NojORnoiBhQOYuH5V
+ tzhtB2UcmaPDXebvikI17p8CawMzp5wZacYPaDB8UoAGobV49v7B+rBz0UdOPLBIfVSU8a7rA
+ KvBgcm0WYUa94OLCyxUCE+NAWKmcmrvo+ZryfB4w5ayfwCN0bOGdbN2/xrTMWqtQJ/Q7kbFQF
+ GJdhHfomDJ6doMQnPhw04zbQBl0/rTgnFjzTAo5DNPI9CjdFceipZEeN0v4jr6I+cyr0YCaSR
+ bZFC2Ua2xqw+BjjPCUqOoI716y3MrbVwZlcToNdbrJSiG9TRfvpDrgm4jbMl1n1R62lnAvn3U
+ OsFxlOUaqxsOGszqaRQXKG6Z39QlbgjL2s2ouLKVSEi3qlykm3BIOJKF1WKpmvKhMRA/4hC38
+ LobehJigE+kHJmRvfO0tZ7Ip1mFDMYtCOiuwf4tgVdDJuEZjsDrasPQFDIKRm4ijBIbjXCS9G
+ dknf24ug98J9qIAxMvtjXH+BkRAPJGo2/6NS4aCy/36sAS0Fpvlj20+FtckaHHCOy4ily8rhy
+ ROoIZ9TQ0+zUEf3VKcj+/EYMC4m9/WIee/Mx9KHf3trS3rwW4A9JxJEc11IvcNayQdWLs11e5
+ DnIJxq3kJ7hFk0rDGEHr97vS+ld+fpdCvCNtJjn9S/V6/K+wokBoCqRNdWDltYfGXANaxLCPO
+ 68s97e1pn28QdI+cAVcDpDdgccth6793+6kdY8l0w6T45MJbgL0eOHFekOoEPcXrNfgxAS8oA
+ 6SlqlNdMWoGf5OAL3ZrzDwemEFNCOh9VcT3bpezg4m8+ky6A2pVkyFVvdYI6tBji5NW4oAY+W
+ /YoeTkr4+8dtwRUvEI6U8T0ueQE3t7b8Z+TCOOHzzUcao/fVsVGshR3gPwDDPtjHx/iyULSeB
+ 7hm+X5FawrCag4RNwUp789qtDmwbrqoLOOsgDstWlPhlVCgyYZGVeRG0RpjhYtW7Oaf7B64JQ
+ VYkFercxnEtx5pcV95LrKhN9c88xd/ld3kLmrtWEHOhZt+3AaApu0DixlDk2Cd+zXzs+O/aWm
+ nTUSIzqD0UVH1JVpI
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 6:21 PM Minchan Kim <minchan@kernel.org> wrote:
->
-> Based on discussion[1], people didn't feel we need to support both
-> pid and pidfd for every new coming API[2] so this patch keeps only
-> pidfd. This patch also changes flags's type with "unsigned int".
-> So finally, the API is as follows,
->
->       ssize_t process_madvise(int pidfd, const struct iovec *iovec,
->                 unsigned long vlen, int advice, unsigned int flags);
->
->     DESCRIPTION
->       The process_madvise() system call is used to give advice or directions
->       to the kernel about the address ranges from external process as well as
->       local process. It provides the advice to address ranges of process
->       described by iovec and vlen. The goal of such advice is to improve system
->       or application performance.
->
->       The pidfd selects the process referred to by the PID file descriptor
->       specified in pidfd. (See pidofd_open(2) for further information)
->
->       The pointer iovec points to an array of iovec structures, defined in
->       <sys/uio.h> as:
->
->         struct iovec {
->             void *iov_base;         /* starting address */
->             size_t iov_len;         /* number of bytes to be advised */
->         };
->
->       The iovec describes address ranges beginning at address(iov_base)
->       and with size length of bytes(iov_len).
->
->       The vlen represents the number of elements in iovec.
->
->       The advice is indicated in the advice argument, which is one of the
->       following at this moment if the target process specified by idtype and
+> It will call devm_request_irq() after platform_get_irq() function
+> in many drivers, sometimes, it is not right of the error handling
+> for these two functions in some drivers. so provide this function
+> to simplify the driver.
 
-There is no idtype parameter anymore, so maybe just "if the target
-process is external"?
+I suggest to improve also this change description.
+How do you think about a wording variant like the following?
 
->       id is external.
->
->         MADV_COLD
->         MADV_PAGEOUT
->         MADV_MERGEABLE
->         MADV_UNMERGEABLE
->
->       Permission to provide a hint to external process is governed by a
->       ptrace access mode PTRACE_MODE_ATTACH_FSCREDS check; see ptrace(2).
->
->       The process_madvise supports every advice madvise(2) has if target
->       process is in same thread group with calling process so user could
->       use process_madvise(2) to extend existing madvise(2) to support
->       vector address ranges.
->
->     RETURN VALUE
->       On success, process_madvise() returns the number of bytes advised.
->       This return value may be less than the total number of requested
->       bytes, if an error occurred. The caller should check return value
->       to determine whether a partial advice occurred.
->
-> [1] https://lore.kernel.org/linux-mm/20200509124817.xmrvsrq3mla6b76k@wittgenstein/
-> [2] https://lore.kernel.org/linux-mm/9d849087-3359-c4ab-fbec-859e8186c509@virtuozzo.com/
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  mm/madvise.c | 42 +++++++++++++-----------------------------
->  1 file changed, 13 insertions(+), 29 deletions(-)
->
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index d3fbbe52d230..35c9b220146a 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -1229,8 +1229,8 @@ static int process_madvise_vec(struct task_struct *target_task,
->         return ret;
->  }
->
-> -static ssize_t do_process_madvise(int which, pid_t upid, struct iov_iter *iter,
-> -                                      int behavior, unsigned long flags)
-> +static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
-> +                               int behavior, unsigned int flags)
->  {
->         ssize_t ret;
->         struct pid *pid;
-> @@ -1241,26 +1241,12 @@ static ssize_t do_process_madvise(int which, pid_t upid, struct iov_iter *iter,
->         if (flags != 0)
->                 return -EINVAL;
->
-> -       switch (which) {
-> -       case P_PID:
-> -               if (upid <= 0)
-> -                       return -EINVAL;
-> -
-> -               pid = find_get_pid(upid);
-> -               if (!pid)
-> -                       return -ESRCH;
-> -               break;
-> -       case P_PIDFD:
-> -               if (upid < 0)
-> -                       return -EINVAL;
-> -
-> -               pid = pidfd_get_pid(upid);
-> -               if (IS_ERR(pid))
-> -                       return PTR_ERR(pid);
-> -               break;
-> -       default:
-> +       if (pidfd < 0)
->                 return -EINVAL;
-> -       }
-> +
-> +       pid = pidfd_get_pid(pidfd);
-> +       if (IS_ERR(pid))
-> +               return PTR_ERR(pid);
->
->         task = get_pid_task(pid, PIDTYPE_PID);
->         if (!task) {
-> @@ -1292,9 +1278,8 @@ static ssize_t do_process_madvise(int which, pid_t upid, struct iov_iter *iter,
->         return ret;
->  }
->
-> -SYSCALL_DEFINE6(process_madvise, int, which, pid_t, upid,
-> -               const struct iovec __user *, vec, unsigned long, vlen,
-> -               int, behavior, unsigned long, flags)
-> +SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> +               unsigned long, vlen, int, behavior, unsigned int, flags)
->  {
->         ssize_t ret;
->         struct iovec iovstack[UIO_FASTIOV];
-> @@ -1303,19 +1288,18 @@ SYSCALL_DEFINE6(process_madvise, int, which, pid_t, upid,
->
->         ret = import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
->         if (ret >= 0) {
-> -               ret = do_process_madvise(which, upid, &iter, behavior, flags);
-> +               ret = do_process_madvise(pidfd, &iter, behavior, flags);
->                 kfree(iov);
->         }
->         return ret;
->  }
->
->  #ifdef CONFIG_COMPAT
-> -COMPAT_SYSCALL_DEFINE6(process_madvise, compat_int_t, which,
-> -                       compat_pid_t, upid,
-> +COMPAT_SYSCALL_DEFINE5(process_madvise, compat_int_t, pidfd,
->                         const struct compat_iovec __user *, vec,
->                         compat_ulong_t, vlen,
->                         compat_int_t, behavior,
-> -                       compat_ulong_t, flags)
-> +                       compat_int_t, flags)
->
->  {
->         ssize_t ret;
-> @@ -1326,7 +1310,7 @@ COMPAT_SYSCALL_DEFINE6(process_madvise, compat_int_t, which,
->         ret = compat_import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack),
->                                 &iov, &iter);
->         if (ret >= 0) {
-> -               ret = do_process_madvise(which, upid, &iter, behavior, flags);
-> +               ret = do_process_madvise(pidfd, &iter, behavior, flags);
->                 kfree(iov);
->         }
->         return ret;
-> --
-> 2.26.2.761.g0e0b3e54be-goog
->
+   The function =E2=80=9Cdevm_request_irq=E2=80=9D is called after the
+   function =E2=80=9Cplatform_get_irq=E2=80=9D in many drivers.
+   The exception handling is incomplete there sometimes.
+   Thus add a corresponding wrapper function for the simplification
+   of the drivers.
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+
+Will a companion script for the semantic patch language (Coccinelle softwa=
+re)
+become helpful for further support of collateral evolution?
+
+Regards,
+Markus
