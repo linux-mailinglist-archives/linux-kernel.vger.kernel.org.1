@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6D41D8AC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3171D8AB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgERW1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728223AbgERW1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:27:48 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F651C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 15:27:47 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z26so5481878pfk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 15:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QjsuewzhfZI6m+Hde5GIwD747MiEMVgDHLx6f9iIyuQ=;
-        b=DciQigMFiKQBAI+nDrFox05gdEbOalXst4/IvZVKSbr97ysgLO3Jnr3C2Org/JRDMi
-         zPkTpZL8gweMYiStFzBJUYVyLPGk6uO85DUDakpJ95uBUGtvgx77rWvjEwa81nvpf5m9
-         zjgnynD9lkFsaY690XDl/nsyWgnp0EPXRP6Jh/qpj8BzBFqaDAP3mnXhPVSyi7WZwXgm
-         CCswHh6+CPgxf/uT53rTYwIgMhL8BVYo1RzINNGxGEGFhlxZKZ4cZWWXeJZO4Ig90rDR
-         Ciz6oqiMiwABYc1o2n2v0A7cw2q0hwc9OsOnTFonHD7xRIWNk45uyQIG3yzLhw51NQh6
-         KlbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QjsuewzhfZI6m+Hde5GIwD747MiEMVgDHLx6f9iIyuQ=;
-        b=oGIMoN93XNFE3IMD284/Pck22uFdWnYAvZEFAqzBtiUuthHrz5r2OrIFYQcjkjuQSZ
-         Wb70q5YamhAzUANafd3bGZkux164WSZ6OK7BSrEkrfzE6vuXshe9g1IhQMF5KeVlXoou
-         gePxigd0/Z6tnnwyVGedqR0gRk8u89uKgpvtFGyhIXpUqZCvR70BkWqBVkKLXSQoVQP3
-         cJp3DX/LXZArC7vIQs2qinMqUfcrWM2ooVEfaTY8FOiByGKyYhl5EGjEdhcwW93FmJ4A
-         xJWkVEof6xNIgUGXXTfncKMc2DWn0d80FWrwlY8nWC8KVMJ3motmJSWwg7Uy/z/moX+B
-         IkKA==
-X-Gm-Message-State: AOAM5310zF0OKkG/kIS/S7hJkdyPbQdwvZv8pOQGkasP9H2FQHnnsfCT
-        DSNQRXw8cXCyCJQ6RLP7MT1hhA==
-X-Google-Smtp-Source: ABdhPJwXQpma2Z97nvUZzKCu239hl460Tco5kUWtUE9yL/qcG0JvxSHuAv1T7YyKEDBFNvrp2Ipklw==
-X-Received: by 2002:a63:ed50:: with SMTP id m16mr17808069pgk.271.1589840866953;
-        Mon, 18 May 2020 15:27:46 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id x10sm8268963pgr.65.2020.05.18.15.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 15:27:46 -0700 (PDT)
-Date:   Mon, 18 May 2020 15:26:23 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Valdis Kl??tnieks <valdis.kletnieks@vt.edu>
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: wcss: Fix function call for new API
-Message-ID: <20200518222623.GI2165@builder.lan>
-References: <77652.1589836106@turing-police>
- <77864.1589836457@turing-police>
+        id S1728199AbgERWWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbgERWWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:22:36 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FDB620674;
+        Mon, 18 May 2020 22:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589840556;
+        bh=I48flygjIBp7uOnVnXDFpml1edpXtpsCjzT/57eK7CQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=r2Z4K0y2G8YiS1+K48wrTdZc8IcboE5EvkgJatVdyvfNLmOZ/GLIOr/AteenNbOBW
+         rRDXRtgGIto++cGMHN27fMO358VTGas/gXzeuSuxTaIUCBnRee0Fu3worwP9ddV5Jh
+         Eoyk06j6KCZ1MWUhrWx13BTFIGqueNItbI5JS1w8=
+Date:   Mon, 18 May 2020 17:27:22 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] ACPICA: Replace one-element array and use struct_size()
+ helper
+Message-ID: <20200518222722.GA7791@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77864.1589836457@turing-police>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18 May 14:14 PDT 2020, Valdis Kl??tnieks wrote:
+The current codebase makes use of one-element arrays in the following
+form:
 
-> On Mon, 18 May 2020 17:08:26 -0400, "Valdis Kl??tnieks" said:
-> > commit 8a226e2c71: remoteproc: wcss: add support for rpmsg communication
-> >
-> > throws a compile error:
-> >
-> >    CC [M]  drivers/remoteproc/qcom_q6v5_wcss.o
-> > drivers/remoteproc/qcom_q6v5_wcss.c: In function 'q6v5_wcss_probe':
-> 
->  Ignore this - was fixed between when I noted the problem and when I sent the mail :)
+struct something {
+    int length;
+    u8 data[1];
+};
 
-Right, I fixed this a few days back. Thanks for the patch and thanks for
-confirming that it's fixed!
+struct something *instance;
 
-Regards,
-Bjorn
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
+
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
+
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct acpi_pnp_device_id_list.
+
+This issue was found with the help of Coccinellea and, audited and
+fixed _manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/acpi/acpica/utids.c | 4 +---
+ include/acpi/actypes.h      | 2 +-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/acpi/acpica/utids.c b/drivers/acpi/acpica/utids.c
+index 3bb06935a2ad3..c2f819a39424a 100644
+--- a/drivers/acpi/acpica/utids.c
++++ b/drivers/acpi/acpica/utids.c
+@@ -262,9 +262,7 @@ acpi_ut_execute_CID(struct acpi_namespace_node *device_node,
+ 	 * 2) Size of the CID PNP_DEVICE_ID array +
+ 	 * 3) Size of the actual CID strings
+ 	 */
+-	cid_list_size = sizeof(struct acpi_pnp_device_id_list) +
+-	    ((count - 1) * sizeof(struct acpi_pnp_device_id)) +
+-	    string_area_size;
++	cid_list_size = struct_size(cid_list, ids, count) + string_area_size;
+ 
+ 	cid_list = ACPI_ALLOCATE_ZEROED(cid_list_size);
+ 	if (!cid_list) {
+diff --git a/include/acpi/actypes.h b/include/acpi/actypes.h
+index 4defed58ea338..c7bcda0ad366a 100644
+--- a/include/acpi/actypes.h
++++ b/include/acpi/actypes.h
+@@ -1145,7 +1145,7 @@ struct acpi_pnp_device_id {
+ struct acpi_pnp_device_id_list {
+ 	u32 count;		/* Number of IDs in Ids array */
+ 	u32 list_size;		/* Size of list, including ID strings */
+-	struct acpi_pnp_device_id ids[1];	/* ID array */
++	struct acpi_pnp_device_id ids[];	/* ID array */
+ };
+ 
+ /*
+-- 
+2.26.2
+
