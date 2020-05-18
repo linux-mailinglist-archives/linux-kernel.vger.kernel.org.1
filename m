@@ -2,245 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878621D6E8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 03:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE261D6E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 03:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgERBWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 21:22:03 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17148 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgERBWA (ORCPT
+        id S1727890AbgERBWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 21:22:22 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41310 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727825AbgERBWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 21:22:00 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec1e2aa0002>; Sun, 17 May 2020 18:19:38 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Sun, 17 May 2020 18:21:59 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Sun, 17 May 2020 18:21:59 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
- 2020 01:21:59 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 18 May 2020 01:21:59 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.48.175]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ec1e3370002>; Sun, 17 May 2020 18:21:59 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Andy Walls <awalls@md.metrocast.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 2/2] ivtv: convert get_user_pages() --> pin_user_pages()
-Date:   Sun, 17 May 2020 18:21:57 -0700
-Message-ID: <20200518012157.1178336-3-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518012157.1178336-1-jhubbard@nvidia.com>
-References: <20200518012157.1178336-1-jhubbard@nvidia.com>
+        Sun, 17 May 2020 21:22:14 -0400
+Received: by mail-il1-f200.google.com with SMTP id f65so8389056ilh.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 18:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ap8i6E0yrJQAtmU9MgshgOvQ1VBY3o/WHGCOKeuX4nc=;
+        b=E477BTiBmgC6fWyaB05QYJVHQTZP+9/l7P+e6nuCLnJbiCMTVEpsq96i3YnVAIJBQC
+         HgL1OTICsLPTSbiWTamAXvzIjbhA0/a7joqDMZB8ddhe7hdkDxwpPV/xqh8Pt/x4JuvN
+         z/UVhtNeYGkE4yMwMmlqClpzXsBcM2HEb+5S9e9txYR5KjQ5kjeLGiJctFj9UXfmzzjE
+         M4kQFFFpyARWlAirrLXLCYtVq47HvxPb5kx4BTgu7PwobcabTOsMNIYC3q+qEQf3aSAh
+         Glba0q4m9qr0WoqagyG/5ofeBl3QEr7UCcE9PC/bro0HTtds+iUF0Y7Ey4TqrvkupsPM
+         ZwYQ==
+X-Gm-Message-State: AOAM532uVN8b6PFXEMl00Z6sstyU055C/Cky1zquHMaMH70/n64ZkHXl
+        /zIIaPYwrh+KWRb99iYm/iJZWtwE4h4ijsDYEsojqZPvto8z
+X-Google-Smtp-Source: ABdhPJx3Rtos3rtwRka74QnG8oJkX6dZbfUmTZP+c6Q9rnRW8WUn6+HOHNDULTl1z0EQ9gaNdX3Rj6KcgInTcoBOQ8s9c7QPUizi
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589764778; bh=xH5C6dG4bePEiW5mi0F4Wccp6bZO0ppe4EGiUHwyKL4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=CX1C6gQ3Uc4S7SSx/ZsxTBahVSnoaDpWC3l01HcZefatkGC66AlShWq5rJKl8AifA
-         vmW5VlhQ+4xVmr4wRskks+yW0d/6wd8ctYDfKqIVJNwkmEjThrCDShyUhqjvK1PyYF
-         1OdpyULk2UJckuFPpW3kXEuVt2CidPkPfH6LzRJhNUI0scO09uClU/UcEUjwHD9J0T
-         fQcr50jUUVPfi8XG6JThpmWKhEUKScyCEW4gI0754E5+rtHXPqHsekQkFnEkZzAIB5
-         FQsBTB9Dmtwpjx0KZeyPtowlZVDTtViOoniPMR//5lVfjA1TLHuHZnMnIKvreTJXLp
-         YZgjH86pydYVg==
+X-Received: by 2002:a92:1d49:: with SMTP id d70mr13345443ild.188.1589764933763;
+ Sun, 17 May 2020 18:22:13 -0700 (PDT)
+Date:   Sun, 17 May 2020 18:22:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002746f005a5e1fe6b@google.com>
+Subject: BUG: sleeping function called from invalid context in console_lock
+From:   syzbot <syzbot+f8589c355cdce42b2446@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code was using get_user_pages*(), in a "Case 2" scenario
-(DMA/RDMA), using the categorization from [1]. That means that it's
-time to convert the get_user_pages*() + put_page() calls to
-pin_user_pages*() + unpin_user_pages() calls.
+Hello,
 
-There is some helpful background in [2]: basically, this is a small
-part of fixing a long-standing disconnect between pinning pages, and
-file systems' use of those pages.
+syzbot found the following crash on:
 
-[1] Documentation/core-api/pin_user_pages.rst
+HEAD commit:    3d1c1e59 Merge tag 'block-5.7-2020-05-16' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a8d202100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c14212794ed9ad24
+dashboard link: https://syzkaller.appspot.com/bug?extid=f8589c355cdce42b2446
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+userspace arch: i386
 
-[2] "Explicit pinning of user-space pages":
-    https://lwn.net/Articles/807108/
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f8589c355cdce42b2446@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at kernel/printk/printk.c:2312
+in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 21174, name: syz-executor.5
+3 locks held by syz-executor.5/21174:
+ #0: ffff8880a965c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:378 [inline]
+ #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: n_tty_ioctl_helper drivers/tty/tty_ioctl.c:914 [inline]
+ #1: ffff8880a965c3f8 (&tty->flow_lock){....}-{2:2}, at: n_tty_ioctl_helper+0xcc/0x3b0 drivers/tty/tty_ioctl.c:894
+ #2: ffff8880a965c098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref+0x1d/0x80 drivers/tty/tty_ldisc.c:288
+irq event stamp: 46
+hardirqs last  enabled at (45): [<ffffffff81b0ba8b>] kfree+0x1eb/0x2b0 mm/slab.c:3758
+hardirqs last disabled at (46): [<ffffffff87d08f35>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
+hardirqs last disabled at (46): [<ffffffff87d08f35>] _raw_spin_lock_irq+0x35/0x80 kernel/locking/spinlock.c:167
+softirqs last  enabled at (0): [<ffffffff8143deb7>] copy_process+0x1ae7/0x7110 kernel/fork.c:2031
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 21174 Comm: syz-executor.5 Not tainted 5.7.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ ___might_sleep.cold+0x1f4/0x23d kernel/sched/core.c:6801
+ console_lock+0x19/0x80 kernel/printk/printk.c:2312
+ do_con_write.part.0+0x95/0x1dc0 drivers/tty/vt/vt.c:2596
+ do_con_write drivers/tty/vt/vt.c:2593 [inline]
+ con_write+0x41/0xe0 drivers/tty/vt/vt.c:3159
+ n_hdlc_send_frames+0x22d/0x3d0 drivers/tty/n_hdlc.c:289
+ tty_wakeup+0xe1/0x120 drivers/tty/tty_io.c:536
+ __start_tty+0x5c/0x70 drivers/tty/tty_io.c:803
+ n_tty_ioctl_helper drivers/tty/tty_ioctl.c:917 [inline]
+ n_tty_ioctl_helper+0x34e/0x3b0 drivers/tty/tty_ioctl.c:894
+ n_hdlc_tty_ioctl+0xd3/0x2f0 drivers/tty/n_hdlc.c:615
+ tty_ioctl+0xf88/0x1440 drivers/tty/tty_io.c:2665
+ tty_compat_ioctl+0x2bf/0x410 drivers/tty/tty_io.c:2834
+ __do_compat_sys_ioctl fs/ioctl.c:865 [inline]
+ __se_compat_sys_ioctl fs/ioctl.c:816 [inline]
+ __ia32_compat_sys_ioctl+0x23d/0x2b0 fs/ioctl.c:816
+ do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
+ do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
+ entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+
+
 ---
- drivers/media/pci/ivtv/ivtv-udma.c | 19 ++++++-------------
- drivers/media/pci/ivtv/ivtv-yuv.c  | 17 ++++++-----------
- drivers/media/pci/ivtv/ivtvfb.c    |  4 ++--
- 3 files changed, 14 insertions(+), 26 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/iv=
-tv-udma.c
-index 5f8883031c9c..0d8372cc364a 100644
---- a/drivers/media/pci/ivtv/ivtv-udma.c
-+++ b/drivers/media/pci/ivtv/ivtv-udma.c
-@@ -92,7 +92,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_=
-dest_addr,
- {
- 	struct ivtv_dma_page_info user_dma;
- 	struct ivtv_user_dma *dma =3D &itv->udma;
--	int i, err;
-+	int err;
-=20
- 	IVTV_DEBUG_DMA("ivtv_udma_setup, dst: 0x%08x\n", (unsigned int)ivtv_dest_=
-addr);
-=20
-@@ -111,16 +111,15 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long i=
-vtv_dest_addr,
- 		return -EINVAL;
- 	}
-=20
--	/* Get user pages for DMA Xfer */
--	err =3D get_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
-+	/* Pin user pages for DMA Xfer */
-+	err =3D pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
- 			dma->map, FOLL_FORCE);
-=20
- 	if (user_dma.page_count !=3D err) {
- 		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
- 			   err, user_dma.page_count);
- 		if (err >=3D 0) {
--			for (i =3D 0; i < err; i++)
--				put_page(dma->map[i]);
-+			unpin_user_pages(dma->map, err);
- 			return -EINVAL;
- 		}
- 		return err;
-@@ -130,9 +129,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivt=
-v_dest_addr,
-=20
- 	/* Fill SG List with new values */
- 	if (ivtv_udma_fill_sg_list(dma, &user_dma, 0) < 0) {
--		for (i =3D 0; i < dma->page_count; i++) {
--			put_page(dma->map[i]);
--		}
-+		unpin_user_pages(dma->map, dma->page_count);
- 		dma->page_count =3D 0;
- 		return -ENOMEM;
- 	}
-@@ -153,7 +150,6 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivt=
-v_dest_addr,
- void ivtv_udma_unmap(struct ivtv *itv)
- {
- 	struct ivtv_user_dma *dma =3D &itv->udma;
--	int i;
-=20
- 	IVTV_DEBUG_INFO("ivtv_unmap_user_dma\n");
-=20
-@@ -169,10 +165,7 @@ void ivtv_udma_unmap(struct ivtv *itv)
- 	/* sync DMA */
- 	ivtv_udma_sync_for_cpu(itv);
-=20
--	/* Release User Pages */
--	for (i =3D 0; i < dma->page_count; i++) {
--		put_page(dma->map[i]);
--	}
-+	unpin_user_pages(dma->map, dma->page_count);
- 	dma->page_count =3D 0;
- }
-=20
-diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivt=
-v-yuv.c
-index cd2fe2d444c0..5f7dc9771f8d 100644
---- a/drivers/media/pci/ivtv/ivtv-yuv.c
-+++ b/drivers/media/pci/ivtv/ivtv-yuv.c
-@@ -30,7 +30,6 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 	struct yuv_playback_info *yi =3D &itv->yuv_info;
- 	u8 frame =3D yi->draw_frame;
- 	struct yuv_frame_info *f =3D &yi->new_frame_info[frame];
--	int i;
- 	int y_pages, uv_pages;
- 	unsigned long y_buffer_offset, uv_buffer_offset;
- 	int y_decode_height, uv_decode_height, y_size;
-@@ -62,12 +61,12 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, str=
-uct ivtv_user_dma *dma,
- 	ivtv_udma_get_page_info (&y_dma, (unsigned long)args->y_source, 720 * y_d=
-ecode_height);
- 	ivtv_udma_get_page_info (&uv_dma, (unsigned long)args->uv_source, 360 * u=
-v_decode_height);
-=20
--	/* Get user pages for DMA Xfer */
--	y_pages =3D get_user_pages_unlocked(y_dma.uaddr,
-+	/* Pin user pages for DMA Xfer */
-+	y_pages =3D pin_user_pages_unlocked(y_dma.uaddr,
- 			y_dma.page_count, &dma->map[0], FOLL_FORCE);
- 	uv_pages =3D 0; /* silence gcc. value is set and consumed only if: */
- 	if (y_pages =3D=3D y_dma.page_count) {
--		uv_pages =3D get_user_pages_unlocked(uv_dma.uaddr,
-+		uv_pages =3D pin_user_pages_unlocked(uv_dma.uaddr,
- 				uv_dma.page_count, &dma->map[y_pages],
- 				FOLL_FORCE);
- 	}
-@@ -81,8 +80,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 				 uv_pages, uv_dma.page_count);
-=20
- 			if (uv_pages >=3D 0) {
--				for (i =3D 0; i < uv_pages; i++)
--					put_page(dma->map[y_pages + i]);
-+				unpin_user_pages(&dma->map[y_pages], uv_pages);
- 				rc =3D -EFAULT;
- 			} else {
- 				rc =3D uv_pages;
-@@ -93,8 +91,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struc=
-t ivtv_user_dma *dma,
- 				 y_pages, y_dma.page_count);
- 		}
- 		if (y_pages >=3D 0) {
--			for (i =3D 0; i < y_pages; i++)
--				put_page(dma->map[i]);
-+			unpin_user_pages(dma->map, y_pages);
- 			/*
- 			 * Inherit the -EFAULT from rc's
- 			 * initialization, but allow it to be
-@@ -112,9 +109,7 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, str=
-uct ivtv_user_dma *dma,
- 	/* Fill & map SG List */
- 	if (ivtv_udma_fill_sg_list (dma, &uv_dma, ivtv_udma_fill_sg_list (dma, &y=
-_dma, 0)) < 0) {
- 		IVTV_DEBUG_WARN("could not allocate bounce buffers for highmem userspace=
- buffers\n");
--		for (i =3D 0; i < dma->page_count; i++) {
--			put_page(dma->map[i]);
--		}
-+		unpin_user_pages(dma->map, dma->page_count);
- 		dma->page_count =3D 0;
- 		return -ENOMEM;
- 	}
-diff --git a/drivers/media/pci/ivtv/ivtvfb.c b/drivers/media/pci/ivtv/ivtvf=
-b.c
-index 0c2859844081..e2d56dca5be4 100644
---- a/drivers/media/pci/ivtv/ivtvfb.c
-+++ b/drivers/media/pci/ivtv/ivtvfb.c
-@@ -281,10 +281,10 @@ static int ivtvfb_prep_dec_dma_to_device(struct ivtv =
-*itv,
- 	/* Map User DMA */
- 	if (ivtv_udma_setup(itv, ivtv_dest_addr, userbuf, size_in_bytes) <=3D 0) =
-{
- 		mutex_unlock(&itv->udma.lock);
--		IVTVFB_WARN("ivtvfb_prep_dec_dma_to_device, Error with get_user_pages: %=
-d bytes, %d pages returned\n",
-+		IVTVFB_WARN("ivtvfb_prep_dec_dma_to_device, Error with pin_user_pages: %=
-d bytes, %d pages returned\n",
- 			       size_in_bytes, itv->udma.page_count);
-=20
--		/* get_user_pages must have failed completely */
-+		/* pin_user_pages must have failed completely */
- 		return -EIO;
- 	}
-=20
---=20
-2.26.2
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
