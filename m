@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAFD1D848B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCC71D85B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387559AbgERSMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S2387767AbgERSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733163AbgERSL7 (ORCPT
+        with ESMTP id S1729754AbgERSUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:11:59 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCFCC061A0C;
-        Mon, 18 May 2020 11:11:59 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f23so5209074pgj.4;
-        Mon, 18 May 2020 11:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=se9wd1uk38RXhEDmZHcWVSPKHbV3RHA1ESfUPJD0CkI=;
-        b=fFoYry9bkC202CbP/RHEryK1BVp7WjWg4Lrq7JlBQj5SDRiGI+XqT09ss6aUyFsRQi
-         nDymm7zrPp7UMP5R0ZQBAynNP7ZJ9nfBh7hibK7/dw1Sv7P3twxrEcTD1Sl1EZ1zuWDx
-         1LPqeQTCxpkSEM/ZmQMt1ASFnCvV/mlSho8cXmkciQ4k32SbjbeBGSsjs5ra4VkC9C0/
-         fUp27BpMSG6AW+5m7ZnH5xZ5Gh63mZDrC+8F/EmSIRR5cKQ7NKv6bZIfPv2YWxWYj2Sr
-         kqs3r+C6Ztlh/0GPty3LSHyn2E7AxsAqAOn+2NNxyhtrBwsYwmdoYZtPX9WkowHazFU0
-         HOYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=se9wd1uk38RXhEDmZHcWVSPKHbV3RHA1ESfUPJD0CkI=;
-        b=fE0FFvXN3qOpyO+1joryj5iD9sFBDgFr2zSYZd3tvIsmBX3V0iNNGqO5zHiMuqZsK9
-         Y77S04KyNHDMS6MQ2R19AwuCTQnBrtphnw/Ons92H8pVF/lIyj73aguHPv7GtZ5i++0P
-         EcYgphoppEdSiebhy7yDfgqsIqMe7mVDfQJ6Q4XAdszb9wIdkpmYUzAI9QRS7F4N7QKW
-         9AdiCe6ays7zh+8LBmWrG+O50gjEKprFDC+l5Xr6pTpcmXdmJ0RIL+zY4eTfxLphPihS
-         jgsfDXv0xEnaLAlWWdrHFZOh88QbFs+0jlAuZgfKWo1SEOaTt2rjdVEfW657tDw3uOyU
-         AzVA==
-X-Gm-Message-State: AOAM5339oFr4vEQVAWmI9Mbp3iwaIGf+EOo06+F3oi+W+i2RcKEtGnbJ
-        arGDpDeKS79jxp2t56Bhgv4GuFzsMa8=
-X-Google-Smtp-Source: ABdhPJx5k0G6UpPfiNaOcE/RYjDoQwzNDryfEMz6nHWXKsAwKNpGvTipLXd1sqSKTqtcte5myUUTCw==
-X-Received: by 2002:a63:c34a:: with SMTP id e10mr1301316pgd.412.1589825518735;
-        Mon, 18 May 2020 11:11:58 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.172.185.68])
-        by smtp.gmail.com with ESMTPSA id d184sm9082427pfc.130.2020.05.18.11.11.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 May 2020 11:11:57 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     hao.wu@intel.com, mdf@kernel.org, enno.luebbers@intel.com,
-        guangrong.xiao@linux.intel.com, gregkh@linuxfoundation.org,
-        christopher.rauer@intel.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH v2] fpga: dfl: afu: Corrected error handling levels
-Date:   Mon, 18 May 2020 23:49:51 +0530
-Message-Id: <1589825991-3545-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Mon, 18 May 2020 14:20:22 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A5AC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:20:21 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jakMz-00014W-EN; Mon, 18 May 2020 20:20:09 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 5F7B7100606; Mon, 18 May 2020 20:20:08 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        bp@alien8.de, luto@kernel.org
+Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
+        ak@linux.intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org
+Subject: Re: [PATCH v12 10/18] x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions
+In-Reply-To: <20200511045311.4785-11-sashal@kernel.org>
+Date:   Mon, 18 May 2020 20:20:08 +0200
+Message-ID: <87v9ktw1ev.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corrected error handling goto sequnece. Level put_pages should
-be called when pinned pages >= 0 && pinned != npages. Level
-free_pages should be called when pinned pages < 0.
+Sasha Levin <sashal@kernel.org> writes:
+> +unsigned long x86_gsbase_read_cpu_inactive(void)
+> +{
+> +	unsigned long gsbase;
+> +
+> +	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
+> +		bool need_restore = false;
+> +		unsigned long flags;
+> +
+> +		/*
+> +		 * We read the inactive GS base value by swapping
+> +		 * to make it the active one. But we cannot allow
+> +		 * an interrupt while we switch to and from.
+> +		 */
+> +		if (!irqs_disabled()) {
+> +			local_irq_save(flags);
+> +			need_restore = true;
+> +		}
+> +
+> +		native_swapgs();
+> +		gsbase = rdgsbase();
+> +		native_swapgs();
+> +
+> +		if (need_restore)
+> +			local_irq_restore(flags);
 
-Fixes: fa8dda1edef9 (fpga: dfl: afu: add DFL_FPGA_PORT_DMA_MAP/
-UNMAP ioctls support)
+Where does this crap come from?
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Acked-by: Wu Hao <hao.wu@intel.com>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
----
-v2: Updated change logs and few reviews.
+This conditional irqsave gunk is clearly NOT what was in the tip tree
+before it got reverted:
 
- drivers/fpga/dfl-afu-dma-region.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+  a86b4625138d ("x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions")
 
-diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
-index 62f9244..5942343 100644
---- a/drivers/fpga/dfl-afu-dma-region.c
-+++ b/drivers/fpga/dfl-afu-dma-region.c
-@@ -61,10 +61,10 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
- 				     region->pages);
- 	if (pinned < 0) {
- 		ret = pinned;
--		goto put_pages;
-+		goto free_pages;
- 	} else if (pinned != npages) {
- 		ret = -EFAULT;
--		goto free_pages;
-+		goto put_pages;
- 	}
- 
- 	dev_dbg(dev, "%d pages pinned\n", pinned);
--- 
-1.9.1
+In https://lore.kernel.org/r/87ftcrtckg.fsf@nanos.tec.linutronix.de I
+explicitely asked for this:
 
+     - Made sure that the cleanups I did when merging them initially have
+       been picked up. I'm not going to waste another couple of days on
+       this mess just to revert it because it hadn't seen any serious
+       testing in development.
+
+and you confirmed in https://lore.kernel.org/r/20200426025243.GJ13035@sasha-vm
+
+       Based on your revert
+       (https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/cpu&id=049331f277fef1c3f2527c2c9afa1d285e9a1247)
+       I believe that we have all the relevant patches in the series.
+
+And the above while it might not have exploded yet, is simply broken
+because the 'swapgs rd/wr swapgs' sequence is not protected against
+kprobes. There is even a big fat comment in that original commit:
+
+ /*
+  * Out of line to be protected from kprobes. It is not used on Xen
+  * paravirt. When paravirt support is needed, it needs to be renamed
+  * with native_ prefix.
+  */
+
+Yes, you surely got all patches from the git tree and made sure that the
+result reflects that.
+
+I've just extracted the original commits from git and applied them and
+fixed the trivial rejects. Then I diffed the result against this lot:
+
+ - That above gunk, which is the worst of all
+
+ - In paranoid_exit()
+
+-	TRACE_IRQS_IRETQ_DEBUG
++	TRACE_IRQS_OFF_DEBUG
+
+ - Dropped comments vs. FENCE_SWAPGS and a gazillion of comment
+   changes to make reading the diff harder.
+
+Then I gave up looking at it.
+
+It took me ~ 20 minutes (ignoring selftests and documentation) to fixup
+the rejects and create a patch queue which is reflecting the state
+before the revert and does not have complete crap in it.
+
+This required to add one preparatory patch dealing with the changes in
+copy_thread_tls() and no, not by inlining all of that twice.
+
+It took me another 5 minutes to get rid of the local_irq_save/restore()
+in save_fsgs() on top without any conditional crap.
+
+I'm seriously tired of this FSGSBASE mess. Every single version I've
+looked at in several years was a trainwreck.
+
+Don't bother to send out a new version of this in a frenzy. For my
+mental sake I'm not going to look at yet another cobbled together
+trainwreck anytime soon.
+
+If you read the above carefully you might find a recipe of properly
+engineering this so it's easy to verify against the old version.
+
+Your's seriously grumpy
+
+       tglx
