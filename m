@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99761D8187
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045211D865D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730430AbgERRst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49836 "EHLO mail.kernel.org"
+        id S1729800AbgERRos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728679AbgERRsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:46 -0400
+        id S1729760AbgERRoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AD0020674;
-        Mon, 18 May 2020 17:48:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED53520849;
+        Mon, 18 May 2020 17:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824124;
-        bh=wr5dUKOjBE5WDyW1f619MDASjdnkV8pA2c7QAk6Vhus=;
+        s=default; t=1589823870;
+        bh=W9pZaL+dU6ZVtxRB9KnoZBqbow8gSrBZ3FEwNa25IwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVlGQ+gzDlzGFXaHkkfqQKf3wdPMTnhcMCICjj9dimWyUu6VMRQOZUrQNAl0a9fup
-         ph1MduRx61JR5Gb92w6NoFeTss6az1uHrjLLFr15CMMumoWFINGOBBeAvoBCZ8ktL4
-         4X1+VJqmWvbqA9ZUwlE0OqvoPAEiivFcGR0Sgaas=
+        b=KqW2fe3GTcohkOolPDAaj845UchCpdhB5v3W2cs6MJnkU84Q7eWlKpxT2FNXvoISR
+         qDohIOBiRVikQkdoAPTCUOSYXURzb6XD6g5/Ve0Ua2ahLVHMcZbH1p9bC/H/YVVvYN
+         9lw9OeuVzMO5eVUiy39Oq2ShvVbbV+L8RpaX04OI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.14 038/114] net: ipv6_stub: use ip6_dst_lookup_flow instead of ip6_dst_lookup
+        stable@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tristan Madani <tristmd@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 32/90] blktrace: Protect q->blk_trace with RCU
 Date:   Mon, 18 May 2020 19:36:10 +0200
-Message-Id: <20200518173510.466974574@linuxfoundation.org>
+Message-Id: <20200518173457.700027112@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,243 +49,422 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sabrina Dubroca <sd@queasysnail.net>
+From: Jan Kara <jack@suse.cz>
 
-commit 6c8991f41546c3c472503dff1ea9daaddf9331c2 upstream.
+commit c780e86dd48ef6467a1146cf7d0fe1e05a635039 upstream.
 
-ipv6_stub uses the ip6_dst_lookup function to allow other modules to
-perform IPv6 lookups. However, this function skips the XFRM layer
-entirely.
+KASAN is reporting that __blk_add_trace() has a use-after-free issue
+when accessing q->blk_trace. Indeed the switching of block tracing (and
+thus eventual freeing of q->blk_trace) is completely unsynchronized with
+the currently running tracing and thus it can happen that the blk_trace
+structure is being freed just while __blk_add_trace() works on it.
+Protect accesses to q->blk_trace by RCU during tracing and make sure we
+wait for the end of RCU grace period when shutting down tracing. Luckily
+that is rare enough event that we can afford that. Note that postponing
+the freeing of blk_trace to an RCU callback should better be avoided as
+it could have unexpected user visible side-effects as debugfs files
+would be still existing for a short while block tracing has been shut
+down.
 
-All users of ipv6_stub->ip6_dst_lookup use ip_route_output_flow (via the
-ip_route_output_key and ip_route_output helpers) for their IPv4 lookups,
-which calls xfrm_lookup_route(). This patch fixes this inconsistent
-behavior by switching the stub to ip6_dst_lookup_flow, which also calls
-xfrm_lookup_route().
-
-This requires some changes in all the callers, as these two functions
-take different arguments and have different return types.
-
-Fixes: 5f81bd2e5d80 ("ipv6: export a stub for IPv6 symbols used by vxlan")
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backported to 4.14:
- - Drop change in lwt_bpf.c
- - Delete now-unused "ret" in mlx5e_route_lookup_ipv6()
- - Initialise "out_dev" in mlx5e_create_encap_header_ipv6() to avoid
-   introducing a spurious "may be used uninitialised" warning
- - Adjust filenames, context, indentation]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=205711
+CC: stable@vger.kernel.org
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Tested-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reported-by: Tristan Madani <tristmd@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+[bwh: Backported to 4.9: adjust context]
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/addr.c                  |    7 +++----
- drivers/infiniband/sw/rxe/rxe_net.c             |    8 +++++---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c |   11 +++++------
- drivers/net/geneve.c                            |    4 +++-
- drivers/net/vxlan.c                             |    8 +++-----
- include/net/addrconf.h                          |    6 ++++--
- net/ipv6/addrconf_core.c                        |   11 ++++++-----
- net/ipv6/af_inet6.c                             |    2 +-
- net/mpls/af_mpls.c                              |    7 +++----
- net/tipc/udp_media.c                            |    9 ++++++---
- 10 files changed, 39 insertions(+), 34 deletions(-)
+ include/linux/blkdev.h       |   2 +-
+ include/linux/blktrace_api.h |  18 ++++--
+ kernel/trace/blktrace.c      | 110 +++++++++++++++++++++++++----------
+ 3 files changed, 94 insertions(+), 36 deletions(-)
 
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -450,16 +450,15 @@ static int addr6_resolve(struct sockaddr
- 	struct flowi6 fl6;
- 	struct dst_entry *dst;
- 	struct rt6_info *rt;
--	int ret;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index a8dfbad42d1b0..060881478e59e 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -445,7 +445,7 @@ struct request_queue {
+ 	unsigned int		sg_reserved_size;
+ 	int			node;
+ #ifdef CONFIG_BLK_DEV_IO_TRACE
+-	struct blk_trace	*blk_trace;
++	struct blk_trace __rcu	*blk_trace;
+ 	struct mutex		blk_trace_mutex;
+ #endif
+ 	/*
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index cceb72f9e29f5..45fb00427306f 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -51,18 +51,26 @@ void __trace_note_message(struct blk_trace *, const char *fmt, ...);
+  **/
+ #define blk_add_trace_msg(q, fmt, ...)					\
+ 	do {								\
+-		struct blk_trace *bt = (q)->blk_trace;			\
++		struct blk_trace *bt;					\
++									\
++		rcu_read_lock();					\
++		bt = rcu_dereference((q)->blk_trace);			\
+ 		if (unlikely(bt))					\
+ 			__trace_note_message(bt, fmt, ##__VA_ARGS__);	\
++		rcu_read_unlock();					\
+ 	} while (0)
+ #define BLK_TN_MAX_MSG		128
  
- 	memset(&fl6, 0, sizeof fl6);
- 	fl6.daddr = dst_in->sin6_addr;
- 	fl6.saddr = src_in->sin6_addr;
- 	fl6.flowi6_oif = addr->bound_dev_if;
- 
--	ret = ipv6_stub->ipv6_dst_lookup(addr->net, NULL, &dst, &fl6);
--	if (ret < 0)
--		return ret;
-+	dst = ipv6_stub->ipv6_dst_lookup_flow(addr->net, NULL, &fl6, NULL);
-+	if (IS_ERR(dst))
-+		return PTR_ERR(dst);
- 
- 	rt = (struct rt6_info *)dst;
- 	if (ipv6_addr_any(&src_in->sin6_addr)) {
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -154,10 +154,12 @@ static struct dst_entry *rxe_find_route6
- 	memcpy(&fl6.daddr, daddr, sizeof(*daddr));
- 	fl6.flowi6_proto = IPPROTO_UDP;
- 
--	if (unlikely(ipv6_stub->ipv6_dst_lookup(sock_net(recv_sockets.sk6->sk),
--						recv_sockets.sk6->sk, &ndst, &fl6))) {
-+	ndst = ipv6_stub->ipv6_dst_lookup_flow(sock_net(recv_sockets.sk6->sk),
-+					       recv_sockets.sk6->sk, &fl6,
-+					       NULL);
-+	if (unlikely(IS_ERR(ndst))) {
- 		pr_err_ratelimited("no route to %pI6\n", daddr);
--		goto put;
-+		return NULL;
- 	}
- 
- 	if (unlikely(ndst->error)) {
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1550,12 +1550,11 @@ static int mlx5e_route_lookup_ipv6(struc
- 
- #if IS_ENABLED(CONFIG_INET) && IS_ENABLED(CONFIG_IPV6)
- 	struct mlx5_eswitch *esw = priv->mdev->priv.eswitch;
--	int ret;
- 
--	ret = ipv6_stub->ipv6_dst_lookup(dev_net(mirred_dev), NULL, &dst,
--					 fl6);
--	if (ret < 0)
--		return ret;
-+	dst = ipv6_stub->ipv6_dst_lookup_flow(dev_net(mirred_dev), NULL, fl6,
-+					      NULL);
-+	if (IS_ERR(dst))
-+		return PTR_ERR(dst);
- 
- 	*out_ttl = ip6_dst_hoplimit(dst);
- 
-@@ -1754,7 +1753,7 @@ static int mlx5e_create_encap_header_ipv
- 	int max_encap_size = MLX5_CAP_ESW(priv->mdev, max_encap_header_size);
- 	int ipv6_encap_size = ETH_HLEN + sizeof(struct ipv6hdr) + VXLAN_HLEN;
- 	struct ip_tunnel_key *tun_key = &e->tun_info.key;
--	struct net_device *out_dev;
-+	struct net_device *out_dev = NULL;
- 	struct neighbour *n = NULL;
- 	struct flowi6 fl6 = {};
- 	char *encap_header;
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -796,7 +796,9 @@ static struct dst_entry *geneve_get_v6_d
- 		if (dst)
- 			return dst;
- 	}
--	if (ipv6_stub->ipv6_dst_lookup(geneve->net, gs6->sock->sk, &dst, fl6)) {
-+	dst = ipv6_stub->ipv6_dst_lookup_flow(geneve->net, gs6->sock->sk, fl6,
-+					      NULL);
-+	if (IS_ERR(dst)) {
- 		netdev_dbg(dev, "no route to %pI6\n", &fl6->daddr);
- 		return ERR_PTR(-ENETUNREACH);
- 	}
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1962,7 +1962,6 @@ static struct dst_entry *vxlan6_get_rout
- 	bool use_cache = ip_tunnel_dst_cache_usable(skb, info);
- 	struct dst_entry *ndst;
- 	struct flowi6 fl6;
--	int err;
- 
- 	if (!sock6)
- 		return ERR_PTR(-EIO);
-@@ -1985,10 +1984,9 @@ static struct dst_entry *vxlan6_get_rout
- 	fl6.fl6_dport = dport;
- 	fl6.fl6_sport = sport;
- 
--	err = ipv6_stub->ipv6_dst_lookup(vxlan->net,
--					 sock6->sock->sk,
--					 &ndst, &fl6);
--	if (unlikely(err < 0)) {
-+	ndst = ipv6_stub->ipv6_dst_lookup_flow(vxlan->net, sock6->sock->sk,
-+					       &fl6, NULL);
-+	if (unlikely(IS_ERR(ndst))) {
- 		netdev_dbg(dev, "no route to %pI6\n", daddr);
- 		return ERR_PTR(-ENETUNREACH);
- 	}
---- a/include/net/addrconf.h
-+++ b/include/net/addrconf.h
-@@ -223,8 +223,10 @@ struct ipv6_stub {
- 				 const struct in6_addr *addr);
- 	int (*ipv6_sock_mc_drop)(struct sock *sk, int ifindex,
- 				 const struct in6_addr *addr);
--	int (*ipv6_dst_lookup)(struct net *net, struct sock *sk,
--			       struct dst_entry **dst, struct flowi6 *fl6);
-+	struct dst_entry *(*ipv6_dst_lookup_flow)(struct net *net,
-+						  const struct sock *sk,
-+						  struct flowi6 *fl6,
-+						  const struct in6_addr *final_dst);
- 	void (*udpv6_encap_enable)(void);
- 	void (*ndisc_send_na)(struct net_device *dev, const struct in6_addr *daddr,
- 			      const struct in6_addr *solicited_addr,
---- a/net/ipv6/addrconf_core.c
-+++ b/net/ipv6/addrconf_core.c
-@@ -126,15 +126,16 @@ int inet6addr_validator_notifier_call_ch
- }
- EXPORT_SYMBOL(inet6addr_validator_notifier_call_chain);
- 
--static int eafnosupport_ipv6_dst_lookup(struct net *net, struct sock *u1,
--					struct dst_entry **u2,
--					struct flowi6 *u3)
-+static struct dst_entry *eafnosupport_ipv6_dst_lookup_flow(struct net *net,
-+							   const struct sock *sk,
-+							   struct flowi6 *fl6,
-+							   const struct in6_addr *final_dst)
+ static inline bool blk_trace_note_message_enabled(struct request_queue *q)
  {
--	return -EAFNOSUPPORT;
-+	return ERR_PTR(-EAFNOSUPPORT);
+-	struct blk_trace *bt = q->blk_trace;
+-	if (likely(!bt))
+-		return false;
+-	return bt->act_mask & BLK_TC_NOTIFY;
++	struct blk_trace *bt;
++	bool ret;
++
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	ret = bt && (bt->act_mask & BLK_TC_NOTIFY);
++	rcu_read_unlock();
++	return ret;
  }
  
- const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
--	.ipv6_dst_lookup = eafnosupport_ipv6_dst_lookup,
-+	.ipv6_dst_lookup_flow = eafnosupport_ipv6_dst_lookup_flow,
- };
- EXPORT_SYMBOL_GPL(ipv6_stub);
+ extern void blk_add_driver_data(struct request_queue *q, struct request *rq,
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index a88e677c74f31..78a896acd21ac 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -325,6 +325,7 @@ static void put_probe_ref(void)
  
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -874,7 +874,7 @@ static struct pernet_operations inet6_ne
- static const struct ipv6_stub ipv6_stub_impl = {
- 	.ipv6_sock_mc_join = ipv6_sock_mc_join,
- 	.ipv6_sock_mc_drop = ipv6_sock_mc_drop,
--	.ipv6_dst_lookup = ip6_dst_lookup,
-+	.ipv6_dst_lookup_flow = ip6_dst_lookup_flow,
- 	.udpv6_encap_enable = udpv6_encap_enable,
- 	.ndisc_send_na = ndisc_send_na,
- 	.nd_tbl	= &nd_tbl,
---- a/net/mpls/af_mpls.c
-+++ b/net/mpls/af_mpls.c
-@@ -587,16 +587,15 @@ static struct net_device *inet6_fib_look
- 	struct net_device *dev;
- 	struct dst_entry *dst;
- 	struct flowi6 fl6;
--	int err;
+ static void blk_trace_cleanup(struct blk_trace *bt)
+ {
++	synchronize_rcu();
+ 	blk_trace_free(bt);
+ 	put_probe_ref();
+ }
+@@ -629,8 +630,10 @@ static int compat_blk_trace_setup(struct request_queue *q, char *name,
+ static int __blk_trace_startstop(struct request_queue *q, int start)
+ {
+ 	int ret;
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
  
- 	if (!ipv6_stub)
- 		return ERR_PTR(-EAFNOSUPPORT);
++	bt = rcu_dereference_protected(q->blk_trace,
++				       lockdep_is_held(&q->blk_trace_mutex));
+ 	if (bt == NULL)
+ 		return -EINVAL;
  
- 	memset(&fl6, 0, sizeof(fl6));
- 	memcpy(&fl6.daddr, addr, sizeof(struct in6_addr));
--	err = ipv6_stub->ipv6_dst_lookup(net, NULL, &dst, &fl6);
--	if (err)
--		return ERR_PTR(err);
-+	dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &fl6, NULL);
-+	if (IS_ERR(dst))
-+		return ERR_CAST(dst);
+@@ -739,8 +742,8 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
+ void blk_trace_shutdown(struct request_queue *q)
+ {
+ 	mutex_lock(&q->blk_trace_mutex);
+-
+-	if (q->blk_trace) {
++	if (rcu_dereference_protected(q->blk_trace,
++				      lockdep_is_held(&q->blk_trace_mutex))) {
+ 		__blk_trace_startstop(q, 0);
+ 		__blk_trace_remove(q);
+ 	}
+@@ -766,10 +769,14 @@ void blk_trace_shutdown(struct request_queue *q)
+ static void blk_add_trace_rq(struct request_queue *q, struct request *rq,
+ 			     unsigned int nr_bytes, u32 what)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
  
- 	dev = dst->dev;
- 	dev_hold(dev);
---- a/net/tipc/udp_media.c
-+++ b/net/tipc/udp_media.c
-@@ -187,10 +187,13 @@ static int tipc_udp_xmit(struct net *net
- 			.saddr = src->ipv6,
- 			.flowi6_proto = IPPROTO_UDP
- 		};
--		err = ipv6_stub->ipv6_dst_lookup(net, ub->ubsock->sk, &ndst,
--						 &fl6);
--		if (err)
-+		ndst = ipv6_stub->ipv6_dst_lookup_flow(net,
-+						       ub->ubsock->sk,
-+						       &fl6, NULL);
-+		if (IS_ERR(ndst)) {
-+			err = PTR_ERR(ndst);
- 			goto tx_error;
-+		}
- 		ttl = ip6_dst_hoplimit(ndst);
- 		err = udp_tunnel6_xmit_skb(ndst, ub->ubsock->sk, skb, NULL,
- 					   &src->ipv6, &dst->ipv6, 0, ttl, 0,
+-	if (likely(!bt))
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	if (likely(!bt)) {
++		rcu_read_unlock();
+ 		return;
++	}
+ 
+ 	if (rq->cmd_type == REQ_TYPE_BLOCK_PC) {
+ 		what |= BLK_TC_ACT(BLK_TC_PC);
+@@ -780,6 +787,7 @@ static void blk_add_trace_rq(struct request_queue *q, struct request *rq,
+ 		__blk_add_trace(bt, blk_rq_pos(rq), nr_bytes, req_op(rq),
+ 				rq->cmd_flags, what, rq->errors, 0, NULL);
+ 	}
++	rcu_read_unlock();
+ }
+ 
+ static void blk_add_trace_rq_abort(void *ignore,
+@@ -829,13 +837,18 @@ static void blk_add_trace_rq_complete(void *ignore,
+ static void blk_add_trace_bio(struct request_queue *q, struct bio *bio,
+ 			      u32 what, int error)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 
+-	if (likely(!bt))
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	if (likely(!bt)) {
++		rcu_read_unlock();
+ 		return;
++	}
+ 
+ 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
+ 			bio_op(bio), bio->bi_opf, what, error, 0, NULL);
++	rcu_read_unlock();
+ }
+ 
+ static void blk_add_trace_bio_bounce(void *ignore,
+@@ -880,11 +893,14 @@ static void blk_add_trace_getrq(void *ignore,
+ 	if (bio)
+ 		blk_add_trace_bio(q, bio, BLK_TA_GETRQ, 0);
+ 	else {
+-		struct blk_trace *bt = q->blk_trace;
++		struct blk_trace *bt;
+ 
++		rcu_read_lock();
++		bt = rcu_dereference(q->blk_trace);
+ 		if (bt)
+ 			__blk_add_trace(bt, 0, 0, rw, 0, BLK_TA_GETRQ, 0, 0,
+ 					NULL);
++		rcu_read_unlock();
+ 	}
+ }
+ 
+@@ -896,27 +912,35 @@ static void blk_add_trace_sleeprq(void *ignore,
+ 	if (bio)
+ 		blk_add_trace_bio(q, bio, BLK_TA_SLEEPRQ, 0);
+ 	else {
+-		struct blk_trace *bt = q->blk_trace;
++		struct blk_trace *bt;
+ 
++		rcu_read_lock();
++		bt = rcu_dereference(q->blk_trace);
+ 		if (bt)
+ 			__blk_add_trace(bt, 0, 0, rw, 0, BLK_TA_SLEEPRQ,
+ 					0, 0, NULL);
++		rcu_read_unlock();
+ 	}
+ }
+ 
+ static void blk_add_trace_plug(void *ignore, struct request_queue *q)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
+ 	if (bt)
+ 		__blk_add_trace(bt, 0, 0, 0, 0, BLK_TA_PLUG, 0, 0, NULL);
++	rcu_read_unlock();
+ }
+ 
+ static void blk_add_trace_unplug(void *ignore, struct request_queue *q,
+ 				    unsigned int depth, bool explicit)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
+ 	if (bt) {
+ 		__be64 rpdu = cpu_to_be64(depth);
+ 		u32 what;
+@@ -928,14 +952,17 @@ static void blk_add_trace_unplug(void *ignore, struct request_queue *q,
+ 
+ 		__blk_add_trace(bt, 0, 0, 0, 0, what, 0, sizeof(rpdu), &rpdu);
+ 	}
++	rcu_read_unlock();
+ }
+ 
+ static void blk_add_trace_split(void *ignore,
+ 				struct request_queue *q, struct bio *bio,
+ 				unsigned int pdu)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
+ 	if (bt) {
+ 		__be64 rpdu = cpu_to_be64(pdu);
+ 
+@@ -944,6 +971,7 @@ static void blk_add_trace_split(void *ignore,
+ 				BLK_TA_SPLIT, bio->bi_error, sizeof(rpdu),
+ 				&rpdu);
+ 	}
++	rcu_read_unlock();
+ }
+ 
+ /**
+@@ -963,11 +991,15 @@ static void blk_add_trace_bio_remap(void *ignore,
+ 				    struct request_queue *q, struct bio *bio,
+ 				    dev_t dev, sector_t from)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 	struct blk_io_trace_remap r;
+ 
+-	if (likely(!bt))
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	if (likely(!bt)) {
++		rcu_read_unlock();
+ 		return;
++	}
+ 
+ 	r.device_from = cpu_to_be32(dev);
+ 	r.device_to   = cpu_to_be32(bio->bi_bdev->bd_dev);
+@@ -976,6 +1008,7 @@ static void blk_add_trace_bio_remap(void *ignore,
+ 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
+ 			bio_op(bio), bio->bi_opf, BLK_TA_REMAP, bio->bi_error,
+ 			sizeof(r), &r);
++	rcu_read_unlock();
+ }
+ 
+ /**
+@@ -996,11 +1029,15 @@ static void blk_add_trace_rq_remap(void *ignore,
+ 				   struct request *rq, dev_t dev,
+ 				   sector_t from)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 	struct blk_io_trace_remap r;
+ 
+-	if (likely(!bt))
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	if (likely(!bt)) {
++		rcu_read_unlock();
+ 		return;
++	}
+ 
+ 	r.device_from = cpu_to_be32(dev);
+ 	r.device_to   = cpu_to_be32(disk_devt(rq->rq_disk));
+@@ -1009,6 +1046,7 @@ static void blk_add_trace_rq_remap(void *ignore,
+ 	__blk_add_trace(bt, blk_rq_pos(rq), blk_rq_bytes(rq),
+ 			rq_data_dir(rq), 0, BLK_TA_REMAP, !!rq->errors,
+ 			sizeof(r), &r);
++	rcu_read_unlock();
+ }
+ 
+ /**
+@@ -1026,10 +1064,14 @@ void blk_add_driver_data(struct request_queue *q,
+ 			 struct request *rq,
+ 			 void *data, size_t len)
+ {
+-	struct blk_trace *bt = q->blk_trace;
++	struct blk_trace *bt;
+ 
+-	if (likely(!bt))
++	rcu_read_lock();
++	bt = rcu_dereference(q->blk_trace);
++	if (likely(!bt)) {
++		rcu_read_unlock();
+ 		return;
++	}
+ 
+ 	if (rq->cmd_type == REQ_TYPE_BLOCK_PC)
+ 		__blk_add_trace(bt, 0, blk_rq_bytes(rq), 0, 0,
+@@ -1037,6 +1079,7 @@ void blk_add_driver_data(struct request_queue *q,
+ 	else
+ 		__blk_add_trace(bt, blk_rq_pos(rq), blk_rq_bytes(rq), 0, 0,
+ 				BLK_TA_DRV_DATA, rq->errors, len, data);
++	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(blk_add_driver_data);
+ 
+@@ -1529,6 +1572,7 @@ static int blk_trace_remove_queue(struct request_queue *q)
+ 		return -EINVAL;
+ 
+ 	put_probe_ref();
++	synchronize_rcu();
+ 	blk_trace_free(bt);
+ 	return 0;
+ }
+@@ -1690,6 +1734,7 @@ static ssize_t sysfs_blk_trace_attr_show(struct device *dev,
+ 	struct hd_struct *p = dev_to_part(dev);
+ 	struct request_queue *q;
+ 	struct block_device *bdev;
++	struct blk_trace *bt;
+ 	ssize_t ret = -ENXIO;
+ 
+ 	bdev = bdget(part_devt(p));
+@@ -1702,21 +1747,23 @@ static ssize_t sysfs_blk_trace_attr_show(struct device *dev,
+ 
+ 	mutex_lock(&q->blk_trace_mutex);
+ 
++	bt = rcu_dereference_protected(q->blk_trace,
++				       lockdep_is_held(&q->blk_trace_mutex));
+ 	if (attr == &dev_attr_enable) {
+-		ret = sprintf(buf, "%u\n", !!q->blk_trace);
++		ret = sprintf(buf, "%u\n", !!bt);
+ 		goto out_unlock_bdev;
+ 	}
+ 
+-	if (q->blk_trace == NULL)
++	if (bt == NULL)
+ 		ret = sprintf(buf, "disabled\n");
+ 	else if (attr == &dev_attr_act_mask)
+-		ret = blk_trace_mask2str(buf, q->blk_trace->act_mask);
++		ret = blk_trace_mask2str(buf, bt->act_mask);
+ 	else if (attr == &dev_attr_pid)
+-		ret = sprintf(buf, "%u\n", q->blk_trace->pid);
++		ret = sprintf(buf, "%u\n", bt->pid);
+ 	else if (attr == &dev_attr_start_lba)
+-		ret = sprintf(buf, "%llu\n", q->blk_trace->start_lba);
++		ret = sprintf(buf, "%llu\n", bt->start_lba);
+ 	else if (attr == &dev_attr_end_lba)
+-		ret = sprintf(buf, "%llu\n", q->blk_trace->end_lba);
++		ret = sprintf(buf, "%llu\n", bt->end_lba);
+ 
+ out_unlock_bdev:
+ 	mutex_unlock(&q->blk_trace_mutex);
+@@ -1733,6 +1780,7 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
+ 	struct block_device *bdev;
+ 	struct request_queue *q;
+ 	struct hd_struct *p;
++	struct blk_trace *bt;
+ 	u64 value;
+ 	ssize_t ret = -EINVAL;
+ 
+@@ -1763,8 +1811,10 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
+ 
+ 	mutex_lock(&q->blk_trace_mutex);
+ 
++	bt = rcu_dereference_protected(q->blk_trace,
++				       lockdep_is_held(&q->blk_trace_mutex));
+ 	if (attr == &dev_attr_enable) {
+-		if (!!value == !!q->blk_trace) {
++		if (!!value == !!bt) {
+ 			ret = 0;
+ 			goto out_unlock_bdev;
+ 		}
+@@ -1776,18 +1826,18 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
+ 	}
+ 
+ 	ret = 0;
+-	if (q->blk_trace == NULL)
++	if (bt == NULL)
+ 		ret = blk_trace_setup_queue(q, bdev);
+ 
+ 	if (ret == 0) {
+ 		if (attr == &dev_attr_act_mask)
+-			q->blk_trace->act_mask = value;
++			bt->act_mask = value;
+ 		else if (attr == &dev_attr_pid)
+-			q->blk_trace->pid = value;
++			bt->pid = value;
+ 		else if (attr == &dev_attr_start_lba)
+-			q->blk_trace->start_lba = value;
++			bt->start_lba = value;
+ 		else if (attr == &dev_attr_end_lba)
+-			q->blk_trace->end_lba = value;
++			bt->end_lba = value;
+ 	}
+ 
+ out_unlock_bdev:
+-- 
+2.20.1
+
 
 
