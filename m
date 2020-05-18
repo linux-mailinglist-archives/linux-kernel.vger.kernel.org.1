@@ -2,53 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4901D7A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E6F1D7A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgERNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36370 "EHLO mail.kernel.org"
+        id S1727803AbgERNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:48:22 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35770 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbgERNrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:47:47 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726800AbgERNsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:48:22 -0400
+Received: from zn.tnic (p200300ec2f06e8006d2513699c1ec3e6.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:e800:6d25:1369:9c1e:c3e6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4249220657;
-        Mon, 18 May 2020 13:47:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589809667;
-        bh=OWTjpnAZkv7sUXgqDZ9dbdDlTjjTUSLdc+5YI8H9+UE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sf1QAiTFSvJXJkMn5jRwradWooQaW1xX69MhjeMoAyGi/OaRVGC511vMbFHgmeTuw
-         F1bu8RCpTz/H2b+ugOc/MlFVZ8XJ/Tubkt3ccgsnPoG1bUU2Qa5aJQDrGzn4dj4Oh6
-         qQYG9kbTE01nA0am8NMbYygdIry9SQzDoXJqfYbo=
-Date:   Mon, 18 May 2020 14:47:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     =?utf-8?B?546L56iL5Yia?= <wangchenggang@vivo.com>
-Cc:     'Catalin Marinas' <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@vivo.com
-Subject: Re: [PATCH] arch/arm64: Enlarge arm64 command line length to 4096
- bytes
-Message-ID: <20200518134742.GH32394@willie-the-truck>
-References: <00fc01d62d1a$35445a80$9fcd0f80$@vivo.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B64C61EC011B;
+        Mon, 18 May 2020 15:48:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1589809700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hr/IVXCwsh0+cseGpLd9ZaZKuurJGFMlWPphXz979TM=;
+        b=W2MmwePbiDvOwpghD0Ohf9OU0mgiNCo5yd2QNcryZurMhoVcXYJjUAHYs4QYiuZYL+H5Md
+        F+hdNligUmZsirqo5R6twNhLBlZkwU0Z8v5GAOh8dhp8/hgEWuBy5ttYT6SevNx5Igtg0k
+        qJ+5mQ8jpi6vICCd7mqsX6oCA+dmgYk=
+Date:   Mon, 18 May 2020 15:48:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jue Wang <juew@google.com>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/mm: Don't try to change poison pages to uncacheable
+ in a guest
+Message-ID: <20200518134813.GC25034@zn.tnic>
+References: <20200516150229.GB19372@zn.tnic>
+ <8022D1E6-A8BC-4610-9F58-67A06B9A9575@intel.com>
+ <CAPcxDJ50pbuTbittyvPwKq1uUT8q8jJ+dHH8rCug8a1DDZXVYw@mail.gmail.com>
+ <CAPcxDJ6f3pBpwiR9nvXN_g_HBa1RAMG+aOmgfXLFT6aZ9HQn3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <00fc01d62d1a$35445a80$9fcd0f80$@vivo.com>
+In-Reply-To: <CAPcxDJ6f3pBpwiR9nvXN_g_HBa1RAMG+aOmgfXLFT6aZ9HQn3w@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:42:43PM +0800, 王程刚 wrote:
-> Now android use many long command line, and oem need append some command
-> line to debug boot, so 2048 bytes cannot able to meet the requirement.
-> Enlarge arm64's command line length to 4096 bytes.
+Hi,
 
-I thought bootconfig was supposed to fix this sort of thing?
+lemme try to reply to three emails at once.
 
-Will
+First of all, the two of you: pls do not top-post.
+
+On Sat, May 16, 2020 at 6:52 PM Luck, Tony <tony.luck@intel.com> wrote:
+> But the guest isn’t likely to do the right thing with a page fault.
+> The guest just accessed a page that it knows is poisoned (VMM just told
+> it once that it was poisoned). There is no reason that the VMM should
+> let the guest actually touch the poison a second time. But if the guest
+> does, then the guest should get the expected response. I.e. another
+> machine check.
+
+So Jue says below that the VMM has unmapped the guest page from the EPT.
+So the guest cannot touch the poison anymore.
+
+How is then possible for the guest to touch it again if the page is not
+mapped anymore?
+
+The guest should get a #PF when the page is unmapped and cause a new
+page to be mapped.
+
+On Sun, May 17, 2020 at 07:36:00AM -0700, Jue Wang wrote:
+> The stack is from guest MCE handler's processing of the first MCE injected.
+
+Aha, so you've flipped the functions order in the trace. It all starts
+at
+
+  set_mce_nospec(m->addr >> PAGE_SHIFT);
+
+Now it makes sense.
+
+> Note before the first MCE is injected into guest (i.e., after the host MCE
+> handler successfully finished MCE handling and notified VMM via SIGBUS with
+> BUS_MCEERR_AR), VMM unmaps the guest page from EPT.
+
+Ok, good.
+
+> The guest MCE handler finished the "normal" MCE handling and recovery
+> (memory_failure() in mm/memory_failure.cc) successfully, it's the aftermath
+> below leading to the stack trace:
+> https://github.com/torvalds/linux/blob/5a9ffb954a3933d7867f4341684a23e008d6839b/arch/x86/kernel/cpu/mce/core.c#L1101
+
+On Sun, May 17, 2020 at 08:33:00AM -0700, Jue Wang wrote:
+> In other words, it's the *do_memory_failure -> set_mce_nospec*  flow of
+> guest MCE handler acting on the *first* MCE injection. As a result, the
+> guest panics and resets *whenever* there is an MCE injected, even when the
+> injected MCE is recoverable.
+
+So IIUC that set_mce_nospec() thing should check whether m->addr is
+mapped first and only then mark it _uc and whatever monkey business it
+does. Not this blanket
+
+  if am I a guest?
+
+test.
+
+Imagine a hypervisor which doesn't set X86_FEATURE_HYPERVISOR, i.e.,
+CPUID(1)[EDX, bit 31]?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
