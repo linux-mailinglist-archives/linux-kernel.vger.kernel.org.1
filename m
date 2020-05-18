@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E341D80C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA941D8552
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729338AbgERRlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38264 "EHLO mail.kernel.org"
+        id S1731595AbgERR4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729315AbgERRln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:41:43 -0400
+        id S1729073AbgERR4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E566620715;
-        Mon, 18 May 2020 17:41:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB53C207C4;
+        Mon, 18 May 2020 17:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823702;
-        bh=NiLw0/Kb0xmuy06SBKrKtUCqZfQThB7sAaJN2reodso=;
+        s=default; t=1589824565;
+        bh=t3npKBEsuRcAzaeEdhUZ+UJDeNrUl67D2yV/RLVnfT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j8wHAzud1hziGAv4bzRsIPvLvj+tvWSSdkNtp8xtDwkv/uA4FX2sj3HEeFFkV7Xsh
-         ADXZGYS3OO3sQzgvYFSe9Jw4W3vfRqf/Sy6guo6R5ndmnmnWyd3J08XhYtMRCa3xaL
-         tNI7d0YbjRKCaXs2EfIpyobrvZMl5zZIdVZnLr3o=
+        b=Iai5fJ2mbBdAwBta3BsLizbf5oocQx13KX7jdJMjKnjQ2PHsweEw8F6LyJxL8mtig
+         7/MTJJUX6wN2CW1MA62uLeKEZmJJy2d36BERfrowQLd80tGRYsj8TlLwHKaVu+0Jzj
+         wSKDm+eTD8tisRct1BSDnx7EdMXrWQmOO6ob0yE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 54/86] IB/mlx4: Test return value of calls to ib_get_cached_pkey
+Subject: [PATCH 5.4 062/147] i40iw: Fix error handling in i40iw_manage_arp_cache()
 Date:   Mon, 18 May 2020 19:36:25 +0200
-Message-Id: <20200518173501.461163403@linuxfoundation.org>
+Message-Id: <20200518173521.766924092@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,66 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 6693ca95bd4330a0ad7326967e1f9bcedd6b0800 ]
+[ Upstream commit 37e31d2d26a4124506c24e95434e9baf3405a23a ]
 
-In the mlx4_ib_post_send() flow, some functions call ib_get_cached_pkey()
-without checking its return value. If ib_get_cached_pkey() returns an
-error code, these functions should return failure.
+The i40iw_arp_table() function can return -EOVERFLOW if
+i40iw_alloc_resource() fails so we can't just test for "== -1".
 
-Fixes: 1ffeb2eb8be9 ("IB/mlx4: SR-IOV IB context objects and proxy/tunnel SQP support")
-Fixes: 225c7b1feef1 ("IB/mlx4: Add a driver Mellanox ConnectX InfiniBand adapters")
-Fixes: e622f2f4ad21 ("IB: split struct ib_send_wr")
-Link: https://lore.kernel.org/r/20200426075921.130074-1-leon@kernel.org
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 4e9042e647ff ("i40iw: add hw and utils files")
+Link: https://lore.kernel.org/r/20200422092211.GA195357@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/qp.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 348828271cb07..ecd461ee6dbe2 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -2156,6 +2156,7 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
- 	int send_size;
- 	int header_size;
- 	int spc;
-+	int err;
- 	int i;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+index 55a1fbf0e670c..ae8b97c306657 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_hw.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+@@ -534,7 +534,7 @@ void i40iw_manage_arp_cache(struct i40iw_device *iwdev,
+ 	int arp_index;
  
- 	if (wr->wr.opcode != IB_WR_SEND)
-@@ -2190,7 +2191,9 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
- 
- 	sqp->ud_header.lrh.virtual_lane    = 0;
- 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
--	ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
-+	err = ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
-+	if (err)
-+		return err;
- 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
- 	if (sqp->qp.mlx4_ib_qp_type == MLX4_IB_QPT_TUN_SMI_OWNER)
- 		sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
-@@ -2423,9 +2426,14 @@ static int build_mlx_header(struct mlx4_ib_sqp *sqp, struct ib_ud_wr *wr,
- 	}
- 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
- 	if (!sqp->qp.ibqp.qp_num)
--		ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index, &pkey);
-+		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index,
-+					 &pkey);
- 	else
--		ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index, &pkey);
-+		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index,
-+					 &pkey);
-+	if (err)
-+		return err;
-+
- 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
- 	sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
- 	sqp->ud_header.bth.psn = cpu_to_be32((sqp->send_psn++) & ((1 << 24) - 1));
+ 	arp_index = i40iw_arp_table(iwdev, ip_addr, ipv4, mac_addr, action);
+-	if (arp_index == -1)
++	if (arp_index < 0)
+ 		return;
+ 	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
+ 	if (!cqp_request)
 -- 
 2.20.1
 
