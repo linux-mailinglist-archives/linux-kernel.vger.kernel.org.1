@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FFD1D8702
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A220E1D8708
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388004AbgERS2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:48 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:39320 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387852AbgERS2q (ORCPT
+        id S1731110AbgERS3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388013AbgERS3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:28:46 -0400
-Received: by mail-io1-f66.google.com with SMTP id x5so11736276ioh.6;
-        Mon, 18 May 2020 11:28:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/p9YM/GnXrG9SKVwxPAWMOdMPZXYXdovPfbgwwKorf0=;
-        b=uTdl7pZOW8+uirJ3eO/GWJwnWxrfAzJUIbEElcUSMKU+sIVDYzSiBXubBIFSp5au0O
-         +GhBp3u+JwUFs30BhMReStMIs3sxPwNzjJ7z7IanEixBk3Kt0Gpewsc2jJ9Y8kh1UjbZ
-         HJpmGglImj/rYWH2QD97u6HoF61H3/f2yK0BBK6HZMHwhV3s+KI1VBbWIv/u3TX4Yl4a
-         yhLIqbPQ+/CRGqqxLSrru9LqzZWFb4WyWg6SRUK55r+Dv+42G5/AShhnrghncwvfrgnz
-         SpeSAw5zNKkEO1utlGz6z/1TVVeKljd2E6endhC/OO36wGT+SzC+Jaj5DqBTs27ADCCG
-         dKlw==
-X-Gm-Message-State: AOAM530T7Eq/0EebV/XYrG5aEDxTlkPhRKNP5OkqJKyWyOO3IMfZEJcf
-        9Rbu1byRVb+P2cGLsF0R+w==
-X-Google-Smtp-Source: ABdhPJyQMHKgCPUCeovV3BchpiRD9KADEVI8p81q+CRYTGF8ksnKQdsZoo8KTJr7NyfISNcmJcVulQ==
-X-Received: by 2002:a5e:c303:: with SMTP id a3mr15796959iok.15.1589826525234;
-        Mon, 18 May 2020 11:28:45 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id j2sm4147519ioo.8.2020.05.18.11.28.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 11:28:44 -0700 (PDT)
-Received: (nullmailer pid 5690 invoked by uid 1000);
-        Mon, 18 May 2020 18:28:43 -0000
-Date:   Mon, 18 May 2020 12:28:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     srk@48.io
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Cross <xobs@kosagi.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: n133hse-ea1: Add Innolux N133HSE panel
-Message-ID: <20200518182843.GA4265@bogus>
-References: <20200509111834.26335-1-srk@48.io>
- <20200509111834.26335-2-srk@48.io>
+        Mon, 18 May 2020 14:29:01 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF7DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:29:01 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jakVO-0001gb-TK; Mon, 18 May 2020 20:28:51 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 3A905100606; Mon, 18 May 2020 20:28:50 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, bp@alien8.de, luto@kernel.org,
+        hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
+        ak@linux.intel.com, ravi.v.shankar@intel.com,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
+In-Reply-To: <20200518151604.GC33628@sasha-vm>
+References: <20200511045311.4785-1-sashal@kernel.org> <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com> <20200515164013.GF29995@sasha-vm> <87o8qly3jo.fsf@nanos.tec.linutronix.de> <20200518151604.GC33628@sasha-vm>
+Date:   Mon, 18 May 2020 20:28:50 +0200
+Message-ID: <87sgfxw10d.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509111834.26335-2-srk@48.io>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 09, 2020 at 01:18:33PM +0200, srk@48.io wrote:
-> From: Sean Cross <xobs@kosagi.com>
-> 
-> The Innolux N133HSE panel is a 13.3" 1920x1080 panel that contains an
-> integrated backlight, and connects via eDP.
-> 
-> It is used in the Kosagi Novena.
-> 
-> Signed-off-by: Sean Cross <xobs@kosagi.com>
-> Signed-off-by: Richard Marko <srk@48.io>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Fabio Estevam <fabio.estevam@nxp.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> To: dri-devel@lists.freedesktop.org
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> index 393ffc6acbba..756bf6a48e8d 100644
-> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> @@ -139,6 +139,8 @@ properties:
->        - innolux,g121i1-l01
->          # Innolux Corporation 12.1" G121X1-L03 XGA (1024x768) TFT LCD panel
->        - innolux,g121x1-l03
-> +        # Innolux Corporation 13.3" FHD (1920x1080) TFT LCD panel
-> +      - innolux,n133hse-ea1
->          # Innolux Corporation 11.6" WXGA (1366x768) TFT LCD panel
->        - innolux,n116bge
+Sasha Levin <sashal@kernel.org> writes:
+> On Mon, May 18, 2020 at 11:51:07AM +0200, Thomas Gleixner wrote:
+>>Sasha Levin <sashal@kernel.org> writes:
+>>> On Fri, May 15, 2020 at 12:24:14PM +0300, Jarkko Sakkinen wrote:
+>>>>
+>>>>Can you put me to the CC-loop for this patches. Some SGX-enabled
+>>>>frameworks such as Graphene use out-of-tree changes to achieve this.
+>>>>That's where the interest to possibly test this comes from.
+>>>
+>>> Indeed, we've seen a few hacks that basically just enable FSGSBASE:
+>>>
+>>>  - https://github.com/oscarlab/graphene-sgx-driver
+>>>  - https://github.com/occlum/enable_rdfsbase
+>>
+>>I'm really amazed by all these security experts enabling a full root
+>>hole. It clearly puts the SGX hypocrisy into perspective.
+>
+> We can bash Intel all we want here, but sadly there are users in the
 
-Alpha-numeric order please.
+This is not about bashing Intel.
 
->          # InnoLux 15.6" WXGA TFT LCD panel
-> -- 
-> 2.25.1
-> 
+> "wild" who just enable these root holes thinking they're secure, and
+> those users are the ones running very sensitive workloads. Here's an
+> example from a book called "Responsible Genomic Data Sharing":
+>
+> 	https://books.google.com/books?id=y6zWDwAAQBAJ&pg=PA184#v=onepage&q&f=false
+>
+> That explains how to use Graphene-SGX which just enables FSGSBASE with
+> root holes.
+
+It's about these SGX promoting security experts which try to tell
+everyone else that he has no clue about security.
+
+Thanks,
+
+        tglx
+
+
