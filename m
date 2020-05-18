@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FF01D8188
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1701D82B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbgERRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
+        id S1731931AbgERR6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:58:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728458AbgERRss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:48 -0400
+        id S1731922AbgERR6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:58:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E82C720657;
-        Mon, 18 May 2020 17:48:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02FB520715;
+        Mon, 18 May 2020 17:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824127;
-        bh=Jn+yjls3npzhmafHZuiUzqmvvWEAnI8achqTrDx62TM=;
+        s=default; t=1589824714;
+        bh=wjNCLJm8je2dfTo3Dnvetm+uHr8DjiIVmachTBfbvW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v850nwLzCvZPE3jD9FYf580TfTDAv0uTytEF/DSBwmBLu9IcOHGU0hKTTLctLX1Xe
-         o5LnCDimXgol3evJrHs8r3otZaeRgWBkWVwX71BXgKMaAxKIzvx2MnrIxsm0ck2tBf
-         hKe3QCDSDZOKSP5RmHFz3syFzDWoavsm0ZrecwfA=
+        b=DsEeXzGMFvxKkYstGbRnUHKak6BA2vucTO+769vgqHKCREPblHrgJC+sIkMqh2xR3
+         lggPlX0vFYiEAHfpKfUQ1JHrD85gpCm/PAMh6Wl13pTGsxG8+tK8tY9V+0iL99+9K6
+         BrOXqo8nasGy/4IHcIpQlZ2DANLIaxKsfdpzjl1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 075/114] gcc-10: disable array-bounds warning for now
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/147] RDMA/rxe: Always return ERR_PTR from rxe_create_mmap_info()
 Date:   Mon, 18 May 2020 19:36:47 +0200
-Message-Id: <20200518173516.353825776@linuxfoundation.org>
+Message-Id: <20200518173524.083777446@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +46,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
+[ Upstream commit bb43c8e382e5da0ee253e3105d4099820ff4d922 ]
 
-This is another fine warning, related to the 'zero-length-bounds' one,
-but hitting the same historical code in the kernel.
+The commit below modified rxe_create_mmap_info() to return ERR_PTR's but
+didn't update the callers to handle them. Modify rxe_create_mmap_info() to
+only return ERR_PTR and fix all error checking after
+rxe_create_mmap_info() is called.
 
-Because C didn't historically support flexible array members, we have
-code that instead uses a one-sized array, the same way we have cases of
-zero-sized arrays.
+Ensure that all other exit paths properly set the error return.
 
-The one-sized arrays come from either not wanting to use the gcc
-zero-sized array extension, or from a slight convenience-feature, where
-particularly for strings, the size of the structure now includes the
-allocation for the final NUL character.
-
-So with a "char name[1];" at the end of a structure, you can do things
-like
-
-       v = my_malloc(sizeof(struct vendor) + strlen(name));
-
-and avoid the "+1" for the terminator.
-
-Yes, the modern way to do that is with a flexible array, and using
-'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
-also technically gets the size "more correct" in that it avoids any
-alignment (and thus padding) issues, but this is another long-term
-cleanup thing that will not happen for 5.7.
-
-So disable the warning for now, even though it's potentially quite
-useful.  Having a slew of warnings that then hide more urgent new issues
-is not an improvement.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ff23dfa13457 ("IB: Pass only ib_udata in function prototypes")
+Link: https://lore.kernel.org/r/20200425233545.17210-1-sudipm.mukherjee@gmail.com
+Link: https://lore.kernel.org/r/20200511183742.GB225608@mwanda
+Cc: stable@vger.kernel.org [5.4+]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/sw/rxe/rxe_mmap.c  |  2 +-
+ drivers/infiniband/sw/rxe/rxe_queue.c | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -802,6 +802,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
+index 48f48122ddcb8..6a413d73b95dd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mmap.c
++++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
+@@ -151,7 +151,7 @@ struct rxe_mmap_info *rxe_create_mmap_info(struct rxe_dev *rxe, u32 size,
  
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
-+KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ 	ip = kmalloc(sizeof(*ip), GFP_KERNEL);
+ 	if (!ip)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
  
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 	size = PAGE_ALIGN(size);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index ff92704de32ff..245040c3a35d0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -45,12 +45,15 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ 
+ 	if (outbuf) {
+ 		ip = rxe_create_mmap_info(rxe, buf_size, udata, buf);
+-		if (!ip)
++		if (IS_ERR(ip)) {
++			err = PTR_ERR(ip);
+ 			goto err1;
++		}
+ 
+-		err = copy_to_user(outbuf, &ip->info, sizeof(ip->info));
+-		if (err)
++		if (copy_to_user(outbuf, &ip->info, sizeof(ip->info))) {
++			err = -EFAULT;
+ 			goto err2;
++		}
+ 
+ 		spin_lock_bh(&rxe->pending_lock);
+ 		list_add(&ip->pending_mmaps, &rxe->pending_mmaps);
+@@ -64,7 +67,7 @@ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+ err2:
+ 	kfree(ip);
+ err1:
+-	return -EINVAL;
++	return err;
+ }
+ 
+ inline void rxe_queue_reset(struct rxe_queue *q)
+-- 
+2.20.1
+
 
 
