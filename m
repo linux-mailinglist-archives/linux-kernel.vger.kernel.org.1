@@ -2,63 +2,853 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AAA1D6E56
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 02:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773921D6E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 02:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726895AbgERAvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 20:51:05 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2137 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726680AbgERAvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 20:51:04 -0400
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id E8C08D36FE6B0E58D10F;
-        Mon, 18 May 2020 08:51:01 +0800 (CST)
-Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 18 May 2020 08:51:01 +0800
-Received: from [10.173.219.71] (10.173.219.71) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 18 May 2020 08:51:01 +0800
-Subject: Re: [PATCH net-next] hinic: add support to set and get pause param
-To:     David Miller <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>
-References: <20200516020030.23017-1-luobin9@huawei.com>
- <20200516.132504.766576117055386086.davem@davemloft.net>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <6a340973-ad63-b3e4-a212-4eb9dbe2ee3f@huawei.com>
-Date:   Mon, 18 May 2020 08:51:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1726726AbgERA5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 20:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726675AbgERA5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 20:57:34 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB251C061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 17:57:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y18so4159341pfl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 17:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cbR8JWri6tOD4F9ZlXIwUplw5Nqbrv1E+9vr4ktvPfU=;
+        b=Xj1gjbPyT8G0bKdxPr1EjvvvF7BKFCpC1kCyrVHsPx2dwqqOcWYlQD4CPv/wZ7+cMj
+         6QV6bLV7+GuHKcbcAqhk+aAp9jFm+490B9qCjqhbz+gaPDWc+PMVN7/9sX/wgS7h02c2
+         92S+2Lf0BS2d1TxCaEDOT2DuZLH5HAssZi+Q1JyIcyyEYY4wGJY6m5KbYGZTTx2OVl+L
+         k4vsu4qAyEk+PK8GalcG+j0ncu+qIkb5j6jD0SZsyBkmOi6ceRO2hHnZO7WTLwFkr+lo
+         sneCJ/gCWMqRHtigcplaxG8h0e6g9H1HPB/b77Nq4QFnqQp54EC1PsQffDOrzwZtugJd
+         KJog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=cbR8JWri6tOD4F9ZlXIwUplw5Nqbrv1E+9vr4ktvPfU=;
+        b=qHApM4XZSJlXw/rR2nA53AHZXxqWE3kLmG7UN38F5Mf+7aAg9XzHsetL5Penuw38Ro
+         ch5V1I8W27AGWmIrUI1GIt2BJNw/q+OEhCwOmpXOTLU8JDXJh5TnFVaZOZsgdGgwQuaV
+         NebS1bkOsdd+XhVm1jiT27faoejmYxnSLWxo6AH7lY1bWyo99HxUIPkmvlyhw1OxTmvQ
+         JECqJ6So/cMky3VM81M92mO+GkQYcKe9jAStQv9mq016cU7UF5T5U0EA2BPJkLgwu4Gg
+         xctn3MdleiLLXgLYy/mEARtdd80KkaCiw9aMqC7FQhlkSawGbnjT2dRBMKDXoYY6fD98
+         +K0A==
+X-Gm-Message-State: AOAM533huhEfl5RIUEKrtnlxWxPdywDxVJ3pxNjMewku2ol4UHEba0w+
+        1mu/JGdMfcIpmf3/JXKe3TV3rIJyRZI=
+X-Google-Smtp-Source: ABdhPJzIww995Xy85XSaL7FboNA+dPbzI6RiVFXqMMB2UTzHliELNw4e3eFFrumS28ACg5VXmrwmKw==
+X-Received: by 2002:a62:84c6:: with SMTP id k189mr12045928pfd.215.1589763451844;
+        Sun, 17 May 2020 17:57:31 -0700 (PDT)
+Received: from Gentoo ([103.231.91.68])
+        by smtp.gmail.com with ESMTPSA id j7sm7152824pfh.154.2020.05.17.17.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 May 2020 17:57:30 -0700 (PDT)
+Date:   Mon, 18 May 2020 06:27:18 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.7-rc6
+Message-ID: <20200518005718.GA13084@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wjP9eOr2GEpgtcpN4Hqve6YRiyEF5Pq6ZsKFKHZ_v5Bwg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200516.132504.766576117055386086.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.173.219.71]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjP9eOr2GEpgtcpN4Hqve6YRiyEF5Pq6ZsKFKHZ_v5Bwg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will fix. Thanks.
 
-On 2020/5/17 4:25, David Miller wrote:
-> From: Luo bin <luobin9@huawei.com>
-> Date: Sat, 16 May 2020 02:00:30 +0000
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 17:07 Sun 17 May 2020, Linus Torvalds wrote:
+>Another week, another rc.
 >
->> add support to set pause param with ethtool -A and get pause
->> param with ethtool -a. Also remove set_link_ksettings ops for VF.
->>
->> Signed-off-by: Luo bin <luobin9@huawei.com>
-> Why are you using a semaphore and not a plain mutex.
+>Last weekend, we had a larger-than-usual rc5, which I expected because
+>rc4 had been small and so there was some pent-up fixing work that
+>ended up in rc5.
 >
-> Semaphores should be used as an absolute last resort, and only
-> after trying vigorously to use other locking primitives.
-> .
+>This weekend, we had an even bigger rc6, and I really hoped we were in
+>the calming down period.
+>
+>So I'm not entirely happy about this. That said, there's nothing
+>particularly scary in here, and it's not like this rc6 is outrageously
+>big or out of control. I was just hoping for less.
+>
+>About a quarter of this is arch updates (arm[64], csky, x86, powerpc,
+>risc-v) with an additional 5% being some x86 kvm selftests.
+>
+>The rest is mostly driver updates (gpu, usb, networking, rmda, clk)
+>with a random mix of other stuff (filesystem updates, tracing, mm, and
+>core networking).
+>
+>Nothing really stands out, but let's hope things calm down now.
+>
+>                 Linus
+>
+>PS. On a personal note, my middle daughter graduated college
+>yesterday. Congrats to her - and to me. Two down, one to go!
+
+Whoa! That's a bloody good news. You must busking on the glory...kudos
+you and your daughter to achieve that.
+
+Thanks,
+Bhaskar
+>
+>---
+>
+>Adam Ford (2):
+>      arm64: dts: imx8mn: Change SDMA1 ahb clock for imx8mn
+>      gpio: pca953x: Fix pca953x_gpio_set_config
+>
+>Adam McCoy (1):
+>      cifs: fix leaked reference on requeued write
+>
+>Adrian Hunter (1):
+>      mmc: block: Fix request completion in the CQE timeout path
+>
+>Ahmad Fatoum (1):
+>      ARM: imx: provide v7_cpu_resume() only on ARM_CPU_SUSPEND=3Dy
+>
+>Al Viro (1):
+>      csky: Fixup raw_copy_from_user()
+>
+>Alex Deucher (2):
+>      drm/amdgpu: force fbdev into vram
+>      drm/amdgpu: implement soft_recovery for gfx10
+>
+>Alex Elder (2):
+>      net: ipa: set DMA length in gsi_trans_cmd_add()
+>      net: ipa: use tag process on modem crash
+>
+>Amit Singh Tomar (1):
+>      pinctrl: actions: fix function group name for i2c0_group
+>
+>Amol Grover (2):
+>      ipmr: Fix RCU list debugging warning
+>      ipmr: Add lockdep expression to ipmr_for_each_table macro
+>
+>Amy Shih (2):
+>      hwmon: (nct7904) Read all SMI status registers in probe function
+>      hwmon: (nct7904) Fix incorrect range of temperature limit registers
+>
+>Anders Roxell (1):
+>      security: Fix the default value of secid_to_secctx hook
+>
+>Andreas Gruenbacher (3):
+>      gfs2: Another gfs2_walk_metadata fix
+>      gfs2: More gfs2_find_jhead fixes
+>      gfs2: Grab glock reference sooner in gfs2_add_revoke
+>
+>Andrew Oakley (1):
+>      ALSA: usb-audio: add mapping for ASRock TRX40 Creator
+>
+>Andrey Konovalov (8):
+>      usb: raw-gadget: fix return value of ep read ioctls
+>      usb: raw-gadget: improve uapi headers comments
+>      usb: raw-gadget: fix gadget endpoint selection
+>      usb: raw-gadget: support stalling/halting/wedging endpoints
+>      usb: raw-gadget: documentation updates
+>      usb: raw-gadget: fix null-ptr-deref when reenabling endpoints
+>      kasan: consistently disable debugging features
+>      kasan: add missing functions declarations to kasan.h
+>
+>Andrii Nakryiko (1):
+>      bpf: Fix bug in mmap() implementation for BPF array map
+>
+>Andy Shevchenko (3):
+>      pinctrl: sunrisepoint: Fix PAD lock register offset for SPT-H
+>      pinctrl: baytrail: Enable pin configuration setting for GPIO chip
+>      usb: dwc3: pci: Enable extcon driver for Intel Merrifield
+>
+>Ansuel Smith (1):
+>      pinctrl: qcom: fix wrong write in update_dual_edge
+>
+>Arnd Bergmann (4):
+>      net: bareudp: avoid uninitialized variable warning
+>      usb: dwc3: select USB_ROLE_SWITCH
+>      net: freescale: select CONFIG_FIXED_PHY where needed
+>      netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+>
+>Babu Moger (1):
+>      KVM: x86: Fix pkru save/restore when guest CR4.PKE=3D0, move it to x=
+86.c
+>
+>Bartosz Golaszewski (2):
+>      gpiolib: improve the robustness of watch/unwatch ioctl()
+>      gpiolib: don't call sleeping functions with a spinlock taken
+>
+>Ben Chuang (2):
+>      mmc: sdhci-pci-gli: Fix no irq handler from suspend
+>      mmc: sdhci-pci-gli: Fix can not access GL9750 after reboot from Wind=
+ows 10
+>
+>Bernard Zhao (1):
+>      drm/meson: pm resume add return errno branch
+>
+>Bjorn Andersson (1):
+>      arm64: dts: qcom: msm8996: Reduce vdd_apc voltage
+>
+>Bob Peterson (11):
+>      gfs2: fix withdraw sequence deadlock
+>      gfs2: Fix error exit in do_xmote
+>      gfs2: Fix BUG during unmount after file system withdraw
+>      gfs2: Fix use-after-free in gfs2_logd after withdraw
+>      gfs2: Fix problems regarding gfs2_qa_get and _put
+>      gfs2: Change BUG_ON to an assert_withdraw in gfs2_quota_change
+>      gfs2: remove check for quotas on in gfs2_quota_check
+>      gfs2: move privileged user check to gfs2_quota_lock_check
+>      gfs2: don't call quota_unhold if quotas are not locked
+>      gfs2: If go_sync returns error, withdraw but skip invalidate
+>      Revert "gfs2: Don't demote a glock until its revokes are written"
+>
+>Borislav Petkov (1):
+>      x86: Fix early boot crash on gcc-10, third try
+>
+>Brian Geffon (1):
+>      userfaultfd: fix remap event with MREMAP_DONTUNMAP
+>
+>Chen-Yu Tsai (5):
+>      arm64: dts: rockchip: Replace RK805 PMIC node name with "pmic"
+>on rk3328 boards
+>      arm64: dts: rockchip: drop non-existent gmac2phy pinmux options
+>from rk3328
+>      arm64: dts: rockchip: drop #address-cells, #size-cells from
+>rk3328 grf node
+>      arm64: dts: rockchip: drop #address-cells, #size-cells from
+>rk3399 pmugrf node
+>      arm64: dts: rockchip: Rename dwc3 device nodes on rk3399 to make dtc=
+ happy
+>
+>Chris Chiu (1):
+>      ALSA: hda/realtek - Enable headset mic of ASUS GL503VM with ALC295
+>
+>Chris Wilson (10):
+>      drm/i915: Avoid dereferencing a dead context
+>      drm/i915/gt: Make timeslicing an explicit engine property
+>      drm/i915: Check current i915_vma.pin_count status first on unbind
+>      drm/i915/gt: Yield the timeslice if caught waiting on a user semapho=
+re
+>      drm/i915/gem: Remove object_is_locked assertion from
+>unpin_from_display_plane
+>      drm/i915/execlists: Avoid reusing the same logical CCID
+>      drm/i915/execlists: Track inflight CCID
+>      drm/i915: Propagate error from completed fences
+>      drm/i915: Mark concurrent submissions with a weak-dependency
+>      drm/i915: Handle idling during i915_gem_evict_something busy loops
+>
+>Christian Brauner (1):
+>      fork: prevent accidental access to clone3 features
+>
+>Christoph Hellwig (1):
+>      arm64: fix the flush_icache_range arguments in machine_kexec
+>
+>Christoph Paasch (1):
+>      mptcp: Initialize map_seq upon subflow establishment
+>
+>Christophe JAILLET (4):
+>      mmc: alcor: Fix a resource leak in the error path for ->probe()
+>      usb: gadget: audio: Fix a missing error return value in audio_bind()
+>      usb: phy: twl6030-usb: Fix a resource leak in an error handling
+>path in 'twl6030_usb_probe()'
+>      usb: gadget: net2272: Fix a memory leak in an error handling
+>path in 'net2272_plat_probe()'
+>
+>Christophe Leroy (3):
+>      powerpc/32s: Fix build failure with CONFIG_PPC_KUAP_DEBUG
+>      powerpc/vdso32: Fallback on getres syscall when clock is unknown
+>      powerpc/40x: Make more space for system call exception
+>
+>Chuck Lever (4):
+>      SUNRPC: Add "@len" parameter to gss_unwrap()
+>      SUNRPC: Fix GSS privacy computation of auth->au_ralign
+>      SUNRPC: Revert 241b1f419f0e ("SUNRPC: Remove xdr_buf_trim()")
+>      SUNRPC: Signalled ASYNC tasks need to exit
+>
+>Chuhong Yuan (1):
+>      net: microchip: encx24j600: add missed kthread_stop
+>
+>Clay McClure (1):
+>      net: ethernet: ti: Remove TI_CPTS_MOD workaround
+>
+>Colin Xu (1):
+>      drm/i915/gvt: Init DPLL/DDI vreg for virtual display instead of
+>inheritance.
+>
+>Cong Wang (1):
+>      net: fix a potential recursive NETDEV_FEAT_CHANGE
+>
+>Dan Carpenter (2):
+>      i40iw: Fix error handling in i40iw_manage_arp_cache()
+>      dpaa2-eth: prevent array underflow in update_cls_rule()
+>
+>Daniel Borkmann (3):
+>      bpf: Restrict bpf_probe_read{, str}() only to archs where they work
+>      bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_ran=
+ge
+>      bpf: Restrict bpf_trace_printk()'s %s usage and add %pks, %pus speci=
+fier
+>
+>Dave Wysochanski (3):
+>      NFS: Fix fscache super_cookie index_key from changing after umount
+>      NFS: Fix fscache super_cookie allocation
+>      NFSv4: Fix fscache cookie aux_data to ensure change_attr is included
+>
+>David Gow (1):
+>      gpio: of: Build fails if CONFIG_OF_DYNAMIC enabled without CONFIG_OF=
+_GPIO
+>
+>David Howells (1):
+>      cachefiles: Fix corruption of the return value in
+>cachefiles_read_or_alloc_pages()
+>
+>David S. Miller (2):
+>      MAINTAINERS: Add Jakub to networking drivers.
+>      MAINTAINERS: Mark networking drivers as Maintained.
+>
+>Denis V. Lunev (1):
+>      IB/i40iw: Remove bogus call to netdev_master_upper_dev_get()
+>
+>Eric Dumazet (2):
+>      tcp: fix SO_RCVLOWAT hangs with fat skbs
+>      tcp: fix error recovery in tcp_zerocopy_receive()
+>
+>Eric W. Biederman (1):
+>      exec: Move would_dump into flush_old_exec
+>
+>Eugeniu Rosca (1):
+>      usb: core: hub: limit HUB_QUIRK_DISABLE_AUTOSUSPEND to USB5534B
+>
+>Evan Quan (4):
+>      drm/amdgpu: disable MGCG/MGLS also on gfx CG ungate
+>      drm/amdgpu: drop unnecessary cancel_delayed_work_sync on PG ungate
+>      drm/amd/powerplay: perform PG ungate prior to CG ungate
+>      drm/amdgpu: enable hibernate support on Navi1X
+>
+>Fabio Estevam (2):
+>      ARM: dts: imx27-phytec-phycard-s-rdk: Fix the I2C1 pinctrl entries
+>      arm64: dts: imx8m: Fix AIPS reg properties
+>
+>Faiz Abbas (1):
+>      ARM: dts: am574x-idk: Disable m_can node
+>
+>Felix Kuehling (1):
+>      drm/amdgpu: Use GEM obj reference for KFD BOs
+>
+>Florian Fainelli (2):
+>      net: dsa: loop: Add module soft dependency
+>      net: broadcom: Select BROADCOM_PHY for BCMGENET
+>
+>Florian Westphal (1):
+>      netfilter: conntrack: fix infinite loop on rmmod
+>
+>Geert Uytterhoeven (5):
+>      ARM: dts: r8a73a4: Add missing CMT1 interrupts
+>      ARM: dts: r7s9210: Remove bogus clock-names from OSTM nodes
+>      CIFS: Spelling s/EACCESS/EACCES/
+>      net: hisilicon: Make CONFIG_HNS invisible
+>      ARM: dts: r8a7740: Add missing extal2 to CPG node
+>
+>Grace Kao (1):
+>      pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_hand=
+ler
+>
+>Greg Kroah-Hartman (1):
+>      USB: usbfs: fix mmap dma mismatch
+>
+>Guenter Roeck (1):
+>      hwmon: (drivetemp) Fix SCT support if SCT data tables are not suppor=
+ted
+>
+>Guillaume Nault (1):
+>      pppoe: only process PADT targeted at local interfaces
+>
+>Guo Ren (6):
+>      csky/ftrace: Fixup error when disable CONFIG_DYNAMIC_FTRACE
+>      csky: Fixup compile error for abiv1 entry.S
+>      csky: Fixup perf probe -x hungup
+>      csky: Fixup calltrace panic
+>      csky: Fixup remove unnecessary save/restore PSR code
+>      csky: Fixup gdbmacros.txt with name sp in thread_struct
+>
+>Gustavo A. R. Silva (1):
+>      tools/testing: Replace zero-length array with flexible-array
+>
+>Heiner Kallweit (2):
+>      r8169: re-establish support for RTL8401 chip version
+>      net: phy: fix aneg restart in phy_ethtool_set_eee
+>
+>Imre Deak (1):
+>      drm/i915/tgl+: Fix interrupt handling for DP AUX transactions
+>
+>Ioana Ciornei (1):
+>      dpaa2-eth: properly handle buffer size restrictions
+>
+>J. Bruce Fields (2):
+>      nfs: fix NULL deference in nfs4_get_valid_delegation
+>      SUNRPC: 'Directory with parent 'rpc_clnt' already present!'
+>
+>Jack Morgenstein (2):
+>      IB/mlx4: Test return value of calls to ib_get_cached_pkey
+>      IB/core: Fix potential NULL pointer dereference in pkey cache
+>
+>Jacob Keller (1):
+>      ptp: fix struct member comment for do_aux_work
+>
+>Jason Gunthorpe (2):
+>      RDMA/uverbs: Do not discard the IB_EVENT_DEVICE_FATAL event
+>      RDMA/uverbs: Move IB_EVENT_DEVICE_FATAL to destroy_uobj
+>
+>Jason Yan (1):
+>      usb: cdns3: gadget: make a bunch of functions static
+>
+>Jens Axboe (1):
+>      io_uring: polled fixed file must go through free iteration
+>
+>Jesus Ramos (1):
+>      ALSA: usb-audio: Add control message quirk delay for Kingston
+>HyperX headset
+>
+>Jian-Hong Pan (2):
+>      ALSA: hda/realtek - Enable headset mic of ASUS UX550GE with ALC295
+>      ALSA: hda/realtek: Enable headset mic of ASUS UX581LV with ALC295
+>
+>Jim Mattson (1):
+>      KVM: x86: Fix off-by-one error in kvm_vcpu_ioctl_x86_setup_mce
+>
+>Johan Jonker (7):
+>      ARM: dts: rockchip: fix phy nodename for rk3228-evb
+>      ARM: dts: rockchip: fix phy nodename for rk3229-xms6
+>      arm64: dts: rockchip: remove extra assigned-clocks property from
+>&gmac2phy node in rk3328-evb.dts
+>      arm64: dts: rockchip: fix status for &gmac2phy in rk3328-evb.dts
+>      arm64: dts: rockchip: swap interrupts interrupt-names rk3399 gpu node
+>      ARM: dts: rockchip: swap clock-names of gpu nodes
+>      ARM: dts: rockchip: fix pinctrl sub nodename for spi in rk322x.dtsi
+>
+>John Fastabend (2):
+>      bpf, sockmap: msg_pop_data can incorrecty set an sge length
+>      bpf, sockmap: bpf_tcp_ingress needs to subtract bytes from sg.size
+>
+>John Stultz (2):
+>      kselftests: dmabuf-heaps: Fix confused return value on expected
+>error testing
+>      dwc3: Remove check for HWO flag in dwc3_gadget_ep_reclaim_trb_sg()
+>
+>Jon Hunter (1):
+>      arm64: defconfig: Re-enable Tegra PCIe host driver
+>
+>Josh Poimboeuf (1):
+>      x86/unwind/orc: Fix error handling in __unwind_start()
+>
+>Justin Swartz (1):
+>      clk: rockchip: fix incorrect configuration of rk3228 aclk_gpu* clocks
+>
+>Kai-Heng Feng (2):
+>      Revert "ALSA: hda/realtek: Fix pop noise on ALC225"
+>      ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
+>
+>Kefeng Wang (9):
+>      riscv: perf_event: Make some funciton static
+>      riscv: perf: RISCV_BASE_PMU should be independent
+>      riscv: Fix unmet direct dependencies built based on SOC_VIRT
+>      riscv: stacktrace: Fix undefined reference to `walk_stackframe'
+>      riscv: Add pgprot_writecombine/device and PAGE_SHARED defination if =
+NOMMU
+>      riscv: Disable ARCH_HAS_DEBUG_VIRTUAL if NOMMU
+>      riscv: Make SYS_SUPPORTS_HUGETLBFS depends on MMU
+>      riscv: pgtable: Fix __kernel_map_pages build error if NOMMU
+>      riscv: mmiowb: Fix implicit declaration of function 'smp_processor_i=
+d'
+>
+>Keith Busch (1):
+>      nvme-pci: dma read memory barrier for completions
+>
+>Kelly Littlepage (1):
+>      net: tcp: fix rx timestamp behavior for tcp_recvmsg
+>
+>Kevin Lo (1):
+>      net: phy: broadcom: fix BCM54XX_SHD_SCR3_TRDDAPD value for BCM54810
+>
+>Kishon Vijay Abraham I (1):
+>      ARM: dts: dra7: Fix bus_dma_limit for PCIe
+>
+>Kyungtae Kim (1):
+>      USB: gadget: fix illegal array access in binding with UDC
+>
+>Lei Xue (1):
+>      cachefiles: Fix race between read_waiter and read_copier
+>involving op->to_do
+>
+>Leo (Hanghong) Ma (1):
+>      drm/amd/amdgpu: Update update_config() logic
+>
+>Li Jun (1):
+>      usb: host: xhci-plat: keep runtime active when removing host
+>
+>Light Hsieh (1):
+>      pinctrl: mediatek: remove shadow variable declaration
+>
+>Linus Torvalds (2):
+>      drm: fix trivial field description cut-and-paste error
+>      Linux 5.7-rc6
+>
+>Linus Walleij (1):
+>      clk: impd1: Look up clock-output-names
+>
+>Liu Yibin (2):
+>      csky: Fixup msa highest 3 bits mask
+>      csky: Fixup remove duplicate irq_disable
+>
+>Luo bin (1):
+>      hinic: fix a bug of ndo_stop
+>
+>Ma Feng (1):
+>      ARM: oxnas: make ox820_boot_secondary static
+>
+>Maciej =C5=BBenczykowski (2):
+>      net: remove spurious declaration of tcp_default_init_rwnd()
+>      Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
+>
+>Madhuparna Bhowmik (1):
+>      drivers: net: hamradio: Fix suspicious RCU usage warning in bpqether=
+=2Ec
+>
+>Mao Han (1):
+>      csky: Fixup perf callchain unwind
+>
+>Maor Gottlieb (1):
+>      RDMA/core: Fix double put of resource
+>
+>Marc Zyngier (1):
+>      clk: Unlink clock if failed to prepare or enable
+>
+>Masahiro Yamada (1):
+>      usb: gadget: legacy: fix redundant initialization warnings
+>
+>Masami Hiramatsu (1):
+>      bootconfig: Fix to prevent warning message if no bootconfig option
+>
+>Matteo Croce (1):
+>      samples: bpf: Fix build error
+>
+>Matthieu Baerts (1):
+>      selftests: mptcp: pm: rm the right tmp file
+>
+>Max Krummenacher (4):
+>      arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+>      arm64: defconfig: add DRM_DISPLAY_CONNECTOR
+>      arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+>      arm64: defconfig: add MEDIA_PLATFORM_SUPPORT
+>
+>Michael Ellerman (3):
+>      powerpc/64s: Fix unrecoverable SLB crashes due to preemption check
+>      selftests/lkdtm: Don't clear dmesg when running tests
+>      selftests/lkdtm: Use grep -E instead of egrep
+>
+>Michael S. Tsirkin (1):
+>      virtio_net: fix lockdep warning on 32 bit
+>
+>Michael Walle (2):
+>      dt-bindings: dma: fsl-edma: fix ls1028a-edma compatible
+>      arm64: dts: ls1028a: add "fsl,vf610-edma" compatible
+>
+>Michal Vok=C3=A1=C4=8D (1):
+>      ARM: dts: imx6dl-yapp4: Fix Ursa board Ethernet connection
+>
+>Mike Marciniszyn (1):
+>      IB/hfi1: Fix another case where pq is left on waitlist
+>
+>Mike Pozulp (1):
+>      ALSA: hda/realtek: Add quirk for Samsung Notebook
+>
+>Nayna Jain (1):
+>      powerpc/ima: Fix secure boot rules in ima arch policy
+>
+>Neil Armstrong (4):
+>      arm64: dts: meson-g12b-ugoos-am6: fix usb vbus-supply
+>      arm64: dts: meson-g12-common: fix dwc2 clock names
+>      arm64: dts: meson-g12b-khadas-vim3: add missing frddr_a status prope=
+rty
+>      arm64: dts: meson-g12: remove spurious blank line
+>
+>NeilBrown (1):
+>      SUNRPC: fix use-after-free in rpc_free_client_work()
+>
+>Nicholas Kazlauskas (1):
+>      drm/amd/display: Fix vblank and pageflip event handling for FreeSync
+>
+>Nicholas Piggin (4):
+>      powerpc/uaccess: Evaluate macro arguments once, before user
+>access is allowed
+>      powerpc/64/kuap: Move kuap checks out of MSR[RI]=3D0 regions of exit=
+ code
+>      powerpc/64s/kuap: Restore AMR in system reset exception
+>      powerpc/64s/kuap: Restore AMR in fast_interrupt_return
+>
+>Olga Kornievskaia (1):
+>      NFSv3: fix rpc receive buffer size for MOUNT call
+>
+>Oliver Neukum (1):
+>      usb: hso: correct debug message
+>
+>Pablo Neira Ayuso (1):
+>      netfilter: flowtable: set NF_FLOW_TEARDOWN flag on entry expiration
+>
+>Paolo Abeni (3):
+>      mptcp: set correct vfs info for subflows
+>      net: ipv4: really enforce backoff for redirects
+>      netlabel: cope with NULL catmap
+>
+>Paolo Bonzini (5):
+>      KVM: x86: fix DR6 delivery for various cases of #DB injection
+>      KVM: nSVM: trap #DB and #BP to userspace if guest debugging is on
+>      KVM: SVM: keep DR6 synchronized with vcpu->arch.dr6
+>      KVM: x86, SVM: isolate vcpu->arch.dr6 from vmcb->save.dr6
+>      KVM: VMX: pass correct DR6 for GD userspace exit
+>
+>Paul Blakey (1):
+>      netfilter: flowtable: Add pending bit for offload work
+>
+>Pavel Begunkov (1):
+>      io_uring: fix zero len do_splice()
+>
+>Peter Chen (1):
+>      usb: cdns3: gadget: prev_req->trb is NULL for ep0
+>
+>Peter Jones (1):
+>      Make the "Reducing compressed framebufer size" message be DRM_INFO_O=
+NCE()
+>
+>Peter Xu (5):
+>      KVM: X86: Declare KVM_CAP_SET_GUEST_DEBUG properly
+>      KVM: X86: Set RTM for DB_VECTOR too for KVM_EXIT_DEBUG
+>      KVM: X86: Fix single-step with KVM_SET_GUEST_DEBUG
+>      KVM: selftests: Add KVM_SET_GUEST_DEBUG test
+>      mm/gup: fix fixup_user_fault() on multiple retries
+>
+>Phil Sutter (1):
+>      netfilter: nft_set_rbtree: Add missing expired checks
+>
+>Po-Hsu Lin (1):
+>      selftests/ftrace: mark irqsoff_tracer.tc test as unresolved if
+>the test module does not exist
+>
+>Potnuri Bharat Teja (1):
+>      RDMA/iw_cxgb4: Fix incorrect function parameters
+>
+>Prashant Malani (1):
+>      usb: typec: mux: intel: Fix DP_HPD_LVL bit field
+>
+>Rafael J. Wysocki (1):
+>      ACPI: EC: PM: Avoid premature returns from acpi_s2idle_wake()
+>
+>Raul E Rangel (1):
+>      mmc: sdhci-acpi: Add SDHCI_QUIRK2_BROKEN_64_BIT_DMA for AMDI0040
+>
+>Ricardo Ca=C3=B1uelo (3):
+>      arm64: dts: renesas: Make hdmi encoder nodes compliant with DT bindi=
+ngs
+>      ARM: dts: renesas: Make hdmi encoder nodes compliant with DT bindings
+>      ARM: dts: iwg20d-q7-dbcm-ca: Remove unneeded properties in hdmi@39
+>
+>Rikard Falkeborn (1):
+>      usb: mtu3: constify struct debugfs_reg32
+>
+>Robin Murphy (2):
+>      arm64: dts: rockchip: Correct PMU compatibles for PX30 and RK3308
+>      arm64: dts: rockchip: Fix Pinebook Pro FUSB302 interrupt
+>
+>Roi Dayan (1):
+>      netfilter: flowtable: Remove WQ_MEM_RECLAIM from workqueue
+>
+>Roman Penyaev (1):
+>      epoll: call final ep_events_available() check under the lock
+>
+>Samu Nuutamo (1):
+>      hwmon: (da9052) Synchronize access with mfd
+>
+>Samuel Holland (2):
+>      arm64: dts: allwinner: a64: pinetab: Fix cpvdd supply name
+>      arm64: dts: allwinner: a64: Remove unused SPDIF sound card
+>
+>Samuel Zou (1):
+>      usb: gadget: udc: atmel: Make some symbols static
+>
+>Sarthak Garg (1):
+>      mmc: core: Fix recursive locking issue in CQE recovery path
+>
+>Shannon Nelson (2):
+>      ionic: leave netdev mac alone after fw-upgrade
+>      ionic: call ionic_port_init after fw-upgrade
+>
+>Shengjiu Wang (1):
+>      arm64: dts: freescale: imx8mp: update input_val for AUDIOMIX_BIT_STR=
+EAM
+>
+>Simon Ser (1):
+>      drm/amd/display: add basic atomic check for cursor plane
+>
+>Sriharsha Allenki (1):
+>      usb: xhci: Fix NULL pointer dereference when enqueuing trbs from
+>urb sg list
+>
+>Srinivas Kandagatla (3):
+>      arm64: qcom: c630: fix asm dai setup
+>      arm64: dts: qcom: db845c: fix asm dai setup
+>      arm64: dts: qcom: db820c: fix audio configuration
+>
+>Stephen Warren (1):
+>      gpio: tegra: mask GPIO IRQs during IRQ shutdown
+>
+>Steve French (1):
+>      cifs: Fix null pointer check in cifs_read
+>
+>Steven Rostedt (VMware) (5):
+>      tools/bootconfig: Fix apply_xbc() to return zero on success
+>      tracing: Wait for preempt irq delay thread to execute
+>      x86/ftrace: Have ftrace trampolines turn read-only at the end of
+>system boot up
+>      ring-buffer: Don't deactivate the ring buffer on failed iterator rea=
+ds
+>      ring-buffer: Remove all BUG() calls
+>
+>Sudip Mukherjee (1):
+>      RDMA/rxe: Always return ERR_PTR from rxe_create_mmap_info()
+>
+>Sultan Alsawaf (1):
+>      drm/i915: Don't enable WaIncreaseLatencyIPCEnabled when IPC is disab=
+led
+>
+>Sumanth Korikkar (1):
+>      libbpf: Fix register naming in PT_REGS s390 macros
+>
+>Suravee Suthikulpanit (2):
+>      KVM: Introduce kvm_make_all_cpus_request_except()
+>      KVM: SVM: Disable AVIC before setting V_IRQ
+>
+>Takashi Iwai (3):
+>      ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
+>      ALSA: hda/realtek - Add COEF workaround for ASUS ZenBook UX431DA
+>      ALSA: hda/realtek - Limit int mic boost for Thinkpad T530
+>
+>Takashi Sakamoto (1):
+>      ALSA: firewire-lib: fix 'function sizeof not defined' error of
+>tracepoints format
+>
+>Tero Kristo (3):
+>      clk: ti: clkctrl: Fix Bad of_node_put within clkctrl_get_name
+>      clk: ti: am33xx: fix RTC clock parent
+>      clk: ti: clkctrl: convert subclocks to use proper names also
+>
+>Thierry Reding (4):
+>      drm/tegra: Fix SMMU support on Tegra124 and Tegra210
+>      gpu: host1x: Use SMMU on Tegra124 and Tegra210
+>      usb: gadget: tegra-xudc: Fix idle suspend/resume
+>      clk: tegra: Fix initial rate for pll_a on Tegra124
+>
+>Tobias Schramm (2):
+>      arm64: dts: rockchip: fix inverted headphone detection on Pinebook P=
+ro
+>      arm64: dts: rockchip: enable DC charger detection pullup on Pinebook=
+ Pro
+>
+>Tom St Denis (1):
+>      drm/amd/amdgpu: add raven1 part to the gfxoff quirk list
+>
+>Tony Lindgren (2):
+>      ARM: dts: omap4-droid4: Fix flakey wlan by disabling internal
+>pull for gpio
+>      ARM: dts: omap4-droid4: Fix occasional lost wakeirq for uart1
+>
+>Trond Myklebust (2):
+>      NFS: Don't use RPC_TASK_CRED_NOREF with delegreturn
+>      NFS/pnfs: Don't use RPC_TASK_CRED_NOREF with pnfs
+>
+>Tuong Lien (3):
+>      tipc: fix large latency in smart Nagle streaming
+>      tipc: fix memory leak in service subscripting
+>      tipc: fix failed service subscription deletion
+>
+>Ursula Braun (2):
+>      MAINTAINERS: add Karsten Graul as S390 NETWORK DRIVERS maintainer
+>      MAINTAINERS: another add of Karsten Graul for S390 networking
+>
+>Vasily Averin (1):
+>      ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
+>
+>Veerabhadrarao Badiganti (1):
+>      mmc: core: Check request type before completing the request
+>
+>Venkata Narendra Kumar Gutta (1):
+>      pinctrl: qcom: Add affinity callbacks to msmgpio IRQ chip
+>
+>Vincent Minet (1):
+>      umh: fix memory leak on execve failure
+>
+>Vinod Koul (1):
+>      net: stmmac: fix num_por initialization
+>
+>Wang Wenhu (1):
+>      drivers: ipa: fix typos for ipa_smp2p structure doc
+>
+>Wei Yongjun (6):
+>      bpf: Fix error return code in map_lookup_and_delete_elem()
+>      nfp: abm: fix error return code in nfp_abm_vnic_alloc()
+>      octeontx2-vf: Fix error return code in otx2vf_probe()
+>      usb: gadget: legacy: fix error return code in cdc_bind()
+>      usb: gadget: legacy: fix error return code in gncm_bind()
+>      s390/ism: fix error return code in ism_probe()
+>
+>Wolfram Sang (1):
+>      char: ipmi: convert to use i2c_new_client_device()
+>
+>Xiyu Yang (1):
+>      bpf: Fix sk_psock refcnt leak when receiving message
+>
+>Yafang Shao (1):
+>      mm, memcg: fix inconsistent oom event behavior
+>
+>Yonghong Song (2):
+>      bpf: Enforce returning 0 for fentry/fexit progs
+>      selftests/bpf: Enforce returning 0 for fentry/fexit programs
+>
+>Yoshihiro Shimoda (1):
+>      arm64: dts: renesas: r8a77980: Fix IPMMU VIP[01] nodes
+>
+>Zefan Li (1):
+>      netprio_cgroup: Fix unlimited memory leak of v2 cgroups
+>
+>Zhenyu Wang (1):
+>      drm/i915/gvt: Fix kernel oops for 3-level ppgtt guest
+
+--XsQoSWH+UP9D9v3l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl7B3WoACgkQsjqdtxFL
+KRUjgQf9GBLkc6LuaVjlOsA4lwAEyxvIe+4wr2wm7omhzMWKnV0j885sMaCb51F6
+AA5TPj10vYbpwHLS2thNB9ThstVfwSrl38CbM9LYjfbO0o2mrUPjcF2anS6HIXqa
+gDMB1cju5kNLzbHqkR6ZR6s4M734pmKwKgTHAbs+r3J8P4xaZPmfd0AnLgRQN+1Z
+8S8t/ADG/0RZ5OYR+TpdMGmegRTkz+NaSIz5z59NbxYIH8Hg2TSeUhBPB8V4O1Y1
+3RLd0R1ZcufAdeJlSFXnH6cPwKObOsf5ofy3RHtl/m0rtmKCIfd2yzHQrZqIW84C
+BfcQeN5i4qSS1Fgu/XjWXoIlKIZ82Q==
+=F6hs
+-----END PGP SIGNATURE-----
+
+--XsQoSWH+UP9D9v3l--
