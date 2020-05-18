@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B481D8252
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5429D1D8347
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgERRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60746 "EHLO mail.kernel.org"
+        id S1732109AbgERSD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731438AbgERRzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:23 -0400
+        id S1732089AbgERSDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77191207C4;
-        Mon, 18 May 2020 17:55:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 049CA2087D;
+        Mon, 18 May 2020 18:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824522;
-        bh=MZoJruzevu0Mqm1XG+YDSEIaVLGDBxikzdKGaPu4uuM=;
+        s=default; t=1589824993;
+        bh=diiVx+TMqGWpq3wIlg8bfWNg67/JwJNk0HLJd5akJTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qkr0xF7uBcLN5F7jc2/YCfwHZ30muI7QUBgPNvxi/xH+nPu4BeROUdI+FIoyA44cK
-         BkTHBKbOoUJ4AsiX64mjcwEqkU/RAXvrdNIb2GySV9aqADw9g95R7CXrsKw80rXaO3
-         lHonIA3D+KWRy1MU33XbS1lzv4xS/fSelEbxrp2I=
+        b=BuDj5h6YoB6qIqXs0JbvCJ1b2JBtFEr3Gk2ckopmDOnl0w9BeXzLozoX9dVSyNd9O
+         206h7cTiBrU8NW/pNXW2ZNb/GGRwJMuLf6dwIUMeRbSbeXezaeR+rlZI4Hs4wDe1qC
+         Y4HYM+JQhO8Obm0ZZpKtYrTXwHv25izOsSM94+Mc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sung Lee <sung.lee@amd.com>,
-        Yongqiang Sun <yongqiang.sun@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/147] drm/amd/display: Update downspread percent to match spreadsheet for DCN2.1
+Subject: [PATCH 5.6 079/194] drm/tegra: Fix SMMU support on Tegra124 and Tegra210
 Date:   Mon, 18 May 2020 19:36:09 +0200
-Message-Id: <20200518173519.759606237@linuxfoundation.org>
+Message-Id: <20200518173538.361802898@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,41 +44,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sung Lee <sung.lee@amd.com>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit 668a6741f809f2d15d125cfe2b39661e8f1655ea ]
+[ Upstream commit 501be6c1c72417eab05e7413671a38ea991a8ebc ]
 
-[WHY]
-The downspread percentage was copied over from a previous version
-of the display_mode_lib spreadsheet. This value has been updated,
-and the previous value is too high to allow for such modes as
-4K120hz. The new value is sufficient for such modes.
+When testing whether or not to enable the use of the SMMU, consult the
+supported DMA mask rather than the actually configured DMA mask, since
+the latter might already have been restricted.
 
-[HOW]
-Update the value in dcn21_resource to match the spreadsheet.
-
-Signed-off-by: Sung Lee <sung.lee@amd.com>
-Reviewed-by: Yongqiang Sun <yongqiang.sun@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 2d9384ff9177 ("drm/tegra: Relax IOMMU usage criteria on old Tegra")
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/drm.c |  3 ++-
+ drivers/gpu/host1x/dev.c    | 13 +++++++++++++
+ include/linux/host1x.h      |  3 +++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-index 161bf7caf3ae0..bb7add5ea2273 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -247,7 +247,7 @@ struct _vcs_dpi_soc_bounding_box_st dcn2_1_soc = {
- 	.dram_channel_width_bytes = 4,
- 	.fabric_datapath_to_dcn_data_return_bytes = 32,
- 	.dcn_downspread_percent = 0.5,
--	.downspread_percent = 0.5,
-+	.downspread_percent = 0.38,
- 	.dram_page_open_time_ns = 50.0,
- 	.dram_rw_turnaround_time_ns = 17.5,
- 	.dram_return_buffer_per_channel_bytes = 8192,
+diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
+index bd268028fb3d6..583cd6e0ae27f 100644
+--- a/drivers/gpu/drm/tegra/drm.c
++++ b/drivers/gpu/drm/tegra/drm.c
+@@ -1039,6 +1039,7 @@ void tegra_drm_free(struct tegra_drm *tegra, size_t size, void *virt,
+ 
+ static bool host1x_drm_wants_iommu(struct host1x_device *dev)
+ {
++	struct host1x *host1x = dev_get_drvdata(dev->dev.parent);
+ 	struct iommu_domain *domain;
+ 
+ 	/*
+@@ -1076,7 +1077,7 @@ static bool host1x_drm_wants_iommu(struct host1x_device *dev)
+ 	 * sufficient and whether or not the host1x is attached to an IOMMU
+ 	 * doesn't matter.
+ 	 */
+-	if (!domain && dma_get_mask(dev->dev.parent) <= DMA_BIT_MASK(32))
++	if (!domain && host1x_get_dma_mask(host1x) <= DMA_BIT_MASK(32))
+ 		return true;
+ 
+ 	return domain != NULL;
+diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
+index 388bcc2889aaf..40a4b9f8b861a 100644
+--- a/drivers/gpu/host1x/dev.c
++++ b/drivers/gpu/host1x/dev.c
+@@ -502,6 +502,19 @@ static void __exit tegra_host1x_exit(void)
+ }
+ module_exit(tegra_host1x_exit);
+ 
++/**
++ * host1x_get_dma_mask() - query the supported DMA mask for host1x
++ * @host1x: host1x instance
++ *
++ * Note that this returns the supported DMA mask for host1x, which can be
++ * different from the applicable DMA mask under certain circumstances.
++ */
++u64 host1x_get_dma_mask(struct host1x *host1x)
++{
++	return host1x->info->dma_mask;
++}
++EXPORT_SYMBOL(host1x_get_dma_mask);
++
+ MODULE_AUTHOR("Thierry Reding <thierry.reding@avionic-design.de>");
+ MODULE_AUTHOR("Terje Bergstrom <tbergstrom@nvidia.com>");
+ MODULE_DESCRIPTION("Host1x driver for Tegra products");
+diff --git a/include/linux/host1x.h b/include/linux/host1x.h
+index 62d216ff10979..c230b4e70d759 100644
+--- a/include/linux/host1x.h
++++ b/include/linux/host1x.h
+@@ -17,9 +17,12 @@ enum host1x_class {
+ 	HOST1X_CLASS_GR3D = 0x60,
+ };
+ 
++struct host1x;
+ struct host1x_client;
+ struct iommu_group;
+ 
++u64 host1x_get_dma_mask(struct host1x *host1x);
++
+ /**
+  * struct host1x_client_ops - host1x client operations
+  * @init: host1x client initialization code
 -- 
 2.20.1
 
