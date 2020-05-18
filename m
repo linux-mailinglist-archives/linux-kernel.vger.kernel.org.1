@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326CD1D814A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCAE1D86CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgERRqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46482 "EHLO mail.kernel.org"
+        id S1729538AbgERRnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729583AbgERRqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:39 -0400
+        id S1728960AbgERRm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:42:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB3C920674;
-        Mon, 18 May 2020 17:46:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8247F207C4;
+        Mon, 18 May 2020 17:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823999;
-        bh=0ASyik1bakUhJoWujJbdgcwUggN/kSU0IrhuWHkjudE=;
+        s=default; t=1589823776;
+        bh=rI69ELdrINCHlnyvofm74tGYIw+cV8yJBh7GJpNNMKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CcAB0eZ4W6pM8EKBcqivNSR+gW1qFdwkxxaLfmJXT5Q75IvaIlQYtz6Ao8BajiNQK
-         pFtpjBIcZB+SQmYYRjbdJwK/q9t7eipAThKmUfLxqDbrEZlOqQZBsIuVq3U76N1hcR
-         BqN8ixkSmb/E+99+DZ6IiFyC+SfHy/emaz3bOuGo=
+        b=JplKA2gVF1y9cVeLkntx/j45bYWJuEBBr28JW1NFz8H6AifM2cwCwig5/G3X2T5iv
+         wHlVDg23hL8qHOvsLRPNAQxIiiv7KYx0avV2GhKIZNEtuVbH0VPi5NmfhIeHka+rd8
+         pomvfGIlAFzhAL+LPRUK1uGQhZuOvXHaIRm9fLQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Subject: [PATCH 4.14 030/114] x86/entry/64: Fix unwind hints in rewind_stack_do_exit()
+        stable@vger.kernel.org, Ivan Delalande <colona@arista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 24/90] scripts/decodecode: fix trapping instruction formatting
 Date:   Mon, 18 May 2020 19:36:02 +0200
-Message-Id: <20200518173509.213180999@linuxfoundation.org>
+Message-Id: <20200518173456.102360336@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,41 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Ivan Delalande <colona@arista.com>
 
-commit f977df7b7ca45a4ac4b66d30a8931d0434c394b1 upstream.
+commit e08df079b23e2e982df15aa340bfbaf50f297504 upstream.
 
-The LEAQ instruction in rewind_stack_do_exit() moves the stack pointer
-directly below the pt_regs at the top of the task stack before calling
-do_exit(). Tell the unwinder to expect pt_regs.
+If the trapping instruction contains a ':', for a memory access through
+segment registers for example, the sed substitution will insert the '*'
+marker in the middle of the instruction instead of the line address:
 
-Fixes: 8c1f75587a18 ("x86/entry/64: Add unwind hint annotations")
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Jann Horn <jannh@google.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Jones <dsj@fb.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lore.kernel.org/r/68c33e17ae5963854916a46f522624f8e1d264f2.1587808742.git.jpoimboe@redhat.com
+	2b:   65 48 0f c7 0f          cmpxchg16b %gs:*(%rdi)          <-- trapping instruction
+
+I started to think I had forgotten some quirk of the assembly syntax
+before noticing that it was actually coming from the script.  Fix it to
+add the address marker at the right place for these instructions:
+
+	28:   49 8b 06                mov    (%r14),%rax
+	2b:*  65 48 0f c7 0f          cmpxchg16b %gs:(%rdi)           <-- trapping instruction
+	30:   0f 94 c0                sete   %al
+
+Fixes: 18ff44b189e2 ("scripts/decodecode: make faulting insn ptr more robust")
+Signed-off-by: Ivan Delalande <colona@arista.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Link: http://lkml.kernel.org/r/20200419223653.GA31248@visor
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/entry/entry_64.S |    2 +-
+ scripts/decodecode |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1649,7 +1649,7 @@ ENTRY(rewind_stack_do_exit)
+--- a/scripts/decodecode
++++ b/scripts/decodecode
+@@ -98,7 +98,7 @@ faultlinenum=$(( $(wc -l $T.oo  | cut -d
+ faultline=`cat $T.dis | head -1 | cut -d":" -f2-`
+ faultline=`echo "$faultline" | sed -e 's/\[/\\\[/g; s/\]/\\\]/g'`
  
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rax
- 	leaq	-PTREGS_SIZE(%rax), %rsp
--	UNWIND_HINT_FUNC sp_offset=PTREGS_SIZE
-+	UNWIND_HINT_REGS
- 
- 	call	do_exit
- END(rewind_stack_do_exit)
+-cat $T.oo | sed -e "${faultlinenum}s/^\(.*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
++cat $T.oo | sed -e "${faultlinenum}s/^\([^:]*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
+ echo
+ cat $T.aa
+ cleanup
 
 
