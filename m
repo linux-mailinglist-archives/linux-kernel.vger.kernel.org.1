@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD681D7222
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD271D722F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgERHo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:44:26 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:3529 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgERHo0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:44:26 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15ec23ca1a69-30e3d; Mon, 18 May 2020 15:43:29 +0800 (CST)
-X-RM-TRANSID: 2ee15ec23ca1a69-30e3d
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35ec23c9ef8a-3723f;
-        Mon, 18 May 2020 15:43:29 +0800 (CST)
-X-RM-TRANSID: 2ee35ec23c9ef8a-3723f
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
-        Xiubo.Lee@gmail.com, perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: fsl_micfil: Fix format and unused assignment
-Date:   Mon, 18 May 2020 15:44:05 +0800
-Message-Id: <20200518074405.14880-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1727904AbgERHqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:46:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51452 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726489AbgERHqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:46:46 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 33CF4265351D7FE83BD5;
+        Mon, 18 May 2020 15:46:39 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 18 May 2020
+ 15:46:30 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
+CC:     <yebin10@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] scsi: Fix incorrect usage of shost_for_each_device
+Date:   Mon, 18 May 2020 15:44:20 +0800
+Message-ID: <20200518074420.39275-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function fsl_micfil_startup(), the two lines of dev_err()
-can be shortened to one line. And delete unused initialized value
-of 'ret', because it will be assigned by the function
-fsl_micfil_set_mclk_rate().
+shost_for_each_device(sdev, shost) \
+	for ((sdev) = __scsi_iterate_devices((shost), NULL); \
+	     (sdev); \
+	     (sdev) = __scsi_iterate_devices((shost), (sdev)))
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+When terminating shost_for_each_device() iteration with break or return,
+scsi_device_put() should be used to prevent stale scsi device references from
+being left behind.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/scsi/scsi_error.c | 2 ++
+ drivers/scsi/scsi_lib.c   | 4 +++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index f7f2d29f1..a7a6118be 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -217,8 +217,7 @@ static int fsl_micfil_startup(struct snd_pcm_substream *substream,
- 	struct fsl_micfil *micfil = snd_soc_dai_get_drvdata(dai);
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 978be1602f71..927b1e641842 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -1412,6 +1412,7 @@ static int scsi_eh_stu(struct Scsi_Host *shost,
+ 				sdev_printk(KERN_INFO, sdev,
+ 					    "%s: skip START_UNIT, past eh deadline\n",
+ 					    current->comm));
++			scsi_device_put(sdev);
+ 			break;
+ 		}
+ 		stu_scmd = NULL;
+@@ -1478,6 +1479,7 @@ static int scsi_eh_bus_device_reset(struct Scsi_Host *shost,
+ 				sdev_printk(KERN_INFO, sdev,
+ 					    "%s: skip BDR, past eh deadline\n",
+ 					     current->comm));
++			scsi_device_put(sdev);
+ 			break;
+ 		}
+ 		bdr_scmd = NULL;
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index be1a4a9a5fca..173bc7fc2836 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -2859,8 +2859,10 @@ scsi_host_unblock(struct Scsi_Host *shost, int new_state)
  
- 	if (!micfil) {
--		dev_err(dai->dev,
--			"micfil dai priv_data not set\n");
-+		dev_err(dai->dev, "micfil dai priv_data not set\n");
- 		return -EINVAL;
+ 	shost_for_each_device(sdev, shost) {
+ 		ret = scsi_internal_device_unblock(sdev, new_state);
+-		if (ret)
++		if (ret) {
++			scsi_device_put(sdev);
+ 			break;
++		}
  	}
- 
-@@ -296,7 +295,7 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 	int clk_div;
--	int ret = 0;
-+	int ret;
- 
- 	ret = fsl_micfil_set_mclk_rate(micfil, rate);
- 	if (ret < 0)
+ 	return ret;
+ }
 -- 
-2.20.1.windows.1
-
-
+2.21.3
 
