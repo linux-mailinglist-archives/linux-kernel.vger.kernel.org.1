@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63871D837D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D5D1D818F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732913AbgERSFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:05:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
+        id S1730480AbgERRtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:49:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732880AbgERSFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:03 -0400
+        id S1730010AbgERRtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:49:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E0DC207F5;
-        Mon, 18 May 2020 18:05:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14DE020657;
+        Mon, 18 May 2020 17:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825102;
-        bh=YejrB3xnXuLpOQRytvCx3Nvljyswk4AfYXxt6KjMsK0=;
+        s=default; t=1589824142;
+        bh=pd5YWyWFz+tsihJlMqRKZ21NLXrKyDUcvfBo3PqQ9Ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KlBSQbuF6aSO3VaPewjYpfTl0R1mKZS1vxNT2FQZNv87Dw1ZpBoUhKEujURbcB6Kq
-         BWYh18Y7KNh+VQ9XAl/jPQZ4yrhV/ZWTHofMWLOCuWaQ+KTT37OOQctm2/QZCvLOO+
-         OIgmbw1Qk9mfzR/801zOBGAlrEtbNCkSaBSQwMMM=
+        b=WrdN0ehFoOA7fRHjgtNn5DFeA0Y4fQCSRh9Rwp0u6yJy3dDeKuIFMKLl9jJYJyHdg
+         eRvEoLdgay/7s04ZO+YPvk0d7Kj0zC1ChCE3fXzyxPfS2EPlJnm7tBLt5q05rRmRup
+         vR3qtruRGP2qnl/gffikCBLh0dybStNL+N1HFM9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 131/194] gcc-10 warnings: fix low-hanging fruit
+        stable@vger.kernel.org, Iris Liu <iris@onechronos.com>,
+        Kelly Littlepage <kelly@onechronos.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 089/114] net: tcp: fix rx timestamp behavior for tcp_recvmsg
 Date:   Mon, 18 May 2020 19:37:01 +0200
-Message-Id: <20200518173542.369782651@linuxfoundation.org>
+Message-Id: <20200518173518.386266386@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +47,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Kelly Littlepage <kelly@onechronos.com>
 
-commit 9d82973e032e246ff5663c9805fbb5407ae932e3 upstream.
+[ Upstream commit cc4de047b33be247f9c8150d3e496743a49642b8 ]
 
-Due to a bug-report that was compiler-dependent, I updated one of my
-machines to gcc-10.  That shows a lot of new warnings.  Happily they
-seem to be mostly the valid kind, but it's going to cause a round of
-churn for getting rid of them..
+The stated intent of the original commit is to is to "return the timestamp
+corresponding to the highest sequence number data returned." The current
+implementation returns the timestamp for the last byte of the last fully
+read skb, which is not necessarily the last byte in the recv buffer. This
+patch converts behavior to the original definition, and to the behavior of
+the previous draft versions of commit 98aaa913b4ed ("tcp: Extend
+SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg") which also match this
+behavior.
 
-This is the really low-hanging fruit of removing a couple of zero-sized
-arrays in some core code.  We have had a round of these patches before,
-and we'll have many more coming, and there is nothing special about
-these except that they were particularly trivial, and triggered more
-warnings than most.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 98aaa913b4ed ("tcp: Extend SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg")
+Co-developed-by: Iris Liu <iris@onechronos.com>
+Signed-off-by: Iris Liu <iris@onechronos.com>
+Signed-off-by: Kelly Littlepage <kelly@onechronos.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- include/linux/fs.h  |    2 +-
- include/linux/tty.h |    2 +-
- scripts/kallsyms.c  |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ net/ipv4/tcp.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -978,7 +978,7 @@ struct file_handle {
- 	__u32 handle_bytes;
- 	int handle_type;
- 	/* file identifier */
--	unsigned char f_handle[0];
-+	unsigned char f_handle[];
- };
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1977,13 +1977,15 @@ skip_copy:
+ 			tp->urg_data = 0;
+ 			tcp_fast_path_check(sk);
+ 		}
+-		if (used + offset < skb->len)
+-			continue;
  
- static inline struct file *get_file(struct file *f)
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -66,7 +66,7 @@ struct tty_buffer {
- 	int read;
- 	int flags;
- 	/* Data points here */
--	unsigned long data[0];
-+	unsigned long data[];
- };
- 
- /* Values for .flags field of tty_buffer */
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -34,7 +34,7 @@ struct sym_entry {
- 	unsigned int len;
- 	unsigned int start_pos;
- 	unsigned int percpu_absolute;
--	unsigned char sym[0];
-+	unsigned char sym[];
- };
- 
- struct addr_range {
+ 		if (TCP_SKB_CB(skb)->has_rxtstamp) {
+ 			tcp_update_recv_tstamps(skb, &tss);
+ 			has_tss = true;
+ 		}
++
++		if (used + offset < skb->len)
++			continue;
++
+ 		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
+ 			goto found_fin_ok;
+ 		if (!(flags & MSG_PEEK))
 
 
