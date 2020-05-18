@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD161D8117
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4CF1D829E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgERRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42998 "EHLO mail.kernel.org"
+        id S1731848AbgERR6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:58:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729275AbgERRof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:35 -0400
+        id S1729367AbgERR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D276620715;
-        Mon, 18 May 2020 17:44:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 719E420829;
+        Mon, 18 May 2020 17:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823875;
-        bh=bDA3ORR6saXc6yEWqMEoxIh7cCsWEQXRzhmnx+QhUaw=;
+        s=default; t=1589824674;
+        bh=ftgpYQd1243SeZTrXMF3o09XBaI2AZ9eAu0tHzqPrBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnK/ISPTGYLn8JgxCkgPbt44GiQRDG7k3OUWtJD+eM5d+M1KCwh+kZN0HeLiu2wCC
-         WSrM59BDmUYhL7E94H+DA0rZeOgjoYT0gFCipzK0AJFyGd/Rk7AUsi42Tz6lHd7SXP
-         Sazo8yNSBeKmFjnXOjDZakx58Dyds0Z4/iqMiznE=
+        b=LFNF/fEIy5ziO7myVvqBCXq76j2YSSjYbGl87wQdQqQl8z2ZaTqscuNhm4Cm6QPzC
+         uxghPhAS7wsltIAuUhcVNEJbNGm9RpVOeQHHZjVzHm3WuJmN6sd2H9U1gXY2xnpRDU
+         yC6MVK4RTu40d0Z0Zka+c6hUJTaOLy8i8DhJuQRg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 64/90] gcc-10: disable zero-length-bounds warning for now
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 079/147] arm64: fix the flush_icache_range arguments in machine_kexec
 Date:   Mon, 18 May 2020 19:36:42 +0200
-Message-Id: <20200518173504.147510115@linuxfoundation.org>
+Message-Id: <20200518173523.584720302@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Christoph Hellwig <hch@lst.de>
 
-commit 5c45de21a2223fe46cf9488c99a7fbcf01527670 upstream.
+[ Upstream commit d51c214541c5154dda3037289ee895ea3ded5ebd ]
 
-This is a fine warning, but we still have a number of zero-length arrays
-in the kernel that come from the traditional gcc extension.  Yes, they
-are getting converted to flexible arrays, but in the meantime the gcc-10
-warning about zero-length bounds is very verbose, and is hiding other
-issues.
+The second argument is the end "pointer", not the length.
 
-I missed one actual build failure because it was hidden among hundreds
-of lines of warning.  Thankfully I caught it on the second go before
-pushing things out, but it convinced me that I really need to disable
-the new warnings for now.
-
-We'll hopefully be all done with our conversion to flexible arrays in
-the not too distant future, and we can then re-enable this warning.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
+Cc: <stable@vger.kernel.org> # 4.8.x-
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/kernel/machine_kexec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -797,6 +797,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- # disable stringop warnings in gcc 8+
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 0df8493624e00..cc049ff5c6a53 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -189,6 +189,7 @@ void machine_kexec(struct kimage *kimage)
+ 	 * the offline CPUs. Therefore, we must use the __* variant here.
+ 	 */
+ 	__flush_icache_range((uintptr_t)reboot_code_buffer,
++			     (uintptr_t)reboot_code_buffer +
+ 			     arm64_relocate_new_kernel_size);
  
-+# We'll want to enable this eventually, but it's not going away for 5.7 at least
-+KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
-+
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
- 
+ 	/* Flush the kimage list and its buffers. */
+-- 
+2.20.1
+
 
 
