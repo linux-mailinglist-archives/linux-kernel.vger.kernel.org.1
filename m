@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFC61D8563
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F781D8462
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731533AbgERRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
+        id S1733226AbgERSLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730833AbgERRzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:31 -0400
+        id S1732806AbgERSEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE02120674;
-        Mon, 18 May 2020 17:55:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25C6D2083E;
+        Mon, 18 May 2020 18:04:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824530;
-        bh=FoizjeQWVQ+PPrHic9gyMac+0ySrT3orkEdMtBwM2/s=;
+        s=default; t=1589825075;
+        bh=xutSc8A9hRxcqC+TgUIwPgptzdazbIwaCkmPOPmLn6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYHYM8EdrrUUpyNe12dO4LW4uQABsB4GGXGsi7QPpadTdXj9Ghdt/5am0CbG2IXnE
-         Iw1p4uvFzCjv0+ANtqM0ALdpUugHYpXXw3LlvaJ7xvpEli1zSOLb1N9kWt3YRnOY5c
-         Nw8GvX3J+A8fOnFLHoAyVRRbZs+c55c2sL4C4JDU=
+        b=Z6KueulywNz+R1m9ffs+iCT7pRlCO9sgDl0+2+ezvA06uAVFiLufEqifkPttw1y+I
+         4J4nX3mDiPa/YtfHuDona3kiRLtujxA31VrkRlleNFU1xsrBlC8Xmh6i4ArVmBM6fC
+         baTsw4e/STIaTDthj/HutELKx1VMQ8pPpXlAHADU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?= <marek.olsak@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, David Wysochanski <dwysocha@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 049/147] drm/amdgpu: invalidate L2 before SDMA IBs (v2)
+Subject: [PATCH 5.6 082/194] cachefiles: Fix corruption of the return value in cachefiles_read_or_alloc_pages()
 Date:   Mon, 18 May 2020 19:36:12 +0200
-Message-Id: <20200518173520.085222643@linuxfoundation.org>
+Message-Id: <20200518173538.580068624@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,84 +45,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Olšák <marek.olsak@amd.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit fdf83646c0542ecfb9adc4db8f741a1f43dca058 ]
+[ Upstream commit c5f9d9db83d9f84d2b4aae5a1b29d9b582ccff2f ]
 
-This fixes GPU hangs due to cache coherency issues.
+The patch which changed cachefiles from calling ->bmap() to using the
+bmap() wrapper overwrote the running return value with the result of
+calling bmap().  This causes an assertion failure elsewhere in the code.
 
-v2: Split the version bump to a separate patch
+Fix this by using ret2 rather than ret to hold the return value.
 
-Signed-off-by: Marek Olšák <marek.olsak@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Tested-by: Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+The oops looks like:
+
+	kernel BUG at fs/nfs/fscache.c:468!
+	...
+	RIP: 0010:__nfs_readpages_from_fscache+0x18b/0x190 [nfs]
+	...
+	Call Trace:
+	 nfs_readpages+0xbf/0x1c0 [nfs]
+	 ? __alloc_pages_nodemask+0x16c/0x320
+	 read_pages+0x67/0x1a0
+	 __do_page_cache_readahead+0x1cf/0x1f0
+	 ondemand_readahead+0x172/0x2b0
+	 page_cache_async_readahead+0xaa/0xe0
+	 generic_file_buffered_read+0x852/0xd50
+	 ? mem_cgroup_commit_charge+0x6e/0x140
+	 ? nfs4_have_delegation+0x19/0x30 [nfsv4]
+	 generic_file_read_iter+0x100/0x140
+	 ? nfs_revalidate_mapping+0x176/0x2b0 [nfs]
+	 nfs_file_read+0x6d/0xc0 [nfs]
+	 new_sync_read+0x11a/0x1c0
+	 __vfs_read+0x29/0x40
+	 vfs_read+0x8e/0x140
+	 ksys_read+0x61/0xd0
+	 __x64_sys_read+0x1a/0x20
+	 do_syscall_64+0x60/0x1e0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	RIP: 0033:0x7f5d148267e0
+
+Fixes: 10d83e11a582 ("cachefiles: drop direct usage of ->bmap method.")
+Reported-by: David Wysochanski <dwysocha@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Tested-by: David Wysochanski <dwysocha@redhat.com>
+cc: Carlos Maiolino <cmaiolino@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/amdgpu/navi10_sdma_pkt_open.h    | 16 ++++++++++++++++
- drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c           | 14 +++++++++++++-
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ fs/cachefiles/rdwr.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/navi10_sdma_pkt_open.h b/drivers/gpu/drm/amd/amdgpu/navi10_sdma_pkt_open.h
-index 074a9a09c0a79..a5b60c9a24189 100644
---- a/drivers/gpu/drm/amd/amdgpu/navi10_sdma_pkt_open.h
-+++ b/drivers/gpu/drm/amd/amdgpu/navi10_sdma_pkt_open.h
-@@ -73,6 +73,22 @@
- #define SDMA_OP_AQL_COPY  0
- #define SDMA_OP_AQL_BARRIER_OR  0
+diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
+index 1dc97f2d62013..d3d78176b23ce 100644
+--- a/fs/cachefiles/rdwr.c
++++ b/fs/cachefiles/rdwr.c
+@@ -398,7 +398,7 @@ int cachefiles_read_or_alloc_page(struct fscache_retrieval *op,
+ 	struct inode *inode;
+ 	sector_t block;
+ 	unsigned shift;
+-	int ret;
++	int ret, ret2;
  
-+#define SDMA_GCR_RANGE_IS_PA		(1 << 18)
-+#define SDMA_GCR_SEQ(x)			(((x) & 0x3) << 16)
-+#define SDMA_GCR_GL2_WB			(1 << 15)
-+#define SDMA_GCR_GL2_INV		(1 << 14)
-+#define SDMA_GCR_GL2_DISCARD		(1 << 13)
-+#define SDMA_GCR_GL2_RANGE(x)		(((x) & 0x3) << 11)
-+#define SDMA_GCR_GL2_US			(1 << 10)
-+#define SDMA_GCR_GL1_INV		(1 << 9)
-+#define SDMA_GCR_GLV_INV		(1 << 8)
-+#define SDMA_GCR_GLK_INV		(1 << 7)
-+#define SDMA_GCR_GLK_WB			(1 << 6)
-+#define SDMA_GCR_GLM_INV		(1 << 5)
-+#define SDMA_GCR_GLM_WB			(1 << 4)
-+#define SDMA_GCR_GL1_RANGE(x)		(((x) & 0x3) << 2)
-+#define SDMA_GCR_GLI_INV(x)		(((x) & 0x3) << 0)
-+
- /*define for op field*/
- #define SDMA_PKT_HEADER_op_offset 0
- #define SDMA_PKT_HEADER_op_mask   0x000000FF
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-index 2a792d7abe007..bd715012185c6 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-@@ -382,6 +382,18 @@ static void sdma_v5_0_ring_emit_ib(struct amdgpu_ring *ring,
- 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
- 	uint64_t csa_mc_addr = amdgpu_sdma_get_csa_mc_addr(ring, vmid);
+ 	object = container_of(op->op.object,
+ 			      struct cachefiles_object, fscache);
+@@ -430,8 +430,8 @@ int cachefiles_read_or_alloc_page(struct fscache_retrieval *op,
+ 	block = page->index;
+ 	block <<= shift;
  
-+	/* Invalidate L2, because if we don't do it, we might get stale cache
-+	 * lines from previous IBs.
-+	 */
-+	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_GCR_REQ));
-+	amdgpu_ring_write(ring, 0);
-+	amdgpu_ring_write(ring, (SDMA_GCR_GL2_INV |
-+				 SDMA_GCR_GL2_WB |
-+				 SDMA_GCR_GLM_INV |
-+				 SDMA_GCR_GLM_WB) << 16);
-+	amdgpu_ring_write(ring, 0xffffff80);
-+	amdgpu_ring_write(ring, 0xffff);
-+
- 	/* An IB packet must end on a 8 DW boundary--the next dword
- 	 * must be on a 8-dword boundary. Our IB packet below is 6
- 	 * dwords long, thus add x number of NOPs, such that, in
-@@ -1607,7 +1619,7 @@ static const struct amdgpu_ring_funcs sdma_v5_0_ring_funcs = {
- 		SOC15_FLUSH_GPU_TLB_NUM_WREG * 3 +
- 		SOC15_FLUSH_GPU_TLB_NUM_REG_WAIT * 6 * 2 +
- 		10 + 10 + 10, /* sdma_v5_0_ring_emit_fence x3 for user fence, vm fence */
--	.emit_ib_size = 7 + 6, /* sdma_v5_0_ring_emit_ib */
-+	.emit_ib_size = 5 + 7 + 6, /* sdma_v5_0_ring_emit_ib */
- 	.emit_ib = sdma_v5_0_ring_emit_ib,
- 	.emit_fence = sdma_v5_0_ring_emit_fence,
- 	.emit_pipeline_sync = sdma_v5_0_ring_emit_pipeline_sync,
+-	ret = bmap(inode, &block);
+-	ASSERT(ret < 0);
++	ret2 = bmap(inode, &block);
++	ASSERT(ret2 == 0);
+ 
+ 	_debug("%llx -> %llx",
+ 	       (unsigned long long) (page->index << shift),
+@@ -739,8 +739,8 @@ int cachefiles_read_or_alloc_pages(struct fscache_retrieval *op,
+ 		block = page->index;
+ 		block <<= shift;
+ 
+-		ret = bmap(inode, &block);
+-		ASSERT(!ret);
++		ret2 = bmap(inode, &block);
++		ASSERT(ret2 == 0);
+ 
+ 		_debug("%llx -> %llx",
+ 		       (unsigned long long) (page->index << shift),
 -- 
 2.20.1
 
