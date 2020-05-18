@@ -2,228 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7DE1D7289
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04821D728F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgERIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:08:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:41834 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726573AbgERIIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:08:47 -0400
-IronPort-SDR: DR4ceoYP6nHFOBiDd56ccozFIKzX90gNGLZYN+A1NnAiPWssoiBlxuthr5lrhePN4jlL4XoDfe
- bTt/374j5gXA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 01:08:46 -0700
-IronPort-SDR: npM7UJ3sPDJcwMqyeOSP3rs1HB1aRK9avL61nL57nkuOZNPQadrQNVHsKc2+xCw0WQYdOSM0kO
- 0ExJRiD4mYDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
-   d="scan'208";a="308034687"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 May 2020 01:08:46 -0700
-Received: from [10.249.230.167] (abudanko-mobl.ccr.corp.intel.com [10.249.230.167])
-        by linux.intel.com (Postfix) with ESMTP id 21F6A580100;
-        Mon, 18 May 2020 01:08:43 -0700 (PDT)
-Subject: Re: [PATCH v3 0/9] perf: support enable and disable commands in stat
- and record modes
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <f7ef424f-da30-4bf4-3ffd-c1704ed06df0@linux.intel.com>
-Date:   Mon, 18 May 2020 11:08:43 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727098AbgERIK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:10:58 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41913 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726489AbgERIK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:10:57 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id BB0805C0135;
+        Mon, 18 May 2020 04:10:56 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 18 May 2020 04:10:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=0VCyxFvAMhgusgpYr5rZXUJVhIUn8Js
+        Ts3zpGGtk/U0=; b=qqCr/U7ZsqicykMchNolnowqKvxzNY/evSBODVQQ7E0w/oB
+        d/qF7NUTRhCbO/ZX8y3WxrsdPhJ+mA46E3n/C0RhbrrEfU/akHwmt+Jj1+QiuXVi
+        J8w1vh3af7RD1euv7ZD/seRCYYDudB/9P8UOydCt6XxynGzH0YtPWAZ1XqU8KrXb
+        hl9J0gn/iG/wbWXgZOJRnVlzF9zgYS+HnmDzPrX3U3BLlmZlIz0QISWPFCEdzhzi
+        CAkD5/41cS0oAu5oLU8mCrr2p0D0bIDTXFXv/UBYv8w8HDOPuKiONS0gbK+c9LrV
+        r5B8N1+OnJ2QtIzAipWiTPIeZnMEVGZEUuSRWcQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0VCyxF
+        vAMhgusgpYr5rZXUJVhIUn8JsTs3zpGGtk/U0=; b=T9C0di6fpbvAhkF2JLufwu
+        fYCXmSMEM+NSdwzWW2JnJKDNTD3rHRiwGVwCGxxegyu/g0m3qXrRJa7ppJioeMOq
+        ku4lbGzoVn9zfs5f0OupupdyOl5sUr+1qPqowvGj1iRHy3JL769SgO9ZpneHeMe2
+        0a4U9m8uwI72TSw/OUNGW++XAYO/U7eMpM+RqkHNPQPKisZiU/G/Sw9iutelNIxJ
+        LBSRnfbi+hZJ+8Befupo5Kiyec0t2KxoGzSUMw9Fu6yaFG9q5EB6vqcqZlw1m9IA
+        bfWIs5Dgv76MLPsadpY1VOPBzjtSzmqoRrI7iMj8IVo+fcqhKgr/8cBgU57D1YfA
+        ==
+X-ME-Sender: <xms:DUPCXqjCTbbGhrZ3bGJBN7-MW1nPOL8J7dCfifvDJWZdP6yNHZM7lw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddthedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:DUPCXrDt1OZLn0weyuVs_63PfANhJRqOctaWv6-1wQuHZvShsS4SCA>
+    <xmx:DUPCXiGs1UsRn-tIOlMXqGPSlZ6JKi0HG4NyuiscNNMlu0T3Zs4sjw>
+    <xmx:DUPCXjRc79OBZYouM7Pb9zXXZgKzJqpEqY4lnauiI6BVANrMl1rWvg>
+    <xmx:EEPCXn8KxaReefRybqzM0YKLIVqJVW9XuX_gW20J4X8mlq-07XWQvQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 231EAE00B3; Mon, 18 May 2020 04:10:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-dev0-464-g810d66a-fmstable-20200518v1
+Mime-Version: 1.0
+Message-Id: <bc674840-0789-4055-a228-d092f52f1ec6@www.fastmail.com>
+In-Reply-To: <20200517160227.GU1551@shell.armlinux.org.uk>
+References: <20200517153959.293224-1-andrew@aj.id.au>
+ <20200517160227.GU1551@shell.armlinux.org.uk>
+Date:   Mon, 18 May 2020 17:40:31 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Russell King" <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Kees Cook" <keescook@chromium.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>, labbott@redhat.com,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH]_ARM:_kprobes:_Avoid_fortify=5Fpanic()_when_copying?=
+ =?UTF-8?Q?_optprobe_template?=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Is there anything else that could be done from my side to move this forward?
 
-Thanks,
-Alexey
+On Mon, 18 May 2020, at 01:32, Russell King - ARM Linux admin wrote:
+> On Mon, May 18, 2020 at 01:09:59AM +0930, Andrew Jeffery wrote:
+> > Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
+> > to a panic in memcpy() when injecting a kprobe despite the fixes found
+> > in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
+> > FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
+> > optimized kprobes illegal instruction").
+> > 
+> > arch/arm/include/asm/kprobes.h effectively declares
+> > the target type of the optprobe_template_entry assembly label as a u32,
+> > which leads memcpy()'s __builtin_object_size() call to determine that
+> > the pointed-to object is of size four. In practical terms the symbol is
+> > used as a handle for the optimised probe assembly template that is at
+> > least 96 bytes in size. The symbol's use despite its type blows up the
+> > memcpy() in ARM's arch_prepare_optimized_kprobe() with a false-positive
+> > fortify_panic() when it should instead copy the optimised probe template
+> > into place.
+> > 
+> > As mentioned, a couple of attempts have been made to address the issue
+> > by casting a pointer to optprobe_template_entry before providing it to
+> > memcpy(), however gccs such as Ubuntu 20.04's arm-linux-gnueabi-gcc
+> > 9.3.0 (Ubuntu 9.3.0-10ubuntu1) see through these efforts.
+> > 
+> > Squash the false-positive by aliasing the template assembly with a new
+> > symbol 'arm_optprobe_template'; declare it as a function object and
+> > pass the function object as the argument to memcpy() such that
+> > __builtin_object_size() cannot immediately determine the object size.
+> > 
+> > Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
+> > Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  arch/arm/include/asm/kprobes.h    | 7 +++++++
+> >  arch/arm/probes/kprobes/opt-arm.c | 4 +++-
+> >  2 files changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
+> > index 213607a1f45c..94db8bf25f9c 100644
+> > --- a/arch/arm/include/asm/kprobes.h
+> > +++ b/arch/arm/include/asm/kprobes.h
+> > @@ -43,6 +43,13 @@ int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
+> >  int kprobe_exceptions_notify(struct notifier_block *self,
+> >  			     unsigned long val, void *data);
+> >  
+> > +/*
+> > + * The optprobe template buffer is not anything that should be called directly,
+> > + * however describe it as a function to give ourselves a handle to it that
+> > + * bypasses CONFIG_FORTIFY_SOURCE=y sanity checks in memcpy().
+> > + */
+> > +extern __visible void arm_optprobe_template(void);
+> 
+> Does this really need to be globally visible to anything that happens
+> to include this header?
+> 
+> While we may abhor "extern" declarations and prototypes in .c files, it
+> seems to me to be entirely reasonable for this to live in opt-arm.c and
+> remove the .global for this symbol, thereby making this symbol local to
+> opt-arm.c
 
-On 13.05.2020 10:53, Alexey Budankov wrote:
-> 
-> Changes in v3:
-> - renamed functions and types from perf_evlist_ to evlist_ to avoid
->   clash with libperf code;
-> - extended commands to be strings of variable length consisting of
->   command name and also possibly including command specific data;
-> - merged docs update with the code changes;
-> - updated docs for -D,--delay=-1 option for stat and record modes;
-> 
-> v2: https://lore.kernel.org/lkml/d582cc3d-2302-c7e2-70d3-bc7ab6f628c3@linux.intel.com/
-> 
-> Changes in v2:
-> - renamed resume and pause commands to enable and disable ones, renamed
->   CTL_CMD_RESUME and CTL_CMD_PAUSE to CTL_CMD_ENABLE and CTL_CMD_DISABLE
->   to fit to the appropriate ioctls and avoid mixing up with PAUSE_OUTPUT
->   ioctl;
-> - factored out event handling loop into a handle_events() for stat mode;
-> - separated -D,--delay=-1 into separate patches for stat and record modes;
-> 
-> v1: https://lore.kernel.org/lkml/825a5132-b58d-c0b6-b050-5a6040386ec7@linux.intel.com/
-> 
-> repo: tip of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-> 
-> The patch set implements handling of 'start disabled', 'enable' and 'disable'
-> external control commands which can be provided for stat and record modes
-> of the tool from an external controlling process. 'start disabled' command
-> can be used to postpone enabling of events in the beginning of a monitoring
-> session. 'enable' and 'disable' commands can be used to enable and disable
-> events correspondingly any time after the start of the session.
-> 
-> The 'start disabled', 'enable' and 'disable' external control commands can be
-> used to focus measurement on specially selected time intervals of workload
-> execution. Focused measurement reduces tool intrusion and influence on
-> workload behavior, reduces distortion and amount of collected and stored
-> data, mitigates data accuracy loss because measurement and data capturing
-> happen only during intervals of interest.
-> 
-> A controlling process can be a bash shell script [1], native executable or
-> any other language program that can directly work with file descriptors,
-> e.g. pipes [2], and spawn a process, specially the tool one.
-> 
-> -D,--delay <val> option is extended with -1 value to skip events enabling
-> in the beginning of a monitoring session ('start disabled' command).
-> --ctl-fd and --ctl-fd-ack command line options are introduced to provide the
-> tool with a pair of file descriptors to listen to control commands and reply
-> to the controlling process on the completion of received commands.
-> 
-> The tool reads control command message from ctl-fd descriptor, handles the
-> command and optionally replies acknowledgement message to fd-ack descriptor,
-> if it is specified on the command line. 'enable' command is recognized as
-> 'enable' string message and 'disable' command is recognized as 'disable'
-> string message both received from ctl-fd descriptor. Completion message is
-> 'ack\n' and sent to fd-ack descriptor.
-> 
-> Example bash script demonstrating simple use case follows:
-> 
-> #!/bin/bash
-> 
-> ctl_dir=/tmp/
-> 
-> ctl_fifo=${ctl_dir}perf_ctl.fifo
-> test -p ${ctl_fifo} && unlink ${ctl_fifo}
-> mkfifo ${ctl_fifo} && exec {ctl_fd}<>${ctl_fifo}
-> 
-> ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-> test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-> mkfifo ${ctl_ack_fifo} && exec {ctl_fd_ack}<>${ctl_ack_fifo}
-> 
-> perf stat -D -1 -e cpu-cycles -a -I 1000                \
->           --ctl-fd ${ctl_fd} --ctl-fd-ack ${ctl_fd_ack} \
->           -- sleep 40 &
-> perf_pid=$!
-> 
-> sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-> sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-> sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e2 && echo "enabled(${e2})"
-> sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d2 && echo "disabled(${d2})"
-> 
-> exec {ctl_fd_ack}>&- && unlink ${ctl_ack_fifo}
-> exec {ctl_fd}>&- && unlink ${ctl_fifo}
-> 
-> wait -n ${perf_pid}
-> exit $?
-> 
-> 
-> Script output:
-> 
-> [root@host dir] example
-> Events disabled
-> #           time             counts unit events
->      1.001101062      <not counted>      cpu-cycles                                                  
->      2.002994944      <not counted>      cpu-cycles                                                  
->      3.004864340      <not counted>      cpu-cycles                                                  
->      4.006727177      <not counted>      cpu-cycles                                                  
-> Events enabled
-> enabled(ack)
->      4.993808464          3,124,246      cpu-cycles                                                  
->      5.008597004          3,325,624      cpu-cycles                                                  
->      6.010387483         83,472,992      cpu-cycles                                                  
->      7.012266598         55,877,621      cpu-cycles                                                  
->      8.014175695         97,892,729      cpu-cycles                                                  
->      9.016056093         68,461,242      cpu-cycles                                                  
->     10.017937507         55,449,643      cpu-cycles                                                  
->     11.019830154         68,938,167      cpu-cycles                                                  
->     12.021719952         55,164,101      cpu-cycles                                                  
->     13.023627550         70,535,720      cpu-cycles                                                  
->     14.025580995         53,240,125      cpu-cycles                                                  
-> disabled(ack)
->     14.997518260         53,558,068      cpu-cycles                                                  
-> Events disabled
->     15.027216416      <not counted>      cpu-cycles                                                  
->     16.029052729      <not counted>      cpu-cycles                                                  
->     17.030904762      <not counted>      cpu-cycles                                                  
->     18.032073424      <not counted>      cpu-cycles                                                  
->     19.033805074      <not counted>      cpu-cycles                                                  
-> Events enabled
-> enabled(ack)
->     20.001279097          3,021,022      cpu-cycles                                                  
->     20.035044381          6,434,367      cpu-cycles                                                  
->     21.036923813         89,358,251      cpu-cycles                                                  
->     22.038825169         72,516,351      cpu-cycles                                                  
-> #           time             counts unit events
->     23.040715596         55,046,157      cpu-cycles                                                  
->     24.042643757         78,128,649      cpu-cycles                                                  
->     25.044558535         61,052,428      cpu-cycles                                                  
->     26.046452785         62,142,806      cpu-cycles                                                  
->     27.048353021         74,477,971      cpu-cycles                                                  
->     28.050241286         61,001,623      cpu-cycles                                                  
->     29.052149961         61,653,502      cpu-cycles                                                  
-> disabled(ack)
->     30.004980264         82,729,640      cpu-cycles                                                  
-> Events disabled
->     30.053516176      <not counted>      cpu-cycles                                                  
->     31.055348366      <not counted>      cpu-cycles                                                  
->     32.057202097      <not counted>      cpu-cycles                                                  
->     33.059040702      <not counted>      cpu-cycles                                                  
->     34.060843288      <not counted>      cpu-cycles                                                  
->     35.000888624      <not counted>      cpu-cycles                                                  
-> [root@host dir]# 
-> 
-> [1] http://man7.org/linux/man-pages/man1/bash.1.html
-> [2] http://man7.org/linux/man-pages/man2/pipe.2.html
-> 
-> ---
-> Alexey Budankov (9):
->   perf evlist: introduce control file descriptors
->   perf evlist: implement control command handling functions
->   perf stat: factor out event handling loop into a function
->   perf stat: extend -D,--delay option with -1 value
->   perf stat: implement control commands handling
->   perf stat: introduce --ctl-fd[-ack] options
->   perf record: extend -D,--delay option with -1 value
->   perf record: implement control commands handling
->   perf record: introduce --ctl-fd[-ack] options
-> 
->  tools/perf/Documentation/perf-record.txt |  44 +++++++-
->  tools/perf/Documentation/perf-stat.txt   |  45 +++++++-
->  tools/perf/builtin-record.c              |  39 ++++++-
->  tools/perf/builtin-stat.c                | 137 ++++++++++++++++-------
->  tools/perf/builtin-trace.c               |   2 +-
->  tools/perf/util/evlist.c                 | 131 ++++++++++++++++++++++
->  tools/perf/util/evlist.h                 |  24 ++++
->  tools/perf/util/record.h                 |   4 +-
->  tools/perf/util/stat.h                   |   4 +-
->  9 files changed, 379 insertions(+), 51 deletions(-)
-> 
+You are right, exposing it globally was unnecessary, I got caught up poking
+at the other symbols. But I think we should go with Kees' patch instead.
+
+Thanks for the quick feedback.
+
+Andrew
