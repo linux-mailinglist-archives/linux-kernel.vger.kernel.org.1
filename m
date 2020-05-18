@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFF21D842C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181C41D82D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733161AbgERSJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54168 "EHLO mail.kernel.org"
+        id S1732145AbgERR7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733087AbgERSGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:06:13 -0400
+        id S1731651AbgERR7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:59:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46E57207D3;
-        Mon, 18 May 2020 18:06:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA976207C4;
+        Mon, 18 May 2020 17:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825172;
-        bh=v2D+En1nhWCpIG+58dalIczcVQYoWdoRBY62R/ukpgQ=;
+        s=default; t=1589824789;
+        bh=ZJxifm2L9pOtEbCR4LMQt0wDqcoKiXMau1jrI71o23k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzYY0Z+P55wUJBWLS39IG109L6J1mfuaWuLxbP6/+Pu6RhIuCRZvhEvBw1q85bO/S
-         8cgHTNC5lJiSJnVyC2bi2ty2XRxviefw6Tlhm0UBr7affMRzJ4V99Saf8kN8EayPpA
-         8q8TnQNRypGqYCpbx/9c3rkjNDkkUwCAiptF9sew=
+        b=d5WPWsnPFlWn8klHhxE9oYC7Tux8KP94aA/MuN4O1J5CkpvzRp5E39bCvwFyRNCYu
+         b9FLeXF6fvwHOSODaa86xlDgY6QjskZ72I7RjmotJPzLgO3hGMiYYGmMJ4ylntB8Hu
+         4Dj++BFVOYYaO+KjeDuGDjLCHxQVBw+Yws05HPwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.6 157/194] KVM: x86: Fix pkru save/restore when guest CR4.PKE=0, move it to x86.c
+        stable@vger.kernel.org,
+        Justin Swartz <justin.swartz@risingedge.co.za>,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH 5.4 124/147] clk: rockchip: fix incorrect configuration of rk3228 aclk_gpu* clocks
 Date:   Mon, 18 May 2020 19:37:27 +0200
-Message-Id: <20200518173544.277402015@linuxfoundation.org>
+Message-Id: <20200518173528.345904956@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,122 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <babu.moger@amd.com>
+From: Justin Swartz <justin.swartz@risingedge.co.za>
 
-commit 37486135d3a7b03acc7755b63627a130437f066a upstream.
+commit cec9d101d70a3509da9bd2e601e0b242154ce616 upstream.
 
-Though rdpkru and wrpkru are contingent upon CR4.PKE, the PKRU
-resource isn't. It can be read with XSAVE and written with XRSTOR.
-So, if we don't set the guest PKRU value here(kvm_load_guest_xsave_state),
-the guest can read the host value.
+The following changes prevent the unrecoverable freezes and rcu_sched
+stall warnings experienced in each of my attempts to take advantage of
+lima.
 
-In case of kvm_load_host_xsave_state, guest with CR4.PKE clear could
-potentially use XRSTOR to change the host PKRU value.
+Replace the COMPOSITE_NOGATE definition of aclk_gpu_pre with a
+COMPOSITE that retains the selection of HDMIPHY as the PLL source, but
+instead makes uses of the aclk_gpu PLL source gate and parent names
+defined by mux_pll_src_4plls_p rather than mux_aclk_gpu_pre_p.
 
-While at it, move pkru state save/restore to common code and the
-host_pkru field to kvm_vcpu_arch.  This will let SVM support protection keys.
+Remove the now unused mux_aclk_gpu_pre_p and the four named but also
+unused definitions (cpll_gpu, gpll_gpu, hdmiphy_gpu and usb480m_gpu)
+of the aclk_gpu PLL source gate.
 
+Use the correct gate offset for aclk_gpu and aclk_gpu_noc.
+
+Fixes: 307a2e9ac524 ("clk: rockchip: add clock controller for rk3228")
 Cc: stable@vger.kernel.org
-Reported-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Message-Id: <158932794619.44260.14508381096663848853.stgit@naples-babu.amd.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+[double-checked against SoC manual and added fixes tag]
+Link: https://lore.kernel.org/r/20200114162503.7548-1-justin.swartz@risingedge.co.za
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/kvm_host.h |    1 +
- arch/x86/kvm/vmx/vmx.c          |   18 ------------------
- arch/x86/kvm/x86.c              |   17 +++++++++++++++++
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ drivers/clk/rockchip/clk-rk3228.c |   17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -574,6 +574,7 @@ struct kvm_vcpu_arch {
- 	unsigned long cr4;
- 	unsigned long cr4_guest_owned_bits;
- 	unsigned long cr8;
-+	u32 host_pkru;
- 	u32 pkru;
- 	u32 hflags;
- 	u64 efer;
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1380,7 +1380,6 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu
+--- a/drivers/clk/rockchip/clk-rk3228.c
++++ b/drivers/clk/rockchip/clk-rk3228.c
+@@ -156,8 +156,6 @@ PNAME(mux_i2s_out_p)		= { "i2s1_pre", "x
+ PNAME(mux_i2s2_p)		= { "i2s2_src", "i2s2_frac", "xin12m" };
+ PNAME(mux_sclk_spdif_p)		= { "sclk_spdif_src", "spdif_frac", "xin12m" };
  
- 	vmx_vcpu_pi_load(vcpu, cpu);
- 
--	vmx->host_pkru = read_pkru();
- 	vmx->host_debugctlmsr = get_debugctlmsr();
- }
- 
-@@ -6538,11 +6537,6 @@ static void vmx_vcpu_run(struct kvm_vcpu
- 
- 	kvm_load_guest_xsave_state(vcpu);
- 
--	if (static_cpu_has(X86_FEATURE_PKU) &&
--	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE) &&
--	    vcpu->arch.pkru != vmx->host_pkru)
--		__write_pkru(vcpu->arch.pkru);
+-PNAME(mux_aclk_gpu_pre_p)	= { "cpll_gpu", "gpll_gpu", "hdmiphy_gpu", "usb480m_gpu" };
 -
- 	pt_guest_enter(vmx);
+ PNAME(mux_uart0_p)		= { "uart0_src", "uart0_frac", "xin24m" };
+ PNAME(mux_uart1_p)		= { "uart1_src", "uart1_frac", "xin24m" };
+ PNAME(mux_uart2_p)		= { "uart2_src", "uart2_frac", "xin24m" };
+@@ -468,16 +466,9 @@ static struct rockchip_clk_branch rk3228
+ 			RK2928_CLKSEL_CON(24), 6, 10, DFLAGS,
+ 			RK2928_CLKGATE_CON(2), 8, GFLAGS),
  
- 	atomic_switch_perf_msrs(vmx);
-@@ -6631,18 +6625,6 @@ static void vmx_vcpu_run(struct kvm_vcpu
+-	GATE(0, "cpll_gpu", "cpll", 0,
+-			RK2928_CLKGATE_CON(3), 13, GFLAGS),
+-	GATE(0, "gpll_gpu", "gpll", 0,
+-			RK2928_CLKGATE_CON(3), 13, GFLAGS),
+-	GATE(0, "hdmiphy_gpu", "hdmiphy", 0,
+-			RK2928_CLKGATE_CON(3), 13, GFLAGS),
+-	GATE(0, "usb480m_gpu", "usb480m", 0,
++	COMPOSITE(0, "aclk_gpu_pre", mux_pll_src_4plls_p, 0,
++			RK2928_CLKSEL_CON(34), 5, 2, MFLAGS, 0, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(3), 13, GFLAGS),
+-	COMPOSITE_NOGATE(0, "aclk_gpu_pre", mux_aclk_gpu_pre_p, 0,
+-			RK2928_CLKSEL_CON(34), 5, 2, MFLAGS, 0, 5, DFLAGS),
  
- 	pt_guest_exit(vmx);
+ 	COMPOSITE(SCLK_SPI0, "sclk_spi0", mux_pll_src_2plls_p, 0,
+ 			RK2928_CLKSEL_CON(25), 8, 1, MFLAGS, 0, 7, DFLAGS,
+@@ -582,8 +573,8 @@ static struct rockchip_clk_branch rk3228
+ 	GATE(0, "pclk_peri_noc", "pclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(12), 2, GFLAGS),
  
--	/*
--	 * eager fpu is enabled if PKEY is supported and CR4 is switched
--	 * back on host, so it is safe to read guest PKRU from current
--	 * XSAVE.
--	 */
--	if (static_cpu_has(X86_FEATURE_PKU) &&
--	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE)) {
--		vcpu->arch.pkru = rdpkru();
--		if (vcpu->arch.pkru != vmx->host_pkru)
--			__write_pkru(vmx->host_pkru);
--	}
--
- 	kvm_load_host_xsave_state(vcpu);
+ 	/* PD_GPU */
+-	GATE(ACLK_GPU, "aclk_gpu", "aclk_gpu_pre", 0, RK2928_CLKGATE_CON(13), 14, GFLAGS),
+-	GATE(0, "aclk_gpu_noc", "aclk_gpu_pre", 0, RK2928_CLKGATE_CON(13), 15, GFLAGS),
++	GATE(ACLK_GPU, "aclk_gpu", "aclk_gpu_pre", 0, RK2928_CLKGATE_CON(7), 14, GFLAGS),
++	GATE(0, "aclk_gpu_noc", "aclk_gpu_pre", 0, RK2928_CLKGATE_CON(7), 15, GFLAGS),
  
- 	vmx->nested.nested_run_pending = 0;
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -809,11 +809,25 @@ void kvm_load_guest_xsave_state(struct k
- 		    vcpu->arch.ia32_xss != host_xss)
- 			wrmsrl(MSR_IA32_XSS, vcpu->arch.ia32_xss);
- 	}
-+
-+	if (static_cpu_has(X86_FEATURE_PKU) &&
-+	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-+	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
-+	    vcpu->arch.pkru != vcpu->arch.host_pkru)
-+		__write_pkru(vcpu->arch.pkru);
- }
- EXPORT_SYMBOL_GPL(kvm_load_guest_xsave_state);
- 
- void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
- {
-+	if (static_cpu_has(X86_FEATURE_PKU) &&
-+	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-+	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
-+		vcpu->arch.pkru = rdpkru();
-+		if (vcpu->arch.pkru != vcpu->arch.host_pkru)
-+			__write_pkru(vcpu->arch.host_pkru);
-+	}
-+
- 	if (kvm_read_cr4_bits(vcpu, X86_CR4_OSXSAVE)) {
- 
- 		if (vcpu->arch.xcr0 != host_xcr0)
-@@ -3529,6 +3543,9 @@ void kvm_arch_vcpu_load(struct kvm_vcpu
- 
- 	kvm_x86_ops->vcpu_load(vcpu, cpu);
- 
-+	/* Save host pkru register if supported */
-+	vcpu->arch.host_pkru = read_pkru();
-+
- 	/* Apply any externally detected TSC adjustments (due to suspend) */
- 	if (unlikely(vcpu->arch.tsc_offset_adjustment)) {
- 		adjust_tsc_offset_host(vcpu, vcpu->arch.tsc_offset_adjustment);
+ 	/* PD_BUS */
+ 	GATE(0, "sclk_initmem_mbist", "aclk_cpu", 0, RK2928_CLKGATE_CON(8), 1, GFLAGS),
 
 
