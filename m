@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3341D7921
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF841D792D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgERNB1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 May 2020 09:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgERNB1 (ORCPT
+        id S1727882AbgERNDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:03:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60458 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgERNDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:01:27 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73116C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:01:27 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jafOY-0001kn-0i; Mon, 18 May 2020 15:01:26 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 5897E100606; Mon, 18 May 2020 15:01:25 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Missing CLOCK_BOOTTIME_RAW?
-In-Reply-To: <20200518124902.yuw2rtmjndi7nbd2@pali>
-References: <20200508213122.f7srcd2gnduamtvs@pali> <87zhah4evs.fsf@nanos.tec.linutronix.de> <20200518111103.sj73h5j3r75zv2wp@pali> <87ftbxxz55.fsf@nanos.tec.linutronix.de> <20200518113522.y6sj7ypunsu6pi3s@pali> <87d071xwxv.fsf@nanos.tec.linutronix.de> <20200518124902.yuw2rtmjndi7nbd2@pali>
-Date:   Mon, 18 May 2020 15:01:25 +0200
-Message-ID: <87a725xuqi.fsf@nanos.tec.linutronix.de>
+        Mon, 18 May 2020 09:03:01 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jafPw-0006cd-7l; Mon, 18 May 2020 13:02:52 +0000
+Date:   Mon, 18 May 2020 15:02:51 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] exec: Change uselib(2) IS_SREG() failure to EACCES
+Message-ID: <20200518130251.zih2s32q2rxhxg6f@wittgenstein>
+References: <20200518055457.12302-1-keescook@chromium.org>
+ <20200518055457.12302-2-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Disposition: inline
+In-Reply-To: <20200518055457.12302-2-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pali Rohár <pali@kernel.org> writes:
-> On Monday 18 May 2020 14:13:48 Thomas Gleixner wrote:
->> Of course not, but the kernel relies on that application behaving
->> sanely. If it does not then the time stamps you are complaining about
->> are the least of your worries.
->
-> I do not thing it is too bad... When I needed to deal in userspace with
-> time/date/clock I just needed either "current time in UTC" to show it to
-> user (possible in different timezone and pretty formatted) or I needed
-> "timestamp since some epoch" suitable for measuring time differences.
->
-> For first case I used CLOCK_REALTIME and for second case I used
-> CLOCK_MONOTONIC_RAW (as it was not affected by adjtime()).
->
-> And I would like to know, it is correct to use these two clocks in those
-> situations?
+On Sun, May 17, 2020 at 10:54:54PM -0700, Kees Cook wrote:
+> Change uselib(2)' S_ISREG() error return to EACCES instead of EINVAL so
+> the behavior matches execve(2), and the seemingly documented value.
+> The "not a regular file" failure mode of execve(2) is explicitly
+> documented[1], but it is not mentioned in uselib(2)[2] which does,
+> however, say that open(2) and mmap(2) errors may apply. The documentation
+> for open(2) does not include a "not a regular file" error[3], but mmap(2)
+> does[4], and it is EACCES.
+> 
+> [1] http://man7.org/linux/man-pages/man2/execve.2.html#ERRORS
+> [2] http://man7.org/linux/man-pages/man2/uselib.2.html#ERRORS
+> [3] http://man7.org/linux/man-pages/man2/open.2.html#ERRORS
+> [4] http://man7.org/linux/man-pages/man2/mmap.2.html#ERRORS
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-It's your choice to do so. I prefer CLOCK_MONOTONIC simply because it's
-in human understandable units and not some assumed frequency.
+This is all extremely weird.
+uselib has been deprected since forever basically which makes me doubt
+this matters much but:
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-> Anyway, what would happen with CLOCK_BOOTTIME when during suspend is
-> that external RTC source shifted back? Is kernel guarantee that
-> CLOCK_BOOTTIME is always monotonic even in this case?
+Also - gulp (puts on flame proof suit) - may I suggest we check if there
+are any distros out there that still set CONFIG_USELIB=y and if not do
+what we did with the sysctl syscall and remove it? If someone yells we
+can always backpaddle...
 
-If the RTC delta is negative, then it's ignored, i.e. 0 sleep time
-injected.
-
-Thanks,
-
-        tglx
+Christian
