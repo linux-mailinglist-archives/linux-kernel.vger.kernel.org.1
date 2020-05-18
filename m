@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13331D8560
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93981D8475
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgERRzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33244 "EHLO mail.kernel.org"
+        id S1728815AbgERSCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:02:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731471AbgERRzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:48 -0400
+        id S1732537AbgERSCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:02:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40F1B20674;
-        Mon, 18 May 2020 17:55:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8290220884;
+        Mon, 18 May 2020 18:02:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824547;
-        bh=1nnHsVdBrNbkfWBXxTVXXxkC6uk3Re/8JIIgBHmsfGw=;
+        s=default; t=1589824959;
+        bh=PXKcnrdYSP9RGpx8YL6Ph46rp7ixJa2f5AWPppSHqVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=siygg+SbKtCVFo7VqU0fTZlIRng7hqpiB2mHCsQ+aSMccUy2odtS8RpQaFEYoR14g
-         PwD8aSF6Sh62BF8MdHw5BwelFS//XNmJ7zAItrcm28Dttr7URlpAskhSvBoZ7Iz2xa
-         Be8/2gYU0nbeSmhUVr+eWH0NiHOemGmatA3U1DE0=
+        b=mguJ5S2OvLtrrQtdR2AOLFctH/I/2CF5AJsK3agOgA9o2kmCJwJCTh85EO3n/T3x2
+         Rf6EmwlFMiQAgnjiV6qKMLzAEC6jg2x2RollUzNFnSGIwrxb2BWCC1ES9CfFyc3ZZu
+         7+RmUuehroQz19nAcN9gTWvQPyY8JOIIoQPtn6Ss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/147] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+        stable@vger.kernel.org, Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 071/194] gfs2: Another gfs2_walk_metadata fix
 Date:   Mon, 18 May 2020 19:36:01 +0200
-Message-Id: <20200518173518.835907574@linuxfoundation.org>
+Message-Id: <20200518173537.694046759@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
+[ Upstream commit 566a2ab3c9005f62e784bd39022d58d34ef4365c ]
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+Make sure we don't walk past the end of the metadata in gfs2_walk_metadata: the
+inode holds fewer pointers than indirect blocks.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Slightly clean up gfs2_iomap_get.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: a27a0c9b6a20 ("gfs2: gfs2_walk_metadata fix")
+Cc: stable@vger.kernel.org # v5.3+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/bmap.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index 581e7a290d98e..a3b0b4c56a190 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -865,6 +865,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
+diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
+index 08f6fbb3655e2..31ed264356253 100644
+--- a/fs/gfs2/bmap.c
++++ b/fs/gfs2/bmap.c
+@@ -528,10 +528,12 @@ static int gfs2_walk_metadata(struct inode *inode, struct metapath *mp,
+ 
+ 		/* Advance in metadata tree. */
+ 		(mp->mp_list[hgt])++;
+-		if (mp->mp_list[hgt] >= sdp->sd_inptrs) {
+-			if (!hgt)
++		if (hgt) {
++			if (mp->mp_list[hgt] >= sdp->sd_inptrs)
++				goto lower_metapath;
++		} else {
++			if (mp->mp_list[hgt] >= sdp->sd_diptrs)
+ 				break;
+-			goto lower_metapath;
+ 		}
+ 
+ fill_up_metapath:
+@@ -876,10 +878,9 @@ static int gfs2_iomap_get(struct inode *inode, loff_t pos, loff_t length,
+ 					ret = -ENOENT;
+ 					goto unlock;
+ 				} else {
+-					/* report a hole */
+ 					iomap->offset = pos;
+ 					iomap->length = length;
+-					goto do_alloc;
++					goto hole_found;
+ 				}
+ 			}
+ 			iomap->length = size;
+@@ -933,8 +934,6 @@ static int gfs2_iomap_get(struct inode *inode, loff_t pos, loff_t length,
+ 	return ret;
+ 
+ do_alloc:
+-	iomap->addr = IOMAP_NULL_ADDR;
+-	iomap->type = IOMAP_HOLE;
+ 	if (flags & IOMAP_REPORT) {
+ 		if (pos >= size)
+ 			ret = -ENOENT;
+@@ -956,6 +955,9 @@ static int gfs2_iomap_get(struct inode *inode, loff_t pos, loff_t length,
+ 		if (pos < size && height == ip->i_height)
+ 			ret = gfs2_hole_size(inode, lblock, len, mp, iomap);
  	}
- 
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
- 
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -880,7 +881,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
- 
--	pd->dma.dev = &pdev->dev;
- 
- 	INIT_LIST_HEAD(&pd->dma.channels);
++hole_found:
++	iomap->addr = IOMAP_NULL_ADDR;
++	iomap->type = IOMAP_HOLE;
+ 	goto out;
+ }
  
 -- 
 2.20.1
