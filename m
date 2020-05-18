@@ -2,113 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC841D7908
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 14:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3E41D7936
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgERMx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 08:53:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59920 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgERMx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 08:53:29 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jafGo-0005Y1-9c; Mon, 18 May 2020 12:53:26 +0000
-Date:   Mon, 18 May 2020 14:53:25 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.ws>
-Cc:     Aleksa Sarai <asarai@suse.de>, Kees Cook <keescook@chromium.org>,
-        linux-api@vger.kernel.org, containers@lists.linux-foundation.org,
+        id S1727930AbgERNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:04:04 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:40766 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726726AbgERNED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:04:03 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 37AF81A02E9;
+        Mon, 18 May 2020 15:04:02 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5C89A1A0AFE;
+        Mon, 18 May 2020 15:03:58 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 518EF402A8;
+        Mon, 18 May 2020 21:03:53 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
-Message-ID: <20200518125325.l2lpixp3ch7zuiwx@wittgenstein>
-References: <20200515234005.32370-1-sargun@sargun.me>
- <202005162344.74A02C2D@keescook>
- <20200517104701.bbn2d2rqaplwchdw@wittgenstein>
- <20200517112156.cphs2h33hx2wfcs4@yavin.dot.cyphar.com>
- <20200517142316.GA1996744@cisco>
- <20200517143311.fmxaf3pnopuaezl4@wittgenstein>
- <20200517144603.GD1996744@cisco>
- <20200517150215.GE1996744@cisco>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200517150215.GE1996744@cisco>
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/2] ARM: dts: imx50: Add src node interrupt
+Date:   Mon, 18 May 2020 20:54:19 +0800
+Message-Id: <1589806460-19592-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 17, 2020 at 09:02:15AM -0600, Tycho Andersen wrote:
-> On Sun, May 17, 2020 at 08:46:03AM -0600, Tycho Andersen wrote:
-> > On Sun, May 17, 2020 at 04:33:11PM +0200, Christian Brauner wrote:
-> > > struct seccomp_notif2 {
-> > > 	__u32 notif_size;
-> > > 	__u64 id;
-> > > 	__u32 pid;
-> > > 	__u32 flags;
-> > > 	struct seccomp_data data;
-> > > 	__u32 data_size;
-> > > };
-> > 
-> > I guess you need to put data_size before data, otherwise old userspace
-> > with a smaller struct seccomp_data will look in the wrong place.
-> > 
-> > But yes, that'll work if you put two sizes in, which is probably
-> > reasonable since we're talking about two structs.
-> 
-> Well, no, it doesn't either. Suppose we add a new field first to
-> struct seccomp_notif2:
-> 
-> struct seccomp_notif2 {
->     __u32 notif_size;
->     __u64 id;
->     __u32 pid;
->     __u32 flags;
->     struct seccomp_data data;
->     __u32 data_size;
->     __u32 new_field;
-> };
-> 
-> And next we add a new field to struct secccomp_data. When a userspace
-> compiled with just the new seccomp_notif2 field does:
-> 
-> seccomp_notif2.new_field = ...;
-> 
-> the compiler will put it in the wrong place for the kernel with the
-> new seccomp_data field too.
-> 
-> Sort of feels like we should do:
-> 
-> struct seccomp_notif2 {
->     struct seccomp_notif *notif;
->     struct seccomp_data *data;
-> };
-> 
-> ?
+Interrupt is a required property according to SRC binding, add
+it for SRC node.
 
-Oh yes of course, sorry that was my stupid typo. I meant:
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ arch/arm/boot/dts/imx50.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-struct seccomp_notif2 {
-    __u32 notif_size;
-    __u64 id;
-    __u32 pid;
-    __u32 flags;
-    struct seccomp_data *data;
-    __u32 data_size;
-    __u32 new_field;
-}
+diff --git a/arch/arm/boot/dts/imx50.dtsi b/arch/arm/boot/dts/imx50.dtsi
+index d325658..567dcc5 100644
+--- a/arch/arm/boot/dts/imx50.dtsi
++++ b/arch/arm/boot/dts/imx50.dtsi
+@@ -336,6 +336,7 @@
+ 			src: src@53fd0000 {
+ 				compatible = "fsl,imx50-src", "fsl,imx51-src";
+ 				reg = <0x53fd0000 0x4000>;
++				interrupts = <75>;
+ 				#reset-cells = <1>;
+ 			};
+ 
+-- 
+2.7.4
 
-at which point things should just work imho. This is similar to how the
-set_tid array works. The kernel doesn't need to allocate any more too.
-The kernel can just always use the currently know seccomp_data size.
-If the kernel supports _less_ than what the caller expects, it can
-report the supported size in data_size to userspace returning EINVAL. If
-it supports more then it can just copy the known fields, I guess.
-
-This way we don't need to add yet another ioctl...
-
-Christian
