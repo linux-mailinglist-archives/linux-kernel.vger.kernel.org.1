@@ -2,45 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B381D726E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE3D1D7278
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgERICJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S1727890AbgERIEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgERICI (ORCPT
+        with ESMTP id S1726828AbgERIEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:02:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA48EC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:02:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OliYoPmApMwDOHWsUxWzzlLoF4O4orV+YLS9RaxjrMw=; b=AGCeSWw1H7TP4HeQRRRncdVmin
-        gN/Q0QiXiisyOOaP2xe8tzMKvo7i2TYWtsGZef48hP4qeBj5G3s3GSVX4IfNpWwDrFcCnBKSL6Y+e
-        VWXRhlRAPHo9FyLbdwFQZ7d87AB80BppaTyhtNLvX0L55U5zIt7vH8Jxbz6dfNyP6IbCEFjcNcp6E
-        TwLtHg6hadv20BwucTHbt37Ki/CZhk/dV4kyZ+RVKlOy9wUUT1gWisClaifFVBPal5xFL5apXaiX6
-        ZNhsgDf2Byw/3JgnGBboOYDvl4ThYChij6t/zqOTAH6614tdSHq+0Id77u4l9uENdg43xNihknduH
-        EoHbTPKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jaaiO-0004iF-AJ; Mon, 18 May 2020 08:01:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B2657306089;
-        Mon, 18 May 2020 10:01:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 51982200CB610; Mon, 18 May 2020 10:01:33 +0200 (CEST)
-Date:   Mon, 18 May 2020 10:01:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Mon, 18 May 2020 04:04:23 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA030C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:04:22 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jaajp-0004W8-4K; Mon, 18 May 2020 10:03:05 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 748921006FB; Mon, 18 May 2020 10:03:04 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -59,40 +45,45 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
         Wei Liu <wei.liu@kernel.org>,
         Michael Kelley <mikelley@microsoft.com>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
 Subject: Re: [patch V6 04/37] x86: Make hardware latency tracing explicit
-Message-ID: <20200518080133.GI2940@hirez.programming.kicks-ass.net>
-References: <20200515234547.710474468@linutronix.de>
- <20200515235124.783722942@linutronix.de>
+In-Reply-To: <CALCETrVuA25n_d-3KMvvDxuqZeBEEYb6n=QAXOhBFkgS1Dk+UA@mail.gmail.com>
+References: <20200515234547.710474468@linutronix.de> <20200515235124.783722942@linutronix.de> <CALCETrW2negGYRSQ8dqFVdiWGtYpYf6nKe5_hkotNv0e5mNBxA@mail.gmail.com> <87zha7c5h5.fsf@nanos.tec.linutronix.de> <CALCETrVuA25n_d-3KMvvDxuqZeBEEYb6n=QAXOhBFkgS1Dk+UA@mail.gmail.com>
+Date:   Mon, 18 May 2020 10:03:04 +0200
+Message-ID: <877dx9zn47.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515235124.783722942@linutronix.de>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 01:45:51AM +0200, Thomas Gleixner wrote:
-> --- a/arch/x86/kernel/nmi.c
-> +++ b/arch/x86/kernel/nmi.c
-> @@ -334,6 +334,7 @@ static noinstr void default_do_nmi(struc
->  	__this_cpu_write(last_nmi_rip, regs->ip);
->  
->  	instrumentation_begin();
-> +	ftrace_nmi_handler_enter();
->  
->  	handled = nmi_handle(NMI_LOCAL, regs);
->  	__this_cpu_add(nmi_stats.normal, handled);
-> @@ -420,6 +421,7 @@ static noinstr void default_do_nmi(struc
->  		unknown_nmi_error(reason, regs);
->  
->  out:
-> +	ftrace_nmi_handler_exit();
->  	instrumentation_end();
->  }
+Andy Lutomirski <luto@kernel.org> writes:
+> On Sun, May 17, 2020 at 1:48 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> Remember this is about ensuring that all the state is properly
+>> established before any of this instrumentation muck can happen.
+>>
+>> DR7 handling is specific to #DB and done even before nmi_enter to
+>> prevent recursion.
+>
+> So why is this change needed?
 
-Yeah, so I'm confused about this and the previous patch too. Why not
-do just this? Remove that ftrace_nmi_handler.* crud from
-nmi_{enter,exit}() and stick it here? Why do we needs the
-nmi_{enter,exit}_notrace() thing?
+We really want nmi_enter() to be the carefully crafted mechanism which
+establishes correct state in whatever strange context the exception
+hits. Not more, not less.
+
+Random instrumentation has absolutely no business there and I went a
+long way to make sure that this is enforcible by objtool.
+
+Aside of that the tracing which is contained in nmi_enter() is about
+taking timestamps for hardware latency detection. If someone runs
+hardware latency detection with active break/watchpoints then I really
+can't help it.
+
+Thanks,
+
+        tglx
