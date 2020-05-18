@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2EE1D86AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150F01D86BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387868AbgERS0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:26:42 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:20732 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730445AbgERS0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:26:34 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 18 May 2020 11:26:32 -0700
-Received: from localhost (unknown [10.200.192.41])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 8500FB2C85;
-        Mon, 18 May 2020 14:26:33 -0400 (EDT)
-Date:   Mon, 18 May 2020 11:26:33 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     Julien Thierry <jthierry@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC][PATCH 4/5] objtool: Enable compilation of objtool for all
- architectures
-Message-ID: <20200518182633.GL9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Julien Thierry <jthierry@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1588888003.git.mhelsley@vmware.com>
- <9f709ea2ae66cc03b3ff3329baa8f670ccd0e368.1588888003.git.mhelsley@vmware.com>
- <f9eedb02-54fe-fb96-fbcc-5f40f41e571a@redhat.com>
- <20200513155948.GI9040@rlwimi.vmware.com>
- <e369f0a9-30fc-5754-8cff-bf238ab0b716@redhat.com>
- <20200515205135.5pknexlld53oicu5@treble>
+        id S1730222AbgERS1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:27:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731371AbgERS1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:27:25 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B2272065F;
+        Mon, 18 May 2020 18:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589826444;
+        bh=vUexAKayig7hoQMTXHum2daB+jiGgP2Hd7w/7txXwSI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jeqK2OJ6xFtqCNfN1ky7GwcFDsbDnhDlARUGcXd/rWqLG1sHGTSJARhdKe+3y/LCJ
+         iHQseL6fG/6OqBdVnTsWEvNhB2EfPTXY6ZLceYvCD96AeJXHNC9pFJjEvD/JUuZCZd
+         A1LlsKRgjQyaubXUtHLYEOujo3EDZJKJna3WYR0Q=
+Received: by mail-oi1-f169.google.com with SMTP id l6so4016667oic.9;
+        Mon, 18 May 2020 11:27:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530tR//h4pBrj2MsZ7gQmZ9F+cw2JY5PmF1z/eJDmmxADz0RC5fy
+        AXxf9nDEkvr1tzkMXQMJGbBUgellaU+OgbpHYg==
+X-Google-Smtp-Source: ABdhPJx3fgeoOHAumedf5oacXjRoxMizojAOnq9MnOT4ZX6kWsKK8ZqiKg8ShKAj1LLh0Vm4moDpvYl9CG1Oub20DaY=
+X-Received: by 2002:aca:1904:: with SMTP id l4mr523744oii.106.1589826443359;
+ Mon, 18 May 2020 11:27:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200515205135.5pknexlld53oicu5@treble>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+References: <20200513104615.7905-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200513104615.7905-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200514125709.GA8436@bogus> <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
+In-Reply-To: <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 18 May 2020 12:27:11 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJxqdi2MmyHZteMOpx5yy_o+ZxaqGHMUV7aCknWWQ0ptg@mail.gmail.com>
+Message-ID: <CAL_JsqJxqdi2MmyHZteMOpx5yy_o+ZxaqGHMUV7aCknWWQ0ptg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: Add Nand Flash Controller
+ support for Intel LGM SoC
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Mason Yang <masonccyang@mxic.com.tw>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Vignesh R <vigneshr@ti.com>,
+        "hauke.mehrtens" <hauke.mehrtens@intel.com>,
+        devicetree@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        cheol.yong.kim@intel.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        qi-ming.wu@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 03:51:35PM -0500, Josh Poimboeuf wrote:
-> On Wed, May 13, 2020 at 05:55:31PM +0100, Julien Thierry wrote:
-> > > > Since the stuff under arch/missing is only weak symbols to make up for
-> > > > missing subcmd implementations, can we put everything in a file
-> > > > subcmd_defaults.c (name up for debate!) that would be always be compiled an
-> > > > linked. And some SUBCMD_XXX is set to "y", the corresponding object file
-> > > > gets compiled and overrides the weak symbols from subcmd_defaults.c .
-> > > 
-> > > Hmm, I like keeping them separated along similar lines to the other
-> > > code because it makes it easier to see the intended correspondence and
-> > > likely will keep the files more readable / smaller. I could
-> > > just move them out of arch/missing and into missing_check.c and so forth.
-> > > 
-> > > What do you think of that?
-> > > 
-> > 
-> > I do prefer that to the introduction of an arch/missing.
-> > 
-> > Still, I'm not sure I see much benefit in splitting those small
-> > implementations in separate files, but it's not a problem either. This seems
-> > more a matter of taste rather than one approach working better than the
-> > other. So it's more up to what the maintainer prefer! :)
-> 
-> For now I'd prefer getting rid of the 'missing' arch and just having a
-> single top-level weak.c which has all the weak functions in it.  Keeps
-> the clutter down :-)
-> 
-> Down the road, if the number of weak functions got out of hand then we
-> could look at splitting them up into multiple files.
+On Thu, May 14, 2020 at 8:08 PM Ramuthevar, Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+>
+> Hi Rob,
+>
+> On 14/5/2020 8:57 pm, Rob Herring wrote:
+> > On Wed, 13 May 2020 18:46:14 +0800, Ramuthevar,Vadivel MuruganX wrote:
+> >> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> >>
+> >> Add YAML file for dt-bindings to support NAND Flash Controller
+> >> on Intel's Lightning Mountain SoC.
+> >>
+> >> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> >> ---
+> >>   .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 83 ++++++++++++++++++++++
+> >>   1 file changed, 83 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> >>
+> >
+> >
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >
+> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: nand-controller@e0f00000: 'dmas' is a dependency of 'dma-names'
+> >
+> > See https://patchwork.ozlabs.org/patch/1289160
+> >
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure dt-schema is up to date:
+> >
+> > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> >
+> > Please check and re-submit.
+> Thank you very much for review comments...
+> I didn't find build errors, successfully built.
 
-OK, I'll merge them all into weak.c
+You need to build without DT_SCHEMA_FILES set or be on 5.7-rc (you
+should be on a current -rcX at least for any patch submission). This
+comes from the core schema.
 
-Thanks!
-
-Cheers,
-    -Matt Helsley
+Rob
