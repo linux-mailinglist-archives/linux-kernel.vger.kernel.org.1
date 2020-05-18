@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC87E1D84D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0177B1D84E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732098AbgERR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:59:41 -0400
-Received: from rcdn-iport-8.cisco.com ([173.37.86.79]:28453 "EHLO
-        rcdn-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731609AbgERR7e (ORCPT
+        id S1732130AbgERR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:51 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:41262 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730218AbgERR7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:59:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1409; q=dns/txt; s=iport;
-  t=1589824773; x=1591034373;
-  h=from:to:cc:subject:date:message-id;
-  bh=I6Ye1oWv20B/Y6eYK4Iqy3OEerd2+jAvxiUKGYznuqo=;
-  b=MYFCMeDkjwhy+ggODO8sP8T2AQ7PgXmhypyokvTpyshWPHyB1JsIqlQJ
-   d35Uk3T0qJRmdhchagZdepHNn94I/ivf0RKPfnDIjzpg0WZu2CnGBtlXR
-   F1R7DngPWhZnHwyvnUU1l71h63RMnQcNe/KoNNOislgn7xHUjzL+SJ9DZ
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.73,407,1583193600"; 
-   d="scan'208";a="768458453"
-Received: from rcdn-core-10.cisco.com ([173.37.93.146])
-  by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 18 May 2020 17:59:32 +0000
-Received: from zorba.cisco.com ([10.24.1.223])
-        by rcdn-core-10.cisco.com (8.15.2/8.15.2) with ESMTP id 04IHxUGL000659;
-        Mon, 18 May 2020 17:59:32 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jinhua Wu <jinhwu@cisco.com>, xe-linux-external@cisco.com,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mtd: spi-nor: intel-spi: fix forced writable option
-Date:   Mon, 18 May 2020 10:59:30 -0700
-Message-Id: <20200518175930.10948-2-danielwa@cisco.com>
-X-Mailer: git-send-email 2.17.1
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.1.223, [10.24.1.223]
-X-Outbound-Node: rcdn-core-10.cisco.com
+        Mon, 18 May 2020 13:59:45 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id CA4C980648;
+        Mon, 18 May 2020 19:59:40 +0200 (CEST)
+Date:   Mon, 18 May 2020 19:59:39 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LinusW <linus.walleij@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/6] drm: Prepare to use a GPIO on ti-sn65dsi86 for
+ Hot Plug Detect
+Message-ID: <20200518175939.GA770425@ravnborg.org>
+References: <20200507213500.241695-1-dianders@chromium.org>
+ <20200509201511.GD30802@ravnborg.org>
+ <CAD=FV=VBU7JmTdvgWjyj_ytrFmz6Gkx2OjVr1FxLh9DBG_jN6w@mail.gmail.com>
+ <CAD=FV=UNuwb+YYJKw9+HNMKUNfuNFxj+Gr+yB9tXANbXAvDgCg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=UNuwb+YYJKw9+HNMKUNfuNFxj+Gr+yB9tXANbXAvDgCg@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=A5vhPJNbEhw8tvalPI0A:9 a=CjuIK1q_8ugA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This option currently doesn't work as expected. If the BIOS has this
-flash as read-only there is no way to change this thru the driver.
-There is a parameter which allows the flash to become writable with the
-"writable" option to the module, but it does nothing if the BIOS has it
-set to read-only.
+Hi Douglas.
 
-I would expect this option would make the flash writable regardless of
-the BIOS settings. This patch changes this option so the BIOS setting
-doesn't stop the writable option from enabling read write on the flash.
+> > Given the previous feedback from Linus W, Stephen, and Laurent I
+> > expect things are good enough to land now, but it'd be good to get
+> > confirmation (I removed some of the previous tags just to get
+> > confirmation).  If we can get review tags early next week maybe it'll
+> > still be in time to land for 5.8?
+> 
+> I think all the others have reviews now.  Is there anything blocking
+> them from getting applied?
+Applied, including the small fix pointed out by Linus.
 
-Original patch by Jinhua Wu <jinhwu@cisco.com>
-
-Cc: Jinhua Wu <jinhwu@cisco.com>
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- drivers/mtd/spi-nor/controllers/intel-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
-index e5a3d51a2e4d..68a5877bfc0b 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
-@@ -954,7 +954,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
- 	intel_spi_fill_partition(ispi, &part);
- 
- 	/* Prevent writes if not explicitly enabled */
--	if (!ispi->writeable || !writeable)
-+	if (!ispi->writeable && !writeable)
- 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
- 
- 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
--- 
-2.17.1
-
+	Sam
