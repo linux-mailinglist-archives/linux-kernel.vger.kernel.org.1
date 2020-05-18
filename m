@@ -2,87 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5771D74A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F5A1D74E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgERKBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 06:01:48 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:50097 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgERKBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 06:01:47 -0400
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6F727200017;
-        Mon, 18 May 2020 10:01:45 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/3] TTY improve n_gsm support
-In-Reply-To: <20200518084517.2173242-4-gregory.clement@bootlin.com>
-References: <20200518084517.2173242-1-gregory.clement@bootlin.com> <20200518084517.2173242-4-gregory.clement@bootlin.com>
-Date:   Mon, 18 May 2020 12:01:45 +0200
-Message-ID: <87ftbxfto6.fsf@FE-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726500AbgERKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:13:16 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48832 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgERKNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 06:13:16 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D9583200060;
+        Mon, 18 May 2020 12:13:14 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 759A6200781;
+        Mon, 18 May 2020 12:13:10 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D20A402A6;
+        Mon, 18 May 2020 18:13:04 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2] dt-bindings: reset: Convert i.MX reset to json-schema
+Date:   Mon, 18 May 2020 18:03:32 +0800
+Message-Id: <1589796212-9993-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Convert the i.MX reset binding to DT schema format using json-schema.
 
-> Hello,
->
-> This series is the second version of patch improving n_gms support
-> especially with TELIT LE910. However the fix should benefit to any
-> modem supporting cmux.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- add the compatible strings per SoC;
+	- use "reset-controller" as node name instead of src;
+	- add interrupt items description.
+---
+ .../devicetree/bindings/reset/fsl,imx-src.txt      | 49 -----------
+ .../devicetree/bindings/reset/fsl,imx-src.yaml     | 98 ++++++++++++++++++++++
+ 2 files changed, 98 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.txt
+ create mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
 
-You can just ignore the emails from this point, I forgot to remove the
-remaining .patch!
-
-Sorry for the noise
-
-Gregory
-
->
-> The first patch is just about improving debugging output.
->
-> The second one removes a tty optimization which make the LE910 hang.
->
-> The last one fixes an issue observed on the LE910 but should benefit
-> to all the modem. We observed that pretty quickly the transfer done
-> using the virtual tty were blocked. We found that it was due of a
-> wakeup to the real tty. Without this fix, the real tty wait for
-> indefinitely.
->
-> Thanks to Jiri Slaby for the review.
->
-> Changelog:
->  v1 -> v2:
->  - don't replace the pr_info by pr_debug
->  - remove the superfluous printk("\n");
->  - use --follow option with git log to find the original commit to fix
->  - use tty_port_tty_wakeup
->  - use 'for' loop instead of 'while'
->
-> Gregory
->
-> Gregory CLEMENT (3):
->   tty: n_gsm: Improve debug output
->   tty: n_gsm: Fix SOF skipping
->   tty: n_gsm: Fix waking up upper tty layer when room available
->
->  drivers/tty/n_gsm.c | 48 +++++++++++++++++++++++----------------------
->  1 file changed, 25 insertions(+), 23 deletions(-)
->
-> -- 
-> 2.26.2
->
-
+diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt b/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
+deleted file mode 100644
+index 6ed79e6..0000000
+--- a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-Freescale i.MX System Reset Controller
+-======================================
+-
+-Please also refer to reset.txt in this directory for common reset
+-controller binding usage.
+-
+-Required properties:
+-- compatible: Should be "fsl,<chip>-src"
+-- reg: should be register base and length as documented in the
+-  datasheet
+-- interrupts: Should contain SRC interrupt and CPU WDOG interrupt,
+-  in this order.
+-- #reset-cells: 1, see below
+-
+-example:
+-
+-src: src@20d8000 {
+-        compatible = "fsl,imx6q-src";
+-        reg = <0x020d8000 0x4000>;
+-        interrupts = <0 91 0x04 0 96 0x04>;
+-        #reset-cells = <1>;
+-};
+-
+-Specifying reset lines connected to IP modules
+-==============================================
+-
+-The system reset controller can be used to reset the GPU, VPU,
+-IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
+-nodes should specify the reset line on the SRC in their resets
+-property, containing a phandle to the SRC device node and a
+-RESET_INDEX specifying which module to reset, as described in
+-reset.txt
+-
+-example:
+-
+-        ipu1: ipu@2400000 {
+-                resets = <&src 2>;
+-        };
+-        ipu2: ipu@2800000 {
+-                resets = <&src 4>;
+-        };
+-
+-The following RESET_INDEX values are valid for i.MX5:
+-GPU_RESET     0
+-VPU_RESET     1
+-IPU1_RESET    2
+-OPEN_VG_RESET 3
+-The following additional RESET_INDEX value is valid for i.MX6:
+-IPU2_RESET    4
+diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
+new file mode 100644
+index 0000000..7cd6095
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
+@@ -0,0 +1,98 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reset/fsl,imx-src.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX System Reset Controller
++
++maintainers:
++  - Philipp Zabel <p.zabel@pengutronix.de>
++
++description: |
++  The system reset controller can be used to reset the GPU, VPU,
++  IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
++  nodes should specify the reset line on the SRC in their resets
++  property, containing a phandle to the SRC device node and a
++  RESET_INDEX specifying which module to reset, as described in
++  reset.txt
++
++  The following RESET_INDEX values are valid for i.MX5:
++    GPU_RESET     0
++    VPU_RESET     1
++    IPU1_RESET    2
++    OPEN_VG_RESET 3
++  The following additional RESET_INDEX value is valid for i.MX6:
++    IPU2_RESET    4
++
++properties:
++  compatible:
++    oneOf:
++      - description: on i.MX51 the following compatible must be specified
++        items:
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX50 the following compatibles must be specified
++        items:
++          - const: "fsl,imx50-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX53 the following compatibles must be specified
++        items:
++          - const: "fsl,imx53-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX6Q the following compatibles must be specified
++        items:
++          - const: "fsl,imx6q-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX6SX the following compatibles must be specified
++        items:
++          - const: "fsl,imx6sx-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX6SL the following compatibles must be specified
++        items:
++          - const: "fsl,imx6sl-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX6UL the following compatibles must be specified
++        items:
++          - const: "fsl,imx6ul-src"
++          - const: "fsl,imx51-src"
++
++      - description: on i.MX6SLL the following compatibles must be specified
++        items:
++          - const: "fsl,imx6sll-src"
++          - const: "fsl,imx51-src"
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: SRC interrupt
++      - description: CPU WDOG interrupts out of SRC
++    minItems: 1
++    maxItems: 2
++
++  '#reset-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    reset-controller@73fd0000 {
++        compatible = "fsl,imx51-src";
++        reg = <0x73fd0000 0x4000>;
++        interrupts = <75>;
++        #reset-cells = <1>;
++    };
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.7.4
+
