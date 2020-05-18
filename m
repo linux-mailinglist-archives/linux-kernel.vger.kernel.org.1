@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE551D8957
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819CB1D898A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgERUgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgERUgD (ORCPT
+        id S1726615AbgERUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:45:23 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16615 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgERUpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:36:03 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399C4C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:36:02 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w10so11335815ljo.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 13:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3L59nRthiFfkytay0hS/vHEY6X7pgsTeIQ+1Fo4gUXg=;
-        b=SmZaZsDyw7GcMLk81eBDm80EPCTMBbXKR9C3yTzJwxSO01tUBrvmpyoFK1EIYATfw7
-         vlcIOZgFCAqWgZFgvkxhXt4QYMKxCUTF1cv+i3B7/VToVBSDKPvauPxraf1h3Q0U6LwI
-         wgk0/VVMKdLDTxOuI8VsdAYYkYI7r8kikf+YcONg9Gb0XW9lWTFUnIXjBFPt03J9tIEk
-         X3OFi4LVEPVgtCuzZGTRvzu7JGInPPNZjkXFSPaQ/K70GBaom5acNi3+/EHqjbhOHIgg
-         ft0/dZxDJyZyrmn76Ai2Fard59qXKbiWriyRtYhh+0WIGvqz+QmM/Roq97E7dAWcG3S4
-         JDvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3L59nRthiFfkytay0hS/vHEY6X7pgsTeIQ+1Fo4gUXg=;
-        b=Gcov+wFJcd4KrhAuKjs5WrjS89vo58aB5x0glrGe9sPqkF73BOQ/MvlLbYHgr3eAji
-         U8b3fMjcWoi67Gtq5YUxy0nJ/wsPNvAoyEgqr7OsYovp8CbypFuahCQ4g3RSg+oddF7f
-         HmQuROYU45Xwc5j2iHxE14QijL5DBEBM0XBX+ntygkXVlP8FlfAN3Zd4VWGYVaENW0LO
-         Ty/F7274c3/WzRmjNVHYx6fP+fN8DJmnQpWOg+wrQQ2rXkaD/Ae3QZ4Ym1AHmXGOBnTZ
-         KM6tL14nkHwyYfXf1TEmyqEC7UOcWMcxP2lSnadS3E2F/HHrPuuwZ+KCKxz89KzCSeq/
-         UBRA==
-X-Gm-Message-State: AOAM5320g+xvOnm8cw6r16aSbPxbvP57PFaV2W7bgdozWnUAM0f1utlv
-        Q4v8TTLewQySYBkHz3U8MsCpyF/fcEE9J0x9YTNzNvu9
-X-Google-Smtp-Source: ABdhPJwphy4mnxySWsCfrCGpUDbuyK5wlVe+z53mZjWJjOpJ2rJ0VcCksH6Fuhxx0vqcUdLwwOACQcy6cEKrSvg24CU=
-X-Received: by 2002:a05:651c:50e:: with SMTP id o14mr11720435ljp.52.1589834160491;
- Mon, 18 May 2020 13:36:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <1589831903-27800-1-git-send-email-jrdr.linux@gmail.com> <20200518201737.GV16070@bombadil.infradead.org>
-In-Reply-To: <20200518201737.GV16070@bombadil.infradead.org>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 19 May 2020 02:14:01 +0530
-Message-ID: <CAFqt6zbcn5kEbtY1fod4yy_PETKX8zVM2NjsY0HHyOixiu2q4w@mail.gmail.com>
+        Mon, 18 May 2020 16:45:23 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec2f3550000>; Mon, 18 May 2020 13:43:01 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 18 May 2020 13:45:23 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 18 May 2020 13:45:23 -0700
+Received: from [10.2.55.90] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
+ 2020 20:45:23 +0000
 Subject: Re: [RFC] mm/gup.c: Use gup_flags as parameter instead of passing
  write flag
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <1589831903-27800-1-git-send-email-jrdr.linux@gmail.com>
+ <20200518201737.GV16070@bombadil.infradead.org>
+ <CAFqt6zbcn5kEbtY1fod4yy_PETKX8zVM2NjsY0HHyOixiu2q4w@mail.gmail.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <975cc333-e9f4-29e4-db0e-00ea8b8a7c25@nvidia.com>
+Date:   Mon, 18 May 2020 13:45:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAFqt6zbcn5kEbtY1fod4yy_PETKX8zVM2NjsY0HHyOixiu2q4w@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589834581; bh=ETg7oDnQAPuL0vMyRI/CbHbu8E+SOEsdUwm22tCAnLU=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GyymXkanZutr+09L/dWOeefPVDI//sAgZNsA8dPfSFpciSS58Q3CIzlVjLHO76Nhp
+         50i0yZV+QYWQFd0OExdjQsfvMRIvReSnHxRr11TPIsBv73/9IKW0FqpoVSvjqPyxQo
+         lJKwxgvG2ju8DvL8E9XuHg2knObVvmuPk8Zcz9yfFE+xOEp+STwT3C1WpSSBmD2jmI
+         PQ25nQfHUXY2GqTf+HmPKaurXX+Y5D9d+e6wjlaw17BbpdHq1UNmHjG0PFt4Nmxmy3
+         iPIpsagw8tzOTmyVb8lDdrP3OV5kldhRe+VW/kDSn6Tv6QAn5kyTOHtt5zYM8wu3LO
+         C71DsYpo5n6Tg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19 May, 2020, 1:47 AM Matthew Wilcox, <willy@infradead.org> wrote:
->
-> On Tue, May 19, 2020 at 01:28:23AM +0530, Souptick Joarder wrote:
-> > The idea is to get rid of write parameter. Instead caller will pass
-> > FOLL_WRITE to __get_user_pages_fast(). This will not change any
-> > functionality of the API. Once it is upstream all the callers will
-> > be changed to pass FOLL_WRITE.
->
-> Uhh ... until you change all the callers, haven't you just broken all
-> the callers?
+On 2020-05-18 13:44, Souptick Joarder wrote:
+> On Tue 19 May, 2020, 1:47 AM Matthew Wilcox, <willy@infradead.org> wrote:
+>>
+>> On Tue, May 19, 2020 at 01:28:23AM +0530, Souptick Joarder wrote:
+>>> The idea is to get rid of write parameter. Instead caller will pass
+>>> FOLL_WRITE to __get_user_pages_fast(). This will not change any
+>>> functionality of the API. Once it is upstream all the callers will
+>>> be changed to pass FOLL_WRITE.
+>>
+>> Uhh ... until you change all the callers, haven't you just broken all
+>> the callers?
+> 
+> All the callers have called the API with either 1 or 0.  I think, it's
+> not going to break
+> any of the callers.
 
-All the callers have called the API with either 1 or 0.  I think, it's
-not going to break
-any of the callers.
+Maybe so, but it's still "wrong" to do that, because it only works more
+or less accidentally. That is, it works in spite of a type safety
+violation. So we don't want to do that sort of thing unless there is
+a compelling reason.
 
->
-> > -int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
-> > -                       struct page **pages)
-> > +int __get_user_pages_fast(unsigned long start, int nr_pages,
-> > +                     unsigned int gup_flags, struct page **pages)
-> >  {
-> >       unsigned long len, end;
-> >       unsigned long flags;
-> > @@ -2685,10 +2692,7 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
-> >        * Internally (within mm/gup.c), gup fast variants must set FOLL_GET,
-> >        * because gup fast is always a "pin with a +1 page refcount" request.
-> >        */
-> > -     unsigned int gup_flags = FOLL_GET;
-> > -
-> > -     if (write)
-> > -             gup_flags |= FOLL_WRITE;
-> > +     gup_flags |= FOLL_GET;
+In addition to that, I am at the exact moment putting together a minor
+refactoring of this function, because I need a FOLL_PIN variant:
+__pin_user_pages_fast(), as part of my work to change over a few dozen
+gup call sites to pin_user_pages*().
+
+(In fact, I was wondering whether to stick with the "write" parameter, for
+the new __pin_user_pages_fast(), or go with gup_flags. That could go either
+way: gup_flags provides a nicer API, but "write" matches the existing
+callers.)
+
+So in other words, if you do go out and change all the call sites (there only
+seem to be about 7, outside of gup.c, actually), that's going to conflict
+a little bit with what I'm doing here.
+
+So, how would you like proceed? If you want to do the full conversion
+(which really should include the call sites), it would be easier for me
+if you based it on my upcoming small patchset, which I expect to post
+shortly (later today).
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+> 
+>>
+>>> -int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
+>>> -                       struct page **pages)
+>>> +int __get_user_pages_fast(unsigned long start, int nr_pages,
+>>> +                     unsigned int gup_flags, struct page **pages)
+>>>   {
+>>>        unsigned long len, end;
+>>>        unsigned long flags;
+>>> @@ -2685,10 +2692,7 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
+>>>         * Internally (within mm/gup.c), gup fast variants must set FOLL_GET,
+>>>         * because gup fast is always a "pin with a +1 page refcount" request.
+>>>         */
+>>> -     unsigned int gup_flags = FOLL_GET;
+>>> -
+>>> -     if (write)
+>>> -             gup_flags |= FOLL_WRITE;
+>>> +     gup_flags |= FOLL_GET;
+> 
+
