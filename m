@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965E21D823A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082CD1D80E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730817AbgERRyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
+        id S1729516AbgERRnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731303AbgERRy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:28 -0400
+        id S1728916AbgERRmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:42:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8739220715;
-        Mon, 18 May 2020 17:54:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECE3820715;
+        Mon, 18 May 2020 17:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824468;
-        bh=daS6GalhjnGYoPZ3TDKNy1AUcN8WR2LaRd4LmL2ZeTQ=;
+        s=default; t=1589823768;
+        bh=NElWdHSPE0Co3MWskyrX7Zbj7D9KTvqkOaLCXT/v8lg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMzwpjn/DgMehKt5ACzyEz2Nm0y2kuucjknlGs3nO+VRUSiCMnnZxkfKqP2ZZ0/IY
-         AB6myI22hCyX49y/DY0kH/BdYwT4XIQEvZND/XZKbuSmYdqlVEfMOeK6YRcvc1q2fY
-         n2lUN/8oMMh6WN+5Hn4PT4QThqNqUL2eBDkx8VZA=
+        b=DzBZCx1c4CH3S0x/lVvGWOqIVBNEKqJ7seSp6MncsPJm6xOohD2v4Z6yEk9vWgxX8
+         0jG+cxJ0dhczyUlGh056BawY4g7XDpitfRfxgBmMD5xipxNWAEuXLoF2OqijiPuZYT
+         v+81IxN9EfEeHKRhsM6YbRkKD8rVH6aHVJE/J5ik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
-        Guillaume Nault <gnault@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot+0251e883fe39e7a0cb0a@syzkaller.appspotmail.com,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 023/147] pppoe: only process PADT targeted at local interfaces
+Subject: [PATCH 4.9 08/90] sch_sfq: validate silly quantum values
 Date:   Mon, 18 May 2020 19:35:46 +0200
-Message-Id: <20200518173516.719890797@linuxfoundation.org>
+Message-Id: <20200518173452.906332765@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit b8c158395119be62294da73646a3953c29ac974b ]
+[ Upstream commit df4953e4e997e273501339f607b77953772e3559 ]
 
-We don't want to disconnect a session because of a stray PADT arriving
-while the interface is in promiscuous mode.
-Furthermore, multicast and broadcast packets make no sense here, so
-only PACKET_HOST is accepted.
+syzbot managed to set up sfq so that q->scaled_quantum was zero,
+triggering an infinite loop in sfq_dequeue()
 
-Reported-by: David Balažic <xerces9@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
+More generally, we must only accept quantum between 1 and 2^18 - 7,
+meaning scaled_quantum must be in [1, 0x7FFF] range.
+
+Otherwise, we also could have a loop in sfq_dequeue()
+if scaled_quantum happens to be 0x8000, since slot->allot
+could indefinitely switch between 0 and 0x8000.
+
+Fixes: eeaeb068f139 ("sch_sfq: allow big packets and be fair")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot+0251e883fe39e7a0cb0a@syzkaller.appspotmail.com
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ppp/pppoe.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/sched/sch_sfq.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -492,6 +492,9 @@ static int pppoe_disc_rcv(struct sk_buff
- 	if (!skb)
- 		goto out;
- 
-+	if (skb->pkt_type != PACKET_HOST)
-+		goto abort;
+--- a/net/sched/sch_sfq.c
++++ b/net/sched/sch_sfq.c
+@@ -635,6 +635,15 @@ static int sfq_change(struct Qdisc *sch,
+ 	if (ctl->divisor &&
+ 	    (!is_power_of_2(ctl->divisor) || ctl->divisor > 65536))
+ 		return -EINVAL;
 +
- 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
- 		goto abort;
- 
++	/* slot->allot is a short, make sure quantum is not too big. */
++	if (ctl->quantum) {
++		unsigned int scaled = SFQ_ALLOT_SIZE(ctl->quantum);
++
++		if (scaled <= 0 || scaled > SHRT_MAX)
++			return -EINVAL;
++	}
++
+ 	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
+ 					ctl_v1->Wlog))
+ 		return -EINVAL;
 
 
