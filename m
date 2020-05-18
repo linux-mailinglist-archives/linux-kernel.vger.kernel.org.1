@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4731D7EA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA1A1D7E9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgERQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 12:35:30 -0400
-Received: from mga01.intel.com ([192.55.52.88]:16277 "EHLO mga01.intel.com"
+        id S1728228AbgERQfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 12:35:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42489 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728139AbgERQf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 12:35:28 -0400
-IronPort-SDR: 40IqoeyLkjNPmSyUXc2WpRGsjJEgbxjpsWZqE3IaJM5hsjZsKMyZiL+f67mfJfXKJTYYoOcMBp
- Rd2sBipclFvg==
+        id S1727006AbgERQfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 12:35:25 -0400
+IronPort-SDR: KvElP5/2Y7fTqu6FoVpLkWWMKzv155dsgLkDqyBd+64stnJCSJUASKVMKbarWal+DJ48hSuGIk
+ a993Qs2DqCAw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 09:35:28 -0700
-IronPort-SDR: hLkPHdOVkwJQtdW+AOL0Q0hvbkJ2pRPqMvCpZ085tL1yBYifxSSSJXxQsB4G+4QIy8YR6N45K7
- GFjNsftEGtmA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 09:35:25 -0700
+IronPort-SDR: Qj+WXnA/CMDKXyowwwN+TrZetsAKeFYv7fSU5HWhoEvvxAtdWiX7hFyI6kx6ruaLQ1/tRW2ve8
+ xe+TfSNshqKg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="264014288"
-Received: from kharjox-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.180.35])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 09:35:27 -0700
-From:   Sean V Kelley <sean.v.kelley@linux.intel.com>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David E. Box" <david.e.box@linux.intel.com>
-Subject: [PATCH V2 1/3] pci: Add Designated Vendor Specific Capability
-Date:   Mon, 18 May 2020 09:35:21 -0700
-Message-Id: <20200518163523.1225643-2-sean.v.kelley@linux.intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518163523.1225643-1-sean.v.kelley@linux.intel.com>
-References: <20200518163523.1225643-1-sean.v.kelley@linux.intel.com>
+   d="scan'208";a="465640555"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005.fm.intel.com with ESMTP; 18 May 2020 09:35:20 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jaija-007T56-Mt; Mon, 18 May 2020 19:35:22 +0300
+Date:   Mon, 18 May 2020 19:35:22 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Maarten Brock <m.brock@vanmierlo.com>
+Cc:     Lukas Wunner <lukas@wunner.de>, Heiko Stuebner <heiko@sntech.de>,
+        gregkh@linuxfoundation.org, jslaby@suse.com,
+        matwey.kornilov@gmail.com, giulio.benetti@micronovasrl.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        linux-serial-owner@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] serial: 8250: Support separate rs485 rx-enable
+ GPIO
+Message-ID: <20200518163522.GK1634618@smile.fi.intel.com>
+References: <20200517215610.2131618-1-heiko@sntech.de>
+ <20200517215610.2131618-4-heiko@sntech.de>
+ <20200518151241.GG1634618@smile.fi.intel.com>
+ <20200518152247.slenjeiiplps7mcd@wunner.de>
+ <33547f6a596df2ca2ee8e647111e5fa1@vanmierlo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33547f6a596df2ca2ee8e647111e5fa1@vanmierlo.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "David E. Box" <david.e.box@linux.intel.com>
+On Mon, May 18, 2020 at 06:13:16PM +0200, Maarten Brock wrote:
+> On 2020-05-18 17:22, Lukas Wunner wrote:
+> > On Mon, May 18, 2020 at 06:12:41PM +0300, Andy Shevchenko wrote:
+> > > On Sun, May 17, 2020 at 11:56:08PM +0200, Heiko Stuebner wrote:
+> > > > From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> > > >
+> > > > The RE signal is used to control the duplex mode of transmissions,
+> > > > aka receiving data while sending in full duplex mode, while stopping
+> > > > receiving data in half-duplex mode.
+> > > >
+> > > > On a number of boards the !RE signal is tied to ground so reception
+> > > > is always enabled except if the UART allows disabling the receiver.
+> > > > This can be taken advantage of to implement half-duplex mode - like
+> > > > done on 8250_bcm2835aux.
+> > > >
+> > > > Another solution is to tie !RE to RTS always forcing half-duplex mode.
+> > > >
+> > > > And finally there is the option to control the RE signal separately,
+> > > > like done here by introducing a new rs485-specific gpio that can be
+> > > > set depending on the RX_DURING_TX setting in the common em485 callbacks.
+> > > 
+> > > ...
+> > > 
+> > > > +	port->rs485_re_gpio = devm_gpiod_get_optional(dev, "rs485-rx-enable",
+> > > > +						      GPIOD_OUT_HIGH);
+> > > 
+> > > While reviewing some other patch I realized that people are missing
+> > > the
+> > > point of these GPIO flags when pin is declared to be output.
+> > > 
+> > > HIGH here means "asserted" (consider active-high vs. active-low in
+> > > general). Is that the intention here?
+> > > 
+> > > Lukas, same question to your patch.
+> > 
+> > Yes.  "High", i.e. asserted, means "termination enabled" in the case of
+> > my patch and "receiver enabled" in the case of Heiko's patch.
+> 
+> But "High" on a gpio would disable the receiver when connected to !RE.
 
-Add pcie dvsec extended capability id along with helper macros to
-retrieve information from the headers.
+No, that's exactly the point of the terminology (asserted means active whatever
+polarity it is). You need to define active-low in GPIO description.
 
-https://members.pcisig.com/wg/PCI-SIG/document/12335
-
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- include/uapi/linux/pci_regs.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index f9701410d3b5..c96f08d1e711 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -720,6 +720,7 @@
- #define PCI_EXT_CAP_ID_DPC	0x1D	/* Downstream Port Containment */
- #define PCI_EXT_CAP_ID_L1SS	0x1E	/* L1 PM Substates */
- #define PCI_EXT_CAP_ID_PTM	0x1F	/* Precision Time Measurement */
-+#define PCI_EXT_CAP_ID_DVSEC	0x23	/* Desinated Vendor-Specific */
- #define PCI_EXT_CAP_ID_DLF	0x25	/* Data Link Feature */
- #define PCI_EXT_CAP_ID_PL_16GT	0x26	/* Physical Layer 16.0 GT/s */
- #define PCI_EXT_CAP_ID_MAX	PCI_EXT_CAP_ID_PL_16GT
-@@ -1062,6 +1063,10 @@
- #define  PCI_L1SS_CTL1_LTR_L12_TH_SCALE	0xe0000000  /* LTR_L1.2_THRESHOLD_Scale */
- #define PCI_L1SS_CTL2		0x0c	/* Control 2 Register */
- 
-+/* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
-+#define PCI_DVSEC_HEADER1		0x4 /* Vendor-Specific Header1 */
-+#define PCI_DVSEC_HEADER2		0x8 /* Vendor-Specific Header2 */
-+
- /* Data Link Feature */
- #define PCI_DLF_CAP		0x04	/* Capabilities Register */
- #define  PCI_DLF_EXCHANGE_ENABLE	0x80000000  /* Data Link Feature Exchange Enable */
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
