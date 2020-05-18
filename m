@@ -2,178 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609E91D89AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBCB1D89B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 23:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgERU57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:57:59 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:50090 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgERU57 (ORCPT
+        id S1727076AbgERVAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 17:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgERVAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:57:59 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8593C8030779;
-        Mon, 18 May 2020 20:57:54 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ztp9O0FMjJ7Y; Mon, 18 May 2020 23:57:53 +0300 (MSK)
-Date:   Mon, 18 May 2020 23:57:52 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 18/20] mips: csrc-r4k: Decrease r4k-clocksource rating
- if CPU_FREQ enabled
-Message-ID: <20200518205752.txbylbjt2zkwdwwe@mobilestation>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-19-Sergey.Semin@baikalelectronics.ru>
- <20200508154150.GB22247@alpha.franken.de>
- <20200511133121.cz5axbwynhmqkx7x@mobilestation>
- <20200515074827.6p5zx4sb3bmavjih@mobilestation>
- <20200515210647.GA22922@alpha.franken.de>
- <20200518134820.wedoumgbsllvhem6@mobilestation>
- <20200518163206.GA17800@alpha.franken.de>
+        Mon, 18 May 2020 17:00:04 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608A4C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 14:00:04 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id e7so4465879vsm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 14:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4vQAvXs8YebqJQNpvsgx+YOpDZkNHLr4/g7pen09M+Y=;
+        b=UzmCAWI3Et1k/ZetXQXo8P7q5FAsHXBwwnFSCGgtDVWBYyDfVAPaFJFOP+/jbBxQPZ
+         x63KZMFIM/dDJIh3QlTuH2yECcrZwYZCpiYH9MFtMCDOG8n18NeS6lZ7oPGMpcTGWu85
+         xnn+GfXK8uB79yIF6irfWr1brh/7UoNiSPDHs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4vQAvXs8YebqJQNpvsgx+YOpDZkNHLr4/g7pen09M+Y=;
+        b=ImecVOMy1VJOjDcZlBfSZmun7Gaq/IPeq5aCQ3DLxukDaUnc+DfE2RQI8K0ZLQBder
+         RH+sj9EWCtFs6HGBjo2wA/2G4PCzaCoDXQT07uOL9q+z9VXdlWLTUzQqYwz9umUoWutP
+         dHDdR+60f4FLWHB5aHy2lobYX3wO3wCUkoTXN6oVPtYafNq7QfvKsi39kV4nfZHodNjF
+         qEg0m299yItjiCCcTTliWdP0XR3oDJw4YHkBFVzCu42Qs0k2UK9BXRekhGOm+s6m6xzD
+         KPpzAzY9cLEwRNL4avFE8NjL93OmTWnxgviSQZz72R8KeqzATRn5Rpo1Ze3Ts3gl8NAd
+         6bUQ==
+X-Gm-Message-State: AOAM533n+DVdaw1Eeme2lJN8WBF8Ot3QEwJwybVnIfcveCxSXYr6bYOS
+        dq+W+ai5xR7HzqK35J4RgPNd2Ht4sD0=
+X-Google-Smtp-Source: ABdhPJxuUJFdYeUGAqN3gSiaNMAXBqYc5/yGDCn+TMAy4JZVzIDDyqvCGobYJ51tcDXfnolxPNK6Lw==
+X-Received: by 2002:a67:de97:: with SMTP id r23mr6866619vsk.102.1589835601976;
+        Mon, 18 May 2020 14:00:01 -0700 (PDT)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id v3sm3565225vka.45.2020.05.18.14.00.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 14:00:01 -0700 (PDT)
+Received: by mail-ua1-f51.google.com with SMTP id k4so3991454uaq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 14:00:00 -0700 (PDT)
+X-Received: by 2002:ab0:b13:: with SMTP id b19mr12713480uak.91.1589835600274;
+ Mon, 18 May 2020 14:00:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200518163206.GA17800@alpha.franken.de>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <1588329036-18732-1-git-send-email-smasetty@codeaurora.org>
+ <1588329036-18732-2-git-send-email-smasetty@codeaurora.org>
+ <CAD=FV=WXv9DYf7LWoFBvro=7Bzeb1_0bXAvRH-suzxnrCu+V2A@mail.gmail.com> <20200518143920.GJ32394@willie-the-truck>
+In-Reply-To: <20200518143920.GJ32394@willie-the-truck>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 18 May 2020 13:59:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=We2+5QHimzr+ukit9qkDKQaaTHYEZGkVbOwsNuy11k9A@mail.gmail.com>
+Message-ID: <CAD=FV=We2+5QHimzr+ukit9qkDKQaaTHYEZGkVbOwsNuy11k9A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: arm-smmu: Add sc7180 compatible string
+To:     Will Deacon <will@kernel.org>
+Cc:     Sharat Masetty <smasetty@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 06:32:06PM +0200, Thomas Bogendoerfer wrote:
-> On Mon, May 18, 2020 at 04:48:20PM +0300, Serge Semin wrote:
-> > On Fri, May 15, 2020 at 11:06:47PM +0200, Thomas Bogendoerfer wrote:
-> > > On Fri, May 15, 2020 at 10:48:27AM +0300, Serge Semin wrote:
-> > > > Thomas,
-> > > > Could you take a look at my comment below so I could proceed with the
-> > > > patchset v3 development?
-> > > 
-> > > I can't help, but using r4k clocksource with changing frequency is
-> > > probaly only usefull as a random generator. So IMHO the only two
-> > > options are disabling it or implement what arch/x86/kernel/tsc.c does.
-> > > 
-> > > Thomas.
-> > 
-> > Thomas, could you proceed with the rest of the patches review?
-> > ├─>[PATCH v2 16/20] bus: cdmm: Add MIPS R5 arch support
-> > ├─>[PATCH v2 15/20] mips: cdmm: Add mti,mips-cdmm dtb node support
-> 
-> both are not my call, but look ok to me.
+Hi,
 
-Can I add your Reviewed-by tag there then?
+On Mon, May 18, 2020 at 7:39 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, May 15, 2020 at 12:05:39PM -0700, Doug Anderson wrote:
+> > On Fri, May 1, 2020 at 3:30 AM Sharat Masetty <smasetty@codeaurora.org> wrote:
+> > >
+> > > This patch simply adds a new compatible string for SC7180 platform.
+> > >
+> > > Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> > > index 6515dbe..986098b 100644
+> > > --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> > > +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> > > @@ -28,6 +28,7 @@ properties:
+> > >            - enum:
+> > >                - qcom,msm8996-smmu-v2
+> > >                - qcom,msm8998-smmu-v2
+> > > +              - qcom,sc7180-smmu-v2
+> > >                - qcom,sdm845-smmu-v2
+> > >            - const: qcom,smmu-v2
+> >
+> > Is anything blocking this patch from landing now?
+>
+> I thought updates to the bindings usually went via Rob and the device-tree
+> tree, but neither of those are on cc.
+>
+> Perhaps resend with that fixed?
 
-> 
-> > ├─>[PATCH v2 13/20] mips: early_printk_8250: Use offset-sized IO-mem accessors
-> 
-> that's broken. A reg shift of 2 doesn't mean we could use 32bit access
-> to the registers on other platforms. As I don't think adding some ifdefery
-> makes things nicer, just implement the your prom_putchar in board code.
+Ah, I guess I wasn't familiar with how things worked for this file, or
+maybe things have changed recently?  I'm used to most bindings going
+through the same tree as the drivers that use them.  Usually if things
+are at all complicated maintainers wait for an Ack from Rob (so he
+should have been CCed for sure) and then land.
 
-I thought about that initially, but then I decided to alter the generic
-early_printk_8250 code instead. My version of prom_putchar() would be almost
-the same as one implemented in the early_printk_8250 module except minor
-modification of replacing readb/writeb methods with readl/writel. So I didn't
-want to duplicate the code, but wanted to provide a general way to fix the
-problem potentially also for another platforms.
+In this case it actually looks like Bjorn landed it in the Qualcomm
+and I just didn't realize it.  That seems like it should be fine since
+it's in the middle of a clause that's all Qualcomm and the change
+shouldn't be controversial in any way.  :-)
 
-Since you don't like this fix alternatively I'd suggest to add the reg_width
-parameter passed to the setup_8250_early_printk_port() method like this:
--setup_8250_early_printk_port(unsigned long base, unsigned int reg_shift,
--                             unsigned int timeout)
-+setup_8250_early_printk_port(unsigned long base, unsigned int reg_shift,
-+                             unsigned int reg_width, unsigned int timeout)
+Thanks!
 
-By reg_width parameter we could determine the actual width of the register:
- static inline u8 serial_in(int offset)
- {
--       return readb(serial8250_base + (offset << serial8250_reg_shift));
-+       u8 ret = 0xFF;
-+
-+       offset <<= serial8250_reg_shift;
-+       switch (serial8250_reg_width) {
-+       case 1:
-+               ret = readb(serial8250_base + offset);
-+               break;
-+       case 2:
-+               ret = readw(serial8250_base + offset);
-+               break;
-+       case 4:
-+               ret = readl(serial8250_base + offset);
-+               break;
-+       default:
-+               break;
-+       }
-+
-+       return ret;
- }
-
-The similar modification will be implemented for serial_out(). I'll also modify
-the currently available setup_8250_early_printk_port() calls so they would pass
-the reg_with as 1 to activate the normal readb/writeb IO methods.
-
-What do you think about this?
-
-> 
-> > ├─>[PATCH v2 12/20] mips: MAAR: Add XPA mode support
-> 
-> looks ok so far.
-
-Can I add your Reviewed-by tag there then?
-
-> 
-> > ├─>[PATCH v2 10/20] mips: Add CONFIG/CONFIG6/Cause reg fields macro
-> 
-> that is fine
-
-Can I add your Reviewed-by tag there then?
-
-> 
-> > └─>[PATCH v2 09/20] mips: Add CP0 Write Merge config support
-> 
-> this is IMHO a dangerous change. Enabling write merging for any
-> CPU supporting it might triggers bugs. Do it in your board bringup
-> code and at the moment I don't see a reason for the rest of that
-> patch.
-
-Let's at least leave the mm_config() implementation but without the write-merge
-enabling by default. Providing features availability macro
-cpu_has_mm_sysad/cpu_has_mm_full and c0 config fields
-MIPS_CPU_MM_SYSAD/MIPS_CPU_MM_FULL defined will be useful in the platform-specific
-Write-Merge enable/disable procedure. For instance, in the my prom_init() method
-I could use them to implement a code pattern like:
-
-+	if (cpu_has_mm_full) {
-+		unsigned int config0 = read_c0_config();
-+               config0 = (config0 & ~MIPS_CONF_MM) | MIPS_CONF_MM_FULL;
-+               write_c0_config(config0);
-+	}
-
-By doing so I can manually enable/disable the MM feature in the
-cpu-feature-overrides.h. Without that I'd have to locally define these macro,
-which isn't good seeing they are in fact generic and can be useful for other
-platforms with SYSAD and FULL MM feature available. What do you think?
-
--Sergey
-
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+-Doug
