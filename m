@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2760C1D7FFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEA91D8007
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgERRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgERRWv (ORCPT
+        id S1728395AbgERRZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:25:12 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43558 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726958AbgERRZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:22:51 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEF0C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:22:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id g1so10718432ljk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qu8M66lDUKLK1WzpQWJe9igp01pFB46NWxsyvCKG6oY=;
-        b=WAxyrolK30XZ/8MijRphoQ1WbKWVbqxz0H4gA/Jy0pDcY9RRDe21Oan+4qDj9RDWUv
-         LcWGp75Zyqhpcfrh+DYhLDfC9L9hFBI3p+iU/zxywhL1G6tidYQ6GLIuGqXlUMc5RKDx
-         2NX8Xzg6Xu2UUpMC93lzFHkjXofk5Qof537hs=
+        Mon, 18 May 2020 13:25:12 -0400
+Received: by mail-pf1-f194.google.com with SMTP id v63so5251734pfb.10;
+        Mon, 18 May 2020 10:25:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qu8M66lDUKLK1WzpQWJe9igp01pFB46NWxsyvCKG6oY=;
-        b=QgJT0+COzxQwr3uWPV4+f2iHO02dYKVPmBKOVSShVjlqK8reDyDjJiqeRHL731sGU5
-         2R2qRdan/L2x37IdSCNbiTKaz4HRHrRhDXNiDGcsA+wp2zIXlJjJHMRnjlksPZ9J0K/S
-         y3U9GrCB2s4r9YJOWg6J/x9WiBZoFclfqqIbYS16wlTgIYhn75RMrIEJhsPwN+SHkMTM
-         eHgvEFTkTi44+DLaDfvVOhi0zgDDGSlrmXAM+k/6y28y7yU0hw7wiVMJbZgXPcoCtBTG
-         QGa5fbgW55DRAQNRWiulG1dpAUe4Lzi6Ae+4mFQNWqvnuWoGaFP6HIPgq15sCM122p71
-         Ze6w==
-X-Gm-Message-State: AOAM5306mlIFyqRIMo/k33JwT0CdeF6Iya+SpT8VdCsmyCFHf/uP1lp7
-        ySUUHUJteNYkAkdlBCkC6F6uiCLLN/4=
-X-Google-Smtp-Source: ABdhPJxnQdwnZy7+HR04PEeVWkkyqeHx6SWKAuDmE3bMVIYFM3MVT9FsQ81J0wyZR07Cji71FGc74w==
-X-Received: by 2002:a2e:9743:: with SMTP id f3mr4459056ljj.205.1589822568390;
-        Mon, 18 May 2020 10:22:48 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id g6sm5982657ljj.78.2020.05.18.10.22.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 10:22:47 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id 82so8792000lfh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:22:46 -0700 (PDT)
-X-Received: by 2002:a05:6512:62:: with SMTP id i2mr3417039lfo.152.1589822566461;
- Mon, 18 May 2020 10:22:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Rf4+hBoD1TufFAfP8oFpnGmCmQq8DRRl+yC7GIzRnls=;
+        b=NhQurF0swK75au3jCljjIk+T7onO26pMHv2X+vSZjOoBH+PNQNYM6pN8K+gTDEZi5r
+         gc6C3rIhup07M9HZ6QHLtU+18fdR8+LQHASFX3zCJj5x4Iomr+4GIe4ctvYZ8FvWxhwB
+         vh3kzdXPhKTTvlGwUuSGfVYq9vmNwKiwIshHZTACXLKMPr4OIjBIE4KM5A0C91bZj58+
+         IixZBrJoVR9fxR41HHdg551iUxqR9NwDGyK154jj0n3EEKhaJz+HIXQGAsp9f4BPZOJV
+         jpLte7c3x59G0Ax5aXjtRHBt0AJgcIZT8U0nJTtNbMy5CGWTS9jYdYRIYcwg0C40FXag
+         FRsg==
+X-Gm-Message-State: AOAM531jb8IziEd+kKN00T6NHLNsHe/s3zY/2sfK9Af0zuSqHzY99tPl
+        r8WMdmnZOvk14Gk8GY+gnMo=
+X-Google-Smtp-Source: ABdhPJwoIGmdm0EAOz7T19rzlTCGw86tRefARI9ZDYNn44SDMrYtVhJEFmKj0/1owuC3GWI0j0VyGA==
+X-Received: by 2002:a62:e402:: with SMTP id r2mr18153266pfh.300.1589822711513;
+        Mon, 18 May 2020 10:25:11 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id c3sm3614080pgk.76.2020.05.18.10.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 10:25:10 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id D0475404B0; Mon, 18 May 2020 17:25:09 +0000 (UTC)
+Date:   Mon, 18 May 2020 17:25:09 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Stephen Kitt <steve@sk2.org>, Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sysctl: const-ify ngroups_max
+Message-ID: <20200518172509.GM11244@42.do-not-panic.com>
+References: <20200518155727.10514-1-steve@sk2.org>
+ <202005180908.C016C44D2@keescook>
 MIME-Version: 1.0
-References: <20200501094010.17694-1-john.ogness@linutronix.de>
- <20200501094010.17694-3-john.ogness@linutronix.de> <87v9ktcs3q.fsf@vostro.fn.ogness.net>
-In-Reply-To: <87v9ktcs3q.fsf@vostro.fn.ogness.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 May 2020 10:22:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whSLRiNxehLiuX+ZfHsu8Kpj7R1Sdr3zA7==SMW0zh3ug@mail.gmail.com>
-Message-ID: <CAHk-=whSLRiNxehLiuX+ZfHsu8Kpj7R1Sdr3zA7==SMW0zh3ug@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] printk: add lockless buffer
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202005180908.C016C44D2@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 6:04 AM John Ogness <john.ogness@linutronix.de> wrote:
->
-> The cmpxchg() needs to be moved out of the while condition so that a
-> continue can be used as intended. Patch below.
+On Mon, May 18, 2020 at 09:08:22AM -0700, Kees Cook wrote:
+> On Mon, May 18, 2020 at 05:57:27PM +0200, Stephen Kitt wrote:
+> > ngroups_max is a read-only sysctl entry, reflecting NGROUPS_MAX. Make
+> > it const, in the same way as cap_last_cap.
+> > 
+> > Signed-off-by: Stephen Kitt <steve@sk2.org>
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-This seems pointless and wrong (patch edited to remove the '-' lines
-so that you see the end result):
+Kees, since there is quite a bit of sysctl cleanup stuff going on and I
+have a fs sysctl kitchen cleanup, are you alright if I carry this in a
+tree and send this to Andrew once done? This would hopefully avoid
+merge conflicts between these patches.
 
->                 smp_mb(); /* LMM(data_push_tail:C) */
->
-> +               if (atomic_long_try_cmpxchg_relaxed(&data_ring->tail_lpos,
-> +                               &tail_lpos,
-> +                               next_lpos)) { /* LMM(data_push_tail:D) */
-> +                       break;
-> +               }
+I have to still re-spin my fs sysctl stuff, but will wait to do that
+once Xiaoming bases his series on linux-next.
 
-Doing an "smp_mb()" followed by a "cmpxchg_relaxed" seems all kinds of
-odd and pointless, and is very much non-optimal on x86 for example.,
-
-Just remove the smp_mb(), and use the non-relaxed form of cmpxchg.
-It's defined to be fully ordered if it succeeds (and if the cmpxchg
-doesn't succeed, it's a no-op and the memory barrier shouldn't make
-any difference).
-
-Otherwise you'll do two memory ordering operations on x86 (and
-probably some other architectures), since the cmpxchg is always
-ordered on x86 and there exists no "relaxed" form of it.
-
-                  Linus
+  Luis
