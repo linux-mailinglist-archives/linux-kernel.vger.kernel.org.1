@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4074C1D813D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A91B1D8052
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730056AbgERRqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
+        id S1728639AbgERRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:38:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729197AbgERRqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:09 -0400
+        id S1728621AbgERRiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:38:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 084BC207C4;
-        Mon, 18 May 2020 17:46:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC66820874;
+        Mon, 18 May 2020 17:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823969;
-        bh=vNZivytMBWAhlteQOYiqnhPyfZQnjhltAJXHLe92+kk=;
+        s=default; t=1589823531;
+        bh=K0nTKFYR4erZ7CrFK5RO8VsqlyURu8lK5DXwvEtK5Ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s6wlbgO2kk6/C8vKuorkoTYvwLLpdb0k+7VYK1BCHtxciRpCSFSi5ydb20NFzo8/D
-         zNDYSw9eO6F1sG43znGVI61Nm/DZ1ZxsEaY9BavJJvuAPCjhsvz9RAz0wkS4oQm5ri
-         gPal0BM4D37j4Q4/x8RaPoep6wbCpXpuPw9pPVY0=
+        b=BsYlhIuXDQVb9gDe7UIT6IxhiXTcih3wr5I4Odzq4zcG4PqknwmJ6LYhY4JLQ6nMO
+         JGt5YRJBkwqSGKaOI/+8qORN5btfMsp8jfSlvXFbDMbSj+OCHX86a5cxAkT0wVGqIN
+         zqGpMPDlY9bTk44TCgOA8d0Fvue41QeeayRwzIWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        =?UTF-8?q?Julian=20Gro=C3=9F?= <julian.g@posteo.de>
-Subject: [PATCH 4.14 019/114] USB: uas: add quirk for LaCie 2Big Quadra
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Shijie Luo <luoshijie1@huawei.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.4 20/86] ext4: add cond_resched() to ext4_protect_reserved_inode
 Date:   Mon, 18 May 2020 19:35:51 +0200
-Message-Id: <20200518173507.149711736@linuxfoundation.org>
+Message-Id: <20200518173454.557562877@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Shijie Luo <luoshijie1@huawei.com>
 
-commit 9f04db234af691007bb785342a06abab5fb34474 upstream.
+commit af133ade9a40794a37104ecbcc2827c0ea373a3c upstream.
 
-This device needs US_FL_NO_REPORT_OPCODES to avoid going
-through prolonged error handling on enumeration.
+When journal size is set too big by "mkfs.ext4 -J size=", or when
+we mount a crafted image to make journal inode->i_size too big,
+the loop, "while (i < num)", holds cpu too long. This could cause
+soft lockup.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: Julian Groß <julian.g@posteo.de>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200429155218.7308-1-oneukum@suse.com
+[  529.357541] Call trace:
+[  529.357551]  dump_backtrace+0x0/0x198
+[  529.357555]  show_stack+0x24/0x30
+[  529.357562]  dump_stack+0xa4/0xcc
+[  529.357568]  watchdog_timer_fn+0x300/0x3e8
+[  529.357574]  __hrtimer_run_queues+0x114/0x358
+[  529.357576]  hrtimer_interrupt+0x104/0x2d8
+[  529.357580]  arch_timer_handler_virt+0x38/0x58
+[  529.357584]  handle_percpu_devid_irq+0x90/0x248
+[  529.357588]  generic_handle_irq+0x34/0x50
+[  529.357590]  __handle_domain_irq+0x68/0xc0
+[  529.357593]  gic_handle_irq+0x6c/0x150
+[  529.357595]  el1_irq+0xb8/0x140
+[  529.357599]  __ll_sc_atomic_add_return_acquire+0x14/0x20
+[  529.357668]  ext4_map_blocks+0x64/0x5c0 [ext4]
+[  529.357693]  ext4_setup_system_zone+0x330/0x458 [ext4]
+[  529.357717]  ext4_fill_super+0x2170/0x2ba8 [ext4]
+[  529.357722]  mount_bdev+0x1a8/0x1e8
+[  529.357746]  ext4_mount+0x44/0x58 [ext4]
+[  529.357748]  mount_fs+0x50/0x170
+[  529.357752]  vfs_kern_mount.part.9+0x54/0x188
+[  529.357755]  do_mount+0x5ac/0xd78
+[  529.357758]  ksys_mount+0x9c/0x118
+[  529.357760]  __arm64_sys_mount+0x28/0x38
+[  529.357764]  el0_svc_common+0x78/0x130
+[  529.357766]  el0_svc_handler+0x38/0x78
+[  529.357769]  el0_svc+0x8/0xc
+[  541.356516] watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [mount:18674]
+
+Link: https://lore.kernel.org/r/20200211011752.29242-1-luoshijie1@huawei.com
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/ext4/block_validity.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -41,6 +41,13 @@
-  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
-  */
- 
-+/* Reported-by: Julian Groß <julian.g@posteo.de> */
-+UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
-+		"LaCie",
-+		"2Big Quadra USB3",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_REPORT_OPCODES),
-+
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -152,6 +152,7 @@ static int ext4_protect_reserved_inode(s
+ 		return PTR_ERR(inode);
+ 	num = (inode->i_size + sb->s_blocksize - 1) >> sb->s_blocksize_bits;
+ 	while (i < num) {
++		cond_resched();
+ 		map.m_lblk = i;
+ 		map.m_len = num - i;
+ 		n = ext4_map_blocks(NULL, inode, &map, 0);
 
 
