@@ -2,82 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127F31D765E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE2A1D7664
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgERLNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:13:20 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38528 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgERLNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:13:19 -0400
-Received: by mail-ot1-f68.google.com with SMTP id w22so7683895otp.5;
-        Mon, 18 May 2020 04:13:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pR1cgKO8rpCf/7AlmTREELkczgYUosKtpXfrAtbkObM=;
-        b=YqG56V49Bv69ICEnhFwSBTFUMFjqPl97uPbIc5FBHA3YykwgzKEfTtzOw3qXHjj+lH
-         EeTe7Y+WZAMDx3tMYWdmRTpH0CoXxXOr0pEnyKOOziVH5hbZZISTNf2vipREkyTM71ev
-         HuTosVuCcEiz0mMYiSDdjqHX8YWo0BRqzWTYko+SNnU0LxHezabwDKmVtg7DNd5GSJj7
-         i//Gadedd15SKaH3IeJmCRcLLPi4Ip+AY3gvh+LwK8v8V1P045xFGsRI72NOPWgz9/bN
-         uoZ8qQdNBwCUsDcueUla5UJ0fmsZtaUQHmcjjZhrVWTQMv6lCQaz/ytSZCIq5RENkorG
-         ruEw==
-X-Gm-Message-State: AOAM5314/I/v+1TQMANxnDrKXs2FUtZ1dVuuF3vSRYSAmSy5OYn3TrZY
-        jGaEY4DZ7+GoshKJb4ra355GcRlyG0nGQwk00QM=
-X-Google-Smtp-Source: ABdhPJwRrYq4SFa2PkXCkouuudLXM04hVkXibjgJLxfqq5xK2wIlnVt4nFW4BOiciwsS6hKoNryVVo1hafLabc2sBmU=
-X-Received: by 2002:a9d:7e92:: with SMTP id m18mr11590288otp.145.1589800398609;
- Mon, 18 May 2020 04:13:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1589555337-5498-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1589555337-5498-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 May 2020 13:13:07 +0200
-Message-ID: <CAMuHMdUTnVyOY5=cA1U_bVrQGrfcMxpoVxy-t1xFqya5mV6KKA@mail.gmail.com>
-Subject: Re: [PATCH 08/17] dt-bindings: ata: renesas,rcar-sata: Add r8a7742 support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-ide@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        id S1727798AbgERLNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:13:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:38218 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726424AbgERLNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:13:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F8E7106F;
+        Mon, 18 May 2020 04:13:45 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.25])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 962A63F52E;
+        Mon, 18 May 2020 04:13:43 -0700 (PDT)
+Date:   Mon, 18 May 2020 12:13:35 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the scmi tree
+Message-ID: <20200518111335.GA16262@bogus>
+References: <20200518210823.760fee29@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518210823.760fee29@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:10 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Document SATA support for the RZ/G1H, which is compatible with
-> R-Car Gen2 SoC family.
+Hi Stephen,
+
+On Mon, May 18, 2020 at 09:08:23PM +1000, Stephen Rothwell wrote:
+> Commit
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>   17a37ff76e95 ("arm64: dts: juno: Use proper DT node name for USB")
+>
+> is missing a Signed-off-by from its author.
+>
+> Also, the commit message tags should be separated from the rest of the
+> commit message by a blank line.
+>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Thanks for the heads up, I will fix and push ASAP.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Regards,
+Sudeep
