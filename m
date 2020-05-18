@@ -2,53 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F641D8B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CCD1D8B60
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 01:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgERXEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 19:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50020 "EHLO mail.kernel.org"
+        id S1728379AbgERXE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 19:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgERXEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 19:04:20 -0400
+        id S1726490AbgERXE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 19:04:28 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97D012081A;
-        Mon, 18 May 2020 23:04:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D56B7207F9;
+        Mon, 18 May 2020 23:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589843060;
-        bh=FivWSGA5nKr+8BVNRlfId66BwqKvfngHdf0PvsDY1Gk=;
+        s=default; t=1589843068;
+        bh=KGUQGz4db3YjWPudFeOfKSYM0sWPkRsvPRm4npW190o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHXwzWPUne9lNRLze2eVuRdHvkAB3cprbaBFfewEjJY46dL74bSD6c43meXBwefFz
-         8Ff13vNT0YVAVYK6ZuLCiCBb/hKd8p1jjr5DR7uackt2nEf7mrkdz1hmvgIJkixlww
-         eBns6vIZvKw6GHKnaVdx54+jKGUPcy+BwXaxDiHs=
+        b=QiYgQErP+LqAuYyClBRqQfZb8lTctaFLjv1rRjDatVQa4+ACebdT3cczztU9y/m4X
+         E6a5RwRyF7McE6jg2mwRHz+DInqvnyTv0xcLfVldVojV0mFkp/NvQmKk06TlQy2MHS
+         K6mn7Pw3TmAhV73dowk5GXTeTO8eObZgPHiY4Zv0=
 From:   Will Deacon <will@kernel.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>
+To:     robin.murphy@arm.com, swboyd@chromium.org, joro@8bytes.org,
+        Sibi Sankar <sibis@codeaurora.org>
 Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>, sumit.garg@linaro.org,
-        Allison Randal <allison@lohutok.net>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Enrico Weigelt <info@metux.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        jinho lim <jordan.lim@samsung.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Alexios Zavras <alexios.zavras@intel.com>, liwei391@huawei.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] arm64: Call debug_traps_init() from trap_init() to help early kgdb
-Date:   Tue, 19 May 2020 00:04:04 +0100
-Message-Id: <158982068109.260335.5582031208894337234.b4-ty@kernel.org>
+        dianders@chromium.org, iommu@lists.linux-foundation.org,
+        bjorn.andersson@linaro.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] iommu/arm-smmu-qcom: Request direct mapping for modem device
+Date:   Tue, 19 May 2020 00:04:08 +0100
+Message-Id: <158981250642.239015.17275693427372248725.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid>
-References: <20200513160501.1.I0b5edf030cc6ebef6ab4829f8867cdaea42485d8@changeid>
+In-Reply-To: <20200511175532.25874-1-sibis@codeaurora.org>
+References: <20200511175532.25874-1-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -56,23 +45,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 May 2020 16:06:37 -0700, Douglas Anderson wrote:
-> A new kgdb feature will soon land (kgdb_earlycon) that lets us run
-> kgdb much earlier.  In order for everything to work properly it's
-> important that the break hook is setup by the time we process
-> "kgdbwait".
-> 
-> Right now the break hook is setup in debug_traps_init() and that's
-> called from arch_initcall().  That's a bit too late since
-> kgdb_earlycon really needs things to be setup by the time the system
-> calls dbg_late_init().
+On Mon, 11 May 2020 23:25:32 +0530, Sibi Sankar wrote:
+> The modem remote processor has two access paths to DDR. One path is
+> directly connected to DDR and another path goes through an SMMU. The
+> SMMU path is configured to be a direct mapping because it's used by
+> various peripherals in the modem subsystem. Typically this direct
+> mapping is configured statically at EL2 by QHEE (Qualcomm's Hypervisor
+> Execution Environment) before the kernel is entered.
 > 
 > [...]
 
-Applied to arm64 (for-next/misc), thanks!
+Applied to will (for-joerg/arm-smmu/updates), thanks!
 
-[1/1] arm64: Call debug_traps_init() from trap_init() to help early kgdb
-      https://git.kernel.org/arm64/c/b322c65f8ca3
+[1/1] iommu/arm-smmu-qcom: Request direct mapping for modem device
+      https://git.kernel.org/will/c/d100ff3843b7
 
 Cheers,
 -- 
