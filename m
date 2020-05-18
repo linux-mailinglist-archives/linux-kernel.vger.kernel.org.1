@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C43F1D7AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266001D7ABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgEROJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbgEROJ2 (ORCPT
+        id S1727918AbgEROKi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 May 2020 10:10:38 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54984 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726945AbgEROKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:09:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1F6C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 07:09:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id n5so10634114wmd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 07:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KP1W2Itm/+ybI6CcKF2T7q86qg0QdOvp+lK7UryjN2U=;
-        b=JNmEf5rwJZJTr3vmTU+JXBnKh939INhFXQISR4gZuwZuwNupLRBzf58/B385vN8CHT
-         yAfEk+7buu6f8M6Z72fr0I46EKkUNOnbKCtWZ+F7Arox8Bqaq+sbNbEjR2iBIaQN9yr5
-         gEieuiOZK80sU81Aw6EV7G5+HB+Yd8A5GGNYnTZ/NZYFAUoVGSKqOsT9++GZV5IDShCi
-         KWr5whkVMdxzwp/VgAlUvpzBSqlKMHsfbLf/Vdx0iJulRNme1RDydeGFKU2yWukycvuC
-         H9KvUAG4zcbPJP3X1O5kf/zXTEcZoJRJeS+9yoKUytzw0Yc++ZRyVy6FuCkHCNFTUSE7
-         RDLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KP1W2Itm/+ybI6CcKF2T7q86qg0QdOvp+lK7UryjN2U=;
-        b=g+4a4S+jQz3E/+SDMN6jfezJ+a73W9cHgi5sBhlaqp0gdwQZHQEDKbUQ8Qk1L9vDMz
-         INyDEVQHqsEM3VKcpXjbIi5vzsREJWjUHdOLIn0UYWencosJ0OV6vI7z28L/jTBtEqWL
-         9BXeL+IXX5KU/zm00kY4YZ5GADa2c1zZj9Xe/Zsg2eBH8ChReuQyG3KuIHfbZRLx6ZLg
-         ea1jLVDUUX9/myW0BCp2c1yOE2oDRGQidUIiBBVXJAgRGOxriZBCHIv93a8tAr2MvexL
-         WG1Px84xC18W/R10X1ijXQzM8iFtrEjoka2pUddk0iG7sLFUn+WsshPyREAgRqxNfvJx
-         6z9Q==
-X-Gm-Message-State: AOAM530qmC5nPwol9IXSGD55vus4ae2IqSgK9PvM9SWRXr8cyhoBOW+D
-        uvGGBybcWE8WOAALpkDd2fHCR0KzrAk=
-X-Google-Smtp-Source: ABdhPJznBYMlOTMQy1fWtCi9cSlyOljLSD8C50+NxP2y+5UPsZXyZPC/g2hVtKCHqIb31GNdQ8+Tsw==
-X-Received: by 2002:a05:600c:2dd7:: with SMTP id e23mr19309184wmh.96.1589810965999;
-        Mon, 18 May 2020 07:09:25 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9e7:3ac5:a930:2cd8? ([2a01:e34:ed2f:f020:9e7:3ac5:a930:2cd8])
-        by smtp.googlemail.com with ESMTPSA id s11sm16348361wrp.79.2020.05.18.07.09.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 07:09:25 -0700 (PDT)
-Subject: Re: [PATCH 09/10] timer-riscv: Fix undefined riscv_time_val
-To:     Palmer Dabbelt <palmer@dabbelt.com>, wangkefeng.wang@huawei.com,
-        tglx@linutronix.de
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hulkci@huawei.com
-References: <mhng-0c491e9e-41fd-4f76-a048-55c03d9359f0@palmerdabbelt-glaptop1>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <66121f9a-48f3-d3a5-7c96-d71397e12aed@linaro.org>
-Date:   Mon, 18 May 2020 16:09:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 18 May 2020 10:10:38 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-Rc9al0JYPzyOmqTSwBUjXQ-1; Mon, 18 May 2020 10:10:32 -0400
+X-MC-Unique: Rc9al0JYPzyOmqTSwBUjXQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D090D835B8B;
+        Mon, 18 May 2020 14:10:30 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.196.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C71332CD69;
+        Mon, 18 May 2020 14:10:28 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>
+Subject: [RFC] perf trace: Fix compilation error for make NO_LIBBPF=1 DEBUG=1
+Date:   Mon, 18 May 2020 16:10:27 +0200
+Message-Id: <20200518141027.3765877-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <mhng-0c491e9e-41fd-4f76-a048-55c03d9359f0@palmerdabbelt-glaptop1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/05/2020 23:14, Palmer Dabbelt wrote:
-> On Sun, 10 May 2020 19:20:00 PDT (-0700), wangkefeng.wang@huawei.com wrote:
->> ERROR: modpost: "riscv_time_val" [crypto/tcrypt.ko] undefined!
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>  drivers/clocksource/timer-riscv.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/clocksource/timer-riscv.c
->> b/drivers/clocksource/timer-riscv.c
->> index c4f15c4068c0..071b8c144027 100644
->> --- a/drivers/clocksource/timer-riscv.c
->> +++ b/drivers/clocksource/timer-riscv.c
->> @@ -19,6 +19,7 @@
->>
->>  u64 __iomem *riscv_time_cmp;
->>  u64 __iomem *riscv_time_val;
->> +EXPORT_SYMBOL(riscv_time_val);
->>
->>  static inline void mmio_set_timer(u64 val)
->>  {
-> 
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> Adding the clocksource maintainers.  Let me know if you want this
-> through my
-> tree, I'm assuming you want it through your tree.
+I haven't tested if this breaks some perf trace functionality,
+hence RFC ;-)
 
-How can we end up by an export symbol here ?!
+The perf compilation fails for NO_LIBBPF=1 DEBUG=1 with:
 
+  $ make NO_LIBBPF=1 DEBUG=1
+    BUILD:   Doing 'make -j8' parallel build
+    CC       builtin-trace.o
+    LD       perf-in.o
+    LINK     perf
+  /usr/bin/ld: perf-in.o: in function `trace__find_bpf_map_by_name':
+  /home/jolsa/kernel/linux-perf/tools/perf/builtin-trace.c:4608: undefined reference to `bpf_object__find_map_by_name'
+  collect2: error: ld returned 1 exit status
+  make[2]: *** [Makefile.perf:631: perf] Error 1
+  make[1]: *** [Makefile.perf:225: sub-make] Error 2
+  make: *** [Makefile:70: all] Error 2
 
+Moving trace__find_bpf_map_by_name calls under HAVE_LIBBPF_SUPPORT
+ifdef and add make test for this.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/builtin-trace.c | 54 ++++++++++++++++++++++++--------------
+ tools/perf/tests/make      |  1 +
+ 2 files changed, 35 insertions(+), 20 deletions(-)
+
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 56bcf1ab19f8..61bafca1018a 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -3174,6 +3174,26 @@ static int trace__set_ev_qualifier_tp_filter(struct trace *trace)
+ }
+ 
+ #ifdef HAVE_LIBBPF_SUPPORT
++static struct bpf_map *trace__find_bpf_map_by_name(struct trace *trace, const char *name)
++{
++	if (trace->bpf_obj == NULL)
++		return NULL;
++
++	return bpf_object__find_map_by_name(trace->bpf_obj, name);
++}
++
++static void trace__set_bpf_map_filtered_pids(struct trace *trace)
++{
++	trace->filter_pids.map = trace__find_bpf_map_by_name(trace, "pids_filtered");
++}
++
++static void trace__set_bpf_map_syscalls(struct trace *trace)
++{
++	trace->syscalls.map = trace__find_bpf_map_by_name(trace, "syscalls");
++	trace->syscalls.prog_array.sys_enter = trace__find_bpf_map_by_name(trace, "syscalls_sys_enter");
++	trace->syscalls.prog_array.sys_exit  = trace__find_bpf_map_by_name(trace, "syscalls_sys_exit");
++}
++
+ static struct bpf_program *trace__find_bpf_program_by_title(struct trace *trace, const char *name)
+ {
+ 	if (trace->bpf_obj == NULL)
+@@ -3512,6 +3532,20 @@ static void trace__delete_augmented_syscalls(struct trace *trace)
+ 	trace->bpf_obj = NULL;
+ }
+ #else // HAVE_LIBBPF_SUPPORT
++static struct bpf_map *trace__find_bpf_map_by_name(struct trace *trace __maybe_unused,
++						   const char *name __maybe_unused)
++{
++	return NULL;
++}
++
++static void trace__set_bpf_map_filtered_pids(struct trace *trace __maybe_unused)
++{
++}
++
++static void trace__set_bpf_map_syscalls(struct trace *trace __maybe_unused)
++{
++}
++
+ static int trace__set_ev_qualifier_bpf_filter(struct trace *trace __maybe_unused)
+ {
+ 	return 0;
+@@ -4600,26 +4634,6 @@ static int trace__parse_cgroups(const struct option *opt, const char *str, int u
+ 	return 0;
+ }
+ 
+-static struct bpf_map *trace__find_bpf_map_by_name(struct trace *trace, const char *name)
+-{
+-	if (trace->bpf_obj == NULL)
+-		return NULL;
+-
+-	return bpf_object__find_map_by_name(trace->bpf_obj, name);
+-}
+-
+-static void trace__set_bpf_map_filtered_pids(struct trace *trace)
+-{
+-	trace->filter_pids.map = trace__find_bpf_map_by_name(trace, "pids_filtered");
+-}
+-
+-static void trace__set_bpf_map_syscalls(struct trace *trace)
+-{
+-	trace->syscalls.map = trace__find_bpf_map_by_name(trace, "syscalls");
+-	trace->syscalls.prog_array.sys_enter = trace__find_bpf_map_by_name(trace, "syscalls_sys_enter");
+-	trace->syscalls.prog_array.sys_exit  = trace__find_bpf_map_by_name(trace, "syscalls_sys_exit");
+-}
+-
+ static int trace__config(const char *var, const char *value, void *arg)
+ {
+ 	struct trace *trace = arg;
+diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+index 5d0c3a9c47a1..c3c59def9f87 100644
+--- a/tools/perf/tests/make
++++ b/tools/perf/tests/make
+@@ -84,6 +84,7 @@ make_no_libaudit    := NO_LIBAUDIT=1
+ make_no_libbionic   := NO_LIBBIONIC=1
+ make_no_auxtrace    := NO_AUXTRACE=1
+ make_no_libbpf	    := NO_LIBBPF=1
++make_no_libbpf_DEBUG := NO_LIBBPF=1 DEBUG=1
+ make_no_libcrypto   := NO_LIBCRYPTO=1
+ make_with_babeltrace:= LIBBABELTRACE=1
+ make_no_sdt	    := NO_SDT=1
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.4
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
