@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3301D8294
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13D21D845A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731820AbgERR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32894 "EHLO mail.kernel.org"
+        id S2387449AbgERSL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:11:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731508AbgERRzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:35 -0400
+        id S1732836AbgERSEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA67A20674;
-        Mon, 18 May 2020 17:55:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6BDC20873;
+        Mon, 18 May 2020 18:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824535;
-        bh=MvciCjxqbATbF9bVFNFSQoSFaxr/QAeTiCBmuMcVyko=;
+        s=default; t=1589825085;
+        bh=vvO58edxBBfMDGU/CA+sbKPkuGmRSwNhdMK6PcSRDFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TvKcSlQHWgrxbYFTVdW7ek1TJ2RBw9uxtp7mVUQy7rcZovQvvA92Vkx9ygvs9dGiG
-         UYqFTr0XwnyRCKHF1/oRbx5rfNtV+Kw+dlD0cmR4ZFoxOICyrplOzTSDsgDACIzEsb
-         VAhHphEdsehwWfLLWQRpwAQIvS2t99r6KKQweGQY=
+        b=a+U4c8GWZe5nf2fMQRk6ZCbbrGV8V5HhQKDRIIu2C/zFiumNTqXzZufhgVQGJvvlH
+         U36W+grfU48WTOjeiN5RDfxRFyhZ/252vXAoPYRKZByV+XDY4cydxuUSQgowvsb/em
+         f8FYE8assUV78CxX95WkgShQsTLX64HcBVwaUw7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 051/147] ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
+        stable@vger.kernel.org, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 084/194] drm/i915/gt: Make timeslicing an explicit engine property
 Date:   Mon, 18 May 2020 19:36:14 +0200
-Message-Id: <20200518173520.322944614@linuxfoundation.org>
+Message-Id: <20200518173538.719488345@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +45,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-[ Upstream commit 52e4e36807aeac1cdd07b14e509c8a64101e1a09 ]
+[ Upstream commit fe5a708267911d55cce42910d93e303924b088fd ]
 
-Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
-0") makes the ALC225 have pop noise on S3 resume and cold boot.
+In order to allow userspace to rely on timeslicing to reorder their
+batches, we must support preemption of those user batches. Declare
+timeslicing as an explicit property that is a combination of having the
+kernel support and HW support.
 
-The previous fix enable power save node universally for ALC225, however
-it makes some ALC225 systems unable to produce any sound.
-
-So let's only enable power save node for the affected Dell Wyse
-platform.
-
-Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
-BugLink: https://bugs.launchpad.net/bugs/1866357
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200503152449.22761-2-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Suggested-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Fixes: 8ee36e048c98 ("drm/i915/execlists: Minimalistic timeslicing")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200501122249.12417-1-chris@chris-wilson.co.uk
+(cherry picked from commit a211da9c771bf97395a3ced83a3aa383372b13a7)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/gpu/drm/i915/gt/intel_engine.h       |  9 ---------
+ drivers/gpu/drm/i915/gt/intel_engine_types.h | 18 ++++++++++++++----
+ drivers/gpu/drm/i915/gt/intel_lrc.c          |  5 ++++-
+ 3 files changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 64270983ab7db..1a01e7c5b6d0a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5743,6 +5743,15 @@ static void alc233_alc662_fixup_lenovo_dual_codecs(struct hda_codec *codec,
- 	}
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine.h b/drivers/gpu/drm/i915/gt/intel_engine.h
+index 5df003061e442..beb3211a6249d 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine.h
++++ b/drivers/gpu/drm/i915/gt/intel_engine.h
+@@ -338,13 +338,4 @@ intel_engine_has_preempt_reset(const struct intel_engine_cs *engine)
+ 	return intel_engine_has_preemption(engine);
  }
  
-+static void alc225_fixup_s3_pop_noise(struct hda_codec *codec,
-+				      const struct hda_fixup *fix, int action)
+-static inline bool
+-intel_engine_has_timeslices(const struct intel_engine_cs *engine)
+-{
+-	if (!IS_ACTIVE(CONFIG_DRM_I915_TIMESLICE_DURATION))
+-		return false;
+-
+-	return intel_engine_has_semaphores(engine);
+-}
+-
+ #endif /* _INTEL_RINGBUFFER_H_ */
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine_types.h b/drivers/gpu/drm/i915/gt/intel_engine_types.h
+index 92be41a6903c0..4ea067e1508a5 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine_types.h
++++ b/drivers/gpu/drm/i915/gt/intel_engine_types.h
+@@ -473,10 +473,11 @@ struct intel_engine_cs {
+ #define I915_ENGINE_SUPPORTS_STATS   BIT(1)
+ #define I915_ENGINE_HAS_PREEMPTION   BIT(2)
+ #define I915_ENGINE_HAS_SEMAPHORES   BIT(3)
+-#define I915_ENGINE_NEEDS_BREADCRUMB_TASKLET BIT(4)
+-#define I915_ENGINE_IS_VIRTUAL       BIT(5)
+-#define I915_ENGINE_HAS_RELATIVE_MMIO BIT(6)
+-#define I915_ENGINE_REQUIRES_CMD_PARSER BIT(7)
++#define I915_ENGINE_HAS_TIMESLICES   BIT(4)
++#define I915_ENGINE_NEEDS_BREADCRUMB_TASKLET BIT(5)
++#define I915_ENGINE_IS_VIRTUAL       BIT(6)
++#define I915_ENGINE_HAS_RELATIVE_MMIO BIT(7)
++#define I915_ENGINE_REQUIRES_CMD_PARSER BIT(8)
+ 	unsigned int flags;
+ 
+ 	/*
+@@ -573,6 +574,15 @@ intel_engine_has_semaphores(const struct intel_engine_cs *engine)
+ 	return engine->flags & I915_ENGINE_HAS_SEMAPHORES;
+ }
+ 
++static inline bool
++intel_engine_has_timeslices(const struct intel_engine_cs *engine)
 +{
-+	if (action != HDA_FIXUP_ACT_PRE_PROBE)
-+		return;
++	if (!IS_ACTIVE(CONFIG_DRM_I915_TIMESLICE_DURATION))
++		return false;
 +
-+	codec->power_save_node = 1;
++	return engine->flags & I915_ENGINE_HAS_TIMESLICES;
 +}
 +
- /* Forcibly assign NID 0x03 to HP/LO while NID 0x02 to SPK for EQ */
- static void alc274_fixup_bind_dacs(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)
-@@ -5932,6 +5941,7 @@ enum {
- 	ALC233_FIXUP_ACER_HEADSET_MIC,
- 	ALC294_FIXUP_LENOVO_MIC_LOCATION,
- 	ALC225_FIXUP_DELL_WYSE_MIC_NO_PRESENCE,
-+	ALC225_FIXUP_S3_POP_NOISE,
- 	ALC700_FIXUP_INTEL_REFERENCE,
- 	ALC274_FIXUP_DELL_BIND_DACS,
- 	ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
-@@ -6817,6 +6827,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ }
- 		},
- 		.chained = true,
-+		.chain_id = ALC225_FIXUP_S3_POP_NOISE
-+	},
-+	[ALC225_FIXUP_S3_POP_NOISE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc225_fixup_s3_pop_noise,
-+		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
- 	},
- 	[ALC700_FIXUP_INTEL_REFERENCE] = {
+ static inline bool
+ intel_engine_needs_breadcrumb_tasklet(const struct intel_engine_cs *engine)
+ {
+diff --git a/drivers/gpu/drm/i915/gt/intel_lrc.c b/drivers/gpu/drm/i915/gt/intel_lrc.c
+index 31455eceeb0c6..5bebda4a2d0b4 100644
+--- a/drivers/gpu/drm/i915/gt/intel_lrc.c
++++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
+@@ -4194,8 +4194,11 @@ void intel_execlists_set_default_submission(struct intel_engine_cs *engine)
+ 	engine->flags |= I915_ENGINE_SUPPORTS_STATS;
+ 	if (!intel_vgpu_active(engine->i915)) {
+ 		engine->flags |= I915_ENGINE_HAS_SEMAPHORES;
+-		if (HAS_LOGICAL_RING_PREEMPTION(engine->i915))
++		if (HAS_LOGICAL_RING_PREEMPTION(engine->i915)) {
+ 			engine->flags |= I915_ENGINE_HAS_PREEMPTION;
++			if (IS_ACTIVE(CONFIG_DRM_I915_TIMESLICE_DURATION))
++				engine->flags |= I915_ENGINE_HAS_TIMESLICES;
++		}
+ 	}
+ 
+ 	if (INTEL_GEN(engine->i915) >= 12)
 -- 
 2.20.1
 
