@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCAE1D86CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0871E1D826B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgERRnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40158 "EHLO mail.kernel.org"
+        id S1731612AbgERR4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728960AbgERRm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:56 -0400
+        id S1729921AbgERR4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8247F207C4;
-        Mon, 18 May 2020 17:42:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B35F207C4;
+        Mon, 18 May 2020 17:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823776;
-        bh=rI69ELdrINCHlnyvofm74tGYIw+cV8yJBh7GJpNNMKA=;
+        s=default; t=1589824575;
+        bh=vjM1O94rgx2tx7HK6gBqTpJ9GjaQq+alA5IdlOKPtJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JplKA2gVF1y9cVeLkntx/j45bYWJuEBBr28JW1NFz8H6AifM2cwCwig5/G3X2T5iv
-         wHlVDg23hL8qHOvsLRPNAQxIiiv7KYx0avV2GhKIZNEtuVbH0VPi5NmfhIeHka+rd8
-         pomvfGIlAFzhAL+LPRUK1uGQhZuOvXHaIRm9fLQc=
+        b=dJ2MDBRBIrXhFf4tiOEtpC9Of6tmfCYP7QaNGWP0I/FEt7wGhtO9ljO7fLqEmOrRJ
+         sHKxHvdpkaXeraj0x4wGxx4k2wMpz4kbxAiXv9yaJ/EKO10pEZWfYBWapTsXraygVJ
+         BPq/AAoxaiOt1c5nJGazlVnXIQ4gqdMUIMzJJ1iw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ivan Delalande <colona@arista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 24/90] scripts/decodecode: fix trapping instruction formatting
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 039/147] dmaengine: mmp_tdma: Do not ignore slave config validation errors
 Date:   Mon, 18 May 2020 19:36:02 +0200
-Message-Id: <20200518173456.102360336@linuxfoundation.org>
+Message-Id: <20200518173518.945704430@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Delalande <colona@arista.com>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-commit e08df079b23e2e982df15aa340bfbaf50f297504 upstream.
+[ Upstream commit 363c32701c7fdc8265a84b21a6a4f45d1202b9ca ]
 
-If the trapping instruction contains a ':', for a memory access through
-segment registers for example, the sed substitution will insert the '*'
-marker in the middle of the instruction instead of the line address:
+With an invalid dma_slave_config set previously,
+mmp_tdma_prep_dma_cyclic() would detect an error whilst configuring the
+channel, but proceed happily on:
 
-	2b:   65 48 0f c7 0f          cmpxchg16b %gs:*(%rdi)          <-- trapping instruction
+  [  120.756530] mmp-tdma d42a0800.adma: mmp_tdma: unknown burst size.
 
-I started to think I had forgotten some quirk of the assembly syntax
-before noticing that it was actually coming from the script.  Fix it to
-add the address marker at the right place for these instructions:
-
-	28:   49 8b 06                mov    (%r14),%rax
-	2b:*  65 48 0f c7 0f          cmpxchg16b %gs:(%rdi)           <-- trapping instruction
-	30:   0f 94 c0                sete   %al
-
-Fixes: 18ff44b189e2 ("scripts/decodecode: make faulting insn ptr more robust")
-Signed-off-by: Ivan Delalande <colona@arista.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Link: http://lkml.kernel.org/r/20200419223653.GA31248@visor
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Link: https://lore.kernel.org/r/20200419164912.670973-2-lkundrak@v3.sk
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/decodecode |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/mmp_tdma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/scripts/decodecode
-+++ b/scripts/decodecode
-@@ -98,7 +98,7 @@ faultlinenum=$(( $(wc -l $T.oo  | cut -d
- faultline=`cat $T.dis | head -1 | cut -d":" -f2-`
- faultline=`echo "$faultline" | sed -e 's/\[/\\\[/g; s/\]/\\\]/g'`
+diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
+index e7d1e12bf4643..4d5b987e4841a 100644
+--- a/drivers/dma/mmp_tdma.c
++++ b/drivers/dma/mmp_tdma.c
+@@ -443,7 +443,8 @@ static struct dma_async_tx_descriptor *mmp_tdma_prep_dma_cyclic(
+ 	if (!desc)
+ 		goto err_out;
  
--cat $T.oo | sed -e "${faultlinenum}s/^\(.*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
-+cat $T.oo | sed -e "${faultlinenum}s/^\([^:]*:\)\(.*\)/\1\*\2\t\t<-- trapping instruction/"
- echo
- cat $T.aa
- cleanup
+-	mmp_tdma_config_write(chan, direction, &tdmac->slave_config);
++	if (mmp_tdma_config_write(chan, direction, &tdmac->slave_config))
++		goto err_out;
+ 
+ 	while (buf < buf_len) {
+ 		desc = &tdmac->desc_arr[i];
+-- 
+2.20.1
+
 
 
