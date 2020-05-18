@@ -2,172 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6131D873F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B041D8752
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388070AbgERSbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
+        id S1729251AbgERSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730031AbgERSbh (ORCPT
+        with ESMTP id S1728490AbgERSc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:31:37 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0060C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:31:36 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id v192so2676100vkd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:31:36 -0700 (PDT)
+        Mon, 18 May 2020 14:32:59 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A17C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:32:58 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id p4so5200399qvr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HQzH3Ik7R7bKVK+hgXPw/UmcsoI9rlOtwmNtQ860cnE=;
-        b=miOjzMgcOpfbeSMWq3Gx1DdS6+h1XPq9+vmLz16SB2L+HvrXn0Vvre3nKBF4+Fu4IU
-         AEMmp2MZ456ArLT88Kgs/axf2lPMVyWQ6S6E/h77iNThxTM28XLkjiCB/5mTXxOiDHke
-         j+4HcCT4TuvKliY7nsOyI4RRrVQCxmcP5rKM8=
+        bh=z6hi1rrNtPKGurqtuvzRNaOED97sTicPfJzHu8wjv0A=;
+        b=VXCvPlbewLRnjk+XCmKk3io0FDq/mVREC5+z/CS1b6F/6F5Vald7FO8ZUSxj09yygY
+         wSM7JWf0IDyDq7NVBUbJqbV3oj9pLTvqBdoyUaL/TizOEXGoSoUU7i3q96JR+FBSr7UT
+         Wi6aZCZb9Z6J7QM3TK++xp8jHhjDRNBiEZ4C36RBvCrQi5dB24g7q8JjDzCK25Fg52Vo
+         ReG29DQ0RmBv7D4kd7FgQqTPs+Ow0htCs+M8X9AUhnUIvjmwV+QFBO+CRVDSwp76wnA8
+         8B3laXVWE72oh4gGeGYcp19PPiksrKbiFsFXs6Zx+0aQMRZ3a0oXJu1ezlHcnuSyfm3j
+         Vuzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HQzH3Ik7R7bKVK+hgXPw/UmcsoI9rlOtwmNtQ860cnE=;
-        b=rY8yMOfXkLKd7Q/LuS+E9lN7TnEIyneeGsKcGU4xjXGZvw2qX7q+30cigtnkIu+4Rr
-         c+NuzJObunrijI4HAqW5c39qjG3NUbw0knzSEzi7Ex4KaWLHbL5CeAX/0sv5nM9apncZ
-         XaX2rwdBbbrS/IYfL6ogtEH5ZGO4O+Ocet2TwSJcQ57W6ZX+qGH6yVBEQB65SF/AgeIE
-         VBkt3TlOcprHlS16Ys9GM8i5oPtp3ra8H7SAGGy0zzDLijdZ0ldWRZj3KfqkUjzA3WY9
-         ZAF/Vv5rTmjS1vTkeBbK5El5qii5ppYRBC3XGdeyejiW7oZO4BZESWlcRNKF2VWlZdJD
-         Y3VQ==
-X-Gm-Message-State: AOAM531G/CDTLvUb7GUkgHLKlKyw4vwcfkrFpwRt7dGgxPcOA6R68JP2
-        w5MJ+xLkkTFeYNeORVWY9oscMaJDDY8=
-X-Google-Smtp-Source: ABdhPJyzAsxvNeXz6HUyRzfv7coMSwjVqqpVj5QHq823EF1Du2vpiCBQv0qzzJA8Fq8rpl4H0eOJNA==
-X-Received: by 2002:a1f:3415:: with SMTP id b21mr4931022vka.50.1589826695360;
-        Mon, 18 May 2020 11:31:35 -0700 (PDT)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id t141sm3373083vke.26.2020.05.18.11.31.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 11:31:34 -0700 (PDT)
-Received: by mail-vs1-f46.google.com with SMTP id 62so6220665vsi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:31:34 -0700 (PDT)
-X-Received: by 2002:a67:d199:: with SMTP id w25mr5344534vsi.169.1589826693613;
- Mon, 18 May 2020 11:31:33 -0700 (PDT)
+        bh=z6hi1rrNtPKGurqtuvzRNaOED97sTicPfJzHu8wjv0A=;
+        b=AbY04YgoLXxHoJ7idYmnC2JbAbmihURc4Jo1xkZAMgr8K6ZNljO2AZFQ3RlJ3m0zDG
+         Ua3qRd6ok/rFO8AlI+jrZovqY0YOFpaZATsTtwxSPhRavcestktSqhu51iZVuTpdNFo2
+         t5al2uNgEdhTFoO7knR2JwaSXxagqdyPDqCIVOk+oncmwX3QXcgpF+xTSxDiI2GcX3jL
+         8i1f2nNFdAMjOHARl1IYmIEoJ9BnSbUOvaqg09JX1N/7QO0vfngwoZga0jPULad1vKmb
+         BHqcoprbxtXQAXi28ISxz/d51efcJyDwpixYn3BmRwYeixS5VbUmvwRsDOFwI5nMUKl4
+         m+4g==
+X-Gm-Message-State: AOAM533wee6VVCnpymdFPcGDdpqW/DIkAEi01/bnJZ0yz3hP1juWYozw
+        Q2ydW1sps0zpY3uauVVSU6MgZCuBQ9q24Cz6uKo=
+X-Google-Smtp-Source: ABdhPJyqxvmh9rJ31Mq/U5nvKnfwPluC1R2wT2iMF4O6fKI1BM5ejNKhZVf2iLmi66MdIYovUz+3S9wSdI8GxSOWGco=
+X-Received: by 2002:ad4:4145:: with SMTP id z5mr17353001qvp.29.1589826777307;
+ Mon, 18 May 2020 11:32:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <1589307480-27508-1-git-send-email-rbokka@codeaurora.org>
- <1589307480-27508-3-git-send-email-rbokka@codeaurora.org> <ffaccce7-95c0-2f95-ad3b-55f1da42eaee@linaro.org>
- <14e1fa51-066c-6e1b-01a4-2103612de9e9@codeaurora.org> <d5902226-21b3-7941-6405-688d7a115142@linaro.org>
- <b80aaca0-0594-e04b-5320-b5b3c4478161@codeaurora.org> <d76e4eb2-fa6a-0b76-3912-83bce678bc96@linaro.org>
-In-Reply-To: <d76e4eb2-fa6a-0b76-3912-83bce678bc96@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 18 May 2020 11:31:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XW7GymV_pr_0SvUPWwL6WnPhqMq-crq-RbR_us3-ShNA@mail.gmail.com>
-Message-ID: <CAD=FV=XW7GymV_pr_0SvUPWwL6WnPhqMq-crq-RbR_us3-ShNA@mail.gmail.com>
-Subject: Re: [RFC v1 2/3] drivers: nvmem: Add driver for QTI qfprom-efuse support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <20200518135943.11749-1-huobean@gmail.com> <20200518135943.11749-6-huobean@gmail.com>
+In-Reply-To: <20200518135943.11749-6-huobean@gmail.com>
+From:   Steve deRosier <derosier@gmail.com>
+Date:   Mon, 18 May 2020 11:32:21 -0700
+Message-ID: <CALLGbR+MWz82hcC6jrv+MrH6Rhj5McW5vt9V+x4UhiZdsoqkRg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] mtd: rawnand: micron: Micron SLC NAND filling block
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>, s.hauer@pengutronix.de,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        dhavalp@codeaurora.org, mturney@codeaurora.org,
-        sparate@codeaurora.org, c_rbokka@codeaurora.org,
-        mkurumel@codeaurora.org
+        Bean Huo <beanhuo@micron.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, May 18, 2020 at 3:45 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+On Mon, May 18, 2020 at 7:00 AM Bean Huo <huobean@gmail.com> wrote:
 >
-> On 18/05/2020 11:39, Ravi Kumar Bokka (Temp) wrote:
-> >
-> > Based on the compatible, do i need to separate probe function for
-> > qfprom-efuse and maintain separate nvmem object to register nvmem
-> > framework. Is this what you are suggesting to implementing this in to
-> > one existing driver?
+> From: Bean Huo <beanhuo@micron.com>
 >
-> Yes for same driver we should add new compatible string and add support
-> to this in existing qfprom driver.
-> Ideally we should allocate nvmem_config object at probe with different
-> parameters based on compatible string.
+> On some legacy planar 2D Micron NAND devices when a block erase command
 
-I wish I had better documentation for exactly what was in the SoC
-instead of the heavily redacted stuff Qualcomm provides.  Really the
-answer here is: how do you best describe the hardware?  OK, so I just
-spent the past hour or so trying to patch together all the bits and
-fragments that Qualcomm provided me.  Just like a scavenger hunt!
-Fun!  The best I can patch together is that there is a single QFPROM
-with these ranges:
+I object the use of the qualifications you're putting in this
+sentence. By saying "some legacy...." you're implying that there's a
+set that does and a set that doesn't require this. Which then leads
+the reader of this commit message to #1 look for which ones this
+applies to vs not, and #2 want to remove/exclude the feature when
+they're using a "current" device. The wiggle-word wording is confusing
+and dishonest.
 
-0x00780000 - 0x007800FF
-QFPROM HW registers, range 1/2
+I've followed this discussion now intently and it seems like Micron is
+either unable or unwilling to determine which specific devices this
+does or doesn't apply to. If you are unable to identify and restrict
+this functionality to a specific subset of devices, then the fact is
+it's "all."  Let's just say that and eliminate the confusion. And
+please also update your datasheets to indicate that this is the
+correct algorithm for working with these devices. Better would be to
+issue an errata on the chips and notify your customers. I feel for
+those customers who aren't using Linux and don't know the reliability
+problem they've been tracking down for the last couple of years is
+already known but they don't have any way of knowing about it.
 
-0x00780120 - 0x007808FF
-QFPROM "raw" space
+In your commit message, rewording to "On planar 2D Micron NAND devices
+when a block erase command..." is sufficient.
 
-0x00782000 - 0x007820FF
-QFPROM HW registers, range 2/2
-
-0x00784120 - 0x007848FF
-QFPROM "corrected" space
-
-0x00786000 - 0x00786FFF
-QFPROM memory range that I don't really understand and maybe we don't
-worry about right now?
-
-Did I get that right?  If so, is there a prize for winning the scavenger hunt?
-
----
-
-If so then, IMO, it wouldn't be insane to actually keep it as two
-drivers and two device tree nodes, as you've done.  I'd defer to
-Srinivas and Rob Herring, though.  The existing driver would be a
-read-only driver and provide access to the "corrected" versions of all
-the registers.  Its node would have "#address-cells = <1>" and
-"#size-cells = <1>" because it's expected that other drivers might
-need to refer to data stored here.
-
-Your new driver would be read-write and provide access to the "raw"
-values.  A read from your new driver would not necessarily equal a
-read from the old driver if the FEC (forward error correction) kicked
-in.  Other drivers should never refer to the non-corrected values so
-you wouldn't have "#address-cells" and "#size-cells".  The only way to
-really read or write it would be through sysfs.
-
-It would be super important to document what's happening, of course.
-...and ideally name them to make it clearer too.
-
----
-
-Another alternative (if Srinivas and/or Rob H prefer it) would be to
-deprecate the old driver and/or bindings and say that there really
-should just be one node and one driver.  In that case you'd replace
-the old node with:
-
-qfprom@780000 {
-  compatible = "qcom,sc7180-qfprom-efuse";
-  reg = <0 0x00780000 0 0x6fff>;
-  #address-cells = <1>;
-  #size-cells = <1>;
-
-  clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-  clock-names = "sec";
-
-  qusb2p_hstx_trim: hstx-trim-primary@25b {
-    reg = <0x25b 0x1>;
-    bits = <1 3>;
-  };
-};
-
-You'd use the of_match_table solution to figure out the relevant
-offsets (0x120, 0x2000, 0x4120, 0x6000) for sc7180 and this new driver
-would be responsible for being able to read the corrected values and
-also for programming.  In this case I'm not sure how (assuming it's
-valuable) you'd provide read access to the uncorrected data.
+- Steve
 
 
--Doug
+> is issued, occasionally even though a block erase operation completes and
+> returns a pass status, the flash block may not be completely erased.
+> Subsequent operations to this block on very rare cases can result in subtle
+> failures or corruption. These extremely rare cases should nevertheless be
+> considered. These rare occurrences have been observed on partially written
+> blocks.
+>
+> To avoid this rare occurrence, we should make sure that at least 15 pages
+> have been programmed to a block before it is erased. In case we find that
+> less than 15 pages have been programmed, we will rewrite first 15 pages of
+> block.
+>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/mtd/nand/raw/nand_micron.c | 102 +++++++++++++++++++++++++++++
+>  1 file changed, 102 insertions(+)
+>
+> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> index b3485b0995ad..c5fd9e60f46d 100644
+> --- a/drivers/mtd/nand/raw/nand_micron.c
+> +++ b/drivers/mtd/nand/raw/nand_micron.c
+> @@ -36,6 +36,9 @@
+>  #define NAND_ECC_STATUS_1_3_CORRECTED  BIT(4)
+>  #define NAND_ECC_STATUS_7_8_CORRECTED  (BIT(4) | BIT(3))
+>
+> +#define MICRON_SHALLOW_ERASE_MIN_PAGE 15
+> +#define MICRON_PAGE_MASK_TRIGGER GENMASK(MICRON_SHALLOW_ERASE_MIN_PAGE, 0)
+> +
+>  struct nand_onfi_vendor_micron {
+>         u8 two_plane_read;
+>         u8 read_cache;
+> @@ -64,6 +67,7 @@ struct micron_on_die_ecc {
+>
+>  struct micron_nand {
+>         struct micron_on_die_ecc ecc;
+> +       u16 *writtenp;
+>  };
+>
+>  static int micron_nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
+> @@ -429,6 +433,93 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+>         return MICRON_ON_DIE_SUPPORTED;
+>  }
+>
+> +static int micron_nand_pre_erase(struct nand_chip *chip, u32 eraseblock)
+> +{
+> +       struct micron_nand *micron = nand_get_manufacturer_data(chip);
+> +       struct mtd_info *mtd = nand_to_mtd(chip);
+> +       u8 last_page = MICRON_SHALLOW_ERASE_MIN_PAGE - 1;
+> +       u32 page;
+> +       u8 *data_buf;
+> +       int ret, i;
+> +
+> +       data_buf = nand_get_data_buf(chip);
+> +       WARN_ON(!data_buf);
+> +
+> +       if (likely(micron->writtenp[eraseblock] & BIT(last_page)))
+> +               return 0;
+> +
+> +       page = eraseblock << (chip->phys_erase_shift - chip->page_shift);
+> +
+> +       if (unlikely(micron->writtenp[eraseblock] == 0)) {
+> +               ret = nand_read_page_raw(chip, data_buf, 1, page + last_page);
+> +               if (ret)
+> +                       return ret; /* Read error */
+> +               ret = nand_check_is_erased_page(chip, data_buf, true);
+> +               if (!ret)
+> +                       return 0;
+> +       }
+> +
+> +       memset(data_buf, 0x00, mtd->writesize);
+> +
+> +       for (i = 0; i < MICRON_SHALLOW_ERASE_MIN_PAGE; i++) {
+> +               ret = nand_write_page_raw(chip, data_buf, false, page + i);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int micron_nand_post_erase(struct nand_chip *chip, u32 eraseblock)
+> +{
+> +       struct micron_nand *micron = nand_get_manufacturer_data(chip);
+> +
+> +       if (!micron)
+> +               return -EINVAL;
+> +
+> +       micron->writtenp[eraseblock] = 0;
+> +
+> +       return 0;
+> +}
+> +
+> +static int micron_nand_write_oob(struct nand_chip *chip, loff_t to,
+> +                                struct mtd_oob_ops *ops)
+> +{
+> +       struct micron_nand *micron = nand_get_manufacturer_data(chip);
+> +       u32 eb_sz = nanddev_eraseblock_size(&chip->base);
+> +       u32 p_sz = nanddev_page_size(&chip->base);
+> +       u32 ppeb = nanddev_pages_per_eraseblock(&chip->base);
+> +       u32 nb_p_tot = ops->len / p_sz;
+> +       u32 first_eb = DIV_ROUND_DOWN_ULL(to, eb_sz);
+> +       u32 first_p = DIV_ROUND_UP_ULL(to - (first_eb * eb_sz), p_sz);
+> +       u32 nb_eb = DIV_ROUND_UP_ULL(first_p + nb_p_tot, ppeb);
+> +       u32 remaining_p, eb, nb_p;
+> +       int ret;
+> +
+> +       ret = nand_write_oob_nand(chip, to, ops);
+> +
+> +       if (ret || ops->len != ops->retlen)
+> +               return ret;
+> +
+> +       /* Mark the last pages of the first erase block to write */
+> +       nb_p = min(nb_p_tot, ppeb - first_p);
+> +       micron->writtenp[first_eb] |= GENMASK(first_p + nb_p, 0) &
+> +                                       MICRON_PAGE_MASK_TRIGGER;
+> +       remaining_p = nb_p_tot - nb_p;
+> +
+> +       /* Mark all the pages of all "in-the-middle" erase blocks */
+> +       for (eb = first_eb + 1; eb < first_eb + nb_eb - 1; eb++) {
+> +               micron->writtenp[eb] |= MICRON_PAGE_MASK_TRIGGER;
+> +               remaining_p -= ppeb;
+> +       }
+> +
+> +       /* Mark the first pages of the last erase block to write */
+> +       if (remaining_p)
+> +               micron->writtenp[eb] |= GENMASK(remaining_p - 1, 0) &
+> +                                       MICRON_PAGE_MASK_TRIGGER;
+> +               return 0;
+> +}
+> +
+>  static int micron_nand_init(struct nand_chip *chip)
+>  {
+>         struct mtd_info *mtd = nand_to_mtd(chip);
+> @@ -515,6 +606,17 @@ static int micron_nand_init(struct nand_chip *chip)
+>                 }
+>         }
+>
+> +       if (nand_is_slc(chip)) {
+> +               micron->writtenp = kcalloc(nanddev_neraseblocks(&chip->base),
+> +                                          sizeof(u16), GFP_KERNEL);
+> +               if (!micron->writtenp)
+> +                       goto err_free_manuf_data;
+> +
+> +               chip->ops.write_oob = micron_nand_write_oob;
+> +               chip->ops.pre_erase = micron_nand_pre_erase;
+> +               chip->ops.post_erase = micron_nand_post_erase;
+> +       }
+> +
+>         return 0;
+>
+>  err_free_manuf_data:
+> --
+> 2.17.1
+>
