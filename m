@@ -2,142 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC311D7695
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FEC1D76A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgERLRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbgERLRO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:17:14 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A119CC05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 04:17:14 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h7so711126otr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 04:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g503Ck8Hmnwm3Mle9RPu3pG4Ds3hYRoRksfGfnX5Wtc=;
-        b=IboKzie54ObNPp3JiHhtIQ8kPbLLNHmAcRRYDKnk1oArIjZ+GMd10k4aYMJSRPb9zG
-         17F0resl74uiihv4gxGIutzAXhic+K18i7W3hyGwgMfTt8nCdTFLiRiH/3M90+eJtdp8
-         NOtY1+r+bXRxOoYA/CFBWd3Y29PGDF37HlePI4bTyWF2JDP4nX+bpXNsXdtCMybiKvJk
-         3xL5+CrFHGwbOdHy5qb3FBbTBNIDGk7CJwhLUp4tig7HJTZMNmUt4I/ZmlrsqxCOu96c
-         odlDwjvWGdMjf7bSEZvSr2V+hOQ8gJPE9TtlDbNnG+73EW9FbfvLzrsTUZwGJeNQoI66
-         xWWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g503Ck8Hmnwm3Mle9RPu3pG4Ds3hYRoRksfGfnX5Wtc=;
-        b=GaZf+W81Yek3qlGgnKCInhLIYlMKQTqQmPR0QJU9BpFfUjgkigPFIIhtq2sEypZgcZ
-         5yHMb1X7tN1lyLSEf2MFKc5BRHzbTAzMgvDeBIy/PV2zGf2HZgmlmudPgiZvkOPjMx58
-         rukZcy07NQLUeOlRq+77vUe2avv+uXJhKQf2BGeCwnduN3E06tHam2AvRcnd6i+uyee/
-         NdLRkSrH9xWlbJrY0WEv3FsE4XdJUZYtfQUOkFN3sk5Y0eAPh3ssYOX7PAAlR3N9WNCY
-         T2ArLThZOO2iVwxaNYh4LHSAuIsl2b54ktVVpPl0K6TCyvZiLfeey32HOqhEuvDD28tE
-         cClQ==
-X-Gm-Message-State: AOAM531ta1miex1GP2+Qb8gQRdNTG7hd1aWES3q8/0UCG6qM8eEanBc/
-        7wP/HMH2tYS19FXiRhJEHhqcGjluLVShe9kH24yqJg==
-X-Google-Smtp-Source: ABdhPJwl5rqs5VWO5Jkao2XeEWkRX+lCx01ip7F50tguMxrw+WswGeYLG9OGd+5XHn6jnx/Q1aQbMIwBn56Y/9LJcLA=
-X-Received: by 2002:a9d:ec7:: with SMTP id 65mr11530376otj.164.1589800633898;
- Mon, 18 May 2020 04:17:13 -0700 (PDT)
+        id S1727957AbgERLR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:17:58 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:46884 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726682AbgERLR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:17:58 -0400
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id E84CC20479;
+        Mon, 18 May 2020 11:17:52 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+c1af344512918c61362c@syzkaller.appspotmail.com>,
+        jmorris@namei.org, linux-next@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH v2] proc: proc_pid_ns takes super_block as an argument
+Date:   Mon, 18 May 2020 13:17:16 +0200
+Message-Id: <20200518111716.2896385-1-gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <87lfltcbc4.fsf@x220.int.ebiederm.org>
+References: <87lfltcbc4.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-References: <20200311112004.47138-1-stevensd@chromium.org> <20200311112004.47138-2-stevensd@chromium.org>
- <CAKMK7uHFgiHLe9oiFBr-VR-6rU9-hLTpBTEVNh0ezyj54u70jw@mail.gmail.com>
- <CAD=HUj6k-y1=64zY8ZFOQBZ7WSUWiQfvkiTpXXt10JB_CGqk1A@mail.gmail.com>
- <20200514123007.GP206103@phenom.ffwll.local> <CAD=HUj7452eFfn9i=JWm54Mke3Lew-7AWYeoKZLAjCSg7eLO6A@mail.gmail.com>
- <20200515140306.GF206103@phenom.ffwll.local>
-In-Reply-To: <20200515140306.GF206103@phenom.ffwll.local>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Mon, 18 May 2020 16:47:02 +0530
-Message-ID: <CAO_48GG85PhyoZ1yzXuwv8tT12V4dkDsXc8_RaMd--oinkpN2g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] dma-buf: add support for virtio exported objects
-To:     David Stevens <stevensd@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:VIRTIO CORE, NET..." 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, virtio-dev@lists.oasis-open.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 18 May 2020 11:17:54 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+The proc_pid_ns() can be used for both inode and dentry. To avoid making
+two identical functions, change the argument type of the proc_pid_ns().
 
-On Fri, 15 May 2020 at 19:33, Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, May 15, 2020 at 02:07:06PM +0900, David Stevens wrote:
-> > On Thu, May 14, 2020 at 9:30 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > On Thu, May 14, 2020 at 05:19:40PM +0900, David Stevens wrote:
-> > > > Sorry for the duplicate reply, didn't notice this until now.
-> > > >
-> > > > > Just storing
-> > > > > the uuid should be doable (assuming this doesn't change during the
-> > > > > lifetime of the buffer), so no need for a callback.
-> > > >
-> > > > Directly storing the uuid doesn't work that well because of
-> > > > synchronization issues. The uuid needs to be shared between multiple
-> > > > virtio devices with independent command streams, so to prevent races
-> > > > between importing and exporting, the exporting driver can't share the
-> > > > uuid with other drivers until it knows that the device has finished
-> > > > registering the uuid. That requires a round trip to and then back from
-> > > > the device. Using a callback allows the latency from that round trip
-> > > > registration to be hidden.
-> > >
-> > > Uh, that means you actually do something and there's locking involved.
-> > > Makes stuff more complicated, invariant attributes are a lot easier
-> > > generally. Registering that uuid just always doesn't work, and blocking
-> > > when you're exporting?
-> >
-> > Registering the id at creation and blocking in gem export is feasible,
-> > but it doesn't work well for systems with a centralized buffer
-> > allocator that doesn't support batch allocations (e.g. gralloc). In
-> > such a system, the round trip latency would almost certainly be
-> > included in the buffer allocation time. At least on the system I'm
-> > working on, I suspect that would add 10s of milliseconds of startup
-> > latency to video pipelines (although I haven't benchmarked the
-> > difference). Doing the blocking as late as possible means most or all
-> > of the latency can be hidden behind other pipeline setup work.
-> >
-> > In terms of complexity, I think the synchronization would be basically
-> > the same in either approach, just in different locations. All it would
-> > do is alleviate the need for a callback to fetch the UUID.
->
-I think I agree with Daniel there - this seems best suited for code
-within virtio.
+Link: https://lore.kernel.org/lkml/c3461e26-1407-2262-c709-dac0df3da2d0@i-love.sakura.ne.jp/
+Reported-by: syzbot+c1af344512918c61362c@syzkaller.appspotmail.com
+Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+---
+ fs/locks.c                 |  4 ++--
+ fs/proc/array.c            |  2 +-
+ fs/proc/base.c             | 10 +++++-----
+ fs/proc/self.c             |  2 +-
+ fs/proc/thread_self.c      |  2 +-
+ include/linux/proc_fs.h    |  4 ++--
+ kernel/fork.c              |  2 +-
+ net/ipv6/ip6_flowlabel.c   |  2 +-
+ security/tomoyo/realpath.c |  2 +-
+ 9 files changed, 15 insertions(+), 15 deletions(-)
 
-> Hm ok. I guess if we go with the older patch, where this all is a lot more
-> just code in virtio, doing an extra function to allocate the uuid sounds
-> fine. Then synchronization is entirely up to the virtio subsystem and not
-> a dma-buf problem (and hence not mine). You can use dma_resv_lock or so,
-> but no need to. But with callbacks potentially going both ways things
-> always get a bit interesting wrt locking - this is what makes peer2peer
-> dma-buf so painful right now. Hence I'd like to avoid that if needed, at
-> least at the dma-buf level. virtio code I don't mind what you do there :-)
->
-> Cheers, Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+diff --git a/fs/locks.c b/fs/locks.c
+index 399c5dbb72c4..ab702d6efb55 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -2823,7 +2823,7 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ {
+ 	struct inode *inode = NULL;
+ 	unsigned int fl_pid;
+-	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
++	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
+ 
+ 	fl_pid = locks_translate_pid(fl, proc_pidns);
+ 	/*
+@@ -2901,7 +2901,7 @@ static int locks_show(struct seq_file *f, void *v)
+ {
+ 	struct locks_iterator *iter = f->private;
+ 	struct file_lock *fl, *bfl;
+-	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file));
++	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
+ 
+ 	fl = hlist_entry(v, struct file_lock, fl_link);
+ 
+diff --git a/fs/proc/array.c b/fs/proc/array.c
+index 8e16f14bb05a..a4d4763731e0 100644
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -728,7 +728,7 @@ static int children_seq_show(struct seq_file *seq, void *v)
+ {
+ 	struct inode *inode = file_inode(seq->file);
+ 
+-	seq_printf(seq, "%d ", pid_nr_ns(v, proc_pid_ns(inode)));
++	seq_printf(seq, "%d ", pid_nr_ns(v, proc_pid_ns(inode)->i_sb));
+ 	return 0;
+ }
+ 
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 5a307b3bb2d1..30c9fceca0b7 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -754,7 +754,7 @@ static const struct inode_operations proc_def_inode_operations = {
+ static int proc_single_show(struct seq_file *m, void *v)
+ {
+ 	struct inode *inode = m->private;
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	struct pid *pid = proc_pid(inode);
+ 	struct task_struct *task;
+ 	int ret;
+@@ -1423,7 +1423,7 @@ static const struct file_operations proc_fail_nth_operations = {
+ static int sched_show(struct seq_file *m, void *v)
+ {
+ 	struct inode *inode = m->private;
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	struct task_struct *p;
+ 
+ 	p = get_proc_task(inode);
+@@ -2466,7 +2466,7 @@ static int proc_timers_open(struct inode *inode, struct file *file)
+ 		return -ENOMEM;
+ 
+ 	tp->pid = proc_pid(inode);
+-	tp->ns = proc_pid_ns(inode);
++	tp->ns = proc_pid_ns(inode->i_sb);
+ 	return 0;
+ }
+ 
+@@ -3377,7 +3377,7 @@ int proc_pid_readdir(struct file *file, struct dir_context *ctx)
+ {
+ 	struct tgid_iter iter;
+ 	struct proc_fs_info *fs_info = proc_sb_info(file_inode(file)->i_sb);
+-	struct pid_namespace *ns = proc_pid_ns(file_inode(file));
++	struct pid_namespace *ns = proc_pid_ns(file_inode(file)->i_sb);
+ 	loff_t pos = ctx->pos;
+ 
+ 	if (pos >= PID_MAX_LIMIT + TGID_OFFSET)
+@@ -3730,7 +3730,7 @@ static int proc_task_readdir(struct file *file, struct dir_context *ctx)
+ 	/* f_version caches the tgid value that the last readdir call couldn't
+ 	 * return. lseek aka telldir automagically resets f_version to 0.
+ 	 */
+-	ns = proc_pid_ns(inode);
++	ns = proc_pid_ns(inode->i_sb);
+ 	tid = (int)file->f_version;
+ 	file->f_version = 0;
+ 	for (task = first_tid(proc_pid(inode), tid, ctx->pos - 2, ns);
+diff --git a/fs/proc/self.c b/fs/proc/self.c
+index 309301ac0136..ca5158fa561c 100644
+--- a/fs/proc/self.c
++++ b/fs/proc/self.c
+@@ -12,7 +12,7 @@ static const char *proc_self_get_link(struct dentry *dentry,
+ 				      struct inode *inode,
+ 				      struct delayed_call *done)
+ {
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	pid_t tgid = task_tgid_nr_ns(current, ns);
+ 	char *name;
+ 
+diff --git a/fs/proc/thread_self.c b/fs/proc/thread_self.c
+index 2493cbbdfa6f..ac284f409568 100644
+--- a/fs/proc/thread_self.c
++++ b/fs/proc/thread_self.c
+@@ -12,7 +12,7 @@ static const char *proc_thread_self_get_link(struct dentry *dentry,
+ 					     struct inode *inode,
+ 					     struct delayed_call *done)
+ {
+-	struct pid_namespace *ns = proc_pid_ns(inode);
++	struct pid_namespace *ns = proc_pid_ns(inode->i_sb);
+ 	pid_t tgid = task_tgid_nr_ns(current, ns);
+ 	pid_t pid = task_pid_nr_ns(current, ns);
+ 	char *name;
+diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+index 2cb424e6f36a..6ec524d8842c 100644
+--- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -202,9 +202,9 @@ int open_related_ns(struct ns_common *ns,
+ 		   struct ns_common *(*get_ns)(struct ns_common *ns));
+ 
+ /* get the associated pid namespace for a file in procfs */
+-static inline struct pid_namespace *proc_pid_ns(const struct inode *inode)
++static inline struct pid_namespace *proc_pid_ns(struct super_block *sb)
+ {
+-	return proc_sb_info(inode->i_sb)->pid_ns;
++	return proc_sb_info(sb)->pid_ns;
+ }
+ 
+ #endif /* _LINUX_PROC_FS_H */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 4385f3d639f2..e7bdaccad942 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1745,7 +1745,7 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
+ 	pid_t nr = -1;
+ 
+ 	if (likely(pid_has_task(pid, PIDTYPE_PID))) {
+-		ns = proc_pid_ns(file_inode(m->file));
++		ns = proc_pid_ns(file_inode(m->file)->i_sb);
+ 		nr = pid_nr_ns(pid, ns);
+ 	}
+ 
+diff --git a/net/ipv6/ip6_flowlabel.c b/net/ipv6/ip6_flowlabel.c
+index d64b83e85642..ce4fbba4acce 100644
+--- a/net/ipv6/ip6_flowlabel.c
++++ b/net/ipv6/ip6_flowlabel.c
+@@ -779,7 +779,7 @@ static void *ip6fl_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	struct ip6fl_iter_state *state = ip6fl_seq_private(seq);
+ 
+-	state->pid_ns = proc_pid_ns(file_inode(seq->file));
++	state->pid_ns = proc_pid_ns(file_inode(seq->file)->i_sb);
+ 
+ 	rcu_read_lock_bh();
+ 	return *pos ? ip6fl_get_idx(seq, *pos - 1) : SEQ_START_TOKEN;
+diff --git a/security/tomoyo/realpath.c b/security/tomoyo/realpath.c
+index 08b096e2f7e3..df4798980416 100644
+--- a/security/tomoyo/realpath.c
++++ b/security/tomoyo/realpath.c
+@@ -162,7 +162,7 @@ static char *tomoyo_get_local_path(struct dentry *dentry, char * const buffer,
+ 	if (sb->s_magic == PROC_SUPER_MAGIC && *pos == '/') {
+ 		char *ep;
+ 		const pid_t pid = (pid_t) simple_strtoul(pos + 1, &ep, 10);
+-		struct pid_namespace *proc_pidns = proc_pid_ns(d_inode(dentry));
++		struct pid_namespace *proc_pidns = proc_pid_ns(sb);
+ 
+ 		if (*ep == '/' && pid && pid ==
+ 		    task_tgid_nr_ns(current, proc_pidns)) {
+-- 
+2.25.4
 
-Best,
-Sumit.
