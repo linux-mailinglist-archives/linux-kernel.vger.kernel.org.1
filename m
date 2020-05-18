@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6501D85E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B289E1D811C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387614AbgERSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        id S1729827AbgERRo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730877AbgERRvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:32 -0400
+        id S1729786AbgERRoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF8A420715;
-        Mon, 18 May 2020 17:51:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C80F020715;
+        Mon, 18 May 2020 17:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824292;
-        bh=D7KNT8DXPfp5mfOYskYOKBb4eNvLU6ux7YhVEuX6CoE=;
+        s=default; t=1589823883;
+        bh=typIq0/seAP8Czi1rdqH4ZdtGRHRMXR+6Z2dgm9bv+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NK/zeLjMWeShmrd4zx0ay19lXZSU87i4PAcOHvwisS0qp/v7Wh9KSsVmDrVCwcsW/
-         ZqFImTay8PdLWknc3p2pvrAP9RyUlrSaBVGYW9/fsZX/ZH9g0NDJd5B7ndlkIB9QYG
-         HMdlnpAN4SDdakxFqF9YkXRYE6NcouWX5d0s4Nxc=
+        b=2BsQYLEEswHdjuPmgitsSZ0w2VlwNV+qA4cOxcNfaIllPGSsQmYTEED3IzFVPxgg+
+         zPP2YPvebZZQGRI2aIwklc4ozGOQgaz1dpCKxVcCxtijrh04tf5p694zEFIcdlcMc7
+         tgemK46UDvzl038POsmDyFIr9cyj/MOSqui9BGnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 34/80] mmc: core: Check request type before completing the request
-Date:   Mon, 18 May 2020 19:36:52 +0200
-Message-Id: <20200518173457.347082325@linuxfoundation.org>
+        stable@vger.kernel.org, butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 75/90] ALSA: rawmidi: Fix racy buffer resize under concurrent accesses
+Date:   Mon, 18 May 2020 19:36:53 +0200
+Message-Id: <20200518173506.527439760@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,56 +43,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit e6bfb1bf00852b55f4c771f47ae67004c04d3c87 ]
+commit c1f6e3c818dd734c30f6a7eeebf232ba2cf3181d upstream.
 
-In the request completion path with CQE, request type is being checked
-after the request is getting completed. This is resulting in returning
-the wrong request type and leading to the IO hang issue.
+The rawmidi core allows user to resize the runtime buffer via ioctl,
+and this may lead to UAF when performed during concurrent reads or
+writes: the read/write functions unlock the runtime lock temporarily
+during copying form/to user-space, and that's the race window.
 
-ASYNC request type is getting returned for DCMD type requests.
-Because of this mismatch, mq->cqe_busy flag is never getting cleared
-and the driver is not invoking blk_mq_hw_run_queue. So requests are not
-getting dispatched to the LLD from the block layer.
+This patch fixes the hole by introducing a reference counter for the
+runtime buffer read/write access and returns -EBUSY error when the
+resize is performed concurrently against read/write.
 
-All these eventually leading to IO hang issues.
-So, get the request type before completing the request.
+Note that the ref count field is a simple integer instead of
+refcount_t here, since the all contexts accessing the buffer is
+basically protected with a spinlock, hence we need no expensive atomic
+ops.  Also, note that this busy check is needed only against read /
+write functions, and not in receive/transmit callbacks; the race can
+happen only at the spinlock hole mentioned in the above, while the
+whole function is protected for receive / transmit callbacks.
 
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
 Cc: <stable@vger.kernel.org>
-Fixes: 1e8e55b67030 ("mmc: block: Add CQE support")
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1588775643-18037-2-git-send-email-vbadigan@codeaurora.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/CAFcO6XMWpUVK_yzzCpp8_XP7+=oUpQvuBeCbMffEDkpe8jWrfg@mail.gmail.com
+Link: https://lore.kernel.org/r/s5heerw3r5z.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mmc/core/block.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/rawmidi.h |    1 +
+ sound/core/rawmidi.c    |   31 +++++++++++++++++++++++++++----
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 60eac66dc9f0b..23bcdbba0cab9 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1424,6 +1424,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
- 	struct mmc_request *mrq = &mqrq->brq.mrq;
- 	struct request_queue *q = req->q;
- 	struct mmc_host *host = mq->card->host;
-+	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
- 	unsigned long flags;
- 	bool put_card;
- 	int err;
-@@ -1453,7 +1454,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -76,6 +76,7 @@ struct snd_rawmidi_runtime {
+ 	size_t avail_min;	/* min avail for wakeup */
+ 	size_t avail;		/* max used buffer for wakeup */
+ 	size_t xruns;		/* over/underruns counter */
++	int buffer_ref;		/* buffer reference count */
+ 	/* misc */
+ 	spinlock_t lock;
+ 	wait_queue_head_t sleep;
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -108,6 +108,17 @@ static void snd_rawmidi_input_event_work
+ 		runtime->event(runtime->substream);
+ }
  
- 	spin_lock_irqsave(q->queue_lock, flags);
++/* buffer refcount management: call with runtime->lock held */
++static inline void snd_rawmidi_buffer_ref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref++;
++}
++
++static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
++{
++	runtime->buffer_ref--;
++}
++
+ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_rawmidi_runtime *runtime;
+@@ -654,6 +665,11 @@ int snd_rawmidi_output_params(struct snd
+ 		if (!newbuf)
+ 			return -ENOMEM;
+ 		spin_lock_irq(&runtime->lock);
++		if (runtime->buffer_ref) {
++			spin_unlock_irq(&runtime->lock);
++			kfree(newbuf);
++			return -EBUSY;
++		}
+ 		oldbuf = runtime->buffer;
+ 		runtime->buffer = newbuf;
+ 		runtime->buffer_size = params->buffer_size;
+@@ -962,8 +978,10 @@ static long snd_rawmidi_kernel_read1(str
+ 	long result = 0, count1;
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	unsigned long appl_ptr;
++	int err = 0;
  
--	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
-+	mq->in_flight[issue_type] -= 1;
+ 	spin_lock_irqsave(&runtime->lock, flags);
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -982,16 +1000,19 @@ static long snd_rawmidi_kernel_read1(str
+ 		if (userbuf) {
+ 			spin_unlock_irqrestore(&runtime->lock, flags);
+ 			if (copy_to_user(userbuf + result,
+-					 runtime->buffer + appl_ptr, count1)) {
+-				return result > 0 ? result : -EFAULT;
+-			}
++					 runtime->buffer + appl_ptr, count1))
++				err = -EFAULT;
+ 			spin_lock_irqsave(&runtime->lock, flags);
++			if (err)
++				goto out;
+ 		}
+ 		result += count1;
+ 		count -= count1;
+ 	}
++ out:
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+-	return result;
++	return result > 0 ? result : err;
+ }
  
- 	put_card = (mmc_tot_in_flight(mq) == 0);
- 
--- 
-2.20.1
-
+ long snd_rawmidi_kernel_read(struct snd_rawmidi_substream *substream,
+@@ -1262,6 +1283,7 @@ static long snd_rawmidi_kernel_write1(st
+ 			return -EAGAIN;
+ 		}
+ 	}
++	snd_rawmidi_buffer_ref(runtime);
+ 	while (count > 0 && runtime->avail > 0) {
+ 		count1 = runtime->buffer_size - runtime->appl_ptr;
+ 		if (count1 > count)
+@@ -1293,6 +1315,7 @@ static long snd_rawmidi_kernel_write1(st
+ 	}
+       __end:
+ 	count1 = runtime->avail < runtime->buffer_size;
++	snd_rawmidi_buffer_unref(runtime);
+ 	spin_unlock_irqrestore(&runtime->lock, flags);
+ 	if (count1)
+ 		snd_rawmidi_output_trigger(substream, 1);
 
 
