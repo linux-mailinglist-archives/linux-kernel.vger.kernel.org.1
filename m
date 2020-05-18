@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D871D83A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1A51D80BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgERSGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
+        id S1728707AbgERRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733153AbgERSGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:06:25 -0400
+        id S1729294AbgERRlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A1A520715;
-        Mon, 18 May 2020 18:06:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8748420657;
+        Mon, 18 May 2020 17:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825184;
-        bh=994zIiEycYh7/lg/4+jHuKAIDN+NHXup24O6Vq+jURo=;
+        s=default; t=1589823695;
+        bh=d4BMgLQoXzWEKnQZXDP1fQuQggJi+WIqwZC85rLTDCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nhWXk1mmS1Qu5HBLqqoTeHZ9vPn+utip6stYXiKhdRTPX5/Cs5RDluNl5QnIp1VEo
-         7Mf2BBRbiz5Sh+Cwb6XCAVT7PFbWIjKmAYMQdAcc1hrskdYm23glJlCmEoqKsVPNhT
-         2lV7oNvrsmOf0ieEpoRuZ2eThABJTTI9FpsjZ/9M=
+        b=YMFzhB7UshjTh1m+AllZ3M0AdMtCLywJfRhZnGr78FYAJ1ME9CTDAAvRydKAPyi/l
+         RbGIJCcW2EQ8kzbs4gTSJT34St2/yzgbBF8b/TIV3d4WJoTEP17pgXSHSrQWSs466T
+         s2GbwWFbmomP4PbXiGpLwvvsvFMdBg2zCpDHUuKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 125/194] net/rds: Use ERR_PTR for rds_message_alloc_sgs()
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ulrich Hecht <uli+renesas@fpond.eu>
+Subject: [PATCH 4.4 84/86] ARM: dts: r8a7740: Add missing extal2 to CPG node
 Date:   Mon, 18 May 2020 19:36:55 +0200
-Message-Id: <20200518173541.956896644@linuxfoundation.org>
+Message-Id: <20200518173507.594465380@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,142 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 7dba92037baf3fa00b4880a31fd532542264994c upstream.
+commit e47cb97f153193d4b41ca8d48127da14513d54c7 upstream.
 
-Returning the error code via a 'int *ret' when the function returns a
-pointer is very un-kernely and causes gcc 10's static analysis to choke:
+The Clock Pulse Generator (CPG) device node lacks the extal2 clock.
+This may lead to a failure registering the "r" clock, or to a wrong
+parent for the "usb24s" clock, depending on MD_CK2 pin configuration and
+boot loader CPG_USBCKCR register configuration.
 
-net/rds/message.c: In function ‘rds_message_map_pages’:
-net/rds/message.c:358:10: warning: ‘ret’ may be used uninitialized in this function [-Wmaybe-uninitialized]
-  358 |   return ERR_PTR(ret);
+This went unnoticed, as this does not affect the single upstream board
+configuration, which relies on the first clock input only.
 
-Use a typical ERR_PTR return instead.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d9ffd583bf345e2e ("ARM: shmobile: r8a7740: add SoC clocks to DTS")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Link: https://lore.kernel.org/r/20200508095918.6061-1-geert+renesas@glider.be
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/rds/message.c |   19 ++++++-------------
- net/rds/rdma.c    |   12 ++++++++----
- net/rds/rds.h     |    3 +--
- net/rds/send.c    |    6 ++++--
- 4 files changed, 19 insertions(+), 21 deletions(-)
+ arch/arm/boot/dts/r8a7740.dtsi |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -308,26 +308,20 @@ out:
- /*
-  * RDS ops use this to grab SG entries from the rm's sg pool.
-  */
--struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
--					  int *ret)
-+struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents)
- {
- 	struct scatterlist *sg_first = (struct scatterlist *) &rm[1];
- 	struct scatterlist *sg_ret;
- 
--	if (WARN_ON(!ret))
--		return NULL;
--
- 	if (nents <= 0) {
- 		pr_warn("rds: alloc sgs failed! nents <= 0\n");
--		*ret = -EINVAL;
--		return NULL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	if (rm->m_used_sgs + nents > rm->m_total_sgs) {
- 		pr_warn("rds: alloc sgs failed! total %d used %d nents %d\n",
- 			rm->m_total_sgs, rm->m_used_sgs, nents);
--		*ret = -ENOMEM;
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 	}
- 
- 	sg_ret = &sg_first[rm->m_used_sgs];
-@@ -343,7 +337,6 @@ struct rds_message *rds_message_map_page
- 	unsigned int i;
- 	int num_sgs = DIV_ROUND_UP(total_len, PAGE_SIZE);
- 	int extra_bytes = num_sgs * sizeof(struct scatterlist);
--	int ret;
- 
- 	rm = rds_message_alloc(extra_bytes, GFP_NOWAIT);
- 	if (!rm)
-@@ -352,10 +345,10 @@ struct rds_message *rds_message_map_page
- 	set_bit(RDS_MSG_PAGEVEC, &rm->m_flags);
- 	rm->m_inc.i_hdr.h_len = cpu_to_be32(total_len);
- 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
--	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
--	if (!rm->data.op_sg) {
-+	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
-+	if (IS_ERR(rm->data.op_sg)) {
- 		rds_message_put(rm);
--		return ERR_PTR(ret);
-+		return ERR_CAST(rm->data.op_sg);
- 	}
- 
- 	for (i = 0; i < rm->data.op_nents; ++i) {
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -664,9 +664,11 @@ int rds_cmsg_rdma_args(struct rds_sock *
- 	op->op_odp_mr = NULL;
- 
- 	WARN_ON(!nr_pages);
--	op->op_sg = rds_message_alloc_sgs(rm, nr_pages, &ret);
--	if (!op->op_sg)
-+	op->op_sg = rds_message_alloc_sgs(rm, nr_pages);
-+	if (IS_ERR(op->op_sg)) {
-+		ret = PTR_ERR(op->op_sg);
- 		goto out_pages;
-+	}
- 
- 	if (op->op_notify || op->op_recverr) {
- 		/* We allocate an uninitialized notifier here, because
-@@ -905,9 +907,11 @@ int rds_cmsg_atomic(struct rds_sock *rs,
- 	rm->atomic.op_silent = !!(args->flags & RDS_RDMA_SILENT);
- 	rm->atomic.op_active = 1;
- 	rm->atomic.op_recverr = rs->rs_recverr;
--	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1, &ret);
--	if (!rm->atomic.op_sg)
-+	rm->atomic.op_sg = rds_message_alloc_sgs(rm, 1);
-+	if (IS_ERR(rm->atomic.op_sg)) {
-+		ret = PTR_ERR(rm->atomic.op_sg);
- 		goto err;
-+	}
- 
- 	/* verify 8 byte-aligned */
- 	if (args->local_addr & 0x7) {
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -852,8 +852,7 @@ rds_conn_connecting(struct rds_connectio
- 
- /* message.c */
- struct rds_message *rds_message_alloc(unsigned int nents, gfp_t gfp);
--struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents,
--					  int *ret);
-+struct scatterlist *rds_message_alloc_sgs(struct rds_message *rm, int nents);
- int rds_message_copy_from_user(struct rds_message *rm, struct iov_iter *from,
- 			       bool zcopy);
- struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned int total_len);
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1274,9 +1274,11 @@ int rds_sendmsg(struct socket *sock, str
- 
- 	/* Attach data to the rm */
- 	if (payload_len) {
--		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs, &ret);
--		if (!rm->data.op_sg)
-+		rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
-+		if (IS_ERR(rm->data.op_sg)) {
-+			ret = PTR_ERR(rm->data.op_sg);
- 			goto out;
-+		}
- 		ret = rds_message_copy_from_user(rm, &msg->msg_iter, zcopy);
- 		if (ret)
- 			goto out;
+--- a/arch/arm/boot/dts/r8a7740.dtsi
++++ b/arch/arm/boot/dts/r8a7740.dtsi
+@@ -461,7 +461,7 @@
+ 		cpg_clocks: cpg_clocks@e6150000 {
+ 			compatible = "renesas,r8a7740-cpg-clocks";
+ 			reg = <0xe6150000 0x10000>;
+-			clocks = <&extal1_clk>, <&extalr_clk>;
++			clocks = <&extal1_clk>, <&extal2_clk>, <&extalr_clk>;
+ 			#clock-cells = <1>;
+ 			clock-output-names = "system", "pllc0", "pllc1",
+ 					     "pllc2", "r",
 
 
