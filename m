@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C777B1D8AAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475121D8AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgERWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:20:18 -0400
-Received: from mga01.intel.com ([192.55.52.88]:47013 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgERWUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:20:18 -0400
-IronPort-SDR: nPtcy3ktJ2Aa5zGV7ptvVTd1UTnMi7Hrg/UVpVlvIkvekMpoaYEnStfvwwCu+nqE5xqg9Afcvu
- MfWRPWqXxUDg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 15:20:18 -0700
-IronPort-SDR: bunCAUpkQe5rEtfhlNJhPWAzLxi8Vq+VFArHQiuw64K4VzT++yLn9vczgTv1L+qSPLrskSpF0b
- V0DPyg0vOPhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="267675369"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga006.jf.intel.com with ESMTP; 18 May 2020 15:20:17 -0700
-Date:   Mon, 18 May 2020 15:20:37 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 1/2] x86, sched: Prevent divisions by zero in frequency
- invariant accounting
-Message-ID: <20200518222037.GA14829@ranerica-svr.sc.intel.com>
-References: <20200428132450.24901-1-ggherdovich@suse.cz>
- <20200428132450.24901-2-ggherdovich@suse.cz>
- <20200501133042.GE3762@hirez.programming.kicks-ass.net>
- <1588429500.8505.29.camel@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588429500.8505.29.camel@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728369AbgERWYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:24:05 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:20521 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728347AbgERWYE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:24:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589840643; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=l2AiwPoRUWb12iTjkfgbugtmaZ2GIkyi5/CVey8i4vc=; b=nMx7NOMN90yR3Q+M5Yv1q99TsRu8xcE6A6WoanpadeYWnuo4qy5KkWN4aD+rdz9+Gy8Cux6K
+ NEkd53u5MFl1bEdgLijEIjcmTdlsNcnaYJiwi/9Ad5DJx74HH1hW1FvFFIOhARS2LQaN5aGs
+ 3vvUly81oBfcvNJB2UAnnFMSZcs=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5ec30af5057563ff398a8367 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 May 2020 22:23:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0ABBC4478C; Mon, 18 May 2020 22:23:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1D6BC433F2;
+        Mon, 18 May 2020 22:23:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1D6BC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v1 0/3] user space client interface driver
+Date:   Mon, 18 May 2020 15:23:36 -0700
+Message-Id: <1589840619-18520-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 04:25:00PM +0200, Giovanni Gherdovich wrote:
-> > 
-> > I've changed the patch like so.. OK?
-> > 
-> > (ok, perhaps I went a little overboard with the paranoia ;-)
-> 
-> Right, I wasn't really checking for overflow, only for when the product
-> "mcnt * arch_max_freq_ratio" becomes zero.
-> 
-> Thanks for your edit (I took note of the macros check_*_overflow, didn't know
-> them). I fully subscribe to the paranoid approach.
-> 
-> I understand you've already edited the patches in your tree, so I am not
-> resending, just confirming my
-> 
-> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+MHI based uci driver is for transferring data between host and
+device using standard file operations from user space. Open, read,
+write, and close operations are supported by this driver. Currently
+LOOPBACK channel is supported.
 
-Hi, have these changes been merged? I still don't see them in the tip or
-Linus' tree.
+Hemant Kumar (3):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  bus: mhi: clients: Add user space client interface driver
 
-Thanks and BR,
-Ricardo
+ drivers/bus/mhi/Kconfig          |   2 +
+ drivers/bus/mhi/Makefile         |   1 +
+ drivers/bus/mhi/clients/Kconfig  |  16 +
+ drivers/bus/mhi/clients/Makefile |   3 +
+ drivers/bus/mhi/clients/uci.c    | 653 +++++++++++++++++++++++++++++++++++++++
+ drivers/bus/mhi/core/internal.h  |   1 -
+ drivers/bus/mhi/core/main.c      |  12 +
+ include/linux/mhi.h              |  12 +
+ 8 files changed, 699 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/bus/mhi/clients/Kconfig
+ create mode 100644 drivers/bus/mhi/clients/Makefile
+ create mode 100644 drivers/bus/mhi/clients/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
