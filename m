@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63331D8164
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D9C1D86C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729959AbgERRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47964 "EHLO mail.kernel.org"
+        id S2387952AbgERS1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:27:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730235AbgERRrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:36 -0400
+        id S1729610AbgERRnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3669520671;
-        Mon, 18 May 2020 17:47:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA61F20873;
+        Mon, 18 May 2020 17:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824055;
-        bh=QKJKtRoLIqCaEfc6uLGClsCSoy4x2Et0ySrYl6L8788=;
+        s=default; t=1589823818;
+        bh=pLKK1rWfKBUkBR8Z+9c0T7j+u/CPpMhUJDWsMDYB5aY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlQvxGIXUen/dO0inW8k+OphuW1is6k7IGaxTVZRKZZZMGgeW4rRoezeKD7LO+Tq9
-         A94IpWifYac5IWOdbXreesy2w7qR2ZV6kIBKQd6oA0Z+C88dOGDUlM4R4IneDvzL4I
-         k1pvuFj+1x1Gf7RSmWj7O8EqAvUfGAumfTXIIdwM=
+        b=M89gzHfeQl9Rm3aG91iZT9R0f9iFPNE+qhl+itWAdXIIX7kyso2H9NxNWUAUZTpdL
+         xGD7aPOgGmt2YXcZ0FITKf5mLVXQudVCYwtVWqjm23j3M9XAcuYRxoEtsom+W50++3
+         AxUnmp8zYhwGQ/4XhWDbKr9SNA5vZ0Tix1NGUREs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
-        Wu Bo <wubo40@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 054/114] scsi: sg: add sg_remove_request in sg_write
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 48/90] cifs: Fix a race condition with cifs_echo_request
 Date:   Mon, 18 May 2020 19:36:26 +0200
-Message-Id: <20200518173513.039706661@linuxfoundation.org>
+Message-Id: <20200518173500.990164419@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,39 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-commit 83c6f2390040f188cc25b270b4befeb5628c1aee upstream.
+[ Upstream commit f2caf901c1b7ce65f9e6aef4217e3241039db768 ]
 
-If the __copy_from_user function failed we need to call sg_remove_request
-in sg_write.
+There is a race condition with how we send (or supress and don't send)
+smb echos that will cause the client to incorrectly think the
+server is unresponsive and thus needs to be reconnected.
 
-Link: https://lore.kernel.org/r/610618d9-e983-fd56-ed0f-639428343af7@huawei.com
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Summary of the race condition:
+ 1) Daisy chaining scheduling creates a gap.
+ 2) If traffic comes unfortunate shortly after
+    the last echo, the planned echo is suppressed.
+ 3) Due to the gap, the next echo transmission is delayed
+    until after the timeout, which is set hard to twice
+    the echo interval.
+
+This is fixed by changing the timeouts from 2 to three times the echo interval.
+
+Detailed description of the bug: https://lutz.donnerhacke.de/eng/Blog/Groundhog-Day-with-SMB-remount
+
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-[groeck: Backport to v5.4.y and older kernels]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/scsi/sg.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/cifs/connect.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -695,8 +695,10 @@ sg_write(struct file *filp, const char _
- 	hp->flags = input_size;	/* structure abuse ... */
- 	hp->pack_id = old_hdr.pack_id;
- 	hp->usr_ptr = NULL;
--	if (__copy_from_user(cmnd, buf, cmd_size))
-+	if (__copy_from_user(cmnd, buf, cmd_size)) {
-+		sg_remove_request(sfp, srp);
- 		return -EFAULT;
-+	}
+diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
+index 37c8cac86431f..3545b237187a8 100644
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -551,10 +551,10 @@ static bool
+ server_unresponsive(struct TCP_Server_Info *server)
+ {
  	/*
- 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
- 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
+-	 * We need to wait 2 echo intervals to make sure we handle such
++	 * We need to wait 3 echo intervals to make sure we handle such
+ 	 * situations right:
+ 	 * 1s  client sends a normal SMB request
+-	 * 2s  client gets a response
++	 * 3s  client gets a response
+ 	 * 30s echo workqueue job pops, and decides we got a response recently
+ 	 *     and don't need to send another
+ 	 * ...
+@@ -563,9 +563,9 @@ server_unresponsive(struct TCP_Server_Info *server)
+ 	 */
+ 	if ((server->tcpStatus == CifsGood ||
+ 	    server->tcpStatus == CifsNeedNegotiate) &&
+-	    time_after(jiffies, server->lstrp + 2 * server->echo_interval)) {
++	    time_after(jiffies, server->lstrp + 3 * server->echo_interval)) {
+ 		cifs_dbg(VFS, "Server %s has not responded in %lu seconds. Reconnecting...\n",
+-			 server->hostname, (2 * server->echo_interval) / HZ);
++			 server->hostname, (3 * server->echo_interval) / HZ);
+ 		cifs_reconnect(server);
+ 		wake_up(&server->response_q);
+ 		return true;
+-- 
+2.20.1
+
 
 
