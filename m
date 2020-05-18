@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A67A1D7C2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886711D7C46
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgERPCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:02:31 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:40135 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgERPCa (ORCPT
+        id S1728180AbgERPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbgERPDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:02:30 -0400
-X-Originating-IP: 84.210.220.251
-Received: from [192.168.1.123] (cm-84.210.220.251.getinternet.no [84.210.220.251])
-        (Authenticated sender: fredrik@strupe.net)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 38FBCC000F;
-        Mon, 18 May 2020 15:02:27 +0000 (UTC)
-Subject: Re: [PING] [PATCH v2] arm: ptrace: Fix mask for thumb breakpoint hook
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20200413173841.29651-1-fredrik@strupe.net>
- <d7381f90-f597-2a9c-4387-5714b41e02e6@strupe.net>
- <20200518141858.GV1551@shell.armlinux.org.uk>
-From:   Fredrik Strupe <fredrik@strupe.net>
-Message-ID: <0afefde9-f121-c88c-2ceb-7c02f7561979@strupe.net>
-Date:   Mon, 18 May 2020 17:02:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200518141858.GV1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        Mon, 18 May 2020 11:03:53 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E39C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 08:03:51 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id z15so78915pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 08:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WgmxNih5o7lZXHfbWl9I3AtHRbIULLMSDkl7rFCTknE=;
+        b=s37biS52LBSY4wjTk2uU75fo73grJe1Bprmn0WzYTdY+9jDKJUKnntDV2RhFYAu/Sw
+         IYtmt4gYUF7Wc2sC3ZWKv8Qjq7ij33/F0YhqVmq2J24OAEZ3GnVJ/PNVvwCUzyvGSnQE
+         6h4tj2fhO7alMmc/2bNlGXAyKFeUmFtYmltJOhp3qJ/yfcQUKXASbXIYGGzwCwGPqTva
+         7DemjyYkUBCQJwHxoy7eVVIGcG9Xbi4aA0tUc+raEElr8dprKQLZ092YUuAXWckSMf+h
+         r82jJexcn2WUIz4Q7f63qmWoeU8VMFzVgrG+QmJCLRpI4J42vjz6jzmFmDLDbkOrINZd
+         DiXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WgmxNih5o7lZXHfbWl9I3AtHRbIULLMSDkl7rFCTknE=;
+        b=o9LjCywsxKWU+T7EQ8GNoTg+zVknc2h7xPFa8Zt/dEaymsfTjaOyzvG7p6XP0gbGol
+         +Zbbld1byyDiG9uuRyal93pulwmxXhXlE7FGIU0b50ja1DEEazLhSMoU5VPXp2ldWyws
+         PELzvKnVLOjSZGYgeJqQaGH7uL6i1mWyWAwA0p3SOQsXBgteZC9s4qB1NQs8fbj+aG8v
+         hV4DXXmc5dfkGMq4Se5IX07bJqzGLdha0HDTLW7d+xdgawm3DdRpWwEfQRbyFuJsEFk7
+         zNqUzzNzscQa7yNnYUdnOOJt6P2JqiTZOR5F0OBdocP6NLZejQkj1uLtIwdSIN40hUqC
+         RN7g==
+X-Gm-Message-State: AOAM533yz3fhgCr7tdcECt4nVRs9NstLnXQfYvz+i5g8S/lUA/DEhAMx
+        kVbDURo0++1HE9LGmm+2SnM=
+X-Google-Smtp-Source: ABdhPJy1il1HPxFZ4CMIw6qSCNCAYzwkanG2+QXgzJ9xj6UUukyerk2v7SMZyIwnlULbjAtJNpz1Vg==
+X-Received: by 2002:a17:902:7682:: with SMTP id m2mr10535509pll.281.1589814230632;
+        Mon, 18 May 2020 08:03:50 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:418:e389:dd54:a815:71b4:fdc])
+        by smtp.gmail.com with ESMTPSA id 7sm6329586pfc.203.2020.05.18.08.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 08:03:49 -0700 (PDT)
+From:   Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     aishwaryarj100@gmail.com
+Subject: [PATCH] drm/i915/gvt: Use ARRAY_SIZE for vgpu_types
+Date:   Mon, 18 May 2020 20:33:36 +0530
+Message-Id: <20200518150336.15265-1-aishwaryarj100@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.05.2020 16:18, Russell King - ARM Linux admin wrote:
-> On Mon, May 18, 2020 at 03:12:06PM +0200, Fredrik Strupe wrote:
->> call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
->> and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
->> (0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
->> instructions will be masked out. This makes the function match 32-bit
->> thumb instructions where the second half-word is equal to instr_val,
->> regardless of the first half-word.
->>
->> The result in this case is that all undefined 32-bit thumb instructions
->> with the second half-word equal to de01 (udf #1) work as breakpoints
->> and will raise a SIGTRAP instead of a SIGILL, instead of just the one
->> intended 16-bit instruction. An example of such an instruction is
->> eaa0b650, which is unallocated according to Arm ARM and should raise a
->> SIGILL, but instead raises a SIGTRAP.
->
-> How can 0xeaa0b650 match 0xde01 when masked with 0xffff ?
->
+Prefer ARRAY_SIZE instead of using sizeof
 
-Sorry, that is a typo; it should say 0xeaa0de01.
+Fixes coccicheck warning: Use ARRAY_SIZE
 
-For reference, this is similar to the problem with SETEND emulation that
-was fixed in commit fc2266011acc in the mainline kernel
-(or as discussed here: https://lkml.org/lkml/2020/4/8/274).
+Signed-off-by: Aishwarya Ramakrishnan <aishwaryarj100@gmail.com>
+---
+ drivers/gpu/drm/i915/gvt/vgpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fredrik
+diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/vgpu.c
+index 1d5ff88078bd..7d361623ff67 100644
+--- a/drivers/gpu/drm/i915/gvt/vgpu.c
++++ b/drivers/gpu/drm/i915/gvt/vgpu.c
+@@ -124,7 +124,7 @@ int intel_gvt_init_vgpu_types(struct intel_gvt *gvt)
+ 	 */
+ 	low_avail = gvt_aperture_sz(gvt) - HOST_LOW_GM_SIZE;
+ 	high_avail = gvt_hidden_sz(gvt) - HOST_HIGH_GM_SIZE;
+-	num_types = sizeof(vgpu_types) / sizeof(vgpu_types[0]);
++	num_types = ARRAY_SIZE(vgpu_types);
+ 
+ 	gvt->types = kcalloc(num_types, sizeof(struct intel_vgpu_type),
+ 			     GFP_KERNEL);
+-- 
+2.17.1
 
