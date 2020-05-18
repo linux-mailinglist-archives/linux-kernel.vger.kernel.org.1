@@ -2,92 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F17B1D7785
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936BC1D778A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbgERLmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:42:54 -0400
-Received: from mailgate1.rohmeurope.com ([87.129.152.131]:47024 "EHLO
-        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgERLmx (ORCPT
+        id S1727957AbgERLni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgERLni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:42:53 -0400
-X-AuditID: c0a8fbf4-473ff70000004419-1a-5ec274bbfea0
-Received: from smtp.reu.rohmeu.com (will-cas002.reu.rohmeu.com [192.168.251.178])
-        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id 87.09.17433.BB472CE5; Mon, 18 May 2020 13:42:51 +0200 (CEST)
-Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
- WILL-CAS002.REu.RohmEu.com ([fe80::fc24:4cbc:e287:8659%12]) with mapi id
- 14.03.0487.000; Mon, 18 May 2020 13:42:39 +0200
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
-CC:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [not urgent] ROHM PMIC/Charger IC driver maintenance.
-Thread-Topic: [not urgent] ROHM PMIC/Charger IC driver maintenance.
-Thread-Index: AQHWLOdQMdOSpxREeE+Cws0ySbgdVKithlaAgAARMgA=
-Date:   Mon, 18 May 2020 11:42:36 +0000
-Message-ID: <184c1e6c17851c53683ce6fd27794bf279a5ab85.camel@fi.rohmeurope.com>
-References: <18838efd9341c953fb6aabe9536786de3f1150ae.camel@fi.rohmeurope.com>
-         <20200518104107.GS271301@dell>
-In-Reply-To: <20200518104107.GS271301@dell>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [62.78.225.252]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <18EFCC55B10D8940B0BA1B93640F498C@de.rohmeurope.com>
-Content-Transfer-Encoding: base64
+        Mon, 18 May 2020 07:43:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133ADC061A0C;
+        Mon, 18 May 2020 04:43:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vqFtTJgrrYSVHcjYD6xL7NeKGj8OBrO9WYZrdZNFTPg=; b=Ic+l84u85aQa9NU4JISWSGcUT7
+        JspapLxIoUC4p2cSrnYXmwwkgCgvGxo0Q+bsGUzytgc0vP8MpdPy7S83x0dBTEMFz2XY3UuE8bSHJ
+        8YNjvaG19lKsoS5ccYJuzkZU/Q8pAsucYBHZGpqqZsXv5wE8fIZeKBYPQX9FO1L3Sec3P64yxzcm5
+        wGzdwYH7VrCpcu8J/EDmELUtDk50YDb3qAh+wlCRaDpqG2Iawy++/9E1zTsxRkYNmV+q5fpOzLUdq
+        ZvIuiYE8tnH0ZWhyDv8P5+OhRKNQtuu0b4ZEOGsp28K+uNyPmofy1h/Co0GLN1tYsOPL9Ib4ITumS
+        SL4VVMpw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jaeAx-0001CZ-0L; Mon, 18 May 2020 11:43:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0BCE03011E8;
+        Mon, 18 May 2020 13:43:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 066CB2B3D07AA; Mon, 18 May 2020 13:43:14 +0200 (CEST)
+Date:   Mon, 18 May 2020 13:43:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
+        wei.w.wang@intel.com
+Subject: Re: [PATCH v11 04/11] perf/x86: Add constraint to create guest LBR
+ event without hw counter
+Message-ID: <20200518114313.GD277222@hirez.programming.kicks-ass.net>
+References: <20200514083054.62538-1-like.xu@linux.intel.com>
+ <20200514083054.62538-5-like.xu@linux.intel.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0gUURjtzszOjI+pcbX2tr1wKUotS4oYSiJ6wPingv70IG3Mmyu5D2bW
-        aqsfFplvMNioliwz3dLVojUwH4UsRpv5pNISI3wUaO8yV1O0GafSX/fc73znnO/Cd2lcW0/q
-        6RSzDYlmIdVABhINd8Y9a+ps3vh1fW2xXEnHK4rL/OKiuOHCJoK71DtAcu9+PQHcyMssjHNM
-        3Ma4F7XXSG7gZjPGXSv1EVxH004u41EjxU123ie453U2rn9wEt86j//6OoPir1ec5mucbyne
-        U55N8j2d9SRfVlGh4Wv86RR/+foYxv/0LN0TcCAoNlGwHd+bkmxeu+VwkPHClfMaa3HQyZqi
-        YSIdTATmgAAashvg1JSLzAGBtJbtBLD9dzWlXnwAvnA3EjmApkk2Fua8oRRBGBsDS3zvCaUH
-        Z5s1sLlsGFOIUHYb9PW04GrTdjje+glT8Sbo6evXKJhgV8CGbsd0D8Pugm1V30jFX8ta4fsW
-        k1IOYKPgh47W6SzALoHZ6V+mbXBWBz0f/Bp1aBaW1LfhKp4PB/sn/9bDYbX/7vTIOBsB79Wu
-        VaVbYbXPpVFxOHTk9lLqBCHw2dUBogAscM5KcM6onbPUzllq5yx1EdCUA2gSUlKTBRuKiRZR
-        WrRoMZrk44jF5AHqNgw/BFPeOC/AaOAFC2nMMJ/J3+2N185NtCTZjYJkTBDTUpHkBZDGDWHM
-        /p+P47VMkmA/hUTLP2oRTRh0zMrei4e0rJJ1DCErEv+xi2naAJk9kmwaIqJkdPJoSqpthsbo
-        AMU8UB8mIXMSEoU0mzFBWY8ESd4PhQqWc0tFWc5IVsEkV1VpE4iiCwYLi3G6sbC0GNcSZosZ
-        6XWMQ0lilVZjmvl/0BDQ0cAQyowoRsHyl/jvMyRHYHLEzg7laZJNmKH06cBVGTE6FdR1MCtz
-        f+v6XCeqGjPhD+xdofq4s1K2bkB6t7f7R4Pn86h7h75tWXmGZqiMX24/0L2vz12FUEt43tyn
-        47E9tXmrqdNnTjiy20tyxzOs688NuexP2+dBgz3+VtLHzds/6kwbV90YjKys8X+vnIPy/K4C
-        0n3q6OGEfLeBkIxCTCQuSsIf1osRKM8DAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514083054.62538-5-like.xu@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gTGVlLA0KDQpPbiBNb24sIDIwMjAtMDUtMTggYXQgMTE6NDEgKzAxMDAsIExlZSBKb25l
-cyB3cm90ZToNCj4gT24gTW9uLCAxOCBNYXkgMjAyMCwgVmFpdHRpbmVuLCBNYXR0aSB3cm90ZToN
-Cj4gDQo+ID4gSGVsbG8gQWxsLA0KPiA+IA0KPiA+IEluIHNob3J0IC0gSSBjb25zaWRlciBhZGRp
-bmcgbXlzZWxmIGluIE1BSU5UQUlORVJzIGZvciB0aGUgUk9ITSBJQw0KPiA+IGRyaXZlcnMgSSd2
-ZSBhdXRob3JlZC4gSSB3b3VsZCBsaWtlIHRvIGdldCB5b3VyIG9waW5pb24gYXMNCj4gPiBzdWJz
-eXN0ZW0NCj4gPiBtYWludGFpbmVycyBvbiB0aGUgYXJlYSB3aGVyZSB0aGVzZSBkcml2ZXIgYmVs
-b25nLiBJZiB5b3UgZG9uJ3QNCj4gPiBjYXJlIC0NCj4gPiB0aGVuIG5vIG5lZWQgdG8gcmVhZCBm
-dXJ0aGVyIDopIElmIHlvdSBkbyByZWFkLCB0aGVuIEkgd291bGQNCj4gPiBhcHByZWNpYXRlDQo+
-ID4gaGVhcmluZyBhYm91dCB5b3VyIGV4cGVjdGF0aW9ucyByZWdhcmRpbmcgcmV2aWV3cywgQUNL
-cyBldGMuDQo+IA0KPiBJdCdzIGZpbmUgdG8gYWRkIHlvdXJzZWxmIHRvIE1BSU5UQUlORVJTIGZv
-ciB0aGlzIHB1cnBvc2UuDQo+IA0KPiBFaXRoZXIgYXMgTSAobWFpbC10bykgb3IgUiAoZGVzaWdu
-YXRlZCByZXZpZXdlcikgaXMgZmluZS4NCg0KVGhhbmtzISBBcHByZWNpYXRlIHlvdXIgaGVscC4g
-U28sIGlmIEkgdW5kZXJzdGFuZCB0aGlzIGNvcnJlY3RseSB0aGUNCmRpZmZlcmVuY2UgYmV0d2Vl
-biBNIGFuZCBSIGlzIHRoYXQgTSBpbXBsaWVzIHRoZSBwYXRjaGVzIGdvIHRvIHVwc3RyZWFtDQp2
-aWEgcGVyc29uIGxpc3RlZCBpbiBNLiBTbyBpbiBteSBjYXNlIC0gYXMgSSBob3BlIHBhdGNoZXMg
-dG8gdGhlc2UNCmRyaXZlcnMgYXJlIHN0aWxsIGdvaW5nIHRvIHlvdXIgdHJlZSAtIHRoZSBSIHdv
-dWxkIGJlIG1vcmUgYXBwcm9wcmlhdGUsDQpyaWdodD8gTSBzb3VuZHMgbmljZSB0aG91Z2ggLSBp
-dCdzIGEgZ29vZCBsZXR0ZXIgKHNheXMgc29tZW9uZSB3aG9zZQ0KbmFtZSBpcyBNYXR0aSA7XSAp
-DQoNCkJyLA0KCU1hdHRpIFZhaXR0aW5lbg0K
+
+Subject: perf/x86: Add constraint to create guest LBR event without hw counter
+From: Like Xu <like.xu@linux.intel.com>
+Date: Thu, 14 May 2020 16:30:47 +0800
+
+From: Like Xu <like.xu@linux.intel.com>
+
+The hypervisor may request the perf subsystem to schedule a time window
+to directly access the LBR stack msrs for its own use. Normally, it would
+create a guest LBR event with callstack mode enabled, which is scheduled
+along with other ordinary LBR events on the host but in an exclusive way.
+
+To avoid wasting a counter for the guest LBR event, the perf tracks it via
+needs_guest_lbr_without_counter() and assigns it with a fake VLBR counter
+with the help of new lbr_without_counter_constraint. As with the BTS event,
+there is actually no hardware counter assigned for the guest LBR event.
+
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200514083054.62538-5-like.xu@linux.intel.com
+---
+ arch/x86/events/core.c            |    1 +
+ arch/x86/events/intel/core.c      |   18 ++++++++++++++++++
+ arch/x86/events/intel/lbr.c       |    4 ++++
+ arch/x86/events/perf_event.h      |    1 +
+ arch/x86/include/asm/perf_event.h |   22 +++++++++++++++++++++-
+ 5 files changed, 45 insertions(+), 1 deletion(-)
+
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1104,6 +1104,7 @@ static inline void x86_assign_hw_event(s
+ 
+ 	switch (hwc->idx) {
+ 	case INTEL_PMC_IDX_FIXED_BTS:
++	case INTEL_PMC_IDX_FIXED_VLBR:
+ 		hwc->config_base = 0;
+ 		hwc->event_base	= 0;
+ 		break;
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2621,6 +2621,20 @@ intel_bts_constraints(struct perf_event
+ 	return NULL;
+ }
+ 
++/*
++ * Note: matches a fake event, like Fixed2.
++ */
++static struct event_constraint *
++intel_vlbr_constraints(struct perf_event *event)
++{
++	struct event_constraint *c = &vlbr_constraint;
++
++	if (unlikely(constraint_match(c, event->hw.config)))
++		return c;
++
++	return NULL;
++}
++
+ static int intel_alt_er(int idx, u64 config)
+ {
+ 	int alt_idx = idx;
+@@ -2811,6 +2825,10 @@ __intel_get_event_constraints(struct cpu
+ {
+ 	struct event_constraint *c;
+ 
++	c = intel_vlbr_constraints(event);
++	if (c)
++		return c;
++
+ 	c = intel_bts_constraints(event);
+ 	if (c)
+ 		return c;
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -1363,3 +1363,7 @@ int x86_perf_get_lbr(struct x86_pmu_lbr
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(x86_perf_get_lbr);
++
++struct event_constraint vlbr_constraint =
++	FIXED_EVENT_CONSTRAINT(INTEL_FIXED_VLBR_EVENT,
++			       (INTEL_PMC_IDX_FIXED_VLBR - INTEL_PMC_IDX_FIXED));
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -990,6 +990,7 @@ void release_ds_buffers(void);
+ void reserve_ds_buffers(void);
+ 
+ extern struct event_constraint bts_constraint;
++extern struct event_constraint vlbr_constraint;
+ 
+ void intel_pmu_enable_bts(u64 config);
+ 
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -192,10 +192,30 @@ struct x86_pmu_capability {
+ #define GLOBAL_STATUS_UNC_OVF				BIT_ULL(61)
+ #define GLOBAL_STATUS_ASIF				BIT_ULL(60)
+ #define GLOBAL_STATUS_COUNTERS_FROZEN			BIT_ULL(59)
+-#define GLOBAL_STATUS_LBRS_FROZEN			BIT_ULL(58)
++#define GLOBAL_STATUS_LBRS_FROZEN_BIT			58
++#define GLOBAL_STATUS_LBRS_FROZEN			BIT_ULL(GLOBAL_STATUS_LBRS_FROZEN_BIT)
+ #define GLOBAL_STATUS_TRACE_TOPAPMI			BIT_ULL(55)
+ 
+ /*
++ * We model guest LBR event tracing as another fixed-mode PMC like BTS.
++ *
++ * We choose bit 58 because it's used to indicate LBR stack frozen state
++ * for architectural perfmon v4, also we unconditionally mask that bit in
++ * the handle_pmi_common(), so it'll never be set in the overflow handling.
++ *
++ * With this fake counter assigned, the guest LBR event user (such as KVM),
++ * can program the LBR registers on its own, and we don't actually do anything
++ * with then in the host context.
++ */
++#define INTEL_PMC_IDX_FIXED_VLBR	(GLOBAL_STATUS_LBRS_FROZEN_BIT)
++
++/*
++ * Pseudo-encoding the guest LBR event as event=0x00,umask=0x1b,
++ * since it would claim bit 58 which is effectively Fixed26.
++ */
++#define INTEL_FIXED_VLBR_EVENT	0x1b00
++
++/*
+  * Adaptive PEBS v4
+  */
+ 
