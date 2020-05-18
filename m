@@ -2,76 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEA91D8007
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949FC1D80B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgERRZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:25:12 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43558 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgERRZM (ORCPT
+        id S1728616AbgERRlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:41:32 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:20491 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729258AbgERRlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:25:12 -0400
-Received: by mail-pf1-f194.google.com with SMTP id v63so5251734pfb.10;
-        Mon, 18 May 2020 10:25:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rf4+hBoD1TufFAfP8oFpnGmCmQq8DRRl+yC7GIzRnls=;
-        b=NhQurF0swK75au3jCljjIk+T7onO26pMHv2X+vSZjOoBH+PNQNYM6pN8K+gTDEZi5r
-         gc6C3rIhup07M9HZ6QHLtU+18fdR8+LQHASFX3zCJj5x4Iomr+4GIe4ctvYZ8FvWxhwB
-         vh3kzdXPhKTTvlGwUuSGfVYq9vmNwKiwIshHZTACXLKMPr4OIjBIE4KM5A0C91bZj58+
-         IixZBrJoVR9fxR41HHdg551iUxqR9NwDGyK154jj0n3EEKhaJz+HIXQGAsp9f4BPZOJV
-         jpLte7c3x59G0Ax5aXjtRHBt0AJgcIZT8U0nJTtNbMy5CGWTS9jYdYRIYcwg0C40FXag
-         FRsg==
-X-Gm-Message-State: AOAM531jb8IziEd+kKN00T6NHLNsHe/s3zY/2sfK9Af0zuSqHzY99tPl
-        r8WMdmnZOvk14Gk8GY+gnMo=
-X-Google-Smtp-Source: ABdhPJwoIGmdm0EAOz7T19rzlTCGw86tRefARI9ZDYNn44SDMrYtVhJEFmKj0/1owuC3GWI0j0VyGA==
-X-Received: by 2002:a62:e402:: with SMTP id r2mr18153266pfh.300.1589822711513;
-        Mon, 18 May 2020 10:25:11 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id c3sm3614080pgk.76.2020.05.18.10.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 10:25:10 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id D0475404B0; Mon, 18 May 2020 17:25:09 +0000 (UTC)
-Date:   Mon, 18 May 2020 17:25:09 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Kitt <steve@sk2.org>, Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: const-ify ngroups_max
-Message-ID: <20200518172509.GM11244@42.do-not-panic.com>
-References: <20200518155727.10514-1-steve@sk2.org>
- <202005180908.C016C44D2@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202005180908.C016C44D2@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 18 May 2020 13:41:25 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200518174123epoutp04f3a01e69350a7692441fed784a13dbc4~QMDdxyd3P2736627366epoutp04I
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:41:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200518174123epoutp04f3a01e69350a7692441fed784a13dbc4~QMDdxyd3P2736627366epoutp04I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589823683;
+        bh=SJvqKP/iDeqX2YV6Q0c1S/r1bKd4wjPJEQwBKJ5VINg=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=VmATcE7EzbzcY1B5/ioEm96WjeulrU7tGA+eP6nRfh6VMDSlnNxPzfAMBFEu2fKWQ
+         gqjDi892sEsJPzdh8HHzYuc6rYKuvESqeJLlBkRVigM2pD6cTqAqLAJD6iYkPGhgxl
+         ytS+6iwy2Q+hPJCr6g6jmrJZW8sJAtZvSwHIBWmU=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200518174121epcas5p38e466287a78b4c98792b9905f52e503b~QMDcsQqxY1819018190epcas5p3j;
+        Mon, 18 May 2020 17:41:21 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A5.19.23569.1C8C2CE5; Tue, 19 May 2020 02:41:21 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200518174120epcas5p1fb5f832c7874a9d367eb9c9ea4e69d53~QMDbdakZB0533905339epcas5p1Z;
+        Mon, 18 May 2020 17:41:20 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200518174120epsmtrp2ee3087f08d21bb7d3fd24bd1d5550f5a~QMDbckrWw0707307073epsmtrp2L;
+        Mon, 18 May 2020 17:41:20 +0000 (GMT)
+X-AuditID: b6c32a4a-3b1ff70000005c11-52-5ec2c8c11014
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F6.2E.18461.0C8C2CE5; Tue, 19 May 2020 02:41:20 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200518174118epsmtip16ef36e2887700870b6687cebc78bf266~QMDZbPpKN0547805478epsmtip1C;
+        Mon, 18 May 2020 17:41:18 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     inki.dae@samsung.com, jy0922.shim@samsung.com,
+        sw0312.kim@samsung.com, kyungmin.park@samsung.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaik.ameer@samsung.com, krzk@kernel.org, alim.akhtar@samsung.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH] drm/exynos: Remove dev_err() on platform_get_irq() failure
+Date:   Mon, 18 May 2020 22:57:08 +0530
+Message-Id: <20200518172708.48600-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBIsWRmVeSWpSXmKPExsWy7bCmlu7BE4fiDN4eMLHoPXeSyeLBvG1s
+        Fv+3TWS2uPL1PZvFpPsTWCxe3LvIYnH+/AZ2i7NNb9gtNj2+xmpxedccNosZ5/cxWdxtXcxu
+        ceThbnaLGZNfsjnweez9toDFY9OqTjaP7d8esHrc7z7O5LF5Sb1H35ZVjB6fN8kFsEdx2aSk
+        5mSWpRbp2yVwZcx/t4Sl4JFgxeetK1kbGNv5uxg5OSQETCTWHlrD3MXIxSEksJtRYsKMOywQ
+        zidGiXU7PkNlvjFKrGjrZ4JpuXV+BiNEYi+jROuMLjYIp4VJ4tfc70BVHBxsApoSx89zg8RF
+        BDoZJXpu/2YFcZgFfjBKvFm5jhmkSFjAW+Lj9RqQqSwCqhIr/k5lBbF5BSwkHu17wAyxTV5i
+        9YYDYGdICHxllzh0DOYMF4k7169AFQlLvDq+hR3ClpL4/G4vG4SdLzF/3iqomgqJlRfeQNn2
+        EgeuzGEBuYEZ6ND1u/RBwswCfBK9v5+A3S8hwCvR0SYEUa0o8X93P9R0cYl3K6awQtgeEoe+
+        Hge7RkggVmLbu73sExhlZiEMXcDIuIpRMrWgODc9tdi0wCgvtVyvODG3uDQvXS85P3cTIzhx
+        aHntYHz44IPeIUYmDsZDjBIczEoivJGf98UJ8aYkVlalFuXHF5XmpBYfYpTmYFES501q3BIn
+        JJCeWJKanZpakFoEk2Xi4JRqYArs+rO9XUi1qnptpfz/m08ak33tZ7pXql8/GMJenTCl/17Z
+        oru7DCP3tSWuenagxlH/bYzeNSnL2syLGzTXs1maaRaw9k1fty6L9+Td+bwpfSd3P1h/6EmV
+        pfjXHPMNv5fz9s3dcYj13oct61h2n/5z+sebpYW6j7eFmoovfCHJwfPx9ORpJlPXOrvp/ftg
+        HRr71T4+5sZsvZ0KL9g8ypbk/uCxepArzLtzXWHxiw/qjQ+efDi95ueM/29q/5ROP60WsjWh
+        /OmL728OabBNVYtp1ovYe9jbhjHW2NQrRsnldu/kOwyT43/NvncnzdG4Y8cMTuZw9e+r8xvr
+        Jxfy/n5y8urJ1Tem/DY33y1+4w6vEktxRqKhFnNRcSIAKu+FYYsDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsWy7bCSnO6BE4fiDN7cULToPXeSyeLBvG1s
+        Fv+3TWS2uPL1PZvFpPsTWCxe3LvIYnH+/AZ2i7NNb9gtNj2+xmpxedccNosZ5/cxWdxtXcxu
+        ceThbnaLGZNfsjnweez9toDFY9OqTjaP7d8esHrc7z7O5LF5Sb1H35ZVjB6fN8kFsEdx2aSk
+        5mSWpRbp2yVwZcx/t4Sl4JFgxeetK1kbGNv5uxg5OSQETCRunZ/B2MXIxSEksJtR4u35JiaI
+        hLjEtF/7GSFsYYmV/56zQxQ1MUmca9nJ0sXIwcEmoClx/Dw3SFxEYCKjxJz2VSwgDrNAA5PE
+        ipW/GUGKhAW8JT5erwEZxCKgKrHi71RWEJtXwELi0b4HzBAL5CVWbzjAPIGRZwEjwypGydSC
+        4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjODw1NLcwbh91Qe9Q4xMHIyHGCU4mJVEeCM/74sT
+        4k1JrKxKLcqPLyrNSS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1OqgSl8rVx/qOgZ
+        2xNLHhYpGOT+OtVnNy+o/kCtyeepz+QOlZnat9+8oXJlsfzPby+b+X8InXFaviu1SmStFGc3
+        s8kF6Wf71nTUt+kVxMRP2PnWI2nvxtDyfCWL4uoZsT0cNRMOH1krUpDgZ2gY8SqTQVNbU2QD
+        s/vaGxftfe05JhiF+ssG3Ftoxy10vPjTAxemVmWdrj2RLbvvXq684B1Tcibkwd6l3gLxSh2v
+        xB6y1xROCVkxxbeZV0xJ/qVLaoWo9YMHGd9X1s6dO1s4P5W7f0mRlIuJxdQ3Lf5F3+5+srp2
+        v/qJrfe24kgWDbalerv/ugRGSCZLLZj9wcbv/FOxl5Fqie8TZXkr1p9cq39GiaU4I9FQi7mo
+        OBEAcBf7hL4CAAA=
+X-CMS-MailID: 20200518174120epcas5p1fb5f832c7874a9d367eb9c9ea4e69d53
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200518174120epcas5p1fb5f832c7874a9d367eb9c9ea4e69d53
+References: <CGME20200518174120epcas5p1fb5f832c7874a9d367eb9c9ea4e69d53@epcas5p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:08:22AM -0700, Kees Cook wrote:
-> On Mon, May 18, 2020 at 05:57:27PM +0200, Stephen Kitt wrote:
-> > ngroups_max is a read-only sysctl entry, reflecting NGROUPS_MAX. Make
-> > it const, in the same way as cap_last_cap.
-> > 
-> > Signed-off-by: Stephen Kitt <steve@sk2.org>
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+platform_get_irq() will call dev_err() itself on failure,
+so there is no need for the driver to also do this.
+This is detected by coccinelle.
 
-Kees, since there is quite a bit of sysctl cleanup stuff going on and I
-have a fs sysctl kitchen cleanup, are you alright if I carry this in a
-tree and send this to Andrew once done? This would hopefully avoid
-merge conflicts between these patches.
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+---
+ drivers/gpu/drm/exynos/exynos_drm_dsi.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_rotator.c | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_scaler.c  | 1 -
+ 4 files changed, 4 deletions(-)
 
-I have to still re-spin my fs sysctl stuff, but will wait to do that
-once Xiaoming bases his series on linux-next.
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+index 902938d2568f..df2e14b19fbf 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+@@ -1810,7 +1810,6 @@ static int exynos_dsi_probe(struct platform_device *pdev)
+ 
+ 	dsi->irq = platform_get_irq(pdev, 0);
+ 	if (dsi->irq < 0) {
+-		dev_err(dev, "failed to request dsi irq resource\n");
+ 		return dsi->irq;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+index fcee33a43aca..03be31427181 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+@@ -1498,7 +1498,6 @@ static int g2d_probe(struct platform_device *pdev)
+ 
+ 	g2d->irq = platform_get_irq(pdev, 0);
+ 	if (g2d->irq < 0) {
+-		dev_err(dev, "failed to get irq\n");
+ 		ret = g2d->irq;
+ 		goto err_put_clk;
+ 	}
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_rotator.c b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
+index dafa87b82052..0edf7950a3fe 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_rotator.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
+@@ -294,7 +294,6 @@ static int rotator_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(dev, "failed to get irq\n");
+ 		return irq;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_scaler.c b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
+index 93c43c8d914e..4e33d5661eef 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_scaler.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
+@@ -503,7 +503,6 @@ static int scaler_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		dev_err(dev, "failed to get irq\n");
+ 		return irq;
+ 	}
+ 
+-- 
+2.17.1
 
-  Luis
