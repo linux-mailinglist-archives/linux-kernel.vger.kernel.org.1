@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4D91D7B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE85C1DB32E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgEROmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:42:18 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35909 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgEROmR (ORCPT
+        id S1726754AbgETM2y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 08:28:54 -0400
+Received: from mail3.sumicity.com.br ([189.113.72.105]:55860 "EHLO
+        mail3.sumicity.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgETM2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:42:17 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jagy5-0006pE-JF; Mon, 18 May 2020 14:42:14 +0000
-Date:   Mon, 18 May 2020 16:42:12 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     mtk.manpages@gmail.com, Miklos Szeredi <mszeredi@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Petr Vorel <pvorel@suse.cz>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: Setting mount propagation type in new mount API
-Message-ID: <20200518144212.xpfjlajgwzwhlq7r@wittgenstein>
-References: <CAKgNAkioH1z-pVimHziWP=ZtyBgCOwoC7ekWGFwzaZ1FPYg-tA@mail.gmail.com>
- <909768.1589812234@warthog.procyon.org.uk>
+        Wed, 20 May 2020 08:28:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id EF0BC997E81;
+        Mon, 18 May 2020 22:06:26 -0300 (-03)
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id yrcV4a2w2TAI; Mon, 18 May 2020 22:06:26 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail3.sumicity.com.br (Postfix) with ESMTP id 2A89A983155;
+        Mon, 18 May 2020 16:01:15 -0300 (-03)
+X-Virus-Scanned: amavisd-new at sumicity.com.br
+Received: from mail3.sumicity.com.br ([127.0.0.1])
+        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CBro_Td-MhIf; Mon, 18 May 2020 16:01:15 -0300 (-03)
+Received: from [192.168.0.199] (unknown [106.210.57.205])
+        by mail3.sumicity.com.br (Postfix) with ESMTPSA id 151D699193E;
+        Mon, 18 May 2020 11:42:35 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <909768.1589812234@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Dear Friend
+To:     Recipients <pinheiromodas@sumicity.com.br>
+From:   "Mr Saeed Ahmed" <pinheiromodas@sumicity.com.br>
+Date:   Mon, 18 May 2020 20:12:25 +0530
+Reply-To: saeedasutanahmed0@gmail.com
+Message-Id: <20200518144236.151D699193E@mail3.sumicity.com.br>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 03:30:34PM +0100, David Howells wrote:
-> Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
-> 
-> > I've been looking at the new mount API (fsopen(), fsconfig(),
-> > fsmount(), move_mount(), etc.) and among the details that remain
-> > mysterious to me is this: how does one set the propagation type
-> > (private/shared/slave/unbindable) of a new mount and change the
-> > propagation type of an existing mount?
-> 
-> Christian said he was going to have a go at writing mount_setattr().  It's not
-> trivial as it has to be able to handle AT_RECURSIVE.
+Dear Friend,
 
-Right, I've put this on my roadmap now. It's becoming more urgent for us
-too since I've already switched over a few bits to the new mount api to
-make use of detached/anonymous mounts.
-I've planned to start working on a version early next week.
+I want you to be honest and truthful with me that you will help me with all your effort and time for just seven to fourteen workings of your time
 
-Christian
+Please kindly reply to my most confidential email if you are really interested in helping me please: saeedasutanahmed0@gmail.com
+                                 
+God be with you
+Mr Saeed Ahmed
