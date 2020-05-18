@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D801D80F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A4D1D8350
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729607AbgERRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
+        id S1732683AbgERSDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729592AbgERRnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:32 -0400
+        id S1732163AbgERSD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACA6E207C4;
-        Mon, 18 May 2020 17:43:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 859E5207F5;
+        Mon, 18 May 2020 18:03:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823811;
-        bh=QKJKtRoLIqCaEfc6uLGClsCSoy4x2Et0ySrYl6L8788=;
+        s=default; t=1589825008;
+        bh=Svaos6vxxlnOv44Wz/7DLBgu5pGY5TzjWg76st8tLXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=INeDBaNC3eogaRrQA+CcvQLav/Lhr0bBsNqOA+AcecywLWgY2adj5zzjHyQTDRaPZ
-         gPSzX+zi6uWL10j6QpJd1R4nRTBn58QARmq9cdM5IMbRxRZlxQw8j4LcwSfws+3zti
-         Qd/NwQ9LgqjRWOLkBOuS1s+QRw9/4SxC/8yrcBIU=
+        b=Qcbmq/77cF5I0BRMnb+dhW+rM2fL7ttguHynhrjSKARvrmOFu4v4hysBmVtTiXF81
+         qQ+bxyIjTrfrQTFg6Zga0YcbsVurLhdXqwUhWxFB1j6YdhFfyGbkGgnOUoPTnivoOg
+         R/iG6Jo1s48JdxYMcKyjAC4aBQcfY5nVPQ6hOuG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
-        Wu Bo <wubo40@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.9 45/90] scsi: sg: add sg_remove_request in sg_write
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 093/194] mmc: block: Fix request completion in the CQE timeout path
 Date:   Mon, 18 May 2020 19:36:23 +0200
-Message-Id: <20200518173500.428520775@linuxfoundation.org>
+Message-Id: <20200518173539.889443507@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,39 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit 83c6f2390040f188cc25b270b4befeb5628c1aee upstream.
+[ Upstream commit c077dc5e0620508a29497dac63a2822324ece52a ]
 
-If the __copy_from_user function failed we need to call sg_remove_request
-in sg_write.
+First, it should be noted that the CQE timeout (60 seconds) is substantial
+so a CQE request that times out is really stuck, and the race between
+timeout and completion is extremely unlikely. Nevertheless this patch
+fixes an issue with it.
 
-Link: https://lore.kernel.org/r/610618d9-e983-fd56-ed0f-639428343af7@huawei.com
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Commit ad73d6feadbd7b ("mmc: complete requests from ->timeout")
+preserved the existing functionality, to complete the request.
+However that had only been necessary because the block layer
+timeout handler had been marking the request to prevent it from being
+completed normally. That restriction was removed at the same time, the
+result being that a request that has gone will have been completed anyway.
+That is, the completion was unnecessary.
+
+At the time, the unnecessary completion was harmless because the block
+layer would ignore it, although that changed in kernel v5.0.
+
+Note for stable, this patch will not apply cleanly without patch "mmc:
+core: Fix recursive locking issue in CQE recovery path"
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: ad73d6feadbd7b ("mmc: complete requests from ->timeout")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200508062227.23144-1-adrian.hunter@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-[groeck: Backport to v5.4.y and older kernels]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/scsi/sg.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mmc/core/queue.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -695,8 +695,10 @@ sg_write(struct file *filp, const char _
- 	hp->flags = input_size;	/* structure abuse ... */
- 	hp->pack_id = old_hdr.pack_id;
- 	hp->usr_ptr = NULL;
--	if (__copy_from_user(cmnd, buf, cmd_size))
-+	if (__copy_from_user(cmnd, buf, cmd_size)) {
-+		sg_remove_request(sfp, srp);
- 		return -EFAULT;
-+	}
- 	/*
- 	 * SG_DXFER_TO_FROM_DEV is functionally equivalent to SG_DXFER_FROM_DEV,
- 	 * but is is possible that the app intended SG_DXFER_TO_DEV, because there
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index 4d1e468d39823..9c0ccb3744c28 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -110,8 +110,7 @@ static enum blk_eh_timer_return mmc_cqe_timed_out(struct request *req)
+ 				mmc_cqe_recovery_notifier(mrq);
+ 			return BLK_EH_RESET_TIMER;
+ 		}
+-		/* No timeout (XXX: huh? comment doesn't make much sense) */
+-		blk_mq_complete_request(req);
++		/* The request has gone already */
+ 		return BLK_EH_DONE;
+ 	default:
+ 		/* Timeout is handled by mmc core */
+-- 
+2.20.1
+
 
 
