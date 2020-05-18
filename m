@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627DC1D86D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824461D80EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387987AbgERS2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40396 "EHLO mail.kernel.org"
+        id S1729033AbgERRnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:43:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729520AbgERRnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:43:07 -0400
+        id S1729526AbgERRnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92DE020849;
-        Mon, 18 May 2020 17:43:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F18020829;
+        Mon, 18 May 2020 17:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823786;
-        bh=++6rxJ4KjRISx6k9lCyq8Zf09OyDNFQaezhXx9FQq6Y=;
+        s=default; t=1589823788;
+        bh=aWKxntaITNK5Crmzs5lhTI9tLJXLyzOlCRtDtXkeG0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+hRe3mouFVpZkkkuIOY+ADNVQ5vGhpkSUD7mspi6eN9I3aR1q96k95//MoXY+8ru
-         w6M53SQEyrsbWT7/XhAJNTN4pmthRv4YN5pD4xTDcK7FDOz8fVi6pmSrjPhKevEoc5
-         GCIexGQI7xo+fadVpi+T6qkN068v9p3w+i/u4cgI=
+        b=vSmJmymPy088njy4ZziB0PZfCsweKPmWyfkg+fdexgDESoAYL1UapoQNa0MQK91GC
+         uP52eeuBxzSQQVxQYaxHRtRIbRM9A66jCtagnRbbcJWmug8uNT1Ftm+dGEfYluoreu
+         VOcemsNUNJoBWltLuEstWjTsNYMh2gF2DJv5Q1iQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
         Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 36/90] ptp: create "pins" together with the rest of attributes
-Date:   Mon, 18 May 2020 19:36:14 +0200
-Message-Id: <20200518173458.426221453@linuxfoundation.org>
+Subject: [PATCH 4.9 37/90] chardev: add helper function to register char devs with a struct device
+Date:   Mon, 18 May 2020 19:36:15 +0200
+Message-Id: <20200518173458.652973043@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
 References: <20200518173450.930655662@linuxfoundation.org>
@@ -46,169 +47,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-commit 85a66e55019583da1e0f18706b7a8281c9f6de5b upstream.
+commit 233ed09d7fdacf592ee91e6c97ce5f4364fbe7c0 upstream.
 
-Let's switch to using device_create_with_groups(), which will allow us to
-create "pins" attribute group together with the rest of ptp device
-attributes, and before userspace gets notified about ptp device creation.
+Credit for this patch goes is shared with Dan Williams [1]. I've
+taken things one step further to make the helper function more
+useful and clean up calling code.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backported to 4.9: adjust context]
+There's a common pattern in the kernel whereby a struct cdev is placed
+in a structure along side a struct device which manages the life-cycle
+of both. In the naive approach, the reference counting is broken and
+the struct device can free everything before the chardev code
+is entirely released.
+
+Many developers have solved this problem by linking the internal kobjs
+in this fashion:
+
+cdev.kobj.parent = &parent_dev.kobj;
+
+The cdev code explicitly gets and puts a reference to it's kobj parent.
+So this seems like it was intended to be used this way. Dmitrty Torokhov
+first put this in place in 2012 with this commit:
+
+2f0157f char_dev: pin parent kobject
+
+and the first instance of the fix was then done in the input subsystem
+in the following commit:
+
+4a215aa Input: fix use-after-free introduced with dynamic minor changes
+
+Subsequently over the years, however, this issue seems to have tripped
+up multiple developers independently. For example, see these commits:
+
+0d5b7da iio: Prevent race between IIO chardev opening and IIO device
+(by Lars-Peter Clausen in 2013)
+
+ba0ef85 tpm: Fix initialization of the cdev
+(by Jason Gunthorpe in 2015)
+
+5b28dde [media] media: fix use-after-free in cdev_put() when app exits
+after driver unbind
+(by Shauh Khan in 2016)
+
+This technique is similarly done in at least 15 places within the kernel
+and probably should have been done so in another, at least, 5 places.
+The kobj line also looks very suspect in that one would not expect
+drivers to have to mess with kobject internals in this way.
+Even highly experienced kernel developers can be surprised by this
+code, as seen in [2].
+
+To help alleviate this situation, and hopefully prevent future
+wasted effort on this problem, this patch introduces a helper function
+to register a char device along with its parent struct device.
+This creates a more regular API for tying a char device to its parent
+without the developer having to set members in the underlying kobject.
+
+This patch introduce cdev_device_add and cdev_device_del which
+replaces a common pattern including setting the kobj parent, calling
+cdev_add and then calling device_add. It also introduces cdev_set_parent
+for the few cases that set the kobject parent without using device_add.
+
+[1] https://lkml.org/lkml/2017/2/13/700
+[2] https://lkml.org/lkml/2017/2/10/370
+
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Hans Verkuil <hans.verkuil@cisco.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ptp/ptp_clock.c   | 20 +++++++++++---------
- drivers/ptp/ptp_private.h |  7 ++++---
- drivers/ptp/ptp_sysfs.c   | 39 +++++++++------------------------------
- 3 files changed, 24 insertions(+), 42 deletions(-)
+ fs/char_dev.c        | 86 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/cdev.h |  5 +++
+ 2 files changed, 91 insertions(+)
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 08f304b83ad13..d5ac33350889e 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -214,16 +214,17 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	mutex_init(&ptp->pincfg_mux);
- 	init_waitqueue_head(&ptp->tsev_wq);
- 
-+	err = ptp_populate_pin_groups(ptp);
-+	if (err)
-+		goto no_pin_groups;
-+
- 	/* Create a new device in our class. */
--	ptp->dev = device_create(ptp_class, parent, ptp->devid, ptp,
--				 "ptp%d", ptp->index);
-+	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
-+					     ptp, ptp->pin_attr_groups,
-+					     "ptp%d", ptp->index);
- 	if (IS_ERR(ptp->dev))
- 		goto no_device;
- 
--	err = ptp_populate_sysfs(ptp);
--	if (err)
--		goto no_sysfs;
--
- 	/* Register a new PPS source. */
- 	if (info->pps) {
- 		struct pps_source_info pps;
-@@ -251,10 +252,10 @@ no_clock:
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
- no_pps:
--	ptp_cleanup_sysfs(ptp);
--no_sysfs:
- 	device_destroy(ptp_class, ptp->devid);
- no_device:
-+	ptp_cleanup_pin_groups(ptp);
-+no_pin_groups:
- 	mutex_destroy(&ptp->tsevq_mux);
- 	mutex_destroy(&ptp->pincfg_mux);
- 	ida_simple_remove(&ptp_clocks_map, index);
-@@ -273,8 +274,9 @@ int ptp_clock_unregister(struct ptp_clock *ptp)
- 	/* Release the clock's resources. */
- 	if (ptp->pps_source)
- 		pps_unregister_source(ptp->pps_source);
--	ptp_cleanup_sysfs(ptp);
-+
- 	device_destroy(ptp_class, ptp->devid);
-+	ptp_cleanup_pin_groups(ptp);
- 
- 	posix_clock_unregister(&ptp->clock);
+diff --git a/fs/char_dev.c b/fs/char_dev.c
+index 23e0477edf7d6..1bbb966c0783f 100644
+--- a/fs/char_dev.c
++++ b/fs/char_dev.c
+@@ -477,6 +477,85 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
  	return 0;
-diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
-index 9c5d41421b651..d95888974d0c6 100644
---- a/drivers/ptp/ptp_private.h
-+++ b/drivers/ptp/ptp_private.h
-@@ -54,6 +54,8 @@ struct ptp_clock {
- 	struct device_attribute *pin_dev_attr;
- 	struct attribute **pin_attr;
- 	struct attribute_group pin_attr_group;
-+	/* 1st entry is a pointer to the real group, 2nd is NULL terminator */
-+	const struct attribute_group *pin_attr_groups[2];
- };
- 
- /*
-@@ -94,8 +96,7 @@ uint ptp_poll(struct posix_clock *pc,
- 
- extern const struct attribute_group *ptp_groups[];
- 
--int ptp_cleanup_sysfs(struct ptp_clock *ptp);
--
--int ptp_populate_sysfs(struct ptp_clock *ptp);
-+int ptp_populate_pin_groups(struct ptp_clock *ptp);
-+void ptp_cleanup_pin_groups(struct ptp_clock *ptp);
- 
- #endif
-diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
-index a55a6eb4dfde9..731d0423c8aa7 100644
---- a/drivers/ptp/ptp_sysfs.c
-+++ b/drivers/ptp/ptp_sysfs.c
-@@ -268,25 +268,14 @@ static ssize_t ptp_pin_store(struct device *dev, struct device_attribute *attr,
- 	return count;
  }
  
--int ptp_cleanup_sysfs(struct ptp_clock *ptp)
-+int ptp_populate_pin_groups(struct ptp_clock *ptp)
- {
--	struct device *dev = ptp->dev;
--	struct ptp_clock_info *info = ptp->info;
--
--	if (info->n_pins) {
--		sysfs_remove_group(&dev->kobj, &ptp->pin_attr_group);
--		kfree(ptp->pin_attr);
--		kfree(ptp->pin_dev_attr);
--	}
--	return 0;
--}
--
--static int ptp_populate_pins(struct ptp_clock *ptp)
--{
--	struct device *dev = ptp->dev;
- 	struct ptp_clock_info *info = ptp->info;
- 	int err = -ENOMEM, i, n_pins = info->n_pins;
- 
-+	if (!n_pins)
-+		return 0;
++/**
++ * cdev_set_parent() - set the parent kobject for a char device
++ * @p: the cdev structure
++ * @kobj: the kobject to take a reference to
++ *
++ * cdev_set_parent() sets a parent kobject which will be referenced
++ * appropriately so the parent is not freed before the cdev. This
++ * should be called before cdev_add.
++ */
++void cdev_set_parent(struct cdev *p, struct kobject *kobj)
++{
++	WARN_ON(!kobj->state_initialized);
++	p->kobj.parent = kobj;
++}
 +
- 	ptp->pin_dev_attr = kzalloc(n_pins * sizeof(*ptp->pin_dev_attr),
- 				    GFP_KERNEL);
- 	if (!ptp->pin_dev_attr)
-@@ -310,28 +299,18 @@ static int ptp_populate_pins(struct ptp_clock *ptp)
- 	ptp->pin_attr_group.name = "pins";
- 	ptp->pin_attr_group.attrs = ptp->pin_attr;
- 
--	err = sysfs_create_group(&dev->kobj, &ptp->pin_attr_group);
--	if (err)
--		goto no_group;
-+	ptp->pin_attr_groups[0] = &ptp->pin_attr_group;
++/**
++ * cdev_device_add() - add a char device and it's corresponding
++ *	struct device, linkink
++ * @dev: the device structure
++ * @cdev: the cdev structure
++ *
++ * cdev_device_add() adds the char device represented by @cdev to the system,
++ * just as cdev_add does. It then adds @dev to the system using device_add
++ * The dev_t for the char device will be taken from the struct device which
++ * needs to be initialized first. This helper function correctly takes a
++ * reference to the parent device so the parent will not get released until
++ * all references to the cdev are released.
++ *
++ * This helper uses dev->devt for the device number. If it is not set
++ * it will not add the cdev and it will be equivalent to device_add.
++ *
++ * This function should be used whenever the struct cdev and the
++ * struct device are members of the same structure whose lifetime is
++ * managed by the struct device.
++ *
++ * NOTE: Callers must assume that userspace was able to open the cdev and
++ * can call cdev fops callbacks at any time, even if this function fails.
++ */
++int cdev_device_add(struct cdev *cdev, struct device *dev)
++{
++	int rc = 0;
 +
- 	return 0;
- 
--no_group:
--	kfree(ptp->pin_attr);
- no_pin_attr:
- 	kfree(ptp->pin_dev_attr);
- no_dev_attr:
- 	return err;
- }
- 
--int ptp_populate_sysfs(struct ptp_clock *ptp)
-+void ptp_cleanup_pin_groups(struct ptp_clock *ptp)
++	if (dev->devt) {
++		cdev_set_parent(cdev, &dev->kobj);
++
++		rc = cdev_add(cdev, dev->devt, 1);
++		if (rc)
++			return rc;
++	}
++
++	rc = device_add(dev);
++	if (rc)
++		cdev_del(cdev);
++
++	return rc;
++}
++
++/**
++ * cdev_device_del() - inverse of cdev_device_add
++ * @dev: the device structure
++ * @cdev: the cdev structure
++ *
++ * cdev_device_del() is a helper function to call cdev_del and device_del.
++ * It should be used whenever cdev_device_add is used.
++ *
++ * If dev->devt is not set it will not remove the cdev and will be equivalent
++ * to device_del.
++ *
++ * NOTE: This guarantees that associated sysfs callbacks are not running
++ * or runnable, however any cdevs already open will remain and their fops
++ * will still be callable even after this function returns.
++ */
++void cdev_device_del(struct cdev *cdev, struct device *dev)
++{
++	device_del(dev);
++	if (dev->devt)
++		cdev_del(cdev);
++}
++
+ static void cdev_unmap(dev_t dev, unsigned count)
  {
--	struct ptp_clock_info *info = ptp->info;
--	int err;
--
--	if (info->n_pins) {
--		err = ptp_populate_pins(ptp);
--		if (err)
--			return err;
--	}
--	return 0;
-+	kfree(ptp->pin_attr);
-+	kfree(ptp->pin_dev_attr);
- }
+ 	kobj_unmap(cdev_map, dev, count);
+@@ -488,6 +567,10 @@ static void cdev_unmap(dev_t dev, unsigned count)
+  *
+  * cdev_del() removes @p from the system, possibly freeing the structure
+  * itself.
++ *
++ * NOTE: This guarantees that cdev device will no longer be able to be
++ * opened, however any cdevs already open will remain and their fops will
++ * still be callable even after cdev_del returns.
+  */
+ void cdev_del(struct cdev *p)
+ {
+@@ -576,5 +659,8 @@ EXPORT_SYMBOL(cdev_init);
+ EXPORT_SYMBOL(cdev_alloc);
+ EXPORT_SYMBOL(cdev_del);
+ EXPORT_SYMBOL(cdev_add);
++EXPORT_SYMBOL(cdev_set_parent);
++EXPORT_SYMBOL(cdev_device_add);
++EXPORT_SYMBOL(cdev_device_del);
+ EXPORT_SYMBOL(__register_chrdev);
+ EXPORT_SYMBOL(__unregister_chrdev);
+diff --git a/include/linux/cdev.h b/include/linux/cdev.h
+index f8763615a5f2d..408bc09ce497b 100644
+--- a/include/linux/cdev.h
++++ b/include/linux/cdev.h
+@@ -4,6 +4,7 @@
+ #include <linux/kobject.h>
+ #include <linux/kdev_t.h>
+ #include <linux/list.h>
++#include <linux/device.h>
+ 
+ struct file_operations;
+ struct inode;
+@@ -26,6 +27,10 @@ void cdev_put(struct cdev *p);
+ 
+ int cdev_add(struct cdev *, dev_t, unsigned);
+ 
++void cdev_set_parent(struct cdev *p, struct kobject *kobj);
++int cdev_device_add(struct cdev *cdev, struct device *dev);
++void cdev_device_del(struct cdev *cdev, struct device *dev);
++
+ void cdev_del(struct cdev *);
+ 
+ void cd_forget(struct inode *);
 -- 
 2.20.1
 
