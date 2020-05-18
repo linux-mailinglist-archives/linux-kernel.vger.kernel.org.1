@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437341D83B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E391D82D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733236AbgERSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
+        id S1732073AbgERR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733228AbgERSGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:06:55 -0400
+        id S1732063AbgERR73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:59:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F7DF20853;
-        Mon, 18 May 2020 18:06:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECDA020873;
+        Mon, 18 May 2020 17:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825214;
-        bh=o17/TW0X+DbStAST/+2VmncIN6BYEU6alqBMmFDmoL4=;
+        s=default; t=1589824769;
+        bh=KZFGpym89vL+pkYsJKw1YvGqavgp7Flu1HyOh8N8L3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1prsjZ0bGY6lL/QFUDdIHYtzfksfzmzNefbO4dtuacyX0Em0ejlEGPCdm6p2U1amq
-         3UD9pd50ZQp0xgJq3NKADyxxnr/oYvhMT/TAk11DMaJhiF93MPvxwSzU3814pFpGvh
-         fTw2Tazjp1pEiLOEtnbQdFSZ3BOqVE7+8OSj2nKE=
+        b=Lm9gDaXLEskMpKAL5hDNJgmpd/diYNqaaznkOKiAkZ5SKgA8bYdXWJRlM4V9wmEpi
+         Pr0rrAi/FbLeQpiaO9FXR9fo9c4lxiXO6G70SQPazWhp6apTYIsTmV8j0ZiDa8uJwQ
+         VeOY1eZRFwhnfVpREjIE9S5zKE6w2izDhoJrbB14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 5.6 176/194] arm64: dts: rockchip: Replace RK805 PMIC node name with "pmic" on rk3328 boards
-Date:   Mon, 18 May 2020 19:37:46 +0200
-Message-Id: <20200518173546.234930983@linuxfoundation.org>
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Backlund <tmb@mageia.org>
+Subject: [PATCH 5.4 144/147] Makefile: disallow data races on gcc-10 as well
+Date:   Mon, 18 May 2020 19:37:47 +0200
+Message-Id: <20200518173530.903242359@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-commit 83b994129fb4c18a8460fd395864a28740e5e7fb upstream.
+commit b1112139a103b4b1101d0d2d72931f2d33d8c978 upstream.
 
-In some board device tree files, "rk805" was used for the RK805 PMIC's
-node name. However the policy for device trees is that generic names
-should be used.
+gcc-10 will rename --param=allow-store-data-races=0
+to -fno-allow-store-data-races.
 
-Replace the "rk805" node name with the generic "pmic" name.
+The flag change happened at https://gcc.gnu.org/PR92046.
 
-Fixes: 1e28037ec88e ("arm64: dts: rockchip: add rk805 node for rk3328-evb")
-Fixes: 955bebde057e ("arm64: dts: rockchip: add rk3328-rock64 board")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20200327030414.5903-3-wens@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Acked-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Thomas Backlund <tmb@mageia.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/boot/dts/rockchip/rk3328-evb.dts    |    2 +-
- arch/arm64/boot/dts/rockchip/rk3328-rock64.dts |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/boot/dts/rockchip/rk3328-evb.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-evb.dts
-@@ -92,7 +92,7 @@
- &i2c1 {
- 	status = "okay";
+--- a/Makefile
++++ b/Makefile
+@@ -709,6 +709,7 @@ endif
  
--	rk805: rk805@18 {
-+	rk805: pmic@18 {
- 		compatible = "rockchip,rk805";
- 		reg = <0x18>;
- 		interrupt-parent = <&gpio2>;
---- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-@@ -169,7 +169,7 @@
- &i2c1 {
- 	status = "okay";
+ # Tell gcc to never replace conditional load with a non-conditional one
+ KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
++KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
  
--	rk805: rk805@18 {
-+	rk805: pmic@18 {
- 		compatible = "rockchip,rk805";
- 		reg = <0x18>;
- 		interrupt-parent = <&gpio2>;
+ include scripts/Makefile.kcov
+ include scripts/Makefile.gcc-plugins
 
 
