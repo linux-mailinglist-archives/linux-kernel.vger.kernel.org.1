@@ -2,103 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B341D759B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414901D7590
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgERKvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 06:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbgERKvw (ORCPT
+        id S1726494AbgERKv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:51:27 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:34032 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgERKv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 06:51:52 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C8FC061A0C;
-        Mon, 18 May 2020 03:51:52 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id v192so2279734vkd.3;
-        Mon, 18 May 2020 03:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MpjSkkn7ApK5Yq+n7OuT8kXvOD7uu7gT865+wNXuHVM=;
-        b=TIdzmN5Zyod2KpKoraBArfu7HJ/dEL5tffIucTv8YuRzLkeoU8FiBg7P7XovUQxL/D
-         PNj0R8Ys14RDTqKJWOpbotZAsy2DF9HvMohwoUIcrtsRtdZ1KhYQRu5S1a3jtL2keuQ9
-         n01+J9BhdUvlIGWd3QV7N8Ct+r8CCv5twPyzFL9jzrRF8UIlaU90fZAB11X4PCvWuvCs
-         HuJ3DiC7taPGk51xKRGbeKVrv1LRbWsxwT5zP8w20Oqj/OPmx8/wp4OrKUkO3aBtzmtG
-         dByNMjEIU75bxzxx5lR95RTEk8A9XIQ80QnpUDh4BaEbvqGlAoOTnd8U+zSTQZ6gIxx4
-         fkHw==
+        Mon, 18 May 2020 06:51:27 -0400
+Received: by mail-oo1-f66.google.com with SMTP id s139so1936141oos.1;
+        Mon, 18 May 2020 03:51:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MpjSkkn7ApK5Yq+n7OuT8kXvOD7uu7gT865+wNXuHVM=;
-        b=GEcT5+nVu9wKVn1vTu5i8SRHuEeAjD8YMZ7iYWGasdXGEL0TTvIx0U3Q+eaIeIkNvt
-         7f7lZSTTqA0JPrUPUav1We0XjyPMQPNPmSo3+SiewOYelX9cBWaZ5oGBb5Ow8/2raxuK
-         lPXVHinb+1S+BdmyPhhvBMwe6psj7vzG8vu7tC+TeBbQ9BQSGWDvxpbLZCIZRcI4enOp
-         1lB5SKP/92Gsj/S8FoD1piAy2Sm5q2TvF40Q7/wxp1tC5rrUMBr36kDTqbXkxUuJfDf/
-         CKgB/OO3VfFf9w+YJOW98mT+JzrxtKW86qg2GX/1vZsZJ4u+KwLYC6yoNBlM2SjwleqC
-         miEw==
-X-Gm-Message-State: AOAM531Ze3WRKsvdVM9Ox94/k7S3vpewWf9MZn6EQu4R5eRMgtHnTSDN
-        a9K1CduxbGnKHECf+8o2DXtFmBqevqqFyn8UBn8=
-X-Google-Smtp-Source: ABdhPJyJoE3DeUp5mRCR4/NwPKcB+0c9bpy1Jfu2Pe+bafT+c8kQlQDsW0FnkxaYd3hr8PrATmPVX23jWINoG1EwtPc=
-X-Received: by 2002:a1f:2bd7:: with SMTP id r206mr790067vkr.28.1589799110526;
- Mon, 18 May 2020 03:51:50 -0700 (PDT)
+        bh=lNMXSW+sgPzbz8sV3erf+BVgtCmbmji/K/QtFyrknmo=;
+        b=s1CfJ7uhVTqb5RMP+t++4sBVZFwoxJv9g4uee/6P6MjaiyD0euuv17fCPFm1NjsYP/
+         pmARXhuD0Cb4k169afAtx5woREgl1Ow0QcIz221jFyWto5mxFXRtaIefqPeoiRYiuRd4
+         +XH4Um2iGVuBpcXLM+G02trzec0eNTnA3OwQ4112QE7l/+T7pm8Z3AKHpL6yGLV+rTVY
+         t3pBFs9U7/5i2E4R1vzGM4b879BzcDFQ6K0vseg3q3H1dUXvrVl4SGq3Ws+AYNgOCVTW
+         3ttenyx0RHvV4VrgZjSIJZTOye3HrRQdvXBg8fKzkg+psMQq8iz8ETbCezlL/BTCWhWg
+         mgtg==
+X-Gm-Message-State: AOAM532LKdoA/52i+Kp9GUrjqtB/Ei+JEfyE+HMPKXar2tmtPpK6EsBg
+        SHjc44vMSWh+f2yvQIvNjZ7HExnIWoThNu4p9ouqGQ==
+X-Google-Smtp-Source: ABdhPJwXKPHrVc2nshP6py5iOtERo4swV8insgwVVxqAdeRAgg41N/VGvu05gaipdg5BK+WXxE+QcFrnrrWttpBR3Ws=
+X-Received: by 2002:a4a:e0d1:: with SMTP id e17mr12336167oot.1.1589799085973;
+ Mon, 18 May 2020 03:51:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200516215057.392609-1-paul@crapouillou.net> <20200516215057.392609-11-paul@crapouillou.net>
-In-Reply-To: <20200516215057.392609-11-paul@crapouillou.net>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Mon, 18 May 2020 11:48:59 +0100
-Message-ID: <CACvgo50q=qJXk3nFSCm+S6JHBMxpY0C_HwH8KGB2EAcKwgL0oQ@mail.gmail.com>
-Subject: Re: [PATCH 11/12] gpu/drm: Ingenic: Add support for the IPU
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>, od@zcrc.me,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200518102415.k4c5qglodij5ac6h@vireshk-i7> <20200518103102.t3a3g4uxeeuwsnix@mobilestation>
+ <5284478.EF2IWm2iUs@kreacher> <20200518104602.mjh2p5iltf2x4wmq@mobilestation>
+In-Reply-To: <20200518104602.mjh2p5iltf2x4wmq@mobilestation>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 18 May 2020 12:51:15 +0200
+Message-ID: <CAJZ5v0imYcL3M80S1snJAqXQ=GsqbChij-6aWx=4L02TKVvrQg@mail.gmail.com>
+Subject: Re: [PATCH v2 20/20] cpufreq: Return zero on success in boost sw setting
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Yue Hu <huyue2@yulong.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-Disclaimer: I don't know much about the hardware :-P
-
-On Sun, 17 May 2020 at 00:31, Paul Cercueil <paul@crapouillou.net> wrote:
+On Mon, May 18, 2020 at 12:46 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
 >
-> Add support for the Image Processing Unit (IPU) found in all Ingenic
-> SoCs.
+> On Mon, May 18, 2020 at 12:41:19PM +0200, Rafael J. Wysocki wrote:
+> > On Monday, May 18, 2020 12:31:02 PM CEST Serge Semin wrote:
+> > > On Mon, May 18, 2020 at 03:54:15PM +0530, Viresh Kumar wrote:
+> > > > On 18-05-20, 12:22, Rafael J. Wysocki wrote:
+> > > > > On Monday, May 18, 2020 12:11:09 PM CEST Viresh Kumar wrote:
+> > > > > > On 18-05-20, 11:53, Rafael J. Wysocki wrote:
+> > > > > > > That said if you really only want it to return 0 on success, you may as well
+> > > > > > > add a ret = 0; statement (with a comment explaining why it is needed) after
+> > > > > > > the last break in the loop.
+> > > > > >
+> > > > > > That can be done as well, but will be a bit less efficient as the loop
+> > > > > > will execute once for each policy, and so the statement will run
+> > > > > > multiple times. Though it isn't going to add any significant latency
+> > > > > > in the code.
+> > > > >
+> > > > > Right.
+> > > > >
+> > > > > However, the logic in this entire function looks somewhat less than
+> > > > > straightforward to me, because it looks like it should return an
+> > > > > error on the first policy without a frequency table (having a frequency
+> > > > > table depends on the driver and that is the same for all policies, so it
+> > > > > is pointless to iterate any further in that case).
+> > > > >
+> > > > > Also, the error should not be -EINVAL, because that means "invalid
+> > > > > argument" which would be the state value.
+> > > > >
+> > > > > So I would do something like this:
+> > > > >
+> > > > > ---
+> > > > >  drivers/cpufreq/cpufreq.c |   11 ++++++-----
+> > > > >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > Index: linux-pm/drivers/cpufreq/cpufreq.c
+> > > > > ===================================================================
+> > > > > --- linux-pm.orig/drivers/cpufreq/cpufreq.c
+> > > > > +++ linux-pm/drivers/cpufreq/cpufreq.c
+> > > > > @@ -2535,26 +2535,27 @@ EXPORT_SYMBOL_GPL(cpufreq_update_limits)
+> > > > >  static int cpufreq_boost_set_sw(int state)
+> > > > >  {
+> > > > >         struct cpufreq_policy *policy;
+> > > > > -       int ret = -EINVAL;
+> > > > >
+> > > > >         for_each_active_policy(policy) {
+> > > > > +               int ret;
+> > > > > +
+> > > > >                 if (!policy->freq_table)
+> > > > > -                       continue;
+> > > > > +                       return -ENXIO;
+> > > > >
+> > > > >                 ret = cpufreq_frequency_table_cpuinfo(policy,
+> > > > >                                                       policy->freq_table);
+> > > > >                 if (ret) {
+> > > > >                         pr_err("%s: Policy frequency update failed\n",
+> > > > >                                __func__);
+> > > > > -                       break;
+> > > > > +                       return ret;
+> > > > >                 }
+> > > > >
+> > > > >                 ret = freq_qos_update_request(policy->max_freq_req, policy->max);
+> > > > >                 if (ret < 0)
+> > > > > -                       break;
+> > > > > +                       return ret;
+> > > > >         }
+> > > > >
+> > > > > -       return ret;
+> > > > > +       return 0;
+> > > > >  }
+> > > > >
+> > > > >  int cpufreq_boost_trigger_state(int state)
+> > > >
+> > > > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > >
+> > > Ok. Thanks for the comments. Shall I resend the patch with update Rafael
+> > > suggests or you'll merge the Rafael's fix in yourself?
+> >
+> > I'll apply the fix directly, thanks!
 >
-Since the IPU is present on all devices supported, does it make sense
-to have it as separate module?
-Didn't check closely although I suspect doing that will remove the
-need for the component patch.
+> Great. Is it going to be available in the repo:
+> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/
+> ?
 
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
-> @@ -50,7 +50,7 @@ struct jz_soc_info {
->
->  struct ingenic_drm {
->         struct drm_device drm;
-> -       struct drm_plane f0, f1;
-> +       struct drm_plane f0, f1, *ipu_plane;
->         struct drm_crtc crtc;
->         struct drm_encoder encoder;
->
-> @@ -186,13 +186,16 @@ static void ingenic_drm_crtc_update_timings(struct ingenic_drm *priv,
->         regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
->                            JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16,
->                            JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16);
-> +
-> +       regmap_write(priv->map, JZ_REG_LCD_IPUR, JZ_LCD_IPUR_IPUREN |
-> +                    (ht * vpe / 3) << JZ_LCD_IPUR_IPUR_LSB);
-
-This hunk also indicates that it may be better to merge the IPU within
-the existing driver.
-
--Emil
+Yes, it is.  Please see the bleeding-edge branch in there, thanks!
