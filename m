@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65391D824F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E261D833D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731435AbgERRzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
+        id S1732607AbgERSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729932AbgERRzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:15 -0400
+        id S1732587AbgERSC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:02:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4071205CB;
-        Mon, 18 May 2020 17:55:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07891207D3;
+        Mon, 18 May 2020 18:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824515;
-        bh=OePKM7A1K0XYiRWplDYUiamyPrsd/Yopn1WWNiCHw9c=;
+        s=default; t=1589824978;
+        bh=HzhzUmDKmEhn4BXR+WRZZo9dgSDG/SsJmeYNmu1EgwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NlD2D42vER26Jtiv4QYge1DMt8RHifueg3QnDtijSKd46mgKEyhh6sONrmDGcz5uy
-         H3jLxo0tM9kdXKzHvQdDCkMfMu6mJr8tuU/G76Cocvtdib5jqXiclA87oEJfsfeDIw
-         cyFM9VL/oHEo/RyVVF5T+XpyBybIy/9rJczvKCdA=
+        b=WJ7g5ldxt/hnmovrgxFJihEuQg0UvLwhT0cDjOAf5DfHLxlwta+elYKQXGDi6OJFi
+         +KO+BeJiJXWM6J/s0Ikcg2SzN3DR8F/JnuD6okHDYGZUhmSNtp5bVgaZ8uOAlm//9J
+         WWjKodPm2uPb3mLNH53kVAEeWo3Xw1y09inSrsns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/147] net: moxa: Fix a potential double free_irq()
+        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.6 042/194] hinic: fix a bug of ndo_stop
 Date:   Mon, 18 May 2020 19:35:32 +0200
-Message-Id: <20200518173514.563323808@linuxfoundation.org>
+Message-Id: <20200518173535.263756891@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Luo bin <luobin9@huawei.com>
 
-[ Upstream commit ee8d2267f0e39a1bfd95532da3a6405004114b27 ]
+[ Upstream commit e8a1b0efd632d1c9db7d4e93da66377c7b524862 ]
 
-Should an irq requested with 'devm_request_irq' be released explicitly,
-it should be done by 'devm_free_irq()', not 'free_irq()'.
+if some function in ndo_stop interface returns failure because of
+hardware fault, must go on excuting rest steps rather than return
+failure directly, otherwise will cause memory leak.And bump the
+timeout for SET_FUNC_STATE to ensure that cmd won't return failure
+when hw is busy. Otherwise hw may stomp host memory if we free
+memory regardless of the return value of SET_FUNC_STATE.
 
-Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 51ba902a16e6 ("net-next/hinic: Initialize hw interface")
+Signed-off-by: Luo bin <luobin9@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c |   16 ++++++++++++----
+ drivers/net/ethernet/huawei/hinic/hinic_main.c    |   18 +++---------------
+ 2 files changed, 15 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index e1651756bf9da..f70bb81e1ed65 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -564,7 +564,7 @@ static int moxart_remove(struct platform_device *pdev)
- 	struct net_device *ndev = platform_get_drvdata(pdev);
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
+@@ -45,6 +45,8 @@
  
- 	unregister_netdev(ndev);
--	free_irq(ndev->irq, ndev);
-+	devm_free_irq(&pdev->dev, ndev->irq, ndev);
- 	moxart_mac_free_memory(ndev);
- 	free_netdev(ndev);
+ #define MGMT_MSG_TIMEOUT                5000
  
--- 
-2.20.1
-
++#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
++
+ #define mgmt_to_pfhwdev(pf_mgmt)        \
+ 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
+ 
+@@ -238,12 +240,13 @@ static int msg_to_mgmt_sync(struct hinic
+ 			    u8 *buf_in, u16 in_size,
+ 			    u8 *buf_out, u16 *out_size,
+ 			    enum mgmt_direction_type direction,
+-			    u16 resp_msg_id)
++			    u16 resp_msg_id, u32 timeout)
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
+ 	struct hinic_recv_msg *recv_msg;
+ 	struct completion *recv_done;
++	unsigned long timeo;
+ 	u16 msg_id;
+ 	int err;
+ 
+@@ -267,8 +270,9 @@ static int msg_to_mgmt_sync(struct hinic
+ 		goto unlock_sync_msg;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(recv_done,
+-					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
++	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
++
++	if (!wait_for_completion_timeout(recv_done, timeo)) {
+ 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
+ 		err = -ETIMEDOUT;
+ 		goto unlock_sync_msg;
+@@ -342,6 +346,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
+ {
+ 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
+ 	struct pci_dev *pdev = hwif->pdev;
++	u32 timeout = 0;
+ 
+ 	if (sync != HINIC_MGMT_MSG_SYNC) {
+ 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
+@@ -353,9 +358,12 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
+ 		return -EINVAL;
+ 	}
+ 
++	if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
++		timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
++
+ 	return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
+ 				buf_out, out_size, MGMT_DIRECT_SEND,
+-				MSG_NOT_RESP);
++				MSG_NOT_RESP, timeout);
+ }
+ 
+ /**
+--- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+@@ -483,7 +483,6 @@ static int hinic_close(struct net_device
+ {
+ 	struct hinic_dev *nic_dev = netdev_priv(netdev);
+ 	unsigned int flags;
+-	int err;
+ 
+ 	down(&nic_dev->mgmt_lock);
+ 
+@@ -497,20 +496,9 @@ static int hinic_close(struct net_device
+ 
+ 	up(&nic_dev->mgmt_lock);
+ 
+-	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev,
+-			  "Failed to set func port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
+-
+-	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
+-	if (err) {
+-		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
+-		nic_dev->flags |= (flags & HINIC_INTF_UP);
+-		return err;
+-	}
++	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
++
++	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ 
+ 	if (nic_dev->flags & HINIC_RSS_ENABLE) {
+ 		hinic_rss_deinit(nic_dev);
 
 
