@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5971D8710
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AB21D8719
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732802AbgERS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:29:32 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:42213 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729345AbgERS32 (ORCPT
+        id S2388039AbgERS3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:29:52 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:38676 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728709AbgERS3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:29:28 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 18 May 2020 11:29:26 -0700
-Received: from localhost (unknown [10.200.192.41])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 42FFC40320;
-        Mon, 18 May 2020 11:29:27 -0700 (PDT)
-Date:   Mon, 18 May 2020 11:29:26 -0700
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC][PATCH 5/5] objtool: Report missing support for subcommands
-Message-ID: <20200518182926.GM9040@rlwimi.vmware.com>
-Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1588888003.git.mhelsley@vmware.com>
- <38a0c7a1ec8d98238379a322866c0432befc259b.1588888003.git.mhelsley@vmware.com>
- <20200515210448.jqseippuz52wx7ct@treble>
+        Mon, 18 May 2020 14:29:41 -0400
+Received: by mail-il1-f194.google.com with SMTP id j2so10878121ilr.5;
+        Mon, 18 May 2020 11:29:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=H9QUmqRboTMq2btI6W1PlOxGwrrB/TVm3hT9RDAxdio=;
+        b=dv/RyRgTjIqZKFw4/wVffVjI4wcgG6Tee3JUpGSOClDB8QnVwGVR8NqYWLlhLtwjEb
+         Gu9nqMn2IXRrLq0M3Ol9/b0DQq1JuqwA7BWDu8nEW617EA2/kuIF4VW1631VzpFLN/15
+         x86g7/YZFNyvLil9lx5mpbP7rGqKqmm4uDczvdtiW08XqOebfPOTD8tyCX3NHBCAA5lS
+         ENe3BLYLrPCQfMWDAleQ3vThc09IokJaXhUa0bmFUUTDgAhr4sQ28T8mAFI4gXqpDa7p
+         sK8w05oqVMwOFkBw1lq6ccLD68+4Q773TN/cIl1G/9Ep4EsCNxA3gsn8IcM5noRUNKW3
+         WFxQ==
+X-Gm-Message-State: AOAM530c4M2mGZb/S6AGqYDJoADu1tehptIOHdVLHW9w6z/0kZhQTXyc
+        LS7cK5qoZHgvkn1jx+mKqQ==
+X-Google-Smtp-Source: ABdhPJzxd7rr3zApzsbN80hNAQP6arGxepHH572CYOWpC/bwGTqxizgZRmX7IJW1q0n5+KM61tXsVA==
+X-Received: by 2002:a92:b743:: with SMTP id c3mr14630153ilm.92.1589826579249;
+        Mon, 18 May 2020 11:29:39 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id l9sm4203595iop.22.2020.05.18.11.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 11:29:38 -0700 (PDT)
+Received: (nullmailer pid 7054 invoked by uid 1000);
+        Mon, 18 May 2020 18:29:37 -0000
+Date:   Mon, 18 May 2020 12:29:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: serial: qca,ar9330-uart: Convert to
+ json-schema
+Message-ID: <20200518182937.GA6974@bogus>
+References: <20200510051522.6191-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515210448.jqseippuz52wx7ct@treble>
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+In-Reply-To: <20200510051522.6191-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:04:48PM -0500, Josh Poimboeuf wrote:
-> On Mon, May 11, 2020 at 10:35:13AM -0700, Matt Helsley wrote:
-> > The check and orc-related subcommands for objtool are x86-specific.
-> > To make this clear to anyone using the tool return a non-zero exit
-> > code and indicate in the help and usage output which commands are
-> > (and are not) available.
-> > 
-> > Signed-off-by: Matt Helsley <mhelsley@vmware.com>
+On Sun, 10 May 2020 07:15:22 +0200, Oleksij Rempel wrote:
+> Convert the Qualcomm Atheros AR9330 High-Speed UART
+> Device Tree binding documentation to json-schema.
 > 
-> I think I'd rather the simplest approach of just having the weak
-> functions print an error and return an error code.  At least for now I
-> don't think we need to go through the trouble of advertising whether
-> certain commands are available.  Technically they are available, they
-> just always fail :-)
-
-OK, that'll drop this patch from  the series.
-
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/serial/qca,ar9330-uart.txt       | 31 ------------
+>  .../bindings/serial/qca,ar9330-uart.yaml      | 50 +++++++++++++++++++
+>  2 files changed, 50 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/qca,ar9330-uart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/qca,ar9330-uart.yaml
 > 
-> And, people don't tend to use objtool directly anyway.
-> 
-> BTW, several of the patches didn't apply cleanly to tip/master, so
-> you'll probably need to rebase for v2.  There've been a lot of objtool
-> changes lately.  Peter's been busy...
 
-Will do.
-
-Cheers,
-    -Matt Helsley
+Applied, thanks!
