@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7491D872A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C761D8270
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388061AbgERSau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:30:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36132 "EHLO mail.kernel.org"
+        id S1731635AbgERR42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgERRkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:31 -0400
+        id S1731624AbgERR4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EB57207C4;
-        Mon, 18 May 2020 17:40:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D88B120674;
+        Mon, 18 May 2020 17:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823630;
-        bh=RBtMrab00h/AfiPj6f36tLb+wuyzRhdgxgtjsWfA3y4=;
+        s=default; t=1589824582;
+        bh=Ravtxt/8JFd5uOHHBu5b9u7OtEtK3wSnXvPfha5Ixis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4BHQv3rNhR4lKAzbqeg03/gmJpHEdW1zigDYo9R47V2yI5lcmuln5UVlNA1Jfe5r
-         mu5dK+f29yaXtFTh2Ey1xgFHeucyTVgB9VdcI32BzONPtOldKdC/Wp4vlXkxm74vf9
-         LFAPaROjCrXKcjcSV6B9jn2fwB+hXuWXRZfKo9Lc=
+        b=XtBYY0mCyTsrZFYjcG0MSGkaRNy0X1dZbiFI/ROruk6US/ynmWnbWdQBBz3TOSc9D
+         dnNMdnYr33id/rcvTyudDAYW/b/2YDtHjqjvven4fpBIaoTwfgcttc9BzJykpOW9iy
+         DbIbvJERSIT2QqHxNnGM80xlAC3/sokPwhR7l2TQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 60/86] gcc-10: disable array-bounds warning for now
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 068/147] mmc: core: Check request type before completing the request
 Date:   Mon, 18 May 2020 19:36:31 +0200
-Message-Id: <20200518173502.586773004@linuxfoundation.org>
+Message-Id: <20200518173522.498574957@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
+[ Upstream commit e6bfb1bf00852b55f4c771f47ae67004c04d3c87 ]
 
-This is another fine warning, related to the 'zero-length-bounds' one,
-but hitting the same historical code in the kernel.
+In the request completion path with CQE, request type is being checked
+after the request is getting completed. This is resulting in returning
+the wrong request type and leading to the IO hang issue.
 
-Because C didn't historically support flexible array members, we have
-code that instead uses a one-sized array, the same way we have cases of
-zero-sized arrays.
+ASYNC request type is getting returned for DCMD type requests.
+Because of this mismatch, mq->cqe_busy flag is never getting cleared
+and the driver is not invoking blk_mq_hw_run_queue. So requests are not
+getting dispatched to the LLD from the block layer.
 
-The one-sized arrays come from either not wanting to use the gcc
-zero-sized array extension, or from a slight convenience-feature, where
-particularly for strings, the size of the structure now includes the
-allocation for the final NUL character.
+All these eventually leading to IO hang issues.
+So, get the request type before completing the request.
 
-So with a "char name[1];" at the end of a structure, you can do things
-like
-
-       v = my_malloc(sizeof(struct vendor) + strlen(name));
-
-and avoid the "+1" for the terminator.
-
-Yes, the modern way to do that is with a flexible array, and using
-'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
-also technically gets the size "more correct" in that it avoids any
-alignment (and thus padding) issues, but this is another long-term
-cleanup thing that will not happen for 5.7.
-
-So disable the warning for now, even though it's potentially quite
-useful.  Having a slew of warnings that then hide more urgent new issues
-is not an improvement.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: <stable@vger.kernel.org>
+Fixes: 1e8e55b67030 ("mmc: block: Add CQE support")
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/1588775643-18037-2-git-send-email-vbadigan@codeaurora.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/core/block.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -797,6 +797,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 95b41c0891d02..9d01b5dca5198 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1417,6 +1417,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+ 	struct mmc_request *mrq = &mqrq->brq.mrq;
+ 	struct request_queue *q = req->q;
+ 	struct mmc_host *host = mq->card->host;
++	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
+ 	unsigned long flags;
+ 	bool put_card;
+ 	int err;
+@@ -1446,7 +1447,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
  
- # We'll want to enable this eventually, but it's not going away for 5.7 at least
- KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
-+KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ 	spin_lock_irqsave(&mq->lock, flags);
  
- # Enabled with W=2, disabled by default as noisy
- KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+-	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
++	mq->in_flight[issue_type] -= 1;
+ 
+ 	put_card = (mmc_tot_in_flight(mq) == 0);
+ 
+-- 
+2.20.1
+
 
 
