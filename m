@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEF11D8A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9E31D8AAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgERWOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:14:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32874 "EHLO mail.kernel.org"
+        id S1728255AbgERWUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:20:04 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:59829 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgERWOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:14:18 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726386AbgERWUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:20:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC2062081A;
-        Mon, 18 May 2020 22:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589840057;
-        bh=onfFTV2EHN95M3D7dQOFHRH3PPQXSDCcX3o8p3KOPZ0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZRWpi2SmYbpuYdb5oz+hDLU8XiiN4QEZj2hJutTRJftiKi1WLPyBj7tPr9UzuoBwS
-         VO6qxp10IIaWhM85ElMDSGVMilvYdd2XmeQ/Nyl4U63CWKMUpry0y9pg+dy2yC7PEX
-         3C5oLaFwGgIUbzZeStStjKDxlFAWo+VT8ykoUIq4=
-Date:   Mon, 18 May 2020 17:19:04 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] soc: fsl: qe: Replace one-element array and use
- struct_size() helper
-Message-ID: <20200518221904.GA22274@embeddedor>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Qtjt0xN6z9sRK;
+        Tue, 19 May 2020 08:20:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589840402;
+        bh=FjIS8vGcrmSBHisqyc6vQi6ntIWxCy8/k3LeKa2MooY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Uu4Xg/jrFle3EYUUFxbo03dp1YHPRpC5g+ssrda+pIvKzQkO/4saBL1iCVtp9AsqW
+         ggwjQv11wGZhUkQEfIVoWoQsjMw9K4EjMEyde02gQ7UF1EP/gvzbff+u1e6GTYqu2t
+         /hkI5DS2WSK3/LGx0mJr7vLKpn576v0KzV+cHvsH4GWE9fcgD/0PA1We8I7pEhgS/1
+         xp4tVQ12oh+CkZ8FemhVQyrBFlTLz3pdA8btVlPcmQPnZonF3+g64Rayj6CzAnTxHn
+         0bqbEh+QJeyV7AedhIBjTDaC0S4+BApT+1r/QCMtxS3o6PYW8kYHnFB4ZJkmKsTo0q
+         FSNwhebIsSNqw==
+Date:   Tue, 19 May 2020 08:20:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernelci.org bot" <bot@kernelci.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: linux-next: build failure in Linus tree
+Message-ID: <20200519082000.4909cfe6@canb.auug.org.au>
+In-Reply-To: <20200420214611.17a6411f@canb.auug.org.au>
+References: <20200420214611.17a6411f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/+y.HsfQv2rB9O.Ik0uuV71p";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of one-element arrays in the following
-form:
+--Sig_/+y.HsfQv2rB9O.Ik0uuV71p
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-struct something {
-    int length;
-    u8 data[1];
-};
+Hi all,
 
-struct something *instance;
+On Mon, 20 Apr 2020 21:46:11 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> [reported by kernelci.org bot]
+>=20
+> For a while now, building Linus' tree, the linux-next build (arm
+> qcom_defconfig) fails like this:
+>=20
+> ERROR: modpost: "rd_full" [drivers/gpu/drm/msm/msm.ko] undefined!
+>=20
+> Caused by commit
+>=20
+>   e515af8d4a6f ("drm/msm: devcoredump should dump MSM_SUBMIT_BO_DUMP buff=
+ers")
 
-instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
-instance->length = size;
-memcpy(instance->data, source, size);
+I see a fix for this has gone into the drm-msm tree.  Since this is a
+bug in Linus' tree, is the intention to send this fix to Linus soon?
 
-but the preferred mechanism to declare variable-length types such as
-these ones is a flexible array member[1][2], introduced in C99:
+--=20
+Cheers,
+Stephen Rothwell
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+--Sig_/+y.HsfQv2rB9O.Ik0uuV71p
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on. So, replace
-the one-element array with a flexible-array member.
+-----BEGIN PGP SIGNATURE-----
 
-Also, make use of the new struct_size() helper to properly calculate the
-size of struct qe_firmware.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7DChAACgkQAVBC80lX
+0GzAMQgAk9kFf0Hv9JzbJhxAzxEScWAk04rJZiWTVJYtQ0ICFJwTQzP4z91rQpp3
+k3mDPLu4bgxd7rGw7kHGUs4ADFUC8LQRhBRDmyThLDvYJciuhhXQS7+C9tG1kI5c
+RmsSkEahr203+NXRPOkBOGSN+Tg1h5SxMnBcx+WWumgXZupcDVA1FflDx0gxJOyN
+h9GQk+h7cobMcUxuCS6q5G1PhjzOOGBOow60EblopwGSka1oE6Vmdr1wVnhEKjEJ
+eeWIReXeHn2Qsmvs4iN/aIV3fvjCc+HeFAJr3+TemtGX8UZCHmAJxuZGea8Mbahk
+QXsqwbuCDr6BwAYiM591FidxGRqAHQ==
+=U7Ry
+-----END PGP SIGNATURE-----
 
-This issue was found with the help of Coccinelle and, audited and fixed
-_manually_.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/soc/fsl/qe/qe.c | 4 ++--
- include/soc/fsl/qe/qe.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/soc/fsl/qe/qe.c b/drivers/soc/fsl/qe/qe.c
-index 447146861c2c1..2df20d6f85fa4 100644
---- a/drivers/soc/fsl/qe/qe.c
-+++ b/drivers/soc/fsl/qe/qe.c
-@@ -448,7 +448,7 @@ int qe_upload_firmware(const struct qe_firmware *firmware)
- 	unsigned int i;
- 	unsigned int j;
- 	u32 crc;
--	size_t calc_size = sizeof(struct qe_firmware);
-+	size_t calc_size;
- 	size_t length;
- 	const struct qe_header *hdr;
- 
-@@ -480,7 +480,7 @@ int qe_upload_firmware(const struct qe_firmware *firmware)
- 	}
- 
- 	/* Validate the length and check if there's a CRC */
--	calc_size += (firmware->count - 1) * sizeof(struct qe_microcode);
-+	calc_size = struct_size(firmware, microcode, firmware->count);
- 
- 	for (i = 0; i < firmware->count; i++)
- 		/*
-diff --git a/include/soc/fsl/qe/qe.h b/include/soc/fsl/qe/qe.h
-index e282ac01ec081..3feddfec9f87d 100644
---- a/include/soc/fsl/qe/qe.h
-+++ b/include/soc/fsl/qe/qe.h
-@@ -307,7 +307,7 @@ struct qe_firmware {
- 		u8 revision;		/* The microcode version revision */
- 		u8 padding;		/* Reserved, for alignment */
- 		u8 reserved[4];		/* Reserved, for future expansion */
--	} __attribute__ ((packed)) microcode[1];
-+	} __packed microcode[];
- 	/* All microcode binaries should be located here */
- 	/* CRC32 should be located here, after the microcode binaries */
- } __attribute__ ((packed));
--- 
-2.26.2
-
+--Sig_/+y.HsfQv2rB9O.Ik0uuV71p--
