@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBD21D7C0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1347A1D7C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgERO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 10:58:14 -0400
-Received: from mail-eopbgr80041.outbound.protection.outlook.com ([40.107.8.41]:19104
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726989AbgERO6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 10:58:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m2uXWPQIgubSqUsUcgpiekebmsqdnnhimnPkhq/glUzkKNYinCManwSFPNpK11s9baIj12pIMEVF+/pf1ispSwLrcmDZ3ovbNghesJOILEUlqGGedHNp2OsR3XyujEvoGbeN+b4fzrNmAj9HblkcWEz8j2ns8LKLd208f/EN69b4oItAJGWZjEDEEmO+Vp6XHnQyFa1C+Ikb40m86i4cMPjJjrzYvFfiynns3V+seu/kGAGy+l8qwNYkPVZcj5VRVcr902G5IOzp5wBt9Qo26zJcsKr8kkmAn94iPrOAsppm4ll5ewBHlZNeR3DoujOWgtSw/KZoly+926MxA1u/qg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zylMsXVi2AUt/xI7mdoTChCykK/ltDRXXVPBrcDCskc=;
- b=EFYzI6HEVUfJKOVdvLrysrxZfS8llW5h+gHRFRgSPaP6uoNptqPKFdhoGC/7++cHGZJ+lATX98d/aBvwrm4d25FNHWPiHHT9jRcovggG48h9yfRpWzCRHA4x2H1xrybR2835XkKRTicny6eSHeST8ijTHEF5+zPo38aOy1BYMQaQaV96qhZVrFhXG6ikhFvw1a0Do0Eqvfz/Bn0ynx1qoKlnXQtRJ85Ex/HBaffwp7Wz2LDiChAfBPDjKTd10O0w5MIgDDQA/7M1X/bBnT11GNQXhEF0A5Btqm4Sv9kqRb0/WqPc8LPKZlVYHtR35IGTowZ6a8sGY1j7lkqH7hfD4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zylMsXVi2AUt/xI7mdoTChCykK/ltDRXXVPBrcDCskc=;
- b=lKDnPMNzjSroVfL5UxiajMk6MeIT0mLvgK4OMlhgnvqmQDSUlNWaCUhhhNkRT9duZG8d6Gc7KUVLeZfZJzugRZRmlw32mA9Ta6TxxOP/Ewefi38VCjK1YvHg460S+rdfFzcDSP46RCCkdWAGnT/8h+1BLigMsmpdU64/A5OOoN0=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3739.eurprd04.prod.outlook.com (2603:10a6:8:6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Mon, 18 May
- 2020 14:58:10 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3000.033; Mon, 18 May 2020
- 14:58:10 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Frank Li <Frank.Li@freescale.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] dt-bindings: clock: Convert i.MX7D clock to json-schema
-Thread-Topic: [PATCH] dt-bindings: clock: Convert i.MX7D clock to json-schema
-Thread-Index: AQHWLR72N3fl3eQKykOoBnP7ocNeoait65qAgAADcKA=
-Date:   Mon, 18 May 2020 14:58:09 +0000
-Message-ID: <DB3PR0402MB39165B7915BB178D645805F5F5B80@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1589810819-19851-1-git-send-email-Anson.Huang@nxp.com>
- <CAOMZO5BeBcvmAwEJTUhHSn=_chx7OVkkxj2oB+50hGH-7H7SfA@mail.gmail.com>
-In-Reply-To: <CAOMZO5BeBcvmAwEJTUhHSn=_chx7OVkkxj2oB+50hGH-7H7SfA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3b40987f-3148-47ea-6d26-08d7fb3be189
-x-ms-traffictypediagnostic: DB3PR0402MB3739:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB3739C3E99CDBF907EB3F2697F5B80@DB3PR0402MB3739.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1468;
-x-forefront-prvs: 04073E895A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9X4an+es5wFo47mBQSdQGj5UPJvJnxKS0Iwi2UaHLvCRJG53TLqmy2F04eksyRtD/ef7EGIC2MmpBAG4HL5W88aebxqYJRKPcBhzFgUB4LwJbMhGPhjJUa4095E5EcGt2H8pQM/zssUSYd5OaJ5dWnt476q8ydEck0pyoaY+inK1aFz4GoIvbKkXXXtAuliiy2MbHYjcLZhki9/WiDw7+VypuCOeHhaE/EUWHfAi8t6SCgAsxrFMdR4ofU7Z1suuBxySwCSip5YS77x4X8jIzUHvnm8QJohEp25W38T+gWZyd5impLVn6tl714Nya5RNPpliCAJ0sN9TIA/IjM5CO3WyDolh6VSZWtVkhc/N8FM1l7v2QwvZ+pZH7bLW8Fl0eCC78WEiFAz/AXUTTWzxv1qxmOJOk9EjxnhhEBCYVodVk435VdQOAgy5749gAU7v
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(55016002)(7416002)(9686003)(4744005)(5660300002)(4326008)(6506007)(53546011)(186003)(7696005)(86362001)(33656002)(44832011)(2906002)(54906003)(66476007)(66556008)(478600001)(66446008)(76116006)(66946007)(26005)(316002)(64756008)(8676002)(8936002)(71200400001)(6916009)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: xgf6Ca0tH9R1b0j8W61xY9eu6DtPu0PLrvWP51FWQj6n3Flx/G+eUGbe8jGiiyZTUd9jgWi+SjokXVwSmpuGSq3niuZZ4K+90xVQ498bTLPC/1ZGERI6HIum/vo5Qqb5HBHt+OPfVCrB3b/KanF8minIfJlgVsY5GahHNQnn5+Svg5IdQ0yjqmaldXTHijJtEGfN1kqs+gK3kPxAOyXbaK6FedWaHHx5o/e2ebqrI6lpS4sIe9NCPL8cPk/6JvJDEuvobaNoI+LDoCPE8GrplZKDIKSvDCFqPKxtc/jQg6bEDCTzfWT7iiWpwMsvasyeFXydv2t59B/fIfptVDDw2bUZusPqvTtYwoGrIstMblwwnnGT2zFq9dGBS3t9QugD6KHRRIp11h0LTCgLXvStSs3dMDu5VyvXhJy6blDrupu1XOcl/neu3ESiDx2EnuSm2fUvrwUKCeQd/78B4GgWDS3hY4NnAZPvlSrLWAop5s3RND62LlN6Mi5wt8wIrJWa
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728078AbgERPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:08:49 -0400
+Received: from 8.mo179.mail-out.ovh.net ([46.105.75.26]:59609 "EHLO
+        8.mo179.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726958AbgERPIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:08:49 -0400
+Received: from player692.ha.ovh.net (unknown [10.108.35.103])
+        by mo179.mail-out.ovh.net (Postfix) with ESMTP id B50F4164D36
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:59:01 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player692.ha.ovh.net (Postfix) with ESMTPSA id 42F39125A01F8;
+        Mon, 18 May 2020 14:58:58 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-99G003ec7d000f-9e2f-4878-b4b2-bb7f6857284c,684EF6CDF7F8D64881578A2CD861565D4C1A1A2F) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH v2] docs: sysctl/kernel: document ngroups_max
+Date:   Mon, 18 May 2020 16:58:36 +0200
+Message-Id: <20200518145836.15816-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b40987f-3148-47ea-6d26-08d7fb3be189
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2020 14:58:10.0197
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EftTpW+h1utvwDwdJpJ5NGe49NwIx74T9m+gBqeOF8kJUL4IFUGr8+Pd0QDwZwfTcsDwav54JP9ORPkuv/tgLA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3739
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 11724277205499989381
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedruddthedgkedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelvddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEZhYmlvDQoNCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBkdC1iaW5kaW5nczogY2xvY2s6
-IENvbnZlcnQgaS5NWDdEIGNsb2NrIHRvIGpzb24tc2NoZW1hDQo+IA0KPiBPbiBNb24sIE1heSAx
-OCwgMjAyMCBhdCAxMToxNiBBTSBBbnNvbiBIdWFuZyA8QW5zb24uSHVhbmdAbnhwLmNvbT4NCj4g
-d3JvdGU6DQo+IA0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEZyYW5rIExpIDxGcmFuay5M
-aUBmcmVlc2NhbGUuY29tPg0KPiANCj4gVGhlIGZyZWVzY2FsZS5jb20gZS1tYWlsIGRvbWFpbiBp
-cyBubyBsb25nZXIgdmFsaWQgZm9yIHF1aXRlIHNvbWUgdGltZSA6LSkNCg0KVGhhbmtzIGZvciBy
-ZW1pbmRlciwgSSB3aWxsIHVzZSBGcmFuaydzIG54cCBlLW1haWwgYWRkcmVzcyBpbnN0ZWFkLg0K
-DQpBbnNvbg0K
+This is a read-only export of NGROUPS_MAX.
+
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+Changes since v1:
+  - drop changes to kernel/sysctl.c
+
+ Documentation/admin-guide/sysctl/kernel.rst | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 0d427fd10941..5f12ee07665c 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -459,6 +459,15 @@ Notes:
+      successful IPC object allocation. If an IPC object allocation syscall
+      fails, it is undefined if the value remains unmodified or is reset to -1.
+ 
++
++ngroups_max
++===========
++
++Maximum number of supplementary groups, _i.e._ the maximum size which
++``setgroups`` will accept. Exports ``NGROUPS_MAX`` from the kernel.
++
++
++
+ nmi_watchdog
+ ============
+ 
+
+base-commit: 1ae7efb388540adc1653a51a3bc3b2c9cef5ec1a
+-- 
+2.20.1
+
