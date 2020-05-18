@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865D51D7D47
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE491D7D4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgERPtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:49:24 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11281 "EHLO mga18.intel.com"
+        id S1728427AbgERPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:49:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:43096 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727007AbgERPtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:49:24 -0400
-IronPort-SDR: kp+h8Sb8My/UII/YXc4z9vv7QAXWISEr1LsOZcxVkrrrLaukiE/0XQQVhHQlkO8dEV96gEy0Us
- 973A2z5NmDOQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 08:49:23 -0700
-IronPort-SDR: L6G04AIge5D55UrRgxPLrv4p4b0eq6pVar1+izTtqtjQ3SmrW/XACqXzn35bZ6qFbHNNydws0g
- dKKn4R/QpTlA==
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="465801574"
-Received: from xiaoxuwa-mobl.ccr.corp.intel.com (HELO [10.255.28.12]) ([10.255.28.12])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 08:49:22 -0700
-Subject: Re: [PATCH] kvm: x86: Use KVM CPU capabilities to determine CR4
- reserved bits
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jmattson@google.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200506094436.3202-1-pbonzini@redhat.com>
- <6a4daca4-6034-901a-261f-215df7d606a6@intel.com>
- <09cb27f8-fa02-4b37-94de-1a4d86b9bdbd@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <3bf2e68f-9843-cfed-6520-54dbf4955fc8@intel.com>
-Date:   Mon, 18 May 2020 23:49:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <09cb27f8-fa02-4b37-94de-1a4d86b9bdbd@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728300AbgERPt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:49:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECD61101E;
+        Mon, 18 May 2020 08:49:55 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B78F43F52E;
+        Mon, 18 May 2020 08:49:54 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Oliver Neukum <oneukum@suse.de>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND] [PATCH v2 1/3] usb/ohci-platform: Fix a warning when hibernating
+Date:   Mon, 18 May 2020 16:49:29 +0100
+Message-Id: <20200518154931.6144-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/2020 8:31 PM, Paolo Bonzini wrote:
-> On 18/05/20 06:52, Xiaoyao Li wrote:
->> On 5/6/2020 5:44 PM, Paolo Bonzini wrote:
->>> Using CPUID data can be useful for the processor compatibility
->>> check, but that's it.  Using it to compute guest-reserved bits
->>> can have both false positives (such as LA57 and UMIP which we
->>> are already handling) and false negatives:
->>
->>> in particular, with
->>> this patch we don't allow anymore a KVM guest to set CR4.PKE
->>> when CR4.PKE is clear on the host.
->>
->> A common question about whether a feature can be exposed to guest:
->>
->> Given a feature, there is a CPUID bit to enumerate it, and a CR4 bit to
->> turn it on/off. Whether the feature can be exposed to guest only depends
->> on host CR4 setting? I.e., if CPUID bit is not cleared in cpu_data in
->> host but host kernel doesn't set the corresponding CR4 bit to turn it
->> on, we cannot expose the feature to guest. right?
-> 
-> It depends.  The most obvious case is that the host kernel doesn't use
-> CR4.PSE but we even use 4MB pages to emulate paging disabled mode when
-> the processor doesn't support unrestricted guests.
-> 
-> Basically, the question is whether we are able to save/restore any
-> processor state attached to the CR4 bit on vmexit/vmentry.  In this case
-> there is no PKRU field in the VMCS and the RDPKRU/WRPKRU instructions
-> require CR4.PKE=1; therefore, we cannot let the guest enable CR4.PKE
-> unless it's also enabled on the host.
-> 
+The following warning was observed when attempting to suspend to disk
+using a USB flash as a swap device.
 
-aha! That's reason!
-Thanks for the clarification.
+[  111.779649] ------------[ cut here ]------------
+[  111.788382] URB (____ptrval____) submitted while active
+[  111.796646] WARNING: CPU: 3 PID: 365 at drivers/usb/core/urb.c:363 usb_submit_urb+0x3d8/0x590
+[  111.805417] Modules linked in:
+[  111.808584] CPU: 3 PID: 365 Comm: kworker/3:2 Not tainted 5.6.0-rc6-00002-gdfd1731f9a3e-dirty #545
+[  111.817796] Hardware name: ARM Juno development board (r2) (DT)
+[  111.823896] Workqueue: usb_hub_wq hub_event
+[  111.828217] pstate: 60000005 (nZCv daif -PAN -UAO)
+[  111.833156] pc : usb_submit_urb+0x3d8/0x590
+[  111.837471] lr : usb_submit_urb+0x3d8/0x590
+[  111.841783] sp : ffff800018de38b0
+[  111.845205] x29: ffff800018de38b0 x28: 0000000000000003
+[  111.850682] x27: ffff000970530b20 x26: ffff8000133fd000
+[  111.856159] x25: ffff8000133fd000 x24: ffff800018de3b38
+[  111.861635] x23: 0000000000000004 x22: 0000000000000c00
+[  111.867112] x21: 0000000000000000 x20: 00000000fffffff0
+[  111.872589] x19: ffff0009704e7a00 x18: ffffffffffffffff
+[  111.878065] x17: 00000000a7c8f4bc x16: 000000002af33de8
+[  111.883542] x15: ffff8000133fda88 x14: 0720072007200720
+[  111.889019] x13: 0720072007200720 x12: 0720072007200720
+[  111.894496] x11: 0000000000000000 x10: 00000000a5286134
+[  111.899973] x9 : 0000000000000002 x8 : ffff000970c837a0
+[  111.905449] x7 : 0000000000000000 x6 : ffff800018de3570
+[  111.910926] x5 : 0000000000000001 x4 : 0000000000000003
+[  111.916401] x3 : 0000000000000000 x2 : ffff800013427118
+[  111.921879] x1 : 9d4e965b4b7d7c00 x0 : 0000000000000000
+[  111.927356] Call trace:
+[  111.929892]  usb_submit_urb+0x3d8/0x590
+[  111.933852]  hub_activate+0x108/0x7f0
+[  111.937633]  hub_resume+0xac/0x148
+[  111.941149]  usb_resume_interface.isra.10+0x60/0x138
+[  111.946265]  usb_resume_both+0xe4/0x140
+[  111.950225]  usb_runtime_resume+0x24/0x30
+[  111.954365]  __rpm_callback+0xdc/0x138
+[  111.958236]  rpm_callback+0x34/0x98
+[  111.961841]  rpm_resume+0x4a8/0x720
+[  111.965445]  rpm_resume+0x50c/0x720
+[  111.969049]  __pm_runtime_resume+0x4c/0xb8
+[  111.973276]  usb_autopm_get_interface+0x28/0x60
+[  111.977948]  hub_event+0x80/0x16d8
+[  111.981466]  process_one_work+0x2a4/0x748
+[  111.985604]  worker_thread+0x48/0x498
+[  111.989387]  kthread+0x13c/0x140
+[  111.992725]  ret_from_fork+0x10/0x18
+[  111.996415] irq event stamp: 354
+[  111.999756] hardirqs last  enabled at (353): [<ffff80001019ea1c>] console_unlock+0x504/0x5b8
+[  112.008441] hardirqs last disabled at (354): [<ffff8000100a95d0>] do_debug_exception+0x1a8/0x258
+[  112.017479] softirqs last  enabled at (350): [<ffff8000100818a4>] __do_softirq+0x4bc/0x568
+[  112.025984] softirqs last disabled at (343): [<ffff8000101145a4>] irq_exit+0x144/0x150
+[  112.034129] ---[ end trace dc96030b9cf6c8a3 ]---
+
+The problem was tracked down to a missing call to
+pm_runtime_set_active() on resume in ohci-platform.
+
+Link: https://lore.kernel.org/lkml/20200323143857.db5zphxhq4hz3hmd@e107158-lin.cambridge.arm.com/
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+CC: Tony Prisk <linux@prisktech.co.nz>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Mathias Nyman <mathias.nyman@intel.com>
+CC: Oliver Neukum <oneukum@suse.de>
+CC: linux-arm-kernel@lists.infradead.org
+CC: linux-usb@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/usb/host/ohci-platform.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+index 7addfc2cbadc..4a8456f12a73 100644
+--- a/drivers/usb/host/ohci-platform.c
++++ b/drivers/usb/host/ohci-platform.c
+@@ -299,6 +299,11 @@ static int ohci_platform_resume(struct device *dev)
+ 	}
+ 
+ 	ohci_resume(hcd, false);
++
++	pm_runtime_disable(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
+ 	return 0;
+ }
+ #endif /* CONFIG_PM_SLEEP */
+-- 
+2.17.1
 
