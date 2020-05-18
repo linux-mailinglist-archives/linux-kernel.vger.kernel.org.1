@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42951D7787
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8681D778F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgERLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:43:21 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13725 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgERLnV (ORCPT
+        id S1728007AbgERLn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726957AbgERLny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:43:21 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec274cc0000>; Mon, 18 May 2020 04:43:08 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 18 May 2020 04:43:21 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 18 May 2020 04:43:21 -0700
-Received: from [10.26.74.226] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 May
- 2020 11:43:18 +0000
-Subject: Re: [PATCH] dmaengine: tegra210-adma: Fix an error handling path in
- 'tegra_adma_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        <ldewangan@nvidia.com>, <dan.j.williams@intel.com>,
-        <vkoul@kernel.org>, <thierry.reding@gmail.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20200516214205.276266-1-christophe.jaillet@wanadoo.fr>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <899a62c8-b4fa-b1cc-6e3a-bbfb680e5d41@nvidia.com>
-Date:   Mon, 18 May 2020 12:43:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 18 May 2020 07:43:54 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CD5C061A0C;
+        Mon, 18 May 2020 04:43:54 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y198so3244679pfb.4;
+        Mon, 18 May 2020 04:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D2fiYTMGkA72yxkM7OqMlh+jTtVoL+5gotBtf6Ab1Vg=;
+        b=FupRAN/PobQTaQAv55Hsu61uSDhgZ3yYRyGz8MMb28tAecTlaodhHWlWTBtxSxZsLL
+         hUHBpFsd2j51DYacP5abkLC8bE0rQqecQGxlgDDhXG70Kp4nA0D407rBYGJrrN6WC3JW
+         S3xYBq32QeVdIUofnBLx7OzpiOmgjjWSYxZ4huxWNohOM/1bvv1kWksiXP4exgRlnwHA
+         mxmA2IVSXkpjectaLC1fgYuhtSYOjE+JUBx+StzEfl0No5bJYMY32wDd2kwSb2UXMd6/
+         ef+TC7BOv19rXQ9ppgji3DX6OQ8nXQy+7mCHuWpX8NWB4NpxsMpp24w4Bq/cKSlzs4Z+
+         4htg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D2fiYTMGkA72yxkM7OqMlh+jTtVoL+5gotBtf6Ab1Vg=;
+        b=FdpcROL4jStzdv7U4l0/LZC/DJlgRbjAxJ7orqeBQk/o8dLxREzBbF8l6E52tOIiN6
+         eakPNNicBni4B1fux5CIF2Pf4TamU+Tb9I3GS4TkJSGkF/+1RlNeTfvgYq0IG1SNROGd
+         6GbzKGbWPLWblO5CGg0v7HxCOriSW55PSCvhx1SXz253oV71WcbJ5a/FjpCW/drfbZZ8
+         4gIk/nhDKw9A2SMn9ycbxAuD7nvgLEp3oreqISUolYM0KnkGGip8pT9jEm9SE346g9Pj
+         eXkpH2j7L9jnmBr1lN0i44QutVnl1H3/DgW5TYEZr8bMzTKbptWx98wcC2SnLmP7vEYQ
+         2cRw==
+X-Gm-Message-State: AOAM532XhZMJqo/8ZkK7jJGElhV9lzIbBomJkDynpr6RhxB3NnkRfVJM
+        SeeqtG7vu7vVgmIIY+PTgkUQnNB/Bl7lsl83pvmGEf2LZQU=
+X-Google-Smtp-Source: ABdhPJyjDARrY4u/7pTXmySvEzdtyf7tJDRYLFc46T/zWf+w+QvLGa31DWfDx3lW7E/Y60GuBUgnGDnQNIZcaj+xHss=
+X-Received: by 2002:a65:6251:: with SMTP id q17mr14337972pgv.4.1589802234387;
+ Mon, 18 May 2020 04:43:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200516214205.276266-1-christophe.jaillet@wanadoo.fr>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589802188; bh=DzIgCyZcvN9rr4wBAYpZeYTa28sgNw2eUicDprROQHc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=OU82ecs4nx6r/Bhm6rWg7Ij3YNHy1BdCCslIYShViREuXGKDQrfsQaLZ/cn2XKssS
-         B5RFjpGeQL8GSFZ3chXe2/0LzC3LBkhkFIRjAmnsKSf39z3tKVHEAmNRi7OtQLwJIB
-         QNA9Hq2+CpjJuTtvKi3VzDIVpj0thoZdU1Eg3795DxpWI3nF0j9FRux3sE/hB3ZnWE
-         Voo62VH+eq60SIisbJ/MJRMWqWBqODPh84jNVbtilQGzNw71b9XYYcAdRAoCQTo8vS
-         jGmAvmuKuEIQXyGquQXBJmQj+sFfEcfEN3VAqMiqMELLkEaLrvOSiZMNp1hqb4eUIy
-         5DjRWhHPLk3Lw==
+References: <20200515105537.4876-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <202005152142.AWvx4xc5%lkp@intel.com> <CAHp75Ven9q-6dDYtP_uXigeS_r2uvpUZVR5Mh0RdEd36MbTG+Q@mail.gmail.com>
+ <CAK8P3a3RKJo-C5=19oAppx212s7T8NdnKJVmkj+h=34a8aKMNA@mail.gmail.com> <5180e734-ff56-db5a-ab49-8a55cfa2f2c0@linux.intel.com>
+In-Reply-To: <5180e734-ff56-db5a-ab49-8a55cfa2f2c0@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 May 2020 14:43:42 +0300
+Message-ID: <CAHp75Ve_XjvvGBEQyhy=qVVJMFS+18j3aKxNxSQpGK5qJmzfBg@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>, kbuild-all@lists.01.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        masonccyang@mxic.com.tw
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 18, 2020 at 2:39 PM Ramuthevar, Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> On 15/5/2020 10:30 pm, Arnd Bergmann wrote:
+> > On Fri, May 15, 2020 at 4:25 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> >> On Fri, May 15, 2020 at 4:48 PM kbuild test robot <lkp@intel.com> wrote:
 
-On 16/05/2020 22:42, Christophe JAILLET wrote:
-> Commit b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-> has moved some code in the probe function and reordered the error handling
-> path accordingly.
-> However, a goto has been missed.
-> 
-> Fix it and goto the right label if 'dma_async_device_register()' fails, so
-> that all resources are released.
-> 
-> Fixes: b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/dma/tegra210-adma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-> index c4ce5dfb149b..db58d7e4f9fe 100644
-> --- a/drivers/dma/tegra210-adma.c
-> +++ b/drivers/dma/tegra210-adma.c
-> @@ -900,7 +900,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
->  	ret = dma_async_device_register(&tdma->dma_dev);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "ADMA registration failed: %d\n", ret);
-> -		goto irq_dispose;
-> +		goto rpm_put;
->  	}
->  
->  	ret = of_dma_controller_register(pdev->dev.of_node,
+> > iowrite_be32() is the correct way to store word into a big-endian mmio register,
+> > if that is the intention here.
+> Thank you for suggestions to use iowrite32be(), it suits exactly.
 
+Can you before doing this comment what is the real intention here?
 
-Thanks for fixing this!
-
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
+And note, if you are going to use iowrite*() / ioread*() in one place,
+you will probably need to replace all of the read*() / write*() to
+respective io* API.
 
 -- 
-nvpublic
+With Best Regards,
+Andy Shevchenko
