@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD47F1D80B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2301D836F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgERRlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37330 "EHLO mail.kernel.org"
+        id S1732829AbgERSEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:04:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729219AbgERRlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:41:11 -0400
+        id S1732790AbgERSEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A87ED20657;
-        Mon, 18 May 2020 17:41:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2440B20715;
+        Mon, 18 May 2020 18:04:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823670;
-        bh=Q6OxYPg+HEkGz2LIWB5H4R2fxd0AQ+iGVhEsHiX43Pk=;
+        s=default; t=1589825070;
+        bh=NXrrNf/jojGM7RP9reK/QcyWTDKdGM6nS++ECSboFQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1E+zIVY4rKvFOtwQ1HFs9/BdBwtXfJvYD8wAlPNrEha9gYgiO9xsxQoo4eacjWfSW
-         ZVG9AJhHmNl3M7u2uQZX+aHrTJZmgEUIcqeA2D2/2nNUb16pYttI0B4gtdmndaaR6k
-         7FssJr3RIMRXv7fmfLivWSguo32u1Ouxz7zRmGbo=
+        b=kzEm213PJSst3P+uYVSSwt+eUBs9IDLZrZ/OIzuCPXSKEVAM/OpMUC19EXC0Tk2h9
+         xcgZa/uiGzISUCkj5ZIyocctXqen6CufWlca+7AL4/57tLUKnLRfbiZwn8PJ0l8n0T
+         0kGz9waSQj9Hmdl3ZGj104p/nZ/7cmVeVj/V7gGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.4 75/86] USB: gadget: fix illegal array access in binding with UDC
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 116/194] x86/ftrace: Have ftrace trampolines turn read-only at the end of system boot up
 Date:   Mon, 18 May 2020 19:36:46 +0200
-Message-Id: <20200518173505.756313534@linuxfoundation.org>
+Message-Id: <20200518173541.352620638@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,75 +50,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyungtae Kim <kt0755@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 15753588bcd4bbffae1cca33c8ced5722477fe1f upstream.
+[ Upstream commit 59566b0b622e3e6ea928c0b8cac8a5601b00b383 ]
 
-FuzzUSB (a variant of syzkaller) found an illegal array access
-using an incorrect index while binding a gadget with UDC.
+Booting one of my machines, it triggered the following crash:
 
-Reference: https://www.spinics.net/lists/linux-usb/msg194331.html
+ Kernel/User page tables isolation: enabled
+ ftrace: allocating 36577 entries in 143 pages
+ Starting tracer 'function'
+ BUG: unable to handle page fault for address: ffffffffa000005c
+ #PF: supervisor write access in kernel mode
+ #PF: error_code(0x0003) - permissions violation
+ PGD 2014067 P4D 2014067 PUD 2015063 PMD 7b253067 PTE 7b252061
+ Oops: 0003 [#1] PREEMPT SMP PTI
+ CPU: 0 PID: 0 Comm: swapper Not tainted 5.4.0-test+ #24
+ Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./To be filled by O.E.M., BIOS SDBLI944.86P 05/08/2007
+ RIP: 0010:text_poke_early+0x4a/0x58
+ Code: 34 24 48 89 54 24 08 e8 bf 72 0b 00 48 8b 34 24 48 8b 4c 24 08 84 c0 74 0b 48 89 df f3 a4 48 83 c4 10 5b c3 9c 58 fa 48 89 df <f3> a4 50 9d 48 83 c4 10 5b e9 d6 f9 ff ff
+0 41 57 49
+ RSP: 0000:ffffffff82003d38 EFLAGS: 00010046
+ RAX: 0000000000000046 RBX: ffffffffa000005c RCX: 0000000000000005
+ RDX: 0000000000000005 RSI: ffffffff825b9a90 RDI: ffffffffa000005c
+ RBP: ffffffffa000005c R08: 0000000000000000 R09: ffffffff8206e6e0
+ R10: ffff88807b01f4c0 R11: ffffffff8176c106 R12: ffffffff8206e6e0
+ R13: ffffffff824f2440 R14: 0000000000000000 R15: ffffffff8206eac0
+ FS:  0000000000000000(0000) GS:ffff88807d400000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: ffffffffa000005c CR3: 0000000002012000 CR4: 00000000000006b0
+ Call Trace:
+  text_poke_bp+0x27/0x64
+  ? mutex_lock+0x36/0x5d
+  arch_ftrace_update_trampoline+0x287/0x2d5
+  ? ftrace_replace_code+0x14b/0x160
+  ? ftrace_update_ftrace_func+0x65/0x6c
+  __register_ftrace_function+0x6d/0x81
+  ftrace_startup+0x23/0xc1
+  register_ftrace_function+0x20/0x37
+  func_set_flag+0x59/0x77
+  __set_tracer_option.isra.19+0x20/0x3e
+  trace_set_options+0xd6/0x13e
+  apply_trace_boot_options+0x44/0x6d
+  register_tracer+0x19e/0x1ac
+  early_trace_init+0x21b/0x2c9
+  start_kernel+0x241/0x518
+  ? load_ucode_intel_bsp+0x21/0x52
+  secondary_startup_64+0xa4/0xb0
 
-This bug occurs when a size variable used for a buffer
-is misused to access its strcpy-ed buffer.
-Given a buffer along with its size variable (taken from user input),
-from which, a new buffer is created using kstrdup().
-Due to the original buffer containing 0 value in the middle,
-the size of the kstrdup-ed buffer becomes smaller than that of the original.
-So accessing the kstrdup-ed buffer with the same size variable
-triggers memory access violation.
+I was able to trigger it on other machines, when I added to the kernel
+command line of both "ftrace=function" and "trace_options=func_stack_trace".
 
-The fix makes sure no zero value in the buffer,
-by comparing the strlen() of the orignal buffer with the size variable,
-so that the access to the kstrdup-ed buffer is safe.
+The cause is the "ftrace=function" would register the function tracer
+and create a trampoline, and it will set it as executable and
+read-only. Then the "trace_options=func_stack_trace" would then update
+the same trampoline to include the stack tracer version of the function
+tracer. But since the trampoline already exists, it updates it with
+text_poke_bp(). The problem is that text_poke_bp() called while
+system_state == SYSTEM_BOOTING, it will simply do a memcpy() and not
+the page mapping, as it would think that the text is still read-write.
+But in this case it is not, and we take a fault and crash.
 
-BUG: KASAN: slab-out-of-bounds in gadget_dev_desc_UDC_store+0x1ba/0x200
-drivers/usb/gadget/configfs.c:266
-Read of size 1 at addr ffff88806a55dd7e by task syz-executor.0/17208
+Instead, lets keep the ftrace trampolines read-write during boot up,
+and then when the kernel executable text is set to read-only, the
+ftrace trampolines get set to read-only as well.
 
-CPU: 2 PID: 17208 Comm: syz-executor.0 Not tainted 5.6.8 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xce/0x128 lib/dump_stack.c:118
- print_address_description.constprop.4+0x21/0x3c0 mm/kasan/report.c:374
- __kasan_report+0x131/0x1b0 mm/kasan/report.c:506
- kasan_report+0x12/0x20 mm/kasan/common.c:641
- __asan_report_load1_noabort+0x14/0x20 mm/kasan/generic_report.c:132
- gadget_dev_desc_UDC_store+0x1ba/0x200 drivers/usb/gadget/configfs.c:266
- flush_write_buffer fs/configfs/file.c:251 [inline]
- configfs_write_file+0x2f1/0x4c0 fs/configfs/file.c:283
- __vfs_write+0x85/0x110 fs/read_write.c:494
- vfs_write+0x1cd/0x510 fs/read_write.c:558
- ksys_write+0x18a/0x220 fs/read_write.c:611
- __do_sys_write fs/read_write.c:623 [inline]
- __se_sys_write fs/read_write.c:620 [inline]
- __x64_sys_write+0x73/0xb0 fs/read_write.c:620
- do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Link: https://lkml.kernel.org/r/20200430202147.4dc6e2de@oasis.local.home
 
-Signed-off-by: Kyungtae Kim <kt0755@gmail.com>
-Reported-and-tested-by: Kyungtae Kim <kt0755@gmail.com>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200510054326.GA19198@pizza01
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: stable@vger.kernel.org
+Fixes: 768ae4406a5c ("x86/ftrace: Use text_poke()")
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/configfs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/include/asm/ftrace.h  |  6 ++++++
+ arch/x86/kernel/ftrace.c       | 29 ++++++++++++++++++++++++++++-
+ arch/x86/mm/init_64.c          |  3 +++
+ include/linux/ftrace.h         | 23 +++++++++++++++++++++++
+ kernel/trace/ftrace_internal.h | 22 ----------------------
+ 5 files changed, 60 insertions(+), 23 deletions(-)
 
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -260,6 +260,9 @@ static ssize_t gadget_dev_desc_UDC_store
- 	char *name;
- 	int ret;
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 85be2f5062728..89af0d2c62aab 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -56,6 +56,12 @@ struct dyn_arch_ftrace {
  
-+	if (strlen(page) < len)
-+		return -EOVERFLOW;
+ #ifndef __ASSEMBLY__
+ 
++#if defined(CONFIG_FUNCTION_TRACER) && defined(CONFIG_DYNAMIC_FTRACE)
++extern void set_ftrace_ops_ro(void);
++#else
++static inline void set_ftrace_ops_ro(void) { }
++#endif
 +
- 	name = kstrdup(page, GFP_KERNEL);
- 	if (!name)
- 		return -ENOMEM;
+ #define ARCH_HAS_SYSCALL_MATCH_SYM_NAME
+ static inline bool arch_syscall_match_sym_name(const char *sym, const char *name)
+ {
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 37a0aeaf89e77..b0e641793be4f 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -407,7 +407,8 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 
+ 	set_vm_flush_reset_perms(trampoline);
+ 
+-	set_memory_ro((unsigned long)trampoline, npages);
++	if (likely(system_state != SYSTEM_BOOTING))
++		set_memory_ro((unsigned long)trampoline, npages);
+ 	set_memory_x((unsigned long)trampoline, npages);
+ 	return (unsigned long)trampoline;
+ fail:
+@@ -415,6 +416,32 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	return 0;
+ }
+ 
++void set_ftrace_ops_ro(void)
++{
++	struct ftrace_ops *ops;
++	unsigned long start_offset;
++	unsigned long end_offset;
++	unsigned long npages;
++	unsigned long size;
++
++	do_for_each_ftrace_op(ops, ftrace_ops_list) {
++		if (!(ops->flags & FTRACE_OPS_FL_ALLOC_TRAMP))
++			continue;
++
++		if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
++			start_offset = (unsigned long)ftrace_regs_caller;
++			end_offset = (unsigned long)ftrace_regs_caller_end;
++		} else {
++			start_offset = (unsigned long)ftrace_caller;
++			end_offset = (unsigned long)ftrace_epilogue;
++		}
++		size = end_offset - start_offset;
++		size = size + RET_SIZE + sizeof(void *);
++		npages = DIV_ROUND_UP(size, PAGE_SIZE);
++		set_memory_ro((unsigned long)ops->trampoline, npages);
++	} while_for_each_ftrace_op(ops);
++}
++
+ static unsigned long calc_trampoline_call_offset(bool save_regs)
+ {
+ 	unsigned long start_offset;
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index abbdecb75fad8..023e1ec5e1537 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -54,6 +54,7 @@
+ #include <asm/init.h>
+ #include <asm/uv/uv.h>
+ #include <asm/setup.h>
++#include <asm/ftrace.h>
+ 
+ #include "mm_internal.h"
+ 
+@@ -1288,6 +1289,8 @@ void mark_rodata_ro(void)
+ 	all_end = roundup((unsigned long)_brk_end, PMD_SIZE);
+ 	set_memory_nx(text_end, (all_end - text_end) >> PAGE_SHIFT);
+ 
++	set_ftrace_ops_ro();
++
+ #ifdef CONFIG_CPA_DEBUG
+ 	printk(KERN_INFO "Testing CPA: undo %lx-%lx\n", start, end);
+ 	set_memory_rw(start, (end-start) >> PAGE_SHIFT);
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index db95244a62d44..ab4bd15cbcdb3 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -210,6 +210,29 @@ struct ftrace_ops {
+ #endif
+ };
+ 
++extern struct ftrace_ops __rcu *ftrace_ops_list;
++extern struct ftrace_ops ftrace_list_end;
++
++/*
++ * Traverse the ftrace_global_list, invoking all entries.  The reason that we
++ * can use rcu_dereference_raw_check() is that elements removed from this list
++ * are simply leaked, so there is no need to interact with a grace-period
++ * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
++ * concurrent insertions into the ftrace_global_list.
++ *
++ * Silly Alpha and silly pointer-speculation compiler optimizations!
++ */
++#define do_for_each_ftrace_op(op, list)			\
++	op = rcu_dereference_raw_check(list);			\
++	do
++
++/*
++ * Optimized for just a single item in the list (as that is the normal case).
++ */
++#define while_for_each_ftrace_op(op)				\
++	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
++	       unlikely((op) != &ftrace_list_end))
++
+ /*
+  * Type of the current tracing.
+  */
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 0456e0a3dab14..382775edf6902 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -4,28 +4,6 @@
+ 
+ #ifdef CONFIG_FUNCTION_TRACER
+ 
+-/*
+- * Traverse the ftrace_global_list, invoking all entries.  The reason that we
+- * can use rcu_dereference_raw_check() is that elements removed from this list
+- * are simply leaked, so there is no need to interact with a grace-period
+- * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+- * concurrent insertions into the ftrace_global_list.
+- *
+- * Silly Alpha and silly pointer-speculation compiler optimizations!
+- */
+-#define do_for_each_ftrace_op(op, list)			\
+-	op = rcu_dereference_raw_check(list);			\
+-	do
+-
+-/*
+- * Optimized for just a single item in the list (as that is the normal case).
+- */
+-#define while_for_each_ftrace_op(op)				\
+-	while (likely(op = rcu_dereference_raw_check((op)->next)) &&	\
+-	       unlikely((op) != &ftrace_list_end))
+-
+-extern struct ftrace_ops __rcu *ftrace_ops_list;
+-extern struct ftrace_ops ftrace_list_end;
+ extern struct mutex ftrace_lock;
+ extern struct ftrace_ops global_ops;
+ 
+-- 
+2.20.1
+
 
 
