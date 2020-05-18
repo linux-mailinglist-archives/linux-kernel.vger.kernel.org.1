@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF641D8094
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527C31D8233
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgERRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35976 "EHLO mail.kernel.org"
+        id S1731270AbgERRyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729055AbgERRk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:26 -0400
+        id S1731256AbgERRyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:54:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F3D920657;
-        Mon, 18 May 2020 17:40:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E823F20715;
+        Mon, 18 May 2020 17:54:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823625;
-        bh=+5Hx6j8XeznTB/ncyoRGCyiroW+T2QpU5wS0iwqqkEQ=;
+        s=default; t=1589824450;
+        bh=MU67RfYfMuV3qxgKka3yAsweG+AZhjJO5xzh4rxpdgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CifkUaDDmLvQ3+Rx0sisk5GcM93F1axhYyh52xo/F/c78E0ryCHicy8YeijL8v3cX
-         d6vFl+MRNU//7cxVuKnyvloHBpH9Q26vTBai/VWPtGI6QtzF1sBeAxna/ZDI7pg+XL
-         uboJ2MvFPje1oxfshiY88H4p6LX7bQS1PGmIW5vw=
+        b=0F24r5sLBjTpBbuKn6TnV7ZawqY3k9eeOfwXMHQdDErVSfI5jMsIT6S6a6Z2OHnYg
+         uZAtrz5qvooe8rjyFSQHNmVEfn6bZ1Bp67iRKBDC/e9QnEbelZ4nY0XzzwtgOh58Oz
+         /POf4mT48O19sKkhJlz61IiHMSZrgsJjz4jzkwwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sabrina Dubroca <sd@queasysnail.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 09/86] ipv6: fix cleanup ordering for ip6_mr failure
+        stable@vger.kernel.org, Raul E Rangel <rrangel@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 017/147] mmc: sdhci-acpi: Add SDHCI_QUIRK2_BROKEN_64_BIT_DMA for AMDI0040
 Date:   Mon, 18 May 2020 19:35:40 +0200
-Message-Id: <20200518173452.201457230@linuxfoundation.org>
+Message-Id: <20200518173515.907161000@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sabrina Dubroca <sd@queasysnail.net>
+From: Raul E Rangel <rrangel@chromium.org>
 
-commit afe49de44c27a89e8e9631c44b5ffadf6ace65e2 upstream.
+[ Upstream commit 45a3fe3bf93b7cfeddc28ef7386555e05dc57f06 ]
 
-Commit 15e668070a64 ("ipv6: reorder icmpv6_init() and ip6_mr_init()")
-moved the cleanup label for ipmr_fail, but should have changed the
-contents of the cleanup labels as well. Now we can end up cleaning up
-icmpv6 even though it hasn't been initialized (jump to icmp_fail or
-ipmr_fail).
+The AMD eMMC 5.0 controller does not support 64 bit DMA.
 
-Simply undo things in the reverse order of their initialization.
-
-Example of panic (triggered by faking a failure of icmpv6_init):
-
-    kasan: GPF could be caused by NULL-ptr deref or user memory access
-    general protection fault: 0000 [#1] PREEMPT SMP KASAN PTI
-    [...]
-    RIP: 0010:__list_del_entry_valid+0x79/0x160
-    [...]
-    Call Trace:
-     ? lock_release+0x8a0/0x8a0
-     unregister_pernet_operations+0xd4/0x560
-     ? ops_free_list+0x480/0x480
-     ? down_write+0x91/0x130
-     ? unregister_pernet_subsys+0x15/0x30
-     ? down_read+0x1b0/0x1b0
-     ? up_read+0x110/0x110
-     ? kmem_cache_create_usercopy+0x1b4/0x240
-     unregister_pernet_subsys+0x1d/0x30
-     icmpv6_cleanup+0x1d/0x30
-     inet6_init+0x1b5/0x23f
-
-Fixes: 15e668070a64 ("ipv6: reorder icmpv6_init() and ip6_mr_init()")
-Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 34597a3f60b1 ("mmc: sdhci-acpi: Add support for ACPI HID of AMD Controller with HS400")
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+Link: https://marc.info/?l=linux-mmc&m=158879884514552&w=2
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20200508165344.1.Id5bb8b1ae7ea576f26f9d91c761df7ccffbf58c5@changeid
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/af_inet6.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mmc/host/sdhci-acpi.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -1029,11 +1029,11 @@ netfilter_fail:
- igmp_fail:
- 	ndisc_cleanup();
- ndisc_fail:
--	ip6_mr_cleanup();
-+	icmpv6_cleanup();
- icmp_fail:
--	unregister_pernet_subsys(&inet6_net_ops);
-+	ip6_mr_cleanup();
- ipmr_fail:
--	icmpv6_cleanup();
-+	unregister_pernet_subsys(&inet6_net_ops);
- register_pernet_fail:
- 	sock_unregister(PF_INET6);
- 	rtnl_unregister_all(PF_INET6);
+diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+index 1604f512c7bd1..01fc437ed9659 100644
+--- a/drivers/mmc/host/sdhci-acpi.c
++++ b/drivers/mmc/host/sdhci-acpi.c
+@@ -602,10 +602,12 @@ static int sdhci_acpi_emmc_amd_probe_slot(struct platform_device *pdev,
+ }
+ 
+ static const struct sdhci_acpi_slot sdhci_acpi_slot_amd_emmc = {
+-	.chip   = &sdhci_acpi_chip_amd,
+-	.caps   = MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE,
+-	.quirks = SDHCI_QUIRK_32BIT_DMA_ADDR | SDHCI_QUIRK_32BIT_DMA_SIZE |
+-			SDHCI_QUIRK_32BIT_ADMA_SIZE,
++	.chip		= &sdhci_acpi_chip_amd,
++	.caps		= MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE,
++	.quirks		= SDHCI_QUIRK_32BIT_DMA_ADDR |
++			  SDHCI_QUIRK_32BIT_DMA_SIZE |
++			  SDHCI_QUIRK_32BIT_ADMA_SIZE,
++	.quirks2	= SDHCI_QUIRK2_BROKEN_64_BIT_DMA,
+ 	.probe_slot     = sdhci_acpi_emmc_amd_probe_slot,
+ };
+ 
+-- 
+2.20.1
+
 
 
