@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963601D8640
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B411D8367
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgERRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49046 "EHLO mail.kernel.org"
+        id S1732782AbgERSE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:04:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729517AbgERRsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:15 -0400
+        id S1732758AbgERSEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D112920671;
-        Mon, 18 May 2020 17:48:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06F9C207D3;
+        Mon, 18 May 2020 18:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824095;
-        bh=y/aX+JlJ1/Um5fwc1TEGEE4stW2ob/ossdMASJdymvE=;
+        s=default; t=1589825055;
+        bh=X2Df0dKFjqT5/2DCl87p0uzmyYZJ8m8uEBOTVMJ0uLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hGa6CCwkLeARzfg2N/bAqXxYEyIhedGIcdDs4KUomN+PxYrwy+/G8SgPX+8kTzhXt
-         /LWkFJqjqMnhKE4e8RtlprXJ6LXZGs3s7Pwo6Nv1rNHTfotf67KCTFJqKiIzSErbvt
-         COPNEc71bS7o7zS5vbxhS9CbhqwDYwseTcq1Qtgk=
+        b=Iy+T1rcE1IQCw5DxubsDNKRHZRKRiAsrIZq+l10+l3V8kpAkgopPOOfonCumBA59c
+         dk16axRMjUUizh58Z4LyeAPCYhcbdG8QSkhvehKDndhYJ+wu0vhOLNDyOH2V4gYkUo
+         Y9rzsQ8RTC9RxST+277FC7sXNCXIcfT5ccI67HqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org, Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 068/114] IB/mlx4: Test return value of calls to ib_get_cached_pkey
+Subject: [PATCH 5.6 110/194] netfilter: nft_set_rbtree: Add missing expired checks
 Date:   Mon, 18 May 2020 19:36:40 +0200
-Message-Id: <20200518173515.389339610@linuxfoundation.org>
+Message-Id: <20200518173540.951820648@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,66 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+From: Phil Sutter <phil@nwl.cc>
 
-[ Upstream commit 6693ca95bd4330a0ad7326967e1f9bcedd6b0800 ]
+[ Upstream commit 340eaff651160234bdbce07ef34b92a8e45cd540 ]
 
-In the mlx4_ib_post_send() flow, some functions call ib_get_cached_pkey()
-without checking its return value. If ib_get_cached_pkey() returns an
-error code, these functions should return failure.
+Expired intervals would still match and be dumped to user space until
+garbage collection wiped them out. Make sure they stop matching and
+disappear (from users' perspective) as soon as they expire.
 
-Fixes: 1ffeb2eb8be9 ("IB/mlx4: SR-IOV IB context objects and proxy/tunnel SQP support")
-Fixes: 225c7b1feef1 ("IB/mlx4: Add a driver Mellanox ConnectX InfiniBand adapters")
-Fixes: e622f2f4ad21 ("IB: split struct ib_send_wr")
-Link: https://lore.kernel.org/r/20200426075921.130074-1-leon@kernel.org
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 8d8540c4f5e03 ("netfilter: nft_set_rbtree: add timeout support")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/qp.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ net/netfilter/nft_set_rbtree.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index e10c3d915e389..df1ecd29057f8 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -2917,6 +2917,7 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
- 	int send_size;
- 	int header_size;
- 	int spc;
-+	int err;
- 	int i;
- 
- 	if (wr->wr.opcode != IB_WR_SEND)
-@@ -2951,7 +2952,9 @@ static int build_sriov_qp0_header(struct mlx4_ib_sqp *sqp,
- 
- 	sqp->ud_header.lrh.virtual_lane    = 0;
- 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
--	ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
-+	err = ib_get_cached_pkey(ib_dev, sqp->qp.port, 0, &pkey);
-+	if (err)
-+		return err;
- 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
- 	if (sqp->qp.mlx4_ib_qp_type == MLX4_IB_QPT_TUN_SMI_OWNER)
- 		sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
-@@ -3240,9 +3243,14 @@ static int build_mlx_header(struct mlx4_ib_sqp *sqp, struct ib_ud_wr *wr,
- 	}
- 	sqp->ud_header.bth.solicited_event = !!(wr->wr.send_flags & IB_SEND_SOLICITED);
- 	if (!sqp->qp.ibqp.qp_num)
--		ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index, &pkey);
-+		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, sqp->pkey_index,
-+					 &pkey);
- 	else
--		ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index, &pkey);
-+		err = ib_get_cached_pkey(ib_dev, sqp->qp.port, wr->pkey_index,
-+					 &pkey);
-+	if (err)
-+		return err;
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index 46d976969ca30..accbb54c2b714 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -79,6 +79,10 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
+ 				parent = rcu_dereference_raw(parent->rb_left);
+ 				continue;
+ 			}
 +
- 	sqp->ud_header.bth.pkey = cpu_to_be16(pkey);
- 	sqp->ud_header.bth.destination_qpn = cpu_to_be32(wr->remote_qpn);
- 	sqp->ud_header.bth.psn = cpu_to_be32((sqp->send_psn++) & ((1 << 24) - 1));
++			if (nft_set_elem_expired(&rbe->ext))
++				return false;
++
+ 			if (nft_rbtree_interval_end(rbe)) {
+ 				if (nft_set_is_anonymous(set))
+ 					return false;
+@@ -94,6 +98,7 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
+ 
+ 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
+ 	    nft_set_elem_active(&interval->ext, genmask) &&
++	    !nft_set_elem_expired(&interval->ext) &&
+ 	    nft_rbtree_interval_start(interval)) {
+ 		*ext = &interval->ext;
+ 		return true;
+@@ -154,6 +159,9 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
+ 				continue;
+ 			}
+ 
++			if (nft_set_elem_expired(&rbe->ext))
++				return false;
++
+ 			if (!nft_set_ext_exists(&rbe->ext, NFT_SET_EXT_FLAGS) ||
+ 			    (*nft_set_ext_flags(&rbe->ext) & NFT_SET_ELEM_INTERVAL_END) ==
+ 			    (flags & NFT_SET_ELEM_INTERVAL_END)) {
+@@ -170,6 +178,7 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
+ 
+ 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
+ 	    nft_set_elem_active(&interval->ext, genmask) &&
++	    !nft_set_elem_expired(&interval->ext) &&
+ 	    ((!nft_rbtree_interval_end(interval) &&
+ 	      !(flags & NFT_SET_ELEM_INTERVAL_END)) ||
+ 	     (nft_rbtree_interval_end(interval) &&
+@@ -418,6 +427,8 @@ static void nft_rbtree_walk(const struct nft_ctx *ctx,
+ 
+ 		if (iter->count < iter->skip)
+ 			goto cont;
++		if (nft_set_elem_expired(&rbe->ext))
++			goto cont;
+ 		if (!nft_set_elem_active(&rbe->ext, iter->genmask))
+ 			goto cont;
+ 
 -- 
 2.20.1
 
