@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA861D8241
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BA51D813F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731367AbgERRyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59774 "EHLO mail.kernel.org"
+        id S1730071AbgERRqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731361AbgERRys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:48 -0400
+        id S1730062AbgERRqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 370FA20674;
-        Mon, 18 May 2020 17:54:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC66020657;
+        Mon, 18 May 2020 17:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824487;
-        bh=pcSZmbod3HWKZt1cbu4qTL7iaeGene4CKB3KNhswXl0=;
+        s=default; t=1589823977;
+        bh=wTaUMCm6MSW1jvD4dj3eMAa7vjgtXNySyMYn6acQZQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NqYebtgNiqrHQFx5M531UBwgFFOt3AzTewIcmViyOsSOba/ho5kebiZELEgV9s14x
-         2uLWH4dZs7SEseWcZodBPcV7c4sdB8EB1IT0dSfrFzLdnpCD96glKNVJ4nN7lNUrbp
-         ZTBuXdFvVltGda3r5dFdSk/F58mhxPcxVY0c+bc8=
+        b=zd+jYGiwomCwE0cDytHRdEpyg6nzkkqLdrunLBuWSRC/mWmePTSHWjXSs0sb9fKgW
+         +ntmE+FHuSYYvPUnPOGV1SKOZC/G9LbiryFGCY4reQI1BGSjUCdtow57yN4Zk73ty7
+         85s1tQdv7eLr0+CDBDCG+zZ5H8nK4SPSmCkqDCzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 030/147] net: dsa: loop: Add module soft dependency
+        stable@vger.kernel.org,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.14 021/114] tracing: Add a vmalloc_sync_mappings() for safe measure
 Date:   Mon, 18 May 2020 19:35:53 +0200
-Message-Id: <20200518173517.695640647@linuxfoundation.org>
+Message-Id: <20200518173507.540177073@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,32 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit 3047211ca11bf77b3ecbce045c0aa544d934b945 ]
+commit 11f5efc3ab66284f7aaacc926e9351d658e2577b upstream.
 
-There is a soft dependency against dsa_loop_bdinfo.ko which sets up the
-MDIO device registration, since there are no symbols referenced by
-dsa_loop.ko, there is no automatic loading of dsa_loop_bdinfo.ko which
-is needed.
+x86_64 lazily maps in the vmalloc pages, and the way this works with per_cpu
+areas can be complex, to say the least. Mappings may happen at boot up, and
+if nothing synchronizes the page tables, those page mappings may not be
+synced till they are used. This causes issues for anything that might touch
+one of those mappings in the path of the page fault handler. When one of
+those unmapped mappings is touched in the page fault handler, it will cause
+another page fault, which in turn will cause a page fault, and leave us in
+a loop of page faults.
 
-Fixes: 98cd1552ea27 ("net: dsa: Mock-up driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Commit 763802b53a42 ("x86/mm: split vmalloc_sync_all()") split
+vmalloc_sync_all() into vmalloc_sync_unmappings() and
+vmalloc_sync_mappings(), as on system exit, it did not need to do a full
+sync on x86_64 (although it still needed to be done on x86_32). By chance,
+the vmalloc_sync_all() would synchronize the page mappings done at boot up
+and prevent the per cpu area from being a problem for tracing in the page
+fault handler. But when that synchronization in the exit of a task became a
+nop, it caused the problem to appear.
+
+Link: https://lore.kernel.org/r/20200429054857.66e8e333@oasis.local.home
+
+Cc: stable@vger.kernel.org
+Fixes: 737223fbca3b1 ("tracing: Consolidate buffer allocation code")
+Reported-by: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Suggested-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/dsa/dsa_loop.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/net/dsa/dsa_loop.c
-+++ b/drivers/net/dsa/dsa_loop.c
-@@ -356,6 +356,7 @@ static void __exit dsa_loop_exit(void)
+---
+ kernel/trace/trace.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7666,6 +7666,19 @@ static int allocate_trace_buffers(struct
+ 	 */
+ 	allocate_snapshot = false;
+ #endif
++
++	/*
++	 * Because of some magic with the way alloc_percpu() works on
++	 * x86_64, we need to synchronize the pgd of all the tables,
++	 * otherwise the trace events that happen in x86_64 page fault
++	 * handlers can't cope with accessing the chance that a
++	 * alloc_percpu()'d memory might be touched in the page fault trace
++	 * event. Oh, and we need to audit all other alloc_percpu() and vmalloc()
++	 * calls in tracing, because something might get triggered within a
++	 * page fault trace event!
++	 */
++	vmalloc_sync_mappings();
++
+ 	return 0;
  }
- module_exit(dsa_loop_exit);
  
-+MODULE_SOFTDEP("pre: dsa_loop_bdinfo");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Florian Fainelli");
- MODULE_DESCRIPTION("DSA loopback driver");
 
 
