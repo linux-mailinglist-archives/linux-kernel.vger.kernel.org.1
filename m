@@ -2,98 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633651D818C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41A01D819F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730464AbgERRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:01 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:40232 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729906AbgERRs5 (ORCPT
+        id S1730530AbgERRt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729506AbgERRtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:57 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 4F54380512;
-        Mon, 18 May 2020 19:48:49 +0200 (CEST)
-Date:   Mon, 18 May 2020 19:48:47 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 7/7] drm/mediatek: mtk_dsi: Create connector for
- bridges
-Message-ID: <20200518174847.GA770263@ravnborg.org>
-References: <20200501152335.1805790-1-enric.balletbo@collabora.com>
- <20200501152335.1805790-8-enric.balletbo@collabora.com>
- <CAFqH_53h=3OXzwLnw1XT3rHYkMPOPNFBdQdPeFmNubN9qq_Twg@mail.gmail.com>
- <CAAOTY_-pOUuM7LQ1jm6gqpg8acMqDWOHxGucY5XOjq0ctGUkzA@mail.gmail.com>
- <53683f2d-23c7-57ab-2056-520c50795ffe@collabora.com>
- <CAAOTY__b6V12fS2xTKGjB1fQTfRjX7AQyBqDPXzshfhkjjSkeQ@mail.gmail.com>
- <37191700-5832-2931-5764-7f7fddd023b9@collabora.com>
- <e1ac7d75-c46a-445a-5fcf-5253548f2707@collabora.com>
- <CAAOTY_-w0V0iQgjZ0n26KKs_MdB-im9+LC2EDTmGo0wMG9p_Vw@mail.gmail.com>
- <CAFqH_52YJEnuoXmJVq1TgH5Ay76p-feVQPZ6s4h-1TMBDQ8fDA@mail.gmail.com>
+        Mon, 18 May 2020 13:49:20 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEEC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:49:20 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id r10so5175030pgv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mBq4CNh2SzaiNVBNhEkzgkxU7yRKv+pxY1QX3ny6bNo=;
+        b=VZ/6zRNAtX7ZLlIID1QWRgdZtiIeGPTy6KpLomMn7JqqlM9TYujBoe1ZNgZVDIwquw
+         ALYqr3PEcui0ZwjYYSnWjyK6pf8VE9zmUuIuAtQFogiF0ec5vn+LTgNNgZabT18V1qGp
+         fYcHYtQePf5E8AdCeKiarqvj8k7FWkDfvIqOafYwf4u6ghZ2Va4dEK/DOYyuzoIGIp1x
+         nyn618v+L6curDrasU9mH0v11URYueVTIs5e7vyBLELrRyQyH/ZtAOW6OdrFc6E8HS/r
+         1d9QyjXSKUzE6Hd43GT/swjkdoEgDK36woYmEOjAy3Wzbmc580F9wlAufVZmlJCooCER
+         ygQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mBq4CNh2SzaiNVBNhEkzgkxU7yRKv+pxY1QX3ny6bNo=;
+        b=qazfvMXltUb9TmOO9QYMhrVUe1iU1FAF2by0XXLu7wHcCUCchx3CJSp0Zn5mIcrWdW
+         zj4Gg+fvHXFLIZyvmfz3BKa8AotZ+xL1xjXQ7jeugkrgWUadjgApEqR+ZTkp/KzlQTzU
+         5RkcyqeUY+5QhZl1ngS/SVL9ILH9i+/8I+EM5JT4BNbHFBZd4LEf0+Fqe6wHOceXNnLv
+         myvDCw+IaWM9LkwF/NAUG8g84F/3oOFCICSVmQizKrjT4HzuKoeX8By/7eY7MWgTHkOO
+         Sf+4SRzpBhPu7XSVN7W7oVKgupKOUREcZf1PFnLgBu1m84owpGYi+eE4i0jijkmJ6w5J
+         ZeMw==
+X-Gm-Message-State: AOAM531jqbf4OWiuOXJqT+4wV6xAT0AnGN4JA5pUgAu3P+ppBrdeoIww
+        3Hgt9fu4gbmv02zD3nG6zqi1qbqntrDsPsGYhZEjaQ==
+X-Google-Smtp-Source: ABdhPJxRHZLfRdK8uwwpMwsbOhVoF9vG5SJy734z8XHqMzN8eGkBO6NS7OWznhB++dzCLKoA34gxjZ8Pn9+T4BRCXLE=
+X-Received: by 2002:a63:d010:: with SMTP id z16mr5906980pgf.381.1589824159213;
+ Mon, 18 May 2020 10:49:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqH_52YJEnuoXmJVq1TgH5Ay76p-feVQPZ6s4h-1TMBDQ8fDA@mail.gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=33rsfa9LKxz_d3rkTGwA:9 a=mxk1C73UtW0IAQGh:21
-        a=CjuIK1q_8ugA:10
+References: <20200517011732.GE24705@shao2-debian> <20200517034739.GO2869@paulmck-ThinkPad-P72>
+ <CANpmjNNj37=mgrZpzX7joAwnYk-GsuiE8oOm13r48FYAK0gSQw@mail.gmail.com>
+ <CANpmjNMx0+=Cac=WvHuzKb2zJvgNVvVxjo_W1wYWztywxDKeCQ@mail.gmail.com> <CANpmjNPcOHAE5d=gaD327HqxTBegf75qeN_pjoszahdk6_i5=Q@mail.gmail.com>
+In-Reply-To: <CANpmjNPcOHAE5d=gaD327HqxTBegf75qeN_pjoszahdk6_i5=Q@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 18 May 2020 10:49:08 -0700
+Message-ID: <CAKwvOd=Gi2z_NjRfpTigCCcV5kUWU7Bm7h1eHLeQ6DZCmrsR8w@mail.gmail.com>
+Subject: Re: [rcu] 2f08469563: BUG:kernel_reboot-without-warning_in_boot_stage
+To:     Marco Elver <elver@google.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, LKP <lkp@lists.01.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric/Chun-Kuang.
-
+On Mon, May 18, 2020 at 7:34 AM Marco Elver <elver@google.com> wrote:
+>
+> On Mon, 18 May 2020 at 14:44, Marco Elver <elver@google.com> wrote:
 > >
-> > My point is: when do you attach panel to a connector?
-> > In this patch,
+> > [+Cc clang-built-linux FYI]
 > >
-> > ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
-> >                                           DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> >
-> > it would call into mtk_dsi_bridge_attach() with
-> > DRM_BRIDGE_ATTACH_NO_CONNECTOR, and call into panel_bridge_attach()
-> > with DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> 
-> My understanding is that the DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is to
-> ease transition between the old and the new model. The drivers that
-> support the new model shall set that flag.
-Yes, right now we have fous on migrating all bridge drivers to the new
-model and next step is to make the transition for the display drivers
-one by one.
-Display drivers that uses the old model rely on the bridge driver to
-create the connector, whereas display drivers using the new model will
-create the connector themself.
-Display drivers following the new model will pass DRM_BRIDGE_ATTACH_NO_CONNECTOR
-to tell the bridge drive that no connector shall be created by the
-bridge driver.
+> > On Mon, 18 May 2020 at 12:11, Marco Elver <elver@google.com> wrote:
+> > >
+> > > On Sun, 17 May 2020 at 05:47, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Sun, May 17, 2020 at 09:17:32AM +0800, kernel test robot wrote:
+> > > > > Greeting,
+> > > > >
+> > > > > FYI, we noticed the following commit (built with clang-11):
+> > > > >
+> > > > > commit: 2f08469563550d15cb08a60898d3549720600eee ("rcu: Mark rcu_state.ncpus to detect concurrent writes")
+> > > > > https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2020.05.14c
+> > > > >
+> > > > > in testcase: boot
+> > > > >
+> > > > > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> > > > >
+> > > > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > > > >
+> > > > >
+> > > > >
+> > > > >
+> > > > > If you fix the issue, kindly add following tag
+> > > > > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > > > >
+> > > > >
+> > > > > [    0.054943] BRK [0x05204000, 0x05204fff] PGTABLE
+> > > > > [    0.061181] BRK [0x05205000, 0x05205fff] PGTABLE
+> > > > > [    0.062403] BRK [0x05206000, 0x05206fff] PGTABLE
+> > > > > [    0.065200] RAMDISK: [mem 0x7a247000-0x7fffffff]
+> > > > > [    0.067344] ACPI: Early table checksum verification disabled
+> > > > > BUG: kernel reboot-without-warning in boot stage
+> > > >
+> > > > I am having some difficulty believing that this commit is at fault given
+> > > > that the .config does not list CONFIG_KCSAN=y, but CCing Marco Elver
+> > > > for his thoughts.  Especially given that I have never built with clang-11.
+> > > >
+> > > > But this does invoke ASSERT_EXCLUSIVE_WRITER() in early boot from
+> > > > rcu_init().  Might clang-11 have objections to early use of this macro?
+> > >
+> > > The macro is a noop without KCSAN. I think the bisection went wrong.
+> > >
+> > > I am able to reproduce a reboot-without-warning when building with
+> > > Clang 11 and the provided config. I did a bisect, starting with v5.6
+> > > (good), and found this:
+> > > - Since v5.6, first bad commit is
+> > > 20e2aa812620439d010a3f78ba4e05bc0b3e2861 (Merge tag
+> > > 'perf-urgent-2020-04-12' of
+> > > git://git.kernel.org/pub/scm/linux/kernel//git/tip/tip)
+> > > - The actual commit that introduced the problem is
+> > > 2b3b76b5ec67568da4bb475d3ce8a92ef494b5de (perf/x86/intel/uncore: Add
+> > > Ice Lake server uncore support) -- reverting it fixes the problem.
+>
+> Some more clues:
+>
+> 1. I should have noticed that this uses CONFIG_KASAN=y.
 
-For this driver where only the new model is needed there is no
-reason to try to support both models.
-So the display driver shall always create the connector, and never
-ask the bridge driver to do it (always pass
-DRM_BRIDGE_ATTACH_NO_CONNECTOR).
+Thanks for the report, testing, and bisection.  I don't see any
+smoking gun in the code.
+https://godbolt.org/z/qbK26r
 
-I hope this confirm and clarifies it.
+>
+> 2. Something about function icx_uncore_mmio_init(). Making it a noop
+> also makes the issue go away.
+>
+> 3. Leaving icx_uncore_mmio_init() a noop but removing the 'static'
+> from icx_mmio_uncores also presents the issue. So this seems to be
+> something about how/where icx_mmio_uncores is allocated.
 
-	Sam
+Can you share the disassembly of icx_uncore_mmio_init() in the given
+configuration?
+-- 
+Thanks,
+~Nick Desaulniers
