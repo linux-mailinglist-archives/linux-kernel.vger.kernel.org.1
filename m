@@ -2,132 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0091D716B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777D71D7146
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 08:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgERG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 02:59:14 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44430 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgERG7O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 02:59:14 -0400
-Received: by mail-io1-f71.google.com with SMTP id j10so7839046iop.11
-        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 23:59:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0DRTTMdVZ3heC4/TQ87vML96phwJC9Mo4+Jf/QtDxIs=;
-        b=uf33iwl/s1fdGRuqKRnzYPU7rpM7Hsdrn/jrEV9u2XzXxOuik9prPTUW2OHD8+3JWL
-         EgyrSB3eauI1f6j3TByOYw9yQkEeOooPO3Dj3M4QTVykhmQNaf6bNlN9UyEantwQ6AEi
-         Y5U9PCotHydGPH93gQGH/moCIg55bJQBvBuiQCc3Om/f3NgXB6Rq9y7bb8qvlZ1bb35+
-         YkDvMIgY3LXAy9rI2Z2HhdL8yxnCfnzxyI/jXSWzTF1xY+l2TYJ39FC8AbtnMw2sBh7l
-         QxdFggioM/cq2xsGJCP1GZs60EmET3wv/JbDFsvyblGRgrF9zAD/PrBiiH6uW4j0maOc
-         w4aw==
-X-Gm-Message-State: AOAM531W0W8XdhhZ2OPp8gG/L55+CUFpzr43IQyOhmHAjSBxNNRGSNsR
-        W7N3p6CNA3wKBYOIQ9ga57gXXXW5eI67CeR/gmHwSiWJTeeb
-X-Google-Smtp-Source: ABdhPJxv25dH3gO0w1lsIE4A8x9M7WmS6AwjpjzU3B2ogLIoYBsDEghD+K73/McTdGBMuX8tBAb4iLkViNxDRaHKaCL2EImtR872
+        id S1726481AbgERGu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 02:50:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:3552 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726040AbgERGu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 02:50:56 -0400
+IronPort-SDR: 1VzzeX53a97xqJ/0HvWkE1I/uDGJ1ZgcorukdYT+FfLpvCVriZ15Q4KOFcuCN7Mf+OfNQFjnhr
+ USzs/4g90j2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 23:50:55 -0700
+IronPort-SDR: oyhTQGkBJFfmfrsnh7FlhTR9PUcv3yxyDrgk17h7fYIH7QDtkXGb2i0scy4gVGNH5gQQK2aDoo
+ /TOYIns6o80g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
+   d="scan'208";a="373291247"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by fmsmga001.fm.intel.com with ESMTP; 17 May 2020 23:50:51 -0700
+Date:   Mon, 18 May 2020 15:00:46 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        OTC LSE PnP <otc.lse.pnp@intel.com>, lkp@lists.01.org
+Subject: Re: [sched/fair] 0b0695f2b3:
+ phoronix-test-suite.compress-gzip.0.seconds 19.8% regression
+Message-ID: <20200518070046.GA23559@xsang-OptiPlex-9020>
+References: <20200514141526.GA30976@xsang-OptiPlex-9020>
+ <CAKfTPtB3jQWd52FTyKNk5w8mmoDnu+jwYgkFBOiOKjb_BjxqTw@mail.gmail.com>
+ <20200515141226.17700-1-hdanton@sina.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:243:: with SMTP id w3mr14673119jaq.20.1589785152982;
- Sun, 17 May 2020 23:59:12 -0700 (PDT)
-Date:   Sun, 17 May 2020 23:59:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005016dd05a5e6b308@google.com>
-Subject: BUG: unable to handle kernel paging request in rb_erase
-From:   syzbot <syzbot+0e37e9d19bded16b8ab9@syzkaller.appspotmail.com>
-To:     bfields@fieldses.org, chuck.lever@oracle.com,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515141226.17700-1-hdanton@sina.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, May 15, 2020 at 10:12:26PM +0800, Hillf Danton wrote:
+> 
+> On Fri, 15 May 2020 09:43:39 +0800 Oliver Sang wrote:
+> > On Thu, May 14, 2020 at 07:09:35PM +0200, Vincent Guittot wrote:
+> > > Hi Oliver,
+> > > 
+> > > On Thu, 14 May 2020 at 16:05, kernel test robot <oliver.sang@intel.com> wrote:
+> > > >
+> > > > Hi Vincent Guittot,
+> > > >
+> > > > Below report FYI.
+> > > > Last year, we actually reported an improvement "[sched/fair] 0b0695f2b3:
+> > > > vm-scalability.median 3.1% improvement" on link [1].
+> > > > but now we found the regression on pts.compress-gzip.
+> > > > This seems align with what showed in "[v4,00/10] sched/fair: rework the CFS
+> > > > load balance" (link [2]), where showed the reworked load balance could have
+> > > > both positive and negative effect for different test suites.
+> > > 
+> > > We have tried to run  all possible use cases but it's impossible to
+> > > covers all so there were a possibility that one that is not covered,
+> > > would regressed.
+> > > 
+> > > > And also from link [3], the patch set risks regressions.
+> > > >
+> > > > We also confirmed this regression on another platform
+> > > > (Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz with 8G memory),
+> > > > below is the data (lower is better).
+> > > > v5.4    4.1
+> > > > fcf0553db6f4c79387864f6e4ab4a891601f395e    4.01
+> > > > 0b0695f2b34a4afa3f6e9aa1ff0e5336d8dad912    4.89
+> > > > v5.5    5.18
+> > > > v5.6    4.62
+> > > > v5.7-rc2    4.53
+> > > > v5.7-rc3    4.59
+> > > >
+> > > > It seems there are some recovery on latest kernels, but not fully back.
+> 
+> Hi
+> 
+> Here is a tiny diff for growing balance in the over loaded case. Wish it's
+> likely going to help you spot the factors behind the regression.
 
-syzbot found the following crash on:
+Thanks Hillf!
+just wondering what's the target release of below patch?
 
-HEAD commit:    9b1f2cbd Merge tag 'clk-fixes-for-linus' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15dfdeaa100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c14212794ed9ad24
-dashboard link: https://syzkaller.appspot.com/bug?extid=0e37e9d19bded16b8ab9
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+0e37e9d19bded16b8ab9@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffff887ffffffff0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8682 Comm: syz-executor.3 Not tainted 5.7.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:201 [inline]
-RIP: 0010:rb_erase+0x37/0x18d0 lib/rbtree.c:443
-Code: 89 f7 41 56 41 55 49 89 fd 48 83 c7 08 48 89 fa 41 54 48 c1 ea 03 55 53 48 83 ec 18 80 3c 02 00 0f 85 89 10 00 00 49 8d 7d 10 <4d> 8b 75 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80
-RSP: 0018:ffffc900178ffb58 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff8880354d0000 RCX: ffffc9000fb6d000
-RDX: 1ffff10ffffffffe RSI: ffff88800011dfe0 RDI: ffff887ffffffff8
-RBP: ffff887fffffffb0 R08: ffff888057284280 R09: fffffbfff185d12e
-R10: ffffffff8c2e896f R11: fffffbfff185d12d R12: ffff88800011dfe0
-R13: ffff887fffffffe8 R14: 000000000001dfe0 R15: ffff88800011dfe0
-FS:  00007fa002d21700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff887ffffffff0 CR3: 00000000a2164000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nfsd_reply_cache_free_locked+0x198/0x380 fs/nfsd/nfscache.c:127
- nfsd_reply_cache_shutdown+0x150/0x350 fs/nfsd/nfscache.c:203
- nfsd_exit_net+0x189/0x4c0 fs/nfsd/nfsctl.c:1504
- ops_exit_list.isra.0+0xa8/0x150 net/core/net_namespace.c:186
- setup_net+0x50c/0x860 net/core/net_namespace.c:364
- copy_net_ns+0x293/0x590 net/core/net_namespace.c:482
- create_new_namespaces+0x3fb/0xb30 kernel/nsproxy.c:108
- unshare_nsproxy_namespaces+0xbd/0x1f0 kernel/nsproxy.c:229
- ksys_unshare+0x43d/0x8e0 kernel/fork.c:2970
- __do_sys_unshare kernel/fork.c:3038 [inline]
- __se_sys_unshare kernel/fork.c:3036 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3036
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca29
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fa002d20c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 000000000050a1c0 RCX: 000000000045ca29
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000040000000
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000c4e R14: 00000000004ce9bd R15: 00007fa002d216d4
-Modules linked in:
-CR2: ffff887ffffffff0
----[ end trace f929dcba0362906a ]---
-RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:201 [inline]
-RIP: 0010:rb_erase+0x37/0x18d0 lib/rbtree.c:443
-Code: 89 f7 41 56 41 55 49 89 fd 48 83 c7 08 48 89 fa 41 54 48 c1 ea 03 55 53 48 83 ec 18 80 3c 02 00 0f 85 89 10 00 00 49 8d 7d 10 <4d> 8b 75 08 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80
-RSP: 0018:ffffc900178ffb58 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff8880354d0000 RCX: ffffc9000fb6d000
-RDX: 1ffff10ffffffffe RSI: ffff88800011dfe0 RDI: ffff887ffffffff8
-RBP: ffff887fffffffb0 R08: ffff888057284280 R09: fffffbfff185d12e
-R10: ffffffff8c2e896f R11: fffffbfff185d12d R12: ffff88800011dfe0
-R13: ffff887fffffffe8 R14: 000000000001dfe0 R15: ffff88800011dfe0
-FS:  00007fa002d21700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff887ffffffff0 CR3: 00000000a2164000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> Hillf
+> 
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8683,15 +8683,12 @@ find_idlest_group(struct sched_domain *s
+>  	struct sched_group *idlest = NULL, *local = NULL, *group = sd->groups;
+>  	struct sg_lb_stats local_sgs, tmp_sgs;
+>  	struct sg_lb_stats *sgs;
+> -	unsigned long imbalance;
+> +	unsigned long hal, lal;
+>  	struct sg_lb_stats idlest_sgs = {
+>  			.avg_load = UINT_MAX,
+>  			.group_type = group_overloaded,
+>  	};
+>  
+> -	imbalance = scale_load_down(NICE_0_LOAD) *
+> -				(sd->imbalance_pct-100) / 100;
+> -
+>  	do {
+>  		int local_group;
+>  
+> @@ -8744,31 +8741,26 @@ find_idlest_group(struct sched_domain *s
+>  
+>  	switch (local_sgs.group_type) {
+>  	case group_overloaded:
+> -	case group_fully_busy:
+> -		/*
+> -		 * When comparing groups across NUMA domains, it's possible for
+> -		 * the local domain to be very lightly loaded relative to the
+> -		 * remote domains but "imbalance" skews the comparison making
+> -		 * remote CPUs look much more favourable. When considering
+> -		 * cross-domain, add imbalance to the load on the remote node
+> -		 * and consider staying local.
+> -		 */
+> -
+> -		if ((sd->flags & SD_NUMA) &&
+> -		    ((idlest_sgs.avg_load + imbalance) >= local_sgs.avg_load))
+> -			return NULL;
+> +		if (idlest_sgs.avg_load < local_sgs.avg_load) {
+> +			hal = local_sgs.avg_load;
+> +			lal = idlest_sgs.avg_load;
+> +		} else {
+> +			lal = local_sgs.avg_load;  /*  low avg load */
+> +			hal = idlest_sgs.avg_load; /* high avg load */
+> +		}
+>  
+> -		/*
+> -		 * If the local group is less loaded than the selected
+> -		 * idlest group don't try and push any tasks.
+> -		 */
+> -		if (idlest_sgs.avg_load >= (local_sgs.avg_load + imbalance))
+> +		/* No push if groups are balanced in terms of load */
+> +		if (100 * hal <= sd->imbalance_pct * lal)
+>  			return NULL;
+>  
+> -		if (100 * local_sgs.avg_load <= sd->imbalance_pct * idlest_sgs.avg_load)
+> +		/* No push if it only grows imbalance */
+> +		if (hal == idlest_sgs.avg_load)
+>  			return NULL;
+>  		break;
+>  
+> +	case group_fully_busy:
+> +		/* No push because groups are unusually balanced */
+> +		return NULL;
+>  	case group_imbalanced:
+>  	case group_asym_packing:
+>  		/* Those type are not used in the slow wakeup path */
+> --
+> 
+> > > > We were just wondering whether you could share some lights the further works
+> > > > on the load balance after patch set [2] which could cause the performance
+> > > > change?
+> > > > And whether you have plan to refine the load balance algorithm further?
+> > > 
+> > > I'm going to have a look at your regression to understand what is
+> > > going wrong and how it can be fixed
+> > 
+> > Thanks a lot!
+> > 
+> > > 
+> > > Thanks
+> > > Vincent
+> > > 
+> > 
+> 
