@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B66F1D83F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74921D84DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733263AbgERSHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55568 "EHLO mail.kernel.org"
+        id S1731644AbgERR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733233AbgERSHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:07:02 -0400
+        id S1732095AbgERR7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:59:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEE0020671;
-        Mon, 18 May 2020 18:07:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2A34207C4;
+        Mon, 18 May 2020 17:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825222;
-        bh=eV3kUzzlf5OSTxkiuVstu95fzxA6qQ/NqCtoRjvFgUE=;
+        s=default; t=1589824779;
+        bh=2LASOvTvTrONAR+ocAmH7QR9a1jeIKG1nWnEI8PmZrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1KjTbeW20ygQVbazpl8vJAhHcIA76rZ/7G54e8tT3T1s9SF6WqPd9MDnGZh1Ur1PK
-         OdGF3gMgIOAUllXAHCQ8DdzrrghJ/Iyx/9/MHtWowvcMTfl4DBr4mjgRYD8BKJVqho
-         AzIv6Wtn4gXPjM73nGnMAx5IF3RMxRgUSYLS4az4=
+        b=ZK8bCoMYUYjZz7jrHkLDS61A8EEP740NC0C3VULUxfFqUpM5Z2dtofI29v5OfLy2p
+         2Wsce7P1Xa3npHP3EjqYACb1efr9iwfz/1wPJLZ42ksCgTYUe/tAQyGx76DlJdUkYJ
+         Irsje9wTiP86n1szph4pDSVfXgVZJbe9tER9McrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5.6 179/194] ARM: dts: r8a73a4: Add missing CMT1 interrupts
-Date:   Mon, 18 May 2020 19:37:49 +0200
-Message-Id: <20200518173546.418161462@linuxfoundation.org>
+        Kamal Mostafa <kamal@canonical.com>
+Subject: [PATCH 5.4 147/147] bpf: Test_progs, fix test_get_stack_rawtp_err.c build
+Date:   Mon, 18 May 2020 19:37:50 +0200
+Message-Id: <20200518173531.196702589@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Kamal Mostafa <kamal@canonical.com>
 
-commit 0f739fdfe9e5ce668bd6d3210f310df282321837 upstream.
+The linux-5.4.y commit 8781011a302b ("bpf: Test_progs, add test to catch
+retval refine error handling") fails to build when libbpf headers are
+not installed, as it tries to include <bpf/bpf_helpers.h>:
 
-The R-Mobile APE6 Compare Match Timer 1 generates 8 interrupts, one for
-each channel, but currently only 1 is described.
-Fix this by adding the missing interrupts.
+  progs/test_get_stack_rawtp_err.c:4:10:
+      fatal error: 'bpf/bpf_helpers.h' file not found
 
-Fixes: f7b65230019b9dac ("ARM: shmobile: r8a73a4: Add CMT1 node")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200408090926.25201-1-geert+renesas@glider.be
+For 5.4-stable (only) the new test prog needs to include "bpf_helpers.h"
+instead (like all the rest of progs/*.c do) because 5.4-stable does not
+carry commit e01a75c15969 ("libbpf: Move bpf_{helpers, helper_defs,
+endian, tracing}.h into libbpf").
+
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+Fixes: 8781011a302b ("bpf: Test_progs, add test to catch retval refine error handling")
+Cc: <stable@vger.kernel.org> # v5.4
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/r8a73a4.dtsi |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/test_get_stack_rawtp_err.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/r8a73a4.dtsi
-+++ b/arch/arm/boot/dts/r8a73a4.dtsi
-@@ -131,7 +131,14 @@
- 	cmt1: timer@e6130000 {
- 		compatible = "renesas,r8a73a4-cmt1", "renesas,rcar-gen2-cmt1";
- 		reg = <0 0xe6130000 0 0x1004>;
--		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&mstp3_clks R8A73A4_CLK_CMT1>;
- 		clock-names = "fck";
- 		power-domains = <&pd_c5>;
+--- a/tools/testing/selftests/bpf/progs/test_get_stack_rawtp_err.c
++++ b/tools/testing/selftests/bpf/progs/test_get_stack_rawtp_err.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include <linux/bpf.h>
+-#include <bpf/bpf_helpers.h>
++#include "bpf_helpers.h"
+ 
+ #define MAX_STACK_RAWTP 10
+ 
 
 
