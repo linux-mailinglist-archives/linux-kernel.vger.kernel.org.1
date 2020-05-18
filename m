@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890DD1D8A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1561D8A8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728166AbgERWKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:10:39 -0400
-Received: from ozlabs.org ([203.11.71.1]:49571 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727819AbgERWKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:10:39 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49QtVz5Cx4z9sT6;
-        Tue, 19 May 2020 08:10:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589839836;
-        bh=cd1yGsFVS8n9QhPGW0WRX8GQrlmNy12viz0GdmV8aqI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W1W1PdZe/Sj6JW2qArWDQwLnSeCxVWd/modVm4A5NILCgVQewDw3ExoiqsKE+H1+E
-         fZQNM1WLWZ+xUoFvbRt8e3/NJxPHnR+XOxcTa5SI63UKFahxvUR79/WtC1SlNqN79w
-         RWeKNIPmMgJS/pkxmQTdzbo7ypLXvpXtX0/oJXvQYQ7nrzU/twcXdhwrOf+/UO1wQf
-         +HuEEnYHbt/ed9n244dre5+5UG5XCscDUIg0onJNv8/WeZCxnFZxtDaGcTsLLjB+vx
-         nXtct3GMexDLCOAH0rqIiXL+Hje6jQcErZGE9cBbUa6J5CFqTLpRgvgBKN5GVhYXsw
-         LXi5a+t9JSRMg==
-Date:   Tue, 19 May 2020 08:10:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: linux-next: Fixes tag needs some work in the v4l-dvb tree
-Message-ID: <20200519081034.6413aeb8@canb.auug.org.au>
+        id S1728225AbgERWOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:14:38 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:46983 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgERWOi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:14:38 -0400
+Received: by mail-il1-f193.google.com with SMTP id w18so11450060ilm.13;
+        Mon, 18 May 2020 15:14:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EILzSJQ9ooYrSwPtQmh1JCJ6iFHH9cshXd0l+K0UWUg=;
+        b=nitLYRi2DhE+3ScFShOd22mpPlAvagEKFcVCY/nPk7rnc/h5YIRIk8dJjLTRA8wmVt
+         mESqCWMznttR2dw6nPqvXZ92eCmLzzxeeylWpzVnT7JomjksCcIjxLiJGRx7iUzhFiNa
+         kXnKBekKDyCylo3/QZ+A5m/IHvQb/ARptFVLVIfoM0cQ04ubABDh9AC+lTKNjUw3UgRq
+         qC5xuEu9ypmEOntz13s76m6t10J2oBoEQxiYq8Tb8FKRsr3J+2NsJzGICaH2nI1Z601t
+         RrDCWkjN3loMkgBeJPinrHqCfOz7MbtO/o+UwOcACLrHT7zVtwJLnZxm6g7YYbJd+g/1
+         yMEw==
+X-Gm-Message-State: AOAM532RsnHJzoVa9qnxHQPHVtrT98ob0CIpbCu9bbez+4irsx0xJPL8
+        Dk5M1WV/h7YS6/7U1olk9w==
+X-Google-Smtp-Source: ABdhPJxuDsDG4Q8cCZyp7eSxhiTFEEoCp3gbOuCrmvr18ODcvv037EWI9zIgOwCOuRr5OAWDWsrAAA==
+X-Received: by 2002:a92:5f5a:: with SMTP id t87mr18582791ilb.269.1589840077379;
+        Mon, 18 May 2020 15:14:37 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id r80sm5316136ilk.65.2020.05.18.15.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 15:14:36 -0700 (PDT)
+Received: (nullmailer pid 6875 invoked by uid 1000);
+        Mon, 18 May 2020 22:14:35 -0000
+Date:   Mon, 18 May 2020 16:14:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     nikitos.tr@gmail.com
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        pavel@ucw.cz, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: Add Shanghai Awinic
+ Technology Co., Ltd.
+Message-ID: <20200518221435.GA6734@bogus>
+References: <20200511111128.16210-1-nikitos.tr@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/V/=8/HlN/lKObGpiWpoND89";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511111128.16210-1-nikitos.tr@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/V/=8/HlN/lKObGpiWpoND89
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 11 May 2020 16:11:26 +0500,  wrote:
+> From: Nikita Travkin <nikitos.tr@gmail.com>
+> 
+> Add the "awinic" vendor prefix for Shanghai Awinic Technology Co., Ltd.
+> Website: https://www.awinic.com/
+> 
+> Signed-off-by: Nikita Travkin <nikitos.tr@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Hi all,
-
-In commit
-
-  70d4a9efee9c ("media: entity: Pass entity to get_fwnode_pad operation")
-
-Fixes tag
-
-  Fixes: ae45cd5efc120 ("[media] media: entity: Add get_fwnode_pad entity
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than 1 line.  The second part
-of this one has also been moved in the commit message.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/V/=8/HlN/lKObGpiWpoND89
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7DB9oACgkQAVBC80lX
-0GyZXAf/cDZjwE/Sfyr6IqNYbqR8PXociJd87fnrbum/Teib3H2D+IePjl9ECxYV
-v4HT+cqtiB2t3HbuXuUhzOAj/B8Hm93QH2nDf6SOAl38vrKDuxAvhQtQ/PkoqV/A
-a9XcPb9bFzw3kL1GZdXEmBn7LuR64kOZaj7hZmmWrEki2/t8cL1p9779r8+WOWuT
-U65bzuM/zbr7vtt90MOpdxeDf2oY5BAglc79KOK9FL5Rh75GlqSvqhzinpImXej2
-fDFAoR+hl3AP+wKTdGMOpcafoTfK1lrhCMGga2AfVAdfb+XPY30Sm/QVwsPwp2+F
-IXSBIbY7I6HIOzR0Oq2Zjka4ToUk0A==
-=HG+n
------END PGP SIGNATURE-----
-
---Sig_/V/=8/HlN/lKObGpiWpoND89--
+Reviewed-by: Rob Herring <robh@kernel.org>
