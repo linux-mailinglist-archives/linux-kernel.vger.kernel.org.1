@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA49E1D827D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B301D833B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731716AbgERR4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:56:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
+        id S1729405AbgERSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731705AbgERR4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:56:53 -0400
+        id S1731198AbgERSC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:02:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 253E020674;
-        Mon, 18 May 2020 17:56:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4A8B207D3;
+        Mon, 18 May 2020 18:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824612;
-        bh=qQJ8XuGD1yqiYvBBlA+XTk9Ka7sBVbNnfFgy4ubIWrU=;
+        s=default; t=1589824976;
+        bh=cTsk6Vd1CBdbHwWM2rAQN9WqRfHIR5FG9DzF31Adokw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qg1gSl5a+YwEJlTbPJMdTUNVAgyG2xoeAEej3HIGjJhPYQKBIWUAr2yXD6idGdE7x
-         H9aF13CBDXiWoIOd2CCCvyfTYuLZx5JyDiH7xsgLx0POFNJoEtRRXVcCe1vjiu4iLM
-         c7h9BvrJYi5MGK7v9EAY+QJ0dL/G06htDk2fCZm0=
+        b=XV9cywZWMaW4eKwjpvgF4UuTVoim1bO3wRhKOdHg/GKmCBBv233lD1iTgZEq5ffNo
+         pisZ2u3u6ZfvsXyfBiQb9VvcYIFu8I5RATM9FHfGvU6BtuqoxdWGJujnv2H/BEW3Ue
+         yBx86eGvChaSnKGO81nwN8uqsSgihUv/ijIDqEm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Tiecheng Zhou <Tiecheng.Zhou@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/147] drm/amd/powerplay: avoid using pm_en before it is initialized revised
+Subject: [PATCH 5.6 077/194] pinctrl: qcom: fix wrong write in update_dual_edge
 Date:   Mon, 18 May 2020 19:36:07 +0200
-Message-Id: <20200518173519.543648334@linuxfoundation.org>
+Message-Id: <20200518173538.215907782@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiecheng Zhou <Tiecheng.Zhou@amd.com>
+From: Ansuel Smith <ansuelsmth@gmail.com>
 
-[ Upstream commit 690ae30be163d5262feae01335b2a6f30569e5aa ]
+[ Upstream commit 90bcb0c3ca0809d1ed358bfbf838df4b3d4e58e0 ]
 
-hwmgr->pm_en is initialized at hwmgr_hw_init.
+Fix a typo in the readl/writel accessor conversion where val is used
+instead of pol changing the behavior of the original code.
 
-during amdgpu_device_init, there is amdgpu_asic_reset that calls to
-soc15_asic_reset (for V320 usecase, Vega10 asic), in which:
-1) soc15_asic_reset_method calls to pp_get_asic_baco_capability (pm_en)
-2) soc15_asic_baco_reset calls to pp_set_asic_baco_state (pm_en)
-
-pm_en is used in the above two cases while it has not yet been initialized
-
-So avoid using pm_en in the above two functions for V320 passthrough.
-
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Tiecheng Zhou <Tiecheng.Zhou@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20200414003726.25347-1-ansuelsmth@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/amd_powerplay.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pinctrl/qcom/pinctrl-msm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-index d306cc7119976..8bb5fbef7de0f 100644
---- a/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-+++ b/drivers/gpu/drm/amd/powerplay/amd_powerplay.c
-@@ -1425,7 +1425,8 @@ static int pp_get_asic_baco_capability(void *handle, bool *cap)
- 	if (!hwmgr)
- 		return -EINVAL;
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 1a948c3f54b7c..9f1c9951949ea 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -692,7 +692,7 @@ static void msm_gpio_update_dual_edge_pos(struct msm_pinctrl *pctrl,
  
--	if (!hwmgr->pm_en || !hwmgr->hwmgr_func->get_asic_baco_capability)
-+	if (!(hwmgr->not_vf && amdgpu_dpm) ||
-+		!hwmgr->hwmgr_func->get_asic_baco_capability)
- 		return 0;
+ 		pol = msm_readl_intr_cfg(pctrl, g);
+ 		pol ^= BIT(g->intr_polarity_bit);
+-		msm_writel_intr_cfg(val, pctrl, g);
++		msm_writel_intr_cfg(pol, pctrl, g);
  
- 	mutex_lock(&hwmgr->smu_lock);
-@@ -1459,7 +1460,8 @@ static int pp_set_asic_baco_state(void *handle, int state)
- 	if (!hwmgr)
- 		return -EINVAL;
- 
--	if (!hwmgr->pm_en || !hwmgr->hwmgr_func->set_asic_baco_state)
-+	if (!(hwmgr->not_vf && amdgpu_dpm) ||
-+		!hwmgr->hwmgr_func->set_asic_baco_state)
- 		return 0;
- 
- 	mutex_lock(&hwmgr->smu_lock);
+ 		val2 = msm_readl_io(pctrl, g) & BIT(g->in_bit);
+ 		intstat = msm_readl_intr_status(pctrl, g);
 -- 
 2.20.1
 
