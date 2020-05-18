@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD23A1D72D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730851D72D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgERIUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S1726932AbgERIVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726800AbgERIUX (ORCPT
+        with ESMTP id S1726292AbgERIVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:20:23 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BA8C05BD0B
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:20:23 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id f18so8819953lja.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:20:23 -0700 (PDT)
+        Mon, 18 May 2020 04:21:34 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30258C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:21:34 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f13so8293323wmc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 01:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cWBQhzz5kxNoR9BFp0TP6Ch5JEPPhK+boe7luhQX8WE=;
-        b=lzCxMPImw8Rt7qwkKQvXvs4yHXPUCBcSFgZgVKQ1O//DYIZLFdU0vSKui/Goai4MKT
-         xzGOdXpFC6fBYraQ5/bglOKFm4zvdR+GQlFCVvUpk2HQXfwDAcFh1u70fVOJ6VXLasU+
-         yjC4ArpFTAt05MznUJpxxFnr4qaGbzevmpirg+pnHZQf3hyxYA50KaYPvFy8M4Ix9Vsw
-         7CmNiCNqtZExlHmmBkup0WtdyjuF+RwTNb9qxejk1O74cyIWT47Mx0yUrBpBhB0w0N/p
-         7DpB2eYveOkZ4EyHcs+xZJHU8763ij0ME6GnBRSzZ8iCJ3Xg9989Oe0v34IPE6J4mp6U
-         wGAA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ke8BoO5EmHk4SIG95iemEMZnR5BDFJSAvPbDzk3LsE=;
+        b=y8DuRMtZ5m32J99ssZXJXSq+X+AfOmJ+8dm6KSocF9Z7GTbedT/x+AWJ7/buNAr3pg
+         Lc4iDOZnNKa1b971lpHeSODJhZ4KsL7pg3cd7aNHPsLWp+woLitHcV75oXe/SFMpFWH6
+         mRETIVp45P9yo8Vo9q/avbqmc59f2lnBmAsRsoyJV/oWG0W9PRJE5a53kk1GMfdahNzp
+         h090VIAv9PNzyF+oVrlPFrp3oBdB27BDMGL8b36Wy4DkS9m435f3D3if4j6tR0cRQfhC
+         OnVMJiDqXESB8zrBykPNUJIbFiwQqwRHG2yZRbwCdOYvKuT2iI0SkwgGXHSRhw29Fo9U
+         mGbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cWBQhzz5kxNoR9BFp0TP6Ch5JEPPhK+boe7luhQX8WE=;
-        b=CQ8daCIQpy/Y3ArC27pccMCsuKfVrwOplaFZNm3Tu6CrtJ4h/F1aISPXXFIk+TPRfs
-         oJMN6KfGDB6tpDqHhGUyCAIsb22XBaFCUy4oNuidnV196qKVEX2irQr/k+Ojy6vSIaDz
-         CtgpFei3dgK3veS0KeB4gY87tOD4Kjmop+AWBPU6x+uV5rLOBWXRkrSaT98OzlL0if0S
-         Zjk66C2Eol6GEx314wW21Ms3Q5bN+h/bg66TxAiDnjeAh2WIeAoF8/Z8tIDbH/ymdOnj
-         grLaY1y2OQ4yK/k714ghabaRrGuZWCLsN63k7o0MLdEOcWvbIGjfPKTox5Ja0MDHEdC+
-         y5aQ==
-X-Gm-Message-State: AOAM531nxHFo9wjhvkr7cMtEYc5fBHYmf9naC5p9fi70jv4KJkPk9RS6
-        K3/eN4Y4OihE+B1HJCAXyxyJ2VewqVpSJhsu/ACuUw==
-X-Google-Smtp-Source: ABdhPJy23lR0seQjYixD1vitkrbudfUoFZ0cFs0uEBn+vezhL4JCCG9kC3sBTizi/2x2WCOoPPUTf8nffzPSq1nM6JE=
-X-Received: by 2002:a2e:a209:: with SMTP id h9mr10157090ljm.39.1589790021698;
- Mon, 18 May 2020 01:20:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4ke8BoO5EmHk4SIG95iemEMZnR5BDFJSAvPbDzk3LsE=;
+        b=HSfe+6rzOB1TkOLrNgihr+u5hWx9C4UxIpDdkcoibC2IWkVje1w1wxaJi8m0fvgBLO
+         DH5nSEAo12pGPr6uUUwwKg6e5u18tMxnkvp6k8OHbkyub4ZXFix1Epz7fnNW3tzjg2Ou
+         Cmr+NRjgq4EiPoh8jGJ3b+wgWiD7uFVf3HsmzsedbtFkpwzvKdBs4CS82bJhUpvuQxRY
+         svsCteXov0bXfl7fsRqeW+2sOZqcEYxFDAV5hWZaloaJVAGxRqY6bHNoAOMbVeYAQHjt
+         pOwU5gXUucxgxThwfMmdumPiuAIN47lcU4mjsT2dhnkHpOTbyNFFFe4q3sacAc7SGq8o
+         lOEA==
+X-Gm-Message-State: AOAM530cmIylmTvYnj084QkTrMtnqVvdLhERvvG3CHOAeeBkYZidcloR
+        x4HHbVqeDFyd6EmljoWyCO8NNw==
+X-Google-Smtp-Source: ABdhPJz3/vAFGGLjGfXRhTYtndwC2SARogPWWAdkeE9QbQBVTa6G6s3MYYvtL+u+txx74j1Lpr8f7w==
+X-Received: by 2002:a7b:ce01:: with SMTP id m1mr6593049wmc.116.1589790092914;
+        Mon, 18 May 2020 01:21:32 -0700 (PDT)
+Received: from localhost.localdomain ([37.120.32.219])
+        by smtp.gmail.com with ESMTPSA id x184sm15849567wmg.38.2020.05.18.01.21.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 01:21:32 -0700 (PDT)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Nicolas Dechesne <nicolas.dechesne@linaro.org>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v3] arm64: dts: qcom: apq8016-sbc-d3: Add Qualcomm APQ8016 SBC + D3Camera mezzanine
+Date:   Mon, 18 May 2020 10:21:29 +0200
+Message-Id: <20200518082129.2103683-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200511145257.22970-1-geert+renesas@glider.be> <20200511145257.22970-4-geert+renesas@glider.be>
-In-Reply-To: <20200511145257.22970-4-geert+renesas@glider.be>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 18 May 2020 10:20:10 +0200
-Message-ID: <CACRpkdaqSQ4++mhR03pqi0i=uhSyf51WhtE5VOobGNEcMmf09g@mail.gmail.com>
-Subject: Re: [PATCH v7 3/6] gpiolib: Add support for GPIO lookup by line name
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harish Jenny K N <harish_kandiga@mentor.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Alexander Graf <graf@amazon.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        QEMU Developers <qemu-devel@nongnu.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 4:53 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
+Add device treee support for the Qualcomm APQ8016 SBC, otherwise known as
+the Dragonboard 410c with the D3Camera mezzanine expansion board.
 
-> Currently a GPIO lookup table can only refer to a specific GPIO by a
-> tuple, consisting of a GPIO controller label and a GPIO offset inside
-> the controller.
->
-> However, a GPIO may also carry a line name, defined by DT or ACPI.
-> If present, the line name is the most use-centric way to refer to a
-> GPIO.  Hence add support for looking up GPIOs by line name.
-> Note that there is no guarantee that GPIO line names are globally
-> unique, so this will use the first match found.
->
-> Implement this by reusing the existing gpiod_lookup infrastructure.
-> Rename gpiod_lookup.chip_label to gpiod_lookup.key, to make it clear
-> that this field can have two meanings, and update the kerneldoc and
-> GPIO_LOOKUP*() macros.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-> Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> ---
-> v7:
->   - Document non-uniqueness of line names,
->   - Rebase on top of commit a0b66a73785ccc8f ("gpio: Rename variable in
+The D3Camera mezzanine ships in a kit with a OmniVision 5640 sensor module,
+which is what this DT targets.
 
-This is likely the most controversial patch of this series but since
-noone seems to be especially upset, I think I just accept this
-heuristic.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
 
-It is pretty clearly cut I think, and fits very well with the
-aggregator use case, which is an important one.
+Changes since v2:
+ - Vinod: Change copyright assignment to Linaro
 
-Yours,
-Linus Walleij
+Changes since v1:
+ - Vinod: Changed license to GPL+BSD
+ - Vinod: Changed copyright year to 2020
+ - Nico: Changed name of mezzanine to d3camera
+
+ arch/arm64/boot/dts/qcom/Makefile             |  1 +
+ .../boot/dts/qcom/apq8016-sbc-d3camera.dts    | 45 +++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
+
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index cc103f7020fd..3f95b522694e 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-d3camera.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+ dtb-$(CONFIG_ARCH_QCOM) += apq8096-ifc6640.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
+new file mode 100644
+index 000000000000..752e5ec47499
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc-d3camera.dts
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++/*
++ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ */
++
++/dts-v1/;
++
++#include "apq8016-sbc.dtsi"
++
++/ {
++	model = "Qualcomm Technologies, Inc. APQ 8016 SBC w/ D3Camera Mezzanine";
++	compatible = "qcom,apq8016-sbc", "qcom,apq8016", "qcom,sbc";
++};
++
++&cci_i2c0 {
++	/delete-node/ camera_rear@3b;
++
++	camera_rear@76 {
++		compatible = "ovti,ov5640";
++		reg = <0x76>;
++
++		enable-gpios = <&msmgpio 34 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&msmgpio 35 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&camera_rear_default>;
++
++		clocks = <&gcc GCC_CAMSS_MCLK0_CLK>;
++		clock-names = "xclk";
++		clock-frequency = <23880000>;
++
++		vdddo-supply = <&camera_vdddo_1v8>;
++		vdda-supply = <&camera_vdda_2v8>;
++		vddd-supply = <&camera_vddd_1v5>;
++
++		status = "ok";
++
++		port {
++			ov5640_ep: endpoint {
++				clock-lanes = <1>;
++				data-lanes = <0 2>;
++				remote-endpoint = <&csiphy0_ep>;
++			};
++		};
++	};
++};
+-- 
+2.25.1
+
