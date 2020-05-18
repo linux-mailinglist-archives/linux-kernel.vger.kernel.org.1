@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE101D832B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D431D874F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732544AbgERSCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
+        id S2387883AbgERScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732531AbgERSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:30 -0400
+        id S1728703AbgERRjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6FD020826;
-        Mon, 18 May 2020 18:02:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29E1C20829;
+        Mon, 18 May 2020 17:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824949;
-        bh=MnVZ8YB95EmxBqxmwt11FwSNiLoPIlEMw9ZmUH95iPU=;
+        s=default; t=1589823548;
+        bh=bqL8njQcBWcAVj8w3cU6kdLpwiCsrDRbVhJNWo/25T8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxutOka6SeVHp3vguSYoZ7+oH6OPfb6wDI8GUBal7E9DV8zXfMSdEDhWlh8q7jftn
-         KEslEUhlMhB0o2jNIXz/Uvvyu0Q290i5qtawD1bsJuMZ2WLfffcazZYhUpSMMVvyEA
-         wwkdT89V9X1rsSJj02BrC9rb1EzOu32dnprUHTGU=
+        b=1G3XIITz1a2uxmuvGdco+Iqio23WUS0MfrflPj0stHCFSGYXzPo7f+Srnw7hTLjPK
+         F3T+sVW+zBJ9gPLMQeZHecVPcBcs8IDvS+0G5WnCxACNZJRVmd1/jf+93eSzLK13p5
+         DmDOu7U2MKfOI88raN8ffaxeOAMI/oG5yDoiPJqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 067/194] io_uring: use cond_resched() in io_ring_ctx_wait_and_kill()
-Date:   Mon, 18 May 2020 19:35:57 +0200
-Message-Id: <20200518173537.317015147@linuxfoundation.org>
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Bob Liu <bob.liu@oracle.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Cengiz Can <cengiz@kernel.wtf>, Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.4 27/86] blktrace: fix dereference after null check
+Date:   Mon, 18 May 2020 19:35:58 +0200
+Message-Id: <20200518173455.995560766@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+From: Cengiz Can <cengiz@kernel.wtf>
 
-[ Upstream commit 3fd44c86711f71156b586c22b0495c58f69358bb ]
+commit 153031a301bb07194e9c37466cfce8eacb977621 upstream.
 
-While working on to make io_uring sqpoll mode support syscalls that need
-struct files_struct, I got cpu soft lockup in io_ring_ctx_wait_and_kill(),
+There was a recent change in blktrace.c that added a RCU protection to
+`q->blk_trace` in order to fix a use-after-free issue during access.
 
-    while (ctx->sqo_thread && !wq_has_sleeper(&ctx->sqo_wait))
-        cpu_relax();
+However the change missed an edge case that can lead to dereferencing of
+`bt` pointer even when it's NULL:
 
-above loop never has an chance to exit, it's because preempt isn't enabled
-in the kernel, and the context calling io_ring_ctx_wait_and_kill() and
-io_sq_thread() run in the same cpu, if io_sq_thread calls a cond_resched()
-yield cpu and another context enters above loop, then io_sq_thread() will
-always in runqueue and never exit.
+Coverity static analyzer marked this as a FORWARD_NULL issue with CID
+1460458.
 
-Use cond_resched() can fix this issue.
+```
+/kernel/trace/blktrace.c: 1904 in sysfs_blk_trace_attr_store()
+1898            ret = 0;
+1899            if (bt == NULL)
+1900                    ret = blk_trace_setup_queue(q, bdev);
+1901
+1902            if (ret == 0) {
+1903                    if (attr == &dev_attr_act_mask)
+>>>     CID 1460458:  Null pointer dereferences  (FORWARD_NULL)
+>>>     Dereferencing null pointer "bt".
+1904                            bt->act_mask = value;
+1905                    else if (attr == &dev_attr_pid)
+1906                            bt->pid = value;
+1907                    else if (attr == &dev_attr_start_lba)
+1908                            bt->start_lba = value;
+1909                    else if (attr == &dev_attr_end_lba)
+```
 
- Reported-by: syzbot+66243bb7126c410cefe6@syzkaller.appspotmail.com
-Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Added a reassignment with RCU annotation to fix the issue.
+
+Fixes: c780e86dd48 ("blktrace: Protect q->blk_trace with RCU")
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Bob Liu <bob.liu@oracle.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/blktrace.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 9690c845a3e4b..01f71b9efb88f 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6451,7 +6451,7 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
- 	 * it could cause shutdown to hang.
- 	 */
- 	while (ctx->sqo_thread && !wq_has_sleeper(&ctx->sqo_wait))
--		cpu_relax();
-+		cond_resched();
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1822,8 +1822,11 @@ static ssize_t sysfs_blk_trace_attr_stor
+ 	}
  
- 	io_kill_timeouts(ctx);
- 	io_poll_remove_all(ctx);
--- 
-2.20.1
-
+ 	ret = 0;
+-	if (bt == NULL)
++	if (bt == NULL) {
+ 		ret = blk_trace_setup_queue(q, bdev);
++		bt = rcu_dereference_protected(q->blk_trace,
++				lockdep_is_held(&q->blk_trace_mutex));
++	}
+ 
+ 	if (ret == 0) {
+ 		if (attr == &dev_attr_act_mask)
 
 
