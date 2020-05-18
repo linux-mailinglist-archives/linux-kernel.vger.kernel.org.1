@@ -2,300 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191DE1D85BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE8E1D85A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731662AbgERSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
+        id S2387498AbgERSUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730997AbgERRwe (ORCPT
+        with ESMTP id S1731152AbgERRxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:34 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DADC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:52:33 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id CF53F2A10C9
-Subject: Re: [PATCH v14 03/11] soc: mediatek: Add basic_clk_name to
- scp_power_data
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org,
-        Fan Chen <fan.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1588752963-19934-1-git-send-email-weiyi.lu@mediatek.com>
- <1588752963-19934-4-git-send-email-weiyi.lu@mediatek.com>
- <7ad67855-a3f8-f979-8849-3765bd8289d3@collabora.com>
- <1589176947.21832.9.camel@mtksdaap41> <1589513724.16252.3.camel@mtksdaap41>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <c510cc46-3285-fa53-b2e1-0420b0bfb61c@collabora.com>
-Date:   Mon, 18 May 2020 19:52:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 18 May 2020 13:53:30 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B08EC05BD0A
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:53:30 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id c12so5404917lfc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 10:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=auxOAvLWtf1pZZSyVWFPai0DZNGDmQxFTyydphVNHvc=;
+        b=Vl9mmuiC7+19REd6VDHNPar684dLArGlRGMkQn5oqgGISgDn9rA9Lik+VFA810mJKY
+         Z/lqU/1LmGYWo/ob8AYxr4Q2/sNWezCyNM2TzOQag9de1dtWzYYjvtcqYLaj5UZ/eRSs
+         j8hcnYEluwCIYYQEZhNVvSaQXUVwZaW1vekivhtGXj6agpH6us2lt2eVka42V2tC3FBb
+         anttD+3GT6y2WprpvsdRhnf8iEsWgi9AJN5Lcv6UsJMZ0dJcUwz0KICOSnVe+AkXm4jK
+         rk7WxHuCvOQsbVbuTW9D42lNo27aBJenp/CL1EDodgfeQDkV7DKsAI6jISrExqk+E3OT
+         iqGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=auxOAvLWtf1pZZSyVWFPai0DZNGDmQxFTyydphVNHvc=;
+        b=W8iJ7XF2xmSsYazWcCs6/qClZLDZLNNa2jddTAeJNzRkwKPLDvfQweG4a47/7mzrtH
+         k2Hwak17cTjkr85gaWeHxn1HYZLWALxVcL88OgTPAmPdm7/j+d0gvvDS98kx7jsZ3cIp
+         Jea3RIC7l6IDeJwtzRPHZZLRoycnkwYGMDwq0bHwmYNmS69zbXnO4YKQs25w2EaCYMZM
+         7GKGAJhunDR9TkFQ2dgz5xHvok5sZFnICkQBr93alrV0ZvFTeX4hYk7q/q02o8I7M8aO
+         vAEo70mSNWJ18JgBec5X4IXwaVxYHVUB+TdIoRgmxdzXBzKfuxb6YBL9Zg5jm7287lyk
+         OfVA==
+X-Gm-Message-State: AOAM531DvlBULBV2cVYHsogAGpHBlKeYA8cHCu5qG1Tk3RIpLJ9Vuido
+        QKspxvz7+LAnW0h+T5ta3ZUVpAPNJ46lxvuGGAV0OA==
+X-Google-Smtp-Source: ABdhPJzv50aTNUNlvFS55s6qXm4/Sd4s/08q5esk2oruVv0ektYpkAo/7FrkfziK8Eed36WkBnmqcTgcwCr6rqNC7Eg=
+X-Received: by 2002:a19:48c9:: with SMTP id v192mr8337329lfa.20.1589824408382;
+ Mon, 18 May 2020 10:53:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1589513724.16252.3.camel@mtksdaap41>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200506060025.1535960-1-vkoul@kernel.org> <20200506060025.1535960-4-vkoul@kernel.org>
+In-Reply-To: <20200506060025.1535960-4-vkoul@kernel.org>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Mon, 18 May 2020 19:53:17 +0200
+Message-ID: <CADYN=9JLeWHODRWDEcTE_6iZ3TX-E4yyx3OwqzK-H-ytLAmQUg@mail.gmail.com>
+Subject: Re: [PATCH v13 3/5] usb: xhci: Add support for Renesas controller
+ with memory
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        =?UTF-8?Q?Andreas_B=C3=B6hler?= <dev@aboehler.at>,
+        linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Weiyi,
+On Wed, 6 May 2020 at 08:01, Vinod Koul <vkoul@kernel.org> wrote:
+>
+> Some rensas controller like uPD720201 and uPD720202 need firmware to be
+> loaded. Add these devices in pci table and invoke renesas firmware loader
+> functions to check and load the firmware into device memory when
+> required.
+>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-On 15/5/20 5:35, Weiyi Lu wrote:
-> On Mon, 2020-05-11 at 14:02 +0800, Weiyi Lu wrote:
->> On Wed, 2020-05-06 at 23:01 +0200, Enric Balletbo i Serra wrote:
->>> Hi Weiyi,
->>>
->>> Thank you for your patch.
->>>
->>> On 6/5/20 10:15, Weiyi Lu wrote:
->>>> Try to stop extending the clk_id or clk_names if there are
->>>> more and more new BASIC clocks. To get its own clocks by the
->>>> basic_clk_name of each power domain.
->>>> And then use basic_clk_name strings for all compatibles, instead of
->>>> mixing clk_id and clk_name.
->>>>
->>>> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
->>>> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
->>>> ---
->>>>  drivers/soc/mediatek/mtk-scpsys.c | 134 ++++++++++++--------------------------
->>>>  1 file changed, 41 insertions(+), 93 deletions(-)
->>>>
->>>> diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
->>>> index f669d37..c9c3cf7 100644
->>>> --- a/drivers/soc/mediatek/mtk-scpsys.c
->>>> +++ b/drivers/soc/mediatek/mtk-scpsys.c
->>>> @@ -78,34 +78,6 @@
->>>>  #define PWR_STATUS_HIF1			BIT(26)	/* MT7622 */
->>>>  #define PWR_STATUS_WB			BIT(27)	/* MT7622 */
->>>>  
->>>> -enum clk_id {
->>>> -	CLK_NONE,
->>>> -	CLK_MM,
->>>> -	CLK_MFG,
->>>> -	CLK_VENC,
->>>> -	CLK_VENC_LT,
->>>> -	CLK_ETHIF,
->>>> -	CLK_VDEC,
->>>> -	CLK_HIFSEL,
->>>> -	CLK_JPGDEC,
->>>> -	CLK_AUDIO,
->>>> -	CLK_MAX,
->>>> -};
->>>> -
->>>> -static const char * const clk_names[] = {
->>>> -	NULL,
->>>> -	"mm",
->>>> -	"mfg",
->>>> -	"venc",
->>>> -	"venc_lt",
->>>> -	"ethif",
->>>> -	"vdec",
->>>> -	"hif_sel",
->>>> -	"jpgdec",
->>>> -	"audio",
->>>> -	NULL,
->>>> -};
->>>> -
->>>>  #define MAX_CLKS	3
->>>>  
->>>>  /**
->>>> @@ -116,7 +88,7 @@ enum clk_id {
->>>>   * @sram_pdn_bits: The mask for sram power control bits.
->>>>   * @sram_pdn_ack_bits: The mask for sram power control acked bits.
->>>>   * @bus_prot_mask: The mask for single step bus protection.
->>>> - * @clk_id: The basic clocks required by this power domain.
->>>> + * @basic_clk_name: The basic clocks required by this power domain.
->>>>   * @caps: The flag for active wake-up action.
->>>>   */
->>>>  struct scp_domain_data {
->>>> @@ -126,7 +98,7 @@ struct scp_domain_data {
->>>>  	u32 sram_pdn_bits;
->>>>  	u32 sram_pdn_ack_bits;
->>>>  	u32 bus_prot_mask;
->>>> -	enum clk_id clk_id[MAX_CLKS];
->>>> +	const char *basic_clk_name[MAX_CLKS];
->>>
->>> I only reviewed v13, so sorry if this was already discussed. I am wondering if
->>> would be better take advantage of the devm_clk_bulk_get() function instead of
->>> kind of reimplementing the same, something like this
->>>
->>> 	const struct clk_bulk_data *basic_clocks;
->>>
->>
->> I thought it should be const struct clk_bulk_data
->> basic_clocks[MAX_CLKS]; instead of const struct clk_bulk_data
->> *basic_clocks; in struct scp_domain_data data type
->>
->>>>  	u8 caps;
->>>>  };
->>>>  
->>>> @@ -411,12 +383,19 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
->>>>  	return ret;
->>>>  }
->>>>  
->>>> -static void init_clks(struct platform_device *pdev, struct clk **clk)
->>>> +static int init_basic_clks(struct platform_device *pdev, struct clk **clk,
->>>> +			const char * const *name)
->>>>  {
->>>>  	int i;
->>>>  
->>>> -	for (i = CLK_NONE + 1; i < CLK_MAX; i++)
->>>> -		clk[i] = devm_clk_get(&pdev->dev, clk_names[i]);
->>>> +	for (i = 0; i < MAX_CLKS && name[i]; i++) {
->>>> +		clk[i] = devm_clk_get(&pdev->dev, name[i]);
->>>> +
->>>> +		if (IS_ERR(clk[i]))
->>>> +			return PTR_ERR(clk[i]);
->>>> +	}
->>>
->>> You will be able to remove this function, see below ...
->>>
->>>> +
->>>> +	return 0;
->>>>  }
->>>>  
->>>>  static struct scp *init_scp(struct platform_device *pdev,
->>>> @@ -426,9 +405,8 @@ static struct scp *init_scp(struct platform_device *pdev,
->>>>  {
->>>>  	struct genpd_onecell_data *pd_data;
->>>>  	struct resource *res;
->>>> -	int i, j;
->>>> +	int i, ret;
->>>>  	struct scp *scp;
->>>> -	struct clk *clk[CLK_MAX];
->>>>  
->>>>  	scp = devm_kzalloc(&pdev->dev, sizeof(*scp), GFP_KERNEL);
->>>>  	if (!scp)
->>>> @@ -481,8 +459,6 @@ static struct scp *init_scp(struct platform_device *pdev,
->>>>  
->>>>  	pd_data->num_domains = num;
->>>>  
->>>> -	init_clks(pdev, clk);
->>>> -
->>>>  	for (i = 0; i < num; i++) {
->>>>  		struct scp_domain *scpd = &scp->domains[i];
->>>>  		struct generic_pm_domain *genpd = &scpd->genpd;
->>>> @@ -493,17 +469,9 @@ static struct scp *init_scp(struct platform_device *pdev,
->>>>  
->>>>  		scpd->data = data;
->>>>  
->>>> -		for (j = 0; j < MAX_CLKS && data->clk_id[j]; j++) {
->>>> -			struct clk *c = clk[data->clk_id[j]];
->>>> -
->>>> -			if (IS_ERR(c)) {
->>>> -				dev_err(&pdev->dev, "%s: clk unavailable\n",
->>>> -					data->name);
->>>> -				return ERR_CAST(c);
->>>> -			}
->>>> -
->>>> -			scpd->clk[j] = c;
->>>> -		}
->>>> +		ret = init_basic_clks(pdev, scpd->clk, data->basic_clk_name);
->>>> +		if (ret)
->>>> +			return ERR_PTR(ret);
->>>
->>> Just call:
->>>
->>> 	ret = devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(basic_clocks),
->>> 				data->basic_clocks);
->>> 	if (ret)
->>> 		return ERR_PTR(ret);
->>>
->>>>  
->>>>  		genpd->name = data->name;
->>>>  		genpd->power_off = scpsys_power_off;
->>>> @@ -560,7 +528,6 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->>>>  		.ctl_offs = SPM_CONN_PWR_CON,
->>>>  		.bus_prot_mask = MT2701_TOP_AXI_PROT_EN_CONN_M |
->>>>  				 MT2701_TOP_AXI_PROT_EN_CONN_S,
->>>> -		.clk_id = {CLK_NONE},
->>>>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
->>>>  	},
->>>>  	[MT2701_POWER_DOMAIN_DISP] = {
->>>> @@ -568,7 +535,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->>>>  		.sta_mask = PWR_STATUS_DISP,
->>>>  		.ctl_offs = SPM_DIS_PWR_CON,
->>>>  		.sram_pdn_bits = GENMASK(11, 8),
->>>> -		.clk_id = {CLK_MM},
->>>> +		.basic_clk_name = {"mm"},
->>>
->>> 		.basic_clocks[] = {
->>> 			{ .id = "mm" },
->>> 		};
->>>
->>
->> Those basic clocks without given a name (name: null) would get incorrect
->> clock via clk_bulk_get(...) due to 
->>
->> /**
->>  * of_parse_clkspec() - Parse a DT clock specifier for a given device
->> node
->>  * @np: device node to parse clock specifier from
->>  * @index: index of phandle to parse clock out of. If index < 0, @name
->> is used
->>  * @name: clock name to find and parse. If name is NULL, the index is
->> used
->>
->> And the index is 0 here in this callstack
->>
->> I guess something need to be improved before we use the clk_bulk_ APIs.
->>
-> 
-> Hi Enric,
-> 
-> According to the result above, is it necessary to change the APIs or
-> maybe I should send the next version v15 first to fix other problems you
-> mentioned? Many thanks.
-> 
+Hi, I got a build error when I built an arm64 allmodconfig kernel.
 
-It is fine to send a next version without changing the APIs, it depends on the
-extra work if you are fine with the change. To be honest I didn't see the
-problem above but I think can be fixed.
+building obj-arm64-next-20200518
+
+aarch64-linux-gnu-ld: drivers/usb/host/xhci-pci.o: in function
+`xhci_pci_remove':
+/srv/src/kernel/next/obj-arm64-next-20200518/../drivers/usb/host/xhci-pci.c:411:
+undefined reference to `renesas_xhci_pci_exit'
+aarch64-linux-gnu-ld:
+/srv/src/kernel/next/obj-arm64-next-20200518/../drivers/usb/host/xhci-pci.c:411:(.text+0xd8):
+relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
+`renesas_xhci_pci_exit'
+aarch64-linux-gnu-ld: drivers/usb/host/xhci-pci.o: in function `xhci_pci_probe':
+/srv/src/kernel/next/obj-arm64-next-20200518/../drivers/usb/host/xhci-pci.c:345:
+undefined reference to `renesas_xhci_check_request_fw'
+aarch64-linux-gnu-ld:
+/srv/src/kernel/next/obj-arm64-next-20200518/../drivers/usb/host/xhci-pci.c:345:(.text+0x2298):
+relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
+`renesas_xhci_check_request_fw'
+make[1]: *** [/srv/src/kernel/next/Makefile:1126: vmlinux] Error 1
+make[1]: Target 'Image' not remade because of errors.
+make: *** [Makefile:185: __sub-make] Error 2
+make: Target 'Image' not remade because of errors.
+
+When I reverted this patch from todays next tag next-20200518 I
+managed to build.
+
 
 Cheers,
- Enric
+Anders
 
-
->>
->>>>  		.bus_prot_mask = MT2701_TOP_AXI_PROT_EN_MM_M0,
->>>>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
->>>>  	},
->>>> @@ -578,7 +545,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->>>>  		.ctl_offs = SPM_MFG_PWR_CON,
->>>>  		.sram_pdn_bits = GENMASK(11, 8),
->>>>  		.sram_pdn_ack_bits = GENMASK(12, 12),
->>>> -		.clk_id = {CLK_MFG},
->>>> +		.basic_clk_name = {"mfg"},
->>>
->>> 		.basic_clocks[] = {
->>> 			{ .id = "mfg" },
->>> 		};
->>>
->>>>  		.caps = MTK_SCPD_ACTIVE_WAKEUP,
->>>>  	},
->>>>  	[MT2701_POWER_DOMAIN_VDEC] = {
->>>> @@ -587,7 +554,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->>>>  		.ctl_offs = SPM_VDE_PWR_CON,
->>>>  		.sram_pdn_bits = GENMASK(11, 8),
->>>>  		.sram_pdn_ack_bits = GENMASK(12, 12),
->>>> -		.clk_id = {CLK_MM},
->>>> +		.basic_clk_name = {"mm"},
->>>
->>> ...
->>>
->>> [snip]
->>
->>
-> 
+> ---
+>  drivers/usb/host/xhci-pci.c | 35 ++++++++++++++++++++++++++++++++++-
+>  drivers/usb/host/xhci.h     |  1 +
+>  2 files changed, 35 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> index b6c2f5c530e3..ef513c2fb843 100644
+> --- a/drivers/usb/host/xhci-pci.c
+> +++ b/drivers/usb/host/xhci-pci.c
+> @@ -15,6 +15,7 @@
+>
+>  #include "xhci.h"
+>  #include "xhci-trace.h"
+> +#include "xhci-pci.h"
+>
+>  #define SSIC_PORT_NUM          2
+>  #define SSIC_PORT_CFG2         0x880c
+> @@ -87,7 +88,16 @@ static int xhci_pci_reinit(struct xhci_hcd *xhci, struct pci_dev *pdev)
+>
+>  static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+>  {
+> -       struct pci_dev          *pdev = to_pci_dev(dev);
+> +       struct pci_dev                  *pdev = to_pci_dev(dev);
+> +       struct xhci_driver_data         *driver_data;
+> +       const struct pci_device_id      *id;
+> +
+> +       id = pci_match_id(pdev->driver->id_table, pdev);
+> +
+> +       if (id && id->driver_data) {
+> +               driver_data = (struct xhci_driver_data *)id->driver_data;
+> +               xhci->quirks |= driver_data->quirks;
+> +       }
+>
+>         /* Look for vendor-specific quirks */
+>         if (pdev->vendor == PCI_VENDOR_ID_FRESCO_LOGIC &&
+> @@ -328,6 +338,14 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>         int retval;
+>         struct xhci_hcd *xhci;
+>         struct usb_hcd *hcd;
+> +       struct xhci_driver_data *driver_data;
+> +
+> +       driver_data = (struct xhci_driver_data *)id->driver_data;
+> +       if (driver_data && driver_data->quirks & XHCI_RENESAS_FW_QUIRK) {
+> +               retval = renesas_xhci_check_request_fw(dev, id);
+> +               if (retval)
+> +                       return retval;
+> +       }
+>
+>         /* Prevent runtime suspending between USB-2 and USB-3 initialization */
+>         pm_runtime_get_noresume(&dev->dev);
+> @@ -389,6 +407,9 @@ static void xhci_pci_remove(struct pci_dev *dev)
+>         struct xhci_hcd *xhci;
+>
+>         xhci = hcd_to_xhci(pci_get_drvdata(dev));
+> +       if (xhci->quirks & XHCI_RENESAS_FW_QUIRK)
+> +               renesas_xhci_pci_exit(dev);
+> +
+>         xhci->xhc_state |= XHCI_STATE_REMOVING;
+>
+>         if (xhci->quirks & XHCI_DEFAULT_PM_RUNTIME_ALLOW)
+> @@ -540,14 +561,26 @@ static void xhci_pci_shutdown(struct usb_hcd *hcd)
+>
+>  /*-------------------------------------------------------------------------*/
+>
+> +static const struct xhci_driver_data reneses_data = {
+> +       .quirks  = XHCI_RENESAS_FW_QUIRK,
+> +       .firmware = "renesas_usb_fw.mem",
+> +};
+> +
+>  /* PCI driver selection metadata; PCI hotplugging uses this */
+>  static const struct pci_device_id pci_ids[] = {
+> +       { PCI_DEVICE(0x1912, 0x0014),
+> +               .driver_data =  (unsigned long)&reneses_data,
+> +       },
+> +       { PCI_DEVICE(0x1912, 0x0015),
+> +               .driver_data =  (unsigned long)&reneses_data,
+> +       },
+>         /* handle any USB 3.0 xHCI controller */
+>         { PCI_DEVICE_CLASS(PCI_CLASS_SERIAL_USB_XHCI, ~0),
+>         },
+>         { /* end: all zeroes */ }
+>  };
+>  MODULE_DEVICE_TABLE(pci, pci_ids);
+> +MODULE_FIRMWARE("renesas_usb_fw.mem");
+>
+>  /* pci driver glue; this is a "new style" PCI driver module */
+>  static struct pci_driver xhci_pci_driver = {
+> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+> index 3289bb516201..4047363c7423 100644
+> --- a/drivers/usb/host/xhci.h
+> +++ b/drivers/usb/host/xhci.h
+> @@ -1873,6 +1873,7 @@ struct xhci_hcd {
+>  #define XHCI_DEFAULT_PM_RUNTIME_ALLOW  BIT_ULL(33)
+>  #define XHCI_RESET_PLL_ON_DISCONNECT   BIT_ULL(34)
+>  #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
+> +#define XHCI_RENESAS_FW_QUIRK  BIT_ULL(36)
+>
+>         unsigned int            num_active_eps;
+>         unsigned int            limit_active_eps;
+> --
+> 2.25.4
+>
