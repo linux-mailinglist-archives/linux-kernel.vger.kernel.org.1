@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819721D7EE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439C1D7EFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgERQoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 12:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgERQoP (ORCPT
+        id S1728497AbgERQo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 12:44:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37279 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728519AbgERQo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 12:44:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6344BC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:44:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w64so224133wmg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mrOVKHVJapH6kF5qReOp0wglPtw6uXIPRlbofv8HkOI=;
-        b=nSW/zmI+oIKzyOLNG6etkGbyYqHBBsA2N8whXlXs5aLplRWbKVRVZJuGjkipitkMFd
-         JpDvh6n1I6fl6OnyDNwsPT/olbSNWIvVDkOpC9T4/wi31U2gZWWAb9vaKvbqwiXWSzRE
-         /OCEBdRmoFd+eNbb5XCzC9mXeGwdFmBqmUkmzBgIlhfo5zWNUwJ7+xhAVSwwqpiTwxhR
-         YbwDxXTWPeNSRUpgsH2ZgBcUrvqn70knzY40sUTMnYGSikYPo9uylu89drqXy985LCES
-         jwguU3GVWDkHvHwoJhoQ2HH/fA+IMRHX4PXEy9HH7+Dn53Y38W//jL36zKm6iMSn9XTQ
-         JH1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mrOVKHVJapH6kF5qReOp0wglPtw6uXIPRlbofv8HkOI=;
-        b=Kn1n78eQo28yZLpKgqt5ZUPvWLQQrcclsAILMYD7vW5qsPtwuEm9J1rx3+K7XSIas4
-         eYaVgInIS0uTSTJDI/OYunrmxHwgrYGe8Qwj5MTg7X9fqCDAEjx/8czJMFPi7IYEACry
-         NwS7D93dsF3k38PJt4p9vEMWDvb4n4ScW50nxt2Ai6fJ2fWvS/0lNHPY1V6QTNaXVVk9
-         6aj2BmXSOEn0ER/Nndmv3i/ASK4II2ZAHZN6Y+Qgymi1NTtMzNECrPnCSu8xEfOqgGRh
-         1l8GwmOW77s3TkE58yfTu9g+xpdrVjcJp66qu7f3nEj9OGam3frrjOSa4xWJEmQ7QfDZ
-         IzpA==
-X-Gm-Message-State: AOAM530E/Q0s9//m8tGR31yTZAnDhV6xaeM84FG1oDgIZ1PY373ELuH5
-        sHW56mLHP092BhSSBN9CZ37wvA==
-X-Google-Smtp-Source: ABdhPJxvMfrufurokRmF+O8ESaZRzfiwWThU1ZHkuIFz5YhCwG7DhnQCN+0EO7FHTPHDCdOSTcYLjg==
-X-Received: by 2002:a1c:2e4d:: with SMTP id u74mr230711wmu.145.1589820253760;
-        Mon, 18 May 2020 09:44:13 -0700 (PDT)
-Received: from dbrazdil-macbookpro.roam.corp.google.com ([2a01:4b00:8523:2d03:4431:2de6:16f:7f90])
-        by smtp.gmail.com with ESMTPSA id e21sm125834wme.34.2020.05.18.09.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 09:44:13 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-X-Google-Original-From: David Brazdil <dbrazdil@dbrazdil-macbookpro.roam.corp.google.com>
-Date:   Mon, 18 May 2020 17:44:12 +0100
-To:     Andrew Scull <ascull@google.com>
-Cc:     David Brazdil <dbrazdil@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/14] arm64: kvm: Split hyp/switch.c to VHE/nVHE
-Message-ID: <20200518164412.coycmliijagaaw4m@dbrazdil-macbookpro.roam.corp.google.com>
-References: <20200515105841.73532-1-dbrazdil@google.com>
- <20200515105841.73532-8-dbrazdil@google.com>
- <20200518152851.GA147668@google.com>
+        Mon, 18 May 2020 12:44:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589820296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HmKG2XSLE3/J68hgnuYjwER/7zsYr5OkD9knzKGzUfo=;
+        b=h1Hrako95ydeUJYJU2z8aYgKAVidahc1fJH3QdqX9l/vLN0bM5vvi8g6i9b9lmU/odSNRO
+        OqgYlbrkCSdk9GNpu58HEmOe8BOCpsilpd9nHIRkonBRMb4c/OmesScfWZ90oTkdPJiVeJ
+        UYp4fOdL1x596SYSm0MjU95uOFk1Z+U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-b7jxYptWP_K2nQ2-TGriEg-1; Mon, 18 May 2020 12:44:54 -0400
+X-MC-Unique: b7jxYptWP_K2nQ2-TGriEg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6410C100A8ED;
+        Mon, 18 May 2020 16:44:53 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 65435797E9;
+        Mon, 18 May 2020 16:44:50 +0000 (UTC)
+Date:   Mon, 18 May 2020 12:44:49 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: next-20200514 - build issue in drivers/md/dm-zoned-target.c
+Message-ID: <20200518164449.GA24518@redhat.com>
+References: <367320.1589627953@turing-police>
+ <7bb0d1c8-b164-d5f3-0218-5c71047c3a8c@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200518152851.GA147668@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7bb0d1c8-b164-d5f3-0218-5c71047c3a8c@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 04:28:51PM +0100, Andrew Scull wrote:
-> On Fri, May 15, 2020 at 11:58:34AM +0100, David Brazdil wrote:
-> > +__kvm_nvhe_sve_load_state = sve_load_state;
-> > +__kvm_nvhe_sve_save_state = sve_save_state;
-> 
-> Building without CONFIG_ARM64_VHE leads to a linker error due to the SVE
-> functions being referenced in this list. This is caused by
-> CONFIG_ARM64_VHE disabling CONFIG_ARM64_SVE and, in turn, preventing the
-> generation of those symbols. There aren't any references from code, just
-> this file.
-> 
-> It can be resolved by having the SVE symbol aliases depend on
-> CONFIG_ARM64_SVE.
-Thanks, will fix the linker script in v3.
+On Mon, May 18 2020 at  2:25am -0400,
+Hannes Reinecke <hare@suse.de> wrote:
+
+> On 5/16/20 1:19 PM, Valdis Klētnieks wrote:
+> >Am seeing a build error in next-0514.  -0420 built OK.
+> >building a 'make allmodconfig' on a RPi4 in 32-bit mode.
+> >
+> >   MODPOST 7575 modules
+> >ERROR: modpost: "__aeabi_uldivmod" [drivers/md/dm-zoned.ko] undefined!
+> >
+> >objdump and 'make drivers/md/dm-zoned-target.s' tells
+> >me that the problem is in function dmz_fixup_devices(), near here:
+> >
+> >@ drivers/md/dm-zoned-target.c:806:             reg_dev->nr_zones = DIV_ROUND_UP(reg_dev->capacity,
+> >         ldr     r0, [r6, #56]   @ reg_dev_166->capacity, reg_dev_166->capacity
+> >         adds    r1, r3, r1      @ tmp316, _227, reg_dev_166->capacity
+> >         adc     r0, r2, r0      @ tmp315, _227, reg_dev_166->capacity
+> >         subs    r1, r1, #1      @, tmp316,
+> >@ drivers/md/dm-zoned-target.c:805:             reg_dev->zone_nr_sectors = zoned_dev->zone_nr_sectors;
+> >         strd    r2, [r6, #80]   @, reg_dev,
+> >@ drivers/md/dm-zoned-target.c:806:             reg_dev->nr_zones = DIV_ROUND_UP(reg_dev->capacity,
+> >         sbc     r0, r0, #0      @, tmp315,
+> >         bl      __aeabi_uldivmod                @
+> >@ drivers/md/dm-zoned-target.c:806:             reg_dev->nr_zones = DIV_ROUND_UP(reg_dev->capacity,
+> >         str     r1, [r6, #64]   @ tmp306, reg_dev_166->nr_zones
+> >
+> >git blame points at this commit:
+> >
+> >commit 70978208ec91d798066f4c291bc98ff914bea222
+> >Author: Hannes Reinecke <hare@suse.de>
+> >Date:   Mon May 11 10:24:30 2020 +0200
+> >
+> >     dm zoned: metadata version 2
+> >
+> >Reverting that commit lets the build complete.
+> >
+> >
+> I thought I've send a patch to fix that up; DIV_ROUND_UP() needs to
+> be changed to DIV_ROUND_UP_ULL().
+> I'll be checking and will be sending a patch if necessary.
+
+Unless I'm missing something it was fixed up with this commit last
+wednesday (13th):
+
+https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/commit/?h=dm-5.8&id=81a3a1453ec4e5da081e1395732801a600feb352
+
+
