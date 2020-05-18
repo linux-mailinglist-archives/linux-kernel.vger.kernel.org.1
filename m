@@ -2,65 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0F71D718D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675F01D719E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgERHMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:12:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51962 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgERHMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:12:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 81EEEAC52;
-        Mon, 18 May 2020 07:12:45 +0000 (UTC)
-Date:   Mon, 18 May 2020 09:12:34 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the tip tree with Linus' tree
-Message-ID: <20200518071234.GA24692@zn.tnic>
-References: <20200518151032.57d57052@canb.auug.org.au>
+        id S1727779AbgERHRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgERHRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:17:20 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A240C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:17:20 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id n18so4551823pfa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aGW79/y1sQxyNyKnYCdm7xRnlp2A+ncCgZ78AmDbDP0=;
+        b=UoMzpgXlEUtE4xe4uJZtseFzP5Ny1oiUH3PWAPrU0uwohnVsjL6+mWGVtr3ZbY62L3
+         CdEvu72849N2oUeWuGuvQsh7R2CyVghspGfDG8oIdxjSCe48IU5eP12SSasjjvjEuq0m
+         6ooxwWrlTiGPcrDQXDa8pFCA5Ee9Oq5QO4OeM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aGW79/y1sQxyNyKnYCdm7xRnlp2A+ncCgZ78AmDbDP0=;
+        b=NeFCEoXFLIlXbmTWA8zIEYVD6a/K8+vgOzeoFvoGZKnNHPz9KTS+9q6AQzGfLqRU61
+         DoQimbLM7wrk4BIMJ+JoYjrZ7cuIM5J9oMjHT/36gEmTMNyiPhkWyaBLKmD21rdLUlpy
+         6kph2GadNG2khOdQYvqP48VIV1cHYLCBK5MZeEb3gmRWYUMcQpWCDxKlFeqy5235Vc40
+         9LvIdN5+LV4YktD21dLKo953hPLR2NtxbDuDjbNKBmVsSQYPGqFGjPgXN8ri4eajJ8rI
+         U9/PmB4NsBP9dRrsXvVcQ0I+hl0otnJUtpyuc1zjLm5XWtm/clu8ODLX36XyApvrneqX
+         fNRg==
+X-Gm-Message-State: AOAM533R08iyjK8RUFFFEjSzVBoc4cbzGHXonGYtiYyk+Fb1LCMQWOD8
+        p6wdy/RYlikaJ3BKpQ6F+0AXDgBxmyI=
+X-Google-Smtp-Source: ABdhPJyv0URzVNnS1GzQydgz4Ze44LkdtRVqQhZVXcedVFYRQ2f2wxpZaMbCk5O9s+Iin1/nelLPLg==
+X-Received: by 2002:a63:4f0e:: with SMTP id d14mr13794386pgb.445.1589786239476;
+        Mon, 18 May 2020 00:17:19 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id 30sm6928590pgp.38.2020.05.18.00.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 00:17:18 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: chrome: Add cros-ec-typec mux props
+Date:   Mon, 18 May 2020 00:17:04 -0700
+Message-Id: <20200518071707.161843-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200518151032.57d57052@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 03:10:32PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the tip tree got a conflict in:
-> 
->   include/linux/compiler.h
-> 
-> between commit:
-> 
->   a9a3ed1eff36 ("x86: Fix early boot crash on gcc-10, third try")
-> 
-> from Linus' tree and commit:
-> 
->   f670269a42bf ("x86: Fix early boot crash on gcc-10, next try")
-> 
-> from the tip tree.
+Add properties for mode, orientation and USB data role switches for
+Type C connectors. When available, these will allow the Type C connector
+class port driver to configure the various switches according to USB PD
+information (like orientation, alt mode etc.) provided by the Chrome OS
+EC controller.
 
-That commit is gone in the meantime so you won't have the merge conflict
-anymore once tip/master is regenerated.
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Acked-By: Benson Leung <bleung@chromium.org>
+---
 
-Thx.
+Changes in v2:
+- Added more text to the switch descriptions, explaining their purpose,
+  and relation to the Type C connector class framework.
 
+ .../bindings/chrome/google,cros-ec-typec.yaml | 40 ++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+index 6d7396ab8bee..800c005a0e44 100644
+--- a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
++++ b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+@@ -21,7 +21,34 @@ properties:
+     const: google,cros-ec-typec
+ 
+   connector:
+-    $ref: /schemas/connector/usb-connector.yaml#
++    allOf:
++      - $ref: /schemas/connector/usb-connector.yaml#
++      - type: object
++        properties:
++          mode-switch:
++            description: Reference to a DT node for the USB Type C Multiplexer
++              for this connector. This switch controls the data lines routing
++              for this connector for various operation modes, including
++              Alternate Modes. This switch is assumed registered with the Type C
++              connector class framework by its driver. The Type C connector
++              class framework assumes that the mode switch property uses this
++              name.
++
++          orientation-switch:
++            description: Reference to a DT node for the USB Type C orientation
++              switch for this connector. This switch controls routing the
++              correct data pairs depending on the cable plug orientation from
++              this connector to the USB / Alternate Mode controllers. This
++              switch is assumed registered with the Type C connector class
++              framework by its driver. The Type C connector class framework
++              assumes that the orientation switch property uses this name.
++
++          usb-role-switch:
++            description: Reference to a DT node for the USB Data role switch
++              for this connector. This switch is assumed registered with the
++              Type C connector class framework by its driver. The Type C
++              connector class framework assumes that the USB role switch
++              property uses this name.
+ 
+ required:
+   - compatible
+@@ -49,6 +76,17 @@ examples:
+             data-role = "dual";
+             try-power-role = "source";
+           };
++
++          connector@1 {
++            compatible = "usb-c-connector";
++            reg = <1>;
++            power-role = "dual";
++            data-role = "host";
++            try-power-role = "source";
++            mode-switch = <&typec_mux>;
++            orientation-switch = <&typec_orientation_switch>;
++            usb-role-switch = <&typec_mux>;
++          };
+         };
+       };
+     };
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2.761.g0e0b3e54be-goog
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
