@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3635F1D85DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA571D8661
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387780AbgERSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
+        id S1729835AbgERRpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729686AbgERRvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:41 -0400
+        id S1729803AbgERRot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E19920674;
-        Mon, 18 May 2020 17:51:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEA842083E;
+        Mon, 18 May 2020 17:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824299;
-        bh=NwoxlKm386/Ta1pu7y0OFbs9BZsszEG+foliAgIk/cs=;
+        s=default; t=1589823888;
+        bh=urpJaHN2EIxnumCX9RaMskzOc4V4jk6eMrt58IG4yMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lln/scyE6mScGSF3VwfaTkDGL4bPz04ABbif1H4BcMQvCzV2sQMzdOB7hUdrSwRU0
-         y7n70x6phYqDkpV5h0JZ78YbAPpt3sTGK6L1xsG5+TSejqD+qelB8rTV2zHgvoE5bF
-         6a1iqAV1FuHQsSAEOzNkaGJDeZai2E3r60jqrbHU=
+        b=r11vAlcpxpDYlORQrGasE5xY0aPvPMvQY4rNh3P7FUMuTl7PsUiLMgdQ1/m2VbJI6
+         5O0DVcoxNp1gYWygb5zYKH+qlepG3XV69cctWU+9Ifa2zGhEVNQurWQzOra1iO6PWm
+         H3imyApIYPvWWBg4ncrlfVyNi3cS156tQ1l72EwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/80] nfs: fscache: use timespec64 in inode auxdata
+        stable@vger.kernel.org, Kyungtae Kim <kt0755@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.9 77/90] USB: gadget: fix illegal array access in binding with UDC
 Date:   Mon, 18 May 2020 19:36:55 +0200
-Message-Id: <20200518173457.878160967@linuxfoundation.org>
+Message-Id: <20200518173506.941393298@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,115 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Kyungtae Kim <kt0755@gmail.com>
 
-[ Upstream commit 6e31ded6895adfca97211118cc9b72236e8f6d53 ]
+commit 15753588bcd4bbffae1cca33c8ced5722477fe1f upstream.
 
-nfs currently behaves differently on 32-bit and 64-bit kernels regarding
-the on-disk format of nfs_fscache_inode_auxdata.
+FuzzUSB (a variant of syzkaller) found an illegal array access
+using an incorrect index while binding a gadget with UDC.
 
-That format should really be the same on any kernel, and we should avoid
-the 'timespec' type in order to remove that from the kernel later on.
+Reference: https://www.spinics.net/lists/linux-usb/msg194331.html
 
-Using plain 'timespec64' would not be good here, since that includes
-implied padding and would possibly leak kernel stack data to the on-disk
-format on 32-bit architectures.
+This bug occurs when a size variable used for a buffer
+is misused to access its strcpy-ed buffer.
+Given a buffer along with its size variable (taken from user input),
+from which, a new buffer is created using kstrdup().
+Due to the original buffer containing 0 value in the middle,
+the size of the kstrdup-ed buffer becomes smaller than that of the original.
+So accessing the kstrdup-ed buffer with the same size variable
+triggers memory access violation.
 
-struct __kernel_timespec would work as a replacement, but open-coding
-the two struct members in nfs_fscache_inode_auxdata makes it more
-obvious what's going on here, and keeps the current format for 64-bit
-architectures.
+The fix makes sure no zero value in the buffer,
+by comparing the strlen() of the orignal buffer with the size variable,
+so that the access to the kstrdup-ed buffer is safe.
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BUG: KASAN: slab-out-of-bounds in gadget_dev_desc_UDC_store+0x1ba/0x200
+drivers/usb/gadget/configfs.c:266
+Read of size 1 at addr ffff88806a55dd7e by task syz-executor.0/17208
+
+CPU: 2 PID: 17208 Comm: syz-executor.0 Not tainted 5.6.8 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xce/0x128 lib/dump_stack.c:118
+ print_address_description.constprop.4+0x21/0x3c0 mm/kasan/report.c:374
+ __kasan_report+0x131/0x1b0 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_load1_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+ gadget_dev_desc_UDC_store+0x1ba/0x200 drivers/usb/gadget/configfs.c:266
+ flush_write_buffer fs/configfs/file.c:251 [inline]
+ configfs_write_file+0x2f1/0x4c0 fs/configfs/file.c:283
+ __vfs_write+0x85/0x110 fs/read_write.c:494
+ vfs_write+0x1cd/0x510 fs/read_write.c:558
+ ksys_write+0x18a/0x220 fs/read_write.c:611
+ __do_sys_write fs/read_write.c:623 [inline]
+ __se_sys_write fs/read_write.c:620 [inline]
+ __x64_sys_write+0x73/0xb0 fs/read_write.c:620
+ do_syscall_64+0x9e/0x510 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Signed-off-by: Kyungtae Kim <kt0755@gmail.com>
+Reported-and-tested-by: Kyungtae Kim <kt0755@gmail.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200510054326.GA19198@pizza01
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/nfs/fscache-index.c |  6 ++++--
- fs/nfs/fscache.c       | 18 ++++++++++++------
- fs/nfs/fscache.h       |  8 +++++---
- 3 files changed, 21 insertions(+), 11 deletions(-)
+ drivers/usb/gadget/configfs.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/nfs/fscache-index.c b/fs/nfs/fscache-index.c
-index 666415d13d521..b7ca0b85b1fe2 100644
---- a/fs/nfs/fscache-index.c
-+++ b/fs/nfs/fscache-index.c
-@@ -88,8 +88,10 @@ enum fscache_checkaux nfs_fscache_inode_check_aux(void *cookie_netfs_data,
- 		return FSCACHE_CHECKAUX_OBSOLETE;
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -259,6 +259,9 @@ static ssize_t gadget_dev_desc_UDC_store
+ 	char *name;
+ 	int ret;
  
- 	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
--	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
-+	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
-+	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
-+	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
-+	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
- 
- 	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
- 		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index b931169c2bb24..0a4d6b35545a3 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -245,8 +245,10 @@ void nfs_fscache_init_inode(struct inode *inode)
- 		return;
- 
- 	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
--	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
-+	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
-+	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
-+	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
-+	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
- 
- 	if (NFS_SERVER(&nfsi->vfs_inode)->nfs_client->rpc_ops->version == 4)
- 		auxdata.change_attr = inode_peek_iversion_raw(&nfsi->vfs_inode);
-@@ -270,8 +272,10 @@ void nfs_fscache_clear_inode(struct inode *inode)
- 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
- 
- 	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
--	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
-+	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
-+	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
-+	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
-+	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
- 	fscache_relinquish_cookie(cookie, &auxdata, false);
- 	nfsi->fscache = NULL;
- }
-@@ -312,8 +316,10 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
- 		return;
- 
- 	memset(&auxdata, 0, sizeof(auxdata));
--	auxdata.mtime = timespec64_to_timespec(nfsi->vfs_inode.i_mtime);
--	auxdata.ctime = timespec64_to_timespec(nfsi->vfs_inode.i_ctime);
-+	auxdata.mtime_sec  = nfsi->vfs_inode.i_mtime.tv_sec;
-+	auxdata.mtime_nsec = nfsi->vfs_inode.i_mtime.tv_nsec;
-+	auxdata.ctime_sec  = nfsi->vfs_inode.i_ctime.tv_sec;
-+	auxdata.ctime_nsec = nfsi->vfs_inode.i_ctime.tv_nsec;
- 
- 	if (inode_is_open_for_write(inode)) {
- 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
-diff --git a/fs/nfs/fscache.h b/fs/nfs/fscache.h
-index 6363ea9568581..89d2f956668f2 100644
---- a/fs/nfs/fscache.h
-+++ b/fs/nfs/fscache.h
-@@ -66,9 +66,11 @@ struct nfs_fscache_key {
-  * cache object.
-  */
- struct nfs_fscache_inode_auxdata {
--	struct timespec	mtime;
--	struct timespec	ctime;
--	u64		change_attr;
-+	s64	mtime_sec;
-+	s64	mtime_nsec;
-+	s64	ctime_sec;
-+	s64	ctime_nsec;
-+	u64	change_attr;
- };
- 
- /*
--- 
-2.20.1
-
++	if (strlen(page) < len)
++		return -EOVERFLOW;
++
+ 	name = kstrdup(page, GFP_KERNEL);
+ 	if (!name)
+ 		return -ENOMEM;
 
 
