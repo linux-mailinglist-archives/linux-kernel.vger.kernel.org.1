@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DD11D8405
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB9C1D811F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbgERSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52512 "EHLO mail.kernel.org"
+        id S1729873AbgERRpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732887AbgERSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:05:05 -0400
+        id S1728704AbgERRpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2D2420715;
-        Mon, 18 May 2020 18:05:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BCF1207C4;
+        Mon, 18 May 2020 17:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825105;
-        bh=c+kKypr0TA5TgWuMuZZZ+dMSCVKlESVb8rQtUPAIsOI=;
+        s=default; t=1589823908;
+        bh=JLwt2QAOm1wDlWCfZPVnnYPNnyM3OYsA0xWfyD8tsvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1tDqJwRDmAenEyQ2Vk4bXWYuFm7YMKC8/w3jzaKGFV2cbVDO4BZRJE+ELQYetwqx1
-         3EtQbxX+Zp0fYkyg267cq+sDiEfgCdzKCox84Wxc6oBkizAgHvuA0deTCmaBn/G74W
-         m70fTIxO4aULDcOSqLoHK8ancvcZxnec6Iw7Gd9E=
+        b=H7oRoD3nN1ZI5dsn0VaDinOOFQ31xvK6Cv/nW5r0wKCnX2BRTJOqUXwTlZHe0sEkY
+         Bkm0okRwbg8Wv7GVbjxHcN60oqSBP/Q0/7RzArGqCe7cNmgHeU/xea7i6wN9uOgmgX
+         Emu/2xd2u9ZS4EWFT0C6xmpi8r6UyqoUFQSV6H0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 132/194] gcc-10: mark more functions __init to avoid section mismatch warnings
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.9 84/90] usb: gadget: legacy: fix error return code in gncm_bind()
 Date:   Mon, 18 May 2020 19:37:02 +0200
-Message-Id: <20200518173542.433611594@linuxfoundation.org>
+Message-Id: <20200518173508.251705593@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-commit e99332e7b4cda6e60f5b5916cf9943a79dbef902 upstream.
+commit e27d4b30b71c66986196d8a1eb93cba9f602904a upstream.
 
-It seems that for whatever reason, gcc-10 ends up not inlining a couple
-of functions that used to be inlined before.  Even if they only have one
-single callsite - it looks like gcc may have decided that the code was
-unlikely, and not worth inlining.
+If 'usb_otg_descriptor_alloc()' fails, we must return a
+negative error code -ENOMEM, not 0.
 
-The code generation difference is harmless, but caused a few new section
-mismatch errors, since the (now no longer inlined) function wasn't in
-the __init section, but called other init functions:
-
-   Section mismatch in reference from the function kexec_free_initrd() to the function .init.text:free_initrd_mem()
-   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memremap()
-   Section mismatch in reference from the function tpm2_calc_event_log_size() to the function .init.text:early_memunmap()
-
-So add the appropriate __init annotation to make modpost not complain.
-In both cases there were trivially just a single callsite from another
-__init function.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 1156e91dd7cc ("usb: gadget: ncm: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/firmware/efi/tpm.c |    2 +-
- init/initramfs.c           |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/legacy/ncm.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/tpm.c
-+++ b/drivers/firmware/efi/tpm.c
-@@ -16,7 +16,7 @@
- int efi_tpm_final_log_size;
- EXPORT_SYMBOL(efi_tpm_final_log_size);
+--- a/drivers/usb/gadget/legacy/ncm.c
++++ b/drivers/usb/gadget/legacy/ncm.c
+@@ -162,8 +162,10 @@ static int gncm_bind(struct usb_composit
+ 		struct usb_descriptor_header *usb_desc;
  
--static int tpm2_calc_event_log_size(void *data, int count, void *size_info)
-+static int __init tpm2_calc_event_log_size(void *data, int count, void *size_info)
- {
- 	struct tcg_pcr_event2_head *header;
- 	int event_size, size = 0;
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -542,7 +542,7 @@ void __weak free_initrd_mem(unsigned lon
- }
- 
- #ifdef CONFIG_KEXEC_CORE
--static bool kexec_free_initrd(void)
-+static bool __init kexec_free_initrd(void)
- {
- 	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
- 	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
