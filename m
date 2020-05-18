@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6711D892E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C87C1D8937
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgERUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgERUbD (ORCPT
+        id S1727009AbgERUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:33:23 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:46978 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgERUdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:31:03 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407B0C061A0C;
-        Mon, 18 May 2020 13:31:03 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.93)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1jamOZ-00FkWP-9n; Mon, 18 May 2020 22:29:55 +0200
-Message-ID: <8d7a3bed242ac9d3ec55a4c97e008081230f1f6d.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Steve deRosier <derosier@gmail.com>,
-        Ben Greear <greearb@candelatech.com>, jeyu@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, rostedt@goodmis.org,
-        mingo@redhat.com, aquini@redhat.com, cai@lca.pw, dyoung@redhat.com,
-        bhe@redhat.com, peterz@infradead.org, tglx@linutronix.de,
-        gpiccoli@canonical.com, pmladek@suse.com,
-        Takashi Iwai <tiwai@suse.de>, schlad@suse.de,
-        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
-        daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        ath10k@lists.infradead.org
-Date:   Mon, 18 May 2020 22:29:53 +0200
-In-Reply-To: <20200518132828.553159d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20200515212846.1347-1-mcgrof@kernel.org>
-         <20200515212846.1347-13-mcgrof@kernel.org>
-         <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
-         <20200518165154.GH11244@42.do-not-panic.com>
-         <4ad0668d-2de9-11d7-c3a1-ad2aedd0c02d@candelatech.com>
-         <20200518170934.GJ11244@42.do-not-panic.com>
-         <abf22ef3-93cb-61a4-0af2-43feac6d7930@candelatech.com>
-         <20200518171801.GL11244@42.do-not-panic.com>
-         <CALLGbR+ht2V3m5f-aUbdwEMOvbsX8ebmzdWgX4jyWTbpHrXZ0Q@mail.gmail.com>
-         <20200518190930.GO11244@42.do-not-panic.com>
-         <e3d978c8fa6a4075f12e843548d41e2c8ab537d1.camel@sipsolutions.net>
-         <20200518132828.553159d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        Mon, 18 May 2020 16:33:22 -0400
+Received: by mail-il1-f193.google.com with SMTP id w18so11204998ilm.13;
+        Mon, 18 May 2020 13:33:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aCdfZ7ueYmEHhf27ECx3pl3zz6CbgFMjwskwT2kCHRE=;
+        b=c6ccFKzM1au209IPK3k0fg/V6jXBqQly2G7SGHEigdfijov6p9AxSAgmZ1vKZvraxq
+         KrhYd/ZpEzqzwYmEdJ/o+Y/unOnCl5oXBsYD+P47TIAN6sa+1lea+vpmKA5GsCRxoqfj
+         0XCZxssUrFZlxYCRKDoYGH7N5+zTdBV53mt0Dz5wuWvwRKx+6i68SoF1Y/wSRZS0MKvo
+         rBnGLTtxY4FfMsLgIJGOYS1JkWYsKs87kUBt/4zj1c+z6wL+nkg3AbQ7lpmf+x5uqhPX
+         IH+jnW2bD1EUSwbF5MPgseWFU8J22UWjX22Z3NPsKa3SyEtBwiTQqbOSb/E9uV5u3jKO
+         Rq9Q==
+X-Gm-Message-State: AOAM533+/Y9oRLw4ii58lWK+ZF0BtQ6dagcNe/X5kGn1yWI8CBAWjDpp
+        xnPjIwnqsIUYc4ZjlP772Q==
+X-Google-Smtp-Source: ABdhPJwGNhQsjXHbVcG/RCJvvyF1a7+gc39oF1lqupbQlZeHsmLopWJZSzTWyAp5EdP5nZruQOvORg==
+X-Received: by 2002:a92:4909:: with SMTP id w9mr18358517ila.302.1589834001709;
+        Mon, 18 May 2020 13:33:21 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id e19sm4266220iob.1.2020.05.18.13.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 13:33:21 -0700 (PDT)
+Received: (nullmailer pid 31386 invoked by uid 1000);
+        Mon, 18 May 2020 20:33:19 -0000
+Date:   Mon, 18 May 2020 14:33:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/12] dt-bindings: i2c: dw: Add Baikal-T1 SoC I2C
+ controller
+Message-ID: <20200518203319.GA14243@bogus>
+References: <20200306132001.1B875803087C@mail.baikalelectronics.ru>
+ <20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru>
+ <20200510095019.20981-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510095019.20981-4-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-18 at 13:28 -0700, Jakub Kicinski wrote:
-> On Mon, 18 May 2020 21:25:09 +0200 Johannes Berg wrote:
-> > It's pretty clear, but even then, first of all I doubt this is the case
-> > for many of the places that you've sprinkled the annotation on, and
-> > secondly it actually hides useful information.
-> > 
-> > Regardless of the support issue, I think this hiding of information is
-> > also problematic.
-> > 
-> > I really think we'd all be better off if you just made a sysfs file (I
-> > mistyped debugfs in some other email, sorry, apparently you didn't see
-> > the correction in time) that listed which device(s) crashed and how many
-> > times. That would actually be useful. Because honestly, if a random
-> > device crashed for some random reason, that's pretty much a non-event.
-> > If it keeps happening, then we might even want to know about it.
+On Sun, May 10, 2020 at 12:50:09PM +0300, Serge Semin wrote:
+> Add the "baikal,bt1-sys-i2c" compatible string to the DW I2C binding and
+> make sure the reg property isn't required in this case because the
+> controller is embedded into the Baikal-T1 System Controller. The rest of
+> the DW APB I2C properties are compatible and can be freely used to describe
+> the Baikal-T1 I2C controller dts-node.
+
+Is there not a sub-range of the system controller with the I2C 
+registers? I'd assume there is, so you can still have 'reg' even if 
+Linux doesn't use it (currently).
+
 > 
-> Johannes - have you seen devlink health? I think we should just use
-> that interface, since it supports all the things you're requesting,
-> rather than duplicate it in sysfs.
-
-I haven't, and I'm glad to hear that's there, sounds good!
-
-I suspect that Luis wants something more generic though, that isn't just
-applicable to netdevices, unless devlink grew some kind of non-netdev
-stuff while I wasn't looking? :)
-
-johannes
-
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Wolfram Sang <wsa@the-dreams.de>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: linux-mips@vger.kernel.org
+> 
+> ---
+> 
+> Rob, I had to remove your acked-by tag because of the changes introduced
+> in v2 of the patch.
+> 
+> Changelog v2:
+> - Make the reg property being optional if it's Baikal-T1 System I2C DT
+>   node.
+> ---
+>  .../devicetree/bindings/i2c/snps,designware-i2c.yaml | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> index 8d4e5fccbd1c..579964098eb9 100644
+> --- a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+> @@ -21,6 +21,15 @@ allOf:
+>        properties:
+>          reg:
+>            maxItems: 1
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          not:
+> +            contains:
+> +              const: baikal,bt1-sys-i2c
+> +    then:
+> +      required:
+> +        - reg
+>  
+>  properties:
+>    compatible:
+> @@ -31,6 +40,8 @@ properties:
+>          items:
+>            - const: mscc,ocelot-i2c
+>            - const: snps,designware-i2c
+> +      - description: Baikal-T1 SoC System I2C controller
+> +        const: baikal,bt1-sys-i2c
+>  
+>    reg:
+>      minItems: 1
+> @@ -98,7 +109,6 @@ unevaluatedProperties: false
+>  
+>  required:
+>    - compatible
+> -  - reg
+>    - "#address-cells"
+>    - "#size-cells"
+>    - interrupts
+> -- 
+> 2.25.1
+> 
