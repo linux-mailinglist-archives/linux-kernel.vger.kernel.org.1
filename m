@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B161D871C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF5D1D81DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388041AbgERS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37618 "EHLO mail.kernel.org"
+        id S1728982AbgERRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728478AbgERRlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:41:20 -0400
+        id S1730330AbgERRv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E03420715;
-        Mon, 18 May 2020 17:41:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 188C320674;
+        Mon, 18 May 2020 17:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823679;
-        bh=+YDyGxiPU6HgZ0QqhhHYusz2iCtZUh4TaMWN612TJMw=;
+        s=default; t=1589824289;
+        bh=t3npKBEsuRcAzaeEdhUZ+UJDeNrUl67D2yV/RLVnfT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JckdDQRK0XOTiQLh0lw7zs+lB9Rg7zV49bx/07PuUZHq8Rl1mowMMFD8uHKjQ+43s
-         bCiQQOZr4xxS9hJ16iuUxmPeUpP1/cBa4uHagVBv91DIUpRRBrorqP4sPUh5JXPNbp
-         KEOMABYNK4wckbr7UT0b/6TcCNERwX9b9IiB1fN8=
+        b=W1jpyDVCSdPt1rWgch2fCXfS2otQ1mvhUvMOTxyJU7pSxq8BilIo8gUpOQm0kK1lk
+         7uBYzDsbtr3Jzg/MajHQgi1iwrlLsz+pmOlqpekewxBBZx7LvBs9NqrG4lBKgZ5CbT
+         jsjWfS1VGFcLdkZarypt4s6Vfj/t4azvBMzwPtk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.4 79/86] usb: gadget: net2272: Fix a memory leak in an error handling path in net2272_plat_probe()
-Date:   Mon, 18 May 2020 19:36:50 +0200
-Message-Id: <20200518173506.597367557@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 33/80] i40iw: Fix error handling in i40iw_manage_arp_cache()
+Date:   Mon, 18 May 2020 19:36:51 +0200
+Message-Id: <20200518173457.154389444@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit ccaef7e6e354fb65758eaddd3eae8065a8b3e295 upstream.
+[ Upstream commit 37e31d2d26a4124506c24e95434e9baf3405a23a ]
 
-'dev' is allocated in 'net2272_probe_init()'. It must be freed in the error
-handling path, as already done in the remove function (i.e.
-'net2272_plat_remove()')
+The i40iw_arp_table() function can return -EOVERFLOW if
+i40iw_alloc_resource() fails so we can't just test for "== -1".
 
-Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4e9042e647ff ("i40iw: add hw and utils files")
+Link: https://lore.kernel.org/r/20200422092211.GA195357@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/net2272.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/hw/i40iw/i40iw_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2670,6 +2670,8 @@ net2272_plat_probe(struct platform_devic
-  err_req:
- 	release_mem_region(base, len);
-  err:
-+	kfree(dev);
-+
- 	return ret;
- }
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+index 55a1fbf0e670c..ae8b97c306657 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_hw.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+@@ -534,7 +534,7 @@ void i40iw_manage_arp_cache(struct i40iw_device *iwdev,
+ 	int arp_index;
  
+ 	arp_index = i40iw_arp_table(iwdev, ip_addr, ipv4, mac_addr, action);
+-	if (arp_index == -1)
++	if (arp_index < 0)
+ 		return;
+ 	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
+ 	if (!cqp_request)
+-- 
+2.20.1
+
 
 
