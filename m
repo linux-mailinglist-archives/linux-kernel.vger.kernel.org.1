@@ -2,78 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1421D7724
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F931D7733
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgERLcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726585AbgERLcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:32:14 -0400
-Received: from ziggy.de (unknown [213.195.113.243])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 003E220842;
-        Mon, 18 May 2020 11:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589801533;
-        bh=hRLEeBysdZ6kFgUDeK0lA09a2o6jYmHQePruxEGS3qk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDbdd/TVoB29vYhR7SyvYdqoXqfsSo2Dhjv1/4o2cftfqpn5Xaa3rgIATVBpxnbOm
-         2wWJehgaWj6C7SD9IMWELUnHRGQLjb0eA7KD3DxJR5IAeRhGY37WNwjGdPZcqxTJrf
-         jB4XfDFEeYVyy06Uiyw6gx9eNly0gV+QEs0P36Ys=
-From:   matthias.bgg@kernel.org
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     mtk01761 <wendell.lin@mediatek.com>, devicetree@vger.kernel.org,
-        Allison Randal <allison@lohutok.net>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 4/4] arm64: dts: mt6797: Fix mmsys node name
-Date:   Mon, 18 May 2020 13:31:56 +0200
-Message-Id: <20200518113156.25009-4-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518113156.25009-1-matthias.bgg@kernel.org>
-References: <20200518113156.25009-1-matthias.bgg@kernel.org>
+        id S1726992AbgERLdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgERLdz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:33:55 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1EDC061A0C;
+        Mon, 18 May 2020 04:33:55 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b8so4660313pgi.11;
+        Mon, 18 May 2020 04:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eJccfybN0sdNJ8ylX53cDwC7dY9jWBu+I0/w3Xw+cBs=;
+        b=dhzh1omwrLM8jvSd0mWoUvTHmS4XEDbVWxMoTMADnXAKl3vN8Vx+B1sr4yx8mpwhN8
+         ERGpklHuqHhD7nk+hCZ6OD5cAEt1Q4kw+ePgxqT9Aa+eZT+Pf92cktTooIV4J4zrYVzK
+         GEwdlt9w1w6jQPJA2UB83YNy2B8J+lyYRfBcsXWSvI+VoyEzgjnp2/tNXESdBC2s0iVE
+         nvTsnGj4U40Yqdmkxqpq6Ow5jtHIWMuPxYMTahWTbGLLh42LHaNrB7Bzm2KTMxXfvQ53
+         +qPfPP2unWxuvvdjHxPdJU9VWELTuPyXY1LUwCAdDFYvJ+9Of06RfW7ltfDlwpc9rGVi
+         5NjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eJccfybN0sdNJ8ylX53cDwC7dY9jWBu+I0/w3Xw+cBs=;
+        b=jw5Gvc2dWAVM3kOXjqy6sPebmb2jpeiePPVgF3usdTvDlEIs4FGDckA4z3Hm6yPNwR
+         byf0p1FaNDcJw/1A+Z2zok2xZbw6DiHB7OsEkBwT1+efz5SAIINtZqek1r0WW2GojWrC
+         2z2/3JdEKgdLiyDNpvuGETVXIrhMN98gnJw7yZpzW78a3t2W4D39FyYGJXP2Vht8YP6x
+         BSuxFN7Inuwxs/slJ2Tpc4wXxpWjdme1GG8Gq3l6XHlIcsa+HdjEPPBEirGOOEaiQDUy
+         25Eh+D7Br3C+efh/ZTU5wCl1RUbIdQYQar3wcy8TCzTwMu9eQGHG+7nssYbOa8fogZp9
+         ac5Q==
+X-Gm-Message-State: AOAM530lDtwHam4UZFNDtTnmncIZ+JhvnH8J5mdGBrHCUkr9Q/U7JIIO
+        6NHFc4qwJj8dabJ2KunUOxee4aTWF4agBUZ0n/X2kZkD5As=
+X-Google-Smtp-Source: ABdhPJzvOKa+Hpz8yWlRZuCdRSLjZynM4FloBpo5HWvOJMO9MDeg+BZQ1TwU24yvRdCHiAzMpk5JcPujLByGvphCoag=
+X-Received: by 2002:a62:5ec7:: with SMTP id s190mr15951343pfb.130.1589801634593;
+ Mon, 18 May 2020 04:33:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1589798090-11136-1-git-send-email-agordeev@linux.ibm.com>
+In-Reply-To: <1589798090-11136-1-git-send-email-agordeev@linux.ibm.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 May 2020 14:33:43 +0300
+Message-ID: <CAHp75VdM2yrpd2d3pK2RkmbhF3yiM4=fiTXL4i3yu3AxV3wY-A@mail.gmail.com>
+Subject: Re: [PATCH RESEND] lib: fix bitmap_parse() on 64-bit big endian archs
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org, Stable <stable@vger.kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Amritha Nambiar <amritha.nambiar@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Tobin C . Harding" <tobin@kernel.org>,
+        Vineet Gupta <vineet.gupta1@synopsys.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <matthias.bgg@gmail.com>
+On Mon, May 18, 2020 at 1:40 PM Alexander Gordeev
+<agordeev@linux.ibm.com> wrote:
+>
+> Commit 2d6261583be0 ("lib: rework bitmap_parse()") does
+> not take into account order of halfwords on 64-bit big
+> endian architectures.
 
-Node names are supposed to match the class of the device. The
-mmsys node is a syscon as it provides more then just a clock controller.
-Update the name.
+Thanks for report and the patch!
 
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Did it work before? Can we have a test case for that that we will see
+the failure?
 
----
+> Fixes: 2d6261583be0 ("lib: rework bitmap_parse()")
+> Cc: stable@vger.kernel.org
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Amritha Nambiar <amritha.nambiar@intel.com>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Miklos Szeredi <mszeredi@redhat.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: "Tobin C . Harding" <tobin@kernel.org>
+> Cc: Vineet Gupta <vineet.gupta1@synopsys.com>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> ---
+>  lib/bitmap.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 89260aa..a725e46 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -717,6 +717,19 @@ static const char *bitmap_get_x32_reverse(const char *start,
+>         return end;
+>  }
+>
+> +#if defined(__BIG_ENDIAN) && defined(CONFIG_64BIT)
+> +static void save_x32_chunk(unsigned long *maskp, u32 chunk, int chunk_idx)
+> +{
+> +       maskp += (chunk_idx / 2);
+> +       ((u32 *)maskp)[(chunk_idx & 1) ^ 1] = chunk;
+> +}
+> +#else
+> +static void save_x32_chunk(unsigned long *maskp, u32 chunk, int chunk_idx)
+> +{
+> +       ((u32 *)maskp)[chunk_idx] = chunk;
+> +}
+> +#endif
+> +
+>  /**
+>   * bitmap_parse - convert an ASCII hex string into a bitmap.
+>   * @start: pointer to buffer containing string.
+> @@ -738,7 +751,8 @@ int bitmap_parse(const char *start, unsigned int buflen,
+>  {
+>         const char *end = strnchrnul(start, buflen, '\n') - 1;
+>         int chunks = BITS_TO_U32(nmaskbits);
+> -       u32 *bitmap = (u32 *)maskp;
+> +       int chunk_idx = 0;
+> +       u32 chunk;
+>         int unset_bit;
+>
+>         while (1) {
+> @@ -749,9 +763,11 @@ int bitmap_parse(const char *start, unsigned int buflen,
+>                 if (!chunks--)
+>                         return -EOVERFLOW;
+>
+> -               end = bitmap_get_x32_reverse(start, end, bitmap++);
+> +               end = bitmap_get_x32_reverse(start, end, &chunk);
+>                 if (IS_ERR(end))
+>                         return PTR_ERR(end);
+> +
+> +               save_x32_chunk(maskp, chunk, chunk_idx++);
+>         }
+>
+>         unset_bit = (BITS_TO_U32(nmaskbits) - chunks) * 32;
+> --
+> 1.8.3.1
+>
 
- arch/arm64/boot/dts/mediatek/mt6797.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6797.dtsi b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-index 136ef9527a0d..3efd032481ce 100644
---- a/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-@@ -233,7 +233,7 @@ uart3: serial@11005000 {
- 		status = "disabled";
- 	};
- 
--	mmsys: mmsys_config@14000000 {
-+	mmsys: syscon@14000000 {
- 		compatible = "mediatek,mt6797-mmsys", "syscon";
- 		reg = <0 0x14000000 0 0x1000>;
- 		#clock-cells = <1>;
 -- 
-2.26.2
-
+With Best Regards,
+Andy Shevchenko
