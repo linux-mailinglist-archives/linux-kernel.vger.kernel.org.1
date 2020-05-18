@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44CC1D7FAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183021D7FBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgERRJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:09:18 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42349 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgERRJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:09:18 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jajGI-00029G-Ff; Mon, 18 May 2020 17:09:10 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/i915: fix incorrect return of an error status
-Date:   Mon, 18 May 2020 18:09:10 +0100
-Message-Id: <20200518170910.58292-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728431AbgERRJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727006AbgERRJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:09:39 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09D96207E8;
+        Mon, 18 May 2020 17:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589821779;
+        bh=n3Jpm9TY854YSFMuLHwI+o4mk5x9P1AZ1cqMTatvLiQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V8L67bWuzL7d4qlbk48Otx7KYfhX0YF5j+C/FGzKYy7zntJaLwj/00MxWZCRYu2aR
+         XIPzulnbJQY2ZCLWNImokFU8DgFzTt/RrzaMWPM28+kKmeRqyQ7uUlq5ynve8p7Hxt
+         jU5kYqCUHm6B0xu6x5HEnbPzhPAVedwMsH5HctNs=
+Date:   Mon, 18 May 2020 18:09:34 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     mark.rutland@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2] arm64/cpufeature: Drop open encodings while
+ extracting parange
+Message-ID: <20200518170934.GT32394@willie-the-truck>
+References: <1589360614-1164-1-git-send-email-anshuman.khandual@arm.com>
+ <20200518165958.GS32394@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518165958.GS32394@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, May 18, 2020 at 05:59:59PM +0100, Will Deacon wrote:
+> On Wed, May 13, 2020 at 02:33:34PM +0530, Anshuman Khandual wrote:
+> > Currently there are multiple instances of parange feature width mask open
+> > encodings while fetching it's value. Even the width mask value (0x7) itself
+> > is not accurate. It should be (0xf) per ID_AA64MMFR0_EL1.PARange[3:0] as in
+> > ARM ARM (0487F.a). Replace them with cpuid_feature_extract_unsigned_field()
+> > which can extract given standard feature (4 bits width i.e 0xf mask) field.
+> > 
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: James Morse <james.morse@arm.com>
+> > Cc: kvmarm@lists.cs.columbia.edu
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > 
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> > Changes in V2:
+> > 
+> > - Used cpuid_feature_extract_unsigned_field() per Mark
+> > 
+> > Changes in V1: (https://patchwork.kernel.org/patch/11541913/)
+> > 
+> >  arch/arm64/kernel/cpufeature.c |  3 ++-
+> >  arch/arm64/kvm/reset.c         | 11 ++++++++---
+> >  2 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> Acked-by: Will Deacon <will@kernel.org>
+> 
+> I'm assuming Marc will take this, but let me know if it should go via arm64
+> instead (where we have a bunch of other cpufeature stuff queued).
 
-Currently when a call to intel_atomic_get_dbuf_state fails the
-error value being returns is a potentially uninitialized value
-in variable ret.  Fix this by returning the error value of
-new_dbuf_state.
+Hmm, but having just spotted [1], it looks like we might need a bit of
+co-ordination here. Marc?
 
-Addresses-Coverity: ("Uninitialized scalar value")
-Fixes: 3cf43cdc63fb ("drm/i915: Introduce proper dbuf state")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/i915/intel_pm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Will
 
-diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index a21e36ed1a77..762a5184fc69 100644
---- a/drivers/gpu/drm/i915/intel_pm.c
-+++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -5917,7 +5917,7 @@ skl_ddb_add_affected_pipes(struct intel_atomic_state *state)
- 
- 		new_dbuf_state = intel_atomic_get_dbuf_state(state);
- 		if (IS_ERR(new_dbuf_state))
--			return ret;
-+			return PTR_ERR(new_dbuf_state);
- 
- 		old_dbuf_state = intel_atomic_get_old_dbuf_state(state);
- 
--- 
-2.25.1
-
+[1] https://lore.kernel.org/r/1589248647-22925-1-git-send-email-anshuman.khandual@arm.com
