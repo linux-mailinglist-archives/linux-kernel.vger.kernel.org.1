@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993F81D7D50
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3931D7D4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbgERPuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:50:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:43134 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbgERPuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:50:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B357101E;
-        Mon, 18 May 2020 08:50:05 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36AB03F52E;
-        Mon, 18 May 2020 08:50:04 -0700 (PDT)
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Tony Prisk <linux@prisktech.co.nz>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Oliver Neukum <oneukum@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND] [PATCH v2 3/3] usb/ehci-platform: Set PM runtime as active on resume
-Date:   Mon, 18 May 2020 16:49:31 +0100
-Message-Id: <20200518154931.6144-3-qais.yousef@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200518154931.6144-1-qais.yousef@arm.com>
-References: <20200518154931.6144-1-qais.yousef@arm.com>
+        id S1728409AbgERPti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:49:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26990 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727007AbgERPti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:49:38 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IFXR0E108670;
+        Mon, 18 May 2020 11:49:36 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312c63f5ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 11:49:36 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IFeoxh021224;
+        Mon, 18 May 2020 15:49:34 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 3127t5hthp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 15:49:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IFnWRS62324914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 15:49:32 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3829052050;
+        Mon, 18 May 2020 15:49:32 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.145.145])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B351C52052;
+        Mon, 18 May 2020 15:49:31 +0000 (GMT)
+Message-ID: <1589816971.5111.113.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem fixes for v5.7
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 18 May 2020 11:49:31 -0400
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 cotscore=-2147483648
+ spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0
+ mlxscore=0 lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005180131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow suit of ohci-platform.c and perform pm_runtime_set_active() on
-resume.
+Hi Linus,
 
-ohci-platform.c had a warning reported due to the missing
-pm_runtime_set_active() [1].
+Here are a couple of miscellaneous bug fixes for the integrity
+subsystem:
 
-[1] https://lore.kernel.org/lkml/20200323143857.db5zphxhq4hz3hmd@e107158-lin.cambridge.arm.com/
+IMA:
+- Properly modify the open flags in order to calculate the file hash.
+- On systems requiring the IMA policy to be signed, the policy is
+loaded differently.  Don't differentiate between "enforce" and either
+"log" or "fix" modes how the policy is loaded.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-CC: Tony Prisk <linux@prisktech.co.nz>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Mathias Nyman <mathias.nyman@intel.com>
-CC: Oliver Neukum <oneukum@suse.de>
-CC: linux-arm-kernel@lists.infradead.org
-CC: linux-usb@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
- drivers/usb/host/ehci-platform.c | 4 ++++
- 1 file changed, 4 insertions(+)
+EVM:
+- (2 patches) Fix an EVM race condition, normally the result of
+attempting to load an unsupported hash algorithm.
+- Use the lockless RCU version for walking an append only list.
 
-diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-index e4fc3f66d43b..e9a49007cce4 100644
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -455,6 +455,10 @@ static int ehci_platform_resume(struct device *dev)
- 
- 	ehci_resume(hcd, priv->reset_on_resume);
- 
-+	pm_runtime_disable(dev);
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	if (priv->quirk_poll)
- 		quirk_poll_init(priv);
- 
--- 
-2.17.1
+Mimi
 
+The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
+
+  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity.fixes
+
+for you to fetch changes up to 8433856947217ebb5697a8ff9c4c9cad4639a2cf:
+
+  evm: Fix a small race in init_desc() (2020-05-14 19:55:54 -0400)
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      evm: Fix a small race in init_desc()
+
+Madhuparna Bhowmik (1):
+      evm: Fix RCU list related warnings
+
+Roberto Sassu (3):
+      ima: Set file->f_mode instead of file->f_flags in ima_calc_file_hash()
+      evm: Check also if *tfm is an error pointer in init_desc()
+      ima: Fix return value of ima_write_policy()
+
+ security/integrity/evm/evm_crypto.c | 46 ++++++++++++++++++-------------------
+ security/integrity/evm/evm_main.c   |  4 ++--
+ security/integrity/evm/evm_secfs.c  |  9 +++++++-
+ security/integrity/ima/ima_crypto.c | 12 +++++-----
+ security/integrity/ima/ima_fs.c     |  3 +--
+ 5 files changed, 40 insertions(+), 34 deletions(-)
