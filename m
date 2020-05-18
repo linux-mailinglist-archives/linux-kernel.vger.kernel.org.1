@@ -2,142 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCC71D85B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049B41D85C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387767AbgERSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729754AbgERSUW (ORCPT
+        id S2387799AbgERSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:21:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41671 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731703AbgERSU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:20:22 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A5AC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:20:21 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jakMz-00014W-EN; Mon, 18 May 2020 20:20:09 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 5F7B7100606; Mon, 18 May 2020 20:20:08 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org
-Cc:     hpa@zytor.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ak@linux.intel.com, ravi.v.shankar@intel.com,
-        chang.seok.bae@intel.com, Sasha Levin <sashal@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org
-Subject: Re: [PATCH v12 10/18] x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions
-In-Reply-To: <20200511045311.4785-11-sashal@kernel.org>
-Date:   Mon, 18 May 2020 20:20:08 +0200
-Message-ID: <87v9ktw1ev.fsf@nanos.tec.linutronix.de>
+        Mon, 18 May 2020 14:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589826054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bgUgYOhXHVrOhAbBYxlnYyhMzdekwGrXn9fI5GzJacU=;
+        b=P1Ae4JcmTm0WHLLAVaElH5dd9rU87sM7FkJZLRKSfEpQ1W+vh24p5OoRUEyXSMHavi2+O6
+        hyofZQ6yzv9FW4cIZOWwA/V4f5w47EuRXrN/yW5dL62ma3WCPjDUeiuN2Na9ibgT7BUb10
+        dYriE19REwII93v6UFtVKKn+YoNgRvs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-kVRrudnWNEOZ64966nyy_Q-1; Mon, 18 May 2020 14:20:52 -0400
+X-MC-Unique: kVRrudnWNEOZ64966nyy_Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 428731005510;
+        Mon, 18 May 2020 18:20:48 +0000 (UTC)
+Received: from ovpn-115-234.rdu2.redhat.com (ovpn-115-234.rdu2.redhat.com [10.10.115.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AF23398;
+        Mon, 18 May 2020 18:20:43 +0000 (UTC)
+Message-ID: <5260142047d0339e00d4a74865c2f0b7511c89f6.camel@redhat.com>
+Subject: Re: [PATCH 10/29] c6x: use asm-generic/cacheflush.h
+From:   Mark Salter <msalter@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>
+Cc:     linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Michal Simek <monstr@monstr.eu>, Jessica Yu <jeyu@kernel.org>,
+        linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
+        linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        x86@kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 18 May 2020 14:20:42 -0400
+In-Reply-To: <20200515143646.3857579-11-hch@lst.de>
+References: <20200515143646.3857579-1-hch@lst.de>
+         <20200515143646.3857579-11-hch@lst.de>
+Organization: Red Hat, Inc
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sasha Levin <sashal@kernel.org> writes:
-> +unsigned long x86_gsbase_read_cpu_inactive(void)
-> +{
-> +	unsigned long gsbase;
-> +
-> +	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-> +		bool need_restore = false;
-> +		unsigned long flags;
-> +
-> +		/*
-> +		 * We read the inactive GS base value by swapping
-> +		 * to make it the active one. But we cannot allow
-> +		 * an interrupt while we switch to and from.
-> +		 */
-> +		if (!irqs_disabled()) {
-> +			local_irq_save(flags);
-> +			need_restore = true;
-> +		}
-> +
-> +		native_swapgs();
-> +		gsbase = rdgsbase();
-> +		native_swapgs();
-> +
-> +		if (need_restore)
-> +			local_irq_restore(flags);
+On Fri, 2020-05-15 at 16:36 +0200, Christoph Hellwig wrote:
+> C6x needs almost no cache flushing routines of its own.  Rely on
+> asm-generic/cacheflush.h for the defaults.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/c6x/include/asm/cacheflush.h | 19 +------------------
+>  1 file changed, 1 insertion(+), 18 deletions(-)
+> 
+> diff --git a/arch/c6x/include/asm/cacheflush.h b/arch/c6x/include/asm/cacheflush.h
+> index 4540b40475e6c..10922d528de6d 100644
+> --- a/arch/c6x/include/asm/cacheflush.h
+> +++ b/arch/c6x/include/asm/cacheflush.h
+> @@ -16,21 +16,6 @@
+>  #include <asm/page.h>
+>  #include <asm/string.h>
+>  
+> -/*
+> - * virtually-indexed cache management (our cache is physically indexed)
+> - */
+> -#define flush_cache_all()			do {} while (0)
+> -#define flush_cache_mm(mm)			do {} while (0)
+> -#define flush_cache_dup_mm(mm)			do {} while (0)
+> -#define flush_cache_range(mm, start, end)	do {} while (0)
+> -#define flush_cache_page(vma, vmaddr, pfn)	do {} while (0)
+> -#define flush_cache_vmap(start, end)		do {} while (0)
+> -#define flush_cache_vunmap(start, end)		do {} while (0)
+> -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> -#define flush_dcache_page(page)			do {} while (0)
+> -#define flush_dcache_mmap_lock(mapping)		do {} while (0)
+> -#define flush_dcache_mmap_unlock(mapping)	do {} while (0)
+> -
+>  /*
+>   * physically-indexed cache management
+>   */
+> @@ -49,14 +34,12 @@ do {								  \
+>  			(unsigned long) page_address(page) + PAGE_SIZE)); \
+>  } while (0)
+>  
+> -
+>  #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+>  do {						     \
+>  	memcpy(dst, src, len);			     \
+>  	flush_icache_range((unsigned) (dst), (unsigned) (dst) + (len)); \
+>  } while (0)
+>  
+> -#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+> -	memcpy(dst, src, len)
+> +#include <asm-generic/cacheflush.h>
+>  
+>  #endif /* _ASM_C6X_CACHEFLUSH_H */
 
-Where does this crap come from?
+Acked-by: Mark Salter <msalter@redhat.com>
 
-This conditional irqsave gunk is clearly NOT what was in the tip tree
-before it got reverted:
 
-  a86b4625138d ("x86/fsgsbase/64: Enable FSGSBASE instructions in helper functions")
-
-In https://lore.kernel.org/r/87ftcrtckg.fsf@nanos.tec.linutronix.de I
-explicitely asked for this:
-
-     - Made sure that the cleanups I did when merging them initially have
-       been picked up. I'm not going to waste another couple of days on
-       this mess just to revert it because it hadn't seen any serious
-       testing in development.
-
-and you confirmed in https://lore.kernel.org/r/20200426025243.GJ13035@sasha-vm
-
-       Based on your revert
-       (https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/cpu&id=049331f277fef1c3f2527c2c9afa1d285e9a1247)
-       I believe that we have all the relevant patches in the series.
-
-And the above while it might not have exploded yet, is simply broken
-because the 'swapgs rd/wr swapgs' sequence is not protected against
-kprobes. There is even a big fat comment in that original commit:
-
- /*
-  * Out of line to be protected from kprobes. It is not used on Xen
-  * paravirt. When paravirt support is needed, it needs to be renamed
-  * with native_ prefix.
-  */
-
-Yes, you surely got all patches from the git tree and made sure that the
-result reflects that.
-
-I've just extracted the original commits from git and applied them and
-fixed the trivial rejects. Then I diffed the result against this lot:
-
- - That above gunk, which is the worst of all
-
- - In paranoid_exit()
-
--	TRACE_IRQS_IRETQ_DEBUG
-+	TRACE_IRQS_OFF_DEBUG
-
- - Dropped comments vs. FENCE_SWAPGS and a gazillion of comment
-   changes to make reading the diff harder.
-
-Then I gave up looking at it.
-
-It took me ~ 20 minutes (ignoring selftests and documentation) to fixup
-the rejects and create a patch queue which is reflecting the state
-before the revert and does not have complete crap in it.
-
-This required to add one preparatory patch dealing with the changes in
-copy_thread_tls() and no, not by inlining all of that twice.
-
-It took me another 5 minutes to get rid of the local_irq_save/restore()
-in save_fsgs() on top without any conditional crap.
-
-I'm seriously tired of this FSGSBASE mess. Every single version I've
-looked at in several years was a trainwreck.
-
-Don't bother to send out a new version of this in a frenzy. For my
-mental sake I'm not going to look at yet another cobbled together
-trainwreck anytime soon.
-
-If you read the above carefully you might find a recipe of properly
-engineering this so it's easy to verify against the old version.
-
-Your's seriously grumpy
-
-       tglx
