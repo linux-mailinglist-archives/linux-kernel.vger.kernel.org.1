@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9381D7985
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DDB1D798A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgERNTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:19:20 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:42112 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726726AbgERNTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:19:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589807959; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=/vpx/m8pDfBLAbCOs2E0+YfNBsuZAzWzTkmXxzLVrpo=; b=Bae+kLlW0UQUhfVjiQv8aV72beSsDiV520x62YU9wbZs05eVNRXHHJkwfMNFtuqB3glzJT9E
- CHmNLso2tpFYOYvnTASQ/PLyOleXRi4cwkJbSGB5bKcpmV/ZfmJ2GKLn+SGm/oPTZOQHK3bs
- M0y5eJlIKkBvT3pIdMI+GJAAlyM=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec28b4c.7f67d74a74c8-smtp-out-n04;
- Mon, 18 May 2020 13:19:08 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2392CC432C2; Mon, 18 May 2020 13:19:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from [192.168.0.11] (unknown [183.83.138.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A269C433F2;
-        Mon, 18 May 2020 13:19:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3A269C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH V6 3/3] dt-bindings: serial: Add binding for UART pin swap
-To:     Rob Herring <robh@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, rojay@codeaurora.org,
-        skakit@codeaurora.org, mka@chromium.org
-References: <1588863647-17240-1-git-send-email-akashast@codeaurora.org>
- <1588863647-17240-4-git-send-email-akashast@codeaurora.org>
- <20200515030133.GA11479@bogus>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <884f8277-715c-3377-12b2-c9d9a8413842@codeaurora.org>
-Date:   Mon, 18 May 2020 18:49:02 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727833AbgERNTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:19:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:40320 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbgERNTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:19:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A124A101E;
+        Mon, 18 May 2020 06:19:30 -0700 (PDT)
+Received: from melchizedek.cambridge.arm.com (melchizedek.cambridge.arm.com [10.1.196.50])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FADA3F305;
+        Mon, 18 May 2020 06:19:29 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>
+Subject: [PATCH v3 00/10] x86/resctrl: Misc cleanup
+Date:   Mon, 18 May 2020 14:19:13 +0100
+Message-Id: <20200518131924.7741-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20200515030133.GA11479@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello!
 
-On 5/15/2020 8:31 AM, Rob Herring wrote:
-> On Thu, May 07, 2020 at 08:30:47PM +0530, Akash Asthana wrote:
->> Add documentation to support RX-TX & CTS-RTS GPIO pin swap in HW.
->>
->> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
->> ---
->>   Documentation/devicetree/bindings/serial/serial.yaml | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
->> index 53204d9..e657dd6 100644
->> --- a/Documentation/devicetree/bindings/serial/serial.yaml
->> +++ b/Documentation/devicetree/bindings/serial/serial.yaml
->> @@ -67,6 +67,12 @@ properties:
->>         (wired and enabled by pinmux configuration).  This depends on both the
->>         UART hardware and the board wiring.
->>   
->> +  rx-tx-swap:
->> +    description: RX and TX pins are swapped.
->> +
->> +  cts-rts-swap:
->> +    description: CTS and RTS pins are swapped.
-> Need 'type: boolean' on both of these.
+These are the miscellaneous cleanup patches that floated to the top of
+the MPAM tree.
 
-okay, will correct in next version
+The only interesting thing are the patches to make the AMD/Intel
+differences something resctrl understands, instead of just 'happening'
+because of the different function pointers.
+This will become more important once MPAM support is added. parse_bw()
+and friends are what enforces resctrl's ABI resctrl. Allowing an
+architecture/platform to provide a subtly different function here would
+be bad for user-space.
 
-Regards,
+MPAM would set arch_has_sparse_bitmaps and arch_has_empty_bitmap, but
+not arch_needs_linear.
 
-Akash
 
->
->> +
->>   if:
->>     required:
->>       - uart-has-rtscts
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+Since [v2], arch_has_empty_bitmap has been added, and some typos fixed.
+
+Since [v1], I've picked up all the review feedback and collected the
+tags.
+
+Nothing in this series should change any behaviour.
+This series is based on tip's x86/cache branch: v5.7-rc4-7-g0c4d5ba1b998
+and can be retrieved from:
+git://linux-arm.org/linux-jm.git mpam/cleanup/v3
+
+
+Thanks,
+
+James
+
+[v2] https://lore.kernel.org/lkml/20200430170400.21501-1-james.morse@arm.com/
+[v1] https://lore.kernel.org/lkml/20200214182401.39008-1-james.morse@arm.com/
+
+James Morse (10):
+  x86/resctrl: Nothing uses struct mbm_state chunks_bw
+  x86/resctrl: Remove max_delay
+  x86/resctrl: Fix stale comment
+  x86/resctrl: use container_of() in delayed_work handlers
+  x86/resctrl: Include pid.h
+  x86/resctrl: Use is_closid_match() in more places
+  x86/resctrl: Add arch_needs_linear to explain AMD/Intel MBA difference
+  x86/resctrl: Merge AMD/Intel parse_bw() calls
+  x86/resctrl: Add arch_has_{sparse,empty}_bitmaps to explain CAT
+    differences
+  cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
+
+ arch/x86/kernel/cpu/resctrl/core.c        | 45 +++++------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 92 ++++-------------------
+ arch/x86/kernel/cpu/resctrl/internal.h    | 21 ++----
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 16 +---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 32 ++++----
+ include/linux/cacheinfo.h                 | 21 ++++++
+ include/linux/resctrl.h                   |  2 +
+ 7 files changed, 80 insertions(+), 149 deletions(-)
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+2.19.1
+
