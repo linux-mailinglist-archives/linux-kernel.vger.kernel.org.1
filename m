@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ACB1D81E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCC21D81C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730284AbgERRvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52832 "EHLO mail.kernel.org"
+        id S1730782AbgERRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730752AbgERRuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:37 -0400
+        id S1729939AbgERRuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:50:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7981820674;
-        Mon, 18 May 2020 17:50:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E592E20715;
+        Mon, 18 May 2020 17:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824236;
-        bh=S2PjfQJo09RQhAQV6KCBLCWeUPBTH9UMZI6xUNXjn7A=;
+        s=default; t=1589824239;
+        bh=mZDpFq78a3s4o+gGZkg4N/z1GPyCKTvpTor0KpjQaMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3Yj1jUpdLUlgi5mjJhPge+c9IAV5sbQJSxnzLROZfE/0WgJL3hbT0CJ7yPotL43s
-         4uMb7CYWJO595/u/ArpG3zclP2Mywy7SIhPO35DNX9EGMnVChXsYwsBFDtNrh76Awv
-         qjR8d+NGh7Jcu9FBTHlKEXP2dEpFuHJPttdho7V0=
+        b=hMR+ZM2nI4ugMew2zUhWsOYclE3pj915utCLmYevN/vf1YZEJkseRoRWdHuiRqorW
+         iSnFW0/4BG3u0O62gL+FMPNJCpztBoWTFvUVFxQEKKlAmQzvKOMp1HPQasLzbnS43i
+         0oUpMrbzzZ+eitLk1w7LHsxbgVPF/BL6GQB0fQw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?David=20Bala=C5=BEic?= <xerces9@gmail.com>,
-        Guillaume Nault <gnault@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 12/80] pppoe: only process PADT targeted at local interfaces
-Date:   Mon, 18 May 2020 19:36:30 +0200
-Message-Id: <20200518173452.813559136@linuxfoundation.org>
+Subject: [PATCH 4.19 13/80] Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
+Date:   Mon, 18 May 2020 19:36:31 +0200
+Message-Id: <20200518173453.039802676@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
 References: <20200518173450.097837707@linuxfoundation.org>
@@ -45,35 +47,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: "Maciej Żenczykowski" <maze@google.com>
 
-[ Upstream commit b8c158395119be62294da73646a3953c29ac974b ]
+[ Upstream commit 09454fd0a4ce23cb3d8af65066c91a1bf27120dd ]
 
-We don't want to disconnect a session because of a stray PADT arriving
-while the interface is in promiscuous mode.
-Furthermore, multicast and broadcast packets make no sense here, so
-only PACKET_HOST is accepted.
+This reverts commit 19bda36c4299ce3d7e5bce10bebe01764a655a6d:
 
-Reported-by: David Balažic <xerces9@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
+| ipv6: add mtu lock check in __ip6_rt_update_pmtu
+|
+| Prior to this patch, ipv6 didn't do mtu lock check in ip6_update_pmtu.
+| It leaded to that mtu lock doesn't really work when receiving the pkt
+| of ICMPV6_PKT_TOOBIG.
+|
+| This patch is to add mtu lock check in __ip6_rt_update_pmtu just as ipv4
+| did in __ip_rt_update_pmtu.
+
+The above reasoning is incorrect.  IPv6 *requires* icmp based pmtu to work.
+There's already a comment to this effect elsewhere in the kernel:
+
+  $ git grep -p -B1 -A3 'RTAX_MTU lock'
+  net/ipv6/route.c=4813=
+
+  static int rt6_mtu_change_route(struct fib6_info *f6i, void *p_arg)
+  ...
+    /* In IPv6 pmtu discovery is not optional,
+       so that RTAX_MTU lock cannot disable it.
+       We still use this lock to block changes
+       caused by addrconf/ndisc.
+    */
+
+This reverts to the pre-4.9 behaviour.
+
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Fixes: 19bda36c4299 ("ipv6: add mtu lock check in __ip6_rt_update_pmtu")
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ppp/pppoe.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/ipv6/route.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -497,6 +497,9 @@ static int pppoe_disc_rcv(struct sk_buff
- 	if (!skb)
- 		goto out;
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2360,8 +2360,10 @@ static void __ip6_rt_update_pmtu(struct
+ 	const struct in6_addr *daddr, *saddr;
+ 	struct rt6_info *rt6 = (struct rt6_info *)dst;
  
-+	if (skb->pkt_type != PACKET_HOST)
-+		goto abort;
-+
- 	if (!pskb_may_pull(skb, sizeof(struct pppoe_hdr)))
- 		goto abort;
+-	if (dst_metric_locked(dst, RTAX_MTU))
+-		return;
++	/* Note: do *NOT* check dst_metric_locked(dst, RTAX_MTU)
++	 * IPv6 pmtu discovery isn't optional, so 'mtu lock' cannot disable it.
++	 * [see also comment in rt6_mtu_change_route()]
++	 */
  
+ 	if (iph) {
+ 		daddr = &iph->daddr;
 
 
