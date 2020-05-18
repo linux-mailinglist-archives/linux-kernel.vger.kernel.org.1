@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C466E1D8234
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F461D8158
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731277AbgERRyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58692 "EHLO mail.kernel.org"
+        id S1730205AbgERRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731263AbgERRyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:13 -0400
+        id S1730194AbgERRrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EC8120715;
-        Mon, 18 May 2020 17:54:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F63E20671;
+        Mon, 18 May 2020 17:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824452;
-        bh=atgqXYkEgqWD2b2PPiG23BKYGUxZMe4ntwxE0wwZT94=;
+        s=default; t=1589824030;
+        bh=zarCDkkJtDPUB/VqHBe+pgR+Rwd856eYEec/SwS4moE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p79Mrs6r6FeBSn4haf9jTDHkt2EpM8qaUyC5fmlQF/c595WOuaDMvR2GixrVxxVLM
-         zPeKsxw/AWKWWbCDWm6DMG7N6w+AGrCeVInCRF7CwJbLM/nLBlE5ZeTZkmXx2H6wBJ
-         bjtsReyOKE0vM6BS7JLU4lgjxvw3/EPpFoGy7i1E=
+        b=hrVqeV4efVPJkixyajSa+ttnEvG203wxUSuE5FqN5lN8u7WfpFxlpiO6/D2XI1lu/
+         ra7hlZbmnw5li/tcqfWo+UBXqUIF9hgjGzkxjccPHn+U/ycE3t99r3PisAbVSOwoAC
+         uzR67XcH/Uet7Sxor8hcOfO26IG3iFcy45kCwq+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>,
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 018/147] dpaa2-eth: properly handle buffer size restrictions
+Subject: [PATCH 4.14 009/114] bnxt_en: Fix VLAN acceleration handling in bnxt_fix_features().
 Date:   Mon, 18 May 2020 19:35:41 +0200
-Message-Id: <20200518173516.052075569@linuxfoundation.org>
+Message-Id: <20200518173504.960789776@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,153 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana Ciornei <ioana.ciornei@nxp.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit efa6a7d07523ffbbf6503c1a7eeb52201c15c0e3 ]
+[ Upstream commit c72cb303aa6c2ae7e4184f0081c6d11bf03fb96b ]
 
-Depending on the WRIOP version, the buffer size on the RX path must by a
-multiple of 64 or 256. Handle this restriction properly by aligning down
-the buffer size to the necessary value. Also, use the new buffer size
-dynamically computed instead of the compile time one.
+The current logic in bnxt_fix_features() will inadvertently turn on both
+CTAG and STAG VLAN offload if the user tries to disable both.  Fix it
+by checking that the user is trying to enable CTAG or STAG before
+enabling both.  The logic is supposed to enable or disable both CTAG and
+STAG together.
 
-Fixes: 27c874867c4e ("dpaa2-eth: Use a single page per Rx buffer")
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Fixes: 5a9f6b238e59 ("bnxt_en: Enable and disable RX CTAG and RX STAG VLAN acceleration together.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c |   29 +++++++++++++----------
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h |    1 
- 2 files changed, 18 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -86,7 +86,7 @@ static void free_rx_fd(struct dpaa2_eth_
- 	for (i = 1; i < DPAA2_ETH_MAX_SG_ENTRIES; i++) {
- 		addr = dpaa2_sg_get_addr(&sgt[i]);
- 		sg_vaddr = dpaa2_iova_to_virt(priv->iommu_domain, addr);
--		dma_unmap_page(dev, addr, DPAA2_ETH_RX_BUF_SIZE,
-+		dma_unmap_page(dev, addr, priv->rx_buf_size,
- 			       DMA_BIDIRECTIONAL);
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -6827,6 +6827,7 @@ static netdev_features_t bnxt_fix_featur
+ 					   netdev_features_t features)
+ {
+ 	struct bnxt *bp = netdev_priv(dev);
++	netdev_features_t vlan_features;
  
- 		free_pages((unsigned long)sg_vaddr, 0);
-@@ -144,7 +144,7 @@ static struct sk_buff *build_frag_skb(st
- 		/* Get the address and length from the S/G entry */
- 		sg_addr = dpaa2_sg_get_addr(sge);
- 		sg_vaddr = dpaa2_iova_to_virt(priv->iommu_domain, sg_addr);
--		dma_unmap_page(dev, sg_addr, DPAA2_ETH_RX_BUF_SIZE,
-+		dma_unmap_page(dev, sg_addr, priv->rx_buf_size,
- 			       DMA_BIDIRECTIONAL);
- 
- 		sg_length = dpaa2_sg_get_len(sge);
-@@ -185,7 +185,7 @@ static struct sk_buff *build_frag_skb(st
- 				(page_address(page) - page_address(head_page));
- 
- 			skb_add_rx_frag(skb, i - 1, head_page, page_offset,
--					sg_length, DPAA2_ETH_RX_BUF_SIZE);
-+					sg_length, priv->rx_buf_size);
- 		}
- 
- 		if (dpaa2_sg_is_final(sge))
-@@ -211,7 +211,7 @@ static void free_bufs(struct dpaa2_eth_p
- 
- 	for (i = 0; i < count; i++) {
- 		vaddr = dpaa2_iova_to_virt(priv->iommu_domain, buf_array[i]);
--		dma_unmap_page(dev, buf_array[i], DPAA2_ETH_RX_BUF_SIZE,
-+		dma_unmap_page(dev, buf_array[i], priv->rx_buf_size,
- 			       DMA_BIDIRECTIONAL);
- 		free_pages((unsigned long)vaddr, 0);
+ 	if ((features & NETIF_F_NTUPLE) && !bnxt_rfs_capable(bp))
+ 		features &= ~NETIF_F_NTUPLE;
+@@ -6834,12 +6835,14 @@ static netdev_features_t bnxt_fix_featur
+ 	/* Both CTAG and STAG VLAN accelaration on the RX side have to be
+ 	 * turned on or off together.
+ 	 */
+-	if ((features & (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) !=
+-	    (NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_STAG_RX)) {
++	vlan_features = features & (NETIF_F_HW_VLAN_CTAG_RX |
++				    NETIF_F_HW_VLAN_STAG_RX);
++	if (vlan_features != (NETIF_F_HW_VLAN_CTAG_RX |
++			      NETIF_F_HW_VLAN_STAG_RX)) {
+ 		if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
+ 			features &= ~(NETIF_F_HW_VLAN_CTAG_RX |
+ 				      NETIF_F_HW_VLAN_STAG_RX);
+-		else
++		else if (vlan_features)
+ 			features |= NETIF_F_HW_VLAN_CTAG_RX |
+ 				    NETIF_F_HW_VLAN_STAG_RX;
  	}
-@@ -331,7 +331,7 @@ static u32 run_xdp(struct dpaa2_eth_priv
- 		break;
- 	case XDP_REDIRECT:
- 		dma_unmap_page(priv->net_dev->dev.parent, addr,
--			       DPAA2_ETH_RX_BUF_SIZE, DMA_BIDIRECTIONAL);
-+			       priv->rx_buf_size, DMA_BIDIRECTIONAL);
- 		ch->buf_count--;
- 		xdp.data_hard_start = vaddr;
- 		err = xdp_do_redirect(priv->net_dev, &xdp, xdp_prog);
-@@ -370,7 +370,7 @@ static void dpaa2_eth_rx(struct dpaa2_et
- 	trace_dpaa2_rx_fd(priv->net_dev, fd);
- 
- 	vaddr = dpaa2_iova_to_virt(priv->iommu_domain, addr);
--	dma_sync_single_for_cpu(dev, addr, DPAA2_ETH_RX_BUF_SIZE,
-+	dma_sync_single_for_cpu(dev, addr, priv->rx_buf_size,
- 				DMA_BIDIRECTIONAL);
- 
- 	fas = dpaa2_get_fas(vaddr, false);
-@@ -389,13 +389,13 @@ static void dpaa2_eth_rx(struct dpaa2_et
- 			return;
- 		}
- 
--		dma_unmap_page(dev, addr, DPAA2_ETH_RX_BUF_SIZE,
-+		dma_unmap_page(dev, addr, priv->rx_buf_size,
- 			       DMA_BIDIRECTIONAL);
- 		skb = build_linear_skb(ch, fd, vaddr);
- 	} else if (fd_format == dpaa2_fd_sg) {
- 		WARN_ON(priv->xdp_prog);
- 
--		dma_unmap_page(dev, addr, DPAA2_ETH_RX_BUF_SIZE,
-+		dma_unmap_page(dev, addr, priv->rx_buf_size,
- 			       DMA_BIDIRECTIONAL);
- 		skb = build_frag_skb(priv, ch, buf_data);
- 		free_pages((unsigned long)vaddr, 0);
-@@ -963,7 +963,7 @@ static int add_bufs(struct dpaa2_eth_pri
- 		if (!page)
- 			goto err_alloc;
- 
--		addr = dma_map_page(dev, page, 0, DPAA2_ETH_RX_BUF_SIZE,
-+		addr = dma_map_page(dev, page, 0, priv->rx_buf_size,
- 				    DMA_BIDIRECTIONAL);
- 		if (unlikely(dma_mapping_error(dev, addr)))
- 			goto err_map;
-@@ -973,7 +973,7 @@ static int add_bufs(struct dpaa2_eth_pri
- 		/* tracing point */
- 		trace_dpaa2_eth_buf_seed(priv->net_dev,
- 					 page, DPAA2_ETH_RX_BUF_RAW_SIZE,
--					 addr, DPAA2_ETH_RX_BUF_SIZE,
-+					 addr, priv->rx_buf_size,
- 					 bpid);
- 	}
- 
-@@ -1680,7 +1680,7 @@ static bool xdp_mtu_valid(struct dpaa2_e
- 	int mfl, linear_mfl;
- 
- 	mfl = DPAA2_ETH_L2_MAX_FRM(mtu);
--	linear_mfl = DPAA2_ETH_RX_BUF_SIZE - DPAA2_ETH_RX_HWA_SIZE -
-+	linear_mfl = priv->rx_buf_size - DPAA2_ETH_RX_HWA_SIZE -
- 		     dpaa2_eth_rx_head_room(priv) - XDP_PACKET_HEADROOM;
- 
- 	if (mfl > linear_mfl) {
-@@ -2432,6 +2432,11 @@ static int set_buffer_layout(struct dpaa
- 	else
- 		rx_buf_align = DPAA2_ETH_RX_BUF_ALIGN;
- 
-+	/* We need to ensure that the buffer size seen by WRIOP is a multiple
-+	 * of 64 or 256 bytes depending on the WRIOP version.
-+	 */
-+	priv->rx_buf_size = ALIGN_DOWN(DPAA2_ETH_RX_BUF_SIZE, rx_buf_align);
-+
- 	/* tx buffer */
- 	buf_layout.private_data_size = DPAA2_ETH_SWA_SIZE;
- 	buf_layout.pass_timestamp = true;
-@@ -3096,7 +3101,7 @@ static int bind_dpni(struct dpaa2_eth_pr
- 	pools_params.num_dpbp = 1;
- 	pools_params.pools[0].dpbp_id = priv->dpbp_dev->obj_desc.id;
- 	pools_params.pools[0].backup_pool = 0;
--	pools_params.pools[0].buffer_size = DPAA2_ETH_RX_BUF_SIZE;
-+	pools_params.pools[0].buffer_size = priv->rx_buf_size;
- 	err = dpni_set_pools(priv->mc_io, 0, priv->mc_token, &pools_params);
- 	if (err) {
- 		dev_err(dev, "dpni_set_pools() failed\n");
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-@@ -373,6 +373,7 @@ struct dpaa2_eth_priv {
- 	u16 tx_data_offset;
- 
- 	struct fsl_mc_device *dpbp_dev;
-+	u16 rx_buf_size;
- 	u16 bpid;
- 	struct iommu_domain *iommu_domain;
- 
 
 
