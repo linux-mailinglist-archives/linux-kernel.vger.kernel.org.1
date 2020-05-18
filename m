@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2001D812F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FF01D8188
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgERRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44408 "EHLO mail.kernel.org"
+        id S1730438AbgERRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:48:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729936AbgERRpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:33 -0400
+        id S1728458AbgERRss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B5EB20671;
-        Mon, 18 May 2020 17:45:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E82C720657;
+        Mon, 18 May 2020 17:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823932;
-        bh=XjSsmsaj+0cGZzRkm6yFrZT7XEPAlcmNRcivnp2RI7s=;
+        s=default; t=1589824127;
+        bh=Jn+yjls3npzhmafHZuiUzqmvvWEAnI8achqTrDx62TM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V2jEr/F9y/AjBbczEQYkc0S0N3hjO5ljfi0+SGppjJFDVtMvqTF5VQ5TVBbH8vE5j
-         9gB5jstcVJesEacO+r0v+oaJ9yL4GgtY8y9LqyWXrOZCCAiAqsusk1Ecre7cPVHakd
-         yqPsbrG4YStUxdDxOgLY6SFOklf++blJOISyRXsM=
+        b=v850nwLzCvZPE3jD9FYf580TfTDAv0uTytEF/DSBwmBLu9IcOHGU0hKTTLctLX1Xe
+         o5LnCDimXgol3evJrHs8r3otZaeRgWBkWVwX71BXgKMaAxKIzvx2MnrIxsm0ck2tBf
+         hKe3QCDSDZOKSP5RmHFz3syFzDWoavsm0ZrecwfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Sheets <matthew.sheets@gd-ms.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 69/90] netlabel: cope with NULL catmap
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 075/114] gcc-10: disable array-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:47 +0200
-Message-Id: <20200518173505.262109414@linuxfoundation.org>
+Message-Id: <20200518173516.353825776@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit eead1c2ea2509fd754c6da893a94f0e69e83ebe4 ]
+commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
 
-The cipso and calipso code can set the MLS_CAT attribute on
-successful parsing, even if the corresponding catmap has
-not been allocated, as per current configuration and external
-input.
+This is another fine warning, related to the 'zero-length-bounds' one,
+but hitting the same historical code in the kernel.
 
-Later, selinux code tries to access the catmap if the MLS_CAT flag
-is present via netlbl_catmap_getlong(). That may cause null ptr
-dereference while processing incoming network traffic.
+Because C didn't historically support flexible array members, we have
+code that instead uses a one-sized array, the same way we have cases of
+zero-sized arrays.
 
-Address the issue setting the MLS_CAT flag only if the catmap is
-really allocated. Additionally let netlbl_catmap_getlong() cope
-with NULL catmap.
+The one-sized arrays come from either not wanting to use the gcc
+zero-sized array extension, or from a slight convenience-feature, where
+particularly for strings, the size of the structure now includes the
+allocation for the final NUL character.
 
-Reported-by: Matthew Sheets <matthew.sheets@gd-ms.com>
-Fixes: 4b8feff251da ("netlabel: fix the horribly broken catmap functions")
-Fixes: ceba1832b1b2 ("calipso: Set the calipso socket label to match the secattr.")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+So with a "char name[1];" at the end of a structure, you can do things
+like
+
+       v = my_malloc(sizeof(struct vendor) + strlen(name));
+
+and avoid the "+1" for the terminator.
+
+Yes, the modern way to do that is with a flexible array, and using
+'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
+also technically gets the size "more correct" in that it avoids any
+alignment (and thus padding) issues, but this is another long-term
+cleanup thing that will not happen for 5.7.
+
+So disable the warning for now, even though it's potentially quite
+useful.  Having a slew of warnings that then hide more urgent new issues
+is not an improvement.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/cipso_ipv4.c        |    6 ++++--
- net/ipv6/calipso.c           |    3 ++-
- net/netlabel/netlabel_kapi.c |    6 ++++++
- 3 files changed, 12 insertions(+), 3 deletions(-)
 
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -1272,7 +1272,8 @@ static int cipso_v4_parsetag_rbm(const s
- 			return ret_val;
- 		}
+---
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/Makefile
++++ b/Makefile
+@@ -802,6 +802,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
  
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
  
- 	return 0;
-@@ -1453,7 +1454,8 @@ static int cipso_v4_parsetag_rng(const s
- 			return ret_val;
- 		}
- 
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
- 
- 	return 0;
---- a/net/ipv6/calipso.c
-+++ b/net/ipv6/calipso.c
-@@ -1061,7 +1061,8 @@ static int calipso_opt_getattr(const uns
- 			goto getattr_return;
- 		}
- 
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
- 
- 	secattr->type = NETLBL_NLTYPE_CALIPSO;
---- a/net/netlabel/netlabel_kapi.c
-+++ b/net/netlabel/netlabel_kapi.c
-@@ -748,6 +748,12 @@ int netlbl_catmap_getlong(struct netlbl_
- 	if ((off & (BITS_PER_LONG - 1)) != 0)
- 		return -EINVAL;
- 
-+	/* a null catmap is equivalent to an empty one */
-+	if (!catmap) {
-+		*offset = (u32)-1;
-+		return 0;
-+	}
-+
- 	if (off < catmap->startbit) {
- 		off = catmap->startbit;
- 		*offset = off;
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
