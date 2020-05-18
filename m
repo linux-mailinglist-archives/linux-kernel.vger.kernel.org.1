@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2D91D881D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB531D881A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgERTVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 15:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        id S1727933AbgERTVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727942AbgERTVN (ORCPT
+        with ESMTP id S1727066AbgERTVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 15:21:13 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBFEC061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:21:11 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z5so9780321ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:21:11 -0700 (PDT)
+        Mon, 18 May 2020 15:21:06 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DF0C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:21:05 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id d26so9108716otc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:21:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8NCtLMQj4bd2e3c2bHF+/O8J9nt2Ds2pK8CiLeSB8n0=;
-        b=T5KMEfAY6vCFd6N5Kx0NVes4X6Q7ceE8/KLOzPFTAQ+GkwYT9S/SpLB4pNPQnjowkJ
-         CbCiZfwOlTyQiJB+e/DHqeaoM2w/5uknnHaHMT2nG6iUEIGoU/vj/vOD8wHOLr1H25Ks
-         jre48/UL+cra9yG4+JTg6MNvAynGFFoWDDr0Ke+ETW68ZWsmO8VtHAdEufFARE/0AD6G
-         1vBaZK7PKNYcMg2dLZWNq4yLlWd2TcICJpkI2HalSNiiTUXmNQQEcGUMRJr4o/S+9dq3
-         55yjq0I2/mslD4FGfU8OpQTCETGlya80rexHHt7bctlq3GhikIaXE+Qtl2lLopaOmXpk
-         7PJg==
+        d=gmail.com; s=20161025;
+        h=sender:to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=rcEDr+6fG66dv1/hXLkkZjCfS8T1ynKA/WGu4jgXbJg=;
+        b=qh8nh5l/TDw4IKfIEpeZes87n2oPS5ChN6CvDKb82ZmvCFwx4b+BpykTnO+Wat1CfB
+         eenMGnTQf0usWew0hx+F+Y3/GySIoJ50nS38m4NnaKSxWIPL3AjEegH7KFcFd5sGtwif
+         wRmKDVPxaS/UmKTdW7Y3xLX6goHQwVAamTQhxGIj1oZUgt+YZCDgpMNOe+InURgfHVhm
+         kmX2WaXFjI+In4hWO6+x4tn3gtVAjyyDo1g3V/BXkEVmft6M/7fGbzQQuHHJ4N+m2LeV
+         xrLvFsO3WA0mEVPOGRbqTXdAOuxonqY+eOJLMqscxGeTyk5vkalQC43E1n0wXlbTXT4v
+         HW8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8NCtLMQj4bd2e3c2bHF+/O8J9nt2Ds2pK8CiLeSB8n0=;
-        b=jzIFayUJbwO5W9mEi7i5RF1OrXqYkSp0U+PZ1RVRBW4LAlTBPAu3f1vt8hFYJX6MH0
-         TGn6ywfyfY6XERf8/3njK0Wau51LHYY/ADwWbwa8n5Rbtfk9Yfilad7v2QZwH2ixQAb4
-         zRMepyp67vSMRR27cOu6tYp8wwYfkyfdo6MvTTYZyuGLxt+WTFNQJF7yo5ybcfaQptMc
-         93RKcC1Y0NDKGZcE5XCH66iN/+Dv3YysCgZTVXOQWWqG4QL+kwe05aEPuS3B52sBK3vj
-         rX7gI3vTaPmo89Whkr4b8iS0PZfxExf0ZYoMRIKeDz2pKdBXfwwd03cCYY6i0aIaj3Oq
-         yxEg==
-X-Gm-Message-State: AOAM531xbxy4jS7fRKBox70NVY0olxaBjqkP8fKQnM8UMVLycU4lkxU2
-        49GAjbeQMugx5wG/wdQpwA5awagahWy9KOO3E/JB/Q==
-X-Google-Smtp-Source: ABdhPJzd7dkJtQhZKZrnZAYQVrril33taRNEhq4HfjmcahS4WFjiDUaOSfR6v4zAJibJEOPuxLCA5yHtrrOjAp//Bgs=
-X-Received: by 2002:a17:906:528e:: with SMTP id c14mr15831151ejm.123.1589829670561;
- Mon, 18 May 2020 12:21:10 -0700 (PDT)
+        h=x-gm-message-state:sender:to:from:subject:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=rcEDr+6fG66dv1/hXLkkZjCfS8T1ynKA/WGu4jgXbJg=;
+        b=UYxwIeTRS4Z8rbHFXsfa8y0NqCwcDsFR+1Or5bF7OumZpfrAxg/m5Fg08GipLitXd8
+         +g2D1PD+ts1eQVsnd+ojTQop51B4TvnS9/F/mftW4F/2N8FdPTH44rNcZb5MM9FO+KL7
+         ycDuWLsINpMTVvfd2IDkeTpvgOjzWE8c/13yZougpPaSdrEWv0emlLANWsvBKQT5Gpqy
+         hSdEcf92mrkax9o7JuUX3zYX3z0PQsnpcDWFQch96SuCyMuiZ4Ik/2tfxfw612CM0fci
+         4FrqXwdh3ekLLnAkPz33u2X0rNmimI03QaLM2UXpP2CRkaLfAZ28ma5Phn1wZy8RBWV0
+         Aexg==
+X-Gm-Message-State: AOAM533CwprV9KSc079/J4CxIxP/MUkS235PNQ+ZY+MPxMuTqTFHubBO
+        u/u57vzIB7oqG1/WmBJilKoL2wl2
+X-Google-Smtp-Source: ABdhPJxJohjWoyUYrwKDNDY1WdIW9jOk/28nyhXa4CBArE3BYBLcMkCBLgCSGhdKS6HbLUpDrSvU9w==
+X-Received: by 2002:a05:6830:1353:: with SMTP id r19mr13204140otq.248.1589829665202;
+        Mon, 18 May 2020 12:21:05 -0700 (PDT)
+Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
+        by smtp.gmail.com with ESMTPSA id t24sm958048otp.69.2020.05.18.12.21.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 12:21:04 -0700 (PDT)
+To:     LKML <linux-kernel@vger.kernel.org>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Indicated kmemleak in msr_build_context() for Kernel 5.7.0-rc5
+Message-ID: <9f1bb619-c4ee-21c4-a251-870bd4db04fa@lwfinger.net>
+Date:   Mon, 18 May 2020 14:21:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200516150229.GB19372@zn.tnic> <8022D1E6-A8BC-4610-9F58-67A06B9A9575@intel.com>
- <CAPcxDJ50pbuTbittyvPwKq1uUT8q8jJ+dHH8rCug8a1DDZXVYw@mail.gmail.com>
- <CAPcxDJ6f3pBpwiR9nvXN_g_HBa1RAMG+aOmgfXLFT6aZ9HQn3w@mail.gmail.com>
- <20200518134813.GC25034@zn.tnic> <20200518153625.GA31444@agluck-desk2.amr.corp.intel.com>
- <20200518165500.GD25034@zn.tnic> <20200518182629.GA2957@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20200518182629.GA2957@agluck-desk2.amr.corp.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 18 May 2020 12:20:59 -0700
-Message-ID: <CAPcyv4iLMzGJUgjG9kxuuH65mYbqJ0+oHd4DbD1Kc6p9J14F0g@mail.gmail.com>
-Subject: Re: [PATCH] x86/mm: Don't try to change poison pages to uncacheable
- in a guest
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Jue Wang <juew@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 11:26 AM Luck, Tony <tony.luck@intel.com> wrote:
-[..]
-> N.B. Linux wants to switch the page to uncacheable so that in the
-> persistant memory case the filesytem code can continue to access
-> the other "blocks" in the page, rather than lose all of them. That's
-> futile in the case where the VMM took the whole 4K away. Maybe Dan
-> needs to think about the guest case too.
+On a system with an AMD FX-8320E Eight-Core Processor running kernel 5.7.0-rc5, 
+I am seeing the following memory leak:
 
-I think increasing the blast-radius to 4K is the best we can do
-without a paravirt mechanism to coordinate errors. There's also the
-existing problem that set_mce_nospec() fails on pmem due to the
-memtype lookup.
+localhost:~ # cat /sys/kernel/debug/kmemleak
+unreferenced object 0xffff88840ca02540 (size 64):
+   comm "swapper/0", pid 1, jiffies 4294892775 (age 138786.084s)
+   hex dump (first 32 bytes):
+     00 00 00 00 00 00 00 00 04 10 01 c0 00 00 00 00  ................
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+   backtrace:
+     [<0000000005004530>] msr_build_context.constprop.0+0x32/0xbe
+     [<00000000bb4e1265>] msr_save_cpuid_features+0x28/0x2c
+     [<0000000011ec0f08>] pm_check_save_msr+0x2e/0x40
+     [<000000000cd50945>] do_one_initcall+0x46/0x220
+     [<00000000fd0d2fc9>] kernel_init_freeable+0x1c6/0x23f
+     [<000000009f9b95ca>] kernel_init+0xa/0xfc
+     [<000000000a571fca>] ret_from_fork+0x22/0x40
+
+This is a "family 0x15" AMD CPU, thus MSR saving is needed during suspending. I 
+believe this to be a false positive.
+
+The indicated memory allocation has been in the kernel since v4.5.0. Should a 
+patch be sent to clear this false memory leak indication for systems with AMD 
+processors?
+
+Larry
