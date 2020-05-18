@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B34E1D7928
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1011D7916
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgERNCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:02:12 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:38741 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgERNCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:02:12 -0400
-X-Originating-IP: 84.210.220.251
-Received: from consensus.lan (cm-84.210.220.251.getinternet.no [84.210.220.251])
-        (Authenticated sender: fredrik@strupe.net)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 31480C0010;
-        Mon, 18 May 2020 13:01:58 +0000 (UTC)
-From:   Fredrik Strupe <fredrik@strupe.net>
-To:     Russell King <linux@armlinux.org.uk>, Rabin Vincent <rabin@rab.in>,
-        "David A . Long" <dave.long@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Fredrik Strupe <fredrik@strupe.net>
-Subject: [PATCH] arm: uprobes: Don't hook on thumb instructions
-Date:   Mon, 18 May 2020 14:59:48 +0200
-Message-Id: <20200518125948.25315-1-fredrik@strupe.net>
-X-Mailer: git-send-email 2.20.1
+        id S1726993AbgERNAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726726AbgERNAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:00:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31E71207D3;
+        Mon, 18 May 2020 13:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589806842;
+        bh=ptRx364m99gLe8b4PaIDcBg1wnlIqZ8QZv5aW8MUiz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uQzpbw6R9xMhb5YxMbk+I5cOwk4cKSqiUvPIAPk2g2tn7hxb6qM7jfsQuxZssQb1a
+         hfZSCeSH6jLbjicpFxDTPaELYYSymjlg9sBJW17riIRjSiRtzxwlF/6Ft5xZ2+UF5A
+         mM01N8gkmEJ73LftdVnTgDRKvrQao8c184wQabzQ=
+Date:   Mon, 18 May 2020 14:00:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Eddie James <eajames@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Raymond Tan <raymond.tan@intel.com>,
+        "wuxu.wu" <wuxu.wu@huawei.com>, Clement Leger <cleger@kalray.eu>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/19] spi: dw: Move Non-DMA code to the DW PCIe-SPI
+ driver
+Message-ID: <20200518130039.GG8699@sirena.org.uk>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-14-Sergey.Semin@baikalelectronics.ru>
+ <20200515145153.GJ1634618@smile.fi.intel.com>
+ <20200516201724.7q5uhxmzpr6xjooj@mobilestation>
+ <20200518125850.jnhaqlr2ticu3ivs@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vSsTm1kUtxIHoa7M"
+Content-Disposition: inline
+In-Reply-To: <20200518125850.jnhaqlr2ticu3ivs@mobilestation>
+X-Cookie: If in doubt, mumble.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since uprobes is not supported for thumb, check that the thumb bit is
-not set when matching the uprobes instruction hooks.
 
-The Arm UDF instructions used for uprobes triggering
-(UPROBE_SWBP_ARM_INSN and UPROBE_SS_ARM_INSN) coincidentally share the
-same encoding as a pair of unallocated 32-bit thumb instructions (not
-UDF) when the condition code is 0b1111 (0xf). This in effect makes it
-possible to trigger the uprobes functionality from thumb, and at that
-using two unallocated instructions which are not permanently undefined.
+--vSsTm1kUtxIHoa7M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Fixes: c7edc9e326d5 ("ARM: add uprobes support")
----
- arch/arm/probes/uprobes/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, May 18, 2020 at 03:58:50PM +0300, Serge Semin wrote:
+> On Sat, May 16, 2020 at 11:17:25PM +0300, Serge Semin wrote:
 
-diff --git a/arch/arm/probes/uprobes/core.c b/arch/arm/probes/uprobes/core.c
-index c4b49b322e8a..f5f790c6e5f8 100644
---- a/arch/arm/probes/uprobes/core.c
-+++ b/arch/arm/probes/uprobes/core.c
-@@ -204,7 +204,7 @@ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
- static struct undef_hook uprobes_arm_break_hook = {
- 	.instr_mask	= 0x0fffffff,
- 	.instr_val	= (UPROBE_SWBP_ARM_INSN & 0x0fffffff),
--	.cpsr_mask	= MODE_MASK,
-+	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
- 	.cpsr_val	= USR_MODE,
- 	.fn		= uprobe_trap_handler,
- };
-@@ -212,7 +212,7 @@ static struct undef_hook uprobes_arm_break_hook = {
- static struct undef_hook uprobes_arm_ss_hook = {
- 	.instr_mask	= 0x0fffffff,
- 	.instr_val	= (UPROBE_SS_ARM_INSN & 0x0fffffff),
--	.cpsr_mask	= MODE_MASK,
-+	.cpsr_mask	= (PSR_T_BIT | MODE_MASK),
- 	.cpsr_val	= USR_MODE,
- 	.fn		= uprobe_trap_handler,
- };
--- 
-2.20.1
+> > Only if we rename the spi-dw.c to spi-dw-core.c. Such modification will break all
+> > the pending patches merging. Mark, are you ok with this?
 
+> Mark, could give me your comment regarding this renaming? Are you ok with this?
+
+Either way is fine for me.
+
+--vSsTm1kUtxIHoa7M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7ChvcACgkQJNaLcl1U
+h9AEsAf+Mvi0DahdPQXvlc5p6J2WfVIC/Nfkr+2hZJdtns7zXQVZpaIxk+465AR5
+6GHgGMkKnqIjRRx3MuoHR4CHa8+JX9F0yfxl53XICxtFoCbT7gjOmHEtwylQf7pY
+hx3jpxE58Eeu8QhelS7udCNBSOq+wHu250YLde1MzGEoHUUdsYCIvmDCfsY3/2bU
+REDvwVOdRHapxoBbg9TXAVww9Py7J++EBbYW9SLwqUGz1r8rZN4Hu9MasIDTzt4w
++aBUrl9JoIRjL/ll6uIgj87+vkl2qelmTQVKEl/dbkhMCfjCii60gucyjvMi0Dte
+yrd7rPguLhaezc9A+kHaMjJua6jW0w==
+=TYaY
+-----END PGP SIGNATURE-----
+
+--vSsTm1kUtxIHoa7M--
