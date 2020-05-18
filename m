@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087741D8136
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172F51D8089
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgERRp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45116 "EHLO mail.kernel.org"
+        id S1729031AbgERRkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:40:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730008AbgERRpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:45:52 -0400
+        id S1729005AbgERRkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8E5520674;
-        Mon, 18 May 2020 17:45:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A171020835;
+        Mon, 18 May 2020 17:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823952;
-        bh=hBjtYZJ5CvsH4u+wYPEqeBG0fOmlntBuMqfYioHyMZE=;
+        s=default; t=1589823613;
+        bh=ebooyL8HllyEeBf8CFf+dE7tTD3Gz4n2vRdK6/2AZug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dkEAskBWhbLOtMhAvchTayb/G26drV6wrobnmr77JYsOpbSqEG6gyLDqei0nrfl8C
-         erNM0AKXqCZU05U0M6iR7cI99Nv4PrpISBroo71RXFHqmKjsHVjmV5OPhcHjdkUg7k
-         BD2MIe0l5suo5mwWkfnlpzEzJmMWBkPAX696Q4kA=
+        b=tiuJlny/YgE4pY6riVYxrMMgMs+PJCC+3SPD63+iDjLkGIxhcdzFBgdG3aij838wJ
+         FscmjBLa5lDgo++3SmgqqjWStUBwl/9fHH6VRiztSZ+9OROswJX813SgMK83boHQ3m
+         /vbmM/WT99v2fcLhf+im9xYEMGRmwz9Iw+2pa2Ss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 012/114] bnxt_en: Improve AER slot reset.
-Date:   Mon, 18 May 2020 19:35:44 +0200
-Message-Id: <20200518173505.705981494@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>,
+        syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 14/86] USB: serial: garmin_gps: add sanity checking for data length
+Date:   Mon, 18 May 2020 19:35:45 +0200
+Message-Id: <20200518173453.418944409@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
+commit e9b3c610a05c1cdf8e959a6d89c38807ff758ee6 upstream.
 
-Improve the slot reset sequence by disabling the device to prevent bad
-DMAs if slot reset fails.  Return the proper result instead of always
-PCI_ERS_RESULT_RECOVERED to the caller.
+We must not process packets shorter than a packet ID
 
-Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-and-tested-by: syzbot+d29e9263e13ce0b9f4fd@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -8423,8 +8423,11 @@ static pci_ers_result_t bnxt_io_slot_res
- 		}
- 	}
+---
+ drivers/usb/serial/garmin_gps.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/serial/garmin_gps.c
++++ b/drivers/usb/serial/garmin_gps.c
+@@ -1162,8 +1162,8 @@ static void garmin_read_process(struct g
+ 		   send it directly to the tty port */
+ 		if (garmin_data_p->flags & FLAGS_QUEUING) {
+ 			pkt_add(garmin_data_p, data, data_length);
+-		} else if (bulk_data ||
+-			   getLayerId(data) == GARMIN_LAYERID_APPL) {
++		} else if (bulk_data || (data_length >= sizeof(u32) &&
++				getLayerId(data) == GARMIN_LAYERID_APPL)) {
  
--	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
--		dev_close(netdev);
-+	if (result != PCI_ERS_RESULT_RECOVERED) {
-+		if (netif_running(netdev))
-+			dev_close(netdev);
-+		pci_disable_device(pdev);
-+	}
- 
- 	rtnl_unlock();
- 
-@@ -8435,7 +8438,7 @@ static pci_ers_result_t bnxt_io_slot_res
- 			 err); /* non-fatal, continue */
- 	}
- 
--	return PCI_ERS_RESULT_RECOVERED;
-+	return result;
- }
- 
- /**
+ 			spin_lock_irqsave(&garmin_data_p->lock, flags);
+ 			garmin_data_p->flags |= APP_RESP_SEEN;
 
 
