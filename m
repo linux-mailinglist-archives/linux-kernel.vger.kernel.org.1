@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9EC1D8165
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBF41D80C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730248AbgERRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48070 "EHLO mail.kernel.org"
+        id S1729354AbgERRl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729938AbgERRri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:38 -0400
+        id S1729333AbgERRlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:41:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4F202083E;
-        Mon, 18 May 2020 17:47:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5A8920715;
+        Mon, 18 May 2020 17:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824058;
-        bh=mR3ZUFwRrS+NDGgVw/89s9D33YVvx+Ef+5iNUudGRGM=;
+        s=default; t=1589823707;
+        bh=qFkv+pTyhAym8MVCXPSeG/lVQMT/Jk6Ed+HrNAXS9xY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XQu6bZeyWW28lYvFwRz7UWGH8DYkajMZoQU7jr52d9AmOFJ2BO0Bl6tufhIhulNW8
-         GYmgNw6rwtv6JtRf74k1a5URoDOw9+iovk3AbVuUjrmZpb5gWqqR+jrE7R6y2lMrpa
-         rqguyP6Q9CxeSeCoWPGPBKKszHMVyXmpolhhOXng=
+        b=R3+jKTSlPwedYvGPPOE6cD1+YUAo9A8EWZQbTq+mdi49GKOhj1LiBDKilUWluc/4h
+         K0WpMmeTqxSCZGFYNm+D4SBewxjzAbK3uWDA1hT/urCQLIen2fIs12iJlP3ikFsUbn
+         FJqzVNHKLS/N3BQgiDfm7t7RhflUWEBCHyGk7kaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 055/114] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 56/86] gcc-10 warnings: fix low-hanging fruit
 Date:   Mon, 18 May 2020 19:36:27 +0200
-Message-Id: <20200518173513.173629443@linuxfoundation.org>
+Message-Id: <20200518173501.817340299@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
+commit 9d82973e032e246ff5663c9805fbb5407ae932e3 upstream.
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+Due to a bug-report that was compiler-dependent, I updated one of my
+machines to gcc-10.  That shows a lot of new warnings.  Happily they
+seem to be mostly the valid kind, but it's going to cause a round of
+churn for getting rid of them..
 
-Found by Linux Driver Verification project (linuxtesting.org).
+This is the really low-hanging fruit of removing a couple of zero-sized
+arrays in some core code.  We have had a round of these patches before,
+and we'll have many more coming, and there is nothing special about
+these except that they were particularly trivial, and triggered more
+warnings than most.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/fs.h  |    2 +-
+ include/linux/tty.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index f9028e9d0dfc2..d6af2d439b979 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -873,6 +873,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 	}
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -915,7 +915,7 @@ struct file_handle {
+ 	__u32 handle_bytes;
+ 	int handle_type;
+ 	/* file identifier */
+-	unsigned char f_handle[0];
++	unsigned char f_handle[];
+ };
  
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
+ static inline struct file *get_file(struct file *f)
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -64,7 +64,7 @@ struct tty_buffer {
+ 	int read;
+ 	int flags;
+ 	/* Data points here */
+-	unsigned long data[0];
++	unsigned long data[];
+ };
  
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -888,7 +889,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
- 
--	pd->dma.dev = &pdev->dev;
- 
- 	INIT_LIST_HEAD(&pd->dma.channels);
- 
--- 
-2.20.1
-
+ /* Values for .flags field of tty_buffer */
 
 
