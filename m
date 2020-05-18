@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA3A1D7EC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DAB1D7ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgERQln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 12:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726958AbgERQln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 12:41:43 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1555B20809;
-        Mon, 18 May 2020 16:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589820102;
-        bh=PN662x2FXq4LngDAMLKyKEfjxr8CebC7aeVbnQ+z7zY=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=l+4qkJjCp67DAy+fPTZ8QNF6+A7B/bCsiTWILZTN8pJFQHsjUkRs0AS1GOSkUbWgd
-         JhnzfjSQdOGdaih33NiDHyzEIk4g2+t9DatDlYVP4aU/DuP0pz88w5VzmH+tkUuV1X
-         8CedUrDt+v8yTlwWClZQFbDVCEJ/vpeK5OvAXXuI=
-Date:   Mon, 18 May 2020 17:41:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        kernel@collabora.com, alsa-devel@alsa-project.org
-In-Reply-To: <20200511132544.82364-1-sebastian.reichel@collabora.com>
-References: <20200511132544.82364-1-sebastian.reichel@collabora.com>
-Subject: Re: [PATCHv3 0/5] ASoC: da7213: support for usage with simple-card
-Message-Id: <158982005876.28736.9440768140715468375.b4-ty@kernel.org>
+        id S1728384AbgERQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 12:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728127AbgERQm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 12:42:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A24C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:42:57 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s8so12657169wrt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l7z6K0amO/UJk176kcJX4YeJlctfObnJzJsw8pKe4sQ=;
+        b=t5kbJ8vEQ29jXrypKtW3eJgqbsxD4z/bPK/nPLvx1ZJJGdVY79R33x66hal4j53Dr3
+         wfI41HluahUWCRhpDePMjy/Fmt7gXAHOX2Vj+m7i6uT7LNk1CW2NuqBhL2wnPWG8M/K6
+         ZfTiJ4TzIrY9qDOmQ6u+zRo0jx9Fz6R7MJeVPtAWDHtaQmY+j6ZA0GOIcc5EPHkRjJkv
+         hrsONuz0sTr4YL0NvVUVKzFickAjmDOkC5vxwPnkTV0clhri3E1bXds2SZq6FLpTAzK1
+         4wI1CT8Qwnamr/v2pa27pFL0xCHq5rDzQ0JNtjk1KZxr/ikAms2TvFDyiczEIdvmOlpT
+         M9eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l7z6K0amO/UJk176kcJX4YeJlctfObnJzJsw8pKe4sQ=;
+        b=BTJW0Lh/gvN6/Yb8E++5XhKMZjM3JsmYbpu4SgmREagki6epLIDrmrzzLo4i0/LNoz
+         qlzA4aF5MEzoTGsGWtnFDCIxfna1el2NZlE8KALbm+ic/wYlsi3CFENWRqooY/5wq2Ng
+         UvIwwPV//viABWb28qLFqkFS/F00YAqieTZXLTjMutOxUoIOu3aM8V1a5yrnYPiDUQJV
+         8bgCBCjSn7/7oImB4Q7Gn8Awvuiz166igCa6t4gqPlPCaCW+a0fsPG8uwz/ZLAC1SeXq
+         1CVoHP4ka6JOJN437iTlBJmSM1B/2Ru8SxgSnt3JTYQUWv4ftFAqci2gvacjD99yDaH6
+         WRPw==
+X-Gm-Message-State: AOAM533G87KWQSU38DG8M/vS7NWAXCRNT8tjUUh/s2p3BE7kIhpwbbHm
+        cqE1/Em4Sau3tbuGI4QwdNP3lg==
+X-Google-Smtp-Source: ABdhPJx0XDQyf7zT0sv6Q3paDSxLsaxOBCpajY4Yvk08GG2KYWSgZT6Ac/ffdWmbevL3HdDikI5PEw==
+X-Received: by 2002:a05:6000:1252:: with SMTP id j18mr10965847wrx.3.1589820175994;
+        Mon, 18 May 2020 09:42:55 -0700 (PDT)
+Received: from dbrazdil-macbookpro.roam.corp.google.com ([2a01:4b00:8523:2d03:4431:2de6:16f:7f90])
+        by smtp.gmail.com with ESMTPSA id v24sm106645wmh.45.2020.05.18.09.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 09:42:55 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+X-Google-Original-From: David Brazdil <dbrazdil@dbrazdil-macbookpro.roam.corp.google.com>
+Date:   Mon, 18 May 2020 17:42:54 +0100
+To:     Andrew Scull <ascull@google.com>
+Cc:     David Brazdil <dbrazdil@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/14] arm64: kvm: Add build rules for separate nVHE
+ object files
+Message-ID: <20200518164254.b26ankme6pb6ijqr@dbrazdil-macbookpro.roam.corp.google.com>
+References: <20200515105841.73532-1-dbrazdil@google.com>
+ <20200515105841.73532-5-dbrazdil@google.com>
+ <20200518155553.GB147668@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518155553.GB147668@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 15:25:39 +0200, Sebastian Reichel wrote:
-> This extends the da7213 driver to be used with simple-audio-card in
-> combination with a fixed clock. Here is a snippet of the downstream
-> board's DT, that is supposed to be supported by this patchset.
+On Mon, May 18, 2020 at 04:55:53PM +0100, Andrew Scull wrote:
+> On Fri, May 15, 2020 at 11:58:31AM +0100, David Brazdil wrote:
+> > diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+> > index 7f06ad93fc95..13850134fc28 100644
+> > --- a/arch/arm64/kernel/image-vars.h
+> > +++ b/arch/arm64/kernel/image-vars.h
+> > @@ -51,4 +51,16 @@ __efistub__ctype		= _ctype;
+> >  
+> >  #endif
+> >  
+> > +#ifdef CONFIG_KVM
+> > +
+> > +/*
+> > + * KVM nVHE code has its own symbol namespace prefixed by __hyp_text_, to
+> > + * isolate it from the kernel proper. The following symbols are legally
+> > + * accessed by it, therefore provide aliases to make them linkable.
+> > + * Do not include symbols which may not be safely accessed under hypervisor
+> > + * memory mappings.
+> > + */
 > 
-> ---------------------------------------------------------------------
-> / {
-> 	sound {
-> 		compatible = "simple-audio-card";
-> 		simple-audio-card,name = "audio-card";
-> 		simple-audio-card,format = "i2s";
-> 		simple-audio-card,bitclock-master = <&dailink_master>;
-> 		simple-audio-card,frame-master = <&dailink_master>;
-> 
-> [...]
+> nit: the prefix is not '__kvm_nvhe_' rather than '__hyp_text_'
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
-
-Thanks!
-
-[1/5] ASoC: da7213: Add da7212 DT compatible
-      commit: 95579eaf98f17b97dc174bb31d71902b5895bd85
-[2/5] ASoC: da7213: Add regulator support
-      commit: b2a378816d0f6780a5500f4322e5b2542d41532d
-[3/5] ASoC: da7213: move set_sysclk to codec level
-      commit: 9c5c258438b23cacc4971b94d808ba8af9c5931c
-[4/5] ASoC: da7213: move set_pll to codec level
-      commit: f7a8ae295ca8e96e287f497506b49b1f4b47deb4
-[5/5] ASoC: da7213: add default clock handling
-      (no commit info)
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Thanks, will fix in v3.
