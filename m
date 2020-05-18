@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5031D8343
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9910A1D86BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732110AbgERSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
+        id S2387970AbgERS13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732614AbgERSDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:08 -0400
+        id S1729593AbgERRqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3A3C207D3;
-        Mon, 18 May 2020 18:03:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4479720715;
+        Mon, 18 May 2020 17:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824988;
-        bh=/vUl9F/NYMf2c7sOBI/8G/mLuRaIToq3VCuuxiOWLDo=;
+        s=default; t=1589824001;
+        bh=zbwmqmbafc7t7/TiP/H/lC/ZbOKv4wTPOv7v8lKIcRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pi8RXUyy2BM5W+CBxUNMNKjJpf+8PocWzc8MaruPJVMeA9hA57CQ1ZEl9My5n5XzE
-         6rWxyoIL7MNRA915IymEIOr1io4jCa62nR7GT44YepqGg1g+H93o892svwEwqzbMEi
-         DN/kLMC0Wa9sQkoWdMdhqgYm88elr8l0RfiJG27I=
+        b=i6pMPpliPyAsYbXwAhKLUWljv6Zy5jKA4Tfa0HLU2Q6IEkKR+Z3DchzFGlEoipLEl
+         Q5RU40T48tcSxmVkmsZGSXLPRORRhXZWIjWP8rZ5vh1VGl5H6iyWWRTcgFbiNEcFIv
+         Wg3Kwv/dz/e3rGryKuklokYFdFiMU0KlF9W4I2EE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Iris Liu <iris@onechronos.com>,
-        Kelly Littlepage <kelly@onechronos.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.6 046/194] net: tcp: fix rx timestamp behavior for tcp_recvmsg
+        stable@vger.kernel.org, Scott Dial <scott@scottdial.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 004/114] net: macsec: preserve ingress frame ordering
 Date:   Mon, 18 May 2020 19:35:36 +0200
-Message-Id: <20200518173535.657718381@linuxfoundation.org>
+Message-Id: <20200518173503.884772048@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,51 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Littlepage <kelly@onechronos.com>
+From: Scott Dial <scott@scottdial.com>
 
-[ Upstream commit cc4de047b33be247f9c8150d3e496743a49642b8 ]
+[ Upstream commit ab046a5d4be4c90a3952a0eae75617b49c0cb01b ]
 
-The stated intent of the original commit is to is to "return the timestamp
-corresponding to the highest sequence number data returned." The current
-implementation returns the timestamp for the last byte of the last fully
-read skb, which is not necessarily the last byte in the recv buffer. This
-patch converts behavior to the original definition, and to the behavior of
-the previous draft versions of commit 98aaa913b4ed ("tcp: Extend
-SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg") which also match this
-behavior.
+MACsec decryption always occurs in a softirq context. Since
+the FPU may not be usable in the softirq context, the call to
+decrypt may be scheduled on the cryptd work queue. The cryptd
+work queue does not provide ordering guarantees. Therefore,
+preserving order requires masking out ASYNC implementations
+of gcm(aes).
 
-Fixes: 98aaa913b4ed ("tcp: Extend SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg")
-Co-developed-by: Iris Liu <iris@onechronos.com>
-Signed-off-by: Iris Liu <iris@onechronos.com>
-Signed-off-by: Kelly Littlepage <kelly@onechronos.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+For instance, an Intel CPU with AES-NI makes available the
+generic-gcm-aesni driver from the aesni_intel module to
+implement gcm(aes). However, this implementation requires
+the FPU, so it is not always available to use from a softirq
+context, and will fallback to the cryptd work queue, which
+does not preserve frame ordering. With this change, such a
+system would select gcm_base(ctr(aes-aesni),ghash-generic).
+While the aes-aesni implementation prefers to use the FPU, it
+will fallback to the aes-asm implementation if unavailable.
+
+By using a synchronous version of gcm(aes), the decryption
+will complete before returning from crypto_aead_decrypt().
+Therefore, the macsec_decrypt_done() callback will be called
+before returning from macsec_decrypt(). Thus, the order of
+calls to macsec_post_decrypt() for the frames is preserved.
+
+While it's presumable that the pure AES-NI version of gcm(aes)
+is more performant, the hybrid solution is capable of gigabit
+speeds on modest hardware. Regardless, preserving the order
+of frames is paramount for many network protocols (e.g.,
+triggering TCP retries). Within the MACsec driver itself, the
+replay protection is tripped by the out-of-order frames, and
+can cause frames to be dropped.
+
+This bug has been present in this code since it was added in
+v4.6, however it may not have been noticed since not all CPUs
+have FPU offload available. Additionally, the bug manifests
+as occasional out-of-order packets that are easily
+misattributed to other network phenomena.
+
+When this code was added in v4.6, the crypto/gcm.c code did
+not restrict selection of the ghash function based on the
+ASYNC flag. For instance, x86 CPUs with PCLMULQDQ would
+select the ghash-clmulni driver instead of ghash-generic,
+which submits to the cryptd work queue if the FPU is busy.
+However, this bug was was corrected in v4.8 by commit
+b30bdfa86431afbafe15284a3ad5ac19b49b88e3, and was backported
+all the way back to the v3.14 stable branch, so this patch
+should be applicable back to the v4.6 stable branch.
+
+Signed-off-by: Scott Dial <scott@scottdial.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/macsec.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2163,13 +2163,15 @@ skip_copy:
- 			tp->urg_data = 0;
- 			tcp_fast_path_check(sk);
- 		}
--		if (used + offset < skb->len)
--			continue;
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -1309,7 +1309,8 @@ static struct crypto_aead *macsec_alloc_
+ 	struct crypto_aead *tfm;
+ 	int ret;
  
- 		if (TCP_SKB_CB(skb)->has_rxtstamp) {
- 			tcp_update_recv_tstamps(skb, &tss);
- 			cmsg_flags |= 2;
- 		}
-+
-+		if (used + offset < skb->len)
-+			continue;
-+
- 		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
- 			goto found_fin_ok;
- 		if (!(flags & MSG_PEEK))
+-	tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
++	/* Pick a sync gcm(aes) cipher to ensure order is preserved. */
++	tfm = crypto_alloc_aead("gcm(aes)", 0, CRYPTO_ALG_ASYNC);
+ 
+ 	if (IS_ERR(tfm))
+ 		return tfm;
 
 
