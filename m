@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1127F1D81CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3591D8489
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgERRuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
+        id S1733292AbgERSMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730784AbgERRus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:48 -0400
+        id S1732718AbgERSEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FB3D20674;
-        Mon, 18 May 2020 17:50:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEFC3207D3;
+        Mon, 18 May 2020 18:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824247;
-        bh=3AbfgXRjpm4Ncsl15BA9IV9XcKMlw1Wh5sqRyiiVnn8=;
+        s=default; t=1589825040;
+        bh=TxFjLSAL5zDasn9oik92yX0UwttPZd52H+DlXDaqvRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kR/ao+kd86epG8p/uJQNXEaQFFbZE6CNLesbi8RkZudvfeW2U0thveBUMq16u7DD0
-         PLIJJts8sKmhLAs5hqOG3vz8pdE37SbCQuwB0SbznjYmKVjXoizKk9/eL0ctQv2CGc
-         Cv0XyxytEZYHfLX0xBOArUxhOVym+KAt+WrXvPJo=
+        b=kPWpWebnmUItS2DFmIcUjMO3C3nOd2Fdp2UON4pT5Hs+qonm1wLVBPd0RtHTO5GCb
+         EyM6HHzkA8LUtxFITwpfkvGhfv0CnVhZrGmYeBTS5fRqaF8SmG416uaFJ1LLfILslv
+         3Hw0Clh9LZl86L/i6RB2cIFXvmJ4cYfDtiUrSYHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 16/80] hinic: fix a bug of ndo_stop
-Date:   Mon, 18 May 2020 19:36:34 +0200
-Message-Id: <20200518173453.702399842@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 105/194] drm/i915: Mark concurrent submissions with a weak-dependency
+Date:   Mon, 18 May 2020 19:36:35 +0200
+Message-Id: <20200518173540.624943414@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,119 +45,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-[ Upstream commit e8a1b0efd632d1c9db7d4e93da66377c7b524862 ]
+[ Upstream commit a9d094dcf7845af85f82adcad9f793e51e4d14c8 ]
 
-if some function in ndo_stop interface returns failure because of
-hardware fault, must go on excuting rest steps rather than return
-failure directly, otherwise will cause memory leak.And bump the
-timeout for SET_FUNC_STATE to ensure that cmd won't return failure
-when hw is busy. Otherwise hw may stomp host memory if we free
-memory regardless of the return value of SET_FUNC_STATE.
+We recorded the dependencies for WAIT_FOR_SUBMIT in order that we could
+correctly perform priority inheritance from the parallel branches to the
+common trunk. However, for the purpose of timeslicing and reset
+handling, the dependency is weak -- as we the pair of requests are
+allowed to run in parallel and not in strict succession.
 
-Fixes: 51ba902a16e6 ("net-next/hinic: Initialize hw interface")
-Signed-off-by: Luo bin <luobin9@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The real significance though is that this allows us to rearrange
+groups of WAIT_FOR_SUBMIT linked requests along the single engine, and
+so can resolve user level inter-batch scheduling dependencies from user
+semaphores.
+
+Fixes: c81471f5e95c ("drm/i915: Copy across scheduler behaviour flags across submit fences")
+Testcase: igt/gem_exec_fence/submit
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200507155109.8892-1-chris@chris-wilson.co.uk
+(cherry picked from commit 6b6cd2ebd8d071e55998e32b648bb8081f7f02bb)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c |   16 ++++++++++++----
- drivers/net/ethernet/huawei/hinic/hinic_main.c    |   18 +++---------------
- 2 files changed, 15 insertions(+), 19 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_lrc.c         | 3 +++
+ drivers/gpu/drm/i915/i915_request.c         | 8 ++++++--
+ drivers/gpu/drm/i915/i915_scheduler.c       | 6 +++---
+ drivers/gpu/drm/i915/i915_scheduler.h       | 3 ++-
+ drivers/gpu/drm/i915/i915_scheduler_types.h | 1 +
+ 5 files changed, 15 insertions(+), 6 deletions(-)
 
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mgmt.c
-@@ -54,6 +54,8 @@
+diff --git a/drivers/gpu/drm/i915/gt/intel_lrc.c b/drivers/gpu/drm/i915/gt/intel_lrc.c
+index 5bebda4a2d0b4..637c03ee1a57f 100644
+--- a/drivers/gpu/drm/i915/gt/intel_lrc.c
++++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
+@@ -1626,6 +1626,9 @@ static void defer_request(struct i915_request *rq, struct list_head * const pl)
+ 			struct i915_request *w =
+ 				container_of(p->waiter, typeof(*w), sched);
  
- #define MGMT_MSG_TIMEOUT                5000
- 
-+#define SET_FUNC_PORT_MGMT_TIMEOUT	25000
++			if (p->flags & I915_DEPENDENCY_WEAK)
++				continue;
 +
- #define mgmt_to_pfhwdev(pf_mgmt)        \
- 		container_of(pf_mgmt, struct hinic_pfhwdev, pf_to_mgmt)
+ 			/* Leave semaphores spinning on the other engines */
+ 			if (w->engine != rq->engine)
+ 				continue;
+diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+index a18b2a2447066..32ab154db788c 100644
+--- a/drivers/gpu/drm/i915/i915_request.c
++++ b/drivers/gpu/drm/i915/i915_request.c
+@@ -951,7 +951,9 @@ i915_request_await_request(struct i915_request *to, struct i915_request *from)
+ 		return 0;
  
-@@ -247,12 +249,13 @@ static int msg_to_mgmt_sync(struct hinic
- 			    u8 *buf_in, u16 in_size,
- 			    u8 *buf_out, u16 *out_size,
- 			    enum mgmt_direction_type direction,
--			    u16 resp_msg_id)
-+			    u16 resp_msg_id, u32 timeout)
- {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
- 	struct hinic_recv_msg *recv_msg;
- 	struct completion *recv_done;
-+	unsigned long timeo;
- 	u16 msg_id;
- 	int err;
- 
-@@ -276,8 +279,9 @@ static int msg_to_mgmt_sync(struct hinic
- 		goto unlock_sync_msg;
+ 	if (to->engine->schedule) {
+-		ret = i915_sched_node_add_dependency(&to->sched, &from->sched);
++		ret = i915_sched_node_add_dependency(&to->sched,
++						     &from->sched,
++						     I915_DEPENDENCY_EXTERNAL);
+ 		if (ret < 0)
+ 			return ret;
  	}
+@@ -1084,7 +1086,9 @@ __i915_request_await_execution(struct i915_request *to,
  
--	if (!wait_for_completion_timeout(recv_done,
--					 msecs_to_jiffies(MGMT_MSG_TIMEOUT))) {
-+	timeo = msecs_to_jiffies(timeout ? timeout : MGMT_MSG_TIMEOUT);
-+
-+	if (!wait_for_completion_timeout(recv_done, timeo)) {
- 		dev_err(&pdev->dev, "MGMT timeout, MSG id = %d\n", msg_id);
- 		err = -ETIMEDOUT;
- 		goto unlock_sync_msg;
-@@ -351,6 +355,7 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
- {
- 	struct hinic_hwif *hwif = pf_to_mgmt->hwif;
- 	struct pci_dev *pdev = hwif->pdev;
-+	u32 timeout = 0;
- 
- 	if (sync != HINIC_MGMT_MSG_SYNC) {
- 		dev_err(&pdev->dev, "Invalid MGMT msg type\n");
-@@ -362,9 +367,12 @@ int hinic_msg_to_mgmt(struct hinic_pf_to
- 		return -EINVAL;
+ 	/* Couple the dependency tree for PI on this exposed to->fence */
+ 	if (to->engine->schedule) {
+-		err = i915_sched_node_add_dependency(&to->sched, &from->sched);
++		err = i915_sched_node_add_dependency(&to->sched,
++						     &from->sched,
++						     I915_DEPENDENCY_WEAK);
+ 		if (err < 0)
+ 			return err;
  	}
- 
-+	if (cmd == HINIC_PORT_CMD_SET_FUNC_STATE)
-+		timeout = SET_FUNC_PORT_MGMT_TIMEOUT;
-+
- 	return msg_to_mgmt_sync(pf_to_mgmt, mod, cmd, buf_in, in_size,
- 				buf_out, out_size, MGMT_DIRECT_SEND,
--				MSG_NOT_RESP);
-+				MSG_NOT_RESP, timeout);
+diff --git a/drivers/gpu/drm/i915/i915_scheduler.c b/drivers/gpu/drm/i915/i915_scheduler.c
+index 34b654b4e58af..8e419d897c2b4 100644
+--- a/drivers/gpu/drm/i915/i915_scheduler.c
++++ b/drivers/gpu/drm/i915/i915_scheduler.c
+@@ -455,7 +455,8 @@ bool __i915_sched_node_add_dependency(struct i915_sched_node *node,
  }
  
- /**
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -475,7 +475,6 @@ static int hinic_close(struct net_device
+ int i915_sched_node_add_dependency(struct i915_sched_node *node,
+-				   struct i915_sched_node *signal)
++				   struct i915_sched_node *signal,
++				   unsigned long flags)
  {
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	unsigned int flags;
--	int err;
+ 	struct i915_dependency *dep;
  
- 	down(&nic_dev->mgmt_lock);
+@@ -464,8 +465,7 @@ int i915_sched_node_add_dependency(struct i915_sched_node *node,
+ 		return -ENOMEM;
  
-@@ -489,20 +488,9 @@ static int hinic_close(struct net_device
+ 	if (!__i915_sched_node_add_dependency(node, signal, dep,
+-					      I915_DEPENDENCY_EXTERNAL |
+-					      I915_DEPENDENCY_ALLOC))
++					      flags | I915_DEPENDENCY_ALLOC))
+ 		i915_dependency_free(dep);
  
- 	up(&nic_dev->mgmt_lock);
+ 	return 0;
+diff --git a/drivers/gpu/drm/i915/i915_scheduler.h b/drivers/gpu/drm/i915/i915_scheduler.h
+index d1dc4efef77b5..6f0bf00fc5690 100644
+--- a/drivers/gpu/drm/i915/i915_scheduler.h
++++ b/drivers/gpu/drm/i915/i915_scheduler.h
+@@ -34,7 +34,8 @@ bool __i915_sched_node_add_dependency(struct i915_sched_node *node,
+ 				      unsigned long flags);
  
--	err = hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev,
--			  "Failed to set func port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
--
--	err = hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
--	if (err) {
--		netif_err(nic_dev, drv, netdev, "Failed to set port state\n");
--		nic_dev->flags |= (flags & HINIC_INTF_UP);
--		return err;
--	}
-+	hinic_port_set_state(nic_dev, HINIC_PORT_DISABLE);
-+
-+	hinic_port_set_func_state(nic_dev, HINIC_FUNC_PORT_DISABLE);
+ int i915_sched_node_add_dependency(struct i915_sched_node *node,
+-				   struct i915_sched_node *signal);
++				   struct i915_sched_node *signal,
++				   unsigned long flags);
  
- 	free_rxqs(nic_dev);
- 	free_txqs(nic_dev);
+ void i915_sched_node_fini(struct i915_sched_node *node);
+ 
+diff --git a/drivers/gpu/drm/i915/i915_scheduler_types.h b/drivers/gpu/drm/i915/i915_scheduler_types.h
+index d18e705500542..7186875088a0a 100644
+--- a/drivers/gpu/drm/i915/i915_scheduler_types.h
++++ b/drivers/gpu/drm/i915/i915_scheduler_types.h
+@@ -78,6 +78,7 @@ struct i915_dependency {
+ 	unsigned long flags;
+ #define I915_DEPENDENCY_ALLOC		BIT(0)
+ #define I915_DEPENDENCY_EXTERNAL	BIT(1)
++#define I915_DEPENDENCY_WEAK		BIT(2)
+ };
+ 
+ #endif /* _I915_SCHEDULER_TYPES_H_ */
+-- 
+2.20.1
+
 
 
