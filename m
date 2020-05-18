@@ -2,324 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC101D7489
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D3D1D7491
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgERJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 05:57:59 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:39155 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgERJ56 (ORCPT
+        id S1726632AbgERKAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:00:13 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:11452 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726130AbgERKAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 05:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1589795876; x=1621331876;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=4OvW5X7lQPqJSj1FDeUtnvAV3jtnCoqzvXyXeZaCI54=;
-  b=0ARKMu9iS8R62Zz+9ZqxNXGoSzrPKhjLgdz1nwbZqUd/0mSGfwpO5PoO
-   019di04vAbsizqwncfkIai4qL3r5HDKd/WY4VDUTVxv7DsZobUkyoKoVH
-   r15ST0tfYuRhCnlVj3GW7r1nYeMiOZrTtQjQUQf1v7Y3FjMegokUJ6lM5
-   PeD2Ba8p7aJ6IekdtNRylopJVYfECwoXMhemtQkGu27ZU/I2V/Dnt4SAl
-   8s3CPLxQLkT2WtnbaGE/Dz/+f/aHYf1BzvBqYFWEBnwQMnlDI4HJ9AryN
-   XlW4bYXPHbY9110GpEbnX/6TMqdnRv28wRX2sWDUqwp8Vy8lB+Xc7V7lA
-   A==;
-IronPort-SDR: r0o8fdMe+VRF7ORwmBrvsAcdfvtRYnk8GiP5A9+ii5LNqYTJ+ndORuwVonnHoR66E/kRLQNAmi
- hncaM9Bdzc+n3Jf2/uoxitOac1o/YmAQZ0UUK32JhMKflNJ1sNNILeLNzc6TQWoeCYyiRZJ11l
- 3+5Ipj3LglaavQejVzEBbALtZYVF3r6JwPBIocdSxORNpqUmGtgOvLFEAx1uVK3q1uSnGC/5Cu
- GHWrvvb9/nSa8LcPmvFsactJGnHYrC+0AjVS4PG2U+R8g/fVaRQ+eu3043TYu1sp4cBQ9KEzNL
- rpA=
-X-IronPort-AV: E=Sophos;i="5.73,406,1583218800"; 
-   d="scan'208";a="73754448"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 May 2020 02:57:56 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 18 May 2020 02:57:55 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 18 May 2020 02:57:54 -0700
-References: <20200513134140.25357-1-lars.povlsen@microchip.com> <20200513134140.25357-4-lars.povlsen@microchip.com> <20200513152018.GA60367@roeck-us.net>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        SoC Team <soc@kernel.org>, "Jean Delvare" <jdelvare@suse.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 3/3] hwmon: sparx5: Add Sparx5 SoC temperature driver
-In-Reply-To: <20200513152018.GA60367@roeck-us.net>
-Date:   Mon, 18 May 2020 11:57:52 +0200
-Message-ID: <87tv0do99b.fsf@soft-dev15.microsemi.net>
-MIME-Version: 1.0
+        Mon, 18 May 2020 06:00:03 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04I9uBrt013747;
+        Mon, 18 May 2020 02:59:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=pfpt0818; bh=M+Uo44nbMmJHX33Mt5rIxPzo12kvpZVZaJyPrmz1OFQ=;
+ b=GZXnvljLHeAeSs1mEUR+G5DZo6VjtSwHdjaE5X/li6DhqOjxY5G0WzwIXSbLN1zaBhXZ
+ nH6lLhUjz8M6VVICYyi0VYfs4e3N+8HDFQKaZL+08dJAoHhg4zwL9uQXX2hx39l82joC
+ yTHzRWzD76ShOFUFGPZNUQvcCrQKAQoZir4ZSKz+qa2IZkDZdYye1VbbDHdnhDWJU6M2
+ ZaWtk8ysFcZ1P/p9ufNwJitz4Vg8jWqnmxaV6NuUaMQvVqBTPZzk8IVy35hV8aXjtLyA
+ PWonMNl28+Q2ePCyMDpY0pp1GsoZpdgEdnoU2H3INU+SFWR1e4qZ/fSuy1X1KpEGmOXo sQ== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 312dhqekfb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 02:59:41 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 May
+ 2020 02:59:40 -0700
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 May
+ 2020 02:59:39 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.53) by
+ SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 18 May 2020 02:59:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=brkYqb1brVZH2u/DPL5D0DCwtTtna8h9tYwm6LxEuhpeLXY4XspcKzTD27tvXSW19tTzz2/AwHp5oL47QpWyT6odVA3O9Zh0tN95TpZ+FK6pAwVKcCfkPzAYsQunVhyTerdCzWKrvPxm2eHeLRgWfGBzAbKs5b0RI4tiqUIR22FxTjz/Jn4PzmtI09YeAsBeqrHHn6Y5J5JxV8wrWgxAtV3RxzMbLSgPcRQ753vjMOGbGqWcJjHSl5lvDj3yvzweQH+3fc2WGoRw1pZRz72yWlD5Vrwptc16478cJg81gKXRuxXZfJt6BeLKBOePCNkRx5nTdm90b+Rh0N27cLn/ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M+Uo44nbMmJHX33Mt5rIxPzo12kvpZVZaJyPrmz1OFQ=;
+ b=nACARcGr2PVrBVUBlK5KtoMYiRqZJyDqphZd4GaqD+S36+gEQoIIr+0C72yL/CNNqaRVEsj/yhCrWY81tObNhRRW8IgTbsjUW4JEzngPH7WdCRkv/En2XvrQQmKui7Tu5iqgaIxn0Ytiwfr+ThML8w2G3t4Z2uA2QWvDpNFWaCbvgsIsbq2NUDyok5zXNsg5vy0Py9NuXPNsAm9su8mpPLnVynN+8a++3BoBiSjXDgyp0f1pahCoQJYXiVC1cs8sy8NQyd2EwXsWpM6NhYzRLdF6EcS04ck8uqRRsBufEGv4cP+4VctJ3If8L8So5VQicluMNeqDGO12+9VOJJ8EgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M+Uo44nbMmJHX33Mt5rIxPzo12kvpZVZaJyPrmz1OFQ=;
+ b=JQdLafDbeKpG0Iflh0ncL3XhO1AsVzHhIB730yb4R0YquiOkpp0V+Kgw0Roc7zEJCIAB3/44U/wghfvYZq6kK+RwmFMiAGSLMmQwleH7LtZtEPjrfrnrbVCZhAgBXmPVG+2Dou0vv7cgwnhs1nXb9Ff/bbzs66F/8EeHa+/3J2k=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=marvell.com;
+Received: from BYAPR18MB2661.namprd18.prod.outlook.com (2603:10b6:a03:136::26)
+ by BYAPR18MB2712.namprd18.prod.outlook.com (2603:10b6:a03:103::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24; Mon, 18 May
+ 2020 09:59:38 +0000
+Received: from BYAPR18MB2661.namprd18.prod.outlook.com
+ ([fe80::a165:ffa5:f3eb:d62d]) by BYAPR18MB2661.namprd18.prod.outlook.com
+ ([fe80::a165:ffa5:f3eb:d62d%7]) with mapi id 15.20.3000.033; Mon, 18 May 2020
+ 09:59:38 +0000
+From:   Robert Richter <rrichter@marvell.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>
+CC:     James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Robert Richter <rrichter@marvell.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] EDAC/ghes: Setup DIMM label from DMI and use it in error reports
+Date:   Mon, 18 May 2020 11:58:52 +0200
+Message-ID: <20200518095852.28010-1-rrichter@marvell.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: HE1PR0402CA0021.eurprd04.prod.outlook.com
+ (2603:10a6:3:d0::31) To BYAPR18MB2661.namprd18.prod.outlook.com
+ (2603:10b6:a03:136::26)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from rric.localdomain (31.208.96.227) by HE1PR0402CA0021.eurprd04.prod.outlook.com (2603:10a6:3:d0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend Transport; Mon, 18 May 2020 09:59:34 +0000
+X-Mailer: git-send-email 2.20.1
+X-Originating-IP: [31.208.96.227]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78a9dca0-1eee-47d5-3595-08d7fb122c5b
+X-MS-TrafficTypeDiagnostic: BYAPR18MB2712:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR18MB27121EB974CBF4591EEFB78BD9B80@BYAPR18MB2712.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:155;
+X-Forefront-PRVS: 04073E895A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jx6QZy8Tt1/qPbFfuVkj4o+k1F5fWTcxXSmjQb08y5ESPzkyWHGTr7VDtlgE+4xx9oSJgc2WguVMMCXLg2pMkHsfJneWq6Wx74/ZYX2Td0frnxciKhEd72p9EL5vNjQO+/R/wW4QqHvj4iX8teMyGJaDOcxovO0KRAkx1EQ7U4FUO7cHn73pRzfyl9+2/VkQ16p58wtfzCKePquc7j2TduS1wBVKjCeu7JjSnJlybIQib/tHenGlIxE2BZH0YI7r1FsdOBIYeEMvx6RpojEkp3kAsBXG6XaEbooBf1TNH3iyeW2dAuRnFu/9zcBCz13VpSXBe0WvU5jHXeFF+TUkfxpqBFFMFN/k4GEIaxCMtWFoDa5aog+QhjY+AY7e8P3dX2AMCfYEMJo51zUgj3ErHItU7OJQPXVfSfxXKHIZBj2haEFJ9vfosJjRSdIJU19Ds7JKmQiGrQvunlpXx/DPMcwDjg95XTNQkl067EaEwCkWF8++NyunHWKQZ0SZwF1BJQYmJ1jIkUUmR0AQ9funTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR18MB2661.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(136003)(366004)(346002)(376002)(396003)(6486002)(110136005)(316002)(54906003)(5660300002)(8676002)(6666004)(86362001)(4326008)(6512007)(478600001)(36756003)(966005)(8936002)(2906002)(52116002)(1076003)(16526019)(66946007)(6506007)(66556008)(66476007)(956004)(2616005)(186003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: HggdttvV4Qljl6n8uwEli4n34Y1GIF92grNOO/jHLWK+7FFuQUMZ2z/oscwJY+XsUAX0Fk/bPxRKA5qGllyCiNbbSVXW1AbL+jcL0Ii2B+st8nKKQG0EmN0JGegDypifggxKlGbGpcZ0b/bdbxQIT03o5PNVvNG0zXapnrUWkKngjLhqqdzKLlvyDG0s5y3nW3TY0aj0+ox96OQs5G+04E2fquSuvKmNeUGUSspkH6qZiHJfpGNR8NL9TSdPkpwoqk/WPJ92vd89XEYUh+0DigjIg5wSF4mOh4xnZRyLRhlUJEtRnTL5XyNqQyf/ZnvnNj6xjlCfA60iKCanDWa0ZDnBGXXVSxReuAaj/GPv1aYiQzNbQoCNI7FozT1VVuwxIOpySBPojQHSOkrMiKmun1lNVDcdZ+snO6OtJvu61vaWPKWTi53o7KSBo8uncZht+xKRir+Q5P+ZK6tBnMzuORGPKWGmYsj1l4vJXYVVCdM=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78a9dca0-1eee-47d5-3595-08d7fb122c5b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2020 09:59:37.9546
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y9YZC4bg1X9d70praCL2v/485c/mDCHoFTpZYU2u7cdwMCsYWL9/xeVw2nFMlmyRBJxZqT1GgZHKuaXLeQ3urA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2712
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_03:2020-05-15,2020-05-18 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ghes driver reports errors with 'unknown label' even if the actual
+DIMM label is known, e.g.:
 
-Guenter Roeck writes:
+ EDAC MC0: 1 CE Single-bit ECC on unknown label (node:0 card:0
+   module:0 rank:1 bank:0 col:13 bit_pos:16 DIMM location:N0 DIMM_A0
+   page:0x966a9b3 offset:0x0 grain:1 syndrome:0x0 - APEI location:
+   node:0 card:0 module:0 rank:1 bank:0 col:13 bit_pos:16 DIMM
+   location:N0 DIMM_A0 status(0x0000000000000400): Storage error in
+   DRAM memory)
 
-> On Wed, May 13, 2020 at 03:41:40PM +0200, Lars Povlsen wrote:
->> This patch adds a temperature sensor driver to the Sparx5 SoC.
->>
->> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
->> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->> ---
->>  drivers/hwmon/Kconfig       |  10 +++
->>  drivers/hwmon/Makefile      |   2 +-
->>  drivers/hwmon/sparx5-temp.c | 154 ++++++++++++++++++++++++++++++++++++
->>  3 files changed, 165 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/hwmon/sparx5-temp.c
->>
->> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
->> index 4c62f900bf7e8..130cb1f1748ff 100644
->> --- a/drivers/hwmon/Kconfig
->> +++ b/drivers/hwmon/Kconfig
->> @@ -480,6 +480,16 @@ config SENSORS_I5K_AMB
->>         This driver can also be built as a module. If so, the module
->>         will be called i5k_amb.
->>
->> +config SENSORS_SPARX5
->> +     tristate "Sparx5 SoC temperature sensor"
->> +     depends on ARCH_SPARX5
->> +     help
->> +       If you say yes here you get support for temperature monitoring
->> +       with the Microchip Sparx5 SoC.
->> +
->> +       This driver can also be built as a module. If so, the module
->> +       will be called sparx5-temp.
->> +
->>  config SENSORS_F71805F
->>       tristate "Fintek F71805F/FG, F71806F/FG and F71872F/FG"
->>       depends on !PPC
->> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
->> index b0b9c8e571762..28a09986b7a62 100644
->> --- a/drivers/hwmon/Makefile
->> +++ b/drivers/hwmon/Makefile
->> @@ -64,6 +64,7 @@ obj-$(CONFIG_SENSORS_DS1621)        += ds1621.o
->>  obj-$(CONFIG_SENSORS_EMC1403)        += emc1403.o
->>  obj-$(CONFIG_SENSORS_EMC2103)        += emc2103.o
->>  obj-$(CONFIG_SENSORS_EMC6W201)       += emc6w201.o
->> +obj-$(CONFIG_SENSORS_SPARX5) += sparx5-temp.o
->>  obj-$(CONFIG_SENSORS_F71805F)        += f71805f.o
->>  obj-$(CONFIG_SENSORS_F71882FG)       += f71882fg.o
->>  obj-$(CONFIG_SENSORS_F75375S)        += f75375s.o
->> @@ -190,4 +191,3 @@ obj-$(CONFIG_SENSORS_OCC) += occ/
->>  obj-$(CONFIG_PMBUS)          += pmbus/
->>
->>  ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
->> -
->> diff --git a/drivers/hwmon/sparx5-temp.c b/drivers/hwmon/sparx5-temp.c
->> new file mode 100644
->> index 0000000000000..bf9dd102a9825
->> --- /dev/null
->> +++ b/drivers/hwmon/sparx5-temp.c
->> @@ -0,0 +1,154 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/* Sparx5 SoC temperature sensor driver
->> + *
->> + * Copyright (C) 2020 Lars Povlsen <lars.povlsen@microchip.com>
->> + */
->> +
->> +#include <linux/bitops.h>
->> +#include <linux/hwmon.h>
->> +#include <linux/hwmon-sysfs.h>
->
-> Unnecessary include
+Fix this by using struct dimm_info's label string in error reports:
 
-Ack.
+ EDAC MC0: 1 CE Single-bit ECC on N0 DIMM_A0 (node:0 card:0 module:0
+   rank:1 bank:515 col:14 bit_pos:16 DIMM location:N0 DIMM_A0
+   page:0x99223d8 offset:0x0 grain:1 syndrome:0x0 - APEI location:
+   node:0 card:0 module:0 rank:1 bank:515 col:14 bit_pos:16 DIMM
+   location:N0 DIMM_A0 status(0x0000000000000400): Storage error in
+   DRAM memory)
 
->
->> +#include <linux/init.h>
->> +#include <linux/io.h>
->> +#include <linux/module.h>
->> +#include <linux/of_device.h>
->> +
->> +#define TEMP_CTRL            0
->> +#define TEMP_CFG             4
->> +#define  TEMP_CFG_CYCLES     GENMASK(24, 15)
->> +#define  TEMP_CFG_CYCLES_OFF 15
->> +#define  TEMP_CFG_ENA                BIT(0)
->> +#define TEMP_STAT            8
->> +#define  TEMP_STAT_VALID     BIT(12)
->> +#define  TEMP_STAT_TEMP              GENMASK(11, 0)
->> +
->> +struct s5_hwmon {
->> +     void __iomem *base;
->> +};
->> +
->> +static void s5_temp_enable(struct s5_hwmon *hwmon)
->> +{
->> +     u32 val = readl(hwmon->base + TEMP_CFG);
->> +     u32 clk = 250;
->> +
->> +     val &= ~TEMP_CFG_CYCLES;
->> +     val |= (clk << TEMP_CFG_CYCLES_OFF);
->> +     val |= TEMP_CFG_ENA;
->> +
->> +     writel(val, hwmon->base + TEMP_CFG);
->> +}
->> +
->> +static void s5_temp_disable(void *data)
->> +{
->> +     struct s5_hwmon *hwmon = data;
->> +     u32 val = readl(hwmon->base + TEMP_CFG);
->> +
->> +     val &= ~TEMP_CFG_ENA;
->> +
->> +     writel(val, hwmon->base + TEMP_CFG);
->> +}
->> +
->> +static int s5_read(struct device *dev, enum hwmon_sensor_types type,
->> +                u32 attr, int channel, long *temp)
->> +{
->> +     struct s5_hwmon *hwmon = dev_get_drvdata(dev);
->> +     int rc = 0, value;
->> +     u32 stat;
->> +
->> +     switch (attr) {
->> +     case hwmon_temp_input:
->> +             stat = readl_relaxed(hwmon->base + TEMP_STAT);
->> +             if (stat & TEMP_STAT_VALID) {
->> +                     value = (stat & TEMP_STAT_TEMP);
->
-> Unnecessary ( )
+The labels are initialized by reading the bank and device strings from
+DMI. Now, the label information can also read from sysfs. E.g. a
+ThunderX2 system will show the following:
 
-Removed.
+ /sys/devices/system/edac/mc/mc0/dimm0/dimm_label:N0 DIMM_A0
+ /sys/devices/system/edac/mc/mc0/dimm1/dimm_label:N0 DIMM_B0
+ /sys/devices/system/edac/mc/mc0/dimm2/dimm_label:N0 DIMM_C0
+ /sys/devices/system/edac/mc/mc0/dimm3/dimm_label:N0 DIMM_D0
+ /sys/devices/system/edac/mc/mc0/dimm4/dimm_label:N0 DIMM_E0
+ /sys/devices/system/edac/mc/mc0/dimm5/dimm_label:N0 DIMM_F0
+ /sys/devices/system/edac/mc/mc0/dimm6/dimm_label:N0 DIMM_G0
+ /sys/devices/system/edac/mc/mc0/dimm7/dimm_label:N0 DIMM_H0
+ /sys/devices/system/edac/mc/mc0/dimm8/dimm_label:N1 DIMM_I0
+ /sys/devices/system/edac/mc/mc0/dimm9/dimm_label:N1 DIMM_J0
+ /sys/devices/system/edac/mc/mc0/dimm10/dimm_label:N1 DIMM_K0
+ /sys/devices/system/edac/mc/mc0/dimm11/dimm_label:N1 DIMM_L0
+ /sys/devices/system/edac/mc/mc0/dimm12/dimm_label:N1 DIMM_M0
+ /sys/devices/system/edac/mc/mc0/dimm13/dimm_label:N1 DIMM_N0
+ /sys/devices/system/edac/mc/mc0/dimm14/dimm_label:N1 DIMM_O0
+ /sys/devices/system/edac/mc/mc0/dimm15/dimm_label:N1 DIMM_P0
 
->
->> +                     value = DIV_ROUND_CLOSEST(value * 3522, 4096) - 1094;
->> +                     value *= 100;
->> +                     *temp = value;
->> +             } else
->> +                     rc = -EINVAL;
->
-> -EINVAL is for bad used input. -EIO, maybe, unless there is a better error.
-> Also,
->
->                 if (!(stat & TEMP_STAT_VALID))
->                         return -EIO;
+Since dimm_labels can be rewritten, that label will be used in a later
+error report:
 
-Ok, changed.
+ # echo foobar >/sys/devices/system/edac/mc/mc0/dimm0/dimm_label
+ # # some error injection here
+ # dmesg | grep foobar
+ [ 2119.784489] EDAC MC0: 1 CE Single-bit ECC on foobar (node:0 card:0
+ module:0 rank:0 bank:769 col:1 bit_pos:16 DIMM location:foobar
+ page:0x94d027 offset:0x0 grain:1 syndrome:0x0 - APEI location: node:0
+ card:0 module:0 rank:0 bank:769 col:1 bit_pos:16 DIMM location:foobar
+ status(0x0000000000000400): Storage error in DRAM memory)
 
->                 ...
->
-> would be easier to read (and not result in a checkpatch warning).
->
->> +             break;
->> +     default:
->> +             rc = -EOPNOTSUPP;
->
->                 break;
->
+Signed-off-by: Robert Richter <rrichter@marvell.com>
+---
+This patch is a self-contained version of:
 
-Added.
+ [v2,05/10] EDAC/ghes: Setup DIMM label from DMI and use it in error reports
+ https://lore.kernel.org/patchwork/patch/1229388/
 
->> +     }
->> +
->> +     return rc;
->> +}
->> +
->> +static umode_t s5_is_visible(const void *_data, enum hwmon_sensor_types type,
->> +                          u32 attr, int channel)
->> +{
->> +     if (type != hwmon_temp)
->> +             return 0;
->> +
->> +     switch (attr) {
->> +     case hwmon_temp_input:
->> +             return 0444;
->> +     default:
->> +             return 0;
->> +     }
->> +}
->> +
->> +static const struct hwmon_channel_info *s5_info[] = {
->> +     HWMON_CHANNEL_INFO(chip,
->> +                        HWMON_C_REGISTER_TZ),
->> +     HWMON_CHANNEL_INFO(temp,
->> +                        HWMON_T_INPUT),
->> +     NULL
->> +};
->> +
->> +static const struct hwmon_ops s5_hwmon_ops = {
->> +     .is_visible = s5_is_visible,
->> +     .read = s5_read,
->> +};
->> +
->> +static const struct hwmon_chip_info s5_chip_info = {
->> +     .ops = &s5_hwmon_ops,
->> +     .info = s5_info,
->> +};
->> +
->> +static int s5_temp_probe(struct platform_device *pdev)
->> +{
->> +     struct device *hwmon_dev;
->> +     struct s5_hwmon *hwmon;
->> +     int err = 0;
->
-> Unnecessary initialization
->
+ [02/11] EDAC/ghes: Setup DIMM label from DMI and use it in error reports
+ https://lore.kernel.org/patchwork/patch/1205891/
 
-Removed
+It applies on ras:edac-for-next commit id af8a9a36af01 ("EDAC/ghes:
+Setup DIMM label from DMI and use it in error reports").
 
->> +
->> +     hwmon = devm_kzalloc(&pdev->dev, sizeof(*hwmon), GFP_KERNEL);
->> +     if (!hwmon)
->> +             return -ENOMEM;
->> +
->> +     hwmon->base = devm_platform_ioremap_resource(pdev, 0);
->> +     if (IS_ERR(hwmon->base))
->> +             return PTR_ERR(hwmon->base);
->> +
->> +     err = devm_add_action(&pdev->dev, s5_temp_disable, hwmon);
->> +     if (err)
->> +             return err;
->> +
->> +     s5_temp_enable(hwmon);
->> +
->> +     hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev,
->> +                                                      "s5_temp",
->> +                                                      hwmon,
->> +                                                      &s5_chip_info,
->> +                                                      NULL);
->> +
->> +     return PTR_ERR_OR_ZERO(hwmon_dev);
->> +}
->> +
->> +const struct of_device_id s5_temp_match[] = {
->> +     { .compatible = "microchip,sparx5-temp" },
->> +     {},
->> +};
->> +MODULE_DEVICE_TABLE(of, s5_temp_match);
->> +
->> +static struct platform_driver s5_temp_driver = {
->> +     .probe = s5_temp_probe,
->> +     .driver = {
->> +             .name = "sparx5-temp",
->> +             .of_match_table = s5_temp_match,
->> +     },
->> +};
->> +
->> +module_platform_driver(s5_temp_driver);
->> +
->> +MODULE_AUTHOR("Lars Povlsen <lars.povlsen@microchip.com>");
->> +MODULE_DESCRIPTION("Sparx5 SoC temperature sensor driver");
->> +MODULE_LICENSE("GPL");
->> --
->> 2.26.2
+v3 changes:
 
-Thank you for your input, I will submit anew asap.
+ * shortend function name to dimm_setup_label(),
 
----Lars
+ * let args stick out of find_dimm_by_handle() (line length 82 chars).
+---
+ drivers/edac/ghes_edac.c | 43 +++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index cb3dab56a875..c7d404629863 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -87,16 +87,31 @@ static void ghes_edac_count_dimms(const struct dmi_header *dh, void *arg)
+ 		(*num_dimm)++;
+ }
+ 
+-static int get_dimm_smbios_index(struct mem_ctl_info *mci, u16 handle)
++static struct dimm_info *find_dimm_by_handle(struct mem_ctl_info *mci, u16 handle)
+ {
+ 	struct dimm_info *dimm;
+ 
+ 	mci_for_each_dimm(mci, dimm) {
+ 		if (dimm->smbios_handle == handle)
+-			return dimm->idx;
++			return dimm;
+ 	}
+ 
+-	return -1;
++	return NULL;
++}
++
++static void dimm_setup_label(struct dimm_info *dimm, u16 handle)
++{
++	const char *bank = NULL, *device = NULL;
++
++	dmi_memdev_name(handle, &bank, &device);
++
++	/* both strings must be non-zero */
++	if (bank && *bank && device && *device)
++		snprintf(dimm->label, sizeof(dimm->label),
++			"%s %s", bank, device);
++	else
++		snprintf(dimm->label, sizeof(dimm->label),
++			"unknown memory (handle: 0x%.4x)", handle);
+ }
+ 
+ static void ghes_edac_dmidecode(const struct dmi_header *dh, void *arg)
+@@ -179,9 +194,7 @@ static void ghes_edac_dmidecode(const struct dmi_header *dh, void *arg)
+ 		dimm->dtype = DEV_UNKNOWN;
+ 		dimm->grain = 128;		/* Likely, worse case */
+ 
+-		/*
+-		 * FIXME: It shouldn't be hard to also fill the DIMM labels
+-		 */
++		dimm_setup_label(dimm, entry->handle);
+ 
+ 		if (dimm->nr_pages) {
+ 			edac_dbg(1, "DIMM%i: %s size = %d MB%s\n",
+@@ -344,19 +357,17 @@ void ghes_edac_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_BIT_POSITION)
+ 		p += sprintf(p, "bit_pos:%d ", mem_err->bit_pos);
+ 	if (mem_err->validation_bits & CPER_MEM_VALID_MODULE_HANDLE) {
+-		const char *bank = NULL, *device = NULL;
+-		int index = -1;
++		struct dimm_info *dimm;
+ 
+-		dmi_memdev_name(mem_err->mem_dev_handle, &bank, &device);
+-		if (bank != NULL && device != NULL)
+-			p += sprintf(p, "DIMM location:%s %s ", bank, device);
+-		else
++		dimm = find_dimm_by_handle(mci, mem_err->mem_dev_handle);
++		if (dimm) {
++			e->top_layer = dimm->idx;
++			strcpy(e->label, dimm->label);
++			p += sprintf(p, "DIMM location:%s ", dimm->label);
++		} else {
+ 			p += sprintf(p, "DIMM DMI handle: 0x%.4x ",
+ 				     mem_err->mem_dev_handle);
+-
+-		index = get_dimm_smbios_index(mci, mem_err->mem_dev_handle);
+-		if (index >= 0)
+-			e->top_layer = index;
++		}
+ 	}
+ 	if (p > e->location)
+ 		*(p - 1) = '\0';
 -- 
-Lars Povlsen,
-Microchip
+2.20.1
+
