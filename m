@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61561D8656
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2871D8174
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgERRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42148 "EHLO mail.kernel.org"
+        id S1730329AbgERRsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729680AbgERRoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:06 -0400
+        id S1730313AbgERRsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19FB52083E;
-        Mon, 18 May 2020 17:44:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134DA207C4;
+        Mon, 18 May 2020 17:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823845;
-        bh=J3IsPnupG1bprp4tyhjpuDkdCJ3abZNdijJ9J9kjQPw=;
+        s=default; t=1589824082;
+        bh=wUVPPEjiIhHY7brZale1h2jyk+zGoCYkcSBldVnpos4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HodCwC4k44W3WJa013Q+LdSQekngSTdfidAfd+FKUk8Nm6OOVyNbwZFbryDv59mtD
-         MWkT2rFKVmseDfkRe1q0if63HQ7du83BzIGaF9AY+98y8lw5fV5Q6/hcgiHgS/RRgz
-         VeJL/ycNGaIojTvXQrii9Vx1C3IN6hJiOjYKxZsE=
+        b=GTqKJ6xNo5AiIHClwIxU6aVHCL2HTuX71tP8FXcR8XDHMa5f6BDP4kZYTTlqcIeMk
+         Z12zbJ8W7X6jzjN2h1+uck5t1+lTa9s84tkh5oxpwCLCvU9iuk9fUJAMMyfUxE44Qf
+         kZbY/P9hG1mullGhrUx34FgjKJL0raI2h9CYHLDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 58/90] pnp: Use list_for_each_entry() instead of open coding
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 064/114] pinctrl: baytrail: Enable pin configuration setting for GPIO chip
 Date:   Mon, 18 May 2020 19:36:36 +0200
-Message-Id: <20200518173502.918228186@linuxfoundation.org>
+Message-Id: <20200518173514.693315129@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 01b2bafe57b19d9119413f138765ef57990921ce upstream.
+[ Upstream commit ccd025eaddaeb99e982029446197c544252108e2 ]
 
-Aside from good practice, this avoids a warning from gcc 10:
+It appears that pin configuration for GPIO chip hasn't been enabled yet
+due to absence of ->set_config() callback.
 
-./include/linux/kernel.h:997:3: warning: array subscript -31 is outside array bounds of ‘struct list_head[1]’ [-Warray-bounds]
-  997 |  ((type *)(__mptr - offsetof(type, member))); })
-      |  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/list.h:493:2: note: in expansion of macro ‘container_of’
-  493 |  container_of(ptr, type, member)
-      |  ^~~~~~~~~~~~
-./include/linux/pnp.h:275:30: note: in expansion of macro ‘list_entry’
-  275 | #define global_to_pnp_dev(n) list_entry(n, struct pnp_dev, global_list)
-      |                              ^~~~~~~~~~
-./include/linux/pnp.h:281:11: note: in expansion of macro ‘global_to_pnp_dev’
-  281 |  (dev) != global_to_pnp_dev(&pnp_global); \
-      |           ^~~~~~~~~~~~~~~~~
-arch/x86/kernel/rtc.c:189:2: note: in expansion of macro ‘pnp_for_each_dev’
-  189 |  pnp_for_each_dev(dev) {
+Enable it here for Intel Baytrail.
 
-Because the common code doesn't cast the starting list_head to the
-containing struct.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-[ rjw: Whitespace adjustments ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: c501d0b149de ("pinctrl: baytrail: Add pin control operations")
+Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pnp.h |   29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/pnp.h
-+++ b/include/linux/pnp.h
-@@ -219,10 +219,8 @@ struct pnp_card {
- #define global_to_pnp_card(n) list_entry(n, struct pnp_card, global_list)
- #define protocol_to_pnp_card(n) list_entry(n, struct pnp_card, protocol_list)
- #define to_pnp_card(n) container_of(n, struct pnp_card, dev)
--#define pnp_for_each_card(card) \
--	for((card) = global_to_pnp_card(pnp_cards.next); \
--	(card) != global_to_pnp_card(&pnp_cards); \
--	(card) = global_to_pnp_card((card)->global_list.next))
-+#define pnp_for_each_card(card)	\
-+	list_for_each_entry(card, &pnp_cards, global_list)
- 
- struct pnp_card_link {
- 	struct pnp_card *card;
-@@ -275,14 +273,9 @@ struct pnp_dev {
- #define card_to_pnp_dev(n) list_entry(n, struct pnp_dev, card_list)
- #define protocol_to_pnp_dev(n) list_entry(n, struct pnp_dev, protocol_list)
- #define	to_pnp_dev(n) container_of(n, struct pnp_dev, dev)
--#define pnp_for_each_dev(dev) \
--	for((dev) = global_to_pnp_dev(pnp_global.next); \
--	(dev) != global_to_pnp_dev(&pnp_global); \
--	(dev) = global_to_pnp_dev((dev)->global_list.next))
--#define card_for_each_dev(card,dev) \
--	for((dev) = card_to_pnp_dev((card)->devices.next); \
--	(dev) != card_to_pnp_dev(&(card)->devices); \
--	(dev) = card_to_pnp_dev((dev)->card_list.next))
-+#define pnp_for_each_dev(dev) list_for_each_entry(dev, &pnp_global, global_list)
-+#define card_for_each_dev(card, dev)	\
-+	list_for_each_entry(dev, &(card)->devices, card_list)
- #define pnp_dev_name(dev) (dev)->name
- 
- static inline void *pnp_get_drvdata(struct pnp_dev *pdev)
-@@ -436,14 +429,10 @@ struct pnp_protocol {
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index 4fb3e44f91331..2ea4bb9ce6e16 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1503,6 +1503,7 @@ static const struct gpio_chip byt_gpio_chip = {
+ 	.direction_output	= byt_gpio_direction_output,
+ 	.get			= byt_gpio_get,
+ 	.set			= byt_gpio_set,
++	.set_config		= gpiochip_generic_config,
+ 	.dbg_show		= byt_gpio_dbg_show,
  };
  
- #define to_pnp_protocol(n) list_entry(n, struct pnp_protocol, protocol_list)
--#define protocol_for_each_card(protocol,card) \
--	for((card) = protocol_to_pnp_card((protocol)->cards.next); \
--	(card) != protocol_to_pnp_card(&(protocol)->cards); \
--	(card) = protocol_to_pnp_card((card)->protocol_list.next))
--#define protocol_for_each_dev(protocol,dev) \
--	for((dev) = protocol_to_pnp_dev((protocol)->devices.next); \
--	(dev) != protocol_to_pnp_dev(&(protocol)->devices); \
--	(dev) = protocol_to_pnp_dev((dev)->protocol_list.next))
-+#define protocol_for_each_card(protocol, card)	\
-+	list_for_each_entry(card, &(protocol)->cards, protocol_list)
-+#define protocol_for_each_dev(protocol, dev)	\
-+	list_for_each_entry(dev, &(protocol)->devices, protocol_list)
- 
- extern struct bus_type pnp_bus_type;
- 
+-- 
+2.20.1
+
 
 
