@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9C31D7418
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF251D7421
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbgERJcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 05:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        id S1726671AbgERJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 05:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgERJcS (ORCPT
+        with ESMTP id S1726180AbgERJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 05:32:18 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F80C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 02:32:18 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id y85so3630537oie.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 02:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r4y8pOF1U2hIXUEaQHB5pp1+f6cCMjasAlccauvS3u8=;
-        b=p+4e8OGbkl4jtB21Kp0Taies1F3UglkyxEVlBRQUQ1JCB7uuaBDtommPyyPp+nFWc3
-         1Xguh2oulhrEM1GT03E7NzWVydFgKZNO9PxIrx2t4zUNhN2e2Yzekzb5Kd8ItHWtaWJ+
-         DJRzZRP0Zod3TVkJ8lxGJbG7FIMvQZ7pP+Yi5IcziQk+yOTY+8Ijv+n/4M4sTFnh95o/
-         YyGb1xwUv7sa8c9Jbj4KOSqiGGjhEjVMmHGmH4kDJ/f+dly1SZSizUV2p+nmhaft5URq
-         EUcitTFvt2xe/bdolmFD5KvRRInAoLbZB0WCOCNiPysMYx9wph5eWaErFcbLXSzPw6Y3
-         SQ6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r4y8pOF1U2hIXUEaQHB5pp1+f6cCMjasAlccauvS3u8=;
-        b=kz8idGcVmLlflmkuXw1ylB406E46eYV5M1NjOsrHJip5LiWYjVrvxt9nPhvxMNxv/V
-         KkI3nW2yvaVs9KqSTKWD20VU4gp02GOLjAWW7PiA/h3U8bXlmBjfXsNh9KfMC9SakqhQ
-         us4MsJKn8SUbOb7JPFAuufR7kNtw3O69OQgWL2bKuaMhPqRpLPvGZ6K2F8ShNH4BaIg4
-         /2H6rIo/uTnAmmdjNpWN4WBlmvk8tpvsilAWehphPB9u1LPl65zU++JrlznRizcNyces
-         K3ZWigwmZdP+YgJ1X9Up+SUUrW7ASaaxF+HB8233QEH8qH3WzQV63eBNxahYiPx3umgX
-         J/kA==
-X-Gm-Message-State: AOAM532Y2sD+ztzAYWIrEwWmQt4RhscEDxdqUO4OVxWutYst3capFjA2
-        a+sZFwoKT9LamksyYeVXxGXAPlVU2HN4MvN41ODUHQ==
-X-Google-Smtp-Source: ABdhPJyrEJAISIZWsXEyVlyc4BlPLuXVfhVNfJE1HrEOPfH8Lbw8GOfGkNCHlNzM0DGX7IOc1TiEmiYBdJ1xs3xDRQ4=
-X-Received: by 2002:aca:ea46:: with SMTP id i67mr9709314oih.152.1589794337493;
- Mon, 18 May 2020 02:32:17 -0700 (PDT)
+        Mon, 18 May 2020 05:34:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C60C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 02:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2j4tkpm5JHeMcQSIOd5huHTdfscenHCGpDJTxFjuOQI=; b=M8ycmal7zUd3GNKv6m41wBJcG2
+        uoyz6yFsIUKwbR+rIX97MHGtLVjExxNhILOnzMFyQVcR+si4Qeh1y9kjlsl+KDdjFIQzsiuEe8t9R
+        woCrW5w1Bcy/kx4oSp2JUgFs4DjB9FoRxUsPvcqp3Ei+cc28aRbdexrNg9uvHWjWeHE5HXeq/FcEw
+        vxeNw+aOweYB/WOhDE/WaZRclDl1wJeSYxwgWcRKnCroHI8dJ21O18i0VzGaG/aImQ3gwbXghLetd
+        7urT0HEjZ65/hrGS3APtnThBgapV4xHsQnJywpLBuovUUCYzQ8xdzMr6IOM5+b6FjN1yLd4w0YaLo
+        M6dAvDLQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jac9s-0005EN-Py; Mon, 18 May 2020 09:34:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29822300478;
+        Mon, 18 May 2020 11:34:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E63EF2B3CFEEA; Mon, 18 May 2020 11:34:02 +0200 (CEST)
+Date:   Mon, 18 May 2020 11:34:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@elte.hu, irogers@google.com,
+        kim.phillips@amd.com, jolsa@redhat.com
+Subject: Re: [PATCH 3/3] perf/x86/rapl: add AMD Fam17h RAPL support
+Message-ID: <20200518093402.GB277222@hirez.programming.kicks-ass.net>
+References: <20200515215733.20647-1-eranian@google.com>
+ <20200515215733.20647-4-eranian@google.com>
 MIME-Version: 1.0
-References: <4502272.pByIgeXik9@kreacher> <CAJZ5v0j6S+we7tHeV9TM30LS+TO3zWigACe0ZUFfWphg2FBBZQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0j6S+we7tHeV9TM30LS+TO3zWigACe0ZUFfWphg2FBBZQ@mail.gmail.com>
-From:   Chris Chiu <chiu@endlessm.com>
-Date:   Mon, 18 May 2020 17:32:06 +0800
-Message-ID: <CAB4CAweV+U_pPv9877S+j6UVUPjcTzJq26rarxnJfwc6on1ESA@mail.gmail.com>
-Subject: Re: [PATCH[RFT]] ACPI: EC: s2idle: Avoid flushing EC work when EC GPE
- is inactive
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515215733.20647-4-eranian@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 4:59 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, May 14, 2020 at 12:10 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> >
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Flushing the EC work while suspended to idle when the EC GPE status
-> > is not set causes some EC wakeup events (notably power button and
-> > lid ones) to be missed after a series of spurious wakeups on the Dell
-> > XPS13 9360 in my office.
-> >
-> > If that happens, the machine cannot be woken up from suspend-to-idle
-> > by a power button press or lid status change and it needs to be woken
-> > up in some other way (eg. by a key press).
-> >
-> > Flushing the EC work only after successful dispatching the EC GPE,
-> > which means that its status has been set, avoids the issue, so change
-> > the code in question accordingly.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > Hi Chris,
-> >
-> > Please check if the key press wakeup still works on your system with this patch
-> > applied (on top of https://patchwork.kernel.org/patch/11538065/).
->
-> Hi Chris,
->
-> Since I haven't heard back from you and the problem at hand is a
-> regression on the machine where it happens, I'm going to push this
-> patch for merging.
->
-> If it causes the key press wakeup issue to reappear on your machine,
-> I'm afraid that we'll need to quirk it in the EC driver.
->
-> Thanks!
->
+On Fri, May 15, 2020 at 02:57:33PM -0700, Stephane Eranian wrote:
 
-Sorry that I missed this email. I'll apply this patch and test again.
+> +static struct perf_msr amd_rapl_msrs[] = {
+> +	[PERF_RAPL_PP0]  = { 0, &rapl_events_cores_group, NULL},
+> +	[PERF_RAPL_PKG]  = { MSR_AMD_PKG_ENERGY_STATUS,  &rapl_events_pkg_group,   test_msr },
+> +	[PERF_RAPL_RAM]  = { 0, &rapl_events_ram_group,   NULL},
+> +	[PERF_RAPL_PP1]  = { 0, &rapl_events_gpu_group,   NULL},
+> +	[PERF_RAPL_PSYS] = { 0, &rapl_events_psys_group,  NULL},
+> +};
+
+Why have those !PKG things initialized? Wouldn't they default to 0
+anyway? If not, surely { 0, } is sufficient.
