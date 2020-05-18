@@ -2,48 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF341D85AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D4A1D81BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgERRw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56416 "EHLO mail.kernel.org"
+        id S1728713AbgERRu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731052AbgERRww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:52 -0400
+        id S1730679AbgERRuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:50:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC90920715;
-        Mon, 18 May 2020 17:52:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0B4420674;
+        Mon, 18 May 2020 17:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824371;
-        bh=7ibfb7MZ5Rbo43/qIurP+pCgmu+s1/H3wWWJxSi86sw=;
+        s=default; t=1589824222;
+        bh=CxSv7JTE+Z4S7Ced+QnkcXxppRq20djSJS8RXlB++b8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1TeetxkrfJx65r5AGr/2eYRfnlbJ4OBOhKyzrkyLf04AKG0zgLhBmYOfnAkaJ0LSK
-         0CbsDMdKWLh+KGa21mk7+trtcpwQPlvKrSiBZiFz8djiRK8YzVlKCeFcpfeUYcjSvr
-         kNm8x8MGl14bycsucM0uvMKoeRmT17t4GuYtZkOE=
+        b=bv49LDpLdyX0vmCX3/MCCRpdXgvPKNNpP3GAV15AbqRN1niNfeSaTGGT79yvHp/1r
+         yO1nFOo8o8wiAngRGijLTPmL5DClqn565kFe9V62ZDjNz6r/2JhYcItvjal9MeA+KF
+         VnfnHJBNFtdDuReOHvzfdqvwHjeO94HdvmurPN7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Schwab <schwab@suse.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Waiman Long <longman@redhat.com>, NeilBrown <neilb@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/80] ipc/util.c: sysvipc_find_ipc() incorrectly updates position index
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 074/114] gcc-10: disable zero-length-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:46 +0200
-Message-Id: <20200518173456.062491514@linuxfoundation.org>
+Message-Id: <20200518173516.213881860@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,125 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 5e698222c70257d13ae0816720dde57c56f81e15 ]
+commit 5c45de21a2223fe46cf9488c99a7fbcf01527670 upstream.
 
-Commit 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase
-position index") is causing this bug (seen on 5.6.8):
+This is a fine warning, but we still have a number of zero-length arrays
+in the kernel that come from the traditional gcc extension.  Yes, they
+are getting converted to flexible arrays, but in the meantime the gcc-10
+warning about zero-length bounds is very verbose, and is hiding other
+issues.
 
-   # ipcs -q
+I missed one actual build failure because it was hidden among hundreds
+of lines of warning.  Thankfully I caught it on the second go before
+pushing things out, but it convinced me that I really need to disable
+the new warnings for now.
 
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
+We'll hopefully be all done with our conversion to flexible arrays in
+the not too distant future, and we can then re-enable this warning.
 
-   # ipcmk -Q
-   Message queue id: 0
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x82db8127 0          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 1
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x82db8127 0          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcrm -q 0
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x76d1fb2a 1          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 2
-   # ipcrm -q 2
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x76d1fb2a 1          root       644        0            0
-   0x76d1fb2a 1          root       644        0            0
-
-   # ipcmk -Q
-   Message queue id: 3
-   # ipcrm -q 1
-   # ipcs -q
-
-   ------ Message Queues --------
-   key        msqid      owner      perms      used-bytes   messages
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-   0x7c982867 3          root       644        0            0
-
-Whenever an IPC item with a low id is deleted, the items with higher ids
-are duplicated, as if filling a hole.
-
-new_pos should jump through hole of unused ids, pos can be updated
-inside "for" cycle.
-
-Fixes: 89163f93c6f9 ("ipc/util.c: sysvipc_find_ipc() should increase position index")
-Reported-by: Andreas Schwab <schwab@suse.de>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Cc: NeilBrown <neilb@suse.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Manfred Spraul <manfred@colorfullife.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/4921fe9b-9385-a2b4-1dc4-1099be6d2e39@virtuozzo.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- ipc/util.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/ipc/util.c b/ipc/util.c
-index b111e792b3125..af1b572effb14 100644
---- a/ipc/util.c
-+++ b/ipc/util.c
-@@ -735,21 +735,21 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
- 			total++;
- 	}
+--- a/Makefile
++++ b/Makefile
+@@ -800,6 +800,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ # disable stringop warnings in gcc 8+
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
  
--	*new_pos = pos + 1;
-+	ipc = NULL;
- 	if (total >= ids->in_use)
--		return NULL;
-+		goto out;
++# We'll want to enable this eventually, but it's not going away for 5.7 at least
++KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
  
- 	for (; pos < IPCMNI; pos++) {
- 		ipc = idr_find(&ids->ipcs_idr, pos);
- 		if (ipc != NULL) {
- 			rcu_read_lock();
- 			ipc_lock_object(ipc);
--			return ipc;
-+			break;
- 		}
- 	}
--
--	/* Out of range - return NULL to terminate iteration */
--	return NULL;
-+out:
-+	*new_pos = pos + 1;
-+	return ipc;
- }
- 
- static void *sysvipc_proc_next(struct seq_file *s, void *it, loff_t *pos)
--- 
-2.20.1
-
 
 
