@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446B01D819B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407161D8441
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbgERRtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50748 "EHLO mail.kernel.org"
+        id S1733001AbgERSK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730502AbgERRtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:49:17 -0400
+        id S1732923AbgERSFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A78EF20657;
-        Mon, 18 May 2020 17:49:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F579207D3;
+        Mon, 18 May 2020 18:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824157;
-        bh=RfkX7dMrDN71LREFdUGr1HWXv6KFGxNUxXuzOej2pdg=;
+        s=default; t=1589825117;
+        bh=FjxbjY8TPADnA/AF5u+7Spbw+rwAX8aoWlhgy1tMX3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2qdPn0Puzd76fCcTso5pI4H9Yvxq39AtANxZx+EouSzYtNfS4fD1uW6nMZsLAOeXX
-         xqub2XnU90FqhKN8Nc8AHpvmh2RRBqqAW2FiB+r7Dy8/pvpsKrUN8lMFS7csqcPWu5
-         5pWVwMejyVoDG6ussceNilej+VKQhahvqyXw0Kj8=
+        b=fDOZrX3k3zhNp5bIuEnDz4ksHLioMhksrKWhKVbxtME3rI4p2BxpgVk2FR7auo6bc
+         0Zcd96lbUlAXgLOB6w1VrT2lj7hnV/SE4MMW0RSsU1bpbCQmh8fiu7gJjq5ceKR7t0
+         KjT04/gj0b8f/CsBvPyRu+/O9t24OkKvomcyxXkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.14 094/114] ARM: dts: imx27-phytec-phycard-s-rdk: Fix the I2C1 pinctrl entries
-Date:   Mon, 18 May 2020 19:37:06 +0200
-Message-Id: <20200518173518.920548227@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com
+Subject: [PATCH 5.6 137/194] USB: usbfs: fix mmap dma mismatch
+Date:   Mon, 18 May 2020 19:37:07 +0200
+Message-Id: <20200518173542.781416927@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 0caf34350a25907515d929a9c77b9b206aac6d1e upstream.
+commit a0e710a7def471b8eb779ff551fc27701da49599 upstream.
 
-The I2C2 pins are already used and the following errors are seen:
+In commit 2bef9aed6f0e ("usb: usbfs: correct kernel->user page attribute
+mismatch") we switched from always calling remap_pfn_range() to call
+dma_mmap_coherent() to handle issues with systems with non-coherent USB host
+controller drivers.  Unfortunatly, as syzbot quickly told us, not all the world
+is host controllers with DMA support, so we need to check what host controller
+we are attempting to talk to before doing this type of allocation.
 
-imx27-pinctrl 10015000.iomuxc: pin MX27_PAD_I2C2_SDA already requested by 10012000.i2c; cannot claim for 1001d000.i2c
-imx27-pinctrl 10015000.iomuxc: pin-69 (1001d000.i2c) status -22
-imx27-pinctrl 10015000.iomuxc: could not request pin 69 (MX27_PAD_I2C2_SDA) from group i2c2grp  on device 10015000.iomuxc
-imx-i2c 1001d000.i2c: Error applying setting, reverse things back
-imx-i2c: probe of 1001d000.i2c failed with error -22
+Thanks to Christoph for the quick idea of how to fix this.
 
-Fix it by adding the correct I2C1 IOMUX entries for the pinctrl_i2c1 group.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 61664d0b432a ("ARM: dts: imx27 phyCARD-S pinctrl")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 2bef9aed6f0e ("usb: usbfs: correct kernel->user page attribute mismatch")
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Hillf Danton <hdanton@sina.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jeremy Linton <jeremy.linton@arm.com>
+Cc: stable <stable@vger.kernel.org>
+Reported-by: syzbot+353be47c9ce21b68b7ed@syzkaller.appspotmail.com
+Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20200514112711.1858252-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/core/devio.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
---- a/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-+++ b/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-@@ -81,8 +81,8 @@
- 	imx27-phycard-s-rdk {
- 		pinctrl_i2c1: i2c1grp {
- 			fsl,pins = <
--				MX27_PAD_I2C2_SDA__I2C2_SDA 0x0
--				MX27_PAD_I2C2_SCL__I2C2_SCL 0x0
-+				MX27_PAD_I2C_DATA__I2C_DATA 0x0
-+				MX27_PAD_I2C_CLK__I2C_CLK 0x0
- 			>;
- 		};
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -251,9 +251,19 @@ static int usbdev_mmap(struct file *file
+ 	usbm->vma_use_count = 1;
+ 	INIT_LIST_HEAD(&usbm->memlist);
  
+-	if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle, size)) {
+-		dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
+-		return -EAGAIN;
++	if (hcd->localmem_pool || !hcd_uses_dma(hcd)) {
++		if (remap_pfn_range(vma, vma->vm_start,
++				    virt_to_phys(usbm->mem) >> PAGE_SHIFT,
++				    size, vma->vm_page_prot) < 0) {
++			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
++			return -EAGAIN;
++		}
++	} else {
++		if (dma_mmap_coherent(hcd->self.sysdev, vma, mem, dma_handle,
++				      size)) {
++			dec_usb_memory_use_count(usbm, &usbm->vma_use_count);
++			return -EAGAIN;
++		}
+ 	}
+ 
+ 	vma->vm_flags |= VM_IO;
 
 
