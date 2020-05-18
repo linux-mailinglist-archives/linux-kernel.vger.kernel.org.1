@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8E71D81C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA881D86C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgERRul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
+        id S1731805AbgERS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:27:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730696AbgERRuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:32 -0400
+        id S1729622AbgERRnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 968B720674;
-        Mon, 18 May 2020 17:50:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D217120878;
+        Mon, 18 May 2020 17:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824232;
-        bh=XjSsmsaj+0cGZzRkm6yFrZT7XEPAlcmNRcivnp2RI7s=;
+        s=default; t=1589823823;
+        bh=WnNstYCDUFAAXrsF4FoTE8vpCGvT/AX729NNv95uTrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dG4EJZhcwon6UtZ9rmbV5I2aiEL4aYQszD8CtKk7rLIXziQbEgIcz3zTthBilhaSB
-         Tmy37pKTki3gT9rxu9ZQrE5asURdUlccQ3syKVRrozNaiu2IW/1hOsQBhGCspXD1at
-         xvTvfLvtAqdl7Wrtpsg5qnjA4GVAi/kZILptQq1E=
+        b=zm2NGDVHbYGLJ6hSvbPxvwdIFS7cVSgMbHry9opkzg5oxZrgy4Vylttq/scl8/Blj
+         Zv6h50snV7YAr6jtRHP+K/pX+/uG5J2gJ4EBpUNH26C15KADXEhp/N82SXzOVMBN2+
+         ecdLScoD91MKvyM3mV31/CDkFoYE+O4lFDmnmpMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Sheets <matthew.sheets@gd-ms.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 10/80] netlabel: cope with NULL catmap
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 50/90] dmaengine: mmp_tdma: Reset channel error on release
 Date:   Mon, 18 May 2020 19:36:28 +0200
-Message-Id: <20200518173452.287129397@linuxfoundation.org>
+Message-Id: <20200518173501.371239098@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-[ Upstream commit eead1c2ea2509fd754c6da893a94f0e69e83ebe4 ]
+[ Upstream commit 0c89446379218698189a47871336cb30286a7197 ]
 
-The cipso and calipso code can set the MLS_CAT attribute on
-successful parsing, even if the corresponding catmap has
-not been allocated, as per current configuration and external
-input.
+When a channel configuration fails, the status of the channel is set to
+DEV_ERROR so that an attempt to submit it fails. However, this status
+sticks until the heat end of the universe, making it impossible to
+recover from the error.
 
-Later, selinux code tries to access the catmap if the MLS_CAT flag
-is present via netlbl_catmap_getlong(). That may cause null ptr
-dereference while processing incoming network traffic.
+Let's reset it when the channel is released so that further use of the
+channel with correct configuration is not impacted.
 
-Address the issue setting the MLS_CAT flag only if the catmap is
-really allocated. Additionally let netlbl_catmap_getlong() cope
-with NULL catmap.
-
-Reported-by: Matthew Sheets <matthew.sheets@gd-ms.com>
-Fixes: 4b8feff251da ("netlabel: fix the horribly broken catmap functions")
-Fixes: ceba1832b1b2 ("calipso: Set the calipso socket label to match the secattr.")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Link: https://lore.kernel.org/r/20200419164912.670973-5-lkundrak@v3.sk
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/cipso_ipv4.c        |    6 ++++--
- net/ipv6/calipso.c           |    3 ++-
- net/netlabel/netlabel_kapi.c |    6 ++++++
- 3 files changed, 12 insertions(+), 3 deletions(-)
+ drivers/dma/mmp_tdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -1272,7 +1272,8 @@ static int cipso_v4_parsetag_rbm(const s
- 			return ret_val;
- 		}
+diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
+index 13c68b6434ce2..15b4a44e60069 100644
+--- a/drivers/dma/mmp_tdma.c
++++ b/drivers/dma/mmp_tdma.c
+@@ -362,6 +362,8 @@ static void mmp_tdma_free_descriptor(struct mmp_tdma_chan *tdmac)
+ 		gen_pool_free(gpool, (unsigned long)tdmac->desc_arr,
+ 				size);
+ 	tdmac->desc_arr = NULL;
++	if (tdmac->status == DMA_ERROR)
++		tdmac->status = DMA_COMPLETE;
  
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
- 
- 	return 0;
-@@ -1453,7 +1454,8 @@ static int cipso_v4_parsetag_rng(const s
- 			return ret_val;
- 		}
- 
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
- 
- 	return 0;
---- a/net/ipv6/calipso.c
-+++ b/net/ipv6/calipso.c
-@@ -1061,7 +1061,8 @@ static int calipso_opt_getattr(const uns
- 			goto getattr_return;
- 		}
- 
--		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
-+		if (secattr->attr.mls.cat)
-+			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
- 	}
- 
- 	secattr->type = NETLBL_NLTYPE_CALIPSO;
---- a/net/netlabel/netlabel_kapi.c
-+++ b/net/netlabel/netlabel_kapi.c
-@@ -748,6 +748,12 @@ int netlbl_catmap_getlong(struct netlbl_
- 	if ((off & (BITS_PER_LONG - 1)) != 0)
- 		return -EINVAL;
- 
-+	/* a null catmap is equivalent to an empty one */
-+	if (!catmap) {
-+		*offset = (u32)-1;
-+		return 0;
-+	}
-+
- 	if (off < catmap->startbit) {
- 		off = catmap->startbit;
- 		*offset = off;
+ 	return;
+ }
+-- 
+2.20.1
+
 
 
