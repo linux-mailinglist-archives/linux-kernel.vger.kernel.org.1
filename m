@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD71A1D86A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5031D8343
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbgERSZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:25:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
+        id S1732110AbgERSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729197AbgERRqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:15 -0400
+        id S1732614AbgERSDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB91A20715;
-        Mon, 18 May 2020 17:46:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3A3C207D3;
+        Mon, 18 May 2020 18:03:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823974;
-        bh=bNPbWd2gqtfRj8808VRysk3d+7TcYOolVI5Fr4orOK0=;
+        s=default; t=1589824988;
+        bh=/vUl9F/NYMf2c7sOBI/8G/mLuRaIToq3VCuuxiOWLDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stEb4iKlMoCUr2t5FJbxCgNXhYH/ZQn3CVdtYX3STif7ouLmc7ldYEArC8xnBL+9X
-         3XPz7WAiegFhgl+vIcchmJkZGbfIHWEzWoSQd+yrGnLZEpXtiMKG4rkPUI7lFZ3B0p
-         bDeDmYNwJhxsIoJpzM9kRWTA4JxXeDJmXtLmC12E=
+        b=pi8RXUyy2BM5W+CBxUNMNKjJpf+8PocWzc8MaruPJVMeA9hA57CQ1ZEl9My5n5XzE
+         6rWxyoIL7MNRA915IymEIOr1io4jCa62nR7GT44YepqGg1g+H93o892svwEwqzbMEi
+         DN/kLMC0Wa9sQkoWdMdhqgYm88elr8l0RfiJG27I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 003/114] fq_codel: fix TCA_FQ_CODEL_DROP_BATCH_SIZE sanity checks
-Date:   Mon, 18 May 2020 19:35:35 +0200
-Message-Id: <20200518173503.692350759@linuxfoundation.org>
+        stable@vger.kernel.org, Iris Liu <iris@onechronos.com>,
+        Kelly Littlepage <kelly@onechronos.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.6 046/194] net: tcp: fix rx timestamp behavior for tcp_recvmsg
+Date:   Mon, 18 May 2020 19:35:36 +0200
+Message-Id: <20200518173535.657718381@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,32 +47,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Kelly Littlepage <kelly@onechronos.com>
 
-[ Upstream commit 14695212d4cd8b0c997f6121b6df8520038ce076 ]
+[ Upstream commit cc4de047b33be247f9c8150d3e496743a49642b8 ]
 
-My intent was to not let users set a zero drop_batch_size,
-it seems I once again messed with min()/max().
+The stated intent of the original commit is to is to "return the timestamp
+corresponding to the highest sequence number data returned." The current
+implementation returns the timestamp for the last byte of the last fully
+read skb, which is not necessarily the last byte in the recv buffer. This
+patch converts behavior to the original definition, and to the behavior of
+the previous draft versions of commit 98aaa913b4ed ("tcp: Extend
+SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg") which also match this
+behavior.
 
-Fixes: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
+Fixes: 98aaa913b4ed ("tcp: Extend SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg")
+Co-developed-by: Iris Liu <iris@onechronos.com>
+Signed-off-by: Iris Liu <iris@onechronos.com>
+Signed-off-by: Kelly Littlepage <kelly@onechronos.com>
 Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_fq_codel.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/tcp.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/sched/sch_fq_codel.c
-+++ b/net/sched/sch_fq_codel.c
-@@ -427,7 +427,7 @@ static int fq_codel_change(struct Qdisc
- 		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2163,13 +2163,15 @@ skip_copy:
+ 			tp->urg_data = 0;
+ 			tcp_fast_path_check(sk);
+ 		}
+-		if (used + offset < skb->len)
+-			continue;
  
- 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
--		q->drop_batch_size = min(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
-+		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
- 
- 	if (tb[TCA_FQ_CODEL_MEMORY_LIMIT])
- 		q->memory_limit = min(1U << 31, nla_get_u32(tb[TCA_FQ_CODEL_MEMORY_LIMIT]));
+ 		if (TCP_SKB_CB(skb)->has_rxtstamp) {
+ 			tcp_update_recv_tstamps(skb, &tss);
+ 			cmsg_flags |= 2;
+ 		}
++
++		if (used + offset < skb->len)
++			continue;
++
+ 		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
+ 			goto found_fin_ok;
+ 		if (!(flags & MSG_PEEK))
 
 
