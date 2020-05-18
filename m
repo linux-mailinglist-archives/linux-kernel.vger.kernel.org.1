@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736161D7933
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589861D7948
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgERNDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:03:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
+        id S1727885AbgERNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:04:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726726AbgERNDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:03:42 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726872AbgERNEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:04:52 -0400
+Received: from linux-8ccs.fritz.box (p57a239f2.dip0.t-ipconnect.de [87.162.57.242])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5893B207D3;
-        Mon, 18 May 2020 13:03:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD592207D3;
+        Mon, 18 May 2020 13:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589807022;
-        bh=cqBFppFXywtZsKM/FNOE0/NVU4loKWJIwGTdFBK4NK4=;
+        s=default; t=1589807091;
+        bh=bQOel0Owh5Jsy7D7It/KRrP7k71oDOZIFpOrOzQ9AhA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AQzs1Mwk69tSsp5qxInzTbdXkv04DyufsIs1+gjF3sXZ9S60tnJpxVJ7p0o34FOVa
-         0UDle+HFNXG2qYLjQrqK2hI0w2jrwrTjxLLvyI2MTmKnJRaV/nZ3Qi4Lg3FNyK9O2D
-         MfKT2JzwFunN6II9sHmMU3UzvAPLXEJaYoucP8vI=
-Date:   Mon, 18 May 2020 14:03:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
-Subject: Re: [PATCH 3/6] arm64: scs: Use 'scs_sp' register alias for x18
-Message-ID: <20200518130335.GC32394@willie-the-truck>
-References: <20200515172756.27185-1-will@kernel.org>
- <20200515172756.27185-4-will@kernel.org>
- <20200518115547.GC1957@C02TD0UTHF1T.local>
+        b=YqZBNW7MWDqiTSCxmly8oMsUsg4WN7C2JY9aDcakJBGzWq/UP00eyjCdLpfBridZ5
+         yEWjvi7dzrZTtKaXjd/2d6IuYc59csAsUVZSfRs5jq7Rr7rdKAsQZJF1Mc/s+At7dk
+         CA/eN9nd7O70bEOB0H0VqgRfIrUmH9kT0XamFLi8=
+Date:   Mon, 18 May 2020 15:04:44 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 29/29] module: move the set_fs hack for
+ flush_icache_range to m68k
+Message-ID: <20200518130444.GA21096@linux-8ccs.fritz.box>
+References: <20200515143646.3857579-1-hch@lst.de>
+ <20200515143646.3857579-30-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200518115547.GC1957@C02TD0UTHF1T.local>
+In-Reply-To: <20200515143646.3857579-30-hch@lst.de>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 12:55:47PM +0100, Mark Rutland wrote:
-> On Fri, May 15, 2020 at 06:27:53PM +0100, Will Deacon wrote:
-> > x18 holds the SCS stack pointer value, so introduce a register alias to
-> > make this easier to read in assembly code.
-> > 
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> 
-> I scanned through arm64 for all instances of x18, and it looks like
-> you've covered all the relevant uses here. In kvm we save/restore x18 a
-> bunch becasue it might be a platform register, but we do that
-> unconditionally and without knowledge of what it contains, so I think
-> that's fine to leave as-is. Therefore:
-> 
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> As an aside, the comment in entry-ftrace.S is now stale where it says
-> that x18 is safe to clobber. I can send a patch to clean that up, unless
-> you want to do that yourself.
++++ Christoph Hellwig [15/05/20 16:36 +0200]:
+>flush_icache_range generally operates on kernel addresses, but for some
+>reason m68k needed a set_fs override.  Move that into the m68k code
+>insted of keeping it in the module loader.
+>
+>Signed-off-by: Christoph Hellwig <hch@lst.de>
+>Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>---
+> arch/m68k/mm/cache.c | 4 ++++
+> kernel/module.c      | 8 --------
+> 2 files changed, 4 insertions(+), 8 deletions(-)
 
-Thanks, I'll fix that up (see below). Also, apologies for typo'ing your
-email address when I sent this out on Friday.
+Thanks for cleaning this up. For module.c:
 
-Will
+Acked-by: Jessica Yu <jeyu@kernel.org>
 
---->8
-
-From 7e86208cd6541c1229bc1fcd206596308d1727f8 Mon Sep 17 00:00:00 2001
-From: Will Deacon <will@kernel.org>
-Date: Mon, 18 May 2020 14:01:01 +0100
-Subject: [PATCH] arm64: entry-ftrace.S: Update comment to indicate that x18 is
- live
-
-The Shadow Call Stack pointer is held in x18, so update the ftrace
-entry comment to indicate that it cannot be safely clobbered.
-
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/entry-ftrace.S | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-index 833d48c9acb5..a338f40e64d3 100644
---- a/arch/arm64/kernel/entry-ftrace.S
-+++ b/arch/arm64/kernel/entry-ftrace.S
-@@ -23,8 +23,9 @@
-  *
-  * ... where <entry> is either ftrace_caller or ftrace_regs_caller.
-  *
-- * Each instrumented function follows the AAPCS, so here x0-x8 and x19-x30 are
-- * live, and x9-x18 are safe to clobber.
-+ * Each instrumented function follows the AAPCS, so here x0-x8 and x18-x30 are
-+ * live (x18 holds the Shadow Call Stack pointer), and x9-x17 are safe to
-+ * clobber.
-  *
-  * We save the callsite's context into a pt_regs before invoking any ftrace
-  * callbacks. So that we can get a sensible backtrace, we create a stack record
--- 
-2.26.2.761.g0e0b3e54be-goog
