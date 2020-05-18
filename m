@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605C71D8283
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75751D81D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731734AbgERR5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35298 "EHLO mail.kernel.org"
+        id S1730804AbgERRvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:51:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730740AbgERR5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:00 -0400
+        id S1730807AbgERRvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:51:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEC27207C4;
-        Mon, 18 May 2020 17:56:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6533820674;
+        Mon, 18 May 2020 17:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824620;
-        bh=ufo5PRm5Puk2XkNr55LexldSEveCWOY3kiHg8Rnqago=;
+        s=default; t=1589824264;
+        bh=WmONSK4ctFdQWjz26WZgwfs5SpenNY5/I3xlW0g0H4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0kp/Bw8/YZwyV9msykT3jSZRWD8G54i9e0Wv19pUjCnzZpxhDvvZFu3YlAAG6CObX
-         OHpDqtjQIZwcyHo32LH+msV5emY8LjLYBg22cn/67mcUQ2pKeRLzeAqluK3cXUJxk7
-         qM03OPGg63SpDZVwYL5edUoABdMc6B9SL0MWIXHA=
+        b=nSoHist7/jqWI0XlRi95ZYfvIjBdhez75e7bz0DYFU6sN8jO9EwmAyPIEQPEQpd66
+         CC5j9Fynee6AsPH1hKWnhHA7MUnSOGq7scnzCRvFbGZ+Fv0Q+zfjiwnao+EEblMAgF
+         42g7mDOkFbz3oqMHvMEjVrummft9JvN9Rdp1VKuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 077/147] netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+Subject: [PATCH 4.19 22/80] riscv: fix vdso build with lld
 Date:   Mon, 18 May 2020 19:36:40 +0200
-Message-Id: <20200518173523.395829052@linuxfoundation.org>
+Message-Id: <20200518173454.857080221@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +47,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ilie Halip <ilie.halip@gmail.com>
 
-[ Upstream commit 2c407aca64977ede9b9f35158e919773cae2082f ]
+[ Upstream commit 3c1918c8f54166598195d938564072664a8275b1 ]
 
-gcc-10 warns around a suspicious access to an empty struct member:
+When building with the LLVM linker this error occurrs:
+    LD      arch/riscv/kernel/vdso/vdso-syms.o
+  ld.lld: error: no input files
 
-net/netfilter/nf_conntrack_core.c: In function '__nf_conntrack_alloc':
-net/netfilter/nf_conntrack_core.c:1522:9: warning: array subscript 0 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
- 1522 |  memset(&ct->__nfct_init_offset[0], 0,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from net/netfilter/nf_conntrack_core.c:37:
-include/net/netfilter/nf_conntrack.h:90:5: note: while referencing '__nfct_init_offset'
-   90 |  u8 __nfct_init_offset[0];
-      |     ^~~~~~~~~~~~~~~~~~
+This happens because the lld treats -R as an alias to -rpath, as opposed
+to ld where -R means --just-symbols.
 
-The code is correct but a bit unusual. Rework it slightly in a way that
-does not trigger the warning, using an empty struct instead of an empty
-array. There are probably more elegant ways to do this, but this is the
-smallest change.
+Use the long option name for compatibility between the two.
 
-Fixes: c41884ce0562 ("netfilter: conntrack: avoid zeroing timer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/805
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/netfilter/nf_conntrack.h | 2 +-
- net/netfilter/nf_conntrack_core.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/riscv/kernel/vdso/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index 9f551f3b69c65..90690e37a56f0 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -87,7 +87,7 @@ struct nf_conn {
- 	struct hlist_node	nat_bysource;
- #endif
- 	/* all members below initialized via memset */
--	u8 __nfct_init_offset[0];
-+	struct { } __nfct_init_offset;
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 87f71a6cd3ef8..1dd134fc0d84a 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -30,15 +30,15 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
  
- 	/* If we were expected by an expectation, this will be it */
- 	struct nf_conn *master;
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 5cd610b547e0d..c2ad462f33f1b 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1381,9 +1381,9 @@ __nf_conntrack_alloc(struct net *net,
- 	ct->status = 0;
- 	ct->timeout = 0;
- 	write_pnet(&ct->ct_net, net);
--	memset(&ct->__nfct_init_offset[0], 0,
-+	memset(&ct->__nfct_init_offset, 0,
- 	       offsetof(struct nf_conn, proto) -
--	       offsetof(struct nf_conn, __nfct_init_offset[0]));
-+	       offsetof(struct nf_conn, __nfct_init_offset));
+ # We also create a special relocatable object that should mirror the symbol
+-# table and layout of the linked DSO.  With ld -R we can then refer to
+-# these symbols in the kernel code rather than hand-coded addresses.
++# table and layout of the linked DSO. With ld --just-symbols we can then
++# refer to these symbols in the kernel code rather than hand-coded addresses.
  
- 	nf_ct_zone_add(ct, zone);
+ SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+                             $(call cc-ldoption, -Wl$(comma)--hash-style=both)
+ $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
+ 	$(call if_changed,vdsold)
+ 
+-LDFLAGS_vdso-syms.o := -r -R
++LDFLAGS_vdso-syms.o := -r --just-symbols
+ $(obj)/vdso-syms.o: $(obj)/vdso-dummy.o FORCE
+ 	$(call if_changed,ld)
  
 -- 
 2.20.1
