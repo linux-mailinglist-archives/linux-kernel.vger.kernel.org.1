@@ -2,217 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBB91D8826
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F621D882E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgERTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 15:23:59 -0400
-Received: from mga05.intel.com ([192.55.52.43]:37755 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727856AbgERTX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 15:23:59 -0400
-IronPort-SDR: o6WqnFtRWw648yJnTBVCibxHDp978ah9IfTl/PdjB1Bp0Zway4EalNXQxG4ksLTrV+zWRI43p5
- JA1lDBJyFAMQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 12:23:58 -0700
-IronPort-SDR: NDhrWaw/AbgHFmGh0MuM+YO/qV5icHEW4Lug05Ae9xABBLnPruju/EyFUoO+cNd90Qjh+Kfqz4
- BGb2wi+tyEVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="282074584"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga002.jf.intel.com with ESMTP; 18 May 2020 12:23:57 -0700
-Date:   Mon, 18 May 2020 12:23:57 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200518192357.GE3025231@iweiny-DESK2.sc.intel.com>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-4-ira.weiny@intel.com>
- <20200516020253.GG1009@sol.localdomain>
- <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
- <20200518162447.GA954@sol.localdomain>
+        id S1728102AbgERTYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728079AbgERTYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 15:24:46 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C249C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:24:46 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id v26so6333974vsa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8uiCxZtkzkGr7WZ+iPgFdPescQSjCrMQZRNNCDufNnc=;
+        b=MRxltl0J8aVtgfT0JM0hwghme8n9ii5KsiIHtdLqdtuS9rEt+rotP0c1XrlD+P19BC
+         ImL2dWayDJwm7R5aOFG0KUgv1InTk/WuJfjulJ3iPKJ3TXZmIfPIm+u7x5HSxKRq4VEK
+         DiqyqEYGbmHIxaZ4qMEteC8edmu/XROFw/xzWo21AGsIHPA42X5NEVDkctwW4PJcfGfx
+         Gkadxk18b3LT/xd0B1vTYfI/JxV1cBkPXxob0QjB5TBaABWX1UnbTpUiJnFoyW0aOPxA
+         NxalsdLqJYtVMwX5WCws2p15mC9an6P0fMlTs8e9wHP/lbYeOaOgvJqP7Ck4t2V1oVon
+         cxAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8uiCxZtkzkGr7WZ+iPgFdPescQSjCrMQZRNNCDufNnc=;
+        b=QIU/V5HEwO3HhbbifalrlNrQEyrfCzGo2F0QJyI5azXM2dXIMFruMrmAhu9wObr8P/
+         RA/8L0H+yaAecR6CPuQPO9L8dYCMPr4HQ9L22XB2SEI5Tk7/1vDq5HMrbXw0DaRe3E2g
+         LAeQeYBHsIupD5NL9prK5p1p7fRPYfloR7YbR7kNUHdkj/pdEHfguAif00AC8+umIkgG
+         UExFeHDmtFnZXX1n4e1jTT4vrDZP5TatfCmpLNi6wqctti/8zgIlOnveV/LJFFq/7W+s
+         Y/tC0OVexSBKn90DXX3R/Sl3/MxapwyjvRrFH6yK7d2z2S/lJaXqCWYoBZvTAH6Xnz3k
+         WAMg==
+X-Gm-Message-State: AOAM530Ys/DdMAN56po4nsnyPxCx/+glCHbAbW9yuSiRFLoVYBupWZQv
+        Z+KRGMunU51mscgx5CoIARPD1L8WSlP2jx7JcF4azA==
+X-Google-Smtp-Source: ABdhPJxVu2fS5s4IiGMyAvrir4jnYnkIGQ58i79JVocolUPFTtPQKzk3xisdDZdfn+yqG22dcEB1yhz14Cay7MsEwoE=
+X-Received: by 2002:a67:ef43:: with SMTP id k3mr4860940vsr.213.1589829885173;
+ Mon, 18 May 2020 12:24:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518162447.GA954@sol.localdomain>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200518191242.GA27634@oc3272150783.ibm.com> <20200518192051.GE11620@krava>
+In-Reply-To: <20200518192051.GE11620@krava>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Mon, 18 May 2020 12:24:34 -0700
+Message-ID: <CABPqkBQc-T_wJpxOQXS8O7kM=81-XJZ7L0uT5C-HDANqTeEy8A@mail.gmail.com>
+Subject: Re: metric expressions including metrics?
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     "Paul A. Clarke" <pc@us.ibm.com>, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:24:47AM -0700, Eric Biggers wrote:
-> On Sun, May 17, 2020 at 10:03:15PM -0700, Ira Weiny wrote:
-> > On Fri, May 15, 2020 at 07:02:53PM -0700, Eric Biggers wrote:
-> > > On Tue, May 12, 2020 at 10:43:18PM -0700, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > Encryption and DAX are incompatible.  Changing the DAX mode due to a
-> > > > change in Encryption mode is wrong without a corresponding
-> > > > address_space_operations update.
-> > > > 
-> > > > Make the 2 options mutually exclusive by returning an error if DAX was
-> > > > set first.
-> > > > 
-> > > > Furthermore, clarify the documentation of the exclusivity and how that
-> > > > will work.
-> > > > 
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > ---
-> > > > Changes:
-> > > > 	remove WARN_ON_ONCE
-> > > > 	Add documentation to the encrypt doc WRT DAX
-> > > > ---
-> > > >  Documentation/filesystems/fscrypt.rst |  4 +++-
-> > > >  fs/ext4/super.c                       | 10 +---------
-> > > >  2 files changed, 4 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-> > > > index aa072112cfff..1475b8d52fef 100644
-> > > > --- a/Documentation/filesystems/fscrypt.rst
-> > > > +++ b/Documentation/filesystems/fscrypt.rst
-> > > > @@ -1038,7 +1038,9 @@ astute users may notice some differences in behavior:
-> > > >  - The ext4 filesystem does not support data journaling with encrypted
-> > > >    regular files.  It will fall back to ordered data mode instead.
-> > > >  
-> > > > -- DAX (Direct Access) is not supported on encrypted files.
-> > > > +- DAX (Direct Access) is not supported on encrypted files.  Attempts to enable
-> > > > +  DAX on an encrypted file will fail.  Mount options will _not_ enable DAX on
-> > > > +  encrypted files.
-> > > >  
-> > > >  - The st_size of an encrypted symlink will not necessarily give the
-> > > >    length of the symlink target as required by POSIX.  It will actually
-> > > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > > > index bf5fcb477f66..9873ab27e3fa 100644
-> > > > --- a/fs/ext4/super.c
-> > > > +++ b/fs/ext4/super.c
-> > > > @@ -1320,7 +1320,7 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> > > >  	if (inode->i_ino == EXT4_ROOT_INO)
-> > > >  		return -EPERM;
-> > > >  
-> > > > -	if (WARN_ON_ONCE(IS_DAX(inode) && i_size_read(inode)))
-> > > > +	if (IS_DAX(inode))
-> > > >  		return -EINVAL;
-> > > >  
-> > > >  	res = ext4_convert_inline_data(inode);
-> > > > @@ -1344,10 +1344,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> > > >  			ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> > > >  			ext4_clear_inode_state(inode,
-> > > >  					EXT4_STATE_MAY_INLINE_DATA);
-> > > > -			/*
-> > > > -			 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > > > -			 * S_DAX may be disabled
-> > > > -			 */
-> > > >  			ext4_set_inode_flags(inode);
-> > > >  		}
-> > > >  		return res;
-> > > > @@ -1371,10 +1367,6 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-> > > >  				    ctx, len, 0);
-> > > >  	if (!res) {
-> > > >  		ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-> > > > -		/*
-> > > > -		 * Update inode->i_flags - S_ENCRYPTED will be enabled,
-> > > > -		 * S_DAX may be disabled
-> > > > -		 */
-> > > >  		ext4_set_inode_flags(inode);
-> > > >  		res = ext4_mark_inode_dirty(handle, inode);
-> > > >  		if (res)
-> > > 
-> > > I'm confused by the ext4_set_context() change.
-> > > 
-> > > ext4_set_context() is only called when FS_IOC_SET_ENCRYPTION_POLICY sets an
-> > > encryption policy on an empty directory, *or* when a new inode (regular, dir, or
-> > > symlink) is created in an encrypted directory (thus inheriting encryption from
-> > > its parent).
-> > 
-> > I don't see the check which prevents FS_IOC_SET_ENCRYPTION_POLICY on a file?
-> 
-> It's in fscrypt_ioctl_set_policy().
+On Mon, May 18, 2020 at 12:21 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Mon, May 18, 2020 at 02:12:42PM -0500, Paul A. Clarke wrote:
+> > I'm curious how hard it would be to define metrics using other metrics,
+> > in the metrics definition files.
+> >
+> > Currently, to my understanding, every metric definition must be an
+> > expresssion based solely on arithmetic combinations of hardware events.
+> >
+> > Some metrics are hierarchical in nature such that a higher-level metric
+> > can be defined as an arithmetic expression of two other metrics, e.g.
+> >
+> > cache_miss_cycles_per_instruction =
+> >   data_cache_miss_cycles_per_instruction +
+> >   instruction_cache_miss_cycles_per_instruction
+> >
+> > This would need to be defined something like:
+> > dcache_miss_cpi = "dcache_miss_cycles / instructions"
+> > icache_miss_cpi = "icache_miss_cycles / instructions"
+> > cache_miss_cpi = "(dcache_miss_cycles + icache_miss_cycles) / instructions"
+> >
+> > Could the latter definition be simplified to:
+> > cache_miss_cpi = "dcache_miss_cpi + icache_miss_cpi"
+> >
+> > With multi-level caches and NUMA hierarchies, some of these higher-level
+> > metrics can involve a lot of hardware events.
+> >
+> > Given the recent activity in this area, I'm curious if this has been
+> > considered and already on a wish/to-do list, or found onerous.
+>
+> hi,
+> actually we were discussing this with Ian and Stephane and I plan on
+> checking on that.. should be doable, I'll keep you in the loop
+>
+Yes, this is needed to minimize the number of events needed to compute
+metrics groups.
+Then across all metrics groups, event duplicates must be eliminated
+whenever possible, except when explicit event grouping is required.
 
-I see...
-
-> 
-> > 
-> > On inode creation, encryption will always usurp S_DAX...
-> > 
-> > > 
-> > > So when is it reachable when IS_DAX()?  Is the issue that the DAX flag can now
-> > > be set on directories?  The commit message doesn't seem to be talking about
-> > > directories.  Is the behavior we want is that on an (empty) directory with the
-> > > DAX flag set, FS_IOC_SET_ENCRYPTION_POLICY should fail with EINVAL?
-> > 
-> > We would want that but AFIAK S_DAX is never set on directories.  Perhaps this
-> > is another place where S_DAX needs to be changed to the new inode flag?
-> > However, this would not be appropriate at this point in the series.  At this
-> > point in the series S_DAX is still set based on the mount option and I'm 99%
-> > sure that only happens on regular files, not directories.  So I'm confused now.
-> 
-> S_DAX is only set by ext4_set_inode_flags() which only sets it on regular files.
-
-Exactly...
-
-> 
-> > 
-> > This is, AFAICS, not going to affect correctness.  It will only be confusing
-> > because the user will be able to set both DAX and encryption on the directory
-> > but files there will only see encryption being used...  :-(
-> > 
-> > Assuming you are correct about this call path only being valid on directories.
-> > It seems this IS_DAX() needs to be changed to check for EXT4_DAX_FL in
-> > "fs/ext4: Introduce DAX inode flag"?  Then at that point we can prevent DAX and
-> > encryption on a directory.  ...  and at this point IS_DAX() could be removed at
-> > this point in the series???
-> 
-> I haven't read the whole series, but if you are indeed trying to prevent a
-> directory with EXT4_DAX_FL from being encrypted, then it does look like you'd
-> need to check EXT4_DAX_FL, not S_DAX.
-
-Yep.
-
-> 
-> The other question is what should happen when a file is created in an encrypted
-> directory when the filesystem is mounted with -o dax.  Actually, I think I
-> missed something there.  Currently (based on reading the code) the DAX flag will
-> get set first, and then ext4_set_context()
-
-See this is where I am confused.  Above you said that ext4_set_context() is only
-called on a directory.  And I agree with you now having seen the check in
-fscrypt_ioctl_set_policy().  So what is the call path you are speaking of here?
-
-> will see IS_DAX() && i_size == 0 and
-> clear the DAX flag when setting the encrypt flag.  So, the i_size == 0 check is
-> actually needed.  Your patch (AFAICS) just makes creating an encrypted file fail
-> when '-o dax'.  Is that intended?
-
-Yes that is what I intended for this patch.  At this point in the series the
-file system is either all DAX (-o dax) or not.  I did not comprehend the
-directory vs regular file complexity with fscrypt.
-
-It seems this patch should be removing the IS_DAX() check completely but I'm
-still not sure if a regular file inode could be passed to ext4_set_context()
-and I think we need to protect if it has IS_DAX() set if it does...
-
-An alternate solution would be to drop this patch entirely and change the code
-later in the series once EXT4_DAX_FL is defined...
-
-But I'm not even clear where EXT4_ENCRYPT_FL is set...
-
-Ira
-
-> If not, maybe you should change it to check
-> S_NEW instead of i_size == 0 to make it clearer?
-> 
-> - Eric
+>
+> jirk
+>
+> a
+>
+> >
+> > Regards,
+> > Paul Clarke
+> >
+>
