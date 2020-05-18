@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A8F1D870A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD8E1D8055
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgERS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39068 "EHLO mail.kernel.org"
+        id S1728666AbgERRi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729389AbgERRmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:12 -0400
+        id S1728651AbgERRi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:38:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4880C207C4;
-        Mon, 18 May 2020 17:42:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 819852088E;
+        Mon, 18 May 2020 17:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823731;
-        bh=qDmmf1H14DQGq38TlSbF7UeqBoaq2BFhXg9rvJ9XgF8=;
+        s=default; t=1589823536;
+        bh=CIiBJb42S876a2czSAIfERN6Bj9wuc+r+jF8XajKrFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fK8xP5eW+LHUZJCNnvBiJZmw/oeaBuzZetbWwEPMsoEWvnrnvV7OBb4GGb6U5Hko
-         tp2f5Yhde72eChXDyEPTn5CXEfObaLFrF38gZVQQJR9iC2NQgAEwEleLlTI+3F9vpy
-         PMqy7cEI6Eu+K6ajdrjfhhraNkxfTrjySjEF5/xs=
+        b=P4CQW+GbpIlGwjvRTw4Utz3j93Ezi5WMcWlOsnbl7CxyBLj/g80u9JBJw9hGPN/09
+         AR5FegF1hglQXIsheSydbDNhUnD6H3vI4VjenuPf1TOnxvredjmUi8OqmpzhDPNYtm
+         /tA1NyqHrCuqO63G/3+wtFEd0hQqlqvtJ4jKv8oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 14/90] binfmt_elf: move brk out of mmap when doing direct loader exec
-Date:   Mon, 18 May 2020 19:35:52 +0200
-Message-Id: <20200518173454.108423305@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.4 22/86] net: ipv6_stub: use ip6_dst_lookup_flow instead of ip6_dst_lookup
+Date:   Mon, 18 May 2020 19:35:53 +0200
+Message-Id: <20200518173454.956381951@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,105 +45,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Sabrina Dubroca <sd@queasysnail.net>
 
-commit bbdc6076d2e5d07db44e74c11b01a3e27ab90b32 upstream.
+commit 6c8991f41546c3c472503dff1ea9daaddf9331c2 upstream.
 
-Commmit eab09532d400 ("binfmt_elf: use ELF_ET_DYN_BASE only for PIE"),
-made changes in the rare case when the ELF loader was directly invoked
-(e.g to set a non-inheritable LD_LIBRARY_PATH, testing new versions of
-the loader), by moving into the mmap region to avoid both ET_EXEC and
-PIE binaries.  This had the effect of also moving the brk region into
-mmap, which could lead to the stack and brk being arbitrarily close to
-each other.  An unlucky process wouldn't get its requested stack size
-and stack allocations could end up scribbling on the heap.
+ipv6_stub uses the ip6_dst_lookup function to allow other modules to
+perform IPv6 lookups. However, this function skips the XFRM layer
+entirely.
 
-This is illustrated here.  In the case of using the loader directly, brk
-(so helpfully identified as "[heap]") is allocated with the _loader_ not
-the binary.  For example, with ASLR entirely disabled, you can see this
-more clearly:
+All users of ipv6_stub->ip6_dst_lookup use ip_route_output_flow (via the
+ip_route_output_key and ip_route_output helpers) for their IPv4 lookups,
+which calls xfrm_lookup_route(). This patch fixes this inconsistent
+behavior by switching the stub to ip6_dst_lookup_flow, which also calls
+xfrm_lookup_route().
 
-$ /bin/cat /proc/self/maps
-555555554000-55555555c000 r-xp 00000000 ... /bin/cat
-55555575b000-55555575c000 r--p 00007000 ... /bin/cat
-55555575c000-55555575d000 rw-p 00008000 ... /bin/cat
-55555575d000-55555577e000 rw-p 00000000 ... [heap]
-...
-7ffff7ff7000-7ffff7ffa000 r--p 00000000 ... [vvar]
-7ffff7ffa000-7ffff7ffc000 r-xp 00000000 ... [vdso]
-7ffff7ffc000-7ffff7ffd000 r--p 00027000 ... /lib/x86_64-linux-gnu/ld-2.27.so
-7ffff7ffd000-7ffff7ffe000 rw-p 00028000 ... /lib/x86_64-linux-gnu/ld-2.27.so
-7ffff7ffe000-7ffff7fff000 rw-p 00000000 ...
-7ffffffde000-7ffffffff000 rw-p 00000000 ... [stack]
+This requires some changes in all the callers, as these two functions
+take different arguments and have different return types.
 
-$ /lib/x86_64-linux-gnu/ld-2.27.so /bin/cat /proc/self/maps
-...
-7ffff7bcc000-7ffff7bd4000 r-xp 00000000 ... /bin/cat
-7ffff7bd4000-7ffff7dd3000 ---p 00008000 ... /bin/cat
-7ffff7dd3000-7ffff7dd4000 r--p 00007000 ... /bin/cat
-7ffff7dd4000-7ffff7dd5000 rw-p 00008000 ... /bin/cat
-7ffff7dd5000-7ffff7dfc000 r-xp 00000000 ... /lib/x86_64-linux-gnu/ld-2.27.so
-7ffff7fb2000-7ffff7fd6000 rw-p 00000000 ...
-7ffff7ff7000-7ffff7ffa000 r--p 00000000 ... [vvar]
-7ffff7ffa000-7ffff7ffc000 r-xp 00000000 ... [vdso]
-7ffff7ffc000-7ffff7ffd000 r--p 00027000 ... /lib/x86_64-linux-gnu/ld-2.27.so
-7ffff7ffd000-7ffff7ffe000 rw-p 00028000 ... /lib/x86_64-linux-gnu/ld-2.27.so
-7ffff7ffe000-7ffff8020000 rw-p 00000000 ... [heap]
-7ffffffde000-7ffffffff000 rw-p 00000000 ... [stack]
-
-The solution is to move brk out of mmap and into ELF_ET_DYN_BASE since
-nothing is there in the direct loader case (and ET_EXEC is still far
-away at 0x400000).  Anything that ran before should still work (i.e.
-the ultimately-launched binary already had the brk very far from its
-text, so this should be no different from a COMPAT_BRK standpoint).  The
-only risk I see here is that if someone started to suddenly depend on
-the entire memory space lower than the mmap region being available when
-launching binaries via a direct loader execs which seems highly
-unlikely, I'd hope: this would mean a binary would _not_ work when
-exec()ed normally.
-
-(Note that this is only done under CONFIG_ARCH_HAS_ELF_RANDOMIZATION
-when randomization is turned on.)
-
-Link: http://lkml.kernel.org/r/20190422225727.GA21011@beast
-Link: https://lkml.kernel.org/r/CAGXu5jJ5sj3emOT2QPxQkNQk0qbU6zEfu9=Omfhx_p0nCKPSjA@mail.gmail.com
-Fixes: eab09532d400 ("binfmt_elf: use ELF_ET_DYN_BASE only for PIE")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reported-by: Ali Saidi <alisaidi@amazon.com>
-Cc: Ali Saidi <alisaidi@amazon.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jann Horn <jannh@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 5f81bd2e5d80 ("ipv6: export a stub for IPv6 symbols used by vxlan")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[bwh: Backported to 4.4:
+ - Drop changes in lwt_bpf.c, mlx5, and rxe
+ - Adjust filename, context, indentation]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/binfmt_elf.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/infiniband/core/addr.c |    6 +++---
+ drivers/net/geneve.c           |    4 +++-
+ drivers/net/vxlan.c            |   10 ++++------
+ include/net/addrconf.h         |    6 ++++--
+ net/ipv6/addrconf_core.c       |   11 ++++++-----
+ net/ipv6/af_inet6.c            |    2 +-
+ net/mpls/af_mpls.c             |    7 +++----
+ net/tipc/udp_media.c           |    9 ++++++---
+ 8 files changed, 30 insertions(+), 25 deletions(-)
 
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1100,6 +1100,17 @@ static int load_elf_binary(struct linux_
- 	current->mm->start_stack = bprm->p;
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -293,9 +293,9 @@ static int addr6_resolve(struct sockaddr
+ 	fl6.saddr = src_in->sin6_addr;
+ 	fl6.flowi6_oif = addr->bound_dev_if;
  
- 	if ((current->flags & PF_RANDOMIZE) && (randomize_va_space > 1)) {
-+		/*
-+		 * For architectures with ELF randomization, when executing
-+		 * a loader directly (i.e. no interpreter listed in ELF
-+		 * headers), move the brk area out of the mmap region
-+		 * (since it grows up, and may collide early with the stack
-+		 * growing down), and into the unused ELF_ET_DYN_BASE region.
-+		 */
-+		if (IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) && !interpreter)
-+			current->mm->brk = current->mm->start_brk =
-+				ELF_ET_DYN_BASE;
-+
- 		current->mm->brk = current->mm->start_brk =
- 			arch_randomize_brk(current->mm);
- #ifdef compat_brk_randomized
+-	ret = ipv6_stub->ipv6_dst_lookup(addr->net, NULL, &dst, &fl6);
+-	if (ret < 0)
+-		goto put;
++	dst = ipv6_stub->ipv6_dst_lookup_flow(addr->net, NULL, &fl6, NULL);
++	if (IS_ERR(dst))
++		return PTR_ERR(dst);
+ 
+ 	if (ipv6_addr_any(&fl6.saddr)) {
+ 		ret = ipv6_dev_get_saddr(addr->net, ip6_dst_idev(dst)->dev,
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -781,7 +781,9 @@ static struct dst_entry *geneve_get_v6_d
+ 		fl6->daddr = geneve->remote.sin6.sin6_addr;
+ 	}
+ 
+-	if (ipv6_stub->ipv6_dst_lookup(geneve->net, gs6->sock->sk, &dst, fl6)) {
++	dst = ipv6_stub->ipv6_dst_lookup_flow(geneve->net, gs6->sock->sk, fl6,
++					      NULL);
++	if (IS_ERR(dst)) {
+ 		netdev_dbg(dev, "no route to %pI6\n", &fl6->daddr);
+ 		return ERR_PTR(-ENETUNREACH);
+ 	}
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -1864,7 +1864,6 @@ static struct dst_entry *vxlan6_get_rout
+ {
+ 	struct dst_entry *ndst;
+ 	struct flowi6 fl6;
+-	int err;
+ 
+ 	memset(&fl6, 0, sizeof(fl6));
+ 	fl6.flowi6_oif = oif;
+@@ -1873,11 +1872,10 @@ static struct dst_entry *vxlan6_get_rout
+ 	fl6.flowi6_mark = skb->mark;
+ 	fl6.flowi6_proto = IPPROTO_UDP;
+ 
+-	err = ipv6_stub->ipv6_dst_lookup(vxlan->net,
+-					 vxlan->vn6_sock->sock->sk,
+-					 &ndst, &fl6);
+-	if (err < 0)
+-		return ERR_PTR(err);
++	ndst = ipv6_stub->ipv6_dst_lookup_flow(vxlan->net, vxlan->vn6_sock->sock->sk,
++					       &fl6, NULL);
++	if (unlikely(IS_ERR(ndst)))
++		return ERR_PTR(-ENETUNREACH);
+ 
+ 	*saddr = fl6.saddr;
+ 	return ndst;
+--- a/include/net/addrconf.h
++++ b/include/net/addrconf.h
+@@ -192,8 +192,10 @@ struct ipv6_stub {
+ 				 const struct in6_addr *addr);
+ 	int (*ipv6_sock_mc_drop)(struct sock *sk, int ifindex,
+ 				 const struct in6_addr *addr);
+-	int (*ipv6_dst_lookup)(struct net *net, struct sock *sk,
+-			       struct dst_entry **dst, struct flowi6 *fl6);
++	struct dst_entry *(*ipv6_dst_lookup_flow)(struct net *net,
++						  const struct sock *sk,
++						  struct flowi6 *fl6,
++						  const struct in6_addr *final_dst);
+ 	void (*udpv6_encap_enable)(void);
+ 	void (*ndisc_send_na)(struct net_device *dev, const struct in6_addr *daddr,
+ 			      const struct in6_addr *solicited_addr,
+--- a/net/ipv6/addrconf_core.c
++++ b/net/ipv6/addrconf_core.c
+@@ -107,15 +107,16 @@ int inet6addr_notifier_call_chain(unsign
+ }
+ EXPORT_SYMBOL(inet6addr_notifier_call_chain);
+ 
+-static int eafnosupport_ipv6_dst_lookup(struct net *net, struct sock *u1,
+-					struct dst_entry **u2,
+-					struct flowi6 *u3)
++static struct dst_entry *eafnosupport_ipv6_dst_lookup_flow(struct net *net,
++							   const struct sock *sk,
++							   struct flowi6 *fl6,
++							   const struct in6_addr *final_dst)
+ {
+-	return -EAFNOSUPPORT;
++	return ERR_PTR(-EAFNOSUPPORT);
+ }
+ 
+ const struct ipv6_stub *ipv6_stub __read_mostly = &(struct ipv6_stub) {
+-	.ipv6_dst_lookup = eafnosupport_ipv6_dst_lookup,
++	.ipv6_dst_lookup_flow = eafnosupport_ipv6_dst_lookup_flow,
+ };
+ EXPORT_SYMBOL_GPL(ipv6_stub);
+ 
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -841,7 +841,7 @@ static struct pernet_operations inet6_ne
+ static const struct ipv6_stub ipv6_stub_impl = {
+ 	.ipv6_sock_mc_join = ipv6_sock_mc_join,
+ 	.ipv6_sock_mc_drop = ipv6_sock_mc_drop,
+-	.ipv6_dst_lookup = ip6_dst_lookup,
++	.ipv6_dst_lookup_flow = ip6_dst_lookup_flow,
+ 	.udpv6_encap_enable = udpv6_encap_enable,
+ 	.ndisc_send_na = ndisc_send_na,
+ 	.nd_tbl	= &nd_tbl,
+--- a/net/mpls/af_mpls.c
++++ b/net/mpls/af_mpls.c
+@@ -470,16 +470,15 @@ static struct net_device *inet6_fib_look
+ 	struct net_device *dev;
+ 	struct dst_entry *dst;
+ 	struct flowi6 fl6;
+-	int err;
+ 
+ 	if (!ipv6_stub)
+ 		return ERR_PTR(-EAFNOSUPPORT);
+ 
+ 	memset(&fl6, 0, sizeof(fl6));
+ 	memcpy(&fl6.daddr, addr, sizeof(struct in6_addr));
+-	err = ipv6_stub->ipv6_dst_lookup(net, NULL, &dst, &fl6);
+-	if (err)
+-		return ERR_PTR(err);
++	dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &fl6, NULL);
++	if (IS_ERR(dst))
++		return ERR_CAST(dst);
+ 
+ 	dev = dst->dev;
+ 	dev_hold(dev);
+--- a/net/tipc/udp_media.c
++++ b/net/tipc/udp_media.c
+@@ -200,10 +200,13 @@ static int tipc_udp_send_msg(struct net
+ 			.saddr = src->ipv6,
+ 			.flowi6_proto = IPPROTO_UDP
+ 		};
+-		err = ipv6_stub->ipv6_dst_lookup(net, ub->ubsock->sk, &ndst,
+-						 &fl6);
+-		if (err)
++		ndst = ipv6_stub->ipv6_dst_lookup_flow(net,
++						       ub->ubsock->sk,
++						       &fl6, NULL);
++		if (IS_ERR(ndst)) {
++			err = PTR_ERR(ndst);
+ 			goto tx_error;
++		}
+ 		ttl = ip6_dst_hoplimit(ndst);
+ 		err = udp_tunnel6_xmit_skb(ndst, ub->ubsock->sk, skb,
+ 					   ndst->dev, &src->ipv6,
 
 
