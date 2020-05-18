@@ -2,214 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F5A1D74E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD161D74AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 12:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgERKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 06:13:16 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48832 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgERKNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 06:13:16 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D9583200060;
-        Mon, 18 May 2020 12:13:14 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 759A6200781;
-        Mon, 18 May 2020 12:13:10 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D20A402A6;
-        Mon, 18 May 2020 18:13:04 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2] dt-bindings: reset: Convert i.MX reset to json-schema
-Date:   Mon, 18 May 2020 18:03:32 +0800
-Message-Id: <1589796212-9993-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726671AbgERKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 06:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgERKEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 06:04:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABA8C061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:53 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id t15so3078661ios.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RKROO8T8T/wRvHNAyo40LMuoZm+6bud6XqpTFz5/h4w=;
+        b=fy0kdcuoeSucOVpB37b28WEy2Z7BTjSQPoaSXSZqfWX5PynLzWLa06IIOmSb47HQfk
+         Nk7Lz8qUhRmZt6Uqw/+gbocUoU6pJc8rWwzPJwyXSzPNmym88rVnFeD71u5olQiXqTch
+         i6vC8EcjOjdQRWfG5xjD03JaXffn85wsZgbw4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RKROO8T8T/wRvHNAyo40LMuoZm+6bud6XqpTFz5/h4w=;
+        b=qAklO3my9QS6yYWLk0hXYrpoIyCRpAjHIxi9njiFEm6tDkNg4CeIGb7NohQdiu21Lm
+         LKqPa2rOqSpPAMADDjP/jz+CEcltUDOI3J3ZZ2oweolDsR8yHlqfbiUSeV8r41mvshey
+         qkHr093w1bPS76UQAIEPVKFP3ghpzWtwGWHiOCoszVRxSoNXy5vbZ3k0aNlEWpXewuX8
+         wpzm2J6gJl4LkO2Ue56rCkBF8MSsLFetn1Yx2CSinr2EkoNAL+nwFCiosGU8J/x6fGOC
+         x9VV9gb1HttLKZuQEcdUzT9zl/pKdUKfrK1XHV8r4oxKaT8D0KGrk9CFPkbkx7/9M18t
+         g3HA==
+X-Gm-Message-State: AOAM5316Uz9FAQPiZhpDTcrmAzb+1DQ7BnXyxVill6H1ETIan6FG/rCX
+        BkQwmuByIzR/909lGU2zJds1jI6te0s=
+X-Google-Smtp-Source: ABdhPJyzCyk9LQ0CYTpq5J35JaxAbdvLpLzVw/ZMJAuB5NmY7Q5EnVQZLtfq0QVtFhtifRoXpvXsJA==
+X-Received: by 2002:a6b:e911:: with SMTP id u17mr13588535iof.29.1589796292687;
+        Mon, 18 May 2020 03:04:52 -0700 (PDT)
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com. [209.85.166.179])
+        by smtp.gmail.com with ESMTPSA id f9sm3722934iow.47.2020.05.18.03.04.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 03:04:51 -0700 (PDT)
+Received: by mail-il1-f179.google.com with SMTP id j3so9204077ilk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 03:04:51 -0700 (PDT)
+X-Received: by 2002:a92:b001:: with SMTP id x1mr5174498ilh.18.1589796290578;
+ Mon, 18 May 2020 03:04:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200506072314.112409-1-tientzu@chromium.org> <20200506072314.112409-2-tientzu@chromium.org>
+ <20200515124621.GB1888557@kroah.com>
+In-Reply-To: <20200515124621.GB1888557@kroah.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Mon, 18 May 2020 18:04:39 +0800
+X-Gmail-Original-Message-ID: <CALiNf2_ukL1Ogk3MW5_DSCXHcVxTaE2Rv_JkF+hi7E-8XfrBxw@mail.gmail.com>
+Message-ID: <CALiNf2_ukL1Ogk3MW5_DSCXHcVxTaE2Rv_JkF+hi7E-8XfrBxw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] serdev: ttyport: add devt for tty port
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh@kernel.org, jslaby@suse.com, long.cheng@mediatek.com,
+        changqi.hu@mediatek.com, linux-serial@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX reset binding to DT schema format using json-schema.
+On Fri, May 15, 2020 at 8:46 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, May 06, 2020 at 03:23:12PM +0800, Claire Chang wrote:
+> > serial_match_port() uses devt to match devices. However, when serdev
+> > registers a tty port, devt has never been set. This makes
+> > device_find_child() always return NULL.
+> >
+> > Assign devt in serdev_tty_port_register() to fix this.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > ---
+> >  drivers/tty/serdev/serdev-ttyport.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+>
+> So is existing code broken because of this?  Or does no one ever call
+> device_find_child() on this?  Who needs/uses this?
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- add the compatible strings per SoC;
-	- use "reset-controller" as node name instead of src;
-	- add interrupt items description.
----
- .../devicetree/bindings/reset/fsl,imx-src.txt      | 49 -----------
- .../devicetree/bindings/reset/fsl,imx-src.yaml     | 98 ++++++++++++++++++++++
- 2 files changed, 98 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.txt
- create mode 100644 Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
+I'm not sure. Our use case is to control the wake on bluetooth
+behavior by the power/wakeup node.
 
-diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt b/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
-deleted file mode 100644
-index 6ed79e6..0000000
---- a/Documentation/devicetree/bindings/reset/fsl,imx-src.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Freescale i.MX System Reset Controller
--======================================
--
--Please also refer to reset.txt in this directory for common reset
--controller binding usage.
--
--Required properties:
--- compatible: Should be "fsl,<chip>-src"
--- reg: should be register base and length as documented in the
--  datasheet
--- interrupts: Should contain SRC interrupt and CPU WDOG interrupt,
--  in this order.
--- #reset-cells: 1, see below
--
--example:
--
--src: src@20d8000 {
--        compatible = "fsl,imx6q-src";
--        reg = <0x020d8000 0x4000>;
--        interrupts = <0 91 0x04 0 96 0x04>;
--        #reset-cells = <1>;
--};
--
--Specifying reset lines connected to IP modules
--==============================================
--
--The system reset controller can be used to reset the GPU, VPU,
--IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
--nodes should specify the reset line on the SRC in their resets
--property, containing a phandle to the SRC device node and a
--RESET_INDEX specifying which module to reset, as described in
--reset.txt
--
--example:
--
--        ipu1: ipu@2400000 {
--                resets = <&src 2>;
--        };
--        ipu2: ipu@2800000 {
--                resets = <&src 4>;
--        };
--
--The following RESET_INDEX values are valid for i.MX5:
--GPU_RESET     0
--VPU_RESET     1
--IPU1_RESET    2
--OPEN_VG_RESET 3
--The following additional RESET_INDEX value is valid for i.MX6:
--IPU2_RESET    4
-diff --git a/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
-new file mode 100644
-index 0000000..7cd6095
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/fsl,imx-src.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/reset/fsl,imx-src.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX System Reset Controller
-+
-+maintainers:
-+  - Philipp Zabel <p.zabel@pengutronix.de>
-+
-+description: |
-+  The system reset controller can be used to reset the GPU, VPU,
-+  IPU, and OpenVG IP modules on i.MX5 and i.MX6 ICs. Those device
-+  nodes should specify the reset line on the SRC in their resets
-+  property, containing a phandle to the SRC device node and a
-+  RESET_INDEX specifying which module to reset, as described in
-+  reset.txt
-+
-+  The following RESET_INDEX values are valid for i.MX5:
-+    GPU_RESET     0
-+    VPU_RESET     1
-+    IPU1_RESET    2
-+    OPEN_VG_RESET 3
-+  The following additional RESET_INDEX value is valid for i.MX6:
-+    IPU2_RESET    4
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - description: on i.MX51 the following compatible must be specified
-+        items:
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX50 the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx50-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX53 the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx53-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX6Q the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx6q-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX6SX the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx6sx-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX6SL the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx6sl-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX6UL the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx6ul-src"
-+          - const: "fsl,imx51-src"
-+
-+      - description: on i.MX6SLL the following compatibles must be specified
-+        items:
-+          - const: "fsl,imx6sll-src"
-+          - const: "fsl,imx51-src"
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: SRC interrupt
-+      - description: CPU WDOG interrupts out of SRC
-+    minItems: 1
-+    maxItems: 2
-+
-+  '#reset-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - '#reset-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    reset-controller@73fd0000 {
-+        compatible = "fsl,imx51-src";
-+        reg = <0x73fd0000 0x4000>;
-+        interrupts = <75>;
-+        #reset-cells = <1>;
-+    };
--- 
-2.7.4
+`readlink -f /sys/class/bluetooth/hci0`
+/sys/devices/platform/soc/11003000.serial/serial0/serial0-0/bluetooth/hci0
 
+and we'd like to use
+`/sys/devices/platform/soc/11003000.serial/serial0/power/wakeup` to
+decide whether to enable the in-band wakeup on uart host side.
+
+Thanks,
+Claire
