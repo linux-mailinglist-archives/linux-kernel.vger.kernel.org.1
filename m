@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBDD1D81A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653941D81F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgERRtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51104 "EHLO mail.kernel.org"
+        id S1728542AbgERRwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729723AbgERRt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:49:28 -0400
+        id S1730962AbgERRwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:52:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0710B20657;
-        Mon, 18 May 2020 17:49:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 987BB20674;
+        Mon, 18 May 2020 17:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824167;
-        bh=noemdQvLmANdTTAzdk8AoUEYw3LQed8XQsKZ/Irpfx4=;
+        s=default; t=1589824339;
+        bh=1FTqzyxEzcIrc6VF13xjCbQNw1co+uH7AVWcJBusJ/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MmeSK7jAPRBJsMxyf+LJ3IjENZW5oQpsbvDx8hDKGly4lMbSUJWZlC2pceDY01XZY
-         tzh6UOl9+aOZbTLyPZsjFadZTqXoEyeFqTMhspVO4sGOtBVg+GNloctBG/JHOG9gaP
-         oD3ptOoXWGFr3TGKNnwqHZua26PaJHfzG/kfPWuQ=
+        b=mPyES5UUtQXu4TdKJjsVINkk1wM8ml6IRWrnwc1jfCKowPe7NXiubYBzXMZVtkjEA
+         SjsJe7r1Ht6ZclRLHfevs7YBCXwDk40Tv8JsrXuIj9C3T61ZPBcd7Dn3xHwH9oUyjx
+         nJpnCKcr9SfIDZArIFB+1oSV8I6kndBQsiQZQ0vw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Baolin Wang <baolin.wang@linaro.org>,
-        Peter Chen <peter.chen@nxp.com>, Li Jun <jun.li@nxp.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.14 098/114] usb: host: xhci-plat: keep runtime active when removing host
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 52/80] gcc-10: avoid shadowing standard library free() in crypto
 Date:   Mon, 18 May 2020 19:37:10 +0200
-Message-Id: <20200518173519.376060252@linuxfoundation.org>
+Message-Id: <20200518173500.936440392@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+References: <20200518173450.097837707@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,135 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jun <jun.li@nxp.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 1449cb2c2253d37d998c3714aa9b95416d16d379 upstream.
+commit 1a263ae60b04de959d9ce9caea4889385eefcc7b upstream.
 
-While removing the host (e.g. for USB role switch from host to device),
-if runtime pm is enabled by user, below oops occurs on dwc3 and cdns3
-platforms.
-Keeping the xhci-plat device active during host removal, and disabling
-runtime pm before calling pm_runtime_set_suspended() fixes them.
+gcc-10 has started warning about conflicting types for a few new
+built-in functions, particularly 'free()'.
 
-oops1:
-Unable to handle kernel NULL pointer dereference at virtual address
-0000000000000240
-Internal error: Oops: 96000004 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.4.3-00107-g64d454a-dirty
-Hardware name: FSL i.MX8MP EVK (DT)
-Workqueue: pm pm_runtime_work
-pstate: 60000005 (nZCv daif -PAN -UAO)
-pc : xhci_suspend+0x34/0x698
-lr : xhci_plat_runtime_suspend+0x2c/0x38
-sp : ffff800011ddbbc0
-Call trace:
- xhci_suspend+0x34/0x698
- xhci_plat_runtime_suspend+0x2c/0x38
- pm_generic_runtime_suspend+0x28/0x40
- __rpm_callback+0xd8/0x138
- rpm_callback+0x24/0x98
- rpm_suspend+0xe0/0x448
- rpm_idle+0x124/0x140
- pm_runtime_work+0xa0/0xf8
- process_one_work+0x1dc/0x370
- worker_thread+0x48/0x468
- kthread+0xf0/0x120
- ret_from_fork+0x10/0x1c
+This results in warnings like:
 
-oops2:
-usb 2-1: USB disconnect, device number 2
-xhci-hcd xhci-hcd.1.auto: remove, state 4
-usb usb2: USB disconnect, device number 1
-xhci-hcd xhci-hcd.1.auto: USB bus 2 deregistered
-xhci-hcd xhci-hcd.1.auto: remove, state 4
-usb usb1: USB disconnect, device number 1
-Unable to handle kernel NULL pointer dereference at virtual address
-0000000000000138
-Internal error: Oops: 96000004 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 2 PID: 7 Comm: kworker/u8:0 Not tainted 5.6.0-rc4-next-20200304-03578
-Hardware name: Freescale i.MX8QXP MEK (DT)
-Workqueue: 1-0050 tcpm_state_machine_work
-pstate: 20000005 (nzCv daif -PAN -UAO)
-pc : xhci_free_dev+0x214/0x270
-lr : xhci_plat_runtime_resume+0x78/0x88
-sp : ffff80001006b5b0
-Call trace:
- xhci_free_dev+0x214/0x270
- xhci_plat_runtime_resume+0x78/0x88
- pm_generic_runtime_resume+0x30/0x48
- __rpm_callback+0x90/0x148
- rpm_callback+0x28/0x88
- rpm_resume+0x568/0x758
- rpm_resume+0x260/0x758
- rpm_resume+0x260/0x758
- __pm_runtime_resume+0x40/0x88
- device_release_driver_internal+0xa0/0x1c8
- device_release_driver+0x1c/0x28
- bus_remove_device+0xd4/0x158
- device_del+0x15c/0x3a0
- usb_disable_device+0xb0/0x268
- usb_disconnect+0xcc/0x300
- usb_remove_hcd+0xf4/0x1dc
- xhci_plat_remove+0x78/0xe0
- platform_drv_remove+0x30/0x50
- device_release_driver_internal+0xfc/0x1c8
- device_release_driver+0x1c/0x28
- bus_remove_device+0xd4/0x158
- device_del+0x15c/0x3a0
- platform_device_del.part.0+0x20/0x90
- platform_device_unregister+0x28/0x40
- cdns3_host_exit+0x20/0x40
- cdns3_role_stop+0x60/0x90
- cdns3_role_set+0x64/0xd8
- usb_role_switch_set_role.part.0+0x3c/0x68
- usb_role_switch_set_role+0x20/0x30
- tcpm_mux_set+0x60/0xf8
- tcpm_reset_port+0xa4/0xf0
- tcpm_detach.part.0+0x28/0x50
- tcpm_state_machine_work+0x12ac/0x2360
- process_one_work+0x1c8/0x470
- worker_thread+0x50/0x428
- kthread+0xfc/0x128
- ret_from_fork+0x10/0x18
-Code: c8037c02 35ffffa3 17ffe7c3 f9800011 (c85f7c01)
----[ end trace 45b1a173d2679e44 ]---
+   crypto/xts.c:325:13: warning: conflicting types for built-in function ‘free’; expected ‘void(void *)’ [-Wbuiltin-declaration-mismatch]
 
-[minor commit message cleanup  -Mathias]
-Cc: Baolin Wang <baolin.wang@linaro.org>
-Cc: <stable@vger.kernel.org>
-Fixes: b0c69b4bace3 ("usb: host: plat: Enable xHCI plat runtime PM")
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Tested-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Li Jun <jun.li@nxp.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200514110432.25564-3-mathias.nyman@linux.intel.com
+because the crypto layer had its local freeing functions called
+'free()'.
+
+Gcc-10 is in the wrong here, since that function is marked 'static', and
+thus there is no chance of confusion with any standard library function
+namespace.
+
+But the simplest thing to do is to just use a different name here, and
+avoid this gcc mis-feature.
+
+[ Side note: gcc knowing about 'free()' is in itself not the
+  mis-feature: the semantics of 'free()' are special enough that a
+  compiler can validly do special things when seeing it.
+
+  So the mis-feature here is that gcc thinks that 'free()' is some
+  restricted name, and you can't shadow it as a local static function.
+
+  Making the special 'free()' semantics be a function attribute rather
+  than tied to the name would be the much better model ]
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/host/xhci-plat.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -334,6 +334,7 @@ static int xhci_plat_remove(struct platf
- 	struct clk *clk = xhci->clk;
- 	struct usb_hcd *shared_hcd = xhci->shared_hcd;
- 
-+	pm_runtime_get_sync(&dev->dev);
- 	xhci->xhc_state |= XHCI_STATE_REMOVING;
- 
- 	usb_remove_hcd(shared_hcd);
-@@ -347,8 +348,9 @@ static int xhci_plat_remove(struct platf
- 		clk_disable_unprepare(clk);
- 	usb_put_hcd(hcd);
- 
--	pm_runtime_set_suspended(&dev->dev);
- 	pm_runtime_disable(&dev->dev);
-+	pm_runtime_put_noidle(&dev->dev);
-+	pm_runtime_set_suspended(&dev->dev);
- 
- 	return 0;
+---
+ crypto/lrw.c |    4 ++--
+ crypto/xts.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+--- a/crypto/lrw.c
++++ b/crypto/lrw.c
+@@ -453,7 +453,7 @@ static void exit_tfm(struct crypto_skcip
+ 	crypto_free_skcipher(ctx->child);
  }
+ 
+-static void free(struct skcipher_instance *inst)
++static void free_inst(struct skcipher_instance *inst)
+ {
+ 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
+ 	kfree(inst);
+@@ -565,7 +565,7 @@ static int create(struct crypto_template
+ 	inst->alg.encrypt = encrypt;
+ 	inst->alg.decrypt = decrypt;
+ 
+-	inst->free = free;
++	inst->free = free_inst;
+ 
+ 	err = skcipher_register_instance(tmpl, inst);
+ 	if (err)
+--- a/crypto/xts.c
++++ b/crypto/xts.c
+@@ -393,7 +393,7 @@ static void exit_tfm(struct crypto_skcip
+ 	crypto_free_cipher(ctx->tweak);
+ }
+ 
+-static void free(struct skcipher_instance *inst)
++static void free_inst(struct skcipher_instance *inst)
+ {
+ 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
+ 	kfree(inst);
+@@ -504,7 +504,7 @@ static int create(struct crypto_template
+ 	inst->alg.encrypt = encrypt;
+ 	inst->alg.decrypt = decrypt;
+ 
+-	inst->free = free;
++	inst->free = free_inst;
+ 
+ 	err = skcipher_register_instance(tmpl, inst);
+ 	if (err)
 
 
