@@ -2,49 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A271D8142
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DAF1D8246
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgERRq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45942 "EHLO mail.kernel.org"
+        id S1731385AbgERRy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730073AbgERRqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:23 -0400
+        id S1731372AbgERRyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:54:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77FFD20671;
-        Mon, 18 May 2020 17:46:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A584207C4;
+        Mon, 18 May 2020 17:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823982;
-        bh=OJtl/DPKcnPBAinaU+XsrpPzPk9DjxH6KkyxoHcCLeE=;
+        s=default; t=1589824492;
+        bh=eMgKjlrSqZbzw2cAvXs6l4AlTWhoYN7FjTDp/GmESNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ezn0817SQQ/QDpZgw4DjkFYoZrnFJjGH/aXXjyaKyoJREYK8uuMeVzIdgPx3WtAxE
-         UN/M1/Je5nHx5wXSDo/2+r3A8PFbEqFtzAczlpYJlO8QAtoz6Ylgb8IE/VBmnqyQhF
-         wgH4cdtkJ/L/KZlLfOEHQKRBd02/Sg8HnBrTCcRI=
+        b=IFWI3Kx8vzckXE+npCRIPv2PD30ws6bagcJY766/GxcQlcXojvJLBKotyC88wTgVl
+         bIVmgKD59AFFip1myjEZ38Sa/ZF+v9vE3tpaHCaJWoF8jFDgHQjQv8Xl5VawWP+reh
+         S4LitunQiCOX7I10YABktS6Hev0p+Mb0ordaYpQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 023/114] mm/page_alloc: fix watchdog soft lockups during set_zone_contiguous()
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 032/147] netprio_cgroup: Fix unlimited memory leak of v2 cgroups
 Date:   Mon, 18 May 2020 19:35:55 +0200
-Message-Id: <20200518173507.906629646@linuxfoundation.org>
+Message-Id: <20200518173518.206897083@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,62 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+From: Zefan Li <lizefan@huawei.com>
 
-commit e84fe99b68ce353c37ceeecc95dce9696c976556 upstream.
+[ Upstream commit 090e28b229af92dc5b40786ca673999d59e73056 ]
 
-Without CONFIG_PREEMPT, it can happen that we get soft lockups detected,
-e.g., while booting up.
+If systemd is configured to use hybrid mode which enables the use of
+both cgroup v1 and v2, systemd will create new cgroup on both the default
+root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
+task to the two cgroups. If the task does some network thing then the v2
+cgroup can never be freed after the session exited.
 
-  watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [swapper/0:1]
-  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.6.0-next-20200331+ #4
-  Hardware name: Red Hat KVM, BIOS 1.11.1-4.module+el8.1.0+4066+0f1aadab 04/01/2014
-  RIP: __pageblock_pfn_to_page+0x134/0x1c0
-  Call Trace:
-   set_zone_contiguous+0x56/0x70
-   page_alloc_init_late+0x166/0x176
-   kernel_init_freeable+0xfa/0x255
-   kernel_init+0xa/0x106
-   ret_from_fork+0x35/0x40
+One of our machines ran into OOM due to this memory leak.
 
-The issue becomes visible when having a lot of memory (e.g., 4TB)
-assigned to a single NUMA node - a system that can easily be created
-using QEMU.  Inside VMs on a hypervisor with quite some memory
-overcommit, this is fairly easy to trigger.
+In the scenario described above when sk_alloc() is called
+cgroup_sk_alloc() thought it's in v2 mode, so it stores
+the cgroup pointer in sk->sk_cgrp_data and increments
+the cgroup refcnt, but then sock_update_netprioidx()
+thought it's in v1 mode, so it stores netprioidx value
+in sk->sk_cgrp_data, so the cgroup refcnt will never be freed.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Shile Zhang <shile.zhang@linux.alibaba.com>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Alexander Duyck <alexander.duyck@gmail.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200416073417.5003-1-david@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Currently we do the mode switch when someone writes to the ifpriomap
+cgroup control file. The easiest fix is to also do the switch when
+a task is attached to a new cgroup.
+
+Fixes: bd1060a1d671 ("sock, cgroup: add sock->sk_cgroup")
+Reported-by: Yang Yingliang <yangyingliang@huawei.com>
+Tested-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Zefan Li <lizefan@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/page_alloc.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/core/netprio_cgroup.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1405,6 +1405,7 @@ void set_zone_contiguous(struct zone *zo
- 		if (!__pageblock_pfn_to_page(block_start_pfn,
- 					     block_end_pfn, zone))
- 			return;
-+		cond_resched();
- 	}
+--- a/net/core/netprio_cgroup.c
++++ b/net/core/netprio_cgroup.c
+@@ -236,6 +236,8 @@ static void net_prio_attach(struct cgrou
+ 	struct task_struct *p;
+ 	struct cgroup_subsys_state *css;
  
- 	/* We confirm that there is no hole */
++	cgroup_sk_alloc_disable();
++
+ 	cgroup_taskset_for_each(p, css, tset) {
+ 		void *v = (void *)(unsigned long)css->cgroup->id;
+ 
 
 
