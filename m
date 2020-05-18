@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3931D7D4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512E71D7D58
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgERPti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:49:38 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26990 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727007AbgERPti (ORCPT
+        id S1728299AbgERPux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:50:53 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:26420 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727020AbgERPux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:49:38 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IFXR0E108670;
-        Mon, 18 May 2020 11:49:36 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 312c63f5ue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 11:49:36 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IFeoxh021224;
-        Mon, 18 May 2020 15:49:34 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3127t5hthp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 May 2020 15:49:34 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IFnWRS62324914
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 May 2020 15:49:32 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3829052050;
-        Mon, 18 May 2020 15:49:32 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.145.145])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B351C52052;
-        Mon, 18 May 2020 15:49:31 +0000 (GMT)
-Message-ID: <1589816971.5111.113.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity subsystem fixes for v5.7
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 18 May 2020 11:49:31 -0400
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-18_06:2020-05-15,2020-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 cotscore=-2147483648
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005180131
+        Mon, 18 May 2020 11:50:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589817052; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=MA7x95uTokqN/aU7nVR9VOVc4EF74ZFKJm4hvl9kPak=; b=dMwg11uCHw18KMXBOJmTbThho/QRAsHH9gH6KSIOjYx6o+2wKi75ZFEcKIviAppNjmv+t1AR
+ s0ZpMHXflBTq58/EZKmSx2e4VVXhntG2LBcsizs5AlO4KYTBCfxSUljrVqNFeY2sMSO+mcbX
+ qvFVg8kPTzl0A+zHW0Xi532Jb6Q=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec2aecd.7fd5868fa960-smtp-out-n01;
+ Mon, 18 May 2020 15:50:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B71BDC433D2; Mon, 18 May 2020 15:50:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from groverm-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: groverm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C9E4C43636;
+        Mon, 18 May 2020 15:50:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6C9E4C43636
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=groverm@codeaurora.org
+From:   Mayank Grover <groverm@codeaurora.org>
+To:     linus.walleij@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, neeraju@codeaurora.org,
+        Mayank Grover <groverm@codeaurora.org>
+Subject: [PATCH] pinctrl: msm: Add check for pinctrl group is valid
+Date:   Mon, 18 May 2020 21:20:25 +0530
+Message-Id: <1589817025-21886-1-git-send-email-groverm@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The list of reserved gpio pins for platform are populated
+in gpiochip valid_mask.
 
-Here are a couple of miscellaneous bug fixes for the integrity
-subsystem:
+Here on MSM common driver introduce ability to check if
+pingroup is valid, by parsing pins in pingroup against
+reserved pins for gpios. This does not handle non-gpio
+pingroups.
 
-IMA:
-- Properly modify the open flags in order to calculate the file hash.
-- On systems requiring the IMA policy to be signed, the policy is
-loaded differently.  Don't differentiate between "enforce" and either
-"log" or "fix" modes how the policy is loaded.
+Signed-off-by: Mayank Grover <groverm@codeaurora.org>
+---
+ drivers/pinctrl/qcom/pinctrl-msm.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-EVM:
-- (2 patches) Fix an EVM race condition, normally the result of
-attempting to load an unsupported hash algorithm.
-- Use the lockless RCU version for walking an append only list.
-
-Mimi
-
-The following changes since commit ae83d0b416db002fe95601e7f97f64b59514d936:
-
-  Linux 5.7-rc2 (2020-04-19 14:35:30 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git next-integrity.fixes
-
-for you to fetch changes up to 8433856947217ebb5697a8ff9c4c9cad4639a2cf:
-
-  evm: Fix a small race in init_desc() (2020-05-14 19:55:54 -0400)
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      evm: Fix a small race in init_desc()
-
-Madhuparna Bhowmik (1):
-      evm: Fix RCU list related warnings
-
-Roberto Sassu (3):
-      ima: Set file->f_mode instead of file->f_flags in ima_calc_file_hash()
-      evm: Check also if *tfm is an error pointer in init_desc()
-      ima: Fix return value of ima_write_policy()
-
- security/integrity/evm/evm_crypto.c | 46 ++++++++++++++++++-------------------
- security/integrity/evm/evm_main.c   |  4 ++--
- security/integrity/evm/evm_secfs.c  |  9 +++++++-
- security/integrity/ima/ima_crypto.c | 12 +++++-----
- security/integrity/ima/ima_fs.c     |  3 +--
- 5 files changed, 40 insertions(+), 34 deletions(-)
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 85858c1..b6ebe26 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -261,6 +261,24 @@ static unsigned msm_regval_to_drive(u32 val)
+ 	return (val + 1) * 2;
+ }
+ 
++static bool msm_pingroup_is_valid(struct msm_pinctrl *pctrl,
++				  const struct msm_pingroup *g)
++{
++	const unsigned int *pins = g->pins;
++	unsigned int num_pins = g->npins;
++	struct gpio_chip *chip = &pctrl->chip;
++	unsigned int max_gpios = chip->ngpio;
++	unsigned int i;
++
++	for (i = 0; i < num_pins; i++) {
++		/* Doesn't handle non-gpio pingroups */
++		if (pins[i] < max_gpios &&
++		    !gpiochip_line_is_valid(chip, pins[i]))
++			return false;
++	}
++	return true;
++}
++
+ static int msm_config_group_get(struct pinctrl_dev *pctldev,
+ 				unsigned int group,
+ 				unsigned long *config)
+@@ -276,6 +294,10 @@ static int msm_config_group_get(struct pinctrl_dev *pctldev,
+ 
+ 	g = &pctrl->soc->groups[group];
+ 
++	/* Check if group has all valid pins */
++	if (!msm_pingroup_is_valid(pctrl, g))
++		return -EINVAL;
++
+ 	ret = msm_config_reg(pctrl, g, param, &mask, &bit);
+ 	if (ret < 0)
+ 		return ret;
+@@ -355,6 +377,10 @@ static int msm_config_group_set(struct pinctrl_dev *pctldev,
+ 
+ 	g = &pctrl->soc->groups[group];
+ 
++	/* Check if group has all valid pins */
++	if (!msm_pingroup_is_valid(pctrl, g))
++		return -EINVAL;
++
+ 	for (i = 0; i < num_configs; i++) {
+ 		param = pinconf_to_config_param(configs[i]);
+ 		arg = pinconf_to_config_argument(configs[i]);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
