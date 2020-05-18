@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64661D8191
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207EF1D850B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730476AbgERRtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50512 "EHLO mail.kernel.org"
+        id S1731492AbgERR5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729669AbgERRtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:49:07 -0400
+        id S1731825AbgERR5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F05E120715;
-        Mon, 18 May 2020 17:49:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6707920674;
+        Mon, 18 May 2020 17:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824147;
-        bh=eDNVAQR9bAqbtW3RfWRqf3JH/mbMza7PvaMw3TiDEdY=;
+        s=default; t=1589824659;
+        bh=CncCaItO4mAN4EliTW7rMnGycSoeTL1vbEZZOWBSb6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2IZ6UAUQTqUR39T7VhmwJCNgINcAzaEc/S1ht2J2PiiI9jJQIkKcQdhinr3l2WrE/
-         IjbjKQX0GmilW6qzrvvesMo2qRZVhwIIrBIsfjq4owxKX0gdNFZ64ZBnVYYayFo44w
-         GyxOFwdqefUCwCWDPF14z0mIzN4/V4b/B6Vj5Ctw=
+        b=OUE1WFZG/1Eugn5je1coqWIXsbSHqp45YziK3/o8ucPlmIcnNm7xh1CDnsd/s/jaN
+         5p6UaZo19gwWBQcpxasjbWTVqC8AN/hcmAK7p3NwTU5n3VgmtRwG531pvwLE1qOle5
+         PDREenDaCFp5JgmRNmcIEgGrrSACyyoO2hTySvcc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+194dffdb8b22fc5d207a@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 091/114] ALSA: rawmidi: Initialize allocated buffers
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 100/147] gcc-10 warnings: fix low-hanging fruit
 Date:   Mon, 18 May 2020 19:37:03 +0200
-Message-Id: <20200518173518.607030025@linuxfoundation.org>
+Message-Id: <20200518173525.881693591@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 5a7b44a8df822e0667fc76ed7130252523993bda upstream.
+commit 9d82973e032e246ff5663c9805fbb5407ae932e3 upstream.
 
-syzbot reported the uninitialized value exposure in certain situations
-using virmidi loop.  It's likely a very small race at writing and
-reading, and the influence is almost negligible.  But it's safer to
-paper over this just by replacing the existing kvmalloc() with
-kvzalloc().
+Due to a bug-report that was compiler-dependent, I updated one of my
+machines to gcc-10.  That shows a lot of new warnings.  Happily they
+seem to be mostly the valid kind, but it's going to cause a round of
+churn for getting rid of them..
 
-Reported-by: syzbot+194dffdb8b22fc5d207a@syzkaller.appspotmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This is the really low-hanging fruit of removing a couple of zero-sized
+arrays in some core code.  We have had a round of these patches before,
+and we'll have many more coming, and there is nothing special about
+these except that they were particularly trivial, and triggered more
+warnings than most.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/rawmidi.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/fs.h  |    2 +-
+ include/linux/tty.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -125,7 +125,7 @@ static int snd_rawmidi_runtime_create(st
- 		runtime->avail = 0;
- 	else
- 		runtime->avail = runtime->buffer_size;
--	if ((runtime->buffer = kmalloc(runtime->buffer_size, GFP_KERNEL)) == NULL) {
-+	if ((runtime->buffer = kzalloc(runtime->buffer_size, GFP_KERNEL)) == NULL) {
- 		kfree(runtime);
- 		return -ENOMEM;
- 	}
-@@ -650,7 +650,7 @@ int snd_rawmidi_output_params(struct snd
- 		return -EINVAL;
- 	}
- 	if (params->buffer_size != runtime->buffer_size) {
--		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
-+		newbuf = kzalloc(params->buffer_size, GFP_KERNEL);
- 		if (!newbuf)
- 			return -ENOMEM;
- 		spin_lock_irq(&runtime->lock);
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -978,7 +978,7 @@ struct file_handle {
+ 	__u32 handle_bytes;
+ 	int handle_type;
+ 	/* file identifier */
+-	unsigned char f_handle[0];
++	unsigned char f_handle[];
+ };
+ 
+ static inline struct file *get_file(struct file *f)
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -66,7 +66,7 @@ struct tty_buffer {
+ 	int read;
+ 	int flags;
+ 	/* Data points here */
+-	unsigned long data[0];
++	unsigned long data[];
+ };
+ 
+ /* Values for .flags field of tty_buffer */
 
 
