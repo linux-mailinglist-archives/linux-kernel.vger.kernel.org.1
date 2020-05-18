@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1EA1D809D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5D11D8104
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729172AbgERRkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:40:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
+        id S1729682AbgERRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729112AbgERRki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:38 -0400
+        id S1729650AbgERRoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:44:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C38F207C4;
-        Mon, 18 May 2020 17:40:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43F52207C4;
+        Mon, 18 May 2020 17:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823638;
-        bh=k7emKby5tOFFms/cf5P7x4wI0xM6kC32fF4oJWJ9pdM=;
+        s=default; t=1589823840;
+        bh=55PKlhmg1rmfRguUkGNgpg1h9UfCnaM6roGxuu9k3bA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5gKq3L7+SWPFDZ1Dgw6syU1+NzF6trDErlk1wcStYOfjg3FyZsNOjbN2uVzL1orc
-         CpWeuoWq8jf3ZB3HxAwUTe9PNp3CJQM9v0LKgkLGMyAHPR/Zl3L3kiLSUDbzmP8OAv
-         z+zUAd/4A1MyPzcr1lMTgEsxx3kucVtLA1KRNQxs=
+        b=MeHs8rx51KjpLOeGLfBxFioS3orUU6j2CSay1DozoCbChJywlgKCCmz9snO9MUwaF
+         LfVXiL52tr45QpJW3xGzbZaiRnhd6hQlhBKlrmr0p0p3X0PCd/nY4RFa8PTdkCBxTt
+         q+cAICmtfaFPawRxwTKaPo6LGXBT26BFuUyWaqAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <keith.busch@intel.com>, Jens Axboe <axboe@fb.com>,
-        Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.4 63/86] block: defer timeouts to a workqueue
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 56/90] netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
 Date:   Mon, 18 May 2020 19:36:34 +0200
-Message-Id: <20200518173503.131794977@linuxfoundation.org>
+Message-Id: <20200518173502.512499313@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,85 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 287922eb0b186e2a5bf54fdd04b734c25c90035c upstream.
+[ Upstream commit 2c407aca64977ede9b9f35158e919773cae2082f ]
 
-Timer context is not very useful for drivers to perform any meaningful abort
-action from.  So instead of calling the driver from this useless context
-defer it to a workqueue as soon as possible.
+gcc-10 warns around a suspicious access to an empty struct member:
 
-Note that while a delayed_work item would seem the right thing here I didn't
-dare to use it due to the magic in blk_add_timer that pokes deep into timer
-internals.  But maybe this encourages Tejun to add a sensible API for that to
-the workqueue API and we'll all be fine in the end :)
+net/netfilter/nf_conntrack_core.c: In function '__nf_conntrack_alloc':
+net/netfilter/nf_conntrack_core.c:1522:9: warning: array subscript 0 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
+ 1522 |  memset(&ct->__nfct_init_offset[0], 0,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from net/netfilter/nf_conntrack_core.c:37:
+include/net/netfilter/nf_conntrack.h:90:5: note: while referencing '__nfct_init_offset'
+   90 |  u8 __nfct_init_offset[0];
+      |     ^~~~~~~~~~~~~~~~~~
 
-Contains a major update from Keith Bush:
+The code is correct but a bit unusual. Rework it slightly in a way that
+does not trigger the warning, using an empty struct instead of an empty
+array. There are probably more elegant ways to do this, but this is the
+smallest change.
 
-"This patch removes synchronizing the timeout work so that the timer can
- start a freeze on its own queue. The timer enters the queue, so timer
- context can only start a freeze, but not wait for frozen."
-
--------------
-NOTE: Back-ported to 4.4.y.
-
-The only parts of the upstream commit that have been kept are various
-locking changes, none of which were mentioned in the original commit
-message which therefore describes this change not at all.
-
-Timeout callbacks continue to be run via a timer. Both blk_mq_rq_timer
-and blk_rq_timed_out_timer will return without without doing any work
-if they cannot acquire the queue (without waiting).
--------------
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Keith Busch <keith.busch@intel.com>
-Signed-off-by: Jens Axboe <axboe@fb.com>
-Signed-off-by: Giuliano Procida <gprocida@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c41884ce0562 ("netfilter: conntrack: avoid zeroing timer")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c      |    4 ++++
- block/blk-timeout.c |    3 +++
- 2 files changed, 7 insertions(+)
+ include/net/netfilter/nf_conntrack.h | 2 +-
+ net/netfilter/nf_conntrack_core.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -628,6 +628,9 @@ static void blk_mq_rq_timer(unsigned lon
- 	};
- 	int i;
+diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
+index b57a9f37c297b..7befec513295d 100644
+--- a/include/net/netfilter/nf_conntrack.h
++++ b/include/net/netfilter/nf_conntrack.h
+@@ -103,7 +103,7 @@ struct nf_conn {
+ 	struct hlist_node	nat_bysource;
+ #endif
+ 	/* all members below initialized via memset */
+-	u8 __nfct_init_offset[0];
++	struct { } __nfct_init_offset;
  
-+	if (blk_queue_enter(q, GFP_NOWAIT))
-+		return;
-+
- 	blk_mq_queue_tag_busy_iter(q, blk_mq_check_expired, &data);
+ 	/* If we were expected by an expectation, this will be it */
+ 	struct nf_conn *master;
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 1bdae8f188e1f..d507d0fc7858a 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1124,9 +1124,9 @@ __nf_conntrack_alloc(struct net *net,
+ 	*(unsigned long *)(&ct->tuplehash[IP_CT_DIR_REPLY].hnnode.pprev) = hash;
+ 	ct->status = 0;
+ 	write_pnet(&ct->ct_net, net);
+-	memset(&ct->__nfct_init_offset[0], 0,
++	memset(&ct->__nfct_init_offset, 0,
+ 	       offsetof(struct nf_conn, proto) -
+-	       offsetof(struct nf_conn, __nfct_init_offset[0]));
++	       offsetof(struct nf_conn, __nfct_init_offset));
  
- 	if (data.next_set) {
-@@ -642,6 +645,7 @@ static void blk_mq_rq_timer(unsigned lon
- 				blk_mq_tag_idle(hctx);
- 		}
- 	}
-+	blk_queue_exit(q);
- }
+ 	nf_ct_zone_add(ct, zone);
  
- /*
---- a/block/blk-timeout.c
-+++ b/block/blk-timeout.c
-@@ -134,6 +134,8 @@ void blk_rq_timed_out_timer(unsigned lon
- 	struct request *rq, *tmp;
- 	int next_set = 0;
- 
-+	if (blk_queue_enter(q, GFP_NOWAIT))
-+		return;
- 	spin_lock_irqsave(q->queue_lock, flags);
- 
- 	list_for_each_entry_safe(rq, tmp, &q->timeout_list, timeout_list)
-@@ -143,6 +145,7 @@ void blk_rq_timed_out_timer(unsigned lon
- 		mod_timer(&q->timeout, round_jiffies_up(next));
- 
- 	spin_unlock_irqrestore(q->queue_lock, flags);
-+	blk_queue_exit(q);
- }
- 
- /**
+-- 
+2.20.1
+
 
 
