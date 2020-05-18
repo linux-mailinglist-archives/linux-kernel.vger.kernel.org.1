@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DEF1D6F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 05:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D87F1D6F19
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgERDAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 23:00:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:18994 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgERDAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 23:00:11 -0400
-IronPort-SDR: E8nF6okch5IVhBiQVkGQdu2E20vAdSKlISqyXjlWY9db1dCi9g38DnsrgsBSj+gVBctlpMlkPK
- iB4dacBwArdQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 20:00:10 -0700
-IronPort-SDR: p0H95gVRAi/oYZb5SAEN6kreT+i2s9dECYuTiMr3NwRKY3i2tL8seL7w1i7MENDt7BPCfEZ2W/
- OckX267ut7OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,405,1583222400"; 
-   d="scan'208";a="411105271"
-Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
-  by orsmga004.jf.intel.com with ESMTP; 17 May 2020 20:00:07 -0700
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     alex.williamson@redhat.com, cohuck@redhat.com,
-        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
-        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
-        xin.zeng@intel.com, hang.yuan@intel.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH v4 05/10] vfio/pci: export vfio_pci_get_barmap
-Date:   Sun, 17 May 2020 22:50:16 -0400
-Message-Id: <20200518025016.14317-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200518024202.13996-1-yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
+        id S1726730AbgERCu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgERCu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:50:29 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA52C061A0C;
+        Sun, 17 May 2020 19:50:29 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a9so6668641lfb.8;
+        Sun, 17 May 2020 19:50:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:references:mime-version:message-id
+         :content-transfer-encoding;
+        bh=oam3dJJ4/crtTRL/eRuAxPUMONTVhcxSe0tWiKEQVAc=;
+        b=CjNQYzVgJb9GMSe0J72qapHzAuYsUoEeOr8gOvtTdA9ElJR3QwTCl0uj7sUIHgIy+t
+         l5X7v+4G2lDI8GNAaZqDQQrthE2XdBGbCIP7hXtXUF7eQnJbkGfYM6JeIqhqOOkQhreo
+         1oAV/uQHSXPWY0HOXVfQJPEM1huTKek2nzDE2YpYjZOe4/FoM82h+wQYOTbGhasjUmsZ
+         v9LmPuUkBq2Vh3r8AvjpbRB5GrMklqVlg+EYgfxbKSQhZpATzvDFoe1dp2TlF5/T6XgD
+         jLqFgi9kTUHXzLf9DXIwZrPKxVFcs4RQdZAwcPEnlfMJPHr0d1GC2sBFSXlmRffiSAH1
+         q9LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:references:mime-version
+         :message-id:content-transfer-encoding;
+        bh=oam3dJJ4/crtTRL/eRuAxPUMONTVhcxSe0tWiKEQVAc=;
+        b=VPACUeztPiNS3/A1sx4rF5Orb1ibfBw1vgb6mMf7Z82p9MZLGgIBFhArPyFmsAMmFz
+         I7vTIzlgMHwtlcOijeZtGhGsAVWn1WotsHwDyR3tlqdNwjOmdnQsdibjbsV6s7Gda/sa
+         S2iJylyNFfUq2Y1VrbnzyKeGT+a6AhJ/wPbgilVwV6cBuMcSJ9l5mOXrWzYBAeIB15la
+         j8qH+DRxXyWv5ukL0VqcJAGER6NhyhMn0+5tsbsLvOJBsM4/jOXwCqRoxhqM85I1vyq9
+         2ElzV5V+XE2WSb9ObFnqzdI8ZNZBOaS0m9SWNIE0pfarPoqvax/d3lk6J1vq/qEUoxCx
+         5q9A==
+X-Gm-Message-State: AOAM5321aiJ5hKM27W5fXsicBdhhAZaojGRXlwOHIUx4yzLCe45Wl31D
+        OdcgXI2lXbfg7A4Pa/0ZIeh+5nW4
+X-Google-Smtp-Source: ABdhPJxZNXhf/a/Su+ZtOR0O3Lg9Rt+Ua+DT0J3VJgTo9/b1WBLj8vU2zzf7mjRqGAf/d1T/SoLc5A==
+X-Received: by 2002:a19:c50c:: with SMTP id w12mr10042124lfe.23.1589770227415;
+        Sun, 17 May 2020 19:50:27 -0700 (PDT)
+Received: from N-20L6PF1KTYA2 ([131.228.2.21])
+        by smtp.gmail.com with ESMTPSA id d28sm5962870lfe.76.2020.05.17.19.50.25
+        (version=TLS1_2 cipher=AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 May 2020 19:50:26 -0700 (PDT)
+Date:   Mon, 18 May 2020 10:50:25 +0800
+From:   "Li Xinhai" <lixinhai.lxh@gmail.com>
+To:     "Tom Zanussi" <zanussi@kernel.org>
+Cc:     linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Steven Rostedt" <rostedt@goodmis.org>
+Subject: Re: Documentation/trace/events.rst: wrong numbering of sections
+References: <2020051515434115672512@gmail.com>, 
+        <20200515091126.75db6ec9@gandalf.local.home>, 
+        <2449de9a39bd09510f75bd2358cc7ddfd397e93f.camel@kernel.org>
+X-Priority: 3
+X-GUID: 8C7C185D-E40D-40F5-9BAC-2528207C0581
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.13.365[cn]
+Mime-Version: 1.0
+Message-ID: <2020051810502421237517@gmail.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows vendor driver to read/write to bars directly which is useful
-in security checking condition.
-
-Cc: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- drivers/vfio/pci/vfio_pci_rdwr.c | 10 ++++++++++
- include/linux/vfio.h             |  1 +
- 2 files changed, 11 insertions(+)
-
-diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
-index a87992892a9f..e4085311ab28 100644
---- a/drivers/vfio/pci/vfio_pci_rdwr.c
-+++ b/drivers/vfio/pci/vfio_pci_rdwr.c
-@@ -153,6 +153,16 @@ static int vfio_pci_setup_barmap(struct vfio_pci_device *vdev, int bar)
- 	return 0;
- }
- 
-+void __iomem *vfio_pci_get_barmap(void *device_data, int bar)
-+{
-+	int ret;
-+	struct vfio_pci_device *vdev = device_data;
-+
-+	ret = vfio_pci_setup_barmap(vdev, bar);
-+	return ret ? ERR_PTR(ret) : vdev->barmap[bar];
-+}
-+EXPORT_SYMBOL_GPL(vfio_pci_get_barmap);
-+
- ssize_t vfio_pci_bar_rw(struct vfio_pci_device *vdev, char __user *buf,
- 			size_t count, loff_t *ppos, bool iswrite)
- {
-diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-index 6310c53f9d36..0c786fec4602 100644
---- a/include/linux/vfio.h
-+++ b/include/linux/vfio.h
-@@ -234,6 +234,7 @@ extern void *vfio_pci_vendor_data(void *device_data);
- extern int vfio_pci_set_vendor_regions(void *device_data,
- 				       int num_vendor_regions);
- extern int vfio_pci_set_vendor_irqs(void *device_data, int num_vendor_irqs);
-+extern void __iomem *vfio_pci_get_barmap(void *device_data, int bar);
- 
- struct vfio_pci_vendor_driver_ops {
- 	char			*name;
--- 
-2.17.1
+PkhpLAo+Cj5PbiBGcmksIDIwMjAtMDUtMTUgYXQgMDk6MTEgLTA0MDAsIFN0ZXZlbiBSb3N0ZWR0
+IHdyb3RlOgo+PiBJdCdzIGJlc3QgdG8gQ2MgdGhlIG1haW50YWluZXJzIG9mIHRoZSBmaWxlLiBO
+b2JvZHkgcmVhZHMgbGludXgtCj4+IGtlcm5lbCAoaXQKPj4gcHJvZHVjZXMgODAwIGVtYWlscyBh
+IGRheSEpLiBMdWNraWx5LCBJIGhhcHBlbiB0byBtb25pdG9yIHRoZQo+PiBsaW51eC10cmFjZS1k
+ZXZlbCBsaXN0ICh3aGljaCBpcyBtb3N0bHkgZm9yIHVzZXJsYW5kIHRvb2xzKSwKPj4gb3RoZXJ3
+aXNlIHRoaXMKPj4gZW1haWwgd291bGQgaGF2ZSBiZWVuIGxvc3QgdG8gdGhlIExLTUwgYWJ5c3Mu
+Cj4+Cj4+IE9uIEZyaSwgMTUgTWF5IDIwMjAgMTU6NDM6NDMgKzA4MDAKPj4gIkxpIFhpbmhhaSIg
+PGxpeGluaGFpLmx4aEBnbWFpbC5jb20+IHdyb3RlOgo+Pgo+PiA+IFRoaXMgZG9jdW1lbnQgaGFz
+IGJlbG93IG51bWJlcmluZyBvZiBpdHMgc2VjdGlvbnM6Cj4+ID4KPj4gPiAxLiBJbnRyb2R1Y3Rp
+b24KPj4gPiAyLiBVc2luZyBFdmVudCBUcmFjaW5nCj4+ID4gMi4xIFZpYSB0aGUgJ3NldF9ldmVu
+dCcgaW50ZXJmYWNlCj4+ID4gMi4yIFZpYSB0aGUgJ2VuYWJsZScgdG9nZ2xlCj4+ID4gMi4zIEJv
+b3Qgb3B0aW9uCj4+ID4gMy4gRGVmaW5pbmcgYW4gZXZlbnQtZW5hYmxlZCB0cmFjZXBvaW50Cj4+
+ID4gNC4gRXZlbnQgZm9ybWF0cwo+PiA+IDUuIEV2ZW50IGZpbHRlcmluZwo+PiA+IDUuMSBFeHBy
+ZXNzaW9uIHN5bnRheAo+PiA+IDUuMiBTZXR0aW5nIGZpbHRlcnMKPj4gPiA1LjMgQ2xlYXJpbmcg
+ZmlsdGVycwo+PiA+IDUuMyBTdWJzeXN0ZW0gZmlsdGVycwo+PiA+IDUuNCBQSUQgZmlsdGVyaW5n
+Cj4+ID4gNi4gRXZlbnQgdHJpZ2dlcnMKPj4gPiA2LjEgRXhwcmVzc2lvbiBzeW50YXgKPj4gPiA2
+LjIgU3VwcG9ydGVkIHRyaWdnZXIgY29tbWFuZHMKPj4gPiA2LjMgSW4ta2VybmVsIHRyYWNlIGV2
+ZW50IEFQSQo+PiA+IDYuMy4xIER5YW1pY2FsbHkgY3JlYXRpbmcgc3ludGhldGljIGV2ZW50IGRl
+ZmluaXRpb25zCj4+ID4gNi4zLjMgVHJhY2luZyBzeW50aGV0aWMgZXZlbnRzIGZyb20gaW4ta2Vy
+bmVsIGNvZGUKPj4gPiA2LjMuMy4xIFRyYWNpbmcgYSBzeW50aGV0aWMgZXZlbnQgYWxsIGF0IG9u
+Y2UKPj4gPiA2LjMuMy4xIFRyYWNpbmcgYSBzeW50aGV0aWMgZXZlbnQgcGllY2V3aXNlCj4+ID4g
+Ni4zLjQgRHlhbWljYWxseSBjcmVhdGluZyBrcHJvYmUgYW5kIGtyZXRwcm9iZSBldmVudCBkZWZp
+bml0aW9ucwo+PiA+IDYuMy40IFRoZSAiZHluZXZlbnRfY21kIiBsb3ctbGV2ZWwgQVBJCj4+ID4K
+Pj4gPiBJdCBzZWVtcyB3cm9uZyBudW1iZXJpbmcgd2l0aGluIDYuMyBzZWN0aW9uLgo+PiA+IG9y
+LCB3b3VsZCBpdCBiZSBiZXR0ZXIgdG8gaGF2ZSBzZXBhcmF0ZWQgY2hhcHRlciAjNywgZm9yICdJ
+bi1rZXJuZWwKPj4gPiB0cmFjZQo+PiA+IGV2ZW50IEFQSSc/IGl0IHNlZW1zIG5vdCBiZWxvbmcg
+dG8gJ0V2ZW50IHRyaWdnZXJzJy4KPj4KPj4gWWVhaCwgNi4zLjQgKGJvdGggb2YgdGhlbSkgcHJv
+YmFibHkgc2hvdWxkIGhhdmUgYmVlbiB1bmRlciBhIG5ldyB0b3AKPj4gbGV2ZWwKPj4gc2VjdGlv
+bi4gKCM3KS4KPj4KPgo+WWVhaCwgYXNpZGUgZnJvbSBkdXBsaWNhdGUgbnVtYmVyaW5nIGluIGEg
+Y291cGxlIG9mIHBsYWNlcywgaXQgd291bGQKPm1ha2UgbW9yZSBzZW5zZSBmb3IgZXZlcnl0aGlu
+ZyBzdGFydGluZyBmcm9tICc2LjMgSW4ta2VybmVsIHRyYWNlIGV2ZW50Cj5BUEknIHRvIGJlIGlu
+IGEgc2VjdGlvbiA3Lgo+Cj5Xb3VsZCB5b3UgbGlrZSB0byBzdWJtaXQgYSBwYXRjaCBmb3IgdGhh
+dCwgTGksIG9yIHNob3VsZCBJPwo+IApJIGFtIG5vdCBzdXJlIHRoZSBjb3JyZWN0IG9yZ2FuaXph
+dGlvbiBvZiB0aGVzZSBwYXJ0LCB5b3UgbWF5YmUgYmV0dGVyIHRvIGZpeCBpdCwgdGhhbmtzLgoK
+PlRoYW5rcywKPgo+VG9tCj4KPj4gLS0gU3RldmUKPg==
 
