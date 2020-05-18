@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B06A1D8077
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3301D8294
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgERRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34910 "EHLO mail.kernel.org"
+        id S1731820AbgERR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728915AbgERRjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:53 -0400
+        id S1731508AbgERRzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:55:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E04512086A;
-        Mon, 18 May 2020 17:39:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA67A20674;
+        Mon, 18 May 2020 17:55:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823593;
-        bh=21RvU87suyQJ5Bno2TZaPg+6cnc/R8INOsdBybhJ+a4=;
+        s=default; t=1589824535;
+        bh=MvciCjxqbATbF9bVFNFSQoSFaxr/QAeTiCBmuMcVyko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EzckmMIint4WAj6+lhtT0GgKR2VNBJ1gLmkqxmH8810lBqh/3JLY9J4sgGfC/J+Tw
-         /CpaYxQ1ZqXPuq6zugs19L2Ryew/YDm6SJ7LLkHnAyOPQncjls9+Jd2znwYpUCrU9B
-         9qOtRBdCSGdIKtINn2CNeukgCZA8N5SnzOJhiaP0=
+        b=TvKcSlQHWgrxbYFTVdW7ek1TJ2RBw9uxtp7mVUQy7rcZovQvvA92Vkx9ygvs9dGiG
+         UYqFTr0XwnyRCKHF1/oRbx5rfNtV+Kw+dlD0cmR4ZFoxOICyrplOzTSDsgDACIzEsb
+         VAhHphEdsehwWfLLWQRpwAQIvS2t99r6KKQweGQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 43/86] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 051/147] ALSA: hda/realtek - Fix S3 pop noise on Dell Wyse
 Date:   Mon, 18 May 2020 19:36:14 +0200
-Message-Id: <20200518173459.156844096@linuxfoundation.org>
+Message-Id: <20200518173520.322944614@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
+[ Upstream commit 52e4e36807aeac1cdd07b14e509c8a64101e1a09 ]
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+Commit 317d9313925c ("ALSA: hda/realtek - Set default power save node to
+0") makes the ALC225 have pop noise on S3 resume and cold boot.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+The previous fix enable power save node universally for ALC225, however
+it makes some ALC225 systems unable to produce any sound.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+So let's only enable power save node for the affected Dell Wyse
+platform.
+
+Fixes: 317d9313925c ("ALSA: hda/realtek - Set default power save node to 0")
+BugLink: https://bugs.launchpad.net/bugs/1866357
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20200503152449.22761-2-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index 113605f6fe208..32517003e118e 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -877,6 +877,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 64270983ab7db..1a01e7c5b6d0a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5743,6 +5743,15 @@ static void alc233_alc662_fixup_lenovo_dual_codecs(struct hda_codec *codec,
  	}
+ }
  
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
- 
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -892,7 +893,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
- 
--	pd->dma.dev = &pdev->dev;
- 
- 	INIT_LIST_HEAD(&pd->dma.channels);
- 
++static void alc225_fixup_s3_pop_noise(struct hda_codec *codec,
++				      const struct hda_fixup *fix, int action)
++{
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	codec->power_save_node = 1;
++}
++
+ /* Forcibly assign NID 0x03 to HP/LO while NID 0x02 to SPK for EQ */
+ static void alc274_fixup_bind_dacs(struct hda_codec *codec,
+ 				    const struct hda_fixup *fix, int action)
+@@ -5932,6 +5941,7 @@ enum {
+ 	ALC233_FIXUP_ACER_HEADSET_MIC,
+ 	ALC294_FIXUP_LENOVO_MIC_LOCATION,
+ 	ALC225_FIXUP_DELL_WYSE_MIC_NO_PRESENCE,
++	ALC225_FIXUP_S3_POP_NOISE,
+ 	ALC700_FIXUP_INTEL_REFERENCE,
+ 	ALC274_FIXUP_DELL_BIND_DACS,
+ 	ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
+@@ -6817,6 +6827,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ }
+ 		},
+ 		.chained = true,
++		.chain_id = ALC225_FIXUP_S3_POP_NOISE
++	},
++	[ALC225_FIXUP_S3_POP_NOISE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc225_fixup_s3_pop_noise,
++		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+ 	},
+ 	[ALC700_FIXUP_INTEL_REFERENCE] = {
 -- 
 2.20.1
 
