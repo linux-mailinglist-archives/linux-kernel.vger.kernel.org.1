@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B91E1D8265
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D051D834D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731569AbgERRz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33494 "EHLO mail.kernel.org"
+        id S1732669AbgERSDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731529AbgERRzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:55 -0400
+        id S1731507AbgERSDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A18B420674;
-        Mon, 18 May 2020 17:55:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B69CA207F5;
+        Mon, 18 May 2020 18:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824555;
-        bh=5YsxkCbiT4/BpBT77MVxcMiKuXtcFlXKvr3Vd7rcdao=;
+        s=default; t=1589825003;
+        bh=eJDONeSSXm5ZMoCXxAaEjZbpOF+GULwXMkGcQKEsyTE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6Ey3K+wCVuJPDCs9kMwxqEIcGsmZLvZOY2xaeOM3R7zJO/67aUEbWBV3oHGzGdFP
-         dodKChEt6SOE0E1rwv4Z+XBUJwvobhWEh2UAGqfoAUF2ZhCXnMuWMQaQU251ZIyqXw
-         2f1LLJZKdQovrYnShLxcbUZ8KMR1wvrhox9SZrrw=
+        b=srTp3nI1luXSxkg+1sU4Ok6GdpDWfNPsDKnUSU0kQX57cTresHUVCP1ipAdlXK2R9
+         M+RRk4errJvXkyprJzrZV4jRoiwJygdKIRLLKr93Ini5iC44SHHg3+XH5fKHjNZT8R
+         t7eW0mZfiDs3H0jQlf6UEtSOGLhXp4SJLBjM6Lgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/147] pinctrl: qcom: fix wrong write in update_dual_edge
+Subject: [PATCH 5.6 091/194] mmc: core: Check request type before completing the request
 Date:   Mon, 18 May 2020 19:36:21 +0200
-Message-Id: <20200518173521.189845833@linuxfoundation.org>
+Message-Id: <20200518173539.193412523@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-[ Upstream commit 90bcb0c3ca0809d1ed358bfbf838df4b3d4e58e0 ]
+[ Upstream commit e6bfb1bf00852b55f4c771f47ae67004c04d3c87 ]
 
-Fix a typo in the readl/writel accessor conversion where val is used
-instead of pol changing the behavior of the original code.
+In the request completion path with CQE, request type is being checked
+after the request is getting completed. This is resulting in returning
+the wrong request type and leading to the IO hang issue.
 
-Cc: stable@vger.kernel.org
-Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200414003726.25347-1-ansuelsmth@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+ASYNC request type is getting returned for DCMD type requests.
+Because of this mismatch, mq->cqe_busy flag is never getting cleared
+and the driver is not invoking blk_mq_hw_run_queue. So requests are not
+getting dispatched to the LLD from the block layer.
+
+All these eventually leading to IO hang issues.
+So, get the request type before completing the request.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 1e8e55b67030 ("mmc: block: Add CQE support")
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/1588775643-18037-2-git-send-email-vbadigan@codeaurora.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/qcom/pinctrl-msm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/core/block.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 763da0be10d6f..44320322037df 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -688,7 +688,7 @@ static void msm_gpio_update_dual_edge_pos(struct msm_pinctrl *pctrl,
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 663d87924e5e8..32db16f6debc7 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1417,6 +1417,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
+ 	struct mmc_request *mrq = &mqrq->brq.mrq;
+ 	struct request_queue *q = req->q;
+ 	struct mmc_host *host = mq->card->host;
++	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
+ 	unsigned long flags;
+ 	bool put_card;
+ 	int err;
+@@ -1446,7 +1447,7 @@ static void mmc_blk_cqe_complete_rq(struct mmc_queue *mq, struct request *req)
  
- 		pol = msm_readl_intr_cfg(pctrl, g);
- 		pol ^= BIT(g->intr_polarity_bit);
--		msm_writel_intr_cfg(val, pctrl, g);
-+		msm_writel_intr_cfg(pol, pctrl, g);
+ 	spin_lock_irqsave(&mq->lock, flags);
  
- 		val2 = msm_readl_io(pctrl, g) & BIT(g->in_bit);
- 		intstat = msm_readl_intr_status(pctrl, g);
+-	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
++	mq->in_flight[issue_type] -= 1;
+ 
+ 	put_card = (mmc_tot_in_flight(mq) == 0);
+ 
 -- 
 2.20.1
 
