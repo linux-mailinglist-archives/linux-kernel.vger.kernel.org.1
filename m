@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9521F1D7C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AFC1D8874
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgERPAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbgERPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:00:05 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 118762065F;
-        Mon, 18 May 2020 15:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589814004;
-        bh=RNl6fktbFCVNb99FAXoUAHm7HFGk+HnBZtNJ3HcZJYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uNdmSK6qwH2wEs1Dmvxn71gST5OtXhoWG1ERuWlW5HjkBatY1wakm3u6qeoCeqxQW
-         UuvTXUIqydZD04oNCS+WbK4w0/gvCkAac2cxw5Mi7eEB0fEgZsx14Ig0Tku6fZMYvL
-         iKvPC/+BLbKoO+lQB9OJpljl83PFqCY4jW7yueIM=
-Date:   Mon, 18 May 2020 15:59:59 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
-        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/5] iommu/arm-smmu: Add support for TTBR1
-Message-ID: <20200518145959.GK32394@willie-the-truck>
-References: <20200409233350.6343-1-jcrouse@codeaurora.org>
- <20200409233350.6343-3-jcrouse@codeaurora.org>
+        id S1728447AbgERTqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:46:10 -0400
+Received: from 7.mo4.mail-out.ovh.net ([178.33.253.54]:50751 "EHLO
+        7.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728418AbgERTqJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 15:46:09 -0400
+X-Greylist: delayed 8400 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 May 2020 15:46:08 EDT
+Received: from player787.ha.ovh.net (unknown [10.108.54.74])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 5A770236BC6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:00:13 +0200 (CEST)
+Received: from RCM-web9.webmail.mail.ovh.net (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player787.ha.ovh.net (Postfix) with ESMTPSA id 7EA9612A9ADCD;
+        Mon, 18 May 2020 15:00:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409233350.6343-3-jcrouse@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date:   Mon, 18 May 2020 17:00:04 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: linux-next: manual merge of the jc_docs tree with the vfs and
+ net-next trees
+In-Reply-To: <20200518062253.24709cec@lwn.net>
+References: <20200518123013.6e4cb3cc@canb.auug.org.au>
+ <20200518062253.24709cec@lwn.net>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <6db686525ee6e1eeda0201efc61d361f@sk2.org>
+X-Sender: steve@sk2.org
+X-Originating-IP: 82.65.25.201
+X-Webmail-UserID: steve@sk2.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 11744543403692084613
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedruddthedgkedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepheeftedvhfevuedthedthfektdelleegtdevfeetveefhfekgedttdefgfetgfeunecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejkeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 05:33:47PM -0600, Jordan Crouse wrote:
-> Add support to enable TTBR1 if the domain requests it via the
-> DOMAIN_ATTR_SPLIT_TABLES attribute. If enabled by the hardware
-> and pagetable configuration the driver will configure the TTBR1 region
-> and program the domain pagetable on TTBR1. TTBR0 will be disabled.
+Le 18/05/2020 14:22, Jonathan Corbet a écrit :
+> On Mon, 18 May 2020 12:30:13 +1000
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 > 
-> After attaching the device the value of he domain attribute can
-> be queried to see if the split pagetables were successfully programmed.
-> The domain geometry will be updated as well so that the caller can
-> determine the active region for the pagetable that was programmed.
+>> Today's linux-next merge of the jc_docs tree got a conflict in:
+>> 
+>>   kernel/sysctl.c
+>> 
+>> between commit:
+>> 
+>>   f461d2dcd511 ("sysctl: avoid forward declarations")
+>> 
+>> from the vfs tree and commit:
+>> 
+>>   2f4c33063ad7 ("docs: sysctl/kernel: document ngroups_max")
+>> 
+>> from the jc_docs tree.
 > 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> 
->  drivers/iommu/arm-smmu.c | 48 ++++++++++++++++++++++++++++++++++------
->  drivers/iommu/arm-smmu.h | 24 +++++++++++++++-----
->  2 files changed, 59 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-> index a6a5796e9c41..db6d503c1673 100644
-> --- a/drivers/iommu/arm-smmu.c
-> +++ b/drivers/iommu/arm-smmu.c
-> @@ -555,11 +555,16 @@ static void arm_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
->  			cb->ttbr[0] = pgtbl_cfg->arm_v7s_cfg.ttbr;
->  			cb->ttbr[1] = 0;
->  		} else {
-> -			cb->ttbr[0] = pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
-> -			cb->ttbr[0] |= FIELD_PREP(ARM_SMMU_TTBRn_ASID,
-> -						  cfg->asid);
-> -			cb->ttbr[1] = FIELD_PREP(ARM_SMMU_TTBRn_ASID,
-> -						 cfg->asid);
-> +			cb->ttbr[0] = FIELD_PREP(ARM_SMMU_TTBRn_ASID,
-> +				cfg->asid);
-> +
-> +			if (pgtbl_cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1) {
-> +				cb->ttbr[1] = pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
-> +			} else {
-> +				cb->ttbr[0] |= pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
-> +				cb->ttbr[1] = FIELD_PREP(ARM_SMMU_TTBRn_ASID,
-> +							 cfg->asid);
-> +			}
+> Hmm...that's somewhat messy.  I somehow managed to miss the change to
+> kernel/sysctl.c that doesn't have much to do with documentation.  
+> Stephen
+> (Kitt): I've reverted that change for now.  Could I ask you to resubmit 
+> it
+> as two different patches?  I'll happily take the actual docs change; 
+> the
+> sysctl change can be sent to the VFS tree on top of the changes there.
 
-This looks odd to me. As I mentioned before, the SMMU driver absolutely has
-to manage the ASID space, so we should be setting it in both TTBRs here.
+Done, thanks.
 
-> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-> index 8d1cd54d82a6..5f6d0af7c8c8 100644
-> --- a/drivers/iommu/arm-smmu.h
-> +++ b/drivers/iommu/arm-smmu.h
-> @@ -172,6 +172,7 @@ enum arm_smmu_cbar_type {
->  #define ARM_SMMU_TCR_SH0		GENMASK(13, 12)
->  #define ARM_SMMU_TCR_ORGN0		GENMASK(11, 10)
->  #define ARM_SMMU_TCR_IRGN0		GENMASK(9, 8)
-> +#define ARM_SMMU_TCR_EPD0		BIT(7)
->  #define ARM_SMMU_TCR_T0SZ		GENMASK(5, 0)
->  
->  #define ARM_SMMU_VTCR_RES1		BIT(31)
-> @@ -343,16 +344,27 @@ struct arm_smmu_domain {
->  	struct mutex			init_mutex; /* Protects smmu pointer */
->  	spinlock_t			cb_lock; /* Serialises ATS1* ops and TLB syncs */
->  	struct iommu_domain		domain;
-> +	bool				split_pagetables;
->  };
->  
->  static inline u32 arm_smmu_lpae_tcr(struct io_pgtable_cfg *cfg)
->  {
-> -	return ARM_SMMU_TCR_EPD1 |
-> -	       FIELD_PREP(ARM_SMMU_TCR_TG0, cfg->arm_lpae_s1_cfg.tcr.tg) |
-> -	       FIELD_PREP(ARM_SMMU_TCR_SH0, cfg->arm_lpae_s1_cfg.tcr.sh) |
-> -	       FIELD_PREP(ARM_SMMU_TCR_ORGN0, cfg->arm_lpae_s1_cfg.tcr.orgn) |
-> -	       FIELD_PREP(ARM_SMMU_TCR_IRGN0, cfg->arm_lpae_s1_cfg.tcr.irgn) |
-> -	       FIELD_PREP(ARM_SMMU_TCR_T0SZ, cfg->arm_lpae_s1_cfg.tcr.tsz);
-> +	u32 tcr = FIELD_PREP(ARM_SMMU_TCR_TG0, cfg->arm_lpae_s1_cfg.tcr.tg) |
-> +		FIELD_PREP(ARM_SMMU_TCR_SH0, cfg->arm_lpae_s1_cfg.tcr.sh) |
-> +		FIELD_PREP(ARM_SMMU_TCR_ORGN0, cfg->arm_lpae_s1_cfg.tcr.orgn) |
-> +		FIELD_PREP(ARM_SMMU_TCR_IRGN0, cfg->arm_lpae_s1_cfg.tcr.irgn) |
-> +		FIELD_PREP(ARM_SMMU_TCR_T0SZ, cfg->arm_lpae_s1_cfg.tcr.tsz);
-> +
-> +       /*
-> +	* When TTBR1 is selected shift the TCR fields by 16 bits and disable
-> +	* translation in TTBR0
-> +	*/
-> +	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_TTBR1)
-> +		tcr = (tcr << 16) | ARM_SMMU_TCR_EPD0;
+> In general we really don't want to mix unrelated changes like this.
 
-This looks reasonably dodgy to me, as you copy a RESERVED bit into the A1
-field. Furthermore, for 32-bit context banks you've got the EAE bit to
-contend with as well.
+Noted, I’ll avoid mixing changes in future.
 
-Perhaps we shouldn't expose DOMAIN_ATTR_SPLIT_TABLES for anything other than
-the 64-bit page table format.
+Regards,
 
-Will
+Stephen
