@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC271D81D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477881D815E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730838AbgERRvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53744 "EHLO mail.kernel.org"
+        id S1730229AbgERRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730829AbgERRvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:10 -0400
+        id S1730222AbgERRr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C9F20674;
-        Mon, 18 May 2020 17:51:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EAB620671;
+        Mon, 18 May 2020 17:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824270;
-        bh=v17KLpkrUK8PVtqnolrS1fM1oTtoXKQykSbkQwFs/cU=;
+        s=default; t=1589824046;
+        bh=HyYP/wOosNvn+zL16+yWrZlgCfA669VtlRgAiGh5Qjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJrx6oZggjKNW1LRiAOLvr4DMB93cOmymIaLv8k5SJWcPSKvNY554lz9380Dj3bvx
-         ZckAWTv0SZNdh9iqpLB0d1cEIIfTDO04/fkqd5EV2jcrEh2Pgknk9uKJv1EdAJnmyf
-         Dpnvj5UYSLqIf7VY5VHNknSYx3rfYaq9bcALXWIM=
+        b=Ilqnk5xgbRdvA9Kn3kDjW6hlUjTUQjv6CORxoRiy/Z71xqiFbl+g8zxl/vGoLtb30
+         jGw4e2OcSmL34D5v2/edqN+N2+XCyrg8KhslkjgwIMN6fmkY1SXoWNHc/1+Bhlj9xI
+         pUeKfXvPUuFZ2lAnVUAL1g/lvmucUM6iwlqzWabk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/80] net: moxa: Fix a potential double free_irq()
+Subject: [PATCH 4.14 050/114] net/sonic: Fix a resource leak in an error handling path in jazz_sonic_probe()
 Date:   Mon, 18 May 2020 19:36:22 +0200
-Message-Id: <20200518173451.021483004@linuxfoundation.org>
+Message-Id: <20200518173512.341620450@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,32 +47,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ee8d2267f0e39a1bfd95532da3a6405004114b27 ]
+[ Upstream commit 10e3cc180e64385edc9890c6855acf5ed9ca1339 ]
 
-Should an irq requested with 'devm_request_irq' be released explicitly,
-it should be done by 'devm_free_irq()', not 'free_irq()'.
+A call to 'dma_alloc_coherent()' is hidden in 'sonic_alloc_descriptors()',
+called from 'sonic_probe1()'.
 
-Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
+This is correctly freed in the remove function, but not in the error
+handling path of the probe function.
+Fix it and add the missing 'dma_free_coherent()' call.
+
+While at it, rename a label in order to be slightly more informative.
+
+Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/natsemi/jazzsonic.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/moxa/moxart_ether.c b/drivers/net/ethernet/moxa/moxart_ether.c
-index b34055ac476f7..4db3431b79ac1 100644
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -561,7 +561,7 @@ static int moxart_remove(struct platform_device *pdev)
- 	struct net_device *ndev = platform_get_drvdata(pdev);
+diff --git a/drivers/net/ethernet/natsemi/jazzsonic.c b/drivers/net/ethernet/natsemi/jazzsonic.c
+index d5b28884e21eb..9a6c91c9d111c 100644
+--- a/drivers/net/ethernet/natsemi/jazzsonic.c
++++ b/drivers/net/ethernet/natsemi/jazzsonic.c
+@@ -247,13 +247,15 @@ static int jazz_sonic_probe(struct platform_device *pdev)
+ 		goto out;
+ 	err = register_netdev(dev);
+ 	if (err)
+-		goto out1;
++		goto undo_probe1;
  
- 	unregister_netdev(ndev);
--	free_irq(ndev->irq, ndev);
-+	devm_free_irq(&pdev->dev, ndev->irq, ndev);
- 	moxart_mac_free_memory(ndev);
- 	free_netdev(ndev);
+ 	printk("%s: MAC %pM IRQ %d\n", dev->name, dev->dev_addr, dev->irq);
  
+ 	return 0;
+ 
+-out1:
++undo_probe1:
++	dma_free_coherent(lp->device, SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
++			  lp->descriptors, lp->descriptors_laddr);
+ 	release_mem_region(dev->base_addr, SONIC_MEM_SIZE);
+ out:
+ 	free_netdev(dev);
 -- 
 2.20.1
 
