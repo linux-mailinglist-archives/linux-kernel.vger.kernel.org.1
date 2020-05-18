@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183E31D8087
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087741D8136
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgERRkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:40:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35460 "EHLO mail.kernel.org"
+        id S1728742AbgERRp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728978AbgERRkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:08 -0400
+        id S1730008AbgERRpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7208120853;
-        Mon, 18 May 2020 17:40:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8E5520674;
+        Mon, 18 May 2020 17:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823607;
-        bh=XP312QEKG9ACypwj04DGBWos0WkM813/41HdoPyONdo=;
+        s=default; t=1589823952;
+        bh=hBjtYZJ5CvsH4u+wYPEqeBG0fOmlntBuMqfYioHyMZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TCXyPh+TPJ/fLOIXW0x/f564mHO+AFCmULgQXz/q2boRRAQ+IoT83S5iXz9Xdc5C2
-         NhfAoHHDEff72J8Q5zkbnPaXBxfMW25eBBWzi3pxlb+UI1ZzAPLJ6DRTk9dDXajED+
-         vKVHu10nW+ZJXmYTnBSB1zeq1tzhgseVRrmJ2TBM=
+        b=dkEAskBWhbLOtMhAvchTayb/G26drV6wrobnmr77JYsOpbSqEG6gyLDqei0nrfl8C
+         erNM0AKXqCZU05U0M6iR7cI99Nv4PrpISBroo71RXFHqmKjsHVjmV5OPhcHjdkUg7k
+         BD2MIe0l5suo5mwWkfnlpzEzJmMWBkPAX696Q4kA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        =?UTF-8?q?Julian=20Gro=C3=9F?= <julian.g@posteo.de>
-Subject: [PATCH 4.4 13/86] USB: uas: add quirk for LaCie 2Big Quadra
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 012/114] bnxt_en: Improve AER slot reset.
 Date:   Mon, 18 May 2020 19:35:44 +0200
-Message-Id: <20200518173453.216712227@linuxfoundation.org>
+Message-Id: <20200518173505.705981494@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-commit 9f04db234af691007bb785342a06abab5fb34474 upstream.
+[ Upstream commit bae361c54fb6ac6eba3b4762f49ce14beb73ef13 ]
 
-This device needs US_FL_NO_REPORT_OPCODES to avoid going
-through prolonged error handling on enumeration.
+Improve the slot reset sequence by disabling the device to prevent bad
+DMAs if slot reset fails.  Return the proper result instead of always
+PCI_ERS_RESULT_RECOVERED to the caller.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Reported-by: Julian Groß <julian.g@posteo.de>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200429155218.7308-1-oneukum@suse.com
+Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -40,6 +40,13 @@
-  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
-  */
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -8423,8 +8423,11 @@ static pci_ers_result_t bnxt_io_slot_res
+ 		}
+ 	}
  
-+/* Reported-by: Julian Groß <julian.g@posteo.de> */
-+UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
-+		"LaCie",
-+		"2Big Quadra USB3",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_REPORT_OPCODES),
-+
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
+-	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(netdev))
+-		dev_close(netdev);
++	if (result != PCI_ERS_RESULT_RECOVERED) {
++		if (netif_running(netdev))
++			dev_close(netdev);
++		pci_disable_device(pdev);
++	}
+ 
+ 	rtnl_unlock();
+ 
+@@ -8435,7 +8438,7 @@ static pci_ers_result_t bnxt_io_slot_res
+ 			 err); /* non-fatal, continue */
+ 	}
+ 
+-	return PCI_ERS_RESULT_RECOVERED;
++	return result;
+ }
+ 
+ /**
 
 
