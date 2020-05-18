@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED821D8341
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD71A1D86A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgERSDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:03:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48190 "EHLO mail.kernel.org"
+        id S1731432AbgERSZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgERSDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:06 -0400
+        id S1729197AbgERRqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A5D0207F5;
-        Mon, 18 May 2020 18:03:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB91A20715;
+        Mon, 18 May 2020 17:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824985;
-        bh=YaMNDlpNTa7wJM8n8qlIKbnH1kBa17jOIxZI8kJS4OQ=;
+        s=default; t=1589823974;
+        bh=bNPbWd2gqtfRj8808VRysk3d+7TcYOolVI5Fr4orOK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTp6bB7kBnCkzGtH9qNNwIqOYA2vt+0UuP3TYXY5n+OH5qxLEGJ+Uh8bnZGGg9+9H
-         tGRgv+jq91OZ0eGNxyaQuqzMNE6HYtFwaGQNcK63euAHDl7f/WZZst7kVvfZUCgOxF
-         2V56YWilyzaoXUfUU4gPSjPzQj3BqA+rfMMPhdH0=
+        b=stEb4iKlMoCUr2t5FJbxCgNXhYH/ZQn3CVdtYX3STif7ouLmc7ldYEArC8xnBL+9X
+         3XPz7WAiegFhgl+vIcchmJkZGbfIHWEzWoSQd+yrGnLZEpXtiMKG4rkPUI7lFZ3B0p
+         bDeDmYNwJhxsIoJpzM9kRWTA4JxXeDJmXtLmC12E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.6 045/194] netprio_cgroup: Fix unlimited memory leak of v2 cgroups
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 003/114] fq_codel: fix TCA_FQ_CODEL_DROP_BATCH_SIZE sanity checks
 Date:   Mon, 18 May 2020 19:35:35 +0200
-Message-Id: <20200518173535.546178543@linuxfoundation.org>
+Message-Id: <20200518173503.692350759@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zefan Li <lizefan@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 090e28b229af92dc5b40786ca673999d59e73056 ]
+[ Upstream commit 14695212d4cd8b0c997f6121b6df8520038ce076 ]
 
-If systemd is configured to use hybrid mode which enables the use of
-both cgroup v1 and v2, systemd will create new cgroup on both the default
-root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
-task to the two cgroups. If the task does some network thing then the v2
-cgroup can never be freed after the session exited.
+My intent was to not let users set a zero drop_batch_size,
+it seems I once again messed with min()/max().
 
-One of our machines ran into OOM due to this memory leak.
-
-In the scenario described above when sk_alloc() is called
-cgroup_sk_alloc() thought it's in v2 mode, so it stores
-the cgroup pointer in sk->sk_cgrp_data and increments
-the cgroup refcnt, but then sock_update_netprioidx()
-thought it's in v1 mode, so it stores netprioidx value
-in sk->sk_cgrp_data, so the cgroup refcnt will never be freed.
-
-Currently we do the mode switch when someone writes to the ifpriomap
-cgroup control file. The easiest fix is to also do the switch when
-a task is attached to a new cgroup.
-
-Fixes: bd1060a1d671 ("sock, cgroup: add sock->sk_cgroup")
-Reported-by: Yang Yingliang <yangyingliang@huawei.com>
-Tested-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Zefan Li <lizefan@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 9d18562a2278 ("fq_codel: add batch ability to fq_codel_drop()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/netprio_cgroup.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/sched/sch_fq_codel.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/core/netprio_cgroup.c
-+++ b/net/core/netprio_cgroup.c
-@@ -236,6 +236,8 @@ static void net_prio_attach(struct cgrou
- 	struct task_struct *p;
- 	struct cgroup_subsys_state *css;
+--- a/net/sched/sch_fq_codel.c
++++ b/net/sched/sch_fq_codel.c
+@@ -427,7 +427,7 @@ static int fq_codel_change(struct Qdisc
+ 		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
  
-+	cgroup_sk_alloc_disable();
-+
- 	cgroup_taskset_for_each(p, css, tset) {
- 		void *v = (void *)(unsigned long)css->id;
+ 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
+-		q->drop_batch_size = min(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
++		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
  
+ 	if (tb[TCA_FQ_CODEL_MEMORY_LIMIT])
+ 		q->memory_limit = min(1U << 31, nla_get_u32(tb[TCA_FQ_CODEL_MEMORY_LIMIT]));
 
 
