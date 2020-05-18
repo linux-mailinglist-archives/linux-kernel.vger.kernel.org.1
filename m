@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B462D1D8706
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE101D832B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387927AbgERS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:28:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39382 "EHLO mail.kernel.org"
+        id S1732544AbgERSCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:02:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728841AbgERRmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:24 -0400
+        id S1732531AbgERSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:02:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FD292083E;
-        Mon, 18 May 2020 17:42:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6FD020826;
+        Mon, 18 May 2020 18:02:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823743;
-        bh=TMnk9m68iVlJ4LzBplDanu5lel2viDBbZ466dVlUj3U=;
+        s=default; t=1589824949;
+        bh=MnVZ8YB95EmxBqxmwt11FwSNiLoPIlEMw9ZmUH95iPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=09C5N90MAzevv7L/QRZCwXvWGZLP+qzfWbABcuI/PutWPf3VyHV8RiQdQrfjLsCNv
-         2aR3MIoqXNw39RMMwTGwlE2gZjRfrc4sEyvGZZBe8dhHO1ZrvcnJnsqhBG9J9bDNqj
-         56nFP/8hvDeG6JgKvtj/4c8NGat9i1alWc1ZcD+0=
+        b=RxutOka6SeVHp3vguSYoZ7+oH6OPfb6wDI8GUBal7E9DV8zXfMSdEDhWlh8q7jftn
+         KEslEUhlMhB0o2jNIXz/Uvvyu0Q290i5qtawD1bsJuMZ2WLfffcazZYhUpSMMVvyEA
+         wwkdT89V9X1rsSJj02BrC9rb1EzOu32dnprUHTGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, George Spelvin <lkml@sdf.org>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 4.9 19/90] batman-adv: fix batadv_nc_random_weight_tq
+        stable@vger.kernel.org,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 067/194] io_uring: use cond_resched() in io_ring_ctx_wait_and_kill()
 Date:   Mon, 18 May 2020 19:35:57 +0200
-Message-Id: <20200518173455.116745688@linuxfoundation.org>
+Message-Id: <20200518173537.317015147@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Spelvin <lkml@sdf.org>
+From: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 
-commit fd0c42c4dea54335967c5a86f15fc064235a2797 upstream.
+[ Upstream commit 3fd44c86711f71156b586c22b0495c58f69358bb ]
 
-and change to pseudorandom numbers, as this is a traffic dithering
-operation that doesn't need crypto-grade.
+While working on to make io_uring sqpoll mode support syscalls that need
+struct files_struct, I got cpu soft lockup in io_ring_ctx_wait_and_kill(),
 
-The previous code operated in 4 steps:
+    while (ctx->sqo_thread && !wq_has_sleeper(&ctx->sqo_wait))
+        cpu_relax();
 
-1. Generate a random byte 0 <= rand_tq <= 255
-2. Multiply it by BATADV_TQ_MAX_VALUE - tq
-3. Divide by 255 (= BATADV_TQ_MAX_VALUE)
-4. Return BATADV_TQ_MAX_VALUE - rand_tq
+above loop never has an chance to exit, it's because preempt isn't enabled
+in the kernel, and the context calling io_ring_ctx_wait_and_kill() and
+io_sq_thread() run in the same cpu, if io_sq_thread calls a cond_resched()
+yield cpu and another context enters above loop, then io_sq_thread() will
+always in runqueue and never exit.
 
-This would apperar to scale (BATADV_TQ_MAX_VALUE - tq) by a random
-value between 0/255 and 255/255.
+Use cond_resched() can fix this issue.
 
-But!  The intermediate value between steps 3 and 4 is stored in a u8
-variable.  So it's truncated, and most of the time, is less than 255, after
-which the division produces 0.  Specifically, if tq is odd, the product is
-always even, and can never be 255.  If tq is even, there's exactly one
-random byte value that will produce a product byte of 255.
-
-Thus, the return value is 255 (511/512 of the time) or 254 (1/512
-of the time).
-
-If we assume that the truncation is a bug, and the code is meant to scale
-the input, a simpler way of looking at it is that it's returning a random
-value between tq and BATADV_TQ_MAX_VALUE, inclusive.
-
-Well, we have an optimized function for doing just that.
-
-Fixes: 3c12de9a5c75 ("batman-adv: network coding - code and transmit packets if possible")
-Signed-off-by: George Spelvin <lkml@sdf.org>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+ Reported-by: syzbot+66243bb7126c410cefe6@syzkaller.appspotmail.com
+Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/network-coding.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/batman-adv/network-coding.c
-+++ b/net/batman-adv/network-coding.c
-@@ -1012,15 +1012,8 @@ static struct batadv_nc_path *batadv_nc_
-  */
- static u8 batadv_nc_random_weight_tq(u8 tq)
- {
--	u8 rand_val, rand_tq;
--
--	get_random_bytes(&rand_val, sizeof(rand_val));
--
- 	/* randomize the estimated packet loss (max TQ - estimated TQ) */
--	rand_tq = rand_val * (BATADV_TQ_MAX_VALUE - tq);
--
--	/* normalize the randomized packet loss */
--	rand_tq /= BATADV_TQ_MAX_VALUE;
-+	u8 rand_tq = prandom_u32_max(BATADV_TQ_MAX_VALUE + 1 - tq);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 9690c845a3e4b..01f71b9efb88f 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6451,7 +6451,7 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
+ 	 * it could cause shutdown to hang.
+ 	 */
+ 	while (ctx->sqo_thread && !wq_has_sleeper(&ctx->sqo_wait))
+-		cpu_relax();
++		cond_resched();
  
- 	/* convert to (randomized) estimated tq again */
- 	return BATADV_TQ_MAX_VALUE - rand_tq;
+ 	io_kill_timeouts(ctx);
+ 	io_poll_remove_all(ctx);
+-- 
+2.20.1
+
 
 
