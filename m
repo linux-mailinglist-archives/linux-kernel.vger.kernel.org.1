@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7F91D8662
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD94E1D83A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgERRpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43418 "EHLO mail.kernel.org"
+        id S1733193AbgERSGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729817AbgERRox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:44:53 -0400
+        id S1733169AbgERSGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:06:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FEA420835;
-        Mon, 18 May 2020 17:44:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 500ED20715;
+        Mon, 18 May 2020 18:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823893;
-        bh=RfkX7dMrDN71LREFdUGr1HWXv6KFGxNUxXuzOej2pdg=;
+        s=default; t=1589825189;
+        bh=6N6w2wP3kX6H5vYrBp3ZyXjwxWLpVF52LgoHSd3cLMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qkLkJrfHkCpPXm9wzWwqWMuLDfWPLDN81JEafeLxzGmpcR8Unch9IkbkOPdpnHrdT
-         upjw7yR6NNbrizKUE/XD7wVj4tJTBkYlw8T677F3t5JOuJ358mgiUTeWsgKS54kK9t
-         foav6cwo6Vrwt9YzQquhJ9uC3bnxqDEzfo1gE+jg=
+        b=KK46HM2QSaR0xayvcs8+hZ9zoIDse1lJVBz05qa/pXOfbaPhzDDDdXFAGVNUH9NTw
+         9mzv7DG3zR7MasTYLykjd8KUvYoSmnrbtq4JuPsOqGHRtvEVgkrtdx+jIRhdm02PS/
+         1F/yY5sksfUa4DftK1/lLHKVgh4jOeiJzqmXcfug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.9 79/90] ARM: dts: imx27-phytec-phycard-s-rdk: Fix the I2C1 pinctrl entries
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 127/194] gcc-10: disable zero-length-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:57 +0200
-Message-Id: <20200518173507.300005139@linuxfoundation.org>
+Message-Id: <20200518173542.091835895@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 0caf34350a25907515d929a9c77b9b206aac6d1e upstream.
+commit 5c45de21a2223fe46cf9488c99a7fbcf01527670 upstream.
 
-The I2C2 pins are already used and the following errors are seen:
+This is a fine warning, but we still have a number of zero-length arrays
+in the kernel that come from the traditional gcc extension.  Yes, they
+are getting converted to flexible arrays, but in the meantime the gcc-10
+warning about zero-length bounds is very verbose, and is hiding other
+issues.
 
-imx27-pinctrl 10015000.iomuxc: pin MX27_PAD_I2C2_SDA already requested by 10012000.i2c; cannot claim for 1001d000.i2c
-imx27-pinctrl 10015000.iomuxc: pin-69 (1001d000.i2c) status -22
-imx27-pinctrl 10015000.iomuxc: could not request pin 69 (MX27_PAD_I2C2_SDA) from group i2c2grp  on device 10015000.iomuxc
-imx-i2c 1001d000.i2c: Error applying setting, reverse things back
-imx-i2c: probe of 1001d000.i2c failed with error -22
+I missed one actual build failure because it was hidden among hundreds
+of lines of warning.  Thankfully I caught it on the second go before
+pushing things out, but it convinced me that I really need to disable
+the new warnings for now.
 
-Fix it by adding the correct I2C1 IOMUX entries for the pinctrl_i2c1 group.
+We'll hopefully be all done with our conversion to flexible arrays in
+the not too distant future, and we can then re-enable this warning.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 61664d0b432a ("ARM: dts: imx27 phyCARD-S pinctrl")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-+++ b/arch/arm/boot/dts/imx27-phytec-phycard-s-rdk.dts
-@@ -81,8 +81,8 @@
- 	imx27-phycard-s-rdk {
- 		pinctrl_i2c1: i2c1grp {
- 			fsl,pins = <
--				MX27_PAD_I2C2_SDA__I2C2_SDA 0x0
--				MX27_PAD_I2C2_SCL__I2C2_SCL 0x0
-+				MX27_PAD_I2C_DATA__I2C_DATA 0x0
-+				MX27_PAD_I2C_CLK__I2C_CLK 0x0
- 			>;
- 		};
+--- a/Makefile
++++ b/Makefile
+@@ -857,6 +857,9 @@ KBUILD_CFLAGS += -Wno-pointer-sign
+ # disable stringop warnings in gcc 8+
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+ 
++# We'll want to enable this eventually, but it's not going away for 5.7 at least
++KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
  
 
 
