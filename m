@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936071D869A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8A81D827B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387922AbgERSZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:25:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46682 "EHLO mail.kernel.org"
+        id S1731699AbgERR4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729583AbgERRqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:47 -0400
+        id S1730672AbgERR4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D07FE20671;
-        Mon, 18 May 2020 17:46:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E574C20715;
+        Mon, 18 May 2020 17:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824006;
-        bh=iZoVEaznfcLc5KPtg9brvQf4P2LvgoMn81YSjkt2QUk=;
+        s=default; t=1589824607;
+        bh=ArCnMaJ2+sBqpCNTshjMt72aPj/mxeONg96DdATXufU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kw+dJuUPLd7EvWTkVGYk6T2v6cKVuk8WFplHQW4+wOvMWUFqa8LGI3xNeLCGOhI66
-         O4TYFK8OLp/HVm/Sakd36Gdmzm5wgnQOlhUO3N1/xPiE6XbqBvYiBAq15kDNMgayWs
-         slA9ZCJtGVal9y4c/Udv2TAx+7m4V3p/0dMAlDU4=
+        b=ZPbAbVPVDn0E4FeWVEN83vQ8DN5pek+r2BxlJlvqcBw3F9RfiKd61HhpFJ5e0OVw0
+         jdzNMMDgB8zrVxegtSCHk398UxJScRwT3+/dSTbWRQP8uvuhtFuse950F5oHtRWB+t
+         T3879r2wjpJU1i0ICfK2+3sJLdrOI8SfDBbaKl+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Subject: [PATCH 4.14 032/114] x86/unwind/orc: Prevent unwinding before ORC initialization
-Date:   Mon, 18 May 2020 19:36:04 +0200
-Message-Id: <20200518173509.513162349@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 042/147] cpufreq: intel_pstate: Only mention the BIOS disabling turbo mode once
+Date:   Mon, 18 May 2020 19:36:05 +0200
+Message-Id: <20200518173519.296562904@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,55 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 98d0c8ebf77e0ba7c54a9ae05ea588f0e9e3f46e upstream.
+[ Upstream commit 8c539776ac83c0857395e1ccc9c6b516521a2d32 ]
 
-If the unwinder is called before the ORC data has been initialized,
-orc_find() returns NULL, and it tries to fall back to using frame
-pointers.  This can cause some unexpected warnings during boot.
+Make a note of the first time we discover the turbo mode has been
+disabled by the BIOS, as otherwise we complain every time we try to
+update the mode.
 
-Move the 'orc_init' check from orc_find() to __unwind_init(), so that it
-doesn't even try to unwind from an uninitialized state.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Jones <dsj@fb.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lore.kernel.org/r/069d1499ad606d85532eb32ce39b2441679667d5.1587808742.git.jpoimboe@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/unwind_orc.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/cpufreq/intel_pstate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -90,9 +90,6 @@ static struct orc_entry null_orc_entry =
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 45499e0b9f2f3..d3d7c4ef7d045 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1058,7 +1058,7 @@ static ssize_t store_no_turbo(struct kobject *a, struct kobj_attribute *b,
  
- static struct orc_entry *orc_find(unsigned long ip)
- {
--	if (!orc_init)
--		return NULL;
--
- 	if (ip == 0)
- 		return &null_orc_entry;
- 
-@@ -508,6 +505,9 @@ EXPORT_SYMBOL_GPL(unwind_next_frame);
- void __unwind_start(struct unwind_state *state, struct task_struct *task,
- 		    struct pt_regs *regs, unsigned long *first_frame)
- {
-+	if (!orc_init)
-+		goto done;
-+
- 	memset(state, 0, sizeof(*state));
- 	state->task = task;
- 
+ 	update_turbo_state();
+ 	if (global.turbo_disabled) {
+-		pr_warn("Turbo disabled by BIOS or unavailable on processor\n");
++		pr_notice_once("Turbo disabled by BIOS or unavailable on processor\n");
+ 		mutex_unlock(&intel_pstate_limits_lock);
+ 		mutex_unlock(&intel_pstate_driver_lock);
+ 		return -EPERM;
+-- 
+2.20.1
+
 
 
