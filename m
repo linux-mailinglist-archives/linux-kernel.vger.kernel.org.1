@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9EE1D8215
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4851D83EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgERRxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:53:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57110 "EHLO mail.kernel.org"
+        id S2387520AbgERSIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:08:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731115AbgERRxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:53:16 -0400
+        id S2387419AbgERSHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:07:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B19B20674;
-        Mon, 18 May 2020 17:53:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6110820826;
+        Mon, 18 May 2020 18:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824396;
-        bh=eV3kUzzlf5OSTxkiuVstu95fzxA6qQ/NqCtoRjvFgUE=;
+        s=default; t=1589825254;
+        bh=RwtWXpxjsYCHwzvvSeug+dz9JtaWMYFqL9TctgSNbfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqIpCUI8LJCsBO2WU6wJpk53m+/ZfLrHmkRqF9biKoq5ZeDMYLrtwgDeZ2ikfMT7I
-         KIgitYdQGpCTiU04Bhy1UwIVycP9X1QopOUXWoWo+R1ckaiDA1MjS2wUKTqyuE1tK6
-         439qEQ0hl0ocTjvopt/+CYHN5rYN59IWwqBBTRW4=
+        b=VxaYoAE5nJJMxKqZNGLry+vEG+AcPsRg7a7xlI6wq7xTQP3LPyYUaX4tlYOJeWMvy
+         6DMmD3s2VmMCfMp3yOIVxyEXAAjyUAtpFO0SGA5A40H7iBnqDQfkaoi7WP4KxDsrkr
+         /trVT1XkuLq+XI9oSiEs7wuF54Sh4kthsg//MVrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 4.19 76/80] ARM: dts: r8a73a4: Add missing CMT1 interrupts
+        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 5.6 164/194] arm64: dts: meson-g12b-ugoos-am6: fix usb vbus-supply
 Date:   Mon, 18 May 2020 19:37:34 +0200
-Message-Id: <20200518173505.932736433@linuxfoundation.org>
+Message-Id: <20200518173544.876058311@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit 0f739fdfe9e5ce668bd6d3210f310df282321837 upstream.
+commit 4e025fd91ba32a16ed8131158aa63cd37d141cbb upstream.
 
-The R-Mobile APE6 Compare Match Timer 1 generates 8 interrupts, one for
-each channel, but currently only 1 is described.
-Fix this by adding the missing interrupts.
+The USB supply used the wrong property, fixing:
+meson-g12b-ugoos-am6.dt.yaml: usb@ffe09000: 'vbus-regulator' does not match any of the regexes: '^usb@[0-9a-f]+$', 'pinctrl-[0-9]+'
 
-Fixes: f7b65230019b9dac ("ARM: shmobile: r8a73a4: Add CMT1 node")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200408090926.25201-1-geert+renesas@glider.be
+Fixes: 2cd2310fca4c ("arm64: dts: meson-g12b-ugoos-am6: add initial device-tree")
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Link: https://lore.kernel.org/r/20200326160857.11929-2-narmstrong@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/r8a73a4.dtsi |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/r8a73a4.dtsi
-+++ b/arch/arm/boot/dts/r8a73a4.dtsi
-@@ -131,7 +131,14 @@
- 	cmt1: timer@e6130000 {
- 		compatible = "renesas,r8a73a4-cmt1", "renesas,rcar-gen2-cmt1";
- 		reg = <0 0xe6130000 0 0x1004>;
--		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&mstp3_clks R8A73A4_CLK_CMT1>;
- 		clock-names = "fck";
- 		power-domains = <&pd_c5>;
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
+@@ -545,7 +545,7 @@
+ &usb {
+ 	status = "okay";
+ 	dr_mode = "host";
+-	vbus-regulator = <&usb_pwr_en>;
++	vbus-supply = <&usb_pwr_en>;
+ };
+ 
+ &usb2_phy0 {
 
 
