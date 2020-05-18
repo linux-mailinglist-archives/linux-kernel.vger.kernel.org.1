@@ -2,97 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249DC1D6EB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E437C1D6EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgERCLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:11:09 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:55246 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726670AbgERCLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:11:08 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axlum37sFexeY1AA--.69S2;
-        Mon, 18 May 2020 10:11:03 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2] MIPS: Loongson: Enable devicetree based probing for 8250 ports in defconfig
-Date:   Mon, 18 May 2020 10:11:01 +0800
-Message-Id: <1589767861-9784-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Axlum37sFexeY1AA--.69S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1DuFWkXrWxXF47WrWDCFg_yoW8Xw15pa
-        1fAa1DJFWvqFn5tw48GFyDurWYyFnxAFW2gF47Ar15ua98tay0vw1Sy34jyr47WFWktayF
-        vr93KF9FyF43C3DanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMx
-        CIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
-        j40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUcjjDUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726797AbgERCVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726680AbgERCVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:21:05 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9334420758;
+        Mon, 18 May 2020 02:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589768464;
+        bh=7RJuET2p1c9crhC6k5Md3KsYrDZ64Vq388qDBF/PKT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qKUPHDhKfAvKoQDw6aUbF5oxk/2fSXt6cYTcG445x6tHLCS0hMJXSKIXc5Z28WHUO
+         nlFuCGycnKryukgl1b3dKlivig1RoGMgEXo6P+4drDpHbZO6YsywoMt6lOz6h4/dae
+         CgzG2Fh0kTL1dKHu4p+ITL+Ewb1+xwPHzKxpolUU=
+Date:   Mon, 18 May 2020 11:20:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        mhiramat@kernel.org, labbott@redhat.com,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: kprobes: Avoid fortify_panic() when copying
+ optprobe template
+Message-Id: <20200518112059.c19899ffb17a4843bf4f74ab@kernel.org>
+In-Reply-To: <202005171447.00CFE0C@keescook>
+References: <20200517153959.293224-1-andrew@aj.id.au>
+        <202005171447.00CFE0C@keescook>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 87fcfa7b7fe6 ("MIPS: Loongson64: Add generic dts"),
-there already exists the node and property of Loongson CPU UART0
-in loongson3-package.dtsi:
+On Sun, 17 May 2020 14:48:52 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-cpu_uart0: serial@1fe001e0 {
-        compatible = "ns16550a";
-        reg = <0 0x1fe001e0 0x8>;
-        clock-frequency = <33000000>;
-        interrupt-parent = <&liointc>;
-        interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
-        no-loopback-test;
-};
+> On Mon, May 18, 2020 at 01:09:59AM +0930, Andrew Jeffery wrote:
+> > As mentioned, a couple of attempts have been made to address the issue
+> > by casting a pointer to optprobe_template_entry before providing it to
+> > memcpy(), however gccs such as Ubuntu 20.04's arm-linux-gnueabi-gcc
+> > 9.3.0 (Ubuntu 9.3.0-10ubuntu1) see through these efforts.
+> 
+> Ah, dang. :P
+> 
+> How about converting them all to unsized arrays, which would also allow
+> the code to drop the "&" everywhere, I think. This is untested:
+> 
 
-In order to support for serial console on the Loongson platform,
-add CONFIG_SERIAL_OF_PLATFORM=y to loongson3_defconfig.
+This looks good to me since it uses same technique in sections.h.
 
-With this patch, we can see the following boot messages:
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-[    1.877745] printk: console [ttyS0] disabled
-[    1.881979] 1fe001e0.serial: ttyS0 at MMIO 0x1fe001e0 (irq = 16, base_baud = 2062500) is a 16550A
-[    1.890838] printk: console [ttyS0] enabled
+Thank you!
 
-And also, we can login normally from the serial console.
+> 
+> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
+> index 213607a1f45c..e26a278d301a 100644
+> --- a/arch/arm/include/asm/kprobes.h
+> +++ b/arch/arm/include/asm/kprobes.h
+> @@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
+>  			     unsigned long val, void *data);
+>  
+>  /* optinsn template addresses */
+> -extern __visible kprobe_opcode_t optprobe_template_entry;
+> -extern __visible kprobe_opcode_t optprobe_template_val;
+> -extern __visible kprobe_opcode_t optprobe_template_call;
+> -extern __visible kprobe_opcode_t optprobe_template_end;
+> -extern __visible kprobe_opcode_t optprobe_template_sub_sp;
+> -extern __visible kprobe_opcode_t optprobe_template_add_sp;
+> -extern __visible kprobe_opcode_t optprobe_template_restore_begin;
+> -extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
+> -extern __visible kprobe_opcode_t optprobe_template_restore_end;
+> +extern __visible kprobe_opcode_t optprobe_template_entry[];
+> +extern __visible kprobe_opcode_t optprobe_template_val[];
+> +extern __visible kprobe_opcode_t optprobe_template_call[];
+> +extern __visible kprobe_opcode_t optprobe_template_end[];
+> +extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
+> +extern __visible kprobe_opcode_t optprobe_template_add_sp[];
+> +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
+> +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
+> +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
+>  
+>  #define MAX_OPTIMIZED_LENGTH	4
+>  #define MAX_OPTINSN_SIZE				\
+> -	((unsigned long)&optprobe_template_end -	\
+> -	 (unsigned long)&optprobe_template_entry)
+> +	((unsigned long)optprobe_template_end -	\
+> +	 (unsigned long)optprobe_template_entry)
+>  #define RELATIVEJUMP_SIZE	4
+>  
+>  struct arch_optimized_insn {
+> diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
+> index 7a449df0b359..c78180172120 100644
+> --- a/arch/arm/probes/kprobes/opt-arm.c
+> +++ b/arch/arm/probes/kprobes/opt-arm.c
+> @@ -85,21 +85,21 @@ asm (
+>  			"optprobe_template_end:\n");
+>  
+>  #define TMPL_VAL_IDX \
+> -	((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_CALL_IDX \
+> -	((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_END_IDX \
+> -	((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_ADD_SP \
+> -	((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_SUB_SP \
+> -	((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_RESTORE_BEGIN \
+> -	((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_RESTORE_ORIGN_INSN \
+> -	((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
+>  #define TMPL_RESTORE_END \
+> -	((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
+> +	((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
+>  
+>  /*
+>   * ARM can always optimize an instruction when using ARM ISA, except
+> @@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
+>  	}
+>  
+>  	/* Copy arch-dep-instance from template. */
+> -	memcpy(code, (unsigned long *)&optprobe_template_entry,
+> +	memcpy(code, (unsigned long *)optprobe_template_entry,
+>  			TMPL_END_IDX * sizeof(kprobe_opcode_t));
+>  
+>  	/* Adjust buffer according to instruction. */
+> 
+> -- 
+> Kees Cook
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
 
-v2:
-  - Modify the patch subject
-
- arch/mips/configs/loongson3_defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 4df2434..3d4c7e9 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -217,6 +217,7 @@ CONFIG_SERIAL_8250_EXTENDED=y
- CONFIG_SERIAL_8250_MANY_PORTS=y
- CONFIG_SERIAL_8250_SHARE_IRQ=y
- CONFIG_SERIAL_8250_RSA=y
-+CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_HW_RANDOM=y
- CONFIG_RAW_DRIVER=m
- CONFIG_I2C_CHARDEV=y
 -- 
-2.1.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
