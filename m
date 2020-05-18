@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2111D8371
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2001D812F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732841AbgERSEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51610 "EHLO mail.kernel.org"
+        id S1729943AbgERRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732796AbgERSEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:04:33 -0400
+        id S1729936AbgERRpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF1A7207D3;
-        Mon, 18 May 2020 18:04:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B5EB20671;
+        Mon, 18 May 2020 17:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825073;
-        bh=VFi5CkaO2DwUtxZQxQco5fy/+XpBrOt7pEBYtSTIFN4=;
+        s=default; t=1589823932;
+        bh=XjSsmsaj+0cGZzRkm6yFrZT7XEPAlcmNRcivnp2RI7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YiU7VX8EOL/dhJZtcpp78pzkYWvH0bLJBoPhgzzoyrQAsg4zyNdtkcl3uojRedQFh
-         7AOjJzVQ+Opxjfip9eUCbxPWjyM2IhYyPGnmGmBtK3YtI4IbN9ATtn0GiTXty/lwst
-         g5mmlOUN8WB3FhZJOLjMH3fSjbx6l+cEzjEwgUZI=
+        b=V2jEr/F9y/AjBbczEQYkc0S0N3hjO5ljfi0+SGppjJFDVtMvqTF5VQ5TVBbH8vE5j
+         9gB5jstcVJesEacO+r0v+oaJ9yL4GgtY8y9LqyWXrOZCCAiAqsusk1Ecre7cPVHakd
+         yqPsbrG4YStUxdDxOgLY6SFOklf++blJOISyRXsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samu Nuutamo <samu.nuutamo@vincit.fi>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 117/194] hwmon: (da9052) Synchronize access with mfd
+        stable@vger.kernel.org, Matthew Sheets <matthew.sheets@gd-ms.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 69/90] netlabel: cope with NULL catmap
 Date:   Mon, 18 May 2020 19:36:47 +0200
-Message-Id: <20200518173541.419041855@linuxfoundation.org>
+Message-Id: <20200518173505.262109414@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +45,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samu Nuutamo <samu.nuutamo@vincit.fi>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 333e22db228f0bd0c839553015a6a8d3db4ba569 ]
+[ Upstream commit eead1c2ea2509fd754c6da893a94f0e69e83ebe4 ]
 
-When tsi-as-adc is configured it is possible for in7[0123]_input read to
-return an incorrect value if a concurrent read to in[456]_input is
-performed. This is caused by a concurrent manipulation of the mux
-channel without proper locking as hwmon and mfd use different locks for
-synchronization.
+The cipso and calipso code can set the MLS_CAT attribute on
+successful parsing, even if the corresponding catmap has
+not been allocated, as per current configuration and external
+input.
 
-Switch hwmon to use the same lock as mfd when accessing the TSI channel.
+Later, selinux code tries to access the catmap if the MLS_CAT flag
+is present via netlbl_catmap_getlong(). That may cause null ptr
+dereference while processing incoming network traffic.
 
-Fixes: 4f16cab19a3d5 ("hwmon: da9052: Add support for TSI channel")
-Signed-off-by: Samu Nuutamo <samu.nuutamo@vincit.fi>
-[rebase to current master, reword commit message slightly]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Address the issue setting the MLS_CAT flag only if the catmap is
+really allocated. Additionally let netlbl_catmap_getlong() cope
+with NULL catmap.
+
+Reported-by: Matthew Sheets <matthew.sheets@gd-ms.com>
+Fixes: 4b8feff251da ("netlabel: fix the horribly broken catmap functions")
+Fixes: ceba1832b1b2 ("calipso: Set the calipso socket label to match the secattr.")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Acked-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/da9052-hwmon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/cipso_ipv4.c        |    6 ++++--
+ net/ipv6/calipso.c           |    3 ++-
+ net/netlabel/netlabel_kapi.c |    6 ++++++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwmon/da9052-hwmon.c b/drivers/hwmon/da9052-hwmon.c
-index 53b517dbe7e6e..4af2fc309c286 100644
---- a/drivers/hwmon/da9052-hwmon.c
-+++ b/drivers/hwmon/da9052-hwmon.c
-@@ -244,9 +244,9 @@ static ssize_t da9052_tsi_show(struct device *dev,
- 	int channel = to_sensor_dev_attr(devattr)->index;
- 	int ret;
+--- a/net/ipv4/cipso_ipv4.c
++++ b/net/ipv4/cipso_ipv4.c
+@@ -1272,7 +1272,8 @@ static int cipso_v4_parsetag_rbm(const s
+ 			return ret_val;
+ 		}
  
--	mutex_lock(&hwmon->hwmon_lock);
-+	mutex_lock(&hwmon->da9052->auxadc_lock);
- 	ret = __da9052_read_tsi(dev, channel);
--	mutex_unlock(&hwmon->hwmon_lock);
-+	mutex_unlock(&hwmon->da9052->auxadc_lock);
+-		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
++		if (secattr->attr.mls.cat)
++			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+ 	}
  
- 	if (ret < 0)
- 		return ret;
--- 
-2.20.1
-
+ 	return 0;
+@@ -1453,7 +1454,8 @@ static int cipso_v4_parsetag_rng(const s
+ 			return ret_val;
+ 		}
+ 
+-		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
++		if (secattr->attr.mls.cat)
++			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+ 	}
+ 
+ 	return 0;
+--- a/net/ipv6/calipso.c
++++ b/net/ipv6/calipso.c
+@@ -1061,7 +1061,8 @@ static int calipso_opt_getattr(const uns
+ 			goto getattr_return;
+ 		}
+ 
+-		secattr->flags |= NETLBL_SECATTR_MLS_CAT;
++		if (secattr->attr.mls.cat)
++			secattr->flags |= NETLBL_SECATTR_MLS_CAT;
+ 	}
+ 
+ 	secattr->type = NETLBL_NLTYPE_CALIPSO;
+--- a/net/netlabel/netlabel_kapi.c
++++ b/net/netlabel/netlabel_kapi.c
+@@ -748,6 +748,12 @@ int netlbl_catmap_getlong(struct netlbl_
+ 	if ((off & (BITS_PER_LONG - 1)) != 0)
+ 		return -EINVAL;
+ 
++	/* a null catmap is equivalent to an empty one */
++	if (!catmap) {
++		*offset = (u32)-1;
++		return 0;
++	}
++
+ 	if (off < catmap->startbit) {
+ 		off = catmap->startbit;
+ 		*offset = off;
 
 
