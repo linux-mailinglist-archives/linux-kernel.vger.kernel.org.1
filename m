@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6748D1D81D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F06D1D8646
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730802AbgERRvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
+        id S2387596AbgERSYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730750AbgERRvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:51:00 -0400
+        id S1728692AbgERRsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79AAD20674;
-        Mon, 18 May 2020 17:50:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43D0220671;
+        Mon, 18 May 2020 17:48:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824259;
-        bh=5QqJiQ40v8Ooe7yKSlu2SDUc4FBYOAphE52G5rzRf/U=;
+        s=default; t=1589824087;
+        bh=phbduZygKDjvLEczF+LMzOvnJFb1dJQEvGrvC6l95N4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0BxU02qp07qKaeyVXDEK6UchxZhKqM94vPi1Zt1rbyHbZoW6H+JdCYVjIxl0TWEPw
-         FnZeQBJnPxlIVjTlzrsx21qGK7KTEQkO9y4isOGaJfNOo+F2OkefNdrN6upYkZY4LE
-         tytq1qFagrRkqYOj7kExQMDHvaMUhrAIWbp41Oso=
+        b=kqCFAw2zj5oSzlho0mFOV4uwkJ6beJjdA+23EqV2lbRpbJDSdtnrlmM9YDlkIfz2/
+         TUfX7f4sCdY+lksJD3kVYWdE5dXF4fcZpNIetnmMHAV6TEx3mFZrFTlSjMDvQeoLEQ
+         rrWL9OpExZMDmRpHtESw3xxUr3udwMnaYk09+YWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Iris Liu <iris@onechronos.com>,
-        Kelly Littlepage <kelly@onechronos.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 20/80] net: tcp: fix rx timestamp behavior for tcp_recvmsg
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 066/114] i40iw: Fix error handling in i40iw_manage_arp_cache()
 Date:   Mon, 18 May 2020 19:36:38 +0200
-Message-Id: <20200518173454.450998092@linuxfoundation.org>
+Message-Id: <20200518173515.055877898@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,52 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Littlepage <kelly@onechronos.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit cc4de047b33be247f9c8150d3e496743a49642b8 ]
+[ Upstream commit 37e31d2d26a4124506c24e95434e9baf3405a23a ]
 
-The stated intent of the original commit is to is to "return the timestamp
-corresponding to the highest sequence number data returned." The current
-implementation returns the timestamp for the last byte of the last fully
-read skb, which is not necessarily the last byte in the recv buffer. This
-patch converts behavior to the original definition, and to the behavior of
-the previous draft versions of commit 98aaa913b4ed ("tcp: Extend
-SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg") which also match this
-behavior.
+The i40iw_arp_table() function can return -EOVERFLOW if
+i40iw_alloc_resource() fails so we can't just test for "== -1".
 
-Fixes: 98aaa913b4ed ("tcp: Extend SOF_TIMESTAMPING_RX_SOFTWARE to TCP recvmsg")
-Co-developed-by: Iris Liu <iris@onechronos.com>
-Signed-off-by: Iris Liu <iris@onechronos.com>
-Signed-off-by: Kelly Littlepage <kelly@onechronos.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4e9042e647ff ("i40iw: add hw and utils files")
+Link: https://lore.kernel.org/r/20200422092211.GA195357@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2135,14 +2135,16 @@ skip_copy:
- 			tp->urg_data = 0;
- 			tcp_fast_path_check(sk);
- 		}
--		if (used + offset < skb->len)
--			continue;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+index 476867a3f584f..4ded9411fb325 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_hw.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+@@ -483,7 +483,7 @@ void i40iw_manage_arp_cache(struct i40iw_device *iwdev,
+ 	int arp_index;
  
- 		if (TCP_SKB_CB(skb)->has_rxtstamp) {
- 			tcp_update_recv_tstamps(skb, &tss);
- 			has_tss = true;
- 			has_cmsg = true;
- 		}
-+
-+		if (used + offset < skb->len)
-+			continue;
-+
- 		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
- 			goto found_fin_ok;
- 		if (!(flags & MSG_PEEK))
+ 	arp_index = i40iw_arp_table(iwdev, ip_addr, ipv4, mac_addr, action);
+-	if (arp_index == -1)
++	if (arp_index < 0)
+ 		return;
+ 	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
+ 	if (!cqp_request)
+-- 
+2.20.1
+
 
 
