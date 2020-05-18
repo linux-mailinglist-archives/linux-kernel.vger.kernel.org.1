@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1BC1D8545
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDC41D855F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387595AbgERSRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729764AbgERSRt (ORCPT
+        id S2387720AbgERSSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:18:30 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34580 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732102AbgERSS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:17:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF182C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:17:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id f6so5229735pgm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 11:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q9RvB5nbI09wHpLfw3yLJLanIbQbqsip0Oo5ChvdNdM=;
-        b=QHkMv/WeF/pAoW2hxh1xX1qlre1qL6s8OM9laV1Dprb2X+Kv+QDkyRApG+Qv54H+xi
-         mFtUOtyNXm76nMSWE2RvWWDyrdZ8YCY0Aln67yOEVQrVfwph+FoiZfxlbucNEqpnQfzl
-         oHDRJomHU8uO4ZYiUHp5YyuxUewGtX/XVK1BE=
+        Mon, 18 May 2020 14:18:26 -0400
+Received: by mail-io1-f67.google.com with SMTP id f3so11714894ioj.1;
+        Mon, 18 May 2020 11:18:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q9RvB5nbI09wHpLfw3yLJLanIbQbqsip0Oo5ChvdNdM=;
-        b=LFPZ924aGqpz1aP5MdvdI4rL7blhrL6P6jEy5Bdv+qNuT82d29ywL0G1iqMPMCkHWH
-         EHkQ22PNq1b/oGTGa/SX4X3YmWSS5dZn0+b+jrIiXC40Va6/XdQeVAfyIoB2YyX2SPJj
-         ap66aTbkM+0zRKucnsEdPK3YQMIxMHvEz8X/C4+LPq+sis5Cpp5NKz9d3snTie8wza6Z
-         Eoq/06J3WBv/s4bxQLzvQii1fOc6nssGhIrqXGDFJfyhmTx67XaRuM4oW6InKN3T+HBp
-         VZzvC72Tsofrkuf6GtE9gT6e4DMPxD5VrQGPrbCdBBvPSqW1vVeB1x7bIoSBbEMOgO/0
-         F4RQ==
-X-Gm-Message-State: AOAM531u+o2r4SabC5mcPI5Nj98YouD/Uc7UgJutqeeG7UQw9QOgBo9t
-        kmN4Us5K6azMtsUnlxpi7XAxbQ==
-X-Google-Smtp-Source: ABdhPJwWb935U8X4b3gsmekq3Adu+9arHCIUVn//jGRc1Z1HlHZPmASWj6IesI7CMnbrDuo9K8hLug==
-X-Received: by 2002:a63:3c17:: with SMTP id j23mr15579357pga.343.1589825869244;
-        Mon, 18 May 2020 11:17:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w7sm9014646pfw.82.2020.05.18.11.17.47
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ls2oGb584lE+ih5A0xlC1D9uSKfFyTXu9czWBNVlDL4=;
+        b=bQk+8FEaNjTDZFVrzuzltiKHA3nYK3C+W7IiYFLw2+P4t+cNzZMkqShN5wBeVoxYM6
+         rEg6WigXUVQ6ikZOf9PjLiCL2cre0cho9fPblJcQJAnMS4kT1tM6LNGVnzPyfBS2ZUnM
+         V3rpN8ZmDcJDZvxUsOoP9JCnfRnUEA+5ec5SkB4zJTqS55oMSYKt7w+fNC5E5fcZUo8v
+         hTPmD00stFhyF9fowpSCZ0vnjuJxlu5FVD0XXuogxsQD/hZ68efaOImd2PHk8RN0Iww7
+         kj20r4hVDsY8LY5QkjZC+nx2Hceiaie7L0NRTijkHzrmjvUwo8O+tff+61PKcThVLpH3
+         Uoow==
+X-Gm-Message-State: AOAM5319ILHcMOGChbsTYE8jUtgImh4bTrIOVX1Yz4fK2X/UbzKVXKw9
+        qLd+eIiQNClnGcBgWDXQ6o79OqQ=
+X-Google-Smtp-Source: ABdhPJySwSncBqstvZnifWbUwSs+7NnwA8TVJ2UTLqaiVB8AIydXrixRJL0jgp88qHAOi/ilJtwmHQ==
+X-Received: by 2002:a02:394d:: with SMTP id w13mr15975374jae.58.1589825905257;
+        Mon, 18 May 2020 11:18:25 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id a6sm4144806ioe.10.2020.05.18.11.18.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 11:17:48 -0700 (PDT)
-Date:   Mon, 18 May 2020 11:17:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Kitt <steve@sk2.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: const-ify ngroups_max
-Message-ID: <202005181117.BB74974@keescook>
-References: <20200518155727.10514-1-steve@sk2.org>
- <202005180908.C016C44D2@keescook>
- <20200518172509.GM11244@42.do-not-panic.com>
+        Mon, 18 May 2020 11:18:24 -0700 (PDT)
+Received: (nullmailer pid 23837 invoked by uid 1000);
+        Mon, 18 May 2020 18:18:23 -0000
+Date:   Mon, 18 May 2020 12:18:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [RESEND PATCH v2 2/3] dt-bindings: phy: Allow BSD licensing of
+ marvell,mmp3-hsic-phy.yaml
+Message-ID: <20200518181823.GA23778@bogus>
+References: <20200509081754.474787-1-lkundrak@v3.sk>
+ <20200509081754.474787-3-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200518172509.GM11244@42.do-not-panic.com>
+In-Reply-To: <20200509081754.474787-3-lkundrak@v3.sk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 05:25:09PM +0000, Luis Chamberlain wrote:
-> On Mon, May 18, 2020 at 09:08:22AM -0700, Kees Cook wrote:
-> > On Mon, May 18, 2020 at 05:57:27PM +0200, Stephen Kitt wrote:
-> > > ngroups_max is a read-only sysctl entry, reflecting NGROUPS_MAX. Make
-> > > it const, in the same way as cap_last_cap.
-> > > 
-> > > Signed-off-by: Stephen Kitt <steve@sk2.org>
-> > 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
+On Sat,  9 May 2020 10:17:53 +0200, Lubomir Rintel wrote:
+> I wrote this binding and I'm fine with it being GPL + BSD dual-licensed,
+> as is recommended for new DT bindings.
 > 
-> Kees, since there is quite a bit of sysctl cleanup stuff going on and I
-> have a fs sysctl kitchen cleanup, are you alright if I carry this in a
-> tree and send this to Andrew once done? This would hopefully avoid
-> merge conflicts between these patches.
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> ---
+>  .../devicetree/bindings/phy/marvell,mmp3-hsic-phy.yaml          | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I have to still re-spin my fs sysctl stuff, but will wait to do that
-> once Xiaoming bases his series on linux-next.
 
-Yeah, totally. I don't technically have a sysctl tree (I've always just
-had akpm take stuff), so go for it. I'm just doing reviews. :)
-
--- 
-Kees Cook
+Acked-by: Rob Herring <robh@kernel.org>
