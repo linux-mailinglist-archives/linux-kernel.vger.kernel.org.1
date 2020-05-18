@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28421D829A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F64C1D8123
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgERR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36550 "EHLO mail.kernel.org"
+        id S1728887AbgERRpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730836AbgERR5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:57:45 -0400
+        id S1729896AbgERRpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CF3E20715;
-        Mon, 18 May 2020 17:57:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E729F20657;
+        Mon, 18 May 2020 17:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824664;
-        bh=FtjT8lwXETCyCVSxox66iHY31x24xhLqPM6VXV++cHU=;
+        s=default; t=1589823915;
+        bh=NM+61okHoeZrlRYKybin1UV6GNvIOPisbB5yJ8j6QjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oWPATE75ZKrwDm5sB++ZtVHhVeFeEtJSc4IRFRrOt/0ZVrv8eynrJzn+BTiejLyuU
-         UpbHSl0/E/BeUNIF73hQZlcXA5fR9GGGj/DtoctAJt0MBtGowMRoR3vyjGGoJgpV0s
-         Ga0PgOl5EVVLn+xZbt1PZBfDRDI119qqC/vYj7Ek=
+        b=Q/2Gjp0OwBAaGw70w8NAMAJiMesBTBtsOedfA1iBUptmY8c5z1+5bTWYu9n7DArJX
+         I0kmoaOBpPBxfgFwngtrAQwBzhfMauW+1/DenQbqDUvMx1LhJodwr0syx2ChI3h/DR
+         PdcnzXPcWXBd3lik/3pcTDAqBM1x9wqqTamSAsjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 102/147] gcc-10: avoid shadowing standard library free() in crypto
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 4.9 87/90] ARM: dts: r8a73a4: Add missing CMT1 interrupts
 Date:   Mon, 18 May 2020 19:37:05 +0200
-Message-Id: <20200518173526.083206184@linuxfoundation.org>
+Message-Id: <20200518173508.807412847@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,84 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 1a263ae60b04de959d9ce9caea4889385eefcc7b upstream.
+commit 0f739fdfe9e5ce668bd6d3210f310df282321837 upstream.
 
-gcc-10 has started warning about conflicting types for a few new
-built-in functions, particularly 'free()'.
+The R-Mobile APE6 Compare Match Timer 1 generates 8 interrupts, one for
+each channel, but currently only 1 is described.
+Fix this by adding the missing interrupts.
 
-This results in warnings like:
-
-   crypto/xts.c:325:13: warning: conflicting types for built-in function ‘free’; expected ‘void(void *)’ [-Wbuiltin-declaration-mismatch]
-
-because the crypto layer had its local freeing functions called
-'free()'.
-
-Gcc-10 is in the wrong here, since that function is marked 'static', and
-thus there is no chance of confusion with any standard library function
-namespace.
-
-But the simplest thing to do is to just use a different name here, and
-avoid this gcc mis-feature.
-
-[ Side note: gcc knowing about 'free()' is in itself not the
-  mis-feature: the semantics of 'free()' are special enough that a
-  compiler can validly do special things when seeing it.
-
-  So the mis-feature here is that gcc thinks that 'free()' is some
-  restricted name, and you can't shadow it as a local static function.
-
-  Making the special 'free()' semantics be a function attribute rather
-  than tied to the name would be the much better model ]
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f7b65230019b9dac ("ARM: shmobile: r8a73a4: Add CMT1 node")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200408090926.25201-1-geert+renesas@glider.be
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/lrw.c |    4 ++--
- crypto/xts.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/r8a73a4.dtsi |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/crypto/lrw.c
-+++ b/crypto/lrw.c
-@@ -289,7 +289,7 @@ static void exit_tfm(struct crypto_skcip
- 	crypto_free_skcipher(ctx->child);
- }
- 
--static void free(struct skcipher_instance *inst)
-+static void free_inst(struct skcipher_instance *inst)
- {
- 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
- 	kfree(inst);
-@@ -401,7 +401,7 @@ static int create(struct crypto_template
- 	inst->alg.encrypt = encrypt;
- 	inst->alg.decrypt = decrypt;
- 
--	inst->free = free;
-+	inst->free = free_inst;
- 
- 	err = skcipher_register_instance(tmpl, inst);
- 	if (err)
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -328,7 +328,7 @@ static void exit_tfm(struct crypto_skcip
- 	crypto_free_cipher(ctx->tweak);
- }
- 
--static void free(struct skcipher_instance *inst)
-+static void free_inst(struct skcipher_instance *inst)
- {
- 	crypto_drop_skcipher(skcipher_instance_ctx(inst));
- 	kfree(inst);
-@@ -439,7 +439,7 @@ static int create(struct crypto_template
- 	inst->alg.encrypt = encrypt;
- 	inst->alg.decrypt = decrypt;
- 
--	inst->free = free;
-+	inst->free = free_inst;
- 
- 	err = skcipher_register_instance(tmpl, inst);
- 	if (err)
+--- a/arch/arm/boot/dts/r8a73a4.dtsi
++++ b/arch/arm/boot/dts/r8a73a4.dtsi
+@@ -135,7 +135,14 @@
+ 	cmt1: timer@e6130000 {
+ 		compatible = "renesas,cmt-48-r8a73a4", "renesas,cmt-48-gen2";
+ 		reg = <0 0xe6130000 0 0x1004>;
+-		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
++		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>;
+ 		clocks = <&mstp3_clks R8A73A4_CLK_CMT1>;
+ 		clock-names = "fck";
+ 		power-domains = <&pd_c5>;
 
 
