@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1669E1D73DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D3C1D73F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 11:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgERJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 05:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbgERJWz (ORCPT
+        id S1726895AbgERJZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 05:25:45 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:33106 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgERJZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 05:22:55 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD911C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 02:22:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z4so7352055wmi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 02:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=Z3XlctpSAnbYdb2+5Z7TFNZPigSvZMxY4yX670//TBU=;
-        b=drv2mSAuvezl8uk9ZvXfGTMENTCqHqLeB5OLJuBjylbY9VEyWGnJcxSWFwJQdlPu/F
-         MI0sf0aLcYB3VSz8CAh7zmlYeci5h117eeqYjrXYOCC+4FZogJ+cfjXmN/uxIvzq9fol
-         cFdzZiynTzFtdgY8iDZ6t1CIO4hPrPc3bmZcC9ULjdAW1X/nOAWsI+Yfsh4inCax8R6+
-         ZRcB3gZly/uFkn57tKqXLWK3t3WVpmcdf23zUg1kdMP3INamQ3kTEj4REZR1te4YaMYm
-         sXICAkHLFkf1OhzgL2/WBxfPrH9iJGAAg8735Xtf4myhO321CZ1v7azvSTBhhkrADJZw
-         gnnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:content-language:content-transfer-encoding;
-        bh=Z3XlctpSAnbYdb2+5Z7TFNZPigSvZMxY4yX670//TBU=;
-        b=fYM8VApe+SuVuDtmpfyloF1PnvT7tSZB9lei04iV31SB40Mdd0g1HFQbOhl6mw0Zr4
-         YekejUvN7jDas0OQ9rf62smg9Gf3PRXIMvp9IdaNK3zKGhZZdAcfwcnu+a0CJ7If5hg/
-         VxMpWhyupBdrK/EMhg1esS0P6vLH7JhdrexSCErLj/W2hCZNTw9i46l51k969c3pq4i9
-         XXSSJDqOHsPgOGOKiyLd2wbkq3uyv50csct1GLqmvNIdpNGr/FVwMmfhJapSQLM+FEyk
-         mk1frmEQDLNDFkw2Qm6tVMiW+sGIUbukLrHOOXiiyX9mAEp1GRvhRHTu3awQh/7VB886
-         kyKw==
-X-Gm-Message-State: AOAM531h+hT+0K/zTLkeE+wyGTJw98H2zthPJVAREWCjfn7FJCG9Xg+a
-        FaX98ZTWun2/6rXL4cI2Pi71e/phb6o=
-X-Google-Smtp-Source: ABdhPJy8I8LDsz/5SOI07W1BDAQYcizOum1eE7aOvMk3UKlv2qSI1RLiOS6YkMJ6LmH6Vrszb+qMJg==
-X-Received: by 2002:a05:600c:14c6:: with SMTP id i6mr18126796wmh.58.1589793772297;
-        Mon, 18 May 2020 02:22:52 -0700 (PDT)
-Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id h133sm16392525wmf.25.2020.05.18.02.22.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 May 2020 02:22:51 -0700 (PDT)
-Subject: Re: [PATCH v2 5/7] include: dt-bindings: sound: Add sc7180-lpass
- bindings header
-To:     Ajit Pandey <ajitp@codeaurora.org>, broonie@kernel.org,
-        plai@codeaurora.org, bgoswami@codeaurora.org
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: =?UTF-8?Q?=3c=1c1586592171-31644-1-git-send-email-ajitp=40codeau?=
- =?UTF-8?Q?rora=2eorg=1d=3e_=3c1589474298-29437-1-git-send-email-ajitp=40cod?=
- =?UTF-8?Q?eaurora=2eorg=3e_=3c1589474298-29437-6-git-send-email-ajitp=40cod?=
- =?UTF-8?Q?eaurora=2eorg=3e?=
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e8859fcf-fc00-01fc-b64e-dba086c8155b@linaro.org>
-Date:   Mon, 18 May 2020 10:22:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 18 May 2020 05:25:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AsG25wGsLo5dva63MFW7ZBhcsdfBRHY+JLf9PmDQZPU=; b=T+jd73SGAnN/iUVYvQhlFjUREr
+        gU7clEBE7FwvQwYJv+ptRhy1MxwWC+6dGethKvAPM9K+e7aSyzxN6f5QuFhRKhp8kBacyfB8cZ0as
+        nut9xtAA3UoV+DhX/7q+x+k1ETWwbtYtEw3C2fN/Iu1EjIyCOKQ15WQI2Zz5XnBYpQt70P0ELh7A0
+        p300PEQOHHQJWBINYAN26qJ0kSn1kiXWVxRdamC3E7asrKXlTzKWGgJz8qLYcC+xSMCWvqbHJKYto
+        tNS0dJfjpHvswvwkDqhg+nJKTpeOTGYad2j3ljfINB5vz9Izt8G5QD1TNymqNbcquq5sNr2GcM9iq
+        0mzhGCrA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jabzU-0005B2-28; Mon, 18 May 2020 09:23:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D409D3011E8;
+        Mon, 18 May 2020 11:23:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 730872B3CFEE6; Mon, 18 May 2020 11:23:18 +0200 (CEST)
+Date:   Mon, 18 May 2020 11:23:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@elte.hu, irogers@google.com,
+        kim.phillips@amd.com, jolsa@redhat.com
+Subject: Re: [PATCH 2/3] perf/x86/rapl: refactor code for Intel/AMD sharing
+Message-ID: <20200518092318.GA277222@hirez.programming.kicks-ass.net>
+References: <20200515215733.20647-1-eranian@google.com>
+ <20200515215733.20647-3-eranian@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515215733.20647-3-eranian@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/05/2020 17:38, Ajit Pandey wrote:
-> Add header defining dai-id and mclk id for SC7180 lpass soc.
+On Fri, May 15, 2020 at 02:57:32PM -0700, Stephane Eranian wrote:
+> This patch modifies the rapl_model struct to include architecture specific
+> knowledge to Intel specific structure, and in particular the MSR for
+> POWER_UNIT and the rapl_msrs array.
 > 
-> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> No functional changes.
+> 
+> Signed-off-by: Stephane Eranian <eranian@google.com>
 > ---
->   include/dt-bindings/sound/sc7180-lpass.h | 10 ++++++++++
-
-Why not reuse or rename include/dt-bindings/sound/apq8016-lpass.h to 
-include/dt-bindings/sound/lpass.h and reuse across all the LPASS variants?
-
---srini
-
->   1 file changed, 10 insertions(+)
->   create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+>  arch/x86/events/rapl.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/dt-bindings/sound/sc7180-lpass.h b/include/dt-bindings/sound/sc7180-lpass.h
-> new file mode 100644
-> index 0000000..7d988f6
-> --- /dev/null
-> +++ b/include/dt-bindings/sound/sc7180-lpass.h
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __DT_SC7180_LPASS_H
-> +#define __DT_SC7180_LPASS_H
-> +
-> +#define MI2S_PRIMARY	0
-> +#define MI2S_SECONDARY	1
-> +
-> +#define LPASS_MCLK0	0
-> +
-> +#endif /* __DT_APQ8016_LPASS_H */
-> 
+> diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+> index ece043fb7b494..e98f627a13fa8 100644
+> --- a/arch/x86/events/rapl.c
+> +++ b/arch/x86/events/rapl.c
+> @@ -131,7 +131,9 @@ struct rapl_pmus {
+>  };
+>  
+>  struct rapl_model {
+> +	struct perf_msr *rapl_msrs;
+>  	unsigned long	events;
+> +	int		msr_power_unit;
+
+MSR addresses go negative these days?
