@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90AA1D8429
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1411D8637
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732232AbgERSJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54546 "EHLO mail.kernel.org"
+        id S2387877AbgERSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733161AbgERSG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:06:28 -0400
+        id S1730432AbgERRsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:48:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6F6F207D3;
-        Mon, 18 May 2020 18:06:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FDE420657;
+        Mon, 18 May 2020 17:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825187;
-        bh=M9XhHl33YZ6sKbCBzyoU1iRxB+7oyUhrZghe6cO4qUs=;
+        s=default; t=1589824129;
+        bh=e/IH5Ce3n1nTIjPjeRM0r54VhiqaeZ3w8gRLmUzzDOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A5xbJOtOoApPqcjB+7q/TfgqxISVYhh1rj6ANJRU1ObhRNtoH9mktD/nPkcdBzmH6
-         7Tyf8HvR6ZotbHPrB1CbZEI5tUHChdkeNsB5EB3HYFS6/ZmXlug5mOJM/miXdeJ9em
-         3f7S/NFs1WTQQ3YVHQPMXJTUF4Ula3IoSGF/yYd8=
+        b=K+iJaA9795yuG6oin3vPJtPGS2FneYH4y42mu6v3o36mQc44yPkyaDPJyatmI1T9x
+         Bwwao4M4793O4llTN/KNX+Jqda4xhJ/i9Vc6/PGY8xmncReWtrcZtzs4OjLKrXpzo7
+         hvGI+gCltoCyL05E618MiYc69xX5woUhJK5bN36o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 126/194] Stop the ad-hoc games with -Wno-maybe-initialized
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 084/114] Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
 Date:   Mon, 18 May 2020 19:36:56 +0200
-Message-Id: <20200518173542.024910927@linuxfoundation.org>
+Message-Id: <20200518173517.498171027@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,116 +47,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: "Maciej Żenczykowski" <maze@google.com>
 
-commit 78a5255ffb6a1af189a83e493d916ba1c54d8c75 upstream.
+[ Upstream commit 09454fd0a4ce23cb3d8af65066c91a1bf27120dd ]
 
-We have some rather random rules about when we accept the
-"maybe-initialized" warnings, and when we don't.
+This reverts commit 19bda36c4299ce3d7e5bce10bebe01764a655a6d:
 
-For example, we consider it unreliable for gcc versions < 4.9, but also
-if -O3 is enabled, or if optimizing for size.  And then various kernel
-config options disabled it, because they know that they trigger that
-warning by confusing gcc sufficiently (ie PROFILE_ALL_BRANCHES).
+| ipv6: add mtu lock check in __ip6_rt_update_pmtu
+|
+| Prior to this patch, ipv6 didn't do mtu lock check in ip6_update_pmtu.
+| It leaded to that mtu lock doesn't really work when receiving the pkt
+| of ICMPV6_PKT_TOOBIG.
+|
+| This patch is to add mtu lock check in __ip6_rt_update_pmtu just as ipv4
+| did in __ip_rt_update_pmtu.
 
-And now gcc-10 seems to be introducing a lot of those warnings too, so
-it falls under the same heading as 4.9 did.
+The above reasoning is incorrect.  IPv6 *requires* icmp based pmtu to work.
+There's already a comment to this effect elsewhere in the kernel:
 
-At the same time, we have a very straightforward way to _enable_ that
-warning when wanted: use "W=2" to enable more warnings.
+  $ git grep -p -B1 -A3 'RTAX_MTU lock'
+  net/ipv6/route.c=4813=
 
-So stop playing these ad-hoc games, and just disable that warning by
-default, with the known and straight-forward "if you want to work on the
-extra compiler warnings, use W=123".
+  static int rt6_mtu_change_route(struct fib6_info *f6i, void *p_arg)
+  ...
+    /* In IPv6 pmtu discovery is not optional,
+       so that RTAX_MTU lock cannot disable it.
+       We still use this lock to block changes
+       caused by addrconf/ndisc.
+    */
 
-Would it be great to have code that is always so obvious that it never
-confuses the compiler whether a variable is used initialized or not?
-Yes, it would.  In a perfect world, the compilers would be smarter, and
-our source code would be simpler.
+This reverts to the pre-4.9 behaviour.
 
-That's currently not the world we live in, though.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Fixes: 19bda36c4299 ("ipv6: add mtu lock check in __ip6_rt_update_pmtu")
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- Makefile             |    7 +++----
- init/Kconfig         |   18 ------------------
- kernel/trace/Kconfig |    1 -
- 3 files changed, 3 insertions(+), 23 deletions(-)
+ net/ipv6/route.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -708,10 +708,6 @@ else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
- KBUILD_CFLAGS += -Os
- endif
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -1479,8 +1479,10 @@ static void __ip6_rt_update_pmtu(struct
+ 	const struct in6_addr *daddr, *saddr;
+ 	struct rt6_info *rt6 = (struct rt6_info *)dst;
  
--ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
--KBUILD_CFLAGS   += -Wno-maybe-uninitialized
--endif
--
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
+-	if (dst_metric_locked(dst, RTAX_MTU))
+-		return;
++	/* Note: do *NOT* check dst_metric_locked(dst, RTAX_MTU)
++	 * IPv6 pmtu discovery isn't optional, so 'mtu lock' cannot disable it.
++	 * [see also comment in rt6_mtu_change_route()]
++	 */
  
-@@ -861,6 +857,9 @@ KBUILD_CFLAGS += -Wno-pointer-sign
- # disable stringop warnings in gcc 8+
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
- 
-+# Enabled with W=2, disabled by default as noisy
-+KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
-+
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
- 
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -36,22 +36,6 @@ config TOOLS_SUPPORT_RELR
- config CC_HAS_ASM_INLINE
- 	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
- 
--config CC_HAS_WARN_MAYBE_UNINITIALIZED
--	def_bool $(cc-option,-Wmaybe-uninitialized)
--	help
--	  GCC >= 4.7 supports this option.
--
--config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
--	bool
--	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
--	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
--	help
--	  GCC's -Wmaybe-uninitialized is not reliable by definition.
--	  Lots of false positive warnings are produced in some cases.
--
--	  If this option is enabled, -Wno-maybe-uninitialzed is passed
--	  to the compiler to suppress maybe-uninitialized warnings.
--
- config CONSTRUCTORS
- 	bool
- 	depends on !UML
-@@ -1249,14 +1233,12 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
- config CC_OPTIMIZE_FOR_PERFORMANCE_O3
- 	bool "Optimize more for performance (-O3)"
- 	depends on ARC
--	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  Choosing this option will pass "-O3" to your compiler to optimize
- 	  the kernel yet more for performance.
- 
- config CC_OPTIMIZE_FOR_SIZE
- 	bool "Optimize for size (-Os)"
--	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  Choosing this option will pass "-Os" to your compiler resulting
- 	  in a smaller kernel.
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -466,7 +466,6 @@ config PROFILE_ANNOTATED_BRANCHES
- config PROFILE_ALL_BRANCHES
- 	bool "Profile all if conditionals" if !FORTIFY_SOURCE
- 	select TRACE_BRANCH_PROFILING
--	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  This tracer profiles all branch conditions. Every if ()
- 	  taken in the kernel is recorded whether it hit or miss.
+ 	if (iph) {
+ 		daddr = &iph->daddr;
 
 
