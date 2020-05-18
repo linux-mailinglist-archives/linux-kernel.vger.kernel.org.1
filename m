@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EFE1D8693
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1C01D8486
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387910AbgERSZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
+        id S1733072AbgERSLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730213AbgERRrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:47:19 -0400
+        id S1732742AbgERSEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:04:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC03120671;
-        Mon, 18 May 2020 17:47:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CE3F207D3;
+        Mon, 18 May 2020 18:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824038;
-        bh=tpIiauc4YrWcZQXGN3wFm0cMXUDzbiRA6w5dDO/ReSs=;
+        s=default; t=1589825048;
+        bh=PL0ZmeWqc8FMIxU1IoNlidUEHrZGToEEtWQh6ygb26A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tXySE3nGOcHdmDgekjaz+AJcDyWbhYL9QBraCWiES8pgIVxRBURaagBkweJLcFNA2
-         qkuVlULLIqQJoZbJZebBLSSbML3a8z/zOTyIJx0SkOwac56kevVeA6EXl/qs5zD15O
-         IhCEcA7LxK8OdSibtJ1X51T+ah9MxROGwZyQyKfs=
+        b=bqGwkfj0fIPc4Flsn8eKLfqNo28LsXlGk4a4Byyuv3DyIgjRvl/o0CMrYotNQLnSH
+         oUfcEDSovy1y9TK8VHW9Wg5QU8yh+UryaDyzrLjU7XHHL5LYkKXHk3JycYwPdooACq
+         O++CbT+CYerK6lkeHOeDwc90Qe7hS1HvHWxXROcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.14 039/114] blktrace: fix unlocked access to init/start-stop/teardown
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 081/194] ALSA: firewire-lib: fix function sizeof not defined error of tracepoints format
 Date:   Mon, 18 May 2020 19:36:11 +0200
-Message-Id: <20200518173510.623937854@linuxfoundation.org>
+Message-Id: <20200518173538.508531112@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,151 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit 1f2cac107c591c24b60b115d6050adc213d10fc0 upstream.
+[ Upstream commit 1034872123a06b759aba772b1c99612ccb8e632a ]
 
-sg.c calls into the blktrace functions without holding the proper queue
-mutex for doing setup, start/stop, or teardown.
+The snd-firewire-lib.ko has 'amdtp-packet' event of tracepoints. Current
+printk format for the event includes 'sizeof(u8)' macro expected to be
+extended in compilation time. However, this is not done. As a result,
+perf tools cannot parse the event for printing:
 
-Add internal unlocked variants, and export the ones that do the proper
-locking.
+$ mount -l -t debugfs
+debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
+$ cat /sys/kernel/debug/tracing/events/snd_firewire_lib/amdtp_packet/format
+...
+print fmt: "%02u %04u %04x %04x %02d %03u %02u %03u %02u %01u %02u %s",
+  REC->second, REC->cycle, REC->src, REC->dest, REC->channel,
+  REC->payload_quadlets, REC->data_blocks, REC->data_block_counter,
+  REC->packet_index, REC->irq, REC->index,
+  __print_array(__get_dynamic_array(cip_header),
+                __get_dynamic_array_len(cip_header),
+                sizeof(u8))
 
-Fixes: 6da127ad0918 ("blktrace: Add blktrace ioctls to SCSI generic devices")
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+$ sudo perf record -e snd_firewire_lib:amdtp_packet
+  [snd_firewire_lib:amdtp_packet] function sizeof not defined
+  Error: expected type 5 but read 0
+
+This commit fixes it by obsoleting the macro with actual size.
+
+Cc: <stable@vger.kernel.org>
+Fixes: bde2bbdb307a ("ALSA: firewire-lib: use dynamic array for CIP header of tracing events")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200503045718.86337-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c |   58 +++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 10 deletions(-)
+ sound/firewire/amdtp-stream-trace.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -352,7 +352,7 @@ static void blk_trace_cleanup(struct blk
- 	put_probe_ref();
- }
+diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
+index 16c7f6605511e..26e7cb555d3c5 100644
+--- a/sound/firewire/amdtp-stream-trace.h
++++ b/sound/firewire/amdtp-stream-trace.h
+@@ -66,8 +66,7 @@ TRACE_EVENT(amdtp_packet,
+ 		__entry->irq,
+ 		__entry->index,
+ 		__print_array(__get_dynamic_array(cip_header),
+-			      __get_dynamic_array_len(cip_header),
+-			      sizeof(u8)))
++			      __get_dynamic_array_len(cip_header), 1))
+ );
  
--int blk_trace_remove(struct request_queue *q)
-+static int __blk_trace_remove(struct request_queue *q)
- {
- 	struct blk_trace *bt;
- 
-@@ -365,6 +365,17 @@ int blk_trace_remove(struct request_queu
- 
- 	return 0;
- }
-+
-+int blk_trace_remove(struct request_queue *q)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_remove(q);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_remove);
- 
- static ssize_t blk_dropped_read(struct file *filp, char __user *buffer,
-@@ -565,9 +576,8 @@ err:
- 	return ret;
- }
- 
--int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
--		    struct block_device *bdev,
--		    char __user *arg)
-+static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+			     struct block_device *bdev, char __user *arg)
- {
- 	struct blk_user_trace_setup buts;
- 	int ret;
-@@ -586,6 +596,19 @@ int blk_trace_setup(struct request_queue
- 	}
- 	return 0;
- }
-+
-+int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
-+		    struct block_device *bdev,
-+		    char __user *arg)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_setup(q, name, dev, bdev, arg);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_setup);
- 
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
-@@ -622,7 +645,7 @@ static int compat_blk_trace_setup(struct
- }
  #endif
- 
--int blk_trace_startstop(struct request_queue *q, int start)
-+static int __blk_trace_startstop(struct request_queue *q, int start)
- {
- 	int ret;
- 	struct blk_trace *bt = q->blk_trace;
-@@ -661,6 +684,17 @@ int blk_trace_startstop(struct request_q
- 
- 	return ret;
- }
-+
-+int blk_trace_startstop(struct request_queue *q, int start)
-+{
-+	int ret;
-+
-+	mutex_lock(&q->blk_trace_mutex);
-+	ret = __blk_trace_startstop(q, start);
-+	mutex_unlock(&q->blk_trace_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(blk_trace_startstop);
- 
- /*
-@@ -691,7 +725,7 @@ int blk_trace_ioctl(struct block_device
- 	switch (cmd) {
- 	case BLKTRACESETUP:
- 		bdevname(bdev, b);
--		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
-+		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
- 		break;
- #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
- 	case BLKTRACESETUP32:
-@@ -702,10 +736,10 @@ int blk_trace_ioctl(struct block_device
- 	case BLKTRACESTART:
- 		start = 1;
- 	case BLKTRACESTOP:
--		ret = blk_trace_startstop(q, start);
-+		ret = __blk_trace_startstop(q, start);
- 		break;
- 	case BLKTRACETEARDOWN:
--		ret = blk_trace_remove(q);
-+		ret = __blk_trace_remove(q);
- 		break;
- 	default:
- 		ret = -ENOTTY;
-@@ -723,10 +757,14 @@ int blk_trace_ioctl(struct block_device
-  **/
- void blk_trace_shutdown(struct request_queue *q)
- {
-+	mutex_lock(&q->blk_trace_mutex);
-+
- 	if (q->blk_trace) {
--		blk_trace_startstop(q, 0);
--		blk_trace_remove(q);
-+		__blk_trace_startstop(q, 0);
-+		__blk_trace_remove(q);
- 	}
-+
-+	mutex_unlock(&q->blk_trace_mutex);
- }
- 
- #ifdef CONFIG_BLK_CGROUP
+-- 
+2.20.1
+
 
 
