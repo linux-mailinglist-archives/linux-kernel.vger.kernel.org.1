@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771D01D81BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D115A1D8542
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgERRuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S1733002AbgERSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730640AbgERRuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:50:10 -0400
+        id S1731161AbgERR5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:57:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80CA520674;
-        Mon, 18 May 2020 17:50:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1016020884;
+        Mon, 18 May 2020 17:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824210;
-        bh=hLhqsgP2gFprrbBxfiRlmxjjwHYIN6WgwIWxOuIPfX8=;
+        s=default; t=1589824627;
+        bh=91tBj2hhqc++9j+sjqp/UDyBo96MSzo1RqiQ9zJ2CME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjcmFmc1D8aN0wewImAUKg5x48hg67yVo4yND1KLOVwEQIipkcwUelDZu31k12RXh
-         FfK/c77+a+0Ib15zeUcGAdvWg1RWHotCzgSC0zTJeWF6/kNHw7uVSRgHlgdi+fmrDn
-         gbKtFOB8lmoQqdcXm5Ol/05/Kc5V2x0J5AkPnDTY=
+        b=bdPXaEROXdHuBQ/j8TjET76X2dSCFIBrjqqYokMT5pIEZUl8ZzqbV8LUlQXCeL609
+         dweAbUV03LPytQPhLf70ZNBCET87rhXLckYQs6zZwghnh+ESxSF6GyDmakwaNYieZu
+         Fbzhw0OmlBMHVDR3K7mXdQVJ6DgFis4u8mU0mAA8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.14 079/114] x86/asm: Add instruction suffixes to bitops
+        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 088/147] RDMA/iw_cxgb4: Fix incorrect function parameters
 Date:   Mon, 18 May 2020 19:36:51 +0200
-Message-Id: <20200518173516.883086422@linuxfoundation.org>
+Message-Id: <20200518173524.540038658@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,158 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <JBeulich@suse.com>
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-commit 22636f8c9511245cb3c8412039f1dd95afb3aa59 upstream.
+[ Upstream commit c8b1f340e54158662acfa41d6dee274846370282 ]
 
-Omitting suffixes from instructions in AT&T mode is bad practice when
-operand size cannot be determined by the assembler from register
-operands, and is likely going to be warned about by upstream gas in the
-future (mine does already). Add the missing suffixes here. Note that for
-64-bit this means some operations change from being 32-bit to 64-bit.
+While reading the TCB field in t4_tcb_get_field32() the wrong mask is
+passed as a parameter which leads the driver eventually to a kernel
+panic/app segfault from access to an illegal SRQ index while flushing the
+SRQ completions during connection teardown.
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/5A93F98702000078001ABACC@prv-mh.provo.novell.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 11a27e2121a5 ("iw_cxgb4: complete the cached SRQ buffers")
+Link: https://lore.kernel.org/r/20200511185608.5202-1-bharat@chelsio.com
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/bitops.h |   29 ++++++++++++++++-------------
- arch/x86/include/asm/percpu.h |    2 +-
- 2 files changed, 17 insertions(+), 14 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/arch/x86/include/asm/bitops.h
-+++ b/arch/x86/include/asm/bitops.h
-@@ -78,7 +78,7 @@ set_bit(long nr, volatile unsigned long
- 			: "iq" ((u8)CONST_MASK(nr))
- 			: "memory");
- 	} else {
--		asm volatile(LOCK_PREFIX "bts %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(bts) " %1,%0"
- 			: BITOP_ADDR(addr) : "Ir" (nr) : "memory");
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index d82e0589cfd26..6b4e7235d2f56 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2891,8 +2891,7 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
+ 			srqidx = ABORT_RSS_SRQIDX_G(
+ 					be32_to_cpu(req->srqidx_status));
+ 			if (srqidx) {
+-				complete_cached_srq_buffers(ep,
+-							    req->srqidx_status);
++				complete_cached_srq_buffers(ep, srqidx);
+ 			} else {
+ 				/* Hold ep ref until finish_peer_abort() */
+ 				c4iw_get_ep(&ep->com);
+@@ -3878,8 +3877,8 @@ static int read_tcb_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
+ 		return 0;
  	}
- }
-@@ -94,7 +94,7 @@ set_bit(long nr, volatile unsigned long
-  */
- static __always_inline void __set_bit(long nr, volatile unsigned long *addr)
- {
--	asm volatile("bts %1,%0" : ADDR : "Ir" (nr) : "memory");
-+	asm volatile(__ASM_SIZE(bts) " %1,%0" : ADDR : "Ir" (nr) : "memory");
- }
  
- /**
-@@ -115,7 +115,7 @@ clear_bit(long nr, volatile unsigned lon
- 			: CONST_MASK_ADDR(nr, addr)
- 			: "iq" ((u8)~CONST_MASK(nr)));
- 	} else {
--		asm volatile(LOCK_PREFIX "btr %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(btr) " %1,%0"
- 			: BITOP_ADDR(addr)
- 			: "Ir" (nr));
- 	}
-@@ -137,7 +137,7 @@ static __always_inline void clear_bit_un
+-	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_W,
+-			TCB_RQ_START_S);
++	ep->srqe_idx = t4_tcb_get_field32(tcb, TCB_RQ_START_W, TCB_RQ_START_M,
++					  TCB_RQ_START_S);
+ cleanup:
+ 	pr_debug("ep %p tid %u %016x\n", ep, ep->hwtid, ep->srqe_idx);
  
- static __always_inline void __clear_bit(long nr, volatile unsigned long *addr)
- {
--	asm volatile("btr %1,%0" : ADDR : "Ir" (nr));
-+	asm volatile(__ASM_SIZE(btr) " %1,%0" : ADDR : "Ir" (nr));
- }
- 
- static __always_inline bool clear_bit_unlock_is_negative_byte(long nr, volatile unsigned long *addr)
-@@ -182,7 +182,7 @@ static __always_inline void __clear_bit_
-  */
- static __always_inline void __change_bit(long nr, volatile unsigned long *addr)
- {
--	asm volatile("btc %1,%0" : ADDR : "Ir" (nr));
-+	asm volatile(__ASM_SIZE(btc) " %1,%0" : ADDR : "Ir" (nr));
- }
- 
- /**
-@@ -201,7 +201,7 @@ static __always_inline void change_bit(l
- 			: CONST_MASK_ADDR(nr, addr)
- 			: "iq" ((u8)CONST_MASK(nr)));
- 	} else {
--		asm volatile(LOCK_PREFIX "btc %1,%0"
-+		asm volatile(LOCK_PREFIX __ASM_SIZE(btc) " %1,%0"
- 			: BITOP_ADDR(addr)
- 			: "Ir" (nr));
- 	}
-@@ -217,7 +217,8 @@ static __always_inline void change_bit(l
-  */
- static __always_inline bool test_and_set_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "bts", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(bts),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- /**
-@@ -246,7 +247,7 @@ static __always_inline bool __test_and_s
- {
- 	bool oldbit;
- 
--	asm("bts %2,%1"
-+	asm(__ASM_SIZE(bts) " %2,%1"
- 	    CC_SET(c)
- 	    : CC_OUT(c) (oldbit), ADDR
- 	    : "Ir" (nr));
-@@ -263,7 +264,8 @@ static __always_inline bool __test_and_s
-  */
- static __always_inline bool test_and_clear_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "btr", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btr),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- /**
-@@ -286,7 +288,7 @@ static __always_inline bool __test_and_c
- {
- 	bool oldbit;
- 
--	asm volatile("btr %2,%1"
-+	asm volatile(__ASM_SIZE(btr) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit), ADDR
- 		     : "Ir" (nr));
-@@ -298,7 +300,7 @@ static __always_inline bool __test_and_c
- {
- 	bool oldbit;
- 
--	asm volatile("btc %2,%1"
-+	asm volatile(__ASM_SIZE(btc) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit), ADDR
- 		     : "Ir" (nr) : "memory");
-@@ -316,7 +318,8 @@ static __always_inline bool __test_and_c
-  */
- static __always_inline bool test_and_change_bit(long nr, volatile unsigned long *addr)
- {
--	GEN_BINARY_RMWcc(LOCK_PREFIX "btc", *addr, "Ir", nr, "%0", c);
-+	GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btc),
-+	                 *addr, "Ir", nr, "%0", c);
- }
- 
- static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
-@@ -329,7 +332,7 @@ static __always_inline bool variable_tes
- {
- 	bool oldbit;
- 
--	asm volatile("bt %2,%1"
-+	asm volatile(__ASM_SIZE(bt) " %2,%1"
- 		     CC_SET(c)
- 		     : CC_OUT(c) (oldbit)
- 		     : "m" (*(unsigned long *)addr), "Ir" (nr));
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -526,7 +526,7 @@ static inline bool x86_this_cpu_variable
- {
- 	bool oldbit;
- 
--	asm volatile("bt "__percpu_arg(2)",%1"
-+	asm volatile("btl "__percpu_arg(2)",%1"
- 			CC_SET(c)
- 			: CC_OUT(c) (oldbit)
- 			: "m" (*(unsigned long __percpu *)addr), "Ir" (nr));
+-- 
+2.20.1
+
 
 
