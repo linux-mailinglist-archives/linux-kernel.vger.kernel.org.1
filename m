@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9341D8243
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70FE1D8057
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731376AbgERRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59844 "EHLO mail.kernel.org"
+        id S1728689AbgERRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729771AbgERRyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:50 -0400
+        id S1728657AbgERRjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0C8120674;
-        Mon, 18 May 2020 17:54:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D554020829;
+        Mon, 18 May 2020 17:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824490;
-        bh=40Q/C6SFVyCjEJuhhMnHIsqJzziyUgPkWeVg8jziGjI=;
+        s=default; t=1589823541;
+        bh=96uFTrB1wUL2K5VRxCTmC0WiSXnmT6PY0ZcORRRnhfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AYzPh6c+0wH+dJLPgIwBt2UPBDKxOF9syOWzm/UAhszw3YyBng2BQbAgaE0dSbWwX
-         snDt6aL7VXiKJXA6KMefaoUB/3G4TytNh4rJ8SSshGVj1gpIcXLLDJzZSlrmei7A7K
-         ndXeqz4S/5tb0BuzqhECnHiaVGkEDKnJmkYYDFKw=
+        b=2Hnkk3XdYoT1aw9tr75odNeZB1cHO8bAaP588ePGw/fo4PcSOeBxliUGM1jm+tlL9
+         2GTEWHkCi+eTBsuIufhLEe3HnZCR6DE3y7JyRqw9DbtBKc97Zx0opfgJeT1kJ2FSa/
+         BK8wmOd8Zimth7QziFRg992zwAlENSKyWEcePArw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Walters <walters@redhat.com>
-Subject: [PATCH 5.4 031/147] net: ipv4: really enforce backoff for redirects
-Date:   Mon, 18 May 2020 19:35:54 +0200
-Message-Id: <20200518173518.050636898@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.4 24/86] blktrace: fix unlocked access to init/start-stop/teardown
+Date:   Mon, 18 May 2020 19:35:55 +0200
+Message-Id: <20200518173455.336819399@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 57644431a6c2faac5d754ebd35780cf43a531b1a ]
+commit 1f2cac107c591c24b60b115d6050adc213d10fc0 upstream.
 
-In commit b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and
-rate_tokens usage") I missed the fact that a 0 'rate_tokens' will
-bypass the backoff algorithm.
+sg.c calls into the blktrace functions without holding the proper queue
+mutex for doing setup, start/stop, or teardown.
 
-Since rate_tokens is cleared after a redirect silence, and never
-incremented on redirects, if the host keeps receiving packets
-requiring redirect it will reply ignoring the backoff.
+Add internal unlocked variants, and export the ones that do the proper
+locking.
 
-Additionally, the 'rate_last' field will be updated with the
-cadence of the ingress packet requiring redirect. If that rate is
-high enough, that will prevent the host from generating any
-other kind of ICMP messages
-
-The check for a zero 'rate_tokens' value was likely a shortcut
-to avoid the more complex backoff algorithm after a redirect
-silence period. Address the issue checking for 'n_redirects'
-instead, which is incremented on successful redirect, and
-does not interfere with other ICMP replies.
-
-Fixes: b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and rate_tokens usage")
-Reported-and-tested-by: Colin Walters <walters@redhat.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 6da127ad0918 ("blktrace: Add blktrace ioctls to SCSI generic devices")
+Tested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/route.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/blktrace.c |   58 +++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 10 deletions(-)
 
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -914,7 +914,7 @@ void ip_rt_send_redirect(struct sk_buff
- 	/* Check for load limit; set rate_last to the latest sent
- 	 * redirect.
- 	 */
--	if (peer->rate_tokens == 0 ||
-+	if (peer->n_redirects == 0 ||
- 	    time_after(jiffies,
- 		       (peer->rate_last +
- 			(ip_rt_redirect_load << peer->n_redirects)))) {
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -323,7 +323,7 @@ static void blk_trace_cleanup(struct blk
+ 	put_probe_ref();
+ }
+ 
+-int blk_trace_remove(struct request_queue *q)
++static int __blk_trace_remove(struct request_queue *q)
+ {
+ 	struct blk_trace *bt;
+ 
+@@ -336,6 +336,17 @@ int blk_trace_remove(struct request_queu
+ 
+ 	return 0;
+ }
++
++int blk_trace_remove(struct request_queue *q)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_remove(q);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_remove);
+ 
+ static ssize_t blk_dropped_read(struct file *filp, char __user *buffer,
+@@ -546,9 +557,8 @@ err:
+ 	return ret;
+ }
+ 
+-int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
+-		    struct block_device *bdev,
+-		    char __user *arg)
++static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
++			     struct block_device *bdev, char __user *arg)
+ {
+ 	struct blk_user_trace_setup buts;
+ 	int ret;
+@@ -567,6 +577,19 @@ int blk_trace_setup(struct request_queue
+ 	}
+ 	return 0;
+ }
++
++int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
++		    struct block_device *bdev,
++		    char __user *arg)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_setup(q, name, dev, bdev, arg);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_setup);
+ 
+ #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
+@@ -603,7 +626,7 @@ static int compat_blk_trace_setup(struct
+ }
+ #endif
+ 
+-int blk_trace_startstop(struct request_queue *q, int start)
++static int __blk_trace_startstop(struct request_queue *q, int start)
+ {
+ 	int ret;
+ 	struct blk_trace *bt = q->blk_trace;
+@@ -642,6 +665,17 @@ int blk_trace_startstop(struct request_q
+ 
+ 	return ret;
+ }
++
++int blk_trace_startstop(struct request_queue *q, int start)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_startstop(q, start);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_startstop);
+ 
+ /*
+@@ -672,7 +706,7 @@ int blk_trace_ioctl(struct block_device
+ 	switch (cmd) {
+ 	case BLKTRACESETUP:
+ 		bdevname(bdev, b);
+-		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
++		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
+ 		break;
+ #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
+ 	case BLKTRACESETUP32:
+@@ -683,10 +717,10 @@ int blk_trace_ioctl(struct block_device
+ 	case BLKTRACESTART:
+ 		start = 1;
+ 	case BLKTRACESTOP:
+-		ret = blk_trace_startstop(q, start);
++		ret = __blk_trace_startstop(q, start);
+ 		break;
+ 	case BLKTRACETEARDOWN:
+-		ret = blk_trace_remove(q);
++		ret = __blk_trace_remove(q);
+ 		break;
+ 	default:
+ 		ret = -ENOTTY;
+@@ -704,10 +738,14 @@ int blk_trace_ioctl(struct block_device
+  **/
+ void blk_trace_shutdown(struct request_queue *q)
+ {
++	mutex_lock(&q->blk_trace_mutex);
++
+ 	if (q->blk_trace) {
+-		blk_trace_startstop(q, 0);
+-		blk_trace_remove(q);
++		__blk_trace_startstop(q, 0);
++		__blk_trace_remove(q);
+ 	}
++
++	mutex_unlock(&q->blk_trace_mutex);
+ }
+ 
+ /*
 
 
