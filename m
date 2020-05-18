@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CAC1D8257
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EFE1D8693
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731468AbgERRzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:55:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60894 "EHLO mail.kernel.org"
+        id S2387910AbgERSZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731453AbgERRz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:55:28 -0400
+        id S1730213AbgERRrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 521F8207C4;
-        Mon, 18 May 2020 17:55:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC03120671;
+        Mon, 18 May 2020 17:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824527;
-        bh=ojTCDQRwP9wu3Su04Ln7NJUNO3cMlEDTawPCWWCKniU=;
+        s=default; t=1589824038;
+        bh=tpIiauc4YrWcZQXGN3wFm0cMXUDzbiRA6w5dDO/ReSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lzJHkVty7INZWdfBDMTkR6QrqWjA9pvm/BkMR0qa2SZ6waS/BXg1H3hGNiicASkTC
-         /3GDmboHAM/xyC+V+N39vRyDmFxgr9l3Z+unlxjKORgnfTDPzvRF7vrkaqvWG/jG7/
-         GhMO6X5x0h1nX40GaiuruWO9XNd60Odqnh76YO+U=
+        b=tXySE3nGOcHdmDgekjaz+AJcDyWbhYL9QBraCWiES8pgIVxRBURaagBkweJLcFNA2
+         qkuVlULLIqQJoZbJZebBLSSbML3a8z/zOTyIJx0SkOwac56kevVeA6EXl/qs5zD15O
+         IhCEcA7LxK8OdSibtJ1X51T+ah9MxROGwZyQyKfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 048/147] drm/amdgpu: simplify padding calculations (v2)
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.14 039/114] blktrace: fix unlocked access to init/start-stop/teardown
 Date:   Mon, 18 May 2020 19:36:11 +0200
-Message-Id: <20200518173519.982019557@linuxfoundation.org>
+Message-Id: <20200518173510.623937854@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,160 +44,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luben Tuikov <luben.tuikov@amd.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit ce73516d42c9ab011fad498168b892d28e181db4 ]
+commit 1f2cac107c591c24b60b115d6050adc213d10fc0 upstream.
 
-Simplify padding calculations.
+sg.c calls into the blktrace functions without holding the proper queue
+mutex for doing setup, start/stop, or teardown.
 
-v2: Comment update and spacing.
+Add internal unlocked variants, and export the ones that do the proper
+locking.
 
-Signed-off-by: Luben Tuikov <luben.tuikov@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6da127ad0918 ("blktrace: Add blktrace ioctls to SCSI generic devices")
+Tested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/cik_sdma.c  |  4 ++--
- drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c |  4 ++--
- drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c |  4 ++--
- drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c |  4 ++--
- drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c | 17 ++++++++++++-----
- 5 files changed, 20 insertions(+), 13 deletions(-)
+ kernel/trace/blktrace.c |   58 +++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
-index c45304f1047c5..4af9acc2dc4f9 100644
---- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
-+++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
-@@ -228,7 +228,7 @@ static void cik_sdma_ring_emit_ib(struct amdgpu_ring *ring,
- 	u32 extra_bits = vmid & 0xf;
- 
- 	/* IB packet must end on a 8 DW boundary */
--	cik_sdma_ring_insert_nop(ring, (12 - (lower_32_bits(ring->wptr) & 7)) % 8);
-+	cik_sdma_ring_insert_nop(ring, (4 - lower_32_bits(ring->wptr)) & 7);
- 
- 	amdgpu_ring_write(ring, SDMA_PACKET(SDMA_OPCODE_INDIRECT_BUFFER, 0, extra_bits));
- 	amdgpu_ring_write(ring, ib->gpu_addr & 0xffffffe0); /* base must be 32 byte aligned */
-@@ -811,7 +811,7 @@ static void cik_sdma_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
- 	u32 pad_count;
- 	int i;
- 
--	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
-+	pad_count = (-ib->length_dw) & 7;
- 	for (i = 0; i < pad_count; i++)
- 		if (sdma && sdma->burst_nop && (i == 0))
- 			ib->ptr[ib->length_dw++] =
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-index a101758380130..b6af67f6f2149 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c
-@@ -255,7 +255,7 @@ static void sdma_v2_4_ring_emit_ib(struct amdgpu_ring *ring,
- 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
- 
- 	/* IB packet must end on a 8 DW boundary */
--	sdma_v2_4_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
-+	sdma_v2_4_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
- 
- 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
- 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
-@@ -750,7 +750,7 @@ static void sdma_v2_4_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
- 	u32 pad_count;
- 	int i;
- 
--	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
-+	pad_count = (-ib->length_dw) & 7;
- 	for (i = 0; i < pad_count; i++)
- 		if (sdma && sdma->burst_nop && (i == 0))
- 			ib->ptr[ib->length_dw++] =
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-index 5f4e2c616241f..cd3ebed46d05f 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v3_0.c
-@@ -429,7 +429,7 @@ static void sdma_v3_0_ring_emit_ib(struct amdgpu_ring *ring,
- 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
- 
- 	/* IB packet must end on a 8 DW boundary */
--	sdma_v3_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
-+	sdma_v3_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
- 
- 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
- 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
-@@ -1021,7 +1021,7 @@ static void sdma_v3_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
- 	u32 pad_count;
- 	int i;
- 
--	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
-+	pad_count = (-ib->length_dw) & 7;
- 	for (i = 0; i < pad_count; i++)
- 		if (sdma && sdma->burst_nop && (i == 0))
- 			ib->ptr[ib->length_dw++] =
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-index 4554e72c83786..23de332f3c6ed 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-@@ -698,7 +698,7 @@ static void sdma_v4_0_ring_emit_ib(struct amdgpu_ring *ring,
- 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
- 
- 	/* IB packet must end on a 8 DW boundary */
--	sdma_v4_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
-+	sdma_v4_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
- 
- 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
- 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
-@@ -1579,7 +1579,7 @@ static void sdma_v4_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
- 	u32 pad_count;
- 	int i;
- 
--	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
-+	pad_count = (-ib->length_dw) & 7;
- 	for (i = 0; i < pad_count; i++)
- 		if (sdma && sdma->burst_nop && (i == 0))
- 			ib->ptr[ib->length_dw++] =
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-index 8493bfbbc1484..2a792d7abe007 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-@@ -382,8 +382,15 @@ static void sdma_v5_0_ring_emit_ib(struct amdgpu_ring *ring,
- 	unsigned vmid = AMDGPU_JOB_GET_VMID(job);
- 	uint64_t csa_mc_addr = amdgpu_sdma_get_csa_mc_addr(ring, vmid);
- 
--	/* IB packet must end on a 8 DW boundary */
--	sdma_v5_0_ring_insert_nop(ring, (10 - (lower_32_bits(ring->wptr) & 7)) % 8);
-+	/* An IB packet must end on a 8 DW boundary--the next dword
-+	 * must be on a 8-dword boundary. Our IB packet below is 6
-+	 * dwords long, thus add x number of NOPs, such that, in
-+	 * modular arithmetic,
-+	 * wptr + 6 + x = 8k, k >= 0, which in C is,
-+	 * (wptr + 6 + x) % 8 = 0.
-+	 * The expression below, is a solution of x.
-+	 */
-+	sdma_v5_0_ring_insert_nop(ring, (2 - lower_32_bits(ring->wptr)) & 7);
- 
- 	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_INDIRECT) |
- 			  SDMA_PKT_INDIRECT_HEADER_VMID(vmid & 0xf));
-@@ -1086,10 +1093,10 @@ static void sdma_v5_0_vm_set_pte_pde(struct amdgpu_ib *ib,
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -352,7 +352,7 @@ static void blk_trace_cleanup(struct blk
+ 	put_probe_ref();
  }
  
- /**
-- * sdma_v5_0_ring_pad_ib - pad the IB to the required number of dw
-- *
-+ * sdma_v5_0_ring_pad_ib - pad the IB
-  * @ib: indirect buffer to fill with padding
-  *
-+ * Pad the IB with NOPs to a boundary multiple of 8.
-  */
- static void sdma_v5_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib)
+-int blk_trace_remove(struct request_queue *q)
++static int __blk_trace_remove(struct request_queue *q)
  {
-@@ -1097,7 +1104,7 @@ static void sdma_v5_0_ring_pad_ib(struct amdgpu_ring *ring, struct amdgpu_ib *ib
- 	u32 pad_count;
- 	int i;
+ 	struct blk_trace *bt;
  
--	pad_count = (8 - (ib->length_dw & 0x7)) % 8;
-+	pad_count = (-ib->length_dw) & 0x7;
- 	for (i = 0; i < pad_count; i++)
- 		if (sdma && sdma->burst_nop && (i == 0))
- 			ib->ptr[ib->length_dw++] =
--- 
-2.20.1
-
+@@ -365,6 +365,17 @@ int blk_trace_remove(struct request_queu
+ 
+ 	return 0;
+ }
++
++int blk_trace_remove(struct request_queue *q)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_remove(q);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_remove);
+ 
+ static ssize_t blk_dropped_read(struct file *filp, char __user *buffer,
+@@ -565,9 +576,8 @@ err:
+ 	return ret;
+ }
+ 
+-int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
+-		    struct block_device *bdev,
+-		    char __user *arg)
++static int __blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
++			     struct block_device *bdev, char __user *arg)
+ {
+ 	struct blk_user_trace_setup buts;
+ 	int ret;
+@@ -586,6 +596,19 @@ int blk_trace_setup(struct request_queue
+ 	}
+ 	return 0;
+ }
++
++int blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
++		    struct block_device *bdev,
++		    char __user *arg)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_setup(q, name, dev, bdev, arg);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_setup);
+ 
+ #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
+@@ -622,7 +645,7 @@ static int compat_blk_trace_setup(struct
+ }
+ #endif
+ 
+-int blk_trace_startstop(struct request_queue *q, int start)
++static int __blk_trace_startstop(struct request_queue *q, int start)
+ {
+ 	int ret;
+ 	struct blk_trace *bt = q->blk_trace;
+@@ -661,6 +684,17 @@ int blk_trace_startstop(struct request_q
+ 
+ 	return ret;
+ }
++
++int blk_trace_startstop(struct request_queue *q, int start)
++{
++	int ret;
++
++	mutex_lock(&q->blk_trace_mutex);
++	ret = __blk_trace_startstop(q, start);
++	mutex_unlock(&q->blk_trace_mutex);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(blk_trace_startstop);
+ 
+ /*
+@@ -691,7 +725,7 @@ int blk_trace_ioctl(struct block_device
+ 	switch (cmd) {
+ 	case BLKTRACESETUP:
+ 		bdevname(bdev, b);
+-		ret = blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
++		ret = __blk_trace_setup(q, b, bdev->bd_dev, bdev, arg);
+ 		break;
+ #if defined(CONFIG_COMPAT) && defined(CONFIG_X86_64)
+ 	case BLKTRACESETUP32:
+@@ -702,10 +736,10 @@ int blk_trace_ioctl(struct block_device
+ 	case BLKTRACESTART:
+ 		start = 1;
+ 	case BLKTRACESTOP:
+-		ret = blk_trace_startstop(q, start);
++		ret = __blk_trace_startstop(q, start);
+ 		break;
+ 	case BLKTRACETEARDOWN:
+-		ret = blk_trace_remove(q);
++		ret = __blk_trace_remove(q);
+ 		break;
+ 	default:
+ 		ret = -ENOTTY;
+@@ -723,10 +757,14 @@ int blk_trace_ioctl(struct block_device
+  **/
+ void blk_trace_shutdown(struct request_queue *q)
+ {
++	mutex_lock(&q->blk_trace_mutex);
++
+ 	if (q->blk_trace) {
+-		blk_trace_startstop(q, 0);
+-		blk_trace_remove(q);
++		__blk_trace_startstop(q, 0);
++		__blk_trace_remove(q);
+ 	}
++
++	mutex_unlock(&q->blk_trace_mutex);
+ }
+ 
+ #ifdef CONFIG_BLK_CGROUP
 
 
