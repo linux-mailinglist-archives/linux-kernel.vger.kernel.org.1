@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2161D8240
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647F11D8345
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731360AbgERRyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:54:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        id S1732641AbgERSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731353AbgERRyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:54:46 -0400
+        id S1731507AbgERSDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:03:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFCBF20829;
-        Mon, 18 May 2020 17:54:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FD34207F5;
+        Mon, 18 May 2020 18:03:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824485;
-        bh=QitNHxHhfqNdqMYNIxGf8Vj+yrlLbQAmtA1kEfXAlLE=;
+        s=default; t=1589824990;
+        bh=p+ja2vRe2GOEd4ER0sNd2TiM8cbguWj1RwJgbtZ5bCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dd/ANbirXY2Yhh0DN3Y2n/ibg3e4uIWiEBkxm3VAmYXHTy+T7sZaRFu99qRFtxv8U
-         9V0QrHsQYZENagL5DV2wv57LkHkS5ln9/J58RjXkzONkFNnWoxwI3Ld9Zj1CGH2RM7
-         FwYFnpQ1D+LMTh1uRpBuMR2p1FgDZD4u+pe+1sOE=
+        b=ThrXOwfqZF7e35t4JcBDEcZRloPebNQuAmzFxOtFjLbkrC7XJ06WFu3xN+dik3qSc
+         doYyOUfXej0TnKPjXms9JqAVnZ47QyAsDYe/whNoeSChWoWP0yLNpy1E4cXpynrLtP
+         QoCLNgHQd6z2Kgxhq7Yl4BTga6+HADKLN9ss/29E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuiko Oshino <yuiko.oshino@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 003/147] net: phy: microchip_t1: add lan87xx_phy_init to initialize the lan87xx phy.
-Date:   Mon, 18 May 2020 19:35:26 +0200
-Message-Id: <20200518173513.537061282@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 037/194] Revert "ipv6: add mtu lock check in __ip6_rt_update_pmtu"
+Date:   Mon, 18 May 2020 19:35:27 +0200
+Message-Id: <20200518173534.803818704@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-References: <20200518173513.009514388@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,237 +47,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuiko Oshino <yuiko.oshino@microchip.com>
+From: "Maciej Żenczykowski" <maze@google.com>
 
-[ Upstream commit 63edbcceef612bdd95fa28ce100460c7b79008a4 ]
+[ Upstream commit 09454fd0a4ce23cb3d8af65066c91a1bf27120dd ]
 
-lan87xx_phy_init() initializes the lan87xx phy hardware
-including its TC10 Wake-up and Sleep features.
+This reverts commit 19bda36c4299ce3d7e5bce10bebe01764a655a6d:
 
-Fixes: 3e50d2da5850 ("Add driver for Microchip LAN87XX T1 PHYs")
-Signed-off-by: Yuiko Oshino <yuiko.oshino@microchip.com>
-v0->v1:
-    - Add more details in the commit message and source comments.
-    - Update to the latest initialization sequences.
-    - Add access_ereg_modify_changed().
-    - Fix access_ereg() to access SMI bank correctly.
+| ipv6: add mtu lock check in __ip6_rt_update_pmtu
+|
+| Prior to this patch, ipv6 didn't do mtu lock check in ip6_update_pmtu.
+| It leaded to that mtu lock doesn't really work when receiving the pkt
+| of ICMPV6_PKT_TOOBIG.
+|
+| This patch is to add mtu lock check in __ip6_rt_update_pmtu just as ipv4
+| did in __ip_rt_update_pmtu.
+
+The above reasoning is incorrect.  IPv6 *requires* icmp based pmtu to work.
+There's already a comment to this effect elsewhere in the kernel:
+
+  $ git grep -p -B1 -A3 'RTAX_MTU lock'
+  net/ipv6/route.c=4813=
+
+  static int rt6_mtu_change_route(struct fib6_info *f6i, void *p_arg)
+  ...
+    /* In IPv6 pmtu discovery is not optional,
+       so that RTAX_MTU lock cannot disable it.
+       We still use this lock to block changes
+       caused by addrconf/ndisc.
+    */
+
+This reverts to the pre-4.9 behaviour.
+
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Fixes: 19bda36c4299 ("ipv6: add mtu lock check in __ip6_rt_update_pmtu")
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/microchip_t1.c | 171 +++++++++++++++++++++++++++++++++
- 1 file changed, 171 insertions(+)
+ net/ipv6/route.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/phy/microchip_t1.c b/drivers/net/phy/microchip_t1.c
-index 001def4509c29..fed3e395f18e1 100644
---- a/drivers/net/phy/microchip_t1.c
-+++ b/drivers/net/phy/microchip_t1.c
-@@ -3,9 +3,21 @@
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2725,8 +2725,10 @@ static void __ip6_rt_update_pmtu(struct
+ 	const struct in6_addr *daddr, *saddr;
+ 	struct rt6_info *rt6 = (struct rt6_info *)dst;
  
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/delay.h>
- #include <linux/mii.h>
- #include <linux/phy.h>
+-	if (dst_metric_locked(dst, RTAX_MTU))
+-		return;
++	/* Note: do *NOT* check dst_metric_locked(dst, RTAX_MTU)
++	 * IPv6 pmtu discovery isn't optional, so 'mtu lock' cannot disable it.
++	 * [see also comment in rt6_mtu_change_route()]
++	 */
  
-+/* External Register Control Register */
-+#define LAN87XX_EXT_REG_CTL                     (0x14)
-+#define LAN87XX_EXT_REG_CTL_RD_CTL              (0x1000)
-+#define LAN87XX_EXT_REG_CTL_WR_CTL              (0x0800)
-+
-+/* External Register Read Data Register */
-+#define LAN87XX_EXT_REG_RD_DATA                 (0x15)
-+
-+/* External Register Write Data Register */
-+#define LAN87XX_EXT_REG_WR_DATA                 (0x16)
-+
- /* Interrupt Source Register */
- #define LAN87XX_INTERRUPT_SOURCE                (0x18)
- 
-@@ -14,9 +26,160 @@
- #define LAN87XX_MASK_LINK_UP                    (0x0004)
- #define LAN87XX_MASK_LINK_DOWN                  (0x0002)
- 
-+/* phyaccess nested types */
-+#define	PHYACC_ATTR_MODE_READ		0
-+#define	PHYACC_ATTR_MODE_WRITE		1
-+#define	PHYACC_ATTR_MODE_MODIFY		2
-+
-+#define	PHYACC_ATTR_BANK_SMI		0
-+#define	PHYACC_ATTR_BANK_MISC		1
-+#define	PHYACC_ATTR_BANK_PCS		2
-+#define	PHYACC_ATTR_BANK_AFE		3
-+#define	PHYACC_ATTR_BANK_MAX		7
-+
- #define DRIVER_AUTHOR	"Nisar Sayed <nisar.sayed@microchip.com>"
- #define DRIVER_DESC	"Microchip LAN87XX T1 PHY driver"
- 
-+struct access_ereg_val {
-+	u8  mode;
-+	u8  bank;
-+	u8  offset;
-+	u16 val;
-+	u16 mask;
-+};
-+
-+static int access_ereg(struct phy_device *phydev, u8 mode, u8 bank,
-+		       u8 offset, u16 val)
-+{
-+	u16 ereg = 0;
-+	int rc = 0;
-+
-+	if (mode > PHYACC_ATTR_MODE_WRITE || bank > PHYACC_ATTR_BANK_MAX)
-+		return -EINVAL;
-+
-+	if (bank == PHYACC_ATTR_BANK_SMI) {
-+		if (mode == PHYACC_ATTR_MODE_WRITE)
-+			rc = phy_write(phydev, offset, val);
-+		else
-+			rc = phy_read(phydev, offset);
-+		return rc;
-+	}
-+
-+	if (mode == PHYACC_ATTR_MODE_WRITE) {
-+		ereg = LAN87XX_EXT_REG_CTL_WR_CTL;
-+		rc = phy_write(phydev, LAN87XX_EXT_REG_WR_DATA, val);
-+		if (rc < 0)
-+			return rc;
-+	} else {
-+		ereg = LAN87XX_EXT_REG_CTL_RD_CTL;
-+	}
-+
-+	ereg |= (bank << 8) | offset;
-+
-+	rc = phy_write(phydev, LAN87XX_EXT_REG_CTL, ereg);
-+	if (rc < 0)
-+		return rc;
-+
-+	if (mode == PHYACC_ATTR_MODE_READ)
-+		rc = phy_read(phydev, LAN87XX_EXT_REG_RD_DATA);
-+
-+	return rc;
-+}
-+
-+static int access_ereg_modify_changed(struct phy_device *phydev,
-+				      u8 bank, u8 offset, u16 val, u16 mask)
-+{
-+	int new = 0, rc = 0;
-+
-+	if (bank > PHYACC_ATTR_BANK_MAX)
-+		return -EINVAL;
-+
-+	rc = access_ereg(phydev, PHYACC_ATTR_MODE_READ, bank, offset, val);
-+	if (rc < 0)
-+		return rc;
-+
-+	new = val | (rc & (mask ^ 0xFFFF));
-+	rc = access_ereg(phydev, PHYACC_ATTR_MODE_WRITE, bank, offset, new);
-+
-+	return rc;
-+}
-+
-+static int lan87xx_phy_init(struct phy_device *phydev)
-+{
-+	static const struct access_ereg_val init[] = {
-+		/* TX Amplitude = 5 */
-+		{PHYACC_ATTR_MODE_MODIFY, PHYACC_ATTR_BANK_AFE, 0x0B,
-+		 0x000A, 0x001E},
-+		/* Clear SMI interrupts */
-+		{PHYACC_ATTR_MODE_READ, PHYACC_ATTR_BANK_SMI, 0x18,
-+		 0, 0},
-+		/* Clear MISC interrupts */
-+		{PHYACC_ATTR_MODE_READ, PHYACC_ATTR_BANK_MISC, 0x08,
-+		 0, 0},
-+		/* Turn on TC10 Ring Oscillator (ROSC) */
-+		{PHYACC_ATTR_MODE_MODIFY, PHYACC_ATTR_BANK_MISC, 0x20,
-+		 0x0020, 0x0020},
-+		/* WUR Detect Length to 1.2uS, LPC Detect Length to 1.09uS */
-+		{PHYACC_ATTR_MODE_WRITE, PHYACC_ATTR_BANK_PCS, 0x20,
-+		 0x283C, 0},
-+		/* Wake_In Debounce Length to 39uS, Wake_Out Length to 79uS */
-+		{PHYACC_ATTR_MODE_WRITE, PHYACC_ATTR_BANK_MISC, 0x21,
-+		 0x274F, 0},
-+		/* Enable Auto Wake Forward to Wake_Out, ROSC on, Sleep,
-+		 * and Wake_In to wake PHY
-+		 */
-+		{PHYACC_ATTR_MODE_WRITE, PHYACC_ATTR_BANK_MISC, 0x20,
-+		 0x80A7, 0},
-+		/* Enable WUP Auto Fwd, Enable Wake on MDI, Wakeup Debouncer
-+		 * to 128 uS
-+		 */
-+		{PHYACC_ATTR_MODE_WRITE, PHYACC_ATTR_BANK_MISC, 0x24,
-+		 0xF110, 0},
-+		/* Enable HW Init */
-+		{PHYACC_ATTR_MODE_MODIFY, PHYACC_ATTR_BANK_SMI, 0x1A,
-+		 0x0100, 0x0100},
-+	};
-+	int rc, i;
-+
-+	/* Start manual initialization procedures in Managed Mode */
-+	rc = access_ereg_modify_changed(phydev, PHYACC_ATTR_BANK_SMI,
-+					0x1a, 0x0000, 0x0100);
-+	if (rc < 0)
-+		return rc;
-+
-+	/* Soft Reset the SMI block */
-+	rc = access_ereg_modify_changed(phydev, PHYACC_ATTR_BANK_SMI,
-+					0x00, 0x8000, 0x8000);
-+	if (rc < 0)
-+		return rc;
-+
-+	/* Check to see if the self-clearing bit is cleared */
-+	usleep_range(1000, 2000);
-+	rc = access_ereg(phydev, PHYACC_ATTR_MODE_READ,
-+			 PHYACC_ATTR_BANK_SMI, 0x00, 0);
-+	if (rc < 0)
-+		return rc;
-+	if ((rc & 0x8000) != 0)
-+		return -ETIMEDOUT;
-+
-+	/* PHY Initialization */
-+	for (i = 0; i < ARRAY_SIZE(init); i++) {
-+		if (init[i].mode == PHYACC_ATTR_MODE_MODIFY) {
-+			rc = access_ereg_modify_changed(phydev, init[i].bank,
-+							init[i].offset,
-+							init[i].val,
-+							init[i].mask);
-+		} else {
-+			rc = access_ereg(phydev, init[i].mode, init[i].bank,
-+					 init[i].offset, init[i].val);
-+		}
-+		if (rc < 0)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+
- static int lan87xx_phy_config_intr(struct phy_device *phydev)
- {
- 	int rc, val = 0;
-@@ -40,6 +203,13 @@ static int lan87xx_phy_ack_interrupt(struct phy_device *phydev)
- 	return rc < 0 ? rc : 0;
- }
- 
-+static int lan87xx_config_init(struct phy_device *phydev)
-+{
-+	int rc = lan87xx_phy_init(phydev);
-+
-+	return rc < 0 ? rc : 0;
-+}
-+
- static struct phy_driver microchip_t1_phy_driver[] = {
- 	{
- 		.phy_id         = 0x0007c150,
-@@ -48,6 +218,7 @@ static struct phy_driver microchip_t1_phy_driver[] = {
- 
- 		.features       = PHY_BASIC_T1_FEATURES,
- 
-+		.config_init	= lan87xx_config_init,
- 		.config_aneg    = genphy_config_aneg,
- 
- 		.ack_interrupt  = lan87xx_phy_ack_interrupt,
--- 
-2.20.1
-
+ 	if (iph) {
+ 		daddr = &iph->daddr;
 
 
