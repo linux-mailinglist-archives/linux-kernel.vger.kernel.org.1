@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55CB1D81F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE41D8407
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgERRwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
+        id S1732143AbgERSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730931AbgERRwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:07 -0400
+        id S1732391AbgERSFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64F3C20835;
-        Mon, 18 May 2020 17:52:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3613420853;
+        Mon, 18 May 2020 18:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824326;
-        bh=48APL4Me6i32PibkpfwGlIUpRfmeApshF9jBQdy6avw=;
+        s=default; t=1589825112;
+        bh=09n0LPrMQrdBJRI41KV3ZpJcp4wImuhEc6SnU+Jd4Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N0MhCDSaV/Bw/MaIwxKN0hnePG8HdbiTo4zGxxE9hCfwEaI41P4j/tdp9Np5kvYJs
-         bixGw5ummocijamHZ6q0OGCHdH6BvjnruuNCVGlcTHp2o2X79PqQwUbWhxi8mipr8p
-         xG547uQCzkREcnl34srGCBCj5KYv9K+Kw08sMLWw=
+        b=COq0heGyzv84HWipTlMP1L3QzsjBRjqIpiU6RRYiL0V9Qh3uHUC7d8WWKMStydtPO
+         prWTdDzJkctYZGCCt/paBtnAoAtI0D1pwPMP8AevvuYcfZn8ZhDn46Z5i6PvrhnWuJ
+         tDbieAGJ241At71mIPohIZO035+H486ue71RtWfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 47/80] Stop the ad-hoc games with -Wno-maybe-initialized
+        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.6 135/194] bootconfig: Fix to prevent warning message if no bootconfig option
 Date:   Mon, 18 May 2020 19:37:05 +0200
-Message-Id: <20200518173459.930021014@linuxfoundation.org>
+Message-Id: <20200518173542.650801501@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,109 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 78a5255ffb6a1af189a83e493d916ba1c54d8c75 upstream.
+commit 611d0a95d46b0977a530b4d538948c69d447b001 upstream.
 
-We have some rather random rules about when we accept the
-"maybe-initialized" warnings, and when we don't.
+Commit de462e5f1071 ("bootconfig: Fix to remove bootconfig
+data from initrd while boot") causes a cosmetic regression
+on dmesg, which warns "no bootconfig data" message without
+bootconfig cmdline option.
 
-For example, we consider it unreliable for gcc versions < 4.9, but also
-if -O3 is enabled, or if optimizing for size.  And then various kernel
-config options disabled it, because they know that they trigger that
-warning by confusing gcc sufficiently (ie PROFILE_ALL_BRANCHES).
+Fix setup_boot_config() by moving no bootconfig check after
+commandline option check.
 
-And now gcc-10 seems to be introducing a lot of those warnings too, so
-it falls under the same heading as 4.9 did.
+Link: http://lkml.kernel.org/r/9b1ba335-071d-c983-89a4-2677b522dcc8@molgen.mpg.de
+Link: http://lkml.kernel.org/r/158916116468.21787.14558782332170588206.stgit@devnote2
 
-At the same time, we have a very straightforward way to _enable_ that
-warning when wanted: use "W=2" to enable more warnings.
-
-So stop playing these ad-hoc games, and just disable that warning by
-default, with the known and straight-forward "if you want to work on the
-extra compiler warnings, use W=123".
-
-Would it be great to have code that is always so obvious that it never
-confuses the compiler whether a variable is used initialized or not?
-Yes, it would.  In a perfect world, the compilers would be smarter, and
-our source code would be simpler.
-
-That's currently not the world we live in, though.
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: de462e5f1071 ("bootconfig: Fix to remove bootconfig data from initrd while boot")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- Makefile             |    7 +++----
- init/Kconfig         |   17 -----------------
- kernel/trace/Kconfig |    1 -
- 3 files changed, 3 insertions(+), 22 deletions(-)
+ init/main.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -662,10 +662,6 @@ else
- KBUILD_CFLAGS   += -O2
- endif
+--- a/init/main.c
++++ b/init/main.c
+@@ -398,9 +398,8 @@ static void __init setup_boot_config(con
+ 	char *data, *copy;
+ 	int ret;
  
--ifdef CONFIG_CC_DISABLE_WARN_MAYBE_UNINITIALIZED
--KBUILD_CFLAGS   += -Wno-maybe-uninitialized
--endif
--
- # Tell gcc to never replace conditional load with a non-conditional one
- KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
++	/* Cut out the bootconfig data even if we have no bootconfig option */
+ 	data = get_boot_config_from_initrd(&size, &csum);
+-	if (!data)
+-		goto not_found;
  
-@@ -796,6 +792,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
- # disable stringop warnings in gcc 8+
- KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+ 	strlcpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+ 	parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+@@ -409,6 +408,11 @@ static void __init setup_boot_config(con
+ 	if (!bootconfig_found)
+ 		return;
  
-+# Enabled with W=2, disabled by default as noisy
-+KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
++	if (!data) {
++		pr_err("'bootconfig' found on command line, but no bootconfig found\n");
++		return;
++	}
 +
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
+ 	if (size >= XBC_DATA_MAX) {
+ 		pr_err("bootconfig size %d greater than max size %d\n",
+ 			size, XBC_DATA_MAX);
+@@ -440,8 +444,6 @@ static void __init setup_boot_config(con
+ 		extra_init_args = xbc_make_cmdline("init");
+ 	}
+ 	return;
+-not_found:
+-	pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+ }
  
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -26,22 +26,6 @@ config CLANG_VERSION
- config CC_HAS_ASM_GOTO
- 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
- 
--config CC_HAS_WARN_MAYBE_UNINITIALIZED
--	def_bool $(cc-option,-Wmaybe-uninitialized)
--	help
--	  GCC >= 4.7 supports this option.
--
--config CC_DISABLE_WARN_MAYBE_UNINITIALIZED
--	bool
--	depends on CC_HAS_WARN_MAYBE_UNINITIALIZED
--	default CC_IS_GCC && GCC_VERSION < 40900  # unreliable for GCC < 4.9
--	help
--	  GCC's -Wmaybe-uninitialized is not reliable by definition.
--	  Lots of false positive warnings are produced in some cases.
--
--	  If this option is enabled, -Wno-maybe-uninitialzed is passed
--	  to the compiler to suppress maybe-uninitialized warnings.
--
- config CONSTRUCTORS
- 	bool
- 	depends on !UML
-@@ -1099,7 +1083,6 @@ config CC_OPTIMIZE_FOR_PERFORMANCE
- 
- config CC_OPTIMIZE_FOR_SIZE
- 	bool "Optimize for size"
--	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  Enabling this option will pass "-Os" instead of "-O2" to
- 	  your compiler resulting in a smaller kernel.
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -370,7 +370,6 @@ config PROFILE_ANNOTATED_BRANCHES
- config PROFILE_ALL_BRANCHES
- 	bool "Profile all if conditionals" if !FORTIFY_SOURCE
- 	select TRACE_BRANCH_PROFILING
--	imply CC_DISABLE_WARN_MAYBE_UNINITIALIZED  # avoid false positives
- 	help
- 	  This tracer profiles all branch conditions. Every if ()
- 	  taken in the kernel is recorded whether it hit or miss.
+ #else
 
 
