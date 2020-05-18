@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347511D863E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627DC1D86D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732042AbgERSYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49422 "EHLO mail.kernel.org"
+        id S2387987AbgERS2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728840AbgERRsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:30 -0400
+        id S1729520AbgERRnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7058C20657;
-        Mon, 18 May 2020 17:48:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92DE020849;
+        Mon, 18 May 2020 17:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824109;
-        bh=tbPH4fX5iPahAc68h/Ix2JabO6ya2WIuRe6PLDpthWM=;
+        s=default; t=1589823786;
+        bh=++6rxJ4KjRISx6k9lCyq8Zf09OyDNFQaezhXx9FQq6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ynvYOzKxop+tjqCFPs1FGvfcDJS4gZKEocjxrYFTpyBqhhgB2/B9oUViYgJSjXasx
-         V8yH76ZSdNXNLoy94hT3UYewQhg7WD+6DapEUPUoN4UAZOtZX7jVm+PQ8HkL+kksyl
-         JjtG7iDOvRtYST+yesO0SFKIFZw81u0W4GicCAwU=
+        b=h+hRe3mouFVpZkkkuIOY+ADNVQ5vGhpkSUD7mspi6eN9I3aR1q96k95//MoXY+8ru
+         w6M53SQEyrsbWT7/XhAJNTN4pmthRv4YN5pD4xTDcK7FDOz8fVi6pmSrjPhKevEoc5
+         GCIexGQI7xo+fadVpi+T6qkN068v9p3w+i/u4cgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bob Liu <bob.liu@oracle.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Cengiz Can <cengiz@kernel.wtf>, Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.14 042/114] blktrace: fix dereference after null check
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 36/90] ptp: create "pins" together with the rest of attributes
 Date:   Mon, 18 May 2020 19:36:14 +0200
-Message-Id: <20200518173511.050085773@linuxfoundation.org>
+Message-Id: <20200518173458.426221453@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +46,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cengiz Can <cengiz@kernel.wtf>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-commit 153031a301bb07194e9c37466cfce8eacb977621 upstream.
+commit 85a66e55019583da1e0f18706b7a8281c9f6de5b upstream.
 
-There was a recent change in blktrace.c that added a RCU protection to
-`q->blk_trace` in order to fix a use-after-free issue during access.
+Let's switch to using device_create_with_groups(), which will allow us to
+create "pins" attribute group together with the rest of ptp device
+attributes, and before userspace gets notified about ptp device creation.
 
-However the change missed an edge case that can lead to dereferencing of
-`bt` pointer even when it's NULL:
-
-Coverity static analyzer marked this as a FORWARD_NULL issue with CID
-1460458.
-
-```
-/kernel/trace/blktrace.c: 1904 in sysfs_blk_trace_attr_store()
-1898            ret = 0;
-1899            if (bt == NULL)
-1900                    ret = blk_trace_setup_queue(q, bdev);
-1901
-1902            if (ret == 0) {
-1903                    if (attr == &dev_attr_act_mask)
->>>     CID 1460458:  Null pointer dereferences  (FORWARD_NULL)
->>>     Dereferencing null pointer "bt".
-1904                            bt->act_mask = value;
-1905                    else if (attr == &dev_attr_pid)
-1906                            bt->pid = value;
-1907                    else if (attr == &dev_attr_start_lba)
-1908                            bt->start_lba = value;
-1909                    else if (attr == &dev_attr_end_lba)
-```
-
-Added a reassignment with RCU annotation to fix the issue.
-
-Fixes: c780e86dd48 ("blktrace: Protect q->blk_trace with RCU")
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Bob Liu <bob.liu@oracle.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[bwh: Backported to 4.9: adjust context]
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/ptp/ptp_clock.c   | 20 +++++++++++---------
+ drivers/ptp/ptp_private.h |  7 ++++---
+ drivers/ptp/ptp_sysfs.c   | 39 +++++++++------------------------------
+ 3 files changed, 24 insertions(+), 42 deletions(-)
 
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1911,8 +1911,11 @@ static ssize_t sysfs_blk_trace_attr_stor
- 	}
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 08f304b83ad13..d5ac33350889e 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -214,16 +214,17 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	mutex_init(&ptp->pincfg_mux);
+ 	init_waitqueue_head(&ptp->tsev_wq);
  
- 	ret = 0;
--	if (bt == NULL)
-+	if (bt == NULL) {
- 		ret = blk_trace_setup_queue(q, bdev);
-+		bt = rcu_dereference_protected(q->blk_trace,
-+				lockdep_is_held(&q->blk_trace_mutex));
-+	}
++	err = ptp_populate_pin_groups(ptp);
++	if (err)
++		goto no_pin_groups;
++
+ 	/* Create a new device in our class. */
+-	ptp->dev = device_create(ptp_class, parent, ptp->devid, ptp,
+-				 "ptp%d", ptp->index);
++	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
++					     ptp, ptp->pin_attr_groups,
++					     "ptp%d", ptp->index);
+ 	if (IS_ERR(ptp->dev))
+ 		goto no_device;
  
- 	if (ret == 0) {
- 		if (attr == &dev_attr_act_mask)
+-	err = ptp_populate_sysfs(ptp);
+-	if (err)
+-		goto no_sysfs;
+-
+ 	/* Register a new PPS source. */
+ 	if (info->pps) {
+ 		struct pps_source_info pps;
+@@ -251,10 +252,10 @@ no_clock:
+ 	if (ptp->pps_source)
+ 		pps_unregister_source(ptp->pps_source);
+ no_pps:
+-	ptp_cleanup_sysfs(ptp);
+-no_sysfs:
+ 	device_destroy(ptp_class, ptp->devid);
+ no_device:
++	ptp_cleanup_pin_groups(ptp);
++no_pin_groups:
+ 	mutex_destroy(&ptp->tsevq_mux);
+ 	mutex_destroy(&ptp->pincfg_mux);
+ 	ida_simple_remove(&ptp_clocks_map, index);
+@@ -273,8 +274,9 @@ int ptp_clock_unregister(struct ptp_clock *ptp)
+ 	/* Release the clock's resources. */
+ 	if (ptp->pps_source)
+ 		pps_unregister_source(ptp->pps_source);
+-	ptp_cleanup_sysfs(ptp);
++
+ 	device_destroy(ptp_class, ptp->devid);
++	ptp_cleanup_pin_groups(ptp);
+ 
+ 	posix_clock_unregister(&ptp->clock);
+ 	return 0;
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index 9c5d41421b651..d95888974d0c6 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -54,6 +54,8 @@ struct ptp_clock {
+ 	struct device_attribute *pin_dev_attr;
+ 	struct attribute **pin_attr;
+ 	struct attribute_group pin_attr_group;
++	/* 1st entry is a pointer to the real group, 2nd is NULL terminator */
++	const struct attribute_group *pin_attr_groups[2];
+ };
+ 
+ /*
+@@ -94,8 +96,7 @@ uint ptp_poll(struct posix_clock *pc,
+ 
+ extern const struct attribute_group *ptp_groups[];
+ 
+-int ptp_cleanup_sysfs(struct ptp_clock *ptp);
+-
+-int ptp_populate_sysfs(struct ptp_clock *ptp);
++int ptp_populate_pin_groups(struct ptp_clock *ptp);
++void ptp_cleanup_pin_groups(struct ptp_clock *ptp);
+ 
+ #endif
+diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
+index a55a6eb4dfde9..731d0423c8aa7 100644
+--- a/drivers/ptp/ptp_sysfs.c
++++ b/drivers/ptp/ptp_sysfs.c
+@@ -268,25 +268,14 @@ static ssize_t ptp_pin_store(struct device *dev, struct device_attribute *attr,
+ 	return count;
+ }
+ 
+-int ptp_cleanup_sysfs(struct ptp_clock *ptp)
++int ptp_populate_pin_groups(struct ptp_clock *ptp)
+ {
+-	struct device *dev = ptp->dev;
+-	struct ptp_clock_info *info = ptp->info;
+-
+-	if (info->n_pins) {
+-		sysfs_remove_group(&dev->kobj, &ptp->pin_attr_group);
+-		kfree(ptp->pin_attr);
+-		kfree(ptp->pin_dev_attr);
+-	}
+-	return 0;
+-}
+-
+-static int ptp_populate_pins(struct ptp_clock *ptp)
+-{
+-	struct device *dev = ptp->dev;
+ 	struct ptp_clock_info *info = ptp->info;
+ 	int err = -ENOMEM, i, n_pins = info->n_pins;
+ 
++	if (!n_pins)
++		return 0;
++
+ 	ptp->pin_dev_attr = kzalloc(n_pins * sizeof(*ptp->pin_dev_attr),
+ 				    GFP_KERNEL);
+ 	if (!ptp->pin_dev_attr)
+@@ -310,28 +299,18 @@ static int ptp_populate_pins(struct ptp_clock *ptp)
+ 	ptp->pin_attr_group.name = "pins";
+ 	ptp->pin_attr_group.attrs = ptp->pin_attr;
+ 
+-	err = sysfs_create_group(&dev->kobj, &ptp->pin_attr_group);
+-	if (err)
+-		goto no_group;
++	ptp->pin_attr_groups[0] = &ptp->pin_attr_group;
++
+ 	return 0;
+ 
+-no_group:
+-	kfree(ptp->pin_attr);
+ no_pin_attr:
+ 	kfree(ptp->pin_dev_attr);
+ no_dev_attr:
+ 	return err;
+ }
+ 
+-int ptp_populate_sysfs(struct ptp_clock *ptp)
++void ptp_cleanup_pin_groups(struct ptp_clock *ptp)
+ {
+-	struct ptp_clock_info *info = ptp->info;
+-	int err;
+-
+-	if (info->n_pins) {
+-		err = ptp_populate_pins(ptp);
+-		if (err)
+-			return err;
+-	}
+-	return 0;
++	kfree(ptp->pin_attr);
++	kfree(ptp->pin_dev_attr);
+ }
+-- 
+2.20.1
+
 
 
