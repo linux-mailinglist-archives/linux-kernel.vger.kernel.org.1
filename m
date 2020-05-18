@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF641D7C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E01D7C7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 17:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgERPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 11:12:42 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52402 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbgERPMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 11:12:42 -0400
-IronPort-SDR: WmzkenqQiI/9y/7OhkbZm0Th+NcifX5ickffFZT1HqAoaSvaF7JjOwIu/tbL2SfFowvj+qzPhm
- PcuOh3JJQpAw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 08:12:41 -0700
-IronPort-SDR: lGoNwaSmCWCNYhxVwEIIKD1mnxX+M3JBB4K5asCGRZD4pIfOnOhf7oJqbdp0HpEXYaNBdqz0ap
- +8GLK/AvKu8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="439250139"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005.jf.intel.com with ESMTP; 18 May 2020 08:12:39 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jahRZ-007S1V-Q9; Mon, 18 May 2020 18:12:41 +0300
-Date:   Mon, 18 May 2020 18:12:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        matwey.kornilov@gmail.com, giulio.benetti@micronovasrl.com,
-        lukas@wunner.de, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: Re: [PATCH v3 3/5] serial: 8250: Support separate rs485 rx-enable
- GPIO
-Message-ID: <20200518151241.GG1634618@smile.fi.intel.com>
-References: <20200517215610.2131618-1-heiko@sntech.de>
- <20200517215610.2131618-4-heiko@sntech.de>
+        id S1727987AbgERPOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 11:14:49 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24506 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726958AbgERPOt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 11:14:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589814888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C+olTwBlgSs4ipAcCb7zDXuZrql0pCto2QpWo685kbA=;
+        b=MOHGGhOCu5brOfgji2s97US2uV3e2fRSIRo9QVdaTZz62BEsbwoVy6D0rKsYo39NHT2Bs+
+        uzM3iQH/XIRUP0XMiinoA7VJk13J9BXLO6z2ccDOcAbKsImF6LkuGF+yQzJiDzBsTaAkmo
+        vTbIKNHvo93Pt/EPCtmKmlkoN1HFyqE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-xJOkJ08JPgCBHtTeqDKQdg-1; Mon, 18 May 2020 11:14:26 -0400
+X-MC-Unique: xJOkJ08JPgCBHtTeqDKQdg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B19341853B04;
+        Mon, 18 May 2020 15:14:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-95.rdu2.redhat.com [10.10.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C01AB2B7BB;
+        Mon, 18 May 2020 15:14:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200507185710.GA14910@embeddedor>
+References: <20200507185710.GA14910@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     dhowells@redhat.com,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KEYS: Replace zero-length array with flexible-array
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200517215610.2131618-4-heiko@sntech.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <932085.1589814863.1@warthog.procyon.org.uk>
+Date:   Mon, 18 May 2020 16:14:24 +0100
+Message-ID: <932086.1589814864@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 17, 2020 at 11:56:08PM +0200, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Gustavo A. R. Silva <gustavoars@kernel.org> wrote:
+
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
 > 
-> The RE signal is used to control the duplex mode of transmissions,
-> aka receiving data while sending in full duplex mode, while stopping
-> receiving data in half-duplex mode.
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
 > 
-> On a number of boards the !RE signal is tied to ground so reception
-> is always enabled except if the UART allows disabling the receiver.
-> This can be taken advantage of to implement half-duplex mode - like
-> done on 8250_bcm2835aux.
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
 > 
-> Another solution is to tie !RE to RTS always forcing half-duplex mode.
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
 > 
-> And finally there is the option to control the RE signal separately,
-> like done here by introducing a new rs485-specific gpio that can be
-> set depending on the RX_DURING_TX setting in the common em485 callbacks.
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-...
-
-> +	port->rs485_re_gpio = devm_gpiod_get_optional(dev, "rs485-rx-enable",
-> +						      GPIOD_OUT_HIGH);
-
-While reviewing some other patch I realized that people are missing the point
-of these GPIO flags when pin is declared to be output.
-
-HIGH here means "asserted" (consider active-high vs. active-low in general). Is
-that the intention here?
-
-Lukas, same question to your patch.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Applied to keys-next.
 
