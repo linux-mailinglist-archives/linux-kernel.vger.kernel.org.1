@@ -2,52 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE85C1DB32E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD84A1D7B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 16:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgETM2y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 08:28:54 -0400
-Received: from mail3.sumicity.com.br ([189.113.72.105]:55860 "EHLO
-        mail3.sumicity.com.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgETM2x (ORCPT
+        id S1728012AbgEROmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 10:42:50 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:46996 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727007AbgEROmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:28:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail3.sumicity.com.br (Postfix) with ESMTP id EF0BC997E81;
-        Mon, 18 May 2020 22:06:26 -0300 (-03)
-Received: from mail3.sumicity.com.br ([127.0.0.1])
-        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yrcV4a2w2TAI; Mon, 18 May 2020 22:06:26 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail3.sumicity.com.br (Postfix) with ESMTP id 2A89A983155;
-        Mon, 18 May 2020 16:01:15 -0300 (-03)
-X-Virus-Scanned: amavisd-new at sumicity.com.br
-Received: from mail3.sumicity.com.br ([127.0.0.1])
-        by localhost (mail3.sumicity.com.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id CBro_Td-MhIf; Mon, 18 May 2020 16:01:15 -0300 (-03)
-Received: from [192.168.0.199] (unknown [106.210.57.205])
-        by mail3.sumicity.com.br (Postfix) with ESMTPSA id 151D699193E;
-        Mon, 18 May 2020 11:42:35 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 18 May 2020 10:42:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589812968; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=BOJG45sKpRoyYeCu2iPA0P0NjKwkRXyqePBzMDunQaI=; b=n/qeY/hHckNBzdwypWI5LHzDGCDHWUVuxHAOCcQTx5ZM0m0+pbc/SwLoIusHGfN5bVY09XZz
+ h4vtJXKrH3RYC5eH0r8unigReuZogYEt3KCh55kj+RCQRnrh/f3v0AU2XnGsu//86EJiknFf
+ e3c46aqBmWgxSwreaHpq9ql2ovw=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec29ee7.7fcd12958110-smtp-out-n03;
+ Mon, 18 May 2020 14:42:47 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5A9FC43636; Mon, 18 May 2020 14:42:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2509DC432C2;
+        Mon, 18 May 2020 14:42:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2509DC432C2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 18 May 2020 08:42:43 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [PATCH v3 1/9] drm/msm: add
+ msm_gem_get_and_pin_iova_range
+Message-ID: <20200518144243.GC3915@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <sean@poorly.run>
+References: <20200423210946.28867-1-jonathan@marek.ca>
+ <20200423210946.28867-2-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Dear Friend
-To:     Recipients <pinheiromodas@sumicity.com.br>
-From:   "Mr Saeed Ahmed" <pinheiromodas@sumicity.com.br>
-Date:   Mon, 18 May 2020 20:12:25 +0530
-Reply-To: saeedasutanahmed0@gmail.com
-Message-Id: <20200518144236.151D699193E@mail3.sumicity.com.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423210946.28867-2-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Thu, Apr 23, 2020 at 05:09:13PM -0400, Jonathan Marek wrote:
+> This function allows pinning iova to a specific page range (for a6xx GMU).
 
-I want you to be honest and truthful with me that you will help me with all your effort and time for just seven to fourteen workings of your time
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-Please kindly reply to my most confidential email if you are really interested in helping me please: saeedasutanahmed0@gmail.com
-                                 
-God be with you
-Mr Saeed Ahmed
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/msm_drv.h     |  6 +++++-
+>  drivers/gpu/drm/msm/msm_gem.c     | 28 +++++++++++++++++++++-------
+>  drivers/gpu/drm/msm/msm_gem_vma.c |  6 ++++--
+>  3 files changed, 30 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 194d900a460e..966fd9068c94 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -236,7 +236,8 @@ int msm_crtc_enable_vblank(struct drm_crtc *crtc);
+>  void msm_crtc_disable_vblank(struct drm_crtc *crtc);
+>  
+>  int msm_gem_init_vma(struct msm_gem_address_space *aspace,
+> -		struct msm_gem_vma *vma, int npages);
+> +		struct msm_gem_vma *vma, int npages,
+> +		u64 range_start, u64 range_end);
+>  void msm_gem_purge_vma(struct msm_gem_address_space *aspace,
+>  		struct msm_gem_vma *vma);
+>  void msm_gem_unmap_vma(struct msm_gem_address_space *aspace,
+> @@ -276,6 +277,9 @@ vm_fault_t msm_gem_fault(struct vm_fault *vmf);
+>  uint64_t msm_gem_mmap_offset(struct drm_gem_object *obj);
+>  int msm_gem_get_iova(struct drm_gem_object *obj,
+>  		struct msm_gem_address_space *aspace, uint64_t *iova);
+> +int msm_gem_get_and_pin_iova_range(struct drm_gem_object *obj,
+> +		struct msm_gem_address_space *aspace, uint64_t *iova,
+> +		u64 range_start, u64 range_end);
+>  int msm_gem_get_and_pin_iova(struct drm_gem_object *obj,
+>  		struct msm_gem_address_space *aspace, uint64_t *iova);
+>  uint64_t msm_gem_iova(struct drm_gem_object *obj,
+> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+> index 5a6a79fbc9d6..d8f56a34c117 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.c
+> +++ b/drivers/gpu/drm/msm/msm_gem.c
+> @@ -389,7 +389,8 @@ put_iova(struct drm_gem_object *obj)
+>  }
+>  
+>  static int msm_gem_get_iova_locked(struct drm_gem_object *obj,
+> -		struct msm_gem_address_space *aspace, uint64_t *iova)
+> +		struct msm_gem_address_space *aspace, uint64_t *iova,
+> +		u64 range_start, u64 range_end)
+>  {
+>  	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+>  	struct msm_gem_vma *vma;
+> @@ -404,7 +405,8 @@ static int msm_gem_get_iova_locked(struct drm_gem_object *obj,
+>  		if (IS_ERR(vma))
+>  			return PTR_ERR(vma);
+>  
+> -		ret = msm_gem_init_vma(aspace, vma, obj->size >> PAGE_SHIFT);
+> +		ret = msm_gem_init_vma(aspace, vma, obj->size >> PAGE_SHIFT,
+> +			range_start, range_end);
+>  		if (ret) {
+>  			del_vma(vma);
+>  			return ret;
+> @@ -443,9 +445,13 @@ static int msm_gem_pin_iova(struct drm_gem_object *obj,
+>  			msm_obj->sgt, obj->size >> PAGE_SHIFT);
+>  }
+>  
+> -/* get iova and pin it. Should have a matching put */
+> -int msm_gem_get_and_pin_iova(struct drm_gem_object *obj,
+> -		struct msm_gem_address_space *aspace, uint64_t *iova)
+> +/*
+> + * get iova and pin it. Should have a matching put
+> + * limits iova to specified range (in pages)
+> + */
+> +int msm_gem_get_and_pin_iova_range(struct drm_gem_object *obj,
+> +		struct msm_gem_address_space *aspace, uint64_t *iova,
+> +		u64 range_start, u64 range_end)
+>  {
+>  	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+>  	u64 local;
+> @@ -453,7 +459,8 @@ int msm_gem_get_and_pin_iova(struct drm_gem_object *obj,
+>  
+>  	mutex_lock(&msm_obj->lock);
+>  
+> -	ret = msm_gem_get_iova_locked(obj, aspace, &local);
+> +	ret = msm_gem_get_iova_locked(obj, aspace, &local,
+> +		range_start, range_end);
+>  
+>  	if (!ret)
+>  		ret = msm_gem_pin_iova(obj, aspace);
+> @@ -465,6 +472,13 @@ int msm_gem_get_and_pin_iova(struct drm_gem_object *obj,
+>  	return ret;
+>  }
+>  
+> +/* get iova and pin it. Should have a matching put */
+> +int msm_gem_get_and_pin_iova(struct drm_gem_object *obj,
+> +		struct msm_gem_address_space *aspace, uint64_t *iova)
+> +{
+> +	return msm_gem_get_and_pin_iova_range(obj, aspace, iova, 0, U64_MAX);
+> +}
+> +
+>  /*
+>   * Get an iova but don't pin it. Doesn't need a put because iovas are currently
+>   * valid for the life of the object
+> @@ -476,7 +490,7 @@ int msm_gem_get_iova(struct drm_gem_object *obj,
+>  	int ret;
+>  
+>  	mutex_lock(&msm_obj->lock);
+> -	ret = msm_gem_get_iova_locked(obj, aspace, iova);
+> +	ret = msm_gem_get_iova_locked(obj, aspace, iova, 0, U64_MAX);
+>  	mutex_unlock(&msm_obj->lock);
+>  
+>  	return ret;
+> diff --git a/drivers/gpu/drm/msm/msm_gem_vma.c b/drivers/gpu/drm/msm/msm_gem_vma.c
+> index 1af5354bcd46..407b7ab82818 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_vma.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_vma.c
+> @@ -103,7 +103,8 @@ void msm_gem_close_vma(struct msm_gem_address_space *aspace,
+>  
+>  /* Initialize a new vma and allocate an iova for it */
+>  int msm_gem_init_vma(struct msm_gem_address_space *aspace,
+> -		struct msm_gem_vma *vma, int npages)
+> +		struct msm_gem_vma *vma, int npages,
+> +		u64 range_start, u64 range_end)
+>  {
+>  	int ret;
+>  
+> @@ -111,7 +112,8 @@ int msm_gem_init_vma(struct msm_gem_address_space *aspace,
+>  		return -EBUSY;
+>  
+>  	spin_lock(&aspace->lock);
+> -	ret = drm_mm_insert_node(&aspace->mm, &vma->node, npages);
+> +	ret = drm_mm_insert_node_in_range(&aspace->mm, &vma->node, npages, 0,
+> +		0, range_start, range_end, 0);
+>  	spin_unlock(&aspace->lock);
+>  
+>  	if (ret)
+> -- 
+> 2.26.1
+> 
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
