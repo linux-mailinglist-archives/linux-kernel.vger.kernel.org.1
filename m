@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122C41D8737
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3861D8532
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgERRj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34002 "EHLO mail.kernel.org"
+        id S1731682AbgERR4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728747AbgERRjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:39:24 -0400
+        id S1730672AbgERR4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1079B2086A;
-        Mon, 18 May 2020 17:39:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05E4B20715;
+        Mon, 18 May 2020 17:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823563;
-        bh=JcOJWFHBiOMUh474qYFCAv5ejV4BXihCIBZRpJjND1E=;
+        s=default; t=1589824602;
+        bh=MKIyheyNGViV/MgpHcPvLYxIi6TdIFMAtGgTC0w2VSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NFPlR1h8rnE+2Ku5/JrPqtuelxNEp4k1Cleu9yNqOa7cdXaBJQAFPmG6AktI7MsNZ
-         LPsC1gEiMQaZnfXwW2erjOa3f5p35kYwBsZXGqV+z+5ea3bohvGhqnGQ12LWDcBBaf
-         GlL7+p3Undm7xqquaG/oSSFb0OLjUMrqnPiJeHPc=
+        b=ASSkrb5wi/g8lMhbgXywFaSmmuOLSuxkCSfXq6EurrEIJ5fY7D9NHiGJcNzliBWR5
+         cijE6R/KLLcRgB7rAYjwRPi3MsQ59fKeILt9MkSpkoaf4u5v5d4q695EV1eQ5Ps2fa
+         MpNmmlDhrW2Pjv5Bk5QO7OUo/38+/RM/IVbDEnrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 32/86] ptp: Fix pass zero to ERR_PTR() in ptp_clock_register
+        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 040/147] dmaengine: mmp_tdma: Reset channel error on release
 Date:   Mon, 18 May 2020 19:36:03 +0200
-Message-Id: <20200518173457.047846228@linuxfoundation.org>
+Message-Id: <20200518173519.070973682@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Lubomir Rintel <lkundrak@v3.sk>
 
-commit aea0a897af9e44c258e8ab9296fad417f1bc063a upstream.
+[ Upstream commit 0c89446379218698189a47871336cb30286a7197 ]
 
-Fix smatch warning:
+When a channel configuration fails, the status of the channel is set to
+DEV_ERROR so that an attempt to submit it fails. However, this status
+sticks until the heat end of the universe, making it impossible to
+recover from the error.
 
-drivers/ptp/ptp_clock.c:298 ptp_clock_register() warn:
- passing zero to 'ERR_PTR'
+Let's reset it when the channel is released so that further use of the
+channel with correct configuration is not impacted.
 
-'err' should be set while device_create_with_groups and
-pps_register_source fails
-
-Fixes: 85a66e550195 ("ptp: create "pins" together with the rest of attributes")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Link: https://lore.kernel.org/r/20200419164912.670973-5-lkundrak@v3.sk
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ptp/ptp_clock.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/dma/mmp_tdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -222,8 +222,10 @@ struct ptp_clock *ptp_clock_register(str
- 	ptp->dev = device_create_with_groups(ptp_class, parent, ptp->devid,
- 					     ptp, ptp->pin_attr_groups,
- 					     "ptp%d", ptp->index);
--	if (IS_ERR(ptp->dev))
-+	if (IS_ERR(ptp->dev)) {
-+		err = PTR_ERR(ptp->dev);
- 		goto no_device;
-+	}
+diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
+index 4d5b987e4841a..89d90c456c0ce 100644
+--- a/drivers/dma/mmp_tdma.c
++++ b/drivers/dma/mmp_tdma.c
+@@ -363,6 +363,8 @@ static void mmp_tdma_free_descriptor(struct mmp_tdma_chan *tdmac)
+ 		gen_pool_free(gpool, (unsigned long)tdmac->desc_arr,
+ 				size);
+ 	tdmac->desc_arr = NULL;
++	if (tdmac->status == DMA_ERROR)
++		tdmac->status = DMA_COMPLETE;
  
- 	/* Register a new PPS source. */
- 	if (info->pps) {
-@@ -234,6 +236,7 @@ struct ptp_clock *ptp_clock_register(str
- 		pps.owner = info->owner;
- 		ptp->pps_source = pps_register_source(&pps, PTP_PPS_DEFAULTS);
- 		if (!ptp->pps_source) {
-+			err = -EINVAL;
- 			pr_err("failed to register pps source\n");
- 			goto no_pps;
- 		}
+ 	return;
+ }
+-- 
+2.20.1
+
 
 
