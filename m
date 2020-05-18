@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445D91D7287
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAC91D728D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgERIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 04:08:01 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39327 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgERIIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 04:08:01 -0400
-IronPort-SDR: JCZMkKKJR4Kr23QXcpe8XWVa+tVi59ElZjkFlgzjldeqO2TzY19XQudIL718wDPxFMnJWVCMkT
- MdfhpHrh5dOg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 01:08:00 -0700
-IronPort-SDR: Fxj0lLv4iFb/AfQRyiua2C4SMA0we5GzREgkDRBDWvaBVNhNCHRSeAwkOwGunlQqYRQXxLFkg+
- QPXD6wR9x7Kw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,406,1583222400"; 
-   d="scan'208";a="288485760"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 18 May 2020 01:08:00 -0700
-Received: from [10.249.230.167] (abudanko-mobl.ccr.corp.intel.com [10.249.230.167])
-        by linux.intel.com (Postfix) with ESMTP id 638A85803C5;
-        Mon, 18 May 2020 01:07:56 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] perf: make Perf tool aware of SELinux access
- control
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <0fffd9e2-1f22-a0c2-c2e3-cb7f4bb89d66@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <a143e9e8-d800-1dc9-ee7b-7125596a1e7e@linux.intel.com>
-Date:   Mon, 18 May 2020 11:07:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726976AbgERIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:10:54 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:56720 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgERIKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:10:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Iqm24iEcNucTMf6Splm9sZE31pThskAEE0cgautDMiA=; b=CxtilwHRWrNOBYZqwwg63gS68t
+        zfiFiPm0vagijAvdVfx3a1AMm1nlTz8fkXw7mt8X/YMhiRtmNL8jGMgonq13QHfGmgun8wTaBWqhg
+        SYxW/+LrdoeX7B3ihWGRweAm5ZW4I2hibuF42qRBaEnKRcGch8hmCDbZ48TJlbAqmG3SWeBUbQIhr
+        iuYAL7yOC8m0xDWFr9vpKEXh1c58RV6pQWhtgWKSRSUvYmW13v0YovB4E8zuGxC3QBnEWv3vn72KB
+        0z6kctMotILE430FP6CvS+yKlkSqAYujqXv/nQuqjKpv4ytJ1ydYoZOux2AF4jm7nBfXTtvmVKD5R
+        nhSQe2OA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jaaoq-0003ab-HU; Mon, 18 May 2020 08:08:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 53F92306089;
+        Mon, 18 May 2020 10:08:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0D79B2B3CDC70; Mon, 18 May 2020 10:08:14 +0200 (CEST)
+Date:   Mon, 18 May 2020 10:08:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>
+Subject: Re: [patch V6 04/37] x86: Make hardware latency tracing explicit
+Message-ID: <20200518080814.GJ2940@hirez.programming.kicks-ass.net>
+References: <20200515234547.710474468@linutronix.de>
+ <20200515235124.783722942@linutronix.de>
+ <20200518080133.GI2940@hirez.programming.kicks-ass.net>
+ <874ksdzmzf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <0fffd9e2-1f22-a0c2-c2e3-cb7f4bb89d66@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874ksdzmzf.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, May 18, 2020 at 10:05:56AM +0200, Thomas Gleixner wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> > On Sat, May 16, 2020 at 01:45:51AM +0200, Thomas Gleixner wrote:
+> >> --- a/arch/x86/kernel/nmi.c
+> >> +++ b/arch/x86/kernel/nmi.c
+> >> @@ -334,6 +334,7 @@ static noinstr void default_do_nmi(struc
+> >>  	__this_cpu_write(last_nmi_rip, regs->ip);
+> >>  
+> >>  	instrumentation_begin();
+> >> +	ftrace_nmi_handler_enter();
+> >>  
+> >>  	handled = nmi_handle(NMI_LOCAL, regs);
+> >>  	__this_cpu_add(nmi_stats.normal, handled);
+> >> @@ -420,6 +421,7 @@ static noinstr void default_do_nmi(struc
+> >>  		unknown_nmi_error(reason, regs);
+> >>  
+> >>  out:
+> >> +	ftrace_nmi_handler_exit();
+> >>  	instrumentation_end();
+> >>  }
+> >
+> > Yeah, so I'm confused about this and the previous patch too. Why not
+> > do just this? Remove that ftrace_nmi_handler.* crud from
+> > nmi_{enter,exit}() and stick it here? Why do we needs the
+> > nmi_{enter,exit}_notrace() thing?
+> 
+> Because you then have to fixup _all_ architectures which use
+> nmi_enter/exit().
 
-Is there anything else that could be done from my side to move this forward?
-
-Thanks,
-Alexey
-
-On 30.04.2020 10:06, Alexey Budankov wrote:
-> 
-> Changes in v3:
-> - mention "CAP_PERFMON or CAP_SYS_ADMIN" instead of sole CAP_PERFMON or 
->   CAP_SYS_ADMIN capability in the docs and messages to support use case
->   of newer Perf tool on kernel w/o CAP_PERFMON
-> - reverted double new line in "No permission to enable %s event.\n\n"
-> - updated security.txt content with new messages wording
-> 
-> v2: https://lore.kernel.org/lkml/66f2975b-4a69-b428-7dc5-d9aa40b3c673@linux.intel.com/
-> 
-> Changes in v2:
-> - implemented minor doc and code changes to substitute CAP_SYS_ADMIN
->   with CAP_PERFMON capability;
-> - introduced Perf doc file with instructions on how to enable and use
->   perf_event LSM hooks for mandatory access control to perf_event_open()
->   syscall;
-> 
-> v1: https://lore.kernel.org/lkml/b8a0669e-36e4-a0e8-fd35-3dbd890d2170@linux.intel.com/
-> 
-> repo: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-> sha1: ee097e8ee56f8867cbbf45fe2a06f6b9e660c39c
-> 
-> 
-> Extend Perf tool with the check of /sys/fs/selinux/enforce value and notify 
-> in case access to perf_event_open() syscall is restricted by the enforced 
-> SELinux policy settings. See new added security.txt file for exact steps
-> how the changes look like and how to test the patch set.
-> 
-> ---
-> Alexey Budankov (3):
->   perf docs: extend CAP_SYS_ADMIN with CAP_PERFMON where needed
->   perf tool: make Perf tool aware of SELinux access control
->   perf docs: introduce security.txt file to document related issues
-> 
->  tools/perf/Documentation/perf-intel-pt.txt |   2 +-
->  tools/perf/Documentation/security.txt      | 237 +++++++++++++++++++++
->  tools/perf/util/cloexec.c                  |   4 +-
->  tools/perf/util/evsel.c                    |  39 ++--
->  4 files changed, 264 insertions(+), 18 deletions(-)
->  create mode 100644 tools/perf/Documentation/security.txt
-> 
+We probably have to anyway. But I can do that later I suppose.
