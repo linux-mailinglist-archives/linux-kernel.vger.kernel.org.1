@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287521D814E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397711D827C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgERRqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46762 "EHLO mail.kernel.org"
+        id S1731707AbgERR4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:56:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730137AbgERRqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:46:49 -0400
+        id S1731693AbgERR4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:56:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C14D20674;
-        Mon, 18 May 2020 17:46:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51FB8207C4;
+        Mon, 18 May 2020 17:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824008;
-        bh=elBqDTYUwnIKKlx+yy0o5O7JNMP5I8Jusy8PmsFLkcI=;
+        s=default; t=1589824609;
+        bh=eQdZ91CzWNv7UCeJd+a5ATQUeTgkuElb4uubROWyJM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l2987zsXGc+POC3oRkA44dyZXk2oVLmfHgTLZdtu8uFlQJfCcEtu1qjmwpM8OBorw
-         m7EGrJAg6f9CiQu4x+MLY/V3RFyLRNS3f8AcUT9cGwz4fV7oxz+y1Vh4BN/XLUiCEy
-         HbhBFr0fqVHRRW2bUhnCmpnvOnOx6pQVOSaD4F2Q=
+        b=q6gUSnZ1uhNVkxoYpm0iWzn2t18S2rmsa4UtVLc93a2YvYHF11WbNTGZWyNZobrXj
+         BKISIGFxP+7QCubM+SHCSA8pwbDv4SCZVv/XOl5Jv5BpCxSUnuH/Zp5ThsMoC2INgg
+         ybr9anjIRrNoxjCNGV66vkg1t7Fqc5J15Ad82pkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Subject: [PATCH 4.14 033/114] x86/unwind/orc: Fix error path for bad ORC entry type
-Date:   Mon, 18 May 2020 19:36:05 +0200
-Message-Id: <20200518173509.665006980@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 043/147] ALSA: hda/hdmi: fix race in monitor detection during probe
+Date:   Mon, 18 May 2020 19:36:06 +0200
+Message-Id: <20200518173519.406942250@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,41 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-commit a0f81bf26888048100bf017fadf438a5bdffa8d8 upstream.
+[ Upstream commit ca76282b6faffc83601c25bd2a95f635c03503ef ]
 
-If the ORC entry type is unknown, nothing else can be done other than
-reporting an error.  Exit the function instead of breaking out of the
-switch statement.
+A race exists between build_pcms() and build_controls() phases of codec
+setup. Build_pcms() sets up notifier for jack events. If a monitor event
+is received before build_controls() is run, the initial jack state is
+lost and never reported via mixer controls.
 
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Jones <dsj@fb.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Link: https://lore.kernel.org/r/a7fa668ca6eabbe81ab18b2424f15adbbfdc810a.1587808742.git.jpoimboe@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The problem can be hit at least with SOF as the controller driver. SOF
+calls snd_hda_codec_build_controls() in its workqueue-based probe and
+this can be delayed enough to hit the race condition.
 
+Fix the issue by invalidating the per-pin ELD information when
+build_controls() is called. The existing call to hdmi_present_sense()
+will update the ELD contents. This ensures initial monitor state is
+correctly reflected via mixer controls.
+
+BugLink: https://github.com/thesofproject/linux/issues/1687
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200428123836.24512-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/unwind_orc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -457,7 +457,7 @@ bool unwind_next_frame(struct unwind_sta
- 	default:
- 		orc_warn("unknown .orc_unwind entry type %d for ip %pB\n",
- 			 orc->type, (void *)orig_ip);
--		break;
-+		goto done;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 663168ddce722..d48263d1f6a24 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2234,7 +2234,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 
+ 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
+ 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
++		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
+ 
++		pin_eld->eld_valid = false;
+ 		hdmi_present_sense(per_pin, 0);
  	}
  
- 	/* Find BP: */
+-- 
+2.20.1
+
 
 
