@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D051D8519
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C001D8503
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387608AbgERSQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38436 "EHLO mail.kernel.org"
+        id S1732933AbgERSQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:16:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731922AbgERR6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:58:45 -0400
+        id S1731956AbgERR6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:58:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87631207C4;
-        Mon, 18 May 2020 17:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8E020835;
+        Mon, 18 May 2020 17:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824725;
-        bh=saodYP1hUrtdt/XP2aY9Q7Kgi/0dLuPVWPN8hT5B1LA=;
+        s=default; t=1589824727;
+        bh=bDJ1mgZU+h5ToiLcvLdkwXTROH+5BR7TJ+0MyXthK4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y9lsihbNbvLRaqem4uStAKIC1SQUz+4j5g/gxywt5ggydvb5OmWCEeUEaJiQmWTY1
-         LCdUctP+rHzO8kLCDfPLmJubDtNCPY739PuwHRM71rcXwr4NPNsue6MQTJD8+j7tw7
-         xH7a0AvevAz/D+pqGGhqQvpeFcrc8tlfC1vXvI5A=
+        b=09yvAvfHYrjSARwapTM1jnZb4UppHdacF0XbMhaE58LbnDFPKxl7W4sMyg42Z0ZPY
+         8v2l/bAmqp1jLhJ2MIlg8KAhujT415ouQIS7Js63NBAVz2l5m4CGOL8z8+MkACG0hd
+         0ZcR6c+JNFJKZEmYiqTd6bwszufVauN7a8uwacs8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 127/147] usb: gadget: net2272: Fix a memory leak in an error handling path in net2272_plat_probe()
-Date:   Mon, 18 May 2020 19:37:30 +0200
-Message-Id: <20200518173528.763611029@linuxfoundation.org>
+Subject: [PATCH 5.4 128/147] usb: gadget: audio: Fix a missing error return value in audio_bind()
+Date:   Mon, 18 May 2020 19:37:31 +0200
+Message-Id: <20200518173529.451507680@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
 References: <20200518173513.009514388@linuxfoundation.org>
@@ -46,31 +46,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit ccaef7e6e354fb65758eaddd3eae8065a8b3e295 upstream.
+commit 19b94c1f9c9a16d41a8de3ccbdb8536cf1aecdbf upstream.
 
-'dev' is allocated in 'net2272_probe_init()'. It must be freed in the error
-handling path, as already done in the remove function (i.e.
-'net2272_plat_remove()')
+If 'usb_otg_descriptor_alloc()' fails, we must return an error code, not 0.
 
-Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
+Fixes: 56023ce0fd70 ("usb: gadget: audio: allocate and init otg descriptor by otg capabilities")
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/net2272.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/gadget/legacy/audio.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2647,6 +2647,8 @@ net2272_plat_probe(struct platform_devic
-  err_req:
- 	release_mem_region(base, len);
-  err:
-+	kfree(dev);
-+
- 	return ret;
- }
+--- a/drivers/usb/gadget/legacy/audio.c
++++ b/drivers/usb/gadget/legacy/audio.c
+@@ -300,8 +300,10 @@ static int audio_bind(struct usb_composi
+ 		struct usb_descriptor_header *usb_desc;
  
+ 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail;
++		}
+ 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
