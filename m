@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C841D80DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BCD1D805E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgERRmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
+        id S1728735AbgERRjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729456AbgERRmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:42:39 -0400
+        id S1728721AbgERRjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37AF8207C4;
-        Mon, 18 May 2020 17:42:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AF9620835;
+        Mon, 18 May 2020 17:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823758;
-        bh=eRR5JLpyGQWbddfqfgr7COthF+C/JL4OZYqmjDeULOc=;
+        s=default; t=1589823553;
+        bh=LP08RHZ2h+3MNUPCldPZPOjGAFKVSbQofTJGvA4TZpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAHbCaLYC6aOsjE/M0VshmOAOhDjOGcUEkolOhvnR9kC28iZP6en1eE2dgavQwcG5
-         AEezsiR98KvW36ytguNlFcpSOpsUiIz0k42YWhBCyYrqfzOmsR3HcGpTjMtnU/kkQ6
-         w0Q888U9zA0YRU+F4F5/UK2CQVT7U7MV3/aj8Bzc=
+        b=Aj2+Bj6C67ORnUWR6aQu7t2OOVlUbEcbc2KXAHoNPe35ZGh9VPlJx7Y073J8q5QDw
+         nTmZ0vRzbsufGiz6yRN0R9YBBVeIpzatovIvQqyR8gZ/397RTDu/MsK5Lcg425y1ti
+         IOxxf5JfZf9wvtPiyZo2pNUGmIArWveRWVJKqsHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Dial <scott@scottdial.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 04/90] net: macsec: preserve ingress frame ordering
+        stable@vger.kernel.org,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 11/86] x86/apm: Dont access __preempt_count with zeroed fs
 Date:   Mon, 18 May 2020 19:35:42 +0200
-Message-Id: <20200518173451.911405640@linuxfoundation.org>
+Message-Id: <20200518173452.746337483@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
-References: <20200518173450.930655662@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,75 +48,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Dial <scott@scottdial.com>
+From: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-[ Upstream commit ab046a5d4be4c90a3952a0eae75617b49c0cb01b ]
+commit 6f6060a5c9cc76fdbc22748264e6aa3779ec2427 upstream.
 
-MACsec decryption always occurs in a softirq context. Since
-the FPU may not be usable in the softirq context, the call to
-decrypt may be scheduled on the cryptd work queue. The cryptd
-work queue does not provide ordering guarantees. Therefore,
-preserving order requires masking out ASYNC implementations
-of gcm(aes).
+APM_DO_POP_SEGS does not restore fs/gs which were zeroed by
+APM_DO_ZERO_SEGS. Trying to access __preempt_count with
+zeroed fs doesn't really work.
 
-For instance, an Intel CPU with AES-NI makes available the
-generic-gcm-aesni driver from the aesni_intel module to
-implement gcm(aes). However, this implementation requires
-the FPU, so it is not always available to use from a softirq
-context, and will fallback to the cryptd work queue, which
-does not preserve frame ordering. With this change, such a
-system would select gcm_base(ctr(aes-aesni),ghash-generic).
-While the aes-aesni implementation prefers to use the FPU, it
-will fallback to the aes-asm implementation if unavailable.
+Move the ibrs call outside the APM_DO_SAVE_SEGS/APM_DO_RESTORE_SEGS
+invocations so that fs is actually restored before calling
+preempt_enable().
 
-By using a synchronous version of gcm(aes), the decryption
-will complete before returning from crypto_aead_decrypt().
-Therefore, the macsec_decrypt_done() callback will be called
-before returning from macsec_decrypt(). Thus, the order of
-calls to macsec_post_decrypt() for the frames is preserved.
+Fixes the following sort of oopses:
+[    0.313581] general protection fault: 0000 [#1] PREEMPT SMP
+[    0.313803] Modules linked in:
+[    0.314040] CPU: 0 PID: 268 Comm: kapmd Not tainted 4.16.0-rc1-triton-bisect-00090-gdd84441a7971 #19
+[    0.316161] EIP: __apm_bios_call_simple+0xc8/0x170
+[    0.316161] EFLAGS: 00210016 CPU: 0
+[    0.316161] EAX: 00000102 EBX: 00000000 ECX: 00000102 EDX: 00000000
+[    0.316161] ESI: 0000530e EDI: dea95f64 EBP: dea95f18 ESP: dea95ef0
+[    0.316161]  DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068
+[    0.316161] CR0: 80050033 CR2: 00000000 CR3: 015d3000 CR4: 000006d0
+[    0.316161] Call Trace:
+[    0.316161]  ? cpumask_weight.constprop.15+0x20/0x20
+[    0.316161]  on_cpu0+0x44/0x70
+[    0.316161]  apm+0x54e/0x720
+[    0.316161]  ? __switch_to_asm+0x26/0x40
+[    0.316161]  ? __schedule+0x17d/0x590
+[    0.316161]  kthread+0xc0/0xf0
+[    0.316161]  ? proc_apm_show+0x150/0x150
+[    0.316161]  ? kthread_create_worker_on_cpu+0x20/0x20
+[    0.316161]  ret_from_fork+0x2e/0x38
+[    0.316161] Code: da 8e c2 8e e2 8e ea 57 55 2e ff 1d e0 bb 5d b1 0f 92 c3 5d 5f 07 1f 89 47 0c 90 8d b4 26 00 00 00 00 90 8d b4 26 00 00 00 00 90 <64> ff 0d 84 16 5c b1 74 7f 8b 45 dc 8e e0 8b 45 d8 8e e8 8b 45
+[    0.316161] EIP: __apm_bios_call_simple+0xc8/0x170 SS:ESP: 0068:dea95ef0
+[    0.316161] ---[ end trace 656253db2deaa12c ]---
 
-While it's presumable that the pure AES-NI version of gcm(aes)
-is more performant, the hybrid solution is capable of gigabit
-speeds on modest hardware. Regardless, preserving the order
-of frames is paramount for many network protocols (e.g.,
-triggering TCP retries). Within the MACsec driver itself, the
-replay protection is tripped by the out-of-order frames, and
-can cause frames to be dropped.
-
-This bug has been present in this code since it was added in
-v4.6, however it may not have been noticed since not all CPUs
-have FPU offload available. Additionally, the bug manifests
-as occasional out-of-order packets that are easily
-misattributed to other network phenomena.
-
-When this code was added in v4.6, the crypto/gcm.c code did
-not restrict selection of the ghash function based on the
-ASYNC flag. For instance, x86 CPUs with PCLMULQDQ would
-select the ghash-clmulni driver instead of ghash-generic,
-which submits to the cryptd work queue if the FPU is busy.
-However, this bug was was corrected in v4.8 by commit
-b30bdfa86431afbafe15284a3ad5ac19b49b88e3, and was backported
-all the way back to the v3.14 stable branch, so this patch
-should be applicable back to the v4.6 stable branch.
-
-Signed-off-by: Scott Dial <scott@scottdial.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: dd84441a7971 ("x86/speculation: Use IBRS if available before calling into firmware")
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Cc:  David Woodhouse <dwmw@amazon.co.uk>
+Cc:  "H. Peter Anvin" <hpa@zytor.com>
+Cc:  x86@kernel.org
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Link: https://lkml.kernel.org/r/20180709133534.5963-1-ville.syrjala@linux.intel.com
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/macsec.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/macsec.c
-+++ b/drivers/net/macsec.c
-@@ -1315,7 +1315,8 @@ static struct crypto_aead *macsec_alloc_
- 	struct crypto_aead *tfm;
- 	int ret;
+---
+ arch/x86/include/asm/apm.h |    6 ------
+ arch/x86/kernel/apm_32.c   |    5 +++++
+ 2 files changed, 5 insertions(+), 6 deletions(-)
+
+--- a/arch/x86/include/asm/apm.h
++++ b/arch/x86/include/asm/apm.h
+@@ -6,8 +6,6 @@
+ #ifndef _ASM_X86_MACH_DEFAULT_APM_H
+ #define _ASM_X86_MACH_DEFAULT_APM_H
  
--	tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
-+	/* Pick a sync gcm(aes) cipher to ensure order is preserved. */
-+	tfm = crypto_alloc_aead("gcm(aes)", 0, CRYPTO_ALG_ASYNC);
+-#include <asm/nospec-branch.h>
+-
+ #ifdef APM_ZERO_SEGS
+ #	define APM_DO_ZERO_SEGS \
+ 		"pushl %%ds\n\t" \
+@@ -33,7 +31,6 @@ static inline void apm_bios_call_asm(u32
+ 	 * N.B. We do NOT need a cld after the BIOS call
+ 	 * because we always save and restore the flags.
+ 	 */
+-	firmware_restrict_branch_speculation_start();
+ 	__asm__ __volatile__(APM_DO_ZERO_SEGS
+ 		"pushl %%edi\n\t"
+ 		"pushl %%ebp\n\t"
+@@ -46,7 +43,6 @@ static inline void apm_bios_call_asm(u32
+ 		  "=S" (*esi)
+ 		: "a" (func), "b" (ebx_in), "c" (ecx_in)
+ 		: "memory", "cc");
+-	firmware_restrict_branch_speculation_end();
+ }
  
- 	if (IS_ERR(tfm))
- 		return tfm;
+ static inline u8 apm_bios_call_simple_asm(u32 func, u32 ebx_in,
+@@ -59,7 +55,6 @@ static inline u8 apm_bios_call_simple_as
+ 	 * N.B. We do NOT need a cld after the BIOS call
+ 	 * because we always save and restore the flags.
+ 	 */
+-	firmware_restrict_branch_speculation_start();
+ 	__asm__ __volatile__(APM_DO_ZERO_SEGS
+ 		"pushl %%edi\n\t"
+ 		"pushl %%ebp\n\t"
+@@ -72,7 +67,6 @@ static inline u8 apm_bios_call_simple_as
+ 		  "=S" (si)
+ 		: "a" (func), "b" (ebx_in), "c" (ecx_in)
+ 		: "memory", "cc");
+-	firmware_restrict_branch_speculation_end();
+ 	return error;
+ }
+ 
+--- a/arch/x86/kernel/apm_32.c
++++ b/arch/x86/kernel/apm_32.c
+@@ -239,6 +239,7 @@
+ #include <asm/olpc.h>
+ #include <asm/paravirt.h>
+ #include <asm/reboot.h>
++#include <asm/nospec-branch.h>
+ 
+ #if defined(CONFIG_APM_DISPLAY_BLANK) && defined(CONFIG_VT)
+ extern int (*console_blank_hook)(int);
+@@ -613,11 +614,13 @@ static long __apm_bios_call(void *_call)
+ 	gdt[0x40 / 8] = bad_bios_desc;
+ 
+ 	apm_irq_save(flags);
++	firmware_restrict_branch_speculation_start();
+ 	APM_DO_SAVE_SEGS;
+ 	apm_bios_call_asm(call->func, call->ebx, call->ecx,
+ 			  &call->eax, &call->ebx, &call->ecx, &call->edx,
+ 			  &call->esi);
+ 	APM_DO_RESTORE_SEGS;
++	firmware_restrict_branch_speculation_end();
+ 	apm_irq_restore(flags);
+ 	gdt[0x40 / 8] = save_desc_40;
+ 	put_cpu();
+@@ -689,10 +692,12 @@ static long __apm_bios_call_simple(void
+ 	gdt[0x40 / 8] = bad_bios_desc;
+ 
+ 	apm_irq_save(flags);
++	firmware_restrict_branch_speculation_start();
+ 	APM_DO_SAVE_SEGS;
+ 	error = apm_bios_call_simple_asm(call->func, call->ebx, call->ecx,
+ 					 &call->eax);
+ 	APM_DO_RESTORE_SEGS;
++	firmware_restrict_branch_speculation_end();
+ 	apm_irq_restore(flags);
+ 	gdt[0x40 / 8] = save_desc_40;
+ 	put_cpu();
 
 
