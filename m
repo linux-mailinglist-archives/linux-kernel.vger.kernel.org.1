@@ -2,176 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EE21D70A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 08:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1D11D7134
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 08:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgERF6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 01:58:49 -0400
-Received: from mail-vi1eur05on2054.outbound.protection.outlook.com ([40.107.21.54]:6066
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726040AbgERF6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 01:58:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUe5cazUTcM+RLf3FiGAZQqMlId1bFg30a1gPDSrDKW15+PdmGSRtxR5gwayJg+MEdwC3NSqGTyPAX4bzPWmKu+hzo02Y2nczmuAQlcRSFKQYaQM/FW5R5VDkASL4OlBmXue+mWZPA078qsuCITRJwIgFMifd1wbaP2YlIqQn5KHtcZW53EPyrl0ksSd4CLeLTOrCM8qRtK45r6CQ0TOhJUSgIUeChVmoYvazUkXNz5rfPDVs4BSqHhozlfJnqs+kSnJ9xcOyrPHhySlK05ASpDYbdNudSPl3nkhHRZ6Mcc0RLCeMbaI9ag1dvEvZJZhFejMpNWzl7cC72vvi8JqlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aJZIY/Rjm/TYK27OSIKn4TjYU1agnKvXvjV2qQoQuOk=;
- b=D/n0u7VEM+Y34wuaHdgM2c0Qbg3ywRxuTgLQNNoEAxX7kNP+hR41BnWrxauQx/k+nROieyXPCerR++NLfehsdNWgXu+15ySBRnyeenFTslYJ3xwMoYn7Kx7oYcTYBpYzoa06U06dOGWLo0gJMAQ8xV52gMCeM0ty3II7FiaHSfv+JL4ZfYJHGkrLUwEq0CA7tZN2hl9fuUZzqDxPL1Ub+lRdJeXpkeQ440j+hTV4ASXjOoE8NFEydtgpT19T6fyKICH2JLF0RCVL09dok5SMzHFzD2+x3EjNA4rIhPiQluQu9PUb3vq3B1+AgB1okveh4HZn8ep9wN2kfjbIreW/uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aJZIY/Rjm/TYK27OSIKn4TjYU1agnKvXvjV2qQoQuOk=;
- b=MVHq3nPCBLR3K5pLD7a+BUPYegGUDfGb6mJ10f9Y66gv0TS2wI/F9Gj+CIt/nQc0Jz61+/Gc5u4SwPwNX+NLGI94iQXp81f0uOZugm7P/rwki/vqhnxBV/CQ8UpLWjhvHMM9IJ0BH9O00TLbw53nMMSCpYxufP4SmZBM1vAETMk=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM6PR04MB6695.eurprd04.prod.outlook.com (2603:10a6:20b:d8::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Mon, 18 May
- 2020 05:58:42 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3c6c:a0e9:9a4e:c51d]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3c6c:a0e9:9a4e:c51d%7]) with mapi id 15.20.3000.033; Mon, 18 May 2020
- 05:58:42 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Anson Huang <anson.huang@nxp.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/2] dt-bindings: pwm: Convert imx pwm to json-schema
-Thread-Topic: [PATCH 1/2] dt-bindings: pwm: Convert imx pwm to json-schema
-Thread-Index: AQHWKb3TVkIQx8/F2EitnEjJu59w0aitXsSg
-Date:   Mon, 18 May 2020 05:58:42 +0000
-Message-ID: <AM6PR04MB4966EC7122B2BFB9FEEDD74280B80@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <1589439259-28510-1-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1589439259-28510-1-git-send-email-Anson.Huang@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 10d899b3-57e2-420b-8853-08d7faf084f1
-x-ms-traffictypediagnostic: AM6PR04MB6695:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB66954585DC137D45E44C5DB880B80@AM6PR04MB6695.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 04073E895A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pc75P+qcqR+TU9CE6xvpv3oCLFZyuKlhP8jOCi7rpcKIyRPWd/Zgix7oAEGuzNLnoZpfFvY9IDRxPAnQoCipVV8rnfIIy5qPeb8g6nnsCvNLO63gFHAle+Nkwr/IpBgKavLMfBff5B8RR1WpwvYgUEcbVVs/umg6AKOxn4oUPB5LeYO0yyAw0YTs/medIfb5dK69ACVDszyFeYM9+44pWtZz8pro9mCb+pWnxnJCsclZzUUNvk+Gpi8UUzLiN+UBL8aMrIlpXvbc2gI1kLevu85UVTp4/+/xK7ELKRHNcaa7RTTclrGFnuU/EfsfKZRYXceBiaSnesd/1EZ7WTWVEXdNrOVTgb67yL0ipxMLSfYHA/MZtqAWQkj92B8bHrXO1dA2E+4mBMZn2b9Uxag+PxRNt+GM6NmKoCTYlEX8XnTUlThkI6LZEtef3rFNWyHv6epJPkoCc93y4hwiKr5Crx/HF/k69kB5FsEwre90HgcJjeFk3/2rp410e32Q2uzDvYvDrSBvGav6kvaKscYqkrRQ4kqZKmd0YmaAXc4kLSmNRNCg7We9/mO4kBkBYlME
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(55016002)(5660300002)(8936002)(4326008)(8676002)(45080400002)(478600001)(186003)(33656002)(9686003)(7416002)(2906002)(316002)(86362001)(110136005)(26005)(64756008)(7696005)(66476007)(66946007)(66556008)(76116006)(66446008)(71200400001)(83080400001)(44832011)(6506007)(52536014)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ozbQHlUI6rg1IaJYeVodMmu1rIps8SbJrKc3nk7zGa89hLxB9k9NMc/h3ohihpxifWRZ0OVaU0ucfrgClJdG/kEglMG1N2NKfJ3Feg4WbSnCn6lGGQPZi7Sz5g+1/mHbPnYjhijAh/OT8B58m7+2HsvfYTHd8myAzVQO7Baz4IZaplZTMhT+VBaeIGqs5Ie3vVzdZ0MLdbsytVrDGktPEbtZrjDV2auAZiia4hkCpuOaEtuQYLCEBM/U8TKWsnp4jhbqVmBofAfIu1jNdkTYEcimLNLJyn0irepGQB6sVoX2IiVhpHDUk7Q4RXInG3aLMTEekDeD/fuoNLJMtW12pLFx8MKR3hjNxvAlnhUFhBzJLbyyZsImIPfjxPsQLQehs6a33OhWKY0SjLftvompec+0rmyoaX2i+YDO5lMZFXjjawoTazl6e71S+faB4RkRn9PLq2dV9Xps0Z2hjKlDNaBPxYQFiCekrlgnNAIEe1w=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726847AbgERGka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 02:40:30 -0400
+Received: from mail1462c50.megamailservers.eu ([91.136.14.62]:47554 "EHLO
+        mail267c50.megamailservers.eu" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726732AbgERGka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 02:40:30 -0400
+X-Greylist: delayed 2443 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 May 2020 02:40:28 EDT
+X-Authenticated-User: 017623705678@o2online.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megamailservers.eu;
+        s=maildub; t=1589781572;
+        bh=fxLi+YSwbmy8278/adFBYex83RaX11iJ/EusGEQX78Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VjjGLU/pBviWRwfqfmzs1c+ntu/0Mqi4zL2yWfoWYU53YTQP2b5Nt2d2rgiXJ+gN6
+         jucNuxGktugiiFQwk6VoRLdyRNDTr5SD665pEGVfo0PT92597yX2QSMjVracJ8elWC
+         kyUXG0B699D5ucgh1qe5USJF36E/MSml6lVyUtq0=
+Feedback-ID: 017623705678@o2
+Received: from [192.168.2.2] (dslb-178-011-017-047.178.011.pools.vodafone-ip.de [178.11.17.47])
+        (authenticated bits=0)
+        by mail267c50.megamailservers.eu (8.14.9/8.13.1) with ESMTP id 04I5xS1r001427;
+        Mon, 18 May 2020 05:59:29 +0000
+Subject: Re: RTL8723BS driver doesn't work for,me but I can help testing
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <bcefba5b-107c-716b-bb60-5b4b2476894b@o2online.de>
+ <CAFBinCD8-tr97GCVhBi5R1nzxLhy=_6VuLY8ubUO1SDTFjiELw@mail.gmail.com>
+ <22af498b-44a0-ced3-86f3-114427a73910@o2online.de>
+ <CAFBinCCGAkhPCwOW=mAvsV2qdixq8Gf8yQw1gYErHpz7KmuAZg@mail.gmail.com>
+ <5de6db87-a71f-d14c-390d-b0caeab5d650@o2online.de>
+ <CAFBinCDB9c2uMRXO9DKSX4hC7EBgnRfBa+BM5-VdEPZeieKn_w@mail.gmail.com>
+ <813dfc08-f13a-dcac-0bd9-821d188bba08@o2online.de>
+ <CAFBinCCgZF5Pu944q-_+V0yQ-nc6q82xDjJHjsnj6=uOQL+DEw@mail.gmail.com>
+ <8cbbf90c-54ba-8fa3-3386-022c9c997a20@o2online.de>
+ <CAFBinCBukGbzgO-Y1dCRYXZHhX2PcSEQQ_XvhHqLcnw0fGDP8w@mail.gmail.com>
+From:   Tobias Baumann <017623705678@o2online.de>
+Message-ID: <a95f5fe1-4376-f872-961a-c2237c36811c@o2online.de>
+Date:   Mon, 18 May 2020 07:59:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10d899b3-57e2-420b-8853-08d7faf084f1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2020 05:58:42.4281
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EKUbqVivu7B7RU3yU7lvJbIrB74eXER47Xq6OP7vQG/07PtWrlMNZstHQJxvygpNZiTsXXlPVlYIyHTQLZ5JaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6695
+In-Reply-To: <CAFBinCBukGbzgO-Y1dCRYXZHhX2PcSEQQ_XvhHqLcnw0fGDP8w@mail.gmail.com>
+Content-Type: multipart/mixed;
+ boundary="------------A98A91A7ED40ADFF24300404"
+Content-Language: de-DE
+X-Antivirus: AVG (VPS 200517-0, 17.05.2020), Outbound message
+X-Antivirus-Status: Clean
+X-CTCH-RefID: str=0001.0A782F1C.5EC22409.003C,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+X-CTCH-VOD: Unknown
+X-CTCH-Spam: Unknown
+X-CTCH-Score: 0.000
+X-CTCH-Rules: 
+X-CTCH-Flags: 0
+X-CTCH-ScoreCust: 0.000
+X-CSC:  0
+X-CHA:  v=2.3 cv=Cf92G4jl c=1 sm=1 tr=0 a=cfXdPu6Ul6OsnrHrce2WRQ==:117
+        a=cfXdPu6Ul6OsnrHrce2WRQ==:17 a=r77TgQKjGQsHNAKrUKIA:9 a=q2HaWy13AAAA:20
+        a=oCcaPWc0AAAA:8 a=dmrhWiRAlyGHxnwzX3EA:9 a=QEXdDO2ut3YA:10
+        a=aukWdSIhi2oQ9f3OssAA:9 a=m-Z_27IZkzAA:10 a=Va65v5KMAS5Rrfilet4A:9
+        a=lUC3q8n_5PfBMt-q-dAA:9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBBbnNvbiBIdWFuZyA8QW5zb24uSHVhbmdAbnhwLmNvbT4NCj4gU2VudDogVGh1cnNk
-YXksIE1heSAxNCwgMjAyMCAyOjU0IFBNDQo+IA0KPiBDb252ZXJ0IHRoZSBpbXggcHdtIGJpbmRp
-bmcgdG8gRFQgc2NoZW1hIGZvcm1hdCB1c2luZyBqc29uLXNjaGVtYS4NCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IEFuc29uIEh1YW5nIDxBbnNvbi5IdWFuZ0BueHAuY29tPg0KPiAtLS0NCj4gIERvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vaW14LXB3bS50eHQgIHwgMjcgLS0tLS0t
-LS0tDQo+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vaW14LXB3bS55YW1s
-IHwgNjYNCj4gKysrKysrKysrKysrKysrKysrKysrKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA2NiBp
-bnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkgIGRlbGV0ZSBtb2RlIDEwMDY0NA0KPiBEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2lteC1wd20udHh0DQo+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQNCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9pbXgt
-cHdtLnlhbWwNCj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvcHdtL2lteC1wd20udHh0DQo+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3B3bS9pbXgtcHdtLnR4dA0KPiBkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXgg
-MjJmMWMzZC4uMDAwMDAwMA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvcHdtL2lteC1wd20udHh0DQo+ICsrKyAvZGV2L251bGwNCj4gQEAgLTEsMjcgKzAsMCBAQA0K
-PiAtRnJlZXNjYWxlIGkuTVggUFdNIGNvbnRyb2xsZXINCj4gLQ0KPiAtUmVxdWlyZWQgcHJvcGVy
-dGllczoNCj4gLS0gY29tcGF0aWJsZSA6IHNob3VsZCBiZSAiZnNsLDxzb2M+LXB3bSIgYW5kIG9u
-ZSBvZiB0aGUgZm9sbG93aW5nDQo+IC0gICBjb21wYXRpYmxlIHN0cmluZ3M6DQo+IC0gIC0gImZz
-bCxpbXgxLXB3bSIgZm9yIFBXTSBjb21wYXRpYmxlIHdpdGggdGhlIG9uZSBpbnRlZ3JhdGVkIG9u
-IGkuTVgxDQo+IC0gIC0gImZzbCxpbXgyNy1wd20iIGZvciBQV00gY29tcGF0aWJsZSB3aXRoIHRo
-ZSBvbmUgaW50ZWdyYXRlZCBvbiBpLk1YMjcNCj4gLS0gcmVnOiBwaHlzaWNhbCBiYXNlIGFkZHJl
-c3MgYW5kIGxlbmd0aCBvZiB0aGUgY29udHJvbGxlcidzIHJlZ2lzdGVycw0KPiAtLSAjcHdtLWNl
-bGxzOiAyIGZvciBpLk1YMSBhbmQgMyBmb3IgaS5NWDI3IGFuZCBuZXdlciBTb0NzLiBTZWUgcHdt
-LnlhbWwNCj4gLSAgaW4gdGhpcyBkaXJlY3RvcnkgZm9yIGEgZGVzY3JpcHRpb24gb2YgdGhlIGNl
-bGxzIGZvcm1hdC4NCj4gLS0gY2xvY2tzIDogQ2xvY2sgc3BlY2lmaWVycyBmb3IgYm90aCBpcGcg
-YW5kIHBlciBjbG9ja3MuDQo+IC0tIGNsb2NrLW5hbWVzIDogQ2xvY2sgbmFtZXMgc2hvdWxkIGlu
-Y2x1ZGUgYm90aCAiaXBnIiBhbmQgInBlciINCj4gLVNlZSB0aGUgY2xvY2sgY29uc3VtZXIgYmlu
-ZGluZywNCj4gLQlEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svY2xvY2st
-YmluZGluZ3MudHh0DQo+IC0tIGludGVycnVwdHM6IFRoZSBpbnRlcnJ1cHQgZm9yIHRoZSBwd20g
-Y29udHJvbGxlcg0KPiAtDQo+IC1FeGFtcGxlOg0KPiAtDQo+IC1wd20xOiBwd21ANTNmYjQwMDAg
-ew0KPiAtCSNwd20tY2VsbHMgPSA8Mz47DQo+IC0JY29tcGF0aWJsZSA9ICJmc2wsaW14NTMtcHdt
-IiwgImZzbCxpbXgyNy1wd20iOw0KPiAtCXJlZyA9IDwweDUzZmI0MDAwIDB4NDAwMD47DQo+IC0J
-Y2xvY2tzID0gPCZjbGtzIElNWDVfQ0xLX1BXTTFfSVBHX0dBVEU+LA0KPiAtCQkgPCZjbGtzIElN
-WDVfQ0xLX1BXTTFfSEZfR0FURT47DQo+IC0JY2xvY2stbmFtZXMgPSAiaXBnIiwgInBlciI7DQo+
-IC0JaW50ZXJydXB0cyA9IDw2MT47DQo+IC19Ow0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9pbXgtcHdtLnlhbWwNCj4gYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2lteC1wd20ueWFtbA0KPiBuZXcgZmlsZSBtb2RlIDEw
-MDY0NA0KPiBpbmRleCAwMDAwMDAwLi40YjYyYWYyDQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9pbXgtcHdtLnlhbWwNCj4gQEAg
-LTAsMCArMSw2NiBAQA0KPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAtb25s
-eSBPUiBCU0QtMi1DbGF1c2UpICVZQU1MIDEuMg0KPiArLS0tDQo+ICskaWQ6DQo+ICtodHRwczov
-L2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cCUzQSUyRiUy
-RmRldmljZQ0KPiArdHJlZS5vcmclMkZzY2hlbWFzJTJGcHdtJTJGaW14LXB3bS55YW1sJTIzJmFt
-cDtkYXRhPTAyJTdDMDElDQo+IDdDYWlzaGVuZy5kDQo+ICtvbmclNDBueHAuY29tJTdDOWI1Y2Mx
-ODE0YTRiNDdkMWNiMGQwOGQ3ZjdkNGY1OTQlN0M2ODZlYTFkM2JjDQo+IDJiNGM2ZmE5MmMNCj4g
-K2Q5OWM1YzMwMTYzNSU3QzAlN0MwJTdDNjM3MjUwMzY2MzMxNjI3ODY1JmFtcDtzZGF0YT1NMlJQ
-Y3R5DQo+IHd6NjFXWnJwQVc2Uw0KPiArTzNOSmJyMndqMnFYd25NTW1Cd0NiSW5rJTNEJmFtcDty
-ZXNlcnZlZD0wDQo+ICskc2NoZW1hOg0KPiAraHR0cHM6Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVj
-dGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHAlM0ElMkYlMkZkZXZpY2UNCj4gK3RyZWUub3JnJTJG
-bWV0YS1zY2hlbWFzJTJGY29yZS55YW1sJTIzJmFtcDtkYXRhPTAyJTdDMDElN0NhaXNoZW4NCj4g
-Zy5kb25nJQ0KPiArNDBueHAuY29tJTdDOWI1Y2MxODE0YTRiNDdkMWNiMGQwOGQ3ZjdkNGY1OTQl
-N0M2ODZlYTFkM2JjMmI0Yw0KPiA2ZmE5MmNkOTljDQo+ICs1YzMwMTYzNSU3QzAlN0MwJTdDNjM3
-MjUwMzY2MzMxNjI3ODY1JmFtcDtzZGF0YT1VeGdZU0NsYW55T2p0DQo+IEJtbHlOck1aeUYNCj4g
-KzMlMkY1YXdEJTJGTTN5YVZQcWdOS2d4cyUzRCZhbXA7cmVzZXJ2ZWQ9MA0KPiArDQo+ICt0aXRs
-ZTogRnJlZXNjYWxlIGkuTVggUFdNIGNvbnRyb2xsZXINCj4gKw0KPiArbWFpbnRhaW5lcnM6DQo+
-ICsgIC0gUGhpbGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4NCj4gKw0KPiArcHJv
-cGVydGllczoNCj4gKyAgIiNwd20tY2VsbHMiOg0KPiArICAgIGRlc2NyaXB0aW9uOiB8DQo+ICsg
-ICAgICBTaG91bGQgYmUgMiBmb3IgaS5NWDEgYW5kIDMgZm9yIGkuTVgyNyBhbmQgbmV3ZXIgU29D
-cy4gU2VlIHB3bS55YW1sDQo+ICsgICAgICBpbiB0aGlzIGRpcmVjdG9yeSBmb3IgYSBkZXNjcmlw
-dGlvbiBvZiB0aGUgY2VsbHMgZm9ybWF0Lg0KDQpTaG91bGQgd2UgYWRkIHRoZSByZWZlcmVuY2Ug
-dG8gcHdtLnlhbWw/DQpCVFcsIHN0cmFuZ2UsIEkgZGlkbid0IHNlZSBmb3JtYXQgZGVzY3JpcHRp
-b24gaW4gcHdtLnlhbWwuDQoNCj4gKyAgICBlbnVtOg0KPiArICAgICAgLSAyDQo+ICsgICAgICAt
-IDMNCj4gKw0KPiArICBjb21wYXRpYmxlOg0KPiArICAgIGVudW06DQo+ICsgICAgICAtIGZzbCxp
-bXgxLXB3bQ0KPiArICAgICAgLSBmc2wsaW14MjctcHdtDQo+ICsNCj4gKyAgcmVnOg0KPiArICAg
-IG1heEl0ZW1zOiAxDQo+ICsNCj4gKyAgY2xvY2tzOg0KPiArICAgIGl0ZW1zOg0KPiArICAgICAg
-LSBkZXNjcmlwdGlvbjogU29DIFBXTSBpcGcgY2xvY2sNCj4gKyAgICAgIC0gZGVzY3JpcHRpb246
-IFNvQyBQV00gcGVyIGNsb2NrDQo+ICsgICAgbWF4SXRlbXM6IDINCj4gKw0KPiArICBjbG9jay1u
-YW1lczoNCj4gKyAgICBpdGVtczoNCj4gKyAgICAgIC0gY29uc3Q6IGlwZw0KPiArICAgICAgLSBj
-b25zdDogcGVyDQo+ICsgICAgbWF4SXRlbXM6IDINCj4gKw0KPiArICBpbnRlcnJ1cHRzOg0KPiAr
-ICAgIG1heEl0ZW1zOiAxDQo+ICsNCj4gK3JlcXVpcmVkOg0KPiArICAtICIjcHdtLWNlbGxzIg0K
-PiArICAtIGNvbXBhdGlibGUNCj4gKyAgLSByZWcNCj4gKyAgLSBjbG9ja3MNCj4gKyAgLSBjbG9j
-ay1uYW1lcw0KPiArICAtIGludGVycnVwdHMNCj4gKw0KPiArYWRkaXRpb25hbFByb3BlcnRpZXM6
-IGZhbHNlDQo+ICsNCj4gK2V4YW1wbGVzOg0KPiArICAtIHwNCj4gKyAgICAjaW5jbHVkZSA8ZHQt
-YmluZGluZ3MvY2xvY2svaW14NS1jbG9jay5oPg0KPiArDQo+ICsgICAgcHdtQDUzZmI0MDAwIHsN
-Cj4gKyAgICAgICAgI3B3bS1jZWxscyA9IDwzPjsNCj4gKyAgICAgICAgY29tcGF0aWJsZSA9ICJm
-c2wsaW14MjctcHdtIjsNCj4gKyAgICAgICAgcmVnID0gPDB4NTNmYjQwMDAgMHg0MDAwPjsNCj4g
-KyAgICAgICAgY2xvY2tzID0gPCZjbGtzIElNWDVfQ0xLX1BXTTFfSVBHX0dBVEU+LA0KPiArICAg
-ICAgICAgICAgICAgICA8JmNsa3MgSU1YNV9DTEtfUFdNMV9IRl9HQVRFPjsNCj4gKyAgICAgICAg
-Y2xvY2stbmFtZXMgPSAiaXBnIiwgInBlciI7DQo+ICsgICAgICAgIGludGVycnVwdHMgPSA8NjE+
-Ow0KPiArICAgIH07DQo+IC0tDQo+IDIuNy40DQoNCg==
+This is a multi-part message in MIME format.
+--------------A98A91A7ED40ADFF24300404
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+hi martin
+
+i activate your patch ; wlan works ;  also with only  edit GPIOX_11 wlan 
+works
+
+its now GPIO-402 out high ACTIVE_LOW  ( 3.3V on pin12)
+
+i also attached the performance infos  Wlan0->Router and RAM->SDHC
+
+Am 18.05.2020 um 00:31 schrieb Martin Blumenstingl:
+> Hi Tobias,
+>
+> On Sun, May 17, 2020 at 11:05 PM Tobias Baumann
+> <017623705678@o2online.de> wrote:
+>> hi martin
+>>
+>> sorry for cc -problem it was my fault in thunderbird
+>>
+>> thanks for dtb file but this file has problem kernel stop with
+>>
+>> [    6.122092] mmc0: new high speed SDIO card at address 0001
+>> [   35.804258] VCCK: disabling
+>> [   35.808781] platform pwmleds: deferred probe pending
+>> [   35.812625] platform sound: deferred probe pending
+> pwmleds was also there in your last dmesg
+> please ignore the sound part, I haven't tested it on that particular
+> board in a while
+>
+>
+>> [  215.804295] random: crng init done
+>>
+>> (last time deferred probe was gcc problem )
+>>
+>> please can you provide me with dts file and i complile at my linux box
+>> or maybe only the change line and i use the dtb from image and edit the
+>> lines like the usb patch
+> you can get all my patches from here: [0]
+> as always: some of them are not even in linux-next yet and there's a
+> reason for that ;-)
+> I have changed the GPIO_ACTIVE_* polarity for the two GPIOs in the
+> sdio_pwrseq node if you want to do that by yourself.
+>
+>
+> Best regards,
+> Martin
+>
+>
+> [0] https://github.com/xdarklight/linux/tree/meson-mx-integration-5.8-20200517
+>
+
+
+-- 
+Diese E-Mail wurde von AVG auf Viren geprüft.
+http://www.avg.com
+
+--------------A98A91A7ED40ADFF24300404
+Content-Type: text/plain; charset=UTF-8;
+ name="iperf 3.10.99.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="iperf 3.10.99.txt"
+
+DQpyb290QHZlZ2FzODEyIH4jIGlwZXJmIC1jIDE5Mi4xNjguMi41MCAtcCA0NzExDQotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCkNsaWVudCBjb25uZWN0aW5nIHRvIDE5Mi4xNjguMi41MCwgVENQIHBvcnQgNDcxMQ0K
+VENQIHdpbmRvdyBzaXplOiAyMC43IEtCeXRlIChkZWZhdWx0KQ0KLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpbICAzXSBs
+b2NhbCAxOTIuMTY4LjIuMjAgcG9ydCA1MDU3NyBjb25uZWN0ZWQgd2l0aCAxOTIuMTY4LjIu
+NTAgcG9ydCA0NzExDQpbIElEXSBJbnRlcnZhbCAgICAgICBUcmFuc2ZlciAgICAgQmFuZHdp
+ZHRoDQpbICAzXSAgMC4wLTEwLjAgc2VjICA1NC4xIE1CeXRlcyAgNDUuMiBNYml0cy9zZWMN
+Cg==
+--------------A98A91A7ED40ADFF24300404
+Content-Type: text/plain; charset=UTF-8;
+ name="dd 3.10.99.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dd 3.10.99.txt"
+
+cm9vdEB2ZWdhczgxMiB+IyBkZCBpZj0vZGV2L3plcm8gb2Y9L3Jvb3QvdGVzdGZpbGUgYnM9
+NTEyTSBjb3VudD0xIG9mbGFnPWRpcmVjdA0KMSswIHJlY29yZHMgaW4NCjErMCByZWNvcmRz
+IG91dA0KNTM2ODcwOTEyIGJ5dGVzICg1MzcgTUIsIDUxMiBNaUIpIGNvcGllZCwgNTYuNjA0
+OCBzLCA5LjUgTUIvcw0K
+--------------A98A91A7ED40ADFF24300404
+Content-Type: text/plain; charset=UTF-8;
+ name="iperf 5.7.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="iperf 5.7.txt"
+
+cm9vdEBhbWwtczgxMjp+IyBpcGVyZiAtYyAxOTIuMTY4LjIuNTAgLXAgNDcxMQ0KLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+DQpDbGllbnQgY29ubmVjdGluZyB0byAxOTIuMTY4LjIuNTAsIFRDUCBwb3J0IDQ3MTENClRD
+UCB3aW5kb3cgc2l6ZTogNDMuOCBLQnl0ZSAoZGVmYXVsdCkNCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KWyAgM10gbG9j
+YWwgMTkyLjE2OC4yLjIwIHBvcnQgMzQ1NDAgY29ubmVjdGVkIHdpdGggMTkyLjE2OC4yLjUw
+IHBvcnQgNDcxMQ0KWyBJRF0gSW50ZXJ2YWwgICAgICAgVHJhbnNmZXIgICAgIEJhbmR3aWR0
+aA0KWyAgM10gIDAuMC0xMC4yIHNlYyAgNDQuNiBNQnl0ZXMgIDM2LjcgTWJpdHMvc2VjDQpy
+b290QGFtbC1zODEyOn4jDQo=
+--------------A98A91A7ED40ADFF24300404
+Content-Type: text/plain; charset=UTF-8;
+ name="dd 5.7.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dd 5.7.txt"
+
+cm9vdEBhbWwtczgxMjp+IyBkZCBpZj0vZGV2L3plcm8gb2Y9L3Jvb3QvdGVzdGZpbGUgYnM9
+NTEyTSBjb3VudD0xIG9mbGFnPWRpcmVjdA0KMSswIHJlY29yZHMgaW4NCjErMCByZWNvcmRz
+IG91dA0KNTM2ODcwOTEyIGJ5dGVzICg1MzcgTUIsIDUxMiBNaUIpIGNvcGllZCwgNzUsODM2
+NSBzLCA3LDEgTUIvcw0K
+--------------A98A91A7ED40ADFF24300404--
