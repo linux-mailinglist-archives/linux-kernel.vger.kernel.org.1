@@ -2,119 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641CB1D7152
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 08:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839651D716C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgERGxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 02:53:02 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:20606 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726040AbgERGxB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 02:53:01 -0400
-X-UUID: 50de2994ee194d24be05a64da9dcc874-20200518
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BE27p8cgAXdiOJaTc4rLjiLgh00VCcwZpGfoS4OOzsM=;
-        b=ptpOJFQJPFBPL0cXkOqi5XQq0/yJTcAYzd6Xd1kQWwUg4VdHh2mnbGPt0mbD9ULSgjuY9RuCQsxe6WDM+RcppeVDqP5klDWQdDGAiu8iiqef6Im9IPnivLimwGbVBzh1ZnPdTsfZL3fSYtLAJ1PlFQquB/C2sLu1OEw+FwOZ+Sc=;
-X-UUID: 50de2994ee194d24be05a64da9dcc874-20200518
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1666374242; Mon, 18 May 2020 14:52:50 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 May
- 2020 14:52:46 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 18 May 2020 14:52:46 +0800
-Message-ID: <1589784680.15083.19.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 23/33] iommu/mediatek-v1 Convert to
- probe/release_device() call-backs
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     Joerg Roedel <jroedel@suse.de>, Will Deacon <will@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Marek Szyprowski" <m.szyprowski@samsung.com>
-Date:   Mon, 18 May 2020 14:51:20 +0800
-In-Reply-To: <20200515100718.GS18353@8bytes.org>
-References: <20200414131542.25608-1-joro@8bytes.org>
-         <20200414131542.25608-24-joro@8bytes.org>
-         <1589528699.26119.9.camel@mhfsdcap03> <20200515100718.GS18353@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726957AbgERHBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:01:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4856 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726489AbgERHBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 03:01:04 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 062AD9B7EAF053AB79D3;
+        Mon, 18 May 2020 15:01:02 +0800 (CST)
+Received: from host-suse12sp4.huawei.com (10.67.133.23) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 18 May 2020 15:00:54 +0800
+From:   Shijie Hu <hushijie3@huawei.com>
+To:     <mike.kravetz@oracle.com>
+CC:     <will@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <nixiaoming@huawei.com>, <wangxu72@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <yangerkun@huawei.com>,
+        <wangle6@huawei.com>, <cg.chen@huawei.com>, <chenjie6@huawei.com>,
+        <alex.huangjianhui@huawei.com>
+Subject: [PATCH v6] hugetlbfs: Get unmapped area below TASK_UNMAPPED_BASE for hugetlbfs
+Date:   Mon, 18 May 2020 14:53:38 +0800
+Message-ID: <20200518065338.113664-1-hushijie3@huawei.com>
+X-Mailer: git-send-email 2.12.3
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 645326C83BAFED16ABAF80B4AAC8D7BA842597586DFE9CAF78B92A85A256ADAF2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.67.133.23]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA1LTE1IGF0IDEyOjA3ICswMjAwLCBKb2VyZyBSb2VkZWwgd3JvdGU6DQo+
-IEhpLA0KPiANCj4gT24gRnJpLCBNYXkgMTUsIDIwMjAgYXQgMDM6NDQ6NTlQTSArMDgwMCwgWW9u
-ZyBXdSB3cm90ZToNCj4gPiBPbiBUdWUsIDIwMjAtMDQtMTQgYXQgMTU6MTUgKzAyMDAsIEpvZXJn
-IFJvZWRlbCB3cm90ZToNCj4gPiA+IC0JcmV0dXJuIGlvbW11X2RldmljZV9saW5rKCZkYXRhLT5p
-b21tdSwgZGV2KTsNCj4gPiA+ICsJZXJyID0gYXJtX2lvbW11X2F0dGFjaF9kZXZpY2UoZGV2LCBt
-dGtfbWFwcGluZyk7DQo+ID4gPiArCWlmIChlcnIpDQo+ID4gPiArCQlkZXZfZXJyKGRldiwgIkNh
-bid0IGNyZWF0ZSBJT01NVSBtYXBwaW5nIC0gRE1BLU9QUyB3aWxsIG5vdCB3b3JrXG4iKTsNCj4g
-PiANCj4gPiANCj4gPiBIaSBKb2VyZywNCj4gPiANCj4gPiAgICAgIFRoYW5rcyB2ZXJ5IG11Y2gg
-Zm9yIHRoaXMgcGF0Y2guDQo+ID4gDQo+ID4gICAgICBUaGlzIGFybV9pb21tdV9hdHRhY2hfZGV2
-aWNlIGlzIGNhbGxlZCBqdXN0IGFzIHdlIGV4cGVjdGVkLg0KPiA+IA0KPiA+ICAgICAgQnV0IGl0
-IHdpbGwgZmFpbCBpbiB0aGlzIGNhbGxzdGFjayBhcyB0aGUgZ3JvdXAtPm11dGV4IHdhcyB0cmll
-ZCB0bw0KPiA+IGJlIHJlLWxvY2tlZC4uLg0KPiA+IA0KPiA+IFs8YzA5MzhlOGM+XSAoaW9tbXVf
-YXR0YWNoX2RldmljZSkgZnJvbSBbPGMwMzE3NTkwPl0NCj4gPiAoX19hcm1faW9tbXVfYXR0YWNo
-X2RldmljZSsweDM0LzB4OTApDQo+ID4gWzxjMDMxNzU5MD5dIChfX2FybV9pb21tdV9hdHRhY2hf
-ZGV2aWNlKSBmcm9tIFs8YzAzMTc1Zjg+XQ0KPiA+IChhcm1faW9tbXVfYXR0YWNoX2RldmljZSsw
-eGMvMHgyMCkNCj4gPiBbPGMwMzE3NWY4Pl0gKGFybV9pb21tdV9hdHRhY2hfZGV2aWNlKSBmcm9t
-IFs8YzA5NDMyY2M+XQ0KPiA+IChtdGtfaW9tbXVfcHJvYmVfZmluYWxpemUrMHgzNC8weDUwKQ0K
-PiA+IFs8YzA5NDMyY2M+XSAobXRrX2lvbW11X3Byb2JlX2ZpbmFsaXplKSBmcm9tIFs8YzA5M2E4
-YWM+XQ0KPiA+IChidXNfaW9tbXVfcHJvYmUrMHgyYTgvMHgyYzQpDQo+ID4gWzxjMDkzYThhYz5d
-IChidXNfaW9tbXVfcHJvYmUpIGZyb20gWzxjMDkzYTk1MD5dIChidXNfc2V0X2lvbW11DQo+ID4g
-KzB4ODgvMHhkNCkNCj4gPiBbPGMwOTNhOTUwPl0gKGJ1c19zZXRfaW9tbXUpIGZyb20gWzxjMDk0
-M2M3ND5dIChtdGtfaW9tbXVfcHJvYmUNCj4gPiArMHgyZjgvMHgzNjQpDQo+IA0KPiBUaGFua3Mg
-Zm9yIHRoZSByZXBvcnQsIGlzDQo+IA0KPiAJaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8x
-NTg5NTMwMTIzLTMwMjQwLTEtZ2l0LXNlbmQtZW1haWwteW9uZy53dUBtZWRpYXRlay5jb20vDQo+
-IA0KPiBUaGUgZml4IGZvciB0aGlzIGlzc3VlIG9yIGlzIHNvbWV0aGluZyBlbHNlIHJlcXVpcmVk
-Pw0KDQpOby4gVGhhdCBwYXRjaCBvbmx5IGFkanVzdCB0aGUgaW50ZXJuYWwgZmxvdyB0byBzYXRp
-c2Z5IHRoZSBsYXRlc3QNCmZyYW1ld29yaywgaXQncyBub3QgZm9yIGZpeGluZyB0aGlzIG11dGV4
-IGlzc3VlLiANCg0KSGVyZSBJIG9ubHkgcmVwb3J0ZWQgdGhpcyBpc3N1ZS4NCg0KYmVsb3cgaXMg
-bXkgbG9jYWwgcGF0Y2guIHNwbGl0ICJkbWFfYXR0YWNoIiB0byBhdHRhY2hfZGV2aWNlIGFuZA0K
-cHJvYmVfZmluYWxpemUuIEFib3V0IGF0dGFjaF9kZXZpY2UsIFVzZSB0aGUgZXhpc3RlZA0KX19p
-b21tdV9hdHRhY2hfZ3JvdXAgaW5zdGVhZC4gVGhlbiByZW5hbWUgZnJvbSB0aGUgImRtYV9hdHRh
-Y2giIHRvDQoicHJvYmVfZmluYWxpemUiIHRvIGRvIHRoZSBwcm9iZV9maW5hbGl6ZSBqb2IuIEFu
-ZCBtb3ZlIGl0IG91dHNpZGUgb2YNCnRoZSBtdXRleF91bmxvY2suDQoNCkknbSBub3Qgc3VyZSBp
-ZiBpdCBpcyByaWdodC4gYW5kIG9mIGNvdXJzZSBJIHdpbGwgdGVzdCBpZiB5b3UgaGF2ZSBhbnkN
-Cm90aGVyIHNvbHV0aW9uLiBUaGFua3MuDQoNCg0KLS0tIGEvZHJpdmVycy9pb21tdS9pb21tdS5j
-DQorKysgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCkBAIC0xNjY1LDI2ICsxNjY1LDIwIEBAIHN0
-YXRpYyB2b2lkIHByb2JlX2FsbG9jX2RlZmF1bHRfZG9tYWluKHN0cnVjdA0KYnVzX3R5cGUgKmJ1
-cywNCiANCiB9DQogDQotc3RhdGljIGludCBpb21tdV9ncm91cF9kb19kbWFfYXR0YWNoKHN0cnVj
-dCBkZXZpY2UgKmRldiwgdm9pZCAqZGF0YSkNCitzdGF0aWMgaW50IGlvbW11X2dyb3VwX2RvX3By
-b2JlX2ZpbmFsaXplKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZA0KKmRhdGEpDQogew0KIAlzdHJ1
-Y3QgaW9tbXVfZG9tYWluICpkb21haW4gPSBkYXRhOw0KLQljb25zdCBzdHJ1Y3QgaW9tbXVfb3Bz
-ICpvcHM7DQotCWludCByZXQ7DQotDQotCXJldCA9IF9faW9tbXVfYXR0YWNoX2RldmljZShkb21h
-aW4sIGRldik7DQotDQotCW9wcyA9IGRvbWFpbi0+b3BzOw0KKwljb25zdCBzdHJ1Y3QgaW9tbXVf
-b3BzICpvcHMgPSBkb21haW4tPm9wczsNCiANCi0JaWYgKHJldCA9PSAwICYmIG9wcy0+cHJvYmVf
-ZmluYWxpemUpDQorCWlmIChvcHMtPnByb2JlX2ZpbmFsaXplKQ0KIAkJb3BzLT5wcm9iZV9maW5h
-bGl6ZShkZXYpOw0KLQ0KLQlyZXR1cm4gcmV0Ow0KKwlyZXR1cm4gMDsNCiB9DQogDQotc3RhdGlj
-IGludCBfX2lvbW11X2dyb3VwX2RtYV9hdHRhY2goc3RydWN0IGlvbW11X2dyb3VwICpncm91cCkN
-CitzdGF0aWMgaW50IGlvbW11X2dyb3VwX3Byb2JlX2ZpbmFsaXplKHN0cnVjdCBpb21tdV9ncm91
-cCAqZ3JvdXApDQogew0KIAlyZXR1cm4gX19pb21tdV9ncm91cF9mb3JfZWFjaF9kZXYoZ3JvdXAs
-IGdyb3VwLT5kZWZhdWx0X2RvbWFpbiwNCi0JCQkJCSAgaW9tbXVfZ3JvdXBfZG9fZG1hX2F0dGFj
-aCk7DQorCQkJCQkgIGlvbW11X2dyb3VwX2RvX3Byb2JlX2ZpbmFsaXplKTsNCiB9DQogDQogc3Rh
-dGljIGludCBpb21tdV9kb19jcmVhdGVfZGlyZWN0X21hcHBpbmdzKHN0cnVjdCBkZXZpY2UgKmRl
-diwgdm9pZA0KKmRhdGEpDQpAQCAtMTczMSwxMiArMTcyNSwxNCBAQCBpbnQgYnVzX2lvbW11X3By
-b2JlKHN0cnVjdCBidXNfdHlwZSAqYnVzKQ0KIA0KIAkJaW9tbXVfZ3JvdXBfY3JlYXRlX2RpcmVj
-dF9tYXBwaW5ncyhncm91cCk7DQogDQotCQlyZXQgPSBfX2lvbW11X2dyb3VwX2RtYV9hdHRhY2go
-Z3JvdXApOw0KKwkJcmV0ID0gX19pb21tdV9hdHRhY2hfZ3JvdXAoZ3JvdXAtPmRlZmF1bHRfZG9t
-YWluLCBncm91cCk7DQogDQogCQltdXRleF91bmxvY2soJmdyb3VwLT5tdXRleCk7DQogDQogCQlp
-ZiAocmV0KQ0KIAkJCWJyZWFrOw0KKw0KKwkJaW9tbXVfZ3JvdXBfcHJvYmVfZmluYWxpemUoZ3Jv
-dXApOw0KIAl9DQogDQogCXJldHVybiByZXQ7DQotLSANCg0KPiANCj4gDQo+IFRoYW5rcywNCj4g
-DQo+IAlKb2VyZw0KPiANCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18NCj4gTGludXgtbWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+IExpbnV4LW1lZGlhdGVr
-QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tZWRpYXRlaw0KDQo=
+Here is a final patch to solve that hugetlb_get_unmapped_area() can't
+get unmapped area below mmap base for huge pages based on a few previous
+discussions and patches from me.
+
+I'm so sorry. When sending v2 and v3 patches, I forget to cc:
+linux-mm@kvack.org and linux-kernel@vger.kernel.org. No records of these
+two patches found on the https://lkml.org/lkml/.
+
+Patch V1: https://lkml.org/lkml/2020/4/27/440
+Patch V4: https://lkml.org/lkml/2020/5/13/980
+Patch V5: https://lkml.org/lkml/2020/5/16/60
+
+Changes in V2:
+* Follow Mike's suggestions, move hugetlb_get_unmapped_area() routines
+from "fs/hugetlbfs/inode.c" to "arch/arm64/mm/hugetlbpage.c", without
+changing core code.
+* Add mmap_is_legacy() function, and only fall back to the bottom-up
+function on no-legacy mode.
+
+Changes in V3:
+* Add *bottomup() and *topdown() two function, and check if
+mm->get_unmapped_area is equal to arch_get_unmapped_area() instead of
+checking mmap_is_legacy() to determine which function should be used.
+
+Changes in V4:
+* Follow the suggestions of Will and Mike, move back this patch to core
+code.
+
+Changes in V5:
+* Fix kbuild test error.
+
+Changes in V6:
+* Follow Mike's suggestions, switch the if/else order and add a comment.
+
+------
+
+In a 32-bit program, running on arm64 architecture. When the address
+space below mmap base is completely exhausted, shmat() for huge pages
+will return ENOMEM, but shmat() for normal pages can still success on
+no-legacy mode. This seems not fair.
+
+For normal pages, the calling trace of get_unmapped_area() is:
+	=> mm->get_unmapped_area()
+	if on legacy mode,
+		=> arch_get_unmapped_area()
+			=> vm_unmapped_area()
+	if on no-legacy mode,
+		=> arch_get_unmapped_area_topdown()
+			=> vm_unmapped_area()
+
+For huge pages, the calling trace of get_unmapped_area() is:
+	=> file->f_op->get_unmapped_area()
+		=> hugetlb_get_unmapped_area()
+			=> vm_unmapped_area()
+
+To solve this issue, we only need to make hugetlb_get_unmapped_area()
+take the same way as mm->get_unmapped_area(). Add *bottomup() and
+*topdown() for hugetlbfs, and check current mm->get_unmapped_area()
+to decide which one to use. If mm->get_unmapped_area is equal to
+arch_get_unmapped_area_topdown(), hugetlb_get_unmapped_area() calls
+topdown routine, otherwise calls bottomup routine.
+
+Signed-off-by: Shijie Hu <hushijie3@huawei.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ fs/hugetlbfs/inode.c | 67 +++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 59 insertions(+), 8 deletions(-)
+
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 991c60c7ffe0..f3420a643b4f 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -38,6 +38,7 @@
+ #include <linux/uio.h>
+ 
+ #include <linux/uaccess.h>
++#include <linux/sched/mm.h>
+ 
+ static const struct super_operations hugetlbfs_ops;
+ static const struct address_space_operations hugetlbfs_aops;
+@@ -191,13 +192,60 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 
+ #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+ static unsigned long
++hugetlb_get_unmapped_area_bottomup(struct file *file, unsigned long addr,
++		unsigned long len, unsigned long pgoff, unsigned long flags)
++{
++	struct hstate *h = hstate_file(file);
++	struct vm_unmapped_area_info info;
++
++	info.flags = 0;
++	info.length = len;
++	info.low_limit = current->mm->mmap_base;
++	info.high_limit = TASK_SIZE;
++	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
++	info.align_offset = 0;
++	return vm_unmapped_area(&info);
++}
++
++static unsigned long
++hugetlb_get_unmapped_area_topdown(struct file *file, unsigned long addr,
++		unsigned long len, unsigned long pgoff, unsigned long flags)
++{
++	struct hstate *h = hstate_file(file);
++	struct vm_unmapped_area_info info;
++
++	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
++	info.length = len;
++	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
++	info.high_limit = current->mm->mmap_base;
++	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
++	info.align_offset = 0;
++	addr = vm_unmapped_area(&info);
++
++	/*
++	 * A failed mmap() very likely causes application failure,
++	 * so fall back to the bottom-up function here. This scenario
++	 * can happen with large stack limits and large mmap()
++	 * allocations.
++	 */
++	if (unlikely(offset_in_page(addr))) {
++		VM_BUG_ON(addr != -ENOMEM);
++		info.flags = 0;
++		info.low_limit = current->mm->mmap_base;
++		info.high_limit = TASK_SIZE;
++		addr = vm_unmapped_area(&info);
++	}
++
++	return addr;
++}
++
++static unsigned long
+ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+ 		unsigned long len, unsigned long pgoff, unsigned long flags)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	struct hstate *h = hstate_file(file);
+-	struct vm_unmapped_area_info info;
+ 
+ 	if (len & ~huge_page_mask(h))
+ 		return -EINVAL;
+@@ -218,13 +266,16 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+ 			return addr;
+ 	}
+ 
+-	info.flags = 0;
+-	info.length = len;
+-	info.low_limit = TASK_UNMAPPED_BASE;
+-	info.high_limit = TASK_SIZE;
+-	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+-	info.align_offset = 0;
+-	return vm_unmapped_area(&info);
++	/*
++	 * Use mm->get_unmapped_area value as a hint to use topdown routine.
++	 * If architectures have special needs, they should define their own
++	 * version of hugetlb_get_unmapped_area.
++	 */
++	if (mm->get_unmapped_area == arch_get_unmapped_area_topdown)
++		return hugetlb_get_unmapped_area_topdown(file, addr, len,
++				pgoff, flags);
++	return hugetlb_get_unmapped_area_bottomup(file, addr, len,
++			pgoff, flags);
+ }
+ #endif
+ 
+-- 
+2.12.3
 
