@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9FF1D7237
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BEE1D723E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgERHtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgERHtT (ORCPT
+        id S1727815AbgERHuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:50:55 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:29922 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgERHuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:49:19 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003B0C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:49:18 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id d191so8198575oib.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Kg9Ix3G7gt7x5w/7wJrycMf+fayHlF4h5k5vb0LVNE=;
-        b=gus+oTfRxh3dY9mcRGgv3VOc5RsBFCunI6dbDnm8adq9ral2CBEqTqlLwgGZxLm+vC
-         ziYG7DBHGzpTHqRd83GWYvVnGeYWg9smIvSXqP5cyK/iu7h5UQBMjjhltZiDQWNeVx6a
-         66AWjtaqp1SsfXdxM56EJ48c7p3hz8fW9o0sh9Dr7PmZiGAeXNCazO5b+ff1+o8dq9io
-         k0pr0szNYEf8Cxe4cIYeIeKRbHNX66FHH2jcNZmosYXup3Kc8XpgnOakF4ujC281AOzU
-         D2zf1hyCLD05cRgt/INkOKnbu97DFMfcRV9R1eZDR+TTmcDTvLCns9Poal2NPZ2pRGNS
-         lgSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Kg9Ix3G7gt7x5w/7wJrycMf+fayHlF4h5k5vb0LVNE=;
-        b=gZCEQx5+qMiBRd0oEkIZnskGXQ8mnX5ljfBHvIuvoxKM/zjrUywCxymniO+sHCAq17
-         QkNgKOPoLEI0ad70UqR49CVR3p2KrCiVEJjOAx9PKsQkqjOBgq3fGJBGZFVlDwxKFu3u
-         uRkipiObf89qFBRX0IibE2v/V7Mt9Z3zh5GTrc6O2HT1jjAqx7jpF4qsSzV2fVys9b3b
-         oESNbrzoyE0s2R8jg+5W8uJVOHATQoXXTgnqO60NSK3xKWHZbT7IRiq2ODkEbRqJ7b0I
-         zYG+oq2U3l84h2ad7WE4POoF4jyaoo1KaGDyCz8fcLA2u/QAO6poU6D4iv8Bt1w0n6ac
-         vB2g==
-X-Gm-Message-State: AOAM530N/lxcPGV1+mx3pF2VGYTYroEIyMnNJc8/toEN48k/QA6+M0ea
-        wpUPkqNeSs0xORydJWuq6uLr4J8lbBeZdSJvdUcAfg==
-X-Google-Smtp-Source: ABdhPJzGlx8lai6LNz1Oy0wFUl8yeME9wOla1JSZsaTpsJyonIKVxhd06lQMams06G8wlnYAhhrBg89+S3pwR+SytsU=
-X-Received: by 2002:aca:f1c2:: with SMTP id p185mr3962337oih.69.1589788158197;
- Mon, 18 May 2020 00:49:18 -0700 (PDT)
+        Mon, 18 May 2020 03:50:54 -0400
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 04I7oe6G015704
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:50:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 04I7oe6G015704
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589788241;
+        bh=BAeKR/CP8c+c34Jrd/Sa5Uac4xG1EKW7xJ1dkN7birA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=hmZBvJCvFZ/p+FvqzNJxJo+5AbmElt/8YxHvjygTfb80nk20m3vi/zGhDKQgQoYBi
+         q3eypeh6FRRfA6WG1EWsP1bVcDLt4EPJynPe1MMKJM1aaJ3IwYBFsjjffjg2jgbzpj
+         da4fBZd9/Fgm6AsLEJSZCgBEXaR1UckzzHPBxj+SAUlIuED0CKgDw37RcDsg6nLnf6
+         eC8Tafyza2KnEAb9u8FQu3WibpcPH8hFQ+dIR2VrG7SZSSnobpJ5SakD48EXv0V2MT
+         oZRU/egizOBwpil5sHPeS+/VdBNqpw5jLr7Iii2k41LCRk8vXRCr39w3OgUsnS5O9J
+         qEaakKXRGR6rg==
+X-Nifty-SrcIP: [209.85.217.44]
+Received: by mail-vs1-f44.google.com with SMTP id l15so3101197vsr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:50:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530hDAaFkFnB92DuFUeEOv3m8uuYQsWYQ3rL2DKBi4p0Is9rJF9V
+        G7TZICc/7LhYqN1yRsZuN3N1bMBolaqmgD1GPKw=
+X-Google-Smtp-Source: ABdhPJz+rRVl4TNOdWB+sVuKR/NvML4+a3CfHecIfsBbBz3Bot35tpH4pAKiTBv9bpirXHJkVnhxj0hz/T+OmvGHJg0=
+X-Received: by 2002:a67:d016:: with SMTP id r22mr9596614vsi.215.1589788239877;
+ Mon, 18 May 2020 00:50:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200516080718.166676-1-saravanak@google.com>
-In-Reply-To: <20200516080718.166676-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 18 May 2020 00:48:42 -0700
-Message-ID: <CAGETcx8Ro_tsmYEQwzZKsm2xzimw=MBcChbSW5Nx9arUni53wQ@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Fix memory leak when adding
- SYNC_STATE_ONLY device links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Mon, 18 May 2020 16:50:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARUL52pBhg8AD9XeScVqhD8qr2eVEfu4+1v8D+KPyOwNw@mail.gmail.com>
+Message-ID: <CAK7LNARUL52pBhg8AD9XeScVqhD8qr2eVEfu4+1v8D+KPyOwNw@mail.gmail.com>
+Subject: [GIT PULL] arm64: dts: uniphier: UniPhier DT updates for v5.8
+To:     soc@kernel.org, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 1:07 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
-> core: Add device link support for SYNC_STATE_ONLY flag"),
-> device_link_add() incorrectly skipped adding the new SYNC_STATE_ONLY
-> device link to the supplier's and consumer's "device link" list. So the
-> "device link" is lost forever from driver core if the caller didn't keep
-> track of it (typically isn't expected to).
->
-> If the same SYNC_STATE_ONLY device link is created again using
-> device_link_add(), instead of returning the pointer to the previously
-> created device link, a new device link is created and returned. This can
-> cause memory leaks in conjunction with fw_devlinks.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Hi Olof, Arnd,
 
-Greg/Rafael,
 
-This patch causes a warning for SYNC_STATE_ONLY links because they
-allow consumers to probe before suppliers but the device link
-status/state change code wasn't written with that possibility in mind.
-So I need to fix up that warning or state change code.
+Here are UniPhier DT (64bit) updates for the v5.8 merge window.
 
-Depending on how urgent you think memory leak fixes are, you can take
-it as is for now and I can send a separate patch to fix the
-warning/state change code later. Or if we can sit on this memory leak
-for a week, I might be able to fix the warning before then.
+(I intentionally based this on -rc4.
+because I needed a dt-binding fix from DMA engine tree
+to avoid 'make ARCH=arm dtbs_check' regression.
+I hope this is OK.)
 
-Thanks,
-Saravana
+
+Please pull!
+
+
+
+The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
+
+  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-uniphier.git
+tags/uniphier-dt64-v5.8
+
+for you to fetch changes up to 7d5620d31ecc8d19f6e4ad73196955ec0bb4a507:
+
+  arm64: dts: uniphier: Add support for Akebi96 (2020-05-04 10:07:35 +0900)
+
+----------------------------------------------------------------
+UniPhier ARM64 SoC DT updates for v5.8
+
+- add DMA controller nodes
+
+- add Akebi96 board support
+
+----------------------------------------------------------------
+Kunihiko Hayashi (3):
+      arm64: dts: uniphier: Add XDMAC node
+      arm64: dts: uniphier: Add ethernet aliases
+      arm64: dts: uniphier: Stabilize Ethernet RGMII mode of PXs3 ref board
+
+Masahiro Yamada (1):
+      arm64: dts: uniphier: add #address-cells and #size-cells to SPI nodes
+
+Masami Hiramatsu (2):
+      dt-bindings: arm: Add Akebi96 board support
+      arm64: dts: uniphier: Add support for Akebi96
+
+ .../bindings/arm/socionext/uniphier.yaml   |   1 +
+ arch/arm64/boot/dts/socionext/Makefile     |   1 +
+ .../dts/socionext/uniphier-ld11-global.dts |   1 +
+ .../dts/socionext/uniphier-ld11-ref.dts    |   1 +
+ .../boot/dts/socionext/uniphier-ld11.dtsi  |  12 +
+ .../socionext/uniphier-ld20-akebi96.dts    | 189 ++++++++++++++++
+ .../dts/socionext/uniphier-ld20-global.dts |   1 +
+ .../dts/socionext/uniphier-ld20-ref.dts    |   1 +
+ .../boot/dts/socionext/uniphier-ld20.dtsi  |  16 ++
+ .../dts/socionext/uniphier-pxs3-ref.dts    |  18 ++
+ .../boot/dts/socionext/uniphier-pxs3.dtsi  |  12 +
+ 11 files changed, 253 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/socionext/uniphier-ld20-akebi96.dts
