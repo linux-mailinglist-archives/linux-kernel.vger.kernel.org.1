@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B3D1D8177
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C761D80AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730346AbgERRsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
+        id S1728596AbgERRlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730333AbgERRsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:10 -0400
+        id S1729174AbgERRkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:40:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA13220835;
-        Mon, 18 May 2020 17:48:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0BDD20657;
+        Mon, 18 May 2020 17:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824090;
-        bh=naET/xTHRV5YqzAl34iVD0cQm5QkdHhdjnoTaB9RxYs=;
+        s=default; t=1589823652;
+        bh=8JEMHKTX3965n4n18+Ai3xzuSK/PYEZl1GVXvu9fqag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HuGDuprofRkjBVOl2kZXUvyzihVAu4riGMEG1w2liLRHLK8qU7D1ksIbF8dTAryo/
-         3NFgMOUpqoV+TRHZGW4S11oMz7r7jO8MSxFZPGDF5/US/NcxPzNf28TI85EhK9bH7x
-         4pZ2hpA4nSdFcy9Z48Q6S6h7oX1C+uxuGAP7GP/Y=
+        b=ilCQ/IF27GG8VWgkdSuX6PFcssoGHGQI29XTZyXHKNdYD2OqKwhsl5xj6Cyv79Ka4
+         SburagasyoOS9/eXl3ga4dBdMNPdFBF+Oz5O6rygz5ULt9du3aiJKGxIEdyXvJYpbY
+         wuzfI96XH97VK3a7NsrZbm4NDCqrMlXDPUP5eQrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 067/114] netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
-Date:   Mon, 18 May 2020 19:36:39 +0200
-Message-Id: <20200518173515.227305757@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com,
+        syzbot+c2fb6f9ddcea95ba49b5@syzkaller.appspotmail.com,
+        Jarod Wilson <jarod@redhat.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 69/86] net: fix a potential recursive NETDEV_FEAT_CHANGE
+Date:   Mon, 18 May 2020 19:36:40 +0200
+Message-Id: <20200518173504.310523547@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +51,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit 2c407aca64977ede9b9f35158e919773cae2082f ]
+[ Upstream commit dd912306ff008891c82cd9f63e8181e47a9cb2fb ]
 
-gcc-10 warns around a suspicious access to an empty struct member:
+syzbot managed to trigger a recursive NETDEV_FEAT_CHANGE event
+between bonding master and slave. I managed to find a reproducer
+for this:
 
-net/netfilter/nf_conntrack_core.c: In function '__nf_conntrack_alloc':
-net/netfilter/nf_conntrack_core.c:1522:9: warning: array subscript 0 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
- 1522 |  memset(&ct->__nfct_init_offset[0], 0,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from net/netfilter/nf_conntrack_core.c:37:
-include/net/netfilter/nf_conntrack.h:90:5: note: while referencing '__nfct_init_offset'
-   90 |  u8 __nfct_init_offset[0];
-      |     ^~~~~~~~~~~~~~~~~~
+  ip li set bond0 up
+  ifenslave bond0 eth0
+  brctl addbr br0
+  ethtool -K eth0 lro off
+  brctl addif br0 bond0
+  ip li set br0 up
 
-The code is correct but a bit unusual. Rework it slightly in a way that
-does not trigger the warning, using an empty struct instead of an empty
-array. There are probably more elegant ways to do this, but this is the
-smallest change.
+When a NETDEV_FEAT_CHANGE event is triggered on a bonding slave,
+it captures this and calls bond_compute_features() to fixup its
+master's and other slaves' features. However, when syncing with
+its lower devices by netdev_sync_lower_features() this event is
+triggered again on slaves when the LRO feature fails to change,
+so it goes back and forth recursively until the kernel stack is
+exhausted.
 
-Fixes: c41884ce0562 ("netfilter: conntrack: avoid zeroing timer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Commit 17b85d29e82c intentionally lets __netdev_update_features()
+return -1 for such a failure case, so we have to just rely on
+the existing check inside netdev_sync_lower_features() and skip
+NETDEV_FEAT_CHANGE event only for this specific failure case.
+
+Fixes: fd867d51f889 ("net/core: generic support for disabling netdev features down stack")
+Reported-by: syzbot+e73ceacfd8560cc8a3ca@syzkaller.appspotmail.com
+Reported-by: syzbot+c2fb6f9ddcea95ba49b5@syzkaller.appspotmail.com
+Cc: Jarod Wilson <jarod@redhat.com>
+Cc: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Jann Horn <jannh@google.com>
+Reviewed-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/netfilter/nf_conntrack.h | 2 +-
- net/netfilter/nf_conntrack_core.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ net/core/dev.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index 93bbae8f96414..b6dbc80b6ed15 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -80,7 +80,7 @@ struct nf_conn {
- 	struct hlist_node	nat_bysource;
- #endif
- 	/* all members below initialized via memset */
--	u8 __nfct_init_offset[0];
-+	struct { } __nfct_init_offset;
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6449,11 +6449,13 @@ static void netdev_sync_lower_features(s
+ 			netdev_dbg(upper, "Disabling feature %pNF on lower dev %s.\n",
+ 				   &feature, lower->name);
+ 			lower->wanted_features &= ~feature;
+-			netdev_update_features(lower);
++			__netdev_update_features(lower);
  
- 	/* If we were expected by an expectation, this will be it */
- 	struct nf_conn *master;
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index a79f5a89cab14..8064d769c953c 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1208,9 +1208,9 @@ __nf_conntrack_alloc(struct net *net,
- 	*(unsigned long *)(&ct->tuplehash[IP_CT_DIR_REPLY].hnnode.pprev) = hash;
- 	ct->status = 0;
- 	write_pnet(&ct->ct_net, net);
--	memset(&ct->__nfct_init_offset[0], 0,
-+	memset(&ct->__nfct_init_offset, 0,
- 	       offsetof(struct nf_conn, proto) -
--	       offsetof(struct nf_conn, __nfct_init_offset[0]));
-+	       offsetof(struct nf_conn, __nfct_init_offset));
- 
- 	nf_ct_zone_add(ct, zone);
- 
--- 
-2.20.1
-
+ 			if (unlikely(lower->features & feature))
+ 				netdev_WARN(upper, "failed to disable %pNF on %s!\n",
+ 					    &feature, lower->name);
++			else
++				netdev_features_change(lower);
+ 		}
+ 	}
+ }
 
 
