@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFD71D8876
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130521D8881
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 21:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgERTrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 15:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728464AbgERTrk (ORCPT
+        id S1728512AbgERTur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 15:50:47 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:51977 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727817AbgERTuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 15:47:40 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3062C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:47:38 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id f18so5081313otq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 12:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bBFO4lwxkSc+LH1NOlFaVaJnTNT/AhBja3Nhpq3LMZo=;
-        b=oBUdzRHMNHiLmelW0hosDtypTPyHRt493bdqwDjTFRuvIEWwISb1RnL8axaggTtTqh
-         uNNejrq0cHOKB0cY9oe8iXdVYImLfNBqR97BqDlUqRc9A4xVS2Go+uk0yk6IfaCjB/Dk
-         NnXVFTY2FJQCghGW+vh68cb/zoYHMBeOkAJXuhM9Kh/Uxc50ivmv/wEIaBzochvN9QXN
-         hi4qwhUKQOUIMzLPRjkhb0MSeYAIlJbNznsXC4wQSy63wT8Mc4TEwYMm2r8Cb8d34DFs
-         R131G7BdD20iNUnBj9YD+NssbMfazxN/NYwO3/g249tzyLl0e+tAaDkFGdRTlPlS4oHv
-         aQiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bBFO4lwxkSc+LH1NOlFaVaJnTNT/AhBja3Nhpq3LMZo=;
-        b=akXa8d3c0rpdG3QxwkPa6/MMD/1A9wnB+YPjdI45L8XxmB8YneSi9JS8RQqdzxvJYZ
-         9KoVl9Mzj1+YYcVHoL0QOKKVO3j9/66gV3Mf/MG6N8d4QLRJn8O2MxqvQuliAB9Zrgln
-         uMayTavBtE0p5jJskJ6dMbuLJwQASshi6YdPqSW/TK/vYFm8lmLJqiGEPDHxV8gZC8ql
-         nsUfv9dKhuO5Rl02UmoSIDXDp1lp1vYQQaA4wXviz/veed4Eg9H0hHY+Tdg5rWVk0PDY
-         lfgr2f13jA1Blk6LWxeOtYmQmhmV0mcpIxA+3v+8xWtwWTA1R7TR2LJUfuaRd4IF4Ulc
-         6+xQ==
-X-Gm-Message-State: AOAM5331Ecqu2j6T33ZB0JEAWRp9WEASXmA1C2WI3xklBBZ+brG+hYE9
-        c9G1xZb4efEtqyhkcLVvDu6DeT/5cx5JnjvickYl6w==
-X-Google-Smtp-Source: ABdhPJx+S+VGxK4icqY0mL6oiXyHIyaFLh5EyrnOy//4cOukH88/sp+o301KYy7kjzDc53ynlcWC/sXZqozFE+cmDBc=
-X-Received: by 2002:a9d:2622:: with SMTP id a31mr14506353otb.231.1589831257541;
- Mon, 18 May 2020 12:47:37 -0700 (PDT)
+        Mon, 18 May 2020 15:50:46 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 18 May 2020 12:50:44 -0700
+Received: from localhost (unknown [10.200.192.41])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id BDFAF40BA4;
+        Mon, 18 May 2020 12:50:45 -0700 (PDT)
+Date:   Mon, 18 May 2020 12:50:45 -0700
+From:   Matt Helsley <mhelsley@vmware.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC][PATCH 4/5] objtool: Enable compilation of objtool for all
+ architectures
+Message-ID: <20200518195045.GQ9040@rlwimi.vmware.com>
+Mail-Followup-To: Matt Helsley <mhelsley@vmware.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <cover.1588888003.git.mhelsley@vmware.com>
+ <9f709ea2ae66cc03b3ff3329baa8f670ccd0e368.1588888003.git.mhelsley@vmware.com>
+ <20200515205610.fmdimt7wbafypuqc@treble>
 MIME-Version: 1.0
-References: <20200516080718.166676-1-saravanak@google.com> <CAGETcx8Ro_tsmYEQwzZKsm2xzimw=MBcChbSW5Nx9arUni53wQ@mail.gmail.com>
- <20200518080327.GA3126260@kroah.com>
-In-Reply-To: <20200518080327.GA3126260@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 18 May 2020 12:47:01 -0700
-Message-ID: <CAGETcx9gUG-0GW8trnC-xm5DPfXkVjgdzBg0-M+tRWhyz8fgQw@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Fix memory leak when adding
- SYNC_STATE_ONLY device links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200515205610.fmdimt7wbafypuqc@treble>
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 1:03 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, May 18, 2020 at 12:48:42AM -0700, Saravana Kannan wrote:
-> > On Sat, May 16, 2020 at 1:07 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
-> > > core: Add device link support for SYNC_STATE_ONLY flag"),
-> > > device_link_add() incorrectly skipped adding the new SYNC_STATE_ONLY
-> > > device link to the supplier's and consumer's "device link" list. So the
-> > > "device link" is lost forever from driver core if the caller didn't keep
-> > > track of it (typically isn't expected to).
-> > >
-> > > If the same SYNC_STATE_ONLY device link is created again using
-> > > device_link_add(), instead of returning the pointer to the previously
-> > > created device link, a new device link is created and returned. This can
-> > > cause memory leaks in conjunction with fw_devlinks.
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >
-> > Greg/Rafael,
-> >
-> > This patch causes a warning for SYNC_STATE_ONLY links because they
-> > allow consumers to probe before suppliers but the device link
-> > status/state change code wasn't written with that possibility in mind.
-> > So I need to fix up that warning or state change code.
->
-> What type of warning happens?
+On Fri, May 15, 2020 at 03:56:10PM -0500, Josh Poimboeuf wrote:
+> On Mon, May 11, 2020 at 10:35:12AM -0700, Matt Helsley wrote:
+> > +struct insn_state {
+> > +	struct cfi_reg cfa;
+> > +	struct cfi_reg regs[CFI_NUM_REGS];
+> > +	int stack_size;
+> > +	unsigned char type;
+> > +	bool bp_scratch;
+> > +	bool drap, end, uaccess, df;
+> > +	bool noinstr;
+> > +	s8 instr;
+> > +	unsigned int uaccess_stack;
+> > +	int drap_reg, drap_offset;
+> > +	struct cfi_reg vals[CFI_NUM_REGS];
+> > +};
+> > +
+> > +struct instruction {
+> > +	struct list_head list;
+> > +	struct hlist_node hash;
+> > +	struct section *sec;
+> > +	unsigned long offset;
+> > +	unsigned int len;
+> > +	enum insn_type type;
+> > +	unsigned long immediate;
+> > +	bool alt_group, dead_end, ignore, hint, save, restore, ignore_alts;
+> > +	bool retpoline_safe;
+> > +	s8 instr;
+> > +	u8 visited;
+> > +	struct symbol *call_dest;
+> > +	struct instruction *jump_dest;
+> > +	struct instruction *first_jump_src;
+> > +	struct rela *jump_table;
+> > +	struct list_head alts;
+> > +	struct symbol *func;
+> > +	struct stack_op stack_op;
+> > +	struct insn_state state;
+> > +	struct orc_entry orc;
+> > +};
+> 
+> Why were these moved to arch.h?  They're not necessarily arch-specific,
+> but rather "check"-specific, so I think they still belong in check.h, if
+> possible.
 
-The WARN_ON(link->status != DL_STATE_CONSUMER_PROBE); inside
-device_links_driver_bound().
+Ah, found it. They are arch specific due to struct orc_entry, which is
+presently not defined for any archs besides x86.
 
->
-> > Depending on how urgent you think memory leak fixes are, you can take
-> > it as is for now and I can send a separate patch to fix the
-> > warning/state change code later. Or if we can sit on this memory leak
-> > for a week, I might be able to fix the warning before then.
->
-> memory leaks are not ok, but neither is adding runtime warnings.  Any
-> chance we can't just get a fix for both?  :)
+Prior to the patch (-> means "includes"):
+	check.h -> asm/orc_types.h (defines struct orc_entry)
+	orc_gen.c -> check,h
 
-Don't pick up this patch. I think I have a fix that fixes the memory
-leak without warnings that also coincidentally frees up some memory.
-Testing it.
+After patch:
+	check.c -> asm/orc_types.h
+	orc_gen.c -> asm/orc_types.h
+	orc_gen.c -> check.h
+	orc_gen.c -> arch.h
+	{ now weak.c } -> check.h
 
--Saravana
+So this prevents the headers, which help us keep the weak definitions
+consistent with the strong definitions, from breaking compiles on archs
+that lack struct orc_entry.
+
+I'm not sure what the best way to remove this dependency is without
+a nasty void * for the orc entry, or some #ifdef games related to
+checking for cpp defines from asm/orc_types.h. This approach neatly
+avoids conditional preprocessor games and type casting though I do
+agree it's surprising.
+
+Do you have any advice here?
+
+Cheers,
+	-Matt Helsley
