@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055B91D820B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09F11D81A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731077AbgERRxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:53:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
+        id S1730580AbgERRtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:49:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731067AbgERRw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:52:58 -0400
+        id S1730568AbgERRtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:49:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13E422083E;
-        Mon, 18 May 2020 17:52:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 397E220835;
+        Mon, 18 May 2020 17:49:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824378;
-        bh=GbpSiMG/QbFnfn4dJDJoLRmBqopDdpnZg3qrxmblx/A=;
+        s=default; t=1589824182;
+        bh=g4Jyh2Gc6YE07mZy7KLvOjWpGKn97k7Ero/fLyqsXVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GK0gcGp8CvDwmNwktydY6vTyYwDRRAyj3qDcHg32GUzrmv03sAPx5atjgxaBesGTW
-         iLxVRFBqxBZS1ipgT0qhEPCEC6Yr/b16pK+k3APSszvZc1UniOaOH8r9MChbv27zt4
-         OZILlwa2BOf/3ZMnGx912orL3Z7DKVgwF42IghWU=
+        b=QQEc9VP9BFbrHN2hg8qJOSvT6fJ0hko2xNpklF8uTr3T8CCJAYEicM7HfGA7uvUlT
+         tB2hLt3CKMVvS0GjwZwk/IYNsOdVUdrb3mgGLPXDBTxMoyOXUB1Z1b70+OR5A6CVyQ
+         Qy000Yb/sNr8PTXX9tyGL+71ycSjzzrX5zTiia+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/80] pinctrl: baytrail: Enable pin configuration setting for GPIO chip
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 077/114] gcc-10: disable restrict warning for now
 Date:   Mon, 18 May 2020 19:36:49 +0200
-Message-Id: <20200518173456.718913464@linuxfoundation.org>
+Message-Id: <20200518173516.629894741@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
-References: <20200518173450.097837707@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit ccd025eaddaeb99e982029446197c544252108e2 ]
+commit adc71920969870dfa54e8f40dac8616284832d02 upstream.
 
-It appears that pin configuration for GPIO chip hasn't been enabled yet
-due to absence of ->set_config() callback.
+gcc-10 now warns about passing aliasing pointers to functions that take
+restricted pointers.
 
-Enable it here for Intel Baytrail.
+That's actually a great warning, and if we ever start using 'restrict'
+in the kernel, it might be quite useful.  But right now we don't, and it
+turns out that the only thing this warns about is an idiom where we have
+declared a few functions to be "printf-like" (which seems to make gcc
+pick up the restricted pointer thing), and then we print to the same
+buffer that we also use as an input.
 
-Fixes: c501d0b149de ("pinctrl: baytrail: Add pin control operations")
-Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+And people do that as an odd concatenation pattern, with code like this:
+
+    #define sysfs_show_gen_prop(buffer, fmt, ...) \
+        snprintf(buffer, PAGE_SIZE, "%s"fmt, buffer, __VA_ARGS__)
+
+where we have 'buffer' as both the destination of the final result, and
+as the initial argument.
+
+Yes, it's a bit questionable.  And outside of the kernel, people do have
+standard declarations like
+
+    int snprintf( char *restrict buffer, size_t bufsz,
+                  const char *restrict format, ... );
+
+where that output buffer is marked as a restrict pointer that cannot
+alias with any other arguments.
+
+But in the context of the kernel, that 'use snprintf() to concatenate to
+the end result' does work, and the pattern shows up in multiple places.
+And we have not marked our own version of snprintf() as taking restrict
+pointers, so the warning is incorrect for now, and gcc picks it up on
+its own.
+
+If we do start using 'restrict' in the kernel (and it might be a good
+idea if people find places where it matters), we'll need to figure out
+how to avoid this issue for snprintf and friends.  But in the meantime,
+this warning is not useful.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/pinctrl/intel/pinctrl-baytrail.c | 1 +
- 1 file changed, 1 insertion(+)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
-index a760d8bda0af7..acb02a7aa9496 100644
---- a/drivers/pinctrl/intel/pinctrl-baytrail.c
-+++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
-@@ -1495,6 +1495,7 @@ static const struct gpio_chip byt_gpio_chip = {
- 	.direction_output	= byt_gpio_direction_output,
- 	.get			= byt_gpio_get,
- 	.set			= byt_gpio_set,
-+	.set_config		= gpiochip_generic_config,
- 	.dbg_show		= byt_gpio_dbg_show,
- };
+--- a/Makefile
++++ b/Makefile
+@@ -805,6 +805,9 @@ KBUILD_CFLAGS += $(call cc-disable-warni
+ KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
  
--- 
-2.20.1
-
++# Another good warning that we'll want to enable eventually
++KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
++
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 
 
 
