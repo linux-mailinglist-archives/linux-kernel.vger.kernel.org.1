@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4302E1D8338
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3331D824E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732592AbgERSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        id S1731425AbgERRzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:55:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732573AbgERSCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:54 -0400
+        id S1731412AbgERRzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:55:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32E2B207D3;
-        Mon, 18 May 2020 18:02:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7631B20829;
+        Mon, 18 May 2020 17:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824973;
-        bh=eFQQvsJSP8uxgMOZ03eQ+NJeSwU57IPsCyxr1Z5fU5I=;
+        s=default; t=1589824512;
+        bh=zLUCqSvC236bu0DFeMlfYuTWti5TF2S5odgN6soGDug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MwvlO635+yFOlZv0xsG30MZPhKG+xeeP4ipWeC2fuow/EEqJYCr3TdNC8nWo6ndj/
-         42H2FTPFnXhfRG5O65aYcKE7RQy81CH9tkB46Xxw/PGMTkjewQZjKafoY7hFKHH8MF
-         D3X5bEIPIdnQQe9plKnM5Xl2QWDLeIg3RBqvoKTE=
+        b=TsUnde1nEv4eNXLuqY2tkBZ6vAEx41kbQgSltMbNwG9iidw+vl314yGV5ErsmJRd7
+         5GGOzZTfcE8fay+mra8SaN5/qEefF45/TE2ulQvmjMn5p/Z/Ppg1RRWnU45CNo8QaF
+         0IJCh64RXeE+niCyCEYntXs6PaV/y+qxTZZHvfT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.6 041/194] dpaa2-eth: prevent array underflow in update_cls_rule()
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 008/147] net/sonic: Fix a resource leak in an error handling path in jazz_sonic_probe()
 Date:   Mon, 18 May 2020 19:35:31 +0200
-Message-Id: <20200518173535.175349187@linuxfoundation.org>
+Message-Id: <20200518173514.376311052@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
+References: <20200518173513.009514388@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 6d32a5119811d2e9b5caa284181944c6f1f192ed ]
+[ Upstream commit 10e3cc180e64385edc9890c6855acf5ed9ca1339 ]
 
-The "location" is controlled by the user via the ethtool_set_rxnfc()
-function.  This update_cls_rule() function checks for array overflows
-but it doesn't check if the value is negative.  I have changed the type
-to unsigned to prevent array underflows.
+A call to 'dma_alloc_coherent()' is hidden in 'sonic_alloc_descriptors()',
+called from 'sonic_probe1()'.
 
-Fixes: afb90dbb5f78 ("dpaa2-eth: Add ethtool support for flow classification")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is correctly freed in the remove function, but not in the error
+handling path of the probe function.
+Fix it and add the missing 'dma_free_coherent()' call.
+
+While at it, rename a label in order to be slightly more informative.
+
+Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/natsemi/jazzsonic.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-ethtool.c
-@@ -625,7 +625,7 @@ static int num_rules(struct dpaa2_eth_pr
+diff --git a/drivers/net/ethernet/natsemi/jazzsonic.c b/drivers/net/ethernet/natsemi/jazzsonic.c
+index 51fa82b429a3c..40970352d2082 100644
+--- a/drivers/net/ethernet/natsemi/jazzsonic.c
++++ b/drivers/net/ethernet/natsemi/jazzsonic.c
+@@ -235,11 +235,13 @@ static int jazz_sonic_probe(struct platform_device *pdev)
  
- static int update_cls_rule(struct net_device *net_dev,
- 			   struct ethtool_rx_flow_spec *new_fs,
--			   int location)
-+			   unsigned int location)
- {
- 	struct dpaa2_eth_priv *priv = netdev_priv(net_dev);
- 	struct dpaa2_eth_cls_rule *rule;
+ 	err = register_netdev(dev);
+ 	if (err)
+-		goto out1;
++		goto undo_probe1;
+ 
+ 	return 0;
+ 
+-out1:
++undo_probe1:
++	dma_free_coherent(lp->device, SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
++			  lp->descriptors, lp->descriptors_laddr);
+ 	release_mem_region(dev->base_addr, SONIC_MEM_SIZE);
+ out:
+ 	free_netdev(dev);
+-- 
+2.20.1
+
 
 
