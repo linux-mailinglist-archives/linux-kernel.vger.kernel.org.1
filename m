@@ -2,125 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9351D7982
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4501D7989
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgERNR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727122AbgERNR5 (ORCPT
+        id S1727815AbgERNTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:19:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726855AbgERNTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:17:57 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B046C05BD0B
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:17:56 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b6so9830700ljj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 06:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aaWFz8XM3lber/1QtUDkEYgUS7TEOfr3vPPMOdwLrk4=;
-        b=xj1It/WGw6ho2gXyehxm6yxVpJNgYenYhtlgl5YhWyN5asWO9hvDGHw8rwukxDXrfX
-         dXgMMo0ZAZFQ8mEccZQHf50PdHilbq4KXfNFMbIfNosARIoOPCtmETgBepVHiDoNsjuH
-         A83hapb8pSHGKAN1sMZb8UMxb3PPZOzXEJWGAalWbF/RLzFuG97AwGFScLZAvWV2/z3m
-         E/Vn9Ns9itIfGBr03TxabMBQ53aGb1nWX+LDlRj2KXVhwV6AGa+r/FR+aKeEIn1RKWYn
-         7KyBPmyJIMzxnGy/lCHE9zMxdtRAgWMjgnpmyJBjZvPKtk4iu86WCuyUFTFHGnO06xBX
-         pVAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aaWFz8XM3lber/1QtUDkEYgUS7TEOfr3vPPMOdwLrk4=;
-        b=d0YE8+uYP3vF/kDZ0RQghFHhfOVJypxN6Yq0qhTwjlfmj8y7v0/BPKi1HiXQtzmC3l
-         9WixgERZZDImHaTv2sRS9UzHXHFDvxtdSspLZySIaqrvlOYNd9lX/lVj2qpi5SDS5XTq
-         /B7ONj+KY5EJ5q33xcOIPxLaiXHKJ/0MM87QiCYInchqGh2/YPunNW2gsnDZUA36OiZ+
-         OalD2dxBJak4D8fMWwEdNLPcbaGp07XwIn3kmEFNjoxI2anlwv5mZqdsmXad0hfHxgOO
-         XhzUIUWiQHk8DOfPtkCV3Wxy2IgZd2xAZWGxAWURV0ps46N4Q+B0aVbGmEI9y/sIe3Sx
-         BSsg==
-X-Gm-Message-State: AOAM530cScFzQVjpfjNlfQzpHBKjdVUryVMvS41U0vEW5j+9iZKI7UY1
-        1k2Ydr9pKMfk99nvWQvY6G/q3w==
-X-Google-Smtp-Source: ABdhPJw19UGyEwWJ5Mq/Mme9WNx4l0h6pfEFIGaCERwgxusIQHdpFrVvwJLlfLQPp5MqmCtmQRT2Bg==
-X-Received: by 2002:a2e:9a82:: with SMTP id p2mr10501360lji.279.1589807874514;
-        Mon, 18 May 2020 06:17:54 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:484c:c9e:1c14:285d:1715:e170? ([2a00:1fa0:484c:c9e:1c14:285d:1715:e170])
-        by smtp.gmail.com with ESMTPSA id v10sm5486890lja.23.2020.05.18.06.17.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 06:17:52 -0700 (PDT)
-Subject: Re: [PATCH 17/17] ARM: dts: r8a7742: Add RWDT node
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-ide@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1589555337-5498-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVV+2HsgmBytCOFg4pri4XinT_SPWT_Ac6n7FMZN3dR3w@mail.gmail.com>
- <CA+V-a8tmG1LKYqbc7feGZQO2Tj5RCpNUHi9e19vPr+bED0KOyQ@mail.gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <9ab946d2-1076-ed92-0a48-9a95d798d291@cogentembedded.com>
-Date:   Mon, 18 May 2020 16:17:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 18 May 2020 09:19:30 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04ID413x088391;
+        Mon, 18 May 2020 09:18:36 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312agck66k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 09:18:36 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04ID4H8R090068;
+        Mon, 18 May 2020 09:18:35 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312agck65j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 09:18:35 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IDFda7012514;
+        Mon, 18 May 2020 13:18:33 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 3127t5hpc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 13:18:32 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IDIUh163635458
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 13:18:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC93642042;
+        Mon, 18 May 2020 13:18:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB9FB4203F;
+        Mon, 18 May 2020 13:18:29 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.67.24])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 18 May 2020 13:18:29 +0000 (GMT)
+Subject: Re: [PATCH v5 01/10] mmap locking API: initial implementation as
+ rwsem wrappers
+To:     Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20200422001422.232330-1-walken@google.com>
+ <20200422001422.232330-2-walken@google.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <f39081c8-cbcc-4478-5f9b-4f73651bc6a7@linux.ibm.com>
+Date:   Mon, 18 May 2020 15:18:29 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CA+V-a8tmG1LKYqbc7feGZQO2Tj5RCpNUHi9e19vPr+bED0KOyQ@mail.gmail.com>
+In-Reply-To: <20200422001422.232330-2-walken@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_05:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 cotscore=-2147483648
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005180114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Le 22/04/2020 à 02:14, Michel Lespinasse a écrit :
+> This change wraps the existing mmap_sem related rwsem calls into a new
+> mmap locking API. There are two justifications for the new API:
+> 
+> - At first, it provides an easy hooking point to instrument mmap_sem
+>    locking latencies independently of any other rwsems.
+> 
+> - In the future, it may be a starting point for replacing the rwsem
+>    implementation with a different one, such as range locks.
+> 
+> Signed-off-by: Michel Lespinasse <walken@google.com>
+> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
 
-On 18.05.2020 15:27, Lad, Prabhakar wrote:
+Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
 
->>> Add a device node for the Watchdog Timer (RWDT) controller on the Renesas
->>> RZ/G1H (r8a7742) SoC.
->>>
->>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->>> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->>
->> Thanks for your patch!
->>
->>> --- a/arch/arm/boot/dts/r8a7742.dtsi
->>> +++ b/arch/arm/boot/dts/r8a7742.dtsi
->>> @@ -201,6 +201,16 @@
->>>                  #size-cells = <2>;
->>>                  ranges;
->>>
->>> +               rwdt: watchdog@e6020000 {
->>> +                       compatible = "renesas,r8a7742-wdt",
->>> +                                    "renesas,rcar-gen2-wdt";
->>> +                       reg = <0 0xe6020000 0 0x0c>;
->>> +                       clocks = <&cpg CPG_MOD 402>;
->>> +                       power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
->>> +                       resets = <&cpg 402>;
->>> +                       status = "disabled";
->>
->> Missing "interrupts" property.
->>
-> "interrupts" property isn't used by rwdt driver  and can be dropped
-> from bindings file.
+> ---
+>   include/linux/mm.h        |  1 +
+>   include/linux/mmap_lock.h | 54 +++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 55 insertions(+)
+>   create mode 100644 include/linux/mmap_lock.h
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 5a323422d783..051ec782bdbb 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -15,6 +15,7 @@
+>   #include <linux/atomic.h>
+>   #include <linux/debug_locks.h>
+>   #include <linux/mm_types.h>
+> +#include <linux/mmap_lock.h>
+>   #include <linux/range.h>
+>   #include <linux/pfn.h>
+>   #include <linux/percpu-refcount.h>
+> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+> new file mode 100644
+> index 000000000000..97ac53b66052
+> --- /dev/null
+> +++ b/include/linux/mmap_lock.h
+> @@ -0,0 +1,54 @@
+> +#ifndef _LINUX_MMAP_LOCK_H
+> +#define _LINUX_MMAP_LOCK_H
+> +
+> +static inline void mmap_init_lock(struct mm_struct *mm)
+> +{
+> +	init_rwsem(&mm->mmap_sem);
+> +}
+> +
+> +static inline void mmap_write_lock(struct mm_struct *mm)
+> +{
+> +	down_write(&mm->mmap_sem);
+> +}
+> +
+> +static inline int mmap_write_lock_killable(struct mm_struct *mm)
+> +{
+> +	return down_write_killable(&mm->mmap_sem);
+> +}
+> +
+> +static inline bool mmap_write_trylock(struct mm_struct *mm)
+> +{
+> +	return down_write_trylock(&mm->mmap_sem) != 0;
+> +}
+> +
+> +static inline void mmap_write_unlock(struct mm_struct *mm)
+> +{
+> +	up_write(&mm->mmap_sem);
+> +}
+> +
+> +static inline void mmap_write_downgrade(struct mm_struct *mm)
+> +{
+> +	downgrade_write(&mm->mmap_sem);
+> +}
+> +
+> +static inline void mmap_read_lock(struct mm_struct *mm)
+> +{
+> +	down_read(&mm->mmap_sem);
+> +}
+> +
+> +static inline int mmap_read_lock_killable(struct mm_struct *mm)
+> +{
+> +	return down_read_killable(&mm->mmap_sem);
+> +}
+> +
+> +static inline bool mmap_read_trylock(struct mm_struct *mm)
+> +{
+> +	return down_read_trylock(&mm->mmap_sem) != 0;
+> +}
+> +
+> +static inline void mmap_read_unlock(struct mm_struct *mm)
+> +{
+> +	up_read(&mm->mmap_sem);
+> +}
+> +
+> +#endif /* _LINUX_MMAP_LOCK_H */
+> 
 
-    DT describes the hardware, not its driver's abilities.
-
-> Cheers,
-> --Prabhakar
-
-MBR, Sergei
