@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BEE1D723E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131F81D72D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 10:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgERHuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:50:55 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:29922 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgERHuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:50:54 -0400
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 04I7oe6G015704
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 16:50:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 04I7oe6G015704
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1589788241;
-        bh=BAeKR/CP8c+c34Jrd/Sa5Uac4xG1EKW7xJ1dkN7birA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=hmZBvJCvFZ/p+FvqzNJxJo+5AbmElt/8YxHvjygTfb80nk20m3vi/zGhDKQgQoYBi
-         q3eypeh6FRRfA6WG1EWsP1bVcDLt4EPJynPe1MMKJM1aaJ3IwYBFsjjffjg2jgbzpj
-         da4fBZd9/Fgm6AsLEJSZCgBEXaR1UckzzHPBxj+SAUlIuED0CKgDw37RcDsg6nLnf6
-         eC8Tafyza2KnEAb9u8FQu3WibpcPH8hFQ+dIR2VrG7SZSSnobpJ5SakD48EXv0V2MT
-         oZRU/egizOBwpil5sHPeS+/VdBNqpw5jLr7Iii2k41LCRk8vXRCr39w3OgUsnS5O9J
-         qEaakKXRGR6rg==
-X-Nifty-SrcIP: [209.85.217.44]
-Received: by mail-vs1-f44.google.com with SMTP id l15so3101197vsr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 00:50:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530hDAaFkFnB92DuFUeEOv3m8uuYQsWYQ3rL2DKBi4p0Is9rJF9V
-        G7TZICc/7LhYqN1yRsZuN3N1bMBolaqmgD1GPKw=
-X-Google-Smtp-Source: ABdhPJz+rRVl4TNOdWB+sVuKR/NvML4+a3CfHecIfsBbBz3Bot35tpH4pAKiTBv9bpirXHJkVnhxj0hz/T+OmvGHJg0=
-X-Received: by 2002:a67:d016:: with SMTP id r22mr9596614vsi.215.1589788239877;
- Mon, 18 May 2020 00:50:39 -0700 (PDT)
+        id S1726624AbgERIUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 04:20:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:57600 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726292AbgERIUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 04:20:40 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jab0k-0002ih-00; Mon, 18 May 2020 10:20:34 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 804ADC00F7; Mon, 18 May 2020 09:50:17 +0200 (CEST)
+Date:   Mon, 18 May 2020 09:50:17 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Loongson: Enable devicetree based probing for
+ 8250 ports in defconfig
+Message-ID: <20200518075017.GA7697@alpha.franken.de>
+References: <1589767861-9784-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Mon, 18 May 2020 16:50:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARUL52pBhg8AD9XeScVqhD8qr2eVEfu4+1v8D+KPyOwNw@mail.gmail.com>
-Message-ID: <CAK7LNARUL52pBhg8AD9XeScVqhD8qr2eVEfu4+1v8D+KPyOwNw@mail.gmail.com>
-Subject: [GIT PULL] arm64: dts: uniphier: UniPhier DT updates for v5.8
-To:     soc@kernel.org, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589767861-9784-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Olof, Arnd,
+On Mon, May 18, 2020 at 10:11:01AM +0800, Tiezhu Yang wrote:
+> After commit 87fcfa7b7fe6 ("MIPS: Loongson64: Add generic dts"),
+> there already exists the node and property of Loongson CPU UART0
+> in loongson3-package.dtsi:
+> 
+> cpu_uart0: serial@1fe001e0 {
+>         compatible = "ns16550a";
+>         reg = <0 0x1fe001e0 0x8>;
+>         clock-frequency = <33000000>;
+>         interrupt-parent = <&liointc>;
+>         interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
+>         no-loopback-test;
+> };
+> 
+> In order to support for serial console on the Loongson platform,
+> add CONFIG_SERIAL_OF_PLATFORM=y to loongson3_defconfig.
+> 
+> With this patch, we can see the following boot messages:
+> 
+> [    1.877745] printk: console [ttyS0] disabled
+> [    1.881979] 1fe001e0.serial: ttyS0 at MMIO 0x1fe001e0 (irq = 16, base_baud = 2062500) is a 16550A
+> [    1.890838] printk: console [ttyS0] enabled
+> 
+> And also, we can login normally from the serial console.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> 
+> v2:
+>   - Modify the patch subject
+> 
+>  arch/mips/configs/loongson3_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
+applied to mips-next.
 
-Here are UniPhier DT (64bit) updates for the v5.8 merge window.
+Thomas.
 
-(I intentionally based this on -rc4.
-because I needed a dt-binding fix from DMA engine tree
-to avoid 'make ARCH=arm dtbs_check' regression.
-I hope this is OK.)
-
-
-Please pull!
-
-
-
-The following changes since commit 0e698dfa282211e414076f9dc7e83c1c288314fd:
-
-  Linux 5.7-rc4 (2020-05-03 14:56:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-uniphier.git
-tags/uniphier-dt64-v5.8
-
-for you to fetch changes up to 7d5620d31ecc8d19f6e4ad73196955ec0bb4a507:
-
-  arm64: dts: uniphier: Add support for Akebi96 (2020-05-04 10:07:35 +0900)
-
-----------------------------------------------------------------
-UniPhier ARM64 SoC DT updates for v5.8
-
-- add DMA controller nodes
-
-- add Akebi96 board support
-
-----------------------------------------------------------------
-Kunihiko Hayashi (3):
-      arm64: dts: uniphier: Add XDMAC node
-      arm64: dts: uniphier: Add ethernet aliases
-      arm64: dts: uniphier: Stabilize Ethernet RGMII mode of PXs3 ref board
-
-Masahiro Yamada (1):
-      arm64: dts: uniphier: add #address-cells and #size-cells to SPI nodes
-
-Masami Hiramatsu (2):
-      dt-bindings: arm: Add Akebi96 board support
-      arm64: dts: uniphier: Add support for Akebi96
-
- .../bindings/arm/socionext/uniphier.yaml   |   1 +
- arch/arm64/boot/dts/socionext/Makefile     |   1 +
- .../dts/socionext/uniphier-ld11-global.dts |   1 +
- .../dts/socionext/uniphier-ld11-ref.dts    |   1 +
- .../boot/dts/socionext/uniphier-ld11.dtsi  |  12 +
- .../socionext/uniphier-ld20-akebi96.dts    | 189 ++++++++++++++++
- .../dts/socionext/uniphier-ld20-global.dts |   1 +
- .../dts/socionext/uniphier-ld20-ref.dts    |   1 +
- .../boot/dts/socionext/uniphier-ld20.dtsi  |  16 ++
- .../dts/socionext/uniphier-pxs3-ref.dts    |  18 ++
- .../boot/dts/socionext/uniphier-pxs3.dtsi  |  12 +
- 11 files changed, 253 insertions(+)
- create mode 100644 arch/arm64/boot/dts/socionext/uniphier-ld20-akebi96.dts
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
