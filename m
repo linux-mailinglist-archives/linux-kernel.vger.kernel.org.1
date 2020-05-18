@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26741D818D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2031D811E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730472AbgERRtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 13:49:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50170 "EHLO mail.kernel.org"
+        id S1729868AbgERRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:45:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730456AbgERRs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:48:58 -0400
+        id S1728704AbgERRpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E628020657;
-        Mon, 18 May 2020 17:48:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E56C020715;
+        Mon, 18 May 2020 17:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824137;
-        bh=mtin70/tczYBldlX8vAJG1SyEuIs8VXY9/Z6HZC1mKM=;
+        s=default; t=1589823900;
+        bh=IQGRJknKyaZjCOxSLRNNYP/kisqa8Fs/sQW+wF75x1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7AOjl1XRW4rgqJLFZO9uWjiTmXdx0RHWKPQf9Sr6r83Wlrhig6LQXSvYBUAkVwDc
-         Is35E72QYH9DW/I6Zg8uh5A7DFincALBTiJm9ePWJwtSdeTsDKh3KHbLxHS8jytDAU
-         68sdQgc9WFIY6jotUuitCiij1npR6wiNeJpTwVf0=
+        b=z2YqUTA2p35SA8/PwF4yu+SyXLZymX50JTb+9klpAFaem88GtJw4OYfrFSI9B8zOW
+         Kbd/sqcLPUFhKCK7d8vBQv6Dkqqmb4ee0VV0oMd0TuGQDV9qZr3GtRRWnO8FBlJuKm
+         5hNBDF5YOgqF6mWHgutcniT93jTiMBXquIY89dsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Walters <walters@redhat.com>
-Subject: [PATCH 4.14 087/114] net: ipv4: really enforce backoff for redirects
-Date:   Mon, 18 May 2020 19:36:59 +0200
-Message-Id: <20200518173518.183640004@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 4.9 82/90] usb: gadget: net2272: Fix a memory leak in an error handling path in net2272_plat_probe()
+Date:   Mon, 18 May 2020 19:37:00 +0200
+Message-Id: <20200518173507.888495926@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
-References: <20200518173503.033975649@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 57644431a6c2faac5d754ebd35780cf43a531b1a ]
+commit ccaef7e6e354fb65758eaddd3eae8065a8b3e295 upstream.
 
-In commit b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and
-rate_tokens usage") I missed the fact that a 0 'rate_tokens' will
-bypass the backoff algorithm.
+'dev' is allocated in 'net2272_probe_init()'. It must be freed in the error
+handling path, as already done in the remove function (i.e.
+'net2272_plat_remove()')
 
-Since rate_tokens is cleared after a redirect silence, and never
-incremented on redirects, if the host keeps receiving packets
-requiring redirect it will reply ignoring the backoff.
-
-Additionally, the 'rate_last' field will be updated with the
-cadence of the ingress packet requiring redirect. If that rate is
-high enough, that will prevent the host from generating any
-other kind of ICMP messages
-
-The check for a zero 'rate_tokens' value was likely a shortcut
-to avoid the more complex backoff algorithm after a redirect
-silence period. Address the issue checking for 'n_redirects'
-instead, which is incremented on successful redirect, and
-does not interfere with other ICMP replies.
-
-Fixes: b406472b5ad7 ("net: ipv4: avoid mixed n_redirects and rate_tokens usage")
-Reported-and-tested-by: Colin Walters <walters@redhat.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/route.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -921,7 +921,7 @@ void ip_rt_send_redirect(struct sk_buff
- 	/* Check for load limit; set rate_last to the latest sent
- 	 * redirect.
- 	 */
--	if (peer->rate_tokens == 0 ||
-+	if (peer->n_redirects == 0 ||
- 	    time_after(jiffies,
- 		       (peer->rate_last +
- 			(ip_rt_redirect_load << peer->n_redirects)))) {
+---
+ drivers/usb/gadget/udc/net2272.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/usb/gadget/udc/net2272.c
++++ b/drivers/usb/gadget/udc/net2272.c
+@@ -2666,6 +2666,8 @@ net2272_plat_probe(struct platform_devic
+  err_req:
+ 	release_mem_region(base, len);
+  err:
++	kfree(dev);
++
+ 	return ret;
+ }
+ 
 
 
