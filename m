@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F125E1D88B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204FF1D88C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 22:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgERUBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 16:01:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:9690 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgERUBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 16:01:18 -0400
-IronPort-SDR: dRsUXzK0oTH5Ju1HZCDl76t9qTlbfY3ZGox7G5hlx5L68PJrzjiejdnItnVm1+sd/kj8KJbg41
- o1yi9gkDhTpg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 13:01:18 -0700
-IronPort-SDR: 3qfK7AynXe71zqJ5Bvdl7NRf5LA+A3fwZINumvmqUc80o4Kmt1AbGwzME3vhvh+M/rbouZPkaX
- sO/Y6TuT18uA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="267637992"
-Received: from afloress-mobl2.amr.corp.intel.com ([10.252.56.85])
-  by orsmga006.jf.intel.com with ESMTP; 18 May 2020 13:01:12 -0700
-Message-ID: <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Date:   Mon, 18 May 2020 23:01:11 +0300
-In-Reply-To: <20200518153407.GA499505@tassilo.jf.intel.com>
-References: <20200511045311.4785-1-sashal@kernel.org>
-         <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
-         <20200515164013.GF29995@sasha-vm>
-         <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
-         <20200518153407.GA499505@tassilo.jf.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727039AbgERUEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 16:04:09 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:53884 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726643AbgERUEJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 16:04:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589832248; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=uo59LCImq0/Qfc0TPHY693ynMcaKgKao0O2qJkiCa9o=; b=S++3tz7H1LksXW6Sw7voLlEWCYJgciwlfuu4/xoZxWmMUlVVWuo9upGiKevZfoy2DVvRtJyJ
+ alsYDhSbmhMQ+sOAhk6E378Y57cz8ttg4uR2bRwbmxks7Yib6Ig10e4hMcMGD5u5quGmVTAY
+ QijuVEuNXe+NC4J4UGxJsXmi6XE=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec2ea37.7f93ace636f8-smtp-out-n04;
+ Mon, 18 May 2020 20:04:07 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 887F0C432C2; Mon, 18 May 2020 20:04:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2FF1C433D2;
+        Mon, 18 May 2020 20:04:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F2FF1C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 0/7] Introduce features and debugfs/sysfs entries for MHI
+Date:   Mon, 18 May 2020 13:03:54 -0700
+Message-Id: <1589832241-13867-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-18 at 08:34 -0700, Andi Kleen wrote:
-> > Yes, for SGX this is functional feature because enclave entry points,
-> > thread control structures (aka TCS's), reset FSBASE and GSBASE registers
-> > to fixed (albeit user defined) values. And syscall's can be done only
-> > outside of enclave.
-> > 
-> > This is a required feature for fancier runtimes (such as Graphene).
-> 
-> Can you please explain a bit more? What do they need GS for?
+Introduce independent bus and device voting mechanism for clients and save
+hardware information from BHI.
+Allow reading and modifying some MHI variables for debug, test, and
+informational purposes using debugfs.
+Read values for device specific hardware information to be used by OEMs in
+factory testing such as serial number and PK hash using sysfs.
 
-Apparently, uses only wrfsbase:
+This set of patches was tested on arm64 and x86.
 
-https://raw.githubusercontent.com/oscarlab/graphene/master/Pal/src/host/Linux-SGX/db_misc.c
+v3:
+-Add patch to check for pending packets in suspend as a dependency for the
+independent voting mechanism introduction
+-Include register dump entry for debugfs to dump MHI, BHI, and BHIe registers
+-Update commit message for the debugfs patch
+-Updated Documentation/ABI with the required info for sysfs
+-Updated debugfs patch to include a new KConfig entry and dependencies
+-Updated reviewed-by for some patches
 
-I'm not too familiar with the codebase yet but by reading some research
-papers in the past the idea is to multiplex one TCS for multiple virtual
-threads inside the enclave.
+v2:
+-Added a new debugfs.c file for specific debugfs entries and code
+-Updated commit text and addressed some comments for voting change
+-Made sure sysfs is only used for serial number and OEM PK hash usage
 
-E.g. TCS could represent a vcpu for a libos type of container and on
-entry would pick on a thread and set fsbase accordingly for a thread
-control block.
+Bhaumik Bhatt (7):
+  bus: mhi: core: Abort suspends due to outgoing pending packets
+  bus: mhi: core: Introduce independent voting mechanism
+  bus: mhi: core: Use generic name field for an MHI device
+  bus: mhi: core: Introduce helper function to check device state
+  bus: mhi: core: Introduce debugfs entries and counters for MHI
+  bus: mhi: core: Read and save device hardware information from BHI
+  bus: mhi: core: Introduce sysfs entries for MHI
 
-/Jarkko
+ Documentation/ABI/stable/sysfs-bus-mhi |  25 ++
+ MAINTAINERS                            |   1 +
+ drivers/bus/mhi/Kconfig                |   8 +
+ drivers/bus/mhi/core/Makefile          |   5 +-
+ drivers/bus/mhi/core/boot.c            |  17 +-
+ drivers/bus/mhi/core/debugfs.c         | 501 +++++++++++++++++++++++++++++++++
+ drivers/bus/mhi/core/init.c            |  80 +++++-
+ drivers/bus/mhi/core/internal.h        |  29 ++
+ drivers/bus/mhi/core/main.c            |   6 +-
+ drivers/bus/mhi/core/pm.c              |  79 ++++--
+ include/linux/mhi.h                    |  39 ++-
+ 11 files changed, 745 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+ create mode 100644 drivers/bus/mhi/core/debugfs.c
 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
