@@ -2,85 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7172B1D7E40
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEBF1D7E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 18:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgERQVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 12:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgERQVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 12:21:38 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1024C061A0C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:21:37 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w7so12527298wre.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 09:21:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mPan/iOK3FlJrRcEPq0sqHhm0unuccyfQDLEwiWdKUY=;
-        b=jbwPB+32E8dRbvJ2wuQ2JG0caMLHZmmizHiGemUQmDcbJFiV+TvTZGRDL3d8PDtLsY
-         2ofvAnRHxEjj2ccKFu/Y5AQ4iCGeV1QxDIb1SuzLFLi9OIJdiJas6gQG5cCvWSMPOGBU
-         x/V/WqmQj0E7HnKvep4LT6igUvk+nrxoUYNON3dPkrUZJ9KDQUPW6Har3ir+HmcgWsqf
-         alrdsuwFyryYBcb3FZss6FzqoR50INrutQ/9FhINws5OiGc6tiKlOXePO31DMMzaYdT8
-         /Y2of1GPQsIZoDVqZozjtvQotHRUsqHUJo+Fk8R0XnV0TubHTbxg8/nwPjxSaIXvslXu
-         PaVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mPan/iOK3FlJrRcEPq0sqHhm0unuccyfQDLEwiWdKUY=;
-        b=Tk77iQqU7eWn1nKKaoiTdxCJ8KnBt4v4EXc6KigNqgjld6J/JZlOZcHkL8uRxovzIW
-         rVy7rt4avQOazrkjayoVTNyRt4XjBf994Bidvv3aSPeRTsbGW1Wrr4udAYCfOBLEGyzJ
-         bUKNBOkSZ0NSKz2WZlTdkSebOjSafgG30HciqOla0+feNwIVt1FMBeS/4ysjIBgVHTmX
-         UrvsUNbsW42EOVBv0RPTDjhdI5c4J7KgI5e8PhPX0YBXGYC3amlwLTmSNYxifpKVFKmG
-         rM8pn3mlv+JbZ9HFErhXnAuoC8Kljy8ABl8JDOg0h161pNqBiQaX0YjTnangxa7uhxNc
-         PEmQ==
-X-Gm-Message-State: AOAM532HG8+SXHKQoWiuU4/gLqfQJFOZIPGCPnnfLemW1GVcsMdJ5I4/
-        m1jEvOni74XHTMd2M4h9iZoA91wo+24=
-X-Google-Smtp-Source: ABdhPJyiDuft1ud8pm340dhXzBtCA6hZi5QfdvTeiEMwEovwvB9rBLz7UQdecu8ItPbWcTbrcrKeiQ==
-X-Received: by 2002:adf:f40a:: with SMTP id g10mr21964592wro.117.1589818896319;
-        Mon, 18 May 2020 09:21:36 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:9e7:3ac5:a930:2cd8? ([2a01:e34:ed2f:f020:9e7:3ac5:a930:2cd8])
-        by smtp.googlemail.com with ESMTPSA id i74sm17145474wri.49.2020.05.18.09.21.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 May 2020 09:21:35 -0700 (PDT)
-Subject: Re: [PATCH v1] clocksource: arc_timer: remove duplicate error message
-To:     Dejin Zheng <zhengdejin5@gmail.com>, vgupta@synopsys.com,
-        tglx@linutronix.de, linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20200429151223.3120-1-zhengdejin5@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <54f33384-2d2e-ce84-4242-d15286f65dfa@linaro.org>
-Date:   Mon, 18 May 2020 18:21:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728437AbgERQXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 12:23:11 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47722 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728142AbgERQXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 12:23:10 -0400
+IronPort-SDR: Z7W4YlQBFFE4DI79XummCPSBFDz25o8YBcas1kV5zYVG5gJqRe3eTfslXAkLqs/M/TIMKFaWgl
+ BjW3KQPrXMdw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 09:23:10 -0700
+IronPort-SDR: NcCLSKibfjL3S9MPhvc0m+BrCJaY87EWQf6pTcv0us8UHxzBDVV07HGxGFSr9VFjl9XSlhyoyP
+ YDHnGXXjQOGg==
+X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
+   d="scan'208";a="465635598"
+Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.66.2]) ([10.254.66.2])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 09:23:09 -0700
+Subject: Re: [PATCH V4 4/4] x86/resctrl: Use appropriate API for strings
+ terminated by newline
+From:   Reinette Chatre <reinette.chatre@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
+        tony.luck@intel.com, kuo-lang.tseng@intel.com,
+        ravi.v.shankar@intel.com, mingo@redhat.com, babu.moger@amd.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1589652468.git.reinette.chatre@intel.com>
+ <0c04b58148f181ba182b9a487465e4853e4eadbb.1589652468.git.reinette.chatre@intel.com>
+ <20200518115026.GA1634618@smile.fi.intel.com>
+ <060e3cf6-8fcb-6b43-01ef-63ef0a5ff64a@intel.com>
+Message-ID: <962118f4-3b02-2d6c-fd4d-2540d1a03e89@intel.com>
+Date:   Mon, 18 May 2020 09:23:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200429151223.3120-1-zhengdejin5@gmail.com>
+In-Reply-To: <060e3cf6-8fcb-6b43-01ef-63ef0a5ff64a@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2020 17:12, Dejin Zheng wrote:
-> it will print an error message by itself when arc_get_timer_clk()
-> goes wrong. so remove the duplicate error message.
+Hi Andy,
+
+On 5/18/2020 9:06 AM, Reinette Chatre wrote:
+> On 5/18/2020 4:50 AM, Andy Shevchenko wrote:
+>> On Sat, May 16, 2020 at 11:28:41AM -0700, Reinette Chatre wrote:
+>>> The user input to files in the resctrl filesystem are expected to be
+>>> terminated with a newline. Testing the user input includes a test for
+>>> the presence of a newline and then replacing the newline with NUL
+>>> byte followed by comparison using strcmp().
+>>>
+>>> sysfs_streq() exists to test if strings are equal, treating both NUL and
+>>> newline-then-NUL as equivalent string terminations. Even more,
+>>> sysfs_match_string() exists to match a given string in an array using
+>>> sysfs_streq().
+>>>
+>>> Replace existing strcmp() comparisons of strings that are terminated
+>>> with a newline with more appropriate sysfs_streq() via the
+>>> sysfs_match_string() API that can perform the match across the different
+>>> mode strings that are already maintained in an array.
+>>
+>> Sorry for late comment, but just have noticed...
 > 
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> No problem. I do appreciate your feedback because it helps me to improve
+> the code.
+> 
+>>
+>>>  	if (mode == RDT_MODE_PSEUDO_LOCKED) {
+>>> @@ -1445,14 +1450,14 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
+>>>  		goto out;
+>>>  	}
+>>>  
+>>> -	if (!strcmp(buf, "shareable")) {
+>>> +	if (user_m == RDT_MODE_SHAREABLE) {
+>>>  		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
+>>>  			ret = rdtgroup_locksetup_exit(rdtgrp);
+>>>  			if (ret)
+>>>  				goto out;
+>>>  		}
+>>
+>>>  		rdtgrp->mode = RDT_MODE_SHAREABLE;
+>>
+>> ...can we simple move this and similar (in other branches) to...
+>>
+>>
+>>> -	} else {
+>>> -		rdt_last_cmd_puts("Unknown or unsupported mode\n");
+>>> -		ret = -EINVAL;
+>>>  	}
+>>
+>> ...here as
+>>
+>> 		rdtgrp->mode = user_m;
+> 
+> Will do.
 
-Applied, thanks
+Actually ... now that I take a closer look, this would let an invalid
+mode change (RDT_MODE_PSEUDO_LOCKED) slip through so I plan to keep this
+code as is.
+
+> It also looks like the only reason for the "mode" local variable was to
+> make those earlier "strcmp" lines shorter. With those long lines removed
+> in this patch this local variable is no longer needed and I will remove
+> it also.
+
+I will still do this.
+
+Reinette
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
