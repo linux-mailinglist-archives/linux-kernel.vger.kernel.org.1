@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E30E1D8460
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DEB1D86B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732807AbgERSEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51398 "EHLO mail.kernel.org"
+        id S2387931AbgERS0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:26:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732257AbgERSEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:04:23 -0400
+        id S1729847AbgERRpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:45:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50FBA20715;
-        Mon, 18 May 2020 18:04:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 592B620715;
+        Mon, 18 May 2020 17:45:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825062;
-        bh=tJRGNk7SX8eNPltUjlQO5LmafLOMsO6yY9TLKgqoxrU=;
+        s=default; t=1589823902;
+        bh=dfVQR4veVC0esrH3yIaUeif+5yaaxqOggWhhT+OkLVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJgIgzYzkSLqQB2QmeXxGewdgCZ1pRg6k/ki4PiCElySSyd+W8g/lUOOPrVrUAG8A
-         k7kLa6zjLyB3EHNiYxMsPsP68uiowd18P7js4UohZaIU647ZYKRXy7Ac2L4gkQroOK
-         SfiUw3iGg6IE9W1lde1tJPalBlPVu9L8ZuMLon6M=
+        b=nrpqngwMb10LhYtSce77MpW1M/KK10zC8Vqi5o9Ny0AtmLjA3t7gbKiGo+EdDr1GE
+         MRcOeBjeUavqHnvuMi8OY4NywlUIHV+ynkSB0RmeHWDU6jArTVEsjhmsdEeIf55JDO
+         wcPVCt10OcUhFlE2Je5olCbkDzykV1t76ha9IjxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 113/194] IB/core: Fix potential NULL pointer dereference in pkey cache
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 65/90] gcc-10: disable array-bounds warning for now
 Date:   Mon, 18 May 2020 19:36:43 +0200
-Message-Id: <20200518173541.154322083@linuxfoundation.org>
+Message-Id: <20200518173504.341089242@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,60 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 1901b91f99821955eac2bd48fe25ee983385dc00 ]
+commit 44720996e2d79e47d508b0abe99b931a726a3197 upstream.
 
-The IB core pkey cache is populated by procedure ib_cache_update().
-Initially, the pkey cache pointer is NULL. ib_cache_update allocates a
-buffer and populates it with the device's pkeys, via repeated calls to
-procedure ib_query_pkey().
+This is another fine warning, related to the 'zero-length-bounds' one,
+but hitting the same historical code in the kernel.
 
-If there is a failure in populating the pkey buffer via ib_query_pkey(),
-ib_cache_update does not replace the old pkey buffer cache with the
-updated one -- it leaves the old cache as is.
+Because C didn't historically support flexible array members, we have
+code that instead uses a one-sized array, the same way we have cases of
+zero-sized arrays.
 
-Since initially the pkey buffer cache is NULL, when calling
-ib_cache_update the first time, a failure in ib_query_pkey() will cause
-the pkey buffer cache pointer to remain NULL.
+The one-sized arrays come from either not wanting to use the gcc
+zero-sized array extension, or from a slight convenience-feature, where
+particularly for strings, the size of the structure now includes the
+allocation for the final NUL character.
 
-In this situation, any calls subsequent to ib_get_cached_pkey(),
-ib_find_cached_pkey(), or ib_find_cached_pkey_exact() will try to
-dereference the NULL pkey cache pointer, causing a kernel panic.
+So with a "char name[1];" at the end of a structure, you can do things
+like
 
-Fix this by checking the ib_cache_update() return value.
+       v = my_malloc(sizeof(struct vendor) + strlen(name));
 
-Fixes: 8faea9fd4a39 ("RDMA/cache: Move the cache per-port data into the main ib_port_data")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Link: https://lore.kernel.org/r/20200507071012.100594-1-leon@kernel.org
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+and avoid the "+1" for the terminator.
+
+Yes, the modern way to do that is with a flexible array, and using
+'offsetof()' instead of 'sizeof()', and adding the "+1" by hand.  That
+also technically gets the size "more correct" in that it avoids any
+alignment (and thus padding) issues, but this is another long-term
+cleanup thing that will not happen for 5.7.
+
+So disable the warning for now, even though it's potentially quite
+useful.  Having a slew of warnings that then hide more urgent new issues
+is not an improvement.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/cache.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ Makefile |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 17bfedd24cc34..4619629b958cd 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1536,8 +1536,11 @@ int ib_cache_setup_one(struct ib_device *device)
- 	if (err)
- 		return err;
+--- a/Makefile
++++ b/Makefile
+@@ -799,6 +799,7 @@ KBUILD_CFLAGS += $(call cc-disable-warni
  
--	rdma_for_each_port (device, p)
--		ib_cache_update(device, p, true);
-+	rdma_for_each_port (device, p) {
-+		err = ib_cache_update(device, p, true);
-+		if (err)
-+			return err;
-+	}
+ # We'll want to enable this eventually, but it's not going away for 5.7 at least
+ KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
++KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
  
- 	return 0;
- }
--- 
-2.20.1
-
+ # Enabled with W=2, disabled by default as noisy
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 
