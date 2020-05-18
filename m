@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753C61D872D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63221D8692
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731676AbgERSbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35376 "EHLO mail.kernel.org"
+        id S2387904AbgERSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:25:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728964AbgERRkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:40:05 -0400
+        id S1728802AbgERRrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:47:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3D3820884;
-        Mon, 18 May 2020 17:40:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 395E320897;
+        Mon, 18 May 2020 17:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823605;
-        bh=Bbrs+y755BSyM/MVYEODb6BWtxLA7BzsDuuqPjzRNUM=;
+        s=default; t=1589824040;
+        bh=o2rLPypImoZuBzXNaJCVkrUbeXVB7IAIYi8FmvN374E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zwxPysCdZZEig3igjJ1hGQpTTKC0P/es6UnunpjpVkX3YmakNJ8EauJ8C37tU2/MZ
-         skGD5bNQrSGKTug3MI/JuOqCOK936rc4d7sItamCRjK3SI8w5dE7zgkoRcFCKbOwet
-         M/GoPGfHztWVxa1qSVNA0fB+qGa4D6k8Y/ghrd3Y=
+        b=giHSfbzRszVIUja7d/JGMdUkWYkvOMfvKCcPnifL2UxwB0qCf9d4hH4FcVYTlzsmM
+         nsa1H8WLQaDGKmTkRl/XUXm7BVS+jh8RIOFPJpb5bYxY0wFytvXRFlGvFi4vyPTxtA
+         xm3p9ZgefMl34O7qYoC0ShwjKZEU+xCGrKe9xPCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Bhadram Varka <vbhadram@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 48/86] gre: do not keep the GRE header around in collect medata mode
-Date:   Mon, 18 May 2020 19:36:19 +0200
-Message-Id: <20200518173500.350608854@linuxfoundation.org>
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Subject: [PATCH 4.14 048/114] net: stmmac: Use mutex instead of spinlock
+Date:   Mon, 18 May 2020 19:36:20 +0200
+Message-Id: <20200518173511.977609991@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +46,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Benc <jbenc@redhat.com>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit e271c7b4420ddbb9fae82a2b31a5ab3edafcf4fe ]
+commit 29555fa3de865630570b5f53c847b953413daf1a upstream.
 
-For ipgre interface in collect metadata mode, it doesn't make sense for the
-interface to be of ARPHRD_IPGRE type. The outer header of received packets
-is not needed, as all the information from it is present in metadata_dst. We
-already don't set ipgre_header_ops for collect metadata interfaces, which is
-the only consumer of mac_header pointing to the outer IP header.
+Some drivers, such as DWC EQOS on Tegra, need to perform operations that
+can sleep under this lock (clk_set_rate() in tegra_eqos_fix_speed()) for
+proper operation. Since there is no need for this lock to be a spinlock,
+convert it to a mutex instead.
 
-Just set the interface type to ARPHRD_NONE in collect metadata mode for
-ipgre (not gretap, that still correctly stays ARPHRD_ETHER) and reset
-mac_header.
-
-Fixes: a64b04d86d14 ("gre: do not assign header_ops in collect metadata mode")
-Fixes: 2e15ea390e6f4 ("ip_gre: Add support to collect tunnel metadata.")
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
+Fixes: e6ea2d16fc61 ("net: stmmac: dwc-qos: Add Tegra186 support")
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Bhadram Varka <vbhadram@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_gre.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h         |    2 -
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c |   12 +++----
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    |   31 ++++++++-----------
+ 3 files changed, 21 insertions(+), 24 deletions(-)
 
-diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-index e5448570d6483..900ee28bda99a 100644
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@ -399,7 +399,10 @@ static int ipgre_rcv(struct sk_buff *skb, const struct tnl_ptk_info *tpi)
- 				  iph->saddr, iph->daddr, tpi->key);
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -96,7 +96,7 @@ struct stmmac_priv {
+ 	struct net_device *dev;
+ 	struct device *device;
+ 	struct mac_device_info *hw;
+-	spinlock_t lock;
++	struct mutex lock;
  
- 	if (tunnel) {
--		skb_pop_mac_header(skb);
-+		if (tunnel->dev->type != ARPHRD_NONE)
-+			skb_pop_mac_header(skb);
-+		else
-+			skb_reset_mac_header(skb);
- 		if (tunnel->collect_md) {
- 			__be16 flags;
- 			__be64 tun_id;
-@@ -1015,6 +1018,8 @@ static void ipgre_netlink_parms(struct net_device *dev,
- 		struct ip_tunnel *t = netdev_priv(dev);
+ 	/* RX Queue */
+ 	struct stmmac_rx_queue rx_queue[MTL_MAX_RX_QUEUES];
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -392,13 +392,13 @@ stmmac_ethtool_set_link_ksettings(struct
+ 			ADVERTISED_10baseT_Half |
+ 			ADVERTISED_10baseT_Full);
  
- 		t->collect_md = true;
-+		if (dev->type == ARPHRD_IPGRE)
-+			dev->type = ARPHRD_NONE;
+-		spin_lock(&priv->lock);
++		mutex_lock(&priv->lock);
+ 
+ 		if (priv->hw->mac->pcs_ctrl_ane)
+ 			priv->hw->mac->pcs_ctrl_ane(priv->ioaddr, 1,
+ 						    priv->hw->ps, 0);
+ 
+-		spin_unlock(&priv->lock);
++		mutex_unlock(&priv->lock);
+ 
+ 		return 0;
  	}
+@@ -615,12 +615,12 @@ static void stmmac_get_wol(struct net_de
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 
+-	spin_lock_irq(&priv->lock);
++	mutex_lock(&priv->lock);
+ 	if (device_can_wakeup(priv->device)) {
+ 		wol->supported = WAKE_MAGIC | WAKE_UCAST;
+ 		wol->wolopts = priv->wolopts;
+ 	}
+-	spin_unlock_irq(&priv->lock);
++	mutex_unlock(&priv->lock);
  }
  
--- 
-2.20.1
-
+ static int stmmac_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+@@ -649,9 +649,9 @@ static int stmmac_set_wol(struct net_dev
+ 		disable_irq_wake(priv->wol_irq);
+ 	}
+ 
+-	spin_lock_irq(&priv->lock);
++	mutex_lock(&priv->lock);
+ 	priv->wolopts = wol->wolopts;
+-	spin_unlock_irq(&priv->lock);
++	mutex_unlock(&priv->lock);
+ 
+ 	return 0;
+ }
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -365,7 +365,6 @@ bool stmmac_eee_init(struct stmmac_priv
+ {
+ 	struct net_device *ndev = priv->dev;
+ 	int interface = priv->plat->interface;
+-	unsigned long flags;
+ 	bool ret = false;
+ 
+ 	if ((interface != PHY_INTERFACE_MODE_MII) &&
+@@ -392,7 +391,7 @@ bool stmmac_eee_init(struct stmmac_priv
+ 			 * changed).
+ 			 * In that case the driver disable own timers.
+ 			 */
+-			spin_lock_irqsave(&priv->lock, flags);
++			mutex_lock(&priv->lock);
+ 			if (priv->eee_active) {
+ 				netdev_dbg(priv->dev, "disable EEE\n");
+ 				del_timer_sync(&priv->eee_ctrl_timer);
+@@ -400,11 +399,11 @@ bool stmmac_eee_init(struct stmmac_priv
+ 							     tx_lpi_timer);
+ 			}
+ 			priv->eee_active = 0;
+-			spin_unlock_irqrestore(&priv->lock, flags);
++			mutex_unlock(&priv->lock);
+ 			goto out;
+ 		}
+ 		/* Activate the EEE and start timers */
+-		spin_lock_irqsave(&priv->lock, flags);
++		mutex_lock(&priv->lock);
+ 		if (!priv->eee_active) {
+ 			priv->eee_active = 1;
+ 			setup_timer(&priv->eee_ctrl_timer,
+@@ -421,7 +420,7 @@ bool stmmac_eee_init(struct stmmac_priv
+ 		priv->hw->mac->set_eee_pls(priv->hw, ndev->phydev->link);
+ 
+ 		ret = true;
+-		spin_unlock_irqrestore(&priv->lock, flags);
++		mutex_unlock(&priv->lock);
+ 
+ 		netdev_dbg(priv->dev, "Energy-Efficient Ethernet initialized\n");
+ 	}
+@@ -799,13 +798,12 @@ static void stmmac_adjust_link(struct ne
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	struct phy_device *phydev = dev->phydev;
+-	unsigned long flags;
+ 	bool new_state = false;
+ 
+ 	if (!phydev)
+ 		return;
+ 
+-	spin_lock_irqsave(&priv->lock, flags);
++	mutex_lock(&priv->lock);
+ 
+ 	if (phydev->link) {
+ 		u32 ctrl = readl(priv->ioaddr + MAC_CTRL_REG);
+@@ -864,7 +862,7 @@ static void stmmac_adjust_link(struct ne
+ 	if (new_state && netif_msg_link(priv))
+ 		phy_print_status(phydev);
+ 
+-	spin_unlock_irqrestore(&priv->lock, flags);
++	mutex_unlock(&priv->lock);
+ 
+ 	if (phydev->is_pseudo_fixed_link)
+ 		/* Stop PHY layer to call the hook to adjust the link in case
+@@ -4284,7 +4282,7 @@ int stmmac_dvr_probe(struct device *devi
+ 			       (8 * priv->plat->rx_queues_to_use));
+ 	}
+ 
+-	spin_lock_init(&priv->lock);
++	mutex_init(&priv->lock);
+ 
+ 	/* If a specific clk_csr value is passed from the platform
+ 	 * this means that the CSR Clock Range selection cannot be
+@@ -4375,6 +4373,7 @@ int stmmac_dvr_remove(struct device *dev
+ 	    priv->hw->pcs != STMMAC_PCS_TBI &&
+ 	    priv->hw->pcs != STMMAC_PCS_RTBI)
+ 		stmmac_mdio_unregister(ndev);
++	mutex_destroy(&priv->lock);
+ 	free_netdev(ndev);
+ 
+ 	return 0;
+@@ -4392,7 +4391,6 @@ int stmmac_suspend(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
+-	unsigned long flags;
+ 
+ 	if (!ndev || !netif_running(ndev))
+ 		return 0;
+@@ -4400,7 +4398,7 @@ int stmmac_suspend(struct device *dev)
+ 	if (ndev->phydev)
+ 		phy_stop(ndev->phydev);
+ 
+-	spin_lock_irqsave(&priv->lock, flags);
++	mutex_lock(&priv->lock);
+ 
+ 	netif_device_detach(ndev);
+ 	stmmac_stop_all_queues(priv);
+@@ -4423,7 +4421,7 @@ int stmmac_suspend(struct device *dev)
+ 		clk_disable_unprepare(priv->plat->pclk);
+ 		clk_disable_unprepare(priv->plat->stmmac_clk);
+ 	}
+-	spin_unlock_irqrestore(&priv->lock, flags);
++	mutex_unlock(&priv->lock);
+ 
+ 	priv->oldlink = false;
+ 	priv->speed = SPEED_UNKNOWN;
+@@ -4467,7 +4465,6 @@ int stmmac_resume(struct device *dev)
+ {
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct stmmac_priv *priv = netdev_priv(ndev);
+-	unsigned long flags;
+ 
+ 	if (!netif_running(ndev))
+ 		return 0;
+@@ -4479,9 +4476,9 @@ int stmmac_resume(struct device *dev)
+ 	 * from another devices (e.g. serial console).
+ 	 */
+ 	if (device_may_wakeup(priv->device)) {
+-		spin_lock_irqsave(&priv->lock, flags);
++		mutex_lock(&priv->lock);
+ 		priv->hw->mac->pmt(priv->hw, 0);
+-		spin_unlock_irqrestore(&priv->lock, flags);
++		mutex_unlock(&priv->lock);
+ 		priv->irq_wake = 0;
+ 	} else {
+ 		pinctrl_pm_select_default_state(priv->device);
+@@ -4497,7 +4494,7 @@ int stmmac_resume(struct device *dev)
+ 
+ 	netif_device_attach(ndev);
+ 
+-	spin_lock_irqsave(&priv->lock, flags);
++	mutex_lock(&priv->lock);
+ 
+ 	stmmac_reset_queues_param(priv);
+ 
+@@ -4516,7 +4513,7 @@ int stmmac_resume(struct device *dev)
+ 
+ 	stmmac_start_all_queues(priv);
+ 
+-	spin_unlock_irqrestore(&priv->lock, flags);
++	mutex_unlock(&priv->lock);
+ 
+ 	if (ndev->phydev)
+ 		phy_start(ndev->phydev);
 
 
