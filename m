@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3C01D844B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0217A1D848C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387437AbgERSLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:11:13 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52500 "EHLO mga04.intel.com"
+        id S2387522AbgERSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:12:08 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52605 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728606AbgERSLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:11:08 -0400
-IronPort-SDR: MEihRUQKPD9yLYzUOyQEKFWM725X5E1TW5wxJL26f7d7grexz9Y/SMaIpHJZCs3EXY9zAUzGC1
- OcI675kOf6IQ==
+        id S1733191AbgERSL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:11:59 -0400
+IronPort-SDR: J7lJHpi9Bn2FDwYipCbFVsWQctskGUN1RT5vtQ5XQXv11B6nf87aGpNXckkZB51/SLrwubZyKW
+ qVSsxLYUdY1g==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:11:08 -0700
-IronPort-SDR: 4PTj0JCNuHA2KBITWxMsHBG0lvanYZRK6CkXelcZuJd9rLLbOv9o5Xe4vuYLc2cXwOltPBKNMq
- LeWae4iARKuw==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:11:59 -0700
+IronPort-SDR: ZuNQWmTQ1nLBxtu+5TE/j+AXF8rFdc6kEiAmzXEFcKTfs6vyQ9ShsZPXaT/ddSnQv64auWHBNE
+ rrbMWn7+V4eA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="308177709"
+   d="scan'208";a="373470912"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 May 2020 11:11:08 -0700
-Date:   Mon, 18 May 2020 11:11:08 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 18 May 2020 11:11:59 -0700
+Date:   Mon, 18 May 2020 11:11:59 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
 To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH V3 07/15] arch/kunmap_atomic: Consolidate duplicate code
-Message-ID: <20200518181107.GC3025231@iweiny-DESK2.sc.intel.com>
-References: <20200507150004.1423069-1-ira.weiny@intel.com>
- <20200507150004.1423069-8-ira.weiny@intel.com>
- <20200516223306.GA161252@roeck-us.net>
- <20200518034938.GA3023182@iweiny-DESK2.sc.intel.com>
- <20200518042932.GA59205@roeck-us.net>
+Cc:     Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
+        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
+ PTE tables
+Message-ID: <20200518181158.GA3028105@iweiny-DESK2.sc.intel.com>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200511204150.27858-5-will@kernel.org>
+ <20200517000050.GA87467@roeck-us.net>
+ <20200517000750.GA157503@roeck-us.net>
+ <20200518083715.GA31383@willie-the-truck>
+ <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
+ <20200518142310.GC1118872@kernel.org>
+ <20200518160811.GA66689@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200518042932.GA59205@roeck-us.net>
+In-Reply-To: <20200518160811.GA66689@roeck-us.net>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 17, 2020 at 09:29:32PM -0700, Guenter Roeck wrote:
-> On Sun, May 17, 2020 at 08:49:39PM -0700, Ira Weiny wrote:
-> > On Sat, May 16, 2020 at 03:33:06PM -0700, Guenter Roeck wrote:
-> > > On Thu, May 07, 2020 at 07:59:55AM -0700, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
+On Mon, May 18, 2020 at 09:08:11AM -0700, Guenter Roeck wrote:
+> On Mon, May 18, 2020 at 05:23:10PM +0300, Mike Rapoport wrote:
+> > On Mon, May 18, 2020 at 02:48:18AM -0700, Guenter Roeck wrote:
+> > > On 5/18/20 1:37 AM, Will Deacon wrote:
+> > > > On Sat, May 16, 2020 at 05:07:50PM -0700, Guenter Roeck wrote:
+> > > >> On Sat, May 16, 2020 at 05:00:50PM -0700, Guenter Roeck wrote:
+> > > >>> On Mon, May 11, 2020 at 09:41:36PM +0100, Will Deacon wrote:
+> > > >>>> Now that the page table allocator can free page table allocations
+> > > >>>> smaller than PAGE_SIZE, reduce the size of the PMD and PTE allocations
+> > > >>>> to avoid needlessly wasting memory.
+> > > >>>>
+> > > >>>> Cc: "David S. Miller" <davem@davemloft.net>
+> > > >>>> Cc: Peter Zijlstra <peterz@infradead.org>
+> > > >>>> Signed-off-by: Will Deacon <will@kernel.org>
+> > > >>>
+> > > >>> Something in the sparc32 patches in linux-next causes all my sparc32 emulations
+> > > >>> to crash. bisect points to this patch, but reverting it doesn't help, and neither
+> > > >>> does reverting the rest of the series.
+> > > >>>
+> > > >> Actually, turns out I see the same pattern (lots of scheduling while atomic
+> > > >> followed by 'killing interrupt handler' in cryptomgr_test) with several
+> > > >> powerpc boot tests.  I am currently bisecting those crashes. I'll report
+> > > >> the results here as well as soon as I have it.
 > > > > 
-> > > > Every single architecture (including !CONFIG_HIGHMEM) calls...
+> > > > FWIW, I retested my sparc32 patches with PREEMPT=y and I don't see any
+> > > > issues. However, linux-next is a different story, where I don't get very far
+> > > > at all:
 > > > > 
-> > > > 	pagefault_enable();
-> > > > 	preempt_enable();
-> > > > 
-> > > > ... before returning from __kunmap_atomic().  Lift this code into the
-> > > > kunmap_atomic() macro.
-> > > > 
-> > > > While we are at it rename __kunmap_atomic() to kunmap_atomic_high() to
-> > > > be consistent.
-> > > > 
-> > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > This patch results in:
-> > > 
-> > > Starting init: /bin/sh exists but couldn't execute it (error -14)
-> > > 
-> > > when trying to boot microblazeel:petalogix-ml605 in qemu.
+> > > > BUG: Bad page state in process swapper  pfn:005b4
 > > 
-> > Thanks for the report.  I'm not readily seeing the issue.
+> > This one seems to be due to commit 24aab577764f ("mm: memmap_init:
+> > iterate over memblock regions rather that check each PFN") and reverting
+> > it and partially reverting the next cleanup commits makes those
+> > dissapear. sparc32 boot still fails on today's linux-next and mmotm for me with
 > > 
-> > Do you have a kernel config?  Specifically is CONFIG_HIGHMEM set?
+> > Run /sbin/init as init process
+> >   with arguments:
+> >     /sbin/init
+> >   with environment:
+> >     HOME=/
+> >     TERM=linux
+> > Starting init: /sbin/init exists but couldn't execute it (error -14)
 > > 
-> See below. Yes, CONFIG_HIGHMEM is set.
 > 
-> The scripts used to build and boot the image are at:
+> Interesting; that is also seen on microblazeel:petalogix-ml605. Bisect there
+> suggests 'arch/kmap_atomic: consolidate duplicate code' as the culprit,
+> which is part of Ira's series.
 > 
-> https://github.com/groeck/linux-build-test/tree/master/rootfs/microblazeel
-> 
-> Hope this helps,
+> Today's -next is even worse, unfortunately; now all microblaze boot tests
+> (both little and big endian) fail, plus everything that failed last
+> time, plus new compile failures. Another round of bisects ...
 
-Thank you ...
-
-Could you try the following patch?
-
+I've found this bug in microblaze for sure still looking through the other archs...
 
 commit 82c284b2bb74ca195dfcd35b70a175f010b9fd46 (HEAD -> lm-kmap17)
 Author: Ira Weiny <ira.weiny@intel.com>
@@ -140,4 +134,4 @@ index ee8a422b2b76..92e0890416c9 100644
 -       }
  
         type = kmap_atomic_idx();
- 
+
