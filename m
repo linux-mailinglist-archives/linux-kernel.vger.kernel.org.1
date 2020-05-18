@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C6C1D846F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4074C1D813D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732502AbgERSCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45498 "EHLO mail.kernel.org"
+        id S1730056AbgERRqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732479AbgERSCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:13 -0400
+        id S1729197AbgERRqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F16C20872;
-        Mon, 18 May 2020 18:02:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 084BC207C4;
+        Mon, 18 May 2020 17:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824932;
-        bh=0zUgoL8zGPgVJ5XXJhZqITkeX4BLPqERLZPMDtUiQog=;
+        s=default; t=1589823969;
+        bh=vNZivytMBWAhlteQOYiqnhPyfZQnjhltAJXHLe92+kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NvJqWjw4dcVB25GrNXfzqUm9PY3ThlRmBMbyO02dlVNBHLKSX3QA6i4SyfcLUIK21
-         AJu7VXZXypiYuB0A8USMDsjA3TvaktPMWyDjNbqGRk0rYOgM7zYOe0tyvPXmz4vB8N
-         xN+lDVOsIF28bnlsc/fBMqF8u+1kF8FvyCNDmSoI=
+        b=s6wlbgO2kk6/C8vKuorkoTYvwLLpdb0k+7VYK1BCHtxciRpCSFSi5ydb20NFzo8/D
+         zNDYSw9eO6F1sG43znGVI61Nm/DZ1ZxsEaY9BavJJvuAPCjhsvz9RAz0wkS4oQm5ri
+         gPal0BM4D37j4Q4/x8RaPoep6wbCpXpuPw9pPVY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?= <marek.olsak@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 061/194] drm/amdgpu: bump version for invalidate L2 before SDMA IBs
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        =?UTF-8?q?Julian=20Gro=C3=9F?= <julian.g@posteo.de>
+Subject: [PATCH 4.14 019/114] USB: uas: add quirk for LaCie 2Big Quadra
 Date:   Mon, 18 May 2020 19:35:51 +0200
-Message-Id: <20200518173536.800109596@linuxfoundation.org>
+Message-Id: <20200518173507.149711736@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,40 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Olšák <marek.olsak@amd.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 9017a4897a20658f010bebea825262963c10afa6 ]
+commit 9f04db234af691007bb785342a06abab5fb34474 upstream.
 
-This fixes GPU hangs due to cache coherency issues.
-Bump the driver version. Split out from the original patch.
+This device needs US_FL_NO_REPORT_OPCODES to avoid going
+through prolonged error handling on enumeration.
 
-Signed-off-by: Marek Olšák <marek.olsak@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Tested-by: Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Reported-by: Julian Groß <julian.g@posteo.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200429155218.7308-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/storage/unusual_uas.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 42f4febe24c6d..8d45a2b662aeb 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -85,9 +85,10 @@
-  * - 3.34.0 - Non-DC can flip correctly between buffers with different pitches
-  * - 3.35.0 - Add drm_amdgpu_info_device::tcc_disabled_mask
-  * - 3.36.0 - Allow reading more status registers on si/cik
-+ * - 3.37.0 - L2 is invalidated before SDMA IBs, needed for correctness
+--- a/drivers/usb/storage/unusual_uas.h
++++ b/drivers/usb/storage/unusual_uas.h
+@@ -41,6 +41,13 @@
+  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
   */
- #define KMS_DRIVER_MAJOR	3
--#define KMS_DRIVER_MINOR	36
-+#define KMS_DRIVER_MINOR	37
- #define KMS_DRIVER_PATCHLEVEL	0
  
- int amdgpu_vram_limit = 0;
--- 
-2.20.1
-
++/* Reported-by: Julian Groß <julian.g@posteo.de> */
++UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
++		"LaCie",
++		"2Big Quadra USB3",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_NO_REPORT_OPCODES),
++
+ /*
+  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
+  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
 
 
