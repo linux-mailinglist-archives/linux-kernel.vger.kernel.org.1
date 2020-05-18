@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9711D831C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5860B1D813B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732484AbgERSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45244 "EHLO mail.kernel.org"
+        id S1730040AbgERRqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:46:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731959AbgERSCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:02:07 -0400
+        id S1730022AbgERRqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:46:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AFCC208B3;
-        Mon, 18 May 2020 18:02:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FB5E20657;
+        Mon, 18 May 2020 17:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824927;
-        bh=c7Z1TziP9EnCo4NzNnJO1mlONXL94kwHUnfD09/x5Gw=;
+        s=default; t=1589823964;
+        bh=JS5+hmvc0xkMPZIL1DRSWYsqF1q6mRp78PlRsc1ctZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aK4HezU8jTV+z5bsAX4AMBE7aQpIHYfRjDWh2MHTTj8GHxL5XFwVQgjOVDggJAAdi
-         oJq/+4+zVahCLabZJyAdVDt6T2wTIMR5rpS2Q6msIr7Fcdm9Yeqr34qosCvIh7Ry+N
-         htGJWN+erdItqO48wz+LoByL+aVCbL5r7Q4VEI6Q=
+        b=glRrbu3UCHm0XqMTZIFx4k3L7/bFv9aYNLFqfNAWinVSqY+XwsHndiA2dce5IY6F+
+         Shz6zPIy3zDP220KUqbnHka1bZszTMYHzZmbFBRxNG45gGLUGj4FcbdHaowcqd9YLa
+         qTjpM3jpxkJv+x9xvpBRm9fg4MQ1Vo8yYB/nftZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 059/194] ALSA: hda/hdmi: fix race in monitor detection during probe
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 017/114] geneve: only configure or fill UDP_ZERO_CSUM6_RX/TX info when CONFIG_IPV6
 Date:   Mon, 18 May 2020 19:35:49 +0200
-Message-Id: <20200518173536.649783489@linuxfoundation.org>
+Message-Id: <20200518173506.795255584@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173503.033975649@linuxfoundation.org>
+References: <20200518173503.033975649@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit ca76282b6faffc83601c25bd2a95f635c03503ef ]
+commit f9094b7603c011d27db7ba109e69881c72fa611d upstream.
 
-A race exists between build_pcms() and build_controls() phases of codec
-setup. Build_pcms() sets up notifier for jack events. If a monitor event
-is received before build_controls() is run, the initial jack state is
-lost and never reported via mixer controls.
+Stefano pointed that configure or show UDP_ZERO_CSUM6_RX/TX info doesn't
+make sense if we haven't enabled CONFIG_IPV6. Fix it by adding
+if IS_ENABLED(CONFIG_IPV6) check.
 
-The problem can be hit at least with SOF as the controller driver. SOF
-calls snd_hda_codec_build_controls() in its workqueue-based probe and
-this can be delayed enough to hit the race condition.
+Fixes: abe492b4f50c ("geneve: UDP checksum configuration via netlink")
+Fixes: fd7eafd02121 ("geneve: fix fill_info when link down")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fix the issue by invalidating the per-pin ELD information when
-build_controls() is called. The existing call to hdmi_present_sense()
-will update the ELD contents. This ensures initial monitor state is
-correctly reflected via mixer controls.
-
-BugLink: https://github.com/thesofproject/linux/issues/1687
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200428123836.24512-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/geneve.c |   16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 0c1a59d5ad59d..0f3250417b955 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2320,7 +2320,9 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 
- 	for (pin_idx = 0; pin_idx < spec->num_pins; pin_idx++) {
- 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
-+		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
- 
-+		pin_eld->eld_valid = false;
- 		hdmi_present_sense(per_pin, 0);
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -1369,21 +1369,33 @@ static int geneve_nl2info(struct nlattr
  	}
  
--- 
-2.20.1
-
+ 	if (data[IFLA_GENEVE_UDP_ZERO_CSUM6_TX]) {
++#if IS_ENABLED(CONFIG_IPV6)
+ 		if (changelink) {
+ 			attrtype = IFLA_GENEVE_UDP_ZERO_CSUM6_TX;
+ 			goto change_notsup;
+ 		}
+ 		if (nla_get_u8(data[IFLA_GENEVE_UDP_ZERO_CSUM6_TX]))
+ 			info->key.tun_flags &= ~TUNNEL_CSUM;
++#else
++		NL_SET_ERR_MSG_ATTR(extack, data[IFLA_GENEVE_UDP_ZERO_CSUM6_TX],
++				    "IPv6 support not enabled in the kernel");
++		return -EPFNOSUPPORT;
++#endif
+ 	}
+ 
+ 	if (data[IFLA_GENEVE_UDP_ZERO_CSUM6_RX]) {
++#if IS_ENABLED(CONFIG_IPV6)
+ 		if (changelink) {
+ 			attrtype = IFLA_GENEVE_UDP_ZERO_CSUM6_RX;
+ 			goto change_notsup;
+ 		}
+ 		if (nla_get_u8(data[IFLA_GENEVE_UDP_ZERO_CSUM6_RX]))
+ 			*use_udp6_rx_checksums = false;
++#else
++		NL_SET_ERR_MSG_ATTR(extack, data[IFLA_GENEVE_UDP_ZERO_CSUM6_RX],
++				    "IPv6 support not enabled in the kernel");
++		return -EPFNOSUPPORT;
++#endif
+ 	}
+ 
+ 	return 0;
+@@ -1559,11 +1571,13 @@ static int geneve_fill_info(struct sk_bu
+ 		goto nla_put_failure;
+ 
+ 	if (metadata && nla_put_flag(skb, IFLA_GENEVE_COLLECT_METADATA))
+-			goto nla_put_failure;
++		goto nla_put_failure;
+ 
++#if IS_ENABLED(CONFIG_IPV6)
+ 	if (nla_put_u8(skb, IFLA_GENEVE_UDP_ZERO_CSUM6_RX,
+ 		       !geneve->use_udp6_rx_checksums))
+ 		goto nla_put_failure;
++#endif
+ 
+ 	return 0;
+ 
 
 
