@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875801D8312
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB61D1D8730
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732440AbgERSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
+        id S1728886AbgERRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731641AbgERSBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:01:49 -0400
+        id S1728857AbgERRjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:39:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B73C2207C4;
-        Mon, 18 May 2020 18:01:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6349420849;
+        Mon, 18 May 2020 17:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589824909;
-        bh=1nnHsVdBrNbkfWBXxTVXXxkC6uk3Re/8JIIgBHmsfGw=;
+        s=default; t=1589823580;
+        bh=X4pfsZFG/GXb7yKk7eiqDfPfsrLUvS8kWjXq2j952qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k1HhKfBe6kQ0TKKwk+klTFShhH78yTou8gs0jMK+pK9B/3kFo4PpTFF9Z8wwKzjTg
-         Rd12rJ3aqhIlYbp03ttCUSxJ0DVuV8n5G2H4PvorxLhwCfdSwz3/JDK8IcWdmKfnpE
-         NSbxZ0AEMgR0e8sENuMn8ShZ4/jZ5nPRROero/sw=
+        b=fdO71+hHGG3W20BSrxRXN9R3n4lXgR44T/mx5XhRPsvnvq6Pgu+cBeAdrTzZz+fwt
+         fTYsc+tHBkCaen8t4G19Xc90hIQZHtp3hl8magg1YHfmsetdFbgO0V9/DFmxrOEI7z
+         V3veKKiWBd9qFX12EIU7bOsgL3VQZblFb9MgMg1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 053/194] dmaengine: pch_dma.c: Avoid data race between probe and irq handler
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Alex Estrin <alex.estrin@intel.com>,
+        Feras Daoud <ferasda@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 12/86] Revert "IB/ipoib: Update broadcast object if PKey value was changed in index 0"
 Date:   Mon, 18 May 2020 19:35:43 +0200
-Message-Id: <20200518173536.186626885@linuxfoundation.org>
+Message-Id: <20200518173452.990204365@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
+References: <20200518173450.254571947@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +48,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Alex Estrin <alex.estrin@intel.com>
 
-[ Upstream commit 2e45676a4d33af47259fa186ea039122ce263ba9 ]
+commit 612601d0013f03de9dc134809f242ba6da9ca252 upstream.
 
-pd->dma.dev is read in irq handler pd_irq().
-However, it is set to pdev->dev after request_irq().
-Therefore, set pd->dma.dev to pdev->dev before request_irq() to
-avoid data race between pch_dma_probe() and pd_irq().
+commit 9a9b8112699d will cause core to fail UD QP from being destroyed
+on ipoib unload, therefore cause resources leakage.
+On pkey change event above patch modifies mgid before calling underlying
+driver to detach it from QP. Drivers' detach_mcast() will fail to find
+modified mgid it was never given to attach in a first place.
+Core qp->usecnt will never go down, so ib_destroy_qp() will fail.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+IPoIB driver actually does take care of new broadcast mgid based on new
+pkey by destroying an old mcast object in ipoib_mcast_dev_flush())
+....
+	if (priv->broadcast) {
+		rb_erase(&priv->broadcast->rb_node, &priv->multicast_tree);
+		list_add_tail(&priv->broadcast->list, &remove_list);
+		priv->broadcast = NULL;
+	}
+...
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lore.kernel.org/r/20200416062335.29223-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+then in restarted ipoib_macst_join_task() creating a new broadcast mcast
+object, sending join request and on completion tells the driver to attach
+to reinitialized QP:
+...
+if (!priv->broadcast) {
+...
+	broadcast = ipoib_mcast_alloc(dev, 0);
+...
+	memcpy(broadcast->mcmember.mgid.raw, priv->dev->broadcast + 4,
+	       sizeof (union ib_gid));
+	priv->broadcast = broadcast;
+...
+
+Fixes: 9a9b8112699d ("IB/ipoib: Update broadcast object if PKey value was changed in index 0")
+Cc: stable@vger.kernel.org
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Alex Estrin <alex.estrin@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Reviewed-by: Feras Daoud <ferasda@mellanox.com>
+Signed-off-by: Doug Ledford <dledford@redhat.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/pch_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c |   13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index 581e7a290d98e..a3b0b4c56a190 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -865,6 +865,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+@@ -945,19 +945,6 @@ static inline int update_parent_pkey(str
+ 		 */
+ 		priv->dev->broadcast[8] = priv->pkey >> 8;
+ 		priv->dev->broadcast[9] = priv->pkey & 0xff;
+-
+-		/*
+-		 * Update the broadcast address in the priv->broadcast object,
+-		 * in case it already exists, otherwise no one will do that.
+-		 */
+-		if (priv->broadcast) {
+-			spin_lock_irq(&priv->lock);
+-			memcpy(priv->broadcast->mcmember.mgid.raw,
+-			       priv->dev->broadcast + 4,
+-			sizeof(union ib_gid));
+-			spin_unlock_irq(&priv->lock);
+-		}
+-
+ 		return 0;
  	}
  
- 	pci_set_master(pdev);
-+	pd->dma.dev = &pdev->dev;
- 
- 	err = request_irq(pdev->irq, pd_irq, IRQF_SHARED, DRV_NAME, pd);
- 	if (err) {
-@@ -880,7 +881,6 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_free_irq;
- 	}
- 
--	pd->dma.dev = &pdev->dev;
- 
- 	INIT_LIST_HEAD(&pd->dma.channels);
- 
--- 
-2.20.1
-
 
 
