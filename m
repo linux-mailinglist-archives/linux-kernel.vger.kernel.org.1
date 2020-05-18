@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EB41D8715
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9B91D840E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgERS3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
+        id S1732988AbgERSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 14:05:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729266AbgERRlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 13:41:25 -0400
+        id S1732953AbgERSF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 14:05:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C09020715;
-        Mon, 18 May 2020 17:41:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAC9E20873;
+        Mon, 18 May 2020 18:05:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589823685;
-        bh=Dy9+yzzQGv8TwSLbXo42Lz/TB6+TmkvJluwUjIXx7IM=;
+        s=default; t=1589825125;
+        bh=KPQ5ee/rVhZdwHtanFh23NNG/VV1y3tWvTV40prfyPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KvfM6MOw6XP4dTcwwIg1MtOnFQH1pvume0Ep1LFIOn5Frka/p3BWb+2TljIEeTKwu
-         khfEtq6WYbqtF9KegHp2EMEfbS4PGGfn8Yjebkd2xQA0EcfqkuSZoDRxo000L6wNGg
-         eB8UgHxIVW2dV6ab+nx1VtT8qEsEaM4/0CEQan/0=
+        b=d6S83y4ch699cGelMEDzCiZtEfqrBvGfZZQSNpRRbdYEp+6gI+n5ooTPLioMIWzFF
+         RPLU0jPWmogalcuDbuEuwtCOOQ0q8RTquYhw2vVfO2yxMZ/EXu2AAJ+4KrWq+ap4HL
+         lt4Z1MANmlBXL1iFmy0BDTK7Dr+JP9PR0RkXrXNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.4 80/86] usb: gadget: audio: Fix a missing error return value in audio_bind()
-Date:   Mon, 18 May 2020 19:36:51 +0200
-Message-Id: <20200518173506.792692315@linuxfoundation.org>
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 122/194] bpf: Fix bug in mmap() implementation for BPF array map
+Date:   Mon, 18 May 2020 19:36:52 +0200
+Message-Id: <20200518173541.756566468@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173450.254571947@linuxfoundation.org>
-References: <20200518173450.254571947@linuxfoundation.org>
+In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
+References: <20200518173531.455604187@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+[ Upstream commit 333291ce5055f2039afc907badaf5b66bc1adfdc ]
 
-commit 19b94c1f9c9a16d41a8de3ccbdb8536cf1aecdbf upstream.
+mmap() subsystem allows user-space application to memory-map region with
+initial page offset. This wasn't taken into account in initial implementation
+of BPF array memory-mapping. This would result in wrong pages, not taking into
+account requested page shift, being memory-mmaped into user-space. This patch
+fixes this gap and adds a test for such scenario.
 
-If 'usb_otg_descriptor_alloc()' fails, we must return an error code, not 0.
-
-Fixes: 56023ce0fd70 ("usb: gadget: audio: allocate and init otg descriptor by otg capabilities")
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200512235925.3817805-1-andriin@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/legacy/audio.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/bpf/arraymap.c                         | 7 ++++++-
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 9 +++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/legacy/audio.c
-+++ b/drivers/usb/gadget/legacy/audio.c
-@@ -249,8 +249,10 @@ static int audio_bind(struct usb_composi
- 		struct usb_descriptor_header *usb_desc;
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 95d77770353c9..1d6120fd5ba68 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -486,7 +486,12 @@ static int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+ 	if (!(map->map_flags & BPF_F_MMAPABLE))
+ 		return -EINVAL;
  
- 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail;
-+		}
- 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
+-	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array), pgoff);
++	if (vma->vm_pgoff * PAGE_SIZE + (vma->vm_end - vma->vm_start) >
++	    PAGE_ALIGN((u64)array->map.max_entries * array->elem_size))
++		return -EINVAL;
++
++	return remap_vmalloc_range(vma, array_map_vmalloc_addr(array),
++				   vma->vm_pgoff + pgoff);
+ }
+ 
+ const struct bpf_map_ops array_map_ops = {
+diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
+index 16a814eb4d645..b0e789678aa46 100644
+--- a/tools/testing/selftests/bpf/prog_tests/mmap.c
++++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
+@@ -197,6 +197,15 @@ void test_mmap(void)
+ 	CHECK_FAIL(map_data->val[far] != 3 * 321);
+ 
+ 	munmap(tmp2, 4 * page_size);
++
++	/* map all 4 pages, but with pg_off=1 page, should fail */
++	tmp1 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
++		    data_map_fd, page_size /* initial page shift */);
++	if (CHECK(tmp1 != MAP_FAILED, "adv_mmap7", "unexpected success")) {
++		munmap(tmp1, 4 * page_size);
++		goto cleanup;
++	}
++
+ cleanup:
+ 	if (bss_mmaped)
+ 		CHECK_FAIL(munmap(bss_mmaped, bss_sz));
+-- 
+2.20.1
+
 
 
