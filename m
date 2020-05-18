@@ -2,31 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CB91D721A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6971D7221
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 09:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgERHmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 03:42:14 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:41433 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgERHmO (ORCPT
+        id S1727857AbgERHn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 03:43:26 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:25993 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgERHnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 03:42:14 -0400
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 02E53FF80F;
-        Mon, 18 May 2020 07:42:11 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Jiri Slaby <jslaby@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 3/3] tty: n_gsm: Fix waking up upper tty layer when room available
-In-Reply-To: <4d3863a3-4c82-797f-6c20-b74e61a11724@suse.cz>
-References: <20200512115323.1447922-1-gregory.clement@bootlin.com> <20200512115323.1447922-4-gregory.clement@bootlin.com> <4d3863a3-4c82-797f-6c20-b74e61a11724@suse.cz>
-Date:   Mon, 18 May 2020 09:42:11 +0200
-Message-ID: <87r1vhg04s.fsf@FE-laptop>
+        Mon, 18 May 2020 03:43:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1589787804; x=1621323804;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=FKJAh1HkVv8d/p5YjXylM2nem6uVcaMiV5E5Xj3YJxg=;
+  b=N/Mo9gOdr8dLG92VO2vspqYTdC6ybwy06MNDNqrb1h5K4v4ruEkCkND2
+   cu0mZo4ozsdylQg/voj7wziwalD74fTzC4IMIyACbyyecFeOtwRyzEi9N
+   KbyGKXlPtFU3qM/y/WdEUaYyGmmDr6Vcw7og6K3x+WYJugwkF/lFSPCPo
+   Zk5f8N1qrsFCjQf0gcqKGCriHJFBmulpA103J1MKUZDHkpXSJEv83QGGr
+   z9bZiF3T8i7eiR5uFXkifdto6TQIulSIllcLw45pcNZvW2MQdntXxG7Av
+   CJddKWzosR+z76xtTrSM9/5AZKAj3T4CtK1+RkmYrl/GSBabx5+Cvrwq2
+   A==;
+IronPort-SDR: 9nIYTc6j7tSmHkUO/HDAiU7Hl4ptKImLP7FdPLXeUtwqYerLqPzqdExoE6E93pFxzBah3KHWWG
+ Q9JPG+I2MEL3gHJXGrutIvVYPjZUo1UEB3ylMVbpbguzVvgclguDsT6B3iZUd/aTMSYKFy83vM
+ CmUy67KdBD33r96EVfEhNlaspRBqwP35OdPswMyZsL8Gqtsd2knoZobWdvb4W8vZXCFq31c9xV
+ fWceeyx3oQjJyQHT8TKz77OVnpKjLO40OSg3akb7hIM2OYZrCRcRG94HfDVpY9JW6g17CLZwRG
+ ScA=
+X-IronPort-AV: E=Sophos;i="5.73,406,1583218800"; 
+   d="scan'208";a="73738900"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 May 2020 00:43:22 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 18 May 2020 00:43:22 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 18 May 2020 00:43:17 -0700
+References: <20200513125532.24585-1-lars.povlsen@microchip.com> <20200513125532.24585-7-lars.povlsen@microchip.com> <2d230dab95ee96727a42f9c242c93c18@misterjones.org> <871rnlp740.fsf@soft-dev15.microsemi.net> <18c0d9ef-9a2b-31d0-b317-f051bb26a907@arm.com>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Marc Zyngier <maz@misterjones.org>,
+        <devicetree@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, SoC Team <soc@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Olof Johansson" <olof@lixom.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>
+Subject: Re: [PATCH 06/14] arm64: dts: sparx5: Add basic cpu support
+In-Reply-To: <18c0d9ef-9a2b-31d0-b317-f051bb26a907@arm.com>
+Date:   Mon, 18 May 2020 09:43:16 +0200
+Message-ID: <87wo59ofhn.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -34,84 +69,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
 
-> On 12. 05. 20, 13:53, Gregory CLEMENT wrote:
->> Warn the upper layer when n_gms is ready to receive data
->> again. Without this the associated virtual tty remains blocked
->> indefinitely.
->> 
->> Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
->> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
->> ---
->>  drivers/tty/n_gsm.c | 26 ++++++++++++++++++++++----
->>  1 file changed, 22 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
->> index d8d196645500..69200bd411f7 100644
->> --- a/drivers/tty/n_gsm.c
->> +++ b/drivers/tty/n_gsm.c
->> @@ -663,7 +663,7 @@ static struct gsm_msg *gsm_data_alloc(struct gsm_mux *gsm, u8 addr, int len,
->>   *	FIXME: lock against link layer control transmissions
->>   */
->>  
->> -static void gsm_data_kick(struct gsm_mux *gsm)
->> +static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
->>  {
->>  	struct gsm_msg *msg, *nmsg;
->>  	int len;
->> @@ -695,6 +695,24 @@ static void gsm_data_kick(struct gsm_mux *gsm)
->>  
->>  		list_del(&msg->list);
->>  		kfree(msg);
->> +
->> +		if (dlci) {
->> +			tty_port_tty_wakeup(&dlci->port);
->> +		} else {
->> +			int i = 0;
->> +
->> +			for (i = 0; i < NUM_DLCI; i++) {
->> +				struct gsm_dlci *dlci;
->> +
->> +				dlci = gsm->dlci[i];
->> +				if (dlci == NULL) {
->> +					i++;
->
-> This "i++" looks bogus here.
+Robin Murphy writes:
 
-You're right!
-Sorry for this.
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+> On 2020-05-15 16:09, Lars Povlsen wrote:
+> [...]
+>>>> +             cpu0: cpu@0 {
+>>>> +                     compatible = "arm,cortex-a53", "arm,armv8";
+>
+> Side note: only one compatible string for the real CPU please, running a
+> DT bindings check should complain about that.
+>
 
->
->> +					continue;
->> +				}
->> +
->> +				tty_port_tty_wakeup(&dlci->port);
->
->
-> So simply:
-> for (i = 0; i < NUM_DLCI; i++) {
->   struct gsm_dlci *dlci = gsm->dlci[i];
->   if (dlci)
->     tty_port_tty_wakeup(&dlci->port);
-> }
->
-> ? Or even maybe directly:
-> for (i = 0; i < NUM_DLCI; i++)
->   if (gsm->dlci[i])
->     tty_port_tty_wakeup(&gsm->dlci[i]->port);
+I'll change this.
 
-I will do this, thanks,
-
-Gregory
-
+>>>> +                     device_type = "cpu";
+>>>> +                     reg = <0x0 0x0>;
+>>>> +                     enable-method = "spin-table";
+>>>
+>>> Really? This is 2020, not 2012 any more. Surely a new platform
+>>> boots using PSCI, and not *this*.
+>>>
+>>
+>> We don't currently support PSCI. The platform does not have TrustZone,
+>> hence we don't use ATF.
+> AIUI, part of the purpose of ATF is to provide a nice standardised
+> platform interface regardless of whether you care about Secure software
+> or not. It shouldn't take much to knock up a trivial ATF port that just
+> uses an internal spin-table for its PSCI backend - in fact I suspect
+> that's probably just a copy-paste from the RPi3 port ;)
 >
-> thanks,
-> -- 
-> js
-> suse labs
+
+I'll change this to PSCI if that's whats expected these days. We
+actually already have an ATF port. I fully understand the desire to
+standardize on PSCI.
+
+> Robin.
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Lars Povlsen,
+Microchip
