@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F7B1D79AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5CD1D79B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 15:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgERNXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 09:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgERNXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 09:23:42 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E42C061A0C;
-        Mon, 18 May 2020 06:23:42 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id z6so2022339ooz.3;
-        Mon, 18 May 2020 06:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DBlvsBNo07SGqI/EUYBm242mZ59YuGTGeckJLd8jOpQ=;
-        b=cfcy4DgNDBCTvF7mVRHlNGMhkmacmQXoOEN7xHQW5RByJmQEOZPVAPyo9YID2+ksAi
-         /afPVXSML+4G3Bw1Av627prEUHM1DSfL+K+x7/YDrloQUeRdA0RHZ/Ci8IiVSn06JvxM
-         ERD+F7OU2G0aYA1jm533gAqjJDTSnLWqrFY36parhqgXEhiSPdgqNwQO5fR9KwIhBQHQ
-         YOpKIOz6q+0B0PXG8v4Biq/vO8dKWXEzyeRa0Y9yjaxmh3OejiceK8lNmw23eVKaKsvC
-         ADaynfCq4eIlVTdkVXFTZbxc33D8fvQN23K/LX+Sx2IBxLRkGYZGb+euiCHZkVjhZq4k
-         d+hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DBlvsBNo07SGqI/EUYBm242mZ59YuGTGeckJLd8jOpQ=;
-        b=C5iMQe4UU3Tl0hFeiOWzE/StQvqw3Kmh7p8HM5Kkzy1UvxF5PqWz/k7wu4t0rTyzPY
-         CMxoOIf04UWyi68XYs7384GaZ0SDhpamcvEm3DUSeXvXTCSvz8TNuG2WP56smSCovt56
-         LlqUTnVaR1pzC7u533b9RMNGOtMFC53EdchJ8tTGz+X8Pbu2B63z/wB6Cv4WQz4N0awh
-         e3C0lzPdxyXf/MMSZrKtX8mlhLhCgq9UHG3OOHLqnr/cF6btir2AVvf5Fy+kZ9vA3HDe
-         aSP9SRgTWbM0lo0Ff2J+4Hg9k2V29nC2ixYhyQC8MEPefYc472Q2J30Pjz+zm9EdrFRJ
-         ynmw==
-X-Gm-Message-State: AOAM5314CWzbmL/eFVDRRvDaCOQ05xk0e3fqsi6ObjmhfTL0TIsidPmZ
-        51DtjthyxZJynOHhm/5qJ02cGYP78rQsUvYhoDE=
-X-Google-Smtp-Source: ABdhPJxVcUiw42ooaQWea/4dYUB4KCyh0tbeqfXUZvqVqSB4YyCTuhyTbJeCJawG71KxJDG6Rdbo2qnrc9R3IY+DJW4=
-X-Received: by 2002:a4a:b346:: with SMTP id n6mr12858795ooo.18.1589808222002;
- Mon, 18 May 2020 06:23:42 -0700 (PDT)
+        id S1727983AbgERNXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 09:23:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726800AbgERNXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 09:23:52 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73656207F9;
+        Mon, 18 May 2020 13:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589808232;
+        bh=VRHqp4EH6ZCXx3q/nKzQbhc50sXdlhPesaPcLuWElWU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JK8h+I3656sP2fg7WK8m+s26PlqWyYK5YmqtE6IW3Op9VK8D8B/UqDER4PdbsMSQ5
+         p5sP8nzfJLTy2vv+9qvzJqkifgwB0IuSdn+9i8AFFs0qbrVy6rF0Gc0WQSn7rvJYtN
+         sDiipVGvZG87aUDUNlQjHd0PvJY3D6ZvzjmJje/g=
+Date:   Mon, 18 May 2020 14:23:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@am.com>,
+        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
+Subject: Re: [PATCH 4/6] scs: Move scs_overflow_check() out of architecture
+ code
+Message-ID: <20200518132346.GD32394@willie-the-truck>
+References: <20200515172756.27185-1-will@kernel.org>
+ <20200515172756.27185-5-will@kernel.org>
+ <20200518121210.GD1957@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1589555337-5498-18-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVV+2HsgmBytCOFg4pri4XinT_SPWT_Ac6n7FMZN3dR3w@mail.gmail.com>
- <CA+V-a8tmG1LKYqbc7feGZQO2Tj5RCpNUHi9e19vPr+bED0KOyQ@mail.gmail.com> <9ab946d2-1076-ed92-0a48-9a95d798d291@cogentembedded.com>
-In-Reply-To: <9ab946d2-1076-ed92-0a48-9a95d798d291@cogentembedded.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 18 May 2020 14:23:15 +0100
-Message-ID: <CA+V-a8uuP9d6dNeRpn3O0_aOc15CqWoh0bbAfYze1_hn0dCh8g@mail.gmail.com>
-Subject: Re: [PATCH 17/17] ARM: dts: r8a7742: Add RWDT node
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-ide@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518121210.GD1957@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergei,
+On Mon, May 18, 2020 at 01:12:10PM +0100, Mark Rutland wrote:
+> On Fri, May 15, 2020 at 06:27:54PM +0100, Will Deacon wrote:
+> > There is nothing architecture-specific about scs_overflow_check() as
+> > it's just a trivial wrapper around scs_corrupted().
+> > 
+> > For parity with task_stack_end_corrupted(), rename scs_corrupted() to
+> > task_scs_end_corrupted() and call it from schedule_debug() when
+> > CONFIG_SCHED_STACK_END_CHECK_is enabled. Finally, remove the unused
+> > scs_overflow_check() function entirely.
+> > 
+> > This has absolutely no impact on architectures that do not support SCS
+> > (currently arm64 only).
+> > 
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> 
+> Pulling this out of arch code seems sane to me, and the arch-specific
+> chanes look sound. However, I have a concern with the changes within the
+> scheduler context-switch.
+> 
+> > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > index a35d3318492c..56be4cbf771f 100644
+> > --- a/arch/arm64/kernel/process.c
+> > +++ b/arch/arm64/kernel/process.c
+> > @@ -52,7 +52,6 @@
+> >  #include <asm/mmu_context.h>
+> >  #include <asm/processor.h>
+> >  #include <asm/pointer_auth.h>
+> > -#include <asm/scs.h>
+> >  #include <asm/stacktrace.h>
+> >  
+> >  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
+> > @@ -516,7 +515,6 @@ __notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
+> >  	entry_task_switch(next);
+> >  	uao_thread_switch(next);
+> >  	ssbs_thread_switch(next);
+> > -	scs_overflow_check(next);
+> 
+> Prior to this patch, we'd never switch to a task whose SCS had already
+> been corrupted.
+> 
+> With this patch, we only check that when switching away from a task, and
+> only when CONFIG_SCHED_STACK_END_CHECK is selected, which at first
+> glance seems to weaken that.
 
-On Mon, May 18, 2020 at 2:17 PM Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
->
-> Hello!
->
-> On 18.05.2020 15:27, Lad, Prabhakar wrote:
->
-> >>> Add a device node for the Watchdog Timer (RWDT) controller on the Renesas
-> >>> RZ/G1H (r8a7742) SoC.
-> >>>
-> >>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >>> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> >>
-> >> Thanks for your patch!
-> >>
-> >>> --- a/arch/arm/boot/dts/r8a7742.dtsi
-> >>> +++ b/arch/arm/boot/dts/r8a7742.dtsi
-> >>> @@ -201,6 +201,16 @@
-> >>>                  #size-cells = <2>;
-> >>>                  ranges;
-> >>>
-> >>> +               rwdt: watchdog@e6020000 {
-> >>> +                       compatible = "renesas,r8a7742-wdt",
-> >>> +                                    "renesas,rcar-gen2-wdt";
-> >>> +                       reg = <0 0xe6020000 0 0x0c>;
-> >>> +                       clocks = <&cpg CPG_MOD 402>;
-> >>> +                       power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-> >>> +                       resets = <&cpg 402>;
-> >>> +                       status = "disabled";
-> >>
-> >> Missing "interrupts" property.
-> >>
-> > "interrupts" property isn't used by rwdt driver  and can be dropped
-> > from bindings file.
->
->     DT describes the hardware, not its driver's abilities.
->
-Agreed will add, I had followed it on similar lines of r8a7743/44.
+Yes, ignoring vmap'd stacks, this patch brings the SCS checking in-line with
+the main stack checking when CONFIG_SCHED_STACK_END_CHECK=y.
 
-Cheers,
---Prabhakar
+> Arguably:
+> 
+> * If the next task's SCS was corrupted by that task while it was
+>   running, we had already lost at that point.
+
+With this change, we'll at least catch this one sooner, and that might be
+useful if a bug has caused us to overflow the SCS but not the main stack.
+
+> * If the next task's SCS was corrupted by another task, then that could
+>   also happen immediately after the check (though timing to avoid the
+>   check but affect the process could be harder).
+
+We're only checking the magic end value, so the cross-task case is basically
+if you overrun your own SCS as above, but then continue to overrun entire
+SCSs for other tasks as well. It's probably not very useful in that case.
+
+> ... and a VMAP'd SCS would be much nicer in this regard.
+> 
+> Do we think this is weakening the check, or do we think it wasn't all
+> that helpful to begin with?
+
+I see it as a debug check to catch SCS overflow, rather than a hardening
+feature, and I agree that using something like vmap stack for the SCS would
+be better because we could have a guard page instead. This is something I
+would like to revisit, but we need more information from Sami about why
+Android rejected the larger allocation size, since I don't think there's an
+awful lot of point merging this series if Android doesn't pick it up.
+
+Will
