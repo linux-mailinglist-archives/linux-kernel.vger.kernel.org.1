@@ -2,251 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6881D6F21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967F41D6F16
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 04:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgERCxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 May 2020 22:53:43 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38912 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726675AbgERCxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 May 2020 22:53:43 -0400
-IronPort-SDR: v0031KGH8sPzZNW36l48JiqLD/Ypcles9iwOm9NYyPTbJvPwu16AgLt8YEuwUX9YhZBGwVDpLz
- hI4jkWd3plUw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2020 19:53:42 -0700
-IronPort-SDR: ajl1mKmNYUq8JZW6h0P0xcT210nfq6Cn+lB1ky8e0KlSTGHH5i3gnWv1CM7K3UqhXBHZhDBz1b
- Aw4BnjPfMmdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,405,1583222400"; 
-   d="scan'208";a="411103805"
-Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
-  by orsmga004.jf.intel.com with ESMTP; 17 May 2020 19:53:39 -0700
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     alex.williamson@redhat.com, cohuck@redhat.com,
-        zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
-        kevin.tian@intel.com, shaopeng.he@intel.com, yi.l.liu@intel.com,
-        xin.zeng@intel.com, hang.yuan@intel.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH v4 01/10] vfio/pci: register/unregister vfio_pci_vendor_driver_ops
-Date:   Sun, 17 May 2020 22:43:17 -0400
-Message-Id: <20200518024317.14055-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200518024202.13996-1-yan.y.zhao@intel.com>
-References: <20200518024202.13996-1-yan.y.zhao@intel.com>
+        id S1726700AbgERCoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 May 2020 22:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgERCon (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 May 2020 22:44:43 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D9BC061A0C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 19:44:43 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id s21so7592750ejd.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 May 2020 19:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=8K0sJqpLsIUnKAf2a0bGvl0VcjUMX3pFm+WYrpBq63U=;
+        b=bal608dPtmHgZjr230fo5HEIQmZpWNKbe748W5U7xWtCbMjZR+nm3oALJ/HWSvd00x
+         83Wr8YV8MLCO4AybYUDW7NOBlyfw1CrXTNq0We7cDoJwgzwt3P6Lz+g7EDAp9PxqyPXv
+         i3ImAkB3WHEXwi7X6SfYulCiLO1feN+hFQhesKRoawqlcX7mtVgElmQ56aZ0asEczKmB
+         hBUVItIYqiY+w0vbptHflC6eieNVeHjtNd3dShU8xW2hAnKqy7ZLWe5vl9vxhCAhQBoy
+         yNLIx++JyjzrrmoSnZ6lGx7w/q0GB2d/ld+CzDsrU/X2eU4wIBOh9WPL4rw/0kM/6RNx
+         YByA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=8K0sJqpLsIUnKAf2a0bGvl0VcjUMX3pFm+WYrpBq63U=;
+        b=Ozwbk2eOylS4VH3/kbGHWiy+DODhYgBmlxALmdWoICYJ8e/kj8Brt6MJYlMbviLJe0
+         EBNJcBU618YxvDfawyR6NtfoKksLjIA8e7aACnzE5Hr3lS7TeS34fwCGwKD65ytfWw/a
+         RYIHV0KwavrWSzCHqzth9qyKdhqB2WGJOuFRreJSedhRCUDh199upvS6xwOgNN9qOJy9
+         OYxWs79QK/C6z5eJEmVj1vBg11E4u5gtmjSE3PoWSwslJcxdkTcUi1ToxeDqMsBhdQ9L
+         JDpEByV0Gd2IRD2QZ5Z/og8wvDP//5hGzSEdT8bT7q7kQQQZaxh2hHWNmnZM2hS4Ivn2
+         zQhw==
+X-Gm-Message-State: AOAM5333GTUF9yuJ6CWZHTXWH1AJNirP3tMS7fqbvkskSaV4X77HyW5C
+        sepTlq23nKCiEvJFNBHEv7uZqX+rXmT/toXx+D9rKA==
+X-Google-Smtp-Source: ABdhPJx2MV4ozWTjAy3YkqSEAkabXYFR7xDpxOWtddtOc7wQFoLofcxQF1JcxJiDynszv4GIEWR6UtA2NTgGyNxrpSw=
+X-Received: by 2002:a17:906:3952:: with SMTP id g18mr13610750eje.191.1589769882137;
+ Sun, 17 May 2020 19:44:42 -0700 (PDT)
+MIME-Version: 1.0
+From:   Qian Cai <cai@lca.pw>
+Date:   Sun, 17 May 2020 22:44:31 -0400
+Message-ID: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
+Subject: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_pci_vendor_driver_ops includes two parts:
-(1) .probe() and .remove() interface to be called by vfio_pci_probe()
-and vfio_pci_remove().
-(2) pointer to struct vfio_device_ops. It will be registered as ops of vfio
-device if .probe() succeeds.
+With Clang 9.0.1,
 
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- drivers/vfio/pci/vfio_pci.c         | 102 +++++++++++++++++++++++++++-
- drivers/vfio/pci/vfio_pci_private.h |   7 ++
- include/linux/vfio.h                |   9 +++
- 3 files changed, 117 insertions(+), 1 deletion(-)
+return array->value + array->elem_size * (index & array->index_mask);
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 6c6b37b5c04e..43d10d34cbc2 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -68,6 +68,11 @@ static inline bool vfio_vga_disabled(void)
- #endif
- }
- 
-+static struct vfio_pci {
-+	struct  mutex		vendor_drivers_lock;
-+	struct  list_head	vendor_drivers_list;
-+} vfio_pci;
-+
- /*
-  * Our VGA arbiter participation is limited since we don't know anything
-  * about the device itself.  However, if the device is the only VGA device
-@@ -1570,6 +1575,35 @@ static int vfio_pci_bus_notifier(struct notifier_block *nb,
- 	return 0;
- }
- 
-+static int probe_vendor_drivers(struct vfio_pci_device *vdev)
-+{
-+	struct vfio_pci_vendor_driver *driver;
-+	int ret = -ENODEV;
-+
-+	request_module("vfio-pci:%x-%x", vdev->pdev->vendor,
-+					 vdev->pdev->device);
-+
-+	mutex_lock(&vfio_pci.vendor_drivers_lock);
-+	list_for_each_entry(driver, &vfio_pci.vendor_drivers_list, next) {
-+		void *data;
-+
-+		if (!try_module_get(driver->ops->owner))
-+			continue;
-+
-+		data = driver->ops->probe(vdev->pdev);
-+		if (IS_ERR(data)) {
-+			module_put(driver->ops->owner);
-+			continue;
-+		}
-+		vdev->vendor_driver = driver;
-+		vdev->vendor_data = data;
-+		ret = 0;
-+		break;
-+	}
-+	mutex_unlock(&vfio_pci.vendor_drivers_lock);
-+	return ret;
-+}
-+
- static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
- 	struct vfio_pci_device *vdev;
-@@ -1609,7 +1643,12 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	mutex_init(&vdev->ioeventfds_lock);
- 	INIT_LIST_HEAD(&vdev->ioeventfds_list);
- 
--	ret = vfio_add_group_dev(&pdev->dev, &vfio_pci_ops, vdev);
-+	if (probe_vendor_drivers(vdev))
-+		ret = vfio_add_group_dev(&pdev->dev, &vfio_pci_ops, vdev);
-+	else
-+		ret = vfio_add_group_dev(&pdev->dev,
-+					 vdev->vendor_driver->ops->device_ops,
-+					 vdev);
- 	if (ret)
- 		goto out_free;
- 
-@@ -1698,6 +1737,11 @@ static void vfio_pci_remove(struct pci_dev *pdev)
- 	if (!disable_idle_d3)
- 		vfio_pci_set_power_state(vdev, PCI_D0);
- 
-+	if (vdev->vendor_driver) {
-+		vdev->vendor_driver->ops->remove(vdev->vendor_data);
-+		module_put(vdev->vendor_driver->ops->owner);
-+	}
-+
- 	kfree(vdev->pm_save);
- 	kfree(vdev);
- 
-@@ -2035,6 +2079,8 @@ static int __init vfio_pci_init(void)
- 
- 	vfio_pci_fill_ids();
- 
-+	mutex_init(&vfio_pci.vendor_drivers_lock);
-+	INIT_LIST_HEAD(&vfio_pci.vendor_drivers_list);
- 	return 0;
- 
- out_driver:
-@@ -2042,6 +2088,60 @@ static int __init vfio_pci_init(void)
- 	return ret;
- }
- 
-+int __vfio_pci_register_vendor_driver(struct vfio_pci_vendor_driver_ops *ops)
-+{
-+	struct vfio_pci_vendor_driver *driver, *tmp;
-+
-+	if (!ops || !ops->device_ops)
-+		return -EINVAL;
-+
-+	driver = kzalloc(sizeof(*driver), GFP_KERNEL);
-+	if (!driver)
-+		return -ENOMEM;
-+
-+	driver->ops = ops;
-+
-+	mutex_lock(&vfio_pci.vendor_drivers_lock);
-+
-+	/* Check for duplicates */
-+	list_for_each_entry(tmp, &vfio_pci.vendor_drivers_list, next) {
-+		if (tmp->ops->device_ops == ops->device_ops) {
-+			mutex_unlock(&vfio_pci.vendor_drivers_lock);
-+			kfree(driver);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	list_add(&driver->next, &vfio_pci.vendor_drivers_list);
-+
-+	mutex_unlock(&vfio_pci.vendor_drivers_lock);
-+
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(__vfio_pci_register_vendor_driver);
-+
-+void vfio_pci_unregister_vendor_driver(struct vfio_device_ops *device_ops)
-+{
-+	struct vfio_pci_vendor_driver *driver, *tmp;
-+
-+	mutex_lock(&vfio_pci.vendor_drivers_lock);
-+	list_for_each_entry_safe(driver, tmp,
-+				 &vfio_pci.vendor_drivers_list, next) {
-+		if (driver->ops->device_ops == device_ops) {
-+			list_del(&driver->next);
-+			mutex_unlock(&vfio_pci.vendor_drivers_lock);
-+			kfree(driver);
-+			module_put(THIS_MODULE);
-+			return;
-+		}
-+	}
-+	mutex_unlock(&vfio_pci.vendor_drivers_lock);
-+}
-+EXPORT_SYMBOL_GPL(vfio_pci_unregister_vendor_driver);
-+
- module_init(vfio_pci_init);
- module_exit(vfio_pci_cleanup);
- 
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 36ec69081ecd..7758a20546fa 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -92,6 +92,11 @@ struct vfio_pci_vf_token {
- 	int			users;
- };
- 
-+struct vfio_pci_vendor_driver {
-+	const struct vfio_pci_vendor_driver_ops *ops;
-+	struct list_head			next;
-+};
-+
- struct vfio_pci_device {
- 	struct pci_dev		*pdev;
- 	void __iomem		*barmap[PCI_STD_NUM_BARS];
-@@ -132,6 +137,8 @@ struct vfio_pci_device {
- 	struct list_head	ioeventfds_list;
- 	struct vfio_pci_vf_token	*vf_token;
- 	struct notifier_block	nb;
-+	void			*vendor_data;
-+	struct vfio_pci_vendor_driver	*vendor_driver;
- };
- 
- #define is_intx(vdev) (vdev->irq_type == VFIO_PCI_INTX_IRQ_INDEX)
-diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-index 38d3c6a8dc7e..3e53deb012b6 100644
---- a/include/linux/vfio.h
-+++ b/include/linux/vfio.h
-@@ -214,4 +214,13 @@ extern int vfio_virqfd_enable(void *opaque,
- 			      void *data, struct virqfd **pvirqfd, int fd);
- extern void vfio_virqfd_disable(struct virqfd **pvirqfd);
- 
-+struct vfio_pci_vendor_driver_ops {
-+	char			*name;
-+	struct module		*owner;
-+	void			*(*probe)(struct pci_dev *pdev);
-+	void			(*remove)(void *vendor_data);
-+	struct vfio_device_ops *device_ops;
-+};
-+int __vfio_pci_register_vendor_driver(struct vfio_pci_vendor_driver_ops *ops);
-+void vfio_pci_unregister_vendor_driver(struct vfio_device_ops *device_ops);
- #endif /* VFIO_H */
--- 
-2.17.1
+but array->value is,
 
+char value[0] __aligned(8);
+
+[  506.031548][ T4134] LTP: starting bpf_prog02
+[  506.125326][ T4352]
+================================================================================
+[  506.134603][ T4352] UBSAN: array-index-out-of-bounds in
+kernel/bpf/arraymap.c:177:22
+[  506.142521][ T4352] index 8 is out of range for type 'char [0]'
+[  506.148613][ T4352] CPU: 222 PID: 4352 Comm: bpf_prog02 Tainted: G
+           L    5.7.0-rc5-next-20200515 #2
+[  506.158632][ T4352] Hardware name: HPE Apollo 70
+/C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
+[  506.169084][ T4352] Call trace:
+[  506.172256][ T4352]  dump_backtrace+0x0/0x22c
+[  506.176634][ T4352]  show_stack+0x28/0x34
+[  506.180666][ T4352]  dump_stack+0x104/0x194
+[  506.184877][ T4352]  __ubsan_handle_out_of_bounds+0xf0/0x120
+[  506.190565][ T4352]  array_map_lookup_elem+0x90/0x94
+[  506.195560][ T4352]  bpf_map_lookup_elem+0x48/0x60
+[  506.200383][ T4352]  ___bpf_prog_run+0xe9c/0x2840
+[  506.205109][ T4352]  __bpf_prog_run32+0x80/0xac
+[  506.209673][ T4352]  __bpf_prog_run_save_cb+0x104/0x46c
+[  506.214919][ T4352]  sk_filter_trim_cap+0x21c/0x2c4
+[  506.219823][ T4352]  unix_dgram_sendmsg+0x45c/0x860
+[  506.224725][ T4352]  sock_sendmsg+0x4c/0x74
+[  506.228935][ T4352]  sock_write_iter+0x158/0x1a4
+[  506.233584][ T4352]  __vfs_write+0x190/0x1d8
+[  506.237874][ T4352]  vfs_write+0x13c/0x1b8
+[  506.241992][ T4352]  ksys_write+0xb0/0x120
+[  506.246108][ T4352]  __arm64_sys_write+0x54/0x88
+[  506.250747][ T4352]  do_el0_svc+0x128/0x1dc
+[  506.254957][ T4352]  el0_sync_handler+0xd0/0x268
+[  506.259594][ T4352]  el0_sync+0x164/0x180
+[  506.263747][ T4352]
