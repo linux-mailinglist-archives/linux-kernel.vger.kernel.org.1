@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4281D7764
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36941D7766
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgERLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:37:12 -0400
-Received: from mailgate1.rohmeurope.com ([87.129.152.131]:46884 "EHLO
-        mailgate1.rohmeurope.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgERLhL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:37:11 -0400
-X-AuditID: c0a8fbf4-489ff70000004419-01-5ec273653295
-Received: from smtp.reu.rohmeu.com (will-cas001.reu.rohmeu.com [192.168.251.177])
-        by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id C2.09.17433.56372CE5; Mon, 18 May 2020 13:37:10 +0200 (CEST)
-Received: from WILL-MAIL001.REu.RohmEu.com ([fe80::2915:304f:d22c:c6ba]) by
- WILL-CAS001.REu.RohmEu.com ([fe80::d57e:33d0:7a5d:f0a6%16]) with mapi id
- 14.03.0487.000; Mon, 18 May 2020 13:36:57 +0200
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>
-CC:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [not urgent] ROHM PMIC/Charger IC driver maintenance.
-Thread-Topic: [not urgent] ROHM PMIC/Charger IC driver maintenance.
-Thread-Index: AQHWLOdQMdOSpxREeE+Cws0ySbgdVKitgt4AgAATFoA=
-Date:   Mon, 18 May 2020 11:36:56 +0000
-Message-ID: <b08e5796b3d94b1add13e706f7acdc34c3a79e49.camel@fi.rohmeurope.com>
-References: <18838efd9341c953fb6aabe9536786de3f1150ae.camel@fi.rohmeurope.com>
-         <20200518102842.GB8699@sirena.org.uk>
-In-Reply-To: <20200518102842.GB8699@sirena.org.uk>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [62.78.225.252]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DB3A4F354C80124FBEE95FAFF2F15820@de.rohmeurope.com>
-Content-Transfer-Encoding: base64
+        id S1727835AbgERLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:37:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:38726 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726339AbgERLhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:37:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73515106F;
+        Mon, 18 May 2020 04:37:18 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9F263F52E;
+        Mon, 18 May 2020 04:37:15 -0700 (PDT)
+Date:   Mon, 18 May 2020 12:37:10 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@am.com>,
+        Jann Horn <jannh@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@android.com
+Subject: Re: [PATCH 1/6] arm64: scs: Store absolute SCS stack pointer value
+ in thread_info
+Message-ID: <20200518113710.GA1957@C02TD0UTHF1T.local>
+References: <20200515172756.27185-1-will@kernel.org>
+ <20200515172756.27185-2-will@kernel.org>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDJsWRmVeSWpSXmKPExsVyYMXvjbppxYfiDKb0MlosuXiV3aL93TJ2
-        iy9zT7FYTH34hM3i/tejjBbfrnQwWUz5s5zJ4vKuOWwWTxaeYbKYs/QEi8XFU64WrXuPsFv8
-        u7aRxeL07hKLxy//MTvwe7y/0cruMW9NtcfOWXfZPTat6mTzuHNtD5vHyjVrWD12fm9g95g+
-        7yeTx+dNcgGcUdw2SYklZcGZ6Xn6dgncGUdn3WcvaOKvuNdziqmB8QJfFyMnh4SAicS2Z43M
-        XYxcHEIC1xglTt7eyg7hnGCUWPNzClMXIwcHm4CNRNdNdpAGEQFdiam/FrOB1DALXGCVOLul
-        HSwhLOAkceLOWWaIImeJ3+fegPWKCFhJzHtcARJmEVCVWPfwHVg5r4CfxJeTfxlBbCGBcokz
-        +/aBxTkFjCQeTrwANoZRQFais+EdE4jNLCAusenZd1aIowUkluw5zwxhi0q8fPwPKq4osf37
-        OhaQtcwCmhLrd+lDtDpI3Jn5gA3CVpSY0v0Q6gRBiZMzn7BMYBSbhWTDLITuWUi6ZyHpnoWk
-        ewEj6ypGidzEzJz0xJJUQ72i1FK9ovyMXCCVnJ+7iRGSGr7sYPx/yPMQIxMH4yFGSQ4mJVHe
-        Xv9DcUJ8SfkplRmJxRnxRaU5qcWHGCU4mJVEeCM/74sT4k1JrKxKLcqHSUlzsCiJ86o/nBgr
-        JACyKzs1tSC1CCYrw8GhJMHbWwA0VLAoNT21Ii0zpwQhzcTBCTKcS0qkODUvJbUosbQkIx6U
-        POKLgekDJMUDtDexEKidt7ggMRcoCtF6ilGbY8LLuYuYOY7MXbqIWYglLz8vVUqct6MIqFQA
-        pDSjNA9u0StGcQ5GJWHeDSCDeIBZAm7OK6AVTEArXC+CvFZckoiQkmpgjL6ZvvXyu8xjPyof
-        dgkHfN7ZsXd/oMyWtjczH8cbrdaxYuWsaT7HkRatLSTx9sotsbyjb/qUD5bO3PSAPUfYqiXu
-        QuRMDcu9cfsu3iyV4jZOPt7oozRDrWxz/I7UrqV3j34J9lsj8WJq5HwGvVl/PrwNldQL8pLZ
-        oWJ9LXursZJui83CXUZqSizFGYmGWsxFxYkASQaGbs8DAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515172756.27185-2-will@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciByZXBseSBNYXJrLA0KDQpPbiBNb24sIDIwMjAtMDUtMTggYXQgMTE6MjggKzAx
-MDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+IE9uIE1vbiwgTWF5IDE4LCAyMDIwIGF0IDA3OjM4OjI1
-QU0gKzAwMDAsIFZhaXR0aW5lbiwgTWF0dGkgd3JvdGU6DQo+IA0KPiA+IFdoYXQga2luZCBvZiBw
-YXJ0aWNpcGF0aW9uIHdvdWxkIHlvdSBleHBlY3QvYXBwcmVjaWF0ZSBmcm9tIG1lIGlmIEkNCj4g
-PiBhZGRlZCBteXNlbGYgaW4gTUFJTlRBSU5FUlMgZm9yIHRoZXNlIGRyaXZlcnMgSSBhdXRob3Jl
-ZD8gQW55DQo+IA0KPiBNYWlubHkganVzdCByZXZpZXdpbmcgcGF0Y2hlcy4NCg0KSSBjYW4gZG8g
-dGhhdCA6KQ0KDQo+IA0KPiA+IG9iamVjdGlvbnMgdG8gdGhhdD8gKEkgZG9uJ3QgcmVhbGx5IGtu
-b3cgaG93IE1BSU5UQUlORVJzIGVudHJpZXMNCj4gPiBzaG91bGQNCj4gPiBiZSBhZGRlZCAtIGFu
-ZCBJIGRpZG4ndCBbZWFzaWx5XSBmaW5kIHVwLXRvLWRhdGUgZXhwbGFuYXRpb24gdG8NCj4gPiB0
-aGF0KS4NCj4gDQo+IFNlbmQgYSBwYXRjaCwgb2Z0ZW4gYWxvbmcgd2l0aCBvdGhlciBzdHVmZiB0
-aGF0J3MgZ29pbmcgb24uICBJJ2QNCj4gZ3Vlc3MNCj4gTUZEIHdvdWxkIGJlIGFzIGdvb2QgYSB0
-cmVlIGFzIGFueSBmb3IgaXQgdG8gZ28gdmlhLg0KDQpBaCwgeWVzIDpdIEkgd2FzIGd1ZXNzaW5n
-IHRoaXMgaXMgdGhlIHRlY2huaWNhbCB3YXkgb2YgYWRkaW5nIHRoZQ0KZW50cnkuIEkgd2FzIG1v
-cmUgd29uZGVyaW5nIHdoYXQgaXMgZXhwZWN0ZWQgZnJvbSBtYWludGFpbmVyICh5b3UNCmFuc3dl
-cmVkIHRoYXQgYWJvdmUpIGFuZCB3aGV0aGVyIHRoZXJlIGlzIHNvbWUgY3JpdGVyaWEgYXMgdG8g
-d2hvIGNhbg0KYmUgYSBtYWludGFpbmVyLg0KDQpXaGlsZSB3ZSBhcmUgYXQgaXQgLSBNYXJrLCB3
-b3VsZCB5b3UgY29uc2lkZXIgZm9sbG93aW5nIHRvIGJlIGZ1bGx5DQppbmFwcHJvcHJpYXRlOg0K
-DQpMSU5FQVIgUkFOR0VTIEhFTFBFUlMNCk06ICAgICAgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPg0KUjogICAgICBNYXR0aSBWYWl0dGluZW4gPG1hdHRpLnZhaXR0aW5lbkBmaS5yb2ht
-ZXVyb3BlLmNvbT4NCkY6ICAgICAgbGliL2xpbmVhcl9yYW5nZXMuYw0KRjogICAgICBsaWIvdGVz
-dF9saW5lYXJfcmFuZ2VzLmMNCkY6ICAgICAgaW5jbHVkZS9saW51eC9saW5lYXJfcmFuZ2UuaA0K
-DQpJIHRoaW5rIHRoYXQgcmVndWxhdG9ycyBiZWluZyB0aGUgbWFpbiB1c2VyIGZvciBsaW5lYXJf
-cmFuZ2VzIHRoZQ0KY2hhbmdlcyB0aGVyZSBzaG91bGQgZ28gaW4gdmlhIHlvdXIgdHJlZSAtIGFu
-ZCB5b3Ugc2hvdWxkIHByb2JhYmx5IGJlDQp3YXRjaGluZyBvdmVyIHRoZW0gYW55d2F5cyA6KQ0K
-DQpCZXN0IFJlZ2FyZHMNCglNYXR0aSBWYWl0dGluZW4NCg==
+On Fri, May 15, 2020 at 06:27:51PM +0100, Will Deacon wrote:
+> Storing the SCS information in thread_info as a {base,offset} pair
+> introduces an additional load instruction on the ret-to-user path,
+> since the SCS stack pointer in x18 has to be converted back to an offset
+> by subtracting the base.
+> 
+> Replace the offset with the absolute SCS stack pointer value instead
+> and avoid the redundant load.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+
+One trivial nit below, but regardless this looks sound to me, and I
+certainly prefer having the absolute address rather than an offset, so:
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+> diff --git a/kernel/scs.c b/kernel/scs.c
+> index 9389c28f0853..5ff8663e4a67 100644
+> --- a/kernel/scs.c
+> +++ b/kernel/scs.c
+> @@ -60,8 +60,7 @@ int scs_prepare(struct task_struct *tsk, int node)
+>  	if (!s)
+>  		return -ENOMEM;
+>  
+> -	task_scs(tsk) = s;
+> -	task_scs_offset(tsk) = 0;
+> +	task_scs(tsk) = task_scs_sp(tsk) = s;
+
+I think this would be more legible as two statements:
+
+|	task_sys(tsk) = s;
+|	task_scs_sp(tsk) = s;
+
+... as we usually save `foo = bar = baz` stuff for the start of a
+function or within loop conditions.
+
+Thanks,
+Mark.
+
+>  	scs_account(tsk, 1);
+>  	return 0;
+>  }
+> -- 
+> 2.26.2.761.g0e0b3e54be-goog
+> 
