@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43C91D8358
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 20:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D6D1D8103
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 19:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732726AbgERSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 14:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49654 "EHLO mail.kernel.org"
+        id S1729670AbgERRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 13:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732701AbgERSDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 14:03:53 -0400
+        id S1729657AbgERRn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 13:43:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F4B3207D3;
-        Mon, 18 May 2020 18:03:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F76620835;
+        Mon, 18 May 2020 17:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589825033;
-        bh=Id37jZ/rUFD+T0Ow/Ky5h9rjLEn8tPMh9o/bRa7KCOM=;
+        s=default; t=1589823835;
+        bh=EHKhD3gXwdngNPGPb9pG6smmQeya9nmvVhYi+tzowL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wEqphfhSS0FnOreU3Wob0PEJbTCAsbNgGlX+7pnpSMdnypPxEQygQjB4ZMw/iHVt5
-         mdalxNfvtP/5wMn4ocNzOrhFYRUUC9rMBnhCFdZ5izBEzu95158Pv2CVMWGnZhtSH/
-         KlHl7Fe7yRLGgcSnaMrECT+ptqQV/d8dZBi/BRzs=
+        b=NZbG6t32H+ehh0sRe1DVqczC5c5rnjoyuqchDVSS9vy6n/5uM13jQtSrWDuDOvlRL
+         t5jwUg69UGkADTeg7ydVPSGHIZ7U+IkpFcOK4N44ImRk6COt6wlhIpcE24b6dmaaci
+         tjYxbbdJ4m+lYhaQgtb8DBfle1Cejfk2BggCnszU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiong Zhang <xiong.y.zhang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        stable@vger.kernel.org, Grace Kao <grace.kao@intel.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 102/194] drm/i915/gvt: Fix kernel oops for 3-level ppgtt guest
+Subject: [PATCH 4.9 54/90] pinctrl: cherryview: Add missing spinlock usage in chv_gpio_irq_handler
 Date:   Mon, 18 May 2020 19:36:32 +0200
-Message-Id: <20200518173540.417177322@linuxfoundation.org>
+Message-Id: <20200518173502.111936595@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518173531.455604187@linuxfoundation.org>
-References: <20200518173531.455604187@linuxfoundation.org>
+In-Reply-To: <20200518173450.930655662@linuxfoundation.org>
+References: <20200518173450.930655662@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenyu Wang <zhenyuw@linux.intel.com>
+From: Grace Kao <grace.kao@intel.com>
 
-[ Upstream commit 72a7a9925e2beea09b109dffb3384c9bf920d9da ]
+[ Upstream commit 69388e15f5078c961b9e5319e22baea4c57deff1 ]
 
-As i915 won't allocate extra PDP for current default PML4 table,
-so for 3-level ppgtt guest, we would hit kernel pointer access
-failure on extra PDP pointers. So this trys to bypass that now.
-It won't impact real shadow PPGTT setup, so guest context still
-works.
+According to Braswell NDA Specification Update (#557593),
+concurrent read accesses may result in returning 0xffffffff and write
+instructions may be dropped. We have an established format for the
+commit references, i.e.
+cdca06e4e859 ("pinctrl: baytrail: Add missing spinlock usage in
+byt_gpio_irq_handler")
 
-This is verified on 4.15 guest kernel with i915.enable_ppgtt=1
-to force on old aliasing ppgtt behavior.
-
-Fixes: 4f15665ccbba ("drm/i915: Add ppgtt to GVT GEM context")
-Reviewed-by: Xiong Zhang <xiong.y.zhang@intel.com>
-Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20200506095918.124913-1-zhenyuw@linux.intel.com
+Fixes: 0bd50d719b00 ("pinctrl: cherryview: prevent concurrent access to GPIO controllers")
+Signed-off-by: Grace Kao <grace.kao@intel.com>
+Reported-by: Brian Norris <briannorris@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/gvt/scheduler.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/pinctrl/intel/pinctrl-cherryview.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/i915/gvt/scheduler.c b/drivers/gpu/drm/i915/gvt/scheduler.c
-index 685d1e04a5ff6..709ad181bc94a 100644
---- a/drivers/gpu/drm/i915/gvt/scheduler.c
-+++ b/drivers/gpu/drm/i915/gvt/scheduler.c
-@@ -375,7 +375,11 @@ static void set_context_ppgtt_from_shadow(struct intel_vgpu_workload *workload,
- 		for (i = 0; i < GVT_RING_CTX_NR_PDPS; i++) {
- 			struct i915_page_directory * const pd =
- 				i915_pd_entry(ppgtt->pd, i);
--
-+			/* skip now as current i915 ppgtt alloc won't allocate
-+			   top level pdp for non 4-level table, won't impact
-+			   shadow ppgtt. */
-+			if (!pd)
-+				break;
- 			px_dma(pd) = mm->ppgtt_mm.shadow_pdps[i];
- 		}
- 	}
+diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c b/drivers/pinctrl/intel/pinctrl-cherryview.c
+index e8c08eb975301..d1a99b2e2d4c3 100644
+--- a/drivers/pinctrl/intel/pinctrl-cherryview.c
++++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
+@@ -1509,11 +1509,15 @@ static void chv_gpio_irq_handler(struct irq_desc *desc)
+ 	struct chv_pinctrl *pctrl = gpiochip_get_data(gc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned long pending;
++	unsigned long flags;
+ 	u32 intr_line;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
++	raw_spin_lock_irqsave(&chv_lock, flags);
+ 	pending = readl(pctrl->regs + CHV_INTSTAT);
++	raw_spin_unlock_irqrestore(&chv_lock, flags);
++
+ 	for_each_set_bit(intr_line, &pending, pctrl->community->nirqs) {
+ 		unsigned irq, offset;
+ 
 -- 
 2.20.1
 
