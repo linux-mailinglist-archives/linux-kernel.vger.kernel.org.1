@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6A31D8AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB61E1D8AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 00:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgERW1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 18:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36184 "EHLO mail.kernel.org"
+        id S1728151AbgERWfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 18:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgERW1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 18:27:16 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1726959AbgERWfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 18:35:12 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F45B207ED;
-        Mon, 18 May 2020 22:27:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B32B20756;
+        Mon, 18 May 2020 22:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589840835;
-        bh=Mc5wZR6935NKKgGq3HpDn/de/Md1HC2p9pCOvKfW0k4=;
+        s=default; t=1589841312;
+        bh=bim+Wqlbpg3ow1ruxMttpLSJEZx5ODlUGcT0+LbS9x0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oOo2+UvHiPZA3GmWml8k/2bFs4i/qMTPPqSGWPtSlrIw+dlq6graqyHxT9Bd/63qi
-         a2x9hO4U4YGztj3+oTdalkOQw3hoTo8HQBrdlCXMYmAMR7vSkJciqggudB1GgvWnLA
-         EzkCdUSEBEim2V5zFX7dramyTIVEFIuznVWUp9ec=
-Date:   Mon, 18 May 2020 17:32:02 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org H. Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] x86/uv/time: Replace one-element array and save heap
- space
-Message-ID: <20200518223202.GD9868@embeddedor>
-References: <20200518190114.GA7757@embeddedor>
- <b03d196cdbbbc6e9e8456910c6c6673ab67f76cb.camel@perches.com>
+        b=pW9TdC2c/QFLC760zBJw3wq1A6pU7sv35XuqiL3ktsDSb7AnHVhrD1n1NHujzr+6i
+         1u+b5j7oBdWo0V5B4DA0cLNUUCBe6PeZ2ZXRTJRreG7KDyN1Ykcipc8Z5LRegzeBsj
+         gCmzd+K/dcftxZhEl/xiq7BXIQGYUBjS+EYGZFrk=
+Date:   Mon, 18 May 2020 23:35:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH V2] arm64/cpuinfo: Move HWCAP name arrays alongside their
+ bit definitions
+Message-ID: <20200518223506.GA5866@willie-the-truck>
+References: <1588858150-26823-1-git-send-email-anshuman.khandual@arm.com>
+ <20200513150405.GS21779@arm.com>
+ <0999fa28-3ee7-3f02-4def-a0c6013ec6dd@arm.com>
+ <20200514073613.GB4280@willie-the-truck>
+ <8ddd0ca5-07c9-3a99-2ec6-4a201725ebe8@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b03d196cdbbbc6e9e8456910c6c6673ab67f76cb.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8ddd0ca5-07c9-3a99-2ec6-4a201725ebe8@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 12:09:16PM -0700, Joe Perches wrote:
-> On Mon, 2020-05-18 at 14:01 -0500, Gustavo A. R. Silva wrote:
-> > The current codebase makes use of one-element arrays in the following
-> > form:
-> > 
-> > struct something {
-> >     int length;
-> >     u8 data[1];
-> > };
-> []
-> > This issue has been out there since 2009.
-> > This issue was found with the help of Coccinelle and fixed _manually_.
-> []
-> > diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-> > index 7af31b245636..993a8ae6fdfb 100644
-> > --- a/arch/x86/platform/uv/uv_time.c
-> > +++ b/arch/x86/platform/uv/uv_time.c
-> > @@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
-> >  	struct {
-> >  		int	lcpu;		/* systemwide logical cpu number */
-> >  		u64	expires;	/* next timer expiration for this cpu */
-> > -	} cpu[1];
-> > +	} cpu[];
-> >  };
-> >  
-> >  /*
-> > @@ -156,9 +156,8 @@ static __init int uv_rtc_allocate_timers(void)
-> >  		struct uv_rtc_timer_head *head = blade_info[bid];
-> >  
-> >  		if (!head) {
-> > -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
-> > -				(uv_blade_nr_possible_cpus(bid) *
-> > -					2 * sizeof(u64)),
-> > +			head = kmalloc_node(struct_size(head, cpu,
-> > +				uv_blade_nr_possible_cpus(bid)),
+On Fri, May 15, 2020 at 08:58:05AM +0530, Anshuman Khandual wrote:
+> On 05/14/2020 01:06 PM, Will Deacon wrote:
+> > Why is it a change? We've never reported e.g. "java" on an arm64 kernel, so
 > 
-> It's probably safer to use kzalloc_node here as well.
+> We already have "java" defined in existing compat_hwcap_str[] array even
+> though it might never get set in compat_elf_hwcap. AFAICS, compat_elf_hwcap
+> will have the following capabilities set (at the most).
 > 
-
-Thanks for your feedback, Joe. I'll wait for comments from the
-maintainers on this and the rest of the patch.
-
-Thanks
---
-Gustavo
-
-> >  				GFP_KERNEL, nid);
-> >  			if (!head) {
-> >  				uv_rtc_deallocate_timers();
+> Via COMPAT_ELF_HWCAP_DEFAULT
 > 
+> 01.  COMPAT_HWCAP_HALF
+> 02.  COMPAT_HWCAP_THUMB
+> 03.  COMPAT_HWCAP_FAST_MULT
+> 04.  COMPAT_HWCAP_EDSP
+> 05.  COMPAT_HWCAP_TLS
+> 06.  COMPAT_HWCAP_IDIV
+> 07.  COMPAT_HWCAP_LPAE
+> 
+> Via setup_elf_hwcaps(compat_elf_hwcaps) <-- setup_cpu_features()
+> 
+> 8.  COMPAT_HWCAP_NEON
+> 9.  COMPAT_HWCAP_VFPv4
+> 10. COMPAT_HWCAP_VFP
+> 11. COMPAT_HWCAP_VFPv3
+> 
+> Via arch_timer_set_evtstrm_feature()
+> 
+> 12. COMPAT_HWCAP_EVTSTRM
+> 
+> The code exists for "java" string to be displayed with /proc/cpuinfo but it
+> may never get triggered as compat_elf_hwcap will never have JAVA capability
+> unless there is a bug as you had rightly mentioned.
+
+Fair enough, but applying this patch causes a *tonne* of warnings from
+aiaiai:
+
++In file included from arch/arm64/include/asm/cpufeature.h:11,
++                 from arch/arm64/include/asm/ptrace.h:11,
++                 from arch/arm64/include/asm/irqflags.h:10,
++                 from include/linux/irqflags.h:16,
++                 from include/linux/spinlock.h:54,
++                 from include/linux/seqlock.h:36,
++                 from include/linux/time.h:6,
++                 from arch/arm64/include/asm/stat.h:12,
++                 from include/linux/stat.h:6,
++                 from include/linux/module.h:13,
++                 from drivers/media/rc/keymaps/rc-imon-mce.mod.c:1:
++arch/arm64/include/asm/hwcap.h:189:26: warning: ‘compat_hwcap2_str’ defined but not used [-Wunused-const-variable=]
++  189 | static const char *const compat_hwcap2_str[] = {
++      |                          ^~~~~~~~~~~~~~~~~
+
+so I'm dropping this for now.
+
+Will
