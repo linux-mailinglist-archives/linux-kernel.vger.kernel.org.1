@@ -2,106 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5CD1D77C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58C91D77DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 May 2020 13:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgERLu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 07:50:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56847 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgERLu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 07:50:27 -0400
-IronPort-SDR: Vh9h9idzE6eWoqdabY/KOynM68kUAfda29wy/x6E6MXvWy8uHBcTMWPDsQGpOMH+XTt6/u/aU4
- oUVlafE2ofPQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 04:50:27 -0700
-IronPort-SDR: Q8YgNhXeK5Zw+scoukr6PZp9MnDceel08RkPENGwlOzSx0S9bP8VGxY59TeeSjva+G2QzLh5e5
- wcKz5ClPSA5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
-   d="scan'208";a="281945665"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002.jf.intel.com with ESMTP; 18 May 2020 04:50:24 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jaeHq-007PoR-Tp; Mon, 18 May 2020 14:50:26 +0300
-Date:   Mon, 18 May 2020 14:50:26 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com, kuo-lang.tseng@intel.com,
-        ravi.v.shankar@intel.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 4/4] x86/resctrl: Use appropriate API for strings
- terminated by newline
-Message-ID: <20200518115026.GA1634618@smile.fi.intel.com>
-References: <cover.1589652468.git.reinette.chatre@intel.com>
- <0c04b58148f181ba182b9a487465e4853e4eadbb.1589652468.git.reinette.chatre@intel.com>
+        id S1728013AbgERLw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 07:52:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726413AbgERLw1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 07:52:27 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04IBWP7F054515;
+        Mon, 18 May 2020 07:51:08 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 313r0xuesb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 07:51:08 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04IBWQWj054578;
+        Mon, 18 May 2020 07:51:07 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 313r0xuerc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 07:51:07 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04IBkXpk030546;
+        Mon, 18 May 2020 11:51:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 3127t5sn29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 May 2020 11:51:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04IBp3C743712642
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 May 2020 11:51:03 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D825952052;
+        Mon, 18 May 2020 11:51:02 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.23.117])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id D378B5204E;
+        Mon, 18 May 2020 11:51:01 +0000 (GMT)
+Date:   Mon, 18 May 2020 13:51:00 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org, Stable <stable@vger.kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Amritha Nambiar <amritha.nambiar@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "Tobin C . Harding" <tobin@kernel.org>,
+        Vineet Gupta <vineet.gupta1@synopsys.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH RESEND] lib: fix bitmap_parse() on 64-bit big endian archs
+Message-ID: <20200518115059.GA19150@oc3871087118.ibm.com>
+References: <1589798090-11136-1-git-send-email-agordeev@linux.ibm.com>
+ <CAHp75VdM2yrpd2d3pK2RkmbhF3yiM4=fiTXL4i3yu3AxV3wY-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c04b58148f181ba182b9a487465e4853e4eadbb.1589652468.git.reinette.chatre@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAHp75VdM2yrpd2d3pK2RkmbhF3yiM4=fiTXL4i3yu3AxV3wY-A@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-18_04:2020-05-15,2020-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ phishscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015 suspectscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005180100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 11:28:41AM -0700, Reinette Chatre wrote:
-> The user input to files in the resctrl filesystem are expected to be
-> terminated with a newline. Testing the user input includes a test for
-> the presence of a newline and then replacing the newline with NUL
-> byte followed by comparison using strcmp().
+On Mon, May 18, 2020 at 02:33:43PM +0300, Andy Shevchenko wrote:
+> On Mon, May 18, 2020 at 1:40 PM Alexander Gordeev
+> <agordeev@linux.ibm.com> wrote:
+> >
+> > Commit 2d6261583be0 ("lib: rework bitmap_parse()") does
+> > not take into account order of halfwords on 64-bit big
+> > endian architectures.
 > 
-> sysfs_streq() exists to test if strings are equal, treating both NUL and
-> newline-then-NUL as equivalent string terminations. Even more,
-> sysfs_match_string() exists to match a given string in an array using
-> sysfs_streq().
+> Thanks for report and the patch!
 > 
-> Replace existing strcmp() comparisons of strings that are terminated
-> with a newline with more appropriate sysfs_streq() via the
-> sysfs_match_string() API that can perform the match across the different
-> mode strings that are already maintained in an array.
+> Did it work before? Can we have a test case for that that we will see
+> the failure?
 
-Sorry for late comment, but just have noticed...
+The test exists and enabled with CONFIG_TEST_BITMAP.
+It does not appear ever passed before on 64 BE.
+It does not fail on 64 LE for me either.
 
->  	if (mode == RDT_MODE_PSEUDO_LOCKED) {
-> @@ -1445,14 +1450,14 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
->  		goto out;
->  	}
->  
-> -	if (!strcmp(buf, "shareable")) {
-> +	if (user_m == RDT_MODE_SHAREABLE) {
->  		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
->  			ret = rdtgroup_locksetup_exit(rdtgrp);
->  			if (ret)
->  				goto out;
->  		}
+Thanks!
 
->  		rdtgrp->mode = RDT_MODE_SHAREABLE;
+[...]
 
-...can we simple move this and similar (in other branches) to...
-
-
-> -	} else {
-> -		rdt_last_cmd_puts("Unknown or unsupported mode\n");
-> -		ret = -EINVAL;
->  	}
-
-...here as
-
-		rdtgrp->mode = user_m;
-
-?
-
->  out:
-
-Note, I didn't check all branches carefully.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> -- 
+> With Best Regards,
+> Andy Shevchenko
