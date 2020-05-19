@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54511D9BCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562931D9BDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgESP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:59:27 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38560 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729089AbgESP70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:59:26 -0400
-Received: by mail-ot1-f68.google.com with SMTP id o13so261770otl.5;
-        Tue, 19 May 2020 08:59:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EChIuRDHBE2fP/nhZePuBoCI4yW9gOzMTOOZxaha+Mc=;
-        b=SwM+hS/x8u0hUuAlW6DcoLHI26AvrHXuvEh7EVnW4gmL0AMVtcizK/+LgItB78y+a/
-         gu9DWmhRYqWzA5YxdJgHW6hQo2fakviDxtwIDtteA62Z5kA2mOMnv+zlCCC+TPoZbqRE
-         Up2WjD3VCW4Fxq/vFUwZmkCJMF+nAHWqD/XI0w8r4AJeU9fEXZJVwbT2uCGyWGqyZAEI
-         RgMhN/MXUZseduToSS0dWXqMmKiCS4GCBbfxMiE3/sHzAHL0cIIyV8DXrCMjU2WNOpS9
-         twTgNOi6TjbRDytnheagoM83+o/25RzkoJH7o27I+THwkOK2SNhbnJUU+swCQ/PN5tlj
-         9YiQ==
-X-Gm-Message-State: AOAM532s8yaqL1WBligdJe2nUn1Q/5MPGp3h6Xq3aX6/7zU0gOVaC/Fk
-        Th67XLf8tpjlqHieruTrwjE3J4ZT+N2Uv11qI2U=
-X-Google-Smtp-Source: ABdhPJwAtkbCgsui0+h1xBcvCEqFP0J6q3SWQt/hKKidr/kXNdClt4Q1ZYDyL2hyzmh5V8EvoEwCGPA6GQfLuvx6Sr0=
-X-Received: by 2002:a05:6830:10ce:: with SMTP id z14mr15933980oto.118.1589903966068;
- Tue, 19 May 2020 08:59:26 -0700 (PDT)
+        id S1729344AbgESQAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:00:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:35518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729211AbgESQAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:00:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 018FE30E;
+        Tue, 19 May 2020 09:00:18 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B80493F305;
+        Tue, 19 May 2020 09:00:17 -0700 (PDT)
+Subject: Re: [PATCH] net: phy: Fix c45 no phy detected logic
+To:     netdev@vger.kernel.org
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net,
+        linux-kernel@vger.kernel.org,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>
+References: <20200514170025.1379981-1-jeremy.linton@arm.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <63b1db19-4744-417a-cd26-1e15e60fa571@arm.com>
+Date:   Tue, 19 May 2020 11:00:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200507080456.069724962@linux.com> <20200507080650.439636033@linux.com>
-In-Reply-To: <20200507080650.439636033@linux.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 19 May 2020 17:59:15 +0200
-Message-ID: <CAJZ5v0jnfeAQ4JDz+BTZp8P98h6emTizGWLYNL_QtbQ=3Nw03Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] hibernate: restrict writes to the snapshot device
-To:     Domenico Andreoli <domenico.andreoli@linux.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Pavel Machek <pavel@ucw.cz>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
-        Len Brown <len.brown@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200514170025.1379981-1-jeremy.linton@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It would be better to paste the patch instead of attaching it.
+Hi,
 
-Anyway, note that the snapshot special device is not the target block
-device for saving the image, so it would be good to avoid that
-confusion in the naming.
+On 5/14/20 12:00 PM, Jeremy Linton wrote:
+> The commit "disregard Clause 22 registers present bit..." clears
+> the low bit of the devices_in_package data which is being used
+> in get_phy_c45_ids() to determine if a phy/register is responding
+> correctly. That check is against 0x1FFFFFFF, but since the low
+> bit is always cleared, the check can never be true. This leads to
+> detecting c45 phy devices where none exist.
+> 
+> Lets fix this by also clearing the low bit in the mask to 0x1FFFFFFE.
+> This allows us to continue to autoprobe standards compliant devices
+> without also gaining a large number of bogus ones.
 
-I.e. I would rename is_hibernate_snapshot_dev() to something like
-is_hibernate_image_dev() or is_hibernate_resume_dev() (for consistency
-with the resume= kernel command line parameter name).
+So, I've been reworking the c45 ID detection logic, with an aim to 
+hinting to the scanner that it should fallback to c22 for a given phy 
+address (as well as giving it some additional standardized areas to 
+probe for phy ids). It turns out that the c22 registers present bit is a 
+pretty useful signal that this needs to happen. So, I think this patch 
+really should move the BIT(0) sanitation after the MMD detection loop in 
+get_phy_c45_ids().
 
-Thanks!
+But having dug into this code for a while now, I'm hard pressed to 
+understand the case that the original 3b5e74e0afe3 commit fixed. The 
+only thing I can see is that the "bug" i'm fixing here was intentionally 
+creating bogus phy nodes when the MMDs weren't responding.
+
+
+Thanks,
+
+> 
+> Fixes: 3b5e74e0afe3 ("net: phy: disregard "Clause 22 registers present" bit in get_phy_c45_devs_in_pkg")
+> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> ---
+>   drivers/net/phy/phy_device.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index ac2784192472..b93d984d35cc 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -723,7 +723,7 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+>   		if (phy_reg < 0)
+>   			return -EIO;
+>   
+> -		if ((*devs & 0x1fffffff) == 0x1fffffff) {
+> +		if ((*devs & 0x1ffffffe) == 0x1ffffffe) {
+>   			/*  If mostly Fs, there is no device there,
+>   			 *  then let's continue to probe more, as some
+>   			 *  10G PHYs have zero Devices In package,
+> @@ -733,7 +733,7 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+>   			if (phy_reg < 0)
+>   				return -EIO;
+>   			/* no device there, let's get out of here */
+> -			if ((*devs & 0x1fffffff) == 0x1fffffff) {
+> +			if ((*devs & 0x1ffffffe) == 0x1ffffffe) {
+>   				*phy_id = 0xffffffff;
+>   				return 0;
+>   			} else {
+> 
+
