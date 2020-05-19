@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D191DA5B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CE21DA5C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgESXmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
+        id S1727966AbgESXrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESXmm (ORCPT
+        with ESMTP id S1725998AbgESXrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:42:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CEDC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:42:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w7so1199569wre.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:42:41 -0700 (PDT)
+        Tue, 19 May 2020 19:47:14 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695E0C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:47:14 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z9so500034qvi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:date:message-id:mime-version;
-        bh=MmIqjO1PtTVd+rdNu9nNb4mADvKA71b2ZrcUks1uRJo=;
-        b=vTfMJ8PtHJc/TjzQRTrRhPNVRyHHYycwdoNu7rn6SwqPvWLZ6+03X7Pq1xlTAqKfbq
-         pSkz8erEmZbl5NEC7ffg1vjDBeV91vWIi/UpMblVVUXG7fICkxan3TIDYjBEiTzCKrUw
-         qVb0ilGsCIYZu/z62LoRz/O/WEvNJUKhVB5XjQyTGwvbc4x6bXh9Iqiq500D+DFFVuBw
-         XiFkgIHC3IELUdOO7nHfyfTiYvRDM/6Gaj0O0ZJynaFsDQR93goRr1Ox957iafchATMC
-         74fwNFO/J48rEQSFBTg7/aNrT89cUvNxZYrb076WOjRmwcY4hot6ljnVFsjINyEJnk9s
-         Q7gw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hab13sCBMoSFVDNe53Te5/um8u7Dvom/Oq5qeGy6LQM=;
+        b=Xhbw9rpuCFAsoXsARVsCZK+5mFgLakvRnkIHpbr4LPiEzmvAFLyiDyxRbU9Mkl9Tfe
+         73zROnHsRIGAQKxAXv5vA2bB+Mqm5m394G9/J23BDf/8WQGTOp/6wcKBy2SoClf1hE8n
+         CPJmIWUcNVVNK/QO/oUQckvWaQSs6cD3J+zf0ZvwZYNAAWHINHg4rKH8Ts6JpZVdQwET
+         dXiDnk2XP5PdM5lfJJldFqF3lgi12EFFkLAnQ4YVU0wRmjSr8MeUAgohtdLObAbCPMtL
+         fE28dcJgqERVB0truvko/CaxypXZzlRj+adKyQniVXkcKDWfHG7e52W70g1ZGmN6Ju8l
+         Evxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:date:message-id
-         :mime-version;
-        bh=MmIqjO1PtTVd+rdNu9nNb4mADvKA71b2ZrcUks1uRJo=;
-        b=THZrWGPf/5xXFDCZBTivRPTfUVcDDWBc7YwJAVjP0TGOSoSRFTx5uuiRlNXW9rbzzI
-         1HNLdgEr6OQFUElx1J6+ueeoc5zF4g3Dzw2A3mDfWoME1ta2XyV4PTMtWGk7rXgkdGrS
-         aqyzhhmMNDw+bwO5hFKHlRvdettJf0h6k0v3PM+b125roZWnVWP/WeHOs/QYmb+v03hD
-         8rcGb1unhct2KgFCBz2iYf/Bzh0ztPuexU018ZmM9qWHMb0zmGFejWskulGXfZGKUm2n
-         ru9v1IDiYBbfDkrP/U5YVXZJh/M7iGbJFdQdtROtT/5XxncarKKKGZ7LLYXwmNwwteNO
-         1Yqw==
-X-Gm-Message-State: AOAM5310boWJ+CZyOZ6GIVcOCYcHLCvs44971ddT/WU/oJwnhXmHF2Pw
-        qhJ+AStO3Uy6pd/vL7WBFgWXwA==
-X-Google-Smtp-Source: ABdhPJzYYXY2GYO9fXGwE5+SEib2GsKVQjkMTferPikSHMR/G5SF/9GqcN7uN6IzDDLc5LOSCjL3Dw==
-X-Received: by 2002:adf:f102:: with SMTP id r2mr1249229wro.376.1589931759860;
-        Tue, 19 May 2020 16:42:39 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id n17sm1010174wrr.42.2020.05.19.16.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 16:42:39 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCH v3 0/5] arm64: dts: meson: add W400 dtsi and GT-King/Pro devices
-In-Reply-To: <20200518023404.15166-1-christianshewitt@gmail.com>
-Date:   Tue, 19 May 2020 16:42:36 -0700
-Message-ID: <7hmu63trtf.fsf@baylibre.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hab13sCBMoSFVDNe53Te5/um8u7Dvom/Oq5qeGy6LQM=;
+        b=WDz7OgPzp09w4tILhEsy4YVDjJTYOJH+yqABd31CXa+1+lX/kYex2717q/B7A9IDzk
+         E3POG3Isd0k7j9zVbIvPjCIRuCOe5RJTzCaBJRFwXYfvwCXlkBS/cLqosdmfkAVq86Y/
+         wTrF+K/CDcXaZomzqIekaYzfxyYUr99kOu82ZI39GoFxcX4yb5KA5c1+RH8ql2DZSWUq
+         zKWlwyKjFnOWy+WjP756i2ZO3O8cjybfWfl0e4Om2wlDpw1kSoq7UoLXDvYiC3EPySxf
+         q0E9dkm4ZzV9qCPJLpgnjWacLVBCOgYUMMW9mqCYUDmmWSY+toe0evhQv0V2I66m+wzf
+         ZLYQ==
+X-Gm-Message-State: AOAM530eOMH5lKcPdqDGRA8xtAHDpza/JULIFmLYZI+h4rXpUXemsJ8h
+        EU68io+3wOC45MBeNTczvQLe20PcFn4=
+X-Google-Smtp-Source: ABdhPJzpAvhAglbfwjvqzAhBMICKgBROUjygpu/1kcwuj3g1+1V47CU1Z7d97GhpLB+Zon5+2NymcQ==
+X-Received: by 2002:a0c:a619:: with SMTP id s25mr2273937qva.21.1589932033719;
+        Tue, 19 May 2020 16:47:13 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id q2sm845022qkn.116.2020.05.19.16.47.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 May 2020 16:47:13 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jbBx2-00081J-VC; Tue, 19 May 2020 20:47:12 -0300
+Date:   Tue, 19 May 2020 20:47:12 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH v2] RDMA/rtrs: client: Fix function return on success
+Message-ID: <20200519234712.GE30609@ziepe.ca>
+References: <20200519163612.GA6043@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519163612.GA6043@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On Tue, May 19, 2020 at 11:36:12AM -0500, Gustavo A. R. Silva wrote:
+> Remove the if-statement and return the value contained in _err_,
+> unconditionally.
+> 
+> Addresses-Coverity-ID: 1493753 ("Identical code for different branches")
+> Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+> Changes in v2:
+>  - Return err, unconditionally. As suggested by Bart Van Assche.
+>    Thanks, Bart.
 
-Christian Hewitt <christianshewitt@gmail.com> writes:
+Applied to for-next, thanks
 
-> This series combines patch 2 from [1] which converts the existing Ugoos
-> AM6 device-tree to a common W400 dtsi and dts, and then reworks the
-> Beelink GT-King/GT-King Pro serries from [2] to use the dtsi, but this
-> time without the offending common audio dtsi approach. I've carried
-> forwards acks on bindings from Rob as these did not change.
-
-This looks good to me, thank you very much for reworking into a
-w400-based include.
-
-Unfortunately, it no longer applies on top of all the other stuff I have
-queued for v5.8.
-
-Could you please do a rebase on top of my v5.8/dt64 branch[1], and I'll
-queue for v5.8.
-
-Thanks,
-
-Kevin
-
-> v3 - amend author full-name on bindings patch
->
-> [1] https://patchwork.kernel.org/patch/11497105/
-> [2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=273483
->
-> Christian Hewitt (5):
->   arm64: dts: meson: convert ugoos-am6 to common w400 dtsi
->   dt-bindings: arm: amlogic: add support for the Beelink GT-King
->   arm64: dts: meson-g12b-gtking: add initial device-tree
->   dt-bindings: arm: amlogic: add support for the Beelink GT-King Pro
->   arm64: dts: meson-g12b-gtking-pro: add initial device-tree
->
->  .../devicetree/bindings/arm/amlogic.yaml      |   2 +
->  arch/arm64/boot/dts/amlogic/Makefile          |   2 +
->  .../dts/amlogic/meson-g12b-gtking-pro.dts     | 125 ++++++
->  .../boot/dts/amlogic/meson-g12b-gtking.dts    | 145 ++++++
->  .../boot/dts/amlogic/meson-g12b-ugoos-am6.dts | 410 +----------------
->  .../boot/dts/amlogic/meson-g12b-w400.dtsi     | 423 ++++++++++++++++++
->  6 files changed, 698 insertions(+), 409 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
->
-> -- 
-> 2.17.1
+Jason
