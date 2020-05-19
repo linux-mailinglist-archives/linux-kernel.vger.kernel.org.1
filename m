@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06D91D9E11
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0431D9E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgESRlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 13:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgESRlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 13:41:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C12F20708;
-        Tue, 19 May 2020 17:41:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589910082;
-        bh=1HVe7siEHmIAN+nG5L3ZVcF6EMIZBK5TG0f315B0Iq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mVCbQ6OFVctLAN+lomKmZpJanPOkjMk4E6w2U96PdwT2t+hvbbSQu61lSoW6o5iqS
-         IT6nYSeXUpz0PeD9Nw2GJugY9LVWj4zW0O27gJLF2BLrVfk6t9I1NKEFvHRy/4Nahm
-         uXOzn0H0kD+oo2ulCkusb3HI1XCnmuW6dAkJ6heQ=
-Date:   Tue, 19 May 2020 19:41:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
-        wufan@codeaurora.org, pratanan@codeaurora.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
-Message-ID: <20200519174120.GC1158284@kroah.com>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <CAPM=9txXskVu_yD3DNuR0HgSUsE2v1Pv98dm=AHGvv_z2XKTAQ@mail.gmail.com>
- <93238096-5861-c140-b94f-6137977c3d65@codeaurora.org>
+        id S1729471AbgESRpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 13:45:11 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:44348 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESRpL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 13:45:11 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb6Ie-0003RI-Nx; Tue, 19 May 2020 11:45:08 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb6Id-0004jU-PA; Tue, 19 May 2020 11:45:08 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200518055457.12302-1-keescook@chromium.org>
+        <87a724t153.fsf@x220.int.ebiederm.org>
+        <202005190918.D2BD83F7C@keescook>
+Date:   Tue, 19 May 2020 12:41:27 -0500
+In-Reply-To: <202005190918.D2BD83F7C@keescook> (Kees Cook's message of "Tue,
+        19 May 2020 09:26:04 -0700")
+Message-ID: <87o8qjstyw.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93238096-5861-c140-b94f-6137977c3d65@codeaurora.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1jb6Id-0004jU-PA;;;mid=<87o8qjstyw.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/BewoOodAlU9s75IVSjo2e3P/HkeoZRsY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4326]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 569 ms - load_scoreonly_sql: 0.41 (0.1%),
+        signal_user_changed: 12 (2.1%), b_tie_ro: 10 (1.7%), parse: 1.16
+        (0.2%), extract_message_metadata: 15 (2.7%), get_uri_detail_list: 2.1
+        (0.4%), tests_pri_-1000: 6 (1.0%), tests_pri_-950: 1.37 (0.2%),
+        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 228 (40.2%), check_bayes:
+        217 (38.2%), b_tokenize: 9 (1.5%), b_tok_get_all: 9 (1.5%),
+        b_comp_prob: 3.7 (0.6%), b_tok_touch_all: 192 (33.8%), b_finish: 1.02
+        (0.2%), tests_pri_0: 290 (50.9%), check_dkim_signature: 0.66 (0.1%),
+        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.57 (0.1%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/4] Relocate execve() sanity checks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 08:57:38AM -0600, Jeffrey Hugo wrote:
-> On 5/18/2020 11:08 PM, Dave Airlie wrote:
-> > On Fri, 15 May 2020 at 00:12, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
-> > > 
-> > > Introduction:
-> > > Qualcomm Cloud AI 100 is a PCIe adapter card which contains a dedicated
-> > > SoC ASIC for the purpose of efficently running Deep Learning inference
-> > > workloads in a data center environment.
-> > > 
-> > > The offical press release can be found at -
-> > > https://www.qualcomm.com/news/releases/2019/04/09/qualcomm-brings-power-efficient-artificial-intelligence-inference
-> > > 
-> > > The offical product website is -
-> > > https://www.qualcomm.com/products/datacenter-artificial-intelligence
-> > > 
-> > > At the time of the offical press release, numerious technology news sites
-> > > also covered the product.  Doing a search of your favorite site is likely
-> > > to find their coverage of it.
-> > > 
-> > > It is our goal to have the kernel driver for the product fully upstream.
-> > > The purpose of this RFC is to start that process.  We are still doing
-> > > development (see below), and thus not quite looking to gain acceptance quite
-> > > yet, but now that we have a working driver we beleive we are at the stage
-> > > where meaningful conversation with the community can occur.
-> > 
-> > 
-> > Hi Jeffery,
-> > 
-> > Just wondering what the userspace/testing plans for this driver.
-> > 
-> > This introduces a new user facing API for a device without pointers to
-> > users or tests for that API.
-> 
-> We have daily internal testing, although I don't expect you to take my word
-> for that.
-> 
-> I would like to get one of these devices into the hands of Linaro, so that
-> it can be put into KernelCI.  Similar to other Qualcomm products. I'm trying
-> to convince the powers that be to make this happen.
-> 
-> Regarding what the community could do on its own, everything but the Linux
-> driver is considered proprietary - that includes the on device firmware and
-> the entire userspace stack.  This is a decision above my pay grade.
+Kees Cook <keescook@chromium.org> writes:
 
-Ok, that's a decision you are going to have to push upward on, as we
-really can't take this without a working, open, userspace.
+> On Tue, May 19, 2020 at 10:06:32AM -0500, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > Hi,
+>> >
+>> > While looking at the code paths for the proposed O_MAYEXEC flag, I saw
+>> > some things that looked like they should be fixed up.
+>> >
+>> >   exec: Change uselib(2) IS_SREG() failure to EACCES
+>> > 	This just regularizes the return code on uselib(2).
+>> >
+>> >   exec: Relocate S_ISREG() check
+>> > 	This moves the S_ISREG() check even earlier than it was already.
+>> >
+>> >   exec: Relocate path_noexec() check
+>> > 	This adds the path_noexec() check to the same place as the
+>> > 	S_ISREG() check.
+>> >
+>> >   fs: Include FMODE_EXEC when converting flags to f_mode
+>> > 	This seemed like an oversight, but I suspect there is some
+>> > 	reason I couldn't find for why FMODE_EXEC doesn't get set in
+>> > 	f_mode and just stays in f_flags.
+>> 
+>> So I took a look at this series.
+>> 
+>> I think the belt and suspenders approach of adding code in open and then
+>> keeping it in exec and uselib is probably wrong.  My sense of the
+>> situation is a belt and suspenders approach is more likely to be
+>> confusing and result in people making mistakes when maintaining the code
+>> than to actually be helpful.
+>
+> This is why I added the comments in fs/exec.c's redundant checks. When I
+> was originally testing this series, I had entirely removed the checks in
+> fs/exec.c, but then had nightmares about some kind of future VFS paths
+> that would somehow bypass do_open() and result in execve() working on
+> noexec mounts, there by allowing for the introduction of a really nasty
+> security bug.
+>
+> The S_ISREG test is demonstrably too late (as referenced in the series),
 
-Especially given the copyright owner of this code, that would be just
-crazy and foolish to not have open userspace code as well.  Firmware
-would also be wonderful as well, go poke your lawyers about derivative
-work issues and the like for fun conversations :)
+Yes.  The open of a pipe very much happens when it should not.
 
-So without that changed, I'm not going to take this, and push to object
-that anyone else take this.
+The deadlock looks like part of the cred_guard_mutex mess.  I think I
+introduced an alternate solution for the specific code paths in the
+backtrace when I introduced exec_update_mutex.
 
-I'm not going to be able to review any of this code anymore until that
-changes, sorry.
+The fact that cred_guard_mutex is held over open, while at the same time
+cred_guard_mutex is grabbed on open files is very questionable.  Until
+my most recent patchset feeding exec /proc/self/maps would also deadlock
+this way.
 
-thanks,
+> and given the LSM hooks, I think the noexec check is too late as well.
+> (This is especially true for the coming O_MAYEXEC series, which will
+> absolutely need those tests earlier as well[1] -- the permission checking
+> is then in the correct place: during open, not exec.) I think the only
+> question is about leaving the redundant checks in fs/exec.c, which I
+> think are a cheap way to retain a sense of robustness.
 
-greg k-h
+The trouble is when someone passes through changes one of the permission
+checks for whatever reason (misses that they are duplicated in another
+location) and things then fail in some very unexpected way.
+
+Eric
