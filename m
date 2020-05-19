@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34311D96F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1001D96F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728957AbgESNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728612AbgESND5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:03:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3F9C08C5C4;
-        Tue, 19 May 2020 06:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=CzptVQvO43jJs3G5GLMVm9lezuT7/sLUYMXfvlaV0Hw=; b=HHwPT7+tTUc41fG/QypaZY/V29
-        mSgzjCiwEcqHYhI/N9cWuFTQExVe/+SoHWef8X7jE8PwxtmW2WW72g+V552shEf+XTQeg9LWylzNS
-        iSeeqfyGOYHEUbt9BhIM3BunBA62AzhGCsJ2Nnx3YCjU/dOrD+6xcloNQflpPf+iPKgaOkMMnP52k
-        KTed+jf9E/Dj9Q7zs8Mh8OWsiDQ3pVKQhXIRMGnSJVHu8cMr29VVSwDLxQYC8GoP1S+3n+dfjUTat
-        TXNXg6sB/slt5X9SdLywfy+UzFHaAqOegT+S3RjnsAz5YEzZB5c3lxfsqlqttmex3K7kUYI9Ewfzw
-        ouibK+hA==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jb1uM-0004Gx-Il; Tue, 19 May 2020 13:03:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] ipv6: use ->ndo_tunnel_ctl in addrconf_set_dstaddr
-Date:   Tue, 19 May 2020 15:03:19 +0200
-Message-Id: <20200519130319.1464195-10-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200519130319.1464195-1-hch@lst.de>
-References: <20200519130319.1464195-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728806AbgESNDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:03:50 -0400
+Received: from 8bytes.org ([81.169.241.247]:43902 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728612AbgESNDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:03:50 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id D58C3386; Tue, 19 May 2020 15:03:48 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, joro@8bytes.org,
+        Joerg Roedel <jroedel@suse.de>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Tom Murphy <murphyt7@tcd.ie>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: [PATCH] iommu: Fix deferred domain attachment
+Date:   Tue, 19 May 2020 15:03:40 +0200
+Message-Id: <20200519130340.14564-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new ->ndo_tunnel_ctl instead of overriding the address limit
-and using ->ndo_do_ioctl just to do a pointless user copy.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+The IOMMU core code has support for deferring the attachment of a domain
+to a device. This is needed in kdump kernels where the new domain must
+not be attached to a device before the device driver takes it over.
+
+When the AMD IOMMU driver got converted to use the dma-iommu
+implementation, the deferred attaching got lost. The code in
+dma-iommu.c has support for deferred attaching, but it calls into
+iommu_attach_device() to actually do it. But iommu_attach_device()
+will check if the device should be deferred in it code-path and do
+nothing, breaking deferred attachment.
+
+Move the is_deferred_attach() check out of the attach_device path and
+into iommu_group_add_device() to make deferred attaching work from the
+dma-iommu code.
+
+Cc: Jerry Snitselaar <jsnitsel@redhat.com>
+Cc: Tom Murphy <murphyt7@tcd.ie>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Tested-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Fixes: 795bbbb9b6f8 ("iommu/dma-iommu: Handle deferred devices")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- net/ipv6/addrconf.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/iommu/iommu.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index c827edf877414..09cfbf5dd7ce0 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -2787,8 +2787,6 @@ static int addrconf_set_sit_dstaddr(struct net *net, struct net_device *dev,
- 		struct in6_ifreq *ireq)
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 4050569188be..629d209b8e88 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -769,6 +769,15 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
+ 	return ret;
+ }
+ 
++static bool iommu_is_attach_deferred(struct iommu_domain *domain,
++				     struct device *dev)
++{
++	if (domain->ops->is_attach_deferred)
++		return domain->ops->is_attach_deferred(domain, dev);
++
++	return false;
++}
++
+ /**
+  * iommu_group_add_device - add a device to an iommu group
+  * @group: the group into which to add the device (reference should be held)
+@@ -821,7 +830,7 @@ int iommu_group_add_device(struct iommu_group *group, struct device *dev)
+ 
+ 	mutex_lock(&group->mutex);
+ 	list_add_tail(&device->list, &group->devices);
+-	if (group->domain)
++	if (group->domain  && !iommu_is_attach_deferred(group->domain, dev))
+ 		ret = __iommu_attach_device(group->domain, dev);
+ 	mutex_unlock(&group->mutex);
+ 	if (ret)
+@@ -1893,9 +1902,6 @@ static int __iommu_attach_device(struct iommu_domain *domain,
+ 				 struct device *dev)
  {
- 	struct ip_tunnel_parm p = { };
--	mm_segment_t oldfs = get_fs();
--	struct ifreq ifr;
- 	int err;
+ 	int ret;
+-	if ((domain->ops->is_attach_deferred != NULL) &&
+-	    domain->ops->is_attach_deferred(domain, dev))
+-		return 0;
  
- 	if (!(ipv6_addr_type(&ireq->ifr6_addr) & IPV6_ADDR_COMPATv4))
-@@ -2799,13 +2797,10 @@ static int addrconf_set_sit_dstaddr(struct net *net, struct net_device *dev,
- 	p.iph.ihl = 5;
- 	p.iph.protocol = IPPROTO_IPV6;
- 	p.iph.ttl = 64;
--	ifr.ifr_ifru.ifru_data = (__force void __user *)&p;
+ 	if (unlikely(domain->ops->attach_dev == NULL))
+ 		return -ENODEV;
+@@ -1967,8 +1973,7 @@ EXPORT_SYMBOL_GPL(iommu_sva_unbind_gpasid);
+ static void __iommu_detach_device(struct iommu_domain *domain,
+ 				  struct device *dev)
+ {
+-	if ((domain->ops->is_attach_deferred != NULL) &&
+-	    domain->ops->is_attach_deferred(domain, dev))
++	if (iommu_is_attach_deferred(domain, dev))
+ 		return;
  
--	if (!dev->netdev_ops->ndo_do_ioctl)
-+	if (!dev->netdev_ops->ndo_tunnel_ctl)
- 		return -EOPNOTSUPP;
--	set_fs(KERNEL_DS);
--	err = dev->netdev_ops->ndo_do_ioctl(dev, &ifr, SIOCADDTUNNEL);
--	set_fs(oldfs);
-+	err = dev->netdev_ops->ndo_tunnel_ctl(dev, &p, SIOCADDTUNNEL);
- 	if (err)
- 		return err;
- 
+ 	if (unlikely(domain->ops->detach_dev == NULL))
 -- 
-2.26.2
+2.25.1
 
