@@ -2,115 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122261D93CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64161D93D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgESJuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 05:50:15 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42545 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726504AbgESJuO (ORCPT
+        id S1727822AbgESJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 05:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgESJyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 05:50:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589881813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=SIVLP0DRrlKxQ6SwkqhvlChjQm02/QELWNEmHf7Q4zw=;
-        b=O4oyjzziHXnwkfER/hTLGOUuDPaPHuV8wR7LSpjwZ962H4qVCdB4mhmpjzcgJES8+U05Q3
-        t3r8VSoqd1JR1ufBf/NnRQSfI2Ragf7c7lRSE2O5LHYZrDN6PJR8CvyFUPGoIvtR6YpQbZ
-        grEDEBNr6QX6ahOLTrcq1LlVE3WZ0bk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-CihpbDhtN7SvRQGJ7bl_JA-1; Tue, 19 May 2020 05:50:11 -0400
-X-MC-Unique: CihpbDhtN7SvRQGJ7bl_JA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E966B1800D42;
-        Tue, 19 May 2020 09:50:09 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1775710013D9;
-        Tue, 19 May 2020 09:50:08 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, stable@vger.kernel.org
-Subject: [PATCH] KVM: x86: only do L1TF workaround on affected processors
-Date:   Tue, 19 May 2020 05:50:08 -0400
-Message-Id: <20200519095008.1212-1-pbonzini@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Tue, 19 May 2020 05:54:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EBAC061A0C;
+        Tue, 19 May 2020 02:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=t8KriT0uzWTFwnHacOVwkrZw+QOSCqO/QLL7EaGziaY=; b=CekGnblNiV27nEzeC7Yt2QUlA
+        iprQsXoXs//fZzS67/ovHjUE25VvKy1m7GRj1QG/uR4qViqyr+eX+JRioE32vlQ50vZfmZhYoASRB
+        521kGHTglEg5fEedx7L6H0IW0KiGuJBoYIB1ZiFkUDkk32eqUKMzEWU0MQIBaJFQaJKrgcF/d3FjG
+        pBK2m+lWL0r1BLm5Gtb9ETsRMtvuyi67pdjYMJFYbiJCLdt5a6ZblmXi3nlQMXTkR0L0RJwwvIu+L
+        BA2P/0Z0zjeQSR2mvbRMrSpnBP8vK825qH5HqtRLCJfQUKEaXhikpyeX6bjW1W5pkNPX40KuZigg8
+        yV0YzMxQw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34126)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jaywQ-0004u8-JM; Tue, 19 May 2020 10:53:42 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jaywE-0005ca-M1; Tue, 19 May 2020 10:53:30 +0100
+Date:   Tue, 19 May 2020 10:53:30 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Matteo Croce <mcroce@redhat.com>
+Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
+        netdev <netdev@vger.kernel.org>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        Stefan Chulski <stefanc@marvell.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH net-next 3/5] net: mvpp2: cls: Use RSS contexts
+ to handle RSS tables
+Message-ID: <20200519095330.GA1551@shell.armlinux.org.uk>
+References: <20190524100554.8606-1-maxime.chevallier@bootlin.com>
+ <20190524100554.8606-4-maxime.chevallier@bootlin.com>
+ <CAGnkfhzsx_uEPkZQC-_-_NamTigD8J0WgcDioqMLSHVFa3V6GQ@mail.gmail.com>
+ <20200423170003.GT25745@shell.armlinux.org.uk>
+ <CAGnkfhwOavaeUjcm4_+TG-xLxQA519o+fR8hxBCCfSy3qpcYhQ@mail.gmail.com>
+ <DM5PR18MB1146686527DE66495F75D0DAB0A30@DM5PR18MB1146.namprd18.prod.outlook.com>
+ <20200509114518.GB1551@shell.armlinux.org.uk>
+ <CAGnkfhx8fEZCoLPzGxSzQnj1ZWcQtBMn+g_jO1Jxc4zF7pQwjQ@mail.gmail.com>
+ <20200509195246.GJ1551@shell.armlinux.org.uk>
+ <20200509202050.GK1551@shell.armlinux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200509202050.GK1551@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM stores the gfn in MMIO SPTEs as a caching optimization.  These are split
-in two parts, as in "[high 11111 low]", to thwart any attempt to use these bits
-in an L1TF attack.  This works as long as there are 5 free bits between
-MAXPHYADDR and bit 50 (inclusive), leaving bit 51 free so that the MMIO
-access triggers a reserved-bit-set page fault.
+On Sat, May 09, 2020 at 09:20:50PM +0100, Russell King - ARM Linux admin wrote:
+> On Sat, May 09, 2020 at 08:52:46PM +0100, Russell King - ARM Linux admin wrote:
+> > It is highly likely that 895586d5dc32 is responsible for this breakage.
+> > I've been investigating this afternoon, and what I've found, comparing
+> > a kernel without 895586d5dc32 and with 895586d5dc32 applied is:
+> > 
+> > - The table programmed into the hardware via mvpp22_rss_fill_table()
+> >   appears to be identical with or without the commit.
+> > 
+> > - When rxhash is enabled on eth2, mvpp2_rss_port_c2_enable() reports
+> >   that c2.attr[0] and c2.attr[2] are written back containing:
+> > 
+> >    - with 895586d5dc32, failing:    00200000 40000000
+> >    - without 895586d5dc32, working: 04000000 40000000
+> > 
+> > - When disabling rxhash, c2.attr[0] and c2.attr[2] are written back as:
+> > 
+> >    04000000 00000000
+> > 
+> > The second value represents the MVPP22_CLS_C2_ATTR2_RSS_EN bit, the
+> > first value is the queue number, which comprises two fields.  The high
+> > 5 bits are 24:29 and the low three are 21:23 inclusive.  This comes
+> > from:
+> > 
+> >        c2.attr[0] = MVPP22_CLS_C2_ATTR0_QHIGH(qh) |
+> >                      MVPP22_CLS_C2_ATTR0_QLOW(ql);
+> > #define     MVPP22_CLS_C2_ATTR0_QHIGH(qh)       (((qh) & 0x1f) << 24)
+> > #define     MVPP22_CLS_C2_ATTR0_QLOW(ql)        (((ql) & 0x7) << 21)
+> > 
+> > So, the working case gives eth2 a queue id of 4.0, or 32 as per
+> > port->first_rxq, and the non-working case a queue id of 0.1, or 1.
+> > 
+> > The allocation of queue IDs seems to be in mvpp2_port_probe():
+> > 
+> >         if (priv->hw_version == MVPP21)
+> >                 port->first_rxq = port->id * port->nrxqs;
+> >         else
+> >                 port->first_rxq = port->id * priv->max_port_rxqs;
+> > 
+> > Where:
+> > 
+> >         if (priv->hw_version == MVPP21)
+> >                 priv->max_port_rxqs = 8;
+> >         else
+> >                 priv->max_port_rxqs = 32;
+> > 
+> > Making the port 0 (eth0 / eth1) have port->first_rxq = 0, and port 1
+> > (eth2) be 32.  It seems the idea is that the first 32 queues belong to
+> > port 0, the second 32 queues belong to port 1, etc.
+> > 
+> > mvpp2_rss_port_c2_enable() gets the queue number from it's parameter,
+> > 'ctx', which comes from mvpp22_rss_ctx(port, 0).  This returns
+> > port->rss_ctx[0].
+> > 
+> > mvpp22_rss_context_create() is responsible for allocating that, which
+> > it does by looking for an unallocated priv->rss_tables[] pointer.  This
+> > table is shared amongst all ports on the CP silicon.
+> > 
+> > When we write the tables in mvpp22_rss_fill_table(), the RSS table
+> > entry is defined by:
+> > 
+> > 		u32 sel = MVPP22_RSS_INDEX_TABLE(rss_ctx) |
+> >                           MVPP22_RSS_INDEX_TABLE_ENTRY(i);
+> > 
+> > where rss_ctx is the context ID (queue number) and i is the index in
+> > the table.
+> > 
+> > #define     MVPP22_RSS_INDEX_TABLE_ENTRY(idx)   (idx)
+> > #define     MVPP22_RSS_INDEX_TABLE(idx)         ((idx) << 8)
+> > #define     MVPP22_RSS_INDEX_QUEUE(idx)         ((idx) << 16)
+> > 
+> > If we look at what is written:
+> > 
+> > - The first table to be written has "sel" values of 00000000..0000001f,
+> >   containing values 0..3. This appears to be for eth1.  This is table 0,
+> >   RX queue number 0.
+> > - The second table has "sel" values of 00000100..0000011f, and appears
+> >   to be for eth2.  These contain values 0x20..0x23.  This is table 1,
+> >   RX queue number 0.
+> > - The third table has "sel" values of 00000200..0000021f, and appears
+> >   to be for eth3.  These contain values 0x40..0x43.  This is table 2,
+> >   RX queue number 0.
+> > 
+> > Okay, so how do queue numbers translate to the RSS table?  There is
+> > another table - the RXQ2RSS table, indexed by the MVPP22_RSS_INDEX_QUEUE
+> > field of MVPP22_RSS_INDEX and accessed through the MVPP22_RXQ2RSS_TABLE
+> > register.  Before 895586d5dc32, it was:
+> > 
+> >        mvpp2_write(priv, MVPP22_RSS_INDEX,
+> >                    MVPP22_RSS_INDEX_QUEUE(port->first_rxq));
+> >        mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE,
+> >                    MVPP22_RSS_TABLE_POINTER(port->id));
+> > 
+> > and after:
+> > 
+> >        mvpp2_write(priv, MVPP22_RSS_INDEX, MVPP22_RSS_INDEX_QUEUE(ctx));
+> >        mvpp2_write(priv, MVPP22_RXQ2RSS_TABLE, MVPP22_RSS_TABLE_POINTER(ctx));
+> > 
+> > So, before the commit, for eth2, that would've contained '32' for the
+> > index and '1' for the table pointer - mapping queue 32 to table 1.
+> > Remember that this is queue-high.queue-low of 4.0.
+> > 
+> > After the commit, we appear to map queue 1 to table 1.  That again
+> > looks fine on the face of it.
+> > 
+> > Section 9.3.1 of the A8040 manual seems indicate the reason that the
+> > queue number is separated.  queue-low seems to always come from the
+> > classifier, whereas queue-high can be from the ingress physical port
+> > number or the classifier depending on the MVPP2_CLS_SWFWD_PCTRL_REG.
+> > 
+> > We set the port bit in MVPP2_CLS_SWFWD_PCTRL_REG, meaning that queue-high
+> > comes from the MVPP2_CLS_SWFWD_P2HQ_REG() register... and this seems to
+> > be where our bug comes from.
+> > 
+> > mvpp2_cls_oversize_rxq_set() sets this up as:
+> > 
+> >         mvpp2_write(port->priv, MVPP2_CLS_SWFWD_P2HQ_REG(port->id),
+> >                     (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
+> > 
+> >         val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
+> >         val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
+> >         mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
+> > 
+> > so, the queue-high for eth2 is _always_ 4, meaning that only queues
+> > 32 through 39 inclusive are available to eth2.  Yet, we're trying to
+> > tell the classifier to set queue-high, which will be ignored, to zero.
+> > 
+> > So we end up directing traffic from eth2 not to queue 1, but to queue
+> > 33, and then we tell it to look up queue 33 in the RSS table.  However,
+> > RSS table has not been programmed for queue 33, and so it ends up
+> > (presumably) dropping the packets.
+> > 
+> > It seems that mvpp22_rss_context_create() doesn't take account of the
+> > fact that the upper 5 bits of the queue ID can't actually be changed
+> > due to the settings in mvpp2_cls_oversize_rxq_set(), _or_ it seems
+> > that mvpp2_cls_oversize_rxq_set() has been missed in this commit.
+> > Either way, these two functions mutually disagree with what queue
+> > number should be used.
+> > 
+> > So, 895586d5dc32 is indeed the cause of this problem.
+> 
+> Looking deeper into what mvpp2_cls_oversize_rxq_set() and the MTU
+> validation is doing, it seems that MVPP2_CLS_SWFWD_P2HQ_REG() is
+> used for at least a couple of things.
+> 
+> So, with the classifier having had RSS enabled and directing eth2
+> traffic to queue 1, we can not ignore the fact that we may have
+> packets appearing on queue 32 for this port.
+> 
+> One of the things that queue 32 will be used for is if an over-sized
+> packet attempts to egress through eth2 - it seems that the A8040 has
+> the ability to forward frames between its ports.  However, afaik we
+> don't support that feature, and the kernel restricts the packet size,
+> so we should never violate the MTU validator and end up with such a
+> packet.  In any case, _if_ we were to attempt to transmit an oversized
+> packet, we have no support in the kernel to deal with that appearing
+> in the port's receive queue.
+> 
+> Maybe it would be safe to clear the MVPP2_CLS_SWFWD_PCTRL_MASK() bit?
+> 
+> My testing seems to confirm my findings above - clearing this bit
+> means that if I enable rxhash on eth2, the interface can then pass
+> traffic, as we are now directing traffic to RX queue 1 rather than
+> queue 33.  Traffic still seems to work with rxhash off as well.
+> 
+> So, I think it's clear where the problem lies, but not what the correct
+> solution is; someone with more experience of packet classifiers (this
+> one?) needs to look at this - this is my first venture into these
+> things, and certainly the first time I've traced through how this is
+> trying to work (or not)...
 
-The bit positions however were computed wrongly for AMD processors that have
-encryption support.  In this case, x86_phys_bits is reduced (for example
-from 48 to 43, to account for the C bit at position 47 and four bits used
-internally to store the SEV ASID and other stuff) while x86_cache_bits in
-would remain set to 48, and _all_ bits between the reduced MAXPHYADDR
-and bit 51 are set.  Then low_phys_bits would also cover some of the
-bits that are set in the shadow_mmio_value, terribly confusing the gfn
-caching mechanism.
+This is what I was using here to work around the problem, and what I
+mentioned above.
 
-To fix this, avoid splitting gfns as long as the processor does not have
-the L1TF bug (which includes all AMD processors).  When there is no
-splitting, low_phys_bits can be set to the reduced MAXPHYADDR removing
-the overlap.  This fixes "npt=0" operation on EPYC processors.
-
-Thanks to Maxim Levitsky for bisecting this bug.
-
-Cc: stable@vger.kernel.org
-Fixes: 52918ed5fcf0 ("KVM: SVM: Override default MMIO mask if memory encryption is enabled")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8071952e9cf2..86619631ff6a 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -335,6 +335,8 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_mask, u64 mmio_value, u64 access_mask)
- {
- 	BUG_ON((u64)(unsigned)access_mask != access_mask);
- 	BUG_ON((mmio_mask & mmio_value) != mmio_value);
-+	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << shadow_nonpresent_or_rsvd_mask_len));
-+	WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
- 	shadow_mmio_value = mmio_value | SPTE_MMIO_MASK;
- 	shadow_mmio_mask = mmio_mask | SPTE_SPECIAL_MASK;
- 	shadow_mmio_access_mask = access_mask;
-@@ -583,16 +585,15 @@ static void kvm_mmu_reset_all_pte_masks(void)
- 	 * the most significant bits of legal physical address space.
- 	 */
- 	shadow_nonpresent_or_rsvd_mask = 0;
--	low_phys_bits = boot_cpu_data.x86_cache_bits;
--	if (boot_cpu_data.x86_cache_bits <
--	    52 - shadow_nonpresent_or_rsvd_mask_len) {
-+	low_phys_bits = boot_cpu_data.x86_phys_bits;
-+	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
-+	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
-+			  52 - shadow_nonpresent_or_rsvd_mask_len)) {
-+		low_phys_bits = boot_cpu_data.x86_cache_bits
-+			- shadow_nonpresent_or_rsvd_mask_len;
- 		shadow_nonpresent_or_rsvd_mask =
--			rsvd_bits(boot_cpu_data.x86_cache_bits -
--				  shadow_nonpresent_or_rsvd_mask_len,
--				  boot_cpu_data.x86_cache_bits - 1);
--		low_phys_bits -= shadow_nonpresent_or_rsvd_mask_len;
--	} else
--		WARN_ON_ONCE(boot_cpu_has_bug(X86_BUG_L1TF));
-+			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
-+	}
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
+index fd221d88811e..0dd3b65822dd 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.c
+@@ -1058,7 +1058,7 @@ void mvpp2_cls_oversize_rxq_set(struct mvpp2_port *port)
+ 		    (port->first_rxq >> MVPP2_CLS_OVERSIZE_RXQ_LOW_BITS));
  
- 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
- 		GENMASK_ULL(low_phys_bits - 1, PAGE_SHIFT);
--- 
-2.18.2
+ 	val = mvpp2_read(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG);
+-	val |= MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
++	val &= ~MVPP2_CLS_SWFWD_PCTRL_MASK(port->id);
+ 	mvpp2_write(port->priv, MVPP2_CLS_SWFWD_PCTRL_REG, val);
+ }
+ 
 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
