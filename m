@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02E91D97CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521321D97AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgESNbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728857AbgESNbj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:31:39 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DE9C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:31:38 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w10so13739079ljo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zz4KmcfH8bN5ODG0ex5UZiQJD1c8wBCbG4DymCKep+A=;
-        b=JPl11egiC/rpYvWWDESI7HA/BFOmPHzkcaUh+qIBTvnbvsS97QNPgaHNytnZKZc2WS
-         urX7266g5l2HYvhERmRCJEAL36Vot0tCVb9ldLccQUFp7AlOM0T/rKzZHFhB3wIGTY0Y
-         G9suicr/C8ZuoboVVRpFmxUnj/zGJyaXXQR6AByuU6S/5Pw5nCxfNQ2TVucTiC8EBprh
-         RYhHJIGS5ttTrhqQhF9QVM4hgCuAzeMhpnFEvqqZDUBb6xuyhliw+2EMakO9rU/T6met
-         nE4zZmk52U5WvroAp/Lbtyu812WeifFTbzfjq2JuP9JIEw7Zq5Nkw7FZLJ7MN0iWZbV7
-         Y1og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zz4KmcfH8bN5ODG0ex5UZiQJD1c8wBCbG4DymCKep+A=;
-        b=N8hwr5+KVIoIdA1FQZYxZhlE+ebHqu40C4J4XJ9A7x+Fwjy2UKsdx8M4OuVoYrMka0
-         FBwoUYlKGW8uvEoRk/p0V0B+TrMNBgD3LCKQaytwgx3kyV1RghNM6a2RrHr8vd0K/MIk
-         IbJCsZXJwoGfKOLQv1ljdeMjF9wakKpEeoX5ZjkOkVTpYoiEDV8erXqhYU15X7AJeCF4
-         QpnlmxeU1wQ9pOZkCYSN31Lxj4A94JB9pqtXmOufXZUXJ9J7hswPMNuuej6Fej/dGNd8
-         8H4+tT1CsKV+/Myn4HmJTEAZ+0qmwbSUAALHlHD34mQeW09OOSzWLcwaoAh9oCQi1CiR
-         jKMA==
-X-Gm-Message-State: AOAM530o74P81wNVbcYo8pwd3bUJTNjHp8Ee9Y9VQuh5EwZqZAZK2ItD
-        +nofN2sHLxtWUvYYC5zag7Pe3A==
-X-Google-Smtp-Source: ABdhPJzb9RGwxu+tVzU1e8nCwzm1ZoYzVXHfqQ/a9+EsosV/wCYQzWZU/Q1MGMK7RV4gEl3OaN7u2Q==
-X-Received: by 2002:a2e:584a:: with SMTP id x10mr13878719ljd.181.1589895097279;
-        Tue, 19 May 2020 06:31:37 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id t30sm8193056lfd.29.2020.05.19.06.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 06:31:36 -0700 (PDT)
-Date:   Tue, 19 May 2020 15:31:35 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: timer: Add renesas,em-sti bindings
-Message-ID: <20200519133135.GD470768@oden.dyn.berto.se>
-References: <20200519081101.28973-1-geert+renesas@glider.be>
+        id S1728991AbgESN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:27:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:32900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726471AbgESN10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:27:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2E6F30E;
+        Tue, 19 May 2020 06:27:25 -0700 (PDT)
+Received: from [10.37.8.206] (unknown [10.37.8.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 996353F52E;
+        Tue, 19 May 2020 06:27:24 -0700 (PDT)
+Subject: Re: [PATCH V4 12/17] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64MMFR0 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
+ <1589881254-10082-13-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <aab025fd-a9aa-0f1a-783b-eb5d3b40a327@arm.com>
+Date:   Tue, 19 May 2020 14:32:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200519081101.28973-1-geert+renesas@glider.be>
+In-Reply-To: <1589881254-10082-13-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Thanks for your work.
-
-On 2020-05-19 10:11:01 +0200, Geert Uytterhoeven wrote:
-> Document Device Tree bindings for the Renesas EMMA Mobile System Timer.
+On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
+> Enable EVC, FGT, EXS, TGRAN4_2, TGRAN64_2 and TGRAN16_2 features bits in
+> ID_AA64MMFR0 register as per ARM DDI 0487F.a specification.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
-> ---
->  .../bindings/timer/renesas,em-sti.yaml        | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
 > 
-> diff --git a/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml b/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
-> new file mode 100644
-> index 0000000000000000..233d74d5402cf734
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/renesas,em-sti.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index d1433f996710..7ce19f97ba73 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -267,6 +267,10 @@ static const struct arm64_ftr_bits ftr_id_aa64zfr0[] = {
+>   };
+>   
+>   static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
 > +
-> +title: Renesas EMMA Mobile System Timer
-> +
-> +maintainers:
-> +  - Magnus Damm <magnus.damm@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: renesas,em-sti
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: sclk
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    timer@e0180000 {
-> +            compatible = "renesas,em-sti";
-> +            reg = <0xe0180000 0x54>;
-> +            interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&sti_sclk>;
-> +            clock-names = "sclk";
-> +    };
-> -- 
-> 2.17.1
+
+minor nit: spurious new line.
+
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_ECV_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_FGT_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_EXS_SHIFT, 4, 0),
+>   	/*
+>   	 * We already refuse to boot CPUs that don't support our configured
+>   	 * page size, so we can only detect mismatches for a page size other
+> @@ -274,6 +278,9 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
+>   	 * exist in the wild so, even though we don't like it, we'll have to go
+>   	 * along with it and treat them as non-strict.
+>   	 */
+> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN4_2_SHIFT, 4, ID_AA64MMFR0_TGRAN4_2_NI),
+> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN64_2_SHIFT, 4, ID_AA64MMFR0_TGRAN64_2_NI),
+> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN16_2_SHIFT, 4, ID_AA64MMFR0_TGRAN16_2_NI),
+
+These are not SIGNED as they don't have 0b1111 defined to represent
+something "lower" than '0b0'. It was signed for 4K and 64K, since
+
+0b0000 => supported
+0b1111 => Not supported.
+
+Also Please note, KVM-NV patches are adding these, so you may as well 
+drop them.
+
+>   	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN4_SHIFT, 4, ID_AA64MMFR0_TGRAN4_NI),
+>   	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN64_SHIFT, 4, ID_AA64MMFR0_TGRAN64_NI),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN16_SHIFT, 4, ID_AA64MMFR0_TGRAN16_NI),
 > 
 
--- 
-Regards,
-Niklas Söderlund
+Suzuki
