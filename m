@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8271D9B3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E697E1D9B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgESPal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729205AbgESPah (ORCPT
+        id S1729291AbgESPbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:31:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60599 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728725AbgESPbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:30:37 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1350C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:30:37 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id w188so3477255vkf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rnSyU5f4PrzmexMJlgXOLUxtZCdHxKJvdv/zUlkAcrA=;
-        b=uFDIdf1+QUnCUyeb3hS0KTf1RU83RdK39E8uD55PKtjZVNtGka7FbU96itQXslCa3v
-         DBf1jMaS0xKuLCHFJcuI7M8Mg9AkIPcrVFepYErgEehXvkrtxdty6I1QwJXnoAcmTNg0
-         AVHL3RW8MyuTnQLz/F0B+CkFXCjFj3IMVZZKMReDU7+GoMDGHD1R/XSzfjUizPauPxG5
-         YyffwHfYRRQ86kbn0GzRL0AI98LNK2SIx4AI9Fdb/faRU6JCpYcjuSxfyPrVp1FjwR+E
-         qNuH4yOtO3RNGh73/dQW5BHCznhU0oV1R8GElfWHP1z620/sPMHAJtS3/c1QwkteKu7q
-         eEEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rnSyU5f4PrzmexMJlgXOLUxtZCdHxKJvdv/zUlkAcrA=;
-        b=ArJRF+pZw+65PbSLz9T8GRfkAX6v+9xPG5lfFSGyV4T2jqZUIKSANR295NrVSpK8vs
-         IVFTVJ7iywuv+q50eb7fEWtFtB7op5ZbhQCnZsAftI9tSwM6LGPEoE/cSJhzAFoKQ7Kd
-         raum+k/3Lk0NQ+XYaUvCE1F1yf7kaU9A5jmZnLVWTQzdNFSf4qmievAxbSTZTNPCL61G
-         1fYbgZdsqiGyimVfmOTWhqhB1HIkn9BPPyJuk49tkNBtCpSavQQofucYo2huTPhnomfI
-         LP1wKkgwcDHKcUjOYk3yOctUA6PUbjRaeu1VCa++TyxSBD34UPbM/k8XPcwlEjiziqYR
-         WmiA==
-X-Gm-Message-State: AOAM532bMwJUV086dYXiGbNzGEKR60ffbDJLW59S6dXBxwgqJU8/e/Qs
-        fM05ZZhSqd6kqDrSygWaiyMArRjYHDKcNMdU/PCtMQ==
-X-Google-Smtp-Source: ABdhPJwaSFdjHczLXzH9xCa6keZ5wUU3dU1twsfttZ1EL/Ani+DZymqchdVlLIbyjUH+aWh/LxEzie1suQrANmZB0Dk=
-X-Received: by 2002:ac5:cded:: with SMTP id v13mr222021vkn.59.1589902236878;
- Tue, 19 May 2020 08:30:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200516154314.14769-1-digetx@gmail.com> <CAPDyKFo_Xp-zipqE26iMv4CFwUoMCQZy3Zr63Cp=uzePgWX7BA@mail.gmail.com>
- <b634e7a5-9a30-3bd1-126d-be62e4dd73e1@gmail.com>
-In-Reply-To: <b634e7a5-9a30-3bd1-126d-be62e4dd73e1@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 19 May 2020 17:29:59 +0200
-Message-ID: <CAPDyKFq4MoEzLr3Mgk0-4JWeB3khKawMC+bCEKDNiNKn3tUarg@mail.gmail.com>
-Subject: Re: [PATCH v1] sdhci: tegra: Remove warnings about missing
- device-tree properties
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 19 May 2020 11:31:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589902281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ieIQPluaoA5ik0PXCzJ9SsJMhhzMeJFxrj2dTBp+9dU=;
+        b=ZTToYod/IhRWDl4n56uxklNfgPuPsl3lI+pATbFbzkM6LmzKXy7vdy7wQ1qjOEzba280qu
+        yysF5gfdoNaEy7wmc938GTebPsSLG3BWnPC+Br2WveAQSgVk1jaZ/4UkuWFm32t6Xamzw5
+        YYnsdBawB87GlULh9D/TXP/BIUBQsjI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-Qnt1OykVNPOo44v-peyzSw-1; Tue, 19 May 2020 11:31:17 -0400
+X-MC-Unique: Qnt1OykVNPOo44v-peyzSw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D19EA1054F92;
+        Tue, 19 May 2020 15:31:15 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1388210013D9;
+        Tue, 19 May 2020 15:31:06 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
+        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
+        eparis@parisplace.org, tgraf@infradead.org,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak25 v5] audit: add subj creds to NETFILTER_CFG record to cover async unregister
+Date:   Tue, 19 May 2020 11:30:42 -0400
+Message-Id: <2794b22c0b88637a4270b346e52aeb8db7f59457.1589853445.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020 at 16:05, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 19.05.2020 10:28, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Sat, 16 May 2020 at 17:44, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> Several people asked me about the MMC warnings in the KMSG log and
-> >> I had to tell to ignore them because these warning are irrelevant to
-> >> pre-Tegra210 SoCs.
-> >
-> > Why are the warnings irrelevant?
->
-> That's what the DT binding doc says [1].
->
-> [1]
-> https://www.kernel.org/doc/Documentation/devicetree/bindings/mmc/nvidia%2=
-Ctegra20-sdhci.txt
->
-> Although, looking at the driver's code and TRM docs, it seems that all
-> those properties are really irrelevant only to the older Terga20 SoC. So
-> the binding doc is a bit misleading.
->
-> Nevertheless, the binding explicitly says that the properties are
-> optional, which is correct.
->
-> >> It should be up to a board's device-tree writer to
-> >> properly describe all the necessary properties. Secondly, eventually a=
-ll
-> >> device-tree bindings will be converted to YAML, which allows to valida=
-te
-> >> board DT files, giving a warning about missing properties. Hence let's
-> >> remove the noisy warnings to stop the confusion.
-> >
-> > Yep, makes sense. However, perhaps we should do this conversion then,
-> > rather than first drop the warnings?
->
-> I don't mind to postpone this patch. But again, IIUC, all these
-> properties are optional, and thus, there is no critical need to verify
-> them in DT right now, it could be done later on.
+Some table unregister actions seem to be initiated by the kernel to
+garbage collect unused tables that are not initiated by any userspace
+actions.  It was found to be necessary to add the subject credentials to
+cover this case to reveal the source of these actions.  A sample record:
 
-Ok, fair enough.
+The tty, ses and exe fields have not been included since they are in the
+SYSCALL record and contain nothing useful in the non-user context.
 
-Applied for next, thanks!
+  type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat family=bridge entries=0 op=unregister pid=153 uid=root auid=unset subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2
 
-Kind regards
-Uffe
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+Changelog:
+v5
+- rebase on upstreamed ghak28 on audit/next v5.7-rc1
+- remove tty, ses and exe fields as duplicates or unset
+- drop upstreamed patches 1&2 from set
+
+v4
+- rebase on audit/next v5.7-rc1
+- fix checkpatch.pl errors/warnings in 1/3 and 2/3
+
+v3
+- rebase on v5.6-rc1 audit/next
+- change audit_nf_cfg to audit_log_nfcfg
+- squash 2,3,4,5 to 1 and update patch descriptions
+- add subject credentials to cover garbage collecting kernel threads
+
+v2
+- Rebase (audit/next 5.5-rc1) to get audit_context access and ebt_register_table ret code
+- Split x_tables and ebtables updates
+- Check audit_dummy_context
+- Store struct audit_nfcfg params in audit_context, abstract to audit_nf_cfg() call
+- Restore back to "table, family, entries" from "family, table, entries"
+- Log unregistration of tables
+- Add "op=" at the end of the AUDIT_NETFILTER_CFG record
+- Defer nsid patch (ghak79) to once nsid patchset upstreamed (ghak32)
+- Add ghak refs
+- Ditch NETFILTER_CFGSOLO record
+
+ kernel/auditsc.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index cfe3486e5f31..a07ca529ede9 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -2557,12 +2557,24 @@ void __audit_log_nfcfg(const char *name, u8 af, unsigned int nentries,
+ 		       enum audit_nfcfgop op)
+ {
+ 	struct audit_buffer *ab;
++	const struct cred *cred;
++	struct tty_struct *tty;
++	char comm[sizeof(current->comm)];
+ 
+ 	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_NETFILTER_CFG);
+ 	if (!ab)
+ 		return;
+ 	audit_log_format(ab, "table=%s family=%u entries=%u op=%s",
+ 			 name, af, nentries, audit_nfcfgs[op].s);
++
++	cred = current_cred();
++	audit_log_format(ab, " pid=%u uid=%u auid=%u",
++			 task_pid_nr(current),
++			 from_kuid(&init_user_ns, cred->uid),
++			 from_kuid(&init_user_ns, audit_get_loginuid(current)));
++	audit_log_task_context(ab); /* subj= */
++	audit_log_format(ab, " comm=");
++	audit_log_untrustedstring(ab, get_task_comm(comm, current));
+ 	audit_log_end(ab);
+ }
+ EXPORT_SYMBOL_GPL(__audit_log_nfcfg);
+-- 
+1.8.3.1
+
