@@ -2,166 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231CC1DA13C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FDB1DA142
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgESTqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgESTqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:46:21 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8F2C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:46:20 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w19so304474ply.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q3Ivtwo+9O98WnhcJnwaFt95/Hwxgd+0h4XCSucwWQ0=;
-        b=FlcR34MzrEghbl3vy0OL8MTgoR2QS5ql+EgOS6TLT9J/mjNPWyw1q/1x/GPc6spBVR
-         zIBXeYd140wKdDH6I1j0BK7rPSzWRoIAU5pL+ymoblh8j7HDhXPXdrRuwb4KU4RHbbCX
-         IkV25J7JchNWKWg80zDSG2ZDnZvColidCwd38=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q3Ivtwo+9O98WnhcJnwaFt95/Hwxgd+0h4XCSucwWQ0=;
-        b=Ua4ynFoap0KSUSpgxipXTl7yJxf/pC/6Tzvr12yn0FAhKVi9b+u/LUeD6tjewAbZQ/
-         J6yObqPeQV7xcv7iWgEewLeCKdeJrm++pwH3bhDjDh+b1SMADN7/OvZKBwFooGeOClEZ
-         gCJQn2eSpx+ZfvwyhGOtQy/7K6B3z0DzrqsQzghtFtBIeOP3//6U59ALkIxDVqz5SBdc
-         pVua94WKFUCWGuP5JFexDTaPuh2fiWTAsOBTOjVvvspAwR32CwpzmvJNF1C81wW73UhZ
-         dSlUysAZum14WY5uIl9pF3tqur4pB6Pf3mEI/+cu7UFS5zwxoN4vhwRYVC5FBU/GVhAu
-         yzPA==
-X-Gm-Message-State: AOAM533v/K5Ni5NdQtzYTT+6wZDKrzm25Xo/U0z0PEj3RghJv+7zA4ht
-        mDRmKikdOVD38lLPp/jHlZlmog==
-X-Google-Smtp-Source: ABdhPJzdXNjb2gwJKNeMLT5AEIU9DnLXEYFye7s+DenXWUh8I4fQdMy4wmHogqrZPX7U/5jAByEZOA==
-X-Received: by 2002:a17:90a:2ac2:: with SMTP id i2mr1186297pjg.80.1589917579552;
-        Tue, 19 May 2020 12:46:19 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id fw4sm288758pjb.31.2020.05.19.12.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 12:46:18 -0700 (PDT)
-Date:   Tue, 19 May 2020 12:46:17 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: Re: [PATCH v2 7/8] exec: Generic execfd support
-Message-ID: <202005191220.2DB7B7C7@keescook>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
- <87sgga6ze4.fsf@x220.int.ebiederm.org>
- <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
- <877dx822er.fsf_-_@x220.int.ebiederm.org>
- <87y2poyd91.fsf_-_@x220.int.ebiederm.org>
+        id S1727060AbgESTro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:47:44 -0400
+Received: from ja.ssi.bg ([178.16.129.10]:54114 "EHLO ja.ssi.bg"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726348AbgESTrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:47:43 -0400
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 04JJkPnn004615;
+        Tue, 19 May 2020 22:46:25 +0300
+Date:   Tue, 19 May 2020 22:46:25 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Marco Angaroni <marcoangaroni@gmail.com>
+cc:     Andrew Kim <kim.andrewsy@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "open list:IPVS" <netdev@vger.kernel.org>,
+        "open list:IPVS" <lvs-devel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>
+Subject: Re: [PATCH] netfilter/ipvs: immediately expire UDP connections
+ matching unavailable destination if expire_nodest_conn=1
+In-Reply-To: <CANHHuCW6i0BjLRMYkfY8eZGZJZTnE-NO9EH+-gfH94cc6yYn1A@mail.gmail.com>
+Message-ID: <alpine.LFD.2.21.2005192139500.3504@ja.home.ssi.bg>
+References: <20200515013556.5582-1-kim.andrewsy@gmail.com> <20200517171654.8194-1-kim.andrewsy@gmail.com> <alpine.LFD.2.21.2005182027460.4524@ja.home.ssi.bg> <CABc050G-yW-frv0mCmg=hMnC4iOx9Ht2Zv8eoS1cxQ8uKX6NQw@mail.gmail.com>
+ <CANHHuCW6i0BjLRMYkfY8eZGZJZTnE-NO9EH+-gfH94cc6yYn1A@mail.gmail.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2poyd91.fsf_-_@x220.int.ebiederm.org>
+Content-Type: multipart/mixed; boundary="-1463811672-1121648160-1589917585=:3504"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 07:33:46PM -0500, Eric W. Biederman wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1463811672-1121648160-1589917585=:3504
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+
+	Hello,
+
+On Tue, 19 May 2020, Marco Angaroni wrote:
+
+> Hi Andrew, Julian,
 > 
-> Most of the support for passing the file descriptor of an executable
-> to an interpreter already lives in the generic code and in binfmt_elf.
-> Rework the fields in binfmt_elf that deal with executable file
-> descriptor passing to make executable file descriptor passing a first
-> class concept.
+> could you please confirm if/how this patch is changing any of the
+> following behaviours, which I’m listing below as per my understanding
+> ?
 > 
-> Move the fd_install from binfmt_misc into begin_new_exec after the new
-> creds have been installed.  This means that accessing the file through
-> /proc/<pid>/fd/N is able to see the creds for the new executable
-> before allowing access to the new executables files.
+> When expire_nodest is set and real-server is unavailable, at the
+> moment the following happens to a packet going through IPVS:
 > 
-> Performing the install of the executables file descriptor after
-> the point of no return also means that nothing special needs to
-> be done on error.  The exiting of the process will close all
-> of it's open files.
+> a) TCP (or other connection-oriented protocols):
+>    the packet is silently dropped, then the following retransmission
+> causes the generation of a RST from the load-balancer to the client,
+> which will then re-open a new TCP connection
+
+	Yes. It seems we can not create new connection in
+all cases, we should also check with is_new_conn().
+
+	What we have is that two cases are possible depending on 
+conn_reuse_mode, the state of existing connection and whether
+netfilter conntrack is used:
+
+	1. setup expire for old conn, then drop packet
+	2. setup expire for old conn, then create new
+	conn to schedule the packet
+
+	When expiration is set, the timer will fire in the
+next jiffie to remove the connection from hash table. Until
+removed, the connection still can cause drops. Sometimes
+we can simply create new connection with the same tuple,
+so it is possible both connections to coexist for one jiffie
+but the old connection is not reached on lookup.
+
+> b) UDP:
+>    the packet is silently dropped, then the following retransmission
+> is rescheduled to a new real-server
+
+	Yes, we drop while old conn is not expired yet
+
+> c) UDP in OPS mode:
+>    the packet is rescheduled to a new real-server, as no previous
+> connection exists in IPVS connection table, and a new OPS connection
+> is created (but it lasts only the time to transmit the packet)
+
+	Yes, OPS is not affected.
+
+> d) UDP in OPS mode + persistent-template:
+>    the packet is rescheduled to a new real-server, as previous
+> template-connection is invalidated, a new template-connection is
+> created, and a new OPS connection is created (but it lasts only the
+> time to transmit the packet)
+
+	Yes, the existing template is ignored when its server
+is unavailable.
+
+> It seems to me that you are trying to optimize case a) and b),
+> avoiding the first step where the packet is silently dropped and
+> consequently avoiding the retransmission.
+> And contextually expire also all the other connections pointing to the
+> unavailable real-sever.
+
+	The change will allow immediate scheduling in a new
+connection for any protocol when netfilter conntrack is not
+used:
+
+- TCP: avoids retransmission for SYN
+- UDP: reduces drops from 1 jiffie to 0 (no drops)
+
+	But this single jiffie compared to the delay between
+real server failure and the removal from the IPVS table can be
+negligible. Of course, if real server is removed while it is
+working, with this change we should not see any UDP drops.
+
+> However I'm confused about the references to OPS mode.
+> And why you need to expire all the connections at once: if you expire
+> on a per connection basis, the client experiences the same behaviour
+> (no more re-transmissions), but you avoid the complexities of a new
+> thread.
+
+	Such flushing can help when conntrack is used in which
+case the cost is a retransmission or downtime for one jiffie.
+
+> Maybe also the documentation of expire_nodest_conn sysctl should be updated.
+> When it's stated:
 > 
-> Move the would_dump from binfmt_misc into begin_new_exec right
-> after would_dump is called on the bprm->file.  This makes it
-> obvious this case exists and that no nesting of bprm->file is
-> currently supported.
+>         If this feature is enabled, the load balancer will expire the
+>         connection immediately when a packet arrives and its
+>         destination server is not available, then the client program
+>         will be notified that the connection is closed
 > 
-> In binfmt_misc the movement of fd_install into generic code means
-> that it's special error exit path is no longer needed.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> I think it should be at least "and the client program" instead of
+> "then the client program".
+> Or a more detailed explanation.
 
-Yes, this is so much nicer. :) My head did spin a little between changing
-the management of bprm->executable between this patch and the next,
-but I'm okay now. ;)
+	Yes, if the packet is SYN we can create new connection.
+If it is ACK, the retransmission will get RST.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Regards
 
-nits/thoughts below...
-
-> [...]
-> diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-> index 8c7779d6bf19..653508b25815 100644
-> --- a/include/linux/binfmts.h
-> +++ b/include/linux/binfmts.h
-> [...]
-> @@ -48,6 +51,7 @@ struct linux_binprm {
->  	unsigned int taso:1;
->  #endif
->  	unsigned int recursion_depth; /* only for search_binary_handler() */
-> +	struct file * executable; /* Executable to pass to the interpreter */
->  	struct file * file;
->  	struct cred *cred;	/* new credentials */
-
-nit: can we fix the "* " stuff here? This should be *file and *executable.
-
-> [...]
-> @@ -69,10 +73,6 @@ struct linux_binprm {
->  #define BINPRM_FLAGS_ENFORCE_NONDUMP_BIT 0
->  #define BINPRM_FLAGS_ENFORCE_NONDUMP (1 << BINPRM_FLAGS_ENFORCE_NONDUMP_BIT)
->  
-> -/* fd of the binary should be passed to the interpreter */
-> -#define BINPRM_FLAGS_EXECFD_BIT 1
-> -#define BINPRM_FLAGS_EXECFD (1 << BINPRM_FLAGS_EXECFD_BIT)
-> -
->  /* filename of the binary will be inaccessible after exec */
->  #define BINPRM_FLAGS_PATH_INACCESSIBLE_BIT 2
->  #define BINPRM_FLAGS_PATH_INACCESSIBLE (1 << BINPRM_FLAGS_PATH_INACCESSIBLE_BIT)
-
-nit: may as well renumber BINPRM_FLAGS_PATH_INACCESSIBLE_BIT to 1,
-they're not UAPI. And, actually, nothing uses the *_BIT defines, so
-probably the entire chunk of code could just be reduced to:
-
-/* either interpreter or executable was unreadable */
-#define BINPRM_FLAGS_ENFORCE_NONDUMP    BIT(0)
-/* filename of the binary will be inaccessible after exec */
-#define BINPRM_FLAGS_PATH_INACCESSIBLE  BIT(1)
-
-Though frankly, I wonder if interp_flags could just be removed in favor
-of two new bit members, especially since interp_data is gone:
-
-+               /* Either interpreter or executable was unreadable. */
-+               nondumpable:1;
-+               /* Filename of the binary will be inaccessible after exec. */
-+               path_inaccessible:1;
-...
--       unsigned interp_flags;
-...etc
-
--- 
-Kees Cook
+--
+Julian Anastasov <ja@ssi.bg>
+---1463811672-1121648160-1589917585=:3504--
