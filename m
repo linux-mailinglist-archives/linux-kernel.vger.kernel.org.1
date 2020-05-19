@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A7A1DA140
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32FD1DA147
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726966AbgESTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S1727083AbgESTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgESTrc (ORCPT
+        with ESMTP id S1726348AbgESTrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:47:32 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13414C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:47:32 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p30so295799pgl.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:47:32 -0700 (PDT)
+        Tue, 19 May 2020 15:47:51 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8889C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:47:51 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ci23so134132pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZGuRRRcbTaW8FWPggeFKscV8bVAevR+TD4KidxOAffU=;
-        b=SOy40ns36oc3zn7ljfpnUaBI+qiGaKfHLn/p2KvVh6KGCqg988xKzHeav8r4ADi+al
-         JMlzcpyMm2iAV0qQjdoFwlstcvzlPkZz7a4Ed62ly991kPw9qR3soQzvxgRHMXy11Mkt
-         T5bOiSqk0MEI2lITGszqvjSMp1pDCIvfAIWSMd/2KiQMiZUszZh7AKf51496oMFhqDE8
-         el2E+G1EIlVrf1LUymCs1SMnRoV299YkVmgi+QiZS6fTpG46AoJ0ipU0OuY9YEIWHOUM
-         z5+t0fv/T0hrhw0bs82HPobojLUycNl7mP/2RPVf0aGmaeCzOEorMevm0S9AxXHdqhCa
-         iCRA==
+        bh=CgyntvvUzH1XXLBzT1ZgjwhZo6axGQJQNJMNpQq/mjY=;
+        b=p1lO8gQM6mxvNv1BlHL2svVHbsP69QZ+XlG0COlRjlYM1DGwsqpnqMh/39++m5KE96
+         9n9ZehwfzYN68t7s0KmT0fNOdJ850WfDjLWMRxprnwcCwXNUa+oe4f7TLA117mDNkBiY
+         Fy4wvZ/eetly/jy2W6QHjqCgRMNox+JXoD7UOl+aDpZPISswLph6t/i6Szubr3feo3H5
+         22bmwheyp0Vyy0Jq1xHQ/y9ulpgwj32vBWubfmcAokQg8qPyC16CdKJx8pSM0bZdMn62
+         1+avZfYvheGKN0BzDIFCBnObRRrfeeNSFzCkEPoAms2Dj7pbE1prWTkrtEEQ7Kdpf5do
+         xfzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZGuRRRcbTaW8FWPggeFKscV8bVAevR+TD4KidxOAffU=;
-        b=YFrnd6acgH1pS7bY+YvQ5BbEWGIV/VN1y4XnmlWgZEdAV5K8js9E979NWU32BiHvnH
-         BlJJYMNG2UULZcnBtu0CK1r01iEO9DzmeDAy2BharmREqBW82GAp+plafcHu2mWWjbZ2
-         rDe4ghOtLpi2/XBDm0BgJR+QmXfK3YDloYENCmj0PZj+GuvR0DJZDX27GiWNHlOlZqpI
-         zmwZxglIrkNC86gElmBfgUv8OljcFHj1ocL1JtSwpsEu+6/RDb2X+XKEnxqjc30kCQq7
-         hbTmTK30WqnQo6hK2R4LezabYPbb/e+IH3P1c4auH5ARa9NPeFz0/U2m0rpLAaOR1XyQ
-         /UhA==
-X-Gm-Message-State: AOAM530pPiF3mO+FiCcfZTZzViUZVdCBlf2UbbqcdOSrO6VudhJk52/7
-        aHyqHGPFM7RMc5gy/bNtzQQ=
-X-Google-Smtp-Source: ABdhPJxGFs2gbJfJf03BO6VSSxo3ZeuxRoEcyfB/gfuOvP36kzgTf0L+EcK96MQIwQyh25HevsllAA==
-X-Received: by 2002:a63:3e46:: with SMTP id l67mr761106pga.430.1589917651467;
-        Tue, 19 May 2020 12:47:31 -0700 (PDT)
+        bh=CgyntvvUzH1XXLBzT1ZgjwhZo6axGQJQNJMNpQq/mjY=;
+        b=nRx26pJdG7+BHdPbQXm3IN8QqV47OvL4I35PMNG4v43MjofsnNV5I6YwlVlLnMVkpp
+         gyaLVSxovgCsImNyVYxbKB+e/eEtCVz1Phg8YSJOKpMachNvu4HEHWdx/nep6p70yGfQ
+         Ex9B/ETgepPvJGjNzFDjucOUvbPVcT15pjPxgGQMRhhOPU8RabcMvMYLhGw91Glgk9Kg
+         e2ZloILuWyQBbmHbWUZrchiSmEITWWSlcaglyOOZ3Din6IO7YBzNuOHmXUEMUdxhN5in
+         0QE2BfUHePyY6wU0YxIWrAMDg88+wSyZLZ4L+v8Vnq9FhFjFk3miNP7mHQFpTuQYHDa+
+         L0bQ==
+X-Gm-Message-State: AOAM532ywWD+uSZp7mltlgcfhehr/50WSF9fYZtX70MwYRZ4QTDycQGa
+        IV6UANrPvTwW4k5wfJ2AkY4=
+X-Google-Smtp-Source: ABdhPJz81uFcj5ZQa6mkGTcmojKcSVnPbx9vOLpey0COrD8CM1hoAIfQebh1Ek7hG9dQucZqv5U15g==
+X-Received: by 2002:a17:902:c281:: with SMTP id i1mr1004179pld.177.1589917671065;
+        Tue, 19 May 2020 12:47:51 -0700 (PDT)
 Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e18sm251091pfh.75.2020.05.19.12.47.26
+        by smtp.gmail.com with ESMTPSA id u5sm236045pfu.198.2020.05.19.12.47.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 12:47:30 -0700 (PDT)
-Subject: Re: [PATCH 01/11] genirq: Add fasteoi IPI flow
+        Tue, 19 May 2020 12:47:50 -0700 (PDT)
+Subject: Re: [PATCH 00/11] arm/arm64: Turning IPIs into normal interrupts
+From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     Marc Zyngier <maz@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
@@ -59,14 +60,13 @@ Cc:     Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
         Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>
 References: <20200519161755.209565-1-maz@kernel.org>
- <20200519161755.209565-2-maz@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b691a46e-7461-89c8-c760-a1ef9769091f@gmail.com>
-Date:   Tue, 19 May 2020 12:47:24 -0700
+ <d1ac7873-0f02-dbe0-dd3c-4fd14a87cf03@gmail.com>
+Message-ID: <7b06f351-40f3-74c3-5d16-d7d58ab490b6@gmail.com>
+Date:   Tue, 19 May 2020 12:47:44 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Firefox/68.0 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200519161755.209565-2-maz@kernel.org>
+In-Reply-To: <d1ac7873-0f02-dbe0-dd3c-4fd14a87cf03@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,79 +77,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/19/2020 9:17 AM, Marc Zyngier wrote:
-> For irqchips using the fasteoi flow, IPIs are a bit special.
+On 5/19/2020 10:50 AM, Florian Fainelli wrote:
 > 
-> They need to be EOId early (before calling the handler), as
-> funny things may happen in the handler (they do not necessarily
-> behave like a normal interrupt), and that the arch code is
-> already handling the stats.
 > 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  include/linux/irq.h |  1 +
->  kernel/irq/chip.c   | 26 ++++++++++++++++++++++++++
->  2 files changed, 27 insertions(+)
+> On 5/19/2020 9:17 AM, Marc Zyngier wrote:
+>> For as long as SMP ARM has existed, IPIs have been handled as
+>> something special. The arch code and the interrupt controller exchange
+>> a couple of hooks (one to generate an IPI, another to handle it).
+>>
+>> Although this is perfectly manageable, it prevents the use of features
+>> that we could use if IPIs were Linux IRQs (such as pseudo-NMIs). It
+>> also means that each interrupt controller driver has to follow an
+>> architecture-specific interface instead of just implementing the base
+>> irqchip functionnalities. The arch code also duplicates a number of
+>> things that the core irq code already does (such as calling
+>> set_irq_regs(), irq_enter()...).
+>>
+>> This series tries to remedy this on arm/arm64 by offering a new
+>> registration interface where the irqchip gives the arch code a range
+>> of interrupts to use for IPIs. The arch code requests these as normal
+>> interrupts.
+>>
+>> The bulk of the work is at the interrupt controller level, where all 3
+>> irqchips used on arm64 get converted.
+>>
+>> Finally, the arm64 code drops the legacy registration interface. The
+>> same thing could be done on 32bit as well once the two remaining
+>> irqchips using that interface get converted.
+>>
+>> There is probably more that could be done: statistics are still
+>> architecture-private code, for example, and no attempt is made to
+>> solve that (apart from hidding the IRQs from /proc/interrupt).
+>>
+>> This has been tested on a bunch of 32 and 64bit guests.
 > 
-> diff --git a/include/linux/irq.h b/include/linux/irq.h
-> index 8d5bc2c237d7..726f94d8b8cc 100644
-> --- a/include/linux/irq.h
-> +++ b/include/linux/irq.h
-> @@ -621,6 +621,7 @@ static inline int irq_set_parent(int irq, int parent_irq)
->   */
->  extern void handle_level_irq(struct irq_desc *desc);
->  extern void handle_fasteoi_irq(struct irq_desc *desc);
-> +extern void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc);
->  extern void handle_edge_irq(struct irq_desc *desc);
->  extern void handle_edge_eoi_irq(struct irq_desc *desc);
->  extern void handle_simple_irq(struct irq_desc *desc);
-> diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-> index 41e7e37a0928..7b0b789cfed4 100644
-> --- a/kernel/irq/chip.c
-> +++ b/kernel/irq/chip.c
-> @@ -955,6 +955,32 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
->  		chip->irq_eoi(&desc->irq_data);
->  }
->  
-> +/**
-> + * handle_percpu_devid_fasteoi_ipi - Per CPU local IPI handler with per cpu
-> + *				     dev ids
-> + * @desc:	the interrupt description structure for this irq
-> + *
-> + * The biggest differences with the IRQ version are that:
-> + * - the interrupt is EOIed early, as the IPI could result in a context
-> + *   switch, and we need to make sure the IPI can fire again
-> + * - Stats are usually handled at the architecture level, so we ignore them
-> + *   here
-> + */
-> +void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc)
-> +{
-> +	struct irq_chip *chip = irq_desc_get_chip(desc);
-> +	struct irqaction *action = desc->action;
-> +	unsigned int irq = irq_desc_get_irq(desc);
-> +	irqreturn_t res;
-
-Should not this have a:
-
-	if (!irq_settings_is_no_accounting(desc))
-		__kstat_incr_irqs_this_cpu(desc);
-
-here in case you are using that handler with a SGI interrupt which is
-not used as an IPI?
-
-> +
-> +	if (chip->irq_eoi)
-> +		chip->irq_eoi(&desc->irq_data);
-> +
-> +	trace_irq_handler_entry(irq, action);
-> +	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
-> +	trace_irq_handler_exit(irq, action, res);
-> +}
-> +
->  /**
->   * handle_percpu_devid_fasteoi_nmi - Per CPU local NMI handler with per cpu
->   *				     dev ids
+> Does this patch series change your position on this patch series
 > 
+> https://lore.kernel.org/linux-arm-kernel/20191023000547.7831-3-f.fainelli@gmail.com/T/
+> 
+> or is this still a no-no?
 
+Our firmware specifies SGI interrupts with the first interrupt cell
+specifier set to 2, so changing GIC_IRQ_TYPE_SGI to 2 allows me to use a
+nearly unmodified firmware with your changes, sweet! I know this is not
+supposed to be used that way, but the temptation was too big.
+
+FWIW, on ARM64:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
 Florian
