@@ -2,641 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9E11DABB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 09:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AD41DA0F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgETHNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 03:13:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16407 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETHNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 03:13:52 -0400
-IronPort-SDR: FAUmgj/DN/aY5NKI1u5vb8FEQ+XA3PHzGAHFrJz+6NWAbJGLbh7HlrEH+vb3oqdVptWtGLQb+2
- rPv36BWfRpAA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 00:13:50 -0700
-IronPort-SDR: qA3IEWNqjHI7OIYh9BFQKtFbD5uw8LrgzS2UzRmoNj0KZPHVuiOzkz56HbvRrOd71mfJ0CyK0V
- CDv7hhENZdTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="253596943"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga007.fm.intel.com with ESMTP; 20 May 2020 00:13:47 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 2/2] soundwire: intel: transition to 3 steps initialization
-Date:   Wed, 20 May 2020 03:19:03 +0800
-Message-Id: <20200519191903.6557-2-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
-References: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
+        id S1726560AbgESTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:23:46 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:42842 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESTXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:23:46 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb7py-000156-HH; Tue, 19 May 2020 13:23:38 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb7px-0002fg-EF; Tue, 19 May 2020 13:23:38 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <877dx822er.fsf_-_@x220.int.ebiederm.org>
+        <874ksczru6.fsf_-_@x220.int.ebiederm.org>
+        <202005191144.E3112135@keescook>
+Date:   Tue, 19 May 2020 14:19:56 -0500
+In-Reply-To: <202005191144.E3112135@keescook> (Kees Cook's message of "Tue, 19
+        May 2020 12:08:25 -0700")
+Message-ID: <87zha3n34z.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1jb7px-0002fg-EF;;;mid=<87zha3n34z.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/o3JOqx7Xhio3cLEEFkP2sYm5qyEXZ5Q0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.6 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,T_TooManySym_04,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4966]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_04 7+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 495 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.1 (0.8%), b_tie_ro: 2.8 (0.6%), parse: 0.93
+        (0.2%), extract_message_metadata: 11 (2.2%), get_uri_detail_list: 2.8
+        (0.6%), tests_pri_-1000: 10 (2.1%), tests_pri_-950: 1.01 (0.2%),
+        tests_pri_-900: 0.81 (0.2%), tests_pri_-90: 57 (11.5%), check_bayes:
+        56 (11.3%), b_tokenize: 10 (2.0%), b_tok_get_all: 10 (2.0%),
+        b_comp_prob: 2.3 (0.5%), b_tok_touch_all: 31 (6.2%), b_finish: 0.63
+        (0.1%), tests_pri_0: 397 (80.2%), check_dkim_signature: 0.42 (0.1%),
+        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.19 (0.0%), tests_pri_10:
+        2.5 (0.5%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 6/8] exec/binfmt_script: Don't modify bprm->buf and then return -ENOEXEC
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Kees Cook <keescook@chromium.org> writes:
 
-Rather than a plain-vanilla init/exit, this patch provides 3 steps in
-the initialization (ACPI scan, probe, startup) which makes it easier to
-detect platform support for SoundWire, allocate required resources as
-early as possible, and conversely help make the startup() callback
-lighter-weight with only hardware register setup.
+> On Mon, May 18, 2020 at 07:33:21PM -0500, Eric W. Biederman wrote:
+>> 
+>> When replacing loops with next_non_spacetab and next_terminator care
+>> has been take that the logic of the parsing code (short of replacing
+>> characters by '\0') remains the same.
+>
+> Ah, interesting. As in, bprm->buf must not be modified unless the binfmt
+> handler is going to succeed. I think this requirement should be
+> documented in the binfmt struct header file.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c      |  76 +++++-----
- drivers/soundwire/intel.h      |  15 ++
- drivers/soundwire/intel_init.c | 249 ++++++++++++++++++++++++++-------
- 3 files changed, 250 insertions(+), 90 deletions(-)
+I think the best way to document this is to modify bprm->buf to be
+"const char buf[BINPRM_BUF_SIZE]" or something like that and not
+allow any modifications by anything except for the code that
+initially reads in contets of the file.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 4cfdd074e310..48e5712fbdf9 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -92,23 +92,12 @@
- #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
- #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
- 
--#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE	BIT(1)
--
- enum intel_pdi_type {
- 	INTEL_PDI_IN = 0,
- 	INTEL_PDI_OUT = 1,
- 	INTEL_PDI_BD = 2,
- };
- 
--struct sdw_intel {
--	struct sdw_cdns cdns;
--	int instance;
--	struct sdw_intel_link_res *link_res;
--#ifdef CONFIG_DEBUG_FS
--	struct dentry *debugfs;
--#endif
--};
--
- #define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
- 
- /*
-@@ -1083,20 +1072,18 @@ static int intel_init(struct sdw_intel *sdw)
- /*
-  * probe and init
-  */
--static int intel_probe(struct platform_device *pdev)
-+static int intel_master_probe(struct platform_device *pdev)
- {
--	struct sdw_cdns_stream_config config;
-+	struct device *dev = &pdev->dev;
- 	struct sdw_intel *sdw;
- 	int ret;
- 
--	sdw = devm_kzalloc(&pdev->dev, sizeof(*sdw), GFP_KERNEL);
-+	sdw = devm_kzalloc(dev, sizeof(*sdw), GFP_KERNEL);
- 	if (!sdw)
- 		return -ENOMEM;
- 
- 	sdw->instance = pdev->id;
--	sdw->link_res = dev_get_platdata(&pdev->dev);
--	sdw->cdns.dev = &pdev->dev;
--	sdw->cdns.registers = sdw->link_res->registers;
-+	sdw->cdns.dev = dev;
- 	sdw->cdns.instance = sdw->instance;
- 	sdw->cdns.msg_count = 0;
- 	sdw->cdns.bus.link_id = pdev->id;
-@@ -1109,15 +1096,36 @@ static int intel_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, sdw);
- 
--	ret = sdw_bus_master_add(&sdw->cdns.bus, &pdev->dev, pdev->dev.fwnode);
-+	ret = sdw_bus_master_add(&sdw->cdns.bus, dev, dev->fwnode);
- 	if (ret) {
--		dev_err(&pdev->dev, "sdw_bus_master_add fail: %d\n", ret);
-+		dev_err(dev, "sdw_bus_master_add fail: %d\n", ret);
- 		return ret;
- 	}
- 
--	if (sdw->cdns.bus.prop.hw_disabled) {
--		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
-+	if (sdw->cdns.bus.prop.hw_disabled)
-+		dev_info(dev,
-+			 "SoundWire master %d is disabled, ignoring\n",
- 			 sdw->cdns.bus.link_id);
-+
-+	/* set driver data, accessed by snd_soc_dai_set_drvdata() */
-+	dev_set_drvdata(sdw->cdns.bus.dev, &sdw->cdns);
-+
-+	return 0;
-+}
-+
-+int intel_master_startup(struct platform_device *pdev)
-+{
-+	struct sdw_cdns_stream_config config;
-+	struct device *dev = &pdev->dev;
-+	struct sdw_intel *sdw;
-+	int ret;
-+
-+	sdw = platform_get_drvdata(pdev);
-+
-+	if (sdw->cdns.bus.prop.hw_disabled) {
-+		dev_info(dev,
-+			 "SoundWire master %d is disabled, ignoring\n",
-+			 sdw->instance);
- 		return 0;
- 	}
- 
-@@ -1134,25 +1142,15 @@ static int intel_probe(struct platform_device *pdev)
- 
- 	intel_pdi_ch_update(sdw);
- 
--	/* Acquire IRQ */
--	ret = request_threaded_irq(sdw->link_res->irq,
--				   sdw_cdns_irq, sdw_cdns_thread,
--				   IRQF_SHARED, KBUILD_MODNAME, &sdw->cdns);
--	if (ret < 0) {
--		dev_err(sdw->cdns.dev, "unable to grab IRQ %d, disabling device\n",
--			sdw->link_res->irq);
--		goto err_init;
--	}
--
- 	ret = sdw_cdns_enable_interrupt(&sdw->cdns, true);
- 	if (ret < 0) {
--		dev_err(sdw->cdns.dev, "cannot enable interrupts\n");
-+		dev_err(dev, "cannot enable interrupts\n");
- 		goto err_init;
- 	}
- 
- 	ret = sdw_cdns_exit_reset(&sdw->cdns);
- 	if (ret < 0) {
--		dev_err(sdw->cdns.dev, "unable to exit bus reset sequence\n");
-+		dev_err(dev, "unable to exit bus reset sequence\n");
- 		goto err_interrupt;
- 	}
- 
-@@ -1170,13 +1168,11 @@ static int intel_probe(struct platform_device *pdev)
- 
- err_interrupt:
- 	sdw_cdns_enable_interrupt(&sdw->cdns, false);
--	free_irq(sdw->link_res->irq, sdw);
- err_init:
--	sdw_bus_master_delete(&sdw->cdns.bus);
- 	return ret;
- }
- 
--static int intel_remove(struct platform_device *pdev)
-+static int intel_master_remove(struct platform_device *pdev)
- {
- 	struct sdw_intel *sdw;
- 
-@@ -1194,10 +1190,10 @@ static int intel_remove(struct platform_device *pdev)
- }
- 
- static struct platform_driver sdw_intel_drv = {
--	.probe = intel_probe,
--	.remove = intel_remove,
-+	.probe = intel_master_probe,
-+	.remove = intel_master_remove,
- 	.driver = {
--		.name = "int-sdw",
-+		.name = "intel-sdw",
- 
- 	},
- };
-@@ -1205,5 +1201,5 @@ static struct platform_driver sdw_intel_drv = {
- module_platform_driver(sdw_intel_drv);
- 
- MODULE_LICENSE("Dual BSD/GPL");
--MODULE_ALIAS("platform:int-sdw");
-+MODULE_ALIAS("sdw:intel-sdw");
- MODULE_DESCRIPTION("Intel Soundwire Master Driver");
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 38b7c125fb10..0ac7d764f58c 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -15,6 +15,7 @@
-  * @irq: Interrupt line
-  * @ops: Shim callback ops
-  * @dev: device implementing hw_params and free callbacks
-+ * @clock_stop_quirks: mask defining requested behavior on pm_suspend
-  */
- struct sdw_intel_link_res {
- 	struct platform_device *pdev;
-@@ -25,6 +26,20 @@ struct sdw_intel_link_res {
- 	int irq;
- 	const struct sdw_intel_ops *ops;
- 	struct device *dev;
-+	u32 clock_stop_quirks;
- };
- 
-+struct sdw_intel {
-+	struct sdw_cdns cdns;
-+	int instance;
-+	struct sdw_intel_link_res *link_res;
-+#ifdef CONFIG_DEBUG_FS
-+	struct dentry *debugfs;
-+#endif
-+};
-+
-+#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
-+
-+int intel_master_startup(struct platform_device *pdev);
-+
- #endif /* __SDW_INTEL_LOCAL_H */
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index d5d42795a48f..b918d58bd666 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/soundwire/sdw_intel.h>
-+#include "cadence_master.h"
- #include "intel.h"
- 
- #define SDW_LINK_TYPE		4 /* from Intel ACPI documentation */
-@@ -23,22 +24,51 @@
- #define SDW_LINK_BASE		0x30000
- #define SDW_LINK_SIZE		0x10000
- 
--static int link_mask;
--module_param_named(sdw_link_mask, link_mask, int, 0444);
-+static int ctrl_link_mask;
-+module_param_named(sdw_link_mask, ctrl_link_mask, int, 0444);
- MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
- 
--static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
-+static bool is_link_enabled(struct fwnode_handle *fw_node, int i)
-+{
-+	struct fwnode_handle *link;
-+	char name[32];
-+	u32 quirk_mask = 0;
-+
-+	/* Find master handle */
-+	snprintf(name, sizeof(name),
-+		 "mipi-sdw-link-%d-subproperties", i);
-+
-+	link = fwnode_get_named_child_node(fw_node, name);
-+	if (!link)
-+		return false;
-+
-+	fwnode_property_read_u32(link,
-+				 "intel-quirk-mask",
-+				 &quirk_mask);
-+
-+	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
-+		return false;
-+
-+	return true;
-+}
-+
-+static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
- {
- 	struct sdw_intel_link_res *link = ctx->links;
-+	u32 link_mask;
- 	int i;
- 
- 	if (!link)
- 		return 0;
- 
--	for (i = 0; i < ctx->count; i++) {
-+	link_mask = ctx->link_mask;
-+
-+	for (i = 0; i < ctx->count; i++, link++) {
-+		if (link_mask && !(link_mask & BIT(i)))
-+			continue;
-+
- 		if (link->pdev)
- 			platform_device_unregister(link->pdev);
--		link++;
- 	}
- 
- 	kfree(ctx->links);
-@@ -47,52 +77,97 @@ static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
- 	return 0;
- }
- 
--static struct sdw_intel_ctx
--*sdw_intel_add_controller(struct sdw_intel_res *res)
-+static int
-+sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
- {
--	struct platform_device_info pdevinfo;
--	struct platform_device *pdev;
--	struct sdw_intel_link_res *link;
--	struct sdw_intel_ctx *ctx;
- 	struct acpi_device *adev;
- 	int ret, i;
- 	u8 count;
--	u32 caps;
- 
--	if (acpi_bus_get_device(res->handle, &adev))
--		return NULL;
-+	if (acpi_bus_get_device(info->handle, &adev))
-+		return -EINVAL;
- 
- 	/* Found controller, find links supported */
- 	count = 0;
- 	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
- 					    "mipi-sdw-master-count", &count, 1);
- 
--	/* Don't fail on error, continue and use hw value */
-+	/*
-+	 * In theory we could check the number of links supported in
-+	 * hardware, but in that step we cannot assume SoundWire IP is
-+	 * powered.
-+	 *
-+	 * In addition, if the BIOS doesn't even provide this
-+	 * 'master-count' property then all the inits based on link
-+	 * masks will fail as well.
-+	 *
-+	 * We will check the hardware capabilities in the startup() step
-+	 */
-+
- 	if (ret) {
- 		dev_err(&adev->dev,
- 			"Failed to read mipi-sdw-master-count: %d\n", ret);
--		count = SDW_MAX_LINKS;
-+		return -EINVAL;
- 	}
- 
--	/* Check SNDWLCAP.LCOUNT */
--	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
--	caps &= GENMASK(2, 0);
--
--	/* Check HW supported vs property value and use min of two */
--	count = min_t(u8, caps, count);
--
- 	/* Check count is within bounds */
- 	if (count > SDW_MAX_LINKS) {
- 		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
- 			count, SDW_MAX_LINKS);
--		return NULL;
-+		return -EINVAL;
- 	}
- 
- 	if (!count) {
- 		dev_warn(&adev->dev, "No SoundWire links detected\n");
--		return NULL;
-+		return -EINVAL;
-+	}
-+	dev_dbg(&adev->dev, "ACPI reports %d SDW Link devices\n", count);
-+
-+	info->count = count;
-+	info->link_mask = 0;
-+
-+	for (i = 0; i < count; i++) {
-+		if (ctrl_link_mask && !(ctrl_link_mask & BIT(i))) {
-+			dev_dbg(&adev->dev,
-+				"Link %d masked, will not be enabled\n", i);
-+			continue;
-+		}
-+
-+		if (!is_link_enabled(acpi_fwnode_handle(adev), i)) {
-+			dev_dbg(&adev->dev,
-+				"Link %d not selected in firmware\n", i);
-+			continue;
-+		}
-+
-+		info->link_mask |= BIT(i);
- 	}
- 
-+	return 0;
-+}
-+
-+static struct sdw_intel_ctx
-+*sdw_intel_probe_controller(struct sdw_intel_res *res)
-+{
-+	struct platform_device_info pdevinfo;
-+	struct platform_device *pdev;
-+	struct sdw_intel_link_res *link;
-+	struct sdw_intel_ctx *ctx;
-+	struct acpi_device *adev;
-+	struct sdw_intel *sdw;
-+	u32 link_mask;
-+	int count;
-+	int i;
-+
-+	if (!res)
-+		return NULL;
-+
-+	if (acpi_bus_get_device(res->handle, &adev))
-+		return NULL;
-+
-+	if (!res->count)
-+		return NULL;
-+
-+	count = res->count;
- 	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
- 
- 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-@@ -104,19 +179,22 @@ static struct sdw_intel_ctx
- 	if (!ctx->links)
- 		goto link_err;
- 
-+	ctx->count = count;
-+	ctx->mmio_base = res->mmio_base;
-+	ctx->link_mask = res->link_mask;
-+	ctx->handle = res->handle;
-+
- 	link = ctx->links;
-+	link_mask = ctx->link_mask;
- 
- 	/* Create SDW Master devices */
--	for (i = 0; i < count; i++) {
--		if (link_mask && !(link_mask & BIT(i))) {
--			dev_dbg(&adev->dev,
--				"Link %d masked, will not be enabled\n", i);
--			link++;
-+	for (i = 0; i < count; i++, link++) {
-+		if (link_mask && !(link_mask & BIT(i)))
- 			continue;
--		}
- 
-+		link->mmio_base = res->mmio_base;
- 		link->registers = res->mmio_base + SDW_LINK_BASE
--					+ (SDW_LINK_SIZE * i);
-+			+ (SDW_LINK_SIZE * i);
- 		link->shim = res->mmio_base + SDW_SHIM_BASE;
- 		link->alh = res->mmio_base + SDW_ALH_BASE;
- 
-@@ -126,7 +204,7 @@ static struct sdw_intel_ctx
- 		memset(&pdevinfo, 0, sizeof(pdevinfo));
- 
- 		pdevinfo.parent = res->parent;
--		pdevinfo.name = "int-sdw";
-+		pdevinfo.name = "intel-sdw";
- 		pdevinfo.id = i;
- 		pdevinfo.fwnode = acpi_fwnode_handle(adev);
- 
-@@ -135,26 +213,68 @@ static struct sdw_intel_ctx
- 			dev_err(&adev->dev,
- 				"platform device creation failed: %ld\n",
- 				PTR_ERR(pdev));
--			goto pdev_err;
-+			goto err;
- 		}
--
-+		sdw = platform_get_drvdata(pdev);
-+		sdw->link_res = link;
-+		sdw->cdns.registers = sdw->link_res->registers;
- 		link->pdev = pdev;
--		link++;
- 	}
- 
- 	return ctx;
- 
--pdev_err:
--	sdw_intel_cleanup_pdev(ctx);
-+err:
-+	ctx->count = i;
-+	sdw_intel_cleanup(ctx);
- link_err:
- 	kfree(ctx);
- 	return NULL;
- }
- 
-+static int
-+sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
-+{
-+	struct acpi_device *adev;
-+	struct sdw_intel_link_res *link;
-+	u32 caps;
-+	u32 link_mask;
-+	int i;
-+
-+	if (acpi_bus_get_device(ctx->handle, &adev))
-+		return -EINVAL;
-+
-+	/* Check SNDWLCAP.LCOUNT */
-+	caps = ioread32(ctx->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
-+	caps &= GENMASK(2, 0);
-+
-+	/* Check HW supported vs property value */
-+	if (caps < ctx->count) {
-+		dev_err(&adev->dev,
-+			"BIOS master count is larger than hardware capabilities\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!ctx->links)
-+		return -EINVAL;
-+
-+	link = ctx->links;
-+	link_mask = ctx->link_mask;
-+
-+	/* Startup SDW Master devices */
-+	for (i = 0; i < ctx->count; i++, link++) {
-+		if (link_mask && !(link_mask & BIT(i)))
-+			continue;
-+
-+		intel_master_startup(link->pdev);
-+	}
-+
-+	return 0;
-+}
-+
- static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- 				     void *cdata, void **return_value)
- {
--	struct sdw_intel_res *res = cdata;
-+	struct sdw_intel_acpi_info *info = cdata;
- 	struct acpi_device *adev;
- 	acpi_status status;
- 	u64 adr;
-@@ -168,7 +288,7 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- 		return AE_NOT_FOUND;
- 	}
- 
--	res->handle = handle;
-+	info->handle = handle;
- 
- 	/*
- 	 * On some Intel platforms, multiple children of the HDAS
-@@ -185,36 +305,65 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- }
- 
- /**
-- * sdw_intel_init() - SoundWire Intel init routine
-+ * sdw_intel_acpi_scan() - SoundWire Intel init routine
-  * @parent_handle: ACPI parent handle
-- * @res: resource data
-+ * @info: description of what firmware/DSDT tables expose
-  *
-- * This scans the namespace and creates SoundWire link controller devices
-- * based on the info queried.
-+ * This scans the namespace and queries firmware to figure out which
-+ * links to enable. A follow-up use of sdw_intel_probe() and
-+ * sdw_intel_startup() is required for creation of devices and bus
-+ * startup
-  */
--void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
-+int sdw_intel_acpi_scan(acpi_handle *parent_handle,
-+			struct sdw_intel_acpi_info *info)
- {
- 	acpi_status status;
- 
- 	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
- 				     parent_handle, 1,
- 				     sdw_intel_acpi_cb,
--				     NULL, res, NULL);
-+				     NULL, info, NULL);
- 	if (ACPI_FAILURE(status))
--		return NULL;
-+		return -ENODEV;
- 
--	return sdw_intel_add_controller(res);
-+	return sdw_intel_scan_controller(info);
- }
-+EXPORT_SYMBOL(sdw_intel_acpi_scan);
- 
-+/**
-+ * sdw_intel_probe() - SoundWire Intel probe routine
-+ * @res: resource data
-+ *
-+ * This creates SoundWire Master and Slave devices below the controller.
-+ * All the information necessary is stored in the context, and the res
-+ * argument pointer can be freed after this step.
-+ */
-+struct sdw_intel_ctx
-+*sdw_intel_probe(struct sdw_intel_res *res)
-+{
-+	return sdw_intel_probe_controller(res);
-+}
-+EXPORT_SYMBOL(sdw_intel_probe);
-+
-+/**
-+ * sdw_intel_startup() - SoundWire Intel startup
-+ * @ctx: SoundWire context allocated in the probe
-+ *
-+ */
-+int sdw_intel_startup(struct sdw_intel_ctx *ctx)
-+{
-+	return sdw_intel_startup_controller(ctx);
-+}
-+EXPORT_SYMBOL(sdw_intel_startup);
- /**
-  * sdw_intel_exit() - SoundWire Intel exit
-- * @arg: callback context
-+ * @ctx: SoundWire context allocated in the probe
-  *
-  * Delete the controller instances created and cleanup
-  */
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
--	sdw_intel_cleanup_pdev(ctx);
-+	sdw_intel_cleanup(ctx);
- 	kfree(ctx);
- }
- EXPORT_SYMBOL(sdw_intel_exit);
--- 
-2.17.1
+That unfortunately requires copy_strings_kernel which has become
+copy_string_kernel to take a length.  Then I don't need to modify the
+buffer at all here.
 
+I believe binfmt_scripts is a bit unique in wanting to modify the buffer
+because it is parsing strings.
+
+The requirement is that a binfmt should not modify bprm unless it will
+succeed or fail with an error that is not -ENOEXEC.  The fundamental
+issue is that search_binary_handler will reuse bprm if -ENOEXEC is
+returned.
+
+Until the next patch there is an escape hatch by clearing and closing
+bprm->file but that goes away.  Which is why I need this patch.
+
+I guess I can see adding a comment about the general case of not
+changing bprm unless you are doing something other than returning
+-ENOEXEC and letting the search continue.
+
+Eric
+
+
+>> [...]
+>> diff --git a/fs/binfmt_script.c b/fs/binfmt_script.c
+>> index 8d718d8fd0fe..85e0ef86eb11 100644
+>> --- a/fs/binfmt_script.c
+>> +++ b/fs/binfmt_script.c
+>> @@ -71,39 +56,48 @@ static int load_script(struct linux_binprm *bprm)
+>>  	 * parse them on its own.
+>>  	 */
+>>  	buf_end = bprm->buf + sizeof(bprm->buf) - 1;
+>> -	cp = strnchr(bprm->buf, sizeof(bprm->buf), '\n');
+>> -	if (!cp) {
+>> -		cp = next_non_spacetab(bprm->buf + 2, buf_end);
+>> -		if (!cp)
+>> +	i_end = strnchr(bprm->buf, sizeof(bprm->buf), '\n');
+>> +	if (!i_end) {
+>> +		i_end = next_non_spacetab(bprm->buf + 2, buf_end);
+>> +		if (!i_end)
+>>  			return -ENOEXEC; /* Entire buf is spaces/tabs */
+>>  		/*
+>>  		 * If there is no later space/tab/NUL we must assume the
+>>  		 * interpreter path is truncated.
+>>  		 */
+>> -		if (!next_terminator(cp, buf_end))
+>> +		if (!next_terminator(i_end, buf_end))
+>>  			return -ENOEXEC;
+>> -		cp = buf_end;
+>> +		i_end = buf_end;
+>>  	}
+>> -	/* NUL-terminate the buffer and any trailing spaces/tabs. */
+>> -	*cp = '\0';
+>> -	while (cp > bprm->buf) {
+>> -		cp--;
+>> -		if ((*cp == ' ') || (*cp == '\t'))
+>> -			*cp = '\0';
+>> -		else
+>> -			break;
+>> -	}
+>> -	for (cp = bprm->buf+2; (*cp == ' ') || (*cp == '\t'); cp++);
+>> -	if (*cp == '\0')
+>> +	/* Trim any trailing spaces/tabs from i_end */
+>> +	while (spacetab(i_end[-1]))
+>> +		i_end--;
+>> +
+>> +	/* Skip over leading spaces/tabs */
+>> +	i_name = next_non_spacetab(bprm->buf+2, i_end);
+>> +	if (!i_name || (i_name == i_end))
+>>  		return -ENOEXEC; /* No interpreter name found */
+>> -	i_name = cp;
+>> +
+>> +	/* Is there an optional argument? */
+>>  	i_arg = NULL;
+>> -	for ( ; *cp && (*cp != ' ') && (*cp != '\t'); cp++)
+>> -		/* nothing */ ;
+>> -	while ((*cp == ' ') || (*cp == '\t'))
+>> -		*cp++ = '\0';
+>> -	if (*cp)
+>> -		i_arg = cp;
+>> +	i_sep = next_terminator(i_name, i_end);
+>> +	if (i_sep && (*i_sep != '\0'))
+>> +		i_arg = next_non_spacetab(i_sep, i_end);
+>> +
+>> +	/*
+>> +	 * If the script filename will be inaccessible after exec, typically
+>> +	 * because it is a "/dev/fd/<fd>/.." path against an O_CLOEXEC fd, give
+>> +	 * up now (on the assumption that the interpreter will want to load
+>> +	 * this file).
+>> +	 */
+>> +	if (bprm->interp_flags & BINPRM_FLAGS_PATH_INACCESSIBLE)
+>> +		return -ENOENT;
+>> +
+>> +	/* Release since we are not mapping a binary into memory. */
+>> +	allow_write_access(bprm->file);
+>> +	fput(bprm->file);
+>> +	bprm->file = NULL;
+>> +
+>>  	/*
+>>  	 * OK, we've parsed out the interpreter name and
+>>  	 * (optional) argument.
+>> @@ -121,7 +115,9 @@ static int load_script(struct linux_binprm *bprm)
+>>  	if (retval < 0)
+>>  		return retval;
+>>  	bprm->argc++;
+>> +	*((char *)i_end) = '\0';
+>>  	if (i_arg) {
+>> +		*((char *)i_sep) = '\0';
+>>  		retval = copy_strings_kernel(1, &i_arg, bprm);
+>>  		if (retval < 0)
+>>  			return retval;
+>
+> I think this is all correct, though I'm always suspicious of my visual
+> inspection of string parsers. ;)
+>
+> I had a worry the \n was not handled correctly in some case. I.e. before
+> any \n was converted into \0, and so next_terminator() didn't need to
+> consider \n separately. (next_non_spacetab() doesn't care since \n and \0
+> are both not ' ' nor '\t'.) For next_terminator(), though, I was worried
+> there was a case where *i_end == '\n', and next_terminator()
+> will return NULL instead of "last" due to *last being '\n' instead of
+> '\0', causing a problem, but you're using the adjusted i_end so I think
+> it's correct. And you've handled i_name == i_end.
+>
+> I will see if I can find my testing scripts I used when commit
+> b5372fe5dc84 originally landed to double-check... until then:
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
