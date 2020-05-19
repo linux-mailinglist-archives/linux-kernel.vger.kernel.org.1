@@ -2,302 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F4B1DA462
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C131DA468
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgESWUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESWUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:20:39 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0734FC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:20:39 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id f15so462523plr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qqjzSh1ztmtDYwc/MYnPY/dYSfE16wab49lYkM1PfBQ=;
-        b=Fsh2DrJuOBDMLbA4apQRID0KeanRhQiSAbTpdakI/ENJh94XscmLkvjLVV6+XZOkW3
-         eucUVxtVvrsavK61NAUg8AzSih+MeDqP2lDhozqB/PsV3iU7jq4IVUPvAnXx/WYB1AEu
-         rCvWOaUxyLDiXamwU/LAWr+51cWsMbudGo/hqlk7XmEi5gIQli+lynuVkVgMAYARLkxi
-         dj5VS7LHFE3sAYoY0FhUG5QqivxzJamv7Fvb2w2QqKPIUtuC5iUCxSzz4iwr5EtDW0cO
-         hI8W9R5cvtjBzJOjHU2iWFxrI30srcJL+vNlj076HVH/Iy78HnA3CZhU//XRojnIn9Ni
-         cjaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qqjzSh1ztmtDYwc/MYnPY/dYSfE16wab49lYkM1PfBQ=;
-        b=Vl3PDeM2mHJ09ZqTZ5fH+an3hqTkEKvNanH7Gvt2D2ZkGb+rggBNpNcqVdbMveFvGE
-         6/FmgoM5/LvvKmW8wltBgFpYY/qHRorby/Ux6UtnFolnUjFB1kOUs3CXMFAio2bNqaDx
-         OxRna/fKi9EQ+d3qR+imXQBXIzPsCAlxZFfFNDEw0nPLI++RPfkI1EwkmHD4yM+Tki7h
-         rJvgmDxZoEfVBSrWi/ap25Xj10ZCvB790MACIdX8kXg85IVB6D4senA2mI0O1qscYJUn
-         ma8RCvvT7Dsa361S5OYlI/AP4wwYGNWlISMMkXVRZXAjiVVwFqN3W57YyrIsk0kuuDWP
-         o/fA==
-X-Gm-Message-State: AOAM531IVZTVCBoDPrJ3P7Gtw079wTjZ5xImIy4zrWcorZyG4F7NhrVM
-        JX15S7wg2q1BPOQsqkwmNhJukJ9x8R8=
-X-Google-Smtp-Source: ABdhPJy2qeKYVGFiaiYmSSm3TzYMf3o3nRHsvHjU3Vrs44XNoMU4nBKRIIfLUZrvaNoGCn4Gi6Emlw==
-X-Received: by 2002:a17:90b:503:: with SMTP id r3mr1752652pjz.69.1589926838459;
-        Tue, 19 May 2020 15:20:38 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id w19sm393729pfc.95.2020.05.19.15.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 15:20:37 -0700 (PDT)
-Date:   Tue, 19 May 2020 16:20:35 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arun Kumar Neelakantam <aneela@codeaurora.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sricharan@codeaurora.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH V4 2/4] rpmsg: glink: Add support to handle signals
- command
-Message-ID: <20200519222035.GB26832@xps15>
-References: <1589346671-15226-1-git-send-email-aneela@codeaurora.org>
- <1589346671-15226-3-git-send-email-aneela@codeaurora.org>
+        id S1728015AbgESWV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:21:59 -0400
+Received: from v6.sk ([167.172.42.174]:58478 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgESWV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:21:59 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 115EA610B0;
+        Tue, 19 May 2020 22:21:26 +0000 (UTC)
+Date:   Wed, 20 May 2020 00:21:22 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: sound: Add Marvell MMP Audio Clock
+ Controller binding
+Message-ID: <20200519222122.GI1695525@furthur.local>
+References: <20200511195534.1207927-1-lkundrak@v3.sk>
+ <20200511195534.1207927-2-lkundrak@v3.sk>
+ <158949036750.215346.11234071140104055350@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589346671-15226-3-git-send-email-aneela@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <158949036750.215346.11234071140104055350@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 10:41:09AM +0530, Arun Kumar Neelakantam wrote:
-> Remote peripherals send signal notifications over glink with commandID 15.
+On Thu, May 14, 2020 at 02:06:07PM -0700, Stephen Boyd wrote:
+> Quoting Lubomir Rintel (2020-05-11 12:55:33)
+> > diff --git a/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
+> > new file mode 100644
+> > index 000000000000..b86e9fbfa56d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/marvell,mmp2-audio-clock.yaml
+> > @@ -0,0 +1,73 @@
+> > +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/marvell,mmp2-audio-clock.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Marvell MMP2 Audio Clock Controller
+> > +
+> > +maintainers:
+> > +  - Lubomir Rintel <lkundrak@v3.sk>
+> > +
+> > +description: |
+> > +  The audio clock controller generates and supplies the clocks to the audio
+> > +  codec.
+> > +
+> > +  Each clock is assigned an identifier and client nodes use this identifier
+> > +  to specify the clock which they consume.
+> > +
+> > +  All these identifiers could be found in <dt-bindings/clock/marvell,mmp2.h>.
 > 
-> Add support to send and receive the signal command and convert the signals
-> from NATIVE to TIOCM while receiving and vice versa while sending.
+> Is this right? The patch puts them in mmp2-audio.h
 > 
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
-> ---
->  drivers/rpmsg/qcom_glink_native.c | 126 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 126 insertions(+)
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - marvell,mmp2-audio-clock
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Audio subsystem clock
+> > +      - description: The crystal oscillator clock
+> > +      - description: First I2S clock
+> > +      - description: Second I2S clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: audio
+> > +      - const: vctcxo
+> > +      - const: i2s0
+> > +      - const: i2s1
+> > +
+> > +  '#clock-cells':
+> > +    const: 1
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - '#clock-cells'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/marvell,mmp2.h>
+> > +    #include <dt-bindings/power/marvell,mmp2.h>
+> > +
+> > +    clocks@d42a0c30 {
 > 
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index fc8ef66..68e039a 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> + * Copyright (c) 2018, The Linux Foundation.
+> clock-controller@d42a0c30
+> 
+> > +      compatible = "marvell,mmp2-audio-clock";
+> > +      reg = <0xd42a0c30 0x10>;
+> 
+> That is a very specific and tiny region. Presumably this is part of a
+> larger hardware block and thus shouldn't be described in DT this way.
+> Instead there should be one clock-controller node and a driver that
+> controls all the clks that it wants to inside that hardware block.
 
-Again, not sure what this is for.
+This resides in a block that's entirely separate from SoC's main clock
+controllers ("power management units"). It is inside the audio block,
+separate power island along with two I2S ("SSPA") controllers. The
+addresses are weirdly interleaved, with the clock controller being
+mapped between the two channels of the first SSPA:
 
->   * Copyright (c) 2016-2017, Linaro Ltd
->   */
->  
-> @@ -17,6 +18,7 @@
->  #include <linux/rpmsg.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
-> +#include <linux/termios.h>
->  #include <linux/workqueue.h>
->  #include <linux/mailbox_client.h>
->  
-> @@ -150,6 +152,8 @@ enum {
->   * @intent_req_lock: Synchronises multiple intent requests
->   * @intent_req_result: Result of intent request
->   * @intent_req_comp: Completion for intent_req signalling
-> + * @lsigs:	local side signals
-> + * @rsigs:	remote side signals
->   */
->  struct glink_channel {
->  	struct rpmsg_endpoint ept;
-> @@ -181,6 +185,10 @@ struct glink_channel {
->  	struct mutex intent_req_lock;
->  	bool intent_req_result;
->  	struct completion intent_req_comp;
-> +
-> +	unsigned int lsigs;
-> +	unsigned int rsigs;
-> +
->  };
->  
->  #define to_glink_channel(_ept) container_of(_ept, struct glink_channel, ept)
-> @@ -201,9 +209,15 @@ static const struct rpmsg_endpoint_ops glink_endpoint_ops;
->  #define RPM_CMD_TX_DATA_CONT		12
->  #define RPM_CMD_READ_NOTIF		13
->  #define RPM_CMD_RX_DONE_W_REUSE		14
-> +#define RPM_CMD_SIGNALS			15
->  
->  #define GLINK_FEATURE_INTENTLESS	BIT(1)
->  
-> +#define NATIVE_DTR_SIG	BIT(31)
-> +#define NATIVE_CTS_SIG	BIT(30)
-> +#define NATIVE_CD_SIG	BIT(29)
-> +#define NATIVE_RI_SIG	BIT(28)
+  0xd42a0c00 - 0xd42a0c30 SSPA1 RX
+  0xd42a0c30 - 0xd42a0c40 Clock Control
+  0xd42a0c80 - 0xd42a0cb0 SSPA1 TX
+  0xd42a0d00 - 0xd42a0d30 SSPA2 RX
+  0xd42a0d80 - 0xd42a0cb0 SSPA2 TX
 
-Please align theres with the BIT(1) of _INTENTLESS.
+Despite the addresses being interwoven in this way, the Clock Controller
+is pretty much independent of the SSPAs and deserves a separate device
+node, regardless of how tiny its range is.
 
-> +
->  static void qcom_glink_rx_done_work(struct work_struct *work);
->  
->  static struct glink_channel *qcom_glink_alloc_channel(struct qcom_glink *glink,
-> @@ -975,6 +989,76 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
->  	return 0;
->  }
->  
-> +/**
-> + * qcom_glink_send_signals() - convert a signal  cmd to wire format and transmit
-
-s/signal  cmd/signal cmd
-
-> + * @glink:	The transport to transmit on.
-> + * @channel:	The glink channel
-> + * @sigs:	The signals to encode.
-> + *
-> + * Return: 0 on success or standard Linux error code.
-> + */
-> +static int qcom_glink_send_signals(struct qcom_glink *glink,
-> +				   struct glink_channel *channel,
-> +				   u32 sigs)
-> +{
-> +	struct glink_msg msg;
-> +
-> +	/* convert signals from TIOCM to NATIVE */
-> +	sigs &= 0x0fff;
-> +	if (sigs & TIOCM_DTR)
-> +		sigs |= NATIVE_DTR_SIG;
-> +	if (sigs & TIOCM_RTS)
-> +		sigs |= NATIVE_CTS_SIG;
-> +	if (sigs & TIOCM_CD)
-> +		sigs |= NATIVE_CD_SIG;
-> +	if (sigs & TIOCM_RI)
-> +		sigs |= NATIVE_RI_SIG;
-> +
-> +	msg.cmd = cpu_to_le16(RPM_CMD_SIGNALS);
-> +	msg.param1 = cpu_to_le16(channel->lcid);
-> +	msg.param2 = cpu_to_le32(sigs);
-> +
-> +	return qcom_glink_tx(glink, &msg, sizeof(msg), NULL, 0, true);
-> +}
-> +
-> +static int qcom_glink_handle_signals(struct qcom_glink *glink,
-> +				     unsigned int rcid, unsigned int signals)
-> +{
-> +	struct glink_channel *channel;
-> +	unsigned long flags;
-> +	u32 old;
-> +
-> +	spin_lock_irqsave(&glink->idr_lock, flags);
-> +	channel = idr_find(&glink->rcids, rcid);
-> +	spin_unlock_irqrestore(&glink->idr_lock, flags);
-> +	if (!channel) {
-> +		dev_err(glink->dev, "signal for non-existing channel\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	old = channel->rsigs;
-> +
-> +	/* convert signals from NATIVE to TIOCM */
-> +	if (signals & NATIVE_DTR_SIG)
-> +		signals |= TIOCM_DSR;
-
-In qcom_glink_send_signals(), TIOCM_DTR (and not TIOCM_DSR) converts to
-NATIVE_DTR_SIG.  
-
-> +	if (signals & NATIVE_CTS_SIG)
-> +		signals |= TIOCM_CTS;
-
-Similarly, NATIVE_CTS_SIG converts to TIOCM_RTS.  I would have expected to have
-a match between what gets sent and what comes back up.  If this is intentional
-please at some comments to justify your choices.
-
-> +	if (signals & NATIVE_CD_SIG)
-> +		signals |= TIOCM_CD;
-> +	if (signals & NATIVE_RI_SIG)
-> +		signals |= TIOCM_RI;
-> +	signals &= 0x0fff;
-> +
-> +	channel->rsigs = signals;
-> +
-> +	if (channel->ept.sig_cb) {
-> +		channel->ept.sig_cb(channel->ept.rpdev, channel->ept.priv,
-> +				    old, channel->rsigs);
-
-What is the relevance of old and channel->rsigs?  They are certainly not used in
-patch 4.
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static irqreturn_t qcom_glink_native_intr(int irq, void *data)
->  {
->  	struct qcom_glink *glink = data;
-> @@ -1036,6 +1120,10 @@ static irqreturn_t qcom_glink_native_intr(int irq, void *data)
->  			qcom_glink_handle_intent_req_ack(glink, param1, param2);
->  			qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
->  			break;
-> +		case RPM_CMD_SIGNALS:
-> +			qcom_glink_handle_signals(glink, param1, param2);
-> +			qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
-> +			break;
->  		default:
->  			dev_err(glink->dev, "unhandled rx cmd: %d\n", cmd);
->  			ret = -EINVAL;
-> @@ -1340,6 +1428,42 @@ static int qcom_glink_trysend(struct rpmsg_endpoint *ept, void *data, int len)
->  	return __qcom_glink_send(channel, data, len, false);
->  }
->  
-> +static int qcom_glink_get_sigs(struct rpmsg_endpoint *ept)
-> +{
-> +	struct glink_channel *channel = to_glink_channel(ept);
-> +
-> +	return channel->rsigs;
-> +}
-> +
-> +static int qcom_glink_set_sigs(struct rpmsg_endpoint *ept, u32 set, u32 clear)
-> +{
-> +	struct glink_channel *channel = to_glink_channel(ept);
-> +	struct qcom_glink *glink = channel->glink;
-> +	u32 sigs = channel->lsigs;
-> +
-> +	if (set & TIOCM_DTR)
-> +		sigs |= TIOCM_DTR;
-> +	if (set & TIOCM_RTS)
-> +		sigs |= TIOCM_RTS;
-> +	if (set & TIOCM_CD)
-> +		sigs |= TIOCM_CD;
-> +	if (set & TIOCM_RI)
-> +		sigs |= TIOCM_RI;
-> +
-> +	if (clear & TIOCM_DTR)
-> +		sigs &= ~TIOCM_DTR;
-> +	if (clear & TIOCM_RTS)
-> +		sigs &= ~TIOCM_RTS;
-> +	if (clear & TIOCM_CD)
-> +		sigs &= ~TIOCM_CD;
-> +	if (clear & TIOCM_RI)
-> +		sigs &= ~TIOCM_RI;
-> +
-> +	channel->lsigs = sigs;
-> +
-> +	return qcom_glink_send_signals(glink, channel, sigs);
-> +}
-> +
->  /*
->   * Finds the device_node for the glink child interested in this channel.
->   */
-> @@ -1373,6 +1497,8 @@ static const struct rpmsg_endpoint_ops glink_endpoint_ops = {
->  	.destroy_ept = qcom_glink_destroy_ept,
->  	.send = qcom_glink_send,
->  	.trysend = qcom_glink_trysend,
-> +	.get_signals = qcom_glink_get_sigs,
-> +	.set_signals = qcom_glink_set_sigs,
->  };
->  
->  static void qcom_glink_rpdev_release(struct device *dev)
-> -- 
-> 2.7.4
+> > +      clock-names = "audio", "vctcxo", "i2s0", "i2s1";
+> > +      clocks = <&soc_clocks MMP2_CLK_AUDIO>,
+> > +               <&soc_clocks MMP2_CLK_VCTCXO>,
+> > +               <&soc_clocks MMP2_CLK_I2S0>,
+> > +               <&soc_clocks MMP2_CLK_I2S1>;
+> > +      power-domains = <&soc_clocks MMP2_POWER_DOMAIN_AUDIO>;
+> > +      #clock-cells = <1>;
+> > +    };
+> > diff --git a/include/dt-bindings/clock/marvell,mmp2-audio.h b/include/dt-bindings/clock/marvell,mmp2-audio.h
+> > new file mode 100644
+> > index 000000000000..127b48ec0f0a
+> > --- /dev/null
+> > +++ b/include/dt-bindings/clock/marvell,mmp2-audio.h
+> > @@ -0,0 +1,8 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause) */
+> > +#ifndef __DT_BINDINGS_CLOCK_MARVELL_MMP2_AUDIO_H
+> > +#define __DT_BINDINGS_CLOCK_MARVELL_MMP2_AUDIO_H
+> > +
+> > +#define MMP2_CLK_AUDIO_SYSCLK          1
+> 
+> Any reason to start at 1 vs. 0?
+> 
+> > +#define MMP2_CLK_AUDIO_SSPA0           2
+> > +#define MMP2_CLK_AUDIO_SSPA1           3
+> > +#endif
+> > -- 
+> > 2.26.2
+> >
