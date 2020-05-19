@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551D71D9A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D84A1D9A3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbgESOpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 10:45:34 -0400
-Received: from mx.h4ck.space ([159.69.146.50]:37726 "EHLO mx.h4ck.space"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgESOpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 10:45:31 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Tue, 19 May 2020 10:45:31 EDT
-Date:   Tue, 19 May 2020 16:38:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=notmuch.email;
-        s=mail; t=1589899096;
-        bh=Y9XZYNt+/7HUPB/P7WIrgOb1ARcvi6Rd5XCUCLuyNs0=;
-        h=Date:From:To:Subject;
-        b=vtoz3V1hUuSRbULf8tZ0J8tGKjJrqwfYb70ZRrxExO+2kdpZa+7qRUUSY45v+/0Eg
-         cFMXEB46yGiFATylC/1F7x1vS+gS0VJzbce3RfImbkp7rcB2TYzFa50Z5WCt5eGQT7
-         yF2KjHu1yQNoGHjGbRVVRagYDr4rjAuzJ00mpylk=
-From:   Andreas Rammhold <andi@notmuch.email>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Brendan Shanks <bshanks@codeweavers.com>,
-        linux-kernel@vger.kernel.org
-Subject: umip: AMD Ryzen 3900X, pagefault after emulate SLDT/SIDT instruction
-Message-ID: <20200519143815.cpsd2xfx2kl3khsq@wrt>
+        id S1728837AbgESOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 10:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgESOn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 10:43:56 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8793BC08C5C0;
+        Tue, 19 May 2020 07:43:56 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x10so5716198plr.4;
+        Tue, 19 May 2020 07:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h+eGPpRR6jS7JbQ7gKvWLA9NkPn3/BFF/n/Sa2VGbts=;
+        b=pBNoVHNQaZgmrxDCEA+MqLIeHIL92AcM9T7/grd00MyQ8mDM2qFddLWCjeM7A9CPh5
+         ty82Mu+quQqBvMGpU25lI3HoP4EMSPQTM7v0N1qPgK0iJvat0FNXjnPpq938uzYUU2fg
+         BFnwsNKhWWhvvT+7ybnSoOk2nR9b8SocPoqbBtrKGLH7t96wBz0hAm/rLPobk5f8vmda
+         EczsWjkvrU6HLpTGHZrli0HTzYXxdx7+vqeB1KAQ2Pc1RXIJoT82qJ5FoFtkSeL6tn8K
+         JABwebzTA+W/aVyWkzht7pF1cGec5cPPp71DhMXiWkOUqA1QcmsvY68fb4H/pweyu9Bj
+         XHEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h+eGPpRR6jS7JbQ7gKvWLA9NkPn3/BFF/n/Sa2VGbts=;
+        b=cYrbz3pmpSfMg2Gv39JKHnzKcrSNWvdxHoFAslum3jvkl2Hdtf1nph37uj6YqVozg9
+         TZ8mbY+Bk6+OSAEnjMBzfMvgGzyWxcPvuGgfSwBhe4uFVn1BesKp4jGuv7AuRPki0/k/
+         rvQHe4l8pTZ63pfK6PXvyOc4yEu0iz8uTto1DB496PjdxUR9gJgn+a64f7jeT0kZKvz3
+         gmpeR1iXsXPfsGtUSn7UC81Wbrj5qPX4uS+ZJ31X6G6yTugmnipIPBMENmPkF/2x2ez3
+         mAatX+1zFrgNc+VsdUtvq/2DKUfBJ0JKznd5Ir2epI7DY0CVkv3np6gy6nvnpbBOCeYm
+         Ni2g==
+X-Gm-Message-State: AOAM5322uuraSWIDdU2QFqw8yg2aEjnOWzQc0upgqx0aJk1v+GG8IPVB
+        QKpBvXd+0Z90u1bXq+hkAvwJAYee
+X-Google-Smtp-Source: ABdhPJw9Nmz3nsLfXj064B9slnbSSXBUrxrermjCTg+ltCASNzuwQY3DUsQbxIJyQesPrcxu2WcUrg==
+X-Received: by 2002:a17:90b:3650:: with SMTP id nh16mr5601271pjb.135.1589899436117;
+        Tue, 19 May 2020 07:43:56 -0700 (PDT)
+Received: from localhost ([176.122.159.242])
+        by smtp.gmail.com with ESMTPSA id j24sm10472995pga.51.2020.05.19.07.43.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 May 2020 07:43:55 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     wsa@the-dreams.de, michal.simek@xilinx.com,
+        linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v1] i2c: cadence: Add an error handling for platform_get_irq()
+Date:   Tue, 19 May 2020 22:43:21 +0800
+Message-Id: <20200519144321.27483-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The driver initialization should be end immediately after found
+the platform_get_irq() function return an error.
 
-I've been running into a weird problem with UMIP on a current Ryzen
-3900x with kernel 5.6.11 where a process receives a page fault after the
-kernel handled the SLDT (or SIDT) instruction (emulation).
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+ drivers/i2c/busses/i2c-cadence.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The program I am running is run through WINE in 32bit mode and tries to
-figure out if it is running in a VMWare machine by comparing the results
-of SLDT against well known constants (basically as shown in the
-[example] linked below).
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 89d58f7d2a25..0e8debe32cea 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -912,6 +912,8 @@ static int cdns_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(id->membase);
+ 
+ 	id->irq = platform_get_irq(pdev, 0);
++	if (id->irq < 0)
++		return id->irq;
+ 
+ 	id->adap.owner = THIS_MODULE;
+ 	id->adap.dev.of_node = pdev->dev.of_node;
+-- 
+2.25.0
 
-In dmesg I see the following log lines:
-> [99970.004756] umip: Program.exe[3080] ip:4373fb sp:32f3e0: SIDT instruction cannot be used by applications.
-> [99970.004757] umip: Program.exe[3080] ip:4373fb sp:32f3e0: For now, expensive software emulation returns the result.
-> [99970.004758] umip: Program.exe[3080] ip:437415 sp:32f3e0: SLDT instruction cannot be used by applications.
-
-Following that the process terminates with a page fault:
-> Unhandled exception: page fault on read access to 0xffffffff in 32-bit code (0x0000000000437415).
-
-Assembly at that address:
-> 0x0000000000437415: sldt    0xffffffe8(%ebp)
-
-Running the same executable on the exact same kernel (and userland) but
-on a Intel i7-8565U doesn't crash at this point. I am guessing the
-emulation is supposed to do something different on AMD CPUs?
-
-On the Ryzen the code executes successfully after setting CONFIG_X86_UMIP=n.
-
-I'd love to contriubte a patch but I have no knowledge of the inner
-workings of how UMIP actually works.
-
-Is there anything else I can provide to help debugging/fixing this? Very
-happy to test patches as well.
-
-
-[example] https://www.aldeid.com/wiki/X86-assembly/Instructions/sldt
