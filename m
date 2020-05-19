@@ -2,124 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67FC1D9C4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE7D1D9C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729410AbgESQSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        id S1729470AbgESQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728689AbgESQS1 (ORCPT
+        with ESMTP id S1729233AbgESQTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:18:27 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ACFC08C5C0;
-        Tue, 19 May 2020 09:18:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49RLf63nH3z9sT4;
-        Wed, 20 May 2020 02:18:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589905104;
-        bh=CY3Av0XXjcojShvon3BQ5YHl8W2k49JZVZyswAnM1TY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MwYYxHKUuDnHSBZhxtgLFHNLtfxLGmhlgcKg+fta6KY/OpEL93/QUPyzboVbv11Z0
-         hixZ8wNYulPuZ658qXmbC4cggt4b00FKeNC7F4uj15rpPyhAqHxvvYmfv2aMlfLLFC
-         eLQlRkFitT/joROgwGKmZzJktuQwqXbJnSJOQl39oYbCwLH9BFfMzToNvqjbxxNQnG
-         zbdJPtM3S82cZXF6LMn7Hzdx5En518H7sU6Cyf0nWMkngfc73JpS3HQABC7IJvVOQr
-         3YT907gVilqH45TCc7xz6/Uz051Zy3z5K15LfaLV2NASItaTzxstEF/xBnjjA6UgbA
-         gMGZmlNNnZMdw==
-Date:   Wed, 20 May 2020 02:18:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: linux-next: manual merge of the akpm-current tree with the tip tree
-Message-ID: <20200520021820.618f2080@canb.auug.org.au>
+        Tue, 19 May 2020 12:19:00 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E6FC08C5C0;
+        Tue, 19 May 2020 09:19:00 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id k5so319842lji.11;
+        Tue, 19 May 2020 09:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4IQNUs+IAOZ3M6C3xt5mSR7fGyKGPn6STreh82uXHT8=;
+        b=OBERDcfRI8FAFHIgb+2RoDrLZ3RqSjIUx0f17FmsGP3PnedGDy1EE/faD8/Q/Xjtmr
+         bz7Cu390LDkbNt39m5XgYLjZ2sXLvIlvQzVkVJaJE3rxuIVRMvaQQ+3ryfjsTYnAAAqG
+         eKu8QRRxpIvWhkjeW3zpASKQF/1ud3IxTxAoIYWUkVB8nbdjsMGxstdJSPHeOQzGm4mS
+         dRlOQ1vEiDuVydc1weLVCUzC02B5x2CmUQtpSgcygIrLsPoOzG7U683uM9nREVr3IuU3
+         TMd5xw3quIjF5Re6R9JTKyscUpSJEuVOveTVHcuyfjxj5rcokNE4vrNyu7/3QHZoaqIO
+         pcdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4IQNUs+IAOZ3M6C3xt5mSR7fGyKGPn6STreh82uXHT8=;
+        b=oAOXC/Ir/Poebnev80To0VeUa3I+0nFloW8eYFpfbbbl+Oox71i/iVtUpi7LSzF8Qa
+         y8i8Hi2nXbKDjjIvsqpLjJX0rvkThJ0knIvKS08HD6AUI6vjo4NxAUVJpsmzVZVtfW3G
+         KOerBoL90oufWLUO3u8dAuGciT2RXkhB9dsDcSRw63o/C4LpvVA3CCceODlvYxPYbEo4
+         XCQKNL8weB1w7gFByuuPlVn4hzDLYyBMsloxC3n9VjgTI7u7PtV9aH6s+G1a17NlgPiq
+         Zz5BMYIC7MCJyFmPpYPhUDp31rpCnmjArnTCZklPPnHYF1HSWvERQOTO77Ez+o1Tc/7i
+         0T4Q==
+X-Gm-Message-State: AOAM533ocOXamiYP+foYkjA4XsZwPtFRzztcFpT8HCh1aAqs1ant1IYI
+        wcVGyltH9WX8mq55pkyO7cI+CzVo6IOz1STlim0=
+X-Google-Smtp-Source: ABdhPJy+SObPy/MuIJoN2GIhV98nJVkMSX5lkK+Jhx7jjXaN5+FRo3IhpCUTNk+LWTbkdR6MUQW7OkZIiGW+YZY79Ic=
+X-Received: by 2002:a05:651c:3c6:: with SMTP id f6mr142261ljp.138.1589905138796;
+ Tue, 19 May 2020 09:18:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Wapk7Tq2pmfAxxXMbCct2kj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <202005181120.971232B7B@keescook> <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
+ <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
+In-Reply-To: <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 19 May 2020 09:18:47 -0700
+Message-ID: <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
+Subject: Re: seccomp feature development
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Matt Denton <mpdenton@google.com>,
+        Chris Palmer <palmer@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Wapk7Tq2pmfAxxXMbCct2kj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 18, 2020 at 7:53 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
+>
+> On 2020-05-19, Jann Horn <jannh@google.com> wrote:
+> > On Mon, May 18, 2020 at 11:05 PM Kees Cook <keescook@chromium.org> wrote:
+> > > ## deep argument inspection
+> > >
+> > > Background: seccomp users would like to write filters that traverse
+> > > the user pointers passed into many syscalls, but seccomp can't do this
+> > > dereference for a variety of reasons (mostly involving race conditions and
+> > > rearchitecting the entire kernel syscall and copy_from_user() code flows).
+> >
+> > Also, other than for syscall entry, it might be worth thinking about
+> > whether we want to have a special hook into seccomp for io_uring.
+> > io_uring is growing support for more and more syscalls, including
+> > things like openat2, connect, sendmsg, splice and so on, and that list
+> > is probably just going to grow in the future. If people start wanting
+> > to use io_uring in software with seccomp filters, it might be
+> > necessary to come up with some mechanism to prevent io_uring from
+> > permitting access to almost everything else...
+> >
+> > Probably not a big priority for now, but something to keep in mind for
+> > the future.
+>
+> Indeed. Quite a few people have raised concerns about io_uring and its
+> debug-ability, but I agree that another less-commonly-mentioned concern
+> should be how you restrict io_uring(2) from doing operations you've
+> disallowed through seccomp. Though obviously user_notif shouldn't be
+> allowed. :D
+>
+> > > The argument caching bit is, I think, rather mechanical in nature since
+> > > it's all "just" internal to the kernel: seccomp can likely adjust how it
+> > > allocates seccomp_data (maybe going so far as to have it split across two
+> > > pages with the syscall argument struct always starting on the 2nd page
+> > > boundary), and copying the EA struct into that page, which will be both
+> > > used by the filter and by the syscall.
+> >
+> > We could also do the same kind of thing the eBPF verifier does in
+> > convert_ctx_accesses(), and rewrite the context accesses to actually
+> > go through two different pointers depending on the (constant) offset
+> > into seccomp_data.
+>
+> My main worry with this is that we'll need to figure out what kind of
+> offset mathematics are necessary to deal with pointers inside the
+> extensible struct. As a very ugly proposal, you could make it so that
+> you multiply the offset by PAGE_SIZE each time you want to dereference
+> the pointer at that offset (unless we want to add new opcodes to cBPF to
+> allow us to represent this).
 
-Hi all,
+Please don't. cbpf is frozen.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+>
+> This might even be needed for seccomp user_notif -- given one of the
+> recent proposals was basically to just add two (extensible) struct
+> pointers inside the main user_notif struct.
+>
+> > > I imagine state tracking ("is
+> > > there a cached EA?", "what is the address of seccomp_data?", "what is
+> > > the address of the EA?") can be associated with the thread struct.
+> >
+> > You probably mean the task struct?
+> >
+> > > The growing size of the EA struct will need some API design. For filters
+> > > to operate on the contiguous seccomp_data+EA struct, the filter will
+> > > need to know how large seccomp_data is (more on this later), and how
+> > > large the EA struct is. When the filter is written in userspace, it can
+> > > do the math, point into the expected offsets, and get what it needs. For
+> > > this to work correctly in the kernel, though, the seccomp BPF verifier
+> > > needs to know the size of the EA struct as well, so it can correctly
+> > > perform the offset checking (as it currently does for just the
+> > > seccomp_data struct size).
+> > >
+> > > Since there is not really any caller-based "seccomp state" associated
+> > > across seccomp(2) calls, I don't think we can add a new command to tell
+> > > the kernel "I'm expecting the EA struct size to be $foo bytes", since
+> > > the kernel doesn't track who "I" is besides just being "current", which
+> > > doesn't take into account the thread lifetime -- if a process launcher
+> > > knows about one size and the child knows about another, things will get
+> > > confused. The sizes really are just associated with individual filters,
+> > > based on the syscalls they're examining. So, I have thoughts on possible
+> > > solutions:
+> > >
+> > > - create a new seccomp command SECCOMP_SET_MODE_FILTER2 which uses the
+> > >   EA style so we can pass in more than a filter and include also an
+> > >   array of syscall to size mappings. (I don't like this...)
+> > > - create a new filter flag, SECCOMP_FILTER_FLAG_EXTENSIBLE, which changes
+> > >   the meaning of the uarg from "filter" to a EA-style structure with
+> > >   sizes and pointers to the filter and an array of syscall to size
+> > >   mappings. (I like this slightly better, but I still don't like it.)
+> > > - leverage the EA design and just accept anything <= PAGE_SIZE, record
+> > >   the "max offset" value seen during filter verification, and zero-fill
+> > >   the EA struct with zeros to that size when constructing the
+> > >   seccomp_data + EA struct that the filter will examine. Then the seccomp
+> > >   filter doesn't care what any of the sizes are, and userspace doesn't
+> > >   care what any of the sizes are. (I like this as it makes the problems
+> > >   to solve contained entirely by the seccomp infrastructure and does not
+> > >   touch user API, but I worry I'm missing some gotcha I haven't
+> > >   considered.)
+> >
+> > We don't need to actually zero-fill memory for this beyond what the
+> > kernel supports - AFAIK the existing APIs already say that passing a
+> > short length is equivalent to passing zeroes, so we can just replace
+> > all out-of-bounds loads with zeroing registers in the filter.
+> > The tricky case is what should happen if the userspace program passes
+> > in fields that the filter doesn't know about. The filter can see the
+> > length field passed in by userspace, and then just reject anything
+> > where the length field is bigger than the structure size the filter
+> > knows about. But maybe it'd be slightly nicer if there was an
+> > operation for "tell me whether everything starting at offset X is
+> > zeroes", so that if someone compiles with newer kernel headers where
+> > the struct is bigger, and leaves the new fields zeroed, the syscalls
+> > still go through an outdated filter properly.
+>
+> I think the best way of handling this (without breaking programs
+> senselessly) is to have filters essentially emulate
+> copy_struct_from_user() semantics -- which is along the lines of what
+> you've suggested.
 
-  kernel/kprobes.c
+and cpbf load instruction will become copy_from_user() underneath?
+I don't see how that can work.
+Have you considered implications to jits, register usage, etc ?
 
-between commit:
-
-  4fdd88877e52 ("kprobes: Lock kprobe_mutex while showing kprobe_blacklist")
-
-from the tip tree and commit:
-
-  71294f4f8167 ("kernel/kprobes.c: convert to use DEFINE_SEQ_ATTRIBUTE macr=
-o")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/kprobes.c
-index 9622ee05f5fa,9146e1a8373b..000000000000
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@@ -2506,15 -2436,10 +2496,15 @@@ static int kprobe_blacklist_seq_show(st
-  	return 0;
-  }
- =20
- +static void kprobe_blacklist_seq_stop(struct seq_file *f, void *v)
- +{
- +	mutex_unlock(&kprobe_mutex);
- +}
- +
-- static const struct seq_operations kprobe_blacklist_seq_ops =3D {
-+ static const struct seq_operations kprobe_blacklist_sops =3D {
-  	.start =3D kprobe_blacklist_seq_start,
-  	.next  =3D kprobe_blacklist_seq_next,
- -	.stop  =3D kprobe_seq_stop,	/* Reuse void function */
- +	.stop  =3D kprobe_blacklist_seq_stop,
-  	.show  =3D kprobe_blacklist_seq_show,
-  };
- =20
-
---Sig_/Wapk7Tq2pmfAxxXMbCct2kj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7EBswACgkQAVBC80lX
-0GwmTwf/eg4rIUVcZScw6TzYzeuHYuaQitGNnan43iMaAbASnwmmGN4/e71YUz7B
-mx/XAxhL4+kFw4TQZ1ZTSdj2q5Abxorv/yhDT6esl1ZW1CLLC/vFxCqP2OeERQPs
-7zvoCfIwqv4o/nb7pDUy8p2AAqe+u0zPr5rV8q6GNy7Y2VUxZfqt7YOjCN2boFsC
-Tg92sHLOGqUIZkU1o4x6ZTqF6i5H4rPHwsTrWABb2YvsWmiqGL8OXAPEpJgqNOcW
-Vsfq4XPhVMdwnDw29XIsXx2AgFU3sawuUioEpYlRpUhLOpzLls3QstMNa7RZ4wZH
-ldxZu1lMP1xSJL8wbKvR8JWzaqzdVA==
-=MdSE
------END PGP SIGNATURE-----
-
---Sig_/Wapk7Tq2pmfAxxXMbCct2kj--
+ebpf will become sleepable soon. It will be able to do copy_from_user()
+and examine any level of user pointer dereference.
+toctou is still going to be a concern though,
+but such ebpf+copy_from_user analysis and syscall sandboxing
+will not need to change kernel code base around syscalls at all.
+No need to invent E-syscalls and all the rest I've seen in this thread.
