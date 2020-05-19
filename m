@@ -2,75 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A4C1DA07C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CF41DA083
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgESTGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:06:49 -0400
-Received: from smtprelay0092.hostedemail.com ([216.40.44.92]:60242 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726059AbgESTGs (ORCPT
+        id S1726979AbgESTHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:07:32 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3409 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESTHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:06:48 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 4C1A9182CED28;
-        Tue, 19 May 2020 19:06:47 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7901:7903:7974:9025:9040:10004:10400:10848:11232:11658:11914:12043:12262:12297:12438:12663:12679:12740:12760:12895:13069:13311:13357:13439:14180:14181:14659:14721:14777:21080:21325:21365:21433:21451:21627:21660:21788:21819:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: cave79_0e050da26d0f
-X-Filterd-Recvd-Size: 1827
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 19 May 2020 19:06:46 +0000 (UTC)
-Message-ID: <f723cce2bcbccbfdf6ebc80d1e68ba4fe10c2aee.camel@perches.com>
-Subject: Re: git-send-email: Ability to populate CC using more tags
-From:   Joe Perches <joe@perches.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        gitster@pobox.com
-Cc:     git@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <rv@rasmusvillemoes.dk>
-Date:   Tue, 19 May 2020 12:06:45 -0700
-In-Reply-To: <20200519184041.GB4397@Mani-XPS-13-9360>
-References: <20200519184041.GB4397@Mani-XPS-13-9360>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Tue, 19 May 2020 15:07:31 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec42e670000>; Tue, 19 May 2020 12:07:19 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 19 May 2020 12:07:31 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 19 May 2020 12:07:31 -0700
+Received: from [10.2.164.184] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 May
+ 2020 19:07:30 +0000
+Subject: Re: [PATCH v1] sdhci: tegra: Remove warnings about missing
+ device-tree properties
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200516154314.14769-1-digetx@gmail.com>
+ <CAPDyKFo_Xp-zipqE26iMv4CFwUoMCQZy3Zr63Cp=uzePgWX7BA@mail.gmail.com>
+ <b634e7a5-9a30-3bd1-126d-be62e4dd73e1@gmail.com>
+ <20200519162444.GD2113674@ulmo>
+ <b4eb368e-adc2-7b77-3ae9-fefdcfddaf3d@gmail.com>
+ <11c93dac-f5ba-2193-6f44-63af27fdce09@nvidia.com>
+ <aed72c87-0e16-6dea-a4e2-7fc6a97cd313@nvidia.com>
+Message-ID: <c7469c16-f6f1-f9c0-566f-3b1d3774f130@nvidia.com>
+Date:   Tue, 19 May 2020 12:07:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <aed72c87-0e16-6dea-a4e2-7fc6a97cd313@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1589915239; bh=s6uam05ArM6BiI5b00L7hD1ybeok2Wgo9Vnh25tsBjM=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=qvZKjOCiZVe0c1lxZxtvzU8OQFU8m9bPfOb325PbIRH/WOZxSygAS61Rw23ZCM2Uk
+         f2O4vgzWe5Dt82fS2qx6+DmV+jHKxd9IkMf75U2eXOKLE6+Kiy8fwHhJZrMu328LmN
+         h508L3CC0IS4KmCFV1rD/stVZTyfNeafTa7mJXUy5U0U8jQNVuPhV5UoAQKRqOOv1f
+         /yIH4QVNzI+7CnZy9WlGIZ8doptV/Qfyo6ZKaR4gNGudqhw/Hfa5Kx0uUHnmAmhYV4
+         ysirI+fHK3Kuo/ESILzbxBTqeRoptlEghRLOec8ulWdMg1WYT+HJOX9aKx5D/UL91c
+         T2o/jte13E0tQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-05-20 at 00:10 +0530, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> Currently 'git-send-email' lacks the ability to CC people described using
-> tags such as Acked-by and Reported-by etc...
-> 
-> While doing a bit of googling, I found a patch from Joe [1] but that doesn't
-> look like made its way. And in that discussion I didn't see any real objections
-> for the patch intention apart from the usage of the term 'trailers'.
-> 
-> So I'm just curious if Joe or anyone has plan to resubmit it! If not I may
-> do that.
-> 
-> PS: 'bylines' as mentioned by Joe seems reasonable to me.
-> 
-> Thanks,
-> Mani
-> 
-> [1] https://lkml.org/lkml/2016/8/30/650
 
-You need to use the "--misc-by" option.
+On 5/19/20 11:41 AM, Sowjanya Komatineni wrote:
+>
+> On 5/19/20 11:34 AM, Sowjanya Komatineni wrote:
+>>
+>> On 5/19/20 9:33 AM, Dmitry Osipenko wrote:
+>>> 19.05.2020 19:24, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>> On Tue, May 19, 2020 at 05:05:27PM +0300, Dmitry Osipenko wrote:
+>>>>> 19.05.2020 10:28, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>> On Sat, 16 May 2020 at 17:44, Dmitry Osipenko <digetx@gmail.com>=20
+>>>>>> wrote:
+>>>>>>> Several people asked me about the MMC warnings in the KMSG log and
+>>>>>>> I had to tell to ignore them because these warning are=20
+>>>>>>> irrelevant to
+>>>>>>> pre-Tegra210 SoCs.
+>>>>>> Why are the warnings irrelevant?
+>>>>> That's what the DT binding doc says [1].
+>>>>>
+>>>>> [1]
+>>>>> https://www.kernel.org/doc/Documentation/devicetree/bindings/mmc/nvid=
+ia%2Ctegra20-sdhci.txt=20
+>>>>>
+>>>>>
+>>>>> Although, looking at the driver's code and TRM docs, it seems that=20
+>>>>> all
+>>>>> those properties are really irrelevant only to the older Terga20=20
+>>>>> SoC. So
+>>>>> the binding doc is a bit misleading.
+>>>>>
+>>>>> Nevertheless, the binding explicitly says that the properties are
+>>>>> optional, which is correct.
+>>>> Optional only means that drivers must not fail if these properties
+>>>> aren't found, it doesn't mean that the driver can't warn that they
+>>>> are missing.
+>>>>
+>>>> Quite possibly the only reason why they were made optional is because
+>>>> they weren't part of the bindings since the beginning. Anything added
+>>>> to a binding after the first public release has to be optional by
+>>>> definition, otherwise DT ABI wouldn't be stable.
+>>>>
+>>>> I think these warnings were added on purpose, though I also see that
+>>>> there are only values for these in device tree for Tegra186 and=20
+>>>> Tegra194
+>>>> but not Tegra210 where these should also be necessary.
+>>
+>> dt binding doc we have is common for MMC, SD and SDIO of all Tegras.=20
+>> Its not mandatory to have both 3v3 and 1v8 in device tree as based on=20
+>> signal mode.
+>>
+>> As these driver strengths are SoC specific, they are part of Tegra=20
+>> SoC specific device tree where same values will be applicable to all=20
+>> Tegra SoC specific platforms.
+>>
+>> Based on interface usage on platform, we use one or both of them like=20
+>> sdcard supports dual voltage and we use both 3V3 and 1V8 but if same=20
+>> interface is used for WIFI SD we use 1V8 only.
+>>
+>> So made these dt properties as optional.
+>>
+>> Other reason they are optional is, Tegra210 and prior has drive=20
+>> strength settings part of apb_misc and Tegra186 and later has driver=20
+>> strengths part of SDMMC controller. So,
+>>
+>> - Pinctrls "sdmmc-3v3-drv" and "sdmmc-1v8-drv" for driver strengths=20
+>> are applicable for Tegra210 and prior.
+>> - dt properties pad-autocal-pull-up/down-offset-1v8/3v3-timeout are=20
+>> for T186 onwards for driver strengths
+>>
+>> Looks like dt binding doc need fix to clearly document these based on=20
+>> SoC or agree with Yaml we can conditionally specify pinctrl or dt=20
+>> properties based on SoC dependent.
+>>
+>>
+>>>> Adding Sowjanya who wrote this code. Perhaps she can clarify why the
+>>>> warnings were added. If these values /should/ be there on a subset of
+>>>> Tegra, then I think we should keep them, or add them again, but=20
+>>>> perhaps
+>>>> add a better way of identifying when they are necessary and when it is
+>>>> safe to work without them.
+>>>>
+>>>> That said, looking at those checks I wonder if they are perhaps just
+>>>> wrong. Or at the very least they seem redundant. It looks to me like
+>>>> they can just be:
+>>>>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0if (tegra_host->pinctrl_state_XYZ =3D=3D NULL)=
+ {
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0}
+>>>>
+>>>> That !IS_ERR(...) doesn't seem to do anything. But in that case, it's
+>>>> also obvious why we're warning about them on platforms where these
+>>>> properties don't exist in DT.
+>>
+>> As drive strengths are through dt properties for T186 and later and=20
+>> thru pinctrl for T210 and prior, driver first checks for dt autocal=20
+>> timeout pull-up/down properties and if they are not found, it then=20
+>> checks for presence of pinctrl_state_xyx_drv only when valid=20
+>> pinctrl_state_xyz is present.
+>>
+>> Driver expects either pinctrl or dt properties and shows warning when=20
+>> neither of them are present as its mandatory to use fixed driver=20
+>> strengths when auto calibration fails.
+>>
+>> =C2=A0=C2=A0=C2=A0 err =3D device_property_read_u32(host->mmc->parent,
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 "nvidia,pad-aut=
+ocal-pull-down-offset-3v3-timeout",
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 &autocal->pull_=
+down_3v3_timeout);
+>> =C2=A0=C2=A0=C2=A0 if (err) {
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (!IS_ERR(tegra_host->pinctrl_st=
+ate_3v3) &&
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 (tegra_host->pi=
+nctrl_state_3v3_drv =3D=3D NULL))
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 pr_warn("%s: Mi=
+ssing autocal timeout 3v3-pad drvs\n",
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
+=A0 mmc_hostname(host->mmc));
+>> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 autocal->pull_down_3v3_timeout =3D=
+ 0;
+>> =C2=A0=C2=A0=C2=A0 }
+>>
+>>>>
+>>>> So I think we either need to add those values where appropriate so=20
+>>>> that
+>>>> the warning doesn't show, or we need to narrow down where they are
+>>>> really needed and add a corresponding condition.
+>>>>
+>>>> But again, perhaps Sowjanya can help clarify if these really are only
+>>>> needed on Tegra210 and later or if these also apply to older chips.
+>>> Either way will be cleaner to convert the DT binding to YAML rather=20
+>>> than
+>>> clutter the driver, IMO.
+>>>
+>>
+>>
+>>
+> Auto calibration is present from Tegra30 onward and looking into=20
+> change where autocalibration was added to sdhci driver somehow it was=20
+> enabled only for T30/T210/T186/T194.
+>
+> tegra_sdhci_parse_pad_autocal_dt() was added when auto-calibration was=20
+> added to driver and I see this dt parse is being done irrespective of=20
+> NVQUIRK_HAS_PADCALIB quirk so even on platforms without auto cal=20
+> enabled in driver, these messages shows up.
+>
+> This should be fixed in driver to allow=20
+> tegra_sdhci_parse_pad_autocal_dt() only when NVQUIRK_HAS_PADCALIB is=20
+> set to avoid dt parsing to happen on platforms that don't have auto=20
+> cal enabled.
 
-Perhaps you need to update your git version
-as that was added with:
+Warning on missing drive strengths when auto cal is enabled should be=20
+present as we should switch to fixed recommended drive strengths when=20
+auto cal fails.
 
-commit ef0cc1df90f6b6c2987ab2db8e0ccf2cfc421edf
-Author: Rasmus Villemoes <rv@rasmusvillemoes.dk>
-Date:   Tue Oct 16 09:39:23 2018 +0200
+So probably proper fix should be
 
-send-email: also pick up cc addresses from -by trailers
+- allow tegra_sdhci_parse_pad_autocal_dt() only when=20
+NVQUIRK_HAS_PADCALIB is set
 
+- current driver sets NVQUIRK_HAS_PADCALIB for T30 as well so need to=20
+add pinctrls "sdmmc-3v3-drv" and "sdmmc-1v8-drv" to Tegra30 device tree.
+
+- Keep warning message of missing auto cal timeouts as its mandatory to=20
+use fixed recommended driver strengths when auto cal fails.
 
