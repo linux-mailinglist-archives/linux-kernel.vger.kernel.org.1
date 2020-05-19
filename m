@@ -2,170 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D291DA516
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A891DA51A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgESXBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgESXB3 (ORCPT
+        id S1727995AbgESXD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:03:29 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:39054 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgESXD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:01:29 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0C4C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:01:28 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id o24so1327229oic.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=npvWnReb2IJt3VMAmxpMhac7mlmWW3J/lX24SrgS9qE=;
-        b=UOcCbH88owtzIRMNcPE+vdkyIkUinAEqPG/2YOPPDTTUWNJRr1tgJdTZlr0vWZgJGW
-         yMEPgA/E7XaOt0KFHP+BLdJZWh3BqrXHdORvRWc7/00F6kdrdK9wmiaR1ixpDzDBn91V
-         JDrLsJZoYRkuGucu7UUe46PhrZjYmm6C4BcrA=
+        Tue, 19 May 2020 19:03:29 -0400
+Received: by mail-il1-f195.google.com with SMTP id c20so1174170ilk.6;
+        Tue, 19 May 2020 16:03:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=npvWnReb2IJt3VMAmxpMhac7mlmWW3J/lX24SrgS9qE=;
-        b=F+mqP5KaqkgGeXzA8O1/1zYuB42v8dkRtM+8xq0AHIeqD7D/l52Bbs3dbm2EMVssi+
-         GuTBl7ib68Sku1RIyP8bAMRRgB3KMVYYP3Du30yMUk6OP76Ruu/vfwxziNgZu3gQrS5Q
-         Efry+ajCRnRPAA1rBNTopXy/af8sr53loYU5ZgDuboZiJy4kiayPNUZ7b+tGUlBkE15P
-         Gbc5N7gOufhhbFuCWDPqQnDVAY7rvi+a13MuWHvdscbOlrNRWqhTJEMM+ukDRtqNgUk8
-         PY9RdGXt/scItN202UZCJR3xnuPFSXl4DPBZV5QAzJDWL6qE5mL19YBB4TcL7qeng9Or
-         4Pgg==
-X-Gm-Message-State: AOAM532vdJ/ravWxVvkpsePicE09hIylujFomoBULmFpyOAOoTCjFdR7
-        6M+Vd0HWbm+VpHYSQCm3ZsavPuLHSxkAU9woRKU/BA==
-X-Google-Smtp-Source: ABdhPJzSeSchW1yQuuAJC6w8IpTar3IEvAnrtbLequiDAv30+NoQ1PDJ2Oj/ZnR5ghBhUq8zNh/OM7ccdGUffFcjoNM=
-X-Received: by 2002:aca:1e12:: with SMTP id m18mr1294095oic.128.1589929288064;
- Tue, 19 May 2020 16:01:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YYKFcBn0SXqCqC3JTj/787nlEe7iveNyNWOYE196YMU=;
+        b=Xbf0jlX6sHLBrqwwJbTOMOoYtl/ZUk4SxbhnMVvDRX0TALwNtvEtw8ojFgKp6hIlro
+         /osxA4Fnkp7Fs5XcrO8V7gXoY0p1Lcy5JvUhyF77ekwsqWMz7B1gCunk/EI5AoZmg7+n
+         33e8hah6Kwb/YCX6aI00f0Vq7ryp9eprXsx6JNMF40kAck2rqw5VMgebXTF4T/Or34mQ
+         mmljt8saimpHgfVZnvmKgTJySJr/As+EQNKtIyDBv+LOJWazH5uRPr5vrmGSL1Slc9g+
+         QEUCj1MeUH7m42qSbqiyjBuEucrW+o8V4mZ+1BaGkqU8W5xvunVZ2Ac3axaCeb7xgd4o
+         yHEQ==
+X-Gm-Message-State: AOAM532B8XwHIJtR2wEYmIrnvYsrR7K1dgxxtdZWgXmsjxd7M9YX+ReR
+        RfS1OyCJ5d+HUnGXRJtVaA==
+X-Google-Smtp-Source: ABdhPJxrdBDMRZsMfXlcAqqKCF6SJxDXpeObfQ7NHHULwBA3poGnWuC12jMRJg/9rKFDPnbTK5zxqw==
+X-Received: by 2002:a92:2801:: with SMTP id l1mr1515644ilf.132.1589929407929;
+        Tue, 19 May 2020 16:03:27 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id h10sm412676ioe.3.2020.05.19.16.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 16:03:27 -0700 (PDT)
+Received: (nullmailer pid 857175 invoked by uid 1000);
+        Tue, 19 May 2020 23:03:26 -0000
+Date:   Tue, 19 May 2020 17:03:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Warren <swarren@wwwdotorg.org>
+Cc:     Mian Yousaf Kaukab <ykaukab@suse.de>, robin.murphy@arm.com,
+        devicetree@vger.kernel.org, talho@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, afaerber@suse.de,
+        arnd@arndb.de, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 2/4] dt-bindings: sram: add documentation for
+ reserved-only flag
+Message-ID: <20200519230326.GA827289@bogus>
+References: <20200512144803.24344-1-ykaukab@suse.de>
+ <20200512144803.24344-2-ykaukab@suse.de>
+ <52f099e4-5c03-2141-f049-cd3adeb04c5b@wwwdotorg.org>
+ <20200513104127.GA2309@suse.de>
+ <efcc6b5e-423c-8ae1-8a46-d6a06c1a1bab@wwwdotorg.org>
 MIME-Version: 1.0
-References: <20200519163234.226513-1-sashal@kernel.org> <CAPM=9txZpiCGkv3jiBC1F8pTe4A2pqWpQDyjRBXk2roFqw+0+Q@mail.gmail.com>
-In-Reply-To: <CAPM=9txZpiCGkv3jiBC1F8pTe4A2pqWpQDyjRBXk2roFqw+0+Q@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 20 May 2020 01:01:16 +0200
-Message-ID: <CAKMK7uEa0FH5_AyopVH+wpAXOOxoeo8Acck2qwzzyVnq0UuSZA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] DirectX on Linux
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-hyperv@vger.kernel.org,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "Ursulin, Tvrtko" <tvrtko.ursulin@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        spronovo@microsoft.com,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        iourit@microsoft.com,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <efcc6b5e-423c-8ae1-8a46-d6a06c1a1bab@wwwdotorg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:42 AM Dave Airlie <airlied@gmail.com> wrote:
->
-> On Wed, 20 May 2020 at 02:33, Sasha Levin <sashal@kernel.org> wrote:
-> >
-> > There is a blog post that goes into more detail about the bigger
-> > picture, and walks through all the required pieces to make this work. It
-> > is available here:
-> > https://devblogs.microsoft.com/directx/directx-heart-linux . The rest of
-> > this cover letter will focus on the Linux Kernel bits.
-> >
-> > Overview
-> > ========
-> >
-> > This is the first draft of the Microsoft Virtual GPU (vGPU) driver. The
-> > driver exposes a paravirtualized GPU to user mode applications running
-> > in a virtual machine on a Windows host. This enables hardware
-> > acceleration in environment such as WSL (Windows Subsystem for Linux)
-> > where the Linux virtual machine is able to share the GPU with the
-> > Windows host.
-> >
-> > The projection is accomplished by exposing the WDDM (Windows Display
-> > Driver Model) interface as a set of IOCTL. This allows APIs and user
-> > mode driver written against the WDDM GPU abstraction on Windows to be
-> > ported to run within a Linux environment. This enables the port of the
-> > D3D12 and DirectML APIs as well as their associated user mode driver to
-> > Linux. This also enables third party APIs, such as the popular NVIDIA
-> > Cuda compute API, to be hardware accelerated within a WSL environment.
-> >
-> > Only the rendering/compute aspect of the GPU are projected to the
-> > virtual machine, no display functionality is exposed. Further, at this
-> > time there are no presentation integration. So although the D3D12 API
-> > can be use to render graphics offscreen, there is no path (yet) for
-> > pixel to flow from the Linux environment back onto the Windows host
-> > desktop. This GPU stack is effectively side-by-side with the native
-> > Linux graphics stack.
->
-> Okay I've had some caffiene and absorbed some more of this.
->
-> This is a driver that connects a binary blob interface in the Windows
-> kernel drivers to a binary blob that you run inside a Linux guest.
-> It's a binary transport between two binary pieces. Personally this
-> holds little of interest to me, I can see why it might be nice to have
-> this upstream, but I don't forsee any other Linux distributor ever
-> enabling it or having to ship it, it's purely a WSL2 pipe. I'm not
-> saying I'd be happy to see this in the tree, since I don't see the
-> value of maintaining it upstream, but it probably should just exists
-> in a drivers/hyperv type area.
+On Tue, May 19, 2020 at 10:16:43AM -0600, Stephen Warren wrote:
+> On 5/13/20 4:41 AM, Mian Yousaf Kaukab wrote:
+> > On Tue, May 12, 2020 at 01:45:28PM -0600, Stephen Warren wrote:
+> >> On 5/12/20 8:48 AM, Mian Yousaf Kaukab wrote:
+> >>> Add documentation for the new optional flag added for SRAM driver.
+> >>
+> >>> diff --git a/Documentation/devicetree/bindings/sram/sram.yaml b/Documentation/devicetree/bindings/sram/sram.yaml
+> >>
+> >>> +  reserved-only:
+> >>> +    description:
+> >>> +      The flag indicating, that only SRAM reserved regions have to be remapped.
+> >>> +      remapping type is selected depending upon no-memory-wc as usual.
+> >>> +    type: boolean
+> >>
+> >> This feels a bit like a SW flag rather than a HW description, so I'm not
+> >> sure it's appropriate to put it into DT.
+> > 
+> > Reserved regions themselves are software descriptions, no? Then we have 'pool'
+> > flag which is again a software flag and so on. This flag falls into same
+> > category and nothing out of ordinary.
+> 
+> I suppose that's true to some extent. This is indeed a description of
+> the system environment presented to the SW that consumes the DT, which
+> is a bit more than pure HW description but still a description of
+> something imposed externally rather than describing something that's up
+> to the discretion of the consuming SW. So, go ahead.
+> 
+> >> Are there any cases where the SW should map all of the SRAM, i.e. where
+> >> we wouldn't expect to set reserved-only? [...]
+> > 
+> > Yes, here are a few examples:
+> > arch/arm/boot/dts/aspeed-g*.dtsi
+> > arch/arm/boot/dts/at91*.dtsi
+> > arch/arm/boot/dts/bcm7445.dtsi
+> > Then arch/arm/boot/dts/dra7.dtsi is an example where we should map everything
+> > except the reserved region.
+> > 
+> >> [...] I'd expect reserved-only to be
+> >> the default, and perhaps only, mode of operation for the SRAM driver.
+> > 
+> > It will break compatibility with existing dtbs.
+> > 
+> >> If we can't do that because some SW currently expects to be able to map
+> >> arbitrary portions of the SRAM, shouldn't that SW be fixed to tell the
+> >> SRAM driver which parts it's using, hence still allowing the driver to
+> >> only map in-use portions?
+> > 
+> > User doesn’t need sram driver in that case. It can use genalloc api directly.
+> 
+> This sounds a bit odd. Without a driver for the reserved region, nothing
+> should be touching it, since otherwise there's no code that owns an
+> manages the region. If any code needs to consume the region, it should
+> obtain info about the region from some form of provider code that can
+> handle both the allocation and mapping. Anything else sounds like some
+> consumer code directly making use of DT nodes it doesn't own. But since
+> I'm not familiar enough with the SRAM driver and genalloc code that you
+> mention to fully understand the allocation paths I guess I won't object
+> for now, although it does still sound fishy.
 
-Yup as-is (especially with the goal of this being aimed at ml/compute
-only) drivers/hyperv sounds a bunch more reasonable than drivers/gpu.
+I'm fine with the concept, but I don't think a single flag is adequate. 
+If there are reserved regions within the SRAM, then define child nodes 
+to mark those regions reserved. I don't think you need a new flag. Just 
+a 'reg' property and nothing else.
 
-> Having said that, I hit one stumbling block:
-> "Further, at this time there are no presentation integration. "
->
-> If we upstream this driver as-is into some hyperv specific place, and
-> you decide to add presentation integration this is more than likely
-> going to mean you will want to interact with dma-bufs and dma-fences.
-> If the driver is hidden away in a hyperv place it's likely we won't
-> even notice that feature landing until it's too late.
-
-I've recently added regex matches to MAINTAINERS so we'll see
-dma_buf/fence/anything show up on dri-devel. So that part is solved
-hopefully.
-
-> I would like to see a coherent plan for presentation support (not
-> code, just an architectural diagram), because I think when you
-> contemplate how that works it will change the picture of how this
-> driver looks and intergrates into the rest of the Linux graphics
-> ecosystem.
-
-Yeah once we have the feature-creep to presentation support all the
-integration fun starts, with all the questions about "why does this
-not look like any other linux gpu driver". We have that already with
-nvidia insisting they just can't implement any of the upstream gpu
-uapi we have, but at least they're not in-tree, so not our problem
-from an upstream maintainership pov.
-
-But once this dx12 pipe is landed and then we want to extend it it's
-still going to have all the "we can't ever release the sources to any
-of the parts we usually expect to be open for gpu drivers in upstream"
-problems. Then we're stuck at a rather awkward point of why one vendor
-gets an exception and all the others dont.
-
-> As-is I'd rather this didn't land under my purview, since I don't see
-> the value this adds to the Linux ecosystem at all, and I think it's
-> important when putting a burden on upstream that you provide some
-> value.
-
-Well there is some in the form of "more hw/platform support". But
-given that gpus evolved rather fast, including the entire integration
-ecosystem (it's by far not just the hw drivers that move quickly). So
-that value deprecates a lot faster than for other kernel subsystems.
-And all that's left is the pain of not breaking anything without
-actually being able to evolve the overall stack in any meaningful way.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Rob
