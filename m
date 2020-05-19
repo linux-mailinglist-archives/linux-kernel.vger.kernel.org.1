@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A0C1DA22F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8F21DA228
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgESUCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S1727835AbgEST61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgEST60 (ORCPT
+        with ESMTP id S1726369AbgEST6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:26 -0400
+        Tue, 19 May 2020 15:58:25 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E314C08C5C1;
-        Tue, 19 May 2020 12:58:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE9CC08C5C3;
+        Tue, 19 May 2020 12:58:25 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8NZ-0008AT-Ay; Tue, 19 May 2020 21:58:21 +0200
+        id 1jb8NY-00089p-HJ; Tue, 19 May 2020 21:58:20 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 02EAF1C0480;
-        Tue, 19 May 2020 21:58:21 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 250731C0480;
+        Tue, 19 May 2020 21:58:20 +0200 (CEST)
 Date:   Tue, 19 May 2020 19:58:20 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Convert Debug exception to IDTENTRY_DB
+Subject: [tip: x86/entry] x86/idtentry: Provide IDTRENTRY_NOIST variants for
+ #DB and #MC
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505135314.900297476@linutronix.de>
-References: <20200505135314.900297476@linutronix.de>
+In-Reply-To: <20200505135315.084882104@linutronix.de>
+References: <20200505135315.084882104@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991830089.17951.4794971518476962359.tip-bot2@tip-bot2>
+Message-ID: <158991830005.17951.1353363997980016294.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,250 +53,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     c087b87b1469166dbb0d757c7d79fecf14a90a0a
-Gitweb:        https://git.kernel.org/tip/c087b87b1469166dbb0d757c7d79fecf14a90a0a
+Commit-ID:     97f4e8b75a99efc7376b6c7b5bc2a3124f609bc1
+Gitweb:        https://git.kernel.org/tip/97f4e8b75a99efc7376b6c7b5bc2a3124f609bc1
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 25 Feb 2020 23:33:26 +01:00
+AuthorDate:    Tue, 25 Feb 2020 23:33:28 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:04:11 +02:00
+CommitterDate: Tue, 19 May 2020 16:04:12 +02:00
 
-x86/entry: Convert Debug exception to IDTENTRY_DB
+x86/idtentry: Provide IDTRENTRY_NOIST variants for #DB and #MC
 
-Convert #DB to IDTENTRY_ERRORCODE:
-  - Implement the C entry point with DEFINE_IDTENTRY_DB
-  - Emit the ASM stub with DECLARE_IDTENTRY
-  - Remove the ASM idtentry in 64bit
-  - Remove the open coded ASM entry code in 32bit
-  - Fixup the XEN/PV code
-  - Remove the old prototypes
-
-No functional change.
+Provide NOIST entry point macros which allows to implement NOIST variants
+of the C entry points. These are invoked when #DB or #MC enter from user
+space. This allows explicit handling of the difference between user mode
+and kernel mode entry later.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505135314.900297476@linutronix.de
+Link: https://lkml.kernel.org/r/20200505135315.084882104@linutronix.de
 
 
 ---
- arch/x86/entry/entry_32.S       | 10 ----------
- arch/x86/entry/entry_64.S       |  2 --
- arch/x86/include/asm/idtentry.h |  4 ++++
- arch/x86/include/asm/traps.h    |  3 ---
- arch/x86/kernel/idt.c           |  8 ++++----
- arch/x86/kernel/traps.c         | 21 +++++++++++++--------
- arch/x86/xen/enlighten_pv.c     |  2 +-
- arch/x86/xen/xen-asm_64.S       |  4 ++--
- 8 files changed, 24 insertions(+), 30 deletions(-)
+ arch/x86/include/asm/idtentry.h | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index d4961ca..30c6ed3 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -1488,16 +1488,6 @@ ret_to_user:
- 	jmp	restore_all_switch_stack
- SYM_CODE_END(handle_exception)
- 
--SYM_CODE_START(debug)
--	/*
--	 * Entry from sysenter is now handled in common_exception
--	 */
--	ASM_CLAC
--	pushl	$0
--	pushl	$do_debug
--	jmp	common_exception
--SYM_CODE_END(debug)
--
- SYM_CODE_START(double_fault)
- 1:
- 	/*
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 3d7f2cc..f47629a 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1074,12 +1074,10 @@ apicinterrupt IRQ_WORK_VECTOR			irq_work_interrupt		smp_irq_work_interrupt
- 
- idtentry	X86_TRAP_PF		page_fault		do_page_fault			has_error_code=1
- 
--idtentry_mce_db	X86_TRAP_DB		debug			do_debug
- idtentry_df	X86_TRAP_DF		double_fault		do_double_fault
- 
- #ifdef CONFIG_XEN_PV
- idtentry	512 /* dummy */		hypervisor_callback	xen_do_hypervisor_callback	has_error_code=0
--idtentry	X86_TRAP_DB		xendebug		do_debug			has_error_code=0
- #endif
- 
- /*
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 1f067e6..fcd4230 100644
+index fcd4230..060f9e3 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -262,4 +262,8 @@ DECLARE_IDTENTRY_MCE(X86_TRAP_MC,	exc_machine_check);
- DECLARE_IDTENTRY_NMI(X86_TRAP_NMI,	exc_nmi);
- DECLARE_IDTENTRY_XEN(X86_TRAP_NMI,	nmi);
- 
-+/* #DB */
-+DECLARE_IDTENTRY_DEBUG(X86_TRAP_DB,	exc_debug);
-+DECLARE_IDTENTRY_XEN(X86_TRAP_DB,	debug);
-+
- #endif
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 57b83ae..9bd602d 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -11,7 +11,6 @@
- 
- #define dotraplinkage __visible
- 
--asmlinkage void debug(void);
- #ifdef CONFIG_X86_64
- asmlinkage void double_fault(void);
- #endif
-@@ -19,12 +18,10 @@ asmlinkage void page_fault(void);
- asmlinkage void async_page_fault(void);
- 
- #if defined(CONFIG_X86_64) && defined(CONFIG_XEN_PV)
--asmlinkage void xen_xendebug(void);
- asmlinkage void xen_double_fault(void);
- asmlinkage void xen_page_fault(void);
- #endif
- 
--dotraplinkage void do_debug(struct pt_regs *regs, long error_code);
- dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsigned long cr2);
- dotraplinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code, unsigned long address);
- 
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index d3fecd8..ddf3f3d 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -59,7 +59,7 @@ static bool idt_setup_done __initdata;
-  * stacks work only after cpu_init().
-  */
- static const __initconst struct idt_data early_idts[] = {
--	INTG(X86_TRAP_DB,		debug),
-+	INTG(X86_TRAP_DB,		asm_exc_debug),
- 	SYSG(X86_TRAP_BP,		asm_exc_int3),
- #ifdef CONFIG_X86_32
- 	INTG(X86_TRAP_PF,		page_fault),
-@@ -93,7 +93,7 @@ static const __initconst struct idt_data def_idts[] = {
- #else
- 	INTG(X86_TRAP_DF,		double_fault),
- #endif
--	INTG(X86_TRAP_DB,		debug),
-+	INTG(X86_TRAP_DB,		asm_exc_debug),
- 
- #ifdef CONFIG_X86_MCE
- 	INTG(X86_TRAP_MC,		asm_exc_machine_check),
-@@ -164,7 +164,7 @@ static const __initconst struct idt_data early_pf_idts[] = {
-  * stack set to DEFAULT_STACK (0). Required for NMI trap handling.
-  */
- static const __initconst struct idt_data dbg_idts[] = {
--	INTG(X86_TRAP_DB,	debug),
-+	INTG(X86_TRAP_DB,		asm_exc_debug),
- };
- #endif
- 
-@@ -185,7 +185,7 @@ gate_desc debug_idt_table[IDT_ENTRIES] __page_aligned_bss;
-  * cpu_init() when the TSS has been initialized.
-  */
- static const __initconst struct idt_data ist_idts[] = {
--	ISTG(X86_TRAP_DB,	debug,			IST_INDEX_DB),
-+	ISTG(X86_TRAP_DB,	asm_exc_debug,		IST_INDEX_DB),
- 	ISTG(X86_TRAP_NMI,	asm_exc_nmi,		IST_INDEX_NMI),
- 	ISTG(X86_TRAP_DF,	double_fault,		IST_INDEX_DF),
- #ifdef CONFIG_X86_MCE
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index de5120e..569408a 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -775,7 +775,7 @@ static __always_inline void debug_exit(unsigned long dr7)
+@@ -138,10 +138,12 @@ __visible noinstr void func(struct pt_regs *regs)
+  * @vector:	Vector number (ignored for C)
+  * @func:	Function name of the entry point
   *
-  * May run on IST stack.
+- * Maps to DECLARE_IDTENTRY_RAW
++ * Maps to DECLARE_IDTENTRY_RAW, but declares also the NOIST C handler
++ * which is called from the ASM entry point on user mode entry
   */
--dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
-+DEFINE_IDTENTRY_DEBUG(exc_debug)
- {
- 	struct task_struct *tsk = current;
- 	unsigned long dr6, dr7;
-@@ -784,7 +784,10 @@ dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
+ #define DECLARE_IDTENTRY_IST(vector, func)				\
+-	DECLARE_IDTENTRY_RAW(vector, func)
++	DECLARE_IDTENTRY_RAW(vector, func);				\
++	__visible void noist_##func(struct pt_regs *regs)
  
- 	debug_enter(&dr6, &dr7);
+ /**
+  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
+@@ -152,6 +154,17 @@ __visible noinstr void func(struct pt_regs *regs)
+ #define DEFINE_IDTENTRY_IST(func)					\
+ 	DEFINE_IDTENTRY_RAW(func)
  
--	nmi_enter();
-+	if (user_mode(regs))
-+		idtentry_enter(regs);
-+	else
-+		nmi_enter();
++/**
++ * DEFINE_IDTENTRY_NOIST - Emit code for NOIST entry points which
++ *			   belong to a IST entry point (MCE, DB)
++ * @func:	Function name of the entry point. Must be the same as
++ *		the function name of the corresponding IST variant
++ *
++ * Maps to DEFINE_IDTENTRY_RAW().
++ */
++#define DEFINE_IDTENTRY_NOIST(func)					\
++	DEFINE_IDTENTRY_RAW(noist_##func)
++
+ #else	/* CONFIG_X86_64 */
+ /* Maps to a regular IDTENTRY on 32bit for now */
+ # define DECLARE_IDTENTRY_IST		DECLARE_IDTENTRY
+@@ -161,12 +174,14 @@ __visible noinstr void func(struct pt_regs *regs)
+ /* C-Code mapping */
+ #define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
  
- 	/*
- 	 * The SDM says "The processor clears the BTF flag when it
-@@ -821,7 +824,7 @@ dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
- 		goto exit;
- #endif
+ #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_IST
  
--	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, error_code,
-+	if (notify_die(DIE_DEBUG, "debug", regs, (long)&dr6, 0,
- 		       SIGTRAP) == NOTIFY_STOP)
- 		goto exit;
+ #define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
  
-@@ -835,8 +838,8 @@ dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
- 	cond_local_irq_enable(regs);
- 
- 	if (v8086_mode(regs)) {
--		handle_vm86_trap((struct kernel_vm86_regs *) regs, error_code,
--					X86_TRAP_DB);
-+		handle_vm86_trap((struct kernel_vm86_regs *) regs, 0,
-+				 X86_TRAP_DB);
- 		cond_local_irq_disable(regs);
- 		debug_stack_usage_dec();
- 		goto exit;
-@@ -855,15 +858,17 @@ dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
- 	}
- 	si_code = get_si_code(tsk->thread.debugreg6);
- 	if (tsk->thread.debugreg6 & (DR_STEP | DR_TRAP_BITS) || user_icebp)
--		send_sigtrap(regs, error_code, si_code);
-+		send_sigtrap(regs, 0, si_code);
- 	cond_local_irq_disable(regs);
- 	debug_stack_usage_dec();
- 
- exit:
--	nmi_exit();
-+	if (user_mode(regs))
-+		idtentry_exit(regs);
-+	else
-+		nmi_exit();
- 	debug_exit(dr7);
- }
--NOKPROBE_SYMBOL(do_debug);
- 
- /*
-  * Note that we play around with the 'TS' bit in an attempt to get
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index c65aa4c..535dde1 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -616,7 +616,7 @@ struct trap_array_entry {
- 	.ist_okay	= ist_ok }
- 
- static struct trap_array_entry trap_array[] = {
--	{ debug,                       xen_xendebug,                    true },
-+	TRAP_ENTRY_REDIR(exc_debug, exc_xendebug,	true  ),
- 	{ double_fault,                xen_double_fault,                true },
- #ifdef CONFIG_X86_MCE
- 	TRAP_ENTRY(exc_machine_check,			true  ),
-diff --git a/arch/x86/xen/xen-asm_64.S b/arch/x86/xen/xen-asm_64.S
-index 04fa01b..9999ea3 100644
---- a/arch/x86/xen/xen-asm_64.S
-+++ b/arch/x86/xen/xen-asm_64.S
-@@ -29,8 +29,8 @@ _ASM_NOKPROBE(xen_\name)
- .endm
- 
- xen_pv_trap asm_exc_divide_error
--xen_pv_trap debug
--xen_pv_trap xendebug
-+xen_pv_trap asm_exc_debug
-+xen_pv_trap asm_exc_xendebug
- xen_pv_trap asm_exc_int3
- xen_pv_trap asm_exc_xennmi
- xen_pv_trap asm_exc_overflow
+ /**
+  * DECLARE_IDTENTRY_XEN - Declare functions for XEN redirect IDT entry points
