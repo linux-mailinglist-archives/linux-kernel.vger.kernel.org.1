@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6941DA1F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DD91DA1BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgESUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
+        id S1726059AbgEST7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728261AbgEST6x (ORCPT
+        with ESMTP id S1728293AbgEST66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:53 -0400
+        Tue, 19 May 2020 15:58:58 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61EDC08C5C0;
-        Tue, 19 May 2020 12:58:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4C3C08C5C4;
+        Tue, 19 May 2020 12:58:58 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8Nx-0008Tl-U2; Tue, 19 May 2020 21:58:46 +0200
+        id 1jb8O4-0008W8-Df; Tue, 19 May 2020 21:58:52 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1BEBA1C06DA;
-        Tue, 19 May 2020 21:58:37 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:37 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D02EF1C0854;
+        Tue, 19 May 2020 21:58:38 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:38 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry/64: Provide sane error entry/exit
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+Subject: [tip: x86/entry] x86/traps: Make interrupt enable/disable symmetric in C code
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134904.058904490@linutronix.de>
-References: <20200505134904.058904490@linutronix.de>
+In-Reply-To: <20200505134903.622702796@linutronix.de>
+References: <20200505134903.622702796@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991831702.17951.16780777270107867698.tip-bot2@tip-bot2>
+Message-ID: <158991831873.17951.7873689032893572882.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,107 +52,190 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     3660da2d124813bed342e25b39df0251cbe2ac4f
-Gitweb:        https://git.kernel.org/tip/3660da2d124813bed342e25b39df0251cbe2ac4f
+Commit-ID:     1b208500418d351c476e173f2e4bebaaf0959ef0
+Gitweb:        https://git.kernel.org/tip/1b208500418d351c476e173f2e4bebaaf0959ef0
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 26 Mar 2020 16:56:20 +01:00
+AuthorDate:    Wed, 23 Oct 2019 14:27:10 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:03:56 +02:00
+CommitterDate: Tue, 19 May 2020 16:03:54 +02:00
 
-x86/entry/64: Provide sane error entry/exit
+x86/traps: Make interrupt enable/disable symmetric in C code
 
-For gradual conversion provide a macro parameter and the required code
-which allows to handle instrumentation and interrupt flags tracking in C.
+Traps enable interrupts conditionally but rely on the ASM return code to
+disable them again. That results in redundant interrupt disable and trace
+calls.
 
+Make the trap handlers disable interrupts before returning to avoid that,
+which allows simplification of the ASM entry code in follow up changes.
+
+Originally-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505134904.058904490@linutronix.de
+Link: https://lkml.kernel.org/r/20200505134903.622702796@linutronix.de
+
 
 
 ---
- arch/x86/entry/entry_64.S | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ arch/x86/kernel/traps.c | 28 +++++++++++++++++++---------
+ arch/x86/mm/fault.c     | 15 +++++++++++++--
+ 2 files changed, 32 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 01bfe7f..96ad26f 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -499,8 +499,9 @@ SYM_CODE_END(spurious_entries_start)
-  * @vector:		Vector number
-  * @cfunc:		C function to be called
-  * @has_error_code:	Hardware pushed error code on stack
-+ * @sane:		Sane variant which handles irq tracing, context tracking in C
-  */
--.macro idtentry_body vector cfunc has_error_code:req
-+.macro idtentry_body vector cfunc has_error_code:req sane=0
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index adcc623..f5f4a76 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -201,6 +201,7 @@ static void do_error_trap(struct pt_regs *regs, long error_code, char *str,
+ 			NOTIFY_STOP) {
+ 		cond_local_irq_enable(regs);
+ 		do_trap(trapnr, signr, str, regs, error_code, sicode, addr);
++		cond_local_irq_disable(regs);
+ 	}
+ }
  
- 	call	error_entry
- 	UNWIND_HINT_REGS
-@@ -514,6 +515,7 @@ SYM_CODE_END(spurious_entries_start)
- 		GET_CR2_INTO(%r12);
- 	.endif
+@@ -397,6 +398,8 @@ dotraplinkage void do_bounds(struct pt_regs *regs, long error_code)
+ 		die("bounds", regs, error_code);
  
-+	.if \sane == 0
- 	TRACE_IRQS_OFF
- 
- #ifdef CONFIG_CONTEXT_TRACKING
-@@ -522,6 +524,7 @@ SYM_CODE_END(spurious_entries_start)
- 	CALL_enter_from_user_mode
- .Lfrom_kernel_no_ctxt_tracking_\@:
- #endif
-+	.endif
- 
- 	movq	%rsp, %rdi			/* pt_regs pointer into 1st argument*/
- 
-@@ -538,7 +541,11 @@ SYM_CODE_END(spurious_entries_start)
- 
- 	call	\cfunc
- 
-+	.if \sane == 0
- 	jmp	error_exit
-+	.else
-+	jmp	error_return
-+	.endif
- .endm
- 
- /**
-@@ -547,11 +554,12 @@ SYM_CODE_END(spurious_entries_start)
-  * @asmsym:		ASM symbol for the entry point
-  * @cfunc:		C function to be called
-  * @has_error_code:	Hardware pushed error code on stack
-+ * @sane:		Sane variant which handles irq tracing, context tracking in C
-  *
-  * The macro emits code to set up the kernel context for straight forward
-  * and simple IDT entries. No IST stack, no paranoid entry checks.
-  */
--.macro idtentry vector asmsym cfunc has_error_code:req
-+.macro idtentry vector asmsym cfunc has_error_code:req sane=0
- SYM_CODE_START(\asmsym)
- 	UNWIND_HINT_IRET_REGS offset=\has_error_code*8
- 	ASM_CLAC
-@@ -574,7 +582,7 @@ SYM_CODE_START(\asmsym)
- .Lfrom_usermode_no_gap_\@:
- 	.endif
- 
--	idtentry_body \vector \cfunc \has_error_code
-+	idtentry_body \vector \cfunc \has_error_code \sane
- 
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
-@@ -1403,6 +1411,14 @@ SYM_CODE_START_LOCAL(error_exit)
- 	jmp	.Lretint_user
- SYM_CODE_END(error_exit)
- 
-+SYM_CODE_START_LOCAL(error_return)
-+	UNWIND_HINT_REGS
-+	DEBUG_ENTRY_ASSERT_IRQS_OFF
-+	testb	$3, CS(%rsp)
-+	jz	restore_regs_and_return_to_kernel
-+	jmp	swapgs_restore_regs_and_return_to_usermode
-+SYM_CODE_END(error_return)
+ 	do_trap(X86_TRAP_BR, SIGSEGV, "bounds", regs, error_code, 0, NULL);
 +
- /*
-  * Runs on exception stack.  Xen PV does not go through this path at all,
-  * so we can use real assembly here.
++	cond_local_irq_disable(regs);
+ }
+ 
+ enum kernel_gp_hint {
+@@ -456,12 +459,13 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
+ 
+ 	if (static_cpu_has(X86_FEATURE_UMIP)) {
+ 		if (user_mode(regs) && fixup_umip_exception(regs))
+-			return;
++			goto exit;
+ 	}
+ 
+ 	if (v8086_mode(regs)) {
+ 		local_irq_enable();
+ 		handle_vm86_fault((struct kernel_vm86_regs *) regs, error_code);
++		local_irq_disable();
+ 		return;
+ 	}
+ 
+@@ -473,12 +477,11 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
+ 
+ 		show_signal(tsk, SIGSEGV, "", desc, regs, error_code);
+ 		force_sig(SIGSEGV);
+-
+-		return;
++		goto exit;
+ 	}
+ 
+ 	if (fixup_exception(regs, X86_TRAP_GP, error_code, 0))
+-		return;
++		goto exit;
+ 
+ 	tsk->thread.error_code = error_code;
+ 	tsk->thread.trap_nr = X86_TRAP_GP;
+@@ -490,11 +493,11 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
+ 	if (!preemptible() &&
+ 	    kprobe_running() &&
+ 	    kprobe_fault_handler(regs, X86_TRAP_GP))
+-		return;
++		goto exit;
+ 
+ 	ret = notify_die(DIE_GPF, desc, regs, error_code, X86_TRAP_GP, SIGSEGV);
+ 	if (ret == NOTIFY_STOP)
+-		return;
++		goto exit;
+ 
+ 	if (error_code)
+ 		snprintf(desc, sizeof(desc), "segment-related " GPFSTR);
+@@ -516,6 +519,8 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
+ 
+ 	die_addr(desc, regs, error_code, gp_addr);
+ 
++exit:
++	cond_local_irq_disable(regs);
+ }
+ NOKPROBE_SYMBOL(do_general_protection);
+ 
+@@ -773,7 +778,7 @@ static void math_error(struct pt_regs *regs, int error_code, int trapnr)
+ 
+ 	if (!user_mode(regs)) {
+ 		if (fixup_exception(regs, trapnr, error_code, 0))
+-			return;
++			goto exit;
+ 
+ 		task->thread.error_code = error_code;
+ 		task->thread.trap_nr = trapnr;
+@@ -781,7 +786,7 @@ static void math_error(struct pt_regs *regs, int error_code, int trapnr)
+ 		if (notify_die(DIE_TRAP, str, regs, error_code,
+ 					trapnr, SIGFPE) != NOTIFY_STOP)
+ 			die(str, regs, error_code);
+-		return;
++		goto exit;
+ 	}
+ 
+ 	/*
+@@ -795,10 +800,12 @@ static void math_error(struct pt_regs *regs, int error_code, int trapnr)
+ 	si_code = fpu__exception_code(fpu, trapnr);
+ 	/* Retry when we get spurious exceptions: */
+ 	if (!si_code)
+-		return;
++		goto exit;
+ 
+ 	force_sig_fault(SIGFPE, si_code,
+ 			(void __user *)uprobe_get_trap_addr(regs));
++exit:
++	cond_local_irq_disable(regs);
+ }
+ 
+ dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
+@@ -853,6 +860,8 @@ do_device_not_available(struct pt_regs *regs, long error_code)
+ 
+ 		info.regs = regs;
+ 		math_emulate(&info);
++
++		cond_local_irq_disable(regs);
+ 		return;
+ 	}
+ #endif
+@@ -883,6 +892,7 @@ dotraplinkage void do_iret_error(struct pt_regs *regs, long error_code)
+ 		do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
+ 			ILL_BADSTK, (void __user *)NULL);
+ 	}
++	local_irq_disable();
+ }
+ #endif
+ 
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 6486cce..0715720 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -927,6 +927,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 
+ 		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
+ 
++		local_irq_disable();
++
+ 		return;
+ 	}
+ 
+@@ -1548,9 +1550,18 @@ do_page_fault(struct pt_regs *regs, unsigned long hw_error_code,
+ 		return;
+ 
+ 	/* Was the fault on kernel-controlled part of the address space? */
+-	if (unlikely(fault_in_kernel_space(address)))
++	if (unlikely(fault_in_kernel_space(address))) {
+ 		do_kern_addr_fault(regs, hw_error_code, address);
+-	else
++	} else {
+ 		do_user_addr_fault(regs, hw_error_code, address);
++		/*
++		 * User address page fault handling might have reenabled
++		 * interrupts. Fixing up all potential exit points of
++		 * do_user_addr_fault() and its leaf functions is just not
++		 * doable w/o creating an unholy mess or turning the code
++		 * upside down.
++		 */
++		local_irq_disable();
++	}
+ }
+ NOKPROBE_SYMBOL(do_page_fault);
