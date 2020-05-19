@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660D61D8CDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 03:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F731D8CEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 03:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgESBEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 21:04:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4813 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726696AbgESBEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 21:04:43 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B4266F56307FC087C700;
-        Tue, 19 May 2020 09:04:40 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.101) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 19 May 2020
- 09:04:34 +0800
-Subject: Re: [RFC PATCH 2/3] cpufreq: Add SW BOOST support for drivers without
- frequency table
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>,
-        <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
-        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1588929064-30270-1-git-send-email-wangxiongfeng2@huawei.com>
- <1588929064-30270-3-git-send-email-wangxiongfeng2@huawei.com>
- <5858421.kfVlu25t0p@kreacher>
- <7325b64c-85f7-21fe-3860-faa10ab1cf21@huawei.com>
- <20200518075309.xoon4vyfjywmteww@vireshk-i7>
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Message-ID: <9242eecc-6550-ea45-1ee6-1b75b48e8c0d@huawei.com>
-Date:   Tue, 19 May 2020 09:04:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726763AbgESBGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 21:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726953AbgESBGH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 21:06:07 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A76CC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 18:06:06 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e8so11774133ilm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 18:06:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=WXpirZqtYBddTk6Ncg43EgFZLm/F1+r+8igmhzGGDgQ=;
+        b=HQY7MAoqIIownxq0AtxsvYJvwvSae2reFIl+iKa9bDLrGa1IuJYNAMJh+2Mj4ARbAo
+         JE8EyfADE+R8hJOtPaIhlQle2ltGoOppsBB9IJjhVsmKz3w0LuAylPsXGxwBrwS4W15t
+         M4EIB76ReUaHHRr11Cekp5H4BUWFJAGRsyBTMxWZXOf8a5HCbCRVpnZSATMiRgX/Ro87
+         bxIGethFu8/zKbsoHTckhl6YuA8aR9N/T3yvoOm9Edv3ksGXNcrIGK9/DoHsepGnb5N1
+         f6boqz9GPXpAy1bcgwj8mnCEFgYxhPUdiq/WqH6HAd8kMH93bBFD4oM0gu1qn26nUK2X
+         o9UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=WXpirZqtYBddTk6Ncg43EgFZLm/F1+r+8igmhzGGDgQ=;
+        b=QG+Mi7I7ejLGlQbV181B7EHNekTdq6aCP8zjMR64rmeyKCyTuzjVTmVlbhYYKnISu3
+         V/+F2NX1/4CAKk8ztSgwceh50sSCx3s65IWREUz2nBm+WBN3FzLdlis4Cl9VlECifiNw
+         ha3suMgkiFY8kQN6XNIxhJX9hw6fEZuAmV/ER2b1T9gPl3HSxEHHxfRmqLOmxyWIrhaY
+         bY9JJRZUxYEbKnudDpCB3IMNhS7d03mhCSTjSwRCaauSv18ixg4UMMETlk8tHpQmMHhR
+         vG4p9CLCHNeWQuhHVG6z54JJfuSz4YwoTQ8ReU2omuXeJ2x8H28UblKnEN2/j0NUt7Zt
+         zbug==
+X-Gm-Message-State: AOAM532T1siXVYkwaEXbD+Lp9FhMBIyvfyFtCQhmc4YETapPZIUjWbRC
+        SKAilt1iJ8cGhkEb1ayc2QO7O9lyoZEOZ3AaQfM2NQ==
+X-Google-Smtp-Source: ABdhPJxYBTk4jRaJXOTi3j1um42KqKDWBa7Ee1JL9itlM1FLHLBXo7g5TWO+tsKZbVsdDuqk755NTfcio7J5rfLIKxg=
+X-Received: by 2002:a05:6e02:2:: with SMTP id h2mr16697255ilr.281.1589850365796;
+ Mon, 18 May 2020 18:06:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200518075309.xoon4vyfjywmteww@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.101]
-X-CFilter-Loop: Reflected
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Mon, 18 May 2020 21:05:30 -0400
+Message-ID: <CABV8kRz0mKSc=u1LeonQSLroKJLOKWOWktCoGji2nvEBc=e7=w@mail.gmail.com>
+Subject: arm64: Register modification during syscall entry/exit stop
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Huey <khuey@pernos.co>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Continuing my theme of "weird things I encounter
+while trying to use ptrace on arm64", I ran into the
+effect of the following code in the syscall entry/exit
+reporting:
 
-Thanks for your reply !
+```
+/*
+* A scratch register (ip(r12) on AArch32, x7 on AArch64) is
+* used to denote syscall entry/exit:
+*/
+regno = (is_compat_task() ? 12 : 7);
+saved_reg = regs->regs[regno];
+regs->regs[regno] = dir;
+```
 
-On 2020/5/18 15:53, Viresh Kumar wrote:
-> Sorry for the delay from my side in replying to this thread.
-> 
-> On 15-05-20, 09:49, Xiongfeng Wang wrote:
->> On 2020/5/14 22:16, Rafael J. Wysocki wrote:
->>> On Friday, May 8, 2020 11:11:03 AM CEST Xiongfeng Wang wrote:
->>>> Software-managed BOOST get the boost frequency by check the flag
->>>> CPUFREQ_BOOST_FREQ at driver's frequency table. But some cpufreq driver
->>>> don't have frequency table and use other methods to get the frequency
->>>> range, such CPPC cpufreq driver.
->>>>
->>>> To add SW BOOST support for drivers without frequency table, we add
->>>> members in 'cpufreq_policy.cpufreq_cpuinfo' to record the max frequency
->>>> of boost mode and non-boost mode. The cpufreq driver initialize these two
->>>> members when probing.
->>>>
->>>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
->>>> ---
->>>>  drivers/cpufreq/cpufreq.c | 23 +++++++++++++++--------
->>>>  include/linux/cpufreq.h   |  2 ++
->>>>  2 files changed, 17 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
->>>> index 475fb1b..a299426 100644
->>>> --- a/drivers/cpufreq/cpufreq.c
->>>> +++ b/drivers/cpufreq/cpufreq.c
->>>> @@ -2508,15 +2508,22 @@ static int cpufreq_boost_set_sw(int state)
->>>>  	int ret = -EINVAL;
->>>>  
->>>>  	for_each_active_policy(policy) {
->>>> -		if (!policy->freq_table)
->>>> -			continue;
->>>> -
->>>> -		ret = cpufreq_frequency_table_cpuinfo(policy,
->>>> +		if (policy->freq_table) {
->>>> +			ret = cpufreq_frequency_table_cpuinfo(policy,
->>>>  						      policy->freq_table);
->>>> -		if (ret) {
->>>> -			pr_err("%s: Policy frequency update failed\n",
->>>> -			       __func__);
->>>> -			break;
->>>> +			if (ret) {
->>>> +				pr_err("%s: Policy frequency update failed\n",
->>>> +				       __func__);
->>>> +				break;
->>>> +			}
->>>> +		} else if (policy->cpuinfo.boost_max_freq) {
->>>> +			if (state)
->>>> +				policy->max = policy->cpuinfo.boost_max_freq;
->>>> +			else
->>>> +				policy->max = policy->cpuinfo.nonboost_max_freq;
->>>> +			policy->cpuinfo.max_freq = policy->max;
->>>> +		} else {
->>>> +			continue;
->>>>  		}
->>>
->>> Why do you need to update this function?
->>
->> My original thought is to reuse the current SW BOOST code as possible, but this
->> seems to change the cpufreq core too much.
->>
->> Thanks for your advice. This is better. I will provide a '->set_boost' callback
->> for CPPC driver. But I will need to export 'cpufreq_policy_list' and make the
->> macro 'for_each_active_policy' public.
-> 
-> This can and should be avoided, I will rather move the for-each-policy
-> loop in cpufreq_boost_trigger_state() and call ->set_boost() for each
-> policy and pass policy as argument as well. You would be required to
-> update existing users of sw boost.
+This seems very weird to me. I can't think of any
+other architecture that does something similar
+(other than unicore32 apparently, but the ptrace
+support there seems like it might have just been
+copied from ARM). I'm able to work around this
+in my application, but it adds another stumbling block.
+Some examples of things that happen:
+- Writes to x7 during syscall exit stops are ignored, so
+  if the ptracer tries to emulate a setjmp-type thing, it
+  might miss this register (ptracers sometimes like to do
+  this to manually serialize execution between different
+  threads, puppeteering a single thread of execution
+  between different register states).
+- Reads from x7 are incorrect, so if the ptracer saves
+  a register state and later tries to set it back to the task,
+  it may get x7 incorrect, but user space may be expecting
+  the register to be preserved (when might this happen? -
+  consider a ptracer that wants to modify some syscall
+  arguments, it modifies the arguments, restarts the syscall
+  but then incurs a signal, so it tries to restore the original
+  registers to let userspace deal with the signal without
+  being confused - expect signal traps don't ignore x7
+  modifications, so x7 may have been unexpectedly
+  modified).
+- We now have seccomp traps, which kind of look and
+  act like syscall-entry traps, but don't have this behavior,
+  so it's not particularly reliable for ptracers to use.
 
-Thanks for your advice. It's a good idea. I will change it in the next version.
+Furthermore, it seems unnecessary to me on modern
+kernels. We now have PTRACE_GET_SYSCALL_INFO,
+which exposes this information without lying to the ptracer
+about the tracee's registers.
 
-Thanks,
-Xiongfeng
+I understand, we can't just change this, since people may
+be relying on it, but I would like to propose adding a ptrace
+option (PTRACE_O_ARM_REGSGOOD?) that turns this
+behavior off. Now, I don't think we currently have any other
+arch-specific ptrace options, so maybe there is a different
+option that would be preferable (e.g. could be a different
+regset), but I do think it would be good to have a way to
+operate on the real x7 value. As I said, I can work around it,
+but hopefully I will be able to save a future implementer
+some headache.
 
-> 
-
+Keno
