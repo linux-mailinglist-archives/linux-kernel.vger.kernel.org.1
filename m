@@ -2,342 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E421DA466
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727FA1DA477
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgESWVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:21:36 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:32784 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESWVf (ORCPT
+        id S1728102AbgESWYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgESWYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:21:35 -0400
-Received: by mail-il1-f193.google.com with SMTP id o67so1119793ila.0;
-        Tue, 19 May 2020 15:21:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BEN+tw7z4mCkQ24uiqe88N26f3zgm2QQ47/AnQ840b8=;
-        b=BPluzFLppr57v+Bmew/wypLFdx7g2o4ohBt+lWZ41Jdqu7mZFtUzJSI6xCfDSnAKJx
-         L+/fxWFe9NM0oidK+84QdfZiGe+p5uaOJOkdKGgofNZpG/U6IUQwIQffTbLRkWDLyzJ3
-         gWO32UryU2RXYVzvz3f2dPsojN/l5y8BWKAX/jKQGKQ6kyr6nBH+6gUrs5BzHrNv6Rni
-         SahqgbnG8LIwUjzgSlU0c+dCdRdAUwgryjI67oorIUvYTzT28FpjRXseLeTkJpyr9fzs
-         0v7nLfGohW4aKfHby2wQlaUz56VaR9cOnerfJhM32GWh1o3ExQCQfND73Eg7xf9BZxGo
-         S3QA==
-X-Gm-Message-State: AOAM532HvGjQU3iwmWVoXiIGr7S47mPWA7T3Kt0qeq4c6A17A1QKp4ML
-        vNRa2Z9WrpPsSJTaQr1vyw==
-X-Google-Smtp-Source: ABdhPJx/FMKP9R0H7RKVQpRSG+nSgWCZKRAGXE9/bSi+QvQyjbN8nfD5MxhgfzOgsFYY8McNgXX2Tg==
-X-Received: by 2002:a92:5c06:: with SMTP id q6mr1309504ilb.236.1589926893566;
-        Tue, 19 May 2020 15:21:33 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id o15sm341350ilg.46.2020.05.19.15.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 15:21:32 -0700 (PDT)
-Received: (nullmailer pid 791975 invoked by uid 1000);
-        Tue, 19 May 2020 22:21:32 -0000
-Date:   Tue, 19 May 2020 16:21:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] bindings: sound: Add documentation for TI j721e
- EVM (CPB and IVI)
-Message-ID: <20200519222132.GA488519@bogus>
-References: <20200512131633.32668-1-peter.ujfalusi@ti.com>
- <20200512131633.32668-3-peter.ujfalusi@ti.com>
+        Tue, 19 May 2020 18:24:11 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241C6C061A0F;
+        Tue, 19 May 2020 15:24:11 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbAeL-0003PM-CF; Wed, 20 May 2020 00:23:49 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id B8CC0100606; Wed, 20 May 2020 00:23:48 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
+In-Reply-To: <20200519150159.4d91af93@hermes.lan>
+References: <20200519214547.352050-1-a.darwish@linutronix.de> <20200519214547.352050-2-a.darwish@linutronix.de> <20200519150159.4d91af93@hermes.lan>
+Date:   Wed, 20 May 2020 00:23:48 +0200
+Message-ID: <87v9kr5zt7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512131633.32668-3-peter.ujfalusi@ti.com>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 12, 2020 at 04:16:32PM +0300, Peter Ujfalusi wrote:
-> The audio support on the Common Processor Board board is using
-> pcm3168a codec connected to McASP10 serializers in parallel setup.
-> 
-> The Infotainment board plugs into the Common Processor Board, the support
-> of the extension board is extending the CPB audio support by adding
-> the two codecs on the expansion board.
-> 
-> The audio support on the Infotainment Expansion Board consists of McASP0
-> connected to two pcm3168a codecs with dedicated set of serializers to each.
-> The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../bindings/sound/ti,j721e-cpb-audio.yaml    |  93 ++++++++++++
->  .../sound/ti,j721e-cpb-ivi-audio.yaml         | 142 ++++++++++++++++++
->  2 files changed, 235 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> new file mode 100644
-> index 000000000000..0355ffc2b01b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-> @@ -0,0 +1,93 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ti,j721e-cpb-audio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments J721e Common Processor Board Audio Support
-> +
-> +maintainers:
-> +  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-> +
-> +description: |
-> +  The audio support on the board is using pcm3168a codec connected to McASP10
-> +  serializers in parallel setup.
-> +  The pcm3168a SCKI clock is sourced from j721e AUDIO_REFCLK2 pin.
-> +  In order to support 48KHz and 44.1KHz family of sampling rates the parent
-> +  clock for AUDIO_REFCLK2 needs to be changed between PLL4 (for 48KHz) and
-> +  PLL15 (for 44.1KHz). The same PLLs are used for McASP10's AUXCLK clock via
-> +  different HSDIVIDER.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: ti,j721e-cpb-audio
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  ti,cpb-mcasp:
-> +    description: phandle to McASP10
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,cpb-codec:
-> +    description: phandle to the pcm3168a codec used on the CPB
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  clocks:
-> +    items:
-> +      - description: PLL4 clock
-> +      - description: PLL15 clock
-> +      - description: McASP10 auxclk clock
-> +      - description: PLL4_HSDIV0 parent for McASP10 auxclk (for 48KHz)
-> +      - description: PLL15_HSDIV0 parent for McASP10 auxclk (for 44.1KHz)
-> +      - description: AUDIO_REFCLK2 clock
-> +      - description: PLL4_HSDIV2 parent for AUDIO_REFCLK2 clock (for 48KHz)
-> +      - description: PLL15_HSDIV2 parent for AUDIO_REFCLK2 clock (for 44.1KHz)
+Stephen Hemminger <stephen@networkplumber.org> writes:
+> On Tue, 19 May 2020 23:45:23 +0200
+> "Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
+>
+>> Sequence counters write paths are critical sections that must never be
+>> preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
+>> 
+>> Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
+>> netdev name retrieval.") handled a deadlock, observed with
+>> CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
+>> infinitely spinning: it got scheduled after the seqcount write side
+>> blocked inside its own critical section.
+>> 
+>> To fix that deadlock, among other issues, the commit added a
+>> cond_resched() inside the read side section. While this will get the
+>> non-preemptible kernel eventually unstuck, the seqcount reader is fully
+>> exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
+>> 
+>> The fix is also still broken: if the seqcount reader belongs to a
+>> real-time scheduling policy, it can spin forever and the kernel will
+>> livelock.
+>> 
+>> Disabling preemption over the seqcount write side critical section will
+>> not work: inside it are a number of GFP_KERNEL allocations and mutex
+>> locking through the drivers/base/ :: device_rename() call chain.
+>> 
+>> From all the above, replace the seqcount with a rwsem.
+>> 
+>> Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
+>> Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
+>> Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+>> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>
+> Have your performance tested this with 1000's of network devices?
 
-What h/w are these connected to? You have no control interface here, so 
-how do you have clocks?
+No. We did not. -ENOTESTCASE
 
-Defining parent clocks seems wrong, too. This seems to just be a 
-collection of clocks a driver happens to need. Really, you should be 
-able query possible parents and select one with the right frequency 
-multiple.
+> The reason seqcount logic is was done here was to achieve scaleablity
+> and a semaphore does not scale as well.
 
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pll4
-> +      - const: pll15
-> +      - const: cpb-mcasp
-> +      - const: cpb-mcasp-48000
-> +      - const: cpb-mcasp-44100
-> +      - const: audio-refclk2
-> +      - const: audio-refclk2-48000
-> +      - const: audio-refclk2-44100
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +  - ti,cpb-mcasp
-> +  - ti,cpb-codec
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |+
-> +    sound {
-> +        compatible = "ti,j721e-cpb-audio";
-> +        model = "j721e-cpb";
-> +
-> +        status = "okay";
+That still does not make the livelock magically going away. Just make a
+reader with real-time priority preempt the writer and the system stops
+dead. The net result is perfomance <= 0.
 
-Don't show status in examples.
+This was observed on RT kernels without a special 1000's of network
+devices test case.
 
-> +
-> +        ti,cpb-mcasp = <&mcasp10>;
-> +        ti,cpb-codec = <&pcm3168a_1>;
-> +
-> +        clocks = <&pll4>, <&pll15>,
-> +                 <&k3_clks 184 1>,
-> +                 <&k3_clks 184 2>, <&k3_clks 184 4>,
-> +                 <&k3_clks 157 371>,
-> +                 <&k3_clks 157 400>, <&k3_clks 157 401>;
-> +        clock-names = "pll4", "pll15",
-> +                      "cpb-mcasp",
-> +                      "cpb-mcasp-48000", "cpb-mcasp-44100",
-> +                      "audio-refclk2",
-> +                      "audio-refclk2-48000", "audio-refclk2-44100";
-> +    };
-> diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> new file mode 100644
-> index 000000000000..3951c1320fae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-> @@ -0,0 +1,142 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ti,j721e-cpb-ivi-audio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments J721e Common Processor Board Audio Support
-> +
-> +maintainers:
-> +  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-> +
-> +description: |
-> +  The Infotainment board plugs into the Common Processor Board, the support of the
-> +  extension board is extending the CPB audio support, decribed in:
-> +  sound/ti,j721e-cpb-audio.txt
-> +
-> +  The audio support on the Infotainment Expansion Board consists of McASP0
-> +  connected to two pcm3168a codecs with dedicated set of serializers to each.
-> +  The SCKI for pcm3168a is sourced from j721e AUDIO_REFCLK0 pin.
-> +
-> +  In order to support 48KHz and 44.1KHz family of sampling rates the parent clock
-> +  for AUDIO_REFCLK0 needs to be changed between PLL4 (for 48KHz) and PLL15 (for
-> +  44.1KHz). The same PLLs are used for McASP0's AUXCLK clock via different
-> +  HSDIVIDER.
-> +
-> +  Note: the same PLL4 and PLL15 is used by the audio support on the CPB!
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: ti,j721e-cpb-ivi-audio
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  ti,cpb-mcasp:
-> +    description: phandle to McASP10
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,cpb-codec:
-> +    description: phandle to the pcm3168a codec used on the CPB
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,ivi-mcasp:
-> +    description: phandle to McASP9
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,ivi-codec-a:
-> +    description: phandle to the pcm3168a-A codec on the expansion board
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  ti,ivi-codec-b:
-> +    description: phandle to the pcm3168a-B codec on the expansion board
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  clocks:
-> +    items:
-> +      - description: PLL4 clock
-> +      - description: PLL15 clock
-> +      - description: McASP10 auxclk clock
-> +      - description: PLL4_HSDIV0 parent for McASP10 auxclk (for 48KHz)
-> +      - description: PLL15_HSDIV0 parent for McASP10 auxclk (for 44.1KHz)
-> +      - description: AUDIO_REFCLK2 clock
-> +      - description: PLL4_HSDIV2 parent for AUDIO_REFCLK2 clock (for 48KHz)
-> +      - description: PLL15_HSDIV2 parent for AUDIO_REFCLK2 clock (for 44.1KHz)
-> +      - description: McASP0 auxclk clock
-> +      - description: PLL4_HSDIV0 parent for McASP0 auxclk (for 48KHz)
-> +      - description: PLL15_HSDIV0 parent for McASP0 auxclk (for 44.1KHz)
-> +      - description: AUDIO_REFCLK0 clock
-> +      - description: PLL4_HSDIV2 parent for AUDIO_REFCLK0 clock (for 48KHz)
-> +      - description: PLL15_HSDIV2 parent for AUDIO_REFCLK0 clock (for 44.1KHz)
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pll4
-> +      - const: pll15
-> +      - const: cpb-mcasp
-> +      - const: cpb-mcasp-48000
-> +      - const: cpb-mcasp-44100
-> +      - const: audio-refclk2
-> +      - const: audio-refclk2-48000
-> +      - const: audio-refclk2-44100
-> +      - const: ivi-mcasp
-> +      - const: ivi-mcasp-48000
-> +      - const: ivi-mcasp-44100
-> +      - const: audio-refclk0
-> +      - const: audio-refclk0-48000
-> +      - const: audio-refclk0-44100
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +  - ti,cpb-mcasp
-> +  - ti,cpb-codec
-> +  - ti,ivi-mcasp
-> +  - ti,ivi-codec-a
-> +  - ti,ivi-codec-b
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |+
-> +    sound {
-> +        compatible = "ti,j721e-cpb-ivi-audio";
-> +        model = "j721e-cpb-ivi";
-> +
-> +        status = "okay";
-> +
-> +        ti,cpb-mcasp = <&mcasp10>;
-> +        ti,cpb-codec = <&pcm3168a_1>;
-> +
-> +        ti,ivi-mcasp = <&mcasp0>;
-> +        ti,ivi-codec-a = <&pcm3168a_a>;
-> +        ti,ivi-codec-b = <&pcm3168a_b>;
-> +
-> +        clocks = <&pll4>, <&pll15>,
-> +                 <&k3_clks 184 1>,
-> +                 <&k3_clks 184 2>, <&k3_clks 184 4>,
-> +                 <&k3_clks 157 371>,
-> +                 <&k3_clks 157 400>, <&k3_clks 157 401>,
-> +                 <&k3_clks 174 1>,
-> +                 <&k3_clks 174 2>, <&k3_clks 174 4>,
-> +                 <&k3_clks 157 301>,
-> +                 <&k3_clks 157 330>, <&k3_clks 157 331>;
-> +        clock-names = "pll4", "pll15",
-> +                      "cpb-mcasp",
-> +                      "cpb-mcasp-48000", "cpb-mcasp-44100",
-> +                      "audio-refclk2",
-> +                      "audio-refclk2-48000", "audio-refclk2-44100",
-> +                      "ivi-mcasp",
-> +                      "ivi-mcasp-48000", "ivi-mcasp-44100",
-> +                      "audio-refclk0",
-> +                      "audio-refclk0-48000", "audio-refclk0-44100";
-> +    };
-> -- 
-> Peter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+Just for the record: This is not a RT specific problem. You can
+reproduce that w/o an RT kernel as well. Just run the reader with
+real-time scheduling policy.
+
+As much as you hate it from a performance POV the only sane rule of
+programming is: Correctness first.
+
+And this code clearly violates that rule.
+
+Thanks,
+
+        tglx
