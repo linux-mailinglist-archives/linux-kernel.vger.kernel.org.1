@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6901D9F9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE2F1D9F98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgESShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgESShM (ORCPT
+        id S1727004AbgESShD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:37:03 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:36941 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESShC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:37:12 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94593C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q2so804563ljm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bPh1VSVckJPtJQsHU0gjkG9zuV3GFu1LedTcF51aAcM=;
-        b=VufC5cVt/QsRYDbFjUrTgLBSJIGVamaZ6TqP+B2P/JryRaKr9pcGTQRH1L2ufpBeGo
-         +HGpzbuKFZhBCeI0lW8cu8YaTMgO3KUjgMgFZQImD3dgot0BxtvQv4qWs9UBJf82/Sxm
-         cU7py1ZSjkCtf3GiTwmwvvlOWXszXjd+6c4s8=
+        Tue, 19 May 2020 14:37:02 -0400
+Received: by mail-io1-f66.google.com with SMTP id t15so266539ios.4;
+        Tue, 19 May 2020 11:37:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bPh1VSVckJPtJQsHU0gjkG9zuV3GFu1LedTcF51aAcM=;
-        b=TjDXnxGF5jwHeb4tnO+v5V/JLuiGKyJXLhCjq40WybYgOkC6Zi7gfArVm9oZRNVtP+
-         3bUNJ0mQIlL2w+QAeDPCMe3WYLV9U1IgSfM4AbTspcbj/SImy1NfJjfnTKvceZb529lB
-         GoECByc2eMv1yD1bX8XxcCrzc7hVW0fG9tY7LF34QzUx+47WLqx4jG89swtLA+BKx1xk
-         jomcjj1Vi+0daJOhzM3gu1vpq6xOgxlqMfJXBSsBzz1eP7cDBipvTVRSC1tkPB/Qpk6u
-         SH7bV7gYNHEbhj9uCZdWlDaNl0peHhppsktnYIxfwYxOjjiokDY+unoK/Qff2snL6Rgq
-         Bzkw==
-X-Gm-Message-State: AOAM531pfvZPHxA0pAzi9fFLkGRxGpuZDaxL55plN3gqHIsQsz/RLXwL
-        0vB8lV15OQrOvaNySbrqA6vY0QrRbyU=
-X-Google-Smtp-Source: ABdhPJwZGgmmP6LI4ygPOcz340Mf7UaMHQibkxqAZElppntpaj58kODv63YMjRnJBbVB7/yQrBTKvg==
-X-Received: by 2002:a05:651c:119a:: with SMTP id w26mr463408ljo.53.1589913429886;
-        Tue, 19 May 2020 11:37:09 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id g10sm95403lfc.95.2020.05.19.11.37.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 11:37:08 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id l15so466041lje.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:08 -0700 (PDT)
-X-Received: by 2002:a05:651c:319:: with SMTP id a25mr411854ljp.209.1589913428000;
- Tue, 19 May 2020 11:37:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9gkfGJ7KJs1nebEF+m2qI6r0Zpzd4/7HhycMiWKPpMw=;
+        b=Opub0kShFShF8UDNFVKjrW6AN/4qxFYf0IQuXZGdqv5gqfY5ipjtB9IELyQmGXNavr
+         ZvtF70xvppZQhcZH50zn6ujyjtbcQwVb3DRmxr6+R2P5Vd9DCfcyXiW+0gukBSAGCKQB
+         t9ddVBvB5MCzBIYoDXKaI3I8AyvLxsRj2MDXyEPuNteWRsknaE9yEHWX8oIgyusshXGh
+         fnBWCKb5WJxTBIr8b7hmWBdycjRZLz2loxpp4WGAngMfhS552ZoEn+WU3/6TLpYi06qE
+         Hr4kChnaSRxL0TKV/RV4IJ1NOe+W0XGmzITwNFO84qgwmxHQhwj+3e8fLipf8tVlxoDt
+         V/kQ==
+X-Gm-Message-State: AOAM531/jF7ricChrUHkmUKqo4yTGzYvRHovaf+Ap9Z0GIgWAMw+G2ZY
+        msZ49gmR14DKvhxmE82zjmluRuY=
+X-Google-Smtp-Source: ABdhPJyl4q7PFUuNkIc0fWw+vhM8J2A7oPKEXlt3TrTeH8BFs3YwXt5tc+5BYWSxSBiI1ACKn3OxAg==
+X-Received: by 2002:a02:a895:: with SMTP id l21mr1005625jam.82.1589913422004;
+        Tue, 19 May 2020 11:37:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j16sm128705ild.8.2020.05.19.11.37.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 11:37:01 -0700 (PDT)
+Received: (nullmailer pid 441282 invoked by uid 1000);
+        Tue, 19 May 2020 18:37:00 -0000
+Date:   Tue, 19 May 2020 12:37:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH 10/11] dt-bindings: sound: Add Marvell MMP SSPA binding
+Message-ID: <20200519183700.GA441251@bogus>
+References: <20200511210134.1224532-1-lkundrak@v3.sk>
+ <20200511210134.1224532-11-lkundrak@v3.sk>
 MIME-Version: 1.0
-References: <20200519112657.17098-1-idryomov@gmail.com>
-In-Reply-To: <20200519112657.17098-1-idryomov@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 19 May 2020 11:36:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi9+qm_msiKsk32vaUMon6UQEE0-TydPF_-D6xNPjbOfg@mail.gmail.com>
-Message-ID: <CAHk-=wi9+qm_msiKsk32vaUMon6UQEE0-TydPF_-D6xNPjbOfg@mail.gmail.com>
-Subject: Re: [PATCH v3] vsprintf: don't obfuscate NULL and error pointers
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Tobin C . Harding" <me@tobin.cc>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511210134.1224532-11-lkundrak@v3.sk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 4:27 AM Ilya Dryomov <idryomov@gmail.com> wrote:
->
-> This just came up again, please consider sending this to Linus
-> for 5.7.
+On Mon, 11 May 2020 23:01:33 +0200, Lubomir Rintel wrote:
+> Add binding documentation for the audio serial port interface (I2S) on
+> Marvell MMP SoCs.
+> 
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> ---
+>  .../bindings/sound/marvell,mmp-sspa.yaml      | 122 ++++++++++++++++++
+>  1 file changed, 122 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/marvell,mmp-sspa.yaml
+> 
 
-I just took it directly, since I like it and it looks trivial.
-
-               Linus
+Reviewed-by: Rob Herring <robh@kernel.org>
