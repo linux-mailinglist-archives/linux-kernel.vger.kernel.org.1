@@ -2,252 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3101D8C39
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7853C1D8C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgESAXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 20:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726349AbgESAXs (ORCPT
+        id S1727943AbgESAXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 20:23:11 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55409 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgESAXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 20:23:48 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2F8C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:23:47 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x2so5716384pfx.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=76L2jmn/5xBiAGpfkucj0sHy1ATlbvKKmUWYpASrI6I=;
-        b=oIy/TJt+bfnFQKnMI5r16CijBX74deYXQhw5fq8MrnIPmL50zNhHDAx4kdlbapQWRG
-         NWFz39KpqcpEOuJg8qFDgj0uSSvL3IfUlH5EwOoRalYBEGcJvw7VnxlOC87L+LL6aVLu
-         U6Toa5cgG4xkkDeN7STuNDm1PfN/on+FDqqT76drktag20wIZKE2b7ZiJNxvwbkIvtkN
-         IDhrOt1gIHB/8MY/cUXrsbemF55nDHNbrgz5h9r/Pk89nykykvNvgzQQfxq9+53Kv+pD
-         jaFJBSJrjvn5lt2ITbAg90FjV2LJCMQBYa3bXfs+D73G//VWyvy121EYPasH9KisjSvP
-         feww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=76L2jmn/5xBiAGpfkucj0sHy1ATlbvKKmUWYpASrI6I=;
-        b=P+zn7t/0lLDYE12o3VuWY8rsCpJzVgDv8V/5Hr3Tuxx9UW8kAxJDHj5uUR9a7dVpN+
-         XAIOzUmFtjsCkBx0MyT+JdO/H9GugXnUjCToUAodu2CNAIn0/JhiEiy0drQYIbNUZkcw
-         tG/m0/WMs0ABgfXl9Ti3Ni9inl8yVTTjA2Fp/6hECwUecXnJOiHkOoXzDVEkbZpC4i6K
-         /LaLHEEXSsYMRz3D4I1YIXuVvxcLdIGhZFqaFpwFWt9bM77LHguwWmv2nWeycCrGwwSO
-         eY/OiI3AE/MjL699t1YL/J6Jxh2NrJz5Qv8F4bGI69CZ3PWInnoadySdjhmb7Wmz3RqC
-         cYMw==
-X-Gm-Message-State: AOAM531cGp2rebWqfeonqpZtq6k9SH0wFim3LKD5Rpng4nUswWLXmHUI
-        Gh0aPobb3VZkCnLT0gS988ySpQ==
-X-Google-Smtp-Source: ABdhPJz00Q8eKtLYkOm4FQyR9Wtki5fSGV9CdEuLr/xwSqTX48yyqpQFLzzNsw+c3w7aDF6XqprS9w==
-X-Received: by 2002:a63:30c2:: with SMTP id w185mr16661378pgw.353.1589847826017;
-        Mon, 18 May 2020 17:23:46 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id k12sm6715222pfg.177.2020.05.18.17.23.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 17:23:45 -0700 (PDT)
-Date:   Mon, 18 May 2020 17:22:23 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, loic.pallardy@st.com, arnaud.pouliquen@st.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 05/14] remoteproc: Refactor function rproc_fw_boot()
-Message-ID: <20200519002223.GQ2165@builder.lan>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-6-mathieu.poirier@linaro.org>
- <20200506003341.GD2329931@builder.lan>
- <20200508212756.GB5650@xps15>
- <20200514021055.GF16107@builder.lan>
- <20200515194651.GB24201@xps15>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515194651.GB24201@xps15>
+        Mon, 18 May 2020 20:23:11 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 19F265C0073;
+        Mon, 18 May 2020 20:23:10 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 18 May 2020 20:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=6dez2inLO9ku1pNNSEEQg2wUTyCCTFZ
+        fY7XJVnTZ6zo=; b=Jke5t/vu8yu6lIojT3aomUQNi4Fakt3uHDflIlLQnEuw67N
+        nl1dezDfNQvJOgTEkrBZvoW5MOBynt+0ypcxoPrjSiPuVAYL+2aa1MgzMfINgL34
+        01bVmRbF5u0YT6loEp8zJ3HDl9R7FFH2a7Jw9RebEZOu9hMKIzzRyDHZjOJAayVO
+        +znMhvU1Bu+DthWqE+Fvih4+w8E+hg47lo/OaMzj9kIZnpVXO6TvJQf8RMa2ub10
+        5H/4QTrxXBPK3gXPZpQWDiDQm0VoB4VQxPgWU8FVOaFHWUFke6YBfVrlgtx0OcN8
+        2dPJm9zAGwNOH5VxtwoctQQ7zh69gc9+6rKJfvQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6dez2i
+        nLO9ku1pNNSEEQg2wUTyCCTFZfY7XJVnTZ6zo=; b=eH1davhvjbSqau6PYdxA6Z
+        MLKj8NDL7V/T7TQ1WggrseuNjWCy/Sqwh1BSevutAAJsSGeSo+Kx7YIAVdyrgP4J
+        YnHWk+/BnIKedl7lQEATSOfoX3tFL+/3hbzS8qMbINKkflDX65AfFBYdJZocUPgm
+        9UpjNb2mDmwPU64SAjWSL3L9xH0lKhmdJwtBwAmpEApD9cX42iUMr7lpKUy+kZ2K
+        7+0YpoyGl587b0MRquTIm3KZku1UGMf9VQFlUpXdEjbUX/J9RG9ANnZl1ZG6o8DK
+        umcChQ7n4nqrIoDe87BuAusR4AZHoMVBSRFyjt7bKI2MFSceaigSf8WYwRmzh8GA
+        ==
+X-ME-Sender: <xms:7SbDXtOnI0j2-kgGwjGTkU4HOfWtB_F2fi1uHnbUNxQk9jPaQNZNKw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtiedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:7SbDXv8icLiT4lM1bSEA0pNGSzsKFa22FnYhuv7frg64GMewXMmlzQ>
+    <xmx:7SbDXsRYpKNoaMee211aGR9FNV4MU8DYUrxgJjoKcIZ2GGMhVsjY2A>
+    <xmx:7SbDXptPTWYr0BEwh4whoI3PElvFsQEWJyLbQzM20xj2bI1xGZI1RQ>
+    <xmx:7ibDXp5uEtBy5jID-x8ZNuiygRH1WvtrTk3mPttALrjLWGhwFcdj1A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3B312E0109; Mon, 18 May 2020 20:23:09 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-dev0-464-g810d66a-fmstable-20200518v1
+Mime-Version: 1.0
+Message-Id: <eab147a6-4bc6-491d-aaaf-61526c4df5ff@www.fastmail.com>
+In-Reply-To: <20200518112059.c19899ffb17a4843bf4f74ab@kernel.org>
+References: <20200517153959.293224-1-andrew@aj.id.au>
+ <202005171447.00CFE0C@keescook>
+ <20200518112059.c19899ffb17a4843bf4f74ab@kernel.org>
+Date:   Tue, 19 May 2020 09:52:48 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Russell King" <linux@armlinux.org.uk>, labbott@redhat.com,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH]_ARM:_kprobes:_Avoid_fortify=5Fpanic()_when_copying?=
+ =?UTF-8?Q?_optprobe_template?=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15 May 12:46 PDT 2020, Mathieu Poirier wrote:
 
-> On Wed, May 13, 2020 at 07:10:55PM -0700, Bjorn Andersson wrote:
-> > On Fri 08 May 14:27 PDT 2020, Mathieu Poirier wrote:
-> > 
-> > > On Tue, May 05, 2020 at 05:33:41PM -0700, Bjorn Andersson wrote:
-> > > > On Fri 24 Apr 13:01 PDT 2020, Mathieu Poirier wrote:
-> > > > 
-> > > > > Refactor function rproc_fw_boot() in order to better reflect the work
-> > > > > that is done when supporting scenarios where the remoteproc core is
-> > > > > synchronising with a remote processor.
-> > > > > 
-> > > > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > > > ---
-> > > > >  drivers/remoteproc/remoteproc_core.c | 10 ++++++----
-> > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > > > > index a02593b75bec..e90a21de9de1 100644
-> > > > > --- a/drivers/remoteproc/remoteproc_core.c
-> > > > > +++ b/drivers/remoteproc/remoteproc_core.c
-> > > > > @@ -1370,9 +1370,9 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
-> > > > >  }
-> > > > >  
-> > > > >  /*
-> > > > > - * take a firmware and boot a remote processor with it.
-> > > > > + * boot or synchronise with a remote processor.
-> > > > >   */
-> > > > > -static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
-> > > > > +static int rproc_actuate_device(struct rproc *rproc, const struct firmware *fw)
-> > > > 
-> > > > Per patch 4 this function will if rproc_needs_syncing() be called with
-> > > > fw == NULL, it's not obvious to me that the various operations on "fw"
-> > > > in this function are valid anymore.
-> > > 
-> > > That is right, all firmware related operations in this function are found in
-> > > remoteproc_internal.h where the value of rproc->sync_with_mcu is checked before
-> > > moving forward. That allows us to avoid introducing a new function similar to
-> > > rproc_fw_boot() but without firmware operations or peppering the code with if
-> > > statements.
-> > > 
-> > 
-> > As I wrote in my other reply, the two mechanisms seems to consist of the
-> > following steps:
-> > 
-> > boot the core:
-> > 1) request firmware
-> > 2) prepare device
-> > 3) parse fw
-> > 4) handle resources
-> > 5) allocate carveouts
-> > 6) load segments
-> > 7) find resource table
-> > 8) prepare subdevices
-> > 9) power on
-> > 10) start subdevices
-> > 
-> > sync:
-> > 1) prepare device (?)
-> > 2) handle resources
-> > 3) allocate carveouts (?)
-> > 4) prepare subdevices
-> > 5) attach
-> > 6) start subdevices
-> > 
-> > Rather than relying on the state flag and missing ops will turn the
-> > first list into the second list I conceptually prefer having two
-> > separate functions that are easy to reason about.
-> 
-> I reflected long and hard about doing just that...
-> 
-> > 
-> > But I haven't done any refactoring or implemented this, so in practice
-> > the two might just be a lot of duplication(?)
-> 
-> Exactly - duplication and maintenance are my prime concern.  Right now some
-> functions in the OFFLINE -> RUNNING are clearly not needed when dealing with a
-> DETACHED -> RUNNING scenarios, but with I am convinced people will find ways to
-> do something creative with the callbacks.
 
-I'm sure there are problems out there that will require creative
-solutions, but I would prefer that we keep things easy to reason about
-and ensure that as new problems arise we can evolve the framework.
-
-> In the end I fear the new functions
-> we spin off to deal with DETACHED -> RUNNING scenarios will end up looking very
-> similar to the current implementation.
+On Mon, 18 May 2020, at 11:50, Masami Hiramatsu wrote:
+> On Sun, 17 May 2020 14:48:52 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > On Mon, May 18, 2020 at 01:09:59AM +0930, Andrew Jeffery wrote:
+> > > As mentioned, a couple of attempts have been made to address the issue
+> > > by casting a pointer to optprobe_template_entry before providing it to
+> > > memcpy(), however gccs such as Ubuntu 20.04's arm-linux-gnueabi-gcc
+> > > 9.3.0 (Ubuntu 9.3.0-10ubuntu1) see through these efforts.
+> > 
+> > Ah, dang. :P
+> > 
+> > How about converting them all to unsized arrays, which would also allow
+> > the code to drop the "&" everywhere, I think. This is untested:
+> > 
+> 
+> This looks good to me since it uses same technique in sections.h.
+> 
+> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 > 
 
-In those scenarios I don't see a problem with the platform drivers
-having functions of common code shared between ops->start and
-ops->attach.
+Kees,
 
-> With that in mind I simply did all the work in remoteproc_internal.h and left
-> the core functions intact.
-> 
-> We can try spinning off new functions in the next revision, just to test my
-> theory and see how much gets duplicated.
-> 
+Were you planning to send resend this, or were you looking for me to polish it
+up?
 
-Looking forward to it!
-
-> > 
-> > > > 
-> > > > >  {
-> > > > >  	struct device *dev = &rproc->dev;
-> > > > >  	const char *name = rproc->firmware;
-> > > > > @@ -1382,7 +1382,9 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
-> > > > >  	if (ret)
-> > > > >  		return ret;
-> > > > >  
-> > > > > -	dev_info(dev, "Booting fw image %s, size %zd\n", name, fw->size);
-> > > > > +	if (!rproc_needs_syncing(rproc))
-> > > > 
-> > > > Can't we make this check on fw, to make the relationship "if we where
-> > > > passed a firmware object, we're going to load and boot that firmware"?
-> > > 
-> > > It can but I specifically decided to use rproc_needs_syncing() to be consistent
-> > > with the rest of the patchset.  That way all we need to do is grep for
-> > > rproc_needs_syncing to get all the places where a decision about synchronising
-> > > with a remote processor is made.
-> > > 
-> > 
-> > Conceptually we have a single "to sync or not to sync", but I think
-> > we're invoking rproc_needs_syncing() 8 times during rproc_fw_boot() and
-> > each of those operations may or may not do anything.
-> 
-> As I said above, I'll try spinning off new functions in the next revision.  From
-> there we can decide how best to move forward.
-> 
-> > 
-> > There are certain operations where I see it makes sense for a driver to
-> > either implement or not, but I think that e.g. for a rproc in OFFLINE
-> > state we should just require ops->start to be specified - because it
-> > doesn't make sense to enter rproc_start() if ops->start is a nop.
-> 
-> At this time ops->start() doesn't have to be specified... But as you say it
-> won't do much good and this is something we can easily spot when reviewing
-> patches.
-> 
-
-Presumably after implementing this support we should check during
-registration that there's either a start or an attach ops specified. And
-if there's no start we shouldn't allow the RUNNING->OFFLINE transition.
-
-> Thanks for the review,
-
-Thanks for working on this and sorry that it took me time really digest
-this.
-
-Regards,
-Bjorn
-
-> Mathieu
-> 
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > > 
-> > > > Regards,
-> > > > Bjorn
-> > > > 
-> > > > > +		dev_info(dev, "Booting fw image %s, size %zd\n",
-> > > > > +			 name, fw->size);
-> > > > >  
-> > > > >  	/*
-> > > > >  	 * if enabling an IOMMU isn't relevant for this rproc, this is
-> > > > > @@ -1818,7 +1820,7 @@ int rproc_boot(struct rproc *rproc)
-> > > > >  		}
-> > > > >  	}
-> > > > >  
-> > > > > -	ret = rproc_fw_boot(rproc, firmware_p);
-> > > > > +	ret = rproc_actuate_device(rproc, firmware_p);
-> > > > >  
-> > > > >  	release_firmware(firmware_p);
-> > > > >  
-> > > > > -- 
-> > > > > 2.20.1
-> > > > > 
+Andrew
