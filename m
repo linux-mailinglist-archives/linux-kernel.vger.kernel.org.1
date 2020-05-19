@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CE21D90D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 09:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5B41D90EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 09:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgESHUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 03:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726881AbgESHUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 03:20:03 -0400
-Received: from localhost (unknown [122.182.207.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728326AbgESHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 03:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726881AbgESHXT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 03:23:19 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C096C05BD09;
+        Tue, 19 May 2020 00:23:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 078DF2070A;
-        Tue, 19 May 2020 07:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589872802;
-        bh=1jT1W/ydU3BqDCVDDCoHvLnrD4Q3FZCE3wKld24qVyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ezelM7YRbWjKGsyjoXVM4BMEeOFteFw61AqTzP6YRmQ8uAVepkgKUD9zMj+sPd8eC
-         quTaErEsn9RcpPmrFRXzz4SK8W98ocgbGVj1x0QoraK7CNWX485vAA6ZBaPwnCrjLb
-         PcI6ovYqwax9tAWHyUVga4J3dnNGF3DWMx4mNfbg=
-Date:   Tue, 19 May 2020 12:49:58 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, slawomir.blauciak@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH v2 0/5] soundwire: bus_type: add sdw_master_device support
-Message-ID: <20200519071958.GL374218@vkoul-mobl.Dlink>
-References: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49R6mj2b5Wz9sPF;
+        Tue, 19 May 2020 17:23:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1589872997;
+        bh=fm3/tATrAoXqTVvMa/B2iTLxXsnYu0FCK43ABfBVGtw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZljnTLzvF6ZMfdTUqkBzlUIaUlr6dR/xMzFEkPpomW2Qcdwhbj41e1SP+ewCK631i
+         GVqB7J9dGKw/QMwgIuXl9yDNXG6rsj0eHLP+WLejaHc3IxNxjfENg3WzqgflXlCE+V
+         AT5ATUzF5euh4NXfg7cbsWha97yQrZXSGvyZvCJyzTl4nfLkPMZXVcKSiTPlB/HdBf
+         R6FBe+A8aj2oQUWPks87QtrcrW+ZUtcPF1R168rFZKMv5KfPsHLatBmdjmOODXYdKl
+         3kxtI9M6QSjTI1ZTBxbwQT5waTlBF8GfdRg4Vsn8vbrFMU5HRiHXzTVXH23IMfsS8w
+         +aJOsPpZu2CwQ==
+Date:   Tue, 19 May 2020 17:23:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: linux-next: manual merge of the rcu tree with the powerpc tree
+Message-ID: <20200519172316.3b37cbae@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518174322.31561-1-yung-chuan.liao@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/RyBJk_rS_Gx3yS0K5/j43lV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-05-20, 01:43, Bard Liao wrote:
-> This series adds sdw master devices support.
-> 
-> changes in v2:
->  - Allocate sdw_master_device dynamically
->  - Use unique bus id as master id
->  - Keep checking parent devices
->  - Enable runtime_pm on Master device
+--Sig_/RyBJk_rS_Gx3yS0K5/j43lV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I tested on RB3 board and it looks good to me, Applied all now.
+Hi all,
 
-Thanks for the good cleanup :)
+Today's linux-next merge of the rcu tree got a conflict in:
 
--- 
-~Vinod
+  arch/powerpc/kernel/traps.c
+
+between commit:
+
+  116ac378bb3f ("powerpc/64s: machine check interrupt update NMI accounting=
+")
+
+from the powerpc tree and commit:
+
+  187416eeb388 ("hardirq/nmi: Allow nested nmi_enter()")
+
+from the rcu tree.
+
+I fixed it up (I used the powerpc tree version for now) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RyBJk_rS_Gx3yS0K5/j43lV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7DiWQACgkQAVBC80lX
+0GwZPAf/cPBhPN6cLwgUjG2OMKLg7D/X4Ay9qr9KUqtvaj0bCQ0Qw/KkU+8/RDGA
+X1SaRWnlNGEhz+nKyuNePBGLohcoWnta7yXvjxJSfdAX6/EJYd7Sak5HNwTcZE/e
+kyD9Ur+RgvsbqUGmYF1etEcYnZL3/KLuGHPF/SikKdDxVdQCIRmL1SlEMi8gfOjc
+PaVl+38fsi8JFlO1pAigmiNo0pCzijp8NTvrYlTLRwBFjk6MXSOoBU5DrYg3pYHF
+VCOGgkyTj/NATiy30exWNbk+O+OYTuGcwFCmTi6hArq1fJBoRC1B3B9vSdPJJVkC
+I5YibpxQ9No7zGGlc2bfBqyIrAZUSg==
+=IY1W
+-----END PGP SIGNATURE-----
+
+--Sig_/RyBJk_rS_Gx3yS0K5/j43lV--
