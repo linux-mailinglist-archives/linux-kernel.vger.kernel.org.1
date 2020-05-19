@@ -2,160 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5D61DA27D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A051DA28D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgESUXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:23:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39712 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgESUXM (ORCPT
+        id S1727976AbgESUZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgESUZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:23:12 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JKLjxR100506;
-        Tue, 19 May 2020 20:22:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=qNNW5s1xeGm+K2As9XYYCmIIR1n/LTaTzzpAHOOw+OM=;
- b=elyQXPFD4nsB/VJn38aBWCqpaCIB6MQMHkKVGP1fLmJIRaO7WfkNspqYzxRIdKj1mo1W
- exW58AJu6Yz96MStBgD10iAvRwhmFECHXd+mHYU2ItwbCK3DLhTT/xFCPIE2ESWWyFoa
- CdkF17eIyWppQ4MS080TTxM7CbAX565LUgzOyfTTHHSpH9m7LCv6sZ8cU5632wyyFSuW
- 2O0xftqaO0MnPzdhQkLmLhvD1D2elbcGZ8Kvv2QgP9RhPo8JqRnEgWWxXptpMi4zWa+t
- giKpNCyYEoe8QjuC7cd/w2aYFFdAgk4MLabOmivtaxxU/FnbCz8MlZf75ZLHIACv39LS sA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 31284kyngg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 May 2020 20:22:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04JKIOor097543;
-        Tue, 19 May 2020 20:22:03 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 314gm5qmhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 May 2020 20:22:02 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04JKM0LT031192;
-        Tue, 19 May 2020 20:22:00 GMT
-Received: from dhcp-10-154-188-23.vpn.oracle.com (/10.154.188.23)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 May 2020 13:21:59 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v7 0/4] support reserving crashkernel above 4G on arm64
- kdump
-From:   John Donnelly <john.p.donnelly@oracle.com>
-In-Reply-To: <CAK8P3a2VrAqefPYF2JqRjwdhgTDtORUgWgVuYxRYWqKxE3+5pA@mail.gmail.com>
-Date:   Tue, 19 May 2020 15:21:58 -0500
-Cc:     Chen Zhou <chenzhou10@huawei.com>,
-        Simon Horman <horms@verge.net.au>,
-        Will Deacon <will@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        Dave Young <dyoung@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        John Donnelly <john.p.donnelly@oracle.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3D37F6BE-ECFC-4EC0-A7C4-341F85FC056E@oracle.com>
-References: <20191223152349.180172-1-chenzhou10@huawei.com>
- <a57d46bc-881e-3526-91ca-558bf64e2aa8@huawei.com>
- <CAK8P3a2VrAqefPYF2JqRjwdhgTDtORUgWgVuYxRYWqKxE3+5pA@mail.gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005190173
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
- cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005190174
+        Tue, 19 May 2020 16:25:37 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9B1C08C5C0;
+        Tue, 19 May 2020 13:25:37 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id j28so173588vkn.8;
+        Tue, 19 May 2020 13:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cysi0CoNBsu9DhP/dMMLTlA0RNEElv2ZCbOSz0zvm1U=;
+        b=uI4Z4CVhMiPZX6sByzDWE7ZFzcwaR+6wPM7HAlZLpc4hLaQ4012RvTFwesTownI+Bs
+         j8kpFgg17yYeJhbuR+n9lnpXEr8tBTkj6xaVlmRt/vnllgXmZMEjSgfPTKetO2FaQWKV
+         VpfnSqfteyu+lbYGOp0/zHd858vbvRHaXBwBj0zjkFWzpLd1kJUasVZITFtoF5ZCrWQM
+         WWkmAvZbjeIvNQB/KpaTxpaJXWL8dLZnVrjus730ZRNma+mRrjL9fIc4Ch7v9O6ajCkz
+         yf9hFXaO3YJoSejYY1qxdHiVuQc5W+IPxTYlsl+SjH65eJW13lwqZY7bAgRVnGWDjtf/
+         5x9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cysi0CoNBsu9DhP/dMMLTlA0RNEElv2ZCbOSz0zvm1U=;
+        b=ab2+91xpj3nZ59SsWj4bmsxfBP/OHDP8F7+67ePZJG4zVUaQlBwlEeqDkIwW8VVv6F
+         5Yo0O9ETTXqhldrWTkkR6oB8JVZegMU741iUwnEAXKR83PDEIYBaIOwBPaIeQz4rL3lL
+         7x6ogRK5hpyyDZ1uTzz4e4VUeE4vhBsT+O6XqPBJWwtH4+X9RlcL8032JYnLwxebGju2
+         RBWVLqJuYzSkk2vbTIymUjFPaEtcxEbcAiKxEFTU0IlrE1J/DGimuW5cHxTSKyjj3rA1
+         nI2FwqEuvl0j/N3gObAENqyMF2Cpd9uR4+BLH7AnmXTB/pt6jK7OODMRSnBqYLJTs1+T
+         NaZQ==
+X-Gm-Message-State: AOAM532kwnDaqKJc4kI+oBGOnRjdhOJVZn07ZnLtJRVNfKV7rfzyZ1vM
+        v395q+Z/wyMIC4DlHSYszZM8wLZms2SnpJfIPZ4=
+X-Google-Smtp-Source: ABdhPJxzr/wYHStcp2W7Yr/aP7XG19XGEIQOjr8Kxa0FejuJCLcwi9VSK/A8W46CT4JeGy/ZYWZ/uyU4spAYVziWDD8=
+X-Received: by 2002:a1f:bd96:: with SMTP id n144mr1516532vkf.6.1589919936532;
+ Tue, 19 May 2020 13:25:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200518201646.48312-1-dagmcr@gmail.com>
+In-Reply-To: <20200518201646.48312-1-dagmcr@gmail.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue, 19 May 2020 21:22:42 +0100
+Message-ID: <CACvgo50w90k18K8pEtiAv5foesEcJ9LuOyUzegY8Z9aidscwGw@mail.gmail.com>
+Subject: Re: [PATCH] drm: rcar-du: Fix build error
+To:     Daniel Gomez <dagmcr@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@linux.ie>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 19 May 2020 at 08:01, Daniel Gomez <dagmcr@gmail.com> wrote:
+>
+> Select DRM_KMS_HELPER dependency.
+>
+> Build error when DRM_KMS_HELPER is not selected:
+>
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd48): undefined reference to `drm_atomic_helper_bridge_duplicate_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd50): undefined reference to `drm_atomic_helper_bridge_destroy_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd70): undefined reference to `drm_atomic_helper_bridge_reset'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xdc8): undefined reference to `drm_atomic_helper_connector_reset'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xde0): undefined reference to `drm_helper_probe_single_connector_modes'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe08): undefined reference to `drm_atomic_helper_connector_duplicate_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe10): undefined reference to `drm_atomic_helper_connector_destroy_state'
+>
+> Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
+Nicely spotted.
+AFAICT the only way this ever worked is if people had
+DRM_FBDEV_EMULATION, which is unset in your case.
 
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
 
-> On May 19, 2020, at 5:21 AM, Arnd Bergmann <arnd@arndb.de> wrote:
->=20
-> On Thu, Mar 26, 2020 at 4:10 AM Chen Zhou <chenzhou10@huawei.com> =
-wrote:
->>=20
->> Hi all,
->>=20
->> Friendly ping...
->=20
-> I was asked about this patch series, and see that you last posted it =
-in
-> December. I think you should rebase it to linux-5.7-rc6 and post the
-> entire series again to make progress, as it's unlikely that any =
-maintainer
-> would pick up the patches from last year.
->=20
-> For the contents, everything seems reasonable to me, but I noticed =
-that
-> you are adding a property to the /chosen node without adding the
-> corresponding documentation to
-> Documentation/devicetree/bindings/chosen.txt
->=20
-> Please add that, and Cc the devicetree maintainers on the updated
-> patch.
->=20
->         Arnd
->=20
->> On 2019/12/23 23:23, Chen Zhou wrote:
->>> This patch series enable reserving crashkernel above 4G in arm64.
->>>=20
->>> There are following issues in arm64 kdump:
->>> 1. We use crashkernel=3DX to reserve crashkernel below 4G, which =
-will fail
->>> when there is no enough low memory.
->>> 2. Currently, crashkernel=3DY@X can be used to reserve crashkernel =
-above 4G,
->>> in this case, if swiotlb or DMA buffers are required, crash dump =
-kernel
->>> will boot failure because there is no low memory available for =
-allocation.
->>>=20
->>> The previous changes and discussions can be retrieved from:
->>>=20
->>> Changes since [v6]
->>> - Fix build errors reported by kbuild test robot.
-> ...
-
-
- Hi=20
-
-We found=20
-
-https://lkml.org/lkml/2020/4/30/1583
-
-Has cured our Out-Of-Memory kdump failures.=20
-
-From	Henry Willard=20
-Subject	[PATCH] mm: Limit boost_watermark on small zones.
-
-I am currently not on linux-kernel@vger.kernel.org. dlist for all to see =
- this message so you may want to rebase and see if this cures your OoM =
-issue and share the results.=20
-
-
-
-
-
-
-
-
+I suspect Laurent will pick this in due time.
+-Emil
