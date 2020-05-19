@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1733D1D98DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F83A1DA43E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgESOFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 10:05:09 -0400
-Received: from mail-db8eur05on2073.outbound.protection.outlook.com ([40.107.20.73]:8160
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728982AbgESOFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 10:05:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ul+a2wJQjs1huUyq8QeSm6PCGgmN2Q4HqkJGJnS44pAi4MI011J+fO5sy0PE2kYTUew6mlhxboy4iN48XuqkIowITK2YUfND5Q2g+BkJKNB9PJcel8iiyvtojSxmdEAbOQmv4aJnZ8MxQ+z+x7ZS2DkgYCriIn4Osb7mUcTiHRig2meZpZI0mRffsn5c1ehsWkhU6MxIJigqCW/f/zZnjul6A5y0cgYuhi+/iyNF/Z5aUqL+ZgwCH/61HhQCAPBwutpc/k2q/wA8XYj/Ng2MlDRyeFRRrqpfbSl2IFN3zKpUMHMu2xN9bH4p+kt+Q4WNPS4tHKQ2BOMdHltkeZ6PnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LTLiHa2vMVTb/qu7hQYVMHmXWHuN/6xwzyfcbluYw/Q=;
- b=GOHQn6BO+MI7LddjO1/wpFW8bFfsY64psR5Z0hh6cOHN6ILo1b6g94XjJ4N333qE2azdfKbuTw1IVPZ8okt/1NX5yOwdjj9Uw3Q/zz9NR8mhKGvlh9qPrGpY53AcZASQ/s8Xz2MiQqT5rIK1EDzc9+7nxOB6gbJJgXQJFpjIYP7zqghxT++9Bk9hM+0o1MDI3Rio6aG1RF49KkfCdYQ3TSnAyzP7OWwlMD0qqpVNvdGJ9vEEMLf+qUKGv00mD1+FaXvZGWm2u38naRwwvSKHCnQMBskwcOLTXIDNNa8XJehTnGKD4SfnLLOHTM8dv6SOFCa1pi/1Nee6LhdJMmmK+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LTLiHa2vMVTb/qu7hQYVMHmXWHuN/6xwzyfcbluYw/Q=;
- b=bx+4ntuQxJqKq9zoOiD3dzmQ5xpTeBC6IaclQrTOrMZ0/+0c4T/MZBOoh87FPvq9BkVBp+c8gS7e7LTfMbsm1aiwLkYs0p1+gk62D5cj6Q/mdHUTfDhgs027Q0OkmNeaVBmvYhPs93M8+ghkKqjK+aw0WmjXpRPzxPawvVZQy5c=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VE1PR04MB6429.eurprd04.prod.outlook.com (2603:10a6:803:11a::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Tue, 19 May
- 2020 14:04:59 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::d5f0:c948:6ab0:c2aa]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::d5f0:c948:6ab0:c2aa%4]) with mapi id 15.20.3000.034; Tue, 19 May 2020
- 14:04:59 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
-        anson.huang@nxp.com, festevam@gmail.com, s.hauer@pengutronix.de,
-        john.lee@nxp.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
-        linux-imx@nxp.com
-Subject: [PATCH v1 4/4] arm64: configs: add pca9450 pmic driver
-Date:   Wed, 20 May 2020 06:05:07 +0800
-Message-Id: <1589925907-9195-5-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589925907-9195-1-git-send-email-yibin.gong@nxp.com>
-References: <1589925907-9195-1-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0128.apcprd03.prod.outlook.com
- (2603:1096:4:91::32) To VE1PR04MB6638.eurprd04.prod.outlook.com
- (2603:10a6:803:119::15)
+        id S1727922AbgESWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgESWFO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:05:14 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F100C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:05:14 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbAMH-0003FU-EL; Wed, 20 May 2020 00:05:09 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id B6FD5100606; Wed, 20 May 2020 00:05:08 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Qian Cai <cai@lca.pw>, Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
+In-Reply-To: <CAG=TAF7zVCMLj5US0uw-piwBUSmWpmPSPV3Thjbh7_kGsO88hQ@mail.gmail.com>
+References: <20200512183839.2373-1-elver@google.com> <20200512190910.GM2957@hirez.programming.kicks-ass.net> <CAG=TAF5S+n_W4KM9F8QuCisyV+s6_QA_gO70y6ckt=V7SS2BXw@mail.gmail.com> <CANpmjNMxvMpr=KaJEoEeRMuS3PGZEyi-VkeSmNywpQTAzFMSVA@mail.gmail.com> <CAG=TAF7zVCMLj5US0uw-piwBUSmWpmPSPV3Thjbh7_kGsO88hQ@mail.gmail.com>
+Date:   Wed, 20 May 2020 00:05:08 +0200
+Message-ID: <87y2pn60ob.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR03CA0128.apcprd03.prod.outlook.com (2603:1096:4:91::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.12 via Frontend Transport; Tue, 19 May 2020 14:04:54 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ec1a46fa-74fb-4825-ec20-08d7fbfd9dd3
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6429:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB642956E2FDD11A73D35FCE8189B90@VE1PR04MB6429.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-Forefront-PRVS: 040866B734
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t+uPU6balgi4KTp5wLvcK4VeXM3BWV7va8HrFwKWCj1hZND4o9H3Zg80z04gc/eJPST7U2gMsToPMowd49lJuLNFPoEKTd9RlEjTKrxS/JIDG5MopJiV9bDgSOT7+t88UntqpNbOIbAFp/GPkVWiHJZ5UQ3Bgxb2JnrVNaN12BDKwiJOXxw7U9oQO9KA4X+W5LHKJHfFk5uKX7F+1adBn5oQ1d+bbdlblAZjy9BdDzk+jyswCRQ729Spvb0cdZ3FatzsUidurVi0fPtU5fx2VZ77fcU4u3i9GIV7FytdsR00Lbt+tDzBOYB4cJ4KriqVyiQeJ1Bc7YPdgodfDQEgjxL6WECDcut7c1UAnM2ijIFvA4aVOl+YwK3pao9fcHQbHxb+NdmU84+BIHrNzrhsahG8qiaUOiHjcyZqJXHQQ6Q9BVPAXXinJs/fDiiCwWj96HuwjmAKyFYVvJ86i+BQlOXFayxOmkKqQJ+e55RZTKE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(498600001)(6506007)(6486002)(5660300002)(4744005)(4326008)(186003)(2906002)(2616005)(6636002)(956004)(16526019)(86362001)(52116002)(6512007)(26005)(8676002)(36756003)(6666004)(7416002)(8936002)(66476007)(66556008)(66946007)(921003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: dLVKBYovJwrz7ulJcEfTBhh4xKUxHa7lTNXeLvGP9wSfK0AtHw9UWpk9A+Wpx5zytzMmacbUl0Cvqzb4r/vYUd5dXB8dt6myyQiE8h2E+hUl4HU0zF6O71yrFllE46JUM9ibVZ8f0LRovc6atU6Q89GQcHQzVMnwCTtk7ZB+TfQxu+x+N6IjLABWqu57iqaMjKmzBDkuQwA0C4vnz8RTeMg8IP6vf3DylwE+WOXEkvGQZVHUq3HE6mfz6bP08yVyonyJPvg8AafeZBioCNnPpXE5qPMqbJb3JdYTjHQlX8bfcu2lJVWdHlGiAbCYBlywY11spoVNne3mSsEmeL0OHHg7mpRQ8FCcdG9TNHShk3/Aq2Mj+3I80T2+kPPV8idmNjyw2pmpqBlE+8yKm26hX1nOV4C76788/i39Tm0UBxlGyNyccpnLsZZyTcStxiCoX/1mmGeYsLwTp4XmjeqZP27tTzztpixBcTllIQRFaRU=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec1a46fa-74fb-4825-ec20-08d7fbfd9dd3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2020 14:04:59.3381
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GbxdSs37euDMVpqhRkIt6rRt+tJT44/dDKHJfg/pPqdpqDARQWDeVq9+gryVcqV9/zlfSiRqWvxbNtSJP94izA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6429
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pca9450 pmic driver.
+Qian Cai <cai@lca.pw> writes:
+> On Tue, May 19, 2020 at 5:26 PM Marco Elver <elver@google.com> wrote:
+>> The new solution is here:
+>>     https://lkml.kernel.org/r/20200515150338.190344-1-elver@google.com
+>> While it's a little inconvenient that we'll require Clang 11
+>> (currently available by building yourself from LLVM repo), but until
+>> we get GCC fixed (my patch there still pending :-/), this is probably
+>> the right solution going forward.   If possible, please do test!
+>
+> That would be quite unfortunate. The version here is still gcc-8.3.1
+> and clang-9.0.1 on RHEL 8.2 here. It will probably need many years to
+> be able to get the fixed compilers having versions that high. Sigh...
+> Also, I want to avoid compiling compilers on my own.
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Yes, it's unfortunate, but we have to stop making major concessions just
+because tools are not up to the task.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index c6c7e7e..36fcfd8 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -550,6 +550,7 @@ CONFIG_REGULATOR_HI6421V530=y
- CONFIG_REGULATOR_HI655X=y
- CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8973=y
-+CONFIG_REGULATOR_PCA9450=y
- CONFIG_REGULATOR_PFUZE100=y
- CONFIG_REGULATOR_PWM=y
- CONFIG_REGULATOR_QCOM_RPMH=y
--- 
-2.7.4
+We've done that way too much in the past and this particular problem
+clearly demonstrates that there are limits.
 
+Making brand new technology depend on sane tools is not asked too
+much. And yes, it's inconvenient, but all of us have to build tools
+every now and then to get our job done. It's not the end of the world.
+
+Building clang is trivial enough and pointing the make to the right
+compiler is not rocket science either.
+
+Thanks,
+
+        tglx
