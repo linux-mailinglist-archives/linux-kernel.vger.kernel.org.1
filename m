@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A7E1D9FEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19B81D9FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgESSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:46:51 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:45868 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgESSqv (ORCPT
+        id S1727067AbgESSqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:46:12 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:60656 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgESSqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:46:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JyzkKr1JhOCfKm02c+21XonEXostNDxmZnTbn9PYvN8=; b=CLqf0aifIj0VH4QIoZuacBPBRH
-        XB9v62HUkRhzdcxBtbtle/Qa6NG4mUhtE050hOmZBlTodi4nsxHG3Poh2MLG5g4V5v3lViVUy6DRF
-        cftEo7KzDlLTdAgvvCmHFfqm1Z9XrbHM5JC7qT5enwpzS/fKFe3v15WDiJkBKqpfkc0FWM5rD3qY1
-        TwifgQmOvMW2vxvSO6Y8wShS6rX6rYPKazo21kpk+1KbKGZ+kmzLG3lU+szhKliPDhqA6GMKnQgF0
-        q3re+w2qF6ZzmNWZNqxrr7tEzFBeIQXyTgIT/WWSzG8W4geQdsuB47Jdu7y4APnCa4lrOyqa7JPf7
-        YWANoo3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jb7Bz-0008TD-6L; Tue, 19 May 2020 18:42:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3402D301A80;
-        Tue, 19 May 2020 20:42:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 238A125D60953; Tue, 19 May 2020 20:42:10 +0200 (CEST)
-Date:   Tue, 19 May 2020 20:42:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Fox <afox@redhat.com>,
-        Stephen Johnston <sjohnsto@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stanislaw Gruszka <sgruszka@redhat.com>
-Subject: Re: [PATCH v2] sched/cputime: make scale_stime() more precise
-Message-ID: <20200519184210.GD317569@hirez.programming.kicks-ass.net>
-References: <20190718131834.GA22211@redhat.com>
- <20200127122817.GA10957@redhat.com>
- <20200519172506.GA317395@hirez.programming.kicks-ass.net>
- <CAHk-=wjjxDY6XzKKPEE1S+AUXycmo8XNpX2C-jO4fS+qU8ObpA@mail.gmail.com>
+        Tue, 19 May 2020 14:46:12 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb7Fi-0005kT-4o; Tue, 19 May 2020 12:46:10 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb7Fh-00056u-AM; Tue, 19 May 2020 12:46:09 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200518055457.12302-1-keescook@chromium.org>
+        <87a724t153.fsf@x220.int.ebiederm.org>
+        <202005190918.D2BD83F7C@keescook>
+        <87o8qjstyw.fsf@x220.int.ebiederm.org>
+        <202005191052.0A6B1D5843@keescook>
+Date:   Tue, 19 May 2020 13:42:28 -0500
+In-Reply-To: <202005191052.0A6B1D5843@keescook> (Kees Cook's message of "Tue,
+        19 May 2020 10:56:08 -0700")
+Message-ID: <87sgfvrckr.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjjxDY6XzKKPEE1S+AUXycmo8XNpX2C-jO4fS+qU8ObpA@mail.gmail.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1jb7Fh-00056u-AM;;;mid=<87sgfvrckr.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18MccEeDar1/0mLamXCyDMxW4fspzZPKe8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_20,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
+        *      [score: 0.1588]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 433 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (2.6%), b_tie_ro: 10 (2.2%), parse: 1.40
+        (0.3%), extract_message_metadata: 20 (4.7%), get_uri_detail_list: 2.8
+        (0.6%), tests_pri_-1000: 9 (2.1%), tests_pri_-950: 2.1 (0.5%),
+        tests_pri_-900: 1.84 (0.4%), tests_pri_-90: 81 (18.7%), check_bayes:
+        79 (18.2%), b_tokenize: 12 (2.8%), b_tok_get_all: 10 (2.2%),
+        b_comp_prob: 4.6 (1.1%), b_tok_touch_all: 47 (10.9%), b_finish: 1.10
+        (0.3%), tests_pri_0: 289 (66.8%), check_dkim_signature: 1.10 (0.3%),
+        check_dkim_adsp: 2.4 (0.5%), poll_dns_idle: 0.49 (0.1%), tests_pri_10:
+        2.3 (0.5%), tests_pri_500: 9 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/4] Relocate execve() sanity checks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:33:34AM -0700, Linus Torvalds wrote:
-> On Tue, May 19, 2020 at 10:25 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > --- a/include/linux/math64.h
-> > +++ b/include/linux/math64.h
-> > @@ -263,6 +263,47 @@ static inline u64 mul_u64_u32_div(u64 a, u32 mul, u32 divisor)
-> >  }
-> >  #endif /* mul_u64_u32_div */
-> >
-> > +#ifndef mul_u64_u64_div_u64
-> > +static inline u64 mul_u64_u64_div_u64(u64 a, u64 b, u64 c)
-> 
-> Do we really want to inline this? Particularly if we expect this to be
-> the "architecture doesn't have a better version" case?
-> 
-> It's not like we'd expect people to call it with constant values that
-> could be optimized by inlining, do we? If any of the values are
-> actually constants and it's performance-critical, the code is likely
-> better off using some special helper rather than this anyway.
-> 
-> So I'd much rather see it as a weak function defined in
-> lib/math/div64.c, and then architectures don't even need to override
-> it at all. Just let them define their own (inline or not) function,
-> and we have this as a weak fallback.
+Kees Cook <keescook@chromium.org> writes:
 
-I completely forgot we had a .c file to go with all this. Yes, I'll put
-it in there.
+> On Tue, May 19, 2020 at 12:41:27PM -0500, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> > and given the LSM hooks, I think the noexec check is too late as well.
+>> > (This is especially true for the coming O_MAYEXEC series, which will
+>> > absolutely need those tests earlier as well[1] -- the permission checking
+>> > is then in the correct place: during open, not exec.) I think the only
+>> > question is about leaving the redundant checks in fs/exec.c, which I
+>> > think are a cheap way to retain a sense of robustness.
+>> 
+>> The trouble is when someone passes through changes one of the permission
+>> checks for whatever reason (misses that they are duplicated in another
+>> location) and things then fail in some very unexpected way.
+>
+> Do you think this series should drop the "late" checks in fs/exec.c?
+> Honestly, the largest motivation for me to move the checks earlier as
+> I've done is so that other things besides execve() can use FMODE_EXEC
+> during open() and receive the same sanity-checking as execve() (i.e the
+> O_MAYEXEC series -- the details are still under discussion but this
+> cleanup will be needed regardless).
+
+I think this series should drop the "late" checks in fs/exec.c  It feels
+less error prone, and it feels like that would transform this into
+something Linus would be eager to merge because series becomes a cleanup
+that reduces line count.
+
+I haven't been inside of open recently enough to remember if the
+location you are putting the check fundamentally makes sense.  But the
+O_MAYEXEC bits make a pretty strong case that something of the sort
+needs to happen.
+
+I took a quick look but I can not see clearly where path_noexec
+and the regular file tests should go.
+
+I do see that you have code duplication with faccessat which suggests
+that you haven't put the checks in the right place.
+
+I am wondering if we need something distinct to request the type of the
+file being opened versus execute permissions.
+
+All I know is being careful and putting the tests in a good logical
+place makes the code more maintainable, whereas not being careful
+results in all kinds of sharp corners that might be exploitable.
+So I think it is worth digging in and figuring out where those checks
+should live.  Especially so that code like faccessat does not need
+to duplicate them.
+
+Eric
+
