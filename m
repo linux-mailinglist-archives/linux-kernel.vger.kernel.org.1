@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777821DA59B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3B91DA556
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgESXaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:30:05 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:40836 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728432AbgESXaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:30:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589931002; x=1621467002;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=fitAmmYR+siRHznU7MJYKk9c4Tw82/jy6e5chPwlJLw=;
-  b=YygAM4rxhevUTIpwXDea+e1znhZ7YOkK+Xbwgvyk2RpqEX1HneGo34qH
-   FUR9cIh77T27+TwpzuT/FfNlYH1JbfxCVlwArylM/KP1tL7hgMuWok+zE
-   H0QLewXYVd0zlqr1NelNitMrBpv7JsNH4728d9RmELnUU2LHe0srjoA2i
-   M=;
-IronPort-SDR: Wl3dSMwhpOL5k2tH39DJuBMefCB10ew0UQM8WlE40AAwlaQq7gFVjSYFqv7rMMiJuNURig22t8
- 62l/Qk1vmD/Q==
-X-IronPort-AV: E=Sophos;i="5.73,411,1583193600"; 
-   d="scan'208";a="36216330"
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 19 May 2020 23:30:01 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id C56E42225D4;
-        Tue, 19 May 2020 23:29:59 +0000 (UTC)
-Received: from EX13D07UWB004.ant.amazon.com (10.43.161.196) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:29:52 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D07UWB004.ant.amazon.com (10.43.161.196) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:29:52 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Tue, 19 May 2020 23:29:52 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 847C740712; Tue, 19 May 2020 23:29:52 +0000 (UTC)
-Date:   Tue, 19 May 2020 23:29:52 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <boris.ostrovsky@oracle.com>,
-        <jgross@suse.com>, <linux-pm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kamatam@amazon.com>,
-        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
-        <roger.pau@citrix.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
-        <rjw@rjwysocki.net>, <len.brown@intel.com>, <pavel@ucw.cz>,
-        <peterz@infradead.org>, <eduval@amazon.com>, <sblbir@amazon.com>,
-        <anchalag@amazon.com>, <xen-devel@lists.xenproject.org>,
-        <vkuznets@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
-        <benh@kernel.crashing.org>
-Subject: [PATCH 12/12] PM / hibernate: update the resume offset on
- SNAPSHOT_SET_SWAP_AREA
-Message-ID: <40de33ca69c0d3bcf8c827862768ae5d399698d6.1589926004.git.anchalag@amazon.com>
-References: <cover.1589926004.git.anchalag@amazon.com>
+        id S1728299AbgESXZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgESXZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 19:25:30 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD06B20823;
+        Tue, 19 May 2020 23:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589930730;
+        bh=ccZOuYZdXY28saLbk0F9wAgyg3BGaSBjnFIUUWFi3p8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WpViHFEp1zeBQoJT+Vue+cgK/g9yG8v6Fc2Je0uUdIEbaEu4Tr3bxZs+t43lq+QDn
+         X3H0lsLYoWet2tE0+FkAMA3eJ6RvreN8q5hPxVmFYZdFKXv/TcN4b3m0YXnef92pla
+         is2O8WwOY/8IggV0NmGzVdePDHYvlKsgUCsNi09w=
+Date:   Tue, 19 May 2020 18:30:18 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] RDMA/siw: Replace one-element array and use struct_size()
+ helper
+Message-ID: <20200519233018.GA6105@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1589926004.git.anchalag@amazon.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksei Besogonov <cyberax@amazon.com>
+The current codebase makes use of one-element arrays in the following
+form:
 
-The SNAPSHOT_SET_SWAP_AREA is supposed to be used to set the hibernation
-offset on a running kernel to enable hibernating to a swap file.
-However, it doesn't actually update the swsusp_resume_block variable. As
-a result, the hibernation fails at the last step (after all the data is
-written out) in the validation of the swap signature in
-mark_swapfiles().
+struct something {
+    int length;
+    u8 data[1];
+};
 
-Before this patch, the command line processing was the only place where
-swsusp_resume_block was set.
-[Changelog: Resolved patch conflict as code fragmented to
-snapshot_set_swap_area]
-Signed-off-by: Aleksei Besogonov <cyberax@amazon.com>
-Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
-Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
+struct something *instance;
+
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
+
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
+
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct siw_pbl.
+
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- kernel/power/user.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/siw/siw.h     | 2 +-
+ drivers/infiniband/sw/siw/siw_mem.c | 5 +----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/power/user.c b/kernel/power/user.c
-index 7959449765d9..1afa1f0a223e 100644
---- a/kernel/power/user.c
-+++ b/kernel/power/user.c
-@@ -235,8 +235,12 @@ static int snapshot_set_swap_area(struct snapshot_data *data,
- 		return -EINVAL;
- 	}
- 	data->swap = swap_type_of(swdev, offset, NULL);
--	if (data->swap < 0)
-+	if (data->swap < 0) {
- 		return -ENODEV;
-+	} else {
-+	    swsusp_resume_device = swdev;
-+	    swsusp_resume_block = offset;
-+	}
- 	return 0;
- }
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index af5e9f8c0fcd0..5a58a1cc7a7e8 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -139,7 +139,7 @@ struct siw_pble {
+ struct siw_pbl {
+ 	unsigned int num_buf;
+ 	unsigned int max_buf;
+-	struct siw_pble pbe[1];
++	struct siw_pble pbe[];
+ };
+ 
+ /*
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index e2061dc0b043c..87117781d6374 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -349,14 +349,11 @@ dma_addr_t siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx)
+ struct siw_pbl *siw_pbl_alloc(u32 num_buf)
+ {
+ 	struct siw_pbl *pbl;
+-	int buf_size = sizeof(*pbl);
+ 
+ 	if (num_buf == 0)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	buf_size += ((num_buf - 1) * sizeof(struct siw_pble));
+-
+-	pbl = kzalloc(buf_size, GFP_KERNEL);
++	pbl = kzalloc(struct_size(pbl, pbe, num_buf), GFP_KERNEL);
+ 	if (!pbl)
+ 		return ERR_PTR(-ENOMEM);
  
 -- 
-2.24.1.AMZN
+2.26.2
 
