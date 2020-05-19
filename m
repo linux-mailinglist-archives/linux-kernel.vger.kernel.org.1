@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F09B1D9218
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8811D920E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgESIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 04:35:02 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:50702 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgESIfC (ORCPT
+        id S1728575AbgESIav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 04:30:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38751 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728456AbgESIat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 04:35:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QwmitSwlirACqCyCNTRUZhDaJ4HYS/kaW8Cx57bX5c8=; b=lNIV2LUUjHNOY9YH9V1SHZvupD
-        Ap9O81Ry9Mm7QRxv1ir9txOzUjABze72YWF4n+e8jqzVQPpOz2Y0k1MmDdIem/y+1xlA+52ci/GBr
-        VhJgaAxUx6I8Pg8EKqkDJhytF0BSAvxYY8F35JnXJDYpJXdc/fpka+wNKxUlBo4ZaW9kOSumZRxwM
-        gKB/gcUCuqJkWEkWT/BdfO6O4Emzg6cUb6jUonsMqRKDT0LOMPDGPTFrM/zHqvdgFJG4hF0ZYeAHA
-        PyG8RS7VYQpLmw+y265BUaXen5nOl2xMNwH1nvP2Qiz8LHKmvzOVpG3SLpwUxDRCINsZ9jcDhybYT
-        ZjTch/FA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jaxd4-0006F1-1E; Tue, 19 May 2020 08:29:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C8AB304A59;
-        Tue, 19 May 2020 10:29:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 47C4C29E21566; Tue, 19 May 2020 10:29:26 +0200 (CEST)
-Date:   Tue, 19 May 2020 10:29:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>
-Subject: Re: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
-Message-ID: <20200519082926.GB279861@hirez.programming.kicks-ass.net>
-References: <20200515234547.710474468@linutronix.de>
- <20200518160750.GA279861@hirez.programming.kicks-ass.net>
- <87h7wdvzuq.fsf@nanos.tec.linutronix.de>
+        Tue, 19 May 2020 04:30:49 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jaxe9-0002B4-6Y; Tue, 19 May 2020 08:30:45 +0000
+Date:   Tue, 19 May 2020 10:30:44 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Chris Palmer <palmer@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: seccomp feature development
+Message-ID: <20200519083044.lo5d22hdd5nc3dcm@wittgenstein>
+References: <202005181120.971232B7B@keescook>
+ <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
+ <20200519072451.GA3128@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87h7wdvzuq.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200519072451.GA3128@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 08:53:49PM +0200, Thomas Gleixner wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> > So on top of you entry-v8-full; I had to chase one of those
-> > instrumentation_end() escapes an (extended) basic block chase (again!).
-> >  
-> > +#ifdef CONFIG_DEBUG_ENTRY
+On Tue, May 19, 2020 at 07:24:52AM +0000, Sargun Dhillon wrote:
+> On Tue, May 19, 2020 at 12:39:39AM +0200, Jann Horn wrote:
+> > > For user_notif, I think we need something in and around these options:
+> > >
+> > > - make a new API that explicitly follows EA struct design
+> > >   (and while read()/write() might be easier[4], I tend to agree with
+> > >   Jann and we need to stick to ioctl(): as Tycho noted, "read/write is
+> > >   for data". Though I wonder if read() could be used for the notifications,
+> > >   which ARE data, and use ioctl() for the responses?)
+> > 
+> > Just as a note: If we use read() there, we'll never be able to
+> > transfer things like FDs through that API.
+
+(Hm, how did I not get that message? Weird. :))
+
+I hope we won't be able to receive fds through read(). This quickly
+becomes quite problematic, I think.
+
+> > 
+> Although there is no good reason for read being able to receive FDs, there is
+> precedence for recvmsg being able to do this. Either way, I do not think
+
+Right, and recvmsg() is quite dangerous because of that because you need
+to be extremely careful when e.g. the message is truncated and you want
+to error out and you need to carefully close all fds and other shenanigans.
+
+Also, recvmsg() imho, is a bit different from read simply because
+it's sort-of a "typed" read; it's plumbed on top of a message protocol and
+that protocal includes the ability to read fds. read() on the other hand
+is completely agnostic and doesn't care about the data at all. But
+that's just how I always conceptualized it...
+
+> it's a good idea to recv file descriptors, and instead file descriptors
+> should be fetched via the pidfd_getfd syscall.
+
++1
+
 > 
-> Why this? We lose the kprobes runtime protection that way.
-
-Oh bugger indeed. I forgot about that :-(
-
-I added the CONFIG_DEBUG_ENTRY dependency to
-instrumentation_{begin,end}() because they now emit actual code, and I
-figured we shouldn't bother 'production' kernels with all them extra
-NOPs.
-
-And then I figured (wrongly!) that since I have that, I might as well
-add noinstr to is.
-
-> > +/* Section for code which can't be instrumented at all */
-> > +#define noinstr								\
-> > +	noinline notrace __attribute((__section__(".noinstr.text")))
-> > +
-> >  /* Begin/end of an instrumentation safe region */
-> > -#define instrumentation_begin() ({						\
-> > +#define instrumentation_begin() ({					\
-> >  	asm volatile("%c0:\n\t"						\
-> >  		     ".pushsection .discard.instr_begin\n\t"		\
-> >  		     ".long %c0b - .\n\t"				\
-> >  		     ".popsection\n\t" : : "i" (__COUNTER__));
-> 
-> Nifty.
-
-Yeah, took a bit of fiddling because objtool is a bit weird vs UD2, but
-if you order it just right in the WARN thing it works :-)
-
-You want a new delta without the noinstr thing on?
+> Injection is more complicated, and for now, I believe that "writes" should
+> be done via ioctl, or in the future, something like sendmsg might work.
