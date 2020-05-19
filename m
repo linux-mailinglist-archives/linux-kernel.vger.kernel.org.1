@@ -2,49 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFBB1D9CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEB81D9BEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbgESQb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:31:56 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59328 "EHLO elvis.franken.de"
+        id S1729252AbgESQFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:05:01 -0400
+Received: from muru.com ([72.249.23.125]:55060 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729118AbgESQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:31:55 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jb59m-0001aq-01; Tue, 19 May 2020 18:31:54 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 81EFCC013A; Tue, 19 May 2020 18:04:00 +0200 (CEST)
-Date:   Tue, 19 May 2020 18:04:00 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Zhi Li <lizhi01@loongson.cn>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Remove useless parameter of bootcmdline_init()
-Message-ID: <20200519160400.GB16307@alpha.franken.de>
-References: <1589785688-10426-1-git-send-email-lizhi01@loongson.cn>
+        id S1729055AbgESQFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:05:01 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 07EAD80FA;
+        Tue, 19 May 2020 16:05:50 +0000 (UTC)
+Date:   Tue, 19 May 2020 09:04:58 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     Faiz Abbas <faiz_abbas@ti.com>, Keerthy <j-keerthy@ti.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        bcousson@baylibre.com
+Subject: Re: [PATCH v2] arm: dts: Move am33xx and am43xx mmc nodes to
+ sdhci-omap driver
+Message-ID: <20200519160458.GU37466@atomide.com>
+References: <20200512203804.9340-1-faiz_abbas@ti.com>
+ <20200513162327.GM37466@atomide.com>
+ <94025425-95e2-e53d-cfac-a1e73e6c011a@ti.com>
+ <53c815db-dd7d-e6e1-f81a-cf05ef340c71@ti.com>
+ <20200519154807.GT37466@atomide.com>
+ <e37ed4be-aed5-8051-a9fd-c0704d947d75@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1589785688-10426-1-git-send-email-lizhi01@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <e37ed4be-aed5-8051-a9fd-c0704d947d75@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 03:08:08PM +0800, Zhi Li wrote:
-> The parameter "cmdline_p" is useless in bootcmdline_init()，remove it.
+* Tomi Valkeinen <tomi.valkeinen@ti.com> [200519 15:55]:
+> (Dropping DT from cc)
 > 
-> Signed-off-by: Zhi Li <lizhi01@loongson.cn>
+> On 19/05/2020 18:48, Tony Lindgren wrote:
+> 
+> > > > Suspend/resume on am43xx-gpevm is broken right now in mainline and the regression looks
+> > > > like it is caused by the display subsystem. I have reported this to Tomi and
+> > > > its being investigated.
+> > > > 
+> > > > Meanwhile I have tested this patch with display configs disabled and Keerthy's
+> > > > suspend/resume tests pass on both am3 and am4.
+> > 
+> > OK great thanks for checking it. Do you have the display subsystem
+> > related commit that broke PM? I'm wondering if my recent DSS platform
+> > data removal changes might have caused the regression.
+> 
+> I spent a bit time looking at this, but unfortunately I wasn't even able to
+> resume my AM4 evm from suspend. I tried with rtcwake and with plain console
+> (with no_console_suspend). I did not have DSS loaded.
 
-applied to mips-next.
+My test-bbb-suspend script seems to have:
 
-Thomas.
+sudo modprobe wkup_m3_ipc
+sudo modprobe pm33xx
+sudo modprobe rtc-omap
+rtcwake -m mem -s 5
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+I think the same should work for am437x. But some boards do not support
+deep sleep like am437x-idk.
+
+> Anyone have quick hints on how to debug why resume doesn't seem to happen?
+
+You might get some info with no_console_suspend, but that might also
+cause other issues.
+
+Regards,
+
+Tony
