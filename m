@@ -2,204 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104391D9638
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292CF1D9640
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgESM0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 08:26:22 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25240 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgESM0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 08:26:22 -0400
-IronPort-SDR: blC5HPqsB6gBmfw5Dl8RgQAV2nPOL8tYKuM9Xt9xfnu2xkBfvc36fZUdqw22i9wPlQlWtlJGVb
- 2F7p6oeLMicg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 05:26:21 -0700
-IronPort-SDR: xLjlnrR3VX3TuxCIA8Xk3FVSSHC/bDgKA+1UJSpzDFYQ04S7jiCRI3o0vWWw1FvFte1W/DAOx3
- FXm0ZNtSsWcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
-   d="scan'208";a="373711843"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001.fm.intel.com with ESMTP; 19 May 2020 05:26:18 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jb1K9-007dLD-KQ; Tue, 19 May 2020 15:26:21 +0300
-Date:   Tue, 19 May 2020 15:26:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Tobin C . Harding" <me@tobin.cc>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] vsprintf: don't obfuscate NULL and error pointers
-Message-ID: <20200519122621.GD1634618@smile.fi.intel.com>
-References: <20200519112657.17098-1-idryomov@gmail.com>
+        id S1728842AbgESM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 08:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgESM1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 08:27:49 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C735C08C5C0;
+        Tue, 19 May 2020 05:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=gpxgZE1WFOAA3USSRGpS7gL30qkfqbIwl8FUPWp2p+I=; b=m3qWdMR6jSUKVXFYt3bcZ3AM+
+        1gzgGHifUKhfdqriZNFuIRjJftXo3RkK5mZW0yHqlWjNV/Mhnlantm5xiuI8D5t9vXPWjzicYmUvM
+        oux8K2FN76KGorGbDm46c8qhC6wCqVgHhw/8ll91CpW0mJBfe6HZMluI72cdynfwSUFUQPHocHbva
+        Vhgprv2CIlnBk4mLLJ9Fty0ne9pWfCvz0sPb186ZbqHM0HdJxSwAFIQsFBhp28m1rJ/8jwFNVe1Xj
+        NFfDH2fzDEUnrj6/xHtLfdrknIGCeEDVaoOawN3b5i3tNOa/vxT/O6FxgMy7CxbF4vnQGU7XfzcH5
+        ri6ToOMdQ==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:42234)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jb1Kz-0005M2-Jn; Tue, 19 May 2020 13:27:18 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jb1Ks-0005is-Pw; Tue, 19 May 2020 13:27:06 +0100
+Date:   Tue, 19 May 2020 13:27:06 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Grant Likely <grant.likely@arm.com>
+Subject: Re: [PATCH v6] ARM: boot: Obtain start of physical memory from DTB
+Message-ID: <20200519122706.GC1551@shell.armlinux.org.uk>
+References: <20200519114329.GB1551@shell.armlinux.org.uk>
+ <CGME20200519122044eucas1p1220e8827c66dd1ace94b0a86a34f9c37@eucas1p1.samsung.com>
+ <dleftj5zcs5d6e.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200519112657.17098-1-idryomov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dleftj5zcs5d6e.fsf%l.stelmach@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 01:26:57PM +0200, Ilya Dryomov wrote:
-> I don't see what security concern is addressed by obfuscating NULL
-> and IS_ERR() error pointers, printed with %p/%pK.  Given the number
-> of sites where %p is used (over 10000) and the fact that NULL pointers
-> aren't uncommon, it probably wouldn't take long for an attacker to
-> find the hash that corresponds to 0.  Although harder, the same goes
-> for most common error values, such as -1, -2, -11, -14, etc.
+On Tue, May 19, 2020 at 02:20:25PM +0200, Lukasz Stelmach wrote:
+> It was <2020-05-19 wto 12:43>, when Russell King - ARM Linux admin wrote:
+> > On Tue, May 19, 2020 at 01:21:09PM +0200, Geert Uytterhoeven wrote:
+> >> On Tue, May 19, 2020 at 11:46 AM Russell King - ARM Linux admin
+> >> <linux@armlinux.org.uk> wrote:
+> >> > On Tue, May 19, 2020 at 11:44:17AM +0200, Geert Uytterhoeven wrote:
+> >> > > On Tue, May 19, 2020 at 10:54 AM Lukasz Stelmach <l.stelmach@samsung.com> wrote:
+> >> > > > It was <2020-04-29 śro 10:21>, when Geert Uytterhoeven wrote:
+> >> > > > > Currently, the start address of physical memory is obtained by masking
+> >> > > > > the program counter with a fixed mask of 0xf8000000.  This mask value
+> >> > > > > was chosen as a balance between the requirements of different platforms.
+> >> > > > > However, this does require that the start address of physical memory is
+> >> > > > > a multiple of 128 MiB, precluding booting Linux on platforms where this
+> >> > > > > requirement is not fulfilled.
+> >> > > > >
+> >> > > > > Fix this limitation by obtaining the start address from the DTB instead,
+> >> > > > > if available (either explicitly passed, or appended to the kernel).
+> >> > > > > Fall back to the traditional method when needed.
+> >> > > > >
+> >> > > > > This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
+> >> > > > > on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
+> >> > > > > i.e. not at a multiple of 128 MiB.
+> >> > > > >
+> >> > > > > Suggested-by: Nicolas Pitre <nico@fluxnic.net>
+> >> > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >> > > > > Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+> >> > > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> >> > > > > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> >> > > > > Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> >> > > > > ---
+> >> > > >
+> >> > > > [...]
+> >> > > >
+> >> > > > Apparently reading physical memory layout from DTB breaks crashdump
+> >> > > > kernels. A crashdump kernel is loaded into a region of memory, that is
+> >> > > > reserved in the original (i.e. to be crashed) kernel. The reserved
+> >> > > > region is large enough for the crashdump kernel to run completely inside
+> >> > > > it and don't modify anything outside it, just read and dump the remains
+> >> > > > of the crashed kernel. Using the information from DTB makes the
+> >> > > > decompressor place the kernel outside of the dedicated region.
+> >> > > >
+> >> > > > The log below shows that a zImage and DTB are loaded at 0x18eb8000 and
+> >> > > > 0x193f6000 (physical). The kernel is expected to run at 0x18008000, but
+> >> > > > it is decompressed to 0x00008000 (see r4 reported before jumping from
+> >> > > > within __enter_kernel). If I were to suggest something, there need to be
+> >> > > > one more bit of information passed in the DTB telling the decompressor
+> >> > > > to use the old masking technique to determain kernel address. It would
+> >> > > > be set in the DTB loaded along with the crashdump kernel.
+> >> > >
+> >> > > Shouldn't the DTB passed to the crashkernel describe which region of
+> >> > > memory is to be used instead?
+> >> >
+> >> > Definitely not.  The crashkernel needs to know where the RAM in the
+> >> > machine is, so that it can create a coredump of the crashed kernel.
+> >> 
+> >> So the DTB should describe both ;-)
+> >> 
+> >> > > Describing "to use the old masking technique" sounds a bit hackish to me.
+> >> > > I guess it cannot just restrict the /memory node to the reserved region,
+> >> > > as the crashkernel needs to be able to dump the remains of the crashed
+> >> > > kernel, which lie outside this region.
+> >> >
+> >> > Correct.
+> >> >
+> >> > > However, something under /chosen should work.
+> >> >
+> >> > Yet another sticky plaster...
+> >> 
+> >> IMHO the old masking technique is the hacky solution covered by
+> >> plasters.
+> >
+> > One line of code is not "covered by plasters".  There are no plasters.
+> > It's a solution that works for 99.99% of people, unlike your approach
+> > that has had a stream of issues over the last four months, and has
+> > required many reworks of the code to fix each one.  That in itself
+> > speaks volumes about the suitability of the approach.
 > 
-> The NULL part actually fixes a regression: NULL pointers weren't
-> obfuscated until commit 3e5903eb9cff ("vsprintf: Prevent crash when
-> dereferencing invalid pointers") which went into 5.2.  I'm tacking
-> the IS_ERR() part on here because error pointers won't leak kernel
-> addresses and printing them as pointers shouldn't be any different
-> from e.g. %d with PTR_ERR_OR_ZERO().  Obfuscating them just makes
-> debugging based on existing pr_debug and friends excruciating.
-> 
-> Note that the "always print 0's for %pK when kptr_restrict == 2"
-> behaviour which goes way back is left as is.
-> 
-> Example output with the patch applied:
-> 
->                             ptr         error-ptr              NULL
-> %p:            0000000001f8cc5b  fffffffffffffff2  0000000000000000
-> %pK, kptr = 0: 0000000001f8cc5b  fffffffffffffff2  0000000000000000
-> %px:           ffff888048c04020  fffffffffffffff2  0000000000000000
-> %pK, kptr = 1: ffff888048c04020  fffffffffffffff2  0000000000000000
-> %pK, kptr = 2: 0000000000000000  0000000000000000  0000000000000000
-> 
-> Fixes: 3e5903eb9cff ("vsprintf: Prevent crash when dereferencing invalid pointers")
-> Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> As I have been working with kexec code (patches soon) I would like to
+> defend the DT approach a bit. It allows to avoid zImage relocation when
+> a decompressed kernel is larger than ~128MiB. In such case zImage isn't
+> small either and moving it around takes some time.
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-> ---
->  lib/test_printf.c | 19 ++++++++++++++++++-
->  lib/vsprintf.c    |  7 +++++++
->  2 files changed, 25 insertions(+), 1 deletion(-)
-> 
-> Hi Petr,
-> 
-> This just came up again, please consider sending this to Linus
-> for 5.7.
-> 
-> Prior discussion was split in three threads and revolved around the
-> vision for how lib/test_printf.c should be structured between Rasmus
-> and yourself.  The fix itself wasn't disputed and has several acks.
-> 
-> If you want to restructure the test suite before adding any new
-> test cases, v1 doesn't have them, but I'm reposting with test cases
-> because I think it's best to add them right away to prevent further
-> regressions.
-> 
-> v3:
-> - don't use EAGAIN macro in error_pointer() test case as the
->   actual error code varies between architectures
-> 
-> v2:
-> - fix null_pointer() test case (it didn't catch the original
->   regression because test_hashed() doesn't really test much)
->   and add error_pointer() test case
-> 
-> diff --git a/lib/test_printf.c b/lib/test_printf.c
-> index 2d9f520d2f27..6b1622f4d7c2 100644
-> --- a/lib/test_printf.c
-> +++ b/lib/test_printf.c
-> @@ -214,6 +214,7 @@ test_string(void)
->  #define PTR_STR "ffff0123456789ab"
->  #define PTR_VAL_NO_CRNG "(____ptrval____)"
->  #define ZEROS "00000000"	/* hex 32 zero bits */
-> +#define ONES "ffffffff"		/* hex 32 one bits */
->  
->  static int __init
->  plain_format(void)
-> @@ -245,6 +246,7 @@ plain_format(void)
->  #define PTR_STR "456789ab"
->  #define PTR_VAL_NO_CRNG "(ptrval)"
->  #define ZEROS ""
-> +#define ONES ""
->  
->  static int __init
->  plain_format(void)
-> @@ -330,14 +332,28 @@ test_hashed(const char *fmt, const void *p)
->  	test(buf, fmt, p);
->  }
->  
-> +/*
-> + * NULL pointers aren't hashed.
-> + */
->  static void __init
->  null_pointer(void)
->  {
-> -	test_hashed("%p", NULL);
-> +	test(ZEROS "00000000", "%p", NULL);
->  	test(ZEROS "00000000", "%px", NULL);
->  	test("(null)", "%pE", NULL);
->  }
->  
-> +/*
-> + * Error pointers aren't hashed.
-> + */
-> +static void __init
-> +error_pointer(void)
-> +{
-> +	test(ONES "fffffff5", "%p", ERR_PTR(-11));
-> +	test(ONES "fffffff5", "%px", ERR_PTR(-11));
-> +	test("(efault)", "%pE", ERR_PTR(-11));
-> +}
-> +
->  #define PTR_INVALID ((void *)0x000000ab)
->  
->  static void __init
-> @@ -649,6 +665,7 @@ test_pointer(void)
->  {
->  	plain();
->  	null_pointer();
-> +	error_pointer();
->  	invalid_pointer();
->  	symbol_ptr();
->  	kernel_ptr();
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 7c488a1ce318..f0f0522cd5a7 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -794,6 +794,13 @@ static char *ptr_to_id(char *buf, char *end, const void *ptr,
->  	unsigned long hashval;
->  	int ret;
->  
-> +	/*
-> +	 * Print the real pointer value for NULL and error pointers,
-> +	 * as they are not actual addresses.
-> +	 */
-> +	if (IS_ERR_OR_NULL(ptr))
-> +		return pointer_string(buf, end, ptr, spec);
-> +
->  	/* When debugging early boot use non-cryptographically secure hash. */
->  	if (unlikely(debug_boot_weak_hash)) {
->  		hashval = hash_long((unsigned long)ptr, 32);
-> -- 
-> 2.19.2
-> 
+... which is something that has been supported for a very long time,
+before the days of DT.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
