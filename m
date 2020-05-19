@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACC51D956E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 13:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4310B1D958E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 13:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgESLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 07:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgESLkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 07:40:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082C7C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 04:40:12 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f13so2691599wmc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 04:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cTKYH+mp/bhcR85XQxkJ8OwwsY1zKVWgOX9zGZznoL0=;
-        b=MZHUB2ZXTdwLAmgOpCVyQjfyasKoo+pyNdYM9+FPR+5DIBal6yroxOGSNKZH6XWnWH
-         c6Ms4Byxq3yTfxeqNJ3eAG0k0EraIU/71QMv0I60UuvNYIhmMGIwOlie06z/m2jAkp1s
-         E0zXBbjFMSmJeKWFWdTYTRkL+NYJVwBQnfV0j+tSmNee3UxX65pAQ1T7BXERUCAo31or
-         povr55CG1IJBMb+wfWoNt1VgsdfOJSGB18eLoEl98yykvN46WfwqX9PLEDyXc1TdcyUk
-         Gt/jX2G23Vkir+HGDDstNmbBBBRVoRvTzclBwBacRPYxdobkL4RY5CQCSftE9g/R9/Fq
-         vtfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cTKYH+mp/bhcR85XQxkJ8OwwsY1zKVWgOX9zGZznoL0=;
-        b=gSiN4K3APp5rg8R4o79uyUtTcmVONEutmUeg9Yz85jysgvy1Rq554vDuTYCUgYpaKu
-         05FpWVfp882KS9rjQrH4vQ+3oMgi1BsLg+MrNwsFFB0pTLOakqli8yhEfMJHy14sLh7m
-         UgONyyaJwVO3W/EWIUQkAJ3vbdyMKDYibsXWbX0A8AZh5STaPHitrFBjnXyN0lBFFbM6
-         Fpj+Y/y5rSvB9z1uYIH+XYGja1rF/EhFs+PqRaoRZZXhI7csoxNwlZrKoZspB9mR2FMf
-         L5gfpWG8fEqGE2ZFXA4YoPpeUORefU94LiYny4sACQzHnGeUBw09VU2Ka+HI/ActvNoW
-         Rq+w==
-X-Gm-Message-State: AOAM530nSk+9GGxl+/zr3FtenLchlCAsbxCK0dgoJ+O4smD7xnX5BiaZ
-        VjKlM0/wt2jmknvJskpzal4McLBBjWU=
-X-Google-Smtp-Source: ABdhPJxkzXzSGi0I3tTgZ6x7A+f5Zr0659258Yl+tQWXZmWMobtDKKKEHVlFcps7BOvzvTpauYfFuA==
-X-Received: by 2002:a7b:c939:: with SMTP id h25mr5036964wml.9.1589888410760;
-        Tue, 19 May 2020 04:40:10 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id 89sm21569339wrj.37.2020.05.19.04.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 04:40:10 -0700 (PDT)
-Date:   Tue, 19 May 2020 12:40:08 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kdb: Make the internal env 'KDBFLAGS' undefinable
-Message-ID: <20200519114008.lmdf44zmgcmnf27c@holly.lan>
-References: <20200516092606.41576-1-liwei391@huawei.com>
+        id S1728850AbgESLr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 07:47:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4866 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726880AbgESLr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 07:47:57 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B16082A384A26CA1F027;
+        Tue, 19 May 2020 19:47:54 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 19 May 2020 19:47:46 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>
+CC:     <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
+        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
+Subject: [RFC PATCH v3 0/2] add SW BOOST support for CPPC
+Date:   Tue, 19 May 2020 19:41:27 +0800
+Message-ID: <1589888489-13828-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200516092606.41576-1-liwei391@huawei.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 05:26:06PM +0800, Wei Li wrote:
-> 'KDBFLAGS' is an internal variable of kdb, it is combined by 'KDBDEBUG'
-> and state flags. But the user can define an environment variable named
-> 'KDBFLAGS' too, so let's make it undefinable to avoid confusion.
-> 
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+ACPI spec 6.2 section 8.4.7.1 provide the following two CPC registers.
 
-I took a quick look at this and find myself thinking of KDBFLAGS as
-something of a misfeature.
+"Highest performance is the absolute maximum performance an individual
+processor may reach, assuming ideal conditions. This performance level
+may not be sustainable for long durations, and may only be achievable if
+other platform components are in a specific state; for example, it may
+require other processors be in an idle state.
 
-I think I'd rather get kdb_env to show the value we wrote into
-KDBDEBUG.
+Nominal Performance is the maximum sustained performance level of the
+processor, assuming ideal operating conditions. In absence of an
+external constraint (power, thermal, etc.) this is the performance level
+the platform is expected to be able to maintain continuously. All
+processors are expected to be able to sustain their nominal performance
+state simultaneously."
 
-Sure this means we cannot use KDBDEBUG to look at the least significant
-16-bits but I think anyone who is debugging kdb itself should know
-enough to use `md4c1 kdb_flags` to read those anyway.
+We can use Highest Performance as the max performance in boost mode and
+Nomial Performance as the max performance in non-boost mode. If the
+Highest Performance is greater than the Nominal Performance, we assume
+SW BOOST is supported.
 
+Xiongfeng Wang (2):
+  cpufreq: change '.set_boost' to act on only one policy
+  CPPC: add support for SW BOOST
 
-Daniel.
+ drivers/cpufreq/acpi-cpufreq.c |  4 ++--
+ drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++++--
+ drivers/cpufreq/cpufreq.c      | 53 +++++++++++++++++++++---------------------
+ include/linux/cpufreq.h        |  2 +-
+ 4 files changed, 67 insertions(+), 31 deletions(-)
 
+-- 
+1.7.12.4
 
-
-> ---
-> v1 -> v2:
->  - Fix lack of braces.
-> 
->  kernel/debug/kdb/kdb_main.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-> index 4fc43fb17127..75b798340300 100644
-> --- a/kernel/debug/kdb/kdb_main.c
-> +++ b/kernel/debug/kdb/kdb_main.c
-> @@ -423,6 +423,8 @@ int kdb_set(int argc, const char **argv)
->  			| (debugflags << KDB_DEBUG_FLAG_SHIFT);
->  
->  		return 0;
-> +	} else if (strcmp(argv[1], "KDBFLAGS") == 0) {
-> +		return KDB_NOPERM;
->  	}
->  
->  	/*
-> -- 
-> 2.17.1
-> 
