@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5321D97C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02E91D97CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgESN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:29:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47777 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbgESN3x (ORCPT
+        id S1728942AbgESNbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728857AbgESNbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:29:53 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jb2JJ-0001zu-98; Tue, 19 May 2020 13:29:33 +0000
-Date:   Tue, 19 May 2020 15:29:31 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Eric Biggers <ebiggers3@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] exec: Change uselib(2) IS_SREG() failure to EACCES
-Message-ID: <20200519132931.3b7yugfv2ajry6y7@wittgenstein>
-References: <20200518055457.12302-1-keescook@chromium.org>
- <20200518055457.12302-2-keescook@chromium.org>
- <20200518130251.zih2s32q2rxhxg6f@wittgenstein>
- <CAG48ez1FspvvypJSO6badG7Vb84KtudqjRk1D7VyHRm06AiEbQ@mail.gmail.com>
- <20200518144627.sv5nesysvtgxwkp7@wittgenstein>
- <87blmk3ig4.fsf@x220.int.ebiederm.org>
- <87mu64uxq1.fsf@igel.home>
- <87sgfwuoi3.fsf@x220.int.ebiederm.org>
- <87eergunqs.fsf@igel.home>
- <87ftbwun0h.fsf@x220.int.ebiederm.org>
+        Tue, 19 May 2020 09:31:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DE9C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:31:38 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w10so13739079ljo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zz4KmcfH8bN5ODG0ex5UZiQJD1c8wBCbG4DymCKep+A=;
+        b=JPl11egiC/rpYvWWDESI7HA/BFOmPHzkcaUh+qIBTvnbvsS97QNPgaHNytnZKZc2WS
+         urX7266g5l2HYvhERmRCJEAL36Vot0tCVb9ldLccQUFp7AlOM0T/rKzZHFhB3wIGTY0Y
+         G9suicr/C8ZuoboVVRpFmxUnj/zGJyaXXQR6AByuU6S/5Pw5nCxfNQ2TVucTiC8EBprh
+         RYhHJIGS5ttTrhqQhF9QVM4hgCuAzeMhpnFEvqqZDUBb6xuyhliw+2EMakO9rU/T6met
+         nE4zZmk52U5WvroAp/Lbtyu812WeifFTbzfjq2JuP9JIEw7Zq5Nkw7FZLJ7MN0iWZbV7
+         Y1og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zz4KmcfH8bN5ODG0ex5UZiQJD1c8wBCbG4DymCKep+A=;
+        b=N8hwr5+KVIoIdA1FQZYxZhlE+ebHqu40C4J4XJ9A7x+Fwjy2UKsdx8M4OuVoYrMka0
+         FBwoUYlKGW8uvEoRk/p0V0B+TrMNBgD3LCKQaytwgx3kyV1RghNM6a2RrHr8vd0K/MIk
+         IbJCsZXJwoGfKOLQv1ljdeMjF9wakKpEeoX5ZjkOkVTpYoiEDV8erXqhYU15X7AJeCF4
+         QpnlmxeU1wQ9pOZkCYSN31Lxj4A94JB9pqtXmOufXZUXJ9J7hswPMNuuej6Fej/dGNd8
+         8H4+tT1CsKV+/Myn4HmJTEAZ+0qmwbSUAALHlHD34mQeW09OOSzWLcwaoAh9oCQi1CiR
+         jKMA==
+X-Gm-Message-State: AOAM530o74P81wNVbcYo8pwd3bUJTNjHp8Ee9Y9VQuh5EwZqZAZK2ItD
+        +nofN2sHLxtWUvYYC5zag7Pe3A==
+X-Google-Smtp-Source: ABdhPJzb9RGwxu+tVzU1e8nCwzm1ZoYzVXHfqQ/a9+EsosV/wCYQzWZU/Q1MGMK7RV4gEl3OaN7u2Q==
+X-Received: by 2002:a2e:584a:: with SMTP id x10mr13878719ljd.181.1589895097279;
+        Tue, 19 May 2020 06:31:37 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id t30sm8193056lfd.29.2020.05.19.06.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 06:31:36 -0700 (PDT)
+Date:   Tue, 19 May 2020 15:31:35 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: timer: Add renesas,em-sti bindings
+Message-ID: <20200519133135.GD470768@oden.dyn.berto.se>
+References: <20200519081101.28973-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87ftbwun0h.fsf@x220.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200519081101.28973-1-geert+renesas@glider.be>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 07:28:46AM -0500, Eric W. Biederman wrote:
-> Andreas Schwab <schwab@linux-m68k.org> writes:
-> 
-> > On Mai 19 2020, Eric W. Biederman wrote:
-> >
-> >> I am wondering if there are source trees for libc4 or libc5 around
-> >> anywhere that we can look at to see how usage of uselib evolved.
-> >
-> > libc5 is available from archive.debian.org.
-> >
-> > http://archive.debian.org/debian-archive/debian/pool/main/libc/libc/libc_5.4.46.orig.tar.gz
-> 
-> Interesting.
-> 
-> It appears that the old a.out code to make use of uselib remained in
-> the libc5 sources but it was all conditional on the being compiled not
-> to use ELF.
-> 
-> libc5 did provide a wrapper for the uselib system call.
-> 
-> It appears glibc also provides a wrapper for the uselib system call
-> named: uselib@GLIBC_2.2.5.
-> 
-> I don't see a glibc header file that provides a declaration for uselib
-> though.
-> 
-> So the question becomes did anyone use those glibc wrappers.
+Hi Geert,
 
-The only software I could find was ski, the ia64 instruction set
-emulator, which apparently used to make use of this and when glibc
-removed they did:
+Thanks for your work.
 
-#define uselib(libname) syscall(__NR_uselib, libname)
+On 2020-05-19 10:11:01 +0200, Geert Uytterhoeven wrote:
+> Document Device Tree bindings for the Renesas EMMA Mobile System Timer.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-but they only define it for the sake of the internal syscall list they
-maintain so not actively using it. I just checked, ski is available on
-Fedora 31 and Fedora has USELIB disabled.
-Codesearch on Debian yields no users that actively use the syscall for
-anything.
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-Christian
+> ---
+>  .../bindings/timer/renesas,em-sti.yaml        | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml b/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
+> new file mode 100644
+> index 0000000000000000..233d74d5402cf734
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/renesas,em-sti.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/renesas,em-sti.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas EMMA Mobile System Timer
+> +
+> +maintainers:
+> +  - Magnus Damm <magnus.damm@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: renesas,em-sti
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: sclk
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    timer@e0180000 {
+> +            compatible = "renesas,em-sti";
+> +            reg = <0xe0180000 0x54>;
+> +            interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&sti_sclk>;
+> +            clock-names = "sclk";
+> +    };
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards,
+Niklas Söderlund
