@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDF91DA507
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C44A1DA502
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgESWxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgESWxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:53:31 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E352DC061A0E;
-        Tue, 19 May 2020 15:53:30 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbB6y-0003lX-Nc; Wed, 20 May 2020 00:53:25 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 30B81100D00; Wed, 20 May 2020 00:53:24 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>
-Cc:     Maxim Samoylov <max7255@yandex-team.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH] futex: send SIGBUS if argument is not aligned on a four-byte boundary
-In-Reply-To: <158955700764.647498.18025770126733698386.stgit@buzz>
-References: <158955700764.647498.18025770126733698386.stgit@buzz>
-Date:   Wed, 20 May 2020 00:53:24 +0200
-Message-ID: <87sgfv5yfv.fsf@nanos.tec.linutronix.de>
+        id S1728144AbgESWu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726318AbgESWu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:50:59 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA30620674;
+        Tue, 19 May 2020 22:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589928658;
+        bh=Fqra9IuVuRyQX7OP0Uy6DhIAmIXe+LMIOkrDcW8htPo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VqIiz4a8dXOCfJYo0RzYsoa/zEaVTZCPxvClxFI9E0CB5b3lE56BiocD6YcC4zvMG
+         HUYFxIWUyjxQ2YIBBA9fvKdRS+d06BfV1qgKmXWimlij4rdkaFog6YzOXCvYEynvdv
+         b2g1hSeX3IXsCIj7lAQIsBg9FyXj52owte8DEhBA=
+Date:   Tue, 19 May 2020 17:55:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] drm/amdgpu/smu10: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200519225545.GA2066@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru> writes:
+The current codebase makes use of one-element arrays in the following
+form:
 
-> Userspace implementations of mutexes (including glibc) in some cases
-> retries operation without checking error code from syscall futex.
-> This is good for performance because most errors are impossible when
-> locking code trusts itself.
+struct something {
+    int length;
+    u8 data[1];
+};
 
-This argument is blantantly wrong. It's the justification for bad
-programming. Code ignoring error returns is simply buggy.
+struct something *instance;
 
-> Some errors which could came from outer code are handled automatically,
-> for example invalid address triggers SIGSEGV on atomic fast path.
->
-> But one case turns into nasty busy-loop: when address is unaligned.
-> futex(FUTEX_WAIT) returns EINVAL immediately and loop goes to retry.
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
 
-Why is that something the kernel has to care about? The kernel returns
-EINVAl as documented and when user space decides to ignore then it goes
-to retry for a full timeslice for nothing.
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
 
-You have to come up with a better argument why we want to send a signal
-here.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-Along with an argument why SIGBUS is the right thing when a user space
-fast path violation results in a SIGSEGV as you stated above.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
 
-Plus a patch which documents this change in the futex man page.
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct smu10_voltage_dependency_table.
 
-> Example which loops inside second call rather than hung peacefully:
->
-> #include <stdlib.h>
-> #include <pthread.h>
->
-> int main(int argc, char **argv)
-> {
-> 	char buf[sizeof(pthread_mutex_t) + 1];
-> 	pthread_mutex_t *mutex = (pthread_mutex_t *)(buf + 1);
->
-> 	pthread_mutex_init(mutex, NULL);
-> 	pthread_mutex_lock(mutex);
-> 	pthread_mutex_lock(mutex);
-> }
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
 
-And this broken code is a kernel problem because?
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
 
-> It seems there is no practical usage for calling syscall futex for
-> unaligned address. This may be only bug in user space. Let's help and
-> handle this gracefully without adding extra code on fast path.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 6 ++----
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.h | 2 +-
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-How does that help?
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+index 246bb9ac557d8..c9cfe90a29471 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
+@@ -410,12 +410,10 @@ static int smu10_get_clock_voltage_dependency_table(struct pp_hwmgr *hwmgr,
+ 			struct smu10_voltage_dependency_table **pptable,
+ 			uint32_t num_entry, const DpmClock_t *pclk_dependency_table)
+ {
+-	uint32_t table_size, i;
++	uint32_t i;
+ 	struct smu10_voltage_dependency_table *ptable;
+ 
+-	table_size = sizeof(uint32_t) + sizeof(struct smu10_voltage_dependency_table) * num_entry;
+-	ptable = kzalloc(table_size, GFP_KERNEL);
+-
++	ptable = kzalloc(struct_size(ptable, entries, num_entry), GFP_KERNEL);
+ 	if (NULL == ptable)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.h b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.h
+index 1fb296a996f3a..0f969de10fabc 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.h
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.h
+@@ -192,7 +192,7 @@ struct smu10_clock_voltage_dependency_record {
+ 
+ struct smu10_voltage_dependency_table {
+ 	uint32_t count;
+-	struct smu10_clock_voltage_dependency_record entries[1];
++	struct smu10_clock_voltage_dependency_record entries[];
+ };
+ 
+ struct smu10_clock_voltage_information {
+-- 
+2.26.2
 
-Are you going to stick SIGBUS in _ALL_ syscalls which might be retried
-in a loop just because user space fails to evaluate the error code
-properly?
-
-You have to come up with a better argument to justify this change.
-
-> This patch sends SIGBUS signal to slay task and break busy-loop.
-
-I'm pretty sure that I asked you to read and follow documentation
-before. If I did not:
-
- git grep 'This patch' Documentation/process/
-
-Thanks,
-
-        tglx
