@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA751D9C83
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360E71D9C7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgESQ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S1729397AbgESQ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729340AbgESQ0S (ORCPT
+        with ESMTP id S1729340AbgESQ0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:26:18 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1ABC08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b6so418459ljj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:26:17 -0700 (PDT)
+        Tue, 19 May 2020 12:26:09 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CF9C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:26:09 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a5so1614800pjh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:26:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
-        b=a8S6FimrljQCYdqdMRjHudj5xuwSAYeW17sDBke8Wp/wO6Vv10u9cXvAcweW0ZSEYT
-         O3hXN68ol8TooTR2xUI2YNd5y+PctNRhxhENJnhmYB+aBitMMtqsXQFMvUY86xEYH5PA
-         jFICERjG8bgZGMW0GbVN6qDt50ZsFp9Lq9zCI=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kDaF8zyZTb3Ta49NCK5A63qXcN8gydwJuZQlr41/Oy8=;
+        b=O1QETDhpWINpx9qXOpoLNVjfTGd96i8BxobEwfwNRfKkNpVmJLVykZTQUhodidSGmJ
+         WSliMm3RbgtYth7tcFgdCKpxcpqCdnATzK1fJjMflEOY0r+m11P1uzV6DJVkUmwtV1hb
+         tjnNid9N19+QMXPTuHpDakBiFJmHE/XUVu68g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dhbRZ27gTq3LlamCeWaOIagumkyuEgHdNj01JBr2vyU=;
-        b=sPtcYoXApujBVLiHcKINXhjfI/pdTRxUg/H82nl9SJgyWgzJk/sde58qB4ANFBA7Nz
-         4ZdoxcDem/aFenx75H/o6K77dsdK07u8ansDpaC0/oRV5q7C4xisIhR2Ay/l19qFoIRL
-         qCehXJqLsh5bMwcjDBOeL9X6ohEQyWPRpG45WTM7bCcj+tPjb2m0+qyRbX5+mFZvIlFw
-         gFHjxBy8b/2ZL0U212ALRW5+E76WRE5JnpKFnh+eCvyGXcRP5NSNk+i8Cow9wcT61H17
-         jAWenXBBqkgJA8EUlVJmwUCjwOfb+6u2csK1B/sM/3prtsesto7IM7da5C/bIsgF3S3W
-         kp9w==
-X-Gm-Message-State: AOAM533noDBoiBfze9tyybj8cGiYs8BAChA2E5u9Vs11/D9GJFuTFvQN
-        cc6RnsIa3aiErpmVd/+sJs3Qu5m3HHI=
-X-Google-Smtp-Source: ABdhPJydBW3EVX4Yhd5/4EX14cHK7VL6CTShFWAR7wGjGcmpKBt/qZxTkyg+LXHVlLs9hjf8mdga9g==
-X-Received: by 2002:a2e:a171:: with SMTP id u17mr122687ljl.225.1589905575230;
-        Tue, 19 May 2020 09:26:15 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id n23sm1495618lfq.76.2020.05.19.09.26.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 09:26:14 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id q2so352261ljm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:26:13 -0700 (PDT)
-X-Received: by 2002:a05:651c:1183:: with SMTP id w3mr128485ljo.265.1589905573160;
- Tue, 19 May 2020 09:26:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-13-hch@lst.de>
-In-Reply-To: <20200519134449.1466624-13-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 19 May 2020 09:25:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
-Message-ID: <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com>
-Subject: Re: [PATCH 12/20] maccess: remove strncpy_from_unsafe
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kDaF8zyZTb3Ta49NCK5A63qXcN8gydwJuZQlr41/Oy8=;
+        b=jZWIAzPLwO5GUqtlslgKW8j1bl+a0eA9ieoGo3O5iPpjk0wOvINDrUDdTfehckhS+E
+         kHOrERfa1BqnSFczI7Cxj/oBvdOZ4S48O2GX0LuOs7MsLBsVzP09YWMBdYn3Ji7x74Wc
+         QAj0Mw2LZ9m/u3wOXCQDrwFPGGz4A77RhBsXv4r23iwAfEcfgGFb4A9e742tVMxRn/9r
+         557kUdPAlnXBVplugWHoRfs3VGpenmBMaQkntlmjnXTX1noC9s5pnaBhiqwJ8CnWlAfk
+         pfc9Vhz20amMeYTxgkqv0m+SqL9ilbmQXDHDiwhEIm6aY+uA7zpu/0Zz7JWq4lCVOyvO
+         +DHw==
+X-Gm-Message-State: AOAM530TpjfGi93TsGvNVzklGRArNrSaUXN1xAcLYspq+aS/soN0bM58
+        V13vvWWHI2qBZKsWC/rP76ScSQ==
+X-Google-Smtp-Source: ABdhPJyAcwedXrNHFCHkCzGmbuwb9krutiZpm8RExHOjZKVhXgmGqDW4Wg6fBQWPhl4x2ofwxKKvoA==
+X-Received: by 2002:a17:90a:dc10:: with SMTP id i16mr333818pjv.137.1589905567075;
+        Tue, 19 May 2020 09:26:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f136sm12823pfa.59.2020.05.19.09.26.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 09:26:05 -0700 (PDT)
+Date:   Tue, 19 May 2020 09:26:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] Relocate execve() sanity checks
+Message-ID: <202005190918.D2BD83F7C@keescook>
+References: <20200518055457.12302-1-keescook@chromium.org>
+ <87a724t153.fsf@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a724t153.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> +       if (IS_ENABLED(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE) &&
-> +           compat && (unsigned long)unsafe_ptr < TASK_SIZE)
-> +               ret = strncpy_from_user_nofault(dst, user_ptr, size);
-> +       else
-> +               ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
+On Tue, May 19, 2020 at 10:06:32AM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> 
+> > Hi,
+> >
+> > While looking at the code paths for the proposed O_MAYEXEC flag, I saw
+> > some things that looked like they should be fixed up.
+> >
+> >   exec: Change uselib(2) IS_SREG() failure to EACCES
+> > 	This just regularizes the return code on uselib(2).
+> >
+> >   exec: Relocate S_ISREG() check
+> > 	This moves the S_ISREG() check even earlier than it was already.
+> >
+> >   exec: Relocate path_noexec() check
+> > 	This adds the path_noexec() check to the same place as the
+> > 	S_ISREG() check.
+> >
+> >   fs: Include FMODE_EXEC when converting flags to f_mode
+> > 	This seemed like an oversight, but I suspect there is some
+> > 	reason I couldn't find for why FMODE_EXEC doesn't get set in
+> > 	f_mode and just stays in f_flags.
+> 
+> So I took a look at this series.
+> 
+> I think the belt and suspenders approach of adding code in open and then
+> keeping it in exec and uselib is probably wrong.  My sense of the
+> situation is a belt and suspenders approach is more likely to be
+> confusing and result in people making mistakes when maintaining the code
+> than to actually be helpful.
 
-These conditionals are completely illegible.
+This is why I added the comments in fs/exec.c's redundant checks. When I
+was originally testing this series, I had entirely removed the checks in
+fs/exec.c, but then had nightmares about some kind of future VFS paths
+that would somehow bypass do_open() and result in execve() working on
+noexec mounts, there by allowing for the introduction of a really nasty
+security bug.
 
-That's true in the next patch too.
+The S_ISREG test is demonstrably too late (as referenced in the series),
+and given the LSM hooks, I think the noexec check is too late as well.
+(This is especially true for the coming O_MAYEXEC series, which will
+absolutely need those tests earlier as well[1] -- the permission checking
+is then in the correct place: during open, not exec.) I think the only
+question is about leaving the redundant checks in fs/exec.c, which I
+think are a cheap way to retain a sense of robustness.
 
-Stop using "IS_ENABLED(config)" to make very complex conditionals.
+-Kees
 
-A clear #ifdef is much better if the alternative is a conditional that
-is completely impossible to actually understand and needs multiple
-lines to read.
+[1] https://lore.kernel.org/lkml/202005142343.D580850@keescook/
 
-If you made this a simple helper (called "bpf_strncpy_from_unsafe()"
-with that "compat" flag, perhaps?), it would be much more legible as
-
-  /*
-   * Big comment goes here about the compat behavior and
-   * non-overlapping address spaces and ambiguous pointers.
-   */
-  static long bpf_strncpy_from_legacy(void *dest, const void
-*unsafe_ptr, long size, bool legacy)
-  {
-  #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-        if (legacy && addr < TASK_SIZE)
-            return strncpy_from_user_nofault(dst, (const void __user
-*) unsafe_ptr, size);
-  #endif
-
-        return strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
-  }
-
-and then you'd just use
-
-        if (bpf_strncpy_from_unsafe(dst, unsafe_ptr, size, compat) < 0)
-                memset(dst, 0, size);
-
-and avoid any complicated conditionals, goto's, and make the code much
-easier to understand thanks to having a big comment about the legacy
-case.
-
-In fact, separately I'd probably want that "compat" naming to be
-scrapped entirely in that file.
-
-"compat" generally means something very specific and completely
-different in the kernel: it's the "I'm a 32-bit binary on a 64-bit
-kernel" compatibility case.
-
-Here, it's literally "BPF legacy behavior", not that kind of "compat" thing.
-
-But that renaming is separate, although I'd start the ball rolling
-with that "bpf_strncpy_from_legacy()" helper.
-
-                Linus
+-- 
+Kees Cook
