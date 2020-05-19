@@ -2,154 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB831D8C34
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625791D8C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgESAXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 20:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726284AbgESAXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 20:23:40 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EC52207E8;
-        Tue, 19 May 2020 00:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589847819;
-        bh=yXFIXoaaIhCB0WBUDuO8+foBCMcSuBqnKo4TZIde9+s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VYkk+hfQEWe2QCIlDVTrL0JzYcHPFEh2pQdt0SJC4kVCkK3WALYEsbyaJdgWQcF6F
-         ZQ1Ir+MKj5YNMBlpRtBD5GfHYyxoMlFJREA29gDzJMhBnSfjLFBttiypFO4VGrQPht
-         bot2fl/Y2FZV3XsyOX+jXE6j5v20TbVwRNA45tOM=
-Received: by mail-ed1-f46.google.com with SMTP id l25so5458677edj.4;
-        Mon, 18 May 2020 17:23:39 -0700 (PDT)
-X-Gm-Message-State: AOAM531LAZZpOK1nXxecnbMHeoZt2CbO2nn48XqLWa43kHQNyBCmd8kX
-        ZhGSlYYW1UFb+6juxFbmh4v9DhxA9QwaYHox+A==
-X-Google-Smtp-Source: ABdhPJyrGc6vsnr+WmOKuIm4SqDP52pR/PCq2FPaelMHb8IdDO8nVnID9dGFbWG/aRvWQ0W2/TOp4xkr7PE1zmaiNLM=
-X-Received: by 2002:aa7:d84b:: with SMTP id f11mr13610097eds.288.1589847817907;
- Mon, 18 May 2020 17:23:37 -0700 (PDT)
+        id S1727837AbgESAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 20:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgESAZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 20:25:39 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69063C061A0C;
+        Mon, 18 May 2020 17:25:39 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d7so9740796qtn.11;
+        Mon, 18 May 2020 17:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6nQAIsGmbBiNV1zSsJWz0TENOrH6776bbwZuF8Trr/w=;
+        b=PuB7x/uVjj+wZ/Gxit6ndJAZ2p1GOG41RE3fdhvuzB3KG3w1MrvH1AbDzwTBrI+OTg
+         3qlFSI/J7tqm0sQzs0JKdBholOEQl5vDk9J8gEyowujMKD+xSbp15FX10gXg2rs+9N4/
+         15Qw+H+xeMeYCziG8zL48HeAJOISggk/T/BCCZD5qCP0Rc4U2rdcktZRudMN9NndwVG/
+         MBSovAoMGGZXRzHbXEdGGSKtka3KBnGf8kJ3JhVu+DXuP3mdzQ0PKnzNV3LLrURgqcSG
+         pCUq9CBCQ0pErIWy7cV+APAwi7ObeXfRIXnqAlNR5XfocyfJ43KTrjbs2x7RGEPqcKd+
+         C+Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6nQAIsGmbBiNV1zSsJWz0TENOrH6776bbwZuF8Trr/w=;
+        b=qfFgQMcfEDXig+jaxgZb0JoVXz8djD9DycH4LztP1jZJu5iGVhYnhaS5iGOo4JQz1u
+         5L6S51E7LwhWE9iUTWA8/2LnAtAcKn4EA4gi8UylYMB01OgkXQn4dPBHkUewswBHL324
+         7fU57mVNAeGmVqKVbZ5jGSg3aZDu1KKVLasmKSl7fzYP5pjBMZRaHgjoUHbBVMUAYGKD
+         rCNyTcXX6qRAJXKOecUcFYFkjPPr5aCCQZfaaLVekdSpcFSVRK+gEpzvLPk7btT2/eju
+         /Fj5QotY7j27cqJU7C9RweRsDNOBSkuq7z4xzjcevyxwrZpmKJ+8rc60zwaKvAbdEFq2
+         907Q==
+X-Gm-Message-State: AOAM533jPtUbVqWpjFOML+Qf66VZ/47Q4IJltQVeLgNWNJFQddSE8m3H
+        R30plWTig35KwoL1w1lwygQtS+aWEzB4FzJ0I0g=
+X-Google-Smtp-Source: ABdhPJz4l7HrIm3Z41Fbwv9AZMAfCNar9zykDJML/8NhiMsNv1WTtuHZdvzwk12LIrWvtKuF/4VC9YZz8BdRrF7pHxk=
+X-Received: by 2002:aed:24a1:: with SMTP id t30mr18426331qtc.93.1589847938662;
+ Mon, 18 May 2020 17:25:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200518113156.25009-1-matthias.bgg@kernel.org> <20200518113156.25009-2-matthias.bgg@kernel.org>
-In-Reply-To: <20200518113156.25009-2-matthias.bgg@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 19 May 2020 08:23:24 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-jo3sjsYPD7MPtuyOxN6XZuGJ1Vd_xUrUoBK94maU5ew@mail.gmail.com>
-Message-ID: <CAAOTY_-jo3sjsYPD7MPtuyOxN6XZuGJ1Vd_xUrUoBK94maU5ew@mail.gmail.com>
-Subject: Re: [PATCH 2/4] clk/soc: mediatek: mt6797: Bind clock driver from
- platform device
-To:     matthias.bgg@kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-clk@vger.kernel.org, Allison Randal <allison@lohutok.net>
+References: <CAG=TAF6mfrwxF1-xEJJ9dL675uMUa7RZrOa_eL2mJizZJ-U7iQ@mail.gmail.com>
+ <CAEf4BzazvGOoJbm+zNMqTjhTPJAnVLVv9V=rXkdXZELJ4FPtiA@mail.gmail.com> <CAG=TAF6aqo-sT2YE30riqp7f47KyXH_uhNJ=M9L12QU6EEEfqQ@mail.gmail.com>
+In-Reply-To: <CAG=TAF6aqo-sT2YE30riqp7f47KyXH_uhNJ=M9L12QU6EEEfqQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 May 2020 17:25:27 -0700
+Message-ID: <CAEf4BzaBfnDL=WpRP-7rYFhocOsCQyFuZaLvM0+k9sv2t_=rVw@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
+To:     Qian Cai <cai@lca.pw>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+On Mon, May 18, 2020 at 5:09 PM Qian Cai <cai@lca.pw> wrote:
+>
+> On Mon, May 18, 2020 at 7:55 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sun, May 17, 2020 at 7:45 PM Qian Cai <cai@lca.pw> wrote:
+> > >
+> > > With Clang 9.0.1,
+> > >
+> > > return array->value + array->elem_size * (index & array->index_mask);
+> > >
+> > > but array->value is,
+> > >
+> > > char value[0] __aligned(8);
+> >
+> > This, and ptrs and pptrs, should be flexible arrays. But they are in a
+> > union, and unions don't support flexible arrays. Putting each of them
+> > into anonymous struct field also doesn't work:
+> >
+> > /data/users/andriin/linux/include/linux/bpf.h:820:18: error: flexible
+> > array member in a struct with no named members
+> >    struct { void *ptrs[] __aligned(8); };
+> >
+> > So it probably has to stay this way. Is there a way to silence UBSAN
+> > for this particular case?
+>
+> I am not aware of any way to disable a particular function in UBSAN
+> except for the whole file in kernel/bpf/Makefile,
+>
+> UBSAN_SANITIZE_arraymap.o := n
+>
+> If there is no better way to do it, I'll send a patch for it.
 
-<matthias.bgg@kernel.org> =E6=96=BC 2020=E5=B9=B45=E6=9C=8818=E6=97=A5 =E9=
-=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:32=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Matthias Brugger <matthias.bgg@gmail.com>
->
-> The mmsys driver is now the top level entry point for the multimedia
-> system (mmsys), we bind the clock driver by creating a platform device.
-> We also bind the MediaTek DRM driver which is not yet implement and
-> therefor will errror out for now.
->
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
-> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-> ---
->
->  drivers/clk/mediatek/clk-mt6797-mm.c | 9 ++-------
->  drivers/soc/mediatek/mtk-mmsys.c     | 8 ++++++++
->  2 files changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/clk/mediatek/clk-mt6797-mm.c b/drivers/clk/mediatek/=
-clk-mt6797-mm.c
-> index 8f05653b387d..01fdce287247 100644
-> --- a/drivers/clk/mediatek/clk-mt6797-mm.c
-> +++ b/drivers/clk/mediatek/clk-mt6797-mm.c
-> @@ -92,16 +92,12 @@ static const struct mtk_gate mm_clks[] =3D {
->                  "clk26m", 3),
->  };
->
-> -static const struct of_device_id of_match_clk_mt6797_mm[] =3D {
-> -       { .compatible =3D "mediatek,mt6797-mmsys", },
-> -       {}
-> -};
-> -
->  static int clk_mt6797_mm_probe(struct platform_device *pdev)
->  {
-> +       struct device *dev =3D &pdev->dev;
-> +       struct device_node *node =3D dev->parent->of_node;
->         struct clk_onecell_data *clk_data;
->         int r;
-> -       struct device_node *node =3D pdev->dev.of_node;
->
->         clk_data =3D mtk_alloc_clk_data(CLK_MM_NR);
->
-> @@ -121,7 +117,6 @@ static struct platform_driver clk_mt6797_mm_drv =3D {
->         .probe =3D clk_mt6797_mm_probe,
->         .driver =3D {
->                 .name =3D "clk-mt6797-mm",
-> -               .of_match_table =3D of_match_clk_mt6797_mm,
->         },
->  };
->
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-=
-mmsys.c
-> index 783c3dd008b2..fee64c8d3020 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -88,6 +88,10 @@ static const struct mtk_mmsys_driver_data mt2712_mmsys=
-_driver_data =3D {
->         .clk_driver =3D "clk-mt2712-mm",
->  };
->
-> +static const struct mtk_mmsys_driver_data mt6797_mmsys_driver_data =3D {
-> +       .clk_driver =3D "clk-mt6797-mm",
-> +};
-> +
->  static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data =3D {
->         .clk_driver =3D "clk-mt8173-mm",
->  };
-> @@ -339,6 +343,10 @@ static const struct of_device_id of_match_mtk_mmsys[=
-] =3D {
->                 .compatible =3D "mediatek,mt2712-mmsys",
->                 .data =3D &mt2712_mmsys_driver_data,
->         },
-> +       {
-> +               .compatible =3D "mediatek,mt6797-mmsys",
-> +               .data =3D &mt6797_mmsys_driver_data,
-> +       },
->         {
->                 .compatible =3D "mediatek,mt8173-mmsys",
->                 .data =3D &mt8173_mmsys_driver_data,
-> --
-> 2.26.2
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+That's probably going to be too drastic, we still would want to
+validate the rest of arraymap.c code, probably. Not sure, maybe
+someone else has better ideas.
