@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187E91D9A4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721B91D9A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729172AbgESOpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 10:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727904AbgESOpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 10:45:43 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0124207FB;
-        Tue, 19 May 2020 14:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589899543;
-        bh=/dgqySkNnw+UK5kssnhg5AYKnoQk02tynr9C8SngIMw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KfwNFTCXBfZCdibht0nlEElq287INyWzpWXwpzkjdCDLoq04PnGMc1mBD44iG+zej
-         9KqGVp/ypVDpaRfKv2tl3aYHLNuwf+WxVNX3yn0BHcnVW5eswkSrV35xq7rgAaE4QH
-         hGv19Y0PDFOfZNYwhd0rSouNewH7WhTXmbrejQUI=
-Subject: Re: [PATCH 5.4 000/147] 5.4.42-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, shuah <shuah@kernel.org>
-References: <20200518173513.009514388@linuxfoundation.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <8787b77d-8b8d-a4ff-c4c7-3b87f325cc80@kernel.org>
-Date:   Tue, 19 May 2020 08:45:42 -0600
+        id S1729077AbgESOqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 10:46:47 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:38998 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgESOqr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 10:46:47 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04JEkj0G067348;
+        Tue, 19 May 2020 09:46:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589899605;
+        bh=Y26DaIi4n8BuhyRCfCi9TYUz/rg/RaO9Ay8FWNenVqU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=irb8JtwCjKFWlQ2PezGVskyGurReb505Tinijlx0BxHuxLxy5bLQKjk6PBaXiARwT
+         c+NRc1DWYuAudvbbceSu8QxhYTkdnHsTUaq/pHQlykQZh/Po0bfiNH98sXKG1YpDU9
+         5CMe7Kf6bGQJWZYDAO/zs8Scdp1MxoH1AxgQV0E0=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04JEkjc7109937
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 19 May 2020 09:46:45 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
+ May 2020 09:46:44 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 19 May 2020 09:46:44 -0500
+Received: from [10.250.38.163] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04JEkiXO045835;
+        Tue, 19 May 2020 09:46:44 -0500
+Subject: Re: [PATCH v7 3/3] power: supply: bq25150 introduce the bq25150
+To:     Dan Murphy <dmurphy@ti.com>, <sre@kernel.org>
+CC:     <sspatil@android.com>, <linux-pm@vger.kernel.org>,
+        <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+References: <20200519141916.28282-1-dmurphy@ti.com>
+ <20200519141916.28282-4-dmurphy@ti.com>
+From:   "Andrew F. Davis" <afd@ti.com>
+Message-ID: <50b9ca3f-36e8-d13b-672c-5e72b6158869@ti.com>
+Date:   Tue, 19 May 2020 10:46:43 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200518173513.009514388@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200519141916.28282-4-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/20 11:35 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.42 release.
-> There are 147 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 20 May 2020 17:32:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.42-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On 5/19/20 10:19 AM, Dan Murphy wrote:
+> +static int bq2515x_set_ilim_lvl(struct bq2515x_device *bq2515x, int val)
+> +{
+> +	int i;
+> +
+> +	if (val > BQ2515X_ILIM_MAX || val < BQ2515X_ILIM_MIN)
+> +		return -EINVAL;
 
-Compiled and booted on my test system. No dmesg regressions.
+Clamp to these limits, not reject. Or better, modify the below loop so
+it clamps to the highest or lowest value in bq2515x_ilim_lvl_values[],
+then drop these #defines.
 
-thanks,
--- Shuah
+> +
+> +	for (i = 0; i < ARRAY_SIZE(bq2515x_ilim_lvl_values); i++) {
+> +		if (val == bq2515x_ilim_lvl_values[i])
+> +			break;
+> +
+> +		if (val > bq2515x_ilim_lvl_values[i - 1] &&
+
+Index out of bounds for the i = 0 case.
+
+> +		    val < bq2515x_ilim_lvl_values[i]) {
+> +			if (val - bq2515x_ilim_lvl_values[i - 1] <
+> +			    bq2515x_ilim_lvl_values[i] - val) {
+
+You are still missing the case where the value is closer to the [i]
+element, you check that it is between [i-1] and [i], but only chose
+[i-1] when it is closer to that than [i] but equal and greater case is
+missing.
+
+Given this sets input current limits, would instead always rounding down
+be the safer option?
+
+Andrew
+
+> +				i = i - 1;
+> +				break;
+> +			}
+> +		}
+> +	}
+> +
+> +	return regmap_write(bq2515x->regmap, BQ2515X_ILIMCTRL, i);
+> +}
