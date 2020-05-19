@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A7B1DA248
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0761DA251
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgESUNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55242 "EHLO mail.kernel.org"
+        id S1726717AbgESUO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgESUNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:13:20 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        id S1726447AbgESUO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 16:14:27 -0400
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6804A20873
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:13:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C40D207FB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589919199;
-        bh=9NZsvYQ6ewI+7zKbe7RoQSsXiOldxw/MbYtAogsMHvQ=;
+        s=default; t=1589919266;
+        bh=ZqTQuHxYH0MkHUC6dVn+CA/0CjNcHAiHxB0bgMmBd68=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O1XnzQ8/H9KoqmA0KUZdEXfFjvNSqi81zvozYARXdm40i8hKiLuwwJUhdtdGFIi3b
-         AQkWn9d0a1MzH9NxL9YWTqkMiJ93GnoCZFch+Hf1ujwkCSSBzAIawdPimvR7ECequ4
-         B2D6lmzT1el992Ff41CH0hp7i5IKh+f+m96GX0tQ=
-Received: by mail-wm1-f45.google.com with SMTP id h4so505201wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:13:19 -0700 (PDT)
-X-Gm-Message-State: AOAM531v33VZ9tkL+uWQmvhhFvmNoHMKCS6P9+wMdGBwVIDXZaQrNt6c
-        zlY/oiu75oMUkI/HWHHSNoxqwv3yCQeS3EgpjK0ivQ==
-X-Google-Smtp-Source: ABdhPJx3qSXBm4AlqzAQo6+pYSodcWQ0s9IPQK37A6V5ZPvDbjWGRsKY5YG+nazORP+m5G0Z9upVOIY/EluBTXOuoCk=
-X-Received: by 2002:a1c:2bc2:: with SMTP id r185mr1150725wmr.49.1589919197874;
- Tue, 19 May 2020 13:13:17 -0700 (PDT)
+        b=gxn+9vWGngvikBrEk3ZPZORhFQ3Pv+QDl5P0/jWdVVjyUSDmvsuHsvgxnZMwBURaW
+         N/+6ChpmWebTRn056qY3NJ0/JoxI9URsksny99YMNMosPHSMp+fUKEjbOYWRdCfDZS
+         kT+epaPf3Dz5nmjGjQP+PMDvHiNe4D594DzlDCuE=
+Received: by mail-wr1-f50.google.com with SMTP id k13so823136wrx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:14:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531uXPXLIEVv22ijks7qTP/Vu6xDwGauX2JDX7s9Vc2PgCRMXug2
+        CCOGSTD/7cGpvc94/4yrlTtcq2Q+4e+f/BIhe67Akg==
+X-Google-Smtp-Source: ABdhPJwKhSdNdUVZLlt9aw0CGJpK84ubff9HxyFuvvlt3AbD8GHEgGuei5C2Yn+pOpTpMdJYT5Xd8qlnBCo0xNl1RSs=
+X-Received: by 2002:adf:fe45:: with SMTP id m5mr580223wrs.257.1589919264778;
+ Tue, 19 May 2020 13:14:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235125.813664171@linutronix.de>
-In-Reply-To: <20200515235125.813664171@linutronix.de>
+References: <20200515234547.710474468@linutronix.de> <20200515235125.921971685@linutronix.de>
+In-Reply-To: <20200515235125.921971685@linutronix.de>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 19 May 2020 13:13:06 -0700
-X-Gmail-Original-Message-ID: <CALCETrUV1jC19H_EUFxF3pbqHgq2Nk8J-jpVWX4t_tf9NOUZVw@mail.gmail.com>
-Message-ID: <CALCETrUV1jC19H_EUFxF3pbqHgq2Nk8J-jpVWX4t_tf9NOUZVw@mail.gmail.com>
-Subject: Re: [patch V6 14/37] x86/entry: Remove the transition leftovers
+Date:   Tue, 19 May 2020 13:14:13 -0700
+X-Gmail-Original-Message-ID: <CALCETrV=qqk7ouxFTC4_Huc5xLxd1z4s6vkHX8zkfb-ez91jLA@mail.gmail.com>
+Message-ID: <CALCETrV=qqk7ouxFTC4_Huc5xLxd1z4s6vkHX8zkfb-ez91jLA@mail.gmail.com>
+Subject: Re: [patch V6 15/37] x86/entry: Change exit path of xen_failsafe_callback
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -71,8 +71,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
 >
-> Now that all exceptions are converted over the sane flag is not longer
-> needed. Also the vector argument of idtentry_body on 64 bit is pointless
-> now.
+> xen_failsafe_callback is invoked from XEN for two cases:
+>
+>   1. Fault while reloading DS, ES, FS or GS
+>   2. Fault while executing IRET
+>
+> #1 retries the IRET after XEN has fixed up the segments.
+> #2 injects a #GP which kills the task
+>
+> For #1 there is no reason to go through the full exception return path
+> because the tasks TIF state is still the same. So just going straight to
+> the IRET path is good enough.
+
+Seems reasonable:
 
 Acked-by: Andy Lutomirski <luto@kernel.org>
+
+Although a look from a Xen person might be nice too.
