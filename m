@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE6A1D9A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 16:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8A31D9A8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgESO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 10:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728775AbgESO7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 10:59:06 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E634C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 07:59:06 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id 62so8037947vsi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 07:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cAwM4xUN+JXfgmnpSakIzQBFryyxT4xbvQKyptF8HfU=;
-        b=g7UesDSwco++E9tvDmaeYZHTUzwg0n+acwSdyySMURap5qFLIynLhGq5AUrj1fYMJ0
-         sw/JLqS9GpKjA2q16tUiCfnRqLnJvDl/gct6mgVedTlmvLGW1Pf+VGOmT8FCq4ufSVfc
-         35euMAF2IOS7EKW54E0VcyplYL+ZhWm0tlpcI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cAwM4xUN+JXfgmnpSakIzQBFryyxT4xbvQKyptF8HfU=;
-        b=Fk+lk/sviDNaR65ZGkXnnq07iAa74Yw3mvGiHvluYhX/sCH/rVzmqugSXhgIuz+lqH
-         nX1eZTnwhVzvrzJf8nzQDN6MA/uAJLkNc31lnMAag4E1A6RAUlC3FIO3vvzxVezUoxNY
-         9RXVDXS46XUMM9uZ65xac4Lzy5lMl7aQeeEZ0M7HFdcbC8OLJWkv1d25wefb9r8A8Nuv
-         JTqvLVJvJXhuF99/EWUfxdt6b3cXvt64da1Y6YCYAk0hHLu0mDgPsA3P6szyEMzQSQjV
-         GSI00eX3zkqSa73xY60sKHzkRf8CaBTSjuLdeANIKvWiU2WDHQkTLq63yiQjWuA5Msax
-         uXcQ==
-X-Gm-Message-State: AOAM5309mSoHN7yaGGmpvcwOdMdGlyCcdTUJ4WFulvA9MFuhtJgYV3AK
-        PMYpieqcP40JGV5SlParjH/qBtmSnsk=
-X-Google-Smtp-Source: ABdhPJw4ytPiFoNoTgeEFoK4N93MkkCCoKvvis2XOO2NF7D4OK49LlyNIr/v+eNRazMfvee+9CRh4w==
-X-Received: by 2002:a67:ef1d:: with SMTP id j29mr1511392vsr.238.1589900345472;
-        Tue, 19 May 2020 07:59:05 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id 66sm3581189vss.16.2020.05.19.07.59.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 07:59:04 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id k4so4908359uaq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 07:59:03 -0700 (PDT)
-X-Received: by 2002:ab0:6806:: with SMTP id z6mr15603649uar.0.1589900343396;
- Tue, 19 May 2020 07:59:03 -0700 (PDT)
+        id S1729176AbgESPAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728775AbgESPAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 11:00:19 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95003207D8;
+        Tue, 19 May 2020 15:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589900419;
+        bh=SoqKfc9o/u0JDiKdbnPmoBcv8bBxWfJChyjb+J+h7O8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=vEjbEywTr4j8uWSpYGVehBw4HIxMpHj1VeE57/BOdae+0fW0YNQO7cSro3DTULOD8
+         eg6KWxqgdMUe9n+qs3cXcpm37aQIOrvU2QCaZVfcNfwq82bs1yDhpaJ9jUokUC6uLX
+         m1vHLy5+5LvfPr9v3rlrfLdo9cBZ+08qZGdyn2lc=
+Subject: Re: [PATCH 4.19 00/80] 4.19.124-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, shuah <shuah@kernel.org>
+References: <20200518173450.097837707@linuxfoundation.org>
+From:   shuah <shuah@kernel.org>
+Message-ID: <d6a328bd-68b5-9fbc-f264-5aba71b8ddd9@kernel.org>
+Date:   Tue, 19 May 2020 09:00:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200520000524.69af8a86@canb.auug.org.au>
-In-Reply-To: <20200520000524.69af8a86@canb.auug.org.au>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 19 May 2020 07:58:52 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WuXEO0KCoRnundQxVMJyre9UBdw2NDUSsWxJwADjCR9A@mail.gmail.com>
-Message-ID: <CAD=FV=WuXEO0KCoRnundQxVMJyre9UBdw2NDUSsWxJwADjCR9A@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the kgdb tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200518173450.097837707@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 5/18/20 11:36 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.124 release.
+> There are 80 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 20 May 2020 17:32:42 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.124-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-On Tue, May 19, 2020 at 7:05 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the kgdb tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->
-> drivers/tty/serial/kgdboc.c:418:13: error: expected declaration specifiers or '...' before string constant
->   418 | early_param("ekgdboc", kgdboc_early_init);
->       |             ^~~~~~~~~
-> drivers/tty/serial/kgdboc.c:418:24: error: expected declaration specifiers or '...' before 'kgdboc_early_init'
->   418 | early_param("ekgdboc", kgdboc_early_init);
->       |                        ^~~~~~~~~~~~~~~~~
-> drivers/tty/serial/kgdboc.c:546:13: error: expected declaration specifiers or '...' before string constant
->   546 | early_param("kgdboc_earlycon", kgdboc_earlycon_init);
->       |             ^~~~~~~~~~~~~~~~~
-> drivers/tty/serial/kgdboc.c:546:32: error: expected declaration specifiers or '...' before 'kgdboc_earlycon_init'
->   546 | early_param("kgdboc_earlycon", kgdboc_earlycon_init);
->       |                                ^~~~~~~~~~~~~~~~~~~~
-> drivers/tty/serial/kgdboc.c:505:19: warning: 'kgdboc_earlycon_init' defined but not used [-Wunused-function]
->   505 | static int __init kgdboc_earlycon_init(char *opt)
->       |                   ^~~~~~~~~~~~~~~~~~~~
-> drivers/tty/serial/kgdboc.c:411:19: warning: 'kgdboc_early_init' defined but not used [-Wunused-function]
->   411 | static int __init kgdboc_early_init(char *opt)
->       |                   ^~~~~~~~~~~~~~~~~
->
-> Caused by commit
->
->   220995622da5 ("kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles")
->
-> I have used the kgdb tree from next-20200518 for today.
+Compiled and booted on my test system. No dmesg regressions.
 
-Ugh.  Actually, I think the commit to blame is:
+thanks,
+-- Shuah
 
-eae3e19ca930 ("kgdboc: Remove useless #ifdef
-CONFIG_KGDB_SERIAL_CONSOLE in kgdboc")
-
-The next commit just made it worse.  Apparently the #ifdef wasn't so
-useless after all.  It was just subtly keeping the code from compiling
-when kgdboc was used as a module.  That's because when it's a module
-we instead get this defined:
-
-#define CONFIG_KGDB_SERIAL_CONSOLE_MODULE 1
-
-Apparently I didn't re-test as a module after I made this change in
-one of the later spins.  :(
-
-I think I can whip up a quick patch that uses "IS_BUILTIN(option)".
-Basically this should go back to how the code was in one of the
-earlier patchsets where I tested this.
-
--Doug
