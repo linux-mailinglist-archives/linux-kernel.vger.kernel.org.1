@@ -2,66 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566AE1D9841
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5721D9884
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbgESNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbgESNpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:45:34 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBFFC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:45:33 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:984c:ac0d:3200:67f3] (port=63315)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe.C4rlyn@I-T-Shed-Studio.eu>)
-        id 1jb2Yl-00085M-Be
-        for linux-kernel@vger.kernel.org; Tue, 19 May 2020 15:45:31 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe.C4rlyn@I-T-Shed-Studio.eu>
-Subject: 0.33 ms latency performance bottlenecks
-Message-ID: <138dae9d-a90f-7e67-959d-eaacc9f02699@I-T-Shed-Studio.eu>
-Date:   Tue, 19 May 2020 15:45:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728988AbgESNsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:48:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11239 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727904AbgESNsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:48:45 -0400
+IronPort-SDR: DH9iWt0FTcQdz2aCiRimaTvtF4CiSXK9q5NYvxvYbIgtIchL1qzlCSC6KXZhQk+D+2fXRFVxPu
+ FhfSkWvsjn3Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 06:48:44 -0700
+IronPort-SDR: H/JFjAHMwzZmTTusqpdysvxKXqFJF23mHNOpHPdTHd356dHLXcuk5QvGRbP68bBgYzBfk6LPVq
+ nS0/01vIj02w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="343140365"
+Received: from joelin3-mobl.gar.corp.intel.com (HELO localhost) ([10.249.42.57])
+  by orsmga001.jf.intel.com with ESMTP; 19 May 2020 06:48:39 -0700
+Date:   Tue, 19 May 2020 16:48:38 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Nikita Sobolev <Nikita.Sobolev@synopsys.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Tadeusz Struk <tadeusz.struk@intel.com>,
+        Joey Pabalinas <joeypabalinas@gmail.com>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH] Kernel selftests: Add check if tpm devices are supported
+Message-ID: <20200519134838.GA17129@linux.intel.com>
+References: <20200518213934.23156-1-Nikita.Sobolev@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518213934.23156-1-Nikita.Sobolev@synopsys.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tried Renoise, a good tracker app with 0.33 ms latency. It was really 
-good. Tech Trance in the 90s was all about tracking.
+On Tue, May 19, 2020 at 12:39:34AM +0300, Nikita Sobolev wrote:
+> tpm2 tests set uses /dev/tpm0 and /dev/tpmrm0 without check if they
+> are available. In case, when these devices are not available test
+> fails, but expected behaviour is test to be skipped.
+> 
+> Signed-off-by: Nikita Sobolev <Nikita.Sobolev@synopsys.com>
 
-( a little playlist here for interested 
-https://www.youtube.com/playlist?list=PLpA7__w8yeJ0g6cF0m_y_h-HWjzCNTuWm )
+tpm2 tests set -> TPM2 test suite
 
-Latency on the amiga at that time was very low. More like 0.33 ms 
-latency, or even 0.2.
+Fixes tag is also required.
 
-We want this kind of latency again. Also having in mind a few samples 
-for clocking the D/A well if necessary.
+There is nothing cool writing acronyms in lower case, so lets
+just always write them correctly.
 
-D/A could be a 1bit converter with few analogue components on the 
-output, maybe simply a 1 pole diode filter, if possible. This could work 
-well on a bitstream shifted up in frequency.
+> ---
+>  tools/testing/selftests/tpm2/test_smoke.sh | 11 +++++++++--
+>  tools/testing/selftests/tpm2/test_space.sh |  9 ++++++++-
+>  2 files changed, 17 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
+> index 8155c2ea7ccb..e55d3e400666 100755
+> --- a/tools/testing/selftests/tpm2/test_smoke.sh
+> +++ b/tools/testing/selftests/tpm2/test_smoke.sh
+> @@ -1,8 +1,15 @@
+>  #!/bin/bash
+>  # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>  
+> -python -m unittest -v tpm2_tests.SmokeTest
+> -python -m unittest -v tpm2_tests.AsyncTest
+> +# Kselftest framework requirement - SKIP code is 4.
+> +ksft_skip=4
+> +
+> +if [ -f /dev/tpm0 ] ; then
+> +	python -m unittest -v tpm2_tests.SmokeTest
+> +	python -m unittest -v tpm2_tests.AsyncTest
+> +else
+> +	exit $ksft_skip
+> +fi
+>  
+>  CLEAR_CMD=$(which tpm2_clear)
+>  if [ -n $CLEAR_CMD ]; then
+> diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
+> index a6f5e346635e..180b469c53b4 100755
+> --- a/tools/testing/selftests/tpm2/test_space.sh
+> +++ b/tools/testing/selftests/tpm2/test_space.sh
+> @@ -1,4 +1,11 @@
+>  #!/bin/bash
+>  # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>  
+> -python -m unittest -v tpm2_tests.SpaceTest
+> +# Kselftest framework requirement - SKIP code is 4.
+> +ksft_skip=4
+> +
+> +if [ -f /dev/tpmrm0 ] ; then
+> +	python -m unittest -v tpm2_tests.SpaceTest
+> +else
+> +	exit $ksft_skip
+> +fi
+> -- 
+> 2.16.2
+> 
 
-It seems to use almost a whole cpu just at this latency. It works well 
-though.
+This would make the change more compact:
 
-One might want to look into performance bottlenecks here, hardware aid, 
-or cpu instruction set enhancements. Inner loop optimization beyond HZ 
-timer etc, which is at 91 here.
+# Kselftest framework requirement - SKIP code is 4.
+if [ ! -f /dev/tpmrm0 ] ; then
+	exit 4
+fi
 
-Serene Greetings,
-Ywe Cærlyn
-I-T Shed Studio.
+python -m unittest -v tpm2_tests.SpaceTest
 
+(also for /dev/tpm0)
 
-
+/Jarkko
