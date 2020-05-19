@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20BA1DA4B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69761DA4D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgESWmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:42:08 -0400
-Received: from v6.sk ([167.172.42.174]:58564 "EHLO v6.sk"
+        id S1728419AbgESWml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:42:41 -0400
+Received: from v6.sk ([167.172.42.174]:58676 "EHLO v6.sk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726318AbgESWmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:42:05 -0400
+        id S1728191AbgESWmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:42:36 -0400
 Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 768EC610DB;
-        Tue, 19 May 2020 22:42:03 +0000 (UTC)
+        by v6.sk (Postfix) with ESMTP id 18704610DD;
+        Tue, 19 May 2020 22:42:05 +0000 (UTC)
 From:   Lubomir Rintel <lkundrak@v3.sk>
 To:     Stephen Boyd <sboyd@kernel.org>
 Cc:     Michael Turquette <mturquette@baylibre.com>,
@@ -21,9 +21,9 @@ Cc:     Michael Turquette <mturquette@baylibre.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v3 05/13] clk: mmp2: Move thermal register defines up a bit
-Date:   Wed, 20 May 2020 00:41:43 +0200
-Message-Id: <20200519224151.2074597-6-lkundrak@v3.sk>
+Subject: [PATCH v3 06/13] clk: mmp2: Rename mmp2_pll_init() to mmp2_main_clk_init()
+Date:   Wed, 20 May 2020 00:41:44 +0200
+Message-Id: <20200519224151.2074597-7-lkundrak@v3.sk>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200519224151.2074597-1-lkundrak@v3.sk>
 References: <20200519224151.2074597-1-lkundrak@v3.sk>
@@ -34,40 +34,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A trivial change to keep the sorting sane. The APBC registers are happier
-when they are grouped together, instead of mixed with the APMU ones.
+This is a trivial rename for a routine that registers more clock sources
+than the PLLs -- there's also a XO.
 
 Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 ---
- drivers/clk/mmp/clk-of-mmp2.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/clk/mmp/clk-of-mmp2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/mmp/clk-of-mmp2.c b/drivers/clk/mmp/clk-of-mmp2.c
-index 52dc8b43acd9..524574187c17 100644
+index 524574187c17..ac88ea99b7c6 100644
 --- a/drivers/clk/mmp/clk-of-mmp2.c
 +++ b/drivers/clk/mmp/clk-of-mmp2.c
-@@ -45,6 +45,10 @@
- #define APBC_SSP1	0x54
- #define APBC_SSP2	0x58
- #define APBC_SSP3	0x5c
-+#define APBC_THERMAL0	0x90
-+#define APBC_THERMAL1	0x98
-+#define APBC_THERMAL2	0x9c
-+#define APBC_THERMAL3	0xa0
- #define APMU_SDH0	0x54
- #define APMU_SDH1	0x58
- #define APMU_SDH2	0xe8
-@@ -55,10 +59,6 @@
- #define APMU_DISP1	0x110
- #define APMU_CCIC0	0x50
- #define APMU_CCIC1	0xf4
--#define APBC_THERMAL0	0x90
--#define APBC_THERMAL1	0x98
--#define APBC_THERMAL2	0x9c
--#define APBC_THERMAL3	0xa0
- #define APMU_USBHSIC0	0xf8
- #define APMU_USBHSIC1	0xfc
- #define APMU_GPU	0xcc
+@@ -139,7 +139,7 @@ static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
+ 	{.num = 3521, .den = 689},	/*19.23MHZ */
+ };
+ 
+-static void mmp2_pll_init(struct mmp2_clk_unit *pxa_unit)
++static void mmp2_main_clk_init(struct mmp2_clk_unit *pxa_unit)
+ {
+ 	struct clk *clk;
+ 	struct mmp_clk_unit *unit = &pxa_unit->unit;
+@@ -456,7 +456,7 @@ static void __init mmp2_clk_init(struct device_node *np)
+ 
+ 	mmp_clk_init(np, &pxa_unit->unit, MMP2_NR_CLKS);
+ 
+-	mmp2_pll_init(pxa_unit);
++	mmp2_main_clk_init(pxa_unit);
+ 
+ 	mmp2_apb_periph_clk_init(pxa_unit);
+ 
 -- 
 2.26.2
 
