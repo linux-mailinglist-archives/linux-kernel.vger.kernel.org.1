@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F5B1D9756
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1331D975F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgESNOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:14:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47297 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbgESNOE (ORCPT
+        id S1729016AbgESNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728773AbgESNOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:14:04 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jb23z-0000nn-1Y; Tue, 19 May 2020 13:13:43 +0000
-Date:   Tue, 19 May 2020 15:13:41 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Eric Biggers <ebiggers3@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] exec: Change uselib(2) IS_SREG() failure to EACCES
-Message-ID: <20200519131341.qiysndpmj75zfjtz@wittgenstein>
-References: <20200518055457.12302-1-keescook@chromium.org>
- <20200518055457.12302-2-keescook@chromium.org>
- <20200518130251.zih2s32q2rxhxg6f@wittgenstein>
- <CAG48ez1FspvvypJSO6badG7Vb84KtudqjRk1D7VyHRm06AiEbQ@mail.gmail.com>
- <20200518144627.sv5nesysvtgxwkp7@wittgenstein>
- <87blmk3ig4.fsf@x220.int.ebiederm.org>
- <87mu64uxq1.fsf@igel.home>
- <87sgfwuoi3.fsf@x220.int.ebiederm.org>
+        Tue, 19 May 2020 09:14:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62521C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:14:48 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jb24v-0007Jw-Kj; Tue, 19 May 2020 15:14:41 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jb24p-000170-T8; Tue, 19 May 2020 15:14:35 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: [PATCH net-next v2 0/2] provide KAPI for SQI 
+Date:   Tue, 19 May 2020 15:14:31 +0200
+Message-Id: <20200519131433.4224-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87sgfwuoi3.fsf@x220.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 06:56:36AM -0500, Eric W. Biederman wrote:
-> Andreas Schwab <schwab@linux-m68k.org> writes:
-> 
-> > On Mai 18 2020, Eric W. Biederman wrote:
-> >
-> >> If it was only libc4 and libc5 that used the uselib system call then it
-> >> can probably be removed after enough time.
-> >
-> > Only libc4 used it, libc5 was already ELF.
-> 
-> binfmt_elf.c supports uselib.  In a very a.out ish way.  Do you know if
-> that support was ever used?
-> 
-> If we are truly talking a.out only we should be able to make uselib
-> conditional on a.out support in the kernel which is strongly mostly
-> disabled at this point.
+changes v2:
+- use u32 instead of u8 for SQI
+- add SQI_MAX field and callbacks
+- some style fixes in the rst.
+- do not convert index to shifted index.
 
-The only ones that even allow setting AOUT:
+Oleksij Rempel (2):
+  ethtool: provide UAPI for PHY Signal Quality Index (SQI)
+  net: phy: tja11xx: add SQI support
 
-arch/alpha/Kconfig:     select HAVE_AOUT
-arch/m68k/Kconfig:      select HAVE_AOUT if MMU
+ Documentation/networking/ethtool-netlink.rst |  6 ++--
+ drivers/net/phy/nxp-tja11xx.c                | 26 ++++++++++++++
+ include/linux/phy.h                          |  2 ++
+ include/uapi/linux/ethtool_netlink.h         |  2 ++
+ net/ethtool/common.c                         | 20 +++++++++++
+ net/ethtool/common.h                         |  2 ++
+ net/ethtool/linkstate.c                      | 38 +++++++++++++++++++-
+ 7 files changed, 93 insertions(+), 3 deletions(-)
 
-and x86 deprecated it March 2019:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eac616557050737a8d6ef6fe0322d0980ff0ffde
+-- 
+2.26.2
 
-Christian
