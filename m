@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D311DA392
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81091DA39E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgESV3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:29:02 -0400
-Received: from namei.org ([65.99.196.166]:38282 "EHLO namei.org"
+        id S1727825AbgESVa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:30:57 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59356 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgESV3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:29:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 04JLSVQr028873;
-        Tue, 19 May 2020 21:28:31 GMT
-Date:   Wed, 20 May 2020 07:28:31 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     Kees Cook <keescook@chromium.org>
-cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: Re: [PATCH v2 2/8] exec: Factor security_bprm_creds_for_exec out of
- security_bprm_set_creds
-In-Reply-To: <202005191108.7A6E97831@keescook>
-Message-ID: <alpine.LRH.2.21.2005200728110.6670@namei.org>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org> <87sgga6ze4.fsf@x220.int.ebiederm.org> <87v9l4zyla.fsf_-_@x220.int.ebiederm.org> <877dx822er.fsf_-_@x220.int.ebiederm.org> <87v9kszrzh.fsf_-_@x220.int.ebiederm.org> <202005191108.7A6E97831@keescook>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1725998AbgESVa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 17:30:57 -0400
+Received: from zn.tnic (p200300ec2f0b87001461a870af27ee92.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:8700:1461:a870:af27:ee92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BB1E71EC0116;
+        Tue, 19 May 2020 23:30:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1589923855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SIFdEg6GcNVZI8m+o4nVBjfAN7p3vODxjCvJqV3wrjs=;
+        b=elpzgzYGuUqgOZ3iYwPwU0vO4iNdx7ImGZaBt7EQOXNb+jjkafEqyQpW7/epigIv/Spf0K
+        HPcTyH+9mfJ2d7vnUPk4cNe0LV9L1OU/87vuRpdk0aS+5+kFWhYU6Qs855zaKvaYwie5HC
+        cAlV/DSXMwn0XqpSZmoKfGrJLjeeLGo=
+Date:   Tue, 19 May 2020 23:30:50 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Robert Richter <rrichter@marvell.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] EDAC/ghes: Setup DIMM label from DMI and use it in
+ error reports
+Message-ID: <20200519213050.GE444@zn.tnic>
+References: <20200518095852.28010-1-rrichter@marvell.com>
+ <20200519202535.GC444@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200519202535.GC444@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020, Kees Cook wrote:
+On Tue, May 19, 2020 at 10:25:35PM +0200, Borislav Petkov wrote:
+> but I'm guessing that dmi_memdev_name() doesn't give on my machine what
+> it gives on yours.
 
-> >  	/* SELinux context only depends on initial program or script and not
-> >  	 * the script interpreter */
-> > -	if (bprm->called_set_creds)
-> > -		return 0;
-> >  
-> >  	old_tsec = selinux_cred(current_cred());
-> >  	new_tsec = selinux_cred(bprm->cred);
-> 
-> As you've done in the other LSMs, I think this comment can be removed
-> (or moved to the top of the function) too.
+IOW, this ontop:
 
-I'd prefer moved to top of the function.
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index c7d404629863..f84c117c4310 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -109,9 +109,9 @@ static void dimm_setup_label(struct dimm_info *dimm, u16 handle)
+        if (bank && *bank && device && *device)
+                snprintf(dimm->label, sizeof(dimm->label),
+                        "%s %s", bank, device);
+-       else
+-               snprintf(dimm->label, sizeof(dimm->label),
+-                       "unknown memory (handle: 0x%.4x)", handle);
++       /*
++        * else fallback to the EDAC default name.
++        */
+ }
+ 
+ static void ghes_edac_dmidecode(const struct dmi_header *dh, void *arg)
 
 -- 
-James Morris
-<jmorris@namei.org>
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
