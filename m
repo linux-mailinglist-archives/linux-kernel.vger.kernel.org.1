@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC221D9ED1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB05B1D9EE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgESSHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:07:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45539 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726447AbgESSHs (ORCPT
+        id S1729334AbgESSKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESSKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:07:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589911667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=megtxqWXyglz/CqjKs2x/itHX3lBYfTYHJlMu70hZuI=;
-        b=hpEnHFsZWae2flxOrgbMzvuAA5joLJ2OsqLpVung+PRaqwsiILYJEmHdV9tZyCnORLjmfi
-        EIW1WVZIBOwmmcU62gEDmI1q9eYxHrIQXCUL2QbqAqq2eKfrD+QKAu1QkSwKjkbxpHFDIp
-        JCZIBcIKvmih9VvXt6qHvHwc+m+1CXM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-8zS8eI4HPqOnJYwKbtq5eQ-1; Tue, 19 May 2020 14:07:46 -0400
-X-MC-Unique: 8zS8eI4HPqOnJYwKbtq5eQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECE9A107ACCA;
-        Tue, 19 May 2020 18:07:44 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6367410016EB;
-        Tue, 19 May 2020 18:07:44 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     oupton@google.com, stable@vger.kernel.org
-Subject: [PATCH] KVM: x86: allow KVM_STATE_NESTED_MTF_PENDING in kvm_state flags
-Date:   Tue, 19 May 2020 14:07:43 -0400
-Message-Id: <20200519180743.89974-1-pbonzini@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Tue, 19 May 2020 14:10:14 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDD8C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:10:14 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id a13so216907pls.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jDYo4m5PP7xufMNqX2IQkJ1zE2G71qHXVTGfdTFjKEY=;
+        b=G872pkcm8w6Qv241zfp28F0Fi28C447LZGFxMoMou558duvg393y5a4Y+yvm4hpY23
+         /B3SoivGMflaBaRqQXD0/Tt4XmF8m6Ru1YrRQBVVftz1Vjj8MjKTaYP8ziUFmvhgimd5
+         q9FHPEqaNOcBWF2dh/VDjEYZ5KzcghWUGivs0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jDYo4m5PP7xufMNqX2IQkJ1zE2G71qHXVTGfdTFjKEY=;
+        b=ZnFP0Rdh6p3UtZbJPWO/+4qlDOkD5KiBf/zUMkOs1CZQj91iQb7wZWX3KKwHxmMEPa
+         lfDNkKPX8kIlZpSHlkDhVElwoWZ7rVhh95tnr/Xal7MGNQHctSPV2hFg4LXYButX4whk
+         waPAphCky4udWf6UgK7OxrEdkJ7ouiLVWDVga3xFIBKjQR35wHeYEID3wMaAdugnDdFf
+         dl8a18cHChu2E585TYje1lBYfcqd2e2vits4SvP0BnLyThDQF1jr788UhfpMG9zXrW6L
+         N9512tMbMklvNAQNDLccdNnk0/6lxelCVgzSU2AlGop27xKkA6om3cI1SErm+vPBVzJj
+         3wOQ==
+X-Gm-Message-State: AOAM533/pDDu/JH16PJ42Zy3s0ae1sDV46OpaWpIRT2F541ersTrxIvg
+        pNclLywAO6TPqIs5qk/W/4dE4w==
+X-Google-Smtp-Source: ABdhPJyOVFXnc+Pfx1v9jQO9B9KqYsUGKOm81RvBW5K5UxYTvg5PBkCKO2dKISXN+l0RgynZFoT3yw==
+X-Received: by 2002:a17:90a:6d90:: with SMTP id a16mr821079pjk.138.1589911814441;
+        Tue, 19 May 2020 11:10:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s13sm138380pfh.118.2020.05.19.11.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 11:10:13 -0700 (PDT)
+Date:   Tue, 19 May 2020 11:10:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH v2 2/8] exec: Factor security_bprm_creds_for_exec out of
+ security_bprm_set_creds
+Message-ID: <202005191108.7A6E97831@keescook>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+ <87sgga6ze4.fsf@x220.int.ebiederm.org>
+ <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+ <877dx822er.fsf_-_@x220.int.ebiederm.org>
+ <87v9kszrzh.fsf_-_@x220.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v9kszrzh.fsf_-_@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The migration functionality was left incomplete in commit 5ef8acbdd687
-("KVM: nVMX: Emulate MTF when performing instruction emulation", 2020-02-23),
-fix it.
+On Mon, May 18, 2020 at 07:30:10PM -0500, Eric W. Biederman wrote:
+> 
+> Today security_bprm_set_creds has several implementations:
+> apparmor_bprm_set_creds, cap_bprm_set_creds, selinux_bprm_set_creds,
+> smack_bprm_set_creds, and tomoyo_bprm_set_creds.
+> 
+> Except for cap_bprm_set_creds they all test bprm->called_set_creds and
+> return immediately if it is true.  The function cap_bprm_set_creds
+> ignores bprm->calld_sed_creds entirely.
+> 
+> Create a new LSM hook security_bprm_creds_for_exec that is called just
+> before prepare_binprm in __do_execve_file, resulting in a LSM hook
+> that is called exactly once for the entire of exec.  Modify the bits
+> of security_bprm_set_creds that only want to be called once per exec
+> into security_bprm_creds_for_exec, leaving only cap_bprm_set_creds
+> behind.
+> 
+> Remove bprm->called_set_creds all of it's former users have been moved
+> to security_bprm_creds_for_exec.
+> 
+> Add or upate comments a appropriate to bring them up to date and
+> to reflect this change.
 
-Fixes: 5ef8acbdd687 ("KVM: nVMX: Emulate MTF when performing instruction emulation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yup, awesome. One nit below.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4f55a44951c3..0001b2addc66 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4626,7 +4626,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 
- 		if (kvm_state.flags &
- 		    ~(KVM_STATE_NESTED_RUN_PENDING | KVM_STATE_NESTED_GUEST_MODE
--		      | KVM_STATE_NESTED_EVMCS))
-+		      | KVM_STATE_NESTED_EVMCS | KVM_STATE_NESTED_MTF_PENDING))
- 			break;
- 
- 		/* nested_run_pending implies guest_mode.  */
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+> [...]
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 0b4e32161b77..718345dd76bb 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> [...]
+> @@ -2297,8 +2297,6 @@ static int selinux_bprm_set_creds(struct linux_binprm *bprm)
+>  
+>  	/* SELinux context only depends on initial program or script and not
+>  	 * the script interpreter */
+> -	if (bprm->called_set_creds)
+> -		return 0;
+>  
+>  	old_tsec = selinux_cred(current_cred());
+>  	new_tsec = selinux_cred(bprm->cred);
+
+As you've done in the other LSMs, I think this comment can be removed
+(or moved to the top of the function) too.
+
 -- 
-2.18.2
-
+Kees Cook
