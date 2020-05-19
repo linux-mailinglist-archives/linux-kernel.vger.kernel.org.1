@@ -2,178 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FD81DA086
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD28D1DA0C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgESTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:08:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
+        id S1726700AbgESTNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:13:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgESTIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:08:13 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1726161AbgESTNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:13:14 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E03E02075F;
-        Tue, 19 May 2020 19:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589915292;
-        bh=s0ggLM8TcUO/MB4Ceot/umDdgZQTbNFjRtm+3RpgAyM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HTZ3gDYsbeLgq1PsNyq6EQJky8wcaDS2aKtrh+XAeVuvH4zzL79qNR06nv1dhqQgr
-         I1OFEASOgalOyOStY7pf6+KowStVGu8TcZ4pi1PDueiwaa4+aTVnJ5RbXtwITSe4R/
-         RtXZclU5NC8Yamae33t5exrHcpW94u28E2FkE4CQ=
-Date:   Tue, 19 May 2020 14:12:59 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH perf/core] perf intel-pt: Fix clang build failure in
- intel_pt_synth_pebs_sample
-Message-ID: <20200519191259.GB10690@embeddedor>
-References: <20200513234738.GA21211@embeddedor>
- <20200514131030.GL5583@kernel.org>
- <20200514150601.GS4897@embeddedor>
- <CAP-5=fWTCFx80Hd_97_4AxFV4KsRyYptLbQfw=XVw_j8i-EAyg@mail.gmail.com>
- <20200514220934.GT4897@embeddedor>
- <CAP-5=fV5URsHn+SpW8N4XjkKT1vt2T1Us5FsqaJsoOW0zn=OxQ@mail.gmail.com>
- <20200515001025.GU4897@embeddedor>
- <20200515164153.GD9335@kernel.org>
- <2540ed9a-89f1-6d59-10c9-a66cc90db5d2@intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 089D920758;
+        Tue, 19 May 2020 19:13:11 +0000 (UTC)
+Date:   Tue, 19 May 2020 15:13:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
+Message-ID: <20200519151310.3f9986f5@gandalf.local.home>
+In-Reply-To: <87d06z7ncz.fsf@nanos.tec.linutronix.de>
+References: <20200515234547.710474468@linutronix.de>
+        <20200519143734.41b77601@gandalf.local.home>
+        <87d06z7ncz.fsf@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2540ed9a-89f1-6d59-10c9-a66cc90db5d2@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 16, 2020 at 03:35:48PM +0300, Adrian Hunter wrote:
-> On 15/05/20 7:41 pm, Arnaldo Carvalho de Melo wrote:
-> > Sorry for the top post: Adrian, can you take a look at this?
-> > 
-> > Adrian Hunter was not CCed, Adrian?
-> 
-> From: Adrian Hunter <adrian.hunter@intel.com>
-> Date: Sat, 16 May 2020 15:12:28 +0300
-> Subject: [PATCH] perf intel-pt: Use allocated branch stack for PEBS sample
-> 
-> To avoid having struct branch_stack as a non-last structure member,
-> use allocated branch stack for PEBS sample.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+On Tue, 19 May 2020 21:09:48 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>>
+> Steven Rostedt <rostedt@goodmis.org> writes:
+> 
+> > On Sat, 16 May 2020 01:45:47 +0200
+> > Thomas Gleixner <tglx@linutronix.de> wrote:
+> >  
+> >> The V6 leftover series is based on:
+> >> 
+> >>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base-v6  
+> >
+> >
+> > $ git fetch git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-base-v6
+> > fatal: couldn't find remote ref entry-base-v6  
+> 
+> try entry-v6-base or better entry-v8-base
 
-Thanks, Adrian.
---
-Gustavo
+Ah, I should have had a V8!
 
-> ---
->  tools/perf/util/intel-pt.c | 31 +++++++++++++------------------
->  1 file changed, 13 insertions(+), 18 deletions(-)
-> 
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index f17b1e769ae4..e4dd8bf610ce 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -913,11 +913,11 @@ static void intel_pt_add_callchain(struct intel_pt *pt,
->  	sample->callchain = pt->chain;
->  }
->  
-> -static struct branch_stack *intel_pt_alloc_br_stack(struct intel_pt *pt)
-> +static struct branch_stack *intel_pt_alloc_br_stack(unsigned int entry_cnt)
->  {
->  	size_t sz = sizeof(struct branch_stack);
->  
-> -	sz += pt->br_stack_sz * sizeof(struct branch_entry);
-> +	sz += entry_cnt * sizeof(struct branch_entry);
->  	return zalloc(sz);
->  }
->  
-> @@ -930,7 +930,7 @@ static int intel_pt_br_stack_init(struct intel_pt *pt)
->  			evsel->synth_sample_type |= PERF_SAMPLE_BRANCH_STACK;
->  	}
->  
-> -	pt->br_stack = intel_pt_alloc_br_stack(pt);
-> +	pt->br_stack = intel_pt_alloc_br_stack(pt->br_stack_sz);
->  	if (!pt->br_stack)
->  		return -ENOMEM;
->  
-> @@ -951,6 +951,9 @@ static void intel_pt_add_br_stack(struct intel_pt *pt,
->  	sample->branch_stack = pt->br_stack;
->  }
->  
-> +/* INTEL_PT_LBR_0, INTEL_PT_LBR_1 and INTEL_PT_LBR_2 */
-> +#define LBRS_MAX (INTEL_PT_BLK_ITEM_ID_CNT * 3U)
-> +
->  static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
->  						   unsigned int queue_nr)
->  {
-> @@ -968,8 +971,10 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
->  			goto out_free;
->  	}
->  
-> -	if (pt->synth_opts.last_branch) {
-> -		ptq->last_branch = intel_pt_alloc_br_stack(pt);
-> +	if (pt->synth_opts.last_branch || pt->synth_opts.other_events) {
-> +		unsigned int entry_cnt = max(LBRS_MAX, pt->br_stack_sz);
-> +
-> +		ptq->last_branch = intel_pt_alloc_br_stack(entry_cnt);
->  		if (!ptq->last_branch)
->  			goto out_free;
->  	}
-> @@ -1720,9 +1725,6 @@ static void intel_pt_add_lbrs(struct branch_stack *br_stack,
->  	}
->  }
->  
-> -/* INTEL_PT_LBR_0, INTEL_PT_LBR_1 and INTEL_PT_LBR_2 */
-> -#define LBRS_MAX (INTEL_PT_BLK_ITEM_ID_CNT * 3)
-> -
->  static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->  {
->  	const struct intel_pt_blk_items *items = &ptq->state->items;
-> @@ -1798,25 +1800,18 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
->  	}
->  
->  	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
-> -		struct {
-> -			struct branch_stack br_stack;
-> -			struct branch_entry entries[LBRS_MAX];
-> -		} br;
-> -
->  		if (items->mask[INTEL_PT_LBR_0_POS] ||
->  		    items->mask[INTEL_PT_LBR_1_POS] ||
->  		    items->mask[INTEL_PT_LBR_2_POS]) {
-> -			intel_pt_add_lbrs(&br.br_stack, items);
-> -			sample.branch_stack = &br.br_stack;
-> +			intel_pt_add_lbrs(ptq->last_branch, items);
->  		} else if (pt->synth_opts.last_branch) {
->  			thread_stack__br_sample(ptq->thread, ptq->cpu,
->  						ptq->last_branch,
->  						pt->br_stack_sz);
-> -			sample.branch_stack = ptq->last_branch;
->  		} else {
-> -			br.br_stack.nr = 0;
-> -			sample.branch_stack = &br.br_stack;
-> +			ptq->last_branch->nr = 0;
->  		}
-> +		sample.branch_stack = ptq->last_branch;
->  	}
->  
->  	if (sample_type & PERF_SAMPLE_ADDR && items->has_mem_access_address)
-> -- 
-> 2.17.1
-> 
-> 
-> 
+-- Steve
