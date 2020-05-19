@@ -2,112 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAE51DA408
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D5F1DA3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgESVsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S1728094AbgESVqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgESVsB (ORCPT
+        with ESMTP id S1726030AbgESVqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:48:01 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3F5C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:48:00 -0700 (PDT)
-Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA5a-0002zR-UN; Tue, 19 May 2020 23:47:55 +0200
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v1 25/25] hrtimer: Use sequence counter with associated raw spinlock
-Date:   Tue, 19 May 2020 23:45:47 +0200
-Message-Id: <20200519214547.352050-26-a.darwish@linutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
+        Tue, 19 May 2020 17:46:33 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96555C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:32 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y198so523884pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wbpf3YHhdKi0hj9/gLxGnwwJOKLMjdegtmkz5dArxGA=;
+        b=Dfr2Iiy9ihlox5SzAtBXjGIemJwVQ4F2JN3uJbTnbY/qrYXq8sQozcpMM/b8pKxPY0
+         V94cK/FnHX88kap4Wi+xUxYSPTBAcT20pUoRsuSaexowqwRd6OB3iOHUSyllctMEb+u7
+         7XgqDgwlIZoP8+BuhfDm1NBDvFu1/en5tP4I4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wbpf3YHhdKi0hj9/gLxGnwwJOKLMjdegtmkz5dArxGA=;
+        b=KzXiWRLm9pn/d9znp/+TjW+HLVCd5sIkDNUQBzSugK+Talml04qNHH8TjBAixJqpBG
+         dsyqhSo3FA5Lo6Q28/akaU/e4w5XCh6upxl41t23/wxBa5pkhE+v8kNg+0OHdI24ZeJ6
+         MXtPzp9fh5eOAFd5/liW/Xd4wsnZZjHkcBrrHMkbIQxY5DoP4/D+baaK5sMsjGr5KnT0
+         mtg3DVAhJRgNi3cUYj03QD2XvbXOmUt25D1vcGHsRhwsDz3041uRcvunZI3hr24edcpY
+         Mpvt6uh8VCa+//76C+sJYvS/kH6jX0KlpCDFwzRC/KAW1k89lp1qJVU0rhwu6xOTzWnT
+         C3ww==
+X-Gm-Message-State: AOAM531KwijS+mlvU0JFPBBA/gZ4gNSrmK/B7X7RfDq/jNY25X92H9B6
+        bSzsr+Eu811s90u1LQOcg/m2X2vzOSk=
+X-Google-Smtp-Source: ABdhPJwjUJDJtSAp8x1oX6Fqw6gFTc9NhosvV4//DjsVLDlDelXgP6ca/5uQeOs9JEzvruuzJWqOQw==
+X-Received: by 2002:a63:1d4:: with SMTP id 203mr1113573pgb.74.1589924791817;
+        Tue, 19 May 2020 14:46:31 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id w1sm323779pgh.53.2020.05.19.14.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 14:46:30 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org, robh+dt@kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v3 1/2] dt-bindings: chrome: Add cros-ec-typec mux props
+Date:   Tue, 19 May 2020 14:46:02 -0700
+Message-Id: <20200519214604.180036-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A sequence counter write side critical section must be protected by some
-form of locking to serialize writers. A plain seqcount_t does not
-contain the information of which lock must be held when entering a write
-side critical section.
+Add properties for mode, orientation and USB data role switches for
+Type C connectors. When available, these will allow the Type C connector
+class port driver to configure the various switches according to USB PD
+information (like orientation, alt mode etc.) provided by the Chrome OS
+EC controller.
 
-Use the new seqcount_raw_spinlock_t data type, which allows to associate
-a raw spinlock with the sequence counter. This enables lockdep to verify
-that the raw spinlock used for writer serialization is held when the
-write side critical section is entered.
-
-If lockdep is disabled this lock association is compiled out and has
-neither storage size nor runtime overhead.
-
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Acked-by: Benson Leung <bleung@chromium.org>
 ---
- include/linux/hrtimer.h |  2 +-
- kernel/time/hrtimer.c   | 13 ++++++++++---
- 2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 15c8ac313678..25993b86ac5c 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -159,7 +159,7 @@ struct hrtimer_clock_base {
- 	struct hrtimer_cpu_base	*cpu_base;
- 	unsigned int		index;
- 	clockid_t		clockid;
--	seqcount_t		seq;
-+	seqcount_raw_spinlock_t	seq;
- 	struct hrtimer		*running;
- 	struct timerqueue_head	active;
- 	ktime_t			(*get_time)(void);
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index d89da1c7e005..c4038511d5c9 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -135,7 +135,11 @@ static const int hrtimer_clock_to_base_table[MAX_CLOCKS] = {
-  * timer->base->cpu_base
-  */
- static struct hrtimer_cpu_base migration_cpu_base = {
--	.clock_base = { { .cpu_base = &migration_cpu_base, }, },
-+	.clock_base = { {
-+		.cpu_base = &migration_cpu_base,
-+		.seq      = SEQCNT_RAW_SPINLOCK_ZERO(migration_cpu_base.seq,
-+						     &migration_cpu_base.lock),
-+	}, },
- };
+Changes in v3:
+- Fixed Acked-by tag typo.
+
+Changes in v2:
+- Added more text to the switch descriptions, explaining their purpose,
+  and relation to the Type C connector class framework.
+
+ .../bindings/chrome/google,cros-ec-typec.yaml | 40 ++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+index 6d7396ab8bee..800c005a0e44 100644
+--- a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
++++ b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.yaml
+@@ -21,7 +21,34 @@ properties:
+     const: google,cros-ec-typec
  
- #define migration_base	migration_cpu_base.clock_base[0]
-@@ -1998,8 +2002,11 @@ int hrtimers_prepare_cpu(unsigned int cpu)
- 	int i;
- 
- 	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
--		cpu_base->clock_base[i].cpu_base = cpu_base;
--		timerqueue_init_head(&cpu_base->clock_base[i].active);
-+		struct hrtimer_clock_base *clock_b = &cpu_base->clock_base[i];
+   connector:
+-    $ref: /schemas/connector/usb-connector.yaml#
++    allOf:
++      - $ref: /schemas/connector/usb-connector.yaml#
++      - type: object
++        properties:
++          mode-switch:
++            description: Reference to a DT node for the USB Type C Multiplexer
++              for this connector. This switch controls the data lines routing
++              for this connector for various operation modes, including
++              Alternate Modes. This switch is assumed registered with the Type C
++              connector class framework by its driver. The Type C connector
++              class framework assumes that the mode switch property uses this
++              name.
 +
-+		clock_b->cpu_base = cpu_base;
-+		seqcount_raw_spinlock_init(&clock_b->seq, &cpu_base->lock);
-+		timerqueue_init_head(&clock_b->active);
- 	}
++          orientation-switch:
++            description: Reference to a DT node for the USB Type C orientation
++              switch for this connector. This switch controls routing the
++              correct data pairs depending on the cable plug orientation from
++              this connector to the USB / Alternate Mode controllers. This
++              switch is assumed registered with the Type C connector class
++              framework by its driver. The Type C connector class framework
++              assumes that the orientation switch property uses this name.
++
++          usb-role-switch:
++            description: Reference to a DT node for the USB Data role switch
++              for this connector. This switch is assumed registered with the
++              Type C connector class framework by its driver. The Type C
++              connector class framework assumes that the USB role switch
++              property uses this name.
  
- 	cpu_base->cpu = cpu;
+ required:
+   - compatible
+@@ -49,6 +76,17 @@ examples:
+             data-role = "dual";
+             try-power-role = "source";
+           };
++
++          connector@1 {
++            compatible = "usb-c-connector";
++            reg = <1>;
++            power-role = "dual";
++            data-role = "host";
++            try-power-role = "source";
++            mode-switch = <&typec_mux>;
++            orientation-switch = <&typec_orientation_switch>;
++            usb-role-switch = <&typec_mux>;
++          };
+         };
+       };
+     };
 -- 
-2.20.1
+2.26.2.761.g0e0b3e54be-goog
 
