@@ -2,189 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A5F1D9B1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DAF1D9B23
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgESP1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728778AbgESP1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:27:48 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027F9C08C5C0;
-        Tue, 19 May 2020 08:27:47 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id o24so86749oic.0;
-        Tue, 19 May 2020 08:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=RYbtw7YF74B1TP3f62w+MMm9AmH3T7TyQIzVADm4joc=;
-        b=rWVW9SWwfu2ivOfML4vV88PpbtolLbU1Bt6z/GmKJYKvEr/IJAxC6A+Jan25TLv+67
-         f6IE5DHTZLO9gGFEuM+g3oHnVyHSJ/1mLnjUrYYjZXAPz9BWUue+vLouwKC8JwFv8lE+
-         xL0/DA4BFZAhctA7RjlV5tZSuNUaLhrxtuRqhK1yUPOYp6ErfW5gQDsQhUO0CmAWPi2Z
-         lRHLTdU/LN8H/XKQdofqT8kMbuaGuRe9RWzMqzwGXf8vsOpikWH1l25S/9gJ0m6Du4nz
-         fhUu0iIpQbgyQDF1hVuLP7njtWygXPhhp3G0cbKdGYkrIyXJBvOft96+Te4iOvLsZYuX
-         hYSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=RYbtw7YF74B1TP3f62w+MMm9AmH3T7TyQIzVADm4joc=;
-        b=sXL0PrAJxCM7+BbxgNi4MefqlLC08qc+twxmLDIf0B661TywSYp4L+7XrBhh6QMgkg
-         LQkR+lI1PrtOGt2Fty0O+n2aeOt4UZlUWWj5InimJdbBEeD2qumJ3I3eVqme4IOSdBFa
-         an4yDKu5a13Tu1+3+DfUZr0UwSnKeVclHWh1imgSQaBMv3VBWkZVbh8a8HFA18Mvt27s
-         EPX9gQ1lVndue+LHdaSzs9GKga+EDy67AeiDPq6PF/SUHUPB51vka9rJ1ExkedLmtPfI
-         CS7RM2cgQviWLfnB5xDrKFWOpu0iLxaXt0mTCCZNNAeWneDyYeNg3W5EYItJh0ex+5LH
-         MC3w==
-X-Gm-Message-State: AOAM532EvI7uyqtq8aNo4gZl2fR8LQB1WU/iLw4mE1BV/WvvShvUhXvl
-        zX0fHUKQiIY8f8w9SKEdY2Y=
-X-Google-Smtp-Source: ABdhPJztuxWSwe1B/C48Pk77y+JPvKe2hhPzs11LdWiec1uOOAS4b8PdoDnud6zWas21oN/OFnRQeg==
-X-Received: by 2002:aca:fc0c:: with SMTP id a12mr3784oii.50.1589902066973;
-        Tue, 19 May 2020 08:27:46 -0700 (PDT)
-Received: from localhost.localdomain ([143.166.81.254])
-        by smtp.gmail.com with ESMTPSA id m63sm3858556otm.21.2020.05.19.08.27.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 08:27:46 -0700 (PDT)
-From:   Stuart Hayes <stuart.w.hayes@gmail.com>
-To:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stuart Hayes <stuart.w.hayes@gmail.com>
-Subject: [PATCH] dcdbas: Check SMBIOS for protected buffer address
-Date:   Tue, 19 May 2020 11:27:33 -0400
-Message-Id: <20200519152733.48689-1-stuart.w.hayes@gmail.com>
-X-Mailer: git-send-email 2.18.1
+        id S1729227AbgESP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:28:31 -0400
+Received: from mout.gmx.net ([212.227.17.20]:57507 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgESP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 11:28:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589902096;
+        bh=CiwR7YvzvIouXQnYC3GA/5qmrQBH6HehUBkJ0yz4hD8=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=NS5Al6HFrtMsGkGhQWBAUuuSXCgxFl2irosTvyJLdjxyHRf5YhuTNEKIVbYz4yD+4
+         pFA+ZkJ1FeqRBzPQ4Wo0kAIiHbxMqRsRWgcOCEzJhuzKGT++P/o5t8ma5AhhnRA0of
+         1UTKLiNfW+v58I1caXKgvi5g7I0AyjC8uI7ByZws=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from hsiangkao-HP-ZHAN-66-Pro-G1 ([120.242.72.127]) by mail.gmx.com
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MlNp7-1jDW3X3fXZ-00lqV5; Tue, 19 May 2020 17:28:15 +0200
+Date:   Tue, 19 May 2020 23:27:49 +0800
+From:   Gao Xiang <hsiangkao@gmx.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@fromorbit.com,
+        hch@infradead.org
+Subject: Re: [PATCH 10/10] mm/migrate.c: call detach_page_private to cleanup
+ code
+Message-ID: <20200519152747.GA11416@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+ <20200517214718.468-11-guoqing.jiang@cloud.ionos.com>
+ <20200518221235.1fa32c38e5766113f78e3f0d@linux-foundation.org>
+ <aade5d75-c9e9-4021-6eb7-174a921a7958@cloud.ionos.com>
+ <20200519100612.GA3687@hsiangkao-HP-ZHAN-66-Pro-G1>
+ <20200519151632.GX16070@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519151632.GX16070@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:0Nr+HQn3nAxRsOJtI4q5EwM86pQQgQZG7KEm9Tq2RencbftXqf+
+ C6bC3GYN3AiraPEzGjdJ0pYEjP3UWyuRgHlAC2jU33dpEp/veJnf+e/AXuwA8tV3kNJUViw
+ TY4kuIyCOGF+YggGZSBiV0Bjr8mzTPf6fuU8MTvP+sMoBszhGcJblv3cN1Iz+tF7Pcrmx0Z
+ oHvd8MimZ124aTrWikk/w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qDJwCMbauy4=:HXts9pvt4bos19ExLobmwi
+ /nonUctgUL/hcYIy8ldyGmnoK0kR4FIE4LMLfMGgBYTYQp1951G4beFUbzUC0UA9ua5hNLx7Y
+ a2Gb6AJ4mCNt+eHg0WmEXkhkBWxIrlYShrXWaeD+J3lTWhChDdoOG6EjwuAGG9bIZ7BhsaLlZ
+ HibXv4UffXqVFYPNW7s96pkU4cF6mw2ghPG/tV4eMdCwvkUqoKPQfp0uboxiPG5xxAkHbFoWR
+ 6poYWRAm2h7b6OSOv5kNpmnniR09/rOKwL3oTl8frdHuOjyUnYD9KPaKyIP+VXGAxR7i8oH4u
+ BWSTC6vyeMUTjE8Avu5gyi5PbFLepD9SfgVLlKvKnxXAOlCXhB2RIoPnzeySCe5kLapuCaNI4
+ E9j6k7VRYpBSyqb3h1cDldvmTHQz2M071t/vB6FPVsUz9MF80xv/4vq9NGiZQy3gGb51lzYeR
+ YF05QEoiA+CXJ4Uu/MmXxYE2pt7YuLlvlK6nG56ljtl9d/tVrJ1vuvcYdUir3SbofMy3vie62
+ QTcH1eqks6Z43zuZ5JC4eKC9Hmzpkt5hD0+dXYza4x1OqF+ztAjdCUquCN6ZZOcWQ/4roJsFB
+ MT3MOlZd1qW7tkaEkwh+DcP3tAMAEEk8wWR7g/UkzxBJg1g5ja9h2csFU7dpnQRQtBF4om4NI
+ MZOVsGfUIs2qrZg606qlDiiyy9GWbZMZdzU0kbNoVufvG3DUwrenJouYZbm66qujfBnl30xsh
+ onQkSYxfOv2xCGBK4+8V6NLBpQ9NsPuZyRGB3NvldHN+Mrs3L7mzajD0NsGloSeBU/A5zBTDp
+ GtE84qOcpBRgjlF+8RzSWx/izmZCC+aszl0c/tCmwJvj/pyrXGk18SVu7Dbnic8CP7z9TOoiS
+ lEoEF+s+tPih4AX0ClsofN26HHIaQxU9UdbybgczZrTnLQVYKleHnm9/HrfPJzVMNdRl+vIhN
+ D2X/kDxEl7Dhr2gxmSHm1UcsAC1Tiuh2ltiYwm0zdrPtINmSyIl8+3CihAWGx9MVMulCvdEYK
+ GiZ+OT0zh2acQk2gIN2Xqy2TpLfX6aaxgue/jyU56GC9t/ecXG6lehxasFnLqovl8SkdJPpF6
+ 1QqRYnxCYe6v2TYj+/1j9aRN3LuhMvr2YeD0W0pJZSB8KW33qcIUSUAvUxa77UrNLi5NPftUb
+ CQvPbqEO4z8p+XDXR6nUevRk4zjHgUKFLvyVG5VCAX1Vyzlo7q3yKhHEJUDWWUShbZlYHtlbl
+ cSnCzEVeZSRLGnG5d
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for a new method for BIOS to provide the address and length
-of the protected SMI communication buffer, via SMBIOS OEM strings.
+Hi Matthew,
 
-Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
----
- drivers/platform/x86/dcdbas.c | 43 ++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 13 deletions(-)
+On Tue, May 19, 2020 at 08:16:32AM -0700, Matthew Wilcox wrote:
+> On Tue, May 19, 2020 at 06:06:19PM +0800, Gao Xiang wrote:
+> > In addition, I found some limitation of new {attach,detach}_page_priva=
+te
+> > helper (that is why I was interested in this series at that time [1] [=
+2],
+> > but I gave up finally) since many patterns (not all) in EROFS are
+> >
+> > io_submit (origin, page locked):
+> > attach_page_private(page);
+> > ...
+> > put_page(page);
+> >
+> > end_io (page locked):
+> > SetPageUptodate(page);
+> > unlock_page(page);
+> >
+> > since the page is always locked, so io_submit could be simplified as
+> > set_page_private(page, ...);
+> > SetPagePrivate(page);
+> > , which can save both one temporary get_page(page) and one
+> > put_page(page) since it could be regarded as safe with page locked.
+>
+> It's fine to use page private like this without incrementing the refcoun=
+t,
+> and I can't find any problematic cases in EROFS like those fixed by comm=
+it
+> 8e47a457321ca1a74ad194ab5dcbca764bc70731
+>
+> So I think the new helpers are not for you, and that's fine.  They'll be
+> useful for other filesystems which are using page_private differently
+> from the way that you do.
 
-diff --git a/drivers/platform/x86/dcdbas.c b/drivers/platform/x86/dcdbas.c
-index 84f4cc839cc3..d513a59a5d47 100644
---- a/drivers/platform/x86/dcdbas.c
-+++ b/drivers/platform/x86/dcdbas.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/acpi.h>
- #include <linux/dma-mapping.h>
-+#include <linux/dmi.h>
- #include <linux/errno.h>
- #include <linux/cpu.h>
- #include <linux/gfp.h>
-@@ -34,7 +35,7 @@
- #include "dcdbas.h"
- 
- #define DRIVER_NAME		"dcdbas"
--#define DRIVER_VERSION		"5.6.0-3.3"
-+#define DRIVER_VERSION		"5.6.0-3.4"
- #define DRIVER_DESCRIPTION	"Dell Systems Management Base Driver"
- 
- static struct platform_device *dcdbas_pdev;
-@@ -45,7 +46,7 @@ static unsigned long smi_data_buf_size;
- static unsigned long max_smi_data_buf_size = MAX_SMI_DATA_BUF_SIZE;
- static u32 smi_data_buf_phys_addr;
- static DEFINE_MUTEX(smi_data_lock);
--static u8 *eps_buffer;
-+static u8 *bios_buffer;
- 
- static unsigned int host_control_action;
- static unsigned int host_control_smi_type;
-@@ -518,8 +519,10 @@ static inline struct smm_eps_table *check_eps_table(u8 *addr)
- 
- static int dcdbas_check_wsmt(void)
- {
-+	const struct dmi_device *dev = NULL;
- 	struct acpi_table_wsmt *wsmt = NULL;
- 	struct smm_eps_table *eps = NULL;
-+	u64 bios_buf_paddr;
- 	u64 remap_size;
- 	u8 *addr;
- 
-@@ -532,6 +535,17 @@ static int dcdbas_check_wsmt(void)
- 	    !(wsmt->protection_flags & ACPI_WSMT_COMM_BUFFER_NESTED_PTR_PROTECTION))
- 		return 0;
- 
-+	/*
-+	 * BIOS could provide the address/size of the protected buffer
-+	 * in an SMBIOS string or in an EPS structure in 0xFxxxx.
-+	 */
-+
-+	/* Check SMBIOS for buffer address */
-+	while ((dev = dmi_find_device(DMI_DEV_TYPE_OEM_STRING, NULL, dev)))
-+		if (sscanf(dev->name, "30[%16llx;%8llx]", &bios_buf_paddr,
-+		    &remap_size) == 2)
-+			goto remap;
-+
- 	/* Scan for EPS (entry point structure) */
- 	for (addr = (u8 *)__va(0xf0000);
- 	     addr < (u8 *)__va(0x100000 - sizeof(struct smm_eps_table));
-@@ -542,34 +556,37 @@ static int dcdbas_check_wsmt(void)
- 	}
- 
- 	if (!eps) {
--		dev_dbg(&dcdbas_pdev->dev, "found WSMT, but no EPS found\n");
-+		dev_dbg(&dcdbas_pdev->dev, "found WSMT, but no firmware buffer found\n");
- 		return -ENODEV;
- 	}
-+	bios_buf_paddr = eps->smm_comm_buff_addr;
-+	remap_size = eps->num_of_4k_pages * PAGE_SIZE;
- 
-+remap:
- 	/*
- 	 * Get physical address of buffer and map to virtual address.
- 	 * Table gives size in 4K pages, regardless of actual system page size.
- 	 */
--	if (upper_32_bits(eps->smm_comm_buff_addr + 8)) {
--		dev_warn(&dcdbas_pdev->dev, "found WSMT, but EPS buffer address is above 4GB\n");
-+	if (upper_32_bits(bios_buf_paddr + 8)) {
-+		dev_warn(&dcdbas_pdev->dev, "found WSMT, but buffer address is above 4GB\n");
- 		return -EINVAL;
- 	}
- 	/*
- 	 * Limit remap size to MAX_SMI_DATA_BUF_SIZE + 8 (since the first 8
- 	 * bytes are used for a semaphore, not the data buffer itself).
- 	 */
--	remap_size = eps->num_of_4k_pages * PAGE_SIZE;
- 	if (remap_size > MAX_SMI_DATA_BUF_SIZE + 8)
- 		remap_size = MAX_SMI_DATA_BUF_SIZE + 8;
--	eps_buffer = memremap(eps->smm_comm_buff_addr, remap_size, MEMREMAP_WB);
--	if (!eps_buffer) {
--		dev_warn(&dcdbas_pdev->dev, "found WSMT, but failed to map EPS buffer\n");
-+
-+	bios_buffer = memremap(bios_buf_paddr, remap_size, MEMREMAP_WB);
-+	if (!bios_buffer) {
-+		dev_warn(&dcdbas_pdev->dev, "found WSMT, but failed to map buffer\n");
- 		return -ENOMEM;
- 	}
- 
- 	/* First 8 bytes is for a semaphore, not part of the smi_data_buf */
--	smi_data_buf_phys_addr = eps->smm_comm_buff_addr + 8;
--	smi_data_buf = eps_buffer + 8;
-+	smi_data_buf_phys_addr = bios_buf_paddr + 8;
-+	smi_data_buf = bios_buffer + 8;
- 	smi_data_buf_size = remap_size - 8;
- 	max_smi_data_buf_size = smi_data_buf_size;
- 	wsmt_enabled = true;
-@@ -736,8 +753,8 @@ static void __exit dcdbas_exit(void)
- 	 */
- 	if (dcdbas_pdev)
- 		smi_data_buf_free();
--	if (eps_buffer)
--		memunmap(eps_buffer);
-+	if (bios_buffer)
-+		memunmap(bios_buffer);
- 	platform_device_unregister(dcdbas_pdev_reg);
- 	platform_driver_unregister(&dcdbas_driver);
- }
--- 
-2.18.1
+Yes, I agree. Although there are some dead code in EROFS to handle
+some truncated case, which I'd like to use in the future. Maybe I
+can get rid of it temporarily... But let me get LZMA fixed-sized
+output compression for EROFS in shape at first, which seems useful
+as a complement of LZ4...
+
+Thanks,
+Gao Xiang
 
