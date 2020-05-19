@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149A41DA1B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559561DA1BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgEST7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
+        id S1726940AbgEST75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728384AbgEST7K (ORCPT
+        with ESMTP id S1727990AbgEST7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:59:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AFFC08C5C2;
-        Tue, 19 May 2020 12:59:10 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8OH-0000HV-5t; Tue, 19 May 2020 21:59:05 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3D9E81C047E;
-        Tue, 19 May 2020 21:58:50 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:50 -0000
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/doublefault: Remove memmove() call
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134058.863038566@linutronix.de>
-References: <20200505134058.863038566@linutronix.de>
+        Tue, 19 May 2020 15:59:20 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA08C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:59:19 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id e10so596631edq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BMIDPgMbHVu3g+tSpT5bxTKgYe2ruTghD+dp0Ce+ezo=;
+        b=nmcZhgVFvrUq5JC4qwIm8okfkbdw8iu9il46IC3Uss+sgO/7sPyUdIXQq0O6RdQwbf
+         +WFR18HzTXkFZc3QGFtOFX6HIzFwjCuBKJI/87fymJWXtPspMiErj+JeVTHEn7xa6YgL
+         9TYytifZ01xCLzif+9nLDKfFsDXKuT6ACCqCwliqKPfwV7aJ0mbeetUVkU82jhgr/C5B
+         DCId9cp2tszqdN1laadHjUG7Na7SZdxwVzW0/ByeC53UigedJ99ch+cwSb39KnXTyJ+o
+         3uo/9GDYTmqnZqY1c0M+X60t1tywbXPoN+CbPGmvXBSRBkKeQSkI0pWJOF/OWRt+evlQ
+         iRSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BMIDPgMbHVu3g+tSpT5bxTKgYe2ruTghD+dp0Ce+ezo=;
+        b=kGrapT9Qvi/TtsKYUPV0i9MuLpger5kTEXtBNYEMz6hRNrHOL3I7JmbxLdeILjq9rz
+         DIg3s28fOiG7LTR93LSchy/cU0z1h9hplrxVfg2tGJJTw8dEQNgV7y7pV38np3+i2CHx
+         AVquJPwO0bXBiclSlH63U5zog61DHp6GWDOCeayo0KCzxxhKip2kg5jIxRlOhBuW/1NZ
+         HeWXICvi0oimKlWybWeaMd99EJed7Hj07AVyjrlxB87FaKJ/nyRg7jqu9Dvf6Thn4e6D
+         DvSeM19ovmm/LD0E8F0y1jA38zho0cKCrwDiBQI9jdTMEZq2ghqCX4OwX5Ki237IYEdO
+         /IqA==
+X-Gm-Message-State: AOAM530R1J1p9I3xgv7hCk/Pk8DsQUfz+YmdNdSR3waf60KMLMFsOeJI
+        AhW9J9iHBS8BYkQylchXSnT0l21CJGtsLHGvUTfk
+X-Google-Smtp-Source: ABdhPJz65RXV/YZirbNciXMjDODPfXWd7iH/a+VM6sKDALr2hlZkHrs+ze8+PoO2Ue4Kga0UI8IYhfgPg7XEruoS49s=
+X-Received: by 2002:a05:6402:14d3:: with SMTP id f19mr444826edx.135.1589918358022;
+ Tue, 19 May 2020 12:59:18 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <158991833013.17951.13456353153440993898.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <2794b22c0b88637a4270b346e52aeb8db7f59457.1589853445.git.rgb@redhat.com>
+ <CAHC9VhQYUooJbZ9tcOOwb=48LTjtnfo0g11vQuyLzoxdetaxnw@mail.gmail.com> <20200519194457.nouzteqv2vpcqnta@madcap2.tricolour.ca>
+In-Reply-To: <20200519194457.nouzteqv2vpcqnta@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 19 May 2020 15:59:05 -0400
+Message-ID: <CAHC9VhQRSwTURYZ2dL_YWqi-xnPfFGN_Aef73mip=eYNVfObRw@mail.gmail.com>
+Subject: Re: [PATCH ghak25 v5] audit: add subj creds to NETFILTER_CFG record
+ to cover async unregister
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
+        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Tue, May 19, 2020 at 3:45 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-05-19 15:18, Paul Moore wrote:
+> > On Tue, May 19, 2020 at 11:31 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > Some table unregister actions seem to be initiated by the kernel to
+> > > garbage collect unused tables that are not initiated by any userspace
+> > > actions.  It was found to be necessary to add the subject credentials to
+> > > cover this case to reveal the source of these actions.  A sample record:
+> > >
+> > > The tty, ses and exe fields have not been included since they are in the
+> > > SYSCALL record and contain nothing useful in the non-user context.
+> > >
+> > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat family=bridge entries=0 op=unregister pid=153 uid=root auid=unset subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2
+> >
+> > Based on where things were left in the discussion on the previous
+> > draft, I think it would be good if you could explain a bit why the uid
+> > and auid fields are useful here.
+>
+> They aren't really useful here.  I was hoping to remove them given your
+> reasoning, but I was having trouble guessing what you wanted even after
+> asking for clarity.  Can you clarify what you would prefer to see in
+> this patch?
 
-Commit-ID:     f44e70325748c7998cf089d2ae67b4b5bc8d8ad9
-Gitweb:        https://git.kernel.org/tip/f44e70325748c7998cf089d2ae67b4b5bc8d8ad9
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 20 Feb 2020 13:17:27 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 15 May 2020 20:03:04 +02:00
+/me heavily rolls eyes
 
-x86/doublefault: Remove memmove() call
+In my last email to you I said:
 
-Use of memmove() in #DF is problematic considered tracing and other
-instrumentation.
+"I think it is pointless to record the subject info in this record as we
+either have that info from other records in the event or there is no
+valid subject info to record."
 
-Remove the memmove() call and simply write out what needs doing; this
-even clarifies the code, win-win! The code copies from the espfix64
-stack to the normal task stack, there is no possible way for that to
-overlap.
+... I also said:
 
-Survives selftests/x86, specifically sigreturn_64.
+"As I've mentioned in the thread above, including the auid was done as
+a concession to Steve, I don't think it serves any useful purpose."
 
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505134058.863038566@linutronix.de
+If phrases like "pointless to record the subject info" and "I don't
+think it serves any useful purpose" leave you unsure about what to do,
+I'm at a bit of a loss.
 
----
- arch/x86/kernel/traps.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Drop the "uid" field.  Drop the "auid" field.  Hopefully those last
+two statements should remove any ambiguity from your mind.
 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index e85561f..75fa765 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -369,6 +369,7 @@ dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsign
- 		regs->ip == (unsigned long)native_irq_return_iret)
- 	{
- 		struct pt_regs *gpregs = (struct pt_regs *)this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
-+		unsigned long *p = (unsigned long *)regs->sp;
- 
- 		/*
- 		 * regs->sp points to the failing IRET frame on the
-@@ -376,7 +377,11 @@ dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsign
- 		 * in gpregs->ss through gpregs->ip.
- 		 *
- 		 */
--		memmove(&gpregs->ip, (void *)regs->sp, 5*8);
-+		gpregs->ip	= p[0];
-+		gpregs->cs	= p[1];
-+		gpregs->flags	= p[2];
-+		gpregs->sp	= p[3];
-+		gpregs->ss	= p[4];
- 		gpregs->orig_ax = 0;  /* Missing (lost) #GP error code */
- 
- 		/*
+-- 
+paul moore
+www.paul-moore.com
