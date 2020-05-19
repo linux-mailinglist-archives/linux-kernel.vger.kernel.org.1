@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10B61D8E72
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 06:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89241D8E8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 06:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgESEFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 00:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S1726344AbgESERK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 00:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgESEFQ (ORCPT
+        with ESMTP id S1726131AbgESERK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 00:05:16 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754B3C061A0C;
-        Mon, 18 May 2020 21:05:16 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id a14so6733141ilk.2;
-        Mon, 18 May 2020 21:05:16 -0700 (PDT)
+        Tue, 19 May 2020 00:17:10 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1892BC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 21:17:10 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id p12so10069350qtn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 21:17:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3tOm8zzhCxaJy3Xz/20xYyI/RssQ51tXhkdhSGs8XvM=;
-        b=PZ2PdY14xr+Ro5d+ddOFHl4D+ksurvlmAHT//qsqdw6SDeJ+Njtcdx18griVnejEdH
-         RyRkSXIYdKX/QnNCX73NqkQSMFny0/TLKJVmtHCqogKergXIYgNPnC+sWShWwHid6DgO
-         rZChs500Frt8l+dJeR9HN/bKB6DMTCd43fpRBI1StRoTu2ypdjcromQ1EdKQGaF7jUL2
-         k1Mo4tt2cZ/sfBEpHouIAjKpsEHx2ZvW/f3+q1ym8GsM6In6VWrj0ykApbU5WXFbKW7n
-         XTBb6Te9L3nMOrMTEcdrlWbdIKxPWpZW8GAUT+UEjPomvSFpmSDC9JtXZ3rsk5ZiVxU/
-         WhyQ==
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=f35quzRTsPSsXcJMV+Q1OnEk4JEQ9yMytf7fZJAZYAM=;
+        b=Z2TQfIZL9NbNzNvNKecDOF2sZC6+uM75u5B8T3tjnT2qxjksiZ4nf22dJVGFfNvpRH
+         YsW728leEpAw2LtHjhrKLvsi1oIOoT2j3PLmApLPOYeRPz5r/xx49lLN5FaG47LyCaE5
+         kA0H0/BzVYzlEMRNyjb8BQNrGS0d6KqDWKGPOsUOyq4GnkaUCpYV0Br9YAClyzN1hbmB
+         N4k7lHi6vgiLgTtzWxatpoKTzXejDtAz2Sx1Nu6xJQRDSHgcjMN1CItquZ+HJ11qHcmD
+         oORc9pauzyd6+2D/Mt1lPySnOpRz6MQdeZHcPA2Pup0BJuW3dd2pdzpyKUbkWIunxSGD
+         NpMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3tOm8zzhCxaJy3Xz/20xYyI/RssQ51tXhkdhSGs8XvM=;
-        b=T7hS6eiX9hjyx5uu9VCuWXApHIhBBc0i/O+qN4lA99Jp8DCjqFOltpsmW5Cd0SQ9hF
-         nadUTLMoXxurxckuqPhakmaxFlwfvRggmqxT6Wn5tUEoaVNo4paXLIcnUp8ora3NrUAr
-         4Zf1Gdph5MiBZV5MJMMrP6MKY8xu5mv1My/20okDHygFKMlgyzEXzSAlPWfhAe2SO1qe
-         x0wM+nk+RaKhnJLevJpIUfW1fufK6AWvAfqby/X+N+kPasliDzzE+Mo3tItNtJFDHgiU
-         6Y4TPjSkavpO3omAdPnFlaYaHjFCD7JJ+FtPkdfRqkmUGTfZEQ4/HMdpz3N3O9qoE6ZK
-         mXMw==
-X-Gm-Message-State: AOAM533lBqsfE7e9rNmRB817eN/GIOocKXrEkB8musNRkURf1R3BlJu+
-        vTikTDHxiB64bKjIA2mc+AlpTSTBuIkaogY3zSs=
-X-Google-Smtp-Source: ABdhPJxNZWuYH/8A7JmkXsS57791uw/AMFZzdoXTYEeXfyUEtNq49rXkuAD3c9lok1aG2vmSkwVYra8Cz/oOSTZ1rpU=
-X-Received: by 2002:a92:d40a:: with SMTP id q10mr20463435ilm.87.1589861114283;
- Mon, 18 May 2020 21:05:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <0a50f0cf5593baeb628dc8606c523665e5e2ae6c.1589519600.git.viresh.kumar@linaro.org>
- <20200519012927.GT2165@builder.lan> <20200519034055.hfvifqz442yfduhg@vireshk-i7>
-In-Reply-To: <20200519034055.hfvifqz442yfduhg@vireshk-i7>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 18 May 2020 23:05:03 -0500
-Message-ID: <CABb+yY30nmbBUzYG62xGEbrr7107h_Edyq3jKPheZAQ0Cvr9Yg@mail.gmail.com>
-Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=f35quzRTsPSsXcJMV+Q1OnEk4JEQ9yMytf7fZJAZYAM=;
+        b=KbNXB22GFAcPUutKoRQihmfGqsXp5cSwHaCutC3DGTdZseh+QNwVqoptN/4xlH+CGG
+         OolBkOkV1muiXnTM4G8l8ePVfmHBWc5eEXKx8XUk+Y4YTzE8jRmRTKs8wv/A3e3nCouo
+         OhHxej2xkCF3gejfHQzB3QFZcAGQOuhPWxW3+3WpsNNULjFE1bA84qAZ0AEdXobD38w0
+         MtY7mbsgWOce5GZfxUhNawCfW5Uj/das/bDqaFTIljER075rYDUecBuG8PozePu3LDd6
+         lIunGtSEuzNPzAWC2Un14hqnT5HCBMmt19OWwjTuLYY3qHtAmKwr/JN9gD61xyDypnwY
+         lUXg==
+X-Gm-Message-State: AOAM531nJnNqIpjhBFguT6EuGGpRz2ePU4dW6l8nO1tBjsFkCWgwO6Ru
+        FBmmWkpqvLTHs3CEno/QNPq0F0uyQK5qOw==
+X-Google-Smtp-Source: ABdhPJwpIyb/nh5fY7rAFENRuBra4D8OY1t7WiU2n5+pWVxtKyVO2uDEjGoCqueT0Au5EjRO4+zNhw==
+X-Received: by 2002:ac8:c09:: with SMTP id k9mr6448359qti.264.1589861829049;
+        Mon, 18 May 2020 21:17:09 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id k3sm9948855qkb.112.2020.05.18.21.17.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 21:17:08 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: memory offline infinite loop after soft offline
+Date:   Tue, 19 May 2020 00:17:07 -0400
+Message-Id: <19C82531-5DDB-4474-8FF6-67513BB53784@lca.pw>
+References: <20200515034809.GA27576@hori.linux.bs1.fc.nec.co.jp>
+Cc:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+In-Reply-To: <20200515034809.GA27576@hori.linux.bs1.fc.nec.co.jp>
+To:     =?utf-8?Q?
+         "HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3=E3=80=80=E7=9B=B4?=
+        =?utf-8?Q?=E4=B9=9F=29" ?= <naoya.horiguchi@nec.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 10:40 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 18-05-20, 18:29, Bjorn Andersson wrote:
-> > On Thu 14 May 22:17 PDT 2020, Viresh Kumar wrote:
-> > > This stuff has been doing rounds on the mailing list since several years
-> > > now with no agreed conclusion by all the parties. And here is another
-> > > attempt to get some feedback from everyone involved to close this once
-> > > and for ever. Your comments will very much be appreciated.
-> > >
-> > > The ARM MHU is defined here in the TRM [1] for your reference, which
-> > > states following:
-> > >
-> > >     "The MHU drives the signal using a 32-bit register, with all 32
-> > >     bits logically ORed together. The MHU provides a set of
-> > >     registers to enable software to set, clear, and check the status
-> > >     of each of the bits of this register independently.  The use of
-> > >     32 bits for each interrupt line enables software to provide more
-> > >     information about the source of the interrupt. For example, each
-> > >     bit of the register can be associated with a type of event that
-> > >     can contribute to raising the interrupt."
-> > >
-> >
-> > Does this mean that there are 32 different signals and they are all ORed
-> > into the same interrupt line to trigger software action when something
-> > happens?
-> >
-> > Or does it mean that this register is used to pass multi-bit information
-> > and when any such information is passed an interrupt will be triggered?
-> > If so, what does that information mean? How is it tied into other Linux
-> > drivers/subsystems?
->
-> I have started to believe the hardware is written badly at this point
-> :)
->
-H/W is actually fine :)   Its just that the driver is written to
-_also_ support a platform (my original) that doesn't have shmem and
-need to pass data via 32bit registers.
-Frankly, I am not against the doorbell mode, I am against implementing
-two modes in a driver. If it really helped (note the past tense) the
-SCMI, we could implement the driver only in doorbell mode but
-unfortunately SCMI would still be _broken_ for non-doorbell
-controllers.
+
+
+> On May 14, 2020, at 11:48 PM, HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=80=E7=
+=9B=B4=E4=B9=9F) <naoya.horiguchi@nec.com> wrote:
+>=20
+> I'm very sorry to be quiet for long, but I think that I agree with
+> this patchset and try to see what happend if merged into mmtom,
+> although we need rebaseing to latest mmotm and some basic testing.
+
+Looks like Oscar have been busy those days. Would you have time to take it o=
+ver and rebase it?=
