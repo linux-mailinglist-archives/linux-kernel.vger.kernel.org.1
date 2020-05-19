@@ -2,112 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038361DA447
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1601DA44F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgESWJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S1726985AbgESWMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgESWJc (ORCPT
+        with ESMTP id S1725885AbgESWMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:09:32 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC43C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:09:32 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id j21so861226ejy.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:09:31 -0700 (PDT)
+        Tue, 19 May 2020 18:12:37 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434D9C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:12:37 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id n15so562124pfd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=wbXocx2IVcd/8hG9Fw76EUVKCyEFsGvoPgyI2u8Yy7s=;
-        b=UuoVs2/xVkQsqh8oRKq34Pi7IJzz+LxoGejoY/A86MXa6IeiwmeyUzjMuiXugpkXeM
-         uqgKJCo1MiY6ZK2ei1nM2/349ru0e63XRYH5zD3LuwdgOnc8mMiNwy4xCYAROdsyW8gD
-         032b+dSPWY9eIbClbaCYY6+2LXUKJmK0+0vcT66LdaQ/Z739mfN4IlsVFL7JjrQ3NxH9
-         inmwLO1xpczAlXrEOyLybgtsbYttc/EJuT2eClMezcfLIvIzB06L1W/q/HPhCJbJtNB3
-         w7nDDdiXbHS11rmiRGFzCGOrcfC655w8l7e5zCTE6XVnQuPm9yxdHFj+cX0Iah2VS/ck
-         2+IA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N4XH541U7UQQpdWsqc6VDr4j78oUO2KTxdnSbF6otX8=;
+        b=aeRPaTJ0pWOqy7B9rQlT9Ytvk3L7vQ0tnHXGiI/lZNt/BP9gtOg9vChChdy3fBssJI
+         Fwp+ofBzsTZ1epC6CPeK5f7xxG7enltUCpuDA+0JCgt0kUsYpaw62fuGlr55Eq94KKEU
+         zdpH2JWPHkIia9Oftg7UjNFfHKgEY7fBJQJGtthGCIb/KHZZxlgOYsljUMbMg3amM6D0
+         zevdwyFuk1A+LJcEc7+7dyNNYzMYmRVKxwjAiEsGClRm8XN5giR37BIb6wmmmUzBLFdn
+         YpNBHgifYQT79jQ9zYdoJmhtQ2aj5n/UjUInRPOizfqaDxXjTL1g+Nv0Hd9VnK4lofd2
+         V33Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=wbXocx2IVcd/8hG9Fw76EUVKCyEFsGvoPgyI2u8Yy7s=;
-        b=VwBIgLNyvL64FLUk/FTFGyn1LAbg9xsAymiWKGW88Yxoy/sfYISR+SHSJBCkhp4q4o
-         4AQ/xaJDNVuS78a7x06pfgQ3z6+2CtAqY3KhWmAAoYTlPNGFEU4UO9JdCmzYZy26EBk9
-         dhFHU/jLIm+JPz8RXTTIWSlShYzXh91z1KI47Nfx/xOHsHjwdC/V9aBOjEe1ukhye9LV
-         GROmzCXJxV4bYHk00HXx1+bygfPACC3AcMUxL3g8BA7+jkOe21h6dDY+zzxh3bEMUFH3
-         9AmF6N9QMuoU4nH+gWOVmm8wziUT4JG8u0TNYcQ2u6yxeKFBBV5ft2ZYTiZjFcxrqEXS
-         h8MA==
-X-Gm-Message-State: AOAM531nMBqFzi1bkTeVzim9IHdURehPue8+XN+Ieg6ncj0g+j30oLp2
-        B+9mZKaclZWFhk4tuAYCgBTbYE6SjNi9RT0Z2IA3KQ==
-X-Google-Smtp-Source: ABdhPJz8Afk0tO3ZoqGa4Ed2tdS7qerbDDkJXRn2mhV2+4mQheYHREs7S7MxTs1oJsVybE+vXqGgZgmrDb8ZCclPEFo=
-X-Received: by 2002:a17:906:934d:: with SMTP id p13mr1192908ejw.452.1589926170654;
- Tue, 19 May 2020 15:09:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N4XH541U7UQQpdWsqc6VDr4j78oUO2KTxdnSbF6otX8=;
+        b=S7FPrT5YNDtvqJJv3XwyFHPeDE5OxClvIv3hjDXITirGBB7d8JHlwF1ATn4e+izror
+         IQ722rvrutJnPH0vGM+FkwTKPEwOeo3cYS/SXEP9DKDrXAEH5c+7CUjZ1YZp2tjD16Ps
+         fx52czZAuwHaXaBcbOOW8KQiwDi3mk7T/le7iHNTxpKfugEpjqPdTjKrdyVUsTM4RFQs
+         Zag4iyKZ9RnxWORcOnjHo62yBW8AzI5WzUlHwjlhBjtno2ZyEiNyNr5PnyaCQ+uSAyjx
+         mmp01aBNaKricW0x9yE7RWupNRbbtLjP55Zpjmo5bJUfUaiQQEUr7U7St2k9gAVY7tg6
+         b/dw==
+X-Gm-Message-State: AOAM533+kcF84sOmvpsnBo0t0LgZa99DWR2sQRVZPFXZNp5AM0Saex3V
+        9mzFpDEj2MmEWUbBKROEwhhnYmmnSQHYGqYb+Fa4pg==
+X-Google-Smtp-Source: ABdhPJwFafNy0ByJNK8kOBKMqVM+tJnjfKsrHY0o5MD7vQl1T98o7jN0rNQLD4sRZFm6TMQN+t1LPdTh05UH7cfnPfs=
+X-Received: by 2002:a63:d010:: with SMTP id z16mr1134483pgf.381.1589926356402;
+ Tue, 19 May 2020 15:12:36 -0700 (PDT)
 MIME-Version: 1.0
-From:   Qian Cai <cai@lca.pw>
-Date:   Tue, 19 May 2020 18:09:19 -0400
-Message-ID: <CAG=TAF6hJL-wfGLq3oa-ZGk3-YGEtuMyO2V9ePFUcbv99NWVSw@mail.gmail.com>
-Subject: BUG: sleeping function called from atomic due to "Balance initial LPI
- affinity across CPUs"
-To:     Marc Zyngier <maz@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     John Garry <john.garry@huawei.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <202005200123.gFjGzJEH%lkp@intel.com> <20200519205505.GD444@zn.tnic>
+ <20200519212541.GA3580016@ubuntu-s3-xlarge-x86>
+In-Reply-To: <20200519212541.GA3580016@ubuntu-s3-xlarge-x86>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 19 May 2020 15:12:24 -0700
+Message-ID: <CAKwvOdk+JwddxLaXc9S7SMMTye8bDaGEckcs7zu5tEMD0G3Yog@mail.gmail.com>
+Subject: Re: [tip:x86/mm 1/23] arch/x86/mm/init.c:75:6: warning: no previous
+ prototype for function 'x86_has_pat_wp'
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Philip Li <philip.li@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kbuild test robot <lkp@intel.com>,
+        Christoph Hellwig <hch@lst.de>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Nathan Chancellor <natechancellor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reverted the linux-next commit f068a62c548c ("irqchip/gic-v3-its:
-Balance initial LPI affinity across CPUs") fixed these warnings during
-boot,
+Masahiro and Philip,
+We're seeing a bunch of -Wmissing-prototypes warnings from 0day bot
+suddenly today.  Did something change on the Kbuild or 0day bot side?
 
-its_select_cpu at drivers/irqchip/irq-gic-v3-its.c:1572
+On Tue, May 19, 2020 at 2:25 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, May 19, 2020 at 10:55:05PM +0200, Borislav Petkov wrote:
+> > On Wed, May 20, 2020 at 01:51:25AM +0800, kbuild test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x=
+86/mm
+> > > head:   bd1de2a7aace4d1d312fb1be264b8fafdb706208
+> > > commit: 1f6f655e01adebf5bd5e6c3da2e843c104ded051 [1/23] x86/mm: Add a=
+ x86_has_pat_wp() helper
+> > > config: x86_64-randconfig-r012-20200519 (attached as .config)
+> > > compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project =
+135b877874fae96b4372c8a3fbfaa8ff44ff86e3)
+> > > reproduce:
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master=
+/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # install x86_64 cross compiling tool for clang build
+> > >         # apt-get install binutils-x86-64-linux-gnu
+> > >         git checkout 1f6f655e01adebf5bd5e6c3da2e843c104ded051
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cros=
+s ARCH=3Dx86_64
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kbuild test robot <lkp@intel.com>
+> > >
+> > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> > >
+> > > >> arch/x86/mm/init.c:75:6: warning: no previous prototype for functi=
+on 'x86_has_pat_wp' [-Wmissing-prototypes]
+> > > bool x86_has_pat_wp(void)
+> > > ^
+> >
+> > Triggers with gcc too:
+> >
+> > make W=3D1 arch/x86/mm/init.o
+> >
+> > ...
+> >
+> > arch/x86/mm/init.c:81:6: warning: no previous prototype for =E2=80=98x8=
+6_has_pat_wp=E2=80=99 [-Wmissing-prototypes]
+> >    81 | bool x86_has_pat_wp(void)
+> >       |      ^~~~~~~~~~~~~~
+> >
+> >
+> > -Wmissing-prototypes is default off, though, dunno why clang 11 has it
+> > on.
+>
+> It doesn't: https://godbolt.org/z/rU5_5H
+>
+> I assume this is caused by some sort of internal change to the 0day
+> infrastructure (testing W=3D1?)
+>
+> I cannot see this without adding W=3D1 to make at the listed commit with
+> the provided config.
+>
+> Cheers,
+> Nathan
+>
+> > Anyway, something for Benni to fix. CCed and leaving the rest for him a=
+s
+> > reference.
+> >
+> > > arch/x86/mm/init.c:75:1: note: declare 'static' if the function is no=
+t intended to be used outside of this translation unit
+> > > bool x86_has_pat_wp(void)
+> > > ^
+> > > static
+> > > arch/x86/mm/init.c:866:13: warning: no previous prototype for functio=
+n 'mem_encrypt_free_decrypted_mem' [-Wmissing-prototypes]
+> > > void __weak mem_encrypt_free_decrypted_mem(void) { }
+> > > ^
+> > > arch/x86/mm/init.c:866:1: note: declare 'static' if the function is n=
+ot intended to be used outside of this translation unit
+> > > void __weak mem_encrypt_free_decrypted_mem(void) { }
+> > > ^
+> > > static
+> > > 2 warnings generated.
+> > >
+> > > vim +/x86_has_pat_wp +75 arch/x86/mm/init.c
+> > >
+> > >     73
+> > >     74      /* Check that the write-protect PAT entry is set for writ=
+e-protect */
+> > >   > 75      bool x86_has_pat_wp(void)
+> > >     76      {
+> > >     77              return __pte2cachemode_tbl[_PAGE_CACHE_MODE_WP] =
+=3D=3D _PAGE_CACHE_MODE_WP;
+> > >     78      }
+> > >     79
+> > >
+> > > ---
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >
+> >
+> >
+> > --
+> > Regards/Gruss,
+> >     Boris.
+> >
+> > https://people.kernel.org/tglx/notes-about-netiquette
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/clang-built-linux/20200519212541.GA3580016%40ubuntu-s3-xlarge-x86.
 
-[  332.819381][ T3359] BUG: sleeping function called from invalid
-context at mm/slab.h:568
-[  332.827405][ T3359] in_atomic(): 1, irqs_disabled(): 128,
-non_block: 0, pid: 3359, name: irqbalance
-[  332.836455][ T3359] INFO: lockdep is turned off.
-[  332.841076][ T3359] irq event stamp: 0
-[  332.844836][ T3359] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[  332.851828][ T3359] hardirqs last disabled at (0):
-[<ffff9000101ea65c>] copy_process+0x98c/0x1f34
-[  332.860710][ T3359] softirqs last  enabled at (0):
-[<ffff9000101ea690>] copy_process+0x9c0/0x1f34
-[  332.869586][ T3359] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[  332.876560][ T3359] CPU: 155 PID: 3359 Comm: irqbalance Tainted: G
-      W    L    5.7.0-rc6-next-20200519 #1
-[  332.886563][ T3359] Hardware name: HPE Apollo 70
-/C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
-[  332.897000][ T3359] Call trace:
-[  332.900151][ T3359]  dump_backtrace+0x0/0x22c
-[  332.904514][ T3359]  show_stack+0x28/0x34
-[  332.908543][ T3359]  dump_stack+0x104/0x194
-[  332.912738][ T3359]  ___might_sleep+0x314/0x328
-[  332.917274][ T3359]  __might_sleep+0x7c/0xe0
-[  332.921563][ T3359]  slab_pre_alloc_hook+0x44/0x8c
-[  332.926360][ T3359]  __kmalloc_node+0xb0/0x618
-[  332.930811][ T3359]  alloc_cpumask_var_node+0x48/0x94
-[  332.935868][ T3359]  alloc_cpumask_var+0x10/0x1c
-[  332.940496][ T3359]  its_select_cpu+0x58/0x2e4
-[  332.944945][ T3359]  its_set_affinity+0xe8/0x27c
-[  332.949576][ T3359]  msi_domain_set_affinity+0x78/0x114
-[  332.954813][ T3359]  irq_do_set_affinity+0x84/0x198
-[  332.959697][ T3359]  irq_set_affinity_locked+0x80/0x1a8
-[  332.964927][ T3359]  __irq_set_affinity+0x54/0x84
-[  332.969637][ T3359]  write_irq_affinity+0x16c/0x198
-[  332.974520][ T3359]  irq_affinity_proc_write+0x34/0x44
-[  332.979672][ T3359]  pde_write+0x5c/0x78
-[  332.983602][ T3359]  proc_reg_write+0x74/0xc0
-[  332.987974][ T3359]  __vfs_write+0x84/0x1d8
-[  332.992163][ T3359]  vfs_write+0x13c/0x1b8
-[  332.996265][ T3359]  ksys_write+0xb0/0x120
-[  333.000385][ T3359]  __arm64_sys_write+0x54/0x88
-[  333.005017][ T3359]  do_el0_svc+0x128/0x1dc
-[  333.009213][ T3359]  el0_sync_handler+0xd0/0x268
-[  333.013836][ T3359]  el0_sync+0x164/0x180
-[  336.527739][ T3356] mlx5_core 0000:0b:00.1 enp11s0f1np1: Link down
+
+
+--=20
+Thanks,
+~Nick Desaulniers
