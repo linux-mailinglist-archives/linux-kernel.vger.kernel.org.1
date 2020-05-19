@@ -2,101 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47DF1DA5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E561DA5BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgESXll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:41:41 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:18724 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESXlk (ORCPT
+        id S1728081AbgESXnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbgESXnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:41:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589931699; x=1621467699;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=IbofWm/iMK1clAzyzSw2peC3VqkfUtxWdtzUMhauRHg=;
-  b=IcOQERvZLpaLBjlINgQ/Ozi5CeP56g2auc46asNOtP2cgT1KuNzKoDo0
-   GTF3aWELkyYXEODo8KYmZx1ROe3t+jfe94dByTU3GKwQ+paeFJTozKoz/
-   WgCFvt6cDOa9ZB9G+joaQsGhkf3ZXFF5NidIC7y5GX9UV+H/3VD5HfeHr
-   g=;
-IronPort-SDR: T2gMicTsA/YT1+502F/BdDjy6yNGh0uOnQy64MbhC76QxzxW4whNhw+NBv0bmUGwIrqbQmDqwn
- 7G6ahSvy7dpw==
-X-IronPort-AV: E=Sophos;i="5.73,411,1583193600"; 
-   d="scan'208";a="32498591"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 19 May 2020 23:41:27 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id E6358A0360;
-        Tue, 19 May 2020 23:41:24 +0000 (UTC)
-Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:41:24 +0000
-Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
- EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:41:23 +0000
-Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
- EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
- Tue, 19 May 2020 23:41:23 +0000
-From:   "Singh, Balbir" <sblbir@amazon.com>
-To:     "keescook@chromium.org" <keescook@chromium.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-Subject: Re:  [PATCH v2 3/4] arch/x86: Optionally flush L1D on context switch
-Thread-Topic: [PATCH v2 3/4] arch/x86: Optionally flush L1D on context switch
-Thread-Index: AQHWLjcBCjTHsBVi1Ear3DlyXwRTeA==
-Date:   Tue, 19 May 2020 23:41:23 +0000
-Message-ID: <1236b19be51d0d47ba73016b2bac352983107ce9.camel@amazon.com>
-References: <20200406031946.11815-1-sblbir@amazon.com>
-         <20200406031946.11815-4-sblbir@amazon.com> <202004071125.605F665@keescook>
-In-Reply-To: <202004071125.605F665@keescook>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.26]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <00FAC354435987408F59F82E70E2817A@amazon.com>
-Content-Transfer-Encoding: base64
+        Tue, 19 May 2020 19:43:17 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBF9C061A0E;
+        Tue, 19 May 2020 16:43:17 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbBsV-0004NU-41; Wed, 20 May 2020 01:42:32 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 6D1E3100D00; Wed, 20 May 2020 01:42:30 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
+In-Reply-To: <20200519161141.5fbab730@hermes.lan>
+References: <20200519214547.352050-1-a.darwish@linutronix.de> <20200519214547.352050-2-a.darwish@linutronix.de> <20200519150159.4d91af93@hermes.lan> <87v9kr5zt7.fsf@nanos.tec.linutronix.de> <20200519161141.5fbab730@hermes.lan>
+Date:   Wed, 20 May 2020 01:42:30 +0200
+Message-ID: <87lfln5w61.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA0LTA3IGF0IDExOjI2IC0wNzAwLCBLZWVzIENvb2sgd3JvdGU6DQo+IA0K
-PiANCj4gT24gTW9uLCBBcHIgMDYsIDIwMjAgYXQgMDE6MTk6NDVQTSArMTAwMCwgQmFsYmlyIFNp
-bmdoIHdyb3RlOg0KPiA+IEltcGxlbWVudCBhIG1lY2hhbmlzbSB0byBzZWxlY3RpdmVseSBmbHVz
-aCB0aGUgTDFEIGNhY2hlLiBUaGUgZ29hbCBpcyB0bw0KPiA+IGFsbG93IHRhc2tzIHRoYXQgYXJl
-IHBhcmFub2lkIGR1ZSB0byB0aGUgcmVjZW50IHNub29wIGFzc2lzdGVkIGRhdGEgc2FtcGxpbmcN
-Cj4gPiB2dWxuZXJhYmlsaXRlcywgdG8gZmx1c2ggdGhlaXIgTDFEIG9uIGJlaW5nIHN3aXRjaGVk
-IG91dC4gIFRoaXMgcHJvdGVjdHMNCj4gPiB0aGVpciBkYXRhIGZyb20gYmVpbmcgc25vb3BlZCBv
-ciBsZWFrZWQgdmlhIHNpZGUgY2hhbm5lbHMgYWZ0ZXIgdGhlIHRhc2sNCj4gPiBoYXMgY29udGV4
-dCBzd2l0Y2hlZCBvdXQuDQo+ID4gDQo+ID4gVGhlcmUgYXJlIHR3byBzY2VuYXJpb3Mgd2UgbWln
-aHQgd2FudCB0byBwcm90ZWN0IGFnYWluc3QsIGEgdGFzayBsZWF2aW5nDQo+ID4gdGhlIENQVSB3
-aXRoIGRhdGEgc3RpbGwgaW4gTDFEICh3aGljaCBpcyB0aGUgbWFpbiBjb25jZXJuIG9mIHRoaXMg
-cGF0Y2gpLA0KPiA+IHRoZSBzZWNvbmQgc2NlbmFyaW8gaXMgYSBtYWxpY2lvdXMgdGFzayBjb21p
-bmcgaW4gKG5vdCBzbyB3ZWxsIHRydXN0ZWQpDQo+ID4gZm9yIHdoaWNoIHdlIHdhbnQgdG8gY2xl
-YW4gdXAgdGhlIGNhY2hlIGJlZm9yZSBpdCBzdGFydHMuIE9ubHkgdGhlIGNhc2UNCj4gPiBmb3Ig
-dGhlIGZvcm1lciBpcyBhZGRyZXNzZWQuDQo+ID4gDQo+ID4gQWRkIGFyY2ggc3BlY2lmaWMgcHJj
-dGwoKSdzIHRvIG9wdC1pbiB0byB0aGUgTDFEIGNhY2hlIG9uIGNvbnRleHQgc3dpdGNoDQo+ID4g
-b3V0LCB0aGUgZXhpc3RpbmcgbWVjaGFuaXNtcyBvZiB0cmFja2luZyBwcmV2X21tIHZpYSBjcHVf
-dGxic3RhdGUgaXMNCj4gPiByZXVzZWQuIGNvbmRfaWJwYigpIGlzIHJlZmFjdG9yZWQgYW5kIHJl
-bmFtZWQgaW50byBjb25kX21pdGlnYXRpb24oKS4NCj4gDQo+IEkgc3RpbGwgdGhpbmsgdGhpcyBz
-aG91bGQgYmUgYSBnZW5lcmljIHByY3RsKCkuIElmIHRoZXJlIGlzIGEgc3Ryb25nDQo+IHJlYXNv
-biBub3QgdG8gZG8gdGhpcywgY2FuIGl0IGJlIGRlc2NyaWJlZCBpbiB0aGUgY29tbWl0IGxvZyBo
-ZXJlPw0KDQpLZWVzLCB0aGUgY29udGV4dCBpbiB0aGUgY2hhbmdlbG9nIG1pZ2h0IGJlIG1pc2xl
-YWRpbmcsIHRoZSBwcmN0bCBpcyBnZW5lcmljLA0KdGhlIGltcGxlbWVudGF0aW9uIGlzIGFyY2gg
-c3BlY2lmaWMgYXMgeW91IGNhbiBzZWUgZnJvbSB0aGUgZm9sbG93aW5nIHBhdGNoZXMuDQpJIGNh
-biByZXdvcmQgdGhlIGNoYW5nZSBsb2csIHNvcnJ5IGZvciB0aGUgY29uZnVzaW9uLg0KDQpCYWxi
-aXIgU2luZ2guDQoNCg0K
+Stephen Hemminger <stephen@networkplumber.org> writes:
+> On Wed, 20 May 2020 00:23:48 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+>> No. We did not. -ENOTESTCASE
+>
+> Please try, it isn't that hard..
+>
+> # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
+>
+> real	0m17.002s
+> user	0m1.064s
+> sys	0m0.375s
+
+And that solves the incorrectness of the current code in which way?
