@@ -2,214 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699EB1DA48F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A611DA450
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgESW2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:28:54 -0400
-Received: from mga04.intel.com ([192.55.52.120]:17296 "EHLO mga04.intel.com"
+        id S1726977AbgESWOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:14:02 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25011 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726432AbgESW2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:28:54 -0400
-IronPort-SDR: KhfdQ2hGsQORGxneGXB9KJwp2zYf+xDGDQKh1K30260MCBwwOAHsV6rbAONubUzlZpHzFtSeWi
- V8AQdbu+9hRQ==
+        id S1726344AbgESWOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:14:01 -0400
+IronPort-SDR: A7Owm0J4mtLcZ/fUsRRSCMRk8R0XKfxlqDenbdTJkVCLH69xigv16cHD6rEliEasQuY+ciIlrf
+ UU+a5Ns5whoA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:28:54 -0700
-IronPort-SDR: kfovRO3ZU0v/E1Gg5hcTgC6D/3rQevmVOvf3oUb0xb5m+kqlgk9yzbEp+fjPwX2leW/cnFMSSH
- t1xQrRhUw4nw==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:14:01 -0700
+IronPort-SDR: 2MWpHGqR35+mDeyE6AqtyUXSdJ/NguJmYOo59tFvN01VlDa2/vukJC3CWnxGOaShnWJELBPRHE
+ /0DlzF1xIHKA==
 X-IronPort-AV: E=Sophos;i="5.73,411,1583222400"; 
-   d="scan'208";a="253491432"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:28:53 -0700
-Subject: [PATCH v3 2/2] x86/copy_mc: Introduce copy_mc_generic()
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     tglx@linutronix.de, mingo@redhat.com
-Cc:     x86@kernel.org, stable@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
-Date:   Tue, 19 May 2020 15:12:42 -0700
-Message-ID: <158992636214.403910.12184670538732959406.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <158992635164.403910.2616621400995359522.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <158992635164.403910.2616621400995359522.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+   d="scan'208";a="439787051"
+Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.255.229.46]) ([10.255.229.46])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:14:00 -0700
+Subject: Re: [PATCH V6 0/4] x86/resctrl: Enable user to view and select thread
+ throttling mode
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
+        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1589922949.git.reinette.chatre@intel.com>
+ <20200519213516.GF444@zn.tnic>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <1d9ee0f0-8078-e8b6-ce66-6c0bf51cb3b4@intel.com>
+Date:   Tue, 19 May 2020 15:13:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200519213516.GF444@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original copy_mc_fragile() implementation had negative performance
-implications since it did not use the fast-string instruction sequence
-to perform copies. For this reason copy_mc_to_kernel() fell back to
-plain memcpy() to preserve performance on platform that did not indicate
-the capability to recover from machine check exceptions. However, that
-capability detection was not architectural and now that some platforms
-can recover from fast-string consumption of memory errors the memcpy()
-fallback now causes these more capable platforms to fail.
+Hi Borislav,
 
-Introduce copy_mc_generic() as the fast default implementation of
-copy_mc_to_kernel() and finalize the transition of copy_mc_fragile() to
-be a platform quirk to indicate 'fragility'. With this in place
-copy_mc_to_kernel() is fast and recovery-ready by default regardless of
-hardware capability.
+On 5/19/2020 2:35 PM, Borislav Petkov wrote:
+> On Tue, May 19, 2020 at 02:28:27PM -0700, Reinette Chatre wrote:
+>> V5 upstream submission available from:
+>> https://lore.kernel.org/lkml/cover.1589844108.git.reinette.chatre@intel.com
+> 
+> Is there any chance for not spamming us with this patchset almost every
+> day?
+> 
+> From Documentation/process/submitting-patches.rst:
+> 
+> "Wait for a minimum of one week before resubmitting or pinging reviewers
+> - possibly longer during busy times like merge windows."
+> 
 
-Thanks to Vivek for identifying that copy_user_generic() is not suitable
-as the copy_mc_to_user() backend since the #MC handler explicitly checks
-ex_has_fault_handler().
+I am very sorry. I was hoping that this series could be considered for
+inclusion into v5.8 and submitted it seven weeks ago because of that.
+The recent feedback addressed seemed to be the final few small comments
+needed to be ready for inclusion and I was afraid that waiting long to
+address this would cause me to miss opportunity to be considered for
+inclusion since we are already at rc6.
 
-Cc: x86@kernel.org
-Cc: <stable@vger.kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Tested-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Fixes: 92b0729c34ca ("x86/mm, x86/mce: Add memcpy_mcsafe()")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- arch/x86/include/asm/uaccess_64.h |    3 +++
- arch/x86/lib/copy_mc.c            |   12 +++++------
- arch/x86/lib/copy_mc_64.S         |   40 +++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c             |    1 +
- 4 files changed, 49 insertions(+), 7 deletions(-)
+Reinette
 
-diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-index 9f7e7e27f0a4..422d92460dda 100644
---- a/arch/x86/include/asm/uaccess_64.h
-+++ b/arch/x86/include/asm/uaccess_64.h
-@@ -58,6 +58,9 @@ copy_mc_to_user(void *to, const void *from, unsigned len);
- 
- unsigned long __must_check
- copy_mc_fragile(void *dst, const void *src, unsigned cnt);
-+
-+unsigned long __must_check
-+copy_mc_generic(void *dst, const void *src, unsigned cnt);
- #else
- static inline void enable_copy_mc_fragile(void)
- {
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index cdb8f5dc403d..9e6fac1ab72e 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -23,7 +23,7 @@ void enable_copy_mc_fragile(void)
-  *
-  * Call into the 'fragile' version on systems that have trouble
-  * actually do machine check recovery. Everyone else can just
-- * use memcpy().
-+ * use copy_mc_generic().
-  *
-  * Return 0 for success, or number of bytes not copied if there was an
-  * exception.
-@@ -33,8 +33,7 @@ copy_mc_to_kernel(void *dst, const void *src, unsigned cnt)
- {
- 	if (static_branch_unlikely(&copy_mc_fragile_key))
- 		return copy_mc_fragile(dst, src, cnt);
--	memcpy(dst, src, cnt);
--	return 0;
-+	return copy_mc_generic(dst, src, cnt);
- }
- EXPORT_SYMBOL_GPL(copy_mc_to_kernel);
- 
-@@ -56,11 +55,10 @@ copy_mc_to_user(void *to, const void *from, unsigned len)
- {
- 	unsigned long ret;
- 
--	if (!static_branch_unlikely(&copy_mc_fragile_key))
--		return copy_user_generic(to, from, len);
--
- 	__uaccess_begin();
--	ret = copy_mc_fragile(to, from, len);
-+	if (static_branch_unlikely(&copy_mc_fragile_key))
-+		ret = copy_mc_fragile(to, from, len);
-+	ret = copy_mc_generic(to, from, len);
- 	__uaccess_end();
- 	return ret;
- }
-diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
-index 35a67c50890b..96dc4b8fb954 100644
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -2,7 +2,9 @@
- /* Copyright(c) 2016-2020 Intel Corporation. All rights reserved. */
- 
- #include <linux/linkage.h>
-+#include <asm/alternative-asm.h>
- #include <asm/copy_mc_test.h>
-+#include <asm/cpufeatures.h>
- #include <asm/export.h>
- #include <asm/asm.h>
- 
-@@ -122,4 +124,42 @@ EXPORT_SYMBOL_GPL(copy_mc_fragile)
- 	_ASM_EXTABLE(.L_write_leading_bytes, .E_leading_bytes)
- 	_ASM_EXTABLE(.L_write_words, .E_write_words)
- 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
-+
-+/*
-+ * copy_mc_generic - memory copy with exception handling
-+ *
-+ * Fast string copy + fault / exception handling. If the CPU does
-+ * support machine check exception recovery, but does not support
-+ * recovering from fast-string exceptions then this CPU needs to be
-+ * added to the copy_mc_fragile_key set of quirks. Otherwise, absent any
-+ * machine check recovery support this version should be no slower than
-+ * standard memcpy.
-+ */
-+SYM_FUNC_START(copy_mc_generic)
-+	ALTERNATIVE "jmp copy_mc_fragile", "", X86_FEATURE_ERMS
-+	movq %rdi, %rax
-+	movq %rdx, %rcx
-+.L_copy:
-+	rep movsb
-+	/* Copy successful. Return zero */
-+	xorl %eax, %eax
-+	ret
-+SYM_FUNC_END(copy_mc_generic)
-+EXPORT_SYMBOL_GPL(copy_mc_generic)
-+
-+	.section .fixup, "ax"
-+.E_copy:
-+	/*
-+	 * On fault %rcx is updated such that the copy instruction could
-+	 * optionally be restarted at the fault position, i.e. it
-+	 * contains 'bytes remaining'. A non-zero return indicates error
-+	 * to copy_safe() users, or indicate short transfers to
-+	 * user-copy routines.
-+	 */
-+	movq %rcx, %rax
-+	ret
-+
-+	.previous
-+
-+	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
- #endif
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index b62235004f0b..449a36101385 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -546,6 +546,7 @@ static const char *uaccess_safe_builtin[] = {
- 	"__ubsan_handle_shift_out_of_bounds",
- 	/* misc */
- 	"csum_partial_copy_generic",
-+	"copy_mc_generic",
- 	"copy_mc_fragile",
- 	"copy_mc_fragile_handle_tail",
- 	"ftrace_likely_update", /* CONFIG_TRACE_BRANCH_PROFILING */
 
