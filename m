@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C511D8FCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 08:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3471D8FD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 08:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgESGJm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 May 2020 02:09:42 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35114 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgESGJl (ORCPT
+        id S1728333AbgESGMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 02:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgESGMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 02:09:41 -0400
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1javRa-00085h-Iz
-        for linux-kernel@vger.kernel.org; Tue, 19 May 2020 06:09:38 +0000
-Received: by mail-pg1-f200.google.com with SMTP id r2so9896551pgd.23
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 23:09:38 -0700 (PDT)
+        Tue, 19 May 2020 02:12:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EE1C05BD09
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 23:12:37 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id u22so5174650plq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 23:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NucwNVkAqqb7Hv4lqQXSBES90B7yxHZZLhQ//c0Ras4=;
+        b=f4lRrgtUvWI0qJ3jX5cXK6OYM5hoLZxi3aJUbDDjAxhDtNaVGOHnPYytvoHQiP5vm5
+         Db72vAc2ERN0BgKyMDcdnogzC1NVXfGqrp9LBTnaIEKE3qqLwuTINoLU0DWfDVbtq3A9
+         9HyFsZmopQ84ovzE1oa/3t7Y56pYcM/AOyf2lS4x7+yBMTrhf7douZGUvnJqwMENy+V2
+         XgsVKBW//XyOQr4p6smXQhFRZi1Cuo7GeLz09Xr+S+H/2haqGPeDdrPewgZXnSMlD0Xo
+         zadd3SGR/SqJs+mcibetxNnHi0uEIpjAZGzqSemmA9+hwGZtFDhr4rb8ZzDGdfhfVKph
+         oKxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=DcZBTzbzjTjp7Ciwf677pVVb0h46IoEGoPMmMlLbb5M=;
-        b=nrMIHNliwKbbr8SFBWL+jI5rwelCldthEzlGXXj9B37t7/CEiH+G9fxD0j5tKHubJa
-         JJpLb/KTDymNYROmi1ZtBnjPByi6MEv9V8khjKcrIJv+kcDIlvq2yYsewMSk4Us/mU3d
-         m1/fa0218KbxxACi5f7oiWQmXO+BgxJT5Eb96HRr3QaWPOVLGf+8UnGfPnOLBafqpC32
-         N5wm+lu7id2somHmBP1vvkZoL9AGjEc9B9z9wF2l6EN6I20xRodzZOAOW05RInv4AAUS
-         QqQFP95e+ABqyo7o6ltUi5PM7VqkCNnYzurl/tzR1LZMJGTpAurbQPAnWrC7UZ7WJ3Eu
-         mcWA==
-X-Gm-Message-State: AOAM5303UVPeyLmWMrxcwOjlWmHALE0+tJSjkiKHwUhBxBi1bWXUyc8x
-        aZf6sBiYAUIYVtnnk6xePyDn+SehJPZy2FbaavKtvXkLlXxkMxJ3OSEzCHcdNGZFdPWmkddp76n
-        uiGA6ohaHK2O0GNiRQP+pO6YlHMeH4thUayk9U/Xwpw==
-X-Received: by 2002:a17:90a:ee91:: with SMTP id i17mr3044259pjz.45.1589868576730;
-        Mon, 18 May 2020 23:09:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynoSVhg5x2eLcaVDrdt7BZjkwwAqw4hmDKS0ppPXDDJayTgx1/jvbxkou6+8x2E+ERpCT/xw==
-X-Received: by 2002:a17:90a:ee91:: with SMTP id i17mr3044238pjz.45.1589868576382;
-        Mon, 18 May 2020 23:09:36 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id z23sm3204439pga.86.2020.05.18.23.09.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 May 2020 23:09:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] libata: Use per port sync for detach
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <1470d3de-7785-9f05-2b12-9272ac0005b8@huawei.com>
-Date:   Tue, 19 May 2020 14:09:33 +0800
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <826B8B0D-29EE-4C4F-BBD3-B6442144CA65@canonical.com>
-References: <20200515110916.11556-1-kai.heng.feng@canonical.com>
- <555101fd-71bc-fa0b-98c2-69249bb3eda6@huawei.com>
- <15CFC20D-B8CB-43D7-8973-60E82DE6B894@canonical.com>
- <91334913-eac8-c8e0-ced6-f1bb8d8b2507@huawei.com>
- <1470d3de-7785-9f05-2b12-9272ac0005b8@huawei.com>
-To:     John Garry <john.garry@huawei.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NucwNVkAqqb7Hv4lqQXSBES90B7yxHZZLhQ//c0Ras4=;
+        b=V3W4EgGoUsBhnv1ciqloWu0o8fgYZBQSvSHRham5iqXJrcoo3z6OHu7A6DVLk4cXwn
+         T5l1qoxeGrhAaH/rkEQhh+zei7pX2AYMH1ppnEoKEkuNDLqDX37Z43yHiDrqmzNzAPo2
+         qzV+ybszMT4prgKFK07/KoEkxU5EtZcPmvR2ULPskIxPBRvoEo/2VEkrKOeOmGXYW0It
+         CcOWpIEtY//SP+F+PuQNLwqCdaohxcP5GaNPntvuizCbSiDn8xrcNQjHFrM3NHEDFOLX
+         Xvn0BBgxpXW5xNt/oAc/wXrmHmHgvfxsNPndlsfwSRz/RGJtwjwHTftirSkwWpaOJfVs
+         6EjQ==
+X-Gm-Message-State: AOAM5307f0qQbcDO6bMUlFbVu3sfDD6R4aEMvbqDYNwqZ1eshDfTkx1i
+        tpPiCTk4G5RneiFq2JucXAWOFQ==
+X-Google-Smtp-Source: ABdhPJw3/VikrqtOLgds+XntQ5DKyIHUIpkcu4Jk42AWonuOtANw9OWOvvbPlQHYKCVlWlTSX9GdmQ==
+X-Received: by 2002:a17:90a:17ed:: with SMTP id q100mr3089926pja.80.1589868756741;
+        Mon, 18 May 2020 23:12:36 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id 135sm10222244pfu.125.2020.05.18.23.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 23:12:36 -0700 (PDT)
+Date:   Mon, 18 May 2020 23:11:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Eli Riggs <eli@rje.li>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: Add initial support for Xiaomi
+ Redmi Note 8T
+Message-ID: <20200519061114.GC2165@builder.lan>
+References: <20200517115410.3374-1-eli@rje.li>
+ <20200517115410.3374-3-eli@rje.li>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200517115410.3374-3-eli@rje.li>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Sun 17 May 04:54 PDT 2020, Eli Riggs wrote:
 
-> On May 18, 2020, at 23:21, John Garry <john.garry@huawei.com> wrote:
+> Adds initial device tree for Xiaomi Redmi Note 8T, codename xiaomi-willow.
+> It uses the sm6125 SoC. Currently only boots into initrd shell over UART.
+> Requires appended DTB with qcom,board-id = <0x22 0x0> and
+> qcom,msm-id = <0x18a 0x10000> to actually boot.
 > 
-> On 18/05/2020 10:06, John Garry wrote:
->> On 15/05/2020 18:48, Kai-Heng Feng wrote:
->>>> 841]  ret_from_fork+0x10/0x1c
->>>> [   28.393400] ---[ end trace 9972785c7052048f ]---
->>>> [   28.435826] ahci 0000:b4:03.0: SSS flag set, parallel bus scan disabled
->>> Can you please test the following patch:
->>> 
->>> diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
->>> index 474c6c34fe02..51ee0cc4d414 100644
->>> --- a/drivers/ata/libata-eh.c
->>> +++ b/drivers/ata/libata-eh.c
->>> @@ -3583,8 +3583,10 @@ int ata_eh_recover(struct ata_port *ap, ata_prereset_fn_t prereset,
->>>          rc = 0;
->>>          /* if UNLOADING, finish immediately */
->>> -       if (ap->pflags & ATA_PFLAG_UNLOADING)
->>> +       if (ap->pflags & ATA_PFLAG_UNLOADING) {
->>> +               ap->pflags |= ATA_PFLAG_UNLOADED;
->>>                  goto out;
->>> +       }
->>> 
->>> It's only compile-tested, many drivers panic with CONFIG_DEBUG_TEST_DRIVER_REMOVE enabled, so the system I have can't even boot properly:(
-> 
-> According to the comment for async_synchronize_cookie(), we sync upto (but excluding) the cookie:
-> 
-> /**
-> * async_synchronize_cookie - synchronize asynchronous function calls with cookie checkpointing
-> *
-> * This function waits until all asynchronous function calls prior to @cookie
-> * have been done.
-> 
-> So maybe it should be:
-> 
-> +	for (i = 0; i < host->n_ports; i++)
-> +		async_synchronize_cookie(host->ports[i]->cookie + 1);
-> 
-> That is how other callsites use this API, and that change resolves the WARN for me.
 
-Thanks for catching this up!
-Let me ask the user to test it, and I'll send v2 base on this.
+If I read this correctly you need to supply board-id and msm-id in order
+to be able to get this booting?
 
-Kai-Heng
+Even though we don't like them, I would prefer if you just add them in
+the dts file, in this patch.
 
+> Signed-off-by: Eli Riggs <eli@rje.li>
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile             |  1 +
+>  .../boot/dts/qcom/sm6125-xiaomi-willow.dts    | 19 +++++++++++++++++++
+>  2 files changed, 20 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sm6125-xiaomi-willow.dts
 > 
-> Thanks,
-> John
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index cc103f7020fd6..060aa98200e47 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -22,6 +22,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-cheza-r3.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-db845c.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-xiaomi-willow.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sm6125-xiaomi-willow.dts b/arch/arm64/boot/dts/qcom/sm6125-xiaomi-willow.dts
+> new file mode 100644
+> index 0000000000000..444b32ccb9d48
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sm6125-xiaomi-willow.dts
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 
+Please make this GPL/BSD dual license.
+
+Apart from these few remarks your patches looks good, looking forward to
+see more of this platform!
+
+Regards,
+Bjorn
+
+> +// Copyright (c) 2020, Eli Riggs <eli@rje.li>
+> +
+> +/dts-v1/;
+> +
+> +#include "sm6125.dtsi"
+> +
+> +/ {
+> +	model = "Xiaomi Redmi Note 8T";
+> +	compatible = "xiaomi,willow", "qcom,sm6125";
+> +
+> +	aliases {
+> +		serial0 = &qupv3_se4_2uart;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> -- 
+> 2.20.1
+> 
