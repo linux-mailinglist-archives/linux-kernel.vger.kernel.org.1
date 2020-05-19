@@ -2,164 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE501DA0E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832F81DABB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 09:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgESTTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:19:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29154 "EHLO mga11.intel.com"
+        id S1726489AbgETHNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 03:13:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16407 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgESTTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:19:51 -0400
-IronPort-SDR: OzrTWbvQOxfOARIYaMBXgAN2DqfUv3z0zS3NMwayFzDfRNno5Du/hKoFB65mV+QdvMXolJUc5A
- sKQ03D1cAiag==
+        id S1726369AbgETHNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 03:13:47 -0400
+IronPort-SDR: YFw+xRProKIFay5bZWjuMur1lBEldkPuNLD+c3IZ5xNNrYau1138DvwuvmO8foJsbUojghTNJk
+ X1SBewyMd+rg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 12:19:51 -0700
-IronPort-SDR: hFW3idmohWK6LJG+1iTTS67pn2O8+5pXcvVfFWzEZwVFaY414MWS4hGTaFMY06E71jkrYooXny
- G4nHQ05d/0qA==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 00:13:47 -0700
+IronPort-SDR: 1I4Md1o/u325pnWQMRQ3X79EeTBosykvzJPYwMnXYMhD0Jvyg9TpV494VcD529MpfSn6Je8ttg
+ MPYvcYD4VoQA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
-   d="scan'208";a="299675001"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga002.fm.intel.com with ESMTP; 19 May 2020 12:19:49 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [RESEND PATCH V2] perf/x86/intel/uncore: Add Comet Lake support
-Date:   Tue, 19 May 2020 12:18:25 -0700
-Message-Id: <1589915905-55870-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
+   d="scan'208";a="253596937"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by fmsmga007.fm.intel.com with ESMTP; 20 May 2020 00:13:43 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH 1/2] soundwire: intel: use a single module
+Date:   Wed, 20 May 2020 03:19:02 +0800
+Message-Id: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Rander Wang <rander.wang@intel.com>
 
-The uncore subsystem on Comet Lake is similar to Sky Lake.
-The only difference is the new PCI IDs for IMC.
+It's not clear why we have two modules for the Intel controller/master
+support when there is a single Kconfig. This adds complexity for no
+good reason, the two parts need to work together anyways.
 
-Share the perf code with Sky Lake.
-Add new PCI IDs in the table.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
+ drivers/soundwire/Makefile | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Changes since V1:
-- Rebase on top of tip.git perf/core branch
-  commit 629b3df7ecb0 ("Merge branch 'x86/cpu' into perf/core, to resolve conflict")
-
- arch/x86/events/intel/uncore.c     |  2 ++
- arch/x86/events/intel/uncore_snb.c | 66 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
-
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index cf76d66..b9c2876 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1514,6 +1514,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&skx_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		&skl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		&skl_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&skl_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&skl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_NNPI,	&icl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_uncore_init),
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index 3de1065..5c40367 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -42,6 +42,17 @@
- #define PCI_DEVICE_ID_INTEL_WHL_UQ_IMC		0x3ed0
- #define PCI_DEVICE_ID_INTEL_WHL_4_UQ_IMC	0x3e34
- #define PCI_DEVICE_ID_INTEL_WHL_UD_IMC		0x3e35
-+#define PCI_DEVICE_ID_INTEL_CML_H1_IMC		0x9b44
-+#define PCI_DEVICE_ID_INTEL_CML_H2_IMC		0x9b54
-+#define PCI_DEVICE_ID_INTEL_CML_H3_IMC		0x9b64
-+#define PCI_DEVICE_ID_INTEL_CML_U1_IMC		0x9b51
-+#define PCI_DEVICE_ID_INTEL_CML_U2_IMC		0x9b61
-+#define PCI_DEVICE_ID_INTEL_CML_U3_IMC		0x9b71
-+#define PCI_DEVICE_ID_INTEL_CML_S1_IMC		0x9b33
-+#define PCI_DEVICE_ID_INTEL_CML_S2_IMC		0x9b43
-+#define PCI_DEVICE_ID_INTEL_CML_S3_IMC		0x9b53
-+#define PCI_DEVICE_ID_INTEL_CML_S4_IMC		0x9b63
-+#define PCI_DEVICE_ID_INTEL_CML_S5_IMC		0x9b73
- #define PCI_DEVICE_ID_INTEL_ICL_U_IMC		0x8a02
- #define PCI_DEVICE_ID_INTEL_ICL_U2_IMC		0x8a12
- #define PCI_DEVICE_ID_INTEL_TGL_U1_IMC		0x9a02
-@@ -771,6 +782,50 @@ static const struct pci_device_id skl_uncore_pci_ids[] = {
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_WHL_UD_IMC),
- 		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
- 	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H1_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H2_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H3_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U1_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U2_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U3_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S1_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S2_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S3_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S4_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S5_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
- 	{ /* end: all zeroes */ },
- };
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 7319918e0aec..4f6094767212 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -16,12 +16,9 @@ soundwire-cadence-objs := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
  
-@@ -863,6 +918,17 @@ static const struct imc_uncore_pci_dev desktop_imc_pci_ids[] = {
- 	IMC_DEV(WHL_UQ_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Quad Core */
- 	IMC_DEV(WHL_4_UQ_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Quad Core */
- 	IMC_DEV(WHL_UD_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Dual Core */
-+	IMC_DEV(CML_H1_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_H2_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_H3_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_U1_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_U2_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_U3_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_S1_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_S2_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_S3_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_S4_IMC, &skl_uncore_pci_driver),
-+	IMC_DEV(CML_S5_IMC, &skl_uncore_pci_driver),
- 	IMC_DEV(ICL_U_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
- 	IMC_DEV(ICL_U2_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
- 	{  /* end marker */ }
+ #Intel driver
+-soundwire-intel-objs :=	intel.o
++soundwire-intel-objs :=	intel.o intel_init.o
+ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
+ 
+-soundwire-intel-init-objs := intel_init.o
+-obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
+-
+ #Qualcomm driver
+ soundwire-qcom-objs :=	qcom.o
+ obj-$(CONFIG_SOUNDWIRE_QCOM) += soundwire-qcom.o
 -- 
-2.7.4
+2.17.1
 
