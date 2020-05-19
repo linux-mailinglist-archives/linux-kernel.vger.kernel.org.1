@@ -2,279 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972821D93D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B6B1D93B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgESJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 05:51:48 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:46370 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgESJvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 05:51:48 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A83D62000E1;
-        Tue, 19 May 2020 11:51:45 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A0AA62000DB;
-        Tue, 19 May 2020 11:51:37 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DF866402B3;
-        Tue, 19 May 2020 17:51:27 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, linux-imx@nxp.com,
-        sumit.semwal@linaro.org, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in probe
-Date:   Tue, 19 May 2020 17:41:41 +0800
-Message-Id: <1589881301-4143-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728526AbgESJoc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 19 May 2020 05:44:32 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:38684 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726595AbgESJoa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 05:44:30 -0400
+Received: by mail-oi1-f193.google.com with SMTP id j145so11766192oib.5;
+        Tue, 19 May 2020 02:44:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Rkuqfk9v0dSFtHNviTRsQ331KmGWIpp5BtZ5aSdCkiQ=;
+        b=BEV/4ugp8FFZAU1mkQA+rnSUkUmuejHFV4FgIUSrWbpKlSKvc3C85o7hxxGNT2Yo8S
+         HZ5IAWIs55n0ZBFWoLZEE74jPH1fuH3RXDMyTmW3cnWtWFUTxwWwqpPbe1TZEFg8W8RR
+         3Rw/d32D+7BpX8Ms2mb7qnmP9qy8Zjde1/w+0myANykOyTLSNBn3JYVs5W0Mpvs0yGCv
+         qmwSKa0CftFd2SS61NbTXoenN86i4cuaH3bDhDgBl8TEa+VIe0hVax1sOEYpEohgCOC/
+         OTU5B8uNDGPb0qXSoKjZsybpVWRDsKtXc/naUG+2/eWEXo+5MfP90AKTIvlHkG5bvJD3
+         gnDw==
+X-Gm-Message-State: AOAM5301H24g8HwGyjIzo1Tsq2p4r7CPPIjX3uMWDGTiuYQV5zMoWw+k
+        xoRbAyTejPzySVrhBqsEYIJd9QxBF/f2IcmC9b4=
+X-Google-Smtp-Source: ABdhPJxQYDIUSsP9aca2RSoR1nUOC1fHNj6QIDMPOAbQeBaLW5c/YfMluFpfBirWsZT6mg9LxxzuwmdGpo6c7ZFQpJs=
+X-Received: by 2002:a05:6808:1:: with SMTP id u1mr2557112oic.54.1589881469304;
+ Tue, 19 May 2020 02:44:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <CGME20200429082134eucas1p2415c5269202529e6b019f2d70c1b5572@eucas1p2.samsung.com>
+ <20200429082120.16259-1-geert+renesas@glider.be> <dleftjmu645mqn.fsf%l.stelmach@samsung.com>
+In-Reply-To: <dleftjmu645mqn.fsf%l.stelmach@samsung.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 19 May 2020 11:44:17 +0200
+Message-ID: <CAMuHMdXxq6m6gebQbWvxDynDcZ7dLyZzKC_QroK63L8FGeac1Q@mail.gmail.com>
+Subject: Re: [PATCH v6] ARM: boot: Obtain start of physical memory from DTB
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two requirements that we need to move the request
-of dma channel from probe to open.
+Hi Łukasz
 
-- When dma device binds with power-domains, the power will
-be enabled when we request dma channel. If the request of dma
-channel happen on probe, then the power-domains will be always
-enabled after kernel boot up,  which is not good for power
-saving,  so we need to move the request of dma channel to .open();
+Thanks for your report!
 
-- With FE-BE case, if the dma channel is requested in probe,
-then there will be below issue, which is caused by that the
-dma channel will be requested duplicately
+On Tue, May 19, 2020 at 10:54 AM Lukasz Stelmach <l.stelmach@samsung.com> wrote:
+> It was <2020-04-29 śro 10:21>, when Geert Uytterhoeven wrote:
+> > Currently, the start address of physical memory is obtained by masking
+> > the program counter with a fixed mask of 0xf8000000.  This mask value
+> > was chosen as a balance between the requirements of different platforms.
+> > However, this does require that the start address of physical memory is
+> > a multiple of 128 MiB, precluding booting Linux on platforms where this
+> > requirement is not fulfilled.
+> >
+> > Fix this limitation by obtaining the start address from the DTB instead,
+> > if available (either explicitly passed, or appended to the kernel).
+> > Fall back to the traditional method when needed.
+> >
+> > This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
+> > on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
+> > i.e. not at a multiple of 128 MiB.
+> >
+> > Suggested-by: Nicolas Pitre <nico@fluxnic.net>
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+> > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> > ---
+>
+> [...]
+>
+> Apparently reading physical memory layout from DTB breaks crashdump
+> kernels. A crashdump kernel is loaded into a region of memory, that is
+> reserved in the original (i.e. to be crashed) kernel. The reserved
+> region is large enough for the crashdump kernel to run completely inside
+> it and don't modify anything outside it, just read and dump the remains
+> of the crashed kernel. Using the information from DTB makes the
+> decompressor place the kernel outside of the dedicated region.
+>
+> The log below shows that a zImage and DTB are loaded at 0x18eb8000 and
+> 0x193f6000 (physical). The kernel is expected to run at 0x18008000, but
+> it is decompressed to 0x00008000 (see r4 reported before jumping from
+> within __enter_kernel). If I were to suggest something, there need to be
+> one more bit of information passed in the DTB telling the decompressor
+> to use the old masking technique to determain kernel address. It would
+> be set in the DTB loaded along with the crashdump kernel.
 
-[  638.906268] sysfs: cannot create duplicate filename '/devices/soc0/soc/2000000.bus/2000000.spba-bus/2024000.esai/dma:tx'
-[  638.919061] CPU: 1 PID: 673 Comm: aplay Not tainted 5.7.0-rc1-12956-gfc64b2585593 #287
-[  638.927113] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-[  638.933690] [<c0110dd8>] (unwind_backtrace) from [<c010b8ec>] (show_stack+0x10/0x14)
-[  638.941464] [<c010b8ec>] (show_stack) from [<c0557fc0>] (dump_stack+0xe4/0x118)
-[  638.948808] [<c0557fc0>] (dump_stack) from [<c032aeb4>] (sysfs_warn_dup+0x50/0x64)
-[  638.956406] [<c032aeb4>] (sysfs_warn_dup) from [<c032b1a8>] (sysfs_do_create_link_sd+0xc8/0xd4)
-[  638.965134] [<c032b1a8>] (sysfs_do_create_link_sd) from [<c05dc668>] (dma_request_chan+0xb0/0x210)
-[  638.974120] [<c05dc668>] (dma_request_chan) from [<c05dc7d0>] (dma_request_slave_channel+0x8/0x14)
-[  638.983111] [<c05dc7d0>] (dma_request_slave_channel) from [<c09d5548>] (fsl_asrc_dma_hw_params+0x1e0/0x438)
-[  638.992881] [<c09d5548>] (fsl_asrc_dma_hw_params) from [<c09c1654>] (soc_pcm_hw_params+0x4a0/0x6a8)
-[  639.001952] [<c09c1654>] (soc_pcm_hw_params) from [<c09c39d4>] (dpcm_fe_dai_hw_params+0x70/0xe4)
-[  639.010765] [<c09c39d4>] (dpcm_fe_dai_hw_params) from [<c099b274>] (snd_pcm_hw_params+0x158/0x418)
-[  639.019750] [<c099b274>] (snd_pcm_hw_params) from [<c099c5a0>] (snd_pcm_ioctl+0x734/0x183c)
-[  639.028129] [<c099c5a0>] (snd_pcm_ioctl) from [<c029ff94>] (ksys_ioctl+0x2ac/0xb98)
-[  639.035812] [<c029ff94>] (ksys_ioctl) from [<c0100080>] (ret_fast_syscall+0x0/0x28)
-[  639.043490] Exception stack(0xec529fa8 to 0xec529ff0)
-[  639.048565] 9fa0:                   bee84650 01321870 00000004 c25c4111 bee84650 0002000f
-[  639.056766] 9fc0: bee84650 01321870 01321820 00000036 00001f40 00000000 0002c2f8 00000003
-[  639.064964] 9fe0: b6f483fc bee8451c b6ee2655 b6e1dcf8
-[  639.070339] fsl-esai-dai 2024000.esai: Cannot create DMA dma:tx symlink
+Shouldn't the DTB passed to the crashkernel describe which region of
+memory is to be used instead? Describing "to use the old masking
+technique" sounds a bit hackish to me.
+I guess it cannot just restrict the /memory node to the reserved region,
+as the crashkernel needs to be able to dump the remains of the crashed
+kernel, which lie outside this region.
+However, something under /chosen should work.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/imx-pcm-dma.c | 173 +++++++++++++++++++++++++++++++++---
- 1 file changed, 159 insertions(+), 14 deletions(-)
+> Despite the fact the kernel is able to start and get quite far it simply
+> panics (for a reason unknown to me at the moment).
+>
+> Kind regards,
+> ŁS
+>
+> --8<---------------cut here---------------start------------->8---
+> [   42.358349] kexec_file:__do_sys_kexec_file_load:435: kexec_file: Loading segment 0: buf=0xf1871bcb bufsz=0x52c870 mem=0x18eb8000 memsz=0x52d000
+> [   42.374615] kexec_file:__do_sys_kexec_file_load:435: kexec_file: Loading segment 1: buf=0x012365f6 bufsz=0x5abf mem=0x193f6000 memsz=0x6000
+> root@target:~# sync && echo c > /proc/sysrq-trigger
+> [   62.206252] sysrq: Trigger a crash
+> [   62.209711] Kernel panic - not syncing: sysrq triggered crash
+> [   62.215548] CPU: 0 PID: 1236 Comm: bash Kdump: loaded Tainted: G        W         5.7.0-rc6-00011-gad3fbe6a883e #174
+> [   62.226225] Hardware name: BCM2711
+> [   62.229676] Backtrace:
+> [   62.232178] [<c010bfa4>] (dump_backtrace) from [<c010c334>] (show_stack+0x20/0x24)
+> [   62.239863]  r7:00000008 r6:c0b4a48d r5:00000000 r4:c0eb7b18
+> [   62.245617] [<c010c314>] (show_stack) from [<c03e475c>] (dump_stack+0x20/0x28)
+> [   62.252954] [<c03e473c>] (dump_stack) from [<c011e368>] (panic+0xf4/0x320)
+> [   62.259941] [<c011e274>] (panic) from [<c044bb60>] (sysrq_handle_crash+0x1c/0x20)
+> [   62.267536]  r3:c044bb44 r2:c57e1c21 r1:60000093 r0:c0b4a48d
+> [   62.273278]  r7:00000008
+> [   62.275853] [<c044bb44>] (sysrq_handle_crash) from [<c044c198>] (__handle_sysrq+0xa0/0x150)
+> [   62.284334] [<c044c0f8>] (__handle_sysrq) from [<c044c620>] (write_sysrq_trigger+0x68/0x78)
+> [   62.292814]  r10:00000002 r9:e9123f50 r8:00000002 r7:012f2408 r6:e9112cc0 r5:c044c5b8
+> [   62.300757]  r4:00000002
+> [   62.303335] [<c044c5b8>] (write_sysrq_trigger) from [<c02a7ad4>] (proc_reg_write+0x98/0xa8)
+> [   62.311808]  r5:c044c5b8 r4:eb655700
+> [   62.315443] [<c02a7a3c>] (proc_reg_write) from [<c023b080>] (__vfs_write+0x48/0xf4)
+> [   62.323216]  r9:012f2408 r8:c02a7a3c r7:00000002 r6:e9112cc0 r5:e9123f50 r4:c0e04248
+> [   62.331077] [<c023b038>] (__vfs_write) from [<c023c900>] (vfs_write+0xa8/0xcc)
+> [   62.338407]  r8:e9123f50 r7:012f2408 r6:00000002 r5:00000000 r4:e9112cc0
+> [   62.345211] [<c023c858>] (vfs_write) from [<c023cae0>] (ksys_write+0x78/0xc4)
+> [   62.352454]  r9:012f2408 r8:e9123f5c r7:c0e04248 r6:e9123f50 r5:012f2408 r4:e9112cc0
+> [   62.360316] [<c023ca68>] (ksys_write) from [<c023cb44>] (sys_write+0x18/0x1c)
+> [   62.367559]  r10:00000004 r9:e9122000 r8:c0100264 r7:00000004 r6:b6edcd90 r5:012f2408
+> [   62.375504]  r4:00000002
+> [   62.378080] [<c023cb2c>] (sys_write) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
+> [   62.385759] Exception stack(0xe9123fa8 to 0xe9123ff0)
+> [   62.390889] 3fa0:                   00000002 012f2408 00000001 012f2408 00000002 00000000
+> [   62.399190] 3fc0: 00000002 012f2408 b6edcd90 00000004 012f2408 00000002 00000000 00118fd8
+> [   62.407488] 3fe0: 0000006c be82b7e8 b6df7010 b6e546e4
+> [   62.412647] Loading crashdump kernel...
+> [   62.416628] Bye!
+> Uncompressing Linux... done, booting the kernel.
+> r2:0x193F6000
+> r4:0x00008000
+> [    0.000000] Booting Linux on physical CPU 0x0
+> [    0.000000] Linux version 5.7.0-rc6-00011-gad3fbe6a883e (l.stelmach@AMDC1062) (gcc version 8.3.0 (Debian 8.3.0-2), GNU ld (GNU Binutils for Debian) 2.31.1) #174 Tue May 19
+> 09:37:10 CEST 2020
 
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index 04a9bc749016..dae53b384df4 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -11,6 +11,7 @@
- #include <linux/dmaengine.h>
- #include <linux/types.h>
- #include <linux/module.h>
-+#include <linux/dma-mapping.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -29,24 +30,168 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return true;
- }
- 
--static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
--	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
--	.compat_filter_fn = filter,
--};
-+static int imx_pcm_hw_params(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_dmaengine_dai_dma_data *dma_data;
-+	struct dma_slave_config config;
-+	struct dma_chan *chan;
-+	int ret = 0;
- 
--int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	runtime->dma_bytes = params_buffer_bytes(params);
-+
-+	chan = snd_dmaengine_pcm_get_chan(substream);
-+	if (!chan)
-+		return -EINVAL;
-+
-+	ret = snd_hwparams_to_dma_slave_config(substream, params, &config);
-+	if (ret)
-+		return ret;
-+
-+	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
-+	if (!dma_data)
-+		return -EINVAL;
-+
-+	snd_dmaengine_pcm_set_config_from_dai_data(substream,
-+						   dma_data,
-+						   &config);
-+	return dmaengine_slave_config(chan, &config);
-+}
-+
-+static int imx_pcm_hw_free(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
- {
--	struct snd_dmaengine_pcm_config *config;
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t imx_pcm_pointer(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
-+{
-+	return snd_dmaengine_pcm_pointer(substream);
-+}
-+
-+static int imx_pcm_trigger(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream, int cmd)
-+{
-+	return snd_dmaengine_pcm_trigger(substream, cmd);
-+}
-+
-+static int imx_pcm_open(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_dmaengine_dai_dma_data *dma_data;
-+	struct device *dev = component->dev;
-+	struct snd_pcm_hardware hw;
-+	struct dma_chan *chan;
-+	int ret;
-+
-+	ret = snd_pcm_hw_constraint_integer(substream->runtime,
-+					    SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to set pcm hw params periods\n");
-+		return ret;
-+	}
-+
-+	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
-+	if (!dma_data)
-+		return -EINVAL;
-+
-+	chan = dma_request_slave_channel(cpu_dai->dev, tx ? "tx" : "rx");
-+	if (!chan) {
-+		/* Try to request channel using compat_filter_fn */
-+		chan = snd_dmaengine_pcm_request_channel(filter,
-+							 dma_data->filter_data);
-+		if (!chan)
-+			return -ENXIO;
-+	}
- 
--	config = devm_kzalloc(&pdev->dev,
--			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
--	if (!config)
--		return -ENOMEM;
--	*config = imx_dmaengine_pcm_config;
-+	ret = snd_dmaengine_pcm_open(substream, chan);
-+	if (ret)
-+		goto pcm_open_fail;
- 
--	return devm_snd_dmaengine_pcm_register(&pdev->dev,
--		config,
--		SND_DMAENGINE_PCM_FLAG_COMPAT);
-+	memset(&hw, 0, sizeof(hw));
-+	hw.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED;
-+	hw.periods_min = 2;
-+	hw.periods_max = UINT_MAX;
-+	hw.period_bytes_min = 256;
-+	hw.period_bytes_max = dma_get_max_seg_size(chan->device->dev);
-+	hw.buffer_bytes_max = IMX_DEFAULT_DMABUF_SIZE;
-+	hw.fifo_size = dma_data->fifo_size;
-+
-+	/* Refine the hw according to caps of DMA. */
-+	ret = snd_dmaengine_pcm_refine_runtime_hwparams(substream,
-+							dma_data,
-+							&hw,
-+							chan);
-+	if (ret < 0)
-+		goto refine_runtime_hwparams_fail;
-+
-+	snd_soc_set_runtime_hwparams(substream, &hw);
-+
-+	/* Support allocate memory from IRAM */
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_IRAM,
-+				  chan->device->dev,
-+				  hw.buffer_bytes_max,
-+				  &substream->dma_buffer);
-+	if (ret < 0)
-+		goto alloc_pagas_fail;
-+
-+	return 0;
-+
-+alloc_pagas_fail:
-+refine_runtime_hwparams_fail:
-+	snd_dmaengine_pcm_close(substream);
-+pcm_open_fail:
-+	dma_release_channel(chan);
-+
-+	return ret;
-+}
-+
-+static int imx_pcm_close(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *substream)
-+{
-+	if (substream) {
-+		snd_dma_free_pages(&substream->dma_buffer);
-+		substream->dma_buffer.area = NULL;
-+		substream->dma_buffer.addr = 0;
-+	}
-+
-+	return snd_dmaengine_pcm_close_release_chan(substream);
-+}
-+
-+static int imx_pcm_new(struct snd_soc_component *component,
-+		       struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+
-+	return dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-+}
-+
-+static const struct snd_soc_component_driver imx_pcm_component = {
-+	.name           = "imx-pcm-dma",
-+	.pcm_construct	= imx_pcm_new,
-+	.open		= imx_pcm_open,
-+	.close		= imx_pcm_close,
-+	.hw_params	= imx_pcm_hw_params,
-+	.hw_free	= imx_pcm_hw_free,
-+	.trigger	= imx_pcm_trigger,
-+	.pointer	= imx_pcm_pointer,
-+};
-+
-+int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
-+{
-+	return devm_snd_soc_register_component(&pdev->dev,
-+					       &imx_pcm_component, NULL, 0);
- }
- EXPORT_SYMBOL_GPL(imx_pcm_dma_init);
- 
--- 
-2.21.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
