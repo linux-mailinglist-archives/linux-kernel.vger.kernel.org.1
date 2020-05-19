@@ -2,84 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA131D9B82
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D5D1D9BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgESPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        id S1729304AbgESPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728647AbgESPnC (ORCPT
+        with ESMTP id S1729007AbgESPsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:43:02 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDFDC08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:43:01 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u5so6356pgn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:43:01 -0700 (PDT)
+        Tue, 19 May 2020 11:48:46 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EEDC08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:48:46 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id p30so589364pgl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nDCjU7k2XMPXVzp/hHLiozXK2Q7t2yiQQnE2aeBeopA=;
-        b=ySydS5S7NCcxW2sO7kS+ESFm9nQcmN/vQ1Ctcc2Rq1jGiYT7ZWbKXfY72i8et7nX5n
-         LfGZysbkrQHm7rcDOyJ3Y4qiMNCm4NwoW8MCWbcUuh1v7ZOsguXwMwQ8azkHXUMoPnXt
-         towh7OUR/rQbM440RD8pH1hzeLTe+XUpe+eUsHdYKHIrKU4vp/W2LVMouqFMxFIOJBCZ
-         H+5ALyj3F6b8YRvBv7FGISsB4hKfLfn2oU6Yk7zOdl32d803oWftxco18RPOfCrX1OpD
-         nMkw1sjMd4Ydu3NYoftN1uhAs9iDcaiVbpRbqraSykeGXnVnHj/sVeQ3hW730HQQShtc
-         bmoA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=npj6nyuWQ54ZRzukHs7PaMjCvPNDE9Mt94DLOgYmdAM=;
+        b=P0+mae6a84cR5xUqIaEO+Q0bl2fCnvLeySFo+ugO3JyjssDIgkmsmpUbWGMOo30eLp
+         4la4jakE5roQ8jjlKA1FzIi2twmGQr7jNmyR4G/fELC21PiyyV8enb6i9lBDEIrIB2rV
+         AVTHOA5HszSMzkwJ81gPBz5iiLnARXbKwKDDs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nDCjU7k2XMPXVzp/hHLiozXK2Q7t2yiQQnE2aeBeopA=;
-        b=pRLvIFpj6fdNdIzQnqu2QFUCPuQSpVEmUrVE2ovmNg4Fg3zPOUx/MNMLbI21zneGg1
-         jQTODrE+PJR/Fuez0e06btouB8lVA6CQmtZh1jCitdovtD9EtNSwv03REyFlMv18VAgv
-         vC4jIvfyohnMssi9LAzVi8HAX+jN5cwagfwBCDhi+hCcAGu0SWkYGwFeZbqFzOm7k1OP
-         zW+OZGgxZ9jUMWqCBb78v8mUwpRvsN42zfa+NJE/I7xv1DIqDCHKJealC4pFEeFZ679r
-         vagaboHi8mKFBjcGL0KeqrEXGNuRovhr7REEVwokyEHPK/26R5TrwVpK74Ms/AUArr7B
-         xSKA==
-X-Gm-Message-State: AOAM530BOKH99ou7OOtwM55m2jLkMariahMSIxYyAWiOGnn3vwgh9jVG
-        8mjf4l09Xwjljd/8Cw4ZdbHpCv45j5g=
-X-Google-Smtp-Source: ABdhPJwTeViFpRe8oPY+FVS1lEyfrccIDBCPotb4uA6K/7gsrYzywZ8Vs+MxlhratyhUQ38VLXp/uQ==
-X-Received: by 2002:a63:b0f:: with SMTP id 15mr6801029pgl.6.1589902980570;
-        Tue, 19 May 2020 08:43:00 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:14f4:acbd:a5d0:25ca? ([2605:e000:100e:8c61:14f4:acbd:a5d0:25ca])
-        by smtp.gmail.com with ESMTPSA id p30sm980275pgn.58.2020.05.19.08.42.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 08:42:59 -0700 (PDT)
-Subject: Re: [PATCH] block: Remove unused flush_queue_delayed in struct
- blk_flush_queue
-To:     Baolin Wang <baolin.wang7@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <d4104441539e9d8d2bc29a9c970713ba1ef2105d.1589715744.git.baolin.wang7@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ec068795-5fd9-9d90-19bc-c145456fa5c5@kernel.dk>
-Date:   Tue, 19 May 2020 09:42:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        bh=npj6nyuWQ54ZRzukHs7PaMjCvPNDE9Mt94DLOgYmdAM=;
+        b=Pcr/rNsvpHsTQxIvTIfOEPTDoJMSBKZXUH4HAgSsAFogdYQuqIbt3dIbEqoBCpic61
+         rycYWzDkR6GAgm/eAxHInpderbTyeN8xwOqbRTJROnTahFqWnirnmZ1x3x3WiluWVgxH
+         9Bh5q2T7Pyer/E4pwL5129gUWg6RlMsnW0BUL50gLGjxZxGzGtm+RoNWT+OaVLgprR4R
+         7LyYlsJ7LMjElZvSeAAMXjgARH690I6g1IRvrRtBJxYcd5/e69Uq5SNp+8SPXzk8FMBR
+         R50gAiNl/y7GO8a64b6oMQ3ZLdz1IOuUopyhDsswwIrucKPiPR1X/Dth9wPIkxEYsG09
+         AcOw==
+X-Gm-Message-State: AOAM532c/oZ+GrT6qE58i7xpMCch7vIagESdrPB89Ek1N1B+G47P2tuK
+        vc4xtUuVrG0IHKCB3iwuomRrkA==
+X-Google-Smtp-Source: ABdhPJz5avKKNTtvKZvm8lzBMm3rjxfvXiD2QxxVE3dZa7xUCBH4RpcsiIOy1AoeYJ/nBEZkwHHoAw==
+X-Received: by 2002:aa7:9aa8:: with SMTP id x8mr11608662pfi.182.1589903326036;
+        Tue, 19 May 2020 08:48:46 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id c2sm9506pjg.51.2020.05.19.08.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 08:48:45 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Cc:     linux-next@vger.kernel.org, sumit.garg@linaro.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH] kgdboc: Disable all the early code when kgdboc is a module
+Date:   Tue, 19 May 2020 08:44:02 -0700
+Message-Id: <20200519084345.1.I91670accc8a5ddabab227eb63bb4ad3e2e9d2b58@changeid>
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
 MIME-Version: 1.0
-In-Reply-To: <d4104441539e9d8d2bc29a9c970713ba1ef2105d.1589715744.git.baolin.wang7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/17/20 5:49 AM, Baolin Wang wrote:
-> The flush_queue_delayed was introdued to hold queue if flush is
-> running for non-queueable flush drive by commit 3ac0cc450870
-> ("hold queue if flush is running for non-queueable flush drive"),
-> but the non mq parts of the flush code had been removed by
-> commit 7e992f847a08 ("block: remove non mq parts from the flush code"),
-> as well as removing the usage of the flush_queue_delayed flag.
-> Thus remove the unused flush_queue_delayed flag.
+When kgdboc is compiled as a module all of the "ekgdboc" and
+"kgdb_earlycon" code isn't useful and, in fact, breaks compilation.
+This is because early_param() isn't defined for modules and that's how
+this code gets configured.
 
-Applied, thanks.
+It turns out that this was broken by commit eae3e19ca930 ("kgdboc:
+Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc") and then
+made worse by commit 220995622da5 ("kgdboc: Add kgdboc_earlycon to
+support early kgdb using boot consoles").  I guess the #ifdef wasn't
+so useless, even if it wasn't obvious why it was useful.  When kgdboc
+was compiled as a module only "CONFIG_KGDB_SERIAL_CONSOLE_MODULE" was
+defined, not "CONFIG_KGDB_SERIAL_CONSOLE".  That meant that the old
+module.
 
+Let's basically do the same thing that the old code (pre-removal of
+the #ifdef) did but use "IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)" to
+make it more obvious what the point of the check is.  We'll fix
+kgdboc_earlycon in a similar way.
+
+Fixes: 220995622da5 ("kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles")
+Fixes: eae3e19ca930 ("kgdboc: Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/tty/serial/kgdboc.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 34b5e91dd245..fa6f7a3e73b9 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -43,9 +43,11 @@ static int			kgdb_tty_line;
+ 
+ static struct platform_device *kgdboc_pdev;
+ 
++#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
+ static struct kgdb_io		kgdboc_earlycon_io_ops;
+ static struct console		*earlycon;
+ static int                      (*earlycon_orig_exit)(struct console *con);
++#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
+ 
+ #ifdef CONFIG_KDB_KEYBOARD
+ static int kgdboc_reset_connect(struct input_handler *handler,
+@@ -140,10 +142,19 @@ static void kgdboc_unregister_kbd(void)
+ #define kgdboc_restore_input()
+ #endif /* ! CONFIG_KDB_KEYBOARD */
+ 
+-static void cleanup_kgdboc(void)
++#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
++static void cleanup_earlycon(void)
+ {
+ 	if (earlycon)
+ 		kgdb_unregister_io_module(&kgdboc_earlycon_io_ops);
++}
++#else /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
++static inline void cleanup_earlycon(void) { }
++#endif /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
++
++static void cleanup_kgdboc(void)
++{
++	cleanup_earlycon();
+ 
+ 	if (configured != 1)
+ 		return;
+@@ -388,6 +399,7 @@ static struct kgdb_io kgdboc_io_ops = {
+ 	.post_exception		= kgdboc_post_exp_handler,
+ };
+ 
++#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
+ static int kgdboc_option_setup(char *opt)
+ {
+ 	if (!opt) {
+@@ -544,6 +556,7 @@ static int __init kgdboc_earlycon_init(char *opt)
+ }
+ 
+ early_param("kgdboc_earlycon", kgdboc_earlycon_init);
++#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
+ 
+ module_init(init_kgdboc);
+ module_exit(exit_kgdboc);
 -- 
-Jens Axboe
+2.26.2.761.g0e0b3e54be-goog
 
