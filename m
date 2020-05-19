@@ -2,62 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED841DA062
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315721DA089
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgESTDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgESTDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:03:07 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 735D8206C3;
-        Tue, 19 May 2020 19:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589914986;
-        bh=yGKJu1xlG42vBKIuRnBWXZQM+NLQT8MzF+RRBMa5FQ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FtrDy/VdWXUK6kmNCsHw2vh9EIETgrekvcLoGJuk2Xv3rgo+2KWuI9joZxl25cakV
-         O0J8rc8IlWTaNBQgo1hQJYcEwVY6CmjofXJ60HUZxkdcuhXMtQs9Nl/1GxpfB4no4M
-         xolp7DYp2DpKeXm3XoLFcg2yNRyyGg0vUXRGtk+Y=
-Date:   Tue, 19 May 2020 14:07:53 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>
-Subject: Re: [tip: locking/core] locking/lockdep: Replace zero-length array
- with flexible-array
-Message-ID: <20200519190753.GA10690@embeddedor>
-References: <20200507185804.GA15036@embeddedor>
- <158991386428.17951.3540978557111480073.tip-bot2@tip-bot2>
+        id S1727018AbgESTIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESTI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:08:29 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689BCC08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:08:28 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cx22so96228pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 12:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RmcIN7oDiRdqjbFzFUgxoG77VNtHMuczcjZzgJlogEA=;
+        b=eoXzf9hXQ06zaKJUBvPgE2YZz9h1zQ80EA6b8QroqlmFdCJ0ZIMsDkTGrDlydw01rB
+         ugyyTWz/NAmL2pyTZewiWZvEDazJmNUa4/96mQ68GCyfX0PYPUG0XCKQE/IKw4p5VwP8
+         cQ14sWK6koJ4BAyNNmA9lLIHrLuBQAEZ2EnyA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RmcIN7oDiRdqjbFzFUgxoG77VNtHMuczcjZzgJlogEA=;
+        b=MPVKVZzdDBPTWCqqlqLkm+rc0e1yijf36nMSL7fhLzaCu9MRwZeyFec2tcMpPk4kXU
+         m+BV33/+9ODEIkW1Ve9nQ8J5VE0w0Q3pFZ1UZfjpsPFfT5cDjiPday6QRtsy92s+rXcd
+         kdjQBxUUc0s/aEgZE/aoud52/4JyRNmHsI2LYH6UZNLySIGCCXKnIpsZK2cf/3huCkMr
+         IvaaZVn9plTZTqFQy6lv6fcSncN29xQyYj1xlztWCoMwy4Tt5sUDUnw/zbp0aDW2kDFY
+         /OmNfquqtmFjErO7Kj8VnncLwIpg+iFTRoZQMesH/AiwCUktxPhI5E7kIz9sxVMSgZEN
+         zqrw==
+X-Gm-Message-State: AOAM532d8+NVmnavg6iuZ88BiZCRAV/I5bMS8+19G5Ffx1IApa+y7l7B
+        VlUOtG7VG0MA5y2dFOrgKDaPCg==
+X-Google-Smtp-Source: ABdhPJwqEuEaq7kQpGUMeXthnwkUMJ6lgjSjG02qTXaI4b20dLAWrgvQRGgcnWVI0iaYLj+dy+rw8A==
+X-Received: by 2002:a17:90a:31c8:: with SMTP id j8mr1149298pjf.178.1589915307800;
+        Tue, 19 May 2020 12:08:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i12sm245353pjk.37.2020.05.19.12.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 12:08:26 -0700 (PDT)
+Date:   Tue, 19 May 2020 12:08:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH v2 6/8] exec/binfmt_script: Don't modify bprm->buf and
+ then return -ENOEXEC
+Message-ID: <202005191144.E3112135@keescook>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+ <87sgga6ze4.fsf@x220.int.ebiederm.org>
+ <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+ <877dx822er.fsf_-_@x220.int.ebiederm.org>
+ <874ksczru6.fsf_-_@x220.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158991386428.17951.3540978557111480073.tip-bot2@tip-bot2>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <874ksczru6.fsf_-_@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 06:44:24PM -0000, tip-bot2 for Gustavo A. R. Silva wrote:
-> The following commit has been merged into the locking/core branch of tip:
+On Mon, May 18, 2020 at 07:33:21PM -0500, Eric W. Biederman wrote:
 > 
-> Commit-ID:     db78538c75e49c09b002a2cd96a19ae0c39be771
-> Gitweb:        https://git.kernel.org/tip/db78538c75e49c09b002a2cd96a19ae0c39be771
-> Author:        Gustavo A. R. Silva <gustavoars@kernel.org>
-> AuthorDate:    Thu, 07 May 2020 13:58:04 -05:00
-> Committer:     Peter Zijlstra <peterz@infradead.org>
-> CommitterDate: Tue, 19 May 2020 20:34:18 +02:00
+> The return code -ENOEXEC serves to tell search_binary_handler that it
+> should continue searching for the binfmt to handle a given file.  This
+> makes return -ENOEXEC with a bprm->buf that is needed to continue the
+> search problematic.
 > 
-> locking/lockdep: Replace zero-length array with flexible-array
+> The current binfmt_script manages to escape problems as it closes and
+> clears bprm->file before return -ENOEXEC with bprm->buf modified.
+> This prevents search_binary_handler from looping as it explicitly
+> handles a NULL bprm->file.
 > 
+> I plan on moving all of the bprm->file managment into fs/exec.c and out
+> of the binary handlers so this will become a problem.
+> 
+> Move closing bprm->file and the test for BINPRM_PATH_INACCESSIBLE
+> down below the last return of -ENOEXEC.
+> 
+> Introduce i_sep and i_end to track the end of the first argument and
+> the end of the parameters respectively.  Using those, constification
+> of all char * pointers, and the helpers next_terminator and
+> next_non_spacetab guarantee the parameter parsing will not modify
+> bprm->buf.
 
-Thanks, Peter.
+I'm quite pleased this could be implemented using the existing helpers!
+It seems Linus and I were on the right track with these. :)
 
---
-Gustavo
+> 
+> Only modify bprm->buf to terminate the strings i_arg and i_name with
+> '\0' for passing to copy_strings_kernel.
+> 
+> When replacing loops with next_non_spacetab and next_terminator care
+> has been take that the logic of the parsing code (short of replacing
+> characters by '\0') remains the same.
+
+Ah, interesting. As in, bprm->buf must not be modified unless the binfmt
+handler is going to succeed. I think this requirement should be
+documented in the binfmt struct header file.
+
+> [...]
+> diff --git a/fs/binfmt_script.c b/fs/binfmt_script.c
+> index 8d718d8fd0fe..85e0ef86eb11 100644
+> --- a/fs/binfmt_script.c
+> +++ b/fs/binfmt_script.c
+> @@ -71,39 +56,48 @@ static int load_script(struct linux_binprm *bprm)
+>  	 * parse them on its own.
+>  	 */
+>  	buf_end = bprm->buf + sizeof(bprm->buf) - 1;
+> -	cp = strnchr(bprm->buf, sizeof(bprm->buf), '\n');
+> -	if (!cp) {
+> -		cp = next_non_spacetab(bprm->buf + 2, buf_end);
+> -		if (!cp)
+> +	i_end = strnchr(bprm->buf, sizeof(bprm->buf), '\n');
+> +	if (!i_end) {
+> +		i_end = next_non_spacetab(bprm->buf + 2, buf_end);
+> +		if (!i_end)
+>  			return -ENOEXEC; /* Entire buf is spaces/tabs */
+>  		/*
+>  		 * If there is no later space/tab/NUL we must assume the
+>  		 * interpreter path is truncated.
+>  		 */
+> -		if (!next_terminator(cp, buf_end))
+> +		if (!next_terminator(i_end, buf_end))
+>  			return -ENOEXEC;
+> -		cp = buf_end;
+> +		i_end = buf_end;
+>  	}
+> -	/* NUL-terminate the buffer and any trailing spaces/tabs. */
+> -	*cp = '\0';
+> -	while (cp > bprm->buf) {
+> -		cp--;
+> -		if ((*cp == ' ') || (*cp == '\t'))
+> -			*cp = '\0';
+> -		else
+> -			break;
+> -	}
+> -	for (cp = bprm->buf+2; (*cp == ' ') || (*cp == '\t'); cp++);
+> -	if (*cp == '\0')
+> +	/* Trim any trailing spaces/tabs from i_end */
+> +	while (spacetab(i_end[-1]))
+> +		i_end--;
+> +
+> +	/* Skip over leading spaces/tabs */
+> +	i_name = next_non_spacetab(bprm->buf+2, i_end);
+> +	if (!i_name || (i_name == i_end))
+>  		return -ENOEXEC; /* No interpreter name found */
+> -	i_name = cp;
+> +
+> +	/* Is there an optional argument? */
+>  	i_arg = NULL;
+> -	for ( ; *cp && (*cp != ' ') && (*cp != '\t'); cp++)
+> -		/* nothing */ ;
+> -	while ((*cp == ' ') || (*cp == '\t'))
+> -		*cp++ = '\0';
+> -	if (*cp)
+> -		i_arg = cp;
+> +	i_sep = next_terminator(i_name, i_end);
+> +	if (i_sep && (*i_sep != '\0'))
+> +		i_arg = next_non_spacetab(i_sep, i_end);
+> +
+> +	/*
+> +	 * If the script filename will be inaccessible after exec, typically
+> +	 * because it is a "/dev/fd/<fd>/.." path against an O_CLOEXEC fd, give
+> +	 * up now (on the assumption that the interpreter will want to load
+> +	 * this file).
+> +	 */
+> +	if (bprm->interp_flags & BINPRM_FLAGS_PATH_INACCESSIBLE)
+> +		return -ENOENT;
+> +
+> +	/* Release since we are not mapping a binary into memory. */
+> +	allow_write_access(bprm->file);
+> +	fput(bprm->file);
+> +	bprm->file = NULL;
+> +
+>  	/*
+>  	 * OK, we've parsed out the interpreter name and
+>  	 * (optional) argument.
+> @@ -121,7 +115,9 @@ static int load_script(struct linux_binprm *bprm)
+>  	if (retval < 0)
+>  		return retval;
+>  	bprm->argc++;
+> +	*((char *)i_end) = '\0';
+>  	if (i_arg) {
+> +		*((char *)i_sep) = '\0';
+>  		retval = copy_strings_kernel(1, &i_arg, bprm);
+>  		if (retval < 0)
+>  			return retval;
+
+I think this is all correct, though I'm always suspicious of my visual
+inspection of string parsers. ;)
+
+I had a worry the \n was not handled correctly in some case. I.e. before
+any \n was converted into \0, and so next_terminator() didn't need to
+consider \n separately. (next_non_spacetab() doesn't care since \n and \0
+are both not ' ' nor '\t'.) For next_terminator(), though, I was worried
+there was a case where *i_end == '\n', and next_terminator()
+will return NULL instead of "last" due to *last being '\n' instead of
+'\0', causing a problem, but you're using the adjusted i_end so I think
+it's correct. And you've handled i_name == i_end.
+
+I will see if I can find my testing scripts I used when commit
+b5372fe5dc84 originally landed to double-check... until then:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
