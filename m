@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B921DA405
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54031DA407
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgESVr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
+        id S1728608AbgESVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgESVry (ORCPT
+        with ESMTP id S1728593AbgESVsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:47:54 -0400
+        Tue, 19 May 2020 17:48:01 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BC7C08C5C1;
-        Tue, 19 May 2020 14:47:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546CAC08C5C2;
+        Tue, 19 May 2020 14:48:01 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA5R-0002xn-8E; Tue, 19 May 2020 23:47:45 +0200
+        id 1jbA5W-0002yb-3S; Tue, 19 May 2020 23:47:50 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -29,11 +29,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v1 23/25] userfaultfd: Use sequence counter with associated spinlock
-Date:   Tue, 19 May 2020 23:45:45 +0200
-Message-Id: <20200519214547.352050-24-a.darwish@linutronix.de>
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Subject: [PATCH v1 24/25] kvm/eventfd: Use sequence counter with associated spinlock
+Date:   Tue, 19 May 2020 23:45:46 +0200
+Message-Id: <20200519214547.352050-25-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
@@ -62,31 +61,36 @@ neither storage size nor runtime overhead.
 
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- fs/userfaultfd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/kvm_irqfd.h | 2 +-
+ virt/kvm/eventfd.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index e39fdec8a0b0..dd3aab31c50f 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -61,7 +61,7 @@ struct userfaultfd_ctx {
- 	/* waitqueue head for events */
- 	wait_queue_head_t event_wqh;
- 	/* a refile sequence protected by fault_pending_wqh lock */
--	struct seqcount refile_seq;
-+	seqcount_spinlock_t refile_seq;
- 	/* pseudo fd refcounting */
- 	refcount_t refcount;
- 	/* userfaultfd syscall flags */
-@@ -1998,7 +1998,7 @@ static void init_once_userfaultfd_ctx(void *mem)
- 	init_waitqueue_head(&ctx->fault_wqh);
- 	init_waitqueue_head(&ctx->event_wqh);
- 	init_waitqueue_head(&ctx->fd_wqh);
--	seqcount_init(&ctx->refile_seq);
-+	seqcount_spinlock_init(&ctx->refile_seq, &ctx->fault_pending_wqh.lock);
- }
+diff --git a/include/linux/kvm_irqfd.h b/include/linux/kvm_irqfd.h
+index dc1da020305b..dac047abdba7 100644
+--- a/include/linux/kvm_irqfd.h
++++ b/include/linux/kvm_irqfd.h
+@@ -42,7 +42,7 @@ struct kvm_kernel_irqfd {
+ 	wait_queue_entry_t wait;
+ 	/* Update side is protected by irqfds.lock */
+ 	struct kvm_kernel_irq_routing_entry irq_entry;
+-	seqcount_t irq_entry_sc;
++	seqcount_spinlock_t irq_entry_sc;
+ 	/* Used for level IRQ fast-path */
+ 	int gsi;
+ 	struct work_struct inject;
+diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
+index 67b6fc153e9c..8694a2920ea9 100644
+--- a/virt/kvm/eventfd.c
++++ b/virt/kvm/eventfd.c
+@@ -303,7 +303,7 @@ kvm_irqfd_assign(struct kvm *kvm, struct kvm_irqfd *args)
+ 	INIT_LIST_HEAD(&irqfd->list);
+ 	INIT_WORK(&irqfd->inject, irqfd_inject);
+ 	INIT_WORK(&irqfd->shutdown, irqfd_shutdown);
+-	seqcount_init(&irqfd->irq_entry_sc);
++	seqcount_spinlock_init(&irqfd->irq_entry_sc, &kvm->irqfds.lock);
  
- SYSCALL_DEFINE1(userfaultfd, int, flags)
+ 	f = fdget(args->fd);
+ 	if (!f.file) {
 -- 
 2.20.1
 
