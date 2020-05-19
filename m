@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739A21DA3CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A6C1DA3DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgESVpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
+        id S1728240AbgESVqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgESVpk (ORCPT
+        with ESMTP id S1726030AbgESVqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:45:40 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FAAC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:45:39 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id l21so777969eji.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cSRyYwL1zh4grnM+TNINN+oD+vS6Z1eKKyNnOMI4spM=;
-        b=kooqm401yr9fOYTBZtBz68VkWQLqOCDxgT2Rq5cmtiNGVkoyO+ziEo9wVOwcB6SECM
-         Rk8oAvW39vwRMGGmhe3BmE0pIX+CPBAQFj4V0sW0Q8Mjr3MG9RMFMPPXCTgw+sN7x6T5
-         SJbSgylBl7DdBAeSrRo97mzs3DWFB9QUsSshAWmL5cqk/iadLv7wzaeBaMOqczn+JNAC
-         Ky5v6fPs21vi7tVclq+4k69VrXLPLYAGdL9OnfSHk2eDEfQJSZdPhkokuw8SPH9Tlpvo
-         wUnkLOyslyQrEbvsZ3MkXnkAtfu6fYm229ySD4pt6W0nyAlDuGq8D8cIz5tHySGCAjdO
-         gzQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cSRyYwL1zh4grnM+TNINN+oD+vS6Z1eKKyNnOMI4spM=;
-        b=oN07MuxRaCsROek7d3LVLT+NCCByihhqK3rDYo6wkUAIwY1+tShw8mRvors6f1pvuF
-         jC6gm/Xl3dDK6LaKxihvMPc+OdLS0wLOa0qgrw+D+402LSv9iX6Z+iCRs1kX6zpNwNa2
-         PInZbA6Sz2aLhykoZrzwtPcbxFc0GuNdqPm1MEKn0l2NiOO+bYdlUh1ZIrI0bfkIgDge
-         nb+TyybjrQvFXCxiR9jAO7tMrEbJr16jSAhkrCh69Wj0UA5Sa7D07UtOi7Whb6Lpt4qX
-         Nkc/d9UAPeezgy/ZxTIv3dr/monNaMUCFZJBbqiLkebv8XMLOFZ96AsPz20SKfrKYorS
-         nFHg==
-X-Gm-Message-State: AOAM531slTwdEw1Skiw97kREUjsguTMO5uuCrtTBNbC0Oi27HZZvs2Vi
-        yiGKY0vQnNmm3bzDQ+//HtjgpM4lz1l+VUWyxPw4fg==
-X-Google-Smtp-Source: ABdhPJy1GoTrnWDrOVkvzM8wYuajaS8dLQXgdmDEIfLXKTKo3/mEzrwI9bzUAi343IxzoHsb/+yRmxGSjHMfDpis7r4=
-X-Received: by 2002:a17:907:2711:: with SMTP id w17mr1256244ejk.8.1589924738593;
- Tue, 19 May 2020 14:45:38 -0700 (PDT)
+        Tue, 19 May 2020 17:46:52 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BCCC08C5C0;
+        Tue, 19 May 2020 14:46:52 -0700 (PDT)
+Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <a.darwish@linutronix.de>)
+        id 1jbA3x-0002d6-SK; Tue, 19 May 2020 23:46:14 +0200
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v1 05/25] u64_stats: Document writer non-preemptibility requirement
+Date:   Tue, 19 May 2020 23:45:27 +0200
+Message-Id: <20200519214547.352050-6-a.darwish@linutronix.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-References: <20200512183839.2373-1-elver@google.com> <20200512190910.GM2957@hirez.programming.kicks-ass.net>
- <CAG=TAF5S+n_W4KM9F8QuCisyV+s6_QA_gO70y6ckt=V7SS2BXw@mail.gmail.com> <CANpmjNMxvMpr=KaJEoEeRMuS3PGZEyi-VkeSmNywpQTAzFMSVA@mail.gmail.com>
-In-Reply-To: <CANpmjNMxvMpr=KaJEoEeRMuS3PGZEyi-VkeSmNywpQTAzFMSVA@mail.gmail.com>
-From:   Qian Cai <cai@lca.pw>
-Date:   Tue, 19 May 2020 17:45:27 -0400
-Message-ID: <CAG=TAF7zVCMLj5US0uw-piwBUSmWpmPSPV3Thjbh7_kGsO88hQ@mail.gmail.com>
-Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 5:26 PM Marco Elver <elver@google.com> wrote:
->
-> On Tue, 19 May 2020 at 23:10, Qian Cai <cai@lca.pw> wrote:
-> >
-> > On Tue, May 12, 2020 at 3:09 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Tue, May 12, 2020 at 08:38:39PM +0200, Marco Elver wrote:
-> > > > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> > > > index 741c93c62ecf..e902ca5de811 100644
-> > > > --- a/include/linux/compiler.h
-> > > > +++ b/include/linux/compiler.h
-> > > > @@ -224,13 +224,16 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-> > > >   * atomicity or dependency ordering guarantees. Note that this may result
-> > > >   * in tears!
-> > > >   */
-> > > > -#define __READ_ONCE(x)       (*(const volatile __unqual_scalar_typeof(x) *)&(x))
-> > > > +#define __READ_ONCE(x)                                                       \
-> > > > +({                                                                   \
-> > > > +     kcsan_check_atomic_read(&(x), sizeof(x));                       \
-> > > > +     data_race((*(const volatile __unqual_scalar_typeof(x) *)&(x))); \
-> > > > +})
-> > >
-> > > NAK
-> > >
-> > > This will actively insert instrumentation into __READ_ONCE() and I need
-> > > it to not have any.
-> >
-> > Any way to move this forward? Due to linux-next commit 6bcc8f459fe7
-> > (locking/atomics: Flip fallbacks and instrumentation), it triggers a
-> > lots of KCSAN warnings due to atomic ops are no longer marked.
->
-> This is no longer the right solution we believe due to the various
-> requirements that Peter also mentioned. See the discussion here:
->     https://lkml.kernel.org/r/CANpmjNOGFqhtDa9wWpXs2kztQsSozbwsuMO5BqqW0c0g0zGfSA@mail.gmail.com
->
-> The new solution is here:
->     https://lkml.kernel.org/r/20200515150338.190344-1-elver@google.com
-> While it's a little inconvenient that we'll require Clang 11
-> (currently available by building yourself from LLVM repo), but until
-> we get GCC fixed (my patch there still pending :-/), this is probably
-> the right solution going forward.   If possible, please do test!
+The u64_stats mechanism uses sequence counters to protect against 64-bit
+values tearing on 32-bit architectures. Updating such statistics is a
+sequence counter write side critical section.
 
-That would be quite unfortunate. The version here is still gcc-8.3.1
-and clang-9.0.1 on RHEL 8.2 here. It will probably need many years to
-be able to get the fixed compilers having versions that high. Sigh...
-Also, I want to avoid compiling compilers on my own.
+Preemption must be disabled before entering this seqcount write critical
+section.  Failing to do so, the seqcount read side can preempt the write
+side section and spin for the entire scheduler tick.  If that reader
+belongs to a real-time scheduling class, it can spin forever and the
+kernel will livelock.
+
+Document this statistics update side non-preemptibility requirement.
+
+Reword the u64_stats header file top comment to always mention "Reader"
+or "Writer" at the start of each bullet point, making it easier to
+follow which side each point is actually for.
+
+Fix the statement "whole thing is a NOOP on 64bit arches or UP kernels".
+For 32-bit UP kernels, preemption is always disabled for the statistics
+read side section.
+
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ include/linux/u64_stats_sync.h | 38 ++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
+
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index 9de5c10293f5..30358ce3d8fe 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -7,29 +7,31 @@
+  * we provide a synchronization point, that is a noop on 64bit or UP kernels.
+  *
+  * Key points :
+- * 1) Use a seqcount on SMP 32bits, with low overhead.
+- * 2) Whole thing is a noop on 64bit arches or UP kernels.
+- * 3) Write side must ensure mutual exclusion or one seqcount update could
++ *
++ * 1) Use a seqcount on 32-bit SMP, only disable preemption for 32-bit UP.
++ *
++ * 2) The whole thing is a no-op on 64-bit architectures.
++ *
++ * 3) Write side must ensure mutual exclusion, or one seqcount update could
+  *    be lost, thus blocking readers forever.
+- *    If this synchronization point is not a mutex, but a spinlock or
+- *    spinlock_bh() or disable_bh() :
+- * 3.1) Write side should not sleep.
+- * 3.2) Write side should not allow preemption.
+- * 3.3) If applicable, interrupts should be disabled.
+  *
+- * 4) If reader fetches several counters, there is no guarantee the whole values
+- *    are consistent (remember point 1) : this is a noop on 64bit arches anyway)
++ * 4) Write side must disable preemption, or a seqcount reader can preempt the
++ *    writer and also spin forever.
+  *
+- * 5) readers are allowed to sleep or be preempted/interrupted : They perform
+- *    pure reads. But if they have to fetch many values, it's better to not allow
+- *    preemptions/interruptions to avoid many retries.
++ * 5) Write side must use the _irqsave() variant if other writers, or a reader,
++ *    can be invoked from an IRQ context.
+  *
+- * 6) If counter might be written by an interrupt, readers should block interrupts.
+- *    (On UP, there is no seqcount_t protection, a reader allowing interrupts could
+- *     read partial values)
++ * 6) If reader fetches several counters, there is no guarantee the whole values
++ *    are consistent w.r.t. each other (remember point #2: seqcounts are not
++ *    used for 64bit architectures).
+  *
+- * 7) For irq and softirq uses, readers can use u64_stats_fetch_begin_irq() and
+- *    u64_stats_fetch_retry_irq() helpers
++ * 7) Readers are allowed to sleep or be preempted/interrupted: they perform
++ *    pure reads.
++ *
++ * 8) Readers must use both u64_stats_fetch_{begin,retry}_irq() if the stats
++ *    might be updated from a hardirq or softirq context (remember point #1:
++ *    seqcounts are not used for UP kernels). 32-bit UP stat readers could read
++ *    corrupted 64-bit values otherwise.
+  *
+  * Usage :
+  *
+-- 
+2.20.1
+
