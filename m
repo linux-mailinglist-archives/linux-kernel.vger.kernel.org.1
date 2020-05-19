@@ -2,147 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8D31DA15E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75611DA168
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgESTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgESTwp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:52:45 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547E0C08C5C0;
-        Tue, 19 May 2020 12:52:45 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8I3-0007uH-HA; Tue, 19 May 2020 21:52:39 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 0ED4B1C047E;
-        Tue, 19 May 2020 21:52:39 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:52:38 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/kprobes] kprobes: Prevent probes in .noinstr.text section
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134100.179862032@linutronix.de>
-References: <20200505134100.179862032@linutronix.de>
-MIME-Version: 1.0
-Message-ID: <158991795892.17951.11098194135392988351.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S1728003AbgESTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727854AbgESTxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:53:01 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BCD3207E8;
+        Tue, 19 May 2020 19:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589917981;
+        bh=rdizb6054sUWQ6fZD+89J2wGwwMQkGnOG0/yiHK/LbE=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=ZKhevx5QN2OPN7XottC5bZLJlVfh5Rg8EfQxBPu3lxMvDVX6sXczyiVzISI71VjLL
+         k1gSSXozLucDwKGyaSo4zyvh8jAmRxyTB9p8TSuGonDZnKCHl2NKFO4P5U1DuCHRqZ
+         DNn+LI1kutOg3GO4GnQIaJA4Ody/rIKlZmAUjl1k=
+Date:   Tue, 19 May 2020 20:52:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20200511210134.1224532-2-lkundrak@v3.sk>
+References: <20200511210134.1224532-1-lkundrak@v3.sk> <20200511210134.1224532-2-lkundrak@v3.sk>
+Subject: Re: [PATCH 01/11] ASoC: mmp-sspa: Flip SNDRV_PCM_FMTBIT_S24_3LE on
+Message-Id: <158991797896.23137.453146749205778028.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/kprobes branch of tip:
+On Mon, 11 May 2020 23:01:24 +0200, Lubomir Rintel wrote:
+> The hw_params() callback handles the 3-byte format, not
+> SNDRV_PCM_FMTBIT_S24_LE.
 
-Commit-ID:     66e9b0717102507e64f638790eaece88765cc9e5
-Gitweb:        https://git.kernel.org/tip/66e9b0717102507e64f638790eaece88765cc9e5
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 10 Mar 2020 14:04:34 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 15:56:20 +02:00
+Applied to
 
-kprobes: Prevent probes in .noinstr.text section
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
 
-Instrumentation is forbidden in the .noinstr.text section. Make kprobes
-respect this.
+Thanks!
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lkml.kernel.org/r/20200505134100.179862032@linutronix.de
+[1/2] ASoC: Add Marvell MMP SSPA binding
+      commit: d81bb8726c247c3e7719d21bf213c5400de29e03
+[2/2] ASoC: mmp-sspa: Add Device Tree support
+      commit: a97e384ba78fd8bf7ba8c32718424d8a7536416e
 
----
- include/linux/module.h |  2 ++
- kernel/kprobes.c       | 18 ++++++++++++++++++
- kernel/module.c        |  3 +++
- 3 files changed, 23 insertions(+)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 1192097..d849d06 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -458,6 +458,8 @@ struct module {
- 	void __percpu *percpu;
- 	unsigned int percpu_size;
- #endif
-+	void *noinstr_text_start;
-+	unsigned int noinstr_text_size;
- 
- #ifdef CONFIG_TRACEPOINTS
- 	unsigned int num_tracepoints;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 9eb5acf..3f310df 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2229,6 +2229,12 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- 	/* Symbols in __kprobes_text are blacklisted */
- 	ret = kprobe_add_area_blacklist((unsigned long)__kprobes_text_start,
- 					(unsigned long)__kprobes_text_end);
-+	if (ret)
-+		return ret;
-+
-+	/* Symbols in noinstr section are blacklisted */
-+	ret = kprobe_add_area_blacklist((unsigned long)__noinstr_text_start,
-+					(unsigned long)__noinstr_text_end);
- 
- 	return ret ? : arch_populate_kprobe_blacklist();
- }
-@@ -2248,6 +2254,12 @@ static void add_module_kprobe_blacklist(struct module *mod)
- 		end = start + mod->kprobes_text_size;
- 		kprobe_add_area_blacklist(start, end);
- 	}
-+
-+	start = (unsigned long)mod->noinstr_text_start;
-+	if (start) {
-+		end = start + mod->noinstr_text_size;
-+		kprobe_add_area_blacklist(start, end);
-+	}
- }
- 
- static void remove_module_kprobe_blacklist(struct module *mod)
-@@ -2265,6 +2277,12 @@ static void remove_module_kprobe_blacklist(struct module *mod)
- 		end = start + mod->kprobes_text_size;
- 		kprobe_remove_area_blacklist(start, end);
- 	}
-+
-+	start = (unsigned long)mod->noinstr_text_start;
-+	if (start) {
-+		end = start + mod->noinstr_text_size;
-+		kprobe_remove_area_blacklist(start, end);
-+	}
- }
- 
- /* Module notifier call back, checking kprobes on the module */
-diff --git a/kernel/module.c b/kernel/module.c
-index faf7337..72ed2b3 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3150,6 +3150,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- 	}
- #endif
- 
-+	mod->noinstr_text_start = section_objs(info, ".noinstr.text", 1,
-+						&mod->noinstr_text_size);
-+
- #ifdef CONFIG_TRACEPOINTS
- 	mod->tracepoints_ptrs = section_objs(info, "__tracepoints_ptrs",
- 					     sizeof(*mod->tracepoints_ptrs),
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
