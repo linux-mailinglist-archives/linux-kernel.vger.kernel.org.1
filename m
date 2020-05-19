@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F161D9C0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BE51D9C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729361AbgESQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:09:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
+        id S1729270AbgESQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:14:22 -0400
+Received: from verein.lst.de ([213.95.11.211]:44769 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729055AbgESQI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:08:59 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C4302075F;
-        Tue, 19 May 2020 16:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589904539;
-        bh=u3+jsia5NAW/8Ph5G2JpnG6etn7OX8oeTKdDlKnd0Sc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NV4cKwwuBLLyXVatnObrm47KAEk5WfJ8UQC8c3xRc7mAEJpUQF7O+uI0gdsdZq381
-         f7BJ3B3WbVujfd3EA2AW0zQN2qdrSxoQ8Yi8dE9iCneCp41e8b4sxb8DwOCwLqgU+L
-         6lmnZZOTUAc/Qm7XxCtWaOWhQIzS9A/fzMTzJPEk=
-Date:   Tue, 19 May 2020 11:13:45 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] RDMA/rtrs: client: Fix function return on success
-Message-ID: <20200519161345.GA3910@embeddedor>
+        id S1728534AbgESQOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:14:22 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1F99968B02; Tue, 19 May 2020 18:14:19 +0200 (CEST)
+Date:   Tue, 19 May 2020 18:14:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 11/20] bpf: factor out a bpf_trace_copy_string helper
+Message-ID: <20200519161418.GA26545@lst.de>
+References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-12-hch@lst.de> <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHk-=wjm3HQy_awVX-WyF6KrSuE1pcFRaNX_XhiLKkBUFUZBtQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function should return 0 on success, instead of err.
+On Tue, May 19, 2020 at 09:07:55AM -0700, Linus Torvalds wrote:
+> On Tue, May 19, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > +       switch (fmt_ptype) {
+> > +       case 's':
+> > +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> > +               strncpy_from_unsafe(buf, unsafe_ptr, bufsz);
+> > +               break;
+> > +#endif
+> > +       case 'k':
+> > +               strncpy_from_kernel_nofault(buf, unsafe_ptr, bufsz);
+> > +               break;
+> 
+> That 's' case needs a "fallthrough;" for the overlapping case,
+> methinks. Otherwise you'll get warnings.
 
-Addresses-Coverity-ID: 1493753 ("Identical code for different branches")
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I don't think we need it as the case of
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 468fdd0d8713c..465515e46bb1a 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1594,7 +1594,8 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 
- 	if (err)
- 		return err;
--	return err;
-+
-+	return 0;
- }
- 
- static void destroy_con_cq_qp(struct rtrs_clt_con *con)
--- 
-2.26.2
+	case 'a':
+	case 'b':
+		do_stuff();
+		break;
 
+has always been fine even with the fallthough warnings.  And the
+rest of the stuff gets removed by cpp..
