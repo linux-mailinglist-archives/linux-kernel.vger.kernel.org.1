@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD5D1D967C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E4D1D967E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgESMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 08:41:50 -0400
-Received: from smtprelay0060.hostedemail.com ([216.40.44.60]:42646 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726471AbgESMlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 08:41:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 91B49100E7B40;
-        Tue, 19 May 2020 12:41:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:960:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3866:3867:3868:3870:3871:3874:4321:5007:9592:10004:10400:10848:11026:11473:11658:11914:12043:12296:12297:12438:12555:12760:12986:13069:13311:13357:13439:14659:14721:21080:21627:21990:30012:30054:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: horn52_380766326d0d
-X-Filterd-Recvd-Size: 1957
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 19 May 2020 12:41:48 +0000 (UTC)
-Message-ID: <335067f871a85db5f24650a3dff96f19727bed50.camel@perches.com>
-Subject: lockdep tracing and using of printk return value ?
-From:   Joe Perches <joe@perches.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Date:   Tue, 19 May 2020 05:41:47 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1728836AbgESMmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 08:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726471AbgESMmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 08:42:22 -0400
+Received: from localhost (unknown [122.182.207.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31BE620657;
+        Tue, 19 May 2020 12:42:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589892141;
+        bh=f5OsPgAe/ppTyyXK8XOFW0ghBuiEYD4TKNC7dZ+SMYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aLgW8ezP3WXZsCBJ9YpVI+t2yYJcDhVdasfgkMqharhG8o4/zk+c3tx28FK3UxjpI
+         lHuxb+ps3r9VMQW4psb191jw15agyIHojlR7xJrhDxZYc4OIWjkc0RrKxjnY9anQSi
+         BEbM/E9wNXMphi3G5bOUK6AkbFJS8lJkAKfYoAn0=
+Date:   Tue, 19 May 2020 18:12:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v13 3/5] usb: xhci: Add support for Renesas controller
+ with memory
+Message-ID: <20200519124216.GO374218@vkoul-mobl.Dlink>
+References: <20200506060025.1535960-1-vkoul@kernel.org>
+ <20200506060025.1535960-4-vkoul@kernel.org>
+ <CADYN=9JLeWHODRWDEcTE_6iZ3TX-E4yyx3OwqzK-H-ytLAmQUg@mail.gmail.com>
+ <20200518195719.GG374218@vkoul-mobl.Dlink>
+ <CADYN=9+VuTwVk32hQXAAeDyErMn7D4Y+Gzdehy_=c8fBeU23jA@mail.gmail.com>
+ <20200519045336.GH374218@vkoul-mobl.Dlink>
+ <CAK8P3a2CCwfXz8_p6zscuq21tCRZ_aHRZUa_9ov1b4sSqvL_aw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2CCwfXz8_p6zscuq21tCRZ_aHRZUa_9ov1b4sSqvL_aw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Except for some ancient code in drivers/scsi, this code
-may be the only kernel use of the printk return value.
+HI Arnd,
 
-Code that uses the printk return value in
-kernel/locking/lockdep.c is odd because the printk
-return length includes both the length of a KERN_<LEVEL>
-prefix and the newline.  depth also seems double counted.
+On 19-05-20, 09:44, Arnd Bergmann wrote:
+> On Tue, May 19, 2020 at 6:53 AM Vinod Koul <vkoul@kernel.org> wrote:
+> > On 19-05-20, 00:37, Anders Roxell wrote:
+> > > On Mon, 18 May 2020 at 21:57, Vinod Koul <vkoul@kernel.org> wrote:
+> > > > On 18-05-20, 19:53, Anders Roxell wrote:
+> > > > > On Wed, 6 May 2020 at 08:01, Vinod Koul <vkoul@kernel.org> wrote:
+> > > > > >
+> > > > > > Some rensas controller like uPD720201 and uPD720202 need firmware to be
+> > > > > > loaded. Add these devices in pci table and invoke renesas firmware loader
+> > > > > > functions to check and load the firmware into device memory when
+> > > > > > required.
+> > > > > >
+> > > > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > > >
+> > > > > Hi, I got a build error when I built an arm64 allmodconfig kernel.
+> > > >
+> > > > Thanks for this. This is happening as we have default y for USB_XHCI_PCI
+> > > > and then we make USB_XHCI_PCI_RENESAS=m. That should be not allowed as
+> > > > we export as symbol so both can be inbuilt or modules but USB_XHCI_PCI=y
+> > > > and USB_XHCI_PCI_RENESAS=m cant. While it is valid that USB_XHCI_PCI=y|m
+> > > > and USB_XHCI_PCI_RENESAS=n
+> > > >
+> > > > So this seems to get fixed by below for me. I have tested with
+> > > >  - both y and m (easy)
+> > > >  - make USB_XHCI_PCI_RENESAS=n, USB_XHCI_PCI=y|m works
+> > > >  - try making USB_XHCI_PCI=y and USB_XHCI_PCI_RENESAS=m, then
+> > > >    USB_XHCI_PCI=m by kbuild :)
+> > > >  - try making USB_XHCI_PCI=m and USB_XHCI_PCI_RENESAS=y, kbuild gives
+> > > >    error prompt that it will be m due to depends
+> > > >
+> > > > Thanks to all the fixes done by Arnd which pointed me to this. Pls
+> > > > verify
+> > >
+> > > I was able to build an arm64 allmodconfig kernel with this change.
+> >
+> > I will send the formal patch and add your name in reported and
+> > tested. Thanks for the quick verification
+> 
+> I just checked the patch and I think this will work correctly in all cases,
+> but it still seems a bit backwards:
+> 
+> > > > diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> > > > index b5c542d6a1c5..92783d175b3f 100644
+> > > > --- a/drivers/usb/host/Kconfig
+> > > > +++ b/drivers/usb/host/Kconfig
+> > > > @@ -40,11 +40,11 @@ config USB_XHCI_DBGCAP
+> > > >  config USB_XHCI_PCI
+> > > >         tristate
+> > > >         depends on USB_PCI
+> > > > +       depends on USB_XHCI_PCI_RENESAS || !USB_XHCI_PCI_RENESAS
+> > > >         default y
+> > > >
+> > > >  config USB_XHCI_PCI_RENESAS
+> > > >         tristate "Support for additional Renesas xHCI controller with firwmare"
+> > > > -       depends on USB_XHCI_PCI
+> > > >         ---help---
+> > > >           Say 'Y' to enable the support for the Renesas xHCI controller with
+> > > >           firwmare. Make sure you have the firwmare for the device and
+> > > >
+> 
+> I think it would have been better to follow the normal driver abstraction here
+> and make the renesas xhci a specialized version of the xhci driver with
+> its own platform_driver instance that calls into the generic xhci_pci module,
+> rather than having the generic code treat it as a quirk.
+> 
+> That would be more like how we handle all the ehci and ohci variants, though
+> I'm not sure how exactly it would work with two drivers having pci_device_id
+> tables with non-exclusive members. Presumably the generic driver would
+> still have to know that it needs to fail its probe() function on devices that
+> need the firmware.
 
-Perhaps there's a better way to calculate this?
+Yeah one of the earlier versions did try this and it wasn't nice. The
+xhci driver claims the devices as it registers for the class. Now only
+solution is to ensure we load the renesas first and resort to makefile
+hacks..
 
-Maybe:
----
- kernel/locking/lockdep.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 2fadc2635946..265227edc550 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1960,11 +1960,9 @@ static void print_lock_class_header(struct lock_class *class, int depth)
- 
- 	for (bit = 0; bit < LOCK_USAGE_STATES; bit++) {
- 		if (class->usage_mask & (1 << bit)) {
--			int len = depth;
--
--			len += printk("%*s   %s", depth, "", usage_str[bit]);
--			len += printk(KERN_CONT " at:\n");
--			print_lock_trace(class->usage_traces[bit], len);
-+			printk("%*s   %s at:\n", depth, "", usage_str[bit]);
-+			print_lock_trace(class->usage_traces[bit],
-+					 depth + 3 + strlen(usage_str[bit]);
- 		}
- 	}
- 	printk("%*s }\n", depth, "");
-
-
+-- 
+~Vinod
