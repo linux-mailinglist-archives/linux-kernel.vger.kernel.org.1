@@ -2,165 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2131DA26E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485621DA26C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgESUUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgESUUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:20:14 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C3BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:20:14 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jb8ii-00012c-4u; Tue, 19 May 2020 22:20:12 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 8/8] mm/zswap: Use local lock to protect per-CPU data
-Date:   Tue, 19 May 2020 22:19:12 +0200
-Message-Id: <20200519201912.1564477-9-bigeasy@linutronix.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200519201912.1564477-1-bigeasy@linutronix.de>
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+        id S1727853AbgESUUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:20:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgESUUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 16:20:05 -0400
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 343E7207FB
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589919604;
+        bh=lnPdg3xOComkw/mtgCYuLekVm2wdX5+Kj/vqF2VGxAc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VbacoLCoiqhSf79KI7ZbBXnp4Mpj/29gH6gvsWst/phxyQePGR7NmsMyZAbDlaiZB
+         nn9gtoue2bt3HE8XCXcRyYGe8ZFqGT7miwplEqYGYFUHnAMhB/PY8j1LKRRinarX9U
+         K493lqIQsByqXF5iL/dSTrPZhty+DOJMxa+s2Zuw=
+Received: by mail-wm1-f48.google.com with SMTP id h4so520864wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:20:04 -0700 (PDT)
+X-Gm-Message-State: AOAM532rJ02+7U3R/EqQ/D+0E+jMWOIGFok6jybKpERhXGFunYxjKQAq
+        DPiQlcEK+xXmNHTKsxLWanUTj8PJp3Vuz2dUtqhqHA==
+X-Google-Smtp-Source: ABdhPJw+skrkQiO6Sndokvav+tG/l20x7oZ3l+6UMbbS3U/mvaexLCsdH/RkdoFbspOMYC5+0PP9KbuJVdaRvTZXJIs=
+X-Received: by 2002:a1c:8141:: with SMTP id c62mr1109261wmd.21.1589919602647;
+ Tue, 19 May 2020 13:20:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20200515234547.710474468@linutronix.de> <20200515235126.317328545@linutronix.de>
+In-Reply-To: <20200515235126.317328545@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 19 May 2020 13:19:51 -0700
+X-Gmail-Original-Message-ID: <CALCETrWjT+A_AAuv=zZ52vJhR2ZADktB3XZnO8n_qu09S0P0vQ@mail.gmail.com>
+Message-ID: <CALCETrWjT+A_AAuv=zZ52vJhR2ZADktB3XZnO8n_qu09S0P0vQ@mail.gmail.com>
+Subject: Re: [patch V6 19/37] x86/irq: Convey vector as argument and not in ptregs
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>
+> Device interrupts which go through do_IRQ() or the spurious interrupt
+> handler have their separate entry code on 64 bit for no good reason.
+>
+> Both 32 and 64 bit transport the vector number through ORIG_[RE]AX in
+> pt_regs. Further the vector number is forced to fit into an u8 and is
+> complemented and offset by 0x80 so it's in the signed character
+> range. Otherwise GAS would expand the pushq to a 5 byte instruction for any
+> vector > 0x7F.
+>
+> Treat the vector number like an error code and hand it to the C function as
+> argument. This allows to get rid of the extra entry code in a later step.
+>
+> Simplify the error code push magic by implementing the pushq imm8 via a
+> '.byte 0x6a, vector' sequence so GAS is not able to screw it up. As the
+> pushq imm8 is sign extending the resulting error code needs to be truncated
+> to 8 bits in C code.
 
-zwap uses per-CPU compression. The per-CPU data pointer is acquired with
-get_cpu_ptr() which implicitly disables preemption. It allocates
-memory inside the preempt disabled region which conflicts with the
-PREEMPT_RT semantics.
 
-Replace the implicit preemption control with an explicit local lock.
-This allows RT kernels to substitute it with a real per CPU lock, which
-serializes the access but keeps the code section preemptible. On non RT
-kernels this maps to preempt_disable() as before, i.e. no functional
-change.
+Acked-by: Andy Lutomirski <luto@kernel.org>
 
-[bigeasy: Use local_lock(), additional hunks, patch description]
+although you may be giving me more credit than deserved :)
 
-Cc: Seth Jennings <sjenning@redhat.com>
-Cc: Dan Streetman <ddstreet@ieee.org>
-Cc: Vitaly Wool <vitaly.wool@konsulko.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- mm/zswap.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ +       .align 8
+> +SYM_CODE_START(irq_entries_start)
+> +    vector=FIRST_EXTERNAL_VECTOR
+> +    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+> +       UNWIND_HINT_IRET_REGS
+> +       .byte   0x6a, vector
+> +       jmp     common_interrupt
+> +       .align  8
+> +    vector=vector+1
+> +    .endr
+> +SYM_CODE_END(irq_entries_start)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index fbb782924ccc5..1db2ad941e501 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -18,6 +18,7 @@
- #include <linux/highmem.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-+#include <linux/locallock.h>
- #include <linux/types.h>
- #include <linux/atomic.h>
- #include <linux/frontswap.h>
-@@ -388,6 +389,8 @@ static struct zswap_entry *zswap_entry_find_get(struct =
-rb_root *root,
- * per-cpu code
- **********************************/
- static DEFINE_PER_CPU(u8 *, zswap_dstmem);
-+/* Used for zswap_dstmem and tfm */
-+static DEFINE_LOCAL_LOCK(zswap_cpu_lock);
-=20
- static int zswap_dstmem_prepare(unsigned int cpu)
- {
-@@ -919,10 +922,11 @@ static int zswap_writeback_entry(struct zpool *pool, =
-unsigned long handle)
- 		dlen =3D PAGE_SIZE;
- 		src =3D (u8 *)zhdr + sizeof(struct zswap_header);
- 		dst =3D kmap_atomic(page);
--		tfm =3D *get_cpu_ptr(entry->pool->tfm);
-+		local_lock(zswap_cpu_lock);
-+		tfm =3D *this_cpu_ptr(entry->pool->tfm);
- 		ret =3D crypto_comp_decompress(tfm, src, entry->length,
- 					     dst, &dlen);
--		put_cpu_ptr(entry->pool->tfm);
-+		local_unlock(zswap_cpu_lock);
- 		kunmap_atomic(dst);
- 		BUG_ON(ret);
- 		BUG_ON(dlen !=3D PAGE_SIZE);
-@@ -1074,12 +1078,12 @@ static int zswap_frontswap_store(unsigned type, pgo=
-ff_t offset,
- 	}
-=20
- 	/* compress */
--	dst =3D get_cpu_var(zswap_dstmem);
--	tfm =3D *get_cpu_ptr(entry->pool->tfm);
-+	local_lock(zswap_cpu_lock);
-+	dst =3D *this_cpu_ptr(&zswap_dstmem);
-+	tfm =3D *this_cpu_ptr(entry->pool->tfm);
- 	src =3D kmap_atomic(page);
- 	ret =3D crypto_comp_compress(tfm, src, PAGE_SIZE, dst, &dlen);
- 	kunmap_atomic(src);
--	put_cpu_ptr(entry->pool->tfm);
- 	if (ret) {
- 		ret =3D -EINVAL;
- 		goto put_dstmem;
-@@ -1103,7 +1107,7 @@ static int zswap_frontswap_store(unsigned type, pgoff=
-_t offset,
- 	memcpy(buf, &zhdr, hlen);
- 	memcpy(buf + hlen, dst, dlen);
- 	zpool_unmap_handle(entry->pool->zpool, handle);
--	put_cpu_var(zswap_dstmem);
-+	local_unlock(zswap_cpu_lock);
-=20
- 	/* populate entry */
- 	entry->offset =3D offset;
-@@ -1131,7 +1135,7 @@ static int zswap_frontswap_store(unsigned type, pgoff=
-_t offset,
- 	return 0;
-=20
- put_dstmem:
--	put_cpu_var(zswap_dstmem);
-+	local_unlock(zswap_cpu_lock);
- 	zswap_pool_put(entry->pool);
- freepage:
- 	zswap_entry_cache_free(entry);
-@@ -1176,9 +1180,10 @@ static int zswap_frontswap_load(unsigned type, pgoff=
-_t offset,
- 	if (zpool_evictable(entry->pool->zpool))
- 		src +=3D sizeof(struct zswap_header);
- 	dst =3D kmap_atomic(page);
--	tfm =3D *get_cpu_ptr(entry->pool->tfm);
-+	local_lock(zswap_cpu_lock);
-+	tfm =3D *this_cpu_ptr(entry->pool->tfm);
- 	ret =3D crypto_comp_decompress(tfm, src, entry->length, dst, &dlen);
--	put_cpu_ptr(entry->pool->tfm);
-+	local_unlock(zswap_cpu_lock);
- 	kunmap_atomic(dst);
- 	zpool_unmap_handle(entry->pool->zpool, entry->handle);
- 	BUG_ON(ret);
---=20
-2.26.2
+Having battled code like this in the past (for early exceptions), I
+prefer the variant like:
 
+pos = .;
+.rept blah blah blah
+  .byte whatever
+  jmp whatever
+  . = pos + 8;
+ vector = vector + 1
+.endr
+
+or maybe:
+
+.rept blah blah blah
+  .byte whatever
+  jmp whatever;
+  . = irq_entries_start + 8 * vector;
+  vector = vector + 1
+.endr
+
+The reason is that these variants will fail to assemble if something
+goes wrong and the code expands to more than 8 bytes, whereas using
+.align will cause gas to happily emit 16 bytes and result in
+hard-to-debug mayhem.
