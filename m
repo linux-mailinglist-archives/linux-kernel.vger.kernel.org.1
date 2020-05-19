@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0ED1D97CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65731D97AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgESNad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbgESNac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:30:32 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98730C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:30:32 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id x1so11813786ejd.8
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=incline.eu; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cEMhfbxLJL6rLlCZ47d/1BZ4dX7nhYnz9Rioocq948Y=;
-        b=qtKBJ41x1eSyUD28shYUh/C2cDHMO0K27JJTjNr05O/dfQwVqxz6wzn2pCcjJBHSzl
-         mfPLtIdTT54CMjGqu6MS8lL4yiYywbLs0q0ijnB6tHzfmMd641p+jJH7KQDUJeZ0IF6y
-         LU4J/1SNtPyo08JErha6rVSRVRo26xi9DjO2d1eZLVqeggH3V4U6JA/x92JDhuLaByXu
-         3nx0rwzvGYulMkAlYVj8J//hF4X7SK78J2UFsDvBwhmfq6//4LSk/gliHV6c5K26Rypt
-         JDFT6qVBlyAX/K6V75+2PpPxPBuRaQvJmCxRWsN3J48EFYWmQYI4Vib3PZ0uNB50w/XQ
-         +sZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cEMhfbxLJL6rLlCZ47d/1BZ4dX7nhYnz9Rioocq948Y=;
-        b=iexR7cEMX0JZQ2zPnetAd4LoY0RaukF4FUj9ixp/YRv2vaGR2MTWFNV73zTfDPS3ve
-         sYFX7kOjw8hhp0h3q3hZwqNW8T+33MXmx9rkDvxl6eeubsRn5bBHtsfKzQMQo6N/aB9b
-         GZcFi4724DCkJRwJrlXGVdP9l25duooySEUvS/9GJwsrppFWkzurHgUsb+qwqBnC39Rf
-         IDcvZkMGPEbhQ4M4wrTVXpyVedjbGIl/yOdk0Regcc6t1rGCD40QlAktAlg4SdgFu4ZR
-         BE22qneZPxwgB3qiSN3LK9OuMY+pkvZoz+JF3z39MlgnkUX3uVDDggn/+VKo19ToWmfU
-         jiXg==
-X-Gm-Message-State: AOAM532y/2e7btoQ6nMIiIi8cyySHbWUeKSsLlQ+iaalizUgSq3cUaFt
-        lz9vvxFtt34dedrig/DWJBvTfw==
-X-Google-Smtp-Source: ABdhPJx6jGz89iiW7ZTUSEdSnNX6Fz8y5eW/9ohfFZB2NUmCuHu6A13Bl5f2Eo4pa70nDKlt93AKJw==
-X-Received: by 2002:a17:906:5004:: with SMTP id s4mr19656281ejj.13.1589895031319;
-        Tue, 19 May 2020 06:30:31 -0700 (PDT)
-Received: from sparrow.lan.incline.eu (ptr-7u1g92dm5ip8miek4t7.18120a2.ip6.access.telenet.be. [2a02:1811:51a:b600:ace:32fb:ad63:b5b])
-        by smtp.gmail.com with ESMTPSA id 93sm1449443edj.39.2020.05.19.06.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 06:30:30 -0700 (PDT)
-From:   Timo Beckers <timo@incline.eu>
-Cc:     timo@incline.eu, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
-Subject: [PATCH] perf core: apply calculated padding to PERF_SAMPLE_RAW output
-Date:   Tue, 19 May 2020 15:26:16 +0200
-Message-Id: <20200519132616.794171-1-timo@incline.eu>
-X-Mailer: git-send-email 2.26.2
+        id S1728984AbgESN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:26:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38810 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbgESN0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:26:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=8n7QbL4CNWDNJgApYky9vIvZRe1axoMpHBCOkpZcb6k=; b=pKgI8FPQgtmEv9vHZUozTszU8n
+        xv+ZnZoCrDRhK6jrdW/9DhEShy/FkgyJDNCAH6IStPwT4BqCNHwTc8nYWkVwgGj7QeNExYwdk3iB8
+        F9lQuyeEeXwyV0ZSU5pBZpHOhTiCNA2d0AVOwNePLqk+gwKmhuB6OZKWBRCICuVouinw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jb2GM-002i3F-Sb; Tue, 19 May 2020 15:26:30 +0200
+Date:   Tue, 19 May 2020 15:26:30 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: Re: [PATCH net-next v1 1/2] ethtool: provide UAPI for PHY Signal
+ Quality Index (SQI)
+Message-ID: <20200519132630.GH610998@lunn.ch>
+References: <20200519075200.24631-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519075200.24631-1-o.rempel@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zero the amount of padding bytes determined in perf_prepare_sample().
-This prevents garbage being read from the ring buffer after it has wrapped
-the page boundary at least once.
+On Tue, May 19, 2020 at 09:51:59AM +0200, Oleksij Rempel wrote:
+> Signal Quality Index is a mandatory value required by "OPEN Alliance
+> SIG" for the 100Base-T1 PHYs [1]. This indicator can be used for cable
+> integrity diagnostic and investigating other noise sources and
+> implement by at least two vendors: NXP[2] and TI[3].
 
-Signed-off-by: Timo Beckers <timo@incline.eu>
----
- kernel/events/core.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Hi Oleksij
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 80cf996a7f19..d4e0b003ece0 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6807,8 +6807,16 @@ void perf_output_sample(struct perf_output_handle *handle,
- 					break;
- 				frag = frag->next;
- 			} while (1);
--			if (frag->pad)
--				__output_skip(handle, NULL, frag->pad);
-+			/*
-+			 * The padding value is determined in
-+			 * perf_prepare_sample() and is not
-+			 * expected to exceed u64.
-+			 */
-+			if (frag->pad) {
-+				u64 zero = 0;
-+
-+				__output_copy(handle, &zero, frag->pad);
-+			}
- 		} else {
- 			struct {
- 				u32	size;
--- 
-2.26.2
+With a multi part patch set, please always include a cover note,
+describing what the patchset as a whole does.
 
+> +int __ethtool_get_sqi(struct net_device *dev)
+> +{
+> +	struct phy_device *phydev = dev->phydev;
+> +
+> +	if (!phydev->drv->get_sqi)
+> +		return -EOPNOTSUPP;
+> +
+> +	return phydev->drv->get_sqi(phydev);
+> +}
+
+You are not doing any locking here, which you should. Due to modules
+vs built in, it can be a bit tricky getting this right. Take a look at
+how ethtool ioctl.c uses phy_ethtool_get_stats() and that inline
+function itself.
+
+    Andrew
