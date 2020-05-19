@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5DA1DA3B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF2E1DA3BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgESVkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
+        id S1727070AbgESVl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESVkE (ORCPT
+        with ESMTP id S1725885AbgESVl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:40:04 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1DBC08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:40:04 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d3so430552pln.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:40:04 -0700 (PDT)
+        Tue, 19 May 2020 17:41:26 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F27C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:41:26 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id s3so752416eji.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qZrnOBqdIK/f9ZKEYvAl0vw/13DRB3RwIGSmwGXyTpI=;
-        b=YD0FWr1n4aRBwXbRpkumGdVcnRnTBzs8xC53EtpY/+CDnTQq5QrfVWZuUHWHC7t/oC
-         GCluPTOCW1KYp8yaGOWLKDdonR1xl0cIqDBBpYL/Jc01xqzgLo2avep6uumO1EeeIe0+
-         sqTXfRtYYEmAKVRLMLfBHLUyJCkqlV8EfLlTU=
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8pHDt6TZphRZyh659OaqVb1mgoicXJZH6YOE21j5ScM=;
+        b=dMU1FC1+X+LgzrzDd8puroJ2VjoLl1b7VWx3Oxtyt5RbuHUQTWTuQLJk4KiUdb4hch
+         BOhMOsMa+J+rREOLJwUsj56zTOlxXC2WesxpqG32wtYHMXotR7Bxv6jTxRKbk8j03ZXt
+         fUBFDifGQEMkYvtRxGSYJDBgtvJyWBw656MILr0ozZkvxB3NbFT+XkVBtn3nY+mpTsDH
+         fkg3DmX9UVMYxBNBAT6Z5gxKSD2ZDXbMfEfN1B0N2FgeXBawY7+lPjO1Aqk6iJfuzwzM
+         W55AKS+fNrxcGfJI+ritFN9TMTQ8FvEJPoGMPSkPKYNauuL6Yx4M9XmccEbkC26jlWNw
+         RFUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qZrnOBqdIK/f9ZKEYvAl0vw/13DRB3RwIGSmwGXyTpI=;
-        b=qRV3MpkMxLn0xURaJLXtcGzbUtbhlsr7kWPGR7qBaSFomr8H8to3I3SgivfzzAVMPL
-         d9p9zCJl22QzqIGZA4+ixZ+YKriyz+bBf2re7hOpeZcfNjdvD1/khw/95THHrcwou9Yq
-         IEiV7PJ3EzrZbovVpbb9n/rHaLEzfjE2+VkZ52illBkLC0nQYgd2+gf8SLP3SqOEACnW
-         01Tm6wcfQEv4ml2idkCpTb/D69QMvrK9Qsv32MUilqMw7UWqOzxtkVgz4D1YuDL2qZgb
-         v973rUV80i+oxkTI4byePlf7nEL22rHIdlEeAvHl+k31f401CgNWeZQDUXUTg/vQfVnO
-         WgjA==
-X-Gm-Message-State: AOAM532kQYcDLdgBw4Rqha/yZay9t8bzc/I7O7IUNOrFiB39iWTM/41v
-        m5/y7rmyNg0F5zd/CTVjWnIPEQ==
-X-Google-Smtp-Source: ABdhPJxxUbJw24Z12APTaY/3nigy/vJ+nnWJ/bpNRl0x+5MCtEWwJIZ0w7jwgPf8UyhhfpOzN1YH0w==
-X-Received: by 2002:a17:902:bb82:: with SMTP id m2mr1369227pls.291.1589924403251;
-        Tue, 19 May 2020 14:40:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n67sm370238pfn.16.2020.05.19.14.40.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8pHDt6TZphRZyh659OaqVb1mgoicXJZH6YOE21j5ScM=;
+        b=oNyXh3+nCaPV6DHptDz6akwASS0wPNnqV8gmk8t7aZtgd6AHSCBkU+KcdWoS2JWDyK
+         c2Ag/YkNMa1eSVKu+KL5Yz34ZmEBI+zNin5kQ63mp7hFkP1wBg1soOlOFCq0ndHXYuc8
+         aodQKqsApIR1oZPURcyoBJ8wCylnDcOn3G2tDYRCn4OUDPjlxDKUGkSKVx/4BqFISfQx
+         1JG03l8lxfdwb1xFQwFK8LKe16alaMejcTOxFv5SLH3utvw8n2PthihjxicSU010GF1Z
+         p3TAHTRLWeOcH8TJLXvq6+EJ509edZ1DJS5ADs0+1a+nLood9jBHxLTdWFGa4jmumjF+
+         R2TA==
+X-Gm-Message-State: AOAM530uGQFxhnaXdYsZDVOP++a/0OnJYxHOlZoKzzaxsNg1VdH5+CQI
+        XA2phVITwSljUFO/oQMvEXKQkQ==
+X-Google-Smtp-Source: ABdhPJzwziXIgJV3keA3OENqJBxwLFq+cjMJNMlZTNY3H5m85XcQYW/VSr4fcseQdwsGI40fWd9+NQ==
+X-Received: by 2002:a17:906:f53:: with SMTP id h19mr1065446ejj.343.1589924484583;
+        Tue, 19 May 2020 14:41:24 -0700 (PDT)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:61fc:84a0:6c2a:7c97])
+        by smtp.gmail.com with ESMTPSA id j17sm337728ejs.108.2020.05.19.14.41.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 14:40:01 -0700 (PDT)
-Date:   Tue, 19 May 2020 14:40:00 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Matt Denton <mpdenton@google.com>,
-        Chris Palmer <palmer@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: seccomp feature development
-Message-ID: <202005191434.57253AD@keescook>
-References: <202005181120.971232B7B@keescook>
- <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
- <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
- <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
+        Tue, 19 May 2020 14:41:24 -0700 (PDT)
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, willy@infradead.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [UPDATE PATCH 10/10] mm/migrate.c: call detach_page_private to cleanup code
+Date:   Tue, 19 May 2020 23:40:49 +0200
+Message-Id: <20200519214049.15179-1-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
+References: <20200517214718.468-1-guoqing.jiang@cloud.ionos.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 09:18:47AM -0700, Alexei Starovoitov wrote:
-> On Mon, May 18, 2020 at 7:53 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
-> >
-> > On 2020-05-19, Jann Horn <jannh@google.com> wrote:
-> > > On Mon, May 18, 2020 at 11:05 PM Kees Cook <keescook@chromium.org> wrote:
-> > > > ## deep argument inspection
-> > > >
-> > > > The argument caching bit is, I think, rather mechanical in nature since
-> > > > it's all "just" internal to the kernel: seccomp can likely adjust how it
-> > > > allocates seccomp_data (maybe going so far as to have it split across two
-> > > > pages with the syscall argument struct always starting on the 2nd page
-> > > > boundary), and copying the EA struct into that page, which will be both
-> > > > used by the filter and by the syscall.
-> > >
-> > > We could also do the same kind of thing the eBPF verifier does in
-> > > convert_ctx_accesses(), and rewrite the context accesses to actually
-> > > go through two different pointers depending on the (constant) offset
-> > > into seccomp_data.
-> >
-> > My main worry with this is that we'll need to figure out what kind of
-> > offset mathematics are necessary to deal with pointers inside the
-> > extensible struct. As a very ugly proposal, you could make it so that
-> > you multiply the offset by PAGE_SIZE each time you want to dereference
-> > the pointer at that offset (unless we want to add new opcodes to cBPF to
-> > allow us to represent this).
-> 
-> Please don't. cbpf is frozen.
+We can cleanup code a little by call detach_page_private here.
 
-https://www.youtube.com/watch?v=L0MK7qz13bU
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+---
+Add the cast to fix type mismatch warning, sorry for the mistake.
 
-If the only workable design paths for deep arg inspection end up needing
-BPF helpers, I would agree that it's time for seccomp to grow eBPF
-language support. I'm still hoping there's a clean solution that doesn't
-require a seccomp language extension.
+ mm/migrate.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> > > We don't need to actually zero-fill memory for this beyond what the
-> > > kernel supports - AFAIK the existing APIs already say that passing a
-> > > short length is equivalent to passing zeroes, so we can just replace
-> > > all out-of-bounds loads with zeroing registers in the filter.
-> > > The tricky case is what should happen if the userspace program passes
-> > > in fields that the filter doesn't know about. The filter can see the
-> > > length field passed in by userspace, and then just reject anything
-> > > where the length field is bigger than the structure size the filter
-> > > knows about. But maybe it'd be slightly nicer if there was an
-> > > operation for "tell me whether everything starting at offset X is
-> > > zeroes", so that if someone compiles with newer kernel headers where
-> > > the struct is bigger, and leaves the new fields zeroed, the syscalls
-> > > still go through an outdated filter properly.
-> >
-> > I think the best way of handling this (without breaking programs
-> > senselessly) is to have filters essentially emulate
-> > copy_struct_from_user() semantics -- which is along the lines of what
-> > you've suggested.
-> 
-> and cpbf load instruction will become copy_from_user() underneath?
-
-No, this was meaning internal checking about struct sizes needs to exist
-(not the user copy parts).
-
-> I don't see how that can work.
-> Have you considered implications to jits, register usage, etc ?
-> 
-> ebpf will become sleepable soon. It will be able to do copy_from_user()
-> and examine any level of user pointer dereference.
-> toctou is still going to be a concern though,
-> but such ebpf+copy_from_user analysis and syscall sandboxing
-> will not need to change kernel code base around syscalls at all.
-> No need to invent E-syscalls and all the rest I've seen in this thread.
-
-To avoid the ToCToU, the seccomp infrastructure must do the
-copy_from_user(), so there's not need for the sleepable stuff in seccomp
-that I can see. The question is mainly one of flattening.
-
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 7160c1556f79..44546d407e40 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -797,10 +797,7 @@ static int __buffer_migrate_page(struct address_space *mapping,
+ 	if (rc != MIGRATEPAGE_SUCCESS)
+ 		goto unlock_buffers;
+ 
+-	ClearPagePrivate(page);
+-	set_page_private(newpage, page_private(page));
+-	set_page_private(page, 0);
+-	put_page(page);
++	set_page_private(newpage, (unsigned long)detach_page_private(page));
+ 	get_page(newpage);
+ 
+ 	bh = head;
 -- 
-Kees Cook
+2.17.1
+
