@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5351DA1E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9731DA1DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728719AbgESUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        id S1728708AbgESUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728303AbgEST67 (ORCPT
+        with ESMTP id S1728315AbgEST7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:59 -0400
+        Tue, 19 May 2020 15:59:00 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AC4C08C5C0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F5AC08C5C1;
         Tue, 19 May 2020 12:58:59 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8O0-0008WO-34; Tue, 19 May 2020 21:58:48 +0200
+        id 1jb8O6-00005n-Nf; Tue, 19 May 2020 21:58:54 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3C8F41C04E3;
-        Tue, 19 May 2020 21:58:39 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:39 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 24C301C0813;
+        Tue, 19 May 2020 21:58:40 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:40 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry/64: Use native swapgs in asm_load_gs_index()
+Subject: [tip: x86/entry] x86/traps: Mark sync_regs() noinstr
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Juergen Gross <jgross@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200512213809.583980272@linutronix.de>
-References: <20200512213809.583980272@linutronix.de>
+In-Reply-To: <20200505134903.439765290@linutronix.de>
+References: <20200505134903.439765290@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991831915.17951.5043866712580848379.tip-bot2@tip-bot2>
+Message-ID: <158991832005.17951.16776255437939916241.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,55 +53,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     3d1723d88a0c28ad7db441aed6c912e99467abfe
-Gitweb:        https://git.kernel.org/tip/3d1723d88a0c28ad7db441aed6c912e99467abfe
+Commit-ID:     2c14e64ca887fe55ba958376ef1e2d08e810b5e3
+Gitweb:        https://git.kernel.org/tip/2c14e64ca887fe55ba958376ef1e2d08e810b5e3
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 12 May 2020 14:54:14 +02:00
+AuthorDate:    Wed, 25 Mar 2020 23:47:51 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:03:54 +02:00
+CommitterDate: Tue, 19 May 2020 16:03:53 +02:00
 
-x86/entry/64: Use native swapgs in asm_load_gs_index()
+x86/traps: Mark sync_regs() noinstr
 
-When PARAVIRT_XXL is in use, then load_gs_index() uses xen_load_gs_index()
-and asm_load_gs_index() is unused.
-
-It's therefore pointless to use the paravirtualized SWAPGS implementation
-in asm_load_gs_index(). Switch it to a plain swapgs.
+Replace the notrace and NOKPROBE annotations with noinstr.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200512213809.583980272@linutronix.de
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20200505134903.439765290@linutronix.de
+
 
 ---
- arch/x86/entry/entry_64.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kernel/traps.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index be8ed3a..9747b42 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1043,11 +1043,11 @@ idtentry simd_coprocessor_error		do_simd_coprocessor_error	has_error_code=0
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index b2b3656..adcc623 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -564,14 +564,13 @@ NOKPROBE_SYMBOL(do_int3);
+  * to switch to the normal thread stack if the interrupted code was in
+  * user mode. The actual stack switch is done in entry_64.S
   */
- SYM_FUNC_START(asm_load_gs_index)
- 	FRAME_BEGIN
--	SWAPGS
-+	swapgs
- .Lgs_change:
- 	movl	%edi, %gs
- 2:	ALTERNATIVE "", "mfence", X86_BUG_SWAPGS_FENCE
--	SWAPGS
-+	swapgs
- 	FRAME_END
- 	ret
- SYM_FUNC_END(asm_load_gs_index)
-@@ -1057,7 +1057,7 @@ EXPORT_SYMBOL(asm_load_gs_index)
- 	.section .fixup, "ax"
- 	/* running with kernelgs */
- SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
--	SWAPGS					/* switch back to user gs */
-+	swapgs					/* switch back to user gs */
- .macro ZAP_GS
- 	/* This can't be a string because the preprocessor needs to see it. */
- 	movl $__USER_DS, %eax
+-asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
++asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
+ {
+ 	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(cpu_current_top_of_stack) - 1;
+ 	if (regs != eregs)
+ 		*regs = *eregs;
+ 	return regs;
+ }
+-NOKPROBE_SYMBOL(sync_regs);
+ 
+ struct bad_iret_stack {
+ 	void *error_entry_ret;
