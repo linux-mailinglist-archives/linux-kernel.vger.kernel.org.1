@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AD01D9CE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E621D9CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgESQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        id S1729000AbgESQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729488AbgESQdn (ORCPT
+        with ESMTP id S1728775AbgESQfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:33:43 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E863BC08C5C0;
-        Tue, 19 May 2020 09:33:41 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id c12so40979lfc.10;
-        Tue, 19 May 2020 09:33:41 -0700 (PDT)
+        Tue, 19 May 2020 12:35:10 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD02C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:35:10 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id k5so378277lji.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=erHld5g8aUsGObcGGn0MGFVIEHLOUjB0Us6LDfsWtwI=;
-        b=PXXIEkHbyn+P/kMEEJSfC4wL0O4hX4OmmwcfZbc+VOa1IlbTxAww8MjZF1eb69czSl
-         JhNxWfdAvNvf0aLOJ2zIgjjWjoo3/qMuhePXkwjT47u0273RtTb2w6fbghDsX1IyOsh7
-         ycbxPguVWsvQKY0q2jHaG22jnYYiiQMY92Rhi39x4/Lpu35VITIeAg19c9SUDG8w/qVo
-         OX3zjE3HtGEFaPiApNAXpWAwHWvFp5S5zxBcHjnSAgOQpvSbZOc664cbBcgISbUKtgLG
-         FhgDukKAHwsL4iNX8v0Uc6U3aGczmzdO5M2bQ+S/NnIv/eLlwVXMGR8NYl2RmzgB+wk1
-         u8mA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=54tiBIP0EU7n2aZj7YIONdjaPqjtzHIpQK/HSrYUxTM=;
+        b=BKlafAkH7UQm8tvxZZNMBXFgkeIFjR+sjrqKcA5zu8XfgLo2XsHzCIggLB+hau5PqY
+         bXm4UtHx7/hgToK6wSRtXVRYfkosw2PzhwIv8qXaSb+oYyfc0spNrlQZmy04cFyxd8aX
+         2/kuksBERD9XsYiDJcDnbRjB+/bFhGsJeMkcs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=erHld5g8aUsGObcGGn0MGFVIEHLOUjB0Us6LDfsWtwI=;
-        b=mZVYCtG+b8MGjjdEASra3n+ImZWjkBDnrWDrC04vcBrkKpwVrAzsBgrLbKLTXgh3yR
-         /2fn0nTzN+q2YQxeqF9vf0MQgbBA0peUj4mfnBgY7B2h6ExnN2tPKoAeKTGRcbaLgyw7
-         /EHdPZ3vbE2Oh0aZi1Ifok1uZdAI61FFAAarRYs64E1Z1tMXUOi/TqG5L3LZNIIbZyld
-         ceCYu6T93g6eN86KXYKA83yokL8qi4zJdYX2NlvVdODRfQFKshE6CqH6XxIXzXdHnPDp
-         xtcjFHup8nGbEc/qjM5zHoe3pANHaDpaOxD+GnsyCqhiSix3mPuPWd3hpbN164eFfKFT
-         piZw==
-X-Gm-Message-State: AOAM531y+Ayjle6mwW5EvlH6xxYXtEVRvsYkdKpecs7K+YN5emUbOIm/
-        jAxzSxZP/Ohh6GqO7ruNWANN11Iw
-X-Google-Smtp-Source: ABdhPJynTG9WE/2wz7rU96llUm+O8M3VCxmsoLGn8GGEC/AtLXD3ecQSqJWInxjS2UgGX4APrbMdJA==
-X-Received: by 2002:ac2:5ccf:: with SMTP id f15mr15638072lfq.216.1589906019877;
-        Tue, 19 May 2020 09:33:39 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id v4sm52411ljj.104.2020.05.19.09.33.38
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=54tiBIP0EU7n2aZj7YIONdjaPqjtzHIpQK/HSrYUxTM=;
+        b=lAZziPI6nisHht5BPZEtTowyTCWS/fBFr6iSIx3on2Lmph69SI2v8tiuTp5j17740f
+         aiF7Q/00el6ys2joJYdylIayygbPYdMLzrWqRj7cQ+PTPFSDVkbnZkYT8XPDJG4p8ZNt
+         oe+aOQufCQ3pao6oH4uGuZpirzH2a8VsTptwQyGzO5If+NRkxjtSv+eglXJvRT4+ToZr
+         RgcKNaAvrrdZi0NXUkBkxk+6PMyOczQ4HWI1bMPc6LjvU1nbjV3h5uopJ4nMBg3Oh7x/
+         RhUw6EpPZVv+KqSZQ5PnN91lr+G7rXJ7FFeRHQNB86j8VKTZPrsqoUb67Bam4p6Npl/E
+         wIyw==
+X-Gm-Message-State: AOAM5302d028MLyUg/+mi7KIPlzrwT6lQmC08JSlXM9U2ySXqhCLYZLe
+        AJZXEfJQL808po/gC1ECKJkdf4EffGA=
+X-Google-Smtp-Source: ABdhPJwkI1tJuZWDjSPP751OftiR7F1nlNsk/6//Uaw8IamulF0jmCMryts8mp6IXYYTnTgR1cPDnQ==
+X-Received: by 2002:a2e:d1a:: with SMTP id 26mr178170ljn.160.1589906107566;
+        Tue, 19 May 2020 09:35:07 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id x10sm70347ljd.25.2020.05.19.09.35.06
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 09:33:39 -0700 (PDT)
-Subject: Re: [PATCH v1] sdhci: tegra: Remove warnings about missing
- device-tree properties
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200516154314.14769-1-digetx@gmail.com>
- <CAPDyKFo_Xp-zipqE26iMv4CFwUoMCQZy3Zr63Cp=uzePgWX7BA@mail.gmail.com>
- <b634e7a5-9a30-3bd1-126d-be62e4dd73e1@gmail.com>
- <20200519162444.GD2113674@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b4eb368e-adc2-7b77-3ae9-fefdcfddaf3d@gmail.com>
-Date:   Tue, 19 May 2020 19:33:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 May 2020 09:35:06 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id h188so59941lfd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:35:06 -0700 (PDT)
+X-Received: by 2002:ac2:5a4c:: with SMTP id r12mr1549357lfn.10.1589906105818;
+ Tue, 19 May 2020 09:35:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200519162444.GD2113674@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200519134449.1466624-1-hch@lst.de>
+In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 May 2020 09:34:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whj0zVP-ErHcqGNrM0-bZ+TvSFAwpEd+pKFadZeFXj5PA@mail.gmail.com>
+Message-ID: <CAHk-=whj0zVP-ErHcqGNrM0-bZ+TvSFAwpEd+pKFadZeFXj5PA@mail.gmail.com>
+Subject: Re: clean up and streamline probe_kernel_* and friends v3
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.05.2020 19:24, Thierry Reding пишет:
-> On Tue, May 19, 2020 at 05:05:27PM +0300, Dmitry Osipenko wrote:
->> 19.05.2020 10:28, Ulf Hansson пишет:
->>> On Sat, 16 May 2020 at 17:44, Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>
->>>> Several people asked me about the MMC warnings in the KMSG log and
->>>> I had to tell to ignore them because these warning are irrelevant to
->>>> pre-Tegra210 SoCs.
->>>
->>> Why are the warnings irrelevant?
->>
->> That's what the DT binding doc says [1].
->>
->> [1]
->> https://www.kernel.org/doc/Documentation/devicetree/bindings/mmc/nvidia%2Ctegra20-sdhci.txt
->>
->> Although, looking at the driver's code and TRM docs, it seems that all
->> those properties are really irrelevant only to the older Terga20 SoC. So
->> the binding doc is a bit misleading.
->>
->> Nevertheless, the binding explicitly says that the properties are
->> optional, which is correct.
-> 
-> Optional only means that drivers must not fail if these properties
-> aren't found, it doesn't mean that the driver can't warn that they
-> are missing.
-> 
-> Quite possibly the only reason why they were made optional is because
-> they weren't part of the bindings since the beginning. Anything added
-> to a binding after the first public release has to be optional by
-> definition, otherwise DT ABI wouldn't be stable.
-> 
-> I think these warnings were added on purpose, though I also see that
-> there are only values for these in device tree for Tegra186 and Tegra194
-> but not Tegra210 where these should also be necessary.
-> 
-> Adding Sowjanya who wrote this code. Perhaps she can clarify why the
-> warnings were added. If these values /should/ be there on a subset of
-> Tegra, then I think we should keep them, or add them again, but perhaps
-> add a better way of identifying when they are necessary and when it is
-> safe to work without them.
-> 
-> That said, looking at those checks I wonder if they are perhaps just
-> wrong. Or at the very least they seem redundant. It looks to me like
-> they can just be:
-> 
-> 	if (tegra_host->pinctrl_state_XYZ == NULL) {
-> 		...
-> 	}
-> 
-> That !IS_ERR(...) doesn't seem to do anything. But in that case, it's
-> also obvious why we're warning about them on platforms where these
-> properties don't exist in DT.
-> 
-> So I think we either need to add those values where appropriate so that
-> the warning doesn't show, or we need to narrow down where they are
-> really needed and add a corresponding condition.
-> 
-> But again, perhaps Sowjanya can help clarify if these really are only
-> needed on Tegra210 and later or if these also apply to older chips.
+On Tue, May 19, 2020 at 6:44 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+>  - rebased on 5.7-rc6 with the bpf trace format string changes
 
-Either way will be cleaner to convert the DT binding to YAML rather than
-clutter the driver, IMO.
+Other than the critique about illegible conditionals in the result
+when doing that bpf/trace conversion, I like it.
 
+                  Linus
