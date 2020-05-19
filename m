@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FB91D94A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C0F1D94C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgESKqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 06:46:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:58806 "EHLO foss.arm.com"
+        id S1728515AbgESKxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 06:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728632AbgESKqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 06:46:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF79E101E;
-        Tue, 19 May 2020 03:46:10 -0700 (PDT)
-Received: from [10.37.8.206] (unknown [10.37.8.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7ABE3F68F;
-        Tue, 19 May 2020 03:46:08 -0700 (PDT)
-Subject: Re: [PATCH V4 06/17] arm64/cpufeature: Introduce ID_MMFR5 CPU
- register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, james.morse@arm.com,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-7-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <0c9becaf-2bc6-e094-a3ee-7b67a5eb82cd@arm.com>
-Date:   Tue, 19 May 2020 11:50:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726121AbgESKxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 06:53:33 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AC7D206D4;
+        Tue, 19 May 2020 10:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589885612;
+        bh=caz831zh9zz+Zj57ygMBoHpx7mNwspS/hNdKjQXpDa4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WOGfVmFShUJdf+d1Il5Vw0rbaUx4nHBSCeZktzM4Q+lBY3u9hYvfq5JRtAHRNf3Y7
+         McWpUIiuHwwbCif2U32WG+Yetlv2xZ7rdayR1LSCah1gvlsUa4nApF1p5PX1Je93ko
+         xZlUEbaWb2XaUFNYmnW1cmoT/PoohF6PNmD6vnKE=
+Date:   Tue, 19 May 2020 12:53:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Henri Rosten <henri.rosten@unikie.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, lukas.bulwahn@gmail.com
+Subject: Re: [PATCH 4.4 17/86] phy: micrel: Disable auto negotiation on
+ startup
+Message-ID: <20200519105329.GA120343@kroah.com>
+References: <20200518173450.254571947@linuxfoundation.org>
+ <20200518173453.976038108@linuxfoundation.org>
+ <20200519054510.GA28178@buimax>
 MIME-Version: 1.0
-In-Reply-To: <1589881254-10082-7-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519054510.GA28178@buimax>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
-> This adds basic building blocks required for ID_MMFR5 CPU register which
-> provides information about the implemented memory model and memory
-> management support in AArch32 state. This is added per ARM DDI 0487F.a
-> specification.
+On Tue, May 19, 2020 at 08:45:12AM +0300, Henri Rosten wrote:
+> On Mon, May 18, 2020 at 07:35:48PM +0200, Greg Kroah-Hartman wrote:
+> > From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+> > 
+> > [ Upstream commit 99f81afc139c6edd14d77a91ee91685a414a1c66 ]
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: kvmarm@lists.cs.columbia.edu
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+> I notice 99f81afc139c has been reverted in mainline with commit b43bd72835a5.  
+> The revert commit points out that:
 > 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> "It was papering over the real problem, which is fixed by commit
+> f555f34fdc58 ("net: phy: fix auto-negotiation stall due to unavailable
+> interrupt")"
+>  
+> Therefore, consider backporting f555f34fdc58 instead of 99f81afc139c.
+> 
+> Notice if f555f34fdc58 is taken, then I believe 215d08a85b9a should also 
+> be backported.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+I'm just going to drop this single patch for now instead, thanks.
+
+greg k-h
