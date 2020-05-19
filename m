@@ -2,133 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CAA1D9CB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD11B1D9CC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729380AbgESQaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728775AbgESQaZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:30:25 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC82CC08C5C0;
-        Tue, 19 May 2020 09:30:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u35so68106pgk.6;
-        Tue, 19 May 2020 09:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zl27qRmpnEWPY5MX3lK7b0j3SSfkbuil8NRZek91WDE=;
-        b=CYUHerbZsjjZZn8LrFJpyrGdWRr1VF8zFHmAywfWFC3ZG4LSCtQANHi9Jm3YrwJo5Z
-         fJhq+YJalSrMC9OBgb7qmAHSQ9N9oyYvEFOKqGh6DNDIfRcTeWmXMd/UDXSJ/Vk+DniC
-         MWKHkrq82Rx1O6V+4GTp9OwHQyR31lTfEgV2j7ZPsMm9Y+3yqRG7u2+fgLgynlwSG7yy
-         25OpZ6cb40wtPnA5BoDn4B6oqWnYcl8BRpx7/VrNRDg5n7zhAG11sMkGssUIfxmgLWm8
-         zUUMohosotYvnXdqLg89PrFTWM6yTztpwwWLIs4DXzU0AdgXnBfGLA03pEQVYRyJLupT
-         5jKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zl27qRmpnEWPY5MX3lK7b0j3SSfkbuil8NRZek91WDE=;
-        b=Z4Uta4wEA724Dsj7UFfOujITWPWiOolCUSMGVwpzaerKUkvHzwnE81PSUD+s5QyUX9
-         bk6lwiL1N3EvGg0RVkMJP3pEYIE5JRrmWJOEWKrTNHuonEWiCnNMMMEMzGXmyzppVSnd
-         KGhtUWSEur6YVkcVFipHt6+Zm51jhWZHjxm2HVZIOtp0EoGRWpb1koQmwy6f3cN11H74
-         V7LWhwwyvfeQYiVyFKu76BuAHvCX9QLyAgUi5jrf//useO4dVDEG9xfo8FMOZ2aNusf3
-         tCW5ZzgJdvjbd0ZXens+sUc/FfJ2wpFMhvaJeTj+e5pnod9ve5on2wlKhdbmoY47kqHY
-         idfA==
-X-Gm-Message-State: AOAM530SA0oqgCjUrW5fkbr2uMvnwJBEomGf/677yrjCTfpa4xh50gcs
-        xmqXYqi2wLsB7/WiWCMnYOCOsEmH
-X-Google-Smtp-Source: ABdhPJypTOZPUIJ48RIunmKqZO1ZcLuThjgsZif4KwXDlDqCTU+XL+eOGO4ffqhw3setBjfy+kSCIA==
-X-Received: by 2002:a63:9e41:: with SMTP id r1mr23846pgo.97.1589905824369;
-        Tue, 19 May 2020 09:30:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z190sm25976pfb.1.2020.05.19.09.30.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 09:30:23 -0700 (PDT)
-Subject: Re: [PATCH 5.6 000/192] 5.6.14-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-References: <20200519054650.064501564@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <981436bc-c36d-32e8-73ca-e121b4aea948@roeck-us.net>
-Date:   Tue, 19 May 2020 09:30:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729293AbgESQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgESQdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:33:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA79220709;
+        Tue, 19 May 2020 16:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589905988;
+        bh=N1UCw97sxHv6NCUr3SlLAqzW3zL/V10Dg2KZ3SMQItM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YEFfxu+DKUF3cUmlvwThQFr8L4FVPQT4GNnD9NrOAAxftkTN/wVInEBVVzV+vmz3g
+         SpRhjgh8NoEYtVwmEPwfJcjvb7AmnzpsTEVGJddF0ZEcBEUqFinzvjuxALD9HWs+qa
+         kguy5MvWcaAv+bpW2Mw5fhZ+Lem2P3AcOqCVE1kg=
+From:   Sasha Levin <sashal@kernel.org>
+To:     alexander.deucher@amd.com, chris@chris-wilson.co.uk,
+        ville.syrjala@linux.intel.com, Hawking.Zhang@amd.com,
+        tvrtko.ursulin@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, spronovo@microsoft.com, iourit@microsoft.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        gregkh@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
+Subject: [RFC PATCH 0/4] DirectX on Linux
+Date:   Tue, 19 May 2020 12:32:30 -0400
+Message-Id: <20200519163234.226513-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200519054650.064501564@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/20 10:47 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.14 release.
-> There are 192 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 21 May 2020 05:45:41 +0000.
-> Anything received after that time might be too late.
-> 
+There is a blog post that goes into more detail about the bigger
+picture, and walks through all the required pieces to make this work. It
+is available here:
+https://devblogs.microsoft.com/directx/directx-heart-linux . The rest of
+this cover letter will focus on the Linux Kernel bits.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 431 pass: 431 fail: 0
+Overview
+========
 
-Guenter
+This is the first draft of the Microsoft Virtual GPU (vGPU) driver. The
+driver exposes a paravirtualized GPU to user mode applications running
+in a virtual machine on a Windows host. This enables hardware
+acceleration in environment such as WSL (Windows Subsystem for Linux)
+where the Linux virtual machine is able to share the GPU with the
+Windows host.
+
+The projection is accomplished by exposing the WDDM (Windows Display
+Driver Model) interface as a set of IOCTL. This allows APIs and user
+mode driver written against the WDDM GPU abstraction on Windows to be
+ported to run within a Linux environment. This enables the port of the
+D3D12 and DirectML APIs as well as their associated user mode driver to
+Linux. This also enables third party APIs, such as the popular NVIDIA
+Cuda compute API, to be hardware accelerated within a WSL environment.
+
+Only the rendering/compute aspect of the GPU are projected to the
+virtual machine, no display functionality is exposed. Further, at this
+time there are no presentation integration. So although the D3D12 API
+can be use to render graphics offscreen, there is no path (yet) for
+pixel to flow from the Linux environment back onto the Windows host
+desktop. This GPU stack is effectively side-by-side with the native
+Linux graphics stack.
+
+The driver creates the /dev/dxg device, which can be opened by user mode
+application and handles their ioctls. The IOCTL interface to the driver
+is defined in dxgkmthk.h (Dxgkrnl Graphics Port Driver ioctl
+definitions). The interface matches the D3DKMT interface on Windows.
+Ioctls are implemented in ioctl.c.
+
+When a VM starts, hyper-v on the host adds virtual GPU devices to the VM
+via the hyper-v driver. The host offers several VM bus channels to the
+VM: the global channel and one channel per virtual GPU, assigned to the
+VM.
+
+The driver registers with the hyper-v driver (hv_driver) for the arrival
+of VM bus channels. dxg_probe_device recognizes the vGPU channels and
+creates the corresponding objects (dxgadapter for vGPUs and dxgglobal
+for the global channel).
+
+The driver uses the hyper-V VM bus interface to communicate with the
+host. dxgvmbus.c implements the communication interface.
+
+The global channel has 8GB of IO space assigned by the host. This space
+is managed by the host and used to give the guest direct CPU access to
+some allocations. Video memory is allocated on the host except in the
+case of existing_sysmem allocations. The Windows host allocates memory
+for the GPU on behalf of the guest. The Linux guest can access that
+memory by mapping GPU virtual address to allocations and then
+referencing those GPU virtual address from within GPU command buffers
+submitted to the GPU. For allocations which require CPU access, the
+allocation is mapped by the host into a location in the 8GB of IO space
+reserved in the guest for that purpose. The Windows host uses the nested
+CPU page table to ensure that this guest IO space always map to the
+correct location for the allocation as it may migrate between dedicated
+GPU memory (e.g. VRAM, firmware reserved DDR) and shared system memory
+(regular DDR) over its lifetime. The Linux guest maps a user mode CPU
+virtual address to an allocation IO space range for direct access by
+user mode APIs and drivers.
+
+ 
+
+Implementation of LX_DXLOCK2 ioctl
+==================================
+
+We would appreciate your feedback on the implementation of the
+LX_DXLOCK2 ioctl.
+
+This ioctl is used to get a CPU address to an allocation, which is
+resident in video/system memory on the host. The way it works:
+
+1. The driver sends the Lock message to the host
+
+2. The host allocates space in the VM IO space and maps it to the
+allocation memory
+
+3. The host returns the address in IO space for the mapped allocation
+
+4. The driver (in dxg_map_iospace) allocates a user mode virtual address
+range using vm_mmap and maps it to the IO space using
+io_remap_ofn_range)
+
+5. The VA is returned to the application
+
+ 
+
+Internal objects
+================
+
+The following objects are created by the driver (defined in dxgkrnl.h):
+
+- dxgadapter - represents a virtual GPU
+
+- dxgprocess - tracks per process state (handle table of created
+  objects, list of objects, etc.)
+
+- dxgdevice - a container for other objects (contexts, paging queues,
+  allocations, GPU synchronization objects)
+
+- dxgcontext - represents thread of GPU execution for packet
+  scheduling.
+
+- dxghwqueue - represents thread of GPU execution of hardware scheduling
+
+- dxgallocation - represents a GPU accessible allocation
+
+- dxgsyncobject - represents a GPU synchronization object
+
+- dxgresource - collection of dxgalloction objects
+
+- dxgsharedresource, dxgsharedsyncobj - helper objects to share objects
+  between different dxgdevice objects, which can belong to different
+processes
+
+
+ 
+Object handles
+==============
+
+All GPU objects, created by the driver, are accessible by a handle
+(d3dkmt_handle). Each process has its own handle table, which is
+implemented in hmgr.c. For each API visible object, created by the
+driver, there is an object, created on the host. For example, the is a
+dxgprocess object on the host for each dxgprocess object in the VM, etc.
+The object handles have the same value in the host and the VM, which is
+done to avoid translation from the guest handles to the host handles.
+ 
+
+
+Signaling CPU events by the host
+================================
+
+The WDDM interface provides a way to signal CPU event objects when
+execution of a context reached certain point. The way it is implemented:
+
+- application sends an event_fd via ioctl to the driver
+
+- eventfd_ctx_get is used to get a pointer to the file object
+  (eventfd_ctx)
+
+- the pointer to sent the host via a VM bus message
+
+- when GPU execution reaches a certain point, the host sends a message
+  to the VM with the event pointer
+
+- signal_guest_event() handles the messages and eventually
+  eventfd_signal() is called.
+
+
+Sasha Levin (4):
+  gpu: dxgkrnl: core code
+  gpu: dxgkrnl: hook up dxgkrnl
+  Drivers: hv: vmbus: hook up dxgkrnl
+  gpu: dxgkrnl: create a MAINTAINERS entry
+
+ MAINTAINERS                      |    7 +
+ drivers/gpu/Makefile             |    2 +-
+ drivers/gpu/dxgkrnl/Kconfig      |   10 +
+ drivers/gpu/dxgkrnl/Makefile     |   12 +
+ drivers/gpu/dxgkrnl/d3dkmthk.h   | 1635 +++++++++
+ drivers/gpu/dxgkrnl/dxgadapter.c | 1399 ++++++++
+ drivers/gpu/dxgkrnl/dxgkrnl.h    |  913 ++++++
+ drivers/gpu/dxgkrnl/dxgmodule.c  |  692 ++++
+ drivers/gpu/dxgkrnl/dxgprocess.c |  355 ++
+ drivers/gpu/dxgkrnl/dxgvmbus.c   | 2955 +++++++++++++++++
+ drivers/gpu/dxgkrnl/dxgvmbus.h   |  859 +++++
+ drivers/gpu/dxgkrnl/hmgr.c       |  593 ++++
+ drivers/gpu/dxgkrnl/hmgr.h       |  107 +
+ drivers/gpu/dxgkrnl/ioctl.c      | 5269 ++++++++++++++++++++++++++++++
+ drivers/gpu/dxgkrnl/misc.c       |  280 ++
+ drivers/gpu/dxgkrnl/misc.h       |  288 ++
+ drivers/video/Kconfig            |    2 +
+ include/linux/hyperv.h           |   16 +
+ 18 files changed, 15393 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/gpu/dxgkrnl/Kconfig
+ create mode 100644 drivers/gpu/dxgkrnl/Makefile
+ create mode 100644 drivers/gpu/dxgkrnl/d3dkmthk.h
+ create mode 100644 drivers/gpu/dxgkrnl/dxgadapter.c
+ create mode 100644 drivers/gpu/dxgkrnl/dxgkrnl.h
+ create mode 100644 drivers/gpu/dxgkrnl/dxgmodule.c
+ create mode 100644 drivers/gpu/dxgkrnl/dxgprocess.c
+ create mode 100644 drivers/gpu/dxgkrnl/dxgvmbus.c
+ create mode 100644 drivers/gpu/dxgkrnl/dxgvmbus.h
+ create mode 100644 drivers/gpu/dxgkrnl/hmgr.c
+ create mode 100644 drivers/gpu/dxgkrnl/hmgr.h
+ create mode 100644 drivers/gpu/dxgkrnl/ioctl.c
+ create mode 100644 drivers/gpu/dxgkrnl/misc.c
+ create mode 100644 drivers/gpu/dxgkrnl/misc.h
+
+-- 
+2.25.1
+
