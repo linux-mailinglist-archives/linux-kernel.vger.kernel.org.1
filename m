@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CCD1D942B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC76B1D942E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgESKR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 06:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
+        id S1728685AbgESKSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 06:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728626AbgESKRz (ORCPT
+        with ESMTP id S1728640AbgESKR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 06:17:55 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8955FC061A0C
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:17:54 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e16so15227741wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:17:54 -0700 (PDT)
+        Tue, 19 May 2020 06:17:57 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ACAC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:17:56 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id n5so2874543wmd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:17:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=A0dzsFd7YATdAmh4B3Ufb/iHlKjHhY14r5pPPWljdn0=;
-        b=OTrHYfkHzzmIKmL1oQTQzaP6hizd0MYkrJcpEaKfFmT6JKEdv6qVTE1lg+LBXOpWW/
-         B6qyGK1TH2ZsRlpPaUXSdqmZzZ2/ma+OyRUSdJYCCDKIJffmBgqM5yiAZjSJD3Xuhspn
-         X7NJQ6jlDLEriz8QHi5ttb63Zh0Q8EOL9x4CVDyCBBxXZ0A4SrHavP+BIDM06uv8XeEN
-         ey0mHmZRBgOAegD1bJYAH2ly38v3vIdm9DqIIwrI3mhQwN/2/R2GpJ9fagNqgi6JsG9M
-         C30fFLNOiu6l4UaS+vBnYeUeLjK1kIc75BAhITE5LIW+VX+AHrzxlW+2qP4RLSHuE8UF
-         LLow==
+        bh=Fw6/rheGBigvdKbfBBLuoQxU/TmSkSKuizeWdRgiMEo=;
+        b=bhUgcoRlGk/CHPSzeBIJuBbFMldNRehsCtiaScsoniU5k9tnwiteBislmiXObQiYrv
+         uAdTee/MMmxgHGVBLuWOk4YbgN6/63XwirRvw/ImqZrXUmqDpBv3ERl7ns1y9iAw9KvZ
+         GEohowe7+glTPaGPExzxgS8LvsUU5wbkEb1PZfzJyjOFeou80TtEkT8mAsPtSn2dKhsX
+         vNE57xFz+6uSzQM6w8YI4wVwmwdUc4NI91fVTk4lgREygGaeBRP8tOcKzOt3P3Su1Po8
+         N3B0GqOkvpDZexOsP9+UXB2tYRUijMYjQgyTZSJDY4mcZWUDFyi2GL6+JfPIqe92lRp2
+         c+hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=A0dzsFd7YATdAmh4B3Ufb/iHlKjHhY14r5pPPWljdn0=;
-        b=hALqt+5LOWE+j3DmJ7hKUW5YTp9YDMPhMo3TIWNUK/uN8eCFC8TYv4Lfz/YOGGbDdU
-         Wj8h8C8xfT9t2lKx4x/pCeTSrZUwEQ7crZrkIf1n0qCqJdF575JgqGbat4guAl7S/yGl
-         fJdNQW0WC0jTFKHN1wWAbMqkBpf+eT7JPyLIGM5UUTx8lMy8ZA3ezAxUQJuoV6cxIAEp
-         pGi7ECa1u2IrY4zS4mx5pKigVjtuvOanW6udQgYonUW+8TFjXcpgg1CPiNZZ54JI88nE
-         pyVo9H5BhtfvJIY9EqjKTdzjCX74uqqgomMZRO9VzDNe/NFowIX8mRrPqNa/zEd1j/VL
-         DEPA==
-X-Gm-Message-State: AOAM530k82asKaFdtt4Giz69MWPYGBlzVDhExyCeKsYwTzGX7/d3eNiY
-        WK2uz0mCiQjLrstN+Qou42zBsN/RyZNWHw==
-X-Google-Smtp-Source: ABdhPJzIO0FRdhKzhVIcXSDXsYNgM+AY6/roJHSk4k92JS+Nf2+35NB/qFXpKWpr+9usDiHz5dL04Q==
-X-Received: by 2002:adf:a35c:: with SMTP id d28mr23884503wrb.37.1589883473241;
-        Tue, 19 May 2020 03:17:53 -0700 (PDT)
+        bh=Fw6/rheGBigvdKbfBBLuoQxU/TmSkSKuizeWdRgiMEo=;
+        b=rOxw9m87YCe9Yrida7I/TPDK9W4/HW5LrDE+IjHz3J1tDbSDu6Lxzt1x7Kl/QGlDR1
+         UCMGJwF0BdF0bT+4CM5ptl4QeinMcNPEzCGkHqx1i+7TS4tHqc+YmMHI1Uf5aS2Unq7y
+         UO4intZA8WI2hdkIx3NhYivM+kOyCT91YU6NcZznOOats/9oligRfV3nB4yjHHv3O47m
+         dhNHUY9+zHRSX2/yvISYm4Qx/ZCjrnMNTABJ2/NiguSwTpBG6uihHMxySrUmkXVsndnQ
+         1N3Lf6eMQMVxzdv9TOkwbzKbNDKWPWwb6NxFTFy/HARGByVxwSjWjbetNcZGFr7cOyl+
+         1M1g==
+X-Gm-Message-State: AOAM531SKmzHPVbbWsntoV9MH14j/+1NB8TjaCBBGO6fnEgRrB/yGBUH
+        YI8EA3yk6zhkA83LRWYauLg=
+X-Google-Smtp-Source: ABdhPJwar6JPscVQ2VJ4NDhUmfxW/yUbFSMSjlV8YwyjbE5MVOzrG9NvLQj9pGAw8yEaxzQG9uUWog==
+X-Received: by 2002:a7b:cf15:: with SMTP id l21mr4579351wmg.172.1589883475326;
+        Tue, 19 May 2020 03:17:55 -0700 (PDT)
 Received: from ubuntu-G3.micron.com ([165.225.86.140])
-        by smtp.gmail.com with ESMTPSA id w15sm3062488wmi.35.2020.05.19.03.17.51
+        by smtp.gmail.com with ESMTPSA id w15sm3062488wmi.35.2020.05.19.03.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 03:17:52 -0700 (PDT)
+        Tue, 19 May 2020 03:17:54 -0700 (PDT)
 From:   Bean Huo <huobean@gmail.com>
 To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
         s.hauer@pengutronix.de, boris.brezillon@collabora.com,
         derosier@gmail.com
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         huobean@gmail.com, Bean Huo <beanhuo@micron.com>
-Subject: [RESET PATCH v5 3/5] mtd: rawnand: Add write_oob hook in nand_chip_ops
-Date:   Tue, 19 May 2020 12:17:32 +0200
-Message-Id: <20200519101734.19927-4-huobean@gmail.com>
+Subject: [RESET PATCH v5 4/5] mtd: rawnand: Introduce a new function nand_check_is_erased_page()
+Date:   Tue, 19 May 2020 12:17:33 +0200
+Message-Id: <20200519101734.19927-5-huobean@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200519101734.19927-1-huobean@gmail.com>
 References: <20200519101734.19927-1-huobean@gmail.com>
@@ -66,81 +66,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bean Huo <beanhuo@micron.com>
 
-Break the function nand_write_oob() into two functions, and one of them
-is named nand_write_oob_nand(), which will be assigned to new added hook
-write_oob by default. The hook write_oob will be overwritten in the NAND
-vendor lower-level driver if needed.
+Add a new function nand_check_is_erased_page() in nand_base.c, which is
+used to check whether one programmable page is empty or already programmed.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Bean Huo <beanhuo@micron.com>
 ---
- drivers/mtd/nand/raw/internals.h | 3 ++-
- drivers/mtd/nand/raw/nand_base.c | 9 +++++++++
- include/linux/mtd/rawnand.h      | 3 +++
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_base.c | 40 ++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  2 ++
+ 2 files changed, 42 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index 03866b0aadea..94d300a207ac 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -99,7 +99,8 @@ int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
- void nand_decode_ext_id(struct nand_chip *chip);
- void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
- void sanitize_string(uint8_t *s, size_t len);
--
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			 struct mtd_oob_ops *ops);
- static inline bool nand_has_exec_op(struct nand_chip *chip)
- {
- 	if (!chip->controller || !chip->controller->ops ||
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e90b7ae878e2..09ee490c08a9 100644
+index 09ee490c08a9..932a8cae4e84 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4267,6 +4267,13 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	return chip->ops.write_oob(chip, to, ops);
-+}
-+
-+int nand_write_oob_nand(struct nand_chip *chip, loff_t to,
-+			struct mtd_oob_ops *ops)
-+{
- 	int ret;
- 
- 	ops->retlen = 0;
-@@ -4573,6 +4580,8 @@ static void nand_set_defaults(struct nand_chip *chip)
- 
- 	if (!chip->buf_align)
- 		chip->buf_align = 1;
-+
-+	chip->ops.write_oob = nand_write_oob_nand;
+@@ -2646,6 +2646,46 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
  }
+ EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
  
- /* Sanitize ONFI strings so we can safely print them */
++/**
++ * nand_check_is_erased_page - check if this page is a empty page
++ * @chip: nand chip info structure
++ * @page_data: data buffer containing the data in the page being checked
++ * @oob: indicate if chip->oob_poi points to oob date of the page
++ *
++ * Returns true if this is an un-programmed page, false otherwise.
++ */
++int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int ret, i;
++	u8 *databuf, *eccbuf = NULL;
++	struct mtd_oob_region oobregion;
++	int datasize, eccbytes = 0;
++
++	databuf = page_data;
++	datasize = chip->ecc.size;
++
++	if (oob) {
++		mtd_ooblayout_ecc(mtd, 0, &oobregion);
++		eccbuf = chip->oob_poi + oobregion.offset;
++		eccbytes = chip->ecc.bytes;
++	}
++
++	for (i = 0; i < chip->ecc.steps; i++) {
++		ret = nand_check_erased_ecc_chunk(databuf, datasize,
++						  eccbuf, eccbytes,
++						  NULL, 0, chip->ecc.strength);
++		if (ret < 0)
++			return false;
++
++		databuf += chip->ecc.size;
++		eccbuf += chip->ecc.bytes;
++	}
++
++	return true;
++}
++EXPORT_SYMBOL(nand_check_is_erased_page);
++
+ /**
+  * nand_read_page_raw_notsupp - dummy read raw page function
+  * @chip: nand chip info structure
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index df3d4b3ef2f6..3d75e50e5b75 100644
+index 3d75e50e5b75..718ce81eb111 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1035,6 +1035,7 @@ struct nand_legacy {
-  *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @pre_erase:		[FLASHSPECIFIC] prepare a physical erase block
-  * @post_erase:		[FLASHSPECIFIC] physical block erase post
-+ * @write_oob:		[REPLACEABLE] Raw NAND write operation
-  */
- struct nand_chip_ops {
- 	int (*suspend)(struct nand_chip *chip);
-@@ -1044,6 +1045,8 @@ struct nand_chip_ops {
- 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
- 	int (*pre_erase)(struct nand_chip *chip, u32 eraseblock);
- 	int (*post_erase)(struct nand_chip *chip, u32 eraseblock);
-+	int (*write_oob)(struct nand_chip *chip, loff_t to,
-+			 struct mtd_oob_ops *ops);
- };
+@@ -1337,6 +1337,8 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *extraoob, int extraooblen,
+ 				int threshold);
  
- /**
++int nand_check_is_erased_page(struct nand_chip *chip, u8 *page_data, bool oob);
++
+ int nand_ecc_choose_conf(struct nand_chip *chip,
+ 			 const struct nand_ecc_caps *caps, int oobavail);
+ 
 -- 
 2.17.1
 
