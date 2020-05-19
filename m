@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8811D920E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE891D921A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgESIav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 04:30:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38751 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728456AbgESIat (ORCPT
+        id S1726892AbgESIgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 04:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgESIgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 04:30:49 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jaxe9-0002B4-6Y; Tue, 19 May 2020 08:30:45 +0000
-Date:   Tue, 19 May 2020 10:30:44 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Chris Palmer <palmer@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: seccomp feature development
-Message-ID: <20200519083044.lo5d22hdd5nc3dcm@wittgenstein>
-References: <202005181120.971232B7B@keescook>
- <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
- <20200519072451.GA3128@ircssh-2.c.rugged-nimbus-611.internal>
+        Tue, 19 May 2020 04:36:23 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1CCC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 01:36:23 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jaxjV-000476-KX; Tue, 19 May 2020 10:36:17 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 2386B1006A1; Tue, 19 May 2020 10:36:11 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Xianting Tian <xianting_tian@126.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] timers: Use set_current_state macro
+In-Reply-To: <1589469647-33814-1-git-send-email-xianting_tian@126.com>
+References: <1589469647-33814-1-git-send-email-xianting_tian@126.com>
+Date:   Tue, 19 May 2020 10:36:11 +0200
+Message-ID: <87imgsuxs4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200519072451.GA3128@ircssh-2.c.rugged-nimbus-611.internal>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 07:24:52AM +0000, Sargun Dhillon wrote:
-> On Tue, May 19, 2020 at 12:39:39AM +0200, Jann Horn wrote:
-> > > For user_notif, I think we need something in and around these options:
-> > >
-> > > - make a new API that explicitly follows EA struct design
-> > >   (and while read()/write() might be easier[4], I tend to agree with
-> > >   Jann and we need to stick to ioctl(): as Tycho noted, "read/write is
-> > >   for data". Though I wonder if read() could be used for the notifications,
-> > >   which ARE data, and use ioctl() for the responses?)
-> > 
-> > Just as a note: If we use read() there, we'll never be able to
-> > transfer things like FDs through that API.
+Xianting Tian <xianting_tian@126.com> writes:
+> Use set_current_state macro instead of current->state = TASK_RUNNING
+>
+> Signed-off-by: Xianting Tian <xianting_tian@126.com>
+> ---
+>  kernel/time/timer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index 4820823..b9ecf87 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1882,7 +1882,7 @@ signed long __sched schedule_timeout(signed long timeout)
+>  			printk(KERN_ERR "schedule_timeout: wrong timeout "
+>  				"value %lx\n", timeout);
+>  			dump_stack();
+> -			current->state = TASK_RUNNING;
+> +			set_current_state(TASK_RUNNING);
 
-(Hm, how did I not get that message? Weird. :))
+This is still wrong. Again:
 
-I hope we won't be able to receive fds through read(). This quickly
-becomes quite problematic, I think.
+   "That's not the same and adds a barrier which is not needed.
 
-> > 
-> Although there is no good reason for read being able to receive FDs, there is
-> precedence for recvmsg being able to do this. Either way, I do not think
+    Not a big problem in that particular error handling code path, but in
+    general you really have to look whether your replacement is resulting in
+    the same code.
 
-Right, and recvmsg() is quite dangerous because of that because you need
-to be extremely careful when e.g. the message is truncated and you want
-to error out and you need to carefully close all fds and other shenanigans.
+    If not then you need to make an argument in the changelog why you are
+    replacing existing code with something which is not fully equivalent.
 
-Also, recvmsg() imho, is a bit different from read simply because
-it's sort-of a "typed" read; it's plumbed on top of a message protocol and
-that protocal includes the ability to read fds. read() on the other hand
-is completely agnostic and doesn't care about the data at all. But
-that's just how I always conceptualized it...
+    For this particular case, please check the implementation and read the
+    documentation of set_current_state() in include/linux/sched.h."
 
-> it's a good idea to recv file descriptors, and instead file descriptors
-> should be fetched via the pidfd_getfd syscall.
+Thanks,
 
-+1
-
-> 
-> Injection is more complicated, and for now, I believe that "writes" should
-> be done via ioctl, or in the future, something like sendmsg might work.
+        tglx
