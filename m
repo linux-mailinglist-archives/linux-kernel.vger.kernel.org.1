@@ -2,192 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1601DA44F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D7C1DA48A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgESWMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgESWMh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:12:37 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434D9C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:12:37 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id n15so562124pfd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 15:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=N4XH541U7UQQpdWsqc6VDr4j78oUO2KTxdnSbF6otX8=;
-        b=aeRPaTJ0pWOqy7B9rQlT9Ytvk3L7vQ0tnHXGiI/lZNt/BP9gtOg9vChChdy3fBssJI
-         Fwp+ofBzsTZ1epC6CPeK5f7xxG7enltUCpuDA+0JCgt0kUsYpaw62fuGlr55Eq94KKEU
-         zdpH2JWPHkIia9Oftg7UjNFfHKgEY7fBJQJGtthGCIb/KHZZxlgOYsljUMbMg3amM6D0
-         zevdwyFuk1A+LJcEc7+7dyNNYzMYmRVKxwjAiEsGClRm8XN5giR37BIb6wmmmUzBLFdn
-         YpNBHgifYQT79jQ9zYdoJmhtQ2aj5n/UjUInRPOizfqaDxXjTL1g+Nv0Hd9VnK4lofd2
-         V33Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=N4XH541U7UQQpdWsqc6VDr4j78oUO2KTxdnSbF6otX8=;
-        b=S7FPrT5YNDtvqJJv3XwyFHPeDE5OxClvIv3hjDXITirGBB7d8JHlwF1ATn4e+izror
-         IQ722rvrutJnPH0vGM+FkwTKPEwOeo3cYS/SXEP9DKDrXAEH5c+7CUjZ1YZp2tjD16Ps
-         fx52czZAuwHaXaBcbOOW8KQiwDi3mk7T/le7iHNTxpKfugEpjqPdTjKrdyVUsTM4RFQs
-         Zag4iyKZ9RnxWORcOnjHo62yBW8AzI5WzUlHwjlhBjtno2ZyEiNyNr5PnyaCQ+uSAyjx
-         mmp01aBNaKricW0x9yE7RWupNRbbtLjP55Zpjmo5bJUfUaiQQEUr7U7St2k9gAVY7tg6
-         b/dw==
-X-Gm-Message-State: AOAM533+kcF84sOmvpsnBo0t0LgZa99DWR2sQRVZPFXZNp5AM0Saex3V
-        9mzFpDEj2MmEWUbBKROEwhhnYmmnSQHYGqYb+Fa4pg==
-X-Google-Smtp-Source: ABdhPJwFafNy0ByJNK8kOBKMqVM+tJnjfKsrHY0o5MD7vQl1T98o7jN0rNQLD4sRZFm6TMQN+t1LPdTh05UH7cfnPfs=
-X-Received: by 2002:a63:d010:: with SMTP id z16mr1134483pgf.381.1589926356402;
- Tue, 19 May 2020 15:12:36 -0700 (PDT)
+        id S1727072AbgESW2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:28:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:14393 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726432AbgESW2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:28:44 -0400
+IronPort-SDR: tM64yaY0VVmOTrgLbsyZPHkwBBfokNq25XixByctoKhCrmsrRN9cYFmxrWySPt5NGS8sKZn5IB
+ Y7yA+o2ocXMA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:28:43 -0700
+IronPort-SDR: K4gouk3kgt6TlmETPZvcuoH4GKDKD8iWteFL3OMV34DttzTKYx2Vm86O3xgzK00SdxVPRNm6aX
+ xlKyDYPFpfmg==
+X-IronPort-AV: E=Sophos;i="5.73,411,1583222400"; 
+   d="scan'208";a="253395613"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:28:43 -0700
+Subject: [PATCH v3 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user, kernel}
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     tglx@linutronix.de, mingo@redhat.com
+Cc:     Tony Luck <tony.luck@intel.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Borislav Petkov <bp@alien8.de>, stable@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Date:   Tue, 19 May 2020 15:12:31 -0700
+Message-ID: <158992635164.403910.2616621400995359522.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-References: <202005200123.gFjGzJEH%lkp@intel.com> <20200519205505.GD444@zn.tnic>
- <20200519212541.GA3580016@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200519212541.GA3580016@ubuntu-s3-xlarge-x86>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 May 2020 15:12:24 -0700
-Message-ID: <CAKwvOdk+JwddxLaXc9S7SMMTye8bDaGEckcs7zu5tEMD0G3Yog@mail.gmail.com>
-Subject: Re: [tip:x86/mm 1/23] arch/x86/mm/init.c:75:6: warning: no previous
- prototype for function 'x86_has_pat_wp'
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Philip Li <philip.li@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, kbuild test robot <lkp@intel.com>,
-        Christoph Hellwig <hch@lst.de>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro and Philip,
-We're seeing a bunch of -Wmissing-prototypes warnings from 0day bot
-suddenly today.  Did something change on the Kbuild or 0day bot side?
+Changes since v2 [1]:
+- Replace the non-descriptive copy_safe() with copy_mc_to_user() and
+  copy_mc_to_kernel() several code organization cleanups resulted from
+  this rename, which further proves the point that the name deeply
+  matters for maintainability in this case. (Linus)
 
-On Tue, May 19, 2020 at 2:25 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Tue, May 19, 2020 at 10:55:05PM +0200, Borislav Petkov wrote:
-> > On Wed, May 20, 2020 at 01:51:25AM +0800, kbuild test robot wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x=
-86/mm
-> > > head:   bd1de2a7aace4d1d312fb1be264b8fafdb706208
-> > > commit: 1f6f655e01adebf5bd5e6c3da2e843c104ded051 [1/23] x86/mm: Add a=
- x86_has_pat_wp() helper
-> > > config: x86_64-randconfig-r012-20200519 (attached as .config)
-> > > compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project =
-135b877874fae96b4372c8a3fbfaa8ff44ff86e3)
-> > > reproduce:
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master=
-/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # install x86_64 cross compiling tool for clang build
-> > >         # apt-get install binutils-x86-64-linux-gnu
-> > >         git checkout 1f6f655e01adebf5bd5e6c3da2e843c104ded051
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cros=
-s ARCH=3Dx86_64
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kbuild test robot <lkp@intel.com>
-> > >
-> > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> > >
-> > > >> arch/x86/mm/init.c:75:6: warning: no previous prototype for functi=
-on 'x86_has_pat_wp' [-Wmissing-prototypes]
-> > > bool x86_has_pat_wp(void)
-> > > ^
-> >
-> > Triggers with gcc too:
-> >
-> > make W=3D1 arch/x86/mm/init.o
-> >
-> > ...
-> >
-> > arch/x86/mm/init.c:81:6: warning: no previous prototype for =E2=80=98x8=
-6_has_pat_wp=E2=80=99 [-Wmissing-prototypes]
-> >    81 | bool x86_has_pat_wp(void)
-> >       |      ^~~~~~~~~~~~~~
-> >
-> >
-> > -Wmissing-prototypes is default off, though, dunno why clang 11 has it
-> > on.
->
-> It doesn't: https://godbolt.org/z/rU5_5H
->
-> I assume this is caused by some sort of internal change to the 0day
-> infrastructure (testing W=3D1?)
->
-> I cannot see this without adding W=3D1 to make at the listed commit with
-> the provided config.
->
-> Cheers,
-> Nathan
->
-> > Anyway, something for Benni to fix. CCed and leaving the rest for him a=
-s
-> > reference.
-> >
-> > > arch/x86/mm/init.c:75:1: note: declare 'static' if the function is no=
-t intended to be used outside of this translation unit
-> > > bool x86_has_pat_wp(void)
-> > > ^
-> > > static
-> > > arch/x86/mm/init.c:866:13: warning: no previous prototype for functio=
-n 'mem_encrypt_free_decrypted_mem' [-Wmissing-prototypes]
-> > > void __weak mem_encrypt_free_decrypted_mem(void) { }
-> > > ^
-> > > arch/x86/mm/init.c:866:1: note: declare 'static' if the function is n=
-ot intended to be used outside of this translation unit
-> > > void __weak mem_encrypt_free_decrypted_mem(void) { }
-> > > ^
-> > > static
-> > > 2 warnings generated.
-> > >
-> > > vim +/x86_has_pat_wp +75 arch/x86/mm/init.c
-> > >
-> > >     73
-> > >     74      /* Check that the write-protect PAT entry is set for writ=
-e-protect */
-> > >   > 75      bool x86_has_pat_wp(void)
-> > >     76      {
-> > >     77              return __pte2cachemode_tbl[_PAGE_CACHE_MODE_WP] =
-=3D=3D _PAGE_CACHE_MODE_WP;
-> > >     78      }
-> > >     79
-> > >
-> > > ---
-> > > 0-DAY CI Kernel Test Service, Intel Corporation
-> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> >
-> >
-> >
-> > --
-> > Regards/Gruss,
-> >     Boris.
-> >
-> > https://people.kernel.org/tglx/notes-about-netiquette
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/clang-built-linux/20200519212541.GA3580016%40ubuntu-s3-xlarge-x86.
+- Do not use copy_user_generic() as the generic x86 backend for
+  copy_mc_to_user() since the #MC handler explicitly wants the exception
+  to be trapped by a _ASM_EXTABLE_FAULT handler. (Vivek).
 
+- Rename copy_safe_slow() to copy_mc_fragile() to better indicate what
+  the implementation is handling. copy_safe_fast() is replaced with
+  copy_mc_generic().
 
+---
 
---=20
-Thanks,
-~Nick Desaulniers
+The primary motivation to go touch memcpy_mcsafe() is that the existing
+benefit of doing slow "handle with care" copies is obviated on newer
+CPUs. With that concern lifted it also obviates the need to continue to
+update the MCA-recovery capability detection code currently gated by
+"mcsafe_key". Now the old "mcsafe_key" opt-in to perform the copy with
+concerns for recovery fragility can instead be made an opt-out from the
+default fast copy implementation (enable_copy_mc_fragile()).
+
+The discussion with Linus on the first iteration of this patch
+identified that memcpy_mcsafe() was misnamed relative to its usage. The
+new names copy_mc_to_user() and copy_mc_to_kernel() clearly indicate the
+intended use case and lets the architecture organize the implementation
+accordingly.
+
+For both powerpc and x86 a copy_mc_generic() implementation is added as
+the backend for these interfaces.
+
+Patches are relative to tip/master.
+
+---
+
+Dan Williams (2):
+      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user,kernel}()
+      x86/copy_mc: Introduce copy_mc_generic()
+
+ arch/powerpc/Kconfig                               |    2 
+ arch/powerpc/include/asm/string.h                  |    2 
+ arch/powerpc/include/asm/uaccess.h                 |   40 +++--
+ arch/powerpc/lib/Makefile                          |    2 
+ arch/powerpc/lib/copy_mc_64.S                      |    4 
+ arch/x86/Kconfig                                   |    2 
+ arch/x86/Kconfig.debug                             |    2 
+ arch/x86/include/asm/copy_mc_test.h                |   75 +++++++++
+ arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
+ arch/x86/include/asm/string_64.h                   |   32 ----
+ arch/x86/include/asm/uaccess_64.h                  |   35 ++--
+ arch/x86/kernel/cpu/mce/core.c                     |    8 -
+ arch/x86/kernel/quirks.c                           |    9 -
+ arch/x86/lib/Makefile                              |    1 
+ arch/x86/lib/copy_mc.c                             |   64 ++++++++
+ arch/x86/lib/copy_mc_64.S                          |  165 ++++++++++++++++++++
+ arch/x86/lib/memcpy_64.S                           |  115 --------------
+ arch/x86/lib/usercopy_64.c                         |   21 ---
+ drivers/md/dm-writecache.c                         |   15 +-
+ drivers/nvdimm/claim.c                             |    2 
+ drivers/nvdimm/pmem.c                              |    6 -
+ include/linux/string.h                             |    9 -
+ include/linux/uaccess.h                            |    9 +
+ include/linux/uio.h                                |   10 +
+ lib/Kconfig                                        |    7 +
+ lib/iov_iter.c                                     |   43 +++--
+ tools/arch/x86/include/asm/copy_safe_test.h        |   13 ++
+ tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
+ tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
+ tools/objtool/check.c                              |    5 -
+ tools/perf/bench/Build                             |    1 
+ tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
+ tools/testing/nvdimm/test/nfit.c                   |   48 +++---
+ .../testing/selftests/powerpc/copyloops/.gitignore |    2 
+ tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
+ .../testing/selftests/powerpc/copyloops/copy_mc.S  |    0 
+ 36 files changed, 460 insertions(+), 522 deletions(-)
+ rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_mc_64.S} (98%)
+ create mode 100644 arch/x86/include/asm/copy_mc_test.h
+ delete mode 100644 arch/x86/include/asm/mcsafe_test.h
+ create mode 100644 arch/x86/lib/copy_mc.c
+ create mode 100644 arch/x86/lib/copy_mc_64.S
+ create mode 100644 tools/arch/x86/include/asm/copy_safe_test.h
+ delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
+ delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
+ rename tools/testing/selftests/powerpc/copyloops/{memcpy_mcsafe_64.S => copy_mc.S} (100%)
+
+base-commit: bba413deb1065f1291cb1f366247513f11215520
