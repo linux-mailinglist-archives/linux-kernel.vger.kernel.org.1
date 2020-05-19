@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24B51D962E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3741D9631
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgESMXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 08:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgESMXq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 08:23:46 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E9FC08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:23:46 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id j8so14216902iog.13
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
-        b=WeWgqAf4BT4aJAHC8mDPF/a2N/En8GwmGFs5SdYw2NgqR4SF0uTlXE+rV/Mu0Ib1Nu
-         rXQX4Qpbfk3Dt1BEf0NgytcC88pEZiZcaJEibcXCN4SEZJ8rMHvnnXPwTkPbDR39efIP
-         nECzs7Qd+L0ElKDBrXq1sE0GUVUjhT/A13+jIUakFQZz6euejlinFGU05cuZYSglodD0
-         AGJo3DWhlcjLkmFpUcZKwOa31HjXr+CIFnEDv4+Xb6ZQ7fosx3aR7fNPCyUnJDHOYGGL
-         19eDK423BkkUVL8qvG/iux10rQcoPf7SF2BalhmDwv5obP8nQxfI2HFJwizM1Y8qCmcJ
-         5Yvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=CZOZ6zJl7K+CX7mG44VkFRrQ+i68m5YSb/XRoNfw+DM=;
-        b=Wdkv7+E/6F/kGETzFlPEX/KR08UYxtUz6WPjMQ26KD4yakp1jUJO2bc9jDvqud1A/u
-         fWk7r+vPi5CTlVRHore2wTSsKyFVUpuF/XssQ7rZ/UnPelhji5IQnKlNEL5sRxvN2uGE
-         5SEaMObmkWN9UsFROu/1jr0plixkC1UlgCg9IT4maHCojFMOowcAv8RVL0qW85OXrjpP
-         dRLhNuGMpwBLGrmdKUYsnsbraRht+Z0oVQDWe7U1TNI6rDqkOCkzekrEZAmE1I5XKJFA
-         xvh8/VnhILluCroDkXjrN3rVBkh64Kp2CektBVuKe9wNuz+uQWbticUNaza8m0AzBw7E
-         kLLw==
-X-Gm-Message-State: AOAM533IaGfIyISCFTP1Y2XR3pPtmOJ2jENjx5/4NHWtvAYYDsdxVXsP
-        c3UzgCovbLAj3GojJjBGY4BGHoEMNX0D+6oAQkc=
-X-Google-Smtp-Source: ABdhPJzXumu8Ku30FZ6evyduc9+VcnLp9+ZgGBLk3CwkxBNyjF9ZlpIvwi8eH/iJIj2Pyc7wzsyjQQCvkk1XGXzcTmo=
-X-Received: by 2002:a05:6602:1408:: with SMTP id t8mr12805460iov.125.1589891025539;
- Tue, 19 May 2020 05:23:45 -0700 (PDT)
+        id S1728829AbgESMYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 08:24:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:25136 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgESMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 08:24:42 -0400
+IronPort-SDR: 496qYSdewMGhLUJgzF22dMFgIYgDXyLavxGIjOPvu462z31+XdfR1qv5ovBQgLU4odrg7fLgO3
+ CtlKTN0X5LFQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 05:24:42 -0700
+IronPort-SDR: uXcqt5cgS8vziQXjvTsLjF60PBfq6Ka4H9MGh3uVo2aJdrct40suUlGS/XoeJbWge4pX/d/ycB
+ QBf/rUZ/rccQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="288940600"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.171.98]) ([10.249.171.98])
+  by fmsmga004.fm.intel.com with ESMTP; 19 May 2020 05:24:38 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH v11 08/11] KVM: x86/pmu: Emulate LBR feature via guest LBR
+ event
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
+        wei.w.wang@intel.com
+References: <20200514083054.62538-1-like.xu@linux.intel.com>
+ <20200514083054.62538-9-like.xu@linux.intel.com>
+ <20200519110011.GG279861@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <1fd08161-b3d2-1731-37c5-6c9fe0e06233@intel.com>
+Date:   Tue, 19 May 2020 20:24:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a4f:284:0:0:0:0:0 with HTTP; Tue, 19 May 2020 05:23:44 -0700 (PDT)
-Reply-To: azizdake0@gmail.com
-From:   Aziz Dake <palwil899@gmail.com>
-Date:   Tue, 19 May 2020 05:23:44 -0700
-Message-ID: <CAAE16A4r20CJtOOin9BFfW5=w-sJn6+f6skKxLQnKMUcqxfYYA@mail.gmail.com>
-Subject: From Honourable Barrister Aziz Dake.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200519110011.GG279861@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attn: Sir/Madam
-
-I am Honourable Barrister Aziz the personal resident Attorney here in
-Burkina Faso to Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi of
-Libya c. 1942 =E2=80=93 20 October 2011.
-
-My client Late Mr. Muammar Muhammad Abu Minyar al-Gaddafi c. 1942 =E2=80=93=
- 20
-October 2011, was having a deposit sum of {thirty million four Hundred
-thousand united state dollars} only ($30.4M USD) with a security
-finance firm affiliated with African development bank here in Burkina
-Faso.
-
-With the above explanation=E2=80=99s I want to move this money from Burkina
-Faso to your country, affidavit on your name, but note that this is a
-deal between me and you and should not be related to anybody until the
-deal is over for security reasons, please if interested reply as soon
-as possible.
+On 2020/5/19 19:00, Peter Zijlstra wrote:
+> On Thu, May 14, 2020 at 04:30:51PM +0800, Like Xu wrote:
+>> +static inline bool event_is_oncpu(struct perf_event *event)
+>> +{
+>> +	return event && event->oncpu != -1;
+>> +}
+>
+>> +/*
+>> + * It's safe to access LBR msrs from guest when they have not
+>> + * been passthrough since the host would help restore or reset
+>> + * the LBR msrs records when the guest LBR event is scheduled in.
+>> + */
+>> +static bool intel_pmu_access_lbr_msr(struct kvm_vcpu *vcpu,
+>> +				     struct msr_data *msr_info, bool read)
+>> +{
+>> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>> +	u32 index = msr_info->index;
+>> +
+>> +	if (!intel_is_valid_lbr_msr(vcpu, index))
+>> +		return false;
+>> +
+>> +	if (!msr_info->host_initiated && !pmu->lbr_event)
+>> +		intel_pmu_create_lbr_event(vcpu);
+>> +
+>> +	/*
+>> +	 * Disable irq to ensure the LBR feature doesn't get reclaimed by the
+>> +	 * host at the time the value is read from the msr, and this avoids the
+>> +	 * host LBR value to be leaked to the guest. If LBR has been reclaimed,
+>> +	 * return 0 on guest reads.
+>> +	 */
+>> +	local_irq_disable();
+>> +	if (event_is_oncpu(pmu->lbr_event)) {
+>> +		if (read)
+>> +			rdmsrl(index, msr_info->data);
+>> +		else
+>> +			wrmsrl(index, msr_info->data);
+>> +	} else if (read)
+>> +		msr_info->data = 0;
+>> +	local_irq_enable();
+>> +
+>> +	return true;
+>> +}
+> So this runs in the vCPU thread in host context to emulate the MSR
+> access, right?
+Yes, it's called to emulate MSR accesses when the guest LBR event is
+scheduled on while the LBR stack MSRs have not been passthrough to the vCPU.
 
 Thanks,
-Honourable Barrister Aziz Dake.
+Like Xu
+>
+
