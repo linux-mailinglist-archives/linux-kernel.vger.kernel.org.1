@@ -2,148 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11221DA394
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D311DA392
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgESV3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:29:10 -0400
-Received: from mga05.intel.com ([192.55.52.43]:37811 "EHLO mga05.intel.com"
+        id S1727052AbgESV3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:29:02 -0400
+Received: from namei.org ([65.99.196.166]:38282 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbgESV3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:29:07 -0400
-IronPort-SDR: calwNAkkl1Nx2MfYgUNjJM15C079b9ha3mjn+n7bP+hJARgsHYfRyfc8864HmgRpELfH93RFe7
- iZOPWm+jBTDg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 14:28:57 -0700
-IronPort-SDR: MdmYWyVT48oXiYzdxlaF5nJbDbPdAi5G3Wu1qGFKS5La5TIMrXZEKhFQScVTb4dkQDCpumxwF+
- 89BVI/XwLtCQ==
-X-IronPort-AV: E=Sophos;i="5.73,411,1583222400"; 
-   d="scan'208";a="264449079"
-Received: from rchatre-s.jf.intel.com ([10.54.70.76])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 14:28:56 -0700
-From:   Reinette Chatre <reinette.chatre@intel.com>
-To:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com
-Cc:     kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
-        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH V6 4/4] x86/resctrl: Use appropriate API for strings terminated by newline
-Date:   Tue, 19 May 2020 14:28:31 -0700
-Message-Id: <79faf008e6460a2bc8a3cc02313f7900552b1475.1589922949.git.reinette.chatre@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1589922949.git.reinette.chatre@intel.com>
-References: <cover.1589922949.git.reinette.chatre@intel.com>
+        id S1725998AbgESV3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 17:29:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 04JLSVQr028873;
+        Tue, 19 May 2020 21:28:31 GMT
+Date:   Wed, 20 May 2020 07:28:31 +1000 (AEST)
+From:   James Morris <jmorris@namei.org>
+To:     Kees Cook <keescook@chromium.org>
+cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: [PATCH v2 2/8] exec: Factor security_bprm_creds_for_exec out of
+ security_bprm_set_creds
+In-Reply-To: <202005191108.7A6E97831@keescook>
+Message-ID: <alpine.LRH.2.21.2005200728110.6670@namei.org>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org> <87sgga6ze4.fsf@x220.int.ebiederm.org> <87v9l4zyla.fsf_-_@x220.int.ebiederm.org> <877dx822er.fsf_-_@x220.int.ebiederm.org> <87v9kszrzh.fsf_-_@x220.int.ebiederm.org> <202005191108.7A6E97831@keescook>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user input to files in the resctrl filesystem are expected to be
-terminated with a newline. Testing the user input includes a test for
-the presence of a newline and then replacing the newline with NUL
-byte followed by comparison using strcmp().
+On Tue, 19 May 2020, Kees Cook wrote:
 
-sysfs_streq() exists to test if strings are equal, treating both NUL and
-newline-then-NUL as equivalent string terminations. Even more,
-sysfs_match_string() exists to match a given string in an array using
-sysfs_streq().
+> >  	/* SELinux context only depends on initial program or script and not
+> >  	 * the script interpreter */
+> > -	if (bprm->called_set_creds)
+> > -		return 0;
+> >  
+> >  	old_tsec = selinux_cred(current_cred());
+> >  	new_tsec = selinux_cred(bprm->cred);
+> 
+> As you've done in the other LSMs, I think this comment can be removed
+> (or moved to the top of the function) too.
 
-Replace existing strcmp() comparisons of strings that are terminated
-with a newline with more appropriate sysfs_streq() via the
-sysfs_match_string() API that can perform the match across the different
-mode strings that are already maintained in an array.
+I'd prefer moved to top of the function.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
----
-Changes since V5:
-- Remove the early check of the sysfs_match_string() return code. (Andy)
-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 28 ++++++++++----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 088a1536bccc..07e0f150c56e 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1414,13 +1414,11 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				   char *buf, size_t nbytes, loff_t off)
- {
- 	struct rdtgroup *rdtgrp;
--	enum rdtgrp_mode mode;
- 	int ret = 0;
-+	int user_m;
- 
--	/* Valid input requires a trailing newline */
--	if (nbytes == 0 || buf[nbytes - 1] != '\n')
-+	if (nbytes == 0)
- 		return -EINVAL;
--	buf[nbytes - 1] = '\0';
- 
- 	rdtgrp = rdtgroup_kn_lock_live(of->kn);
- 	if (!rdtgrp) {
-@@ -1430,29 +1428,25 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 
- 	rdt_last_cmd_clear();
- 
--	mode = rdtgrp->mode;
-+	user_m = sysfs_match_string(rdt_mode_str, buf);
- 
--	if ((!strcmp(buf, "shareable") && mode == RDT_MODE_SHAREABLE) ||
--	    (!strcmp(buf, "exclusive") && mode == RDT_MODE_EXCLUSIVE) ||
--	    (!strcmp(buf, "pseudo-locksetup") &&
--	     mode == RDT_MODE_PSEUDO_LOCKSETUP) ||
--	    (!strcmp(buf, "pseudo-locked") && mode == RDT_MODE_PSEUDO_LOCKED))
-+	/* Do nothing and return success if user asks for current mode */
-+	if (user_m == rdtgrp->mode)
- 		goto out;
- 
--	if (mode == RDT_MODE_PSEUDO_LOCKED) {
-+	if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKED) {
- 		rdt_last_cmd_puts("Cannot change pseudo-locked group\n");
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
--	if (!strcmp(buf, "shareable")) {
-+	if (user_m == RDT_MODE_SHAREABLE) {
- 		if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
- 			ret = rdtgroup_locksetup_exit(rdtgrp);
- 			if (ret)
- 				goto out;
- 		}
--		rdtgrp->mode = RDT_MODE_SHAREABLE;
--	} else if (!strcmp(buf, "exclusive")) {
-+	} else if (user_m == RDT_MODE_EXCLUSIVE) {
- 		if (!rdtgroup_mode_test_exclusive(rdtgrp)) {
- 			ret = -EINVAL;
- 			goto out;
-@@ -1462,16 +1456,16 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 			if (ret)
- 				goto out;
- 		}
--		rdtgrp->mode = RDT_MODE_EXCLUSIVE;
--	} else if (!strcmp(buf, "pseudo-locksetup")) {
-+	} else if (user_m == RDT_MODE_PSEUDO_LOCKSETUP) {
- 		ret = rdtgroup_locksetup_enter(rdtgrp);
- 		if (ret)
- 			goto out;
--		rdtgrp->mode = RDT_MODE_PSEUDO_LOCKSETUP;
- 	} else {
- 		rdt_last_cmd_puts("Unknown or unsupported mode\n");
- 		ret = -EINVAL;
-+		goto out;
- 	}
-+	rdtgrp->mode = user_m;
- 
- out:
- 	rdtgroup_kn_unlock(of->kn);
 -- 
-2.21.0
+James Morris
+<jmorris@namei.org>
 
