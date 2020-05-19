@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B471D9D24
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466D91D9D28
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgESQqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbgESQqX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:46:23 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA28C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:46:22 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q2so423372ljm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TC0qAtFd13O2JOLCB7SFLNnsJ0TrRRfShJMVEYLbwy0=;
-        b=BM7rNRUOZPJu6CqIZoTyNHsH3OhfbJ7v4lyTa1sXCfThZdyIW2MAwpqUoVdCrwYJYJ
-         M+8yUvqSB1mogas+2iJO8jLleH/wb+mxdAsp/6H+RxHZ44GfbLZBQMjsb0UkWlV6SNKA
-         VToCUizM9QTTj9Opl/oBOtfqOQD3JZAH4FWEo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TC0qAtFd13O2JOLCB7SFLNnsJ0TrRRfShJMVEYLbwy0=;
-        b=Q2Vyrd/Vyzpc44ymemARrd3PcuqqdSZmPq60Stt6DcM7IQ0UYLc09hLjRr+wsEOU+E
-         ZU/2D2vzMKlPtmkGVbKixtzfKHx3rMWwvJaquAYXxTRilbba4FcF94r3jOoJp9bTUSM7
-         SUpxDBGk8hDjvhjAoGaEHDzgPgPxFfnDrEx3N498TURuG2zBmCHUfomU/v9FK2KoaEJ2
-         WpWvje0CfQIy4YNg2bNRvk2EjgkgYNQOdq+cqv+Xgl4YaHzSaowwu8cUy7+VGKyg9ipZ
-         gw5nZ3hUbkQ5pQMIgTpr2Hl+mukW3CQn8rud49tykcUh68BjYJbGHh1a6Uz6zsCAyySe
-         xAag==
-X-Gm-Message-State: AOAM530JEcdgntiLY61bPNOpfMlU0NCaYTh59zZf+SzMX1qz+yMAV0Mn
-        ZfzrA38ysRPoeKCopeAHfFoy0BJQ+6w=
-X-Google-Smtp-Source: ABdhPJyaU5tVF5FvBuqCGlhhIk9jop08TwPgOhiTfe34bgQ4i59NOAYSEtG/oYGKYCuJEOvL8TyplQ==
-X-Received: by 2002:a2e:9b48:: with SMTP id o8mr201746ljj.130.1589906779983;
-        Tue, 19 May 2020 09:46:19 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id s8sm9287666lfd.61.2020.05.19.09.46.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 09:46:19 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id q2so423235ljm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:46:18 -0700 (PDT)
-X-Received: by 2002:a2e:8956:: with SMTP id b22mr218841ljk.16.1589906778412;
- Tue, 19 May 2020 09:46:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200519134449.1466624-1-hch@lst.de> <20200519134449.1466624-13-hch@lst.de>
- <CAHk-=whE_C2JF0ywF09iMBWtquEfMM3aSxCeLrb5S75EdHr1JA@mail.gmail.com> <20200519164146.GA28313@lst.de>
-In-Reply-To: <20200519164146.GA28313@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 19 May 2020 09:46:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whVd4evLe-pi7VNrh4Htp1SjogWtEqgot6Ta+kavyqamg@mail.gmail.com>
-Message-ID: <CAHk-=whVd4evLe-pi7VNrh4Htp1SjogWtEqgot6Ta+kavyqamg@mail.gmail.com>
-Subject: Re: [PATCH 12/20] maccess: remove strncpy_from_unsafe
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1729389AbgESQqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:46:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59468 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729219AbgESQqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:46:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 35618AC85;
+        Tue, 19 May 2020 16:46:51 +0000 (UTC)
+Message-ID: <1589906807.13984.22.camel@suse.cz>
+Subject: Re: [PATCH 1/2] x86, sched: Prevent divisions by zero in frequency
+ invariant accounting
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 May 2020 18:46:47 +0200
+In-Reply-To: <20200518222037.GA14829@ranerica-svr.sc.intel.com>
+References: <20200428132450.24901-1-ggherdovich@suse.cz>
+         <20200428132450.24901-2-ggherdovich@suse.cz>
+         <20200501133042.GE3762@hirez.programming.kicks-ass.net>
+         <1588429500.8505.29.camel@suse.cz>
+         <20200518222037.GA14829@ranerica-svr.sc.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 9:41 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> I had a lot of folks complaining about things like:
->
-> #ifdef CONFIG_FOO
->         if (foo)
->                 do_stuff();
->         else
-> #endif
->                 do_something_else();
->
-> which I personally don't mind at all, so I switched to this style.
+On Mon, 2020-05-18 at 15:20 -0700, Ricardo Neri wrote:
+> On Sat, May 02, 2020 at 04:25:00PM +0200, Giovanni Gherdovich wrote:
+> > > 
+> > > I've changed the patch like so.. OK?
+> > > 
+> > > (ok, perhaps I went a little overboard with the paranoia ;-)
+> > 
+> > Right, I wasn't really checking for overflow, only for when the product
+> > "mcnt * arch_max_freq_ratio" becomes zero.
+> > 
+> > Thanks for your edit (I took note of the macros check_*_overflow, didn't know
+> > them). I fully subscribe to the paranoid approach.
+> > 
+> > I understand you've already edited the patches in your tree, so I am not
+> > resending, just confirming my
+> > 
+> > Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> 
+> Hi, have these changes been merged? I still don't see them in the tip or
+> Linus' tree.
+> 
 
-Well, I don't particularly like that style either, it is _very_ easy
-to get wrong when you edit it later (and various indentation checkers
-tend to be very unhappy about it too).
+Hi Ricardo,
 
-But that's why I like trying to just make simple helper functions instead.
+the kbuild bot found an error in this patch, the macro check_mul_overflow
+doesn't build on x86 32bit, so Peter Zijlstra hasn't merged it yet.
+This is the error:
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/7GDIBOMNVDG5W2XZD4EICE2TUZR3THBN/
 
-Yeah, it's often a few more lines of code (if only because of the
-extra function definition etc), but with good naming and sane
-arguments those few extra lines can also help make it much more
-understandable in the process, and it gives you a nice place to add
-commentary for the really odd cases (comments inside code that then
-does other things often make things just harder to see).
+I'm writing a patch to avoid doing frequency invariance entirely on i386.
+I doubt those machines have APERFMPERF anyways. This will fix the build error.
 
-             Linus
+
+Cheers,
+Giovanni
