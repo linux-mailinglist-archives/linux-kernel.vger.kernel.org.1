@@ -2,148 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F061D9495
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FBD1D94A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgESKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 06:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgESKpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 06:45:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508B0C061A0C;
-        Tue, 19 May 2020 03:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pB5NRJiuRUwl08JuJrqjBdvxfdMkqgbTh44+AX2Pej4=; b=JM3gb/rwk7cxihpdlXrca4GnSh
-        +KvmhEWySmqxKBMY3vYlLXBmCoYc+OHTDmsKLPdQnumlYHB1kmX4/y838TAHRgESKpsYMQdVssDMn
-        YjqUsSQO7uigXSpqd/+Z0z/r050D6Pu4FMvM7anscLFMHNtAZutmrRgxuOOMTj//WYYIz8Hsk1W75
-        3GHqyedbNnLXF8BUNCKPJ0hmGO8ZkgJCO6qfZTCnEcgQk9Hu8qnKRlUbmAJS8NaDEeqVHSVoPGRZC
-        XSmSqp3NDgFaXAzDBBt9TWs6BHdR5cUnSc+yN4cdbT4H3ZI/d5huiC+ns0OoyHg00Mp1ZQrog83w3
-        5fjNukvA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jazkS-0004tF-BY; Tue, 19 May 2020 10:45:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CAF1E30067C;
-        Tue, 19 May 2020 12:45:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B72A52105F3B6; Tue, 19 May 2020 12:45:20 +0200 (CEST)
-Date:   Tue, 19 May 2020 12:45:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
-        wei.w.wang@intel.com
-Subject: Re: [PATCH v11 05/11] perf/x86: Keep LBR stack unchanged in host
- context for guest LBR event
-Message-ID: <20200519104520.GE279861@hirez.programming.kicks-ass.net>
-References: <20200514083054.62538-1-like.xu@linux.intel.com>
- <20200514083054.62538-6-like.xu@linux.intel.com>
- <20200518120205.GF277222@hirez.programming.kicks-ass.net>
- <dd6b0ab0-0209-e1e5-550c-24e2ad101b15@linux.intel.com>
+        id S1728796AbgESKqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 06:46:47 -0400
+Received: from mail-eopbgr690079.outbound.protection.outlook.com ([40.107.69.79]:63758
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726859AbgESKqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 06:46:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I7x2qFqj/gar8YLjWlrMEIPiL3H5N+rbsi0n1DXqousnziyhA5kQYCzx7A3kioylMlM5NzyE5NDcGGxASEsxcAzuam3VFmgk17qfbS7EwM+IssFDIm4sL/fB7j2slTHP3cQjuqi13Yy98PEBwjmSv90durqiIHVDpgNsbnni1FBQOQi93fBwybhKE3rLKZENSsk5RpY0/L43cK67BD1TGdVdNVUVtkk5BPjze/KzXC77bq2Pt/x3+InHAJLRplxUMDV+UY0cxZaPIqkY0Ac3cFyqTHi6S16oPQMron/5uANcvQSPxpfEzIFdRhus7ADX7sqZb/xBPLeijqaoPnrAxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mxjiQQJG3aOM+U/qCJKWnNUt742TC4aqrzToznec4l0=;
+ b=K+wYy3urJ3ttjNwPjVlIs0fx846E/pjL/Rb6m7uTFmr8AFDFyyMuTQaySqvaEnNOUdIbYWO1OQknUcuin14qsHarAoXDcgUkXlGYs2WlRGmr1SveM1kPNgrNWHcwWbXABKxoKhfFyqbu4m1tZdtDVFoPhi+a2ke0q1Ilw6vJgY4Ny0WQRjv4sLr/7NVxio9O7/dTx7M8aK+jYI+cEE2lUkRfiHi1hHzPhHii8j3MejF41vuzSl/FvWEnJabZE6r5eRg3lvHm+4kw4ZES9/Rmho15QMoG2NzzwX7OsMfNUMzJ/htJZADbIkQMWXUM16VBflxkCsJbBecianciPTMvQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mxjiQQJG3aOM+U/qCJKWnNUt742TC4aqrzToznec4l0=;
+ b=B+HUOhUyopCzEG3aMqlh63cdkg56Pdm0XsYXypV66k/Y+g7VKxiP0gzTnSmVeeWxvC7Qf8Anmxt0DSqgHHEi/d7/5JIO7/PzqIQaqZdUgF7He0sEmEC78BQcBWsIrXufjQfIHlTOVpUPbMnZJo1HUCfNom+ku1Y7XPjO2chh57s=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=sifive.com;
+Received: from DM6PR13MB2619.namprd13.prod.outlook.com (2603:10b6:5:140::13)
+ by DM6PR13MB3882.namprd13.prod.outlook.com (2603:10b6:5:22a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.11; Tue, 19 May
+ 2020 10:46:43 +0000
+Received: from DM6PR13MB2619.namprd13.prod.outlook.com
+ ([fe80::ad23:dfbe:7ec:e5ca]) by DM6PR13MB2619.namprd13.prod.outlook.com
+ ([fe80::ad23:dfbe:7ec:e5ca%3]) with mapi id 15.20.3000.015; Tue, 19 May 2020
+ 10:46:43 +0000
+From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, tudor.ambarus@microchip.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        anup.patel@wdc.com, Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Subject: [PATCH v2 0/2] enable spi flash and update is25wp256d page write capabilities
+Date:   Tue, 19 May 2020 03:46:25 -0700
+Message-Id: <1589885187-31247-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0073.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::14) To DM6PR13MB2619.namprd13.prod.outlook.com
+ (2603:10b6:5:140::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd6b0ab0-0209-e1e5-550c-24e2ad101b15@linux.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR05CA0073.namprd05.prod.outlook.com (2603:10b6:a03:e0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.10 via Frontend Transport; Tue, 19 May 2020 10:46:42 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [64.62.193.194]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc50f93a-8d37-499e-1e02-08d7fbe1eba8
+X-MS-TrafficTypeDiagnostic: DM6PR13MB3882:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR13MB3882092AADB6ACA3FCDB9E0B99B90@DM6PR13MB3882.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 040866B734
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hX5G+5bpMY9/uhl8IqB5EBKOxQMoVnPDA6tvRLirJufvAwvBuEsyMmpls77T5UaJJeCojWb5jKeyoCg4EXqDHthgSEdSfptn3GJ/oMCEKOp16QXN/92kJd1FR8fHiSDYV9GN8AfRkOyu3Wv53p/nm3LAYQLBDdeyigq3t3x5Y/c5eyQMUKq9CULRBNQUgo8L7UX+saaDpgIAo8oD0anRucZR1ZGnYgfE68qv9h/vdFUaQYeIfpGiFuuzxNXt1f+M7OQ2FKHAiQ2yYVr8aidpEO6L3htMdOa8IHNKPN/x9VoGGVxoWItnlqhSM1JxGfIdU3lkWvfBZkaMwqbRElgYp5yBoL2owSbKSYVQf1VM5YWyVGE8MuXSFhq5QDU6dFHNnAsHGMINZGldloTLxMk/bg6mug3F42CqLT3W0aJV4Dl3+x1HSXLMi/IEulyr/45Z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB2619.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(396003)(39850400004)(376002)(366004)(7416002)(4326008)(86362001)(6666004)(66946007)(66556008)(66476007)(316002)(15650500001)(5660300002)(107886003)(36756003)(2906002)(26005)(6486002)(52116002)(16526019)(2616005)(7696005)(956004)(8936002)(8676002)(186003)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 8UCX/RCjWuRK00Cf3PF22hU38vCnoYXXV5C+RqWHSjih4h5J1LXSNyBkl5ZHRwwfoYrgtQqJMncYo4SYXVRbYTIPcU79HZL8vz/X1nUsy9fZOydqfxu6v/dpeDD+2DZRNyxa7xwBmPM/q0jqh3MeQe4WctNi8b2SRf5Y51iaDXZPFAQ4+zCKFcqz9AaX2plfTAisc9Uqr58aB/plYMIsXZVq6t9IKcQ4ofBKjmGxOjoeKbgqI8SmnGLqgdaYDOzYcTKUoFTAEOgdlELpC4WjwlepCVAPIDnJNTgOt7axgF9ChE4aGiy9FSN5jk5hdXYMCPCEhpRv6PPnXxQm5lEH0yPVPCIhk/sQjRl7FLPSQ8dtTNP7Dc4sQ0Izn3NyH0AMW4MWJ29fqWWGde7e3/PEQOu1R4qFGHFQKreW+CUCPkGgWbjdPWybCXBK8nox1VWuEOflZuqSIzIfBO22RVdM7sebjI3oa8/HdRyXqxAssSI=
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc50f93a-8d37-499e-1e02-08d7fbe1eba8
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2020 10:46:43.8130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CqhvrEJr7PQmXr0vlrMwAV/4cVWWj9mU+a4xtyjziMn3GIEeouGXHNV+VsTil7rtrBTASLkuac0MQflrzbap1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB3882
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:08:41AM +0800, Like Xu wrote:
+HiFive Unleashed A00 board has is25wp256d snor chip. It is observed
+that it gets configured with Serial Input Page program by the end
+of spi_nor_scan. Using the post bfpt fixup hook we prioritize the
+page program settings to use quad input page program (opcode:0x34)
+over serial input page program (opcode: 0x12).
 
-> Sure, I could reuse cpuc->intel_ctrl_guest_mask to rewrite this part:
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index d788edb7c1f9..f1243e8211ca 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -2189,7 +2189,8 @@ static void intel_pmu_disable_event(struct perf_event
-> *event)
->         } else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
->                 intel_pmu_disable_bts();
->                 intel_pmu_drain_bts_buffer();
-> -       }
-> +       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-> +               intel_clear_masks(event, idx);
-> 
->         /*
->          * Needs to be called after x86_pmu_disable_event,
-> @@ -2271,7 +2272,8 @@ static void intel_pmu_enable_event(struct perf_event
-> *event)
->                 if (!__this_cpu_read(cpu_hw_events.enabled))
->                         return;
->                 intel_pmu_enable_bts(hwc->config);
-> -       }
-> +       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-> +               intel_set_masks(event, idx);
->  }
+The patchset is tested on Linux 5.7.0-rc5.
 
-This makes me wonder if we can pull intel_{set,clear}_masks() out of
-that if()-forest, but that's something for later...
+Changelog:
+===============================
+V2:
+-Split common code between is25lp256 and is25wp256 devices as suggested
+ Added a generic post bfpt fixup handler that identifies the flash parts
+ based on their device id and uses the corresponding fixup. Other device's
+ that need a post bfpt fixup can just add the device id check and either
+ reuse the available fixups or write the necessary fixup code if one is not
+ available.
+ 
+V1:
+-Moved SPI_SIFIVE from defconfig to Kconfig.socs for SOC_SIFIVE.
+ Retained it's configurability using "imply" instead of "select"
 
->  static void intel_pmu_add_event(struct perf_event *event)
-> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-> index b8dabf1698d6..1b30c76815dd 100644
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -552,11 +552,19 @@ void intel_pmu_lbr_del(struct perf_event *event)
->         perf_sched_cb_dec(event->ctx->pmu);
->  }
-> 
-> +static inline bool vlbr_is_enabled(void)
-> +{
-> +       struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +
-> +       return test_bit(INTEL_PMC_IDX_FIXED_VLBR,
-> +               (unsigned long *)&cpuc->intel_ctrl_guest_mask);
-> +}
+V0: Base version patch (Tested on 5.7.0-rc3).
 
-Maybe call this: vlbr_exclude_host() ?
 
-> +
->  void intel_pmu_lbr_enable_all(bool pmi)
->  {
->         struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> 
-> -       if (cpuc->lbr_users)
-> +       if (cpuc->lbr_users && !vlbr_is_enabled())
->                 __intel_pmu_lbr_enable(pmi);
->  }
-> 
-> @@ -564,7 +572,7 @@ void intel_pmu_lbr_disable_all(void)
->  {
->         struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> 
-> -       if (cpuc->lbr_users)
-> +       if (cpuc->lbr_users && !vlbr_is_enabled())
->                 __intel_pmu_lbr_disable();
->  }
-> 
-> @@ -706,7 +714,8 @@ void intel_pmu_lbr_read(void)
->          * This could be smarter and actually check the event,
->          * but this simple approach seems to work for now.
->          */
-> -       if (!cpuc->lbr_users || cpuc->lbr_users == cpuc->lbr_pebs_users)
-> +       if (!cpuc->lbr_users || vlbr_is_enabled() ||
-> +               cpuc->lbr_users == cpuc->lbr_pebs_users)
->                 return;
-> 
->         if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_32)
-> 
-> Is this acceptable to you ?
+Sagar Shrikant Kadam (2):
+  riscv: defconfig: enable spi nor on Hifive Unleashed A00
+  spi: nor: update page program settings for is25wp256 using post bfpt
+    fixup
 
-Yeah, looks about right. Let me stare at the rest.
+ arch/riscv/Kconfig.socs      |  1 +
+ arch/riscv/configs/defconfig |  3 +-
+ drivers/mtd/spi-nor/issi.c   | 72 ++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 63 insertions(+), 13 deletions(-)
+
+-- 
+2.7.4
+
