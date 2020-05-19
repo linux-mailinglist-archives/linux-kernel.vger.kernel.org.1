@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED481DA013
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2071DA01B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgESS57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:57:59 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:35588 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgESS56 (ORCPT
+        id S1727012AbgESS64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726407AbgESS64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:57:58 -0400
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 May 2020 11:57:57 -0700
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 19 May 2020 11:57:57 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id A91324CCD; Tue, 19 May 2020 11:57:57 -0700 (PDT)
-Date:   Tue, 19 May 2020 11:57:57 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     devicetree@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] mfd: Introduce QTI I2C PMIC controller
-Message-ID: <20200519185757.GA13992@codeaurora.org>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-References: <cover.1588115326.git.gurus@codeaurora.org>
- <5644dea146f8b49a5b827c56392ff916bfb343e9.1588115326.git.gurus@codeaurora.org>
- <20200429075010.GX3559@dell>
- <20200501011319.GA28441@codeaurora.org>
- <20200515104520.GK271301@dell>
+        Tue, 19 May 2020 14:58:56 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A30C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:58:56 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jb7R8-0006vJ-Jc; Tue, 19 May 2020 20:57:58 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 187F7100D01; Tue, 19 May 2020 20:57:58 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V6 10/37] x86/entry: Switch XEN/PV hypercall entry to IDTENTRY
+In-Reply-To: <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
+References: <20200515234547.710474468@linutronix.de> <20200515235125.425810667@linutronix.de> <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
+Date:   Tue, 19 May 2020 20:57:58 +0200
+Message-ID: <87imgr7nwp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515104520.GK271301@dell>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 11:45:20AM +0100, Lee Jones wrote:
-> On Thu, 30 Apr 2020, Guru Das Srinagesh wrote:
-> 
-> > On Wed, Apr 29, 2020 at 08:50:10AM +0100, Lee Jones wrote:
-> > > On Tue, 28 Apr 2020, Guru Das Srinagesh wrote:
-> > > 
-> > > > The Qualcomm Technologies, Inc. I2C PMIC Controller is used by
-> > > > multi-function PMIC devices which communicate over the I2C bus.  The
-> > > > controller enumerates all child nodes as platform devices, and
-> > > > instantiates a regmap interface for them to communicate over the I2C
-> > > > bus.
-> > > > 
-> > > > The controller also controls interrupts for all of the children platform
-> > > > devices.  The controller handles the summary interrupt by deciphering
-> > > > which peripheral triggered the interrupt, and which of the peripheral
-> > > > interrupts were triggered.  Finally, it calls the interrupt handlers for
-> > > > each of the virtual interrupts that were registered.
-> > > > 
-> > > > Nicholas Troast is the original author of this driver.
-> > > > 
-> > > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> > > > ---
-> > > >  drivers/mfd/Kconfig         |  11 +
-> > > >  drivers/mfd/Makefile        |   1 +
-> > > >  drivers/mfd/qcom-i2c-pmic.c | 737 ++++++++++++++++++++++++++++++++++++++++++++
-> > > 
-> > > The vast majority of this driver deals with IRQ handling.  Why can't
-> > > this be split out into its own IRQ Chip driver and moved to
-> > > drivers/irqchip?
-> > 
-> > There appear to be quite a few in-tree MFD drivers that register IRQ
-> > controllers, like this driver does:
-> > 
-> > $ grep --exclude-dir=.git -rnE "irq_domain_(add|create).+\(" drivers/mfd | wc -l
-> > 23
-> > 
-> > As a further example, drivers/mfd/stpmic1.c closely resembles this
-> > driver in that it uses both devm_regmap_add_irq_chip() as well as
-> > devm_of_platform_populate().
-> > 
-> > As such, it seems like this driver is in line with some of the
-> > architectural choices that have been accepted in already-merged drivers.
-> > Could you please elaborate on your concerns?
-> 
-> It is true that *basic* IRQ domain support has been added to these
-> drivers in the past.  However, IMHO the support added to this driver
-> goes beyond those realms such that it would justify a driver of its
-> own.
+Andy Lutomirski <luto@kernel.org> writes:
+> On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> @@ -573,6 +578,16 @@ static __always_inline void __idtentry_exit(struct pt_regs *regs)
+>>                                 instrumentation_end();
+>>                                 return;
+>>                         }
+>> +               } else if (IS_ENABLED(CONFIG_XEN_PV)) {
+>> +                       if (preempt_hcall) {
+>> +                               /* See CONFIG_PREEMPTION above */
+>> +                               instrumentation_begin();
+>> +                               rcu_irq_exit_preempt();
+>> +                               xen_maybe_preempt_hcall();
+>> +                               trace_hardirqs_on();
+>> +                               instrumentation_end();
+>> +                               return;
+>> +                       }
+>
+> Ewwwww!  This shouldn't be taken as a NAK -- it's just an expression
+> of disgust.
 
-I am exploring an option to see if the regmap-irq APIs may be used in
-this driver, similar to stpmic1.c. Just to let you know, it might be a
-few days before I am able to post my next patchset as I'll have to make
-the necessary changes and test them out first.
+I'm really not proud of it, but that was the least horrible thing I
+could come up with.
 
-Thank you.
+> Shouldn't this be:
+>
+> instrumentation_begin();
+> if (!irq_needs_irq_stack(...))
+>   __blah();
+> else
+>   run_on_irqstack(__blah, NULL);
+> instrumentation_end();
+>
+> or even:
+>
+> instrumentation_begin();
+> run_on_irqstack_if_needed(__blah, NULL);
+> instrumentation_end();
 
-Guru Das.
+Yeah. In that case the instrumentation markers are not required as they
+will be inside the run....() function.
+
+> ****** BUT *******
+>
+> I think this is all arse-backwards.  This is a giant mess designed to
+> pretend we support preemption and to emulate normal preemption in a
+> non-preemptible kernel.  I propose one to two massive cleanups:
+>
+> A: Just delete all of this code.  Preemptible hypercalls on
+> non-preempt kernels will still process interrupts but won't get
+> preempted.  If you want preemption, compile with preemption.
+
+I'm happy to do so, but the XEN folks might have opinions on that :)
+
+> B: Turn this thing around.  Specifically, in the one and only case we
+> care about, we know pretty much exactly what context we got this entry
+> in: we're running in a schedulable context doing an explicitly
+> preemptible hypercall, and we have RIP pointing at a SYSCALL
+> instruction (presumably, but we shouldn't bet on it) in the hypercall
+> page.  Ideally we would change the Xen PV ABI so the hypercall would
+> return something like EAGAIN instead of auto-restarting and we could
+> ditch this mess entirely.  But the ABI seems to be set in stone or at
+> least in molasses, so how about just:
+>
+> idt_entry(exit(regs));
+> if (inhcall && need_resched())
+>   schedule();
+
+Which brings you into the situation that you call schedule() from the
+point where we just moved it out. If we would go there we'd need to
+ensure that RCU is watching as well. idtentry_exit() might have it
+turned off ....
+
+That's why I did it this way to keep the code flow exactly the same for
+all these exit variants.
+
+Thanks,
+
+        tglx
