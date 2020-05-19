@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F111D9C22
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F161D9C0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbgESQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:12:57 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41257 "EHLO ozlabs.org"
+        id S1729361AbgESQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728953AbgESQM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:12:56 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729055AbgESQI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:08:59 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49RLWm3bKVz9sT4;
-        Wed, 20 May 2020 02:12:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589904774;
-        bh=0Yoi3CqZc1WFUBb8Tmjse0L1YOY34nPIrRmd1lGuNrA=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C4302075F;
+        Tue, 19 May 2020 16:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589904539;
+        bh=u3+jsia5NAW/8Ph5G2JpnG6etn7OX8oeTKdDlKnd0Sc=;
         h=Date:From:To:Cc:Subject:From;
-        b=I1SXffh1QO1XPbUZXKoFW2dvr8E1vgKj0TUFJMv7nrR6Obgw/c75HrjPXwSyuG20Z
-         YO8G95nkrFIXgK9CZyz9GhYYGKzX0eKnGRvrQhc2ho9mwyMqk52iwJOJCAJZxzAVcT
-         uHdTAaoIN/CWISnF0YNk4r4opnLkznVN6PDpe2sYN4Y3yuXqrpqqcSlUJ/odFklG81
-         Ppdl2+Hg5xRHwlZIze/xovO3EfM4u/4qeuPnA6Q6xM6/7hfJ8N+6a84/t3MiA4Ju8y
-         RTw1L+aNh48KvoJjLt8asINCJrRPJe7B3gzZlMMoVHOh6ywNjtkrmdu2N2TfLYGchp
-         V0hoL6/5NVzZA==
-Date:   Wed, 20 May 2020 02:12:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: linux-next: manual merge of the akpm-current tree with the rcu tree
-Message-ID: <20200520021250.412e1d11@canb.auug.org.au>
+        b=NV4cKwwuBLLyXVatnObrm47KAEk5WfJ8UQC8c3xRc7mAEJpUQF7O+uI0gdsdZq381
+         f7BJ3B3WbVujfd3EA2AW0zQN2qdrSxoQ8Yi8dE9iCneCp41e8b4sxb8DwOCwLqgU+L
+         6lmnZZOTUAc/Qm7XxCtWaOWhQIzS9A/fzMTzJPEk=
+Date:   Tue, 19 May 2020 11:13:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] RDMA/rtrs: client: Fix function return on success
+Message-ID: <20200519161345.GA3910@embeddedor>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WdWOqOb/FrjC87P__422RJN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WdWOqOb/FrjC87P__422RJN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The function should return 0 on success, instead of err.
 
-Hi all,
+Addresses-Coverity-ID: 1493753 ("Identical code for different branches")
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 468fdd0d8713c..465515e46bb1a 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1594,7 +1594,8 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 
+ 	if (err)
+ 		return err;
+-	return err;
++
++	return 0;
+ }
+ 
+ static void destroy_con_cq_qp(struct rtrs_clt_con *con)
+-- 
+2.26.2
 
-  include/linux/sched.h
-
-between commit:
-
-  7df6cae06c3b ("x86/mce: Send #MC singal from task work")
-
-from the rcu tree and commit:
-
-  c0218a9a3a60 ("fs/buffer.c: add debug print for __getblk_gfp() stall prob=
-lem")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/sched.h
-index 33cb5f822054,98060427c53f..000000000000
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@@ -1301,12 -1293,13 +1305,19 @@@ struct task_struct=20
-  	unsigned long			prev_lowest_stack;
-  #endif
- =20
- +#ifdef CONFIG_X86_MCE
- +	u64				mce_addr;
- +	u64				mce_status;
- +	struct callback_head		mce_kill_me;
- +#endif
- +
-+ #ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
-+ 	unsigned long			getblk_stamp;
-+ 	unsigned int			getblk_executed;
-+ 	unsigned int			getblk_bh_count;
-+ 	unsigned long			getblk_bh_state;
-+ #endif
-+=20
-  	/*
-  	 * New fields for task_struct should be added above here, so that
-  	 * they are included in the randomized portion of task_struct.
-
---Sig_/WdWOqOb/FrjC87P__422RJN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7EBYIACgkQAVBC80lX
-0GyLWQf/b1mdknl35g38oD5m1XOQTA716G/yR0lgslZ+ATeBPtD64HelUB9rzAJY
-Cs6Q/vhA4y0J+O3KVjvr7GVTdMp3bkjPZIAMIvM3jr/h2suo31mIuevpTsXjvwW1
-EQxMXNIZjXwjX5AqEMqkIx7LAYcCTPvvUQx8NjQU3i32891jxMRC5tT2foiOl2O+
-cu30FcGsBSj1KBHLtzRNhMCR0D8TxvF1n5s7sqb/59hgPPvFmKW7lguOIATm63MK
-abvT88llLs6Xj8i5uBwSTQ9CvfJUUjP/sIS8YPPP2YUOz7BRlFPqBI77F2DRnC3w
-BGyMCUIVoYUXkspeDIs95N2TmvUUug==
-=gh9N
------END PGP SIGNATURE-----
-
---Sig_/WdWOqOb/FrjC87P__422RJN--
