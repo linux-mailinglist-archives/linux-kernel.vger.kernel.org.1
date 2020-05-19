@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF161D9C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C8D1D9C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgESQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:18:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37402 "EHLO mail.kernel.org"
+        id S1729461AbgESQSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728689AbgESQSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:18:23 -0400
+        id S1728534AbgESQSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:18:24 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69B142081A;
-        Tue, 19 May 2020 16:18:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29602207D8;
+        Tue, 19 May 2020 16:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589905102;
-        bh=ETceS5yARBIur5hySytUSkticz4wlgZ6d9YCm3cxtPg=;
+        s=default; t=1589905103;
+        bh=IgiMXXd078i0bvADAKNsFZGGm1aO3D3tizK5eShr9NM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3yZhUlGNvJcRentzFVvLNeLIyti5dro9BGoBLWzXGOCw9ZpaxMTHWk9kUwZxuT3d
-         MxFmp0fiJeK3uDMYmnao8e8HIguvnsF5UDrii/DgLlaC2/Qblj3zXE22znL5P4bzgk
-         MI2gLoZBr+AH1PIrqdcPmOJKV98gF6MD5C39CrDU=
+        b=vdLFJs3+IBlicIHXUXreUUgV6J2RRngRlGDmTEGOoSYr0KZZVcg4YVLE0np8JKdyt
+         YyMWc4vFPOqqeO01YRa3oiiL4kLhkhJEN1kTLoLpZEMbOoQ3/xn2Vj9dbIug34DtcC
+         HESBIavRqWwtV9SXq43Y0l+qendJfHAR3aiAc5Po=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1jb4we-00Decy-QX; Tue, 19 May 2020 17:18:20 +0100
+        id 1jb4wf-00Decy-Ev; Tue, 19 May 2020 17:18:21 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -36,9 +36,9 @@ Cc:     Will Deacon <will@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
         Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com
-Subject: [PATCH 01/11] genirq: Add fasteoi IPI flow
-Date:   Tue, 19 May 2020 17:17:45 +0100
-Message-Id: <20200519161755.209565-2-maz@kernel.org>
+Subject: [PATCH 02/11] genirq: Allow interrupts to be excluded from /proc/interrupts
+Date:   Tue, 19 May 2020 17:17:46 +0100
+Message-Id: <20200519161755.209565-3-maz@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200519161755.209565-1-maz@kernel.org>
 References: <20200519161755.209565-1-maz@kernel.org>
@@ -53,68 +53,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For irqchips using the fasteoi flow, IPIs are a bit special.
+A number of architectures implement IPI statistics directly,
+bypassing the core kstat_irqs accounting. As we move IPIs to
+being actual IRQs, we would end-up with a confusing display
+in /proc/interrupts (where the IPIs would appear twice).
 
-They need to be EOId early (before calling the handler), as
-funny things may happen in the handler (they do not necessarily
-behave like a normal interrupt), and that the arch code is
-already handling the stats.
+In order to solve this, allow interrupts to be flagged as
+"no accounting", which excludes them from /proc/interrupts.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/irq.h |  1 +
- kernel/irq/chip.c   | 26 ++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ include/linux/irq.h   | 3 ++-
+ kernel/irq/debugfs.c  | 1 +
+ kernel/irq/proc.c     | 2 +-
+ kernel/irq/settings.h | 7 +++++++
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 8d5bc2c237d7..726f94d8b8cc 100644
+index 726f94d8b8cc..4433c8e765c8 100644
 --- a/include/linux/irq.h
 +++ b/include/linux/irq.h
-@@ -621,6 +621,7 @@ static inline int irq_set_parent(int irq, int parent_irq)
-  */
- extern void handle_level_irq(struct irq_desc *desc);
- extern void handle_fasteoi_irq(struct irq_desc *desc);
-+extern void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc);
- extern void handle_edge_irq(struct irq_desc *desc);
- extern void handle_edge_eoi_irq(struct irq_desc *desc);
- extern void handle_simple_irq(struct irq_desc *desc);
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index 41e7e37a0928..7b0b789cfed4 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -955,6 +955,32 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
- 		chip->irq_eoi(&desc->irq_data);
- }
+@@ -97,13 +97,14 @@ enum {
+ 	IRQ_PER_CPU_DEVID	= (1 << 17),
+ 	IRQ_IS_POLLED		= (1 << 18),
+ 	IRQ_DISABLE_UNLAZY	= (1 << 19),
++	IRQ_NO_ACCOUNTING	= (1 << 20),
+ };
  
-+/**
-+ * handle_percpu_devid_fasteoi_ipi - Per CPU local IPI handler with per cpu
-+ *				     dev ids
-+ * @desc:	the interrupt description structure for this irq
-+ *
-+ * The biggest differences with the IRQ version are that:
-+ * - the interrupt is EOIed early, as the IPI could result in a context
-+ *   switch, and we need to make sure the IPI can fire again
-+ * - Stats are usually handled at the architecture level, so we ignore them
-+ *   here
-+ */
-+void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc)
+ #define IRQF_MODIFY_MASK	\
+ 	(IRQ_TYPE_SENSE_MASK | IRQ_NOPROBE | IRQ_NOREQUEST | \
+ 	 IRQ_NOAUTOEN | IRQ_MOVE_PCNTXT | IRQ_LEVEL | IRQ_NO_BALANCING | \
+ 	 IRQ_PER_CPU | IRQ_NESTED_THREAD | IRQ_NOTHREAD | IRQ_PER_CPU_DEVID | \
+-	 IRQ_IS_POLLED | IRQ_DISABLE_UNLAZY)
++	 IRQ_IS_POLLED | IRQ_DISABLE_UNLAZY | IRQ_NO_ACCOUNTING)
+ 
+ #define IRQ_NO_BALANCING_MASK	(IRQ_PER_CPU | IRQ_NO_BALANCING)
+ 
+diff --git a/kernel/irq/debugfs.c b/kernel/irq/debugfs.c
+index 4f9f844074db..9a22eab5537f 100644
+--- a/kernel/irq/debugfs.c
++++ b/kernel/irq/debugfs.c
+@@ -131,6 +131,7 @@ static const struct irq_bit_descr irqdesc_states[] = {
+ 	BIT_MASK_DESCR(_IRQ_PER_CPU_DEVID),
+ 	BIT_MASK_DESCR(_IRQ_IS_POLLED),
+ 	BIT_MASK_DESCR(_IRQ_DISABLE_UNLAZY),
++	BIT_MASK_DESCR(_IRQ_NO_ACCOUNTING),
+ };
+ 
+ static const struct irq_bit_descr irqdesc_istates[] = {
+diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
+index 32c071d7bc03..87780af13c12 100644
+--- a/kernel/irq/proc.c
++++ b/kernel/irq/proc.c
+@@ -485,7 +485,7 @@ int show_interrupts(struct seq_file *p, void *v)
+ 
+ 	rcu_read_lock();
+ 	desc = irq_to_desc(i);
+-	if (!desc)
++	if (!desc || irq_settings_is_no_accounting(desc))
+ 		goto outsparse;
+ 
+ 	if (desc->kstat_irqs)
+diff --git a/kernel/irq/settings.h b/kernel/irq/settings.h
+index e43795cd2ccf..732fc3f2c686 100644
+--- a/kernel/irq/settings.h
++++ b/kernel/irq/settings.h
+@@ -17,6 +17,7 @@ enum {
+ 	_IRQ_PER_CPU_DEVID	= IRQ_PER_CPU_DEVID,
+ 	_IRQ_IS_POLLED		= IRQ_IS_POLLED,
+ 	_IRQ_DISABLE_UNLAZY	= IRQ_DISABLE_UNLAZY,
++	_IRQ_NO_ACCOUNTING	= IRQ_NO_ACCOUNTING,
+ 	_IRQF_MODIFY_MASK	= IRQF_MODIFY_MASK,
+ };
+ 
+@@ -31,6 +32,7 @@ enum {
+ #define IRQ_PER_CPU_DEVID	GOT_YOU_MORON
+ #define IRQ_IS_POLLED		GOT_YOU_MORON
+ #define IRQ_DISABLE_UNLAZY	GOT_YOU_MORON
++#define IRQ_NO_ACCOUNTING	GOT_YOU_MORON
+ #undef IRQF_MODIFY_MASK
+ #define IRQF_MODIFY_MASK	GOT_YOU_MORON
+ 
+@@ -167,3 +169,8 @@ static inline void irq_settings_clr_disable_unlazy(struct irq_desc *desc)
+ {
+ 	desc->status_use_accessors &= ~_IRQ_DISABLE_UNLAZY;
+ }
++
++static inline bool irq_settings_is_no_accounting(struct irq_desc *desc)
 +{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct irqaction *action = desc->action;
-+	unsigned int irq = irq_desc_get_irq(desc);
-+	irqreturn_t res;
-+
-+	if (chip->irq_eoi)
-+		chip->irq_eoi(&desc->irq_data);
-+
-+	trace_irq_handler_entry(irq, action);
-+	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
-+	trace_irq_handler_exit(irq, action, res);
++	return desc->status_use_accessors & _IRQ_NO_ACCOUNTING;
 +}
-+
- /**
-  * handle_percpu_devid_fasteoi_nmi - Per CPU local NMI handler with per cpu
-  *				     dev ids
 -- 
 2.26.2
 
