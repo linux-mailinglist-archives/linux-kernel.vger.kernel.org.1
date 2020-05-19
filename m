@@ -2,219 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2751DA4FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E6E1DA497
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgESWuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:50:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:61173 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgESWuF (ORCPT
+        id S1727831AbgESWcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgESWcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:50:05 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200519225002epoutp017f399f84d20d96600d84291a3cdc008f~Qj6PaOUHx0341303413epoutp017
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:50:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200519225002epoutp017f399f84d20d96600d84291a3cdc008f~Qj6PaOUHx0341303413epoutp017
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1589928602;
-        bh=f6oUHMjeeGH6CxpNcnFCX86gPJZvLN/8Xz/S+Wh9JKQ=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=Lryi9r6/39QV5eNXPsWDhWdMCiOUizwo4VbYvgi6CXnyJQNXjfcq93fYhUmPAyuVj
-         BiRuWw7NxPZpOfsINTpxs0Z5LCGrTUD7LrUrNjyVZN73JylVYyumIhH9h8vcfTh0ch
-         MXGK8sM8cN3eQ60tGeGYD0/aIL5cC8BehpwSm0ms=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200519225001epcas1p1f7e926f25706108e8305b643c76531a0~Qj6OgBSSX1414714147epcas1p1L;
-        Tue, 19 May 2020 22:50:01 +0000 (GMT)
+        Tue, 19 May 2020 18:32:42 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91A5C061A0E;
+        Tue, 19 May 2020 15:32:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3A188128EDAAA;
+        Tue, 19 May 2020 15:32:41 -0700 (PDT)
+Date:   Tue, 19 May 2020 15:32:39 -0700 (PDT)
+Message-Id: <20200519.153239.1577517664546707472.davem@davemloft.net>
+To:     vaibhavgupta40@gmail.com
+Cc:     hkallweit1@gmail.com, vaibhav.varodek@gmail.com,
+        netdev@vger.kernel.org, helgaas@kernel.org, bhelgaas@google.com,
+        bjorn@helgaas.com, linux-kernel-mentees@lists.linuxfoundation.org,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        skhan@linuxfoundation.org
+Subject: Re: [PATCH net-next v3 0/2] realtek ethernet : use generic power
+ management.
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200518150214.100491-1-vaibhavgupta40@gmail.com>
+References: <20200518150214.100491-1-vaibhavgupta40@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
-Subject: Another approach of UFSHPB
-Reply-To: ymhungry.lee@samsung.com
-From:   yongmyung lee <ymhungry.lee@samsung.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        MOHAMMED RAFIQ KAMAL BASHA <md.rafiq@samsung.com>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <835c57b9-f792-2460-c3cc-667031969d63@acm.org>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01589928601376.JavaMail.epsvc@epcpadp1>
-Date:   Wed, 20 May 2020 07:31:37 +0900
-X-CMS-MailID: 20200519223137epcms2p7e5b43c255d6747080fce6beadfc14d49
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200516171420epcas2p108c570904c5117c3654d71e0a2842faa
-References: <835c57b9-f792-2460-c3cc-667031969d63@acm.org>
-        <1589538614-24048-1-git-send-email-avri.altman@wdc.com>
-        <d10b27f1-49ec-d092-b252-2bb8cdc4c66e@acm.org>
-        <SN6PR04MB46408050B71E3A6225D6C495FCBA0@SN6PR04MB4640.namprd04.prod.outlook.com>
-        <CGME20200516171420epcas2p108c570904c5117c3654d71e0a2842faa@epcms2p7>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 19 May 2020 15:32:41 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, All!
+From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Date: Mon, 18 May 2020 20:32:12 +0530
 
-I write this email that is my opinion regard to HPB.
-This mail is very long. So, summary is ... :
+> The purpose of this patch series is to remove legacy power management callbacks
+> from realtek ethernet drivers.
+> 
+> The callbacks performing suspend() and resume() operations are still calling
+> pci_save_state(), pci_set_power_state(), etc. and handling the powermanagement
+> themselves, which is not recommended.
+> 
+> The conversion requires the removal of the those function calls and change the
+> callback definition accordingly.
+> 
+> All Changes are compile-tested only.
 
-[Summary]
-1. HPB, Write Booster and other new UFS features would 
-   be managed by ufs-extended feature layer (additional LLD layer)
-2. Map table of HPB will be managed in LLD (UFS Driver)
-3. Each ufs feature driver can be implemented as a loadable kernel module
-4. Samsung prepares test environment based on QEMU also
-5. We will push our patch as soon! Please review this.
-
-
-This is body: 
-
-I am Yongmyung Lee, who is one of the original authors of the HPB driver,
-which was out-of-tree implementation from linux kernel mainline.
-
-I have seen the works done by Bean Hou and Avri Altman, which are very impressive.
-I also have some opinion on the driver 
-and would like to consult with you about it and prepare a set of patches.
-
-The basic idea of my approach is similar to Bean's work
-of managing HPB map-data in LLD (UFS Driver).
-As HPB Driver is closely related to the behavior of the
-UFS Device, I think it would be nice if HPB Driver runs on the LLD layer.
-
-HPB Driver is closely related to the behavior of the UFS Device. 
-Thus I think it would be nice if HPB Driver works on additional feature layer on LLD. 
-
-Of course, Avri's work makes sense.
-I believe HPB's scheme can be a good alternative to HMB(Host Memory Buffer)of NVMe
-for storage devices like eMMC or SATA SSD (may be DRAMless).
-Once HPB-like scheme is applied, 
-these storage devices could benefit from performance improvement
-in read latency as well as throughput.
-
-However, it would not be desirable to relocate 
-the map table management to the upper layer such as scsi-dh
-as there are no such specification supported for the moment.
-
-When the similar specifications to HPB will be proposed in JEDEC or T13,
-it would be a great chance to have a deep discussion on 
-which layer to be the best fit for the map table management.
-
-Before disclosing my opinion on the HPB driver development approach,
-I would like to introduce the main characteristics of Extended UFS-Feature in progress: 
-
-  * Providing extended functionality.
-    That is, UFS device shall work well without extended UFS-Features.
-    By using them, however, it will be more powerful in certain application scenarios.
-
-  * Designed to suit the Embedded system (such as Android)
-    Due to the characteristics of UFS device, 
-    it is being utilized mainly as a mobile storage.
-    We are mainly trying to improve performance in Android system. 
-
-  * Closely connected to the UFS devices.
-    The Extended UFS-Features use UFS query requests
-    which are UFS private commands.
-    In addition, other features are closely related with
-    electrical and physical characteristics of UFS
-   (such as Voltage, Gear-scaling and Runtime suspend/resume etc.,)
-    and should be taken into consideration
- 
-Therefore, it is desirable to have those features managed 
-separately from the original UFS driver.
-
-Current extended UFS-Features which are approved by the JEDEC are as below:
-
-  * UFS HPB
-  * UFS WriteBooster
-
-In addition to that, we are developing and testing various UFS-features
-that would be beneficial in the Embedded system 
-(At the moment, most of them would be Android system).
-As we have already successfully provided enhanced features 
-in cooperation with major Android Phone vendors,
-now we willingly want to contribute our works to the Linux kernel mainline.
- 
-
-Currently, UFS driver (usually ufshcd.c) has become bulky and complex.
-So, I would like to split these codes into layers 
-like the works of Bean Huo and Avril Altman.
-Especially, I suggest the UFS-Feature Driver model based on Linux Bus-Driver Model,
-which is suitable to manage all Extended UFS-Feature drivers like the Figure as below:
-
-
-UFS Driver data structure (struct ufs_hba)
-   |
-   |    -----------------------    -- ufshpb driver -- <- attach ufshpb device driver (it can be loadable)
-   |---| ufs-ext feature layer |   -- ufs-wb driver -- <- attach ufswb device driver
-   |   |                       |   -- ...           -- <- ...
-   |    -----------------------    -- next ufs feature driver  -- <- attach ufs-next feature driver
-
-* wb : write-booster
- 
-
-Each extended UFS-Feature Driver has a bus of ufs-ext feature type
-and it is bound to the ufs-ext feature layer.
-The ufs-ext feature layer manages common APIs used by each Extended UFS-Feature Driver.
-The APIs consist of UFS Query request and 
-UFS Vendor commands related to each ufs-ext feature driver. 
-
-
-Furthermore, each ufs-ext feature driver will be written as a loadable kernel module.
-Vendors (e.g., Android Phone manufacturer) could optionally load and remove each module.
-Also they can customize the parameters of ufs-ext feature drivers
-while each module is being loaded.
-(For example, vendor would set the maximum memory size
- that can be reclaimed in the Host Control mode in HPB)
-
-
-We are expecting that this kind of standardized and 
-abstracted model will surely make it easier to manage the ufs-ext feature drivers.
-
-I noticed that the ufs-wb (write-booster) patch was written by Asutosh Das and Stanley Chu. 
-The basic idea of ufs-wb code is to proceed write boosting
-in adjusting gear-scaling, which is a good idea that I did not think of.
-I also would like to incorporate ufs-wb driver into the ufs-ext feature layer,
-and in this way the footprint of UFS driver could be slimmed down likewise.
-
-In brief, system vendors can optimize their system
-by loading each ufs-ext feature driver selectively. 
-
-As of now I am still working on the patch and
-have it tested on the android phone with real UFS-HPB device on the stable androidzed kernel
-as well as on a ufs-simulator based on QEMU to reflect latest kernel version with my team members. 
-
-In addition, we plan to provide QEMU with UFS-simulator
-for a test environment for UFS driver development.
-I hope there will be a lot of comments on my idea
-and patch set to be pushed in the near future
-and I will willingly reflect every single opinion.
-
-I will push up my patch set as soon as possible.
-
-Thank you
-
+Series applied, thanks.
