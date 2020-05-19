@@ -2,153 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B997E1D9ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DA01D9ED5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgESSHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:07:09 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:39081 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726510AbgESSHI (ORCPT
+        id S1729345AbgESSIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:08:00 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:44420 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726447AbgESSH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:07:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589911628; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=17pbhKPLb0x+5QvEAOVCbb6Ucpo1/xaIDMY482XpM0o=; b=jUxVQLMfgIMCQ+s+oxH+/aiYNw1ZMtb00WqtGOUNl6q8zXf7wiQdJX7utx1bk2whZdFrGAu3
- UC5M4887vQ1nkbFuwVwrz5rDPvldhjHS3B51pFl5oHgY53adnRkUPTze604vFDPFpZv0foML
- Xp0LEhdgj1X+AAjA13/Z1Dd9MCA=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5ec4204c087f08818e55d193 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 19 May 2020 18:07:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B93DAC072A4; Tue, 19 May 2020 18:07:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 19 May 2020 14:07:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589911678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=jSkbMzL80RhyCrT3ZnovTmqJc4ZMDL+dVOZ04nO1iEs=;
+        b=KRt3jIEjMiFdtdhDI7aohBLChIX11bIppqFjiF5YoDE5LT48E+Pfpwz+q6cfEE8XAFfzMd
+        R47nkAi9WK91eRNKOzpAr8yhrfS3wmGqh5RyqZdYeUq3qdMkY1wfZdlglcpPqwJvDwPOVP
+        4qOFcTotIpsUP6PsfZoWnQ+VLl6wHRU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-UqvQheSgO6CDN0qpYEYNHQ-1; Tue, 19 May 2020 14:07:42 -0400
+X-MC-Unique: UqvQheSgO6CDN0qpYEYNHQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DE89C4478F;
-        Tue, 19 May 2020 18:07:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0DE89C4478F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
-        wufan@codeaurora.org, pratanan@codeaurora.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <CAPM=9txXskVu_yD3DNuR0HgSUsE2v1Pv98dm=AHGvv_z2XKTAQ@mail.gmail.com>
- <93238096-5861-c140-b94f-6137977c3d65@codeaurora.org>
- <20200519174120.GC1158284@kroah.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <ce0e69ef-116c-df95-c136-d4714e02e96e@codeaurora.org>
-Date:   Tue, 19 May 2020 12:07:03 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200519174120.GC1158284@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72E90800D24;
+        Tue, 19 May 2020 18:07:41 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBDF55D9DD;
+        Tue, 19 May 2020 18:07:40 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     oupton@google.com
+Subject: [PATCH 1/3] selftests: kvm: add a SVM version of state-test
+Date:   Tue, 19 May 2020 14:07:38 -0400
+Message-Id: <20200519180740.89884-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/2020 11:41 AM, Greg Kroah-Hartman wrote:
-> On Tue, May 19, 2020 at 08:57:38AM -0600, Jeffrey Hugo wrote:
->> On 5/18/2020 11:08 PM, Dave Airlie wrote:
->>> On Fri, 15 May 2020 at 00:12, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
->>>>
->>>> Introduction:
->>>> Qualcomm Cloud AI 100 is a PCIe adapter card which contains a dedicated
->>>> SoC ASIC for the purpose of efficently running Deep Learning inference
->>>> workloads in a data center environment.
->>>>
->>>> The offical press release can be found at -
->>>> https://www.qualcomm.com/news/releases/2019/04/09/qualcomm-brings-power-efficient-artificial-intelligence-inference
->>>>
->>>> The offical product website is -
->>>> https://www.qualcomm.com/products/datacenter-artificial-intelligence
->>>>
->>>> At the time of the offical press release, numerious technology news sites
->>>> also covered the product.  Doing a search of your favorite site is likely
->>>> to find their coverage of it.
->>>>
->>>> It is our goal to have the kernel driver for the product fully upstream.
->>>> The purpose of this RFC is to start that process.  We are still doing
->>>> development (see below), and thus not quite looking to gain acceptance quite
->>>> yet, but now that we have a working driver we beleive we are at the stage
->>>> where meaningful conversation with the community can occur.
->>>
->>>
->>> Hi Jeffery,
->>>
->>> Just wondering what the userspace/testing plans for this driver.
->>>
->>> This introduces a new user facing API for a device without pointers to
->>> users or tests for that API.
->>
->> We have daily internal testing, although I don't expect you to take my word
->> for that.
->>
->> I would like to get one of these devices into the hands of Linaro, so that
->> it can be put into KernelCI.  Similar to other Qualcomm products. I'm trying
->> to convince the powers that be to make this happen.
->>
->> Regarding what the community could do on its own, everything but the Linux
->> driver is considered proprietary - that includes the on device firmware and
->> the entire userspace stack.  This is a decision above my pay grade.
-> 
-> Ok, that's a decision you are going to have to push upward on, as we
-> really can't take this without a working, open, userspace.
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ .../testing/selftests/kvm/x86_64/state_test.c | 65 ++++++++++++++++---
+ 1 file changed, 55 insertions(+), 10 deletions(-)
 
-Fair enough.  I hope that your position may have made things easier for me.
-
-I hope this doesn't widen the rift as it were, but what is the "bar" for 
-this userspace?
-
-Is a simple test application that adds two numbers on the hardware 
-acceptable?
-
-What is the bar "working"?  I intend to satisfy this request in good 
-faith, but I wonder, if no one has the hardware besides our customers, 
-and possibly KernelCI, can you really say that I've provided a working 
-userspace?
-
-> Especially given the copyright owner of this code, that would be just
-> crazy and foolish to not have open userspace code as well.  Firmware
-> would also be wonderful as well, go poke your lawyers about derivative
-> work issues and the like for fun conversations :)
-
-Those are the kind of conversations I try to avoid  :)
-
-> So without that changed, I'm not going to take this, and push to object
-> that anyone else take this.
-> 
-> I'm not going to be able to review any of this code anymore until that
-> changes, sorry.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-
+diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
+index 5b1a016edf55..1c5216f1ef0a 100644
+--- a/tools/testing/selftests/kvm/x86_64/state_test.c
++++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+@@ -18,10 +18,42 @@
+ #include "kvm_util.h"
+ #include "processor.h"
+ #include "vmx.h"
++#include "svm_util.h"
+ 
+ #define VCPU_ID		5
++#define L2_GUEST_STACK_SIZE 64
++
++void svm_l2_guest_code(void)
++{
++	GUEST_SYNC(4);
++        /* Exit to L1 */
++	vmcall();
++	GUEST_SYNC(6);
++	/* Done, exit to L1 and never come back.  */
++	vmcall();
++}
++
++static void svm_l1_guest_code(struct svm_test_data *svm)
++{
++        unsigned long l2_guest_stack[L2_GUEST_STACK_SIZE];
++	struct vmcb *vmcb = svm->vmcb;
++
++	GUEST_ASSERT(svm->vmcb_gpa);
++	/* Prepare for L2 execution. */
++        generic_svm_setup(svm, svm_l2_guest_code,
++                          &l2_guest_stack[L2_GUEST_STACK_SIZE]);
++
++	GUEST_SYNC(3);
++	run_guest(vmcb, svm->vmcb_gpa);
++	GUEST_ASSERT(vmcb->control.exit_code == SVM_EXIT_VMMCALL);
++	GUEST_SYNC(5);
++	vmcb->save.rip += 3;
++	run_guest(vmcb, svm->vmcb_gpa);
++	GUEST_ASSERT(vmcb->control.exit_code == SVM_EXIT_VMMCALL);
++	GUEST_SYNC(7);
++}
+ 
+-void l2_guest_code(void)
++void vmx_l2_guest_code(void)
+ {
+ 	GUEST_SYNC(6);
+ 
+@@ -42,9 +74,8 @@ void l2_guest_code(void)
+ 	vmcall();
+ }
+ 
+-void l1_guest_code(struct vmx_pages *vmx_pages)
++static void vmx_l1_guest_code(struct vmx_pages *vmx_pages)
+ {
+-#define L2_GUEST_STACK_SIZE 64
+         unsigned long l2_guest_stack[L2_GUEST_STACK_SIZE];
+ 
+ 	GUEST_ASSERT(vmx_pages->vmcs_gpa);
+@@ -56,7 +87,7 @@ void l1_guest_code(struct vmx_pages *vmx_pages)
+ 	GUEST_SYNC(4);
+ 	GUEST_ASSERT(vmptrstz() == vmx_pages->vmcs_gpa);
+ 
+-	prepare_vmcs(vmx_pages, l2_guest_code,
++	prepare_vmcs(vmx_pages, vmx_l2_guest_code,
+ 		     &l2_guest_stack[L2_GUEST_STACK_SIZE]);
+ 
+ 	GUEST_SYNC(5);
+@@ -106,20 +137,31 @@ void l1_guest_code(struct vmx_pages *vmx_pages)
+ 	GUEST_ASSERT(vmresume());
+ }
+ 
+-void guest_code(struct vmx_pages *vmx_pages)
++static u32 cpuid_ecx(u32 eax)
++{
++	u32 result;
++	asm volatile("cpuid" : "=c" (result) : "a" (eax));
++	return result;
++}
++
++static void __attribute__((__flatten__)) guest_code(void *arg)
+ {
+ 	GUEST_SYNC(1);
+ 	GUEST_SYNC(2);
+ 
+-	if (vmx_pages)
+-		l1_guest_code(vmx_pages);
++	if (arg) {
++		if (cpuid_ecx(0x80000001) & CPUID_SVM)
++			svm_l1_guest_code(arg);
++		else
++			vmx_l1_guest_code(arg);
++	}
+ 
+ 	GUEST_DONE();
+ }
+ 
+ int main(int argc, char *argv[])
+ {
+-	vm_vaddr_t vmx_pages_gva = 0;
++	vm_vaddr_t nested_gva = 0;
+ 
+ 	struct kvm_regs regs1, regs2;
+ 	struct kvm_vm *vm;
+@@ -136,8 +178,11 @@ int main(int argc, char *argv[])
+ 	vcpu_regs_get(vm, VCPU_ID, &regs1);
+ 
+ 	if (kvm_check_cap(KVM_CAP_NESTED_STATE)) {
+-		vcpu_alloc_vmx(vm, &vmx_pages_gva);
+-		vcpu_args_set(vm, VCPU_ID, 1, vmx_pages_gva);
++		if (kvm_get_supported_cpuid_entry(0x80000001)->ecx & CPUID_SVM)
++			vcpu_alloc_svm(vm, &nested_gva);
++		else
++			vcpu_alloc_vmx(vm, &nested_gva);
++		vcpu_args_set(vm, VCPU_ID, 1, nested_gva);
+ 	} else {
+ 		pr_info("will skip nested state checks\n");
+ 		vcpu_args_set(vm, VCPU_ID, 1, 0);
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.18.2
+
