@@ -2,275 +2,553 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04081DA57C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03CB1DA590
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgESX22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:28:28 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:29790 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgESX21 (ORCPT
+        id S1728277AbgESX3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728389AbgESX3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:28:27 -0400
+        Tue, 19 May 2020 19:29:50 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F1DC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:29:49 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so557347pgv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:29:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589930906; x=1621466906;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=zbQMNYLtIoa4kLlnYGSDNfjwBBSpQp5232b6Reef8GY=;
-  b=uez2FhW/pzO0eehs75k7xrrklrwkY6NDJ2FuHRxczcHyE7a7jqDRE2Sh
-   AFNv+kBc7NH55VUqvi1xA3yA6CmRwksy2qTQfTepq8moarmI97am16VoL
-   ffYSnqFmgL+1AgpFDGsURV++uzUNnuHW7rxjFZgwTKx3ds62b3qiL9UoC
-   Y=;
-IronPort-SDR: yjilb6+ifEVyXCjPbp681nPaYveCia7d74ArrOmgBsV4eZPeHO69p3DRLt0zG/aIApuBmDvFcZ
- uua+tOHnry/g==
-X-IronPort-AV: E=Sophos;i="5.73,411,1583193600"; 
-   d="scan'208";a="31067017"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 May 2020 23:28:23 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 8AD99223413;
-        Tue, 19 May 2020 23:28:21 +0000 (UTC)
-Received: from EX13D07UWA003.ant.amazon.com (10.43.160.35) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:28:08 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D07UWA003.ant.amazon.com (10.43.160.35) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 May 2020 23:28:08 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Tue, 19 May 2020 23:28:08 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 35D9940712; Tue, 19 May 2020 23:28:08 +0000 (UTC)
-Date:   Tue, 19 May 2020 23:28:08 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <boris.ostrovsky@oracle.com>,
-        <jgross@suse.com>, <linux-pm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kamatam@amazon.com>,
-        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
-        <roger.pau@citrix.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
-        <rjw@rjwysocki.net>, <len.brown@intel.com>, <pavel@ucw.cz>,
-        <peterz@infradead.org>, <eduval@amazon.com>, <sblbir@amazon.com>,
-        <anchalag@amazon.com>, <xen-devel@lists.xenproject.org>,
-        <vkuznets@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
-        <benh@kernel.crashing.org>
-Subject: [PATCH 07/12] xen-netfront: add callbacks for PM suspend and
- hibernation
-Message-ID: <d0371ece7f89c6c0a33fe51567878c3151ec0256.1589926004.git.anchalag@amazon.com>
-References: <cover.1589926004.git.anchalag@amazon.com>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j9VlJDshGqFwXsERNxtqx50EEl+t1E1Y1k/WKH7hZ7A=;
+        b=SBpeA0mBEt+lJPky8uGVBeUXVTVp7DhvKla5yUsppPKM5/keYGd8G2e/UXqS7n0ClT
+         nTNCSnv943KCBqkZHgHwCZOmQAY4IMdBrvrgG0n9GkTbhWZu5821FLpRk62wPZLrxAbP
+         EVJpJQspBfwSlMYR8rrBuNzryrpXqDN4CiItb8BKJeEBE59u1VQ3kGyjL2xqFkGS4OKp
+         iE9wbYKFfHz9nEf6gawOlJAMP7Q/gWyvgLJlXmbx7rUyiS+mPXStE6YJ6+acV3HVJVtV
+         nOKwKlyHEmK6FicHX9erMLgZvTDh2MBze49BQwGPRfZGEehcJDOVMuMMQ2NBU9etsMlS
+         z4hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j9VlJDshGqFwXsERNxtqx50EEl+t1E1Y1k/WKH7hZ7A=;
+        b=Xx0hHkZhH2P7wjx/aW0fM6jO8t6OWl54Ed9O2kJAjSYLLDdAm1reGCEKC1v57l2GzL
+         8tBQt04pblDxLWXCWpwTfsQ0OHlyNcF/21uZfS0bVTQ7lsGVd1/0NHjX+VG/8pIHJueu
+         8tz9K/Qu+hqOZmy+qu3EU8gf+9TWItnDJFBu3XwZx399W5CTsmkcC0ldwGKl+9kOifRP
+         ZNGQtYLI6ZuwivdWVmRgb7cBe1K9ESs7yCQKJ1EZdSn6ZKSFAxV0QoPbYQgKdrBa+pHN
+         a854qQXwuxNy3g/9kohM7QlxeaQHwKPlhY9nAz4ylzrYHpqGIF9kjnyDUlDtW5h29ubR
+         slSQ==
+X-Gm-Message-State: AOAM531a8NUi4+zG0oeOi4DHdxpskADxMaeSY4aX0Ku6l4sexxFrsDkB
+        vuJncI5oLtnI1CimGwlyOzWmRw==
+X-Google-Smtp-Source: ABdhPJyOVkF4UKvLo+5vwRzQxQ4TQeJrBXovGBNqo8QEth9jq8B3pHBuoPYqX/7MjAr3MjXwBPhbEg==
+X-Received: by 2002:a05:6a00:d2:: with SMTP id e18mr1547133pfj.252.1589930988791;
+        Tue, 19 May 2020 16:29:48 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id g184sm458425pfb.80.2020.05.19.16.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 16:29:47 -0700 (PDT)
+Date:   Tue, 19 May 2020 16:28:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mathieu.poirier@linaro.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org
+Subject: Re: [PATCH v3 1/3] remoteproc: Move coredump functionality to a new
+ file
+Message-ID: <20200519232826.GE408178@builder.lan>
+References: <1589486856-23440-1-git-send-email-rishabhb@codeaurora.org>
+ <1589486856-23440-2-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1589926004.git.anchalag@amazon.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <1589486856-23440-2-git-send-email-rishabhb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Munehisa Kamata <kamatam@amazon.com>
+On Thu 14 May 13:07 PDT 2020, Rishabh Bhatnagar wrote:
 
-Add freeze, thaw and restore callbacks for PM suspend and hibernation
-support. The freeze handler simply disconnects the frotnend from the
-backend and frees resources associated with queues after disabling the
-net_device from the system. The restore handler just changes the
-frontend state and let the xenbus handler to re-allocate the resources
-and re-connect to the backend. This can be performed transparently to
-the rest of the system. The handlers are used for both PM suspend and
-hibernation so that we can keep the existing suspend/resume callbacks
-for Xen suspend without modification. Freezing netfront devices is
-normally expected to finish within a few hundred milliseconds, but it
-can rarely take more than 5 seconds and hit the hard coded timeout,
-it would depend on backend state which may be congested and/or have
-complex configuration. While it's rare case, longer default timeout
-seems a bit more reasonable here to avoid hitting the timeout.
-Also, make it configurable via module parameter so that we can cover
-broader setups than what we know currently.
+> Move all coredump functionality to an individual file. This is
+> being done so that the current functionality can be extended
+> in future patchsets.
+> 
 
-[Anchal changelog: Variable name fix and checkpatch.pl fixes]
-Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
-Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
----
- drivers/net/xen-netfront.c | 98 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 97 insertions(+), 1 deletion(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 482c6c8b0fb7..65edcdd6e05f 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -43,6 +43,7 @@
- #include <linux/moduleparam.h>
- #include <linux/mm.h>
- #include <linux/slab.h>
-+#include <linux/completion.h>
- #include <net/ip.h>
- 
- #include <xen/xen.h>
-@@ -56,6 +57,12 @@
- #include <xen/interface/memory.h>
- #include <xen/interface/grant_table.h>
- 
-+enum netif_freeze_state {
-+	NETIF_FREEZE_STATE_UNFROZEN,
-+	NETIF_FREEZE_STATE_FREEZING,
-+	NETIF_FREEZE_STATE_FROZEN,
-+};
-+
- /* Module parameters */
- #define MAX_QUEUES_DEFAULT 8
- static unsigned int xennet_max_queues;
-@@ -63,6 +70,12 @@ module_param_named(max_queues, xennet_max_queues, uint, 0644);
- MODULE_PARM_DESC(max_queues,
- 		 "Maximum number of queues per virtual interface");
- 
-+static unsigned int netfront_freeze_timeout_secs = 10;
-+module_param_named(freeze_timeout_secs,
-+		   netfront_freeze_timeout_secs, uint, 0644);
-+MODULE_PARM_DESC(freeze_timeout_secs,
-+		 "timeout when freezing netfront device in seconds");
-+
- static const struct ethtool_ops xennet_ethtool_ops;
- 
- struct netfront_cb {
-@@ -160,6 +173,10 @@ struct netfront_info {
- 	struct netfront_stats __percpu *tx_stats;
- 
- 	atomic_t rx_gso_checksum_fixup;
-+
-+	int freeze_state;
-+
-+	struct completion wait_backend_disconnected;
- };
- 
- struct netfront_rx_info {
-@@ -721,6 +738,21 @@ static int xennet_close(struct net_device *dev)
- 	return 0;
- }
- 
-+static int xennet_disable_interrupts(struct net_device *dev)
-+{
-+	struct netfront_info *np = netdev_priv(dev);
-+	unsigned int num_queues = dev->real_num_tx_queues;
-+	unsigned int queue_index;
-+	struct netfront_queue *queue;
-+
-+	for (queue_index = 0; queue_index < num_queues; ++queue_index) {
-+		queue = &np->queues[queue_index];
-+		disable_irq(queue->tx_irq);
-+		disable_irq(queue->rx_irq);
-+	}
-+	return 0;
-+}
-+
- static void xennet_move_rx_slot(struct netfront_queue *queue, struct sk_buff *skb,
- 				grant_ref_t ref)
- {
-@@ -1301,6 +1333,8 @@ static struct net_device *xennet_create_dev(struct xenbus_device *dev)
- 
- 	np->queues = NULL;
- 
-+	init_completion(&np->wait_backend_disconnected);
-+
- 	err = -ENOMEM;
- 	np->rx_stats = netdev_alloc_pcpu_stats(struct netfront_stats);
- 	if (np->rx_stats == NULL)
-@@ -1794,6 +1828,50 @@ static int xennet_create_queues(struct netfront_info *info,
- 	return 0;
- }
- 
-+static int netfront_freeze(struct xenbus_device *dev)
-+{
-+	struct netfront_info *info = dev_get_drvdata(&dev->dev);
-+	unsigned long timeout = netfront_freeze_timeout_secs * HZ;
-+	int err = 0;
-+
-+	xennet_disable_interrupts(info->netdev);
-+
-+	netif_device_detach(info->netdev);
-+
-+	info->freeze_state = NETIF_FREEZE_STATE_FREEZING;
-+
-+	/* Kick the backend to disconnect */
-+	xenbus_switch_state(dev, XenbusStateClosing);
-+
-+	/* We don't want to move forward before the frontend is diconnected
-+	 * from the backend cleanly.
-+	 */
-+	timeout = wait_for_completion_timeout(&info->wait_backend_disconnected,
-+					      timeout);
-+	if (!timeout) {
-+		err = -EBUSY;
-+		xenbus_dev_error(dev, err, "Freezing timed out;"
-+				 "the device may become inconsistent state");
-+		return err;
-+	}
-+
-+	/* Tear down queues */
-+	xennet_disconnect_backend(info);
-+	xennet_destroy_queues(info);
-+
-+	info->freeze_state = NETIF_FREEZE_STATE_FROZEN;
-+
-+	return err;
-+}
-+
-+static int netfront_restore(struct xenbus_device *dev)
-+{
-+	/* Kick the backend to re-connect */
-+	xenbus_switch_state(dev, XenbusStateInitialising);
-+
-+	return 0;
-+}
-+
- /* Common code used when first setting up, and when resuming. */
- static int talk_to_netback(struct xenbus_device *dev,
- 			   struct netfront_info *info)
-@@ -1999,6 +2077,8 @@ static int xennet_connect(struct net_device *dev)
- 		spin_unlock_bh(&queue->rx_lock);
- 	}
- 
-+	np->freeze_state = NETIF_FREEZE_STATE_UNFROZEN;
-+
- 	return 0;
- }
- 
-@@ -2036,10 +2116,23 @@ static void netback_changed(struct xenbus_device *dev,
- 		break;
- 
- 	case XenbusStateClosed:
--		if (dev->state == XenbusStateClosed)
-+		if (dev->state == XenbusStateClosed) {
-+		     /* dpm context is waiting for the backend */
-+			if (np->freeze_state == NETIF_FREEZE_STATE_FREEZING)
-+				complete(&np->wait_backend_disconnected);
- 			break;
-+		}
-+
- 		/* Fall through - Missed the backend's CLOSING state. */
- 	case XenbusStateClosing:
-+	       /* We may see unexpected Closed or Closing from the backend.
-+		* Just ignore it not to prevent the frontend from being
-+		* re-connected in the case of PM suspend or hibernation.
-+		*/
-+		if (np->freeze_state == NETIF_FREEZE_STATE_FROZEN &&
-+		    dev->state == XenbusStateInitialising) {
-+			break;
-+		}
- 		xenbus_frontend_closed(dev);
- 		break;
- 	}
-@@ -2186,6 +2279,9 @@ static struct xenbus_driver netfront_driver = {
- 	.probe = netfront_probe,
- 	.remove = xennet_remove,
- 	.resume = netfront_resume,
-+	.freeze = netfront_freeze,
-+	.thaw	= netfront_restore,
-+	.restore = netfront_restore,
- 	.otherend_changed = netback_changed,
- };
- 
--- 
-2.24.1.AMZN
+Thanks,
+Bjorn
 
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> ---
+>  drivers/remoteproc/Makefile              |   1 +
+>  drivers/remoteproc/remoteproc_core.c     | 191 -----------------------------
+>  drivers/remoteproc/remoteproc_coredump.c | 204 +++++++++++++++++++++++++++++++
+>  drivers/remoteproc/remoteproc_internal.h |   4 +
+>  4 files changed, 209 insertions(+), 191 deletions(-)
+>  create mode 100644 drivers/remoteproc/remoteproc_coredump.c
+> 
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 0effd38..f1a33c3 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -5,6 +5,7 @@
+>  
+>  obj-$(CONFIG_REMOTEPROC)		+= remoteproc.o
+>  remoteproc-y				:= remoteproc_core.o
+> +remoteproc-y				+= remoteproc_coredump.o
+>  remoteproc-y				+= remoteproc_debugfs.o
+>  remoteproc-y				+= remoteproc_sysfs.o
+>  remoteproc-y				+= remoteproc_virtio.o
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 4bd0f45..22575f4 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/firmware.h>
+>  #include <linux/string.h>
+>  #include <linux/debugfs.h>
+> -#include <linux/devcoredump.h>
+>  #include <linux/rculist.h>
+>  #include <linux/remoteproc.h>
+>  #include <linux/iommu.h>
+> @@ -40,7 +39,6 @@
+>  #include <linux/platform_device.h>
+>  
+>  #include "remoteproc_internal.h"
+> -#include "remoteproc_elf_helpers.h"
+>  
+>  #define HIGH_BITS_MASK 0xFFFFFFFF00000000ULL
+>  
+> @@ -1238,19 +1236,6 @@ static int rproc_alloc_registered_carveouts(struct rproc *rproc)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * rproc_coredump_cleanup() - clean up dump_segments list
+> - * @rproc: the remote processor handle
+> - */
+> -static void rproc_coredump_cleanup(struct rproc *rproc)
+> -{
+> -	struct rproc_dump_segment *entry, *tmp;
+> -
+> -	list_for_each_entry_safe(entry, tmp, &rproc->dump_segments, node) {
+> -		list_del(&entry->node);
+> -		kfree(entry);
+> -	}
+> -}
+>  
+>  /**
+>   * rproc_resource_cleanup() - clean up and free all acquired resources
+> @@ -1509,182 +1494,6 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * rproc_coredump_add_segment() - add segment of device memory to coredump
+> - * @rproc:	handle of a remote processor
+> - * @da:		device address
+> - * @size:	size of segment
+> - *
+> - * Add device memory to the list of segments to be included in a coredump for
+> - * the remoteproc.
+> - *
+> - * Return: 0 on success, negative errno on error.
+> - */
+> -int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size)
+> -{
+> -	struct rproc_dump_segment *segment;
+> -
+> -	segment = kzalloc(sizeof(*segment), GFP_KERNEL);
+> -	if (!segment)
+> -		return -ENOMEM;
+> -
+> -	segment->da = da;
+> -	segment->size = size;
+> -
+> -	list_add_tail(&segment->node, &rproc->dump_segments);
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(rproc_coredump_add_segment);
+> -
+> -/**
+> - * rproc_coredump_add_custom_segment() - add custom coredump segment
+> - * @rproc:	handle of a remote processor
+> - * @da:		device address
+> - * @size:	size of segment
+> - * @dumpfn:	custom dump function called for each segment during coredump
+> - * @priv:	private data
+> - *
+> - * Add device memory to the list of segments to be included in the coredump
+> - * and associate the segment with the given custom dump function and private
+> - * data.
+> - *
+> - * Return: 0 on success, negative errno on error.
+> - */
+> -int rproc_coredump_add_custom_segment(struct rproc *rproc,
+> -				      dma_addr_t da, size_t size,
+> -				      void (*dumpfn)(struct rproc *rproc,
+> -						     struct rproc_dump_segment *segment,
+> -						     void *dest),
+> -				      void *priv)
+> -{
+> -	struct rproc_dump_segment *segment;
+> -
+> -	segment = kzalloc(sizeof(*segment), GFP_KERNEL);
+> -	if (!segment)
+> -		return -ENOMEM;
+> -
+> -	segment->da = da;
+> -	segment->size = size;
+> -	segment->priv = priv;
+> -	segment->dump = dumpfn;
+> -
+> -	list_add_tail(&segment->node, &rproc->dump_segments);
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(rproc_coredump_add_custom_segment);
+> -
+> -/**
+> - * rproc_coredump_set_elf_info() - set coredump elf information
+> - * @rproc:	handle of a remote processor
+> - * @class:	elf class for coredump elf file
+> - * @machine:	elf machine for coredump elf file
+> - *
+> - * Set elf information which will be used for coredump elf file.
+> - *
+> - * Return: 0 on success, negative errno on error.
+> - */
+> -int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine)
+> -{
+> -	if (class != ELFCLASS64 && class != ELFCLASS32)
+> -		return -EINVAL;
+> -
+> -	rproc->elf_class = class;
+> -	rproc->elf_machine = machine;
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(rproc_coredump_set_elf_info);
+> -
+> -/**
+> - * rproc_coredump() - perform coredump
+> - * @rproc:	rproc handle
+> - *
+> - * This function will generate an ELF header for the registered segments
+> - * and create a devcoredump device associated with rproc.
+> - */
+> -static void rproc_coredump(struct rproc *rproc)
+> -{
+> -	struct rproc_dump_segment *segment;
+> -	void *phdr;
+> -	void *ehdr;
+> -	size_t data_size;
+> -	size_t offset;
+> -	void *data;
+> -	void *ptr;
+> -	u8 class = rproc->elf_class;
+> -	int phnum = 0;
+> -
+> -	if (list_empty(&rproc->dump_segments))
+> -		return;
+> -
+> -	if (class == ELFCLASSNONE) {
+> -		dev_err(&rproc->dev, "Elf class is not set\n");
+> -		return;
+> -	}
+> -
+> -	data_size = elf_size_of_hdr(class);
+> -	list_for_each_entry(segment, &rproc->dump_segments, node) {
+> -		data_size += elf_size_of_phdr(class) + segment->size;
+> -
+> -		phnum++;
+> -	}
+> -
+> -	data = vmalloc(data_size);
+> -	if (!data)
+> -		return;
+> -
+> -	ehdr = data;
+> -
+> -	memset(ehdr, 0, elf_size_of_hdr(class));
+> -	/* e_ident field is common for both elf32 and elf64 */
+> -	elf_hdr_init_ident(ehdr, class);
+> -
+> -	elf_hdr_set_e_type(class, ehdr, ET_CORE);
+> -	elf_hdr_set_e_machine(class, ehdr, rproc->elf_machine);
+> -	elf_hdr_set_e_version(class, ehdr, EV_CURRENT);
+> -	elf_hdr_set_e_entry(class, ehdr, rproc->bootaddr);
+> -	elf_hdr_set_e_phoff(class, ehdr, elf_size_of_hdr(class));
+> -	elf_hdr_set_e_ehsize(class, ehdr, elf_size_of_hdr(class));
+> -	elf_hdr_set_e_phentsize(class, ehdr, elf_size_of_phdr(class));
+> -	elf_hdr_set_e_phnum(class, ehdr, phnum);
+> -
+> -	phdr = data + elf_hdr_get_e_phoff(class, ehdr);
+> -	offset = elf_hdr_get_e_phoff(class, ehdr);
+> -	offset += elf_size_of_phdr(class) * elf_hdr_get_e_phnum(class, ehdr);
+> -
+> -	list_for_each_entry(segment, &rproc->dump_segments, node) {
+> -		memset(phdr, 0, elf_size_of_phdr(class));
+> -		elf_phdr_set_p_type(class, phdr, PT_LOAD);
+> -		elf_phdr_set_p_offset(class, phdr, offset);
+> -		elf_phdr_set_p_vaddr(class, phdr, segment->da);
+> -		elf_phdr_set_p_paddr(class, phdr, segment->da);
+> -		elf_phdr_set_p_filesz(class, phdr, segment->size);
+> -		elf_phdr_set_p_memsz(class, phdr, segment->size);
+> -		elf_phdr_set_p_flags(class, phdr, PF_R | PF_W | PF_X);
+> -		elf_phdr_set_p_align(class, phdr, 0);
+> -
+> -		if (segment->dump) {
+> -			segment->dump(rproc, segment, data + offset);
+> -		} else {
+> -			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+> -			if (!ptr) {
+> -				dev_err(&rproc->dev,
+> -					"invalid coredump segment (%pad, %zu)\n",
+> -					&segment->da, segment->size);
+> -				memset(data + offset, 0xff, segment->size);
+> -			} else {
+> -				memcpy(data + offset, ptr, segment->size);
+> -			}
+> -		}
+> -
+> -		offset += elf_phdr_get_p_filesz(class, phdr);
+> -		phdr += elf_size_of_phdr(class);
+> -	}
+> -
+> -	dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
+> -}
+>  
+>  /**
+>   * rproc_trigger_recovery() - recover a remoteproc
+> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
+> new file mode 100644
+> index 0000000..ded0244
+> --- /dev/null
+> +++ b/drivers/remoteproc/remoteproc_coredump.c
+> @@ -0,0 +1,204 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Coredump functionality for Remoteproc framework.
+> + *
+> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/devcoredump.h>
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/remoteproc.h>
+> +#include "remoteproc_internal.h"
+> +#include "remoteproc_elf_helpers.h"
+> +
+> +/**
+> + * rproc_coredump_cleanup() - clean up dump_segments list
+> + * @rproc: the remote processor handle
+> + */
+> +void rproc_coredump_cleanup(struct rproc *rproc)
+> +{
+> +	struct rproc_dump_segment *entry, *tmp;
+> +
+> +	list_for_each_entry_safe(entry, tmp, &rproc->dump_segments, node) {
+> +		list_del(&entry->node);
+> +		kfree(entry);
+> +	}
+> +}
+> +
+> +/**
+> + * rproc_coredump_add_segment() - add segment of device memory to coredump
+> + * @rproc:	handle of a remote processor
+> + * @da:		device address
+> + * @size:	size of segment
+> + *
+> + * Add device memory to the list of segments to be included in a coredump for
+> + * the remoteproc.
+> + *
+> + * Return: 0 on success, negative errno on error.
+> + */
+> +int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size)
+> +{
+> +	struct rproc_dump_segment *segment;
+> +
+> +	segment = kzalloc(sizeof(*segment), GFP_KERNEL);
+> +	if (!segment)
+> +		return -ENOMEM;
+> +
+> +	segment->da = da;
+> +	segment->size = size;
+> +
+> +	list_add_tail(&segment->node, &rproc->dump_segments);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(rproc_coredump_add_segment);
+> +
+> +/**
+> + * rproc_coredump_add_custom_segment() - add custom coredump segment
+> + * @rproc:	handle of a remote processor
+> + * @da:		device address
+> + * @size:	size of segment
+> + * @dumpfn:	custom dump function called for each segment during coredump
+> + * @priv:	private data
+> + *
+> + * Add device memory to the list of segments to be included in the coredump
+> + * and associate the segment with the given custom dump function and private
+> + * data.
+> + *
+> + * Return: 0 on success, negative errno on error.
+> + */
+> +int rproc_coredump_add_custom_segment(struct rproc *rproc,
+> +				      dma_addr_t da, size_t size,
+> +				      void (*dumpfn)(struct rproc *rproc,
+> +						     struct rproc_dump_segment *segment,
+> +						     void *dest),
+> +				      void *priv)
+> +{
+> +	struct rproc_dump_segment *segment;
+> +
+> +	segment = kzalloc(sizeof(*segment), GFP_KERNEL);
+> +	if (!segment)
+> +		return -ENOMEM;
+> +
+> +	segment->da = da;
+> +	segment->size = size;
+> +	segment->priv = priv;
+> +	segment->dump = dumpfn;
+> +
+> +	list_add_tail(&segment->node, &rproc->dump_segments);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(rproc_coredump_add_custom_segment);
+> +
+> +/**
+> + * rproc_coredump_set_elf_info() - set coredump elf information
+> + * @rproc:	handle of a remote processor
+> + * @class:	elf class for coredump elf file
+> + * @machine:	elf machine for coredump elf file
+> + *
+> + * Set elf information which will be used for coredump elf file.
+> + *
+> + * Return: 0 on success, negative errno on error.
+> + */
+> +int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine)
+> +{
+> +	if (class != ELFCLASS64 && class != ELFCLASS32)
+> +		return -EINVAL;
+> +
+> +	rproc->elf_class = class;
+> +	rproc->elf_machine = machine;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(rproc_coredump_set_elf_info);
+> +
+> +/**
+> + * rproc_coredump() - perform coredump
+> + * @rproc:	rproc handle
+> + *
+> + * This function will generate an ELF header for the registered segments
+> + * and create a devcoredump device associated with rproc.
+> + */
+> +void rproc_coredump(struct rproc *rproc)
+> +{
+> +	struct rproc_dump_segment *segment;
+> +	void *phdr;
+> +	void *ehdr;
+> +	size_t data_size;
+> +	size_t offset;
+> +	void *data;
+> +	void *ptr;
+> +	u8 class = rproc->elf_class;
+> +	int phnum = 0;
+> +
+> +	if (list_empty(&rproc->dump_segments))
+> +		return;
+> +
+> +	if (class == ELFCLASSNONE) {
+> +		dev_err(&rproc->dev, "Elf class is not set\n");
+> +		return;
+> +	}
+> +
+> +	data_size = elf_size_of_hdr(class);
+> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
+> +		data_size += elf_size_of_phdr(class) + segment->size;
+> +
+> +		phnum++;
+> +	}
+> +
+> +	data = vmalloc(data_size);
+> +	if (!data)
+> +		return;
+> +
+> +	ehdr = data;
+> +
+> +	memset(ehdr, 0, elf_size_of_hdr(class));
+> +	/* e_ident field is common for both elf32 and elf64 */
+> +	elf_hdr_init_ident(ehdr, class);
+> +
+> +	elf_hdr_set_e_type(class, ehdr, ET_CORE);
+> +	elf_hdr_set_e_machine(class, ehdr, rproc->elf_machine);
+> +	elf_hdr_set_e_version(class, ehdr, EV_CURRENT);
+> +	elf_hdr_set_e_entry(class, ehdr, rproc->bootaddr);
+> +	elf_hdr_set_e_phoff(class, ehdr, elf_size_of_hdr(class));
+> +	elf_hdr_set_e_ehsize(class, ehdr, elf_size_of_hdr(class));
+> +	elf_hdr_set_e_phentsize(class, ehdr, elf_size_of_phdr(class));
+> +	elf_hdr_set_e_phnum(class, ehdr, phnum);
+> +
+> +	phdr = data + elf_hdr_get_e_phoff(class, ehdr);
+> +	offset = elf_hdr_get_e_phoff(class, ehdr);
+> +	offset += elf_size_of_phdr(class) * elf_hdr_get_e_phnum(class, ehdr);
+> +
+> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
+> +		memset(phdr, 0, elf_size_of_phdr(class));
+> +		elf_phdr_set_p_type(class, phdr, PT_LOAD);
+> +		elf_phdr_set_p_offset(class, phdr, offset);
+> +		elf_phdr_set_p_vaddr(class, phdr, segment->da);
+> +		elf_phdr_set_p_paddr(class, phdr, segment->da);
+> +		elf_phdr_set_p_filesz(class, phdr, segment->size);
+> +		elf_phdr_set_p_memsz(class, phdr, segment->size);
+> +		elf_phdr_set_p_flags(class, phdr, PF_R | PF_W | PF_X);
+> +		elf_phdr_set_p_align(class, phdr, 0);
+> +
+> +		if (segment->dump) {
+> +			segment->dump(rproc, segment, data + offset);
+> +		} else {
+> +			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+> +			if (!ptr) {
+> +				dev_err(&rproc->dev,
+> +					"invalid coredump segment (%pad, %zu)\n",
+> +					&segment->da, segment->size);
+> +				memset(data + offset, 0xff, segment->size);
+> +			} else {
+> +				memcpy(data + offset, ptr, segment->size);
+> +			}
+> +		}
+> +
+> +		offset += elf_phdr_get_p_filesz(class, phdr);
+> +		phdr += elf_size_of_phdr(class);
+> +	}
+> +
+> +	dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
+> +}
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index 4ba7cb5..97d441b 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -47,6 +47,10 @@ struct dentry *rproc_create_trace_file(const char *name, struct rproc *rproc,
+>  int rproc_init_sysfs(void);
+>  void rproc_exit_sysfs(void);
+>  
+> +/* from remoteproc_coredump.c */
+> +void rproc_coredump_cleanup(struct rproc *rproc);
+> +void rproc_coredump(struct rproc *rproc);
+> +
+>  void rproc_free_vring(struct rproc_vring *rvring);
+>  int rproc_alloc_vring(struct rproc_vdev *rvdev, int i);
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
