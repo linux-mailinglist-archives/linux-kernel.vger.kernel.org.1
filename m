@@ -2,158 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939CB1D8E08
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FD01D8E0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgESDIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 23:08:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:47219 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgESDIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 23:08:47 -0400
-IronPort-SDR: 8jSU3MrGz4qQdBslgq1HhH9Uyn5Eq8+GSqxh6PO04igOhxuDuxjt//dedSVDov8yq+yTlUfagS
- NbPmXy99M8uw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 20:08:47 -0700
-IronPort-SDR: UNiJIVy9L3nV2FcocPuxfstsqx+jvmEZPZEtOpRSyRido8uPiQibjcdRaYo50vrue0pb82YSU7
- 4O82+YOsRyoQ==
-X-IronPort-AV: E=Sophos;i="5.73,408,1583222400"; 
-   d="scan'208";a="439459187"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.141]) ([10.238.4.141])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 20:08:43 -0700
-Subject: Re: [PATCH v11 05/11] perf/x86: Keep LBR stack unchanged in host
- context for guest LBR event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
-        wei.w.wang@intel.com
-References: <20200514083054.62538-1-like.xu@linux.intel.com>
- <20200514083054.62538-6-like.xu@linux.intel.com>
- <20200518120205.GF277222@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <dd6b0ab0-0209-e1e5-550c-24e2ad101b15@linux.intel.com>
-Date:   Tue, 19 May 2020 11:08:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728113AbgESDKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 23:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgESDKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 23:10:32 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED30C05BD0A
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:10:31 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so5747986pgv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AJxG9LIE63AA33BzMkyehOfcgbB6kvICbFoJNIUf4Tw=;
+        b=Kl4pD4LMdzo9os2+abZgtSkZC7fcWbzdYwu4Fm7c+1F4IQcZtEx9AntsNG+EimbU9S
+         eOGnGp4ftBlWjUPXRKaO6I+1et3f+ph2LWlWnRhnJqyTk2r7BsI1ufE7Tk8SrGFxrC/u
+         eDvyJ4yyYaoCZX/q/LL1zLU2VfDcExQUc9ABO4okrxFoOz4BflJa5w25O6Hf3bsgCOtC
+         DXXkYPw9AXqChdqW/U1W244ROvX5lPfx0ERxYl5E0eu8uoiz7py/EFb3pwu48dC/3XCJ
+         KkvyDUw60z7Ebxqh93Nq3Lp2EtyLs3scBigOay+8AVDDIthPr6kS8hsNlTtFS4T46JVC
+         eVVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AJxG9LIE63AA33BzMkyehOfcgbB6kvICbFoJNIUf4Tw=;
+        b=Kzlq/Axk3RAscgGRnMhhN3bRKuwVBlGAnE9nWGFeHqMHT4rPLrzcxy8fN3UJa6522L
+         Tl8IeNX734HWF8QR6WHdMG2X1oT3nZ2bBz0sCr4fta/Jk9Ahx1rpq7OVciJe2s+fIX3v
+         1axFZ395pDgpp0zbMYuQSRT2MRSTC9s9Mfyes6ppoK4MsM3O/O0WfkeD2xQtJuDwGSLy
+         ucNw8ilNY1vwjVrpcsGW4TOcMyPEMhPgVuf3UZffrOnJIm4ij0aA/ePU6Q8Gz9keGxUM
+         lc7vgvTMMxzurQqVO+2CvY8NWMN0hwGuX4No0MfUNcjoqwgYng/JcTTGGLepAnyQXR9q
+         UblA==
+X-Gm-Message-State: AOAM532CiHNpdtu5kDX56SXdgY63znYcLnUP/d0lJtrFzPspd2pLlbbb
+        Lil/0IaySfbqwuskyUY1ZKLx0A==
+X-Google-Smtp-Source: ABdhPJzYhnuTz/HQUgu7y0Y6OzdvrkIUvjfOQflASZSrZpZ3z/W1HtJirR07oMROAXIZpgpgY5IVHA==
+X-Received: by 2002:a63:f925:: with SMTP id h37mr18652292pgi.112.1589857831106;
+        Mon, 18 May 2020 20:10:31 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id n23sm742545pjq.18.2020.05.18.20.10.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 20:10:30 -0700 (PDT)
+Date:   Mon, 18 May 2020 20:09:08 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org, mka@chromium.org,
+        swboyd@chromium.org, evgreen@chromium.org, dianders@chromium.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Correct the pdc interrupt
+ ranges
+Message-ID: <20200519030908.GW2165@builder.lan>
+References: <1589804402-27130-1-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200518120205.GF277222@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589804402-27130-1-git-send-email-mkshah@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Mon 18 May 05:20 PDT 2020, Maulik Shah wrote:
 
-Thanks for the clear attitude and code refinement.
-
-On 2020/5/18 20:02, Peter Zijlstra wrote:
-> On Thu, May 14, 2020 at 04:30:48PM +0800, Like Xu wrote:
->> @@ -544,7 +562,12 @@ void intel_pmu_lbr_enable_all(bool pmi)
->>   {
->>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->>   
->> -	if (cpuc->lbr_users)
->> +	/*
->> +	 * When the LBR hardware is scheduled for a guest LBR event,
->> +	 * the guest will dis/enables LBR itself at the appropriate time,
->> +	 * including configuring MSR_LBR_SELECT.
->> +	 */
->> +	if (cpuc->lbr_users && !cpuc->guest_lbr_enabled)
->>   		__intel_pmu_lbr_enable(pmi);
->>   }
+> Few PDC interrupts do not map to respective parent GIC interrupt.
+> Fix this by correcting the pdc interrupt map.
 > 
-> No!, that should be done through perf_event_attr::exclude_host, as I
-> believe all the other KVM event do it.
-> 
+> Fixes: 22f185ee81d2 ("arm64: dts: qcom: sc7180: Add pdc interrupt controller")
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
 
-Sure, I could reuse cpuc->intel_ctrl_guest_mask to rewrite this part:
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index d788edb7c1f9..f1243e8211ca 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2189,7 +2189,8 @@ static void intel_pmu_disable_event(struct perf_event 
-*event)
-         } else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
-                 intel_pmu_disable_bts();
-                 intel_pmu_drain_bts_buffer();
--       }
-+       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-+               intel_clear_masks(event, idx);
-
-         /*
-          * Needs to be called after x86_pmu_disable_event,
-@@ -2271,7 +2272,8 @@ static void intel_pmu_enable_event(struct perf_event 
-*event)
-                 if (!__this_cpu_read(cpu_hw_events.enabled))
-                         return;
-                 intel_pmu_enable_bts(hwc->config);
--       }
-+       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
-+               intel_set_masks(event, idx);
-  }
-
-  static void intel_pmu_add_event(struct perf_event *event)
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index b8dabf1698d6..1b30c76815dd 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -552,11 +552,19 @@ void intel_pmu_lbr_del(struct perf_event *event)
-         perf_sched_cb_dec(event->ctx->pmu);
-  }
-
-+static inline bool vlbr_is_enabled(void)
-+{
-+       struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+
-+       return test_bit(INTEL_PMC_IDX_FIXED_VLBR,
-+               (unsigned long *)&cpuc->intel_ctrl_guest_mask);
-+}
-+
-  void intel_pmu_lbr_enable_all(bool pmi)
-  {
-         struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-
--       if (cpuc->lbr_users)
-+       if (cpuc->lbr_users && !vlbr_is_enabled())
-                 __intel_pmu_lbr_enable(pmi);
-  }
-
-@@ -564,7 +572,7 @@ void intel_pmu_lbr_disable_all(void)
-  {
-         struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-
--       if (cpuc->lbr_users)
-+       if (cpuc->lbr_users && !vlbr_is_enabled())
-                 __intel_pmu_lbr_disable();
-  }
-
-@@ -706,7 +714,8 @@ void intel_pmu_lbr_read(void)
-          * This could be smarter and actually check the event,
-          * but this simple approach seems to work for now.
-          */
--       if (!cpuc->lbr_users || cpuc->lbr_users == cpuc->lbr_pebs_users)
-+       if (!cpuc->lbr_users || vlbr_is_enabled() ||
-+               cpuc->lbr_users == cpuc->lbr_pebs_users)
-                 return;
-
-         if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_32)
-
-Is this acceptable to you ?
-
-If you have more comments on the patchset, please let me know.
+Applied
 
 Thanks,
-Like Xu
+Bjorn
+
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index f1280e0..f6b4ee8 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -2308,8 +2308,7 @@
+>  		pdc: interrupt-controller@b220000 {
+>  			compatible = "qcom,sc7180-pdc", "qcom,pdc";
+>  			reg = <0 0x0b220000 0 0x30000>;
+> -			qcom,pdc-ranges = <0 480 15>, <17 497 98>,
+> -					  <119 634 4>, <124 639 1>;
+> +			qcom,pdc-ranges = <0 480 94>, <94 609 31>, <125 63 1>;
+>  			#interrupt-cells = <2>;
+>  			interrupt-parent = <&intc>;
+>  			interrupt-controller;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
