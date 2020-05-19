@@ -2,255 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A911D9CF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413F21D9D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgESQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729053AbgESQhd (ORCPT
+        id S1729283AbgESQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:40:17 -0400
+Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:42154 "EHLO
+        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729132AbgESQkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:37:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D553DC08C5C0;
-        Tue, 19 May 2020 09:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uyf2ueNIfJGQl9XBfbBGLJfofliABcUPeh4lV+oFziQ=; b=MDdAAORNfycDuso9QDoBWPQvTu
-        L4b4kKFQC8AYHUvV+XYvBB5XZ1tnbL/BKPTtDW5Rn+mhlIMTz0FYCNDcYStzUgO2kNT4lKbyU9OuF
-        XZMsWbY3efbFlDzU87M9/XsluYaaTRbGis7+ucYa+Y04u2WH0UisMIcnc84ybcheRXaZtOZB1U1Po
-        f91gUZJaQBefyGILuixbeTRwbaMXy/JXW7cN39hRrQENVtOH55Q0JqfpQJJA238xlkbwvtyTqPM1Y
-        q9hB/r5GmypNEYLy4TLn9c7R65LLcuqPK8eX3qk2y4j3xONfhYKfpbIOdp3yuHk0ih8XI20dcVbNW
-        SY/PSXMA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jb5Ev-0004uK-B9; Tue, 19 May 2020 16:37:13 +0000
-Date:   Tue, 19 May 2020 09:37:13 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v5 5/7] blktrace: fix debugfs use after free
-Message-ID: <20200519163713.GA29944@infradead.org>
-References: <20200516031956.2605-1-mcgrof@kernel.org>
- <20200516031956.2605-6-mcgrof@kernel.org>
+        Tue, 19 May 2020 12:40:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1589906416; bh=KB5k1+sCGpSRd9pTKc0P9/4ZGPy9ZVtmix5g8Hf7Eac=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rsShBZf3gXvSp1KE18stC5xzS95cHWZ2qHE2kLpjuydCVuETYTBwEnY1B0wTA0UwLC7ibv/RILe0qeoVtZfZmcS3qFSke8lzxJ5WUfnlE8tI+Ba9u/Lyvb6bSpVVSWY/o6mpgZGWilipoE+//uG7GieYZAblrBzPs1rvuE9fExNR5pIxGX5+KGkwP4+RpR73xkGkz6XbcD8b4R8v5ZfpOSAg+l2ksW8Ze3NaKC7S0VUOXdcs0j459m5WgZSqGDHxpF8WM1f03pKHQRWq7EH4AAZSdm9gvprjMXhxPpqI3Hg68Y9TZ4+oPmwk68e3i3wbzpdTtTX8VwD4nc1Ou84p2g==
+X-YMail-OSG: R7VuP90VM1k0EQq_nB4NkpF44DwtvcZVRXDA63d0cCLZj3p6LFCvHmKGpeFDmy3
+ WC5Ax.iQB48OdBy9l4C60SnAwjOH0iIfDnABMZMhA6cQpICMznyO1DpK27ecYyTwWAcCvRGJcKMC
+ 0TQCovOvxQoVhmDhc8Qz1nZsjNTVaGtIViLzSqk.KyOSjjLDmd3ukSGnvI0atLj5xE83AhxhwTa7
+ ZHVet3cu6YkpNMJYQP3EZcFmjKl91lGJU68qPuOjtEIfl3I6Qk2bQDEckfAZYQY_rGggErxo4Kmq
+ UY9Z9e73Lkyj63rv2FJ4dmI2D5RaFkRPNDK_.D2p2jx8NZ_TpaO1immV.G_k5b7hVkjcRHqop2ji
+ p2nyqWIZC6wdSrz0zRwDLmoqhXkNFIJJyB3G9AdrPqhWuIqVzpSSnGsyPBHCL.XaYYB1PajWCSRL
+ D.cJwapHFKxMZxoyWGN4Pd1XGnI8vEAByRsz.mPbiAomPfqiM72ukxoTeVgdD_NdzxbdqoVtNB2I
+ 5N3rHsizZSDcX.FH6rmclZyDhN6NLz4Q.DGZ9RxQzcKBoA0xG1HKh9aM4nJ7qpARC3VuwDu5qUrh
+ 4ayo7.4WKWKrxZ1WHwSwdLJcXVV_j4qgNNhoShXBLodc3iMOmO6GMb1r36EPXsesQkOUUVRPofd7
+ aenj_n1l_fAcEiw7x_UXfkhehLOy0oGm3abLiXJyg8oOE11IxwwX.h58dRZP9S7l7Jl_S6kwkoJW
+ 2bj6wUDsUXf052e5RUxIpDZM_MV13OfEdtrQQ068p_iOxyBf3vQVmBfo8l5fmVt3GMRr.zho0lt8
+ 1w0DfVzfY7p1gBcZvLbKWin3RkCZGkcvxtZoMh.kFkfTlMF0JAoc7xsOUkjp3yREtaQ8sjIW9.qZ
+ umP4rNOCckkVY0rUE1PiKoN7DqxhPNNqe_7dMHUPjWeMlxFgx2WPrS4twDCGBUjBQc1h9JFeHIvO
+ JMeatB0qG8z_BcqNN6xpC6PWby53dEQSOy665aQxlyXWxRudCvTgRT7Ys.v5Ddw6TCMjD.SVZaSh
+ Zhj4A0t95R1Dhhfe0FSDoCTtlhc.GQeBvG8rF5JWkygul1cNR8c2XBSVCwWAbx96TPdg4D2iNRK3
+ e2MHmS2oNX4le871vhyWusMSSubopQS8Hz2OpZ74s92IYESetC2f47Q76zdozlPyyVhhs8fXzC1V
+ XR5nRUheOgaiuU0UKiMVmfXz66VNHNry4vy31ocW.o01NQdICaS2XRisevTjowulC4o7RJ7iqrgJ
+ jtf3EjcMDCXuOpxn_2_ZpatI1ETxv_JkIySAwDAToBlJWz8bd6pfzcUwLh2hVOjqqfAOGQhBxT1g
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Tue, 19 May 2020 16:40:16 +0000
+Date:   Tue, 19 May 2020 16:40:14 +0000 (UTC)
+From:   jerom Njitap <jerome.njitap@aol.com>
+Reply-To: jeromenjitap100@gmail.com
+Message-ID: <2109371352.1082380.1589906414832@mail.yahoo.com>
+Subject: SESAME SEED SUPPLY BURKINA FASO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200516031956.2605-6-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <2109371352.1082380.1589906414832.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15960 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't think we need any of that symlink stuff.  Even if we want it
-(which I don't), it should not be in a bug fix patch.
+Dear Sir,
 
-In fact to fix the blktrace race I think we only need something like
-this fairly trivial patch (completely untested so far) below.
-
-(and with that we can also drop the previous patch, as blk-debugfs.c
-becomes rather pointless)
+This is to bring to your notice that we can supply your needs for
+quality Sesame seeds and other products listed below :
 
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 15df3a36e9fa4..a2800bc56fb4d 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -824,9 +824,6 @@ void blk_mq_debugfs_register(struct request_queue *q)
- 	struct blk_mq_hw_ctx *hctx;
- 	int i;
- 
--	q->debugfs_dir = debugfs_create_dir(kobject_name(q->kobj.parent),
--					    blk_debugfs_root);
--
- 	debugfs_create_files(q->debugfs_dir, q, blk_mq_debugfs_queue_attrs);
- 
- 	/*
-@@ -857,9 +854,7 @@ void blk_mq_debugfs_register(struct request_queue *q)
- 
- void blk_mq_debugfs_unregister(struct request_queue *q)
- {
--	debugfs_remove_recursive(q->debugfs_dir);
- 	q->sched_debugfs_dir = NULL;
--	q->debugfs_dir = NULL;
- }
- 
- static void blk_mq_debugfs_register_ctx(struct blk_mq_hw_ctx *hctx,
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 561624d4cc4e7..8e6ea4a13f550 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -11,6 +11,7 @@
- #include <linux/blktrace_api.h>
- #include <linux/blk-mq.h>
- #include <linux/blk-cgroup.h>
-+#include <linux/debugfs.h>
- 
- #include "blk.h"
- #include "blk-mq.h"
-@@ -918,6 +919,7 @@ static void blk_release_queue(struct kobject *kobj)
- 
- 	blk_trace_shutdown(q);
- 
-+	debugfs_remove_recursive(q->debugfs_dir);
- 	if (queue_is_mq(q))
- 		blk_mq_debugfs_unregister(q);
- 
-@@ -989,6 +991,27 @@ int blk_register_queue(struct gendisk *disk)
- 		goto unlock;
- 	}
- 
-+	/*
-+	 * Blktrace needs a debugsfs name even for queues that don't register
-+	 * a gendisk, so it lazily registers the debugfs directory.  But that
-+	 * can get us into a situation where a SCSI device is found, with no
-+	 * driver for it (yet).  Then blktrace is used on the device, creating
-+	 * the debugfs directory, and only after that a drivers is loaded. In
-+	 * that case we might already have a debugfs directory registered here.
-+	 * Even worse we could be racing with blktrace to register it.
-+	 */
-+#ifdef CONFIG_BLK_DEV_IO_TRACE
-+	mutex_lock(&q->blk_trace_mutex);
-+	if (!q->debugfs_dir) {
-+		q->debugfs_dir =
-+			debugfs_create_dir(kobject_name(q->kobj.parent),
-+				blk_debugfs_root);
-+	}
-+	mutex_unlock(&q->blk_trace_mutex);
-+#else
-+	blk_queue_debugfs_register(q);
-+#endif
-+
- 	if (queue_is_mq(q)) {
- 		__blk_mq_register_dev(dev, q);
- 		blk_mq_debugfs_register(q);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 8801f3d7cf4a3..7a4de524f408f 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -574,8 +574,8 @@ struct request_queue {
- 	struct list_head	tag_set_list;
- 	struct bio_set		bio_split;
- 
--#ifdef CONFIG_BLK_DEBUG_FS
- 	struct dentry		*debugfs_dir;
-+#ifdef CONFIG_BLK_DEBUG_FS
- 	struct dentry		*sched_debugfs_dir;
- 	struct dentry		*rqos_debugfs_dir;
- #endif
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index 3b6ff5902edce..eb6db276e2931 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -22,7 +22,6 @@ struct blk_trace {
- 	u64 end_lba;
- 	u32 pid;
- 	u32 dev;
--	struct dentry *dir;
- 	struct dentry *dropped_file;
- 	struct dentry *msg_file;
- 	struct list_head running_list;
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index ca39dc3230cb3..1b622e970cede 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -311,7 +311,6 @@ static void blk_trace_free(struct blk_trace *bt)
- 	debugfs_remove(bt->msg_file);
- 	debugfs_remove(bt->dropped_file);
- 	relay_close(bt->rchan);
--	debugfs_remove(bt->dir);
- 	free_percpu(bt->sequence);
- 	free_percpu(bt->msg_data);
- 	kfree(bt);
-@@ -476,15 +475,11 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 			      struct blk_user_trace_setup *buts)
- {
- 	struct blk_trace *bt = NULL;
--	struct dentry *dir = NULL;
- 	int ret;
- 
- 	if (!buts->buf_size || !buts->buf_nr)
- 		return -EINVAL;
- 
--	if (!blk_debugfs_root)
--		return -ENOENT;
--
- 	strncpy(buts->name, name, BLKTRACE_BDEV_SIZE);
- 	buts->name[BLKTRACE_BDEV_SIZE - 1] = '\0';
- 
-@@ -494,6 +489,25 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	 */
- 	strreplace(buts->name, '/', '_');
- 
-+	/*
-+	 * For queues that do not have a gendisk attached to them, the debugfs
-+	 * directory will not have been created at setup time.  Create it here
-+	 * lazily, it will only be removed when the queue is torn down.
-+	 *
-+	 * As blktrace relies on debugfs for its interface the debugfs directory
-+	 * is required, contrary to the usual mantra of not checking for debugfs
-+	 * files or directories.
-+	 */
-+	if (!q->debugfs_dir) {
-+		q->debugfs_dir =
-+			debugfs_create_dir(buts->name, blk_debugfs_root);
-+	}
-+	if (IS_ERR_OR_NULL(q->debugfs_dir)) {
-+		pr_warn("debugfs_dir not present for %s so skipping\n",
-+			buts->name);
-+		return -ENOENT;
-+	}
-+
- 	bt = kzalloc(sizeof(*bt), GFP_KERNEL);
- 	if (!bt)
- 		return -ENOMEM;
-@@ -507,23 +521,18 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	if (!bt->msg_data)
- 		goto err;
- 
--	ret = -ENOENT;
--
--	dir = debugfs_lookup(buts->name, blk_debugfs_root);
--	if (!dir)
--		bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
--
- 	bt->dev = dev;
- 	atomic_set(&bt->dropped, 0);
- 	INIT_LIST_HEAD(&bt->running_list);
- 
- 	ret = -EIO;
--	bt->dropped_file = debugfs_create_file("dropped", 0444, dir, bt,
--					       &blk_dropped_fops);
-+	bt->dropped_file = debugfs_create_file("dropped", 0444, q->debugfs_dir,
-+					       bt, &blk_dropped_fops);
- 
--	bt->msg_file = debugfs_create_file("msg", 0222, dir, bt, &blk_msg_fops);
-+	bt->msg_file = debugfs_create_file("msg", 0222, q->debugfs_dir, bt,
-+					   &blk_msg_fops);
- 
--	bt->rchan = relay_open("trace", dir, buts->buf_size,
-+	bt->rchan = relay_open("trace", q->debugfs_dir, buts->buf_size,
- 				buts->buf_nr, &blk_relay_callbacks, bt);
- 	if (!bt->rchan)
- 		goto err;
-@@ -551,8 +560,6 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 
- 	ret = 0;
- err:
--	if (dir && !bt->dir)
--		dput(dir);
- 	if (ret)
- 		blk_trace_free(bt);
- 	return ret;
+Cashew nut
+Raw cotton
+Sesame seed
+Copper cathode
+Copper wire scraps
+Mazut 100 oil,D6
+Used rails
+HMS 1/2
+
+
+We offer the best quality at reasonable prices both on CIF and FOB,
+depending on the nature of your offer. Our company has been in this
+line of business for over a decade so you you can expect nothing but a
+top-notch professional touch and guarantee when you deal or trade with
+us.all communication should be through this email address for
+confidencial purpose(jeromenjitap100@gmail.com)and your whatsaap number.
+
+Look forward to your response.
+
+Regards
+Mr Jerome
