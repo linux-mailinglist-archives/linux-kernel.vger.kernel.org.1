@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13D91DA195
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AACB1DA21D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgEST6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
+        id S1728836AbgESUC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727918AbgEST6a (ORCPT
+        with ESMTP id S1727973AbgEST6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:30 -0400
+        Tue, 19 May 2020 15:58:33 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7EAC08C5C0;
-        Tue, 19 May 2020 12:58:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59F1C08C5C1;
+        Tue, 19 May 2020 12:58:32 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8Nd-0008Cx-CO; Tue, 19 May 2020 21:58:25 +0200
+        id 1jb8Nf-0008E8-D8; Tue, 19 May 2020 21:58:27 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id F36FD1C04D6;
-        Tue, 19 May 2020 21:58:23 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:23 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CB4121C06DA;
+        Tue, 19 May 2020 21:58:24 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:24 -0000
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/mce: Move nmi_enter/exit() into the entry point
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+Subject: [tip: x86/entry] x86/traps: Split int3 handler up
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505135314.243936614@linutronix.de>
-References: <20200505135314.243936614@linutronix.de>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200505135314.045220765@linutronix.de>
+References: <20200505135314.045220765@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991830388.17951.10876721588740341916.tip-bot2@tip-bot2>
+Message-ID: <158991830471.17951.13148640036237320422.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,144 +51,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     46dbb1443cd5c4e1c892b820d7a578995a1708cf
-Gitweb:        https://git.kernel.org/tip/46dbb1443cd5c4e1c892b820d7a578995a1708cf
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 03 Apr 2020 22:37:31 +02:00
+Commit-ID:     f4f6b66fd8011eb5f24dec936faaa4cab2ca7ebc
+Gitweb:        https://git.kernel.org/tip/f4f6b66fd8011eb5f24dec936faaa4cab2ca7ebc
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 05 Mar 2020 16:09:52 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:04:08 +02:00
+CommitterDate: Tue, 19 May 2020 16:04:07 +02:00
 
-x86/mce: Move nmi_enter/exit() into the entry point
+x86/traps: Split int3 handler up
 
-There is no reason to have nmi_enter/exit() in the actual MCE
-handlers. Move it to the entry point. This also covers the until now
-uncovered initial handler which only prints.
+For code simplicity split up the int3 handler into a kernel and user part
+which makes the code flow simpler to understand.
 
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505135314.243936614@linutronix.de
+Link: https://lkml.kernel.org/r/20200505135314.045220765@linutronix.de
 
 
 ---
- arch/x86/kernel/cpu/mce/core.c    | 26 +++++++++++++-------------
- arch/x86/kernel/cpu/mce/p5.c      |  4 ----
- arch/x86/kernel/cpu/mce/winchip.c |  4 ----
- 3 files changed, 13 insertions(+), 21 deletions(-)
+ arch/x86/kernel/traps.c | 68 +++++++++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 28 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index e9265e2..f5993ed 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1100,8 +1100,10 @@ static void mce_clear_state(unsigned long *toclear)
-  * kdump kernel establishing a new #MC handler where a broadcasted MCE
-  * might not get handled properly.
-  */
--static bool __mc_check_crashing_cpu(int cpu)
-+static noinstr bool mce_check_crashing_cpu(void)
- {
-+	unsigned int cpu = smp_processor_id();
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 0ad12df..21c8cfc 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -568,6 +568,35 @@ exit:
+ 	cond_local_irq_disable(regs);
+ }
+ 
++static bool do_int3(struct pt_regs *regs)
++{
++	int res;
 +
- 	if (cpu_is_offline(cpu) ||
- 	    (crashing_cpu != -1 && crashing_cpu != cpu)) {
- 		u64 mcgstatus;
-@@ -1235,7 +1237,6 @@ void noinstr do_machine_check(struct pt_regs *regs, long error_code)
- 	DECLARE_BITMAP(valid_banks, MAX_NR_BANKS);
- 	DECLARE_BITMAP(toclear, MAX_NR_BANKS);
- 	struct mca_config *cfg = &mca_cfg;
--	int cpu = smp_processor_id();
- 	struct mce m, *final;
- 	char *msg = NULL;
- 	int worst = 0;
-@@ -1264,11 +1265,6 @@ void noinstr do_machine_check(struct pt_regs *regs, long error_code)
++#ifdef CONFIG_KGDB_LOW_LEVEL_TRAP
++	if (kgdb_ll_trap(DIE_INT3, "int3", regs, 0, X86_TRAP_BP,
++			 SIGTRAP) == NOTIFY_STOP)
++		return true;
++#endif /* CONFIG_KGDB_LOW_LEVEL_TRAP */
++
++#ifdef CONFIG_KPROBES
++	if (kprobe_int3_handler(regs))
++		return true;
++#endif
++	res = notify_die(DIE_INT3, "int3", regs, 0, X86_TRAP_BP, SIGTRAP);
++
++	return res == NOTIFY_STOP;
++}
++
++static void do_int3_user(struct pt_regs *regs)
++{
++	if (do_int3(regs))
++		return;
++
++	cond_local_irq_enable(regs);
++	do_trap(X86_TRAP_BP, SIGTRAP, "int3", regs, 0, 0, NULL);
++	cond_local_irq_disable(regs);
++}
++
+ DEFINE_IDTENTRY_RAW(exc_int3)
+ {
+ 	/*
+@@ -585,37 +614,20 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 	 * because the INT3 could have been hit in any context including
+ 	 * NMI.
  	 */
- 	int lmce = 1;
- 
--	if (__mc_check_crashing_cpu(cpu))
--		return;
+-	if (user_mode(regs))
++	if (user_mode(regs)) {
+ 		idtentry_enter(regs);
+-	else
+-		nmi_enter();
 -
--	nmi_enter();
+-	instrumentation_begin();
+-#ifdef CONFIG_KGDB_LOW_LEVEL_TRAP
+-	if (kgdb_ll_trap(DIE_INT3, "int3", regs, 0, X86_TRAP_BP,
+-				SIGTRAP) == NOTIFY_STOP)
+-		goto exit;
+-#endif /* CONFIG_KGDB_LOW_LEVEL_TRAP */
 -
- 	this_cpu_inc(mce_exception_count);
- 
- 	mce_gather_info(&m, regs);
-@@ -1356,7 +1352,7 @@ void noinstr do_machine_check(struct pt_regs *regs, long error_code)
- 	sync_core();
- 
- 	if (worst != MCE_AR_SEVERITY && !kill_it)
--		goto out_ist;
-+		return;
- 
- 	/* Fault was in user mode and we need to take some action */
- 	if ((m.cs & 3) == 3) {
-@@ -1373,9 +1369,6 @@ void noinstr do_machine_check(struct pt_regs *regs, long error_code)
- 		if (!fixup_exception(regs, X86_TRAP_MC, error_code, 0))
- 			mce_panic("Failed kernel mode recovery", &m, msg);
- 	}
+-#ifdef CONFIG_KPROBES
+-	if (kprobe_int3_handler(regs))
+-		goto exit;
+-#endif
 -
--out_ist:
--	nmi_exit();
- }
- EXPORT_SYMBOL_GPL(do_machine_check);
- 
-@@ -1912,11 +1905,18 @@ static void unexpected_machine_check(struct pt_regs *regs, long error_code)
- void (*machine_check_vector)(struct pt_regs *, long error_code) =
- 						unexpected_machine_check;
- 
--dotraplinkage notrace void do_mce(struct pt_regs *regs, long error_code)
-+dotraplinkage noinstr void do_mce(struct pt_regs *regs, long error_code)
- {
-+	if (machine_check_vector == do_machine_check &&
-+	    mce_check_crashing_cpu())
-+		return;
-+
-+	nmi_enter();
-+
- 	machine_check_vector(regs, error_code);
-+
-+	nmi_exit();
- }
--NOKPROBE_SYMBOL(do_mce);
- 
- /*
-  * Called for each booted CPU to set up machine checks.
-diff --git a/arch/x86/kernel/cpu/mce/p5.c b/arch/x86/kernel/cpu/mce/p5.c
-index 5ee94aa..dc29f0f 100644
---- a/arch/x86/kernel/cpu/mce/p5.c
-+++ b/arch/x86/kernel/cpu/mce/p5.c
-@@ -25,8 +25,6 @@ static void pentium_machine_check(struct pt_regs *regs, long error_code)
- {
- 	u32 loaddr, hi, lotype;
- 
--	nmi_enter();
+-	if (notify_die(DIE_INT3, "int3", regs, 0, X86_TRAP_BP,
+-			SIGTRAP) == NOTIFY_STOP)
+-		goto exit;
 -
- 	rdmsr(MSR_IA32_P5_MC_ADDR, loaddr, hi);
- 	rdmsr(MSR_IA32_P5_MC_TYPE, lotype, hi);
- 
-@@ -39,8 +37,6 @@ static void pentium_machine_check(struct pt_regs *regs, long error_code)
- 	}
- 
- 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
+-	cond_local_irq_enable(regs);
+-	do_trap(X86_TRAP_BP, SIGTRAP, "int3", regs, 0, 0, NULL);
+-	cond_local_irq_disable(regs);
 -
--	nmi_exit();
+-exit:
+-	instrumentation_end();
+-	if (user_mode(regs))
++		instrumentation_begin();
++		do_int3_user(regs);
++		instrumentation_end();
+ 		idtentry_exit(regs);
+-	else
++	} else {
++		nmi_enter();
++		instrumentation_begin();
++		if (!do_int3(regs))
++			die("int3", regs, 0);
++		instrumentation_end();
+ 		nmi_exit();
++	}
  }
  
- /* Set up machine check reporting for processors with Intel style MCE: */
-diff --git a/arch/x86/kernel/cpu/mce/winchip.c b/arch/x86/kernel/cpu/mce/winchip.c
-index b3938c1..3f8f84b 100644
---- a/arch/x86/kernel/cpu/mce/winchip.c
-+++ b/arch/x86/kernel/cpu/mce/winchip.c
-@@ -19,12 +19,8 @@
- /* Machine check handler for WinChip C6: */
- static void winchip_machine_check(struct pt_regs *regs, long error_code)
- {
--	nmi_enter();
--
- 	pr_emerg("CPU0: Machine Check Exception.\n");
- 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
--
--	nmi_exit();
- }
- 
- /* Set up machine check reporting on the Winchip C6 series */
+ #ifdef CONFIG_X86_64
