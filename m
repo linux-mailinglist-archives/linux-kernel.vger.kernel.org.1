@@ -2,165 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDBB1D9F46
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75E01D9F0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgESSYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgESSYQ (ORCPT
+        id S1728101AbgESSUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:20:33 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:32857 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgESSUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:24:16 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E759DC08C5C0;
-        Tue, 19 May 2020 11:24:15 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ci23so45677pjb.5;
-        Tue, 19 May 2020 11:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=a2sCpqRPJKFXTOs8Et/zawWwVxFdgwLHPGf2S2DawfM=;
-        b=ZE0elzVTcE6MBXWntbFKeB7UHR2K/ret1k59birCBC5fFiGZRD9PyR4eGSQKYe+WM0
-         I5XOjGwHJDBhgPlzw5WBxk8Jh27W5apmYYKbioAFzH5IZBxead09h1cv2/M8JmaKMkAT
-         2mKrHODj7LJN8Yi21l62NVQp/9gJOvIBPj3EsmMwA+e9xHhTovXgzRoNDP+gYfwxSHsY
-         wGRHq/2CqVrjC9OamIC0lSHX17Uy1zblfKdvAIeINnIjpx47LUec+uE8DRTEHW6QkTvV
-         wDuAmEG2Oo0soBWa7TtDSXGiK80B+UGy8nhOgkNPtKO14HRs4E+yserLKSlg4M6I9SuO
-         XUqg==
+        Tue, 19 May 2020 14:20:32 -0400
+Received: by mail-io1-f65.google.com with SMTP id k18so233767ion.0;
+        Tue, 19 May 2020 11:20:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=a2sCpqRPJKFXTOs8Et/zawWwVxFdgwLHPGf2S2DawfM=;
-        b=kEaZrm0zTxz+eITRseV18CaDtPgV0kEhtQ03OxXTAHIK3zTK+iWp1mXQko0pArLW6D
-         h0bvD5gx22JiqKRi65m+WAz+yf9VdflY63J6fRZhpEkX0WT0r2fSPpcXx8qxZR+ku2S6
-         LAOHu4QWBanE8ET4iXqTudNTULuAvb56CjBtBygU2IomYuMiAzR6CjIsqmEwk49UC/uk
-         UOuGJtD+dehqotOIs8s0bwMBp6BzLNZigXHiSg8ovAoWAjhQCW5MnqTT+zX40ICkm94Y
-         qrq8Fb4QJ+n2tDace2rYoH2Pw26Urw+r+on4lPjcaGgyFUYn9FMmnyWOwhu1cdA4/KRS
-         Tjaw==
-X-Gm-Message-State: AOAM5334KVvkR4L7tg/W95T16qSPBijcIy8a5HLwjErMPP2lMlFT3R2d
-        z3SAmKJLClP14lHP+Y2SAjM=
-X-Google-Smtp-Source: ABdhPJz1IRNtvIpLO0Z+w4B2JGOtTrJbXAf0lbOnSkLHJTgGXw2wv4FC0Zcqw1+qUPkuzXTZjXUUoQ==
-X-Received: by 2002:a17:902:549:: with SMTP id 67mr717666plf.115.1589912655377;
-        Tue, 19 May 2020 11:24:15 -0700 (PDT)
-Received: from localhost.localdomain ([223.235.145.232])
-        by smtp.gmail.com with ESMTPSA id p2sm148399pgh.25.2020.05.19.11.24.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 May 2020 11:24:14 -0700 (PDT)
-From:   Amit Singh Tomar <amittomer25@gmail.com>
-To:     andre.przywara@arm.com, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 10/10] arm64: dts: actions: Add uSD support for Cubieboard7
-Date:   Tue, 19 May 2020 23:49:28 +0530
-Message-Id: <1589912368-480-11-git-send-email-amittomer25@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589912368-480-1-git-send-email-amittomer25@gmail.com>
-References: <1589912368-480-1-git-send-email-amittomer25@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C/+WbZpW6fzoYD8VkS+1aw3FrtrjaYr1YvJ99Voi0R4=;
+        b=kO8SdHtPYtx4WlNekh///W47p5bLJ3HKmJnWO+tJLCb2e8IemaCxZIUTU0AgS80aFH
+         fzLJ2z2YhyeUchBnZVu7KdTC0eUgBGTYZ3Umt3dfU6yTORf6xKHCl6mIlKicXsA9fQbG
+         dx+N2pUM81o2XnPF7khQPlp7KZJ7TWLyEhF8GxRGR/zeXtp5peuFqLQACjDJzHn3VsPX
+         C/YvdGRX8AEwlTBYT1VkxZrzkhAD5rdV/J7JDfdfg2DJes/A+F9XL3rcMKbDu+FMoNNl
+         IGRIiaxjWsqPz6uNn5kLWT5eAqQZ8xO+xBWuOEmRnKX6DZbmEG7twp4KKnkKZyUM1jgA
+         zxyw==
+X-Gm-Message-State: AOAM531fA22VaGrZ6elvjc01gS+9XcjLleJRmoQAnVRCXaKHU2yeL2qb
+        tln5M1Ktts/gkW7f29+C+g==
+X-Google-Smtp-Source: ABdhPJy915OuehRkdPhEfoQo98D64T4fLNa9nG2JB08WidQt3qwfV8ozXd5uAN5DAlsvXCG3xjpzPg==
+X-Received: by 2002:a6b:b685:: with SMTP id g127mr214847iof.192.1589912431059;
+        Tue, 19 May 2020 11:20:31 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j15sm101169ilk.0.2020.05.19.11.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 11:20:29 -0700 (PDT)
+Received: (nullmailer pid 409338 invoked by uid 1000);
+        Tue, 19 May 2020 18:20:28 -0000
+Date:   Tue, 19 May 2020 12:20:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: iio: imu: bmi160: convert txt format
+ to yaml
+Message-ID: <20200519182028.GB342367@bogus>
+References: <20200519075111.6356-1-jonathan.albrieux@gmail.com>
+ <20200519075111.6356-2-jonathan.albrieux@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519075111.6356-2-jonathan.albrieux@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds uSD support for Cubieboard7 board based on Actions Semi
-S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
-added yet, fixed regulator has been used as a regulator node.
+On Tue, May 19, 2020 at 09:50:57AM +0200, Jonathan Albrieux wrote:
+> Converts documentation from txt format to yaml 
+> 
+> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> ---
+>  .../devicetree/bindings/iio/imu/bmi160.txt    | 37 --------
+>  .../devicetree/bindings/iio/imu/bmi160.yaml   | 84 +++++++++++++++++++
+>  2 files changed, 84 insertions(+), 37 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/iio/imu/bmi160.txt
+>  create mode 100644 Documentation/devicetree/bindings/iio/imu/bmi160.yaml
 
-Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
----
-Changes since v1:
-	* No change.
-Changes since RFC:
-        * No change.
----
- arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 41 ++++++++++++++++++++++++
- arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
- 2 files changed, 42 insertions(+)
+Use compatible string for filename: bosch,bmi160.yaml
 
-diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-index 63e375cd9eb4..ec117eb12f3a 100644
---- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-+++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-@@ -13,6 +13,7 @@
- 
- 	aliases {
- 		serial3 = &uart3;
-+		mmc0 = &mmc0;
- 	};
- 
- 	chosen {
-@@ -28,6 +29,23 @@
- 		device_type = "memory";
- 		reg = <0x1 0xe0000000 0x0 0x0>;
- 	};
-+
-+	/* Fixed regulator used in the absence of PMIC */
-+	vcc_3v1: vcc-3v1 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fixed-3.1V";
-+		regulator-min-microvolt = <3100000>;
-+		regulator-max-microvolt = <3100000>;
-+	};
-+
-+	/* Fixed regulator used in the absence of PMIC */
-+	sd_vcc: sd-vcc {
-+		compatible = "regulator-fixed";
-+		regulator-name = "fixed-3.1V";
-+		regulator-min-microvolt = <3100000>;
-+		regulator-max-microvolt = <3100000>;
-+		regulator-always-on;
-+	};
- };
- 
- &i2c0 {
-@@ -81,6 +99,14 @@
- 			bias-pull-up;
- 		};
- 	};
-+
-+	mmc0_default: mmc0_default {
-+		pinmux {
-+			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
-+				 "sd0_cmd_mfp", "sd0_clk_mfp";
-+			function = "sd0";
-+		};
-+	};
- };
- 
- &timer {
-@@ -90,3 +116,18 @@
- &uart3 {
- 	status = "okay";
- };
-+
-+/* uSD */
-+&mmc0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc0_default>;
-+	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
-+	no-sdio;
-+	no-mmc;
-+	no-1-8-v;
-+	bus-width = <4>;
-+	vmmc-supply = <&sd_vcc>;
-+	vqmmc-supply = <&sd_vcc>;
-+};
-+
-diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index 0d3ff315b00e..18700aeb8d2b 100644
---- a/arch/arm64/boot/dts/actions/s700.dtsi
-+++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/actions,s700-cmu.h>
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/reset/actions,s700-reset.h>
- 
--- 
-2.7.4
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/imu/bmi160.txt b/Documentation/devicetree/bindings/iio/imu/bmi160.txt
+> deleted file mode 100644
+> index 900c169de00f..000000000000
+> --- a/Documentation/devicetree/bindings/iio/imu/bmi160.txt
+> +++ /dev/null
+> @@ -1,37 +0,0 @@
+> -Bosch BMI160 - Inertial Measurement Unit with Accelerometer, Gyroscope
+> -and externally connectable Magnetometer
+> -
+> -https://www.bosch-sensortec.com/bst/products/all_products/bmi160
+> -
+> -Required properties:
+> - - compatible : should be "bosch,bmi160"
+> - - reg : the I2C address or SPI chip select number of the sensor
+> - - spi-max-frequency : set maximum clock frequency (only for SPI)
+> -
+> -Optional properties:
+> - - interrupts : interrupt mapping for IRQ
+> - - interrupt-names : set to "INT1" if INT1 pin should be used as interrupt
+> -   input, set to "INT2" if INT2 pin should be used instead
+> - - drive-open-drain : set if the specified interrupt pin should be configured as
+> -   open drain. If not set, defaults to push-pull.
+> -
+> -Examples:
+> -
+> -bmi160@68 {
+> -	compatible = "bosch,bmi160";
+> -	reg = <0x68>;
+> -
+> -	interrupt-parent = <&gpio4>;
+> -	interrupts = <12 IRQ_TYPE_EDGE_RISING>;
+> -	interrupt-names = "INT1";
+> -};
+> -
+> -bmi160@0 {
+> -	compatible = "bosch,bmi160";
+> -	reg = <0>;
+> -	spi-max-frequency = <10000000>;
+> -
+> -	interrupt-parent = <&gpio2>;
+> -	interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
+> -	interrupt-names = "INT2";
+> -};
+> diff --git a/Documentation/devicetree/bindings/iio/imu/bmi160.yaml b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> new file mode 100644
+> index 000000000000..6b464ce5ed0b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/imu/bmi160.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bosch BMI160
+> +
+> +maintainers:
+> +  - can't find a mantainer, author is Daniel Baluta <daniel.baluta@intel.com>
 
+Would help to Cc him perhaps.
+
+> +
+> +description: |
+> +  Inertial Measurement Unit with Accelerometer, Gyroscope and externally
+> +  connectable Magnetometer
+> +  https://www.bosch-sensortec.com/bst/products/all_products/bmi160
+> +
+> +properties:
+> +  compatible:
+> +    const: bosch,bmi160
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: the I2C address or SPI chip select number of the sensor
+> +
+> +  spi-max-frequency:
+> +    maxItems: 1
+> +    description: set maximum clock frequency (required only for SPI)
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: interrupt mapping for IRQ
+
+No need for description if not adding anything unique for this device.
+
+> +
+> +  interrupt-names:
+> +    minItems: 1
+> +    maxItems: 1
+> +    items:
+> +      enum:
+> +        - INT1
+> +        - INT2
+
+Just the enum is enough.
+
+> +    description: |
+> +      set to "INT1" if INT1 pin should be used as interrupt input, set
+> +      to "INT2" if INT2 pin should be used instead
+> +
+> +  drive-open-drain:
+> +    description: |
+> +      set if the specified interrupt pin should be configured as
+> +      open drain. If not set, defaults to push-pull.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    // Example for I2C
+> +    i2c@78b7000 {
+> +        reg = <0x78b6000 0x600>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        bmi160@68 {
+> +                compatible = "bosch,bmi160";
+> +                reg = <0x68>;
+> +                interrupt-parent = <&gpio4>;
+> +                interrupts = <12 1>;
+> +                interrupt-names = "INT1";
+> +        };
+> +  - |
+> +    // Example for SPI
+> +    spi@78b7000 {
+> +        reg = <0x78b7000 0x600>,
+> +              <0x7884000 0x23000>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        bmi160@0 {
+> +                compatible = "bosch,bmi160";
+> +                reg = <0>;
+> +                spi-max-frequency = <10000000>;
+> +                interrupt-parent = <&gpio2>;
+> +                interrupts = <12 1>;
+> +                interrupt-names = "INT2";
+> +        };
+> +    };
+> -- 
+> 2.17.1
+> 
