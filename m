@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F801DA16B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CE41DA163
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgESTxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        id S1727972AbgESTw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727978AbgESTxE (ORCPT
+        with ESMTP id S1727854AbgESTw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:53:04 -0400
+        Tue, 19 May 2020 15:52:57 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D8CC08C5C0;
-        Tue, 19 May 2020 12:53:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECFDC08C5C0;
+        Tue, 19 May 2020 12:52:56 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8Hz-0007rb-GG; Tue, 19 May 2020 21:52:35 +0200
+        id 1jb8Hz-0007qz-2J; Tue, 19 May 2020 21:52:35 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 160791C047E;
-        Tue, 19 May 2020 21:52:35 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id A41BF1C0178;
+        Tue, 19 May 2020 21:52:34 +0200 (CEST)
 Date:   Tue, 19 May 2020 19:52:34 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] sh/ftrace: Move arch_ftrace_nmi_{enter,exit} into nmi
- exception
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: core/rcu] sched,rcu,tracing: Avoid tracing before in_nmi() is correct
+Cc:     "Steven Rostedt (VMware)" <rosted@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134101.248881738@linutronix.de>
-References: <20200505134101.248881738@linutronix.de>
+In-Reply-To: <20200505134101.434193525@linutronix.de>
+References: <20200505134101.434193525@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991795499.17951.5925531045899996305.tip-bot2@tip-bot2>
+Message-ID: <158991795458.17951.16867777710377461415.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -55,157 +53,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     178ba00c354eb15cec6806a812771e60a5ae3ea1
-Gitweb:        https://git.kernel.org/tip/178ba00c354eb15cec6806a812771e60a5ae3ea1
+Commit-ID:     f93524eb9c54f49be150167918f6546b0a2e09b1
+Gitweb:        https://git.kernel.org/tip/f93524eb9c54f49be150167918f6546b0a2e09b1
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 24 Feb 2020 22:26:21 +01:00
+AuthorDate:    Wed, 12 Feb 2020 21:01:16 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 19 May 2020 15:51:18 +02:00
 
-sh/ftrace: Move arch_ftrace_nmi_{enter,exit} into nmi exception
+sched,rcu,tracing: Avoid tracing before in_nmi() is correct
 
-SuperH is the last remaining user of arch_ftrace_nmi_{enter,exit}(),
-remove it from the generic code and into the SuperH code.
+If a tracer is invoked before in_nmi() becomes true, the tracer can no
+longer detect it is called from NMI context and behave correctly.
 
+Therefore change nmi_{enter,exit}() to use __preempt_count_{add,sub}()
+as the normal preempt_count_{add,sub}() have a (desired) function
+trace entry.
+
+This fixes a potential issue with the current code; when the function-tracer
+has stack-tracing enabled __trace_stack() will malfunction when it hits the
+preempt_count_add() function entry from NMI context.
+
+Suggested-by: Steven Rostedt (VMware) <rosted@goodmis.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Rich Felker <dalias@libc.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Link: https://lkml.kernel.org/r/20200505134101.248881738@linutronix.de
+Link: https://lkml.kernel.org/r/20200505134101.434193525@linutronix.de
 
 
 ---
- Documentation/trace/ftrace-design.rst |  8 --------
- arch/sh/Kconfig                       |  1 -
- arch/sh/kernel/traps.c                | 12 ++++++++++++
- include/linux/ftrace_irq.h            | 11 -----------
- kernel/trace/Kconfig                  | 10 ----------
- 5 files changed, 12 insertions(+), 30 deletions(-)
+ include/linux/hardirq.h | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/trace/ftrace-design.rst b/Documentation/trace/ftrace-design.rst
-index a8e22e0..6893399 100644
---- a/Documentation/trace/ftrace-design.rst
-+++ b/Documentation/trace/ftrace-design.rst
-@@ -229,14 +229,6 @@ Adding support for it is easy: just define the macro in asm/ftrace.h and
- pass the return address pointer as the 'retp' argument to
- ftrace_push_return_trace().
- 
--HAVE_FTRACE_NMI_ENTER
-----------------------
--
--If you can't trace NMI functions, then skip this option.
--
--<details to be filled>
--
--
- HAVE_SYSCALL_TRACEPOINTS
- ------------------------
- 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index b4f0e37..97656d2 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -71,7 +71,6 @@ config SUPERH32
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_DYNAMIC_FTRACE
--	select HAVE_FTRACE_NMI_ENTER if DYNAMIC_FTRACE
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_ARCH_KGDB
-diff --git a/arch/sh/kernel/traps.c b/arch/sh/kernel/traps.c
-index 63cf17b..2130381 100644
---- a/arch/sh/kernel/traps.c
-+++ b/arch/sh/kernel/traps.c
-@@ -170,11 +170,21 @@ BUILD_TRAP_HANDLER(bug)
- 	force_sig(SIGTRAP);
- }
- 
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+extern void arch_ftrace_nmi_enter(void);
-+extern void arch_ftrace_nmi_exit(void);
-+#else
-+static inline void arch_ftrace_nmi_enter(void) { }
-+static inline void arch_ftrace_nmi_exit(void) { }
-+#endif
-+
- BUILD_TRAP_HANDLER(nmi)
- {
- 	unsigned int cpu = smp_processor_id();
- 	TRAP_HANDLER_DECL;
- 
-+	arch_ftrace_nmi_enter();
-+
- 	nmi_enter();
- 	nmi_count(cpu)++;
- 
-@@ -190,4 +200,6 @@ BUILD_TRAP_HANDLER(nmi)
- 	}
- 
- 	nmi_exit();
-+
-+	arch_ftrace_nmi_exit();
- }
-diff --git a/include/linux/ftrace_irq.h b/include/linux/ftrace_irq.h
-index ccda97d..0abd9a1 100644
---- a/include/linux/ftrace_irq.h
-+++ b/include/linux/ftrace_irq.h
-@@ -2,15 +2,6 @@
- #ifndef _LINUX_FTRACE_IRQ_H
- #define _LINUX_FTRACE_IRQ_H
- 
--
--#ifdef CONFIG_FTRACE_NMI_ENTER
--extern void arch_ftrace_nmi_enter(void);
--extern void arch_ftrace_nmi_exit(void);
--#else
--static inline void arch_ftrace_nmi_enter(void) { }
--static inline void arch_ftrace_nmi_exit(void) { }
--#endif
--
- #ifdef CONFIG_HWLAT_TRACER
- extern bool trace_hwlat_callback_enabled;
- extern void trace_hwlat_callback(bool enter);
-@@ -22,12 +13,10 @@ static inline void ftrace_nmi_enter(void)
- 	if (trace_hwlat_callback_enabled)
- 		trace_hwlat_callback(true);
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index a043ad8..621556e 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -66,6 +66,15 @@ extern void irq_exit(void);
  #endif
--	arch_ftrace_nmi_enter();
- }
  
- static inline void ftrace_nmi_exit(void)
- {
--	arch_ftrace_nmi_exit();
- #ifdef CONFIG_HWLAT_TRACER
- 	if (trace_hwlat_callback_enabled)
- 		trace_hwlat_callback(false);
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 1e9a8f9..24876fa 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -10,11 +10,6 @@ config USER_STACKTRACE_SUPPORT
- config NOP_TRACER
- 	bool
- 
--config HAVE_FTRACE_NMI_ENTER
--	bool
--	help
--	  See Documentation/trace/ftrace-design.rst
--
- config HAVE_FUNCTION_TRACER
- 	bool
- 	help
-@@ -72,11 +67,6 @@ config RING_BUFFER
- 	select TRACE_CLOCK
- 	select IRQ_WORK
- 
--config FTRACE_NMI_ENTER
--       bool
--       depends on HAVE_FTRACE_NMI_ENTER
--       default y
--
- config EVENT_TRACING
- 	select CONTEXT_SWITCH_TRACER
- 	select GLOB
+ /*
++ * NMI vs Tracing
++ * --------------
++ *
++ * We must not land in a tracer until (or after) we've changed preempt_count
++ * such that in_nmi() becomes true. To that effect all NMI C entry points must
++ * be marked 'notrace' and call nmi_enter() as soon as possible.
++ */
++
++/*
+  * nmi_enter() can nest up to 15 times; see NMI_BITS.
+  */
+ #define nmi_enter()						\
+@@ -75,7 +84,7 @@ extern void irq_exit(void);
+ 		lockdep_off();					\
+ 		ftrace_nmi_enter();				\
+ 		BUG_ON(in_nmi() == NMI_MASK);			\
+-		preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
++		__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);	\
+ 		rcu_nmi_enter();				\
+ 		lockdep_hardirq_enter();			\
+ 	} while (0)
+@@ -85,7 +94,7 @@ extern void irq_exit(void);
+ 		lockdep_hardirq_exit();				\
+ 		rcu_nmi_exit();					\
+ 		BUG_ON(!in_nmi());				\
+-		preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
++		__preempt_count_sub(NMI_OFFSET + HARDIRQ_OFFSET);	\
+ 		ftrace_nmi_exit();				\
+ 		lockdep_on();					\
+ 		printk_nmi_exit();				\
