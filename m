@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64F71D9650
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750BE1D9660
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbgESM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 08:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        id S1728785AbgESMdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 08:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728691AbgESM3Q (ORCPT
+        with ESMTP id S1728745AbgESMdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 08:29:16 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFB3C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:29:16 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id s10so14284729iog.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:29:16 -0700 (PDT)
+        Tue, 19 May 2020 08:33:05 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192B1C08C5C2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:33:05 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id p12so10873297qtn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JW39g620VF1bHJrnnWjeDck8qGa5xf2Z2jMQhGIK+fo=;
-        b=omrxtA0s/+KjuQMYFq95kQ0IG5B0oyprCeyuRCYvUKk+ovmWC55kwXR9kBS2J6MtfW
-         FBHGYTtnVql17Jy5moSYPg/P95oCWnG3COzItzmkk3p9MoVybHxb+Zo4oloVIM4gdTpa
-         vbz6UkpgRAKe3N3D/+kc9aK1S7OlC5CQBLTi69aav+VvbEQdA/MDV79vn2/DDDykVwWr
-         VW/eoVYd2SuZnXqccbiMnk0kpb0tn0vvhhrrEDnvGgAyVRKgilzSdA+EiKQqIIqAcLsa
-         8od7tBxjf4HpoZjVLYfjqKjM+3wEIDnNV9NYdFcUb4Bym55MH8lIIAxbS4tZPXKrolIA
-         XQVQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+t7VT6RnoX76WR9ri3gPhMmUz1SOd30HZsDXWBjt9w=;
+        b=fzkoxnSg0zliPjtIMba4XqsZAfUU+OBGnGTw8WY0OxgxMbY4MzJXjvnhyeAtM0dSYU
+         4uirB1AnaOuQjFyBDGcDlYjS8i9JYmjrWu9BLkpOaPfFgUs0F4LlQHzP0ZInkwFCEzWy
+         GMPWnBAEJpo0b3EsDbwRKlOJ9Wryaia+QGEksDCyCM4hRJV8WlqkCZtK/thet7Acaq7D
+         VfEJrO6zD0To+8Q6Z5d6KxKbVF2/eu0pfrjahgx7jirG2A/6vOZTCM2pOtLa153BeEHm
+         wQAnOAS39epji14eep3+9RIoaNOol2+h6dXCyvcTrNC17d+rkuTRghCwRvvahBbMUJEw
+         O5qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JW39g620VF1bHJrnnWjeDck8qGa5xf2Z2jMQhGIK+fo=;
-        b=Ga/xuDR7hOK4S6EDGilvA8+xqRzSlexNbOoJEj3vFY9DKvlSwdW4tZVHJXoRPb0EPM
-         ly3C88tWRpZ0yqkMbjOdOMNIJx36Dc5GA86UtEd06+r4SpuvkaKqKeVa22HUsuzyJgnW
-         vI1j93F7JQi9Upz/vnzVBAzwhlIPHEN5j97LbO8gMWvmX5TbQfrWdHUdxzLJnqANBDsc
-         w9TUh6V8nFBblW9vM4qwyx6UFZhqULsr+/WEB/2O11fw9CVet0hEBxzVZHi6ACPeFXwa
-         hrvX0OQz+CdFGX1ADU85TNFhuFh6iYP6YXQFVeC+Z/Jljm7RTRFy4OqWTcIMQ3myWUsu
-         GCxA==
-X-Gm-Message-State: AOAM533Fy/sYoqOjx/OuE/n3mgwpzPh5QjWwo6fq+XikzQvRV09GmedR
-        NTb4CXDkSTyinRtwfRJUtiGJI1peUlk=
-X-Google-Smtp-Source: ABdhPJzzy9J3x83nT2BRYeABnwvq5cbIn3qbKOZkTAg/uXp38aO1MzfiJityaNd8kKirOq5u+3OwZQ==
-X-Received: by 2002:a02:942a:: with SMTP id a39mr10249305jai.50.1589891355383;
-        Tue, 19 May 2020 05:29:15 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id p1sm4861155ioh.38.2020.05.19.05.29.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 05:29:14 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: qcom: sdm845-mtp: enable IPA
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, evgreen@chromium.org, subashab@codeaurora.org,
+        bh=F+t7VT6RnoX76WR9ri3gPhMmUz1SOd30HZsDXWBjt9w=;
+        b=mmYTK+I8LiPeEFX2dyni6nqQm0Xgn9SWr1jS4HgtAltQ0DDR6EbJnN8wc28fbPsBW1
+         peQc1jrf6viG+ZNXGgSV0R8QtJMZPxWu9o3uD59+i50vZHv43utTPL8u3mDhXCT4WC67
+         Q+2b8061mkvGefQpohzwdNyQ15e8tnKzyNzu0w3JYppchVus6fb582/i9rXcLcK9LOBs
+         oofczhy3qBYnAmSToGUXVE/eMy38M7GqHU9u95O2IGudHqsJLbC232iua5X2yP9tnXrx
+         kNrKLMQPV3XuaObrmfkFuPJv8NyOUoijFoQJKmIw8nFFxh/237f65XP8fnde/aBcY2jk
+         Subg==
+X-Gm-Message-State: AOAM530lbMaUZCG3A6zxKdphkeoBWOkbGa8aC591Iw1/T2ND+nwJpUtU
+        yzUYU4wlI9Jj9gOO989gq0WoKQ==
+X-Google-Smtp-Source: ABdhPJzaTybmIlbDP8Dmzb8h8nZcJnchUinV/svAwS+RzFvpa3fMsFrDzgoS0g2/M5xAZRvI0FXoFA==
+X-Received: by 2002:ac8:1c67:: with SMTP id j36mr20582493qtk.34.1589891584148;
+        Tue, 19 May 2020 05:33:04 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id p9sm5439907qkp.88.2020.05.19.05.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 05:33:03 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, robh+dt@kernel.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200518214834.9630-1-elder@linaro.org>
- <20200518232402.GM2165@builder.lan>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <f739b0de-cfc6-d0c0-df1c-d2ff4b56aeb4@linaro.org>
-Date:   Tue, 19 May 2020 07:29:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: qcom: sdm845-mtp: enable IPA
+Date:   Tue, 19 May 2020 07:32:58 -0500
+Message-Id: <20200519123258.29228-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200518232402.GM2165@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/20 6:24 PM, Bjorn Andersson wrote:
-> modem-init tells the IPA driver that the modem will load the ipa_fws
-> firmware, but the MTP is assumed to run "LA" firmware where it's the
-> Linux-side's job to do this.
+Enable IPA on the SDM845 MTP.
 
-I didn't see this message until just now, but I remembered that
-last night.  I just build my version 2 and will send it shortly.
-Sorry about that.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
 
-					-Alex
+v2: This device uses the AP--not the modem--for early initialization.
+
+ arch/arm64/boot/dts/qcom/sdm845-mtp.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+index 1372fe8601f5..91ede9296aff 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-mtp.dts
+@@ -448,6 +448,11 @@
+ 	clock-frequency = <400000>;
+ };
+ 
++&ipa {
++	status = "okay";
++	memory-region = <&ipa_fw_mem>;
++};
++
+ &mdss {
+ 	status = "okay";
+ };
+-- 
+2.20.1
+
