@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7621DA1B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84821DA1C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgEST7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S1728616AbgESUAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgEST7J (ORCPT
+        with ESMTP id S1728394AbgEST7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:59:09 -0400
+        Tue, 19 May 2020 15:59:12 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249C6C08C5C0;
-        Tue, 19 May 2020 12:59:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3CBC08C5C1;
+        Tue, 19 May 2020 12:59:11 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8OG-0000Gf-Gm; Tue, 19 May 2020 21:59:04 +0200
+        id 1jb8OI-0000IT-3T; Tue, 19 May 2020 21:59:06 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5A8F81C0868;
-        Tue, 19 May 2020 21:58:49 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:49 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id ABA4D1C086B;
+        Tue, 19 May 2020 21:58:50 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:50 -0000
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Remove the unused LOCKDEP_SYSEXIT cruft
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+Subject: [tip: x86/entry] x86/hw_breakpoint: Prevent data breakpoints on
+ cpu_entry_area
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134059.061301403@linutronix.de>
-References: <20200505134059.061301403@linutronix.de>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200505134058.272448010@linutronix.de>
+References: <20200505134058.272448010@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991832921.17951.14149459042864825104.tip-bot2@tip-bot2>
+Message-ID: <158991833058.17951.5755686483787789680.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,84 +55,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     235f96a65b3be1ff5cea6e51c597fa7876f0efdd
-Gitweb:        https://git.kernel.org/tip/235f96a65b3be1ff5cea6e51c597fa7876f0efdd
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 05 Mar 2020 11:16:49 +01:00
+Commit-ID:     3ea11ac991d594728e5df42f7eb1145072b9c2bc
+Gitweb:        https://git.kernel.org/tip/3ea11ac991d594728e5df42f7eb1145072b9c2bc
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Mon, 24 Feb 2020 13:24:58 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 15 May 2020 20:03:05 +02:00
+CommitterDate: Fri, 15 May 2020 20:03:03 +02:00
 
-x86/entry: Remove the unused LOCKDEP_SYSEXIT cruft
+x86/hw_breakpoint: Prevent data breakpoints on cpu_entry_area
 
-No users left since two years due to commit 21d375b6b34f ("x86/entry/64:
-Remove the SYSCALL64 fast path")
+A data breakpoint near the top of an IST stack will cause unrecoverable
+recursion.  A data breakpoint on the GDT, IDT, or TSS is terrifying.
+Prevent either of these from happening.
 
+Co-developed-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200505134059.061301403@linutronix.de
-
+Link: https://lkml.kernel.org/r/20200505134058.272448010@linutronix.de
 
 ---
- arch/x86/entry/thunk_64.S       |  5 -----
- arch/x86/include/asm/irqflags.h | 24 ------------------------
- 2 files changed, 29 deletions(-)
+ arch/x86/kernel/hw_breakpoint.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index dbe4493..34f980c 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -42,10 +42,6 @@ SYM_FUNC_END(\name)
- 	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
- #endif
+diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
+index 4d8d53e..d42fc0e 100644
+--- a/arch/x86/kernel/hw_breakpoint.c
++++ b/arch/x86/kernel/hw_breakpoint.c
+@@ -227,10 +227,35 @@ int arch_check_bp_in_kernelspace(struct arch_hw_breakpoint *hw)
+ 	return (va >= TASK_SIZE_MAX) || ((va + len - 1) >= TASK_SIZE_MAX);
+ }
  
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--	THUNK lockdep_sys_exit_thunk,lockdep_sys_exit
--#endif
--
- #ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
-@@ -54,7 +50,6 @@ SYM_FUNC_END(\name)
- #endif
++/*
++ * Checks whether the range from addr to end, inclusive, overlaps the CPU
++ * entry area range.
++ */
++static inline bool within_cpu_entry_area(unsigned long addr, unsigned long end)
++{
++	return end >= CPU_ENTRY_AREA_BASE &&
++	       addr < (CPU_ENTRY_AREA_BASE + CPU_ENTRY_AREA_TOTAL_SIZE);
++}
++
+ static int arch_build_bp_info(struct perf_event *bp,
+ 			      const struct perf_event_attr *attr,
+ 			      struct arch_hw_breakpoint *hw)
+ {
++	unsigned long bp_end;
++
++	bp_end = attr->bp_addr + attr->bp_len - 1;
++	if (bp_end < attr->bp_addr)
++		return -EINVAL;
++
++	/*
++	 * Prevent any breakpoint of any type that overlaps the
++	 * cpu_entry_area.  This protects the IST stacks and also
++	 * reduces the chance that we ever find out what happens if
++	 * there's a data breakpoint on the GDT, IDT, or TSS.
++	 */
++	if (within_cpu_entry_area(attr->bp_addr, bp_end))
++		return -EINVAL;
++
+ 	hw->address = attr->bp_addr;
+ 	hw->mask = 0;
  
- #if defined(CONFIG_TRACE_IRQFLAGS) \
-- || defined(CONFIG_DEBUG_LOCK_ALLOC) \
-  || defined(CONFIG_PREEMPTION)
- SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %r11
-diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
-index 8a0e56e..e00f064 100644
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -180,30 +180,6 @@ static inline int arch_irqs_disabled(void)
- #  define TRACE_IRQS_ON
- #  define TRACE_IRQS_OFF
- #endif
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--#  ifdef CONFIG_X86_64
--#    define LOCKDEP_SYS_EXIT		call lockdep_sys_exit_thunk
--#    define LOCKDEP_SYS_EXIT_IRQ \
--	TRACE_IRQS_ON; \
--	sti; \
--	call lockdep_sys_exit_thunk; \
--	cli; \
--	TRACE_IRQS_OFF;
--#  else
--#    define LOCKDEP_SYS_EXIT \
--	pushl %eax;				\
--	pushl %ecx;				\
--	pushl %edx;				\
--	call lockdep_sys_exit;			\
--	popl %edx;				\
--	popl %ecx;				\
--	popl %eax;
--#    define LOCKDEP_SYS_EXIT_IRQ
--#  endif
--#else
--#  define LOCKDEP_SYS_EXIT
--#  define LOCKDEP_SYS_EXIT_IRQ
--#endif
- #endif /* __ASSEMBLY__ */
- 
- #endif
