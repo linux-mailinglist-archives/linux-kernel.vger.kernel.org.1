@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0793A1DA3DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E48B1DA40C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgESVqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
+        id S1728639AbgESVs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgESVqu (ORCPT
+        with ESMTP id S1728248AbgESVqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:46:50 -0400
+        Tue, 19 May 2020 17:46:54 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C86C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71792C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:54 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA48-0002eg-JX; Tue, 19 May 2020 23:46:24 +0200
+        id 1jbA4D-0002fp-GG; Tue, 19 May 2020 23:46:29 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -29,9 +29,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v1 07/25] lockdep: Add preemption disabled assertion API
-Date:   Tue, 19 May 2020 23:45:29 +0200
-Message-Id: <20200519214547.352050-8-a.darwish@linutronix.de>
+Subject: [PATCH v1 08/25] seqlock: lockdep assert non-preemptibility on seqcount_t write
+Date:   Tue, 19 May 2020 23:45:30 +0200
+Message-Id: <20200519214547.352050-9-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
@@ -45,94 +45,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asserting that preemption is disabled is a critical sanity check.
-Developers are usually reluctant to add such a check in a fastpath, as
-reading the preemption count can be costly.
+Preemption must be disabled before entering a sequence count write side
+critical section.  Failing to do so, the seqcount read side can preempt
+the write side section and spin for the entire scheduler tick.  If that
+reader belongs to a real-time scheduling class, it can spin forever and
+the kernel will livelock.
 
-Extend the lockdep API with a preemption disabled assertion. If lockdep
-is disabled, or if the underlying architecture does not support kernel
-preemption, this assert has no runtime overhead.
+Assert through lockdep that preemption is disabled for seqcount writers.
 
-Since the lockdep assertion references sched.h task_struct current,
-define it at lockdep.c instead of lockdep.h. This unbinds a potential
-circular header dependency chain for call-sites, defined inlined, at
-other header files already included and needed by sched.h.
-
-Mark the exported assertion symbol with NOKPROBE_SYMBOL. Lockdep
-functions can be involved in breakpoint handling and probing on those
-functions can cause a breakpoint recursion.
-
-References: f54bb2ec02c8 ("locking/lockdep: Add IRQs disabled/enabled assertion APIs: ...")
-References: 2f43c6022d84 ("kprobes: Prohibit probing on lockdep functions")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 ---
- include/linux/lockdep.h  |  9 +++++++++
- kernel/locking/lockdep.c | 15 +++++++++++++++
- lib/Kconfig.debug        |  1 +
- 3 files changed, 25 insertions(+)
+ include/linux/seqlock.h | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 206774ac6946..54c929ea5b98 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -702,6 +702,14 @@ do {									\
- 			  "Not in hardirq as expected\n");		\
- 	} while (0)
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 0491d963d47e..d35be7709403 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -369,14 +369,32 @@ static inline void raw_write_seqcount_latch(seqcount_t *s)
  
-+/*
-+ * Don't define this assertion here to avoid a call-site's header file
-+ * dependency on sched.h task_struct current. This is needed by call
-+ * sites that are inline defined at header files already included by
-+ * sched.h.
-+ */
-+void lockdep_assert_preemption_disabled(void);
+ /*
+  * Sequence counter only version assumes that callers are using their
+- * own mutexing.
++ * own locking and preemption is disabled.
+  */
+-static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
 +
- #else
- # define might_lock(lock) do { } while (0)
- # define might_lock_read(lock) do { } while (0)
-@@ -709,6 +717,7 @@ do {									\
- # define lockdep_assert_irqs_enabled() do { } while (0)
- # define lockdep_assert_irqs_disabled() do { } while (0)
- # define lockdep_assert_in_irq() do { } while (0)
-+# define lockdep_assert_preemption_disabled() do { } while (0)
- #endif
- 
- #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index ac10db66cc63..4dae65bc65c2 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5857,3 +5857,18 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	dump_stack();
++static inline void __write_seqcount_begin_nested(seqcount_t *s, int subclass)
+ {
+ 	raw_write_seqcount_begin(s);
+ 	seqcount_acquire(&s->dep_map, subclass, 0, _RET_IP_);
  }
- EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
-+
-+#ifdef CONFIG_PROVE_LOCKING
-+
-+void lockdep_assert_preemption_disabled(void)
+ 
++static inline void write_seqcount_begin_nested(seqcount_t *s, int subclass)
 +{
-+	WARN_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&
-+		  debug_locks				&&
-+		  !current->lockdep_recursion		&&
-+		  (preempt_count() == 0 && current->hardirqs_enabled),
-+		  "preemption not disabled as expected\n");
++	lockdep_assert_preemption_disabled();
++	__write_seqcount_begin_nested(s, subclass);
 +}
-+EXPORT_SYMBOL_GPL(lockdep_assert_preemption_disabled);
-+NOKPROBE_SYMBOL(lockdep_assert_preemption_disabled);
 +
-+#endif
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 21d9c5f6e7ec..34d9d8896003 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1062,6 +1062,7 @@ config PROVE_LOCKING
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
- 	select DEBUG_LOCK_ALLOC
-+	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
- 	select TRACE_IRQFLAGS
- 	default n
- 	help
++/*
++ * write_seqcount_begin() without lockdep non-preemptibility checks.
++ *
++ * Use for internal seqlock.h code where it's known that preemption
++ * is already disabled. For example, seqlock_t write functions.
++ */
++static inline void __write_seqcount_begin(seqcount_t *s)
++{
++	__write_seqcount_begin_nested(s, 0);
++}
++
+ static inline void write_seqcount_begin(seqcount_t *s)
+ {
+ 	write_seqcount_begin_nested(s, 0);
+@@ -446,7 +464,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+ static inline void write_seqlock(seqlock_t *sl)
+ {
+ 	spin_lock(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ static inline void write_sequnlock(seqlock_t *sl)
+@@ -458,7 +476,7 @@ static inline void write_sequnlock(seqlock_t *sl)
+ static inline void write_seqlock_bh(seqlock_t *sl)
+ {
+ 	spin_lock_bh(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ static inline void write_sequnlock_bh(seqlock_t *sl)
+@@ -470,7 +488,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
+ static inline void write_seqlock_irq(seqlock_t *sl)
+ {
+ 	spin_lock_irq(&sl->lock);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ }
+ 
+ static inline void write_sequnlock_irq(seqlock_t *sl)
+@@ -484,7 +502,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&sl->lock, flags);
+-	write_seqcount_begin(&sl->seqcount);
++	__write_seqcount_begin(&sl->seqcount);
+ 	return flags;
+ }
+ 
 -- 
 2.20.1
 
