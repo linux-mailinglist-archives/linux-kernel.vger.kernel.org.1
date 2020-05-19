@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567D11D947A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CDF1D9487
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728702AbgESKhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 06:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        id S1728618AbgESKl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 06:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgESKhq (ORCPT
+        with ESMTP id S1725911AbgESKlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 06:37:46 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9F6C05BD09
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:37:45 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u188so2939919wmu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:37:45 -0700 (PDT)
+        Tue, 19 May 2020 06:41:55 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF2DC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:41:54 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id w7so15265483wre.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aXsJU44GCIYk2OgRQy7d759a/u1ue6myLJURyVBYd8A=;
-        b=CLcZ236jj0tlYpqLtFL3ioPxwkbu37Ip4CxCdOnYn9axGgoRWAgEiXb7medhtvS0aw
-         S8hfrC0JE0DYi3y30LTInIHDQfUDxzoII2CXXieMTgbi1b1gYcMUOpdhRR6fT2H3Bd4z
-         9InwXKX+yA6Pgj5Mu5UVPY+nzaBFzQxntiWBtIW28S/h+WQAOi/KVfliYPqW+QiZru7P
-         HHnBRRp0qgbgl0dABgTBbXxni+72y9ObnZH/ZW9Zh7bbV116bT8hmzG+Ml3Za9DbLzQS
-         hZy8scnazhAh3wj7771MVayMozXxjHz47wvkYN+o+NoxKlD3sZ0x8v65BmuKr5/OAPPH
-         n2bg==
+         :content-disposition:in-reply-to;
+        bh=GXxkCen/zIzWAVYZRGp0Kup7dkI0f7XaE2jW9ck8KnI=;
+        b=JHkOp+M/CjqaKJTgNHhegxOFjABee6pxv/RQmCGH8DsqeIZPYJ3K4FZKqZulAy0HnL
+         UXdYoQlgHmGcqnMOpwSqMmkMRtdJXNhwNaIjk5/eUJkilqDDu0dGrtbG3l4FZpIfCqxD
+         P+jVEn2HnPKwGjZBTr8ffsIG1sP3UcN9yfyI5vSkFkC8SspwYBv45WxrRWZN42OUkYQM
+         28pqdUQv4bT1JiQnHMd0ceYyvUXYeOZUKAC/w0vNnhsr16prafI0vcIxBREhNB7/PuAw
+         wTLrbpFptATBG3z7qz8tTOCsA7ZySrJE8fqrcpeUaF7WntcARbhTbm8tE/de06BIksGj
+         bjKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aXsJU44GCIYk2OgRQy7d759a/u1ue6myLJURyVBYd8A=;
-        b=UioURIwNjTOYCGOW9ewtFcTlBkKrMNCgNPRr4qy5QIrqJUgy2yPDmg3rlgE/ZZ2X+v
-         1wU5Lg8SNV1ex9tGO8Xa7CdSROZQTqEfztKQjHH1UFy5eTIdKIJOVM3YCZUBmphS0nT5
-         30Y2QU7I4eC9mzaDfzn9r9Uv2ppZwiS+kaR2SOSvB3xgHLMvF3l5avpfrmg7hsyoqonU
-         hP5tPIV+z39dSb+efQ2f7gDiPFD5ojv/vCi0RH0shRjTYhFwNpZIVE5r/zI7bjWOlOfX
-         51k5jGvaaDuZTx+iyJByR4B7+xW02ZK2xksZ7cPmRhFHNRXy6umyg4P6xHMfmUFn/Ks+
-         T5HQ==
-X-Gm-Message-State: AOAM5318e+3CYqXOeEKvxCXurXNvnEjDuedNdLQ38AvoI/URz8dEpa0k
-        PqR8f9wZUa6T9jq/1TxRrTbteg==
-X-Google-Smtp-Source: ABdhPJxiAzyUerOuMTk5FRcIW0Jcjoj2ZL7CECmIr6mC4isdh9wLpToG+AphXu0YHNWUccUjNP0TCw==
-X-Received: by 2002:a1c:8094:: with SMTP id b142mr4859380wmd.61.1589884664183;
-        Tue, 19 May 2020 03:37:44 -0700 (PDT)
-Received: from dell ([2.31.163.63])
-        by smtp.gmail.com with ESMTPSA id q2sm3433181wmq.23.2020.05.19.03.37.43
+         :mime-version:content-disposition:in-reply-to;
+        bh=GXxkCen/zIzWAVYZRGp0Kup7dkI0f7XaE2jW9ck8KnI=;
+        b=ofF67aaUyTMDXE0YnAKeVU7gPXCjsdCzKqLCgtdVzarg/INSLKYe2hVsBu5brtHCNq
+         ETNwCOLra6gcNPehz2Dzb7+WTo9NrnGdU0OteEMPds3zDCauF4oGnNy0Yy7StYxdxJ3/
+         iRr4Vi+9tra3THwcPJhfSrxcFcn7cpBxWjl24E72KlGsBGmOsxpn9lJzL8wn8qa/9Q/L
+         t7XmUO7BVticn5vnG39P1Am/VHVqFAM6grCx7xph5UoGNifMlxwt9Si2k3FbwEst0lui
+         uvAw+oC+tyBBcDkL9WxIvP4sFXuDOavulhRwHJsHO78PRWze/zb4tjFB1nrFVEnR8+bU
+         Hi5A==
+X-Gm-Message-State: AOAM533FKuyljCX/svj6H0IwXYJ7+K7Y1B4sBD5mt+lXFtABvrFmXzIY
+        8hTMpeLXcsblahbg6aqkAONOlA==
+X-Google-Smtp-Source: ABdhPJxI9hHAtjBprvirEkNxdsK9H7V1Yykq/ZJEdnUyCFW3JFUs2vMu+RhotxOD5DsAjFlPFptI7g==
+X-Received: by 2002:a5d:6803:: with SMTP id w3mr25138459wru.151.1589884913554;
+        Tue, 19 May 2020 03:41:53 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id g187sm3368484wmf.30.2020.05.19.03.41.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 03:37:43 -0700 (PDT)
-Date:   Tue, 19 May 2020 11:37:41 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Saravanan Sekar <sravanhome@gmail.com>
-Cc:     andy.shevchenko@gmail.com, robh+dt@kernel.org, jic23@kernel.org,
-        knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v11 2/6] mfd: mp2629: Add support for mps battery charger
-Message-ID: <20200519103741.GW271301@dell>
-References: <20200430155810.21383-1-sravanhome@gmail.com>
- <20200430155810.21383-3-sravanhome@gmail.com>
+        Tue, 19 May 2020 03:41:52 -0700 (PDT)
+Date:   Tue, 19 May 2020 11:41:51 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>, sumit.garg@linaro.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kgdb: Avoid suspicious RCU usage warning
+Message-ID: <20200519104151.6evv3hizm5dbjjq2@holly.lan>
+References: <20200507153444.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200430155810.21383-3-sravanhome@gmail.com>
+In-Reply-To: <20200507153444.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020, Saravanan Sekar wrote:
+On Thu, May 07, 2020 at 03:53:58PM -0700, Douglas Anderson wrote:
+> At times when I'm using kgdb I see a splat on my console about
+> suspicious RCU usage.  I managed to come up with a case that could
+> reproduce this that looked like this:
+> 
+>   WARNING: suspicious RCU usage
+>   5.7.0-rc4+ #609 Not tainted
+>   -----------------------------
+>   kernel/pid.c:395 find_task_by_pid_ns() needs rcu_read_lock() protection!
+> 
+>   other info that might help us debug this:
+> 
+>     rcu_scheduler_active = 2, debug_locks = 1
+>   3 locks held by swapper/0/1:
+>    #0: ffffff81b6b8e988 (&dev->mutex){....}-{3:3}, at: __device_attach+0x40/0x13c
+>    #1: ffffffd01109e9e8 (dbg_master_lock){....}-{2:2}, at: kgdb_cpu_enter+0x20c/0x7ac
+>    #2: ffffffd01109ea90 (dbg_slave_lock){....}-{2:2}, at: kgdb_cpu_enter+0x3ec/0x7ac
+> 
+>   stack backtrace:
+>   CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4+ #609
+>   Hardware name: Google Cheza (rev3+) (DT)
+>   Call trace:
+>    dump_backtrace+0x0/0x1b8
+>    show_stack+0x1c/0x24
+>    dump_stack+0xd4/0x134
+>    lockdep_rcu_suspicious+0xf0/0x100
+>    find_task_by_pid_ns+0x5c/0x80
+>    getthread+0x8c/0xb0
+>    gdb_serial_stub+0x9d4/0xd04
+>    kgdb_cpu_enter+0x284/0x7ac
+>    kgdb_handle_exception+0x174/0x20c
+>    kgdb_brk_fn+0x24/0x30
+>    call_break_hook+0x6c/0x7c
+>    brk_handler+0x20/0x5c
+>    do_debug_exception+0x1c8/0x22c
+>    el1_sync_handler+0x3c/0xe4
+>    el1_sync+0x7c/0x100
+>    rpmh_rsc_probe+0x38/0x420
+>    platform_drv_probe+0x94/0xb4
+>    really_probe+0x134/0x300
+>    driver_probe_device+0x68/0x100
+>    __device_attach_driver+0x90/0xa8
+>    bus_for_each_drv+0x84/0xcc
+>    __device_attach+0xb4/0x13c
+>    device_initial_probe+0x18/0x20
+>    bus_probe_device+0x38/0x98
+>    device_add+0x38c/0x420
+> 
+> If I understand properly we should just be able to blanket kgdb under
+> one big RCU read lock and the problem should go away.  We'll add it to
+> the beast-of-a-function known as kgdb_cpu_enter().
+> 
+> With this I no longer get any splats and things seem to work fine.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-> mp2629 is a highly-integrated switching-mode battery charge management
-> device for single-cell Li-ion or Li-polymer battery.
-> 
-> Add MFD core enables chip access for ADC driver for battery readings,
-> and a power supply battery-charger driver
-> 
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+In principle this looks OK but I'm curious why we don't cuddle these
+calls up to the local interrupt locking (and also whether we want to
+keep hold of the lock during stepping). If nothing else that would make
+review easier.
+
+
+Daniel.
+
+
 > ---
->  drivers/mfd/Kconfig        |  9 +++++
->  drivers/mfd/Makefile       |  2 +
->  drivers/mfd/mp2629.c       | 79 ++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/mp2629.h | 17 ++++++++
->  4 files changed, 107 insertions(+)
->  create mode 100644 drivers/mfd/mp2629.c
->  create mode 100644 include/linux/mfd/mp2629.h
-
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+>  kernel/debug/debug_core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index 2b7c9b67931d..5155cf06731b 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -564,6 +564,8 @@ static int kgdb_cpu_enter(struct kgdb_state *ks, struct pt_regs *regs,
+>  	int online_cpus = num_online_cpus();
+>  	u64 time_left;
+>  
+> +	rcu_read_lock();
+> +
+>  	kgdb_info[ks->cpu].enter_kgdb++;
+>  	kgdb_info[ks->cpu].exception_state |= exception_state;
+>  
+> @@ -635,6 +637,7 @@ static int kgdb_cpu_enter(struct kgdb_state *ks, struct pt_regs *regs,
+>  			atomic_dec(&slaves_in_kgdb);
+>  			dbg_touch_watchdogs();
+>  			local_irq_restore(flags);
+> +			rcu_read_unlock();
+>  			return 0;
+>  		}
+>  		cpu_relax();
+> @@ -773,6 +776,8 @@ static int kgdb_cpu_enter(struct kgdb_state *ks, struct pt_regs *regs,
+>  	dbg_touch_watchdogs();
+>  	local_irq_restore(flags);
+>  
+> +	rcu_read_unlock();
+> +
+>  	return kgdb_info[cpu].ret_state;
+>  }
+>  
+> -- 
+> 2.26.2.645.ge9eca65c58-goog
+> 
