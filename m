@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661851D9F37
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7BE1D9F05
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbgESSWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S1728971AbgESSRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbgESSWh (ORCPT
+        with ESMTP id S1726059AbgESSRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:22:37 -0400
-X-Greylist: delayed 318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 May 2020 11:22:36 PDT
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5EDC08C5C0;
-        Tue, 19 May 2020 11:22:36 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 8DE56543; Tue, 19 May 2020 20:17:12 +0200 (CEST)
+        Tue, 19 May 2020 14:17:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF4BC08C5C0;
+        Tue, 19 May 2020 11:17:17 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l18so460024wrn.6;
+        Tue, 19 May 2020 11:17:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1589912232;
-        bh=agIZSkznk24x5nRuX+3INPmxl6trTGmhxoT+BEZ/4+w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WqVM+uuRUgP1oDGP2/fRdKOzfeQmkdqItQhcBecTsN9KS2cJ4MLGHyqHmuFWWOJGd
-         EaHbHtp/gY5HAEAfJf5DIcSWCdgd2TwZ5vzc0vbX0S3oMcCrf7xEeu5Od3k1G/7YuT
-         Q6tgt3+H+BWkviCXAwZfriVt9yeJ9XNAuARUMZL4FOSL9jGiM+17P8CwwE0JhdcPgf
-         jL6L4/ir+35XVDbrTsq9SWUuFS6wWYAc3MG2uKM6nfcKa0LGm75Ohwn3GkiXm4Tb8W
-         MQD0BvC+JLyyHOzFpskrIHev9+T7BPIlhCs4kSm7XPGDeCMdxlWlOeXYx63Bsp+xHh
-         aDmMFxWSEpTj6WcJVTQ4DIXHoYCWlqBYfiyK7RBhaSHZMED56bKVRn81BgmbvclSdW
-         J7cEjgaVGmt4iFxyNBMt7kvWnZIs5KMQ4xs51ad1ZuqoOl6wVf33wBXiWslwftRwnQ
-         meQZZfPHOVeHBe/mYt7UQqWdrYIu43CjQHulvp8ZCzFBp8HdnFBHg1U1hNRT+tloUY
-         YBi8u9SkXnc9h60uisWqLmj28RZetBPaMMeAj/qyF6zgXJOdP+8d/dn8GiIt733iQN
-         0iYCBxK+/bJ8zAX5t2+Jqo5iRxV2zcrHkvWuYhwfFVvFzMhb4hn+ZB3Dh04eBKwgR6
-         4cb7wMcsCXGYJ38rKOwgodJ4=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        stable@vger.kernel.org
-Subject: [PATCH] s390/sclp_vt220: Fix console name to match device
-Date:   Tue, 19 May 2020 20:16:54 +0200
-Message-Id: <20200519181654.16765-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9i8fE9UcQoMjC7gZk0f5UIj2Ufp+6XHlfmp4ao/4O3I=;
+        b=M0B7KgpZsBQt4E5X8OxXyD2yTNZWolR2/f+H8u41fyIpqXTQ/IBkg+PIk5pQaf9vVM
+         B7FvAhfWR1Ys+m0PgvW4bYZdhRkSN72vW+NPWuFXNjOut7tyAU1zAhCgo0t/tzzyScxo
+         7v428tVbz9c1onq0wHUsVOODP7mwAeG57d5EcWSgVjstv5AnNaRYDSg+IpUshqa4jCi0
+         ZY2uUsdYSopy9gG2dy9+JsJkNabpMVOrmLEYO8GpjMhHzvTmmQ5E1cffTvmnVK3bJfol
+         dRf+5Rb+dfJpS7ZkbpmYXVwTnfBgs42KLrH5bAIpl7PIt9yglAJbH2e4ykXBWz8d9oL3
+         neqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=9i8fE9UcQoMjC7gZk0f5UIj2Ufp+6XHlfmp4ao/4O3I=;
+        b=mFW6msmY4FYrToxgnLx8a5szJiSSh2psvYSGOO4BXmOi/k1Zwl6+TeSuLPTuD518Ac
+         oXJrC8+woD3ilShbWN84gpxt6NgHiSeybgCpqe283sm7vQEGxIURAoJfMCtgTfynBhfK
+         7yTnZknBpBQ0kjIssBmAPu7JSM6xfcpb7jShdB+Zi6XOUj6VpId67gXGZhI8145WQeMM
+         WRAhEj8RlURPIOW7lsC6btbGq33bfs+os/CS4IOd6qrfGl3CUi3B+/Dbc8ll5XJnSpjR
+         XgzDEit32QEeeGfk6E1cl6LJQ7tS77KhIqrUJA48QzJCKSLC0esg3MFy8OuO8fPJ6o33
+         Jzyg==
+X-Gm-Message-State: AOAM530W7GTnNqbAEIJm/vMGRn3QWhybP5ifeYRAq80Xx6PFkHbBMHh6
+        KxSGui0euEg7A0Rsa/IWnS4=
+X-Google-Smtp-Source: ABdhPJyxXQek9kmfiklyRswq34puGT0/qkq70Y1A0X+1ql8Y7CIbt8KUIclIUmKsIVrJHd1bSQywiA==
+X-Received: by 2002:adf:b301:: with SMTP id j1mr148805wrd.221.1589912236198;
+        Tue, 19 May 2020 11:17:16 -0700 (PDT)
+Received: from dumbo ([185.220.101.209])
+        by smtp.gmail.com with ESMTPSA id d4sm250548wre.22.2020.05.19.11.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 11:17:15 -0700 (PDT)
+Received: from cavok by dumbo with local (Exim 4.92)
+        (envelope-from <cavok@dumbo>)
+        id 1jb6ni-0004ND-0s; Tue, 19 May 2020 20:17:14 +0200
+Date:   Tue, 19 May 2020 20:17:13 +0200
+From:   Domenico Andreoli <domenico.andreoli@linux.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Pavel Machek <pavel@ucw.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ted Ts'o <tytso@mit.edu>,
+        Len Brown <len.brown@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] hibernate: restrict writes to the snapshot device
+Message-ID: <20200519181713.GB1963@dumbo>
+Mail-Followup-To: "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Pavel Machek <pavel@ucw.cz>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ted Ts'o <tytso@mit.edu>,
+        Len Brown <len.brown@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200507080456.069724962@linux.com>
+ <20200507080650.439636033@linux.com>
+ <CAJZ5v0jnfeAQ4JDz+BTZp8P98h6emTizGWLYNL_QtbQ=3Nw03Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jnfeAQ4JDz+BTZp8P98h6emTizGWLYNL_QtbQ=3Nw03Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Console name reported in /proc/consoles:
+On Tue, May 19, 2020 at 05:59:15PM +0200, Rafael J. Wysocki wrote:
+> It would be better to paste the patch instead of attaching it.
 
-  ttyS1                -W- (EC p  )    4:65
+Done with v2.
 
-does not match device name:
+> Anyway, note that the snapshot special device is not the target block
+> device for saving the image, so it would be good to avoid that
+> confusion in the naming.
 
-  crw--w----    1 root     root        4,  65 May 17 12:18 /dev/ttysclp0
+I realize that it was a bit hazy in my head as well. It should be fixed
+in v2.
 
-so debian-installer gets confused and fails to start.
+> 
+> I.e. I would rename is_hibernate_snapshot_dev() to something like
+> is_hibernate_image_dev() or is_hibernate_resume_dev() (for consistency
+> with the resume= kernel command line parameter name).
 
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Cc: stable@vger.kernel.org
----
- drivers/s390/char/sclp_vt220.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Done as well.
 
-diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
-index 3f9a6ef650fa..3c2ed6d01387 100644
---- a/drivers/s390/char/sclp_vt220.c
-+++ b/drivers/s390/char/sclp_vt220.c
-@@ -35,8 +35,8 @@
- #define SCLP_VT220_MINOR		65
- #define SCLP_VT220_DRIVER_NAME		"sclp_vt220"
- #define SCLP_VT220_DEVICE_NAME		"ttysclp"
--#define SCLP_VT220_CONSOLE_NAME		"ttyS"
--#define SCLP_VT220_CONSOLE_INDEX	1	/* console=ttyS1 */
-+#define SCLP_VT220_CONSOLE_NAME		"ttysclp"
-+#define SCLP_VT220_CONSOLE_INDEX	0	/* console=ttysclp0 */
- 
- /* Representation of a single write request */
- struct sclp_vt220_request {
+> Thanks!
+
+Thank you!
+
+Dom
+
 -- 
-2.20.1
-
+rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
+ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
