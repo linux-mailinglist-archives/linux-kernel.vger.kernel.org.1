@@ -2,28 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7890F1DA4CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4FE1DA4AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgESWm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:42:29 -0400
-Received: from v6.sk ([167.172.42.174]:58624 "EHLO v6.sk"
+        id S1727951AbgESWl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:41:59 -0400
+Received: from v6.sk ([167.172.42.174]:58510 "EHLO v6.sk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbgESWm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:42:26 -0400
+        id S1726318AbgESWl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:41:59 -0400
 Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 1BDF9610B0;
-        Tue, 19 May 2020 22:41:55 +0000 (UTC)
+        by v6.sk (Postfix) with ESMTP id 04E49610D3;
+        Tue, 19 May 2020 22:41:57 +0000 (UTC)
 From:   Lubomir Rintel <lkundrak@v3.sk>
 To:     Stephen Boyd <sboyd@kernel.org>
 Cc:     Michael Turquette <mturquette@baylibre.com>,
         Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 00/13] MMP2 Clock Updates (GPU, Audio, Power Islands)
-Date:   Wed, 20 May 2020 00:41:38 +0200
-Message-Id: <20200519224151.2074597-1-lkundrak@v3.sk>
+        linux-arm-kernel@lists.infradead.org,
+        Lubomir Rintel <lkundrak@v3.sk>
+Subject: [PATCH v3 01/13] clk: mmp: frac: Do not lose last 4 digits of precision
+Date:   Wed, 20 May 2020 00:41:39 +0200
+Message-Id: <20200519224151.2074597-2-lkundrak@v3.sk>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200519224151.2074597-1-lkundrak@v3.sk>
+References: <20200519224151.2074597-1-lkundrak@v3.sk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -31,50 +34,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+While calculating the output rate of a fractional divider clock, the
+value is divided and multipled by 10000, discarding the least
+significant digits -- presumably to fit the intermediate value within 32
+bits.
 
-please consider applying this patch set. It contains patches that were
-previously sent in two separate series ("clk: mmp2: Enable Audio and GPU
-on MMP2 and MMP3" and "MMP2 Audio clock controller driver") but given
-there are some dependencies, it seems more practical to merge them into
-one.
+The precision we're losing is, however, not insignificant for things like
+I2S clock. Maybe also elsewhere, now that since commit ea56ad60260e ("clk:
+mmp2: Stop pretending PLL outputs are constant") the parent rates are more
+precise and no longer rounded to 10000s.
 
-The ultimate goal it so make GPU and Audio clocks work on MMP2 and
-MMP3-based machines.
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+ drivers/clk/mmp/clk-frac.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-This patch set aims to address issues pointed out in review of v1 of the
-clock controller set.
-
-Ther first few patches add the clocks for the audio block, setting a few
-things beforehands:
-
-  [01/13] clk: mmp: frac: Do not lose last 4 digits of precision
-  [02/13] clk: mmp: frac: Allow setting bits other than the
-  [03/13] dt-bindings: marvell,mmp2: Add clock id for the I2S
-  [04/13] dt-bindings: marvell,mmp2: Add clock id for the Audio
-  [05/13] clk: mmp2: Move thermal register defines up a bit
-  [06/13] clk: mmp2: Rename mmp2_pll_init() to
-  [07/13] clk: mmp2: Add the I2S clocks
-  [08/13] clk: mmp2: Add the audio clock
-
-Then the support for controlling the power to Audio, GPU and (on a MMP3)
-Camera blocks is added. The power is controlled by the same hardware
-(the PMUs) as one that drives the clocks:
-
-  [09/13] dt-bindings: clock: Make marvell,mmp2-clock a power
-  [10/13] dt-bindings: marvell,mmp2: Add ids for the power
-  [11/13] clk: mmp2: Add support for power islands
-
-Finally a driver for the clocks used by I2S is added. The controller is
-separate from a PMUs and lives in the audio block along with a pair of
-I2S controllers:
-
-  [12/13] dt-bindings: clock: Add Marvell MMP Audio Clock
-  [13/13] clk: mmp2: Add audio clock controller driver
-
-Tested the GPU and Audio on an OLPC XO-1.75 laptop (MMP2).
-
-Thanks,
-Lubo
-
+diff --git a/drivers/clk/mmp/clk-frac.c b/drivers/clk/mmp/clk-frac.c
+index fabc09aca6c4..ed9928f5bdc7 100644
+--- a/drivers/clk/mmp/clk-frac.c
++++ b/drivers/clk/mmp/clk-frac.c
+@@ -28,13 +28,15 @@ static long clk_factor_round_rate(struct clk_hw *hw, unsigned long drate,
+ 		unsigned long *prate)
+ {
+ 	struct mmp_clk_factor *factor = to_clk_factor(hw);
+-	unsigned long rate = 0, prev_rate;
++	u64 rate = 0, prev_rate;
+ 	int i;
+ 
+ 	for (i = 0; i < factor->ftbl_cnt; i++) {
+ 		prev_rate = rate;
+-		rate = (((*prate / 10000) * factor->ftbl[i].den) /
+-			(factor->ftbl[i].num * factor->masks->factor)) * 10000;
++		rate = *prate;
++		rate *= factor->ftbl[i].den;
++		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
++
+ 		if (rate > drate)
+ 			break;
+ 	}
+@@ -54,6 +56,7 @@ static unsigned long clk_factor_recalc_rate(struct clk_hw *hw,
+ 	struct mmp_clk_factor *factor = to_clk_factor(hw);
+ 	struct mmp_clk_factor_masks *masks = factor->masks;
+ 	unsigned int val, num, den;
++	u64 rate;
+ 
+ 	val = readl_relaxed(factor->base);
+ 
+@@ -66,8 +69,11 @@ static unsigned long clk_factor_recalc_rate(struct clk_hw *hw,
+ 	if (!den)
+ 		return 0;
+ 
+-	return (((parent_rate / 10000)  * den) /
+-			(num * factor->masks->factor)) * 10000;
++	rate = parent_rate;
++	rate *= den;
++	do_div(rate, num * factor->masks->factor);
++
++	return rate;
+ }
+ 
+ /* Configures new clock rate*/
+@@ -78,12 +84,14 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long drate,
+ 	struct mmp_clk_factor_masks *masks = factor->masks;
+ 	int i;
+ 	unsigned long val;
+-	unsigned long rate = 0;
+ 	unsigned long flags = 0;
++	u64 rate = 0;
+ 
+ 	for (i = 0; i < factor->ftbl_cnt; i++) {
+-		rate = (((prate / 10000) * factor->ftbl[i].den) /
+-			(factor->ftbl[i].num * factor->masks->factor)) * 10000;
++		rate = prate;
++		rate *= factor->ftbl[i].den;
++		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
++
+ 		if (rate > drate)
+ 			break;
+ 	}
+-- 
+2.26.2
 
