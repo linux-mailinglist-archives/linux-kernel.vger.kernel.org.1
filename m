@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8BE1D9E39
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E501D9E3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729465AbgESRvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 13:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgESRvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 13:51:41 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D8A120674;
-        Tue, 19 May 2020 17:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589910701;
-        bh=qO414KmS7DC9vV6JVgPfD94wbq+HHVcUHYLT24PVLi4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pqiFlhxX8oinm7AVG1bzCGFtft9PrwLRVxBchE7Kyf7wFvpUQMws8j57PI2yZyuMV
-         0AX1gUUJDc9MIkchZYqXtmh4YmnIYkVPzZpN9VngSWu6ib/JmCoJe2hCXcMyOzOt6X
-         N/wpsyauyJERxQRtDD/Umh1UqoJjVkDCjGo6extI=
-Received: by pali.im (Postfix)
-        id CCCE46B8; Tue, 19 May 2020 19:51:38 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:51:38 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: dell-wmi: Ignore keyboard attached /
- detached events
-Message-ID: <20200519175138.xu7pquxyku6mwjwt@pali>
-References: <20200513130544.90243-1-hdegoede@redhat.com>
+        id S1729500AbgESRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 13:52:29 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2226 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729001AbgESRw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 13:52:28 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 5D9B76180D7930E2DFAC;
+        Tue, 19 May 2020 18:52:27 +0100 (IST)
+Received: from localhost (10.47.86.149) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Tue, 19 May
+ 2020 18:52:26 +0100
+Date:   Tue, 19 May 2020 18:51:59 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/4] dt-bindings: iio: imu: bmi160: add regulators
+ and mount-matrix
+Message-ID: <20200519185159.00001bd1@Huawei.com>
+In-Reply-To: <20200519075111.6356-3-jonathan.albrieux@gmail.com>
+References: <20200519075111.6356-1-jonathan.albrieux@gmail.com>
+        <20200519075111.6356-3-jonathan.albrieux@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200513130544.90243-1-hdegoede@redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.86.149]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 13 May 2020 15:05:44 Hans de Goede wrote:
-> Ignore events with a type of 0x0011 and a code of 0xfff2 / 0xfff3,
-> this silences the following messages being logged when the keyboard is
-> detached / attached on a Dell Venue 11 Pro 7130:
-> 
-> [   63.621953] dell_wmi: Unknown key with type 0x0011 and code 0xfff2 pressed
-> [   70.240558] dell_wmi: Unknown key with type 0x0011 and code 0xfff3 pressed
-> 
-> Note SW_TABLET_MODE is already reported through the intel_vbtn driver on
-> this and other Dell devices, so dell_wmi should not report this too,
-> to avoid duplicate events.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+On Tue, 19 May 2020 09:50:58 +0200
+Jonathan Albrieux <jonathan.albrieux@gmail.com> wrote:
 
-Looks good, you can add my:
+> Add vdd-supply and vddio-supply support.
+> Add mount-matrix support.
+> 
+> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
 
-Acked-by: Pali Rohár <pali@kernel.org>
+A few minor comments inline.
 
 > ---
->  drivers/platform/x86/dell-wmi.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  .../devicetree/bindings/iio/imu/bmi160.yaml   | 21 +++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> diff --git a/drivers/platform/x86/dell-wmi.c b/drivers/platform/x86/dell-wmi.c
-> index 86e8dd6a8b33..c25a4286d766 100644
-> --- a/drivers/platform/x86/dell-wmi.c
-> +++ b/drivers/platform/x86/dell-wmi.c
-> @@ -310,6 +310,16 @@ static const struct key_entry dell_wmi_keymap_type_0011[] = {
->  	/* Battery inserted */
->  	{ KE_IGNORE, 0xfff1, { KEY_RESERVED } },
+> diff --git a/Documentation/devicetree/bindings/iio/imu/bmi160.yaml b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> index 6b464ce5ed0b..5b13af7a209f 100644
+> --- a/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> +++ b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> @@ -46,6 +46,21 @@ properties:
+>        set if the specified interrupt pin should be configured as
+>        open drain. If not set, defaults to push-pull.
 >  
-> +	/*
-> +	 * Detachable keyboard detached / undocked
-> +	 * Note SW_TABLET_MODE is already reported through the intel_vbtn
-> +	 * driver for this, so we ignore it.
-> +	 */
-> +	{ KE_IGNORE, 0xfff2, { KEY_RESERVED } },
+> +  vdd-supply:
+> +    maxItems: 1
+> +    description: |
+> +      an optional regulator that needs to be on to provide VDD power to
+> +      the sensor.
+
+They aren't optional.  Whether we specify them or rely on stub regulators
+being provided because they aren't controllable is the optional bit.
+That's clearly defined by them not being in the required list below.
+So say something li.e
+
+   description: |
+      provide VDD power to the sensor.
+
 > +
-> +	/* Detachable keyboard attached / docked */
-> +	{ KE_IGNORE, 0xfff3, { KEY_RESERVED } },
+> +  vddio-supply:
+> +    maxItems: 1
+> +    description: |
+> +      an optional regulator that needs to be on to provide the VDD IO power to
+> +      the sensor.
 > +
->  	/* Keyboard backlight level changed */
->  	{ KE_IGNORE, KBD_LED_OFF_TOKEN,      { KEY_RESERVED } },
->  	{ KE_IGNORE, KBD_LED_ON_TOKEN,       { KEY_RESERVED } },
-> -- 
-> 2.26.0
-> 
+> +  mount-matrix:
+> +    description: an optional 3x3 mounting rotation matrix
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -61,9 +76,15 @@ examples:
+>          bmi160@68 {
+>                  compatible = "bosch,bmi160";
+>                  reg = <0x68>;
+> +                vdd-supply = <&pm8916_l17>;
+> +                vddio-supply = <&pm8916_l6>;
+>                  interrupt-parent = <&gpio4>;
+>                  interrupts = <12 1>;
+>                  interrupt-names = "INT1";
+> +                mount-matrix = "0", "1", "0",
+> +                               "-1", "0", "0",
+> +                               "0", "0", "1";
+> +                };
+>          };
+>    - |
+>      // Example for SPI
+
+
