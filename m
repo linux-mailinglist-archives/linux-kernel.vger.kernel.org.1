@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C21C1DA40E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0793A1DA3DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgESVs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S1728199AbgESVqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgESVqz (ORCPT
+        with ESMTP id S1726030AbgESVqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:46:55 -0400
+        Tue, 19 May 2020 17:46:50 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006D4C08C5C3;
-        Tue, 19 May 2020 14:46:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C86C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:49 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA42-0002dr-Ph; Tue, 19 May 2020 23:46:18 +0200
+        id 1jbA48-0002eg-JX; Tue, 19 May 2020 23:46:24 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -28,14 +28,10 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Sebastian A. Siewior" <bigeasy@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v1 06/25] dma-buf: Remove custom seqcount lockdep class key
-Date:   Tue, 19 May 2020 23:45:28 +0200
-Message-Id: <20200519214547.352050-7-a.darwish@linutronix.de>
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH v1 07/25] lockdep: Add preemption disabled assertion API
+Date:   Tue, 19 May 2020 23:45:29 +0200
+Message-Id: <20200519214547.352050-8-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
@@ -49,72 +45,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3c3b177a9369 ("reservation: add support for read-only access
-using rcu") introduced a sequence counter to manage updates to
-reservations. Back then, the reservation object initializer
-reservation_object_init() was always inlined.
+Asserting that preemption is disabled is a critical sanity check.
+Developers are usually reluctant to add such a check in a fastpath, as
+reading the preemption count can be costly.
 
-Having the sequence counter initialization inlined meant that each of
-the call sites would have a different lockdep class key, which would've
-broken lockdep's deadlock detection. The aforementioned commit thus
-introduced, and exported, a custom seqcount lockdep class key and name.
+Extend the lockdep API with a preemption disabled assertion. If lockdep
+is disabled, or if the underlying architecture does not support kernel
+preemption, this assert has no runtime overhead.
 
-The commit 8735f16803f00 ("dma-buf: cleanup reservation_object_init...")
-transformed the reservation object initializer to a normal non-inlined C
-function. seqcount_init(), which automatically defines the seqcount
-lockdep class key and must be called non-inlined, can now be safely used.
+Since the lockdep assertion references sched.h task_struct current,
+define it at lockdep.c instead of lockdep.h. This unbinds a potential
+circular header dependency chain for call-sites, defined inlined, at
+other header files already included and needed by sched.h.
 
-Remove the seqcount custom lockdep class key, name, and export. Use
-seqcount_init() inside the dma reservation object initializer.
+Mark the exported assertion symbol with NOKPROBE_SYMBOL. Lockdep
+functions can be involved in breakpoint handling and probing on those
+functions can cause a breakpoint recursion.
 
+References: f54bb2ec02c8 ("locking/lockdep: Add IRQs disabled/enabled assertion APIs: ...")
+References: 2f43c6022d84 ("kprobes: Prohibit probing on lockdep functions")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/dma-buf/dma-resv.c | 9 +--------
- include/linux/dma-resv.h   | 2 --
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ include/linux/lockdep.h  |  9 +++++++++
+ kernel/locking/lockdep.c | 15 +++++++++++++++
+ lib/Kconfig.debug        |  1 +
+ 3 files changed, 25 insertions(+)
 
-diff --git a/drivers/dma-buf/dma-resv.c b/drivers/dma-buf/dma-resv.c
-index 4264e64788c4..590ce7ad60a0 100644
---- a/drivers/dma-buf/dma-resv.c
-+++ b/drivers/dma-buf/dma-resv.c
-@@ -50,12 +50,6 @@
- DEFINE_WD_CLASS(reservation_ww_class);
- EXPORT_SYMBOL(reservation_ww_class);
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 206774ac6946..54c929ea5b98 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -702,6 +702,14 @@ do {									\
+ 			  "Not in hardirq as expected\n");		\
+ 	} while (0)
  
--struct lock_class_key reservation_seqcount_class;
--EXPORT_SYMBOL(reservation_seqcount_class);
--
--const char reservation_seqcount_string[] = "reservation_seqcount";
--EXPORT_SYMBOL(reservation_seqcount_string);
--
- /**
-  * dma_resv_list_alloc - allocate fence list
-  * @shared_max: number of fences we need space for
-@@ -134,9 +128,8 @@ subsys_initcall(dma_resv_lockdep);
- void dma_resv_init(struct dma_resv *obj)
- {
- 	ww_mutex_init(&obj->lock, &reservation_ww_class);
-+	seqcount_init(&obj->seq);
++/*
++ * Don't define this assertion here to avoid a call-site's header file
++ * dependency on sched.h task_struct current. This is needed by call
++ * sites that are inline defined at header files already included by
++ * sched.h.
++ */
++void lockdep_assert_preemption_disabled(void);
++
+ #else
+ # define might_lock(lock) do { } while (0)
+ # define might_lock_read(lock) do { } while (0)
+@@ -709,6 +717,7 @@ do {									\
+ # define lockdep_assert_irqs_enabled() do { } while (0)
+ # define lockdep_assert_irqs_disabled() do { } while (0)
+ # define lockdep_assert_in_irq() do { } while (0)
++# define lockdep_assert_preemption_disabled() do { } while (0)
+ #endif
  
--	__seqcount_init(&obj->seq, reservation_seqcount_string,
--			&reservation_seqcount_class);
- 	RCU_INIT_POINTER(obj->fence, NULL);
- 	RCU_INIT_POINTER(obj->fence_excl, NULL);
+ #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index ac10db66cc63..4dae65bc65c2 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5857,3 +5857,18 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+ 	dump_stack();
  }
-diff --git a/include/linux/dma-resv.h b/include/linux/dma-resv.h
-index ee50d10f052b..a6538ae7d93f 100644
---- a/include/linux/dma-resv.h
-+++ b/include/linux/dma-resv.h
-@@ -46,8 +46,6 @@
- #include <linux/rcupdate.h>
- 
- extern struct ww_class reservation_ww_class;
--extern struct lock_class_key reservation_seqcount_class;
--extern const char reservation_seqcount_string[];
- 
- /**
-  * struct dma_resv_list - a list of shared fences
+ EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
++
++#ifdef CONFIG_PROVE_LOCKING
++
++void lockdep_assert_preemption_disabled(void)
++{
++	WARN_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&
++		  debug_locks				&&
++		  !current->lockdep_recursion		&&
++		  (preempt_count() == 0 && current->hardirqs_enabled),
++		  "preemption not disabled as expected\n");
++}
++EXPORT_SYMBOL_GPL(lockdep_assert_preemption_disabled);
++NOKPROBE_SYMBOL(lockdep_assert_preemption_disabled);
++
++#endif
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 21d9c5f6e7ec..34d9d8896003 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1062,6 +1062,7 @@ config PROVE_LOCKING
+ 	select DEBUG_RWSEMS
+ 	select DEBUG_WW_MUTEX_SLOWPATH
+ 	select DEBUG_LOCK_ALLOC
++	select PREEMPT_COUNT if !ARCH_NO_PREEMPT
+ 	select TRACE_IRQFLAGS
+ 	default n
+ 	help
 -- 
 2.20.1
 
