@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B61A1D8E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DA91D8E0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgESDDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 23:03:30 -0400
-Received: from mail-eopbgr80045.outbound.protection.outlook.com ([40.107.8.45]:60310
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726494AbgESDDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 23:03:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OiZ+iW66KTyrORxq+ZAGvAkWgXAXD4wRqGLVH5NWd12MEgNZzkz3keE2EbBP7Z7UoF0mdn2RixpwK+PNQu4dMJuI4xB3CQAfjBRExTgwJCk2O61jYmvlLrCCk4PAH3e2SUSMw08++/LGssk0tJceyMdHL/gYECNzxv6TVw7mjytzWW0l7hjDuGSIs7F/VJE/J5Tj4A8fesGgIV3WR5aBk2wijRHORbqhr6XF3L3AHdfwg6SyDx83KL88hHd7zzjYuyjwJMryFXKXOhb9HFPcRF04UxHi1XY6WR7e/BUfcHjsUKFmP3FwNl7yvx35ABb/kZuuOUANbbp2vOvwU16sOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JnjKNkUplrZwqV9WxWqlbyGb3v0XZ/jB2sNZ0Lsu/s0=;
- b=J82mIg/3FHXZuZ1/yaeg+9gnEqwUfzVoLnu9SRtOx0ezvfztPF7O6XukW5paclfeDZyVcpnNYw1tlCSIWs2bobJrBVNaSs2Ao/njE2TF/tZlJiPAFAO5wVoGtTFM2xnFaFwgcqLpj71dg/HM8/HHT6uOBFhKRi+2esAJ1ymwgWc1E0TNfpYOrxN49X7bjqy1C/wlEXGB4dszs2fG3XdIdFXIH8EnTXoGQK6pMh6QTJNo1eMTAG8hmkDkm+ayPf9UTko0rYeXGFPU0OqK4pchXDP7AGlLdoOjdRY5XU3XNV2K67EV802/931r2HyEYFEDqPtzLyqPEy09iWMrvgkY3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JnjKNkUplrZwqV9WxWqlbyGb3v0XZ/jB2sNZ0Lsu/s0=;
- b=kVHJ56VdyqB9ST5ZTlHWtGkk950mThqfmJWNIjjl8sI6CUba1L0k1qk0YB/GZQQCvtKd5JqU+5/e8vSjrFxmaiVcLx+Nf73SVVaP1GPzrkG6PEP+7uHZ3cSV1hcc54VqBgOrlgnW8QY5UpLM0sqT/vHJRio4DKtCN3kM2FBX3uc=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB3PR0402MB3820.eurprd04.prod.outlook.com (2603:10a6:8:3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.31; Tue, 19 May
- 2020 03:03:26 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3000.034; Tue, 19 May 2020
- 03:03:26 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 1/3] dt-bindings: timer: Convert i.MX GPT to json-schema
-Thread-Topic: [PATCH 1/3] dt-bindings: timer: Convert i.MX GPT to json-schema
-Thread-Index: AQHWLSSm+hmARz7RGkeECubw76HaxaiutRGAgAAEUQA=
-Date:   Tue, 19 May 2020 03:03:26 +0000
-Message-ID: <DB3PR0402MB3916A243DDB5BDE55AFA0577F5B90@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1589813260-20036-1-git-send-email-Anson.Huang@nxp.com>
- <1589813260-20036-2-git-send-email-Anson.Huang@nxp.com>
- <AM6PR04MB49669345E21DC28009C486E680B90@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB49669345E21DC28009C486E680B90@AM6PR04MB4966.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.13.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 42dc37b5-3f86-4025-243e-08d7fba13343
-x-ms-traffictypediagnostic: DB3PR0402MB3820:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB3PR0402MB3820CFAF88D66F80F5022A54F5B90@DB3PR0402MB3820.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 040866B734
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hXpSFVN3uGiAhYhXM2HGNr/8VJf92zmewNja6nlqTeYcT10FC2q4R9SGh4k96S3azhvClQL9U4YJyncXf7s6DUqhFDiGYvCBCm8WinDWtoR8TeZLa0x6LGCrElmofjecUcCscxhUWZu1DNXtkhKdGdFVZN1qckmhGNdA3Z9vhy84IdBa1/o595RV99Qjg6OytdyAa+ytSwQxzYW8165CmgW2IcCZpnoB8OC6J0R12pMS8OVprIFideJQX8HF5BRZ2NVhna031kMRUW2unINbEM1J82i/MPcaQz8kVmK01qv0GwpNi25wvve+y/91AMMGZC+OY+kB9ZoiITK+fvWYI1Ty8TuUpp9liySut2YhzJItOC0O76mDi7QBBTTnUSZbFPEZlv3YkmBjIVZGlbodATrLYK2pOIeUwYwNQueF7Al1h9tBj7ecZqH9hwJvj3ZXouqPz+l8ZHa7nENwXYDI0GpctsmmD3k/kmmu7wslPGU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(6506007)(71200400001)(66946007)(26005)(66556008)(44832011)(5660300002)(76116006)(66476007)(52536014)(8676002)(64756008)(66446008)(2906002)(86362001)(186003)(7696005)(110136005)(316002)(33656002)(8936002)(4326008)(7416002)(55016002)(9686003)(478600001)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: DjVMpsWW9nObyzYET0r3goVLc4cfqiRiBK5ZlJo/6Dosk5PBk+xcn1fwTtji/FViYXYJLPGeIvP6HXveXefSusXG5PjDRPOJDbhIYZazVS31TF2zVr6BIlrGm4DxTO2AsnDK7YBL3mNOlcYoJSskB0cIXFzg00ldQIBjFnQw/V0Q05/jcTmq5tqrsAnbt0WNi+wARhPim/8/fjxO9ygDeQomVihfe1XcPStVaZef8+nIns3baeGyTwGFaQCZ1sCGfdI1jvWfdKF2Lu1qOudhkPNJzAo23cn6T9ZIcyeatnLU/Kve9Rr4WTKlQVLEDSFe9Hh7jCCGmuiUVKeHLVYvEb/mR5Qhr2iojhP2e6FensILyZAAbFzXMV2y9WDKxM0NbCEGrREx1Y4XZdl7eVA96vSsIOKLtNl8gaPT216OI30HfcFDlRJVlXs974cgmuFJi/O3MbckIWZC0UBKztPrIpl/tz3tZorIZCO6861Y1N11WDTVRKxZqcBQa1UK3utE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728037AbgESDJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 23:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgESDJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 23:09:01 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E999FC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:08:59 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so10007458qts.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mQJ5GEq7PDJ+xmAy1f1Vg4ydmsBKJSVL7rBc7e/vN0Q=;
+        b=tuU+WBq+N01erbYivv1k/19CTmRAoPPA+gTWI2uPJpN5ra9HL7KDI0EOkRqal8XT5+
+         UmJu47AJ0w83pu/+rzwUJjZyXM2l5j1yzJctHB7SWyjyUZ7SdmyNTCw6ef5eVpdmNM8Q
+         cJXVx8QHLckBAxV+yRAtLeDXOIlPb0doargDP1sxtACXPLZQSRwvWgcrwm/cCmCHi4rH
+         pw5KH+asQZ/FEyXaRkStMrXR32n09Ee7EDVH0FIzpDyGoWd4hqRqaU/vkfutWmQX2PLX
+         UqDYLDRo/4/rFsP80YDtdPPeirV7Azpe9aKEiHmNQPGsjSrpLOh6Sn0sAwYDQMZ06ky8
+         dUCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mQJ5GEq7PDJ+xmAy1f1Vg4ydmsBKJSVL7rBc7e/vN0Q=;
+        b=b07ZTsmr5lCWiTQdCyMKtTSrRb2ZSTmN5Pseu/TdB1gHNxAVNRhdenzth917TQdI4p
+         AazpZMBWko0+6uMxCbUPU9KSc5co/pfOpFNGxM2NWAKxqWdOAyyg5ktfksWDmqzfdQPL
+         FmHPhTWMVU5hPi8bKb47zXhtEZfXI/DtaVrs5iHRM5rWHE2DPVuVfRsIQttvue3aqF4/
+         67GrQd16dBSOW5hiOCYgHGOfGP9/A3TiwCq8tIxi4PQfV7MYke/wjdFyTofSQx0QKZ21
+         ySMpJ46XovbILXE+2DqB3YsUgdBlsQeuEw1fTnYjV0mgh1vfptzVjD++O76qeDp523Fn
+         GWbA==
+X-Gm-Message-State: AOAM533umEz3VRlLP/oUvEkiljLFZxL2ZjHTCXv1HOJJnkvx5Y3w4zXl
+        tu3NY/IWZ3QNXsowM0ao6qNLaw==
+X-Google-Smtp-Source: ABdhPJyqNsHhYZbp5yPpTg7RdDlSSku/gcOTr/4QKk3jwHyz0DH+TNY+8xf4dnxg+M92BBjHTCB5Gg==
+X-Received: by 2002:ac8:37e6:: with SMTP id e35mr13537025qtc.310.1589857739104;
+        Mon, 18 May 2020 20:08:59 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id s74sm9941014qka.54.2020.05.18.20.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2020 20:08:58 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/a6xx: don't try to set GPU frequency when GMU is suspended
+Date:   Mon, 18 May 2020 23:07:33 -0400
+Message-Id: <20200519030735.24713-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42dc37b5-3f86-4025-243e-08d7fba13343
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2020 03:03:26.1790
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +pYNsqYoD8QFLcf2ZhI0uzeLK7BKoRF3AB36CIMAhCADFDRonoKHpI/Bz8iVRrebRiaJO/JjAsQvMwfmK6ElsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3820
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gU3ViamVjdDogUkU6IFtQQVRDSCAxLzNdIGR0LWJpbmRpbmdzOiB0aW1lcjogQ29udmVy
-dCBpLk1YIEdQVCB0byBqc29uLXNjaGVtYQ0KPiANCj4gPiBGcm9tOiBBbnNvbiBIdWFuZyA8QW5z
-b24uSHVhbmdAbnhwLmNvbT4NCj4gPiBTZW50OiBNb25kYXksIE1heSAxOCwgMjAyMCAxMDo0OCBQ
-TQ0KPiA+DQo+ID4gQ29udmVydCB0aGUgaS5NWCBHUFQgYmluZGluZyB0byBEVCBzY2hlbWEgZm9y
-bWF0IHVzaW5nIGpzb24tc2NoZW1hLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQW5zb24gSHVh
-bmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIC4uLi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3RpbWVyL2ZzbCxpbXhncHQudHh0ICAgICAgIHwgIDQ1IC0tLS0tLS0tLQ0KPiA+ICAu
-Li4vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9mc2wsaW14Z3B0LnlhbWwgICAgICB8IDEwOQ0K
-PiA+ICsrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDEwOSBpbnNl
-cnRpb25zKCspLCA0NSBkZWxldGlvbnMoLSkgIGRlbGV0ZSBtb2RlDQo+ID4gMTAwNjQ0IERvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9mc2wsaW14Z3B0LnR4dA0KPiA+ICBj
-cmVhdGUgbW9kZSAxMDA2NDQNCj4gPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-dGltZXIvZnNsLGlteGdwdC55YW1sDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3RpbWVyL2ZzbCxpbXhncHQudHh0DQo+ID4gYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdGltZXIvZnNsLGlteGdwdC50eHQNCj4gPiBkZWxl
-dGVkIGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCA1ZDhmZDViLi4wMDAwMDAwDQo+ID4gLS0t
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3RpbWVyL2ZzbCxpbXhncHQudHh0
-DQo+ID4gKysrIC9kZXYvbnVsbA0KPiA+IEBAIC0xLDQ1ICswLDAgQEANCj4gPiAtRnJlZXNjYWxl
-IGkuTVggR2VuZXJhbCBQdXJwb3NlIFRpbWVyIChHUFQpDQo+ID4gLQ0KPiA+IC1SZXF1aXJlZCBw
-cm9wZXJ0aWVzOg0KPiA+IC0NCj4gPiAtLSBjb21wYXRpYmxlIDogc2hvdWxkIGJlIG9uZSBvZiBm
-b2xsb3dpbmc6DQo+ID4gLSAgZm9yIGkuTVgxOg0KPiA+IC0gIC0gImZzbCxpbXgxLWdwdCI7DQo+
-ID4gLSAgZm9yIGkuTVgyMToNCj4gPiAtICAtICJmc2wsaW14MjEtZ3B0IjsNCj4gPiAtICBmb3Ig
-aS5NWDI3Og0KPiA+IC0gIC0gImZzbCxpbXgyNy1ncHQiLCAiZnNsLGlteDIxLWdwdCI7DQo+ID4g
-LSAgZm9yIGkuTVgzMToNCj4gPiAtICAtICJmc2wsaW14MzEtZ3B0IjsNCj4gPiAtICBmb3IgaS5N
-WDI1Og0KPiA+IC0gIC0gImZzbCxpbXgyNS1ncHQiLCAiZnNsLGlteDMxLWdwdCI7DQo+ID4gLSAg
-Zm9yIGkuTVg1MDoNCj4gPiAtICAtICJmc2wsaW14NTAtZ3B0IiwgImZzbCxpbXgzMS1ncHQiOw0K
-PiA+IC0gIGZvciBpLk1YNTE6DQo+ID4gLSAgLSAiZnNsLGlteDUxLWdwdCIsICJmc2wsaW14MzEt
-Z3B0IjsNCj4gPiAtICBmb3IgaS5NWDUzOg0KPiA+IC0gIC0gImZzbCxpbXg1My1ncHQiLCAiZnNs
-LGlteDMxLWdwdCI7DQo+ID4gLSAgZm9yIGkuTVg2UToNCj4gPiAtICAtICJmc2wsaW14NnEtZ3B0
-IiwgImZzbCxpbXgzMS1ncHQiOw0KPiA+IC0gIGZvciBpLk1YNkRMOg0KPiA+IC0gIC0gImZzbCxp
-bXg2ZGwtZ3B0IjsNCj4gPiAtICBmb3IgaS5NWDZTTDoNCj4gPiAtICAtICJmc2wsaW14NnNsLWdw
-dCIsICJmc2wsaW14NmRsLWdwdCI7DQo+ID4gLSAgZm9yIGkuTVg2U1g6DQo+ID4gLSAgLSAiZnNs
-LGlteDZzeC1ncHQiLCAiZnNsLGlteDZkbC1ncHQiOw0KPiA+IC0tIHJlZyA6IHNwZWNpZmllcyBi
-YXNlIHBoeXNpY2FsIGFkZHJlc3MgYW5kIHNpemUgb2YgdGhlIHJlZ2lzdGVycy4NCj4gPiAtLSBp
-bnRlcnJ1cHRzIDogc2hvdWxkIGJlIHRoZSBncHQgaW50ZXJydXB0Lg0KPiA+IC0tIGNsb2NrcyA6
-IHRoZSBjbG9ja3MgcHJvdmlkZWQgYnkgdGhlIFNvQyB0byBkcml2ZSB0aGUgdGltZXIsIG11c3Qg
-Y29udGFpbg0KPiA+IC0gICAgICAgICAgIGFuIGVudHJ5IGZvciBlYWNoIGVudHJ5IGluIGNsb2Nr
-LW5hbWVzLg0KPiA+IC0tIGNsb2NrLW5hbWVzIDogbXVzdCBpbmNsdWRlICJpcGciIGVudHJ5IGZp
-cnN0LCB0aGVuICJwZXIiIGVudHJ5Lg0KPiA+IC0NCj4gPiAtRXhhbXBsZToNCj4gPiAtDQo+ID4g
-LWdwdDE6IHRpbWVyQDEwMDAzMDAwIHsNCj4gPiAtCWNvbXBhdGlibGUgPSAiZnNsLGlteDI3LWdw
-dCIsICJmc2wsaW14MjEtZ3B0IjsNCj4gPiAtCXJlZyA9IDwweDEwMDAzMDAwIDB4MTAwMD47DQo+
-ID4gLQlpbnRlcnJ1cHRzID0gPDI2PjsNCj4gPiAtCWNsb2NrcyA9IDwmY2xrcyBJTVgyN19DTEtf
-R1BUMV9JUEdfR0FURT4sDQo+ID4gLQkJIDwmY2xrcyBJTVgyN19DTEtfUEVSMV9HQVRFPjsNCj4g
-PiAtCWNsb2NrLW5hbWVzID0gImlwZyIsICJwZXIiOw0KPiA+IC19Ow0KPiA+IGRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdGltZXIvZnNsLGlteGdwdC55YW1s
-DQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdGltZXIvZnNsLGlteGdw
-dC55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwLi41Yzcx
-ODZiDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy90aW1lci9mc2wsaW14Z3B0LnlhbWwNCj4gPiBAQCAtMCwwICsxLDEwOSBAQA0K
-PiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNs
-YXVzZSkgJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICsNCj4gPiArdGl0bGU6IEZyZWVzY2FsZSBp
-Lk1YIEdlbmVyYWwgUHVycG9zZSBUaW1lciAoR1BUKQ0KPiA+ICsNCj4gPiArbWFpbnRhaW5lcnM6
-DQo+ID4gKyAgLSBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+DQo+ID4gKw0K
-PiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+ID4gKyAgICBvbmVPZjoNCj4g
-PiArICAgICAgLSBkZXNjcmlwdGlvbjogb24gaS5NWDEgdGhlIGZvbGxvd2luZyBjb21wYXRpYmxl
-IG11c3QgYmUNCj4gPiArc3BlY2lmaWVkDQo+IA0KPiBTdWNoIGEgZGVzY3JpcHRpb24gc2VlbXMg
-bm90IG5lY2Vzc2FyeSBpbiBvcmRlciB0byBtYWtlIHRoZSBkb2MgbW9yZSBjbGVhbg0KDQpZb3Ug
-bWVhbnQgdGhlIGRlc2NyaXB0aW9uIGlzIE5PVCBuZWNlc3NhcnkgZm9yIHRob3NlIHNpbXBsZSBj
-b21wYXRpYmxlIHN0cmluZyBwbGF0Zm9ybXMgb3IgZm9yDQphbGwgcGxhdGZvcm1zLCBJIGZlZWwg
-bGlrZSBoYXZpbmcgdGhlIGRlc2NyaXB0aW9uIGlzIG1vcmUgY2xlYXIgZm9yIHVzZXJzLg0KDQpB
-bnNvbg0K
+This fixes changing the frequency in sysfs while suspended, for example
+when doing something like this:
+
+cat devfreq/3d00000.gpu/max_freq > devfreq/3d00000.gpu/min_freq
+
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index aec54cde8534..9498803dcad9 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -151,13 +151,20 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, unsigned long freq)
+ 			break;
+ 
+ 	gmu->current_perf_index = perf_index;
++	gmu->freq = gmu->gpu_freqs[perf_index];
++
++	/*
++	 * devfreq may try to change frequency target even when suspended
++	 * this can happen when changing frequency through sysfs
++	 * don't try to set freq when suspended, it will be set on resume
++	 */
++	if (!pm_runtime_active(gmu->dev))
++		return;
+ 
+ 	if (gmu->legacy)
+ 		__a6xx_gmu_set_freq(gmu, perf_index);
+ 	else
+ 		a6xx_hfi_set_freq(gmu, perf_index);
+-
+-	gmu->freq = gmu->gpu_freqs[perf_index];
+ }
+ 
+ unsigned long a6xx_gmu_get_freq(struct msm_gpu *gpu)
+-- 
+2.26.1
+
