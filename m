@@ -2,43 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485621DA26C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6998C1DA271
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgESUUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:20:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgESUUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:20:05 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 343E7207FB
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589919604;
-        bh=lnPdg3xOComkw/mtgCYuLekVm2wdX5+Kj/vqF2VGxAc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VbacoLCoiqhSf79KI7ZbBXnp4Mpj/29gH6gvsWst/phxyQePGR7NmsMyZAbDlaiZB
-         nn9gtoue2bt3HE8XCXcRyYGe8ZFqGT7miwplEqYGYFUHnAMhB/PY8j1LKRRinarX9U
-         K493lqIQsByqXF5iL/dSTrPZhty+DOJMxa+s2Zuw=
-Received: by mail-wm1-f48.google.com with SMTP id h4so520864wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:20:04 -0700 (PDT)
-X-Gm-Message-State: AOAM532rJ02+7U3R/EqQ/D+0E+jMWOIGFok6jybKpERhXGFunYxjKQAq
-        DPiQlcEK+xXmNHTKsxLWanUTj8PJp3Vuz2dUtqhqHA==
-X-Google-Smtp-Source: ABdhPJw+skrkQiO6Sndokvav+tG/l20x7oZ3l+6UMbbS3U/mvaexLCsdH/RkdoFbspOMYC5+0PP9KbuJVdaRvTZXJIs=
-X-Received: by 2002:a1c:8141:: with SMTP id c62mr1109261wmd.21.1589919602647;
- Tue, 19 May 2020 13:20:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235126.317328545@linutronix.de>
-In-Reply-To: <20200515235126.317328545@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 19 May 2020 13:19:51 -0700
-X-Gmail-Original-Message-ID: <CALCETrWjT+A_AAuv=zZ52vJhR2ZADktB3XZnO8n_qu09S0P0vQ@mail.gmail.com>
-Message-ID: <CALCETrWjT+A_AAuv=zZ52vJhR2ZADktB3XZnO8n_qu09S0P0vQ@mail.gmail.com>
-Subject: Re: [patch V6 19/37] x86/irq: Convey vector as argument and not in ptregs
-To:     Thomas Gleixner <tglx@linutronix.de>
+        id S1728013AbgESUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726595AbgESUU2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 16:20:28 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80714C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:20:28 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jb8iZ-00013p-1v; Tue, 19 May 2020 22:20:03 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 515EB100D01; Tue, 19 May 2020 22:20:02 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Andy Lutomirski <luto@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
@@ -61,71 +46,62 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
         Michael Kelley <mikelley@microsoft.com>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V6 12/37] x86/entry: Provide idtentry_entry/exit_cond_rcu()
+In-Reply-To: <87ftbv7nsd.fsf@nanos.tec.linutronix.de>
+References: <20200515234547.710474468@linutronix.de> <20200515235125.628629605@linutronix.de> <CALCETrWnkuwvTuJKr8Vuecgr_q+1ReBDrTv4XOqGaw7-ZpEeQQ@mail.gmail.com> <87ftbv7nsd.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 19 May 2020 22:20:02 +0200
+Message-ID: <87a7237k3x.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+Thomas Gleixner <tglx@linutronix.de> writes:
+> Andy Lutomirski <luto@kernel.org> writes:
+>> On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>> The pagefault handler cannot use the regular idtentry_enter() because that
+>>> invokes rcu_irq_enter() if the pagefault was caused in the kernel. Not a
+>>> problem per se, but kernel side page faults can schedule which is not
+>>> possible without invoking rcu_irq_exit().
+>>>
+>>> Adding rcu_irq_exit() and a matching rcu_irq_enter() into the actual
+>>> pagefault handling code would be possible, but not pretty either.
+>>>
+>>> Provide idtentry_entry/exit_cond_rcu() which calls rcu_irq_enter() only
+>>> when RCU is not watching. The conditional RCU enabling is a correctness
+>>> issue: A kernel page fault which hits a RCU idle reason can neither
+>>> schedule nor is it likely to survive. But avoiding RCU warnings or RCU side
+>>> effects is at least increasing the chance for useful debug output.
+>>>
+>>> The function is also useful for implementing lightweight reschedule IPI and
+>>> KVM posted interrupt IPI entry handling later.
+>>
+>> Why is this conditional?  That is, couldn't we do this for all
+>> idtentry_enter() calls instead of just for page faults?  Evil things
+>> like NMI shouldn't go through this path at all.
 >
->
-> Device interrupts which go through do_IRQ() or the spurious interrupt
-> handler have their separate entry code on 64 bit for no good reason.
->
-> Both 32 and 64 bit transport the vector number through ORIG_[RE]AX in
-> pt_regs. Further the vector number is forced to fit into an u8 and is
-> complemented and offset by 0x80 so it's in the signed character
-> range. Otherwise GAS would expand the pushq to a 5 byte instruction for any
-> vector > 0x7F.
->
-> Treat the vector number like an error code and hand it to the C function as
-> argument. This allows to get rid of the extra entry code in a later step.
->
-> Simplify the error code push magic by implementing the pushq imm8 via a
-> '.byte 0x6a, vector' sequence so GAS is not able to screw it up. As the
-> pushq imm8 is sign extending the resulting error code needs to be truncated
-> to 8 bits in C code.
+> I thought about that, but then ended up with the conclusion that RCU
+> might be unhappy, but my conclusion might be fundamentally wrong.
 
+It's about this:
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+rcu_nmi_enter()
+{
+        if (!rcu_is_watching()) {
+            make it watch;
+        } else if (!in_nmi()) {
+            do_magic_nohz_dyntick_muck();
+        }
 
-although you may be giving me more credit than deserved :)
+So if we do all irq/system vector entries conditional then the
+do_magic() gets never executed. After that I got lost...
 
- +       .align 8
-> +SYM_CODE_START(irq_entries_start)
-> +    vector=FIRST_EXTERNAL_VECTOR
-> +    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
-> +       UNWIND_HINT_IRET_REGS
-> +       .byte   0x6a, vector
-> +       jmp     common_interrupt
-> +       .align  8
-> +    vector=vector+1
-> +    .endr
-> +SYM_CODE_END(irq_entries_start)
+Thanks,
 
-Having battled code like this in the past (for early exceptions), I
-prefer the variant like:
-
-pos = .;
-.rept blah blah blah
-  .byte whatever
-  jmp whatever
-  . = pos + 8;
- vector = vector + 1
-.endr
-
-or maybe:
-
-.rept blah blah blah
-  .byte whatever
-  jmp whatever;
-  . = irq_entries_start + 8 * vector;
-  vector = vector + 1
-.endr
-
-The reason is that these variants will fail to assemble if something
-goes wrong and the code expands to more than 8 bytes, whereas using
-.align will cause gas to happily emit 16 bytes and result in
-hard-to-debug mayhem.
+         tglx
