@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F2F1D8F8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 07:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366191D8F6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 07:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgESFtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 01:49:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:61897 "EHLO pegase1.c-s.fr"
+        id S1728610AbgESFtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 01:49:13 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:42746 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728483AbgESFtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 01:49:02 -0400
+        id S1728494AbgESFtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 01:49:03 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49R4gv4Y5Kz9txm6;
-        Tue, 19 May 2020 07:48:59 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 49R4gw5p3kz9txm0;
+        Tue, 19 May 2020 07:49:00 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id cmBCac8qLr3O; Tue, 19 May 2020 07:48:59 +0200 (CEST)
+        with ESMTP id O8UX92urjnVO; Tue, 19 May 2020 07:49:00 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49R4gv3l7Nz9txm0;
-        Tue, 19 May 2020 07:48:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 981E28B7A7;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49R4gw4Y1dz9txly;
         Tue, 19 May 2020 07:49:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B15EC8B7A7;
+        Tue, 19 May 2020 07:49:01 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id csgR_z2Tramd; Tue, 19 May 2020 07:49:00 +0200 (CEST)
+        with ESMTP id jIClt0nQ-GTg; Tue, 19 May 2020 07:49:01 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4F82C8B767;
-        Tue, 19 May 2020 07:49:00 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 77E5D8B767;
+        Tue, 19 May 2020 07:49:01 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2F1EE65A4A; Tue, 19 May 2020 05:49:00 +0000 (UTC)
-Message-Id: <d6f8e1f46583f1842de24581a68b0496feb15516.1589866984.git.christophe.leroy@csgroup.eu>
+        id 4AFEF65A4A; Tue, 19 May 2020 05:49:01 +0000 (UTC)
+Message-Id: <590d67994a2847cd9fe088f7d974499e3a18b6ac.1589866984.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1589866984.git.christophe.leroy@csgroup.eu>
 References: <cover.1589866984.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v4 17/45] powerpc/mm: PTE_ATOMIC_UPDATES is only for 40x
+Subject: [PATCH v4 18/45] powerpc/mm: Refactor pte_update() on nohash/32
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 19 May 2020 05:49:00 +0000 (UTC)
+Date:   Tue, 19 May 2020 05:49:01 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only 40x still uses PTE_ATOMIC_UPDATES.
-40x cannot not select CONFIG_PTE64_BIT.
+When CONFIG_PTE_64BIT is set, pte_update() operates on
+'unsigned long long'
+When CONFIG_PTE_64BIT is not set, pte_update() operates on
+'unsigned long'
 
-Drop handling of PTE_ATOMIC_UPDATES:
-- In nohash/64
-- In nohash/32 for CONFIG_PTE_64BIT
+In asm/page.h, we have pte_basic_t which is 'unsigned long long'
+when CONFIG_PTE_64BIT is set and 'unsigned long' otherwise.
 
-Keep PTE_ATOMIC_UPDATES only for nohash/32 for !CONFIG_PTE_64BIT
+Refactor pte_update() using pte_basic_t.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/nohash/32/pgtable.h | 17 ------------
- arch/powerpc/include/asm/nohash/64/pgtable.h | 28 +-------------------
- 2 files changed, 1 insertion(+), 44 deletions(-)
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 26 +++-----------------
+ 1 file changed, 4 insertions(+), 22 deletions(-)
 
 diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index 4315d40906a0..7e908a176e9e 100644
+index 7e908a176e9e..db17f50d6ac3 100644
 --- a/arch/powerpc/include/asm/nohash/32/pgtable.h
 +++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -262,25 +262,8 @@ static inline unsigned long long pte_update(pte_t *p,
- 					    unsigned long clr,
- 					    unsigned long set)
+@@ -222,12 +222,9 @@ static inline void pmd_clear(pmd_t *pmdp)
+  * to properly flush the virtually tagged instruction cache of
+  * those implementations.
+  */
+-#ifndef CONFIG_PTE_64BIT
+-static inline unsigned long pte_update(pte_t *p,
+-				       unsigned long clr,
+-				       unsigned long set)
++static inline pte_basic_t pte_update(pte_t *p, unsigned long clr, unsigned long set)
  {
 -#ifdef PTE_ATOMIC_UPDATES
--	unsigned long long old;
--	unsigned long tmp;
--
--	__asm__ __volatile__("\
--1:	lwarx	%L0,0,%4\n\
--	lwzx	%0,0,%3\n\
--	andc	%1,%L0,%5\n\
--	or	%1,%1,%6\n"
--	PPC405_ERR77(0,%3)
--"	stwcx.	%1,0,%4\n\
--	bne-	1b"
--	: "=&r" (old), "=&r" (tmp), "=m" (*p)
--	: "r" (p), "r" ((unsigned long)(p) + 4), "r" (clr), "r" (set), "m" (*p)
--	: "cc" );
--#else /* PTE_ATOMIC_UPDATES */
- 	unsigned long long old = pte_val(*p);
- 	*p = __pte((old & ~(unsigned long long)clr) | set);
--#endif /* !PTE_ATOMIC_UPDATES */
++#if defined(PTE_ATOMIC_UPDATES) && !defined(CONFIG_PTE_64BIT)
+ 	unsigned long old, tmp;
  
- #ifdef CONFIG_44x
- 	if ((old & _PAGE_USER) && (old & _PAGE_EXEC))
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
-index 9a33b8bd842d..9c703b140d64 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
-@@ -211,22 +211,9 @@ static inline unsigned long pte_update(struct mm_struct *mm,
- 				       unsigned long set,
- 				       int huge)
- {
--#ifdef PTE_ATOMIC_UPDATES
--	unsigned long old, tmp;
--
--	__asm__ __volatile__(
--	"1:	ldarx	%0,0,%3		# pte_update\n\
--	andc	%1,%0,%4 \n\
--	or	%1,%1,%6\n\
--	stdcx.	%1,0,%3 \n\
--	bne-	1b"
--	: "=&r" (old), "=&r" (tmp), "=m" (*ptep)
--	: "r" (ptep), "r" (clr), "m" (*ptep), "r" (set)
--	: "cc" );
--#else
- 	unsigned long old = pte_val(*ptep);
- 	*ptep = __pte((old & ~clr) | set);
--#endif
-+
- 	/* huge pages use the old page table lock */
- 	if (!huge)
- 		assert_pte_locked(mm, addr);
-@@ -310,21 +297,8 @@ static inline void __ptep_set_access_flags(struct vm_area_struct *vma,
- 	unsigned long bits = pte_val(entry) &
- 		(_PAGE_DIRTY | _PAGE_ACCESSED | _PAGE_RW | _PAGE_EXEC);
+ 	__asm__ __volatile__("\
+@@ -241,8 +238,8 @@ static inline unsigned long pte_update(pte_t *p,
+ 	: "r" (p), "r" (clr), "r" (set), "m" (*p)
+ 	: "cc" );
+ #else /* PTE_ATOMIC_UPDATES */
+-	unsigned long old = pte_val(*p);
+-	unsigned long new = (old & ~clr) | set;
++	pte_basic_t old = pte_val(*p);
++	pte_basic_t new = (old & ~(pte_basic_t)clr) | set;
  
--#ifdef PTE_ATOMIC_UPDATES
--	unsigned long old, tmp;
--
--	__asm__ __volatile__(
--	"1:	ldarx	%0,0,%4\n\
--		or	%0,%3,%0\n\
--		stdcx.	%0,0,%4\n\
--		bne-	1b"
--	:"=&r" (old), "=&r" (tmp), "=m" (*ptep)
--	:"r" (bits), "r" (ptep), "m" (*ptep)
--	:"cc");
--#else
- 	unsigned long old = pte_val(*ptep);
- 	*ptep = __pte(old | bits);
--#endif
- 
- 	flush_tlb_page(vma, address);
+ #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
+ 	p->pte = p->pte1 = p->pte2 = p->pte3 = new;
+@@ -257,21 +254,6 @@ static inline unsigned long pte_update(pte_t *p,
+ #endif
+ 	return old;
  }
+-#else /* CONFIG_PTE_64BIT */
+-static inline unsigned long long pte_update(pte_t *p,
+-					    unsigned long clr,
+-					    unsigned long set)
+-{
+-	unsigned long long old = pte_val(*p);
+-	*p = __pte((old & ~(unsigned long long)clr) | set);
+-
+-#ifdef CONFIG_44x
+-	if ((old & _PAGE_USER) && (old & _PAGE_EXEC))
+-		icache_44x_need_flush = 1;
+-#endif
+-	return old;
+-}
+-#endif /* CONFIG_PTE_64BIT */
+ 
+ #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+ static inline int __ptep_test_and_clear_young(unsigned int context, unsigned long addr, pte_t *ptep)
 -- 
 2.25.0
 
