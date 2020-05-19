@@ -2,77 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413F21D9D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD5A1D9D04
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729283AbgESQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 12:40:17 -0400
-Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:42154 "EHLO
-        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729132AbgESQkR (ORCPT
+        id S1729311AbgESQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729053AbgESQk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 12:40:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1589906416; bh=KB5k1+sCGpSRd9pTKc0P9/4ZGPy9ZVtmix5g8Hf7Eac=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rsShBZf3gXvSp1KE18stC5xzS95cHWZ2qHE2kLpjuydCVuETYTBwEnY1B0wTA0UwLC7ibv/RILe0qeoVtZfZmcS3qFSke8lzxJ5WUfnlE8tI+Ba9u/Lyvb6bSpVVSWY/o6mpgZGWilipoE+//uG7GieYZAblrBzPs1rvuE9fExNR5pIxGX5+KGkwP4+RpR73xkGkz6XbcD8b4R8v5ZfpOSAg+l2ksW8Ze3NaKC7S0VUOXdcs0j459m5WgZSqGDHxpF8WM1f03pKHQRWq7EH4AAZSdm9gvprjMXhxPpqI3Hg68Y9TZ4+oPmwk68e3i3wbzpdTtTX8VwD4nc1Ou84p2g==
-X-YMail-OSG: R7VuP90VM1k0EQq_nB4NkpF44DwtvcZVRXDA63d0cCLZj3p6LFCvHmKGpeFDmy3
- WC5Ax.iQB48OdBy9l4C60SnAwjOH0iIfDnABMZMhA6cQpICMznyO1DpK27ecYyTwWAcCvRGJcKMC
- 0TQCovOvxQoVhmDhc8Qz1nZsjNTVaGtIViLzSqk.KyOSjjLDmd3ukSGnvI0atLj5xE83AhxhwTa7
- ZHVet3cu6YkpNMJYQP3EZcFmjKl91lGJU68qPuOjtEIfl3I6Qk2bQDEckfAZYQY_rGggErxo4Kmq
- UY9Z9e73Lkyj63rv2FJ4dmI2D5RaFkRPNDK_.D2p2jx8NZ_TpaO1immV.G_k5b7hVkjcRHqop2ji
- p2nyqWIZC6wdSrz0zRwDLmoqhXkNFIJJyB3G9AdrPqhWuIqVzpSSnGsyPBHCL.XaYYB1PajWCSRL
- D.cJwapHFKxMZxoyWGN4Pd1XGnI8vEAByRsz.mPbiAomPfqiM72ukxoTeVgdD_NdzxbdqoVtNB2I
- 5N3rHsizZSDcX.FH6rmclZyDhN6NLz4Q.DGZ9RxQzcKBoA0xG1HKh9aM4nJ7qpARC3VuwDu5qUrh
- 4ayo7.4WKWKrxZ1WHwSwdLJcXVV_j4qgNNhoShXBLodc3iMOmO6GMb1r36EPXsesQkOUUVRPofd7
- aenj_n1l_fAcEiw7x_UXfkhehLOy0oGm3abLiXJyg8oOE11IxwwX.h58dRZP9S7l7Jl_S6kwkoJW
- 2bj6wUDsUXf052e5RUxIpDZM_MV13OfEdtrQQ068p_iOxyBf3vQVmBfo8l5fmVt3GMRr.zho0lt8
- 1w0DfVzfY7p1gBcZvLbKWin3RkCZGkcvxtZoMh.kFkfTlMF0JAoc7xsOUkjp3yREtaQ8sjIW9.qZ
- umP4rNOCckkVY0rUE1PiKoN7DqxhPNNqe_7dMHUPjWeMlxFgx2WPrS4twDCGBUjBQc1h9JFeHIvO
- JMeatB0qG8z_BcqNN6xpC6PWby53dEQSOy665aQxlyXWxRudCvTgRT7Ys.v5Ddw6TCMjD.SVZaSh
- Zhj4A0t95R1Dhhfe0FSDoCTtlhc.GQeBvG8rF5JWkygul1cNR8c2XBSVCwWAbx96TPdg4D2iNRK3
- e2MHmS2oNX4le871vhyWusMSSubopQS8Hz2OpZ74s92IYESetC2f47Q76zdozlPyyVhhs8fXzC1V
- XR5nRUheOgaiuU0UKiMVmfXz66VNHNry4vy31ocW.o01NQdICaS2XRisevTjowulC4o7RJ7iqrgJ
- jtf3EjcMDCXuOpxn_2_ZpatI1ETxv_JkIySAwDAToBlJWz8bd6pfzcUwLh2hVOjqqfAOGQhBxT1g
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Tue, 19 May 2020 16:40:16 +0000
-Date:   Tue, 19 May 2020 16:40:14 +0000 (UTC)
-From:   jerom Njitap <jerome.njitap@aol.com>
-Reply-To: jeromenjitap100@gmail.com
-Message-ID: <2109371352.1082380.1589906414832@mail.yahoo.com>
-Subject: SESAME SEED SUPPLY BURKINA FASO
+        Tue, 19 May 2020 12:40:57 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412D4C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:40:57 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y18so155495pfl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 09:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5lVC+y9qrofIhKyYVHhNqStVfPjx6c6mVisc11SZ+6g=;
+        b=qUFlJ/d8B7IxlM5kkgpLO643/Gd3T+CLU/CLiO5/yckFzZ5AQcg/de9XwcNu2ghrxQ
+         gxEjuXrUvHhqkKgOiGhIin1Zv2R1fkuI+X835miINTmIKoL443ZzDwX/6SslClvq40vP
+         kVEpl/dZlQNrW3egoaD14Y4DqWMe1BbEAf1FOh4AIOAKu/d0h/Hjm7skpqhmkAvyJigS
+         lyDlUp/qHaZ8F0taQXemNrHSttn5Jfs/dlYSQTwQ6ZFatek59/50Bgj3yKYcjMdfcIrR
+         zfMoABuuqbmQ503eJsmNJTOs+/xVT336+x4GFcth1LAyALGFAoFFIL3ccqCZVFLfaYLr
+         D+fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5lVC+y9qrofIhKyYVHhNqStVfPjx6c6mVisc11SZ+6g=;
+        b=FAACl177MA0jozVunwi1x4yc70JalYNMC2FuWR8zt5DfJBCAdqKEENp0aN+fVKZVtB
+         5xFaKi0A/Mv4GwUMRHaxBnMva8kruJ57ddq0CHl0TAr339OWAo9RQQUVOYfaXKRvHkpX
+         SNCNkNEEov01mqUVdG8EeBWaImM45blOSHz6an/2khSUFLxk6YlqAOAez8KUW+nGy8B4
+         VmxO0mQ0i2HBToQE25Z3wJeJFKj3tth6wuiBj4mI3tNX0THfT0DBvWTJnkK4IyvilrvL
+         +JUrj7bjvRs9TRFd2Y9RCzjxwQOgH/XXxP9JXzdqPyHSf8DR5c429fKW0+a5amyUc39u
+         ErCA==
+X-Gm-Message-State: AOAM531JV3uwl+U8ItDYdg9Y3hce1OoEuMIFWrZPn4J1lL1rWeuq3/oK
+        LdkayBCOML7kc43BotEWWOM=
+X-Google-Smtp-Source: ABdhPJyZFYWOpWGuvD+LD4P2lXQJgG+5HwUK8Jj9oxXp1NHVX1Y8ccaMuEdfZe/d81v2sJdj65Y/OA==
+X-Received: by 2002:aa7:80cf:: with SMTP id a15mr14259pfn.124.1589906456808;
+        Tue, 19 May 2020 09:40:56 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n23sm98243pjq.18.2020.05.19.09.40.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 May 2020 09:40:56 -0700 (PDT)
+Date:   Tue, 19 May 2020 09:40:55 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, elver@google.com, tglx@linutronix.de,
+        paulmck@kernel.org, mingo@kernel.org, peterz@infradead.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 04/18] sparc32: mm: Reduce allocation size for PMD and
+ PTE tables
+Message-ID: <20200519164055.GA23715@roeck-us.net>
+References: <20200511204150.27858-1-will@kernel.org>
+ <20200511204150.27858-5-will@kernel.org>
+ <20200517000050.GA87467@roeck-us.net>
+ <20200517000750.GA157503@roeck-us.net>
+ <20200518083715.GA31383@willie-the-truck>
+ <418aa44b-6fb3-c3d8-a920-1a26e5edec62@roeck-us.net>
+ <20200518142310.GC1118872@kernel.org>
+ <b171fbbd-f5b2-ac17-24e5-7188f6ce80f0@roeck-us.net>
+ <20200518191511.GD1118872@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <2109371352.1082380.1589906414832.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15960 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518191511.GD1118872@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir,
+On Mon, May 18, 2020 at 10:15:11PM +0300, Mike Rapoport wrote:
+> On Mon, May 18, 2020 at 11:09:46AM -0700, Guenter Roeck wrote:
+> > On 5/18/20 7:23 AM, Mike Rapoport wrote:
+> > 
+> > Below is another set of bisect results, from next-20200518. It points to one
+> > of your commits. This is for microblaze (big endian) boot failures.
+> 
+> The microblaze one was easy, as for sparc32 I still have no clue for the
+> root cause :(
+> 
+> Andrew, can you please fold it into "mm: pgtable: add shortcuts for
+> accessing kernel PMD and PTE"? 
+> 
+> From 167250de28aa526342641b2647294a755d234090 Mon Sep 17 00:00:00 2001
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> Date: Mon, 18 May 2020 22:08:10 +0300
+> Subject: [PATCH] microblaze: fix page table traversal in setup_rt_frame()
+> 
+> The replacement of long folded page table traversal with the direct access
+> to PMD entry wrongly used the kernel page table in setup_rt_frame()
+> function instead of the process (current->mm) page table.
+> 
+> Fix it.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-This is to bring to your notice that we can supply your needs for
-quality Sesame seeds and other products listed below :
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
-Cashew nut
-Raw cotton
-Sesame seed
-Copper cathode
-Copper wire scraps
-Mazut 100 oil,D6
-Used rails
-HMS 1/2
-
-
-We offer the best quality at reasonable prices both on CIF and FOB,
-depending on the nature of your offer. Our company has been in this
-line of business for over a decade so you you can expect nothing but a
-top-notch professional touch and guarantee when you deal or trade with
-us.all communication should be through this email address for
-confidencial purpose(jeromenjitap100@gmail.com)and your whatsaap number.
-
-Look forward to your response.
-
-Regards
-Mr Jerome
+> ---
+>  arch/microblaze/kernel/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+> index 28b1ec4b4e79..bdd6d0c86e16 100644
+> --- a/arch/microblaze/kernel/signal.c
+> +++ b/arch/microblaze/kernel/signal.c
+> @@ -194,7 +194,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+>  
+>  	address = ((unsigned long)frame->tramp);
+>  #ifdef CONFIG_MMU
+> -	pmdp = pmd_off_k(address);
+> +	pmdp = pmd_off(current->mm, address);
+>  
+>  	preempt_disable();
+>  	ptep = pte_offset_map(pmdp, address);
+> -- 
+> 2.26.2
+> 
+> 
+> > Guenter
+> > 
+> > ---
+> 
+> -- 
+> Sincerely yours,
+> Mike.
