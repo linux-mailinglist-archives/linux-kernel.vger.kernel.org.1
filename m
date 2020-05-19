@@ -2,63 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E561DA5BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D191DA5B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgESXnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S1727890AbgESXmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgESXnR (ORCPT
+        with ESMTP id S1725998AbgESXmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:43:17 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBF9C061A0E;
-        Tue, 19 May 2020 16:43:17 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbBsV-0004NU-41; Wed, 20 May 2020 01:42:32 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 6D1E3100D00; Wed, 20 May 2020 01:42:30 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
-In-Reply-To: <20200519161141.5fbab730@hermes.lan>
-References: <20200519214547.352050-1-a.darwish@linutronix.de> <20200519214547.352050-2-a.darwish@linutronix.de> <20200519150159.4d91af93@hermes.lan> <87v9kr5zt7.fsf@nanos.tec.linutronix.de> <20200519161141.5fbab730@hermes.lan>
-Date:   Wed, 20 May 2020 01:42:30 +0200
-Message-ID: <87lfln5w61.fsf@nanos.tec.linutronix.de>
+        Tue, 19 May 2020 19:42:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CEDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:42:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id w7so1199569wre.13
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:date:message-id:mime-version;
+        bh=MmIqjO1PtTVd+rdNu9nNb4mADvKA71b2ZrcUks1uRJo=;
+        b=vTfMJ8PtHJc/TjzQRTrRhPNVRyHHYycwdoNu7rn6SwqPvWLZ6+03X7Pq1xlTAqKfbq
+         pSkz8erEmZbl5NEC7ffg1vjDBeV91vWIi/UpMblVVUXG7fICkxan3TIDYjBEiTzCKrUw
+         qVb0ilGsCIYZu/z62LoRz/O/WEvNJUKhVB5XjQyTGwvbc4x6bXh9Iqiq500D+DFFVuBw
+         XiFkgIHC3IELUdOO7nHfyfTiYvRDM/6Gaj0O0ZJynaFsDQR93goRr1Ox957iafchATMC
+         74fwNFO/J48rEQSFBTg7/aNrT89cUvNxZYrb076WOjRmwcY4hot6ljnVFsjINyEJnk9s
+         Q7gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:date:message-id
+         :mime-version;
+        bh=MmIqjO1PtTVd+rdNu9nNb4mADvKA71b2ZrcUks1uRJo=;
+        b=THZrWGPf/5xXFDCZBTivRPTfUVcDDWBc7YwJAVjP0TGOSoSRFTx5uuiRlNXW9rbzzI
+         1HNLdgEr6OQFUElx1J6+ueeoc5zF4g3Dzw2A3mDfWoME1ta2XyV4PTMtWGk7rXgkdGrS
+         aqyzhhmMNDw+bwO5hFKHlRvdettJf0h6k0v3PM+b125roZWnVWP/WeHOs/QYmb+v03hD
+         8rcGb1unhct2KgFCBz2iYf/Bzh0ztPuexU018ZmM9qWHMb0zmGFejWskulGXfZGKUm2n
+         ru9v1IDiYBbfDkrP/U5YVXZJh/M7iGbJFdQdtROtT/5XxncarKKKGZ7LLYXwmNwwteNO
+         1Yqw==
+X-Gm-Message-State: AOAM5310boWJ+CZyOZ6GIVcOCYcHLCvs44971ddT/WU/oJwnhXmHF2Pw
+        qhJ+AStO3Uy6pd/vL7WBFgWXwA==
+X-Google-Smtp-Source: ABdhPJzYYXY2GYO9fXGwE5+SEib2GsKVQjkMTferPikSHMR/G5SF/9GqcN7uN6IzDDLc5LOSCjL3Dw==
+X-Received: by 2002:adf:f102:: with SMTP id r2mr1249229wro.376.1589931759860;
+        Tue, 19 May 2020 16:42:39 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id n17sm1010174wrr.42.2020.05.19.16.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 16:42:39 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: Re: [PATCH v3 0/5] arm64: dts: meson: add W400 dtsi and GT-King/Pro devices
+In-Reply-To: <20200518023404.15166-1-christianshewitt@gmail.com>
+Date:   Tue, 19 May 2020 16:42:36 -0700
+Message-ID: <7hmu63trtf.fsf@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Hemminger <stephen@networkplumber.org> writes:
-> On Wed, 20 May 2020 00:23:48 +0200
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->> No. We did not. -ENOTESTCASE
->
-> Please try, it isn't that hard..
->
-> # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
->
-> real	0m17.002s
-> user	0m1.064s
-> sys	0m0.375s
+Hi Christian,
 
-And that solves the incorrectness of the current code in which way?
+Christian Hewitt <christianshewitt@gmail.com> writes:
+
+> This series combines patch 2 from [1] which converts the existing Ugoos
+> AM6 device-tree to a common W400 dtsi and dts, and then reworks the
+> Beelink GT-King/GT-King Pro serries from [2] to use the dtsi, but this
+> time without the offending common audio dtsi approach. I've carried
+> forwards acks on bindings from Rob as these did not change.
+
+This looks good to me, thank you very much for reworking into a
+w400-based include.
+
+Unfortunately, it no longer applies on top of all the other stuff I have
+queued for v5.8.
+
+Could you please do a rebase on top of my v5.8/dt64 branch[1], and I'll
+queue for v5.8.
+
+Thanks,
+
+Kevin
+
+> v3 - amend author full-name on bindings patch
+>
+> [1] https://patchwork.kernel.org/patch/11497105/
+> [2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=273483
+>
+> Christian Hewitt (5):
+>   arm64: dts: meson: convert ugoos-am6 to common w400 dtsi
+>   dt-bindings: arm: amlogic: add support for the Beelink GT-King
+>   arm64: dts: meson-g12b-gtking: add initial device-tree
+>   dt-bindings: arm: amlogic: add support for the Beelink GT-King Pro
+>   arm64: dts: meson-g12b-gtking-pro: add initial device-tree
+>
+>  .../devicetree/bindings/arm/amlogic.yaml      |   2 +
+>  arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+>  .../dts/amlogic/meson-g12b-gtking-pro.dts     | 125 ++++++
+>  .../boot/dts/amlogic/meson-g12b-gtking.dts    | 145 ++++++
+>  .../boot/dts/amlogic/meson-g12b-ugoos-am6.dts | 410 +----------------
+>  .../boot/dts/amlogic/meson-g12b-w400.dtsi     | 423 ++++++++++++++++++
+>  6 files changed, 698 insertions(+), 409 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-gtking-pro.dts
+>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-gtking.dts
+>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+>
+> -- 
+> 2.17.1
