@@ -2,185 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4C61D96F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B3A1D971C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728979AbgESNED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S1728980AbgESNGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728612AbgESNEB (ORCPT
+        with ESMTP id S1726991AbgESNGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:04:01 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A53C08C5C6;
-        Tue, 19 May 2020 06:04:01 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l11so15893287wru.0;
-        Tue, 19 May 2020 06:04:01 -0700 (PDT)
+        Tue, 19 May 2020 09:06:21 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CA5C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:06:21 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ci21so1320066pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MSQgZfzN1EOgpi1rolFm8O7a7AGg5E5FcP9uK+1/dtU=;
-        b=pAjN6JYTHwQXICdoTL6xF71+mcn5qeFjRW9VbT65q+Nd/zfF0zNwOSpffyYLU6NR6W
-         bXN+8hyfaPh/iL2Vc+OnFFZMB+orlZZeCu66eBT319Y1RCemerMW7jyVHqDNQI+7XgjB
-         dTa9X1eBzwc9ylXSKSxzqyX2N224ORhplOtKPAR6JnmWwgKAfsKk7ScIvPypjWTSCMsw
-         0pjMsy0MOFRpMsoQV8yoj5FNjnzuAtjJyJjMpTnqngZD5q5T/JZcdER+m+w/Fy97Ju+M
-         IzWuUFHSmMNX5a4pHF+3G3ZFFJvCwzqycYIr7QelDgJc2CDaYb32TCTgN09lxFbKRg07
-         vm1A==
+         :content-disposition:in-reply-to;
+        bh=Owd8w23sKJnYwtdRMz/02Wxs/sCgJAtWumyomSw5smk=;
+        b=f34fIThxjnHezKXAhGE705YOQqEfgg1Pe3wOaxMR7RCVj0cthZk+EC9jbpdJBqpHSo
+         BozTDJLjNlnBdlKWY1BZjKOWiw82owIdVTl5jVmUpqNI6fTZyo6tCDGjWrpsNe9YFolo
+         14XJF43noJ4TIg8NTOF4Itg4tBO/jfTcHcfLTXDOzhCioofQZjvU5ONpXPtm3s0MOIX/
+         Q5ReYVWd8hcdne6wJh5Hzao2x7BCeU3MSuuSJiRyaD1fiputX0duEOZh5Uo6MiS6HKrm
+         y3UGZr8J79W/SXE5M+/ieptijy+2ZA9IgRcwXezDvVTz7RaMDoRWyxY7887XahUpKWS1
+         AOqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MSQgZfzN1EOgpi1rolFm8O7a7AGg5E5FcP9uK+1/dtU=;
-        b=aIsG3ehuYcpQkwVdxkOCzPwqGWTJWqtJ6mhTT3imQjNYF1aSn9py+F5fHaDdFY321u
-         XzpRi6sbxgr7IvjPsbZYtIMhvHI0dfNK6b6GED3ND+T96zUIrYwwobj/9qvLj9OcKRdL
-         zYRzN5HiUVqXCT6o35EP20xGGeE62gj989y/bJAPHiIXMimfGPi1tQy95SI16V4U3B0R
-         uqXlWxOPYqDrpvaD07cdvvLUuyiMJULUghzGRfpTAvcAVtWwK+YCPsvY6I9S6Av0VHGo
-         n9Xnv16LO2m3CMMFgXn+eRm1sDvrHqK0bnngJQX+Ixt0qMtaslHp9cwSc2zC2O9FRobJ
-         oSSQ==
-X-Gm-Message-State: AOAM533XWYpV1W6tU7a2Q5ZjwYOvbCyZ94whuZfoeHnnMcUC0w70H711
-        EMtfhI/+z1DqKlzWbUVuMBQ=
-X-Google-Smtp-Source: ABdhPJwcVvydfqwzIzdy+iGT+m9LpCim1x1QOadls17v2SDAn6uQqjJD2yJW+n0TB3wSpvtLswA4Zg==
-X-Received: by 2002:adf:f446:: with SMTP id f6mr25174511wrp.75.1589893439903;
-        Tue, 19 May 2020 06:03:59 -0700 (PDT)
-Received: from ict14-OptiPlex-980 ([178.23.248.46])
-        by smtp.gmail.com with ESMTPSA id u65sm3900406wmg.8.2020.05.19.06.03.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 May 2020 06:03:58 -0700 (PDT)
-Date:   Tue, 19 May 2020 15:03:50 +0200
-From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Jilayne Lovejoy <opensource@jilayne.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Steve Winslow <swinslow@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Allison Randal <allison@lohutok.net>
-Subject: Re: [PATCH v3 4/4] iio: magnetometer: ak8975: Add gpio reset support
-Message-ID: <20200519130350.GA30573@ict14-OptiPlex-980>
-References: <20200519124402.26076-1-jonathan.albrieux@gmail.com>
- <20200519124402.26076-5-jonathan.albrieux@gmail.com>
- <20200519125713.GI1634618@smile.fi.intel.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=Owd8w23sKJnYwtdRMz/02Wxs/sCgJAtWumyomSw5smk=;
+        b=J3cAZNPbhUi8D9StX3Zkmm0hCFfqTPuHjWzR3e8VlwB0XM8X6hdSfq1yi2bzU3ym6a
+         eQhMpWfHjX8tFqQjM71rTYGF98qd3eARQfr0pPTx1n6OPFO/AUaLeNsHzHgAuDB9cYfn
+         On4kOVzsj0B4ti//aQvbKhoK+1XrKkzaJQePiK8NUqdEA553Re3H6WY/oXKhUphkj3ak
+         ixqAcrF39SG1o71lfSmQmmPflLtZeW+nMLYJjvYi2UmOVP7TvL10Rgtdz7Tk+oikSt9K
+         jQmCV2E6pwIgX32yu6lzvLq2m4XOyxpK5evEfO0Ae/4BsPUey6T98A6pXyQlSS+IlfAN
+         g6TA==
+X-Gm-Message-State: AOAM532ByJ7dtir1EW4gnR46Jx+jK862dLHJ1Otkf+mfoFL/PAZhF7cn
+        UhIfgtIH9OVaP8+2/b7R+TKDDQ==
+X-Google-Smtp-Source: ABdhPJzIKPmzADaWHU0zrotDwyfCHRD13T4qawSgU6JudknRCihCje1NeeNyGKpFMY62tMS/fbNdiQ==
+X-Received: by 2002:a17:90a:fa95:: with SMTP id cu21mr4884258pjb.106.1589893581072;
+        Tue, 19 May 2020 06:06:21 -0700 (PDT)
+Received: from google.com ([2620:15c:2cd:202:2523:d194:de3b:636f])
+        by smtp.gmail.com with ESMTPSA id gd1sm2299753pjb.14.2020.05.19.06.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 06:06:17 -0700 (PDT)
+Date:   Tue, 19 May 2020 06:06:14 -0700
+From:   Michel Lespinasse <walken@google.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: Re: [PATCH v5.5 09/10] mmap locking API: add mmap_assert_locked()
+ and mmap_assert_write_locked()
+Message-ID: <20200519130614.GC189720@google.com>
+References: <20200422001422.232330-1-walken@google.com>
+ <20200422001422.232330-11-walken@google.com>
+ <20200422015829.GR5820@bombadil.infradead.org>
+ <CANN689EnGsJXA8n6JvTryQfkCtARPvtZbkH+9Dd2a4X+fvqU9g@mail.gmail.com>
+ <20200423015917.GA13910@bombadil.infradead.org>
+ <20200424012612.GA158937@google.com>
+ <20200424013858.GB158937@google.com>
+ <fcf53ca7-d3a0-93e2-47af-7dd9b32b081a@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519125713.GI1634618@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <fcf53ca7-d3a0-93e2-47af-7dd9b32b081a@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 03:57:13PM +0300, Andy Shevchenko wrote:
-> On Tue, May 19, 2020 at 02:43:54PM +0200, Jonathan Albrieux wrote:
-> > According to AK09911 datasheet, if reset gpio is provided then
-> > deassert reset on ak8975_power_on() and assert reset on ak8975_power_off().
-> > 
-> > Without reset's deassertion during ak8975_power_on(), driver's probe fails
-> > on ak8975_who_i_am while() checking for device identity for AK09911 chip.
+On Mon, May 18, 2020 at 01:01:33PM +0200, Vlastimil Babka wrote:
+> On 4/24/20 3:38 AM, Michel Lespinasse wrote:
+> > +static inline void mmap_assert_locked(struct mm_struct *mm)
+> > +{
+> > +	VM_BUG_ON_MM(!lockdep_is_held_type(&mm->mmap_sem, -1), mm);
+> > +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
+> > +}
+> > +
+> > +static inline void mmap_assert_write_locked(struct mm_struct *mm)
+> > +{
+> > +	VM_BUG_ON_MM(!lockdep_is_held_type(&mm->mmap_sem, 0), mm);
+> > +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
+> > +}
 > 
-> Wrong position of (), but hold on, this is so minor, no need to send a new
-> version because of this.
->
+> I would remove VM_BUG_ON_MM() from the lockdep part. If kernel has lockdep
+> enabled, it's already in heavy debugging mode enough so let's just use it and
+> not depend on DEBUG_VM. Many sites you convert don't require DEBUG_VM for the
+> lockdep checks.
+> 
+> With that you can also use the standard lockdep_assert_held() and
+> lockdep_assert_held_write() wrappers.
+> 
+> If user has both lockdep and DEBUG_VM enabled, should we run both variants?
+> Perhaps lockdep is enough as it's more comprehensive? Your initial v5 version
+> was doing that.
 
-Ops, if this represents a problem I can fix it, there's absolutely no problem!
- 
-> > AK09911 has an active low reset gpio to handle register's reset.
-> > AK09911 datasheed says that, if not used, reset pin should be connected
-> > to VID. This patch emulates this situation.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > ---
-> >  drivers/iio/magnetometer/ak8975.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/iio/magnetometer/ak8975.c b/drivers/iio/magnetometer/ak8975.c
-> > index fd368455cd7b..a23422aad97d 100644
-> > --- a/drivers/iio/magnetometer/ak8975.c
-> > +++ b/drivers/iio/magnetometer/ak8975.c
-> > @@ -358,6 +358,7 @@ struct ak8975_data {
-> >  	u8			asa[3];
-> >  	long			raw_to_gauss[3];
-> >  	struct gpio_desc	*eoc_gpiod;
-> > +	struct gpio_desc	*reset_gpiod;
-> >  	int			eoc_irq;
-> >  	wait_queue_head_t	data_ready_queue;
-> >  	unsigned long		flags;
-> > @@ -384,6 +385,9 @@ static int ak8975_power_on(const struct ak8975_data *data)
-> >  			 "Failed to enable specified Vid supply\n");
-> >  		return ret;
-> >  	}
-> > +
-> > +	gpiod_set_value_cansleep(data->reset_gpiod, 0);
-> > +
-> >  	/*
-> >  	 * According to the datasheet the power supply rise time is 200us
-> >  	 * and the minimum wait time before mode setting is 100us, in
-> > @@ -396,6 +400,8 @@ static int ak8975_power_on(const struct ak8975_data *data)
-> >  /* Disable attached power regulator if any. */
-> >  static void ak8975_power_off(const struct ak8975_data *data)
-> >  {
-> > +	gpiod_set_value_cansleep(data->reset_gpiod, 1);
-> > +
-> >  	regulator_disable(data->vid);
-> >  	regulator_disable(data->vdd);
-> >  }
-> > @@ -839,6 +845,7 @@ static int ak8975_probe(struct i2c_client *client,
-> >  	struct ak8975_data *data;
-> >  	struct iio_dev *indio_dev;
-> >  	struct gpio_desc *eoc_gpiod;
-> > +	struct gpio_desc *reset_gpiod;
-> >  	const void *match;
-> >  	unsigned int i;
-> >  	int err;
-> > @@ -856,6 +863,16 @@ static int ak8975_probe(struct i2c_client *client,
-> >  	if (eoc_gpiod)
-> >  		gpiod_set_consumer_name(eoc_gpiod, "ak_8975");
-> >  
-> > +	/*
-> > +	 * According to AK09911 datasheet, if reset GPIO is provided then
-> > +	 * deassert reset on ak8975_power_on() and assert reset on
-> > +	 * ak8975_power_off().
-> > +	 */
-> > +	reset_gpiod = devm_gpiod_get_optional(&client->dev,
-> > +					      "reset", GPIOD_OUT_HIGH);
-> > +	if (IS_ERR(reset_gpiod))
-> > +		return PTR_ERR(reset_gpiod);
-> > +
-> >  	/* Register with IIO */
-> >  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
-> >  	if (indio_dev == NULL)
-> > @@ -866,6 +883,7 @@ static int ak8975_probe(struct i2c_client *client,
-> >  
-> >  	data->client = client;
-> >  	data->eoc_gpiod = eoc_gpiod;
-> > +	data->reset_gpiod = reset_gpiod;
-> >  	data->eoc_irq = 0;
-> >  
-> >  	err = iio_read_mount_matrix(&client->dev, "mount-matrix", &data->orientation);
-> > -- 
-> > 2.17.1
-> > 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Thanks, changed these to lockdep_assert_held() /
+lockdep_assert_held_write() as suggested. This misses dumping out the
+mm, but I think there is only limited value in that. I did keep the
+rwsem_is_locked fallback as people had commented earlier about
+getting assertions in the non-lockdep case. If both are enabled...
+then we'll get somewhat redundant assertions, but I think that is fine
+(better to keep the code simple than try to work around that).
 
-Best regards,
-Jonathan Albrieux
+-- 
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
