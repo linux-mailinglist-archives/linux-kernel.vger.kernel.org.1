@@ -2,202 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC35A1DA2F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957A51DA2EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgESUlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
+        id S1726860AbgESUl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgESUln (ORCPT
+        with ESMTP id S1725885AbgESUl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:41:43 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D52C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:41:43 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d3so379000pln.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:41:43 -0700 (PDT)
+        Tue, 19 May 2020 16:41:26 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF2BC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:41:26 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id c83so262829oob.6
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V6sKSE6C44cvXyb/g2V2AN4nvx5Jqz0pLmmsYUuA158=;
-        b=ECzgFQEqswMLnmgp4t2ImvrB0dMEkJX/CNCleRbBsYPzmIJ5T/IZxdh5bAvlfhT+A/
-         Ckyr1ua1yrzLCyr+YS6epqK80CBF5y7Trad7gcNuH3q/DjRGYVjXfe0rQTxxK8zMHHP7
-         /7C9H+0PuK+Yaum38tF9eC5pnhFCTuSbnYo46fvk5iVLYZbKcJoQOQDHgDpewnhM8+hR
-         1hB1nFtIQQYW2SdORmhoIq2aEVGDvPDmNo3uCyR1c+2kwZPTs5x67/0XtAWqdM/yZzSx
-         FTU2LBhVKLPWa2BaPTE/MRrRJYYo5UwGugMwpd8y8AsLVRgTWoO7rP4I1A4mIdxfmq1r
-         j/WQ==
+        d=ffwll.ch; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=KqlY0HTT+IOHyYqsNVke69dYQGA7KHepidrczDemEV0=;
+        b=QGdyhJkp1DdKBLPoQNQnIKYhC6fJq0diB6e3HUnQosmcbIHkLgsPCnpZZi9nhFUBFR
+         ufALg9+CDJQTkIQruWIWbMiIcF8x8D/WIXcptC6CfuaVQF9VEhxW1ob6ud8UhpSGeqgZ
+         0jEzm47h0mp5kRVqaZC50bC3SLA3QwhfruNp0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V6sKSE6C44cvXyb/g2V2AN4nvx5Jqz0pLmmsYUuA158=;
-        b=dyVeYOtFxSvRa0wa3yxc3hqyiQkr2dqx7Waz7rLNgx6rTuLWnvkikk3oeg6kwbEJyQ
-         LgxUrUDAR5BMfz4YRM3zINi5YTteURTuSjtkQ5YqAhGTd6au5mL12Z+nGp+Ge6wLEz9d
-         mZSEQj52WNkNqcihkpbIf0NzR7DrHk/Ibhi+R8YnFmXvvBZjuoGcgSkIeS+sCJ6NTfMt
-         wHnL+3dEWCkVMaKxTdjHYfsvGALKKjNl3jezSTKLU/vFibHOS15wOSbBcMiUhatWuSdH
-         X6mc/Ng+LWNK9wTF5KXOGp8DBYz1tB+9AEB1ZoMFM62myuEf3aumJ5PjUCAD9P+wB1YF
-         HscA==
-X-Gm-Message-State: AOAM5339BBrUt9PVxdaqm2hO0YrszTKiOGmEy3wFS80Np9kotaqUyn65
-        euNXERM5lamw5R5IMdlq4uOL4Q==
-X-Google-Smtp-Source: ABdhPJx3WLU3KCmYxZ2FekGD/+RxK1YmHHMukDs1jdvhz4tqMxuP/miIxCvfyqUEeW8AE+HnlnqEow==
-X-Received: by 2002:a17:90a:141:: with SMTP id z1mr1382039pje.33.1589920903190;
-        Tue, 19 May 2020 13:41:43 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id t21sm276915pgu.39.2020.05.19.13.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 13:41:42 -0700 (PDT)
-Date:   Tue, 19 May 2020 13:40:21 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH v3 2/2] remoteproc: qcom: Add notification types to SSR
-Message-ID: <20200519204021.GD408178@builder.lan>
-References: <1588112169-29447-1-git-send-email-rishabhb@codeaurora.org>
- <1588112169-29447-3-git-send-email-rishabhb@codeaurora.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=KqlY0HTT+IOHyYqsNVke69dYQGA7KHepidrczDemEV0=;
+        b=DznXNr0DXcCSf3kruCgSFq6SAyqmCczAmS1ScSWXcUM1JTEKwJtY4lXW+cdlclvJcj
+         Rx38gR0Fze8h1JWVeEYWNaUYIivLkwzr75BUszgDlRMsyUzEojCA2Wm1f2YMJDV0LLha
+         b44ofQGNEi21BB/sh67oEgkbXGIwoZ8tyQIquF8yR0DMgi0dWDE/eEebu47PlgWer9u7
+         TiZbpirQlYnBDMKsiroMFdYeCGwIr3uE3Fvd0N5XTwfCSsMWe/4xlMmoL0RfrhvyY7od
+         L2c1Q80MTL+mwdWAks4HJUinUMbSzKqheDiqm1V0PIjklSZy7gBQrTUrwgqfCcnS74F+
+         pzQg==
+X-Gm-Message-State: AOAM531XK5ry2ZBKje83P79SL/9cxBs7/8+pODCYS+X5QUNn5GZf/fY8
+        B0Ae95a8pA+GMkVREL1baNB7MJS93LpH0SEEX6fTuA==
+X-Google-Smtp-Source: ABdhPJy+sQPtCXPvRCO/dG83ZBie1tD9S+4htYq0udq/GYRMDdPlJYAdylJ2iilHdgbiPgeFjf/3wmKXl3/gjVPYxwo=
+X-Received: by 2002:a4a:d136:: with SMTP id n22mr785994oor.85.1589920886046;
+ Tue, 19 May 2020 13:41:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588112169-29447-3-git-send-email-rishabhb@codeaurora.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 19 May 2020 22:41:15 +0200
+Message-ID: <CAKMK7uG-oP-tcOcNz-ZzTmGondEo-17BCN1kpFBPwb7F8QcM5w@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Olof Johansson <olof.johansson@gmail.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        wufan@codeaurora.org, pratanan@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28 Apr 15:16 PDT 2020, Rishabh Bhatnagar wrote:
+On Tue, May 19, 2020 at 07:41:20PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, May 19, 2020 at 08:57:38AM -0600, Jeffrey Hugo wrote:
+> > On 5/18/2020 11:08 PM, Dave Airlie wrote:
+> > > On Fri, 15 May 2020 at 00:12, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+> > > >
+> > > > Introduction:
+> > > > Qualcomm Cloud AI 100 is a PCIe adapter card which contains a dedicated
+> > > > SoC ASIC for the purpose of efficently running Deep Learning inference
+> > > > workloads in a data center environment.
+> > > >
+> > > > The offical press release can be found at -
+> > > > https://www.qualcomm.com/news/releases/2019/04/09/qualcomm-brings-power-efficient-artificial-intelligence-inference
+> > > >
+> > > > The offical product website is -
+> > > > https://www.qualcomm.com/products/datacenter-artificial-intelligence
+> > > >
+> > > > At the time of the offical press release, numerious technology news sites
+> > > > also covered the product.  Doing a search of your favorite site is likely
+> > > > to find their coverage of it.
+> > > >
+> > > > It is our goal to have the kernel driver for the product fully upstream.
+> > > > The purpose of this RFC is to start that process.  We are still doing
+> > > > development (see below), and thus not quite looking to gain acceptance quite
+> > > > yet, but now that we have a working driver we beleive we are at the stage
+> > > > where meaningful conversation with the community can occur.
+> > >
+> > >
+> > > Hi Jeffery,
+> > >
+> > > Just wondering what the userspace/testing plans for this driver.
+> > >
+> > > This introduces a new user facing API for a device without pointers to
+> > > users or tests for that API.
+> >
+> > We have daily internal testing, although I don't expect you to take my word
+> > for that.
+> >
+> > I would like to get one of these devices into the hands of Linaro, so that
+> > it can be put into KernelCI.  Similar to other Qualcomm products. I'm trying
+> > to convince the powers that be to make this happen.
+> >
+> > Regarding what the community could do on its own, everything but the Linux
+> > driver is considered proprietary - that includes the on device firmware and
+> > the entire userspace stack.  This is a decision above my pay grade.
+>
+> Ok, that's a decision you are going to have to push upward on, as we
+> really can't take this without a working, open, userspace.
 
-> From: Siddharth Gupta <sidgup@codeaurora.org>
-> 
-> The SSR subdevice only adds callback for the unprepare event. Add callbacks
-> for unprepare, start and prepare events. The client driver for a particular
-> remoteproc might be interested in knowing the status of the remoteproc
-> while undergoing SSR, not just when the remoteproc has finished shutting
-> down.
-> 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_common.c      | 46 +++++++++++++++++++++++++++++++++--
->  include/linux/remoteproc/qcom_rproc.h | 14 +++++++++++
->  2 files changed, 58 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 7cd17be..0d91cf3 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -197,7 +197,7 @@ struct rproc_notif_info *find_notif_info(const char *name)
->   *
->   * This registers the @nb notifier block as part the notifier chain for a
->   * remoteproc associated with @name. The notifier block's callback
-> - * will be invoked when the particular remote processor is stopped.
-> + * will be invoked when the particular remote processor is started/stopped.
->   */
->  void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb)
->  {
-> @@ -239,6 +239,44 @@ int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
->  }
->  EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
->  
-> +static int ssr_notify_prepare(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct rproc_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 RPROC_BEFORE_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static int ssr_notify_start(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct rproc_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 RPROC_AFTER_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static void ssr_notify_stop(struct rproc_subdev *subdev, bool crashed)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct rproc_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = crashed,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 RPROC_BEFORE_SHUTDOWN, &data);
-> +}
-> +
->  static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->  {
->  	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> @@ -247,7 +285,8 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->  		.crashed = false,
->  	};
->  
-> -	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 RPROC_AFTER_SHUTDOWN, &data);
->  }
->  
->  
-> @@ -282,6 +321,9 @@ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
->  	}
->  	mutex_unlock(&rproc_notif_lock);
->  	ssr->info = info;
-> +	ssr->subdev.prepare = ssr_notify_prepare;
-> +	ssr->subdev.start = ssr_notify_start;
-> +	ssr->subdev.stop = ssr_notify_stop;
->  	ssr->subdev.unprepare = ssr_notify_unprepare;
->  
->  	rproc_add_subdev(rproc, &ssr->subdev);
-> diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
-> index 3dc65c0..567c1f9 100644
-> --- a/include/linux/remoteproc/qcom_rproc.h
-> +++ b/include/linux/remoteproc/qcom_rproc.h
-> @@ -5,6 +5,20 @@
->  
->  #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
->  
-> +/**
-> + * enum rproc_notif_type - Different stages of remoteproc notifications
-> + * @RPROC_BEFORE_SHUTDOWN:	unprepare stage of  remoteproc
-> + * @RPROC_AFTER_SHUTDOWN:	stop stage of  remoteproc
-> + * @RPROC_BEFORE_POWERUP:	prepare stage of  remoteproc
-> + * @RPROC_AFTER_POWERUP:	start stage of  remoteproc
-> + */
-> +enum rproc_notif_type {
-> +	RPROC_BEFORE_SHUTDOWN,
-> +	RPROC_AFTER_SHUTDOWN,
-> +	RPROC_BEFORE_POWERUP,
-> +	RPROC_AFTER_POWERUP,
+Uh wut.
 
-Given that these are not generic remoteproc things I would like a qcom
-prefix on them.
+So the merge criteria for drivers/accel (atm still drivers/misc but I
+thought that was interim until more drivers showed up) isn't actually
+"totally-not-a-gpu accel driver without open source userspace".
 
-How about QCOM_SSR_BEFORE_SHUTDOWN ... 
+Instead it's "totally-not-a-gpu accel driver without open source
+userspace" _and_ you have to be best buddies with Greg. Or at least
+not be on the naughty company list. Since for habanalabs all you
+wanted is a few test cases to exercise the ioctls. Not the entire
+userspace.
 
-Apart from that, this looks good.
+The most bonkers part here is that drivers/gpu actually does have a bunch
+of active contributors from codeaurora ...
 
-Thanks,
-Bjorn
+> Especially given the copyright owner of this code, that would be just
+> crazy and foolish to not have open userspace code as well.  Firmware
+> would also be wonderful as well, go poke your lawyers about derivative
+> work issues and the like for fun conversations :)
+>
+> So without that changed, I'm not going to take this, and push to object
+> that anyone else take this.
+>
+> I'm not going to be able to review any of this code anymore until that
+> changes, sorry.
 
-> +};
-> +
->  struct rproc_notif_data {
->  	const char *name;
->  	bool crashed;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+So you couldn't review the habanalabs driver either?
+
+Get some consistency into your decision making as maintainer. And don't
+tell me or anyone else that this is complicated, gpu and rdma driver folks
+very much told you and Olof last year that this is what you're getting
+yourself into.
+
+Cheers, Daniel
+
+PS: I guess congrats for figuring out you can't write a totally-not-a-gpu
+accel driver without making kernel and userspace parts derivatives works
+of each another. We told you that last year.
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
