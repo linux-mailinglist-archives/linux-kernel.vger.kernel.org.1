@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81121DA31F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E451DA320
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgESUzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:55:55 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:40869 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725998AbgESUzz (ORCPT
+        id S1726936AbgESUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:55:58 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:4149 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725998AbgESUz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:55:55 -0400
+        Tue, 19 May 2020 16:55:56 -0400
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Tue, 19 May 2020 13:55:52 -0700
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Tue, 19 May 2020 13:55:53 -0700
 Received: from sc9-mailhost2.vmware.com (unknown [10.200.192.41])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6EE55404B7;
-        Tue, 19 May 2020 13:55:54 -0700 (PDT)
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 32BC4404B7;
+        Tue, 19 May 2020 13:55:55 -0700 (PDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -26,90 +26,48 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Miroslav Benes <mbenes@suse.cz>,
         Steven Rostedt <rostedt@goodmis.org>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [PATCH 0/3] Enable objtool multiarch build
-Date:   Tue, 19 May 2020 13:55:30 -0700
-Message-ID: <cover.1589913349.git.mhelsley@vmware.com>
+Subject: [PATCH 1/3] objtool: Exit successfully when requesting help
+Date:   Tue, 19 May 2020 13:55:31 -0700
+Message-ID: <26346796590ccf07ffe7b9d2b230435c9e787357.1589913349.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1589913349.git.mhelsley@vmware.com>
+References: <cover.1589913349.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
  designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a necessary first step to adding new architecture and subcommand
-support to objtool enabling building of objtool for more than the x86
-architecture.
+When the user requests help it's not an error so do not exit with
+a non-zero exit code. This is not especially useful for a user but
+any script that might wish to check that objtool --help is at least
+available can't rely on the exit code to crudely check that, for
+example, building an objtool executable succeeds.
 
-Some folks have been working on enabling objtool checking functionality
-for arm64. Rather than repeat that work here this minimal set does not
-port the existing commands but replaces them with weak, not-implemented
-versions which exit with status 127. On x86 the check and orc
-subcommands will still build and operate correctly while on other
-architectures the commands will exit with status 127. This allows future
-changes to port the check command to arm64 or add new subcommands
-such as mcount to replace the separate recordmcount tool.
+Signed-off-by: Matt Helsley <mhelsley@vmware.com>
+---
+ tools/objtool/objtool.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Since the series does not add support for stack validation or checking
-to any new architectures there's no reason to make KConfig or Makefile
-changes which would normally be used to test this. So I've been forcing
-builds of objtool with:
-
-make O=build-foo ARCH=foo CROSS_COMPILE=foo-linux-gnu- defconfig
-make O=build-foo ARCH=foo CROSS_COMPILE=foo-linux-gnu- tools/objtool
-
-And running the resulting binary to verify that it shows all objtoo
-subcommands are supported on x86 and unsupported on other archs.
-
-Changes since RFC[1]:
- - Removed the arch/missing pattern and put everything in weak.c
-	(Julien Thierry and Josh Poimboeuf)
- - Kept arch.h, special, etc. in the top level objtool dir (Julien)
- - Dropped the patch reporting which subcommands are missing in --help
-	output
- - Postponed the rela patch
-	Josh asked to rename a bunch of these variables and suggested
-	an untested improvement. Since they're necessary for
-	recordmcount but not the current arch built support we can drop
-	them from this set.
- - Misc: Removed else (Josh) and updated the commit messages (Julien)
- - Cleaned up includes
-	Moved the prototypes for the command entry functions and other
-	functions that weak symbols need to be consistent with into
-	objtool.h. (Josh)
-
-Tested with cross-compilation for sparc, arm64, s390, and powerpc
-
-[1] https://lore.kernel.org/lkml/cover.1588888003.git.mhelsley@vmware.com/
-
-Matt Helsley (3):
-  objtool: Exit successfully when requesting help
-  objtool: Move struct objtool_file into arch-independent header
-  objtool: Enable compilation of objtool for all architectures
-
- tools/objtool/Build           | 13 +++++++++----
- tools/objtool/Makefile        | 11 ++++++++++-
- tools/objtool/arch.h          |  4 +++-
- tools/objtool/builtin-check.c |  2 +-
- tools/objtool/builtin-orc.c   |  3 +--
- tools/objtool/check.c         |  4 ++--
- tools/objtool/check.h         | 12 ------------
- tools/objtool/objtool.c       |  4 +++-
- tools/objtool/objtool.h       | 34 ++++++++++++++++++++++++++++++++++
- tools/objtool/orc.h           | 18 ------------------
- tools/objtool/orc_dump.c      |  3 ++-
- tools/objtool/orc_gen.c       |  1 -
- tools/objtool/weak.c          | 35 +++++++++++++++++++++++++++++++++++
- 13 files changed, 100 insertions(+), 44 deletions(-)
- create mode 100644 tools/objtool/objtool.h
- delete mode 100644 tools/objtool/orc.h
- create mode 100644 tools/objtool/weak.c
-
-
-base-commit: bba413deb1065f1291cb1f366247513f11215520
+diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
+index 0b3528f05053..58fdda510653 100644
+--- a/tools/objtool/objtool.c
++++ b/tools/objtool/objtool.c
+@@ -58,7 +58,9 @@ static void cmd_usage(void)
+ 
+ 	printf("\n");
+ 
+-	exit(129);
++	if (!help)
++		exit(129);
++	exit(0);
+ }
+ 
+ static void handle_options(int *argc, const char ***argv)
 -- 
 2.20.1
 
