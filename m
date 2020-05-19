@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4FE1DA4AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED4F1DA4D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgESWl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:41:59 -0400
-Received: from v6.sk ([167.172.42.174]:58510 "EHLO v6.sk"
+        id S1728372AbgESWmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:42:35 -0400
+Received: from v6.sk ([167.172.42.174]:58646 "EHLO v6.sk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726318AbgESWl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:41:59 -0400
+        id S1728316AbgESWma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:42:30 -0400
 Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 04E49610D3;
-        Tue, 19 May 2020 22:41:57 +0000 (UTC)
+        by v6.sk (Postfix) with ESMTP id 8D6EE610D5;
+        Tue, 19 May 2020 22:41:58 +0000 (UTC)
 From:   Lubomir Rintel <lkundrak@v3.sk>
 To:     Stephen Boyd <sboyd@kernel.org>
 Cc:     Michael Turquette <mturquette@baylibre.com>,
@@ -21,9 +21,9 @@ Cc:     Michael Turquette <mturquette@baylibre.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v3 01/13] clk: mmp: frac: Do not lose last 4 digits of precision
-Date:   Wed, 20 May 2020 00:41:39 +0200
-Message-Id: <20200519224151.2074597-2-lkundrak@v3.sk>
+Subject: [PATCH v3 02/13] clk: mmp: frac: Allow setting bits other than the numerator/denominator
+Date:   Wed, 20 May 2020 00:41:40 +0200
+Message-Id: <20200519224151.2074597-3-lkundrak@v3.sk>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200519224151.2074597-1-lkundrak@v3.sk>
 References: <20200519224151.2074597-1-lkundrak@v3.sk>
@@ -34,84 +34,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While calculating the output rate of a fractional divider clock, the
-value is divided and multipled by 10000, discarding the least
-significant digits -- presumably to fit the intermediate value within 32
-bits.
-
-The precision we're losing is, however, not insignificant for things like
-I2S clock. Maybe also elsewhere, now that since commit ea56ad60260e ("clk:
-mmp2: Stop pretending PLL outputs are constant") the parent rates are more
-precise and no longer rounded to 10000s.
+For the I2S fractional clocks, there are more bits that need to be set
+for the clock to run. Their actual meaning is unknown.
 
 Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 ---
- drivers/clk/mmp/clk-frac.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ drivers/clk/mmp/clk-frac.c | 3 +++
+ drivers/clk/mmp/clk.h      | 1 +
+ 2 files changed, 4 insertions(+)
 
 diff --git a/drivers/clk/mmp/clk-frac.c b/drivers/clk/mmp/clk-frac.c
-index fabc09aca6c4..ed9928f5bdc7 100644
+index ed9928f5bdc7..48f592bd633d 100644
 --- a/drivers/clk/mmp/clk-frac.c
 +++ b/drivers/clk/mmp/clk-frac.c
-@@ -28,13 +28,15 @@ static long clk_factor_round_rate(struct clk_hw *hw, unsigned long drate,
- 		unsigned long *prate)
- {
- 	struct mmp_clk_factor *factor = to_clk_factor(hw);
--	unsigned long rate = 0, prev_rate;
-+	u64 rate = 0, prev_rate;
- 	int i;
+@@ -148,7 +148,10 @@ static int clk_factor_init(struct clk_hw *hw)
+ 		val &= ~(masks->den_mask << masks->den_shift);
+ 		val |= (factor->ftbl[0].den & masks->den_mask) <<
+ 			masks->den_shift;
++	}
  
- 	for (i = 0; i < factor->ftbl_cnt; i++) {
- 		prev_rate = rate;
--		rate = (((*prate / 10000) * factor->ftbl[i].den) /
--			(factor->ftbl[i].num * factor->masks->factor)) * 10000;
-+		rate = *prate;
-+		rate *= factor->ftbl[i].den;
-+		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
-+
- 		if (rate > drate)
- 			break;
++	if (!(val & masks->enable_mask) || i >= factor->ftbl_cnt) {
++		val |= masks->enable_mask;
+ 		writel(val, factor->base);
  	}
-@@ -54,6 +56,7 @@ static unsigned long clk_factor_recalc_rate(struct clk_hw *hw,
- 	struct mmp_clk_factor *factor = to_clk_factor(hw);
- 	struct mmp_clk_factor_masks *masks = factor->masks;
- 	unsigned int val, num, den;
-+	u64 rate;
  
- 	val = readl_relaxed(factor->base);
+diff --git a/drivers/clk/mmp/clk.h b/drivers/clk/mmp/clk.h
+index 20dc1e5dd756..369a09256e2f 100644
+--- a/drivers/clk/mmp/clk.h
++++ b/drivers/clk/mmp/clk.h
+@@ -16,6 +16,7 @@ struct mmp_clk_factor_masks {
+ 	unsigned int den_mask;
+ 	unsigned int num_shift;
+ 	unsigned int den_shift;
++	unsigned int enable_mask;
+ };
  
-@@ -66,8 +69,11 @@ static unsigned long clk_factor_recalc_rate(struct clk_hw *hw,
- 	if (!den)
- 		return 0;
- 
--	return (((parent_rate / 10000)  * den) /
--			(num * factor->masks->factor)) * 10000;
-+	rate = parent_rate;
-+	rate *= den;
-+	do_div(rate, num * factor->masks->factor);
-+
-+	return rate;
- }
- 
- /* Configures new clock rate*/
-@@ -78,12 +84,14 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long drate,
- 	struct mmp_clk_factor_masks *masks = factor->masks;
- 	int i;
- 	unsigned long val;
--	unsigned long rate = 0;
- 	unsigned long flags = 0;
-+	u64 rate = 0;
- 
- 	for (i = 0; i < factor->ftbl_cnt; i++) {
--		rate = (((prate / 10000) * factor->ftbl[i].den) /
--			(factor->ftbl[i].num * factor->masks->factor)) * 10000;
-+		rate = prate;
-+		rate *= factor->ftbl[i].den;
-+		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
-+
- 		if (rate > drate)
- 			break;
- 	}
+ struct mmp_clk_factor_tbl {
 -- 
 2.26.2
 
