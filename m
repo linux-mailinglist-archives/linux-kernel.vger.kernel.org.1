@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9092D1DA3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC971DA3D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgESVqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        id S1728140AbgESVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgESVqX (ORCPT
+        with ESMTP id S1726030AbgESVqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:46:23 -0400
+        Tue, 19 May 2020 17:46:34 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C07C08C5C0;
-        Tue, 19 May 2020 14:46:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86483C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:46:34 -0700 (PDT)
 Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA3e-0002Yy-7I; Tue, 19 May 2020 23:45:54 +0200
+        id 1jbA3j-0002af-36; Tue, 19 May 2020 23:45:59 +0200
 From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
@@ -29,11 +29,12 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         LKML <linux-kernel@vger.kernel.org>,
         "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
-Date:   Tue, 19 May 2020 23:45:23 +0200
-Message-Id: <20200519214547.352050-2-a.darwish@linutronix.de>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-mm@kvack.org
+Subject: [PATCH v1 02/25] mm/swap: Don't abuse the seqcount latching API
+Date:   Tue, 19 May 2020 23:45:24 +0200
+Message-Id: <20200519214547.352050-3-a.darwish@linutronix.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
 References: <20200519214547.352050-1-a.darwish@linutronix.de>
@@ -47,140 +48,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sequence counters write paths are critical sections that must never be
-preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
+Commit eef1a429f234 ("mm/swap.c: piggyback lru_add_drain_all() calls")
+implemented an optimization mechanism to exit the to-be-started LRU
+drain operation (name it A) if another drain operation *started and
+finished* while (A) was blocked on the LRU draining mutex.
 
-Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
-netdev name retrieval.") handled a deadlock, observed with
-CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
-infinitely spinning: it got scheduled after the seqcount write side
-blocked inside its own critical section.
+This was done through a seqcount latch, which is an abuse of its
+semantics:
 
-To fix that deadlock, among other issues, the commit added a
-cond_resched() inside the read side section. While this will get the
-non-preemptible kernel eventually unstuck, the seqcount reader is fully
-exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
+  1. Seqcount latching should be used for the purpose of switching
+     between two storage places with sequence protection to allow
+     interruptible, preemptible writer sections. The optimization
+     mechanism has absolutely nothing to do with that.
 
-The fix is also still broken: if the seqcount reader belongs to a
-real-time scheduling policy, it can spin forever and the kernel will
-livelock.
+  2. The used raw_write_seqcount_latch() has two smp write memory
+     barriers to always insure one consistent storage place out of the
+     two storage places available. This extra smp_wmb() is redundant for
+     the optimization use case.
 
-Disabling preemption over the seqcount write side critical section will
-not work: inside it are a number of GFP_KERNEL allocations and mutex
-locking through the drivers/base/ :: device_rename() call chain.
+Beside the API abuse, the semantics of a latch sequence counter was
+force fitted into the optimization. What was actually meant is to track
+generations of LRU draining operations, where "current lru draining
+generation = x" implies that all generations 0 < n <= x are already
+*scheduled* for draining.
 
-From all the above, replace the seqcount with a rwsem.
+Remove the conceptually-inappropriate seqcount latch usage and manually
+implement the optimization using a counter and SMP memory barriers.
 
-Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
-Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
-Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
-Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/CALYGNiPSr-cxV9MX9czaVh6Wz_gzSv3H_8KPvgjBTGbJywUJpA@mail.gmail.com
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- net/core/dev.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ mm/swap.c | 57 +++++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 47 insertions(+), 10 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 522288177bbd..e18a4c23df0e 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -79,6 +79,7 @@
- #include <linux/sched.h>
- #include <linux/sched/mm.h>
- #include <linux/mutex.h>
-+#include <linux/rwsem.h>
- #include <linux/string.h>
- #include <linux/mm.h>
- #include <linux/socket.h>
-@@ -194,7 +195,7 @@ static DEFINE_SPINLOCK(napi_hash_lock);
- static unsigned int napi_gen_id = NR_CPUS;
- static DEFINE_READ_MOSTLY_HASHTABLE(napi_hash, 8);
- 
--static seqcount_t devnet_rename_seq;
-+static DECLARE_RWSEM(devnet_rename_sem);
- 
- static inline void dev_base_seq_inc(struct net *net)
- {
-@@ -930,18 +931,13 @@ EXPORT_SYMBOL(dev_get_by_napi_id);
-  *	@net: network namespace
-  *	@name: a pointer to the buffer where the name will be stored.
-  *	@ifindex: the ifindex of the interface to get the name from.
-- *
-- *	The use of raw_seqcount_begin() and cond_resched() before
-- *	retrying is required as we want to give the writers a chance
-- *	to complete when CONFIG_PREEMPTION is not set.
+diff --git a/mm/swap.c b/mm/swap.c
+index bf9a79fed62d..d6910eeed43d 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -713,10 +713,20 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
   */
- int netdev_get_name(struct net *net, char *name, int ifindex)
+ void lru_add_drain_all(void)
  {
- 	struct net_device *dev;
--	unsigned int seq;
+-	static seqcount_t seqcount = SEQCNT_ZERO(seqcount);
+-	static DEFINE_MUTEX(lock);
++	/*
++	 * lru_drain_gen - Current generation of pages that could be in vectors
++	 *
++	 * (A) Definition: lru_drain_gen = x implies that all generations
++	 *     0 < n <= x are already scheduled for draining.
++	 *
++	 * This is an optimization for the highly-contended use case where a
++	 * user space workload keeps constantly generating a flow of pages
++	 * for each CPU.
++	 */
++	static unsigned int lru_drain_gen;
+ 	static struct cpumask has_work;
+-	int cpu, seq;
++	static DEFINE_MUTEX(lock);
++	int cpu, this_gen;
  
--retry:
--	seq = raw_seqcount_begin(&devnet_rename_seq);
-+	down_read(&devnet_rename_sem);
-+
- 	rcu_read_lock();
- 	dev = dev_get_by_index_rcu(net, ifindex);
- 	if (!dev) {
-@@ -951,10 +947,8 @@ int netdev_get_name(struct net *net, char *name, int ifindex)
+ 	/*
+ 	 * Make sure nobody triggers this path before mm_percpu_wq is fully
+@@ -725,21 +735,48 @@ void lru_add_drain_all(void)
+ 	if (WARN_ON(!mm_percpu_wq))
+ 		return;
  
- 	strcpy(name, dev->name);
- 	rcu_read_unlock();
--	if (read_seqcount_retry(&devnet_rename_seq, seq)) {
--		cond_resched();
--		goto retry;
--	}
-+
-+	up_read(&devnet_rename_sem);
+-	seq = raw_read_seqcount_latch(&seqcount);
++	/*
++	 * (B) Cache the LRU draining generation number
++	 *
++	 * smp_rmb() ensures that the counter is loaded before the mutex is
++	 * taken. It pairs with the smp_wmb() inside the mutex critical section
++	 * at (D).
++	 */
++	this_gen = READ_ONCE(lru_drain_gen);
++	smp_rmb();
  
- 	return 0;
+ 	mutex_lock(&lock);
+ 
+ 	/*
+-	 * Piggyback on drain started and finished while we waited for lock:
+-	 * all pages pended at the time of our enter were drained from vectors.
++	 * (C) Exit the draining operation if a newer generation, from another
++	 * lru_add_drain_all(), was already scheduled for draining. Check (A).
+ 	 */
+-	if (__read_seqcount_retry(&seqcount, seq))
++	if (unlikely(this_gen != lru_drain_gen))
+ 		goto done;
+ 
+-	raw_write_seqcount_latch(&seqcount);
++	/*
++	 * (D) Increment generation number
++	 *
++	 * Pairs with READ_ONCE() and smp_rmb() at (B), outside of the critical
++	 * section.
++	 *
++	 * This pairing must be done here, before the for_each_online_cpu loop
++	 * below which drains the page vectors.
++	 *
++	 * Let x, y, and z represent some system CPU numbers, where x < y < z.
++	 * Assume CPU #z is is in the middle of the for_each_online_cpu loop
++	 * below and has already reached CPU #y's per-cpu data. CPU #x comes
++	 * along, adds some pages to its per-cpu vectors, then calls
++	 * lru_add_drain_all().
++	 *
++	 * If the paired smp_wmb() below is done at any later step, e.g. after
++	 * the loop, CPU #x will just exit at (C) and miss flushing out all of
++	 * its added pages.
++	 */
++	WRITE_ONCE(lru_drain_gen, lru_drain_gen + 1);
++	smp_wmb();
+ 
+ 	cpumask_clear(&has_work);
+-
+ 	for_each_online_cpu(cpu) {
+ 		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
+ 
+@@ -766,7 +803,7 @@ void lru_add_drain_all(void)
+ {
+ 	lru_add_drain();
  }
-@@ -1228,10 +1222,10 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 	    likely(!(dev->priv_flags & IFF_LIVE_RENAME_OK)))
- 		return -EBUSY;
+-#endif
++#endif /* CONFIG_SMP */
  
--	write_seqcount_begin(&devnet_rename_seq);
-+	down_write(&devnet_rename_sem);
- 
- 	if (strncmp(newname, dev->name, IFNAMSIZ) == 0) {
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return 0;
- 	}
- 
-@@ -1239,7 +1233,7 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 
- 	err = dev_get_valid_name(net, dev, newname);
- 	if (err < 0) {
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return err;
- 	}
- 
-@@ -1254,11 +1248,11 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 	if (ret) {
- 		memcpy(dev->name, oldname, IFNAMSIZ);
- 		dev->name_assign_type = old_assign_type;
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return ret;
- 	}
- 
--	write_seqcount_end(&devnet_rename_seq);
-+	up_write(&devnet_rename_sem);
- 
- 	netdev_adjacent_rename_links(dev, oldname);
- 
-@@ -1279,7 +1273,7 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 		/* err >= 0 after dev_alloc_name() or stores the first errno */
- 		if (err >= 0) {
- 			err = ret;
--			write_seqcount_begin(&devnet_rename_seq);
-+			down_write(&devnet_rename_sem);
- 			memcpy(dev->name, oldname, IFNAMSIZ);
- 			memcpy(oldname, newname, IFNAMSIZ);
- 			dev->name_assign_type = old_assign_type;
+ /**
+  * release_pages - batched put_page()
 -- 
 2.20.1
 
