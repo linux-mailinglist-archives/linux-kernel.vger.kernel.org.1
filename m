@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F061DA2B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456B81DA2BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgESUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:35:07 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:35322 "EHLO
+        id S1728179AbgESUfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:35:25 -0400
+Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:35392 "EHLO
         rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727939AbgESUfC (ORCPT
+        by vger.kernel.org with ESMTP id S1728018AbgESUfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:35:02 -0400
+        Tue, 19 May 2020 16:35:05 -0400
 Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 6C53B30D82B;
-        Tue, 19 May 2020 13:33:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 6C53B30D82B
+        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 8D33630D83D;
+        Tue, 19 May 2020 13:33:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 8D33630D83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1589920418;
-        bh=idCAwH65TvJoECMSQ+xjnD19SjnYnIujkrcbMhDjDEU=;
+        s=dkimrelay; t=1589920421;
+        bh=VpnotEhiNEPSL/h1q0ZC3ux+vegZ1N4bcsFwvtQO+FE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJ8daraqpkzatWJq9eG4T9sG9xvEc1Xi2vT9BJYubzwEJQmcU1rNmwywqjPM60845
-         syYRRu1GASzkAg/4B2CdK+67D4pNMlJOqnp/UkRQUH1QYqTyvCKvzzuYdOetgHjsPj
-         tGXOQhjA0cfEhoSiVrzmS4gn/EeACUuPhUAZ/IOg=
+        b=tD8NW3F1ADu3W5qZO8tm5cZkY83a5YfdW7Pok6YJk0J1MpyyryIIm/cxU9CkPMVTc
+         +5gYtA0NGWpyE8xH+allbbIhLgRkOvpoHf8j6wb1JOVgEqSXswIoctk4C48jTkUBfI
+         5cTjhW6JJKAbljyC57848rTE07nHe9qnVK5NhHxY=
 Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id B6AED14008D;
-        Tue, 19 May 2020 13:34:59 -0700 (PDT)
+        by mail-irv-17.broadcom.com (Postfix) with ESMTP id 29C5D140239;
+        Tue, 19 May 2020 13:35:02 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     james.quinlan@broadcom.com,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org (open list:DMA MAPPING HELPERS),
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien.grall@arm.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 10/15] dma-direct: Invoke dma offset func if needed
-Date:   Tue, 19 May 2020 16:34:08 -0400
-Message-Id: <20200519203419.12369-11-james.quinlan@broadcom.com>
+Subject: [PATCH 11/15] arm: dma-mapping: Invoke dma offset func if needed
+Date:   Tue, 19 May 2020 16:34:09 -0400
+Message-Id: <20200519203419.12369-12-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200519203419.12369-1-james.quinlan@broadcom.com>
 References: <20200519203419.12369-1-james.quinlan@broadcom.com>
@@ -51,43 +52,46 @@ regions that have different mapping offsets.
 
 Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 ---
- include/linux/dma-direct.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm/include/asm/dma-mapping.h | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 24b8684aa21d..825a773dbbc3 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -15,6 +15,14 @@ static inline dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+diff --git a/arch/arm/include/asm/dma-mapping.h b/arch/arm/include/asm/dma-mapping.h
+index bdd80ddbca34..f0c0a1fa9ac0 100644
+--- a/arch/arm/include/asm/dma-mapping.h
++++ b/arch/arm/include/asm/dma-mapping.h
+@@ -35,8 +35,14 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+ #ifndef __arch_pfn_to_dma
+ static inline dma_addr_t pfn_to_dma(struct device *dev, unsigned long pfn)
  {
- 	dma_addr_t dev_addr = (dma_addr_t)paddr;
- 
+-	if (dev)
++	if (dev) {
 +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
-+	if (unlikely(dev->dma_offset_map)) {
-+		unsigned long dma_pfn_offset =	dma_pfn_offset_frm_phys_addr(
-+			dev->dma_offset_map, paddr);
-+
-+		return dev_addr - ((dma_addr_t)dma_pfn_offset << PAGE_SHIFT);
-+	}
++		if (unlikely(dev->dma_offset_map))
++			pfn -= dma_pfn_offset_frm_phys_addr(
++				dev->dma_offset_map, PFN_PHYS(pfn));
 +#endif
- 	return dev_addr - ((dma_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
+ 		pfn -= dev->dma_pfn_offset;
++	}
+ 	return (dma_addr_t)__pfn_to_bus(pfn);
  }
  
-@@ -22,6 +30,14 @@ static inline phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dev_addr)
+@@ -44,9 +50,14 @@ static inline unsigned long dma_to_pfn(struct device *dev, dma_addr_t addr)
  {
- 	phys_addr_t paddr = (phys_addr_t)dev_addr;
+ 	unsigned long pfn = __bus_to_pfn(addr);
  
+-	if (dev)
++	if (dev) {
 +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
-+	if (unlikely(dev->dma_offset_map)) {
-+		unsigned long dma_pfn_offset = dma_pfn_offset_frm_dma_addr(
-+			dev->dma_offset_map, dev_addr);
-+
-+		return paddr + ((phys_addr_t)dma_pfn_offset << PAGE_SHIFT);
-+	}
++		if (unlikely(dev->dma_offset_map))
++			pfn += dma_pfn_offset_frm_dma_addr(
++				dev->dma_offset_map, addr);
 +#endif
- 	return paddr + ((phys_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
+ 		pfn += dev->dma_pfn_offset;
+-
++	}
+ 	return pfn;
  }
- #endif /* !CONFIG_ARCH_HAS_PHYS_TO_DMA */
+ 
 -- 
 2.17.1
 
