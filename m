@@ -2,156 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8331D9B7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B931D9BD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 18:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgESPlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbgESPlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:41:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF60C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:41:47 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 202so11615002lfe.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0d43uTOdUMjo8+h/D8gql32mRU0y1WLhq8SXyWr0IXc=;
-        b=W0KspSqbJ6Aj72DfmWtAWHU7VMWd90gATZqaAo/4cvA1YpTLHu3x7p4bkzAcjLaecr
-         Ec7eCPkDgEVFv0Wem7uMj2a7aKEUpjEcYdMNfYPKUInU+vAUKoUKWNCA8zrJv7/cJXSm
-         7qddQEmzn2pUKGjmJw/bd9hbWC4M59o0nIuOTMSqZ6mw9Kc0dN2eCoxVULJXA0+ogLK+
-         4BMAw29cH29CrL8OJ3dv0Bzf4vfNQaIW8FjuLgbRGF93vIuRKDQnDeB+o4jHlWUBOF1b
-         s8OqYHkaUCkH5tgFJ2r+iMJ55IMhxjrE3OeuNWJE5ZwQ/4MqJ09mRD16n6OvzqasQev9
-         fPVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0d43uTOdUMjo8+h/D8gql32mRU0y1WLhq8SXyWr0IXc=;
-        b=H8gvCvwhm4ku10g90qNBCPRAWVQlk6k8XSe8hClaTs3RQcOL1usOMqIDQCNP9BW8s3
-         Ucmml9aoDjFaYzRED1Okfy5MZ5x6PiiD98OVXFqFws1XIhIm3KYm/yxVanQ+2lcSBcHy
-         Nn+WDiV79Yfyr6v+10gJXK/ktHQ1w20UguJKzHSUCex286XnakuNzq/sQq1JLxKvVjOs
-         sOL8dgd9dUWR7uy8aiOpNvrO8aNVdH9cy7O80w9vDOmVyBQQKOUkOH5OIkGvMS2ncpeQ
-         uhWf6J3/k90apB8Erm/jpA2/WUThstqg7xR0aZm+bebvj1OPA4tEargwUbtvbIpnSsDF
-         FQsw==
-X-Gm-Message-State: AOAM532V0Hg7ffU5vJGcrhBxxyYBX3AlCRgezDKAvv1H6CCRBfeX0PHc
-        cyMPFb0Rv8LtU8NHlBG16/Wki5CnGTbDawtXFQrHyg==
-X-Google-Smtp-Source: ABdhPJxpqURueWANIDMzW29s7P6vWansVCV4Mh3OJO30N8TKR9yc05pBBYd8/l5q2NntO3MMxGWTiC4sCRcG0bI92Hc=
-X-Received: by 2002:a05:6512:6ca:: with SMTP id u10mr16149796lff.184.1589902905516;
- Tue, 19 May 2020 08:41:45 -0700 (PDT)
+        id S1729330AbgESQAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 12:00:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59275 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729211AbgESQAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 12:00:10 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jb4ew-0001Fc-00; Tue, 19 May 2020 18:00:02 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0EC79C012F; Tue, 19 May 2020 17:42:13 +0200 (CEST)
+Date:   Tue, 19 May 2020 17:42:13 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/20] mips: MAAR: Add XPA mode support
+Message-ID: <20200519154213.GA15797@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-13-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200506155301.14288-1-vincent.guittot@linaro.org> <c1beb50b-d385-524b-56e0-eae16d3700df@arm.com>
-In-Reply-To: <c1beb50b-d385-524b-56e0-eae16d3700df@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 19 May 2020 17:41:19 +0200
-Message-ID: <CAKfTPtDLceotUW0ni=QhD9Z8cc7NA5Yz2vBJi+NjAVzYztrm+g@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/pelt: sync util/runnable_sum with PELT window
- when propagating
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506174238.15385-13-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020 at 12:28, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 06/05/2020 17:53, Vincent Guittot wrote:
->
-> [...]
->
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 02f323b85b6d..df3923a65162 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -3441,52 +3441,46 @@ static inline void
-> >  update_tg_cfs_util(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
-> >  {
-> >       long delta = gcfs_rq->avg.util_avg - se->avg.util_avg;
-> > +     /*
-> > +      * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
-> > +      * See ___update_load_avg() for details.
-> > +      */
-> > +     u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
->
-> Why not doing the assignment (like in update_tg_cfs_load()) after the
-> next condition? Same question for update_tg_cfs_runnable().
+On Wed, May 06, 2020 at 08:42:30PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> When XPA mode is enabled the normally 32-bits MAAR pair registers
+> are extended to be of 64-bits width as in pure 64-bits MIPS
+> architecture. In this case the MAAR registers can enable the
+> speculative loads/stores for addresses of up to 39-bits width.
+> But in this case the process of the MAAR initialization changes a bit.
+> The upper 32-bits of the registers are supposed to be accessed by mean
+> of the dedicated instructions mfhc0/mthc0 and there is a CP0.MAAR.VH
+> bit which should be set together with CP0.MAAR.VL as indication
+> of the boundary validity. All of these peculiarities were taken into
+> account in this commit so the speculative loads/stores would work
+> when XPA mode is enabled.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> ---
+>  arch/mips/include/asm/maar.h     | 17 +++++++++++++++--
+>  arch/mips/include/asm/mipsregs.h | 10 ++++++++++
+>  arch/mips/mm/init.c              |  8 +++++++-
+>  3 files changed, 32 insertions(+), 3 deletions(-)
 
-In fact, I expect the compiler to be smart enough to do this at the best place
+applied to mips-next.
 
->
-> [...]
->
-> >  static inline void
-> >  update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
-> >  {
-> >       long delta = gcfs_rq->avg.runnable_avg - se->avg.runnable_avg;
-> > +     /*
-> > +      * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
-> > +      * See ___update_load_avg() for details.
-> > +      */
-> > +     u32 divider = LOAD_AVG_MAX - 1024 + cfs_rq->avg.period_contrib;
->
-> We know have 6 assignments like this in fair.c and 1 in pelt.c. Could
-> this not be refactored by using something like this in pelt.h:
->
-> +static inline u32 get_divider(struct sched_avg *avg)
+Thomas.
 
-That's a good point
-I would add a pelt in the name like
-static inline u32 get_pelt_divider(struct sched_avg *avg)
-
-> +{
-> +       return LOAD_AVG_MAX - 1024 + avg->period_contrib;
-> +}
->
-> [...]
->
-> > diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-> > index b647d04d9c8b..1feff80e7e45 100644
-> > --- a/kernel/sched/pelt.c
-> > +++ b/kernel/sched/pelt.c
-> > @@ -237,6 +237,30 @@ ___update_load_sum(u64 now, struct sched_avg *sa,
-> >       return 1;
-> >  }
-> >
-> > +/*
-> > + * When syncing *_avg with *_sum, we must take into account the current
-> > + * position in the PELT segment otherwise the remaining part of the segment
-> > + * will be considered as idle time whereas it's not yet elapsed and this will
-> > + * generate unwanted oscillation in the range [1002..1024[.
-> > + *
-> > + * The max value of *_sum varies with the position in the time segment and is
-> > + * equals to :
-> > + *
-> > + *   LOAD_AVG_MAX*y + sa->period_contrib
-> > + *
-> > + * which can be simplified into:
-> > + *
-> > + *   LOAD_AVG_MAX - 1024 + sa->period_contrib
-> > + *
-> > + * because LOAD_AVG_MAX*y == LOAD_AVG_MAX-1024
->
-> Isn't this rather '~' instead of '==', even for y^32 = 0.5 ?
->
-> 47742 * 0.5^(1/32) ~ 47742 - 1024
-
-With integer precision and the runnable_avg_yN_inv array, you've got
-exactly 1024
-
->
->
-> Apart from that, LGTM
->
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
