@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C821DA52A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F221DA531
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgESXK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
+        id S1728154AbgESXLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbgESXK2 (ORCPT
+        with ESMTP id S1726318AbgESXLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:10:28 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07525C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:10:27 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t7so546223plr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:10:27 -0700 (PDT)
+        Tue, 19 May 2020 19:11:51 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5186FC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:11:51 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q9so387637pjm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YIhBgtFrqanZxaoDE99ayOKzut2GbNqr9j2tD0I6nAw=;
-        b=Dr8ZTOprcAXuKEo3lno5QfSoo2JmOs9jR81zKjrpOBd/I/howaMAk9kD88lyo3RsFN
-         GyXXxM8QdWWgKvp3tjNNhr3Ex3z1XDOCy8edrckMCu0yKDK7ZHP/qNSjoVg7f/hWm8Jo
-         0CDbtZCE5WxNTMz50+iquyWVnM7OMwa1HkR+tKZol7nkDsNxubbJVt3EyCWinqPy5+rf
-         40BVralUHrmDhSDDMFErcsxlHLFqsCsAYpJM8dQphqPaaZTXEU3W9+iNta7ATjjlWkYh
-         iIVSUakYD+iG9nX4Ez1PA9K3XDCUAoEpO8Rs8LUWPrdNfXFqyo8IcSEE3C9qusTefyvT
-         cJ8A==
+        bh=qurn0n4Y6IbvY2sEfXURphuvrrh6gfojPnRjnDn7wmQ=;
+        b=c+jIAV2c/bV5qZGOszyYayikwXcF7DKN3e/82k14r0BVVXHmikat7+pOCFJrOAu0zL
+         RNozuDILbgOwEW8AnXvWsuyfVUC1nwEEm84RLu68+rJNE8HVJ8VeI52CpVPsxMIN8fot
+         56y8qb5VURVIT2vodgUGu9JLnt0CQkMLxsmJxbPz5uexuZpBDUeBDO7DD9BXrCV8sZoj
+         K50nbJp286ZdjHh8Edcdxj0luEWiIM8eQigudlmQhuXr2mJMocfPP0xGyZiYKa+F6Otv
+         YrlS6mwOxFluyF88sYqPJZNC3cOhs+vOGTMQ85HGnoMc4JfIXipn7ql3hYMaNvCgf1KH
+         kwOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YIhBgtFrqanZxaoDE99ayOKzut2GbNqr9j2tD0I6nAw=;
-        b=FYG798D/aCQv+B+6zMH6TcQsYg8x9wywlQK6ZEUbzOjbpUaO1GJ6VL3x2Vgh1Dw1ai
-         iPNvCuTGEKVXrMfL6m9xlykxiZYDPQvj2osk6ja9hijRQ19b+e0FbhzqQolp9Jy65wBR
-         WzyMYA6Ne/ESyWJZJ8A2mNCVPjOzQ3cVz5uPFGIunuaNwFMYD/KP3JVp69q5jDDkAZb8
-         qiCv/zojnspexUY1yvxP23jTp5w02nsXxxmIVnwrFmcqEaYfsac+v2P9wzLkUliJ5XGc
-         u5yWDglwN1DhPN2IUD/ABpUomIW2q8b3AXF5jBLYOb1oV+feqshdKB4dkGgNtHlOGhcp
-         jERA==
-X-Gm-Message-State: AOAM531T1dbpRjc3epf9kBA7bXtWj1IgFjHCl/HZ0MT+EBrBDsq7qKHR
-        dl29OpLIKG1rY5K50H9Lmsp9Iw==
-X-Google-Smtp-Source: ABdhPJwBXr1mJnyNqJYn1wuy0/66dvQDSpj0yB5i/10Uf5tQtLlF1F1nIa3TamCG1/p9Wc7yiMkeEw==
-X-Received: by 2002:a17:90a:a43:: with SMTP id o61mr1935891pjo.179.1589929827249;
-        Tue, 19 May 2020 16:10:27 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id kr1sm454125pjb.26.2020.05.19.16.10.26
+        bh=qurn0n4Y6IbvY2sEfXURphuvrrh6gfojPnRjnDn7wmQ=;
+        b=MzuUy0WoIP2FmRtVCUOKFIjuBSu3/q1qCjB0lXN7wf4rJmhz4Ke8DnYJMg4ynMCPRl
+         atKrnm5Zb/iUSThyIKqHeNxCUszdc3OXPd61xA7c04zLDskwU09cNgNBK5CQ9b6iRSY7
+         ua3F3Ijklbwe5NQvvcRmhXlVthVPI1sNFgni9PIWxoNGTZCWFTLWJOF7ZqmCjNTWXdZE
+         ddvTsh+8s5VqqbUO1ZEx1JWhm2Odkg5+X2IRLtKSTLGw96FmU1vamx5GunA5tMum2lyB
+         4Vo5J+Y3QY1MUl3cCt/oQW9NxUOnZyYho/XeSqjkE4rG49lyiKOLiFLHYiBNoANWrDFD
+         q5lA==
+X-Gm-Message-State: AOAM531sQzXdRUpPdWHVh7YnhMzP5CZnrLbPebTS7C+HBgC7LqfxXFSS
+        W1D2vssZxmHPnJJzfuRQnfZVZQ==
+X-Google-Smtp-Source: ABdhPJwWcerbxfvi9Ui7U/h1FcFOUmMVeLA1WEqPpaQ3yyNdQW6PjE8iKL+kelCC2wV+F+ZeFViENw==
+X-Received: by 2002:a17:90b:ed2:: with SMTP id gz18mr2004324pjb.22.1589929910813;
+        Tue, 19 May 2020 16:11:50 -0700 (PDT)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id 131sm397060pgf.49.2020.05.19.16.11.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 16:10:26 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 0/2] arm64: dts: meson-sm1: add thermal nodes
-Date:   Tue, 19 May 2020 16:10:25 -0700
-Message-Id: <158992977729.3767.17121497893810166214.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200512093916.19676-1-narmstrong@baylibre.com>
-References: <20200512093916.19676-1-narmstrong@baylibre.com>
+        Tue, 19 May 2020 16:11:50 -0700 (PDT)
+Date:   Tue, 19 May 2020 16:11:41 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of
+ a seqcount
+Message-ID: <20200519161141.5fbab730@hermes.lan>
+In-Reply-To: <87v9kr5zt7.fsf@nanos.tec.linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+        <20200519214547.352050-2-a.darwish@linutronix.de>
+        <20200519150159.4d91af93@hermes.lan>
+        <87v9kr5zt7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 May 2020 11:39:14 +0200, Neil Armstrong wrote:
-> SM1 Thermal is missing and broken since the G12A/G12B thermal enablement,
-> fix this here by moving the g12b thermal nodes to meson-g12b.dtsi
-> and adding the proper sm1 thermal nodes.
+On Wed, 20 May 2020 00:23:48 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> Stephen Hemminger <stephen@networkplumber.org> writes:
+> > On Tue, 19 May 2020 23:45:23 +0200
+> > "Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
+> >  
+> >> Sequence counters write paths are critical sections that must never be
+> >> preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
+> >> 
+> >> Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
+> >> netdev name retrieval.") handled a deadlock, observed with
+> >> CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
+> >> infinitely spinning: it got scheduled after the seqcount write side
+> >> blocked inside its own critical section.
+> >> 
+> >> To fix that deadlock, among other issues, the commit added a
+> >> cond_resched() inside the read side section. While this will get the
+> >> non-preemptible kernel eventually unstuck, the seqcount reader is fully
+> >> exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
+> >> 
+> >> The fix is also still broken: if the seqcount reader belongs to a
+> >> real-time scheduling policy, it can spin forever and the kernel will
+> >> livelock.
+> >> 
+> >> Disabling preemption over the seqcount write side critical section will
+> >> not work: inside it are a number of GFP_KERNEL allocations and mutex
+> >> locking through the drivers/base/ :: device_rename() call chain.
+> >> 
+> >> From all the above, replace the seqcount with a rwsem.
+> >> 
+> >> Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
+> >> Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
+> >> Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
+> >> Cc: <stable@vger.kernel.org>
+> >> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> >> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>  
+> >
+> > Have your performance tested this with 1000's of network devices?  
 > 
-> Neil Armstrong (2):
->   arm64: dts: meson-g12b: move G12B thermal nodes to meson-g12b.dtsi
->   arm64: dts: meson-sm1: add cpu thermal nodes
-> 
-> [...]
+> No. We did not. -ENOTESTCASE
 
-Applied, thanks!
+Please try, it isn't that hard..
 
-[1/2] arm64: dts: meson-g12b: move G12B thermal nodes to meson-g12b.dtsi
-      commit: fef8ddfeaef8b7c91175e76bda7e4bd207b2d179
-[2/2] arm64: dts: meson-sm1: add cpu thermal nodes
-      commit: 410763ffbf629eee72f0257501dd448f861e3693
+# time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
 
-Best regards,
--- 
-Kevin Hilman <khilman@baylibre.com>
+real	0m17.002s
+user	0m1.064s
+sys	0m0.375s
