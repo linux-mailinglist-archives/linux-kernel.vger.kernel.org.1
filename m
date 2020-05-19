@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8209C1DA284
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109B11DA28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgESUY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726283AbgESUY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:24:59 -0400
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728007AbgESUZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727882AbgESUZn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 16:25:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C8EC08C5C0;
+        Tue, 19 May 2020 13:25:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b87001461a870af27ee92.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:8700:1461:a870:af27:ee92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E77B20829
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589919898;
-        bh=kTkWLjuMmuCoA4+qPlnZ725Sz7A7HK3SsaeFNh7OfYw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bbVLRSI4e13oo38U0HlOerWhsy1lYq+cYBR7SkOe6bdl1cAJZ/GjkDEejvTkaxlAJ
-         AgTs2Zwga+ZUJBeaIyTz4ZO+IoyzXl/FaKm5XMj06OVyMBaOuLNBi1UoJqnKtvSnMQ
-         I2xdMuiz6KIps85xfzpXM+x66UFCaM3XMZ3T2yH0=
-Received: by mail-wr1-f48.google.com with SMTP id k13so853152wrx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:24:57 -0700 (PDT)
-X-Gm-Message-State: AOAM531gaX5jI3Wd+CDDOJu5i1EBKzegMcD28fulGkVkAdlNLpnixoQg
-        OAYTO1Qyf+FmXkU80J/Er7w+QWYJZTX4q/sWBmmXXA==
-X-Google-Smtp-Source: ABdhPJzrAv5O1IkT9VWE6i37uyVDoQrBGbOQGXVSgM+ibFDEEWTi/A9SHF1R5Xeovyvl3AMGx0pJMl/vQGtOViOnH0U=
-X-Received: by 2002:adf:a298:: with SMTP id s24mr655323wra.184.1589919896535;
- Tue, 19 May 2020 13:24:56 -0700 (PDT)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7C7E61EC02A7;
+        Tue, 19 May 2020 22:25:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1589919941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0KQyk6eHRwREL78mJ6GkGFFWFdrtxrD703khoZRYXS8=;
+        b=Jrs74L0jyryYiOWqzSGi+NpM7qxfVX2uWG3+US/KKWLVeV+2W1/gipMtwlAgsEHhaAmaPI
+        c74gjETApzBnmXYJSYN9ZhJ1HwSYsIENOf6iIHMdYdmahX6eYhGsjTRUn382XO7cB/ctdt
+        wqE6Wd7LmqQ6SCdGBvhe5+vvQ+E7z10=
+Date:   Tue, 19 May 2020 22:25:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Robert Richter <rrichter@marvell.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] EDAC/ghes: Setup DIMM label from DMI and use it in
+ error reports
+Message-ID: <20200519202535.GC444@zn.tnic>
+References: <20200518095852.28010-1-rrichter@marvell.com>
 MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235125.628629605@linutronix.de>
- <CALCETrWnkuwvTuJKr8Vuecgr_q+1ReBDrTv4XOqGaw7-ZpEeQQ@mail.gmail.com>
- <87ftbv7nsd.fsf@nanos.tec.linutronix.de> <87a7237k3x.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87a7237k3x.fsf@nanos.tec.linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 19 May 2020 13:24:45 -0700
-X-Gmail-Original-Message-ID: <CALCETrXbQkE1zTW5Ly+ZQgDFLQQa3crPxzK6to0YR+BP5B9q+g@mail.gmail.com>
-Message-ID: <CALCETrXbQkE1zTW5Ly+ZQgDFLQQa3crPxzK6to0YR+BP5B9q+g@mail.gmail.com>
-Subject: Re: [patch V6 12/37] x86/entry: Provide idtentry_entry/exit_cond_rcu()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200518095852.28010-1-rrichter@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 1:20 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Thomas Gleixner <tglx@linutronix.de> writes:
-> > Andy Lutomirski <luto@kernel.org> writes:
-> >> On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >>> The pagefault handler cannot use the regular idtentry_enter() because that
-> >>> invokes rcu_irq_enter() if the pagefault was caused in the kernel. Not a
-> >>> problem per se, but kernel side page faults can schedule which is not
-> >>> possible without invoking rcu_irq_exit().
-> >>>
-> >>> Adding rcu_irq_exit() and a matching rcu_irq_enter() into the actual
-> >>> pagefault handling code would be possible, but not pretty either.
-> >>>
-> >>> Provide idtentry_entry/exit_cond_rcu() which calls rcu_irq_enter() only
-> >>> when RCU is not watching. The conditional RCU enabling is a correctness
-> >>> issue: A kernel page fault which hits a RCU idle reason can neither
-> >>> schedule nor is it likely to survive. But avoiding RCU warnings or RCU side
-> >>> effects is at least increasing the chance for useful debug output.
-> >>>
-> >>> The function is also useful for implementing lightweight reschedule IPI and
-> >>> KVM posted interrupt IPI entry handling later.
-> >>
-> >> Why is this conditional?  That is, couldn't we do this for all
-> >> idtentry_enter() calls instead of just for page faults?  Evil things
-> >> like NMI shouldn't go through this path at all.
-> >
-> > I thought about that, but then ended up with the conclusion that RCU
-> > might be unhappy, but my conclusion might be fundamentally wrong.
->
-> It's about this:
->
-> rcu_nmi_enter()
-> {
->         if (!rcu_is_watching()) {
->             make it watch;
->         } else if (!in_nmi()) {
->             do_magic_nohz_dyntick_muck();
->         }
->
-> So if we do all irq/system vector entries conditional then the
-> do_magic() gets never executed. After that I got lost...
+On Mon, May 18, 2020 at 11:58:52AM +0200, Robert Richter wrote:
+> +static void dimm_setup_label(struct dimm_info *dimm, u16 handle)
+> +{
+> +	const char *bank = NULL, *device = NULL;
+> +
+> +	dmi_memdev_name(handle, &bank, &device);
+> +
+> +	/* both strings must be non-zero */
+> +	if (bank && *bank && device && *device)
+> +		snprintf(dimm->label, sizeof(dimm->label),
+> +			"%s %s", bank, device);
+> +	else
+> +		snprintf(dimm->label, sizeof(dimm->label),
+> +			"unknown memory (handle: 0x%.4x)", handle);
 
-I'm also baffled by that magic, but I'm also not suggesting doing this
-to *all* entries -- just the not-super-magic ones that use
-idtentry_enter().
+This changes the sysfs strings on my test box like this. 00-ghes.before
+and 01-ghes.after are created by doing:
 
-Paul, what is this code actually trying to do?
+grep -EriIn . /sys/devices/system/edac/ 2>/dev/null > [filename]
+
+edac_mc_alloc_dimms() already sets the dimm->label to "mc#%dmemory#%d"
+but I'm guessing that dmi_memdev_name() doesn't give on my machine what
+it gives on yours.
+
+Welcome to the wonderful world of consistently implemented firmware!
+
+--- 00-ghes.before      2020-05-19 17:55:50.821220239 +0200
++++ 01-ghes.after       2020-05-19 22:09:28.808492701 +0200
+@@ -17,7 +17,7 @@
+ /sys/devices/system/edac/mc/mc0/ce_count:1:0
+ /sys/devices/system/edac/mc/mc0/mc_name:1:ghes_edac
+ /sys/devices/system/edac/mc/mc0/csrow15/ce_count:1:0
+-/sys/devices/system/edac/mc/mc0/csrow15/ch0_dimm_label:1:mc#0memory#15
++/sys/devices/system/edac/mc/mc0/csrow15/ch0_dimm_label:1:unknown memory (handle: 0x0030)
+ /sys/devices/system/edac/mc/mc0/csrow15/power/runtime_active_time:1:0
+ /sys/devices/system/edac/mc/mc0/csrow15/power/runtime_active_kids:1:0
+ /sys/devices/system/edac/mc/mc0/csrow15/power/runtime_usage:1:0
+@@ -42,7 +42,7 @@
+ /sys/devices/system/edac/mc/mc0/power/runtime_enabled:1:disabled & forbidden
+ /sys/devices/system/edac/mc/mc0/power/control:1:on
+ /sys/devices/system/edac/mc/mc0/csrow31/ce_count:1:0
+-/sys/devices/system/edac/mc/mc0/csrow31/ch0_dimm_label:1:mc#0memory#31
++/sys/devices/system/edac/mc/mc0/csrow31/ch0_dimm_label:1:unknown memory (handle: 0x0040)
+ /sys/devices/system/edac/mc/mc0/csrow31/power/runtime_active_time:1:0
+ /sys/devices/system/edac/mc/mc0/csrow31/power/runtime_active_kids:1:0
+ /sys/devices/system/edac/mc/mc0/csrow31/power/runtime_usage:1:0
+@@ -73,10 +73,10 @@
+ /sys/devices/system/edac/mc/mc0/dimm15/dimm_dev_type:1:Unknown
+ /sys/devices/system/edac/mc/mc0/dimm15/size:1:32768
+ /sys/devices/system/edac/mc/mc0/dimm15/dimm_ce_count:1:0
+-/sys/devices/system/edac/mc/mc0/dimm15/dimm_label:1:mc#0memory#15
++/sys/devices/system/edac/mc/mc0/dimm15/dimm_label:1:unknown memory (handle: 0x0030)
+ /sys/devices/system/edac/mc/mc0/dimm15/dimm_location:1:memory 15 
+ /sys/devices/system/edac/mc/mc0/dimm15/dimm_edac_mode:1:SECDED
+-/sys/devices/system/edac/mc/mc0/seconds_since_reset:1:354
++/sys/devices/system/edac/mc/mc0/seconds_since_reset:1:979
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_ue_count:1:0
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_mem_type:1:Registered-DDR4
+ /sys/devices/system/edac/mc/mc0/dimm31/power/runtime_active_time:1:0
+@@ -90,7 +90,7 @@
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_dev_type:1:Unknown
+ /sys/devices/system/edac/mc/mc0/dimm31/size:1:32768
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_ce_count:1:0
+-/sys/devices/system/edac/mc/mc0/dimm31/dimm_label:1:mc#0memory#31
++/sys/devices/system/edac/mc/mc0/dimm31/dimm_label:1:unknown memory (handle: 0x0040)
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_location:1:memory 31 
+ /sys/devices/system/edac/mc/mc0/dimm31/dimm_edac_mode:1:SECDED
+ /sys/devices/system/edac/mc/mc0/max_location:1:memory 31
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
