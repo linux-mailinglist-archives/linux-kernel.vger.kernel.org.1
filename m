@@ -2,160 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691321D9894
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86201D989C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgESNvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:51:40 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49792 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgESNvj (ORCPT
+        id S1729062AbgESNxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:53:23 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29049 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729001AbgESNxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:51:39 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04JDpbBu114089;
-        Tue, 19 May 2020 08:51:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589896297;
-        bh=Bd1B8/woIIEIdVYMyBG6viwLVslBpFiPiMxVf/ePN+E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JEziitFwl9AGkzWCfSRGfLHUa1d3vvebG8Jv/0BBS6yesOfQ9hdJUdWYneo055Nbf
-         Et5c4nR3XcHk8t0l770DT+UX3Qljn7NApHRdguqzaEyAgpmct5ExZUqr+Sm9HAUd9W
-         XKGpQMniWsGHMCtXeQNnxtg+PGX7N0MlWumOtX80=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04JDpbTF028922
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 May 2020 08:51:37 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
- May 2020 08:51:37 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 19 May 2020 08:51:37 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04JDpZa1010667;
-        Tue, 19 May 2020 08:51:35 -0500
-Subject: Re: [PATCH v4 2/7] dt-bindings: mdf: ti,j721e-system-controller.yaml:
- Add J721e
-To:     <t-kristo@ti.com>, <robh@kernel.org>
-CC:     <kishon@ti.com>, <nm@ti.com>, <nsekhar@ti.com>, <vigneshr@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200508082937.14171-1-rogerq@ti.com>
- <20200508082937.14171-3-rogerq@ti.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <a2d6b4c3-f17f-389b-305e-8be4646aa397@ti.com>
-Date:   Tue, 19 May 2020 16:51:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 May 2020 09:53:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589896401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z3JDC7hHAG3qt8ihx4nUX9Oy4XZ2I9b3feKVYfmOZwY=;
+        b=V+ApZdPmMPK9DxGtzP8YEtIfkwUnqRUyPZynoLfyXlPHBFDf9GRp6YOQwRIG4YQ7qynaRx
+        RH/ltig7lf8tNr1yf0RcC1qV0e0NQRxNF6Z/KHNsBoDe+06USznbkb3cjMvpDrv0s7SOrk
+        teKKr60fNYld5I0QBoRJTaQLD9vu6nU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-BIX5Nvf_MP2OJJmsKvkikA-1; Tue, 19 May 2020 09:53:17 -0400
+X-MC-Unique: BIX5Nvf_MP2OJJmsKvkikA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F9AF107ACF8;
+        Tue, 19 May 2020 13:53:15 +0000 (UTC)
+Received: from elisabeth (unknown [10.36.110.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57FC71001B07;
+        Tue, 19 May 2020 13:53:10 +0000 (UTC)
+Date:   Tue, 19 May 2020 15:53:00 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>, Phil Sutter <phil@nwl.cc>
+Subject: Re: [PATCH 4.19 41/80] netfilter: nft_set_rbtree: Introduce and use
+ nft_rbtree_interval_start()
+Message-ID: <20200519155300.3560394f@elisabeth>
+In-Reply-To: <20200519125113.GA376546@kroah.com>
+References: <20200518173450.097837707@linuxfoundation.org>
+        <20200518173458.612903024@linuxfoundation.org>
+        <20200519120625.GA8342@amd>
+        <20200519121356.GA354164@kroah.com>
+        <20200519121907.GA9158@amd>
+        <20200519125113.GA376546@kroah.com>
+Organization: Red Hat
 MIME-Version: 1.0
-In-Reply-To: <20200508082937.14171-3-rogerq@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT binding schema for J721e system controller.
+On Tue, 19 May 2020 14:51:13 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
-Changelog:
-v4
--address comments.
+> On Tue, May 19, 2020 at 02:19:07PM +0200, Pavel Machek wrote:
+> > On Tue 2020-05-19 14:13:56, Greg Kroah-Hartman wrote: =20
+> > > On Tue, May 19, 2020 at 02:06:25PM +0200, Pavel Machek wrote: =20
+> > > > Hi!
+> > > >  =20
+> > > > > [ Upstream commit 6f7c9caf017be8ab0fe3b99509580d0793bf0833 ]
+> > > > >=20
+> > > > > Replace negations of nft_rbtree_interval_end() with a new helper,
+> > > > > nft_rbtree_interval_start(), wherever this helps to visualise the
+> > > > > problem at hand, that is, for all the occurrences except for the
+> > > > > comparison against given flags in __nft_rbtree_get().
+> > > > >=20
+> > > > > This gets especially useful in the next patch. =20
+> > > >=20
+> > > > This looks like cleanup in preparation for the next patch. Next pat=
+ch
+> > > > is there for some series, but not for 4.19.124. Should this be in
+> > > > 4.19, then? =20
+> > >=20
+> > > What is the "next patch" in this situation? =20
+> >=20
+> > In 5.4 you have:
+> >=20
+> > 9956 O   Greg Kroah =E2=94=9C=E2=94=80>[PATCH 5.4 082/147] netfilter: n=
+ft_set_rbtree: Introduce and use nft
+> > 9957     Greg Kroah =E2=94=9C=E2=94=80>[PATCH 5.4 083/147] netfilter: n=
+ft_set_rbtree: Add missing expired c
+> >=20
+> > In 4.19 you have:
+> >=20
+> > 10373 r   Greg Kroah =E2=94=9C=E2=94=80>[PATCH 4.19 41/80] netfilter: n=
+ft_set_rbtree: Introduce and use nft
+> > 10376 O   Greg Kroah =E2=94=9C=E2=94=80>[PATCH 4.19 42/80] IB/mlx4: Tes=
+t return value of calls to ib_get_ca
+> >=20
+> > I believe 41/80 can be dropped from 4.19 series, as it is just a
+> > preparation for 083/147... which is not queued for 4.19. =20
+>=20
+> I've queued it up for 4.19 now, thanks.
 
-  .../mfd/ti,j721e-system-controller.yaml       | 76 +++++++++++++++++++
-  1 file changed, 76 insertions(+)
-  create mode 100644 Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+Wait, wait, sorry. I thought you were queuing this up as a missing
+dependency or something, but I see it's not the case. That patch is
+*not* the preparation for:
 
-diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-new file mode 100644
-index 000000000000..cb28dc480c4c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/ti,j721e-system-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI J721e System Controller Registers R/W Device Tree Bindings
-+
-+description: |
-+  This represents the Control Module registers (CTRL_MMR0) on the SoC.
-+  System controller node represents a register region containing a set
-+  of miscellaneous registers. The registers are not cohesive enough to
-+  represent as any specific type of device. The typical use-case is
-+  for some other node's driver, or platform-specific code, to acquire
-+  a reference to the syscon node (e.g. by phandle, node path, or
-+  search using a specific compatible value), interrogate the node (or
-+  associated OS driver) to determine the location of the registers,
-+  and access the registers directly.
-+
-+maintainers:
-+  - Kishon Vijay Abraham I <kishon@ti.com>
-+  - Roger Quadros <rogerq@ti.com
-+
-+properties:
-+  compatible:
-+    anyOf:
-+      - items:
-+        - enum:
-+           - ti,j721e-system-controller
-+        - const: syscon
-+        - const: simple-mfd
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  ranges:
-+    description:
-+      Should translate from local addresses to bus addresses.
-+
-+# Optional children
-+
-+  "^serdes-ln-ctrl@[0-9a-f]+$":
-+    type: object
-+    description: |
-+      This is the SERDES lane control mux. It should follow the bindings
-+      specified in
-+      Documentation/devicetree/bindings/mux/reg-mux.txt
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    scm_conf: scm-conf@100000 {
-+        compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
-+        reg = <0x00100000 0x1c000>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
-+
-+        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
-+            compatible = "mmio-mux";
-+            reg = <0x00004080 0x50>;
-+        };
-+    };
-+...
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+  340eaff65116 netfilter: nft_set_rbtree: Add missing expired checks
 
+...but rather preparation for:
+
+  7c84d41416d8 netfilter: nft_set_rbtree: Detect partial overlaps on insert=
+ion
+
+whose fix-up:
+
+  72239f2795fa netfilter: nft_set_rbtree: Drop spurious condition for overl=
+ap detection on insertion
+
+was queued for 5.6.x (see <20200421131431.GA793882@kroah.com>).
+
+Now, if you want to backport "Add missing expired checks", it *might* be
+more convenient to also backport:
+
+  6f7c9caf017b netfilter: nft_set_rbtree: Introduce and use nft_rbtree_inte=
+rval_start()
+
+and, perhaps (I haven't tried to actually cherry-pick) also:
+
+  7c84d41416d8 netfilter: nft_set_rbtree: Detect partial overlaps on insert=
+ion
+  72239f2795fa netfilter: nft_set_rbtree: Drop spurious condition for overl=
+ap detection on insertion
+
+and it's safe to either:
+
+- backport only 6f7c9caf017b
+- backport the three of them
+
+but other than avoiding conflicts, there should be no reason to do that.
+Sasha had already queued them up for 4.19 and 5.4, then dropped them as
+they weren't needed, see <20200413163900.GO27528@sasha-vm>.
+
+--=20
+Stefano
 
