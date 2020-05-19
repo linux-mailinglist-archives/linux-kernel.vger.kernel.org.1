@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36C1DA22C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9C71DA192
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbgESUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
+        id S1728031AbgEST6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727801AbgEST61 (ORCPT
+        with ESMTP id S1727836AbgEST61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 19 May 2020 15:58:27 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18FCC08C5C0;
-        Tue, 19 May 2020 12:58:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70167C08C5C0;
+        Tue, 19 May 2020 12:58:27 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8Na-0008Bk-7J; Tue, 19 May 2020 21:58:22 +0200
+        id 1jb8Nb-0008CL-3m; Tue, 19 May 2020 21:58:23 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D98631C047E;
-        Tue, 19 May 2020 21:58:21 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:21 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B0D411C047E;
+        Tue, 19 May 2020 21:58:22 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:22 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/nmi: Protect NMI entry against instrumentation
+Subject: [tip: x86/entry] x86/idtentry: Provide IDTENTRY_XEN for XEN/PV
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505135314.716186134@linutronix.de>
-References: <20200505135314.716186134@linutronix.de>
+In-Reply-To: <20200505135314.518622698@linutronix.de>
+References: <20200505135314.518622698@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991830178.17951.11427014884978582535.tip-bot2@tip-bot2>
+Message-ID: <158991830261.17951.10881875632542949562.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,168 +52,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     3a301dc808b77c6ca25be35660f2fcb13389b038
-Gitweb:        https://git.kernel.org/tip/3a301dc808b77c6ca25be35660f2fcb13389b038
+Commit-ID:     9769a24d77c5708376bf99e04cffe5c764cd3e40
+Gitweb:        https://git.kernel.org/tip/9769a24d77c5708376bf99e04cffe5c764cd3e40
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 06 Apr 2020 15:55:06 +02:00
+AuthorDate:    Tue, 25 Feb 2020 23:33:24 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:04:10 +02:00
+CommitterDate: Tue, 19 May 2020 16:04:09 +02:00
 
-x86/nmi: Protect NMI entry against instrumentation
+x86/idtentry: Provide IDTENTRY_XEN for XEN/PV
 
-Mark all functions in the fragile code parts noinstr or force inlining so
-they can't be instrumented.
-
-Also make the hardware latency tracer invocation explicit outside of
-non-instrumentable section.
+XEN/PV has special wrappers for NMI and DB exceptions. They redirect these
+exceptions through regular IDTENTRY points. Provide the necessary IDTENTRY
+macros to make this work
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505135314.716186134@linutronix.de
+Link: https://lkml.kernel.org/r/20200505135314.518622698@linutronix.de
 
 
 ---
- arch/x86/include/asm/desc.h  |  8 ++++----
- arch/x86/kernel/cpu/common.c |  6 ++----
- arch/x86/kernel/nmi.c        | 15 +++++++++------
- 3 files changed, 15 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/idtentry.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
-index 085a2dd..d6c3d34 100644
---- a/arch/x86/include/asm/desc.h
-+++ b/arch/x86/include/asm/desc.h
-@@ -214,7 +214,7 @@ static inline void native_load_gdt(const struct desc_ptr *dtr)
- 	asm volatile("lgdt %0"::"m" (*dtr));
- }
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 36fe964..2315eec 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -168,6 +168,18 @@ __visible noinstr void func(struct pt_regs *regs)
+ #define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
  
--static inline void native_load_idt(const struct desc_ptr *dtr)
-+static __always_inline void native_load_idt(const struct desc_ptr *dtr)
- {
- 	asm volatile("lidt %0"::"m" (*dtr));
- }
-@@ -392,7 +392,7 @@ extern unsigned long system_vectors[];
- 
- #ifdef CONFIG_X86_64
- DECLARE_PER_CPU(u32, debug_idt_ctr);
--static inline bool is_debug_idt_enabled(void)
-+static __always_inline bool is_debug_idt_enabled(void)
- {
- 	if (this_cpu_read(debug_idt_ctr))
- 		return true;
-@@ -400,7 +400,7 @@ static inline bool is_debug_idt_enabled(void)
- 	return false;
- }
- 
--static inline void load_debug_idt(void)
-+static __always_inline void load_debug_idt(void)
- {
- 	load_idt((const struct desc_ptr *)&debug_idt_descr);
- }
-@@ -422,7 +422,7 @@ static inline void load_debug_idt(void)
-  * that doesn't need to disable interrupts, as nothing should be
-  * bothering the CPU then.
-  */
--static inline void load_current_idt(void)
-+static __always_inline void load_current_idt(void)
- {
- 	if (is_debug_idt_enabled())
- 		load_debug_idt();
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index bed0cb8..6751b81 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1692,21 +1692,19 @@ void syscall_init(void)
- DEFINE_PER_CPU(int, debug_stack_usage);
- DEFINE_PER_CPU(u32, debug_idt_ctr);
- 
--void debug_stack_set_zero(void)
-+noinstr void debug_stack_set_zero(void)
- {
- 	this_cpu_inc(debug_idt_ctr);
- 	load_current_idt();
- }
--NOKPROBE_SYMBOL(debug_stack_set_zero);
- 
--void debug_stack_reset(void)
-+noinstr void debug_stack_reset(void)
- {
- 	if (WARN_ON(!this_cpu_read(debug_idt_ctr)))
- 		return;
- 	if (this_cpu_dec_return(debug_idt_ctr) == 0)
- 		load_current_idt();
- }
--NOKPROBE_SYMBOL(debug_stack_reset);
- 
- #else	/* CONFIG_X86_64 */
- 
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index d55e448..d18ec18 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -307,7 +307,7 @@ NOKPROBE_SYMBOL(unknown_nmi_error);
- static DEFINE_PER_CPU(bool, swallow_nmi);
- static DEFINE_PER_CPU(unsigned long, last_nmi_rip);
- 
--static void default_do_nmi(struct pt_regs *regs)
-+static noinstr void default_do_nmi(struct pt_regs *regs)
- {
- 	unsigned char reason = 0;
- 	int handled;
-@@ -333,6 +333,8 @@ static void default_do_nmi(struct pt_regs *regs)
- 
- 	__this_cpu_write(last_nmi_rip, regs->ip);
- 
-+	instrumentation_begin();
++/**
++ * DECLARE_IDTENTRY_XEN - Declare functions for XEN redirect IDT entry points
++ * @vector:	Vector number (ignored for C)
++ * @func:	Function name of the entry point
++ *
++ * Used for xennmi and xendebug redirections. No DEFINE as this is all ASM
++ * indirection magic.
++ */
++#define DECLARE_IDTENTRY_XEN(vector, func)				\
++	asmlinkage void xen_asm_exc_xen##func(void);			\
++	asmlinkage void asm_exc_xen##func(void)
 +
- 	handled = nmi_handle(NMI_LOCAL, regs);
- 	__this_cpu_add(nmi_stats.normal, handled);
- 	if (handled) {
-@@ -346,7 +348,7 @@ static void default_do_nmi(struct pt_regs *regs)
- 		 */
- 		if (handled > 1)
- 			__this_cpu_write(swallow_nmi, true);
--		return;
-+		goto out;
- 	}
- 
- 	/*
-@@ -378,7 +380,7 @@ static void default_do_nmi(struct pt_regs *regs)
- #endif
- 		__this_cpu_add(nmi_stats.external, 1);
- 		raw_spin_unlock(&nmi_reason_lock);
--		return;
-+		goto out;
- 	}
- 	raw_spin_unlock(&nmi_reason_lock);
- 
-@@ -416,8 +418,10 @@ static void default_do_nmi(struct pt_regs *regs)
- 		__this_cpu_add(nmi_stats.swallow, 1);
- 	else
- 		unknown_nmi_error(reason, regs);
-+
-+out:
-+	instrumentation_end();
- }
--NOKPROBE_SYMBOL(default_do_nmi);
+ #else /* !__ASSEMBLY__ */
  
  /*
-  * NMIs can page fault or hit breakpoints which will cause it to lose
-@@ -489,7 +493,7 @@ static DEFINE_PER_CPU(unsigned long, nmi_cr2);
-  */
- static DEFINE_PER_CPU(int, update_debug_stack);
+@@ -203,6 +215,10 @@ __visible noinstr void func(struct pt_regs *regs)
+ /* No ASM code emitted for NMI */
+ #define DECLARE_IDTENTRY_NMI(vector, func)
  
--static bool notrace is_debug_stack(unsigned long addr)
-+static noinstr bool is_debug_stack(unsigned long addr)
- {
- 	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
- 	unsigned long top = CEA_ESTACK_TOP(cs, DB);
-@@ -504,7 +508,6 @@ static bool notrace is_debug_stack(unsigned long addr)
- 	 */
- 	return addr >= bot && addr < top;
- }
--NOKPROBE_SYMBOL(is_debug_stack);
- #endif
++/* XEN NMI and DB wrapper */
++#define DECLARE_IDTENTRY_XEN(vector, func)				\
++	idtentry vector asm_exc_xen##func exc_##func has_error_code=0 sane=1
++
+ #endif /* __ASSEMBLY__ */
  
- DEFINE_IDTENTRY_NMI(exc_nmi)
+ /*
