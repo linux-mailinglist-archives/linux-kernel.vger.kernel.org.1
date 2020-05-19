@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB3F1D9FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1E61D9FE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgESSoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        id S1728256AbgESSo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgESSoY (ORCPT
+        with ESMTP id S1727011AbgESSoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:44:24 -0400
+        Tue, 19 May 2020 14:44:20 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50301C08C5C0;
-        Tue, 19 May 2020 11:44:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25485C08C5C0;
+        Tue, 19 May 2020 11:44:20 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb7Do-0006am-9M; Tue, 19 May 2020 20:44:12 +0200
+        id 1jb7Dp-0006bk-CM; Tue, 19 May 2020 20:44:13 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CE2001C0178;
-        Tue, 19 May 2020 20:44:11 +0200 (CEST)
-Date:   Tue, 19 May 2020 18:44:11 -0000
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 017191C0178;
+        Tue, 19 May 2020 20:44:13 +0200 (CEST)
+Date:   Tue, 19 May 2020 18:44:12 -0000
+From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel: Add more available bits for
- OFFCORE_RESPONSE of Intel Tremont
-Cc:     Stephane Eranian <eranian@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
+Subject: [tip: sched/urgent] sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200501125442.7030-1-kan.liang@linux.intel.com>
-References: <20200501125442.7030-1-kan.liang@linux.intel.com>
+        Phil Auld <pauld@redhat.com>, Ben Segall <bsegall@google.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200513135528.4742-1-vincent.guittot@linaro.org>
+References: <20200513135528.4742-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <158991385175.17951.3596220331125126731.tip-bot2@tip-bot2>
+Message-ID: <158991385289.17951.3658407082283832789.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,44 +49,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     0813c40556fce1eeefb996e020cc5339e0b84137
-Gitweb:        https://git.kernel.org/tip/0813c40556fce1eeefb996e020cc5339e0b84137
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Fri, 01 May 2020 05:54:42 -07:00
+Commit-ID:     39f23ce07b9355d05a64ae303ce20d1c4b92b957
+Gitweb:        https://git.kernel.org/tip/39f23ce07b9355d05a64ae303ce20d1c4b92b957
+Author:        Vincent Guittot <vincent.guittot@linaro.org>
+AuthorDate:    Wed, 13 May 2020 15:55:28 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 19 May 2020 20:34:16 +02:00
+CommitterDate: Tue, 19 May 2020 20:34:10 +02:00
 
-perf/x86/intel: Add more available bits for OFFCORE_RESPONSE of Intel Tremont
+sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list
 
-The mask in the extra_regs for Intel Tremont need to be extended to
-allow more defined bits.
+Although not exactly identical, unthrottle_cfs_rq() and enqueue_task_fair()
+are quite close and follow the same sequence for enqueuing an entity in the
+cfs hierarchy. Modify unthrottle_cfs_rq() to use the same pattern as
+enqueue_task_fair(). This fixes a problem already faced with the latter and
+add an optimization in the last for_each_sched_entity loop.
 
-"Outstanding Requests" (bit 63) is only available on MSR_OFFCORE_RSP0;
-
-Fixes: 6daeb8737f8a ("perf/x86/intel: Add Tremont core PMU support")
-Reported-by: Stephane Eranian <eranian@google.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes: fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
+Reported-by Tao Zhou <zohooouoto@zoho.com.cn>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200501125442.7030-1-kan.liang@linux.intel.com
+Reviewed-by: Phil Auld <pauld@redhat.com>
+Reviewed-by: Ben Segall <bsegall@google.com>
+Link: https://lkml.kernel.org/r/20200513135528.4742-1-vincent.guittot@linaro.org
 ---
- arch/x86/events/intel/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 42 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 332954c..ca35c8b 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -1892,8 +1892,8 @@ static __initconst const u64 tnt_hw_cache_extra_regs
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c6d57c3..538ba5d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4774,7 +4774,6 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	struct rq *rq = rq_of(cfs_rq);
+ 	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
+ 	struct sched_entity *se;
+-	int enqueue = 1;
+ 	long task_delta, idle_task_delta;
  
- static struct extra_reg intel_tnt_extra_regs[] __read_mostly = {
- 	/* must define OFFCORE_RSP_X first, see intel_fixup_er() */
--	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0xffffff9fffull, RSP_0),
--	INTEL_UEVENT_EXTRA_REG(0x02b7, MSR_OFFCORE_RSP_1, 0xffffff9fffull, RSP_1),
-+	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0x800ff0ffffff9fffull, RSP_0),
-+	INTEL_UEVENT_EXTRA_REG(0x02b7, MSR_OFFCORE_RSP_1, 0xff0ffffff9fffull, RSP_1),
- 	EVENT_EXTRA_END
- };
+ 	se = cfs_rq->tg->se[cpu_of(rq)];
+@@ -4798,26 +4797,44 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	idle_task_delta = cfs_rq->idle_h_nr_running;
+ 	for_each_sched_entity(se) {
+ 		if (se->on_rq)
+-			enqueue = 0;
++			break;
++		cfs_rq = cfs_rq_of(se);
++		enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
  
++		cfs_rq->h_nr_running += task_delta;
++		cfs_rq->idle_h_nr_running += idle_task_delta;
++
++		/* end evaluation on encountering a throttled cfs_rq */
++		if (cfs_rq_throttled(cfs_rq))
++			goto unthrottle_throttle;
++	}
++
++	for_each_sched_entity(se) {
+ 		cfs_rq = cfs_rq_of(se);
+-		if (enqueue) {
+-			enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
+-		} else {
+-			update_load_avg(cfs_rq, se, 0);
+-			se_update_runnable(se);
+-		}
++
++		update_load_avg(cfs_rq, se, UPDATE_TG);
++		se_update_runnable(se);
+ 
+ 		cfs_rq->h_nr_running += task_delta;
+ 		cfs_rq->idle_h_nr_running += idle_task_delta;
+ 
++
++		/* end evaluation on encountering a throttled cfs_rq */
+ 		if (cfs_rq_throttled(cfs_rq))
+-			break;
++			goto unthrottle_throttle;
++
++		/*
++		 * One parent has been throttled and cfs_rq removed from the
++		 * list. Add it back to not break the leaf list.
++		 */
++		if (throttled_hierarchy(cfs_rq))
++			list_add_leaf_cfs_rq(cfs_rq);
+ 	}
+ 
+-	if (!se)
+-		add_nr_running(rq, task_delta);
++	/* At this point se is NULL and we are at root level*/
++	add_nr_running(rq, task_delta);
+ 
++unthrottle_throttle:
+ 	/*
+ 	 * The cfs_rq_throttled() breaks in the above iteration can result in
+ 	 * incomplete leaf list maintenance, resulting in triggering the
+@@ -4826,7 +4843,8 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	for_each_sched_entity(se) {
+ 		cfs_rq = cfs_rq_of(se);
+ 
+-		list_add_leaf_cfs_rq(cfs_rq);
++		if (list_add_leaf_cfs_rq(cfs_rq))
++			break;
+ 	}
+ 
+ 	assert_list_leaf_cfs_rq(rq);
