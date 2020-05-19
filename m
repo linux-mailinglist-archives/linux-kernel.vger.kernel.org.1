@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAC01DA275
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67C11DA26F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgESUUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        id S1727981AbgESUUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbgESUUo (ORCPT
+        with ESMTP id S1727956AbgESUUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 16:20:44 -0400
+        Tue, 19 May 2020 16:20:14 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC5EC08C5C0;
-        Tue, 19 May 2020 13:20:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED1EC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 13:20:13 -0700 (PDT)
 Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
         by Galois.linutronix.de with esmtp (Exim 4.80)
         (envelope-from <bigeasy@linutronix.de>)
-        id 1jb8ig-00012c-Sv; Tue, 19 May 2020 22:20:10 +0200
+        id 1jb8ih-00012c-Cv; Tue, 19 May 2020 22:20:11 +0200
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -29,11 +29,13 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Evgeniy Polyakov <zbr@ioremap.net>, netdev@vger.kernel.org,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 6/8] connector/cn_proc: Protect send_msg() with a local lock
-Date:   Tue, 19 May 2020 22:19:10 +0200
-Message-Id: <20200519201912.1564477-7-bigeasy@linutronix.de>
+Subject: [PATCH 7/8] zram: Use local lock to protect per-CPU data
+Date:   Tue, 19 May 2020 22:19:11 +0200
+Message-Id: <20200519201912.1564477-8-bigeasy@linutronix.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200519201912.1564477-1-bigeasy@linutronix.de>
 References: <20200519201912.1564477-1-bigeasy@linutronix.de>
@@ -46,62 +48,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 
-send_msg() disables preemption to avoid out-of-order messages. As the
-code inside the preempt disabled section acquires regular spinlocks,
-which are converted to 'sleeping' spinlocks on a PREEMPT_RT kernel and
-eventually calls into a memory allocator, this conflicts with the RT
-semantics.
+The zcomp driver uses per-CPU compression. The per-CPU data pointer is
+acquired with get_cpu_ptr() which implicitly disables preemption.
+It allocates memory inside the preempt disabled region which conflicts
+with the PREEMPT_RT semantics.
 
-Convert it to a local_lock which allows RT kernels to substitute them with
-a real per CPU lock. On non RT kernels this maps to preempt_disable() as
-before. No functional change.
+Replace the implicit preemption control with an explicit local lock.
+This allows RT kernels to substitute it with a real per CPU lock, which
+serializes the access but keeps the code section preemptible. On non RT
+kernels this maps to preempt_disable() as before, i.e. no functional
+change.
 
-[bigeasy: Patch description]
+[bigeasy: Use local_lock(), description, drop reordering]
 
-Cc: Evgeniy Polyakov <zbr@ioremap.net>
-Cc: netdev@vger.kernel.org
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Nitin Gupta <ngupta@vflare.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
 Signed-off-by: Mike Galbraith <umgwanakikbuti@gmail.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/connector/cn_proc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/block/zram/zcomp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
-index d58ce664da843..055b0c86a0693 100644
---- a/drivers/connector/cn_proc.c
-+++ b/drivers/connector/cn_proc.c
-@@ -18,6 +18,7 @@
- #include <linux/pid_namespace.h>
-=20
- #include <linux/cn_proc.h>
+diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+index 1a8564a79d8dc..32854d460b299 100644
+--- a/drivers/block/zram/zcomp.c
++++ b/drivers/block/zram/zcomp.c
+@@ -11,6 +11,7 @@
+ #include <linux/sched.h>
+ #include <linux/cpu.h>
+ #include <linux/crypto.h>
 +#include <linux/locallock.h>
 =20
- /*
-  * Size of a cn_msg followed by a proc_event structure.  Since the
-@@ -40,10 +41,11 @@ static struct cb_id cn_proc_event_id =3D { CN_IDX_PROC,=
- CN_VAL_PROC };
+ #include "zcomp.h"
 =20
- /* proc_event_counts is used as the sequence number of the netlink message=
- */
- static DEFINE_PER_CPU(__u32, proc_event_counts) =3D { 0 };
-+static DEFINE_LOCAL_LOCK(send_msg_lock);
-=20
- static inline void send_msg(struct cn_msg *msg)
- {
--	preempt_disable();
-+	local_lock(send_msg_lock);
-=20
- 	msg->seq =3D __this_cpu_inc_return(proc_event_counts) - 1;
- 	((struct proc_event *)msg->data)->cpu =3D smp_processor_id();
-@@ -56,7 +58,7 @@ static inline void send_msg(struct cn_msg *msg)
- 	 */
- 	cn_netlink_send(msg, 0, CN_IDX_PROC, GFP_NOWAIT);
-=20
--	preempt_enable();
-+	local_unlock(send_msg_lock);
+@@ -111,14 +112,17 @@ ssize_t zcomp_available_show(const char *comp, char *=
+buf)
+ 	return sz;
  }
 =20
- void proc_fork_connector(struct task_struct *task)
++static DEFINE_LOCAL_LOCK(zcomp_lock);
++
+ struct zcomp_strm *zcomp_stream_get(struct zcomp *comp)
+ {
+-	return *get_cpu_ptr(comp->stream);
++	local_lock(zcomp_lock);
++	return *this_cpu_ptr(comp->stream);
+ }
+=20
+ void zcomp_stream_put(struct zcomp *comp)
+ {
+-	put_cpu_ptr(comp->stream);
++	local_unlock(zcomp_lock);
+ }
+=20
+ int zcomp_compress(struct zcomp_strm *zstrm,
 --=20
 2.26.2
 
