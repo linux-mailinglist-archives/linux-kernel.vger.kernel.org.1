@@ -2,147 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E971D8E7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 06:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A3A1D8E67
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgESEFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 00:05:48 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:38130 "EHLO inva020.nxp.com"
+        id S1728182AbgESD4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 23:56:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:1478 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726881AbgESEFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 00:05:45 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 465721A0013;
-        Tue, 19 May 2020 06:05:42 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CAF4F1A010C;
-        Tue, 19 May 2020 06:05:36 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DBAD340318;
-        Tue, 19 May 2020 12:05:26 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, ping.bai@nxp.com, aisheng.dong@nxp.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2 3/3] dt-bindings: timer: Convert i.MX SYSCTR to json-schema
-Date:   Tue, 19 May 2020 11:55:47 +0800
-Message-Id: <1589860547-3207-4-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589860547-3207-1-git-send-email-Anson.Huang@nxp.com>
-References: <1589860547-3207-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726605AbgESD4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 23:56:45 -0400
+IronPort-SDR: 3flFwuEZPmHp1nw+j2k3UBerhlRwCdUjKU6YlEL5SIOL8hQKSFRNk7YF1f0mVC2tr0tOPReENC
+ gOo2ThwUFZmg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 20:56:44 -0700
+IronPort-SDR: QFxRRniFx2tfaqKTiqe2/A9xXbhaFfZ1jvxhEj2bJAnqaKK53FIltX99ThRNHxjpRnNEdjPdPQ
+ ieiRoQO9fuhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,408,1583222400"; 
+   d="scan'208";a="264172224"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 18 May 2020 20:56:44 -0700
+Received: from [10.213.130.67] (ekotax-mobl.gar.corp.intel.com [10.213.130.67])
+        by linux.intel.com (Postfix) with ESMTP id 43E8F5802C9;
+        Mon, 18 May 2020 20:56:42 -0700 (PDT)
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+Subject: Re: [RESEND PATCH v8 0/3] Add Intel ComboPhy driver
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     robh@kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
+        qi-ming.wu@intel.com, yixin.zhu@intel.com
+References: <cover.1589530082.git.eswara.kota@linux.intel.com>
+ <1d58e6e6-4860-dbde-1b9e-e0804180cddb@ti.com>
+Message-ID: <3e7e3f45-1441-84bd-a218-63847363d9ff@linux.intel.com>
+Date:   Tue, 19 May 2020 11:56:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <1d58e6e6-4860-dbde-1b9e-e0804180cddb@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX SYSCTR binding to DT schema format using json-schema.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
----
-No changes.
----
- .../devicetree/bindings/timer/nxp,sysctr-timer.txt | 25 ----------
- .../bindings/timer/nxp,sysctr-timer.yaml           | 54 ++++++++++++++++++++++
- 2 files changed, 54 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/timer/nxp,sysctr-timer.txt
- create mode 100644 Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
+On 5/18/2020 9:49 PM, Kishon Vijay Abraham I wrote:
+> Dilip,
+>
+> On 5/15/2020 1:43 PM, Dilip Kota wrote:
+>> This patch series adds Intel ComboPhy driver, respective yaml schemas
+>>
+>> Changes on v8:
+>>    As per PHY Maintainer's request add description in comments for doing
+>>    register access through register map framework.
+>>
+>> Changes on v7:
+>>    As per System control driver maintainer's inputs remove
+>>      fwnode_to_regmap() definition and use device_node_get_regmap()
+> Can you fix this warning and resend the patch?
+> drivers/phy/intel/phy-intel-combo.c:229:6: warning: ‘cb_mode’ may be used
+> uninitialized in this function [-Wmaybe-uninitialized]
+>    ret = regmap_write(cbphy->hsiocfg, REG_COMBO_MODE(cbphy->bid), cb_mode);
+>    ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/phy/intel/phy-intel-combo.c:204:24: note: ‘cb_mode’ was declared here
+>    enum intel_combo_mode cb_mode;
+>                          ^~~~~~~
+I noticed this warning while preparing the patch.
+It sounds like false warning because:
+1.) "cb_mode" is initialized in the switch case based on the "mode = 
+cbphy->phy_mode;"
+2.) cbphy->phy_mode is initialized during the probe in 
+"intel_cbphy_fwnode_parse()" with one of the 3 values.
+PHY_PCIE_MODE, PHY_SATA_MODE, PHY_XPCS_MODE.
+3.) There is no chance of "cbphy->phy_mode" having different value.
+4.) And "cb_mode" will be initialized according to the "mode = 
+cbphy->phy_mode;"
+5.) Hence, there is no chance of "cb_mode" getting accessed uninitialized.
 
-diff --git a/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.txt b/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.txt
-deleted file mode 100644
-index d576599..0000000
---- a/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--NXP System Counter Module(sys_ctr)
--
--The system counter(sys_ctr) is a programmable system counter which provides
--a shared time base to Cortex A15, A7, A53, A73, etc. it is intended for use in
--applications where the counter is always powered and support multiple,
--unrelated clocks. The compare frame inside can be used for timer purpose.
--
--Required properties:
--
--- compatible :      should be "nxp,sysctr-timer"
--- reg :             Specifies the base physical address and size of the comapre
--                    frame and the counter control, read & compare.
--- interrupts :      should be the first compare frames' interrupt
--- clocks : 	    Specifies the counter clock.
--- clock-names: 	    Specifies the clock's name of this module
--
--Example:
--
--	system_counter: timer@306a0000 {
--		compatible = "nxp,sysctr-timer";
--		reg = <0x306a0000 0x20000>;/* system-counter-rd & compare */
--		clocks = <&clk_8m>;
--		clock-names = "per";
--		interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
--	};
-diff --git a/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml b/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-new file mode 100644
-index 0000000..830211c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/nxp,sysctr-timer.yaml
-@@ -0,0 +1,54 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/nxp,sysctr-timer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP System Counter Module(sys_ctr)
-+
-+maintainers:
-+  - Bai Ping <ping.bai@nxp.com>
-+
-+description: |
-+  The system counter(sys_ctr) is a programmable system counter
-+  which provides a shared time base to Cortex A15, A7, A53, A73,
-+  etc. it is intended for use in applications where the counter
-+  is always powered and support multiple, unrelated clocks. The
-+  compare frame inside can be used for timer purpose.
-+
-+properties:
-+  compatible:
-+    const: nxp,sysctr-timer
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: per
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    timer@306a0000 {
-+        compatible = "nxp,sysctr-timer";
-+        reg = <0x306a0000 0x20000>;
-+        clocks = <&clk_8m>;
-+        clock-names = "per";
-+        interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
-+     };
--- 
-2.7.4
-
+Regards,
+Dilip
+> Thanks
+> Kishon
+>>      
+>> Changes on v6:
+>>    Rebase patches on the latest maintainer's branch
+>>    https://git.kernel.org/pub/scm/linux/kernel/git/kishon/linux-phy.git/?h=phy-for-5.7
+>> Dilip Kota (3):
+>>    dt-bindings: phy: Add PHY_TYPE_XPCS definition
+>>    dt-bindings: phy: Add YAML schemas for Intel ComboPhy
+>>    phy: intel: Add driver support for ComboPhy
+>>
+>>   .../devicetree/bindings/phy/intel,combo-phy.yaml   | 101 ++++
+>>   drivers/phy/intel/Kconfig                          |  14 +
+>>   drivers/phy/intel/Makefile                         |   1 +
+>>   drivers/phy/intel/phy-intel-combo.c                | 632 +++++++++++++++++++++
+>>   include/dt-bindings/phy/phy.h                      |   1 +
+>>   5 files changed, 749 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
+>>   create mode 100644 drivers/phy/intel/phy-intel-combo.c
+>>
