@@ -2,165 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB8E1D9591
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 13:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAA61D957A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 13:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgESLsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 07:48:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4867 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728798AbgESLr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 07:47:58 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B7585B6E4C3FA3958D6D;
-        Tue, 19 May 2020 19:47:54 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 19 May 2020 19:47:47 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>
-CC:     <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
-        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [RFC PATCH v3 2/2] CPPC: add support for SW BOOST
-Date:   Tue, 19 May 2020 19:41:29 +0800
-Message-ID: <1589888489-13828-3-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1589888489-13828-1-git-send-email-wangxiongfeng2@huawei.com>
-References: <1589888489-13828-1-git-send-email-wangxiongfeng2@huawei.com>
+        id S1728722AbgESLoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 07:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbgESLoF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 07:44:05 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFB5C08C5C0;
+        Tue, 19 May 2020 04:44:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=i/jtSTSQlToCGqMg1V6jGHW2xzHSbUDOgdHVIrB8dzY=; b=TYgG8EpJqFSmsxPMOIGUuUVYi
+        4qhSxnegror40ySupeBudw0I8hLpyWZdTXJbD6EWZaB+gpDmpTqGm9SNIYA6ktyjoevOyBZJRkAVb
+        vUjUKytksSEhivQ8Mk2GmB5GMxW5fwDPFhd6QAv+rHccKbgBDLrpYf5B5f3L8fUtnhCOkwwPGQXuM
+        meG+3tQpAGwLsrJpOc0qwN6oZKhWm2JSI75DshabhMfeK7aDGP5ljAFGxTaNVI3n/4wtMksDixuaV
+        ShIgEPfU97Z0lNrqKfFrF7rzwUaUHn5By24AlmYQSvpRWNrxSXy0m3kzvGJynsrt+Wn6JLrLPFrjo
+        TmhOqb73Q==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:42220)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jb0el-00056N-K6; Tue, 19 May 2020 12:43:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jb0ef-0005hE-Ts; Tue, 19 May 2020 12:43:29 +0100
+Date:   Tue, 19 May 2020 12:43:29 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lukasz Stelmach <l.stelmach@samsung.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Miao <eric.miao@nvidia.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Grant Likely <grant.likely@arm.com>
+Subject: Re: [PATCH v6] ARM: boot: Obtain start of physical memory from DTB
+Message-ID: <20200519114329.GB1551@shell.armlinux.org.uk>
+References: <CGME20200429082134eucas1p2415c5269202529e6b019f2d70c1b5572@eucas1p2.samsung.com>
+ <20200429082120.16259-1-geert+renesas@glider.be>
+ <dleftjmu645mqn.fsf%l.stelmach@samsung.com>
+ <CAMuHMdXxq6m6gebQbWvxDynDcZ7dLyZzKC_QroK63L8FGeac1Q@mail.gmail.com>
+ <20200519094637.GZ1551@shell.armlinux.org.uk>
+ <CAMuHMdU5DG06G4H=+PH+OONMT_9oE==KS=wP+bLgY9xVCez6Ww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdU5DG06G4H=+PH+OONMT_9oE==KS=wP+bLgY9xVCez6Ww@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To add SW BOOST support for CPPC, we need to get the max frequency of
-boost mode and non-boost mode. ACPI spec 6.2 section 8.4.7.1 describe
-the following two CPC registers.
+On Tue, May 19, 2020 at 01:21:09PM +0200, Geert Uytterhoeven wrote:
+> Hi Russell,
+> 
+> CC devicetree
+> 
+> On Tue, May 19, 2020 at 11:46 AM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> > On Tue, May 19, 2020 at 11:44:17AM +0200, Geert Uytterhoeven wrote:
+> > > On Tue, May 19, 2020 at 10:54 AM Lukasz Stelmach <l.stelmach@samsung.com> wrote:
+> > > > It was <2020-04-29 śro 10:21>, when Geert Uytterhoeven wrote:
+> > > > > Currently, the start address of physical memory is obtained by masking
+> > > > > the program counter with a fixed mask of 0xf8000000.  This mask value
+> > > > > was chosen as a balance between the requirements of different platforms.
+> > > > > However, this does require that the start address of physical memory is
+> > > > > a multiple of 128 MiB, precluding booting Linux on platforms where this
+> > > > > requirement is not fulfilled.
+> > > > >
+> > > > > Fix this limitation by obtaining the start address from the DTB instead,
+> > > > > if available (either explicitly passed, or appended to the kernel).
+> > > > > Fall back to the traditional method when needed.
+> > > > >
+> > > > > This allows to boot Linux on r7s9210/rza2mevb using the 64 MiB of SDRAM
+> > > > > on the RZA2MEVB sub board, which is located at 0x0C000000 (CS3 space),
+> > > > > i.e. not at a multiple of 128 MiB.
+> > > > >
+> > > > > Suggested-by: Nicolas Pitre <nico@fluxnic.net>
+> > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > > Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+> > > > > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > > > Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> > > > > ---
+> > > >
+> > > > [...]
+> > > >
+> > > > Apparently reading physical memory layout from DTB breaks crashdump
+> > > > kernels. A crashdump kernel is loaded into a region of memory, that is
+> > > > reserved in the original (i.e. to be crashed) kernel. The reserved
+> > > > region is large enough for the crashdump kernel to run completely inside
+> > > > it and don't modify anything outside it, just read and dump the remains
+> > > > of the crashed kernel. Using the information from DTB makes the
+> > > > decompressor place the kernel outside of the dedicated region.
+> > > >
+> > > > The log below shows that a zImage and DTB are loaded at 0x18eb8000 and
+> > > > 0x193f6000 (physical). The kernel is expected to run at 0x18008000, but
+> > > > it is decompressed to 0x00008000 (see r4 reported before jumping from
+> > > > within __enter_kernel). If I were to suggest something, there need to be
+> > > > one more bit of information passed in the DTB telling the decompressor
+> > > > to use the old masking technique to determain kernel address. It would
+> > > > be set in the DTB loaded along with the crashdump kernel.
+> > >
+> > > Shouldn't the DTB passed to the crashkernel describe which region of
+> > > memory is to be used instead?
+> >
+> > Definitely not.  The crashkernel needs to know where the RAM in the
+> > machine is, so that it can create a coredump of the crashed kernel.
+> 
+> So the DTB should describe both ;-)
+> 
+> > > Describing "to use the old masking technique" sounds a bit hackish to me.
+> > > I guess it cannot just restrict the /memory node to the reserved region,
+> > > as the crashkernel needs to be able to dump the remains of the crashed
+> > > kernel, which lie outside this region.
+> >
+> > Correct.
+> >
+> > > However, something under /chosen should work.
+> >
+> > Yet another sticky plaster...
+> 
+> IMHO the old masking technique is the hacky solution covered by
+> plasters.
 
-"Highest performance is the absolute maximum performance an individual
-processor may reach, assuming ideal conditions. This performance level
-may not be sustainable for long durations, and may only be achievable if
-other platform components are in a specific state; for example, it may
-require other processors be in an idle state.
+One line of code is not "covered by plasters".  There are no plasters.
+It's a solution that works for 99.99% of people, unlike your approach
+that has had a stream of issues over the last four months, and has
+required many reworks of the code to fix each one.  That in itself
+speaks volumes about the suitability of the approach.
 
-Nominal Performance is the maximum sustained performance level of the
-processor, assuming ideal operating conditions. In absence of an
-external constraint (power, thermal, etc.) this is the performance level
-the platform is expected to be able to maintain continuously. All
-processors are expected to be able to sustain their nominal performance
-state simultaneously."
+> DT describes the hardware.
 
-To add SW BOOST support for CPPC, we can use Highest Performance as the
-max performance in boost mode and Nominal Performance as the max
-performance in non-boost mode. If the Highest Performance is greater
-than the Nominal Performance, we assume SW BOOST is supported.
+Right, so DT is correct.
 
-The current CPPC driver does not support SW BOOST and use 'Highest
-Performance' as the max performance the CPU can achieve. 'Nominal
-Performance' is used to convert 'performance' to 'frequency'. That
-means, if firmware enable boost and provide a value for Highest
-Performance which is greater than Nominal Performance, boost feature is
-enabled by default.
+> In general, where to put the kernel is a
+> software policy, and thus doesn't belong in DT, except perhaps under
+> /chosen.  But that would open another can of worms, as people usually
+> have no business in specifying where the kernel should be located.
+> In the crashkernel case, there is a clear separation between memory to
+> be used by the crashkernel, and memory to be solely inspected by the
+> crashkernel.
+> 
+> Devicetree Specification, Release v0.3, Section 3.4 "/memory node" says:
+> 
+>     "The client program may access memory not covered by any memory
+>      reservations (see section 5.3)"
+> 
+> (Section 5.3 "Memory Reservation Block" only talks about structures in
+> the FDT, not about DTS)
+> 
+> Hence according to the above, the crashkernel is rightfully allowed to
+> do whatever it wants with all memory under the /memory node.
+> However, there is also
+> Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt.
+> This suggests the crashkernel should be passed a DTB that contains a
+> /reserved-memory node, describing which memory cannot be used freely.
+> Then the decompressor needs to take this into account when deciding
+> where the put the kernel.
 
-Because SW BOOST is disabled by default, so, after this patch, boost
-feature is disabled by default even if boost is enabled by firmware.
+So you want to throw yet more complexity at this solution to try and
+make it work...
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+> Yes, the above requires changing code. But at least it provides a
+> path forward, getting rid of the fragile old masking technique.
 
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index bda0b24..792ed9e 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -37,6 +37,7 @@
-  * requested etc.
-  */
- static struct cppc_cpudata **all_cpu_data;
-+static bool boost_supported;
- 
- struct cppc_workaround_oem_info {
- 	char oem_id[ACPI_OEM_ID_SIZE + 1];
-@@ -310,7 +311,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * Section 8.4.7.1.1.5 of ACPI 6.1 spec)
- 	 */
- 	policy->min = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_nonlinear_perf);
--	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
- 
- 	/*
- 	 * Set cpuinfo.min_freq to Lowest to make the full range of performance
-@@ -318,7 +319,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * nonlinear perf
- 	 */
- 	policy->cpuinfo.min_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_perf);
--	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
- 
- 	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu_num);
- 	policy->shared_type = cpu->shared_type;
-@@ -343,6 +344,13 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	cpu->cur_policy = policy;
- 
-+	/*
-+	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
-+	 * is supported.
-+	 */
-+	if (cpu->perf_caps.highest_perf > cpu->perf_caps.nominal_perf)
-+		boost_supported = true;
-+
- 	/* Set policy->cur to max now. The governors will adjust later. */
- 	policy->cur = cppc_cpufreq_perf_to_khz(cpu,
- 					cpu->perf_caps.highest_perf);
-@@ -410,6 +418,32 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
- 	return cppc_get_rate_from_fbctrs(cpu, fb_ctrs_t0, fb_ctrs_t1);
- }
- 
-+static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
-+{
-+	struct cppc_cpudata *cpudata;
-+	int ret = 0;
-+
-+	if (!boost_supported) {
-+		pr_err("BOOST not supported by CPU or firmware\n");
-+		return -EINVAL;
-+	}
-+
-+	cpudata = all_cpu_data[policy->cpu];
-+	if (state)
-+		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
-+					cpudata->perf_caps.highest_perf);
-+	else
-+		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
-+					cpudata->perf_caps.nominal_perf);
-+	policy->cpuinfo.max_freq = policy->max;
-+
-+	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static struct cpufreq_driver cppc_cpufreq_driver = {
- 	.flags = CPUFREQ_CONST_LOOPS,
- 	.verify = cppc_verify_policy,
-@@ -417,6 +451,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
- 	.get = cppc_cpufreq_get_rate,
- 	.init = cppc_cpufreq_cpu_init,
- 	.stop_cpu = cppc_cpufreq_stop_cpu,
-+	.set_boost = cppc_cpufreq_set_boost,
- 	.name = "cppc_cpufreq",
- };
- 
+It's hardly fragile when it's worked fine for the last 20+ years,
+whereas your solution can't work without some regression being reported
+within a couple of weeks of it being applied.  Again, that speaks
+volumes about which one is better than the other.
+
+Continually patching this approach to workaround one issue after another
+shows that it is _this_ solution that is the fragile implementation.
+
+A fragile implementation is by definition one that keeps breaking.
+That's yours.  The masking approach hasn't "broken" for anyone, and
+hasn't been the cause of one single regression anywhere.  Yes, there
+are some platforms that it doesn't work for (because they choose to
+reserve the first chunk of RAM for something) but that is not a
+regression.
+
+So, I'm not going to apply the next revision of this patch for at least
+one whole kernel cycle - that means scheduling it for 5.10-rc at the
+earliest.
+
 -- 
-1.7.12.4
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
