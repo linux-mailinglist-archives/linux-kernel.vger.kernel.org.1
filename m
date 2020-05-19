@@ -2,92 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271261D9EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AECE1D9EF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgESSO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgESSOZ (ORCPT
+        id S1729478AbgESSPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:15:04 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:55916 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729457AbgESSPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:14:25 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4294FC08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:14:24 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x15so291951pfa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=GWcc8oVpXNGnhmVFSGsMCYNch8YIZsE+7UZfyDX1b1s=;
-        b=qDxV66tUkSvuPJb7KqJEMgMn6a6QQv5vMRFGKOOlXTaP9TVGqmf+swUWW6F3ibePpm
-         jGMjoYXGMJ8J9WOVwGakwM02ksOKmj9XmG+n8Y08QaAYsEih7trLFLwaLPbOB5jjIQYf
-         M6VJzccmMaUWK4jw+axMKaSnumIKZgFkncQKmXSBkOGyjK6KpvLwByruFYP26AUeF48n
-         vZhgrMVSMOJCgzy1lqW8+8G3bJ3vjtcERhDeWf4LqQeSdMGrK3jtpSbPFVjEOSJ6kmfE
-         MAkCOVpIY+z2/rCAXGW5/lFvs+sNwcKa8qUi9vV13a7eZ1lUXNUp0T4k2DnxpCWlFWg9
-         FWFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GWcc8oVpXNGnhmVFSGsMCYNch8YIZsE+7UZfyDX1b1s=;
-        b=NlLuaWO/Rxdfn4DtG/u7/uXZR/diUmLZqonNWm+XSJjJCgwcNc/l+caNDLo1VjXCYh
-         0L6JtPUvL1RhgVUNbQP5KjaLOGLwQSYMNrS+n6loEsXjSE+Er8BHZuqMTm3dI7NCLT3c
-         EW+a5QwCY74RI6p/6wdiN2+2IYJNgxTBTigAHH6WO+8yUMzxy+RxD8wNygP++YSER1Kp
-         O4XigOqXbL5qIXuZffKbUvJdrLpR+GBrt1ouc+x+ASp0Ykp1eb45zsoz4xSg1L5Wxc1w
-         odkiPjVoQhCQ35pnPvvUdoKfxsdGn3SCFx6JqWqmEt05CRxfpk8bFidb+V7gCo0voBlm
-         AAkw==
-X-Gm-Message-State: AOAM530bURskIFYNTK2OXYAlpeuuHXVE7luRR83eXpHDrWyDbX6HaiV8
-        GWyP/hYFtqiG4rusjAt3RTrB
-X-Google-Smtp-Source: ABdhPJwugN3E28mkgq62MwyOHN6GuwFZQCbSjgrj5P9JL3FNCPKsli5EFHbI2c2y0hHHPx8+GvXwhA==
-X-Received: by 2002:a62:5487:: with SMTP id i129mr312992pfb.77.1589912063535;
-        Tue, 19 May 2020 11:14:23 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:908:98af:f00e:87b6:e4b4:50f0])
-        by smtp.gmail.com with ESMTPSA id q201sm156543pfq.40.2020.05.19.11.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 11:14:22 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] net: qrtr: Fix passing invalid reference to qrtr_local_enqueue()
-Date:   Tue, 19 May 2020 23:44:16 +0530
-Message-Id: <20200519181416.4235-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Tue, 19 May 2020 14:15:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589912102; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WbWK+XDpZ1EpeB30moGdfoWRLNL/z7wIz2LDeq0cfpU=;
+ b=cALJeUigOd2UtDDodMFaIJ+TSsIRq45IyvTW9qPBt4YcxdSvUGHm5dg8Reu/iAp/RH2icsBt
+ GYBexS6EhIV3ZMKqoVM5w1NHYnPj/vuYS1m8jvngXGD5t3Dfp1hFXvP6ma99Gnr4YeioOHlw
+ DIWIN7MwwZCSsceDTQExShNVmqo=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec4220d.7fa2b94590a0-smtp-out-n05;
+ Tue, 19 May 2020 18:14:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF575C43636; Tue, 19 May 2020 18:14:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3E60BC433D2;
+        Tue, 19 May 2020 18:14:36 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 19 May 2020 11:14:36 -0700
+From:   rishabhb@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc-owner@vger.kernel.org
+Subject: Re: [PATCH v5 3/5] remoteproc: qcom: Update PIL relocation info on
+ load
+In-Reply-To: <20200513055641.1413100-4-bjorn.andersson@linaro.org>
+References: <20200513055641.1413100-1-bjorn.andersson@linaro.org>
+ <20200513055641.1413100-4-bjorn.andersson@linaro.org>
+Message-ID: <3ff29ccc94d3097fb39b7df377754af6@codeaurora.org>
+X-Sender: rishabhb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once the traversal of the list is completed with list_for_each_entry(),
-the iterator (node) will point to an invalid object. So passing this to
-qrtr_local_enqueue() which is outside of the iterator block is erroneous
-eventhough the object is not used.
-
-So fix this by passing NULL to qrtr_local_enqueue().
-
-Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- net/qrtr/qrtr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index 7ed31b5e77e4..2d8d6131bc5f 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -854,7 +854,7 @@ static int qrtr_bcast_enqueue(struct qrtr_node *node, struct sk_buff *skb,
- 	}
- 	mutex_unlock(&qrtr_node_lock);
- 
--	qrtr_local_enqueue(node, skb, type, from, to);
-+	qrtr_local_enqueue(NULL, skb, type, from, to);
- 
- 	return 0;
- }
--- 
-2.17.1
-
+On 2020-05-12 22:56, Bjorn Andersson wrote:
+> Update the PIL relocation information in IMEM with information about
+> where the firmware for various remoteprocs are loaded.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v4:
+> - Dropped unnecessary comment about ignoring return value.
+> 
+>  drivers/remoteproc/Kconfig          |  3 +++
+>  drivers/remoteproc/qcom_q6v5_adsp.c | 16 +++++++++++++---
+>  drivers/remoteproc/qcom_q6v5_mss.c  |  3 +++
+>  drivers/remoteproc/qcom_q6v5_pas.c  | 15 ++++++++++++---
+>  drivers/remoteproc/qcom_q6v5_wcss.c | 14 +++++++++++---
+>  drivers/remoteproc/qcom_wcnss.c     | 14 +++++++++++---
+>  6 files changed, 53 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 8088ca4dd6dc..6bd42a411ca8 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -126,6 +126,7 @@ config QCOM_Q6V5_ADSP
+>  	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+>  	depends on QCOM_SYSMON || QCOM_SYSMON=n
+>  	select MFD_SYSCON
+> +	select QCOM_PIL_INFO
+>  	select QCOM_MDT_LOADER
+>  	select QCOM_Q6V5_COMMON
+>  	select QCOM_RPROC_COMMON
+> @@ -158,6 +159,7 @@ config QCOM_Q6V5_PAS
+>  	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
+>  	depends on QCOM_SYSMON || QCOM_SYSMON=n
+>  	select MFD_SYSCON
+> +	select QCOM_PIL_INFO
+>  	select QCOM_MDT_LOADER
+>  	select QCOM_Q6V5_COMMON
+>  	select QCOM_RPROC_COMMON
+> @@ -209,6 +211,7 @@ config QCOM_WCNSS_PIL
+>  	depends on QCOM_SMEM
+>  	depends on QCOM_SYSMON || QCOM_SYSMON=n
+>  	select QCOM_MDT_LOADER
+> +	select QCOM_PIL_INFO
+>  	select QCOM_RPROC_COMMON
+>  	select QCOM_SCM
+>  	help
+> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
+> b/drivers/remoteproc/qcom_q6v5_adsp.c
+> index d2a2574dcf35..c539e89664cb 100644
+> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
+> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/soc/qcom/smem_state.h>
+> 
+>  #include "qcom_common.h"
+> +#include "qcom_pil_info.h"
+>  #include "qcom_q6v5.h"
+>  #include "remoteproc_internal.h"
+> 
+> @@ -82,6 +83,7 @@ struct qcom_adsp {
+>  	unsigned int halt_lpass;
+> 
+>  	int crash_reason_smem;
+> +	const char *info_name;
+> 
+>  	struct completion start_done;
+>  	struct completion stop_done;
+> @@ -164,10 +166,17 @@ static int qcom_adsp_shutdown(struct qcom_adsp 
+> *adsp)
+>  static int adsp_load(struct rproc *rproc, const struct firmware *fw)
+>  {
+>  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
+> +	int ret;
+> +
+> +	ret = qcom_mdt_load_no_init(adsp->dev, fw, rproc->firmware, 0,
+> +				    adsp->mem_region, adsp->mem_phys,
+> +				    adsp->mem_size, &adsp->mem_reloc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	qcom_pil_info_store(adsp->info_name, adsp->mem_reloc, 
+> adsp->mem_size);
+> 
+> -	return qcom_mdt_load_no_init(adsp->dev, fw, rproc->firmware, 0,
+> -			     adsp->mem_region, adsp->mem_phys, adsp->mem_size,
+> -			     &adsp->mem_reloc);
+> +	return 0;
+>  }
+> 
+>  static int adsp_start(struct rproc *rproc)
+> @@ -436,6 +445,7 @@ static int adsp_probe(struct platform_device *pdev)
+>  	adsp = (struct qcom_adsp *)rproc->priv;
+>  	adsp->dev = &pdev->dev;
+>  	adsp->rproc = rproc;
+> +	adsp->info_name = desc->sysmon_name;
+>  	platform_set_drvdata(pdev, adsp);
+> 
+>  	ret = adsp_alloc_memory_region(adsp);
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
+> b/drivers/remoteproc/qcom_q6v5_mss.c
+> index c4936f4d1e80..fdbcae11ae64 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -29,6 +29,7 @@
+> 
+>  #include "remoteproc_internal.h"
+>  #include "qcom_common.h"
+> +#include "qcom_pil_info.h"
+>  #include "qcom_q6v5.h"
+> 
+>  #include <linux/qcom_scm.h>
+> @@ -1221,6 +1222,8 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>  	else if (ret < 0)
+>  		dev_err(qproc->dev, "MPSS authentication failed: %d\n", ret);
+> 
+> +	qcom_pil_info_store("modem", mpss_reloc, qproc->mpss_size);
+> +
+>  release_firmware:
+>  	release_firmware(fw);
+>  out:
+> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c
+> b/drivers/remoteproc/qcom_q6v5_pas.c
+> index 3bb69f58e086..84cb19231c35 100644
+> --- a/drivers/remoteproc/qcom_q6v5_pas.c
+> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/soc/qcom/smem_state.h>
+> 
+>  #include "qcom_common.h"
+> +#include "qcom_pil_info.h"
+>  #include "qcom_q6v5.h"
+>  #include "remoteproc_internal.h"
+> 
+> @@ -64,6 +65,7 @@ struct qcom_adsp {
+>  	int pas_id;
+>  	int crash_reason_smem;
+>  	bool has_aggre2_clk;
+> +	const char *info_name;
+> 
+>  	struct completion start_done;
+>  	struct completion stop_done;
+> @@ -117,11 +119,17 @@ static void adsp_pds_disable(struct qcom_adsp
+> *adsp, struct device **pds,
+>  static int adsp_load(struct rproc *rproc, const struct firmware *fw)
+>  {
+>  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
+> +	int ret;
+> 
+> -	return qcom_mdt_load(adsp->dev, fw, rproc->firmware, adsp->pas_id,
+> -			     adsp->mem_region, adsp->mem_phys, adsp->mem_size,
+> -			     &adsp->mem_reloc);
+> +	ret = qcom_mdt_load(adsp->dev, fw, rproc->firmware, adsp->pas_id,
+> +			    adsp->mem_region, adsp->mem_phys, adsp->mem_size,
+> +			    &adsp->mem_reloc);
+> +	if (ret)
+> +		return ret;
+> 
+> +	qcom_pil_info_store(adsp->info_name, adsp->mem_reloc, 
+> adsp->mem_size);
+mem_reloc is used to calculate  offset and then we again add that offset 
+to the
+ioremapped region base. So we should pass adsp->mem_phys as start here?
+> +
+> +	return 0;
+>  }
+> 
+>  static int adsp_start(struct rproc *rproc)
+> @@ -405,6 +413,7 @@ static int adsp_probe(struct platform_device *pdev)
+>  	adsp->rproc = rproc;
+>  	adsp->pas_id = desc->pas_id;
+>  	adsp->has_aggre2_clk = desc->has_aggre2_clk;
+> +	adsp->info_name = desc->sysmon_name;
+>  	platform_set_drvdata(pdev, adsp);
+> 
+>  	ret = adsp_alloc_memory_region(adsp);
+> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c
+> b/drivers/remoteproc/qcom_q6v5_wcss.c
+> index f1924b740a10..962e37a86b8b 100644
+> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
+> @@ -421,10 +421,18 @@ static void *q6v5_wcss_da_to_va(struct rproc
+> *rproc, u64 da, size_t len)
+>  static int q6v5_wcss_load(struct rproc *rproc, const struct firmware 
+> *fw)
+>  {
+>  	struct q6v5_wcss *wcss = rproc->priv;
+> +	int ret;
+> +
+> +	ret = qcom_mdt_load_no_init(wcss->dev, fw, rproc->firmware,
+> +				    0, wcss->mem_region, wcss->mem_phys,
+> +				    wcss->mem_size, &wcss->mem_reloc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Failures only affect post mortem debugging, so ignore return value 
+> */
+> +	qcom_pil_info_store("wcnss", wcss->mem_reloc, wcss->mem_size);
+> 
+> -	return qcom_mdt_load_no_init(wcss->dev, fw, rproc->firmware,
+> -				     0, wcss->mem_region, wcss->mem_phys,
+> -				     wcss->mem_size, &wcss->mem_reloc);
+> +	return ret;
+>  }
+> 
+>  static const struct rproc_ops q6v5_wcss_ops = {
+> diff --git a/drivers/remoteproc/qcom_wcnss.c 
+> b/drivers/remoteproc/qcom_wcnss.c
+> index 5d65e1a9329a..229482b3231f 100644
+> --- a/drivers/remoteproc/qcom_wcnss.c
+> +++ b/drivers/remoteproc/qcom_wcnss.c
+> @@ -27,6 +27,7 @@
+> 
+>  #include "qcom_common.h"
+>  #include "remoteproc_internal.h"
+> +#include "qcom_pil_info.h"
+>  #include "qcom_wcnss.h"
+> 
+>  #define WCNSS_CRASH_REASON_SMEM		422
+> @@ -145,10 +146,17 @@ void qcom_wcnss_assign_iris(struct qcom_wcnss 
+> *wcnss,
+>  static int wcnss_load(struct rproc *rproc, const struct firmware *fw)
+>  {
+>  	struct qcom_wcnss *wcnss = (struct qcom_wcnss *)rproc->priv;
+> +	int ret;
+> +
+> +	ret = qcom_mdt_load(wcnss->dev, fw, rproc->firmware, WCNSS_PAS_ID,
+> +			    wcnss->mem_region, wcnss->mem_phys,
+> +			    wcnss->mem_size, &wcnss->mem_reloc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	qcom_pil_info_store("wcnss", wcnss->mem_reloc, wcnss->mem_size);
+> 
+> -	return qcom_mdt_load(wcnss->dev, fw, rproc->firmware, WCNSS_PAS_ID,
+> -			     wcnss->mem_region, wcnss->mem_phys,
+> -			     wcnss->mem_size, &wcnss->mem_reloc);
+> +	return 0;
+>  }
+> 
+>  static void wcnss_indicate_nv_download(struct qcom_wcnss *wcnss)
