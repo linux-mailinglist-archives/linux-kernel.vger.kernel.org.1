@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB35E1D986C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566AE1D9841
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgESNqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        id S1728757AbgESNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729327AbgESNp6 (ORCPT
+        with ESMTP id S1729213AbgESNpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:45:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DE0C08C5C1;
-        Tue, 19 May 2020 06:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qCsBvrh+KJD94OzZIg2wzK8eCwrltTUzrmGt8F6Hn0Y=; b=etRLBJXUk51bBqKHOncqZVvZyI
-        vQtqk4TEib0NYj8DZbaJYTWVbFti0S1FOQTd8OOvMAOvvG0eS2z886Ra8KdtsaBczmwJT/lYKIa/q
-        kPbCLDNzaKZGTVer4rnsbXu/5PQUPlqefb96nX8OiUKS3OzpI5MRZsEbjFpAp9JFwupLVwCSfFMHu
-        O/RNnLpEedx5Un+x3Exl18c0pjdk1wEN197kzQh2dzmpruxazCfrkrQCb7pLl19MmtTUEoxexHmud
-        ejW4iRE3Hxs5MV+slCZgYSzYLpYgDBm5mDmm10BLqkixlob6lKEkc0PntbPpD71QC5GQzubFsF2Vn
-        Np5UHAWA==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jb2ZA-0003wy-0R; Tue, 19 May 2020 13:45:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 20/20] maccess: return -ERANGE when copy_from_kernel_nofault_allowed fails
-Date:   Tue, 19 May 2020 15:44:49 +0200
-Message-Id: <20200519134449.1466624-21-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200519134449.1466624-1-hch@lst.de>
-References: <20200519134449.1466624-1-hch@lst.de>
+        Tue, 19 May 2020 09:45:34 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBFFC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 06:45:33 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:984c:ac0d:3200:67f3] (port=63315)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe.C4rlyn@I-T-Shed-Studio.eu>)
+        id 1jb2Yl-00085M-Be
+        for linux-kernel@vger.kernel.org; Tue, 19 May 2020 15:45:31 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe.C4rlyn@I-T-Shed-Studio.eu>
+Subject: 0.33 ms latency performance bottlenecks
+Message-ID: <138dae9d-a90f-7e67-959d-eaacc9f02699@I-T-Shed-Studio.eu>
+Date:   Tue, 19 May 2020 15:45:27 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the callers to distinguish a real unmapped address vs a range
-that can't be probed.
+I tried Renoise, a good tracker app with 0.33 ms latency. It was really 
+good. Tech Trance in the 90s was all about tracking.
 
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/maccess.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+( a little playlist here for interested 
+https://www.youtube.com/playlist?list=PLpA7__w8yeJ0g6cF0m_y_h-HWjzCNTuWm )
 
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 1e7d77656c596..4010d64189d21 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -25,7 +25,7 @@ bool __weak copy_from_kernel_nofault_allowed(void *dst, const void *unsafe_src,
- long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- {
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	copy_from_kernel_nofault_loop(dst, src, size, u64, Efault);
-@@ -69,7 +69,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	pagefault_disable();
- 	do {
-@@ -107,7 +107,7 @@ long copy_from_kernel_nofault(void *dst, const void *src, size_t size)
- 	mm_segment_t old_fs = get_fs();
- 
- 	if (!copy_from_kernel_nofault_allowed(dst, src, size))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
-@@ -174,7 +174,7 @@ long strncpy_from_kernel_nofault(char *dst, const void *unsafe_addr, long count)
- 	if (unlikely(count <= 0))
- 		return 0;
- 	if (!copy_from_kernel_nofault_allowed(dst, unsafe_addr, count))
--		return -EFAULT;
-+		return -ERANGE;
- 
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
--- 
-2.26.2
+Latency on the amiga at that time was very low. More like 0.33 ms 
+latency, or even 0.2.
+
+We want this kind of latency again. Also having in mind a few samples 
+for clocking the D/A well if necessary.
+
+D/A could be a 1bit converter with few analogue components on the 
+output, maybe simply a 1 pole diode filter, if possible. This could work 
+well on a bitstream shifted up in frequency.
+
+It seems to use almost a whole cpu just at this latency. It works well 
+though.
+
+One might want to look into performance bottlenecks here, hardware aid, 
+or cpu instruction set enhancements. Inner loop optimization beyond HZ 
+timer etc, which is at 91 here.
+
+Serene Greetings,
+Ywe Cærlyn
+I-T Shed Studio.
+
+
 
