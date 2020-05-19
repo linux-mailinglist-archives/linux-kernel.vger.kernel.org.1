@@ -2,169 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989441D9737
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C263B1D9743
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgESNLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:11:05 -0400
-Received: from mga02.intel.com ([134.134.136.20]:10145 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728705AbgESNLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:11:04 -0400
-IronPort-SDR: c4t4SSwR/JNBF3lCrIwTh+v3Qmhi/MhIMmA9ss2up+76oStqQWOpnw/Mpgdb2lEgZ8wrYYzFVp
- r2Ga4UrGIi6Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 06:11:04 -0700
-IronPort-SDR: Q1oJwjhWRHQZVxyRT2XVq6iFqHxtT7QDhVGshWTbMBpzbO6OUFVFWexIReRlCIeAOBMM1iDsnf
- eRNW9Bzes32g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
-   d="scan'208";a="288951757"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.171.98]) ([10.249.171.98])
-  by fmsmga004.fm.intel.com with ESMTP; 19 May 2020 06:10:59 -0700
-Reply-To: like.xu@intel.com
-Subject: Re: [PATCH v11 10/11] KVM: x86/pmu: Check guest LBR availability in
- case host reclaims them
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
-        wei.w.wang@intel.com
-References: <20200514083054.62538-1-like.xu@linux.intel.com>
- <20200514083054.62538-11-like.xu@linux.intel.com>
- <20200519111559.GJ279861@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Organization: Intel OTC
-Message-ID: <3a234754-e103-907f-9b06-44b5e7ae12d3@intel.com>
-Date:   Tue, 19 May 2020 21:10:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728955AbgESNMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728845AbgESNMf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:12:35 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112CFC08C5C1;
+        Tue, 19 May 2020 06:12:35 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v16so9609576ljc.8;
+        Tue, 19 May 2020 06:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aNjx9E4L84Rs/lSF6ocaxMnVGmTTxZ1+/o5Yt5fcl2U=;
+        b=iw7Yvp/F9oKwqOokLlksaqSUJwWnsp/Ah/TQH1FKVmevQ3PojWBhwAzebDCQ99gqpS
+         NHtS/aR3g9/4lw+lWDLDvlyI1uMgFDxQYRl6CMawSckWg108nmR8D4Eb2blS0YX/B+in
+         aHMEjFv4KcCFc2D8btP/yZtl9ZMNnnrv9kSr+uU8fPDmVx6K+1SvnzjhLu3oBZc+ETUZ
+         /Yc1Br/QThTpBUdvBZ+RLdsFhq53u4Mzmsh39WtTPpT8OyR3wT+k4m4wxuRE75VArQbu
+         hBpc6p2G+zeC4tGJVI4wJA1Rc7cAaVqb0GifHWXbbkgPsmhTwOHGEOxLgxFgVLMH+8W5
+         LYLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aNjx9E4L84Rs/lSF6ocaxMnVGmTTxZ1+/o5Yt5fcl2U=;
+        b=tEmQw6VB9K2gLfi9nnlWpIbXyTWnmyiykiLeGkWLdvkN3Urn3OrH0VOVuDyMnhsyQs
+         cPHFtpNHTEmL7efSCbqJhHTBse9znvwax6n4YpiZWvqtPRAAMOyG+l/XWd5F7mYs+jcw
+         E4valmKbPT58EPjS3YHfEm0/iEM2qCaeBWE8rbME8ZUdr+9WNhut9Wj1+6LxXJv7BuUN
+         be61aqJ0D3PPXSlflKKEPxjsOpAT4pNH/mNwDW2IQwH7G52Cw89J/HC7o0XwO4mb21j4
+         g1yETpyXI4VEqgaxB8JDKIrId3e5rAv9UIBpSCMpmxfmELe8vzznJ/8G5XySPCxmVYew
+         +0BA==
+X-Gm-Message-State: AOAM53362HTImTEmQY3Uc+mrkAdlZ/slDAb0cqEgJvuALO5HqGt8dj2J
+        G382ZmHE8rIiQTkqL9BWfD48lcQ0h7DKlam38xw=
+X-Google-Smtp-Source: ABdhPJzl/UhbhNWg6Hj8ZwS9CHEcguHzAL89jkjLrh/kvMftgW36E0vCQy2q+ffcr27qloL2tP6HYIm2JUyI0VU7TxE=
+X-Received: by 2002:a2e:878b:: with SMTP id n11mr13623551lji.196.1589893953567;
+ Tue, 19 May 2020 06:12:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200519111559.GJ279861@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200519030036.1785-1-zhang.lyra@gmail.com>
+In-Reply-To: <20200519030036.1785-1-zhang.lyra@gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Tue, 19 May 2020 21:12:22 +0800
+Message-ID: <CADBw62oewy=9GK3jet4Y2=JmHqBMmDQ7XMADD8uOiiwxHOEGbg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] clk: sprd: mark the local clock symbols static
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/19 19:15, Peter Zijlstra wrote:
-> On Thu, May 14, 2020 at 04:30:53PM +0800, Like Xu wrote:
+On Tue, May 19, 2020 at 11:00 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
 >
->> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->> index ea4faae56473..db185dca903d 100644
->> --- a/arch/x86/kvm/vmx/pmu_intel.c
->> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->> @@ -646,6 +646,43 @@ static void intel_pmu_lbr_cleanup(struct kvm_vcpu *vcpu)
->>   		intel_pmu_free_lbr_event(vcpu);
->>   }
->>   
->> +static bool intel_pmu_lbr_is_availabile(struct kvm_vcpu *vcpu)
->> +{
->> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->> +
->> +	if (!pmu->lbr_event)
->> +		return false;
->> +
->> +	if (event_is_oncpu(pmu->lbr_event)) {
->> +		intel_pmu_intercept_lbr_msrs(vcpu, false);
->> +	} else {
->> +		intel_pmu_intercept_lbr_msrs(vcpu, true);
->> +		return false;
->> +	}
->> +
->> +	return true;
->> +}
-> This is unreadable gunk, what?
-
-Abstractly, it is saying "KVM would passthrough the LBR satck MSRs if
-event_is_oncpu() is true, otherwise cancel the passthrough state if any."
-
-I'm using 'event->oncpu != -1' to represent the guest LBR event
-is scheduled on rather than 'event->state == PERF_EVENT_STATE_ERROR'.
-
-For intel_pmu_intercept_lbr_msrs(), false means to passthrough the LBR stack
-MSRs to the vCPU, and true means to cancel the passthrough state and make
-LBR MSR accesses trapped by the KVM.
-
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 >
->> +/*
->> + * Higher priority host perf events (e.g. cpu pinned) could reclaim the
->> + * pmu resources (e.g. LBR) that were assigned to the guest. This is
->> + * usually done via ipi calls (more details in perf_install_in_context).
->> + *
->> + * Before entering the non-root mode (with irq disabled here), double
->> + * confirm that the pmu features enabled to the guest are not reclaimed
->> + * by higher priority host events. Otherwise, disallow vcpu's access to
->> + * the reclaimed features.
->> + */
->> +static void intel_pmu_availability_check(struct kvm_vcpu *vcpu)
->> +{
->> +	lockdep_assert_irqs_disabled();
->> +
->> +	if (lbr_is_enabled(vcpu) && !intel_pmu_lbr_is_availabile(vcpu) &&
->> +		(vmcs_read64(GUEST_IA32_DEBUGCTL) & DEBUGCTLMSR_LBR))
->> +		pr_warn_ratelimited("kvm: vcpu-%d: LBR is temporarily unavailable.\n",
->> +			vcpu->vcpu_id);
-> More unreadable nonsense; when the events go into ERROR state, it's a
-> permanent fail, they'll not come back.
-It's not true.  The guest LBR event with 'ERROR state' or 'oncpu != -1' 
-would be
-lazy released and re-created in the next time the 
-intel_pmu_create_lbr_event() is
-called and it's supposed to be re-scheduled and re-do availability_check() 
-as well.
-
- From the perspective of the guest user, the guest LBR is only temporarily 
-unavailable
-until the host no longer reclaims the LBR.
+> There's a few pll gate clocks which were not marked with static, and
+> those clock are used only in the current file, so add static key word
+> for them.
 >
->> +}
->> +
->>   struct kvm_pmu_ops intel_pmu_ops = {
->>   	.find_arch_event = intel_find_arch_event,
->>   	.find_fixed_event = intel_find_fixed_event,
->> @@ -662,4 +699,5 @@ struct kvm_pmu_ops intel_pmu_ops = {
->>   	.reset = intel_pmu_reset,
->>   	.deliver_pmi = intel_pmu_deliver_pmi,
->>   	.lbr_cleanup = intel_pmu_lbr_cleanup,
->> +	.availability_check = intel_pmu_availability_check,
->>   };
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 9969d663826a..80d036c5f64a 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -6696,8 +6696,10 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->>   
->>   	pt_guest_enter(vmx);
->>   
->> -	if (vcpu_to_pmu(vcpu)->version)
->> +	if (vcpu_to_pmu(vcpu)->version) {
->>   		atomic_switch_perf_msrs(vmx);
->> +		kvm_x86_ops.pmu_ops->availability_check(vcpu);
->> +	}
-> AFAICT you just did a call out to the kvm_pmu crud in
-> atomic_switch_perf_msrs(), why do another call?
-In fact, availability_check() is only called here for just one time.
+> Fixes: 0e4b8a2349f3 ("clk: sprd: add clocks support for SC9863A")
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-The callchain looks like:
-- vmx_vcpu_run()
-     - kvm_x86_ops.pmu_ops->availability_check();
-         - intel_pmu_availability_check()
-             - intel_pmu_lbr_is_availabile()
-                 - event_is_oncpu() ...
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
-Thanks,
-Like Xu
+> ---
+>  drivers/clk/sprd/sc9863a-clk.c | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
 >
+> diff --git a/drivers/clk/sprd/sc9863a-clk.c b/drivers/clk/sprd/sc9863a-clk.c
+> index 9568ec956ee4..ad2e0f9f8563 100644
+> --- a/drivers/clk/sprd/sc9863a-clk.c
+> +++ b/drivers/clk/sprd/sc9863a-clk.c
+> @@ -23,22 +23,22 @@
+>  #include "pll.h"
+>
+>  /* mpll*_gate clocks control cpu cores, they were enabled by default */
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll0_gate, "mpll0-gate", "ext-26m", 0x94,
+> -                            0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(dpll0_gate, "dpll0-gate", "ext-26m", 0x98,
+> -                            0x1000, BIT(0), 0, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(lpll_gate, "lpll-gate", "ext-26m", 0x9c,
+> -                            0x1000, BIT(0), 0, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(gpll_gate, "gpll-gate", "ext-26m", 0xa8,
+> -                            0x1000, BIT(0), 0, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(dpll1_gate, "dpll1-gate", "ext-26m", 0x1dc,
+> -                            0x1000, BIT(0), 0, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll1_gate, "mpll1-gate", "ext-26m", 0x1e0,
+> -                            0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll2_gate, "mpll2-gate", "ext-26m", 0x1e4,
+> -                            0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> -SPRD_PLL_SC_GATE_CLK_FW_NAME(isppll_gate, "isppll-gate", "ext-26m", 0x1e8,
+> -                            0x1000, BIT(0), 0, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll0_gate, "mpll0-gate", "ext-26m", 0x94,
+> +                                   0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(dpll0_gate, "dpll0-gate", "ext-26m", 0x98,
+> +                                   0x1000, BIT(0), 0, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(lpll_gate, "lpll-gate", "ext-26m", 0x9c,
+> +                                   0x1000, BIT(0), 0, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(gpll_gate, "gpll-gate", "ext-26m", 0xa8,
+> +                                   0x1000, BIT(0), 0, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(dpll1_gate, "dpll1-gate", "ext-26m", 0x1dc,
+> +                                   0x1000, BIT(0), 0, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll1_gate, "mpll1-gate", "ext-26m", 0x1e0,
+> +                                   0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(mpll2_gate, "mpll2-gate", "ext-26m", 0x1e4,
+> +                                   0x1000, BIT(0), CLK_IGNORE_UNUSED, 0, 240);
+> +static SPRD_PLL_SC_GATE_CLK_FW_NAME(isppll_gate, "isppll-gate", "ext-26m",
+> +                                   0x1e8, 0x1000, BIT(0), 0, 0, 240);
+>
+>  static struct sprd_clk_common *sc9863a_pmu_gate_clks[] = {
+>         /* address base is 0x402b0000 */
+> --
+> 2.20.1
 >
 
+
+-- 
+Baolin Wang
