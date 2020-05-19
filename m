@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFF81D9D8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFDB1D9D73
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729316AbgESRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 13:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgESRKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 13:10:53 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143E9C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 10:10:53 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f13so3819592wmc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 10:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xs2DZn2lRCTad+sBiNc+BctIq4JOr+bWIH96SVwqx0c=;
-        b=fqL0h3c2Xp2hoK5XrJG/CvNKsMpLGHx9LRNboyPqdPp9c/5mvU5A/y/Q8stJOThqjp
-         keJv+36/P7d+MxJQZ4QYLzAw4eBJAAZg8lsHyPzcKnM9wgIhKZ/CMnK5ef/pC3Xzrp79
-         Op1JvCnUuMY/QJIW/Av/ffefwKvq2w4hy1GQYdEadYCDLE7AG4YqBWAzbuEP5KboSWAB
-         iIUo+FMMQ3iNkPdpgLHWgwlZHvZE/+cQjkn8YUznKN9v9Zk9uSXUss8rBHFGDD0XP4ER
-         pGyxboWn5rpsi/O3glHXHYFEf5jSypil8wxw2WNBVbsf9HfvJ9jqp+4QQXWNOiuTWHGb
-         d5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xs2DZn2lRCTad+sBiNc+BctIq4JOr+bWIH96SVwqx0c=;
-        b=ZKVLR+26Eood1mR9+Fxn7ytufKsOeAdKyph5WFdETjDNfBuT7OL+etHaO5CB6ihCfJ
-         2ZE2SpKjtyJaFUks4bJOPPmdnR0ErVLZDTDCOzz+cmn76GVE5HI4hROy1ETgUKbPKQDE
-         1UyPMsn0ZCLtG0yNo6pDLe52CM0aYl/SKwtqWib89Sy8R6Dhbh+PqytJopGGzvDa+YZA
-         s/HIqWpZb39A7VwmuGcr1ZVyO1n1CjKF0BcSFAOYmVK8jOKSpxEgRIa9+tkrG1uPq6Mm
-         V5XYxD2ukpKaKA5GqYd71saq2uYnh8d+jY5pphxOMnBRyloqQCDeP5HGhzUFRv/03vV0
-         whYw==
-X-Gm-Message-State: AOAM530XBpxD7lHLBko/5QYF/ECY3ZwEsYpHf3NP6fxB/eyKai1wnf1J
-        8YLu4szOqp7Z/u2OycvcHk+skUljwWI=
-X-Google-Smtp-Source: ABdhPJxxGkSH456U4yFcE/ijxHPZM9/w0ZbpuYtWJa6tbyJ/6YaYlZNtNUfv2VH19pVYKoaRtWmTRg==
-X-Received: by 2002:a1c:23d2:: with SMTP id j201mr406894wmj.48.1589907886459;
-        Tue, 19 May 2020 10:04:46 -0700 (PDT)
-Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.googlemail.com with ESMTPSA id b19sm352685wmd.26.2020.05.19.10.04.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 10:04:45 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: add api to get clk consummer from clk_hw
-Date:   Tue, 19 May 2020 19:04:40 +0200
-Message-Id: <20200519170440.294601-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
+        id S1729372AbgESREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 13:04:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728778AbgESREw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 13:04:52 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0831B20708;
+        Tue, 19 May 2020 17:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589907891;
+        bh=njSEaIFh9RXLbuVk3Wkbg0wE3C25mo8/xTDnz+hRj+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TKwyT2Jk0UBMVvsQTn9cesqoPHXxrQrs5IanXez7s1I76HFXhGAUNttUnKWPJmGNg
+         QVV0Z8ETdh6RJY4Obym+GG0Y9MPQQbzWl5xp5gD0liwNgiz5wuJ/xFWx8XRqzWNWeV
+         EzsCk+9E5uurfFqYN45ToduDt0RsJkVXjL8/nziE=
+Date:   Tue, 19 May 2020 19:04:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.6 000/192] 5.6.14-rc2 review
+Message-ID: <20200519170449.GA1085364@kroah.com>
+References: <20200519054650.064501564@linuxfoundation.org>
+ <CA+G9fYuD66kXa-4kYNFsS+HBmu7qSSpCxSnVVSYzb++X=o=2cg@mail.gmail.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYuD66kXa-4kYNFsS+HBmu7qSSpCxSnVVSYzb++X=o=2cg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clk_register() is deprecated. Using 'clk' member of struct clk_hw is
-discouraged. With this constrainst, it is difficult for driver to
-register clocks using the clk_hw API and then use the clock with
-the consummer API
+On Tue, May 19, 2020 at 06:25:05PM +0530, Naresh Kamboju wrote:
+> On Tue, 19 May 2020 at 11:17, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.6.14 release.
+> > There are 192 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 21 May 2020 05:45:41 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.14-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 
-This add a simple helper, clk_hw_get_clk(), to get a struct clk from
-a struct clk_hw. Like other clk_get() variant, each call to this helper
-must be balanced with a call to clk_put().
+Thanks for testing all of these and letting me know.
 
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- drivers/clk/clk.c            | 17 +++++++++++++++++
- include/linux/clk-provider.h |  1 +
- 2 files changed, 18 insertions(+)
-
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 6fd23ce3cb03..d9946e192cbc 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3625,6 +3625,23 @@ struct clk *clk_hw_create_clk(struct device *dev, struct clk_hw *hw,
- 	return clk;
- }
- 
-+/**
-+ * clk_hw_get_clk: get clk consummer given an clk_hw
-+ * @hw: clk_hw associated with the clk being consumed
-+ *
-+ * Returns: new clk consummer
-+ * This is the function to be used by providers which need
-+ * to get a consummer clk and act on the clock element
-+ * Calls to this function must be balanced with calls clk_put()
-+ */
-+struct clk *clk_hw_get_clk(struct clk_hw *hw)
-+{
-+	struct device *dev = hw->core->dev;
-+
-+	return clk_hw_create_clk(dev, hw, dev_name(dev), NULL);
-+}
-+EXPORT_SYMBOL(clk_hw_get_clk);
-+
- static int clk_cpy_name(const char **dst_p, const char *src, bool must_exist)
- {
- 	const char *dst;
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index bd1ee9039558..a8f466bdda1a 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
-@@ -1088,6 +1088,7 @@ static inline struct clk_hw *__clk_get_hw(struct clk *clk)
- 	return (struct clk_hw *)clk;
- }
- #endif
-+struct clk *clk_hw_get_clk(struct clk_hw *hw);
- unsigned int clk_hw_get_num_parents(const struct clk_hw *hw);
- struct clk_hw *clk_hw_get_parent(const struct clk_hw *hw);
- struct clk_hw *clk_hw_get_parent_by_index(const struct clk_hw *hw,
--- 
-2.25.4
-
+greg k-h
