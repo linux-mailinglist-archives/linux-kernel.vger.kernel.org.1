@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9BF1D9393
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198671D937A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 11:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbgESJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 05:42:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:57518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728702AbgESJmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 05:42:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5268C13FD;
-        Tue, 19 May 2020 02:42:03 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.75.102])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D08D53F305;
-        Tue, 19 May 2020 02:42:00 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, suzuki.poulose@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 08/17] arm64/cpufeature: Add remaining feature bits in ID_MMFR4 register
-Date:   Tue, 19 May 2020 15:10:45 +0530
-Message-Id: <1589881254-10082-9-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
+        id S1726632AbgESJk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 05:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgESJkz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 05:40:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA18BC061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 02:40:55 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id C65332A03BE
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] drm/mediatek: mtk_mt8173_hdmi_phy: Remove unnused const variables
+Date:   Tue, 19 May 2020 11:40:45 +0200
+Message-Id: <20200519094045.2447940-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable all remaining feature bits like EVT, CCIDX, LSM, HPDS, CnP, XNX,
-SpecSEI in ID_MMFR4 register per ARM DDI 0487F.a.
+There are some `static const u8` variables that are not used, this
+triggers a warning building with `make W=1`, it is safe to remove them,
+so do it and make the compiler more happy.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-
-Suggested-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
- arch/arm64/include/asm/sysreg.h |  8 ++++++++
- arch/arm64/kernel/cpufeature.c  | 13 +++++++++++++
- 2 files changed, 21 insertions(+)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 02b1246e7dbf..0a0cbb3add89 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -794,6 +794,14 @@
- #define ID_ISAR6_DP_SHIFT		4
- #define ID_ISAR6_JSCVT_SHIFT		0
+ .../gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c    | 48 -------------------
+ 1 file changed, 48 deletions(-)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c b/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c
+index 1c3575372230..827b93786fac 100644
+--- a/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c
++++ b/drivers/gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c
+@@ -107,54 +107,6 @@
+ #define RGS_HDMITX_5T1_EDG		(0xf << 4)
+ #define RGS_HDMITX_PLUG_TST		BIT(0)
  
-+#define ID_MMFR4_EVT_SHIFT		28
-+#define ID_MMFR4_CCIDX_SHIFT		24
-+#define ID_MMFR4_LSM_SHIFT		20
-+#define ID_MMFR4_HPDS_SHIFT		16
-+#define ID_MMFR4_CNP_SHIFT		12
-+#define ID_MMFR4_XNX_SHIFT		8
-+#define ID_MMFR4_SPECSEI_SHIFT		0
-+
- #define ID_MMFR5_ETS_SHIFT		0
- 
- #define ID_PFR0_DIT_SHIFT		24
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index c929aed9fc4b..92186c40b817 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -392,7 +392,20 @@ static const struct arm64_ftr_bits ftr_id_isar5[] = {
- };
- 
- static const struct arm64_ftr_bits ftr_id_mmfr4[] = {
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_EVT_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_CCIDX_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_LSM_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_HPDS_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_CNP_SHIFT, 4, 0),
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_MMFR4_XNX_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, 4, 4, 0),	/* ac2 */
-+	/*
-+	 * SpecSEI = 1 indicates that the PE might generate an SError on an
-+	 * external abort on speculative read. It is safe to assume that an
-+	 * SError might be generated than it will not be. Hence it has been
-+	 * classified as FTR_HIGHER_SAFE.
-+	 */
-+	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_HIGHER_SAFE, ID_MMFR4_SPECSEI_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
- 
+-static const u8 PREDIV[3][4] = {
+-	{0x0, 0x0, 0x0, 0x0},	/* 27Mhz */
+-	{0x1, 0x1, 0x1, 0x1},	/* 74Mhz */
+-	{0x1, 0x1, 0x1, 0x1}	/* 148Mhz */
+-};
+-
+-static const u8 TXDIV[3][4] = {
+-	{0x3, 0x3, 0x3, 0x2},	/* 27Mhz */
+-	{0x2, 0x1, 0x1, 0x1},	/* 74Mhz */
+-	{0x1, 0x0, 0x0, 0x0}	/* 148Mhz */
+-};
+-
+-static const u8 FBKSEL[3][4] = {
+-	{0x1, 0x1, 0x1, 0x1},	/* 27Mhz */
+-	{0x1, 0x0, 0x1, 0x1},	/* 74Mhz */
+-	{0x1, 0x0, 0x1, 0x1}	/* 148Mhz */
+-};
+-
+-static const u8 FBKDIV[3][4] = {
+-	{19, 24, 29, 19},	/* 27Mhz */
+-	{19, 24, 14, 19},	/* 74Mhz */
+-	{19, 24, 14, 19}	/* 148Mhz */
+-};
+-
+-static const u8 DIVEN[3][4] = {
+-	{0x2, 0x1, 0x1, 0x2},	/* 27Mhz */
+-	{0x2, 0x2, 0x2, 0x2},	/* 74Mhz */
+-	{0x2, 0x2, 0x2, 0x2}	/* 148Mhz */
+-};
+-
+-static const u8 HTPLLBP[3][4] = {
+-	{0xc, 0xc, 0x8, 0xc},	/* 27Mhz */
+-	{0xc, 0xf, 0xf, 0xc},	/* 74Mhz */
+-	{0xc, 0xf, 0xf, 0xc}	/* 148Mhz */
+-};
+-
+-static const u8 HTPLLBC[3][4] = {
+-	{0x2, 0x3, 0x3, 0x2},	/* 27Mhz */
+-	{0x2, 0x3, 0x3, 0x2},	/* 74Mhz */
+-	{0x2, 0x3, 0x3, 0x2}	/* 148Mhz */
+-};
+-
+-static const u8 HTPLLBR[3][4] = {
+-	{0x1, 0x1, 0x0, 0x1},	/* 27Mhz */
+-	{0x1, 0x2, 0x2, 0x1},	/* 74Mhz */
+-	{0x1, 0x2, 0x2, 0x1}	/* 148Mhz */
+-};
+-
+ static int mtk_hdmi_pll_prepare(struct clk_hw *hw)
+ {
+ 	struct mtk_hdmi_phy *hdmi_phy = to_mtk_hdmi_phy(hw);
 -- 
-2.20.1
+2.26.2
 
