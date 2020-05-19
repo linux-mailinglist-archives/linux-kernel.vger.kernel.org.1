@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CA61DA1F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693321DA20B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 22:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgESUBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 16:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
+        id S1728799AbgESUBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 16:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728174AbgEST6o (ORCPT
+        with ESMTP id S1728138AbgEST6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:44 -0400
+        Tue, 19 May 2020 15:58:42 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB70C08C5C1;
-        Tue, 19 May 2020 12:58:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29F0C08C5C0;
+        Tue, 19 May 2020 12:58:41 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8Nr-0008K6-Ia; Tue, 19 May 2020 21:58:39 +0200
+        id 1jb8No-0008LZ-Rh; Tue, 19 May 2020 21:58:37 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id C566F1C0813;
-        Tue, 19 May 2020 21:58:29 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:29 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id AE0E91C0837;
+        Tue, 19 May 2020 21:58:30 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:30 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Convert Spurious interrupt bug exception
- to IDTENTRY
+Subject: [tip: x86/entry] x86/entry: Convert Stack segment exception to IDTENTRY
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505134905.728077036@linutronix.de>
-References: <20200505134905.728077036@linutronix.de>
+In-Reply-To: <20200505134905.539867572@linutronix.de>
+References: <20200505134905.539867572@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991830969.17951.11332237832707777362.tip-bot2@tip-bot2>
+Message-ID: <158991831061.17951.221177603269494302.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,16 +52,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     8e82613acc64890cd95e02d0367f21ac005508bb
-Gitweb:        https://git.kernel.org/tip/8e82613acc64890cd95e02d0367f21ac005508bb
+Commit-ID:     24e4d217ea653837567c4763fa465d28d1422e63
+Gitweb:        https://git.kernel.org/tip/24e4d217ea653837567c4763fa465d28d1422e63
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 25 Feb 2020 23:16:26 +01:00
+AuthorDate:    Tue, 25 Feb 2020 23:16:24 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 May 2020 16:04:02 +02:00
+CommitterDate: Tue, 19 May 2020 16:04:01 +02:00
 
-x86/entry: Convert Spurious interrupt bug exception to IDTENTRY
+x86/entry: Convert Stack segment exception to IDTENTRY
 
-Convert #SPURIOUS to IDTENTRY_ERRORCODE:
+Convert #SS to IDTENTRY_ERRORCODE:
   - Implement the C entry point with DEFINE_IDTENTRY
   - Emit the ASM stub with DECLARE_IDTENTRY
   - Remove the ASM idtentry in 64bit
@@ -76,140 +75,150 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505134905.728077036@linutronix.de
+Link: https://lkml.kernel.org/r/20200505134905.539867572@linutronix.de
+
 
 
 ---
- arch/x86/entry/entry_32.S       | 7 -------
- arch/x86/entry/entry_64.S       | 1 -
- arch/x86/include/asm/idtentry.h | 1 +
- arch/x86/include/asm/traps.h    | 3 ---
- arch/x86/kernel/idt.c           | 2 +-
- arch/x86/kernel/traps.c         | 3 +--
- arch/x86/xen/enlighten_pv.c     | 2 +-
- arch/x86/xen/xen-asm_64.S       | 2 +-
- 8 files changed, 5 insertions(+), 16 deletions(-)
+ arch/x86/entry/entry_32.S       |  6 ------
+ arch/x86/entry/entry_64.S       |  1 -
+ arch/x86/include/asm/idtentry.h |  1 +
+ arch/x86/include/asm/traps.h    |  3 ---
+ arch/x86/kernel/idt.c           |  2 +-
+ arch/x86/kernel/traps.c         | 12 ++++--------
+ arch/x86/xen/enlighten_pv.c     |  2 +-
+ arch/x86/xen/xen-asm_64.S       |  2 +-
+ 8 files changed, 8 insertions(+), 21 deletions(-)
 
 diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 9d94a03..f7610e1 100644
+index b01dbb3..ffe43d2 100644
 --- a/arch/x86/entry/entry_32.S
 +++ b/arch/x86/entry/entry_32.S
-@@ -1333,13 +1333,6 @@ SYM_CODE_START(machine_check)
- SYM_CODE_END(machine_check)
+@@ -1318,12 +1318,6 @@ SYM_CODE_START(native_iret)
+ SYM_CODE_END(native_iret)
  #endif
  
--SYM_CODE_START(spurious_interrupt_bug)
+-SYM_CODE_START(stack_segment)
 -	ASM_CLAC
--	pushl	$0
--	pushl	$do_spurious_interrupt_bug
+-	pushl	$do_stack_segment
 -	jmp	common_exception
--SYM_CODE_END(spurious_interrupt_bug)
+-SYM_CODE_END(stack_segment)
 -
- #ifdef CONFIG_XEN_PV
- SYM_FUNC_START(xen_hypervisor_callback)
- 	/*
+ SYM_CODE_START(alignment_check)
+ 	ASM_CLAC
+ 	pushl	$do_alignment_check
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 5cecdd1..1a677ee 100644
+index 367a207..c92592d 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
 @@ -1073,7 +1073,6 @@ apicinterrupt IRQ_WORK_VECTOR			irq_work_interrupt		smp_irq_work_interrupt
   */
  
  idtentry	X86_TRAP_BP		int3			do_int3				has_error_code=0
--idtentry	X86_TRAP_SPURIOUS	spurious_interrupt_bug	do_spurious_interrupt_bug	has_error_code=0
+-idtentry	X86_TRAP_SS		stack_segment		do_stack_segment		has_error_code=1
+ idtentry	X86_TRAP_GP		general_protection	do_general_protection		has_error_code=1
+ idtentry	X86_TRAP_SPURIOUS	spurious_interrupt_bug	do_spurious_interrupt_bug	has_error_code=0
  idtentry	X86_TRAP_MF		coprocessor_error	do_coprocessor_error		has_error_code=0
- idtentry	X86_TRAP_AC		alignment_check		do_alignment_check		has_error_code=1
- idtentry	X86_TRAP_XF		simd_coprocessor_error	do_simd_coprocessor_error	has_error_code=0
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 986fc65..d309b06 100644
+index d517c09..4c0abd3 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -129,6 +129,7 @@ DECLARE_IDTENTRY(X86_TRAP_BR,		exc_bounds);
- DECLARE_IDTENTRY(X86_TRAP_UD,		exc_invalid_op);
- DECLARE_IDTENTRY(X86_TRAP_NM,		exc_device_not_available);
- DECLARE_IDTENTRY(X86_TRAP_OLD_MF,	exc_coproc_segment_overrun);
-+DECLARE_IDTENTRY(X86_TRAP_SPURIOUS,	exc_spurious_interrupt_bug);
- 
+@@ -133,5 +133,6 @@ DECLARE_IDTENTRY(X86_TRAP_OLD_MF,	exc_coproc_segment_overrun);
  /* Simple exception entries with error code pushed by hardware */
  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_TS,	exc_invalid_tss);
+ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_NP,	exc_segment_not_present);
++DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_SS,	exc_stack_segment);
+ 
+ #endif
 diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 3a096a4..4450f3b 100644
+index 970c888..5e580ff 100644
 --- a/arch/x86/include/asm/traps.h
 +++ b/arch/x86/include/asm/traps.h
-@@ -19,7 +19,6 @@ asmlinkage void double_fault(void);
+@@ -17,7 +17,6 @@ asmlinkage void int3(void);
+ #ifdef CONFIG_X86_64
+ asmlinkage void double_fault(void);
  #endif
+-asmlinkage void stack_segment(void);
+ asmlinkage void general_protection(void);
  asmlinkage void page_fault(void);
  asmlinkage void async_page_fault(void);
--asmlinkage void spurious_interrupt_bug(void);
- asmlinkage void coprocessor_error(void);
- asmlinkage void alignment_check(void);
- #ifdef CONFIG_X86_MCE
-@@ -33,7 +32,6 @@ asmlinkage void xen_xendebug(void);
+@@ -34,7 +33,6 @@ asmlinkage void xen_xennmi(void);
+ asmlinkage void xen_xendebug(void);
  asmlinkage void xen_int3(void);
  asmlinkage void xen_double_fault(void);
+-asmlinkage void xen_stack_segment(void);
+ asmlinkage void xen_general_protection(void);
  asmlinkage void xen_page_fault(void);
--asmlinkage void xen_spurious_interrupt_bug(void);
- asmlinkage void xen_coprocessor_error(void);
- asmlinkage void xen_alignment_check(void);
- #ifdef CONFIG_X86_MCE
-@@ -47,7 +45,6 @@ dotraplinkage void do_nmi(struct pt_regs *regs, long error_code);
+ asmlinkage void xen_spurious_interrupt_bug(void);
+@@ -50,7 +48,6 @@ dotraplinkage void do_debug(struct pt_regs *regs, long error_code);
+ dotraplinkage void do_nmi(struct pt_regs *regs, long error_code);
  dotraplinkage void do_int3(struct pt_regs *regs, long error_code);
  dotraplinkage void do_double_fault(struct pt_regs *regs, long error_code, unsigned long cr2);
+-dotraplinkage void do_stack_segment(struct pt_regs *regs, long error_code);
+ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code);
  dotraplinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code, unsigned long address);
--dotraplinkage void do_spurious_interrupt_bug(struct pt_regs *regs, long error_code);
- dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code);
- dotraplinkage void do_alignment_check(struct pt_regs *regs, long error_code);
- dotraplinkage void do_simd_coprocessor_error(struct pt_regs *regs, long error_code);
+ dotraplinkage void do_spurious_interrupt_bug(struct pt_regs *regs, long error_code);
 diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index 6f0af12..8e8936d 100644
+index b9acc7f..8d95cbf 100644
 --- a/arch/x86/kernel/idt.c
 +++ b/arch/x86/kernel/idt.c
-@@ -83,7 +83,7 @@ static const __initconst struct idt_data def_idts[] = {
+@@ -81,7 +81,7 @@ static const __initconst struct idt_data def_idts[] = {
+ 	INTG(X86_TRAP_OLD_MF,		asm_exc_coproc_segment_overrun),
+ 	INTG(X86_TRAP_TS,		asm_exc_invalid_tss),
  	INTG(X86_TRAP_NP,		asm_exc_segment_not_present),
- 	INTG(X86_TRAP_SS,		asm_exc_stack_segment),
- 	INTG(X86_TRAP_GP,		asm_exc_general_protection),
--	INTG(X86_TRAP_SPURIOUS,		spurious_interrupt_bug),
-+	INTG(X86_TRAP_SPURIOUS,		asm_exc_spurious_interrupt_bug),
+-	INTG(X86_TRAP_SS,		stack_segment),
++	INTG(X86_TRAP_SS,		asm_exc_stack_segment),
+ 	INTG(X86_TRAP_GP,		general_protection),
+ 	INTG(X86_TRAP_SPURIOUS,		spurious_interrupt_bug),
  	INTG(X86_TRAP_MF,		coprocessor_error),
- 	INTG(X86_TRAP_AC,		alignment_check),
- 	INTG(X86_TRAP_XF,		simd_coprocessor_error),
 diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index e65c761..2c638b9 100644
+index 88ba5f0..3dfdc4d 100644
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -867,8 +867,7 @@ do_simd_coprocessor_error(struct pt_regs *regs, long error_code)
- 	math_error(regs, error_code, X86_TRAP_XF);
+@@ -264,16 +264,12 @@ DEFINE_IDTENTRY_ERRORCODE(exc_segment_not_present)
+ 		      SIGBUS, 0, NULL);
  }
  
--dotraplinkage void
--do_spurious_interrupt_bug(struct pt_regs *regs, long error_code)
-+DEFINE_IDTENTRY(exc_spurious_interrupt_bug)
+-#define IP ((void __user *)uprobe_get_trap_addr(regs))
+-#define DO_ERROR(trapnr, signr, sicode, addr, str, name)		   \
+-dotraplinkage void do_##name(struct pt_regs *regs, long error_code)	   \
+-{									   \
+-	do_error_trap(regs, error_code, str, trapnr, signr, sicode, addr); \
++DEFINE_IDTENTRY_ERRORCODE(exc_stack_segment)
++{
++	do_error_trap(regs, error_code, "stack segment", X86_TRAP_SS, SIGBUS,
++		      0, NULL);
+ }
+ 
+-DO_ERROR(X86_TRAP_SS,     SIGBUS,           0, NULL, "stack segment",       stack_segment)
+-#undef IP
+-
+ dotraplinkage void do_alignment_check(struct pt_regs *regs, long error_code)
  {
- 	/*
- 	 * This addresses a Pentium Pro Erratum:
+ 	char *str = "alignment check";
 diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 9e648e0..180c86a 100644
+index 5437e28..333222a 100644
 --- a/arch/x86/xen/enlighten_pv.c
 +++ b/arch/x86/xen/enlighten_pv.c
-@@ -632,7 +632,7 @@ static struct trap_array_entry trap_array[] = {
+@@ -630,7 +630,7 @@ static struct trap_array_entry trap_array[] = {
+ 	TRAP_ENTRY(exc_coproc_segment_overrun,		false ),
+ 	TRAP_ENTRY(exc_invalid_tss,			false ),
  	TRAP_ENTRY(exc_segment_not_present,		false ),
- 	TRAP_ENTRY(exc_stack_segment,			false ),
- 	TRAP_ENTRY(exc_general_protection,		false ),
--	{ spurious_interrupt_bug,      xen_spurious_interrupt_bug,      false },
-+	TRAP_ENTRY(exc_spurious_interrupt_bug,		false ),
+-	{ stack_segment,               xen_stack_segment,               false },
++	TRAP_ENTRY(exc_stack_segment,			false ),
+ 	{ general_protection,          xen_general_protection,          false },
+ 	{ spurious_interrupt_bug,      xen_spurious_interrupt_bug,      false },
  	{ coprocessor_error,           xen_coprocessor_error,           false },
- 	{ alignment_check,             xen_alignment_check,             false },
- 	{ simd_coprocessor_error,      xen_simd_coprocessor_error,      false },
 diff --git a/arch/x86/xen/xen-asm_64.S b/arch/x86/xen/xen-asm_64.S
-index 802ec00..698a9c5 100644
+index c8ce7ad..0ecc055 100644
 --- a/arch/x86/xen/xen-asm_64.S
 +++ b/arch/x86/xen/xen-asm_64.S
-@@ -44,7 +44,7 @@ xen_pv_trap asm_exc_segment_not_present
- xen_pv_trap asm_exc_stack_segment
- xen_pv_trap asm_exc_general_protection
+@@ -41,7 +41,7 @@ xen_pv_trap double_fault
+ xen_pv_trap asm_exc_coproc_segment_overrun
+ xen_pv_trap asm_exc_invalid_tss
+ xen_pv_trap asm_exc_segment_not_present
+-xen_pv_trap stack_segment
++xen_pv_trap asm_exc_stack_segment
+ xen_pv_trap general_protection
  xen_pv_trap page_fault
--xen_pv_trap spurious_interrupt_bug
-+xen_pv_trap asm_exc_spurious_interrupt_bug
- xen_pv_trap coprocessor_error
- xen_pv_trap alignment_check
- #ifdef CONFIG_X86_MCE
+ xen_pv_trap spurious_interrupt_bug
