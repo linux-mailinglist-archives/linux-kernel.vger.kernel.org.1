@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146BA1DA18A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3F91DA191
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgEST6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S1727958AbgEST6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgEST6X (ORCPT
+        with ESMTP id S1727047AbgEST6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:58:23 -0400
+        Tue, 19 May 2020 15:58:24 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9C4C08C5C1;
-        Tue, 19 May 2020 12:58:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FA3C08C5C2;
+        Tue, 19 May 2020 12:58:24 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb8NW-00087w-Bm; Tue, 19 May 2020 21:58:18 +0200
+        id 1jb8NW-00088L-OW; Tue, 19 May 2020 21:58:18 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E78941C047E;
-        Tue, 19 May 2020 21:58:17 +0200 (CEST)
-Date:   Tue, 19 May 2020 19:58:17 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5F0B11C0178;
+        Tue, 19 May 2020 21:58:18 +0200 (CEST)
+Date:   Tue, 19 May 2020 19:58:18 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/idtentry: Provide IDTENTRY_DF
+Subject: [tip: x86/entry] x86/mce: Address objtools noinstr complaints
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505135315.583415264@linutronix.de>
-References: <20200505135315.583415264@linutronix.de>
+In-Reply-To: <20200505135315.476734898@linutronix.de>
+References: <20200505135315.476734898@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158991829784.17951.5084767126120807951.tip-bot2@tip-bot2>
+Message-ID: <158991829826.17951.7641601849300262770.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,156 +52,156 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     9bf779984c19883354f55a54283292b927939b6a
-Gitweb:        https://git.kernel.org/tip/9bf779984c19883354f55a54283292b927939b6a
+Commit-ID:     260ba6c939f6ac42c8a96d2b50750b18706f1663
+Gitweb:        https://git.kernel.org/tip/260ba6c939f6ac42c8a96d2b50750b18706f1663
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 25 Feb 2020 23:33:30 +01:00
+AuthorDate:    Tue, 21 Apr 2020 21:22:36 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 19 May 2020 16:04:14 +02:00
 
-x86/idtentry: Provide IDTENTRY_DF
+x86/mce: Address objtools noinstr complaints
 
-Provide a separate macro for #DF as this needs to emit paranoid only code
-and has also a special ASM stub in 32bit.
+Mark the relevant functions noinstr, use the plain non-instrumented MSR
+accessors. The only odd part is the instrumentation_begin()/end() pair around the
+indirect machine_check_vector() call as objtool can't figure that out. The
+possible invoked functions are annotated correctly.
+
+Also use notrace variant of nmi_enter/exit(). If MCEs happen then hardware
+latency tracing is the least of the worries.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra <peterz@infradead.org>
 Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200505135315.583415264@linutronix.de
-
+Link: https://lkml.kernel.org/r/20200505135315.476734898@linutronix.de
 
 
 ---
- arch/x86/include/asm/idtentry.h | 87 ++++++++++++++++++++++++++++++++-
- 1 file changed, 87 insertions(+)
+ arch/x86/kernel/cpu/mce/core.c    | 20 +++++++++++++++-----
+ arch/x86/kernel/cpu/mce/p5.c      |  4 +++-
+ arch/x86/kernel/cpu/mce/winchip.c |  4 +++-
+ kernel/time/timekeeping.c         |  2 +-
+ 4 files changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 060f9e3..9521f32 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -132,6 +132,35 @@ static __always_inline void __##func(struct pt_regs *regs,		\
- #define DEFINE_IDTENTRY_RAW(func)					\
- __visible noinstr void func(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index a72c013..a32a7e2 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -130,7 +130,7 @@ static void (*quirk_no_way_out)(int bank, struct mce *m, struct pt_regs *regs);
+ BLOCKING_NOTIFIER_HEAD(x86_mce_decoder_chain);
  
-+/**
-+ * DECLARE_IDTENTRY_RAW_ERRORCODE - Declare functions for raw IDT entry points
-+ *				    Error code pushed by hardware
-+ * @vector:	Vector number (ignored for C)
-+ * @func:	Function name of the entry point
-+ *
-+ * Maps to DECLARE_IDTENTRY_ERRORCODE()
-+ */
-+#define DECLARE_IDTENTRY_RAW_ERRORCODE(vector, func)			\
-+	DECLARE_IDTENTRY_ERRORCODE(vector, func)
-+
-+/**
-+ * DEFINE_IDTENTRY_RAW_ERRORCODE - Emit code for raw IDT entry points
-+ * @func:	Function name of the entry point
-+ *
-+ * @func is called from ASM entry code with interrupts disabled.
-+ *
-+ * The macro is written so it acts as function definition. Append the
-+ * body with a pair of curly brackets.
-+ *
-+ * Contrary to DEFINE_IDTENTRY_ERRORCODE() this does not invoke the
-+ * idtentry_enter/exit() helpers before and after the body invocation. This
-+ * needs to be done in the body itself if applicable. Use if extra work
-+ * is required before the enter/exit() helpers are invoked.
-+ */
-+#define DEFINE_IDTENTRY_RAW_ERRORCODE(func)				\
-+__visible noinstr void func(struct pt_regs *regs, unsigned long error_code)
-+
-+
- #ifdef CONFIG_X86_64
- /**
-  * DECLARE_IDTENTRY_IST - Declare functions for IST handling IDT entry points
-@@ -165,10 +194,58 @@ __visible noinstr void func(struct pt_regs *regs)
- #define DEFINE_IDTENTRY_NOIST(func)					\
- 	DEFINE_IDTENTRY_RAW(noist_##func)
+ /* Do initial initialization of a struct mce */
+-void mce_setup(struct mce *m)
++noinstr void mce_setup(struct mce *m)
+ {
+ 	memset(m, 0, sizeof(struct mce));
+ 	m->cpu = m->extcpu = smp_processor_id();
+@@ -140,12 +140,12 @@ void mce_setup(struct mce *m)
+ 	m->cpuid = cpuid_eax(1);
+ 	m->socketid = cpu_data(m->extcpu).phys_proc_id;
+ 	m->apicid = cpu_data(m->extcpu).initial_apicid;
+-	rdmsrl(MSR_IA32_MCG_CAP, m->mcgcap);
++	m->mcgcap = __rdmsr(MSR_IA32_MCG_CAP);
  
-+/**
-+ * DECLARE_IDTENTRY_DF - Declare functions for double fault
-+ * @vector:	Vector number (ignored for C)
-+ * @func:	Function name of the entry point
-+ *
-+ * Maps to DECLARE_IDTENTRY_RAW_ERRORCODE
-+ */
-+#define DECLARE_IDTENTRY_DF(vector, func)				\
-+	DECLARE_IDTENTRY_RAW_ERRORCODE(vector, func)
-+
-+/**
-+ * DEFINE_IDTENTRY_DF - Emit code for double fault
-+ * @func:	Function name of the entry point
-+ *
-+ * Maps to DEFINE_IDTENTRY_RAW_ERRORCODE
-+ */
-+#define DEFINE_IDTENTRY_DF(func)					\
-+	DEFINE_IDTENTRY_RAW_ERRORCODE(func)
-+
- #else	/* CONFIG_X86_64 */
-+
- /* Maps to a regular IDTENTRY on 32bit for now */
- # define DECLARE_IDTENTRY_IST		DECLARE_IDTENTRY
- # define DEFINE_IDTENTRY_IST		DEFINE_IDTENTRY
-+
-+/**
-+ * DECLARE_IDTENTRY_DF - Declare functions for double fault 32bit variant
-+ * @vector:	Vector number (ignored for C)
-+ * @func:	Function name of the entry point
-+ *
-+ * Declares two functions:
-+ * - The ASM entry point: asm_##func
-+ * - The C handler called from the C shim
-+ */
-+#define DECLARE_IDTENTRY_DF(vector, func)				\
-+	asmlinkage void asm_##func(void);				\
-+	__visible void func(struct pt_regs *regs,			\
-+			    unsigned long error_code,			\
-+			    unsigned long address)
-+
-+/**
-+ * DEFINE_IDTENTRY_DF - Emit code for double fault on 32bit
-+ * @func:	Function name of the entry point
-+ *
-+ * This is called through the doublefault shim which already provides
-+ * cr2 in the address argument.
-+ */
-+#define DEFINE_IDTENTRY_DF(func)					\
-+__visible noinstr void func(struct pt_regs *regs,			\
-+			    unsigned long error_code,			\
-+			    unsigned long address)
-+
- #endif	/* !CONFIG_X86_64 */
+ 	if (this_cpu_has(X86_FEATURE_INTEL_PPIN))
+-		rdmsrl(MSR_PPIN, m->ppin);
++		m->ppin = __rdmsr(MSR_PPIN);
+ 	else if (this_cpu_has(X86_FEATURE_AMD_PPIN))
+-		rdmsrl(MSR_AMD_PPIN, m->ppin);
++		m->ppin = __rdmsr(MSR_AMD_PPIN);
  
- /* C-Code mapping */
-@@ -212,6 +289,9 @@ __visible noinstr void func(struct pt_regs *regs)
- #define DECLARE_IDTENTRY_RAW(vector, func)				\
- 	DECLARE_IDTENTRY(vector, func)
+ 	m->microcode = boot_cpu_data.microcode;
+ }
+@@ -1895,10 +1895,12 @@ bool filter_mce(struct mce *m)
+ }
  
-+#define DECLARE_IDTENTRY_RAW_ERRORCODE(vector, func)			\
-+	DECLARE_IDTENTRY_ERRORCODE(vector, func)
-+
- #ifdef CONFIG_X86_64
- # define DECLARE_IDTENTRY_MCE(vector, func)				\
- 	idtentry_mce_db vector asm_##func func
-@@ -219,12 +299,19 @@ __visible noinstr void func(struct pt_regs *regs)
- # define DECLARE_IDTENTRY_DEBUG(vector, func)				\
- 	idtentry_mce_db vector asm_##func func
+ /* Handle unconfigured int18 (should never happen) */
+-static void unexpected_machine_check(struct pt_regs *regs)
++static noinstr void unexpected_machine_check(struct pt_regs *regs)
+ {
++	instrumentation_begin();
+ 	pr_err("CPU#%d: Unexpected int18 (Machine Check)\n",
+ 	       smp_processor_id());
++	instrumentation_end();
+ }
  
-+# define DECLARE_IDTENTRY_DF(vector, func)				\
-+	idtentry_df vector asm_##func func
-+
- #else
- # define DECLARE_IDTENTRY_MCE(vector, func)				\
- 	DECLARE_IDTENTRY(vector, func)
+ /* Call the installed machine check handler for this CPU setup. */
+@@ -1915,14 +1917,22 @@ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
+ 		return;
  
- # define DECLARE_IDTENTRY_DEBUG(vector, func)				\
- 	DECLARE_IDTENTRY(vector, func)
-+
-+/* No ASM emitted for DF as this goes through a C shim */
-+# define DECLARE_IDTENTRY_DF(vector, func)
-+
- #endif
+ 	nmi_enter();
++	/*
++	 * The call targets are marked noinstr, but objtool can't figure
++	 * that out because it's an indirect call. Annotate it.
++	 */
++	instrumentation_begin();
+ 	machine_check_vector(regs);
++	instrumentation_end();
+ 	nmi_exit();
+ }
  
- /* No ASM code emitted for NMI */
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+ {
+ 	idtentry_enter(regs);
++	instrumentation_begin();
+ 	machine_check_vector(regs);
++	instrumentation_end();
+ 	idtentry_exit(regs);
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/mce/p5.c b/arch/x86/kernel/cpu/mce/p5.c
+index eaebc4c..19e90ca 100644
+--- a/arch/x86/kernel/cpu/mce/p5.c
++++ b/arch/x86/kernel/cpu/mce/p5.c
+@@ -21,10 +21,11 @@
+ int mce_p5_enabled __read_mostly;
+ 
+ /* Machine check handler for Pentium class Intel CPUs: */
+-static void pentium_machine_check(struct pt_regs *regs)
++static noinstr void pentium_machine_check(struct pt_regs *regs)
+ {
+ 	u32 loaddr, hi, lotype;
+ 
++	instrumentation_begin();
+ 	rdmsr(MSR_IA32_P5_MC_ADDR, loaddr, hi);
+ 	rdmsr(MSR_IA32_P5_MC_TYPE, lotype, hi);
+ 
+@@ -37,6 +38,7 @@ static void pentium_machine_check(struct pt_regs *regs)
+ 	}
+ 
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
++	instrumentation_end();
+ }
+ 
+ /* Set up machine check reporting for processors with Intel style MCE: */
+diff --git a/arch/x86/kernel/cpu/mce/winchip.c b/arch/x86/kernel/cpu/mce/winchip.c
+index 90e3d60..9c9f0ab 100644
+--- a/arch/x86/kernel/cpu/mce/winchip.c
++++ b/arch/x86/kernel/cpu/mce/winchip.c
+@@ -17,10 +17,12 @@
+ #include "internal.h"
+ 
+ /* Machine check handler for WinChip C6: */
+-static void winchip_machine_check(struct pt_regs *regs)
++static noinstr void winchip_machine_check(struct pt_regs *regs)
+ {
++	instrumentation_begin();
+ 	pr_emerg("CPU0: Machine Check Exception.\n");
+ 	add_taint(TAINT_MACHINE_CHECK, LOCKDEP_NOW_UNRELIABLE);
++	instrumentation_end();
+ }
+ 
+ /* Set up machine check reporting on the Winchip C6 series */
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 9ebaab1..d20d489 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -953,7 +953,7 @@ EXPORT_SYMBOL_GPL(ktime_get_real_seconds);
+  * but without the sequence counter protect. This internal function
+  * is called just when timekeeping lock is already held.
+  */
+-time64_t __ktime_get_real_seconds(void)
++noinstr time64_t __ktime_get_real_seconds(void)
+ {
+ 	struct timekeeper *tk = &tk_core.timekeeper;
+ 
