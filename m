@@ -2,75 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75611DA168
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003151DA17C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgESTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56896 "EHLO mail.kernel.org"
+        id S1728136AbgESTx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:53:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:55386 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgESTxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:53:01 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BCD3207E8;
-        Tue, 19 May 2020 19:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589917981;
-        bh=rdizb6054sUWQ6fZD+89J2wGwwMQkGnOG0/yiHK/LbE=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ZKhevx5QN2OPN7XottC5bZLJlVfh5Rg8EfQxBPu3lxMvDVX6sXczyiVzISI71VjLL
-         k1gSSXozLucDwKGyaSo4zyvh8jAmRxyTB9p8TSuGonDZnKCHl2NKFO4P5U1DuCHRqZ
-         DNn+LI1kutOg3GO4GnQIaJA4Ody/rIKlZmAUjl1k=
-Date:   Tue, 19 May 2020 20:52:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org
-In-Reply-To: <20200511210134.1224532-2-lkundrak@v3.sk>
-References: <20200511210134.1224532-1-lkundrak@v3.sk> <20200511210134.1224532-2-lkundrak@v3.sk>
-Subject: Re: [PATCH 01/11] ASoC: mmp-sspa: Flip SNDRV_PCM_FMTBIT_S24_3LE on
-Message-Id: <158991797896.23137.453146749205778028.b4-ty@kernel.org>
+        id S1726721AbgESTx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:53:58 -0400
+IronPort-SDR: Yzy50tgAj/h/L9TOB29zHLm2Jvmj0SGQ26EnHUmuRXjUrovP2afaJt7oa7faxaH1JSCCiA0RMl
+ +IYGhqZO8FHA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 12:53:55 -0700
+IronPort-SDR: 5yUPvJyiI5ojACezJJKD+qA5M0IVQhE8H6B8r4NuEi3aBfC6dQID71J5aCvmOCS0fBJ9IMw5lR
+ ADiXKO6T3rWQ==
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="411754621"
+Received: from iwsiah-mobl.amr.corp.intel.com (HELO [10.209.55.229]) ([10.209.55.229])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 12:53:55 -0700
+From:   "Sean V Kelley" <sean.v.kelley@linux.intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] PCI: Add helpers to enable/disable CXL.mem and
+ CXL.cache
+Date:   Tue, 19 May 2020 12:53:55 -0700
+X-Mailer: MailMate (1.13.1r5671)
+Message-ID: <06AECD46-68DC-464F-A37E-F57A66E4F00D@linux.intel.com>
+In-Reply-To: <20200518165527.GA935823@bjorn-Precision-5520>
+References: <20200518165527.GA935823@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 May 2020 23:01:24 +0200, Lubomir Rintel wrote:
-> The hw_params() callback handles the 3-byte format, not
-> SNDRV_PCM_FMTBIT_S24_LE.
+On 18 May 2020, at 9:55, Bjorn Helgaas wrote:
 
-Applied to
+> On Mon, May 18, 2020 at 09:35:23AM -0700, Sean V Kelley wrote:
+>> With these helpers, a device driver can enable/disable access to
+>> CXL.mem and CXL.cache. Note that the device driver is responsible for
+>> managing the memory area.
+>>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@linux.intel.com>
+>> ---
+>>  drivers/pci/cxl.c | 93 
+>> ++++++++++++++++++++++++++++++++++++++++++++---
+>>  drivers/pci/pci.h |  8 ++++
+>>  2 files changed, 96 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/pci/cxl.c b/drivers/pci/cxl.c
+>> index 4437ca69ad33..0d0a1b82ea98 100644
+>> --- a/drivers/pci/cxl.c
+>> +++ b/drivers/pci/cxl.c
+>> @@ -24,6 +24,88 @@
+>>  #define PCI_CXL_HDM_COUNT(reg)		(((reg) & (3 << 4)) >> 4)
+>>  #define PCI_CXL_VIRAL			BIT(14)
+>>
+>> +#define PCI_CXL_CONFIG_LOCK		BIT(0)
+>> +
+>> +static void pci_cxl_unlock(struct pci_dev *dev)
+>> +{
+>> +	int pos = dev->cxl_cap;
+>> +	u16 lock;
+>> +
+>> +	pci_read_config_word(dev, pos + PCI_CXL_LOCK, &lock);
+>> +	lock &= ~PCI_CXL_CONFIG_LOCK;
+>> +	pci_write_config_word(dev, pos + PCI_CXL_LOCK, lock);
+>> +}
+>> +
+>> +static void pci_cxl_lock(struct pci_dev *dev)
+>> +{
+>> +	int pos = dev->cxl_cap;
+>> +	u16 lock;
+>> +
+>> +	pci_read_config_word(dev, pos + PCI_CXL_LOCK, &lock);
+>> +	lock |= PCI_CXL_CONFIG_LOCK;
+>> +	pci_write_config_word(dev, pos + PCI_CXL_LOCK, lock);
+>> +}
+>
+> Maybe a tiny comment about what PCI_CXL_CONFIG_LOCK does?  I guess
+> these functions don't enforce mutual exclusion (as I first expected a
+> "lock" function to do); they're simply telling the device to accept
+> CTRL changes or something?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.8
+Agree will add.  DVSEC Lock is intended to signify whether the CTRL bits 
+may be changed.
+It locks certain registers and makes them RO.  This lock is designed to 
+prevent future
+changes to configuration. Not to be confused with enforcing mutual 
+exclusion.
 
-Thanks!
 
-[1/2] ASoC: Add Marvell MMP SSPA binding
-      commit: d81bb8726c247c3e7719d21bf213c5400de29e03
-[2/2] ASoC: mmp-sspa: Add Device Tree support
-      commit: a97e384ba78fd8bf7ba8c32718424d8a7536416e
+>
+>> +static int pci_cxl_enable_disable_feature(struct pci_dev *dev, int 
+>> enable,
+>> +					  u16 feature)
+>> +{
+>> +	int pos = dev->cxl_cap;
+>> +	int ret;
+>> +	u16 reg;
+>> +
+>> +	if (!dev->cxl_cap)
+>> +		return -EINVAL;
+>
+> "pos"
+>
+> "pos" is the typical name for things like this, but sometimes I think
+> the code would be more descriptive if we used things like "cxl",
+> "aer", etc.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Will do, makes sense.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>
+>> +
+>> +	/* Only for PCIe */
+>> +	if (!pci_is_pcie(dev))
+>> +		return -EINVAL;
+>
+> Probably not necessary here.  We already checked it in pci_cxi_init().
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You are correct.  Will remove.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>
+>> +	/* Only for Device 0 Function 0, Root Complex Integrated Endpoints 
+>> */
+>> +	if (dev->devfn != 0 || (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_END))
+>> +		return -EINVAL;
+>> +
+>> +	pci_cxl_unlock(dev);
+>> +	ret = pci_read_config_word(dev, pos + PCI_CXL_CTRL, &reg);
+>> +	if (ret)
+>> +		goto lock;
+>> +
+>> +	if (enable)
+>> +		reg |= feature;
+>> +	else
+>> +		reg &= ~feature;
+>> +
+>> +	ret = pci_write_config_word(dev, pos + PCI_CXL_CTRL, reg);
+>> +
+>> +lock:
+>> +	pci_cxl_lock(dev);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +int pci_cxl_mem_enable(struct pci_dev *dev)
+>> +{
+>> +	return pci_cxl_enable_disable_feature(dev, true, PCI_CXL_MEM);
+>> +}
+>> +EXPORT_SYMBOL_GPL(pci_cxl_mem_enable);
+>> +
+>> +void pci_cxl_mem_disable(struct pci_dev *dev)
+>> +{
+>> +	pci_cxl_enable_disable_feature(dev, false, PCI_CXL_MEM);
+>> +}
+>> +EXPORT_SYMBOL_GPL(pci_cxl_mem_disable);
+>> +
+>> +int pci_cxl_cache_enable(struct pci_dev *dev)
+>> +{
+>> +	return pci_cxl_enable_disable_feature(dev, true, PCI_CXL_CACHE);
+>> +}
+>> +EXPORT_SYMBOL_GPL(pci_cxl_cache_enable);
+>> +
+>> +void pci_cxl_cache_disable(struct pci_dev *dev)
+>> +{
+>> +	pci_cxl_enable_disable_feature(dev, false, PCI_CXL_CACHE);
+>> +}
+>> +EXPORT_SYMBOL_GPL(pci_cxl_cache_disable);
+>> +
+>>  /*
+>>   * pci_find_cxl_capability - Identify and return offset to 
+>> Vendor-Specific
+>>   * capabilities.
+>> @@ -73,11 +155,6 @@ void pci_cxl_init(struct pci_dev *dev)
+>>  	dev->cxl_cap = pos;
+>>
+>>  	pci_read_config_word(dev, pos + PCI_CXL_CAP, &cap);
+>> -	pci_read_config_word(dev, pos + PCI_CXL_CTRL, &ctrl);
+>> -	pci_read_config_word(dev, pos + PCI_CXL_STS, &status);
+>> -	pci_read_config_word(dev, pos + PCI_CXL_CTRL2, &ctrl2);
+>> -	pci_read_config_word(dev, pos + PCI_CXL_STS2, &status2);
+>> -	pci_read_config_word(dev, pos + PCI_CXL_LOCK, &lock);
+>>
+>>  	pci_info(dev, "CXL: Cache%c IO%c Mem%c Viral%c HDMCount %d\n",
+>>  		FLAG(cap, PCI_CXL_CACHE),
+>> @@ -86,6 +163,12 @@ void pci_cxl_init(struct pci_dev *dev)
+>>  		FLAG(cap, PCI_CXL_VIRAL),
+>>  		PCI_CXL_HDM_COUNT(cap));
+>>
+>> +	pci_read_config_word(dev, pos + PCI_CXL_CTRL, &ctrl);
+>> +	pci_read_config_word(dev, pos + PCI_CXL_STS, &status);
+>> +	pci_read_config_word(dev, pos + PCI_CXL_CTRL2, &ctrl2);
+>> +	pci_read_config_word(dev, pos + PCI_CXL_STS2, &status2);
+>> +	pci_read_config_word(dev, pos + PCI_CXL_LOCK, &lock);
+>
+> This looks like it's just moving these reads around and isn't actually
+> related to this patch.  Put them where you want them in the first
+> place so the move doesn't clutter this patch.
+
+Looks that way.  I will clean it up.
+
+>
+>>  	pci_info(dev, "CXL: cap ctrl status ctrl2 status2 lock\n");
+>>  	pci_info(dev, "CXL: %04x %04x %04x %04x %04x %04x\n",
+>>  		 cap, ctrl, status, ctrl2, status2, lock);
+>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>> index d9905e2dee95..6336e16565ac 100644
+>> --- a/drivers/pci/pci.h
+>> +++ b/drivers/pci/pci.h
+>> @@ -472,8 +472,16 @@ static inline void pci_restore_ats_state(struct 
+>> pci_dev *dev) { }
+>>  #ifdef CONFIG_PCI_CXL
+>>  /* Compute eXpress Link */
+>>  void pci_cxl_init(struct pci_dev *dev);
+>> +int pci_cxl_mem_enable(struct pci_dev *dev);
+>> +void pci_cxl_mem_disable(struct pci_dev *dev);
+>> +int pci_cxl_cache_enable(struct pci_dev *dev);
+>> +void pci_cxl_cache_disable(struct pci_dev *dev);
+>>  #else
+>>  static inline void pci_cxl_init(struct pci_dev *dev) { }
+>> +static inline int pci_cxl_mem_enable(struct pci_dev *dev) {}
+>> +static inline void pci_cxl_mem_disable(struct pci_dev *dev) {}
+>> +static inline int pci_cxl_cache_enable(struct pci_dev *dev) {}
+>> +static inline void pci_cxl_cache_disable(struct pci_dev *dev) {}
+>
+> The stubs in this file aren't completely consistent, but you can be at
+> least locally consistent by including a space between the "{ }".
+
+Will do.
 
 Thanks,
-Mark
+
+Sean
+
+
+>
+>>  #endif
+>>
+>>  #ifdef CONFIG_PCI_PRI
+>> -- 
+>> 2.26.2
+>>
