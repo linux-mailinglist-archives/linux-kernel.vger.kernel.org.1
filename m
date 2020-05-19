@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227EA1D9F95
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6901D9F9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgESSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
+        id S1727798AbgESShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgESSge (ORCPT
+        with ESMTP id S1726632AbgESShM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:36:34 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E001C08C5C0;
-        Tue, 19 May 2020 11:36:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49RPjX0pyjz9sTH;
-        Wed, 20 May 2020 04:36:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589913393;
-        bh=uHf/n/3lhq80d/20JbDIKvnFDtOjqWPxZBs/eern4Tc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nchV7XJFXHz/dOTOpSi/rBos5yGTV09NBskEw0f3KCv61/NCpPGVL0/OC6GRGPNta
-         zcRGVBs/sq6LjR0LsLra8DmcqXOLawjInD6R7lMssWwUz5OKICVbOrgovVeEnYeuai
-         AtZjFc3uhTaaVUoKPZLr4O1sLdPM5OK3VdsPxp3bFpubDPIAt6wg7jTQT8YgPSFOMK
-         fb3fa25NpJrAM6fXIbuZG7ihcKDtU7F2/vmDPx+qHEbblINgx90K1P9Jv68SwvsIYU
-         1bnTZivcJ+dwJLMsrvzWzlOu1XVmld6fnabFdVk2p95N9+uzoP9QVrtkwiz+6O8REM
-         wAToACIaqONWA==
-Date:   Wed, 20 May 2020 04:36:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: linux-next: Fixes tag needs some work in the iommu tree
-Message-ID: <20200520043631.41a150d2@canb.auug.org.au>
+        Tue, 19 May 2020 14:37:12 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94593C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q2so804563ljm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bPh1VSVckJPtJQsHU0gjkG9zuV3GFu1LedTcF51aAcM=;
+        b=VufC5cVt/QsRYDbFjUrTgLBSJIGVamaZ6TqP+B2P/JryRaKr9pcGTQRH1L2ufpBeGo
+         +HGpzbuKFZhBCeI0lW8cu8YaTMgO3KUjgMgFZQImD3dgot0BxtvQv4qWs9UBJf82/Sxm
+         cU7py1ZSjkCtf3GiTwmwvvlOWXszXjd+6c4s8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bPh1VSVckJPtJQsHU0gjkG9zuV3GFu1LedTcF51aAcM=;
+        b=TjDXnxGF5jwHeb4tnO+v5V/JLuiGKyJXLhCjq40WybYgOkC6Zi7gfArVm9oZRNVtP+
+         3bUNJ0mQIlL2w+QAeDPCMe3WYLV9U1IgSfM4AbTspcbj/SImy1NfJjfnTKvceZb529lB
+         GoECByc2eMv1yD1bX8XxcCrzc7hVW0fG9tY7LF34QzUx+47WLqx4jG89swtLA+BKx1xk
+         jomcjj1Vi+0daJOhzM3gu1vpq6xOgxlqMfJXBSsBzz1eP7cDBipvTVRSC1tkPB/Qpk6u
+         SH7bV7gYNHEbhj9uCZdWlDaNl0peHhppsktnYIxfwYxOjjiokDY+unoK/Qff2snL6Rgq
+         Bzkw==
+X-Gm-Message-State: AOAM531pfvZPHxA0pAzi9fFLkGRxGpuZDaxL55plN3gqHIsQsz/RLXwL
+        0vB8lV15OQrOvaNySbrqA6vY0QrRbyU=
+X-Google-Smtp-Source: ABdhPJwZGgmmP6LI4ygPOcz340Mf7UaMHQibkxqAZElppntpaj58kODv63YMjRnJBbVB7/yQrBTKvg==
+X-Received: by 2002:a05:651c:119a:: with SMTP id w26mr463408ljo.53.1589913429886;
+        Tue, 19 May 2020 11:37:09 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id g10sm95403lfc.95.2020.05.19.11.37.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 May 2020 11:37:08 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id l15so466041lje.9
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:37:08 -0700 (PDT)
+X-Received: by 2002:a05:651c:319:: with SMTP id a25mr411854ljp.209.1589913428000;
+ Tue, 19 May 2020 11:37:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QZtWuWWQjElsZXikxlRXNfy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200519112657.17098-1-idryomov@gmail.com>
+In-Reply-To: <20200519112657.17098-1-idryomov@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 May 2020 11:36:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi9+qm_msiKsk32vaUMon6UQEE0-TydPF_-D6xNPjbOfg@mail.gmail.com>
+Message-ID: <CAHk-=wi9+qm_msiKsk32vaUMon6UQEE0-TydPF_-D6xNPjbOfg@mail.gmail.com>
+Subject: Re: [PATCH v3] vsprintf: don't obfuscate NULL and error pointers
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Tobin C . Harding" <me@tobin.cc>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QZtWuWWQjElsZXikxlRXNfy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 19, 2020 at 4:27 AM Ilya Dryomov <idryomov@gmail.com> wrote:
+>
+> This just came up again, please consider sending this to Linus
+> for 5.7.
 
-Hi all,
+I just took it directly, since I like it and it looks trivial.
 
-In commit
-
-  ef0865631ae3 ("iommu/vt-d: Fix pointer cast warnings on 32 bit")
-
-Fixes tag
-
-  Fixes: d64d47f4f5678 ("iommu/vt-d: Add nested translation helper function=
-")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Fixes tag
-
-  Fixes: a3bea1a35c083 ("iommu/vt-d: Add bind guest PASID support")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: b0d1f8741b81 ("iommu/vt-d: Add nested translation helper function")
-Fixes: 56722a4398a3 ("iommu/vt-d: Add bind guest PASID support")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/QZtWuWWQjElsZXikxlRXNfy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7EJy8ACgkQAVBC80lX
-0GyfpAf8D2Cq6o0ggkCuC3xkUXuOF2h3mbMy0b72PY/Wvls23FJGiQVRjUQ2d0Xu
-Xea683UQqLvpSwgOdmIWnUVQKzp4I28o6fO9vXmYuZv9BM1d24j5yonhm8MsDnQn
-Uu1gYTI20Z1hy0qmYut1X3GBCKOdQtShVCEf0Tq//LIy0DJPRgYmHsiFN9nqCKZL
-0FNskQZUMY9jAqtmyzP+qx5x3bhIajK+hcyBw+e+ePGqMGSoW13zhko1/yMm8Yze
-WE1qHu8CQGb9fupZnKDLQs8/CmY8I0BLRjz7GFC3WJMwtx0c40aqUKGJzNbqk0jj
-S1CPjc8Kb6JyzuvC18RNmePstVmShA==
-=qyWc
------END PGP SIGNATURE-----
-
---Sig_/QZtWuWWQjElsZXikxlRXNfy--
+               Linus
