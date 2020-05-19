@@ -2,95 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F871DA03C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F491DA034
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 21:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgESTBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 15:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgESTBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 15:01:00 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF04C08C5C0;
-        Tue, 19 May 2020 12:01:00 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ci23so81626pjb.5;
-        Tue, 19 May 2020 12:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4feI+F4dRQodabQ0vztzMEpXoHHqdtslcAebc48QhuQ=;
-        b=V8FZpf9QB5HvMPWR4n2yipk9nAHt9lzvzrk6aQhYx4qGZGtM8zGW1kD1vlNBWhqXZD
-         UPT+1NbzpBylVFdJmd8Q3sh0r5J+rSQ8xaecm827s7eZ6aWHsPfJUB07EMSWZTkH2Dgl
-         kSEa40EoyZYqiUZQxNeTFf5JrRXjZ2grV/m5Hua+0lvcXNZ2uhdupCi/eN1jQltTJnVi
-         C1vPOZ8S8IqyFZu8i1Z1zvPJtgSRX9mRcWgZ8dqpnaJujEOu0u7QyWykd8c6KZGoCoy1
-         aSwRfyDC0sGTpFfPXRJn++C+NI0w5ouPjaCuWxY9box11Dzy10potOHKjUcOKCOgA6GS
-         LkVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4feI+F4dRQodabQ0vztzMEpXoHHqdtslcAebc48QhuQ=;
-        b=iZ7Z4ZgFG1xLS3/qkez3YztjprLsXjTCfV4LkRkdfj6cSwLC9IcLz4ypEM2gmAxlyi
-         TfBGyF7KuyMzjKt28EqzzBNcKLu7by7zOlODkZn/mUk5SYgYBnx3QqHpecqjh5VTzg0z
-         5WEIeFf6VVlzxqJUIypv5Oa4CuI+qZ0dn05XHsUCgQppQPX/yvR8foD+DycqfjnX+i+n
-         xzULBfyOiIqZVA8h1CFxB2uiAhmOZrZuEYRAR3UAz1wrpSHm4zZ15GQWhZS2T1mze0Jh
-         493IaN2KsR2UyZpu54vwv2zjODFdVC/hR/WOGGdcCCT2yAYFMj/+KOvv+YMFla4hARao
-         qwuw==
-X-Gm-Message-State: AOAM533TMmsU1wFihVgksKjiR9G8GN+R5WF3N4pBEOHpGIl+om0QhpjB
-        3p0xjoqD/rAVhye1psFhZAA=
-X-Google-Smtp-Source: ABdhPJyiZ6GUF3NCEj+eBq7SSQdZCUNXewKkRllO1OxTLTo3bNYNftWhBN68lnt53o3fngDWu1RNpQ==
-X-Received: by 2002:a17:902:465:: with SMTP id 92mr836874ple.227.1589914859887;
-        Tue, 19 May 2020 12:00:59 -0700 (PDT)
-Received: from localhost.localdomain ([223.235.145.232])
-        by smtp.gmail.com with ESMTPSA id k65sm196128pfd.156.2020.05.19.12.00.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 May 2020 12:00:58 -0700 (PDT)
-From:   Amit Singh Tomar <amittomer25@gmail.com>
-To:     andre.przywara@arm.com, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 07/10] dt-bindings: reset: s700: Add binding constants for mmc
-Date:   Wed, 20 May 2020 00:30:34 +0530
-Message-Id: <1589914834-1728-1-git-send-email-amittomer25@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1589912368-480-8-git-send-email-amittomer25@gmail.com>
-References: <1589912368-480-8-git-send-email-amittomer25@gmail.com>
+        id S1727799AbgESTAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 15:00:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62691 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgESTAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 15:00:45 -0400
+IronPort-SDR: vwky50IiyfCMFHsyjHNDpyQF6ffQBzJJo3cGzp8HGLJAQqSg8h/cNVvxzd85wObH2EjGclJMeB
+ Y/XGOHHkqB+g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 12:00:44 -0700
+IronPort-SDR: DPcoO8JWQyzvNdTE+i+NjsSRehFDDEuS8LYC9YUWq1IQeAtof4lmJM2bG07+MnU58PZIh1qInD
+ p/nEVByMNVFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="264407484"
+Received: from joelin3-mobl.gar.corp.intel.com (HELO localhost) ([10.249.42.57])
+  by orsmga003.jf.intel.com with ESMTP; 19 May 2020 12:00:40 -0700
+Date:   Tue, 19 May 2020 22:00:36 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Nikita Sobolev <Nikita.Sobolev@synopsys.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Tadeusz Struk <tadeusz.struk@intel.com>,
+        Joey Pabalinas <joeypabalinas@gmail.com>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH v2] Kernel selftests: Add check if tpm devices are
+ supported
+Message-ID: <20200519190023.GA22852@linux.intel.com>
+References: <20200519120743.41358-1-Nikita.Sobolev@synopsys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519120743.41358-1-Nikita.Sobolev@synopsys.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds device tree binding reset constants for mmc controller
-present on Actions S700 Soc.
+On Tue, May 19, 2020 at 03:07:43PM +0300, Nikita Sobolev wrote:
+> tpm2 tests set uses /dev/tpm0 and /dev/tpmrm0 without check if they
+> are available. In case, when these devices are not available test
+> fails, but expected behaviour is skipped test.
+> 
+> Signed-off-by: Nikita Sobolev <Nikita.Sobolev@synopsys.com>
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
----
-Changes since v1:
-	* No change.
-Changes since RFC:
-        * added Rob's acked-by tag
----
- include/dt-bindings/reset/actions,s700-reset.h | 3 +++
- 1 file changed, 3 insertions(+)
+See
 
-diff --git a/include/dt-bindings/reset/actions,s700-reset.h b/include/dt-bindings/reset/actions,s700-reset.h
-index 5e3b16b8ef53..a3118de6d7aa 100644
---- a/include/dt-bindings/reset/actions,s700-reset.h
-+++ b/include/dt-bindings/reset/actions,s700-reset.h
-@@ -30,5 +30,8 @@
- #define RESET_UART4				20
- #define RESET_UART5				21
- #define RESET_UART6				22
-+#define RESET_SD0				23
-+#define RESET_SD1				24
-+#define RESET_SD2				25
- 
- #endif /* __DT_BINDINGS_ACTIONS_S700_RESET_H */
--- 
-2.7.4
+https://lore.kernel.org/linux-kselftest/20200519134838.GA17129@linux.intel.com/T/#mf762512a67f0b23db5663d6d67746cb94b812931
 
+The comments about the fixes tag and acronym spelling were not
+addressed. The code change looks great tho now, thanks.
+
+/Jarkko
