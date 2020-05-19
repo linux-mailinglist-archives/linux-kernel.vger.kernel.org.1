@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006451D8E3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2161D8E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 05:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgESDbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 23:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgESDbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 23:31:06 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B41C05BD09
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:31:05 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ci21so729352pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 20:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KO3Z9hueRakPgAx9Ac4Lw9qP6WW8KjlpYbXitB6bWSM=;
-        b=OtsyfSQlKTEjylyOPRxpPGUcGz8k7uGMLR62alTvDkaoxXCQglR7nJ7rV7uW9KWv6E
-         EKyqvWjzO8hmrqfjjZuUpn7FP+TPDdswox4M2rVwu/qA/jjwozjXmByWiEckY9soQXl6
-         exuw2AKYBeQOH9hzuCbiWCpbPWtdvMicE7J58tyEw8wVSchfM1LX5/3cCXx+Rx6d9TKU
-         tqegmblQ8zYMpY2qD7ykz9jFsYaxPPkc4bFHxAxlTs+WNO91nh4JvylaOgqUrrwqWa8m
-         zsU9DHGJW33EEHIWjZXQenSVzF8qsLbRupskLRZjhB/e/txudaShaKvdh29+hYLW61FY
-         jpUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KO3Z9hueRakPgAx9Ac4Lw9qP6WW8KjlpYbXitB6bWSM=;
-        b=kub4ZwiGTSQ+4Jl2RuO5erOUXdur0fggDJ12F0Xo5o5cVuH/4CzsBf6CS8H3vVwCSg
-         tyqLn+rV7NDwEsOntVUg6A03badrc3Ex4hMRGb/sam0uOQ2von7QFtfiRO3ybLu5mVLK
-         5TWubmJXDXrq+3xTAjRIpKsdgIuTJ59CSU2dpuDX6Hr4BKFS7717lKmam9SNclfFSaQ0
-         +alyw7N3EOpX9pPSMcnSsnxvkE6JVGiREBtHQxV1kF3LpjBmN4a6pG4i4FRUMPnEV/Qx
-         1TYLK4+R5yYd7HknS3fLf/EtIsFxGv2Ujel0f3HFPU99nS1XpFfj/7XVvlFW8I4ryi7u
-         7nRQ==
-X-Gm-Message-State: AOAM5300vF6JCZ9++YASwSayJSzh5sA3W1zDjnsG3rECj0EILPE8m0Hu
-        J7sQZR87wv039rR/TAy11pNbLY07qPI=
-X-Google-Smtp-Source: ABdhPJx2exZggkmdCdR9LnIIv36HDIca/L6gu/8aoM/2VReOK6PBJlLaeDMuS91GY0To15weB0y3Vg==
-X-Received: by 2002:a17:90a:71c3:: with SMTP id m3mr2756791pjs.17.1589859064517;
-        Mon, 18 May 2020 20:31:04 -0700 (PDT)
-Received: from localhost ([122.167.130.103])
-        by smtp.gmail.com with ESMTPSA id n14sm785468pjh.45.2020.05.18.20.31.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 May 2020 20:31:03 -0700 (PDT)
-Date:   Tue, 19 May 2020 09:01:01 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH] interconnect: Disallow interconnect core to be built as
- a module
-Message-ID: <20200519033101.fi6oa4xjchdzafi3@vireshk-i7>
-References: <b789cce388dd1f2906492f307dea6780c398bc6a.1567065991.git.viresh.kumar@linaro.org>
- <CAOCOHw4ri6ikRpkJWtAdaPQiMhdKMrdNciqQ8YNaXR+ApSnAew@mail.gmail.com>
- <66c3d470-48e2-619a-dd95-6064a85161e0@linaro.org>
- <20200515071152.GA1274556@kroah.com>
- <20200518184010.GF2165@builder.lan>
+        id S1728297AbgESDb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 23:31:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4861 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728258AbgESDbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 May 2020 23:31:24 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D25ACEF918C424D665AA;
+        Tue, 19 May 2020 11:31:19 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 19 May 2020 11:31:13 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <mcgrof@kernel.org>, <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <mingo@kernel.org>, <nixiaoming@huawei.com>,
+        <gpiccoli@canonical.com>, <rdna@fb.com>, <patrick.bellasi@arm.com>,
+        <sfr@canb.auug.org.au>, <akpm@linux-foundation.org>,
+        <mhocko@suse.com>, <penguin-kernel@i-love.sakura.ne.jp>,
+        <vbabka@suse.cz>, <tglx@linutronix.de>, <peterz@infradead.org>,
+        <Jisheng.Zhang@synaptics.com>, <khlebnikov@yandex-team.ru>,
+        <bigeasy@linutronix.de>, <pmladek@suse.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <wangle6@huawei.com>, <alex.huangjianhui@huawei.com>
+Subject: [PATCH v4 0/4] cleaning up the sysctls table (hung_task watchdog)
+Date:   Tue, 19 May 2020 11:31:07 +0800
+Message-ID: <1589859071-25898-1-git-send-email-nixiaoming@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518184010.GF2165@builder.lan>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-05-20, 11:40, Bjorn Andersson wrote:
-> It most certainly does.
-> 
-> With INTERCONNECT as a bool we can handle its absence with stub
-> functions - like every other framework does. But as a tristate then
-> every driver with a call to the interconnect api needs an entry in
-> Kconfig to ensure the client driver must be a module if the interconnect
-> framework is.
+Kernel/sysctl.c contains more than 190 interface files, and there are a 
+large number of config macro controls. When modifying the sysctl 
+interface directly in kernel/sysctl.c, conflicts are very easy to occur.
+E.g: https://lore.kernel.org/lkml/99095805-8cbe-d140-e2f1-0c5a3e84d7e7@huawei.com/
 
-This patch has been pushed to linux-next a few days back.
+Use register_sysctl() to register the sysctl interface to avoid
+merge conflicts when different features modify sysctl.c at the same time.
+
+So consider cleaning up the sysctls table, details are in:
+   https://kernelnewbies.org/KernelProjects/proc
+   https://lore.kernel.org/lkml/20200513141421.GP11244@42.do-not-panic.com/#t
+
+The current patch set extracts register_sysctl_init and some sysctl_vals
+variables, and clears the interface of hung_task and watchdog in sysctl.c.
+
+The current patch set is based on linux-next, commit 72bc15d0018ebfbc9
+("Add linux-next specific files for 20200518").
+
+changes in v4:
+  Handle the conflict with the commit d4ee116819ed714f ("kernel/hung_task.c:
+  introduce sysctl to print all traces when a hung task is detected"),
+  move the sysctl interface hung_task_all_cpu_backtrace to hung_task.c.
+
+V3: https://lore.kernel.org/lkml/1589774397-42485-1-git-send-email-nixiaoming@huawei.com/
+  base on commit b9bbe6ed63b2b9 ("Linux 5.7-rc6")
+changes in v3:
+  1. make hung_task_timeout_max to be const
+  2. fix build warning:
+     kernel/watchdog.c:779:14: warning: initialization discards 'const'
+         qualifier from pointer target type [-Wdiscarded-qualifiers]
+         .extra2  = &sixty,
+                    ^
+
+V2: https://lore.kernel.org/lkml/1589619315-65827-1-git-send-email-nixiaoming@huawei.com/
+changes in v2:
+  1. Adjusted the order of patches, first do public function
+     extraction, then do feature code movement
+  2. Move hung_task sysctl to hung_task.c instead of adding new file
+  3. Extract multiple common variables instead of only neg_one, and keep
+     the order of member values in sysctl_vals
+  4. Add const modification to the variable sixty in watchdog sysctl
+
+V1: https://lore.kernel.org/lkml/1589517224-123928-1-git-send-email-nixiaoming@huawei.com/
+
+Xiaoming Ni (4):
+  sysctl: Add register_sysctl_init() interface
+  sysctl: Move some boundary constants form sysctl.c to sysctl_vals
+  hung_task: Move hung_task sysctl interface to hung_task.c
+  watchdog: move watchdog sysctl interface to watchdog.c
+
+ fs/proc/proc_sysctl.c        |   2 +-
+ include/linux/sched/sysctl.h |  14 +--
+ include/linux/sysctl.h       |  13 ++-
+ kernel/hung_task.c           |  77 +++++++++++++++-
+ kernel/sysctl.c              | 214 +++++++------------------------------------
+ kernel/watchdog.c            | 101 ++++++++++++++++++++
+ 6 files changed, 224 insertions(+), 197 deletions(-)
 
 -- 
-viresh
+1.8.5.6
