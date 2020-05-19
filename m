@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5791D93F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894C01D93F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 12:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgESKED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 06:04:03 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42508 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726595AbgESKEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 06:04:02 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz97yrsNeDoM2AA--.42S5;
-        Tue, 19 May 2020 18:03:32 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v4 4/4] MIPS: mm: add page valid judgement in function pte_modify
-Date:   Tue, 19 May 2020 18:03:30 +0800
-Message-Id: <1589882610-7291-4-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1589882610-7291-1-git-send-email-maobibo@loongson.cn>
-References: <1589882610-7291-1-git-send-email-maobibo@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxz97yrsNeDoM2AA--.42S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFW8AryxtFWfuw43ur4DJwb_yoWDWwbEka
-        17Zw4fCr95JF17uFW7A3WrJry7Ka48u3Wqyas7J3WavFn0gr45Cay8WryUArZ8uFsFyr40
-        qa95G343CFsxKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb68YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
-        6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
-        02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE
-        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42
-        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
-        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI4
-        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4U
-        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8SfO7UUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S1728474AbgESKFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 06:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgESKFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 06:05:22 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE468C061A0C
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:05:21 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z4so2424118wmi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 03:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZDJEthhWgY5wAb8g4sO5kbhswhHVWOPQX9uJ2zkl5tU=;
+        b=IN2GdLWuNUNLyyNTO3iaOpDYw5MKV1g3T1zBA8FqWfkLDL2e5D+hWE0vRzPzAzIT4g
+         C7G/mNUBoetozevkStq0VqG7bg0HqpihDLSHd048ut/IqjkKh45u1JoDGX3yQ0drsCoF
+         4qzBPZpexi311B3RwsNNQ55mti8t+p4rlSp4i3H9xFqRJ5s9lvEmPBq2EETCrcIKrcPw
+         VOc+Z0mGn2jsFUH4WWbrcfzbAfWLJ71jmm7ljNTfV/Twr00rLi/vynryPEFTJd0UhU5Z
+         sRnGKvAIWMSEfTRG2KEH7z/yyAhQKiytIE4PMiNoWFn1izpQYkrhFGtMcDSXTbJZcwX0
+         Fm/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZDJEthhWgY5wAb8g4sO5kbhswhHVWOPQX9uJ2zkl5tU=;
+        b=L1mVmcRXKRsmw7BUSL1QoQv8aVoTOzvLHRRcdkOz9el5KkABz0IsIukGxUy+UgvJG5
+         3YGHx58BfJqFxpXKPzuRx/tv0kunsPnqYO+8genUbOxhAXjYazWdcegyOC9+cdDPRPph
+         DmFXgwf+bBWfQsNGjyyAcy01ZX6VNjL1yVBE491qqPDWfN3+5iBwP1GpRKYRreDC2e3u
+         IMRymHzWqHGut25ULOyUHK59aSNzmvn5l8ntqDXieEMzxXsFI9hW2ImAsTOLh5h8t9ib
+         Xxp2IuWqXC7c52j7pma9EOMVzkfCaENtQ8Q80eiyJO5YeFLY2B4ID0K33h0/WEs/i8Ra
+         CjJQ==
+X-Gm-Message-State: AOAM532yKNzhlEgzp0xjAPOdUHD7ll7e8wXdXTvT/TOYf+Qu6rWk/t18
+        2V9Y1pHtbNm74o74oars1yU=
+X-Google-Smtp-Source: ABdhPJyTQM4/8f04kiQtCEUDxu72rmNzbKQRKo70umDUp4K1L0E0CogjFDWchr6GuEbTQid3KWXHrw==
+X-Received: by 2002:a1c:7305:: with SMTP id d5mr4716773wmb.85.1589882720420;
+        Tue, 19 May 2020 03:05:20 -0700 (PDT)
+Received: from ubuntu-G3.micron.com ([165.225.86.140])
+        by smtp.gmail.com with ESMTPSA id b18sm19968008wrn.82.2020.05.19.03.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 03:05:19 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        s.hauer@pengutronix.de, boris.brezillon@collabora.com,
+        derosier@gmail.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huobean@gmail.com, Bean Huo <beanhuo@micron.com>
+Subject: [PATCH v5 0/5] Micron SLC NAND filling block
+Date:   Tue, 19 May 2020 12:05:02 +0200
+Message-Id: <20200519100507.19323-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If original PTE has _PAGE_ACCESSED bit set, and new pte has no
-_PAGE_NO_READ bit set, we can add _PAGE_SILENT_READ bit to enable
-page valid bit.
+From: Bean Huo <beanhuo@micron.com>
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/include/asm/pgtable.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Hi,
+On planar 2D Micron NAND devices when a block erase command is issued,
+occasionally even though a block erase operation completes and returns a pass
+status, the flash block may not be completely erased. Subsequent operations to
+this block on very rare cases can result in subtle failures or corruption. These
+extremely rare cases should nevertheless be considered. This patchset is to
+address this potential issue.
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 755d534..4f6eb56 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -509,8 +509,11 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- #else
- static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- {
--	return __pte((pte_val(pte) & _PAGE_CHG_MASK) |
--		     (pgprot_val(newprot) & ~_PAGE_CHG_MASK));
-+	pte_val(pte) &= _PAGE_CHG_MASK;
-+	pte_val(pte) |= pgprot_val(newprot) & ~_PAGE_CHG_MASK;
-+	if ((pte_val(pte) & _PAGE_ACCESSED) && !(pte_val(pte) & _PAGE_NO_READ))
-+		pte_val(pte) |= _PAGE_SILENT_READ;
-+	return pte;
- }
- #endif
- 
+After submission of patch V1 [1] and V2 [2], we stopped its update since we get
+stuck in the solution on how to avoid the power-loss issue in case power-cut
+hits the block filling. In the v1 and v2, to avoid this issue, we always damaged
+page0, page1, this's based on the hypothesis that NAND FS is UBIFS. This
+FS-specifical code is unacceptable in the MTD layer. Also, it cannot cover all
+NAND based file system. Based on the current discussion, seems that re-write all
+first 15 page from page0 is a satisfactory solution.
+
+Meanwhile, I borrowed one idea from Miquel Raynal patchset [3], in which keeps
+a recode of programmed pages, base on it, for most of the cases, we don't need
+to read every page to see if current erasing block is a partially programmed
+block.
+
+Changelog:
+v4 - v5:
+    1. Add Miquel Raynal Authorship and SoB in 4/5 and 5/5 (Miquel Raynal)
+    2. Change  commit message in 5/5. (Steve deRosier)
+    3. Delete unused variable max_bitflips in 4/5
+
+v3 - v4:
+    1. In the patch 4/5, change to directly use ecc.strength to judge the page
+       is a empty page or not, rather than max_bitflips < mtd->bitflip_threshold
+    2. In the patch 5/5, for the powerloss case, from the next time boot up,
+       lots of page will be programmed from >page15 address, if still using
+       first_p as GENMASK() bitmask starting position, writtenp will be always 0
+
+v2 - v3:
+    1. Rebase patch to the latest MTD git tree
+    2. Add a record that keeps tracking the programmed pages in the first 16
+       pages
+    3. Change from program odd pages, damage page 0 and page 1, to program all
+       first 15 pages
+    4. Address issues which exist in the V2.
+
+v1 - v2:
+    1. Rebased V1 to latest Linux kernel.
+    2. Add erase preparation function pointer in nand_manufacturer_ops.
+
+[1] https://www.spinics.net/lists/linux-mtd/msg04112.html
+[2] https://www.spinics.net/lists/linux-mtd/msg04450.html
+[3] https://www.spinics.net/lists/linux-mtd/msg13083.html
+
+Bean Huo (3):
+  mtd: rawnand: group all NAND specific ops into new nand_chip_ops
+  mtd: rawnand: Add {pre,post}_erase hooks in nand_chip_ops
+  mtd: rawnand: Introduce a new function nand_check_is_erased_page()
+Miquel Raynal (2)
+  mtd: rawnand: Add write_oob hook in nand_chip_ops
+  mtd: rawnand: micron: Micron SLC NAND filling block
+
+ drivers/mtd/nand/raw/internals.h     |   3 +-
+ drivers/mtd/nand/raw/nand_base.c     |  87 ++++++++++++++++++----
+ drivers/mtd/nand/raw/nand_hynix.c    |   2 +-
+ drivers/mtd/nand/raw/nand_macronix.c |  10 +--
+ drivers/mtd/nand/raw/nand_micron.c   | 104 ++++++++++++++++++++++++++-
+ include/linux/mtd/rawnand.h          |  40 +++++++----
+ 6 files changed, 211 insertions(+), 35 deletions(-)
+
 -- 
-1.8.3.1
+2.17.1
 
