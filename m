@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D5D1D9BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63101D9B92
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgESPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729007AbgESPsq (ORCPT
+        id S1729157AbgESPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:45:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53562 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbgESPp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:48:46 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EEDC08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:48:46 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p30so589364pgl.11
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 08:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npj6nyuWQ54ZRzukHs7PaMjCvPNDE9Mt94DLOgYmdAM=;
-        b=P0+mae6a84cR5xUqIaEO+Q0bl2fCnvLeySFo+ugO3JyjssDIgkmsmpUbWGMOo30eLp
-         4la4jakE5roQ8jjlKA1FzIi2twmGQr7jNmyR4G/fELC21PiyyV8enb6i9lBDEIrIB2rV
-         AVTHOA5HszSMzkwJ81gPBz5iiLnARXbKwKDDs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npj6nyuWQ54ZRzukHs7PaMjCvPNDE9Mt94DLOgYmdAM=;
-        b=Pcr/rNsvpHsTQxIvTIfOEPTDoJMSBKZXUH4HAgSsAFogdYQuqIbt3dIbEqoBCpic61
-         rycYWzDkR6GAgm/eAxHInpderbTyeN8xwOqbRTJROnTahFqWnirnmZ1x3x3WiluWVgxH
-         9Bh5q2T7Pyer/E4pwL5129gUWg6RlMsnW0BUL50gLGjxZxGzGtm+RoNWT+OaVLgprR4R
-         7LyYlsJ7LMjElZvSeAAMXjgARH690I6g1IRvrRtBJxYcd5/e69Uq5SNp+8SPXzk8FMBR
-         R50gAiNl/y7GO8a64b6oMQ3ZLdz1IOuUopyhDsswwIrucKPiPR1X/Dth9wPIkxEYsG09
-         AcOw==
-X-Gm-Message-State: AOAM532c/oZ+GrT6qE58i7xpMCch7vIagESdrPB89Ek1N1B+G47P2tuK
-        vc4xtUuVrG0IHKCB3iwuomRrkA==
-X-Google-Smtp-Source: ABdhPJz5avKKNTtvKZvm8lzBMm3rjxfvXiD2QxxVE3dZa7xUCBH4RpcsiIOy1AoeYJ/nBEZkwHHoAw==
-X-Received: by 2002:aa7:9aa8:: with SMTP id x8mr11608662pfi.182.1589903326036;
-        Tue, 19 May 2020 08:48:46 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id c2sm9506pjg.51.2020.05.19.08.48.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 08:48:45 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>
-Cc:     linux-next@vger.kernel.org, sumit.garg@linaro.org,
-        Douglas Anderson <dianders@chromium.org>,
+        Tue, 19 May 2020 11:45:56 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jb4RF-0003IW-Eo; Tue, 19 May 2020 15:45:53 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Evgeniy Polyakov <zbr@ioremap.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH] kgdboc: Disable all the early code when kgdboc is a module
-Date:   Tue, 19 May 2020 08:44:02 -0700
-Message-Id: <20200519084345.1.I91670accc8a5ddabab227eb63bb4ad3e2e9d2b58@changeid>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+        Akira Shimahara <akira215corp@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] w1_therm: remove redundant assignments to variable ret
+Date:   Tue, 19 May 2020 16:45:53 +0100
+Message-Id: <20200519154553.873413-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kgdboc is compiled as a module all of the "ekgdboc" and
-"kgdb_earlycon" code isn't useful and, in fact, breaks compilation.
-This is because early_param() isn't defined for modules and that's how
-this code gets configured.
+From: Colin Ian King <colin.king@canonical.com>
 
-It turns out that this was broken by commit eae3e19ca930 ("kgdboc:
-Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc") and then
-made worse by commit 220995622da5 ("kgdboc: Add kgdboc_earlycon to
-support early kgdb using boot consoles").  I guess the #ifdef wasn't
-so useless, even if it wasn't obvious why it was useful.  When kgdboc
-was compiled as a module only "CONFIG_KGDB_SERIAL_CONSOLE_MODULE" was
-defined, not "CONFIG_KGDB_SERIAL_CONSOLE".  That meant that the old
-module.
+The variable ret is being initialized with a value that is never read
+and it is being updated later with a new value. The initialization
+is redundant and can be removed.
 
-Let's basically do the same thing that the old code (pre-removal of
-the #ifdef) did but use "IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)" to
-make it more obvious what the point of the check is.  We'll fix
-kgdboc_earlycon in a similar way.
-
-Fixes: 220995622da5 ("kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles")
-Fixes: eae3e19ca930 ("kgdboc: Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
+ drivers/w1/slaves/w1_therm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- drivers/tty/serial/kgdboc.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index 34b5e91dd245..fa6f7a3e73b9 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -43,9 +43,11 @@ static int			kgdb_tty_line;
+diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
+index cc4b88056b33..d5f062c05c9d 100644
+--- a/drivers/w1/slaves/w1_therm.c
++++ b/drivers/w1/slaves/w1_therm.c
+@@ -505,7 +505,7 @@ static inline int w1_DS18S20_write_data(struct w1_slave *sl,
  
- static struct platform_device *kgdboc_pdev;
- 
-+#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
- static struct kgdb_io		kgdboc_earlycon_io_ops;
- static struct console		*earlycon;
- static int                      (*earlycon_orig_exit)(struct console *con);
-+#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
- 
- #ifdef CONFIG_KDB_KEYBOARD
- static int kgdboc_reset_connect(struct input_handler *handler,
-@@ -140,10 +142,19 @@ static void kgdboc_unregister_kbd(void)
- #define kgdboc_restore_input()
- #endif /* ! CONFIG_KDB_KEYBOARD */
- 
--static void cleanup_kgdboc(void)
-+#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
-+static void cleanup_earlycon(void)
+ static inline int w1_DS18B20_set_resolution(struct w1_slave *sl, int val)
  {
- 	if (earlycon)
- 		kgdb_unregister_io_module(&kgdboc_earlycon_io_ops);
-+}
-+#else /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
-+static inline void cleanup_earlycon(void) { }
-+#endif /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
-+
-+static void cleanup_kgdboc(void)
-+{
-+	cleanup_earlycon();
+-	int ret = -ENODEV;
++	int ret;
+ 	u8 new_config_register[3];	/* array of data to be written */
+ 	struct therm_info info;
  
- 	if (configured != 1)
- 		return;
-@@ -388,6 +399,7 @@ static struct kgdb_io kgdboc_io_ops = {
- 	.post_exception		= kgdboc_post_exp_handler,
- };
+@@ -538,7 +538,7 @@ static inline int w1_DS18B20_set_resolution(struct w1_slave *sl, int val)
  
-+#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
- static int kgdboc_option_setup(char *opt)
+ static inline int w1_DS18B20_get_resolution(struct w1_slave *sl)
  {
- 	if (!opt) {
-@@ -544,6 +556,7 @@ static int __init kgdboc_earlycon_init(char *opt)
- }
+-	int ret = -ENODEV;
++	int ret;
+ 	u8 config_register;
+ 	struct therm_info info;
  
- early_param("kgdboc_earlycon", kgdboc_earlycon_init);
-+#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
+@@ -1499,7 +1499,7 @@ static ssize_t alarms_show(struct device *device,
+ 	struct device_attribute *attr, char *buf)
+ {
+ 	struct w1_slave *sl = dev_to_w1_slave(device);
+-	int ret = -ENODEV;
++	int ret;
+ 	s8 th = 0, tl = 0;
+ 	struct therm_info scratchpad;
  
- module_init(init_kgdboc);
- module_exit(exit_kgdboc);
+@@ -1523,7 +1523,7 @@ static ssize_t alarms_store(struct device *device,
+ 	struct w1_slave *sl = dev_to_w1_slave(device);
+ 	struct therm_info info;
+ 	u8 new_config_register[3];	/* array of data to be written */
+-	int temp, ret = -EINVAL;
++	int temp, ret;
+ 	char *token = NULL;
+ 	s8 tl, th, tt;	/* 1 byte per value + temp ring order */
+ 	char *p_args = kmalloc(size, GFP_KERNEL);
 -- 
-2.26.2.761.g0e0b3e54be-goog
+2.25.1
 
