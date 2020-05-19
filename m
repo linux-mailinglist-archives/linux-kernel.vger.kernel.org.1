@@ -2,157 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8CE1D97A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC351D979A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgESN0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgESN0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:26:34 -0400
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15F5C08C5C0;
-        Tue, 19 May 2020 06:26:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1589894792;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=/iyQysFjE7xolBZ1naSvo7228GHiugrOaI4sO8bPUTk=;
-        b=fwr+dDGEkpoZpHRFsi8fcLwOsy/sYVESVb8GgLSpv79t4LUto9ST3ru1G2W+/CNwUq
-        jsKGEs64/RRB2TBFLOhxGwgyGUi/0C9R/12t0ttN6ghkc7h7qa4ziOZQH0bTDYb4fIhG
-        zfMC/tbsIUoA8ygDpRE9b0aSD1/Mo1N2L3fKZEfEuJTL1xOZP869A/CZ+/Hulugqnwh6
-        EIWjwN126W3TG9fRQZHxF1QPQaCMFZaD7X7Wc7+TX444DaIfLjlxyxxCLoAx+H17hnAU
-        u5Yauj09xAg7rlIo7bs97bvRPURUeYWWuh/+E7UPFhw770eXxnIwg1CFGQpUJnkc1yNy
-        sJsQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IczFaoo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
-        with ESMTPSA id 60b02dw4JDPDl1o
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 19 May 2020 15:25:13 +0200 (CEST)
-Date:   Tue, 19 May 2020 15:25:12 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Jilayne Lovejoy <opensource@jilayne.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Steve Winslow <swinslow@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Allison Randal <allison@lohutok.net>
-Subject: Re: [PATCH v3 4/4] iio: magnetometer: ak8975: Add gpio reset support
-Message-ID: <20200519132512.GC4623@gerhold.net>
-References: <20200519124402.26076-1-jonathan.albrieux@gmail.com>
- <20200519124402.26076-5-jonathan.albrieux@gmail.com>
+        id S1728845AbgESNZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:25:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11209 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726880AbgESNZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:25:23 -0400
+IronPort-SDR: 5Q8tIsJJzmBNuIVVVTrtGDrHwfVrP9x/D78gpwU5FEwAHi/NwJS8kl3u2MxxEj9CBwd/JdquYa
+ 3/TwnT7L2fSA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 06:25:23 -0700
+IronPort-SDR: ygC8FheXCko5FrqcyaE3hSIgTJ7LBEHVRVYW0GvyhhXvfIB4PI6oWD0B+XrVlGuDlTSidP3CYb
+ EHYu+zCKFJZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,410,1583222400"; 
+   d="scan'208";a="288955373"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.171.98]) ([10.249.171.98])
+  by fmsmga004.fm.intel.com with ESMTP; 19 May 2020 06:25:20 -0700
+Reply-To: like.xu@intel.com
+Subject: Re: [PATCH v11 05/11] perf/x86: Keep LBR stack unchanged in host
+ context for guest LBR event
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>, ak@linux.intel.com,
+        wei.w.wang@intel.com
+References: <20200514083054.62538-1-like.xu@linux.intel.com>
+ <20200514083054.62538-6-like.xu@linux.intel.com>
+ <20200518120205.GF277222@hirez.programming.kicks-ass.net>
+ <dd6b0ab0-0209-e1e5-550c-24e2ad101b15@linux.intel.com>
+ <20200519104520.GE279861@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Organization: Intel OTC
+Message-ID: <71d38733-bb96-99b0-5484-f7110410a8c5@intel.com>
+Date:   Tue, 19 May 2020 21:25:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519124402.26076-5-jonathan.albrieux@gmail.com>
+In-Reply-To: <20200519104520.GE279861@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 02:43:54PM +0200, Jonathan Albrieux wrote:
-> According to AK09911 datasheet, if reset gpio is provided then
-> deassert reset on ak8975_power_on() and assert reset on ak8975_power_off().
-> 
-> Without reset's deassertion during ak8975_power_on(), driver's probe fails
-> on ak8975_who_i_am while() checking for device identity for AK09911 chip.
-> 
-> AK09911 has an active low reset gpio to handle register's reset.
-> AK09911 datasheed says that, if not used, reset pin should be connected
+Hi Peter,
 
-Another minor typo: datasheed -> datasheet
+On 2020/5/19 18:45, Peter Zijlstra wrote:
+> On Tue, May 19, 2020 at 11:08:41AM +0800, Like Xu wrote:
+>
+>> Sure, I could reuse cpuc->intel_ctrl_guest_mask to rewrite this part:
+>>
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index d788edb7c1f9..f1243e8211ca 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -2189,7 +2189,8 @@ static void intel_pmu_disable_event(struct perf_event
+>> *event)
+>>          } else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
+>>                  intel_pmu_disable_bts();
+>>                  intel_pmu_drain_bts_buffer();
+>> -       }
+>> +       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
+>> +               intel_clear_masks(event, idx);
+>>
+>>          /*
+>>           * Needs to be called after x86_pmu_disable_event,
+>> @@ -2271,7 +2272,8 @@ static void intel_pmu_enable_event(struct perf_event
+>> *event)
+>>                  if (!__this_cpu_read(cpu_hw_events.enabled))
+>>                          return;
+>>                  intel_pmu_enable_bts(hwc->config);
+>> -       }
+>> +       } else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
+>> +               intel_set_masks(event, idx);
+>>   }
+> This makes me wonder if we can pull intel_{set,clear}_masks() out of
+> that if()-forest, but that's something for later...
+>
+>>   static void intel_pmu_add_event(struct perf_event *event)
+>> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+>> index b8dabf1698d6..1b30c76815dd 100644
+>> --- a/arch/x86/events/intel/lbr.c
+>> +++ b/arch/x86/events/intel/lbr.c
+>> @@ -552,11 +552,19 @@ void intel_pmu_lbr_del(struct perf_event *event)
+>>          perf_sched_cb_dec(event->ctx->pmu);
+>>   }
+>>
+>> +static inline bool vlbr_is_enabled(void)
+>> +{
+>> +       struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>> +
+>> +       return test_bit(INTEL_PMC_IDX_FIXED_VLBR,
+>> +               (unsigned long *)&cpuc->intel_ctrl_guest_mask);
+>> +}
+> Maybe call this: vlbr_exclude_host() ?
+Sure, I'll apply it.
+>
+>> +
+>>   void intel_pmu_lbr_enable_all(bool pmi)
+>>   {
+>>          struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>
+>> -       if (cpuc->lbr_users)
+>> +       if (cpuc->lbr_users && !vlbr_is_enabled())
+>>                  __intel_pmu_lbr_enable(pmi);
+>>   }
+>>
+>> @@ -564,7 +572,7 @@ void intel_pmu_lbr_disable_all(void)
+>>   {
+>>          struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>
+>> -       if (cpuc->lbr_users)
+>> +       if (cpuc->lbr_users && !vlbr_is_enabled())
+>>                  __intel_pmu_lbr_disable();
+>>   }
+>>
+>> @@ -706,7 +714,8 @@ void intel_pmu_lbr_read(void)
+>>           * This could be smarter and actually check the event,
+>>           * but this simple approach seems to work for now.
+>>           */
+>> -       if (!cpuc->lbr_users || cpuc->lbr_users == cpuc->lbr_pebs_users)
+>> +       if (!cpuc->lbr_users || vlbr_is_enabled() ||
+>> +               cpuc->lbr_users == cpuc->lbr_pebs_users)
+>>                  return;
+>>
+>>          if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_32)
+>>
+>> Is this acceptable to you ?
+> Yeah, looks about right. Let me stare at the rest.
+Uh, thanks for your warmly comments on the rest KVM part.
 
-In any case, FWIW:
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+Let me assume we do not have any blocking issues
+on the host perf changes to enable LBR feature for guests.
 
-> to VID. This patch emulates this situation.
-> 
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> ---
->  drivers/iio/magnetometer/ak8975.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/iio/magnetometer/ak8975.c b/drivers/iio/magnetometer/ak8975.c
-> index fd368455cd7b..a23422aad97d 100644
-> --- a/drivers/iio/magnetometer/ak8975.c
-> +++ b/drivers/iio/magnetometer/ak8975.c
-> @@ -358,6 +358,7 @@ struct ak8975_data {
->  	u8			asa[3];
->  	long			raw_to_gauss[3];
->  	struct gpio_desc	*eoc_gpiod;
-> +	struct gpio_desc	*reset_gpiod;
->  	int			eoc_irq;
->  	wait_queue_head_t	data_ready_queue;
->  	unsigned long		flags;
-> @@ -384,6 +385,9 @@ static int ak8975_power_on(const struct ak8975_data *data)
->  			 "Failed to enable specified Vid supply\n");
->  		return ret;
->  	}
-> +
-> +	gpiod_set_value_cansleep(data->reset_gpiod, 0);
-> +
->  	/*
->  	 * According to the datasheet the power supply rise time is 200us
->  	 * and the minimum wait time before mode setting is 100us, in
-> @@ -396,6 +400,8 @@ static int ak8975_power_on(const struct ak8975_data *data)
->  /* Disable attached power regulator if any. */
->  static void ak8975_power_off(const struct ak8975_data *data)
->  {
-> +	gpiod_set_value_cansleep(data->reset_gpiod, 1);
-> +
->  	regulator_disable(data->vid);
->  	regulator_disable(data->vdd);
->  }
-> @@ -839,6 +845,7 @@ static int ak8975_probe(struct i2c_client *client,
->  	struct ak8975_data *data;
->  	struct iio_dev *indio_dev;
->  	struct gpio_desc *eoc_gpiod;
-> +	struct gpio_desc *reset_gpiod;
->  	const void *match;
->  	unsigned int i;
->  	int err;
-> @@ -856,6 +863,16 @@ static int ak8975_probe(struct i2c_client *client,
->  	if (eoc_gpiod)
->  		gpiod_set_consumer_name(eoc_gpiod, "ak_8975");
->  
-> +	/*
-> +	 * According to AK09911 datasheet, if reset GPIO is provided then
-> +	 * deassert reset on ak8975_power_on() and assert reset on
-> +	 * ak8975_power_off().
-> +	 */
-> +	reset_gpiod = devm_gpiod_get_optional(&client->dev,
-> +					      "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(reset_gpiod))
-> +		return PTR_ERR(reset_gpiod);
-> +
->  	/* Register with IIO */
->  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
->  	if (indio_dev == NULL)
-> @@ -866,6 +883,7 @@ static int ak8975_probe(struct i2c_client *client,
->  
->  	data->client = client;
->  	data->eoc_gpiod = eoc_gpiod;
-> +	data->reset_gpiod = reset_gpiod;
->  	data->eoc_irq = 0;
->  
->  	err = iio_read_mount_matrix(&client->dev, "mount-matrix", &data->orientation);
-> -- 
-> 2.17.1
+Thanks,
+Like Xu
+
