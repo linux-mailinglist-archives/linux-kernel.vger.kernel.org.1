@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAB71D9FCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9BA1D9FD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgESSoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        id S1728025AbgESSob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726903AbgESSoT (ORCPT
+        with ESMTP id S1726903AbgESSoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:44:19 -0400
+        Tue, 19 May 2020 14:44:23 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDFCC08C5C0;
-        Tue, 19 May 2020 11:44:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362D3C08C5C0;
+        Tue, 19 May 2020 11:44:23 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jb7Dr-0006cq-FS; Tue, 19 May 2020 20:44:15 +0200
+        id 1jb7Ds-0006dk-Ps; Tue, 19 May 2020 20:44:16 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1C3F31C047E;
-        Tue, 19 May 2020 20:44:15 +0200 (CEST)
-Date:   Tue, 19 May 2020 18:44:15 -0000
-From:   "tip-bot2 for Gustavo A. R. Silva" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 625B11C0480;
+        Tue, 19 May 2020 20:44:16 +0200 (CEST)
+Date:   Tue, 19 May 2020 18:44:16 -0000
+From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Replace zero-length array with flexible-array
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+Subject: [tip: sched/core] sched/fair: Optimize enqueue_task_fair()
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200507192141.GA16183@embeddedor>
-References: <20200507192141.GA16183@embeddedor>
+        Phil Auld <pauld@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200513135502.4672-1-vincent.guittot@linaro.org>
+References: <20200513135502.4672-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <158991385502.17951.1325330133750697343.tip-bot2@tip-bot2>
+Message-ID: <158991385628.17951.11829788536387109935.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,81 +51,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     04f5c362ec6d3ff0e14f1c05230b550da7f528a4
-Gitweb:        https://git.kernel.org/tip/04f5c362ec6d3ff0e14f1c05230b550da7f528a4
-Author:        Gustavo A. R. Silva <gustavoars@kernel.org>
-AuthorDate:    Thu, 07 May 2020 14:21:41 -05:00
+Commit-ID:     7d148be69e3a0eaa9d029a3c51b545e322116a99
+Gitweb:        https://git.kernel.org/tip/7d148be69e3a0eaa9d029a3c51b545e322116a99
+Author:        Vincent Guittot <vincent.guittot@linaro.org>
+AuthorDate:    Wed, 13 May 2020 15:55:02 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 19 May 2020 20:34:14 +02:00
+CommitterDate: Tue, 19 May 2020 20:34:13 +02:00
 
-sched/fair: Replace zero-length array with flexible-array
+sched/fair: Optimize enqueue_task_fair()
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+enqueue_task_fair jumps to enqueue_throttle label when cfs_rq_of(se) is
+throttled which means that se can't be NULL in such case and we can move
+the label after the if (!se) statement. Futhermore, the latter can be
+removed because se is always NULL when reaching this point.
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
-
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-sizeof(flexible-array-member) triggers a warning because flexible array
-members have incomplete type[1]. There are some instances of code in
-which the sizeof operator is being incorrectly/erroneously applied to
-zero-length arrays and the result is zero. Such instances may be hiding
-some bugs. So, this work (flexible-array member conversions) will also
-help to get completely rid of those sorts of issues.
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200507192141.GA16183@embeddedor
+Reviewed-by: Phil Auld <pauld@redhat.com>
+Link: https://lkml.kernel.org/r/20200513135502.4672-1-vincent.guittot@linaro.org
 ---
- kernel/sched/fair.c  | 2 +-
- kernel/sched/sched.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 39 +++++++++++++++++++--------------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44b0c8e..01f94cf 100644
+index 9a58874..4e58686 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -1094,7 +1094,7 @@ struct numa_group {
- 	 * more by CPU use than by memory faults.
- 	 */
- 	unsigned long *faults_cpu;
--	unsigned long faults[0];
-+	unsigned long faults[];
- };
+@@ -5512,28 +5512,27 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+                        list_add_leaf_cfs_rq(cfs_rq);
+ 	}
  
- /*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 21416b3..2bd2a22 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1462,7 +1462,7 @@ struct sched_group {
- 	 * by attaching extra space to the end of the structure,
- 	 * depending on how many CPUs the kernel has booted up with)
- 	 */
--	unsigned long		cpumask[0];
-+	unsigned long		cpumask[];
- };
+-enqueue_throttle:
+-	if (!se) {
+-		add_nr_running(rq, 1);
+-		/*
+-		 * Since new tasks are assigned an initial util_avg equal to
+-		 * half of the spare capacity of their CPU, tiny tasks have the
+-		 * ability to cross the overutilized threshold, which will
+-		 * result in the load balancer ruining all the task placement
+-		 * done by EAS. As a way to mitigate that effect, do not account
+-		 * for the first enqueue operation of new tasks during the
+-		 * overutilized flag detection.
+-		 *
+-		 * A better way of solving this problem would be to wait for
+-		 * the PELT signals of tasks to converge before taking them
+-		 * into account, but that is not straightforward to implement,
+-		 * and the following generally works well enough in practice.
+-		 */
+-		if (flags & ENQUEUE_WAKEUP)
+-			update_overutilized_status(rq);
++	/* At this point se is NULL and we are at root level*/
++	add_nr_running(rq, 1);
  
- static inline struct cpumask *sched_group_span(struct sched_group *sg)
+-	}
++	/*
++	 * Since new tasks are assigned an initial util_avg equal to
++	 * half of the spare capacity of their CPU, tiny tasks have the
++	 * ability to cross the overutilized threshold, which will
++	 * result in the load balancer ruining all the task placement
++	 * done by EAS. As a way to mitigate that effect, do not account
++	 * for the first enqueue operation of new tasks during the
++	 * overutilized flag detection.
++	 *
++	 * A better way of solving this problem would be to wait for
++	 * the PELT signals of tasks to converge before taking them
++	 * into account, but that is not straightforward to implement,
++	 * and the following generally works well enough in practice.
++	 */
++	if (flags & ENQUEUE_WAKEUP)
++		update_overutilized_status(rq);
+ 
++enqueue_throttle:
+ 	if (cfs_bandwidth_used()) {
+ 		/*
+ 		 * When bandwidth control is enabled; the cfs_rq_throttled()
