@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9458A1DA559
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6931DA567
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 01:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgESXZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 19:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgESXZw (ORCPT
+        id S1728376AbgESX0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 19:26:21 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:40085 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbgESX0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 19:25:52 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298A8C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:25:52 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id w64so1002045wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 16:25:52 -0700 (PDT)
+        Tue, 19 May 2020 19:26:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qxIrWzKndId5M02rldluZtVI7y5X3L/VGh+mHmelStw=;
-        b=bZZrY/6tnWofgWh1MVFkN2oZF55QFsh6vsmWfPfWynoox7tKL3JPfxFjowkszeHgPx
-         1JVy3ftg9oXLAPKDUz8BulIDv4k5i2acYWPg3e/Nn68uarVz3TxdSIZkSOBrSxhw+CfS
-         9ZL02L9Fb8mqZWxt5DbkYgNo5beZkAPW853nWPV53ATfqgrfSXlfwEKdjcHbTnn0uNQ2
-         HklkmdipI/ikgP6Z8bD5VsxYA9ZlTlwT+37fCvqDWwXcPnYZY0LoCWHOu6SsI4OHJ4wd
-         3Cw95kgQ1AeHVIGYjWGB4jsw5ccBVlGOlvfl/P27ncyY07XQ9CWRavUrQU9zdVIPGMUg
-         se1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qxIrWzKndId5M02rldluZtVI7y5X3L/VGh+mHmelStw=;
-        b=RNa3LH5qZ69gTsvzNOQSeru5ff6eD/1PY6xB4X1nkOzbYqz4uB1FfcbpkS+DZuPY9U
-         qKRymJ+VfaQ85/X4pEV0RTAeFisG/Ibfcfc0VyfA3ej6j/0GTVXemfSwPz4FMt8bQ5DL
-         ednzGrFdXEc1Foend4oKPCX1evxsOKnY/o7TBGvk8J1dY3hIA5elHej6Vvq6VyZqzUCm
-         54gZrquMw948bw29rvDFDvJmPqhX4vsCvbhwpBKv98LUPcnvdJJOmKZuKn5PHcTOvuLk
-         cShzDZSb4OzwIrZvZgMTXSouxn5/4PHbkzMXuYBD+bUo5xA56GNfhVNFmSC82JE5O3WI
-         9wbQ==
-X-Gm-Message-State: AOAM531S7Uzz/vJDj1PK3GEus45GurCpQkkz1ENAcBcQwBdqsELJLTaa
-        Iz8vjSK5mGEFmYOocxQW0GojUASfyIc=
-X-Google-Smtp-Source: ABdhPJwVz5iNSn8vvVkwnZdoEnwfRvCEGJGZnX/iunolwoitoPT3eaDCdu53wzgC5+x5WDnoxG6miw==
-X-Received: by 2002:a1c:7d02:: with SMTP id y2mr267408wmc.92.1589930749374;
-        Tue, 19 May 2020 16:25:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e504:4297:986:ffb0? ([2a01:e34:ed2f:f020:e504:4297:986:ffb0])
-        by smtp.googlemail.com with ESMTPSA id v19sm898944wml.43.2020.05.19.16.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 16:25:48 -0700 (PDT)
-Subject: Re: [PATCH][next] clocksource/drivers/timer-ti-dm: fix spelling
- mistake "detectt" -> "detect"
-To:     Colin King <colin.king@canonical.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200519224428.6195-1-colin.king@canonical.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <61864ba7-e3f3-8156-d133-9baa5f9138bc@linaro.org>
-Date:   Wed, 20 May 2020 01:25:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1589930780; x=1621466780;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=SCTjmV5xVHiNIjiUIMGTdFjC64fXGAUedyZ2c0jICro=;
+  b=CekwH+sbAr2pQsEc8oiWkbBH7ofiPVvejYJBFfA/XnznZP0Liel6g0nW
+   Mzeh2uGLO9HiCH783//og6xcgE9RFhxYJTOoaJDWhlEFRSsUfnt0Ffb+2
+   7KzlZJGf3ynT47xtPhx850MM2v5cW9OPQgeKidCfS6GdlOocYuuWcwjfU
+   4=;
+IronPort-SDR: Kg+TLt+LY+bqUJUwBpjU3RbEzJfqG2xPZmKQMMNfSWm/LI+Yb1NN+YBg1sA0a/PiOEnBmgV9Bu
+ QFRUnvjW9CbQ==
+X-IronPort-AV: E=Sophos;i="5.73,411,1583193600"; 
+   d="scan'208";a="36215719"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 19 May 2020 23:26:16 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 61936A2313;
+        Tue, 19 May 2020 23:26:09 +0000 (UTC)
+Received: from EX13D05UWC003.ant.amazon.com (10.43.162.226) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 19 May 2020 23:25:48 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D05UWC003.ant.amazon.com (10.43.162.226) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 19 May 2020 23:25:48 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Tue, 19 May 2020 23:25:48 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id 91F2940712; Tue, 19 May 2020 23:25:48 +0000 (UTC)
+Date:   Tue, 19 May 2020 23:25:48 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <boris.ostrovsky@oracle.com>,
+        <jgross@suse.com>, <linux-pm@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kamatam@amazon.com>,
+        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
+        <roger.pau@citrix.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
+        <rjw@rjwysocki.net>, <len.brown@intel.com>, <pavel@ucw.cz>,
+        <peterz@infradead.org>, <eduval@amazon.com>, <sblbir@amazon.com>,
+        <anchalag@amazon.com>, <xen-devel@lists.xenproject.org>,
+        <vkuznets@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
+        <benh@kernel.crashing.org>
+Subject: [PATCH 03/12] x86/xen: Introduce new function to map
+ HYPERVISOR_shared_info on Resume
+Message-ID: <529f544a64bb93b920bf86b1d3f86d93b0a4219b.1589926004.git.anchalag@amazon.com>
+References: <cover.1589926004.git.anchalag@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200519224428.6195-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cover.1589926004.git.anchalag@amazon.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2020 00:44, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in a pr_err message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Introduce a small function which re-uses shared page's PA allocated
+during guest initialization time in reserve_shared_info() and not
+allocate new page during resume flow.
+It also  does the mapping of shared_info_page by calling
+xen_hvm_init_shared_info() to use the function.
 
-Applied, thanks
+Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
+---
+ arch/x86/xen/enlighten_hvm.c | 7 +++++++
+ arch/x86/xen/xen-ops.h       | 1 +
+ 2 files changed, 8 insertions(+)
 
-
+diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
+index e138f7de52d2..75b1ec7a0fcd 100644
+--- a/arch/x86/xen/enlighten_hvm.c
++++ b/arch/x86/xen/enlighten_hvm.c
+@@ -27,6 +27,13 @@
+ 
+ static unsigned long shared_info_pfn;
+ 
++void xen_hvm_map_shared_info(void)
++{
++	xen_hvm_init_shared_info();
++	if (shared_info_pfn)
++		HYPERVISOR_shared_info = __va(PFN_PHYS(shared_info_pfn));
++}
++
+ void xen_hvm_init_shared_info(void)
+ {
+ 	struct xen_add_to_physmap xatp;
+diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
+index 45a441c33d6d..d84c357994bd 100644
+--- a/arch/x86/xen/xen-ops.h
++++ b/arch/x86/xen/xen-ops.h
+@@ -56,6 +56,7 @@ void xen_enable_syscall(void);
+ void xen_vcpu_restore(void);
+ 
+ void xen_callback_vector(void);
++void xen_hvm_map_shared_info(void);
+ void xen_hvm_init_shared_info(void);
+ void xen_unplug_emulated_devices(void);
+ 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.24.1.AMZN
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
