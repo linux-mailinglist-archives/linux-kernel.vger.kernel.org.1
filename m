@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811EA1DA3DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739A21DA3CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 23:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgESVqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 17:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40816 "EHLO
+        id S1726823AbgESVpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 17:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgESVqr (ORCPT
+        with ESMTP id S1726030AbgESVpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 17:46:47 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AADC08C5C0;
-        Tue, 19 May 2020 14:46:47 -0700 (PDT)
-Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de.)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <a.darwish@linutronix.de>)
-        id 1jbA3s-0002cK-Vy; Tue, 19 May 2020 23:46:09 +0200
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>, Phillip Susi <psusi@ubuntu.com>,
-        Vivek Goyal <vgoyal@redhat.com>, linux-block@vger.kernel.org
-Subject: [PATCH v1 04/25] block: nr_sects_write(): Disable preemption on seqcount write
-Date:   Tue, 19 May 2020 23:45:26 +0200
-Message-Id: <20200519214547.352050-5-a.darwish@linutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200519214547.352050-1-a.darwish@linutronix.de>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
+        Tue, 19 May 2020 17:45:40 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FAAC08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:45:39 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id l21so777969eji.4
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 14:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cSRyYwL1zh4grnM+TNINN+oD+vS6Z1eKKyNnOMI4spM=;
+        b=kooqm401yr9fOYTBZtBz68VkWQLqOCDxgT2Rq5cmtiNGVkoyO+ziEo9wVOwcB6SECM
+         Rk8oAvW39vwRMGGmhe3BmE0pIX+CPBAQFj4V0sW0Q8Mjr3MG9RMFMPPXCTgw+sN7x6T5
+         SJbSgylBl7DdBAeSrRo97mzs3DWFB9QUsSshAWmL5cqk/iadLv7wzaeBaMOqczn+JNAC
+         Ky5v6fPs21vi7tVclq+4k69VrXLPLYAGdL9OnfSHk2eDEfQJSZdPhkokuw8SPH9Tlpvo
+         wUnkLOyslyQrEbvsZ3MkXnkAtfu6fYm229ySD4pt6W0nyAlDuGq8D8cIz5tHySGCAjdO
+         gzQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cSRyYwL1zh4grnM+TNINN+oD+vS6Z1eKKyNnOMI4spM=;
+        b=oN07MuxRaCsROek7d3LVLT+NCCByihhqK3rDYo6wkUAIwY1+tShw8mRvors6f1pvuF
+         jC6gm/Xl3dDK6LaKxihvMPc+OdLS0wLOa0qgrw+D+402LSv9iX6Z+iCRs1kX6zpNwNa2
+         PInZbA6Sz2aLhykoZrzwtPcbxFc0GuNdqPm1MEKn0l2NiOO+bYdlUh1ZIrI0bfkIgDge
+         nb+TyybjrQvFXCxiR9jAO7tMrEbJr16jSAhkrCh69Wj0UA5Sa7D07UtOi7Whb6Lpt4qX
+         Nkc/d9UAPeezgy/ZxTIv3dr/monNaMUCFZJBbqiLkebv8XMLOFZ96AsPz20SKfrKYorS
+         nFHg==
+X-Gm-Message-State: AOAM531slTwdEw1Skiw97kREUjsguTMO5uuCrtTBNbC0Oi27HZZvs2Vi
+        yiGKY0vQnNmm3bzDQ+//HtjgpM4lz1l+VUWyxPw4fg==
+X-Google-Smtp-Source: ABdhPJy1GoTrnWDrOVkvzM8wYuajaS8dLQXgdmDEIfLXKTKo3/mEzrwI9bzUAi343IxzoHsb/+yRmxGSjHMfDpis7r4=
+X-Received: by 2002:a17:907:2711:: with SMTP id w17mr1256244ejk.8.1589924738593;
+ Tue, 19 May 2020 14:45:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200512183839.2373-1-elver@google.com> <20200512190910.GM2957@hirez.programming.kicks-ass.net>
+ <CAG=TAF5S+n_W4KM9F8QuCisyV+s6_QA_gO70y6ckt=V7SS2BXw@mail.gmail.com> <CANpmjNMxvMpr=KaJEoEeRMuS3PGZEyi-VkeSmNywpQTAzFMSVA@mail.gmail.com>
+In-Reply-To: <CANpmjNMxvMpr=KaJEoEeRMuS3PGZEyi-VkeSmNywpQTAzFMSVA@mail.gmail.com>
+From:   Qian Cai <cai@lca.pw>
+Date:   Tue, 19 May 2020 17:45:27 -0400
+Message-ID: <CAG=TAF7zVCMLj5US0uw-piwBUSmWpmPSPV3Thjbh7_kGsO88hQ@mail.gmail.com>
+Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For optimized block readers not holding a mutex, the "number of sectors"
-64-bit value is protected from tearing on 32-bit architectures by a
-sequence counter.
+On Tue, May 19, 2020 at 5:26 PM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, 19 May 2020 at 23:10, Qian Cai <cai@lca.pw> wrote:
+> >
+> > On Tue, May 12, 2020 at 3:09 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, May 12, 2020 at 08:38:39PM +0200, Marco Elver wrote:
+> > > > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> > > > index 741c93c62ecf..e902ca5de811 100644
+> > > > --- a/include/linux/compiler.h
+> > > > +++ b/include/linux/compiler.h
+> > > > @@ -224,13 +224,16 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+> > > >   * atomicity or dependency ordering guarantees. Note that this may result
+> > > >   * in tears!
+> > > >   */
+> > > > -#define __READ_ONCE(x)       (*(const volatile __unqual_scalar_typeof(x) *)&(x))
+> > > > +#define __READ_ONCE(x)                                                       \
+> > > > +({                                                                   \
+> > > > +     kcsan_check_atomic_read(&(x), sizeof(x));                       \
+> > > > +     data_race((*(const volatile __unqual_scalar_typeof(x) *)&(x))); \
+> > > > +})
+> > >
+> > > NAK
+> > >
+> > > This will actively insert instrumentation into __READ_ONCE() and I need
+> > > it to not have any.
+> >
+> > Any way to move this forward? Due to linux-next commit 6bcc8f459fe7
+> > (locking/atomics: Flip fallbacks and instrumentation), it triggers a
+> > lots of KCSAN warnings due to atomic ops are no longer marked.
+>
+> This is no longer the right solution we believe due to the various
+> requirements that Peter also mentioned. See the discussion here:
+>     https://lkml.kernel.org/r/CANpmjNOGFqhtDa9wWpXs2kztQsSozbwsuMO5BqqW0c0g0zGfSA@mail.gmail.com
+>
+> The new solution is here:
+>     https://lkml.kernel.org/r/20200515150338.190344-1-elver@google.com
+> While it's a little inconvenient that we'll require Clang 11
+> (currently available by building yourself from LLVM repo), but until
+> we get GCC fixed (my patch there still pending :-/), this is probably
+> the right solution going forward.   If possible, please do test!
 
-Disable preemption before entering that sequence counter's write side
-critical section. Otherwise, the read side can preempt the write side
-section and spin for the entire scheduler tick. If the reader belongs to
-a real-time scheduling class, it can spin forever and the kernel will
-livelock.
-
-Fixes: c83f6bf98dc1 ("block: add partition resize function to blkpg ioctl")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- block/blk.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/block/blk.h b/block/blk.h
-index 0a94ec68af32..151f86932547 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -470,9 +470,11 @@ static inline sector_t part_nr_sects_read(struct hd_struct *part)
- static inline void part_nr_sects_write(struct hd_struct *part, sector_t size)
- {
- #if BITS_PER_LONG==32 && defined(CONFIG_SMP)
-+	preempt_disable();
- 	write_seqcount_begin(&part->nr_sects_seq);
- 	part->nr_sects = size;
- 	write_seqcount_end(&part->nr_sects_seq);
-+	preempt_enable();
- #elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
- 	preempt_disable();
- 	part->nr_sects = size;
--- 
-2.20.1
-
+That would be quite unfortunate. The version here is still gcc-8.3.1
+and clang-9.0.1 on RHEL 8.2 here. It will probably need many years to
+be able to get the fixed compilers having versions that high. Sigh...
+Also, I want to avoid compiling compilers on my own.
