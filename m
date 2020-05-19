@@ -2,120 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B461D9F5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48EC1D9F5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729552AbgESSZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729480AbgESSZI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:25:08 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BF3C08C5C0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:25:07 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dm14so637040qvb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 11:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=/YztpDs6K8vdorsBByvnDRj+nEKIuoGb/xCbk1LxXf8=;
-        b=S8dNvEpvhE+IfpPm75giwVCaRp7o63rsUkXLxrj7ImLgHdi2CIWaV2uRWaWULAp2hb
-         BdHfYBPV3qB1TwxRVPVHr3NEjOJNkTFj/3DHOifWLY5AvwISft0kCLQe7amSF4DDzham
-         TngA37tIZZN0J1lnHTIaF4s0bKvAZzJR0Fwr2gV3phXscBjJxO31CR9TkxU1YajXB/I+
-         N7/1vqQX+QKWF0J5ogpoosa3s99vmKO6BwAljPiJI7wtzqYDSM9/YZ/sjWrGV6IX+83h
-         5QfBWwhuT/IksEOCobJwVwxSS8OAGkzeaQVFoIL4khU76tyzhc95TyDjxNCXiSx1a1Si
-         gqyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=/YztpDs6K8vdorsBByvnDRj+nEKIuoGb/xCbk1LxXf8=;
-        b=TETE9Zjnn3nJsIIAWfB5M5zESTJg91eZ1Opp1VhMkbVPliTyrgCD6/Yci0zajoqM05
-         dqgdMl5nG03Kod7U4/WQje+ubBeLDQ1NcDBRe1ajoVbAiaJu065ZU5oyY1fUqmAckDOu
-         Ao5TRv9STbuYTvvFlFBdqTV+8XBjZbCI1D9dPyQ1k7UoKT7EWiTgl2WemkLjQPkE5jNi
-         l45E/aUBmlzVmJRQlBMmXne+rPFZEeCVcjbAEC1QUitwIFGYhPgatI2LlS3x/g7oLRuo
-         i4JCKBgTCg5LLgnKpiTw0SHkz7JuOvMH0B8RAp178o33zIEaUlpxwO21O/VG391RpjJG
-         uUGw==
-X-Gm-Message-State: AOAM533IFpTi0dinLNrMbmNWxmY6TycG4kDjdg4rvId+vlidOAjRVtPb
-        X2rqF3gNWCQzYdiVsApiUw3PZzaqoA==
-X-Google-Smtp-Source: ABdhPJyqBjGg13VhNhrrjBOPZY6akdM/gNnnfWvsAighzQLtbRMd1TtH6DpRkH6RXRujb4mwRLYmtIE4+Q==
-X-Received: by 2002:a05:6214:3f0:: with SMTP id cf16mr1034113qvb.4.1589912706953;
- Tue, 19 May 2020 11:25:06 -0700 (PDT)
-Date:   Tue, 19 May 2020 20:24:59 +0200
-Message-Id: <20200519182459.87166-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH] kasan: Disable branch tracing for core runtime
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        aryabinin@virtuozzo.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, kernel test robot <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729564AbgESSZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:25:36 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2231 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729053AbgESSZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 14:25:36 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id C3B5395E5F87BA105ED6;
+        Tue, 19 May 2020 19:25:33 +0100 (IST)
+Received: from localhost (10.47.86.149) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Tue, 19 May
+ 2020 19:25:33 +0100
+Date:   Tue, 19 May 2020 19:25:05 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Artur Rojek <contact@artur-rojek.eu>
+CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "Ezequiel Garcia" <ezequiel@vanguardiasur.com.ar>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 7/7] input: joystick: Add ADC attached joystick
+ driver.
+Message-ID: <20200519192505.000031fb@Huawei.com>
+In-Reply-To: <20200517194904.34758-7-contact@artur-rojek.eu>
+References: <20200517194904.34758-1-contact@artur-rojek.eu>
+        <20200517194904.34758-7-contact@artur-rojek.eu>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.86.149]
+X-ClientProxiedBy: lhreml705-chm.china.huawei.com (10.201.108.54) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During early boot, while KASAN is not yet initialized, it is possible to
-enter reporting code-path and end up in kasan_report(). While
-uninitialized, the branch there prevents generating any reports,
-however, under certain circumstances when branches are being traced
-(TRACE_BRANCH_PROFILING), we may recurse deep enough to cause kernel
-reboots without warning.
+On Sun, 17 May 2020 21:49:04 +0200
+Artur Rojek <contact@artur-rojek.eu> wrote:
 
-To prevent similar issues in future, we should disable branch tracing
-for the core runtime.
+> Add a driver for joystick devices connected to ADC controllers
+> supporting the Industrial I/O subsystem.
+> 
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> Tested-by: Paul Cercueil <paul@crapouillou.net>
+> Tested-by: Heiko Stuebner <heiko@sntech.de>
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Link: https://lore.kernel.org/lkml/20200517011732.GE24705@shao2-debian/
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/kasan/Makefile  | 16 ++++++++--------
- mm/kasan/generic.c |  1 -
- 2 files changed, 8 insertions(+), 9 deletions(-)
+For the rest of the patches I haven't commented on I'm
+find with this but will be looking for a dt review tag from Rob.
++ you'll want to fix the > which should be a | that is annoying Rob's
+bot (at least I guess that is what it is)
 
-diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
-index 434d503a6525..de3121848ddf 100644
---- a/mm/kasan/Makefile
-+++ b/mm/kasan/Makefile
-@@ -15,14 +15,14 @@ CFLAGS_REMOVE_tags_report.o = $(CC_FLAGS_FTRACE)
- 
- # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
- # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
--CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_init.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_quarantine.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
--CFLAGS_tags_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
-+CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_init.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_quarantine.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
-+CFLAGS_tags_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector) -DDISABLE_BRANCH_PROFILING
- 
- obj-$(CONFIG_KASAN) := common.o init.o report.o
- obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 56ff8885fe2e..098a7dbaced6 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -15,7 +15,6 @@
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--#define DISABLE_BRANCH_PROFILING
- 
- #include <linux/export.h>
- #include <linux/interrupt.h>
--- 
-2.26.2.761.g0e0b3e54be-goog
+
+Thanks,
+
+Jonathan
+
+> ---
+> 
+>  Changes:
+> 
+>  v2: - sanity check supported channel format on probe,
+>      - rename adc_joystick_disable to a more sensible adc_joystick_cleanup, 
+>      - enforce correct axis order by checking the `reg` property of
+>        child nodes
+> 
+>  v3-v5: no change
+> 
+>  v6: - remove redundant `<linux/of.h>`
+>      - set `val` for each endianness case in their respective branches
+>      - pass received error codes to return value of `adc_joystick_set_axes`
+>      - change `(bits >> 3) > 2` to `bits > 16` for readability
+>      - drop `of_match_ptr`
+> 
+>  v7: no change
+> 
+>  drivers/input/joystick/Kconfig        |  10 +
+>  drivers/input/joystick/Makefile       |   1 +
+>  drivers/input/joystick/adc-joystick.c | 253 ++++++++++++++++++++++++++
+>  3 files changed, 264 insertions(+)
+>  create mode 100644 drivers/input/joystick/adc-joystick.c
+> 
+> diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
+> index 940b744639c7..efbc20ec5099 100644
+> --- a/drivers/input/joystick/Kconfig
+> +++ b/drivers/input/joystick/Kconfig
+> @@ -42,6 +42,16 @@ config JOYSTICK_A3D
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called a3d.
+>  
+> +config JOYSTICK_ADC
+> +	tristate "Simple joystick connected over ADC"
+> +	depends on IIO
+> +	select IIO_BUFFER_CB
+> +	help
+> +	  Say Y here if you have a simple joystick connected over ADC.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called adc-joystick.
+> +
+>  config JOYSTICK_ADI
+>  	tristate "Logitech ADI digital joysticks and gamepads"
+>  	select GAMEPORT
+> diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Makefile
+> index 8656023f6ef5..58232b3057d3 100644
+> --- a/drivers/input/joystick/Makefile
+> +++ b/drivers/input/joystick/Makefile
+> @@ -6,6 +6,7 @@
+>  # Each configuration option enables a list of files.
+>  
+>  obj-$(CONFIG_JOYSTICK_A3D)		+= a3d.o
+> +obj-$(CONFIG_JOYSTICK_ADC)		+= adc-joystick.o
+>  obj-$(CONFIG_JOYSTICK_ADI)		+= adi.o
+>  obj-$(CONFIG_JOYSTICK_AMIGA)		+= amijoy.o
+>  obj-$(CONFIG_JOYSTICK_AS5011)		+= as5011.o
+> diff --git a/drivers/input/joystick/adc-joystick.c b/drivers/input/joystick/adc-joystick.c
+> new file mode 100644
+> index 000000000000..a4ba8eac5a12
+> --- /dev/null
+> +++ b/drivers/input/joystick/adc-joystick.c
+> @@ -0,0 +1,253 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Input driver for joysticks connected over ADC.
+> + * Copyright (c) 2019-2020 Artur Rojek <contact@artur-rojek.eu>
+> + */
+> +#include <linux/ctype.h>
+> +#include <linux/input.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +
+> +struct adc_joystick_axis {
+> +	u32 code;
+> +	s32 range[2];
+> +	s32 fuzz;
+> +	s32 flat;
+> +};
+> +
+> +struct adc_joystick {
+> +	struct input_dev *input;
+> +	struct iio_cb_buffer *buffer;
+> +	struct adc_joystick_axis *axes;
+> +	struct iio_channel *chans;
+> +	int num_chans;
+> +};
+> +
+> +static int adc_joystick_handle(const void *data, void *private)
+> +{
+> +	struct adc_joystick *joy = private;
+> +	enum iio_endian endianness;
+> +	int bytes, msb, val, i;
+> +	bool sign;
+> +
+> +	bytes = joy->chans[0].channel->scan_type.storagebits >> 3;
+> +
+> +	for (i = 0; i < joy->num_chans; ++i) {
+> +		endianness = joy->chans[i].channel->scan_type.endianness;
+> +		msb = joy->chans[i].channel->scan_type.realbits - 1;
+> +		sign = (tolower(joy->chans[i].channel->scan_type.sign) == 's');
+> +
+> +		switch (bytes) {
+> +		case 1:
+> +			val = ((const u8 *)data)[i];
+> +			break;
+> +		case 2:
+> +			if (endianness == IIO_BE)
+> +				val = be16_to_cpu(((const u16 *)data)[i]);
+> +			else if (endianness == IIO_LE)
+> +				val = le16_to_cpu(((const u16 *)data)[i]);
+> +			else /* IIO_CPU */
+> +				val = ((const u16 *)data)[i];
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+> +		val >>= joy->chans[i].channel->scan_type.shift;
+> +		if (sign)
+> +			val = sign_extend32(val, msb);
+> +		else
+> +			val &= GENMASK(msb, 0);
+> +		input_report_abs(joy->input, joy->axes[i].code, val);
+> +	}
+> +
+> +	input_sync(joy->input);
+> +
+> +	return 0;
+> +}
+> +
+> +static int adc_joystick_open(struct input_dev *dev)
+> +{
+> +	struct adc_joystick *joy = input_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = iio_channel_start_all_cb(joy->buffer);
+> +	if (ret)
+> +		dev_err(dev->dev.parent, "Unable to start callback buffer");
+> +
+> +	return ret;
+> +}
+> +
+> +static void adc_joystick_close(struct input_dev *dev)
+> +{
+> +	struct adc_joystick *joy = input_get_drvdata(dev);
+> +
+> +	iio_channel_stop_all_cb(joy->buffer);
+> +}
+> +
+> +static void adc_joystick_cleanup(void *data)
+> +{
+> +	iio_channel_release_all_cb(data);
+> +}
+> +
+> +static int adc_joystick_set_axes(struct device *dev, struct adc_joystick *joy)
+> +{
+> +	struct adc_joystick_axis *axes;
+> +	struct fwnode_handle *child;
+> +	int num_axes, ret, i;
+> +
+> +	num_axes = device_get_child_node_count(dev);
+> +	if (!num_axes) {
+> +		dev_err(dev, "Unable to find child nodes");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (num_axes != joy->num_chans) {
+> +		dev_err(dev, "Got %d child nodes for %d channels",
+> +			num_axes, joy->num_chans);
+> +		return -EINVAL;
+> +	}
+> +
+> +	axes = devm_kmalloc_array(dev, num_axes, sizeof(*axes), GFP_KERNEL);
+> +	if (!axes)
+> +		return -ENOMEM;
+> +
+> +	device_for_each_child_node(dev, child) {
+> +		ret = fwnode_property_read_u32(child, "reg", &i);
+> +		if (ret) {
+> +			dev_err(dev, "reg invalid or missing");
+> +			goto err;
+> +		}
+> +
+> +		if (i >= num_axes) {
+> +			ret = -EINVAL;
+> +			dev_err(dev, "No matching axis for reg %d", i);
+> +			goto err;
+> +		}
+> +
+> +		ret = fwnode_property_read_u32(child, "linux,code",
+> +					     &axes[i].code);
+> +		if (ret) {
+> +			dev_err(dev, "linux,code invalid or missing");
+> +			goto err;
+> +		}
+> +
+> +		ret = fwnode_property_read_u32_array(child, "abs-range",
+> +						   axes[i].range, 2);
+> +		if (ret) {
+> +			dev_err(dev, "abs-range invalid or missing");
+> +			goto err;
+> +		}
+> +
+> +		fwnode_property_read_u32(child, "abs-fuzz",
+> +					 &axes[i].fuzz);
+> +		fwnode_property_read_u32(child, "abs-flat",
+> +					 &axes[i].flat);
+> +
+> +		input_set_abs_params(joy->input, axes[i].code,
+> +				     axes[i].range[0], axes[i].range[1],
+> +				     axes[i].fuzz,
+> +				     axes[i].flat);
+> +		input_set_capability(joy->input, EV_ABS, axes[i].code);
+> +	}
+> +
+> +	joy->axes = axes;
+> +
+> +	return 0;
+> +
+> +err:
+> +	fwnode_handle_put(child);
+> +	return ret;
+> +}
+> +
+> +static int adc_joystick_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct adc_joystick *joy;
+> +	struct input_dev *input;
+> +	int bits, ret, i;
+> +
+> +	joy = devm_kzalloc(dev, sizeof(*joy), GFP_KERNEL);
+> +	if (!joy)
+> +		return -ENOMEM;
+> +
+> +	joy->chans = devm_iio_channel_get_all(dev);
+> +	if (IS_ERR(joy->chans)) {
+> +		ret = PTR_ERR(joy->chans);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(dev, "Unable to get IIO channels");
+> +		return ret;
+> +	}
+> +
+> +	/* Count how many channels we got. NULL terminated. */
+> +	while (joy->chans[joy->num_chans].indio_dev)
+> +		joy->num_chans++;
+> +
+> +	bits = joy->chans[0].channel->scan_type.storagebits;
+> +	if (!bits || (bits > 16)) {
+> +		dev_err(dev, "Unsupported channel storage size");
+> +		return -EINVAL;
+> +	}
+> +	for (i = 1; i < joy->num_chans; ++i)
+> +		if (joy->chans[i].channel->scan_type.storagebits != bits) {
+> +			dev_err(dev, "Channels must have equal storage size");
+> +			return -EINVAL;
+> +		}
+> +
+> +	input = devm_input_allocate_device(dev);
+> +	if (!input) {
+> +		dev_err(dev, "Unable to allocate input device");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	joy->input = input;
+> +	input->name = pdev->name;
+> +	input->id.bustype = BUS_HOST;
+> +	input->open = adc_joystick_open;
+> +	input->close = adc_joystick_close;
+> +
+> +	ret = adc_joystick_set_axes(dev, joy);
+> +	if (ret)
+> +		return ret;
+> +
+> +	input_set_drvdata(input, joy);
+> +	ret = input_register_device(input);
+> +	if (ret) {
+> +		dev_err(dev, "Unable to register input device: %d", ret);
+> +		return ret;
+> +	}
+> +
+> +	joy->buffer = iio_channel_get_all_cb(dev, adc_joystick_handle, joy);
+> +	if (IS_ERR(joy->buffer)) {
+> +		dev_err(dev, "Unable to allocate callback buffer");
+> +		return PTR_ERR(joy->buffer);
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(dev, adc_joystick_cleanup, joy->buffer);
+> +	if (ret)
+> +		dev_err(dev, "Unable to add action");
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id adc_joystick_of_match[] = {
+> +	{ .compatible = "adc-joystick", },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, adc_joystick_of_match);
+> +
+> +static struct platform_driver adc_joystick_driver = {
+> +	.driver = {
+> +		.name = "adc-joystick",
+> +		.of_match_table = adc_joystick_of_match,
+> +	},
+> +	.probe = adc_joystick_probe,
+> +};
+> +module_platform_driver(adc_joystick_driver);
+> +
+> +MODULE_DESCRIPTION("Input driver for joysticks connected over ADC");
+> +MODULE_AUTHOR("Artur Rojek <contact@artur-rojek.eu>");
+> +MODULE_LICENSE("GPL");
+
 
