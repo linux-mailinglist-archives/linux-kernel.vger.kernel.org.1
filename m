@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFC31D8C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F36F1D8C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 02:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgESAcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 May 2020 20:32:46 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:59128 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgESAcq (ORCPT
+        id S1726907AbgESA3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 May 2020 20:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgESA3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 May 2020 20:32:46 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jaqBW-0002cm-4i; Mon, 18 May 2020 18:32:42 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jaqBU-0003N4-Tu; Mon, 18 May 2020 18:32:41 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
-        <87sgga6ze4.fsf@x220.int.ebiederm.org>
-        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
-Date:   Mon, 18 May 2020 19:29:00 -0500
-In-Reply-To: <87v9l4zyla.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Sat, 09 May 2020 14:40:17 -0500")
-Message-ID: <877dx822er.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 18 May 2020 20:29:34 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA6DC061A0C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:29:33 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 202so9663654lfe.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lp5YS4wnqdBmdbNdBQYAqe4C1skHr56PklzUDuGNt/o=;
+        b=HhfO0c/8Afa39iKCJTB/VymbLZle1h5CJm8AufmRSEUwBn1RFOp146dtIZ9YMMYJwD
+         RIsrpTUNyS/4zSVsfHF+DajZ2AXyTU0XqO0JvcLfWy5PnMEXZeMdzN+/JsfVpklg/2It
+         hYaSG+aYP1iUn/RWWyuBF1JUePeDCVxxVxWUw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lp5YS4wnqdBmdbNdBQYAqe4C1skHr56PklzUDuGNt/o=;
+        b=k8QqDp8+QTZuz0bqQ4USM6cQbTFydNjBo8PDIpYJBQuJA2xqD6CBXamg4sA4FP/Jjv
+         rGqqEz1HJU6Vp+GPgqasGD0yoWNs7uTxjF1CbypqBEe4aFbv/8JjPX45eyzUKr6B3eWl
+         cC1lEjeUk9vdVd7Jvi2CSS6iYJtsvb1LIAAcZimJDczepEyziooby4wns3rfmfvgyAqH
+         n8ylYZIW6mEzgU43eUgS0jQfG7H4XwVcjeOnN6d4/tC1E+ylh0InBtb9x3JN2Z8sCIJj
+         p5YtusK+jExON8nhFVoMUOCiJfCHAu1AVG0fKqBQjMtlAFE+YxfF/kNj3G33T01GO38p
+         AreA==
+X-Gm-Message-State: AOAM533ZO++w8Sd8hW1z3IzTrntskTLT+5h1rFb3IZt8QvexO15vtUO/
+        MTbsDe9cplPj/CJ8lFlLnd5OQVa8Q1s=
+X-Google-Smtp-Source: ABdhPJzBOiDKZPvSWhVax8a/iFsouuf5pNGevrUgIhFnsUExvgmBX71zfIbqhqTYrAB8YE2BBNGyAA==
+X-Received: by 2002:a19:70d:: with SMTP id 13mr13512664lfh.60.1589848171412;
+        Mon, 18 May 2020 17:29:31 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id x11sm6384151ljj.15.2020.05.18.17.29.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 May 2020 17:29:30 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id b6so11839130ljj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 May 2020 17:29:30 -0700 (PDT)
+X-Received: by 2002:a2e:8956:: with SMTP id b22mr5686169ljk.16.1589848169813;
+ Mon, 18 May 2020 17:29:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jaqBU-0003N4-Tu;;;mid=<877dx822er.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18by/aaLJV6sf4J1suuuELTUfpwuJ2FJIk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_XMDrugObfuBody_08,XM_Body_Dirty_Words
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.5 XM_Body_Dirty_Words Contains a dirty word
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 609 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (1.8%), b_tie_ro: 10 (1.6%), parse: 0.88
-        (0.1%), extract_message_metadata: 3.3 (0.5%), get_uri_detail_list:
-        1.31 (0.2%), tests_pri_-1000: 4.0 (0.7%), tests_pri_-950: 1.26 (0.2%),
-        tests_pri_-900: 0.98 (0.2%), tests_pri_-90: 60 (9.9%), check_bayes: 59
-        (9.7%), b_tokenize: 8 (1.3%), b_tok_get_all: 8 (1.4%), b_comp_prob:
-        2.5 (0.4%), b_tok_touch_all: 37 (6.1%), b_finish: 0.80 (0.1%),
-        tests_pri_0: 506 (83.2%), check_dkim_signature: 0.58 (0.1%),
-        check_dkim_adsp: 3.8 (0.6%), poll_dns_idle: 0.65 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 11 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v2 0/8] exec: Control flow simplifications
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200408205323.44490-1-natechancellor@gmail.com>
+ <20200518093117.GA719849@ubuntu-s3-xlarge-x86> <CAKwvOdmXgYThHRDpt5dFZy5T1zS6MYQhcBNcq6-rsuc5fjiE6Q@mail.gmail.com>
+ <20200518183513.53b94f11@gandalf.local.home>
+In-Reply-To: <20200518183513.53b94f11@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 May 2020 17:29:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiwom6EF4DqStcZD0cJwXRMwAmLx2Z-wcn5xTiaJpgEkA@mail.gmail.com>
+Message-ID: <CAHk-=wiwom6EF4DqStcZD0cJwXRMwAmLx2Z-wcn5xTiaJpgEkA@mail.gmail.com>
+Subject: Re: [PATCH] x86: mmiotrace: Use cpumask_available for cpumask_var_t variables
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau@lists.freedesktop.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 18, 2020 at 3:35 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Linus,
+>
+> Are you OK with this patch?
 
-It is hard to follow the control flow in exec.c as the code has evolved over
-time and something that used to work one way now works another.  This set of
-changes attempts to address the worst of that, to remove unnecessary work
-and to make the code a little easier to follow.
+Yup, I don't care deeply either way, as long as we can get rid of the warning.
 
-The churn is a bit higher than the last version of this patchset, with
-renaming and cleaning up of comments.  I have split security_bprm_set_creds
-into security_bprm_creds_for_exec and security_bprm_repopulate_creds.  My
-goal was to make it clear that one hook completes its work while the other
-recaculates it's work each time a new interpreter is selected.
-
-I have added a new change at the beginning to make it clear that neither
-security_bprm_creds_for_exec nor security_bprm_repopulate_creds needs to be
-implemented as prepare_exec_creds properly does the work of setting up
-credentials unless something special is going on.
-
-I have made the execfd support generic and moved out of binfmt_misc so that
-I can remove the recursion.
-
-I have moved reassigning bprm->file into the loop that replaces the
-recursion.  In doing so I discovered that binfmt_misc was naughty and
-was returning -ENOEXEC in such a way that the search_binary_handler loop
-could not continue.  So I added a change to remove that naughtiness.
-
-Eric W. Biederman (8):
-      exec: Teach prepare_exec_creds how exec treats uids & gids
-      exec: Factor security_bprm_creds_for_exec out of security_bprm_set_creds
-      exec: Convert security_bprm_set_creds into security_bprm_repopulate_creds
-      exec: Allow load_misc_binary to call prepare_binfmt unconditionally
-      exec: Move the call of prepare_binprm into search_binary_handler
-      exec/binfmt_script: Don't modify bprm->buf and then return -ENOEXEC
-      exec: Generic execfd support
-      exec: Remove recursion from search_binary_handler
-
- arch/alpha/kernel/binfmt_loader.c  | 11 +----
- fs/binfmt_elf.c                    |  4 +-
- fs/binfmt_elf_fdpic.c              |  4 +-
- fs/binfmt_em86.c                   | 13 +----
- fs/binfmt_misc.c                   | 69 ++++-----------------------
- fs/binfmt_script.c                 | 82 ++++++++++++++------------------
- fs/exec.c                          | 97 ++++++++++++++++++++++++++------------
- include/linux/binfmts.h            | 36 ++++++--------
- include/linux/lsm_hook_defs.h      |  3 +-
- include/linux/lsm_hooks.h          | 52 +++++++++++---------
- include/linux/security.h           | 14 ++++--
- kernel/cred.c                      |  3 ++
- security/apparmor/domain.c         |  7 +--
- security/apparmor/include/domain.h |  2 +-
- security/apparmor/lsm.c            |  2 +-
- security/commoncap.c               |  9 ++--
- security/security.c                |  9 +++-
- security/selinux/hooks.c           |  8 ++--
- security/smack/smack_lsm.c         |  9 ++--
- security/tomoyo/tomoyo.c           | 12 ++---
- 20 files changed, 202 insertions(+), 244 deletions(-)
+                Linus
