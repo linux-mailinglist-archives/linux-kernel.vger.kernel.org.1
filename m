@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CAE1D97F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F811D9818
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbgESNjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:39:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:33070 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgESNjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:39:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E777330E;
-        Tue, 19 May 2020 06:39:43 -0700 (PDT)
-Received: from [10.37.8.206] (unknown [10.37.8.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D65D3F52E;
-        Tue, 19 May 2020 06:39:42 -0700 (PDT)
-Subject: Re: [PATCH V4 13/17] arm64/cpufeature: Add remaining feature bits in
- ID_AA64MMFR1 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-14-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <6ad2dde0-455f-90a6-7b76-eda4fe8d6efe@arm.com>
-Date:   Tue, 19 May 2020 14:44:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1728975AbgESNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbgESNo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 09:44:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66041C08C5C0;
+        Tue, 19 May 2020 06:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VA+rkbbJ9Gdu2pIdIJCd0hxkxzOrtfH9/4cfURE97w4=; b=s5jGcOuFcMqXXsAcexu5WkkZpW
+        SqMchNqCMYatHho2iD6t0yuHPPsnOU7ddh0uHbCBrRC1iUo6xwomnsizcFL8lqJCbsH762aqgv9f1
+        M3UX75xgLM/hLHthh07qF4USOtDaNRjvSnclU4YUozuiTb8LWYOEgjMlNNXPhMl5uBUDJ/VaVA6ju
+        ZYOmK5YEdFlIf5whS9gHwr3RdmlbwgpmqhC40VmWGXUQmYyfNQUPBdsaCPh1TLNjxE1ub3Q8jgTGh
+        VjQUwge2yc4VojVSjpq7694uk3yIBqjzpHN6/RQXB0KByEZY3OhQCrBzDRPhy3k9+ljWwoFcuXPml
+        UbSLfoTA==;
+Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jb2Y7-0000zQ-W6; Tue, 19 May 2020 13:44:52 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: clean up and streamline probe_kernel_* and friends v3
+Date:   Tue, 19 May 2020 15:44:29 +0200
+Message-Id: <20200519134449.1466624-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1589881254-10082-14-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
-> Enable ETS, TWED, XNX and SPECSEI features bits in ID_AA64MMFR1 register as
-> per ARM DDI 0487F.a specification.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   arch/arm64/include/asm/sysreg.h | 4 ++++
->   arch/arm64/kernel/cpufeature.c  | 4 ++++
->   2 files changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 95fdfc5e9bd0..f9dd2c5ab074 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -734,6 +734,10 @@
->   #endif
->   
->   /* id_aa64mmfr1 */
-> +#define ID_AA64MMFR1_ETS_SHIFT		36
-> +#define ID_AA64MMFR1_TWED_SHIFT		32
-> +#define ID_AA64MMFR1_XNX_SHIFT		28
-> +#define ID_AA64MMFR1_SPECSEI_SHIFT	24
->   #define ID_AA64MMFR1_PAN_SHIFT		20
->   #define ID_AA64MMFR1_LOR_SHIFT		16
->   #define ID_AA64MMFR1_HPD_SHIFT		12
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 7ce19f97ba73..1f10ff7df705 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -299,6 +299,10 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
->   };
->   
->   static const struct arm64_ftr_bits ftr_id_aa64mmfr1[] = {
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_ETS_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_TWED_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_XNX_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_SPECSEI_SHIFT, 4, 0),
+Hi all,
 
-SpecSEI must be HIGHER_SAFE, like we did for MMFR4 ?
+this series start cleaning up the safe kernel and user memory probing
+helpers in mm/maccess.c, and then allows architectures to implement
+the kernel probing without overriding the address space limit and
+temporarily allowing access to user memory.  It then switches x86
+over to this new mechanism by reusing the unsafe_* uaccess logic.
 
-Otherwise looks good to me.
+This version also switches to the saner copy_{from,to}_kernel_nofault
+naming suggested by Linus.
 
-Suzuki
+I kept the x86 helprs as-is without calling unsage_{get,put}_user as
+that avoids a number of hard to trace casts, and it will still work
+with the asm-goto based version easily.
+
+Changes since v2:
+ - rebased on 5.7-rc6 with the bpf trace format string changes
+ - rename arch_kernel_read to __get_kernel_nofault and arch_kernel_write
+   to __put_kernel_nofault
+ - clean up the tracers to only allowd "mixed" reads when the kernel
+   has non-overlapping address spaces
