@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A611DA450
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9121DA45B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 00:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgESWOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 18:14:02 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25011 "EHLO mga18.intel.com"
+        id S1726871AbgESWRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 18:17:37 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51048 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgESWOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 18:14:01 -0400
-IronPort-SDR: A7Owm0J4mtLcZ/fUsRRSCMRk8R0XKfxlqDenbdTJkVCLH69xigv16cHD6rEliEasQuY+ciIlrf
- UU+a5Ns5whoA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:14:01 -0700
-IronPort-SDR: 2MWpHGqR35+mDeyE6AqtyUXSdJ/NguJmYOo59tFvN01VlDa2/vukJC3CWnxGOaShnWJELBPRHE
- /0DlzF1xIHKA==
-X-IronPort-AV: E=Sophos;i="5.73,411,1583222400"; 
-   d="scan'208";a="439787051"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.255.229.46]) ([10.255.229.46])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 15:14:00 -0700
-Subject: Re: [PATCH V6 0/4] x86/resctrl: Enable user to view and select thread
- throttling mode
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
-        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1589922949.git.reinette.chatre@intel.com>
- <20200519213516.GF444@zn.tnic>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <1d9ee0f0-8078-e8b6-ce66-6c0bf51cb3b4@intel.com>
-Date:   Tue, 19 May 2020 15:13:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725998AbgESWRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 18:17:36 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8BC8E1A011F;
+        Wed, 20 May 2020 00:17:34 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7CCC11A021B;
+        Wed, 20 May 2020 00:17:34 +0200 (CEST)
+Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C76B320564;
+        Wed, 20 May 2020 00:17:33 +0200 (CEST)
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Horia Geanta <horia.geanta@nxp.com>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: [PATCH] crypto: engine - do not requeue in case of fatal error
+Date:   Wed, 20 May 2020 01:17:25 +0300
+Message-Id: <1589926645-32686-1-git-send-email-iuliana.prodan@nxp.com>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-In-Reply-To: <20200519213516.GF444@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+Now, in crypto-engine, if hardware queue is full (-ENOSPC),
+requeue request regardless of MAY_BACKLOG flag.
+If hardware throws any other error code (like -EIO, -EINVAL,
+-ENOMEM, etc.) only MAY_BACKLOG requests are enqueued back into
+crypto-engine's queue, since the others can be dropped.
+The latter case can be fatal error, so those cannot be recovered from.
+For example, in CAAM driver, -EIO is returned in case the job descriptor
+is broken, so there is no possibility to fix the job descriptor.
+Therefore, these errors might be fatal error, so we shouldn’t
+requeue the request. This will just be pass back and forth between
+crypto-engine and hardware.
 
-On 5/19/2020 2:35 PM, Borislav Petkov wrote:
-> On Tue, May 19, 2020 at 02:28:27PM -0700, Reinette Chatre wrote:
->> V5 upstream submission available from:
->> https://lore.kernel.org/lkml/cover.1589844108.git.reinette.chatre@intel.com
-> 
-> Is there any chance for not spamming us with this patchset almost every
-> day?
-> 
-> From Documentation/process/submitting-patches.rst:
-> 
-> "Wait for a minimum of one week before resubmitting or pinging reviewers
-> - possibly longer during busy times like merge windows."
-> 
+Fixes: 6a89f492f8e5 ("crypto: engine - support for parallel requests based on retry mechanism")
+Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+---
+ crypto/crypto_engine.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-I am very sorry. I was hoping that this series could be considered for
-inclusion into v5.8 and submitted it seven weeks ago because of that.
-The recent feedback addressed seemed to be the final few small comments
-needed to be ready for inclusion and I was afraid that waiting long to
-address this would cause me to miss opportunity to be considered for
-inclusion since we are already at rc6.
-
-Reinette
-
+diff --git a/crypto/crypto_engine.c b/crypto/crypto_engine.c
+index 412149e..3655d9d 100644
+--- a/crypto/crypto_engine.c
++++ b/crypto/crypto_engine.c
+@@ -169,13 +169,10 @@ static void crypto_pump_requests(struct crypto_engine *engine,
+ 		/*
+ 		 * If hardware queue is full (-ENOSPC), requeue request
+ 		 * regardless of backlog flag.
+-		 * If hardware throws any other error code,
+-		 * requeue only backlog requests.
+ 		 * Otherwise, unprepare and complete the request.
+ 		 */
+ 		if (!engine->retry_support ||
+-		    ((ret != -ENOSPC) &&
+-		    !(async_req->flags & CRYPTO_TFM_REQ_MAY_BACKLOG))) {
++		    (ret != -ENOSPC)) {
+ 			dev_err(engine->dev,
+ 				"Failed to do one request from queue: %d\n",
+ 				ret);
+-- 
+2.1.0
 
