@@ -2,91 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ED71D960C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1521D9614
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 14:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgESMQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 08:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S1728788AbgESMTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 08:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728612AbgESMQK (ORCPT
+        with ESMTP id S1726880AbgESMTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 08:16:10 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A9FC08C5C0;
-        Tue, 19 May 2020 05:16:09 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id m185so3275669wme.3;
-        Tue, 19 May 2020 05:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CI8m9crALg/Xn9OTn2CBKMgQVjthPtgSj7GKK6/xrJY=;
-        b=vBqmOvTO2RpDH6eAR9P3QBjukIRoBhlYcOfYsZS2KPUH2g7YNw3monWGp1OTTphsZr
-         2BOEwUj0BfqLk13bC05HQvnpLhd+RXE8NX6/wusaJZ4jg+TZHXKBYhcx0jt8Eo3cJ7Hz
-         Y0wBW/ahm1c5pY7qSy5U8LUOfF5KnDEj905txbJ9j9VYGvbD8skZl5FDp/1x7S8TOzra
-         FiIuG06zXO5qpN6aI6/2AhgeUJMB/8Wy/Yado2WGM34H+G7tmZ5z5pCX5iuLeGc3H72O
-         W9lMeK/jqmk5fHNDYm4WN4Vhe67nU0qs0ujenvJa3chTKbNCLe9tESJ41lkBoKAm41gX
-         EBPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=CI8m9crALg/Xn9OTn2CBKMgQVjthPtgSj7GKK6/xrJY=;
-        b=GAsh3hpj/s384s3kkIAB11AdE3AKCUwL7vfsKmb0fXFtxqo8ml+8lQKLDsyJbzXuxJ
-         V/OxsbPZpFmam5r+9cPKM0N8XkJkcYWMxzY4E9M/RdjxGMvkoLHpSHyBprlYMjZ0ZUq8
-         OoMcKU2ESx7oW9emE6lL3+t32hyRvswBspP5ahWcO5Lpi/tleSYyjZGn9W28Kvhdavgb
-         qAt89ugCgJ8gBQMV0/cKSbQiOhd3Uh6v41YOYIMiZ4o24Ug/0SeMVddOgNOy5xVftyRi
-         427BzgWWa4TIeK6543p7Mv8AgwpFwbBzCfALYaqq+t2SKdUOqr215WCiSBagCU4vJCYO
-         pMPg==
-X-Gm-Message-State: AOAM533FQ6XVU08epT44lGiadpnEFOUBVUy0JMDRjFPOheSpZ1dbOQ9k
-        q86vpWp6czd/yEGbh2gsiks=
-X-Google-Smtp-Source: ABdhPJxHMUI94FzaEe4xQzVqMjormWR9atpJ2uAM5QMcxIJw4AE3uiC6h2FBqph/XlkkdbNUkyB9Sg==
-X-Received: by 2002:a05:600c:2c4e:: with SMTP id r14mr5467146wmg.118.1589890568466;
-        Tue, 19 May 2020 05:16:08 -0700 (PDT)
-Received: from dell5510 ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id t129sm4356833wmg.27.2020.05.19.05.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 05:16:07 -0700 (PDT)
-Date:   Tue, 19 May 2020 14:16:05 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Nikita Sobolev <Nikita.Sobolev@synopsys.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Tadeusz Struk <tadeusz.struk@intel.com>,
-        Joey Pabalinas <joeypabalinas@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2] Kernel selftests: Add check if tpm devices are
- supported
-Message-ID: <20200519121605.GA26265@dell5510>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20200519120743.41358-1-Nikita.Sobolev@synopsys.com>
+        Tue, 19 May 2020 08:19:03 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A61C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 05:19:02 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id A4833386; Tue, 19 May 2020 14:19:01 +0200 (CEST)
+Date:   Tue, 19 May 2020 14:19:00 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com
+Subject: Re: [PATCH] iommu/mediatek-v1: Fix a build warning for a unused
+ variable 'data'
+Message-ID: <20200519121900.GI18353@8bytes.org>
+References: <1589875064-662-1-git-send-email-yong.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519120743.41358-1-Nikita.Sobolev@synopsys.com>
+In-Reply-To: <1589875064-662-1-git-send-email-yong.wu@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On Tue, May 19, 2020 at 03:57:44PM +0800, Yong Wu wrote:
+> This patch fixes a build warning:
+> drivers/iommu/mtk_iommu_v1.c: In function 'mtk_iommu_release_device':
+> >> drivers/iommu/mtk_iommu_v1.c:467:25: warning: variable 'data' set but
+> >> not used [-Wunused-but-set-variable]
+> 467 |  struct mtk_iommu_data *data;
+> |                         ^~~~
+> 
+> It's reported at:
+> https://lore.kernel.org/linux-iommu/202005191458.gY38V8bU%25lkp@intel.com/T/#u
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  drivers/iommu/mtk_iommu_v1.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-> tpm2 tests set uses /dev/tpm0 and /dev/tpmrm0 without check if they
-> are available. In case, when these devices are not available test
-> fails, but expected behaviour is skipped test.
-
-> Signed-off-by: Nikita Sobolev <Nikita.Sobolev@synopsys.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Thanks for v2, but I see v1 already merged in next tree since February.
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200518&id=b32694cd0724d4ceca2c62cc7c3d3a8d1ffa11fc
-
-Kind regards,
-Petr
+Applied, thanks.
