@@ -2,797 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373831D8FEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 08:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136C61D8FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 08:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgESGUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 02:20:49 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11141 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgESGUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 02:20:48 -0400
-IronPort-SDR: l6hznbNQ0B5X2lE6tNyTLFtvInnYCEq10KlS3Mu/TnZIikV/HJ5y9mljR+Yeu/yfiNLg6tjc7R
- E6CS98YPea2w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 23:20:47 -0700
-IronPort-SDR: /39XHmAJMyh6Lz7D0gJm0dnb89hsbEhGmSBenemauvgEpt0Zja6xgUHe5ODPCmGMMFVPix/hr9
- Yn33wHSQ12mA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,409,1583222400"; 
-   d="scan'208";a="300010223"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga008.jf.intel.com with ESMTP; 18 May 2020 23:20:44 -0700
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     robh@kernel.org, andriy.shevchenko@intel.com,
-        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
-        qi-ming.wu@intel.com, yixin.zhu@intel.com,
-        Dilip Kota <eswara.kota@linux.intel.com>
-Subject: [PATCH v9 3/3] phy: intel: Add driver support for ComboPhy
-Date:   Tue, 19 May 2020 14:19:21 +0800
-Message-Id: <7b313826f46b9006a3ba98c0613e8f88f293a074.1589868358.git.eswara.kota@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <cover.1589868358.git.eswara.kota@linux.intel.com>
-References: <cover.1589868358.git.eswara.kota@linux.intel.com>
-In-Reply-To: <cover.1589868358.git.eswara.kota@linux.intel.com>
-References: <cover.1589868358.git.eswara.kota@linux.intel.com>
+        id S1728424AbgESGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 02:21:43 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45352 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726605AbgESGVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 02:21:40 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04J6KVFD005422;
+        Mon, 18 May 2020 23:21:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=gnUaIA2yNBSB3XFJIpgac+csWhoBV2fdFY7XlSyIXMk=;
+ b=adlZSfQizUkT4PU+TKVJDql55DLl02F+F5XgsbkThL8Amiy86rh82bpldZHYwbqUNhMM
+ Pt37Z0t/pxuaI7zPqEGYv67gA88n9R0PmPA3BhvllcY34fUQnCLxUKfHEIe3Y9u76p0H
+ UJlLXfossI5MeaJxQLfe0zZEIVIhpcqT0/c= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31305rwj36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 18 May 2020 23:21:15 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 18 May 2020 23:21:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mchqTTnAcnMaJ4GNW/iCgSifeX0KJgsB9zDtryU+jjqrk/Mte8bPLWJmsZvxEmv6F9jbCoeDCN9xhLvP8KD2uFDjXF3BZMJ/3Rx8F2sbbEN9BDQlchv5w3KOAndSPAnjHCJHGiSHw8qKg3wpynSXl+dn34sEimvnu7cuuL4s+OXM4QZkIQcyQuMaCXBrn9K8V459RHcOBNSywxNUcvZmniuDDMAspn+P+C7uydDnMp63wyHOM53F8tcM4XcoUcYBJAnN41LQCYzHAqTf5NsWpbNycGZ3z+XsXn9lQ7Sgy8+jA80oLDL5OlHNkTXS4eVshtpuaaIMMiuWcBxrtmz78g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gnUaIA2yNBSB3XFJIpgac+csWhoBV2fdFY7XlSyIXMk=;
+ b=Ea7E33PeyjlkabdLOlFz3B7KegXjh++yUxyvWeCOiHa1U+zDDHBUkOpFtihpFXKI/V/10fhxm9N+WnPJaUQB4zgbcYJWE9TdDK0bDIfGhXByjBSEbWJPQcSGiqapMr68fku1+BG5nnBw9gigHq8Sdl9HCWFVEm5f1N7njcdIcg+Gko5W6FURZ+0eDMlWtMR5sCRnd79A4SfcW3US7ujG5djIlPenryUFEiAY0E4wLweNshdOSiOrnPyBYBoz6KjiZNcHlnhfKkJwZu5v2nBLl1MvV6ZWAx9ljGqT6ahsHiBHbLfG8wlcDhHyDfmoGbu17SsrQuxrSN3tUQsziQiUkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gnUaIA2yNBSB3XFJIpgac+csWhoBV2fdFY7XlSyIXMk=;
+ b=FMiOAaJuJyxv+NaEQu2i7IlE8VKE90ldSv7ZLN8DRKtBIhvZKnylKEBWv+Z5thWbRIlh8ag/o5C/ECoyif+gvsqBzKEcRoH0dVwTaA0XCC6SQ8HAlZ/UuRwolzGZziTOi1vGpSVbhyLDg07ZB1xCe5dBXtHVtMS7nK1t5tFVBjQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2616.namprd15.prod.outlook.com (2603:10b6:a03:14d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Tue, 19 May
+ 2020 06:21:13 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3000.034; Tue, 19 May 2020
+ 06:21:13 +0000
+Subject: Re: [PATCH v2 bpf-next 2/7] bpf: move to generic BTF show support,
+ apply it to seq files/strings
+To:     Alan Maguire <alan.maguire@oracle.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <joe@perches.com>, <linux@rasmusvillemoes.dk>,
+        <arnaldo.melo@gmail.com>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <andriin@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+References: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com>
+ <1589263005-7887-3-git-send-email-alan.maguire@oracle.com>
+ <2a2c5072-8cd2-610b-db2a-16589df90faf@fb.com>
+ <alpine.LRH.2.21.2005181012040.893@localhost>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <a8dc7739-2227-eebd-1ba5-6b56d6188888@fb.com>
+Date:   Mon, 18 May 2020 23:21:10 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
+In-Reply-To: <alpine.LRH.2.21.2005181012040.893@localhost>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR02CA0053.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::30) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:1867) by BYAPR02CA0053.namprd02.prod.outlook.com (2603:10b6:a03:54::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Tue, 19 May 2020 06:21:12 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1867]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4fd4967f-fd34-499a-c0c0-08d7fbbcd448
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2616:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2616E9E0563218473B75BCA2D3B90@BYAPR15MB2616.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 040866B734
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 93cKEVO2i/MELVaq+mQB3WOhg+uUdNpTehusQD70w5uowDgsLrj3qYKF4ZA9C4MbxyuexuPiO9MzjaOWDBL/3dgvDeo6bmYCc1wSyt3jjlP/1lKaf9WqPPYLL9X9rEMiPm5AWim6fjxsuM/g71DE/qLJdqO7W+zYCLASNthGxVdkWASX92+G1Dp0OegF14hO3uh4cHpgs0Y3BGR6h66CTmRigKtabvMR/Jh/nHsOWk0u8X0Rq7flbTEFnuj3oRBQR3viK+d4ve11gRaYI1q/EY/ceQLCzFKDxQ+O4hrZwK/OwoV52vKA/32z/p0rfoh0uQdCOaCyOWbGckS6APZPSjgBiX/kNgSkmKF4HfPTjPzuAJlBtQKQ74KBAlf6iQFNb0jzsdMHOK584+q5FOERDzgaXtjv7sUVuPCF8aEGgKP89KFAofClY+wNtYvST1dAfBs96I5Sp9vClbJPc6PCOMhIBDwnOH1c8bQnJDa+TInXt0BUXCUYdPwvlLGN5rHqgtO9/ShFUH/59o3Bn3fnGQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(136003)(346002)(366004)(396003)(39860400002)(6506007)(31696002)(53546011)(31686004)(186003)(16526019)(6916009)(6486002)(2616005)(4326008)(86362001)(478600001)(6512007)(2906002)(52116002)(316002)(36756003)(8936002)(66476007)(66556008)(5660300002)(8676002)(66946007)(7416002)(41533002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ywG5SQYl93daDpQYqCzD0l7kRLkgyApPE4yYwJ9H0cB3yuNUJ1Vjoy4Qpj5ROU9b5fmdwzcL0LC1Rtreb/UDfPBgnClfAFWkyRJzIZ2oOnGzRm8ITgBUqB7odyGjNfMrjAu2+eNvPWL+tRcSu5moCxcgM9xfG5P3vrmrH/52P1Dnp/Ju1MhtG91SZReiCu2dtm0nb308lblYfFUhe5WkXwcMCrnDXviJS8Mv+lTDM+J2P9c92rneISCoOWD1R2K0Xhjmy1u2nKVof18fnOcx8PHtA89PrCkcT74dWevUyy661ajVlOUVWBBrBt/GfpnwjoVxijLKCHtMrp4JKAh7We7OGaaoVD7DdJD8SAXR4EaAEyIKX8u5VtJ1mIcNh95GNAxjfETXQIDfUJ8TTOxDuhLVgOZnlFpE2Px3xAjvijaTIiPIl17swY7XROMnqB82K+hchZmZNkKLHmqnmUHNri/6xWaAgY4QBnX6Qlr9o6/69kwT4YGUrtl98ASgcxFU6cMpPufCHUOFTNmq2I+t5w==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fd4967f-fd34-499a-c0c0-08d7fbbcd448
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2020 06:21:13.2124
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S0lMNMNLz2uoNQMhofCm3J5Wg3+gfy0BCaNmNT+E/iMIzICdKVqP3JQnXe/D3yvV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2616
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-19_01:2020-05-15,2020-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 impostorscore=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 clxscore=1015
+ cotscore=-2147483648 mlxscore=0 lowpriorityscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005190056
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ComboPhy subsystem provides PHYs for various
-controllers like PCIe, SATA and EMAC.
 
-Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
----
-Changes on v9:
-  Add Acked-By: Vinod Koul <vkoul@kernel.org>
 
-Fix compiler warning
-drivers/phy/intel/phy-intel-combo.c:229:6: warning: cb_mode may be used
-uninitialized in this function [-Wmaybe-uninitialized]
-   ret = regmap_write(cbphy->hsiocfg, REG_COMBO_MODE(cbphy->bid), cb_mode);
-   ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/phy/intel/phy-intel-combo.c:204:24: note: cb_mode was declared here
-   enum intel_combo_mode cb_mode;
-   
-Changes on v8:
-  As per PHY Maintainer's request add description for doing register access
-  through regmap in comments.
+On 5/18/20 2:46 AM, Alan Maguire wrote:
+> On Wed, 13 May 2020, Yonghong Song wrote:
+> 
+>>
+>>> +struct btf_show {
+>>> +	u64 flags;
+>>> +	void *target;	/* target of show operation (seq file, buffer) */
+>>> +	void (*showfn)(struct btf_show *show, const char *fmt, ...);
+>>> +	const struct btf *btf;
+>>> +	/* below are used during iteration */
+>>> +	struct {
+>>> +		u8 depth;
+>>> +		u8 depth_shown;
+>>> +		u8 depth_check;
+>>
+>> I have some difficulties to understand the relationship between
+>> the above three variables. Could you add some comments here?
+>>
+> 
+> Will do; sorry the code got a bit confusing. The goal is to track
+> which sub-components in a data structure we need to display.  The
+> "depth" variable tracks where we are currently; "depth_shown"
+> is the depth at which we have something nonzer to display (perhaps
+> "depth_to_show" would be a better name?). "depth_check" tells
 
-Changes on v7:
-  Use device_node_to_regmap instead of fwnode_to_regmap
-  
-Changes on v6:
-  No changes
+"depth_to_show" is indeed better.
 
-Changes on v5:
- Add changes as per inputs from Andy and Rob:
-    DT node uses phy-mode values as defined in "include/dt-bindings/phy/phy.h",
-     add changes to handle it.
-    ComboPhy no longer has children nodes, and children node properties(reset)
-     moved to parent node, so do the code changes accordingly.
-    Add _xlate() function to pass the appropriate phy handle.
-    Fix couple of nitpicks.
+> us whether we are currently checking depth or doing printing.
+> If we're checking, we don't actually print anything, we merely note
+> if we hit a non-zero value, and if so, we set "depth_shown"
+> to the depth at which we hit that value.
+> 
+> When we show a struct, union or array, we will only display an
+> object has one or more non-zero members.  But because
+> the struct can in turn nest a struct or array etc, we need
+> to recurse into the object.  When we are doing that, depth_check
+> is set, and this tells us not to do any actual display. When
+> that recursion is complete, we check if "depth_shown" (depth
+> to show) is > depth (i.e. we found something) and if it is
+> we go on to display the object (setting depth_check to 0).
 
-Changes on v4:
- Address review comments
-   Remove dependency on OF config
-   Update copyright to 2019-2020
-   Define register macro PAD_DIS_CFG instead of const variable inside function.
-   Improve the error prints, and error returns.
-   Call put_device(dev), for get_dev_from_fwnode()
-   Move platform_set_drvdata() at the end of the probe().
-   Correct alignment in phy_ops intel_cbphy_ops.
-   Correct commented lines with proper vocabulary and punctuation.
-   Add/remove commas for the required constant arrays and enums.
-   Remove in driver:
-     linux/kernel.h, not required
-     macros: PCIE_PHY_MPLLA_CTRL, PCIE_PHY_MPLLB_CTRL
-     temp variable u32 prop;
-   Change function names:
-     intel_cbphy_iphy_dt_parse() -> intel_cbphy_iphy_fwnode_parse()
-     intel_cbphy_dt_sanity_check() -> intel_cbphy_sanity_check()
-     intel_cbphy_dt_parse() -> intel_cbphy_fwnode_parse()
+Thanks for the explanation. Putting them in the comments
+will be great.
 
-Changes on v3:
- Remove intel_iphy_names
- Remove struct phy in struct intel_cbphy_iphy
- Imporve if conditions logic
- Use fwnode_to_regmap()
- Call devm_of_platform_populate() to populate child nodes
- Fix reset sequence during phy_init
- Add SoC specific compatible "intel,combophy-lgm"
- Add description for enums
- Remove default case in switch {} intel_cbphy_set_mode() as it
-  never happens.
- Use mutex_lock to synchronise combophy initialization across
-  two phys.
- Change init_cnt to u32 datatype as it is within mutex lock.
- Correct error handling of
-  fwnode_property_read_u32_array(fwnode, "intel,phy-mode", ...)
+> 
+> There may be a better way to solve this problem of course,
+> but I wanted to avoid storing values where possible as
+> deeply-nested data structures might overrun such storage.
+> 
+[...]
+>>> +
+>>> +	/*
+>>> +	 * The goal here is to build up the right number of pointer and
+>>> +	 * array suffixes while ensuring the type name for a typedef
+>>> +	 * is represented.  Along the way we accumulate a list of
+>>> +	 * BTF kinds we have encountered, since these will inform later
+>>> +	 * display; for example, pointer types will not require an
+>>> +	 * opening "{" for struct, we will just display the pointer value.
+>>> +	 *
+>>> +	 * We also want to accumulate the right number of pointer or array
+>>> +	 * indices in the format string while iterating until we get to
+>>> +	 * the typedef/pointee/array member target type.
+>>> +	 *
+>>> +	 * We start by pointing at the end of pointer and array suffix
+>>> +	 * strings; as we accumulate pointers and arrays we move the pointer
+>>> +	 * or array string backwards so it will show the expected number of
+>>> +	 * '*' or '[]' for the type.  BTF_SHOW_MAX_ITER of nesting of pointers
+>>> +	 * and/or arrays and typedefs are supported as a precaution.
+>>> +	 *
+>>> +	 * We also want to get typedef name while proceeding to resolve
+>>> +	 * type it points to so that we can add parentheses if it is a
+>>> +	 * "typedef struct" etc.
+>>> +	 */
+>>> +	for (i = 0; i < BTF_SHOW_MAX_ITER; i++) {
+>>> +
+>>> +		switch (BTF_INFO_KIND(t->info)) {
+>>> +		case BTF_KIND_TYPEDEF:
+>>> +			if (!type_name)
+>>> +				type_name = btf_name_by_offset(show->btf,
+>>> +							       t->name_off);
+type_name should never be NULL for valid vmlinux BTF.
 
- drivers/phy/intel/Kconfig           |  14 +
- drivers/phy/intel/Makefile          |   1 +
- drivers/phy/intel/phy-intel-combo.c | 632 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 647 insertions(+)
- create mode 100644 drivers/phy/intel/phy-intel-combo.c
+>>> +			kinds |= BTF_KIND_BIT(BTF_KIND_TYPEDEF);
+>>> +			id = t->type;
+>>> +			break;
+>>> +		case BTF_KIND_ARRAY:
+>>> +			kinds |= BTF_KIND_BIT(BTF_KIND_ARRAY);
+>>> +			parens = "[";
+>>> +			array = btf_type_array(t);
+>>> +			if (!array)
+array will never be NULL here.
+>>> +				return show->state.type_name;
+>>> +			if (!t)
+t will never be NULL here.
+>>> +				return show->state.type_name;
+>>> +			if (array_suffix > array_suffixes)
+>>> +				array_suffix -= 2;
+>>> +			id = array->type;
+>>> +			break;
+>>> +		case BTF_KIND_PTR:
+>>> +			kinds |= BTF_KIND_BIT(BTF_KIND_PTR);
+>>> +			if (ptr_suffix > ptr_suffixes)
+>>> +				ptr_suffix -= 1;
+>>> +			id = t->type;
+>>> +			break;
+>>> +		default:
+>>> +			id = 0;
+>>> +			break;
+>>> +		}
+>>> +		if (!id)
+>>> +			break;
+>>> +		t = btf_type_skip_qualifiers(show->btf, id);
+t should never be NULL here.
+>>> +		if (!t)
+>>> +			return show->state.type_name;
+>>> +	}
+>>
+>> Do we do pointer tracing here? For example
+>> struct t {
+>> 	int *m[5];
+>> }
+>>
+>> When trying to access memory, the above code may go through
+>> ptr->array and out of loop when hitting array element type "int"?
+>>
+> 
+> I'm not totally sure I understand the question so I'll
+> try and describe how the above is supposed to work. I
+> think there's a bug here alright.
+> 
+> In the above case, when we reach the "m" field of "struct t",
+> the code  should start with the BTF_KIND_ARRAY, set up
+> the array suffix, then get the array type which is a PTR
+> and we will set up the ptr suffix to be "*" and we set
+> the id to the id associated with "int", and
+> btf_type_skip_qualifiers() will use that id to look up
+> the new value for the type used in btf_name_by_offset().
+> So on the next iteration we hit the int itself and bail from
+> the loop, having noted that we've got a _PTR and _ARRAY set in
+> the "kinds" bitfield.
+> 
+> Then we look up the int type using "t" with btf_name_by_offset,
+> so we end up displaying "(int *m[])" as the type.
 
-diff --git a/drivers/phy/intel/Kconfig b/drivers/phy/intel/Kconfig
-index 4ea6a8897cd7..3b40eb7b4fb4 100644
---- a/drivers/phy/intel/Kconfig
-+++ b/drivers/phy/intel/Kconfig
-@@ -2,6 +2,20 @@
- #
- # Phy drivers for Intel Lightning Mountain(LGM) platform
- #
-+config PHY_INTEL_COMBO
-+	bool "Intel ComboPHY driver"
-+	depends on X86 || COMPILE_TEST
-+	depends on OF && HAS_IOMEM
-+	select MFD_SYSCON
-+	select GENERIC_PHY
-+	select REGMAP
-+	help
-+	  Enable this to support Intel ComboPhy.
-+
-+	  This driver configures ComboPhy subsystem on Intel gateway
-+	  chipsets which provides PHYs for various controllers, EMAC,
-+	  SATA and PCIe.
-+
- config PHY_INTEL_EMMC
- 	tristate "Intel EMMC PHY driver"
- 	select GENERIC_PHY
-diff --git a/drivers/phy/intel/Makefile b/drivers/phy/intel/Makefile
-index 6b876a75599d..233d530dadde 100644
---- a/drivers/phy/intel/Makefile
-+++ b/drivers/phy/intel/Makefile
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_PHY_INTEL_COMBO)		+= phy-intel-combo.o
- obj-$(CONFIG_PHY_INTEL_EMMC)            += phy-intel-emmc.o
-diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
-new file mode 100644
-index 000000000000..c2a35be4cdfb
---- /dev/null
-+++ b/drivers/phy/intel/phy-intel-combo.c
-@@ -0,0 +1,632 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel Combo-PHY driver
-+ *
-+ * Copyright (C) 2019-2020 Intel Corporation.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/iopoll.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+
-+#include <dt-bindings/phy/phy.h>
-+
-+#define PCIE_PHY_GEN_CTRL	0x00
-+#define PCIE_PHY_CLK_PAD	BIT(17)
-+
-+#define PAD_DIS_CFG		0x174
-+
-+#define PCS_XF_ATE_OVRD_IN_2	0x3008
-+#define ADAPT_REQ_MSK		GENMASK(5, 4)
-+
-+#define PCS_XF_RX_ADAPT_ACK	0x3010
-+#define RX_ADAPT_ACK_BIT	BIT(0)
-+
-+#define CR_ADDR(addr, lane)	(((addr) + (lane) * 0x100) << 2)
-+#define REG_COMBO_MODE(x)	((x) * 0x200)
-+#define REG_CLK_DISABLE(x)	((x) * 0x200 + 0x124)
-+
-+#define COMBO_PHY_ID(x)		((x)->parent->id)
-+#define PHY_ID(x)		((x)->id)
-+
-+#define CLK_100MHZ		100000000
-+#define CLK_156_25MHZ		156250000
-+
-+static const unsigned long intel_iphy_clk_rates[] = {
-+	CLK_100MHZ, CLK_156_25MHZ, CLK_100MHZ,
-+};
-+
-+enum {
-+	PHY_0,
-+	PHY_1,
-+	PHY_MAX_NUM
-+};
-+
-+/*
-+ * Clock Register bit fields to enable clocks
-+ * for ComboPhy according to the mode.
-+ */
-+enum intel_phy_mode {
-+	PHY_PCIE_MODE = 0,
-+	PHY_XPCS_MODE,
-+	PHY_SATA_MODE,
-+};
-+
-+/* ComboPhy mode Register values */
-+enum intel_combo_mode {
-+	PCIE0_PCIE1_MODE = 0,
-+	PCIE_DL_MODE,
-+	RXAUI_MODE,
-+	XPCS0_XPCS1_MODE,
-+	SATA0_SATA1_MODE,
-+};
-+
-+enum aggregated_mode {
-+	PHY_SL_MODE,
-+	PHY_DL_MODE,
-+};
-+
-+struct intel_combo_phy;
-+
-+struct intel_cbphy_iphy {
-+	struct phy		*phy;
-+	struct intel_combo_phy	*parent;
-+	struct reset_control	*app_rst;
-+	u32			id;
-+};
-+
-+struct intel_combo_phy {
-+	struct device		*dev;
-+	struct clk		*core_clk;
-+	unsigned long		clk_rate;
-+	void __iomem		*app_base;
-+	void __iomem		*cr_base;
-+	struct regmap		*syscfg;
-+	struct regmap		*hsiocfg;
-+	u32			id;
-+	u32			bid;
-+	struct reset_control	*phy_rst;
-+	struct reset_control	*core_rst;
-+	struct intel_cbphy_iphy	iphy[PHY_MAX_NUM];
-+	enum intel_phy_mode	phy_mode;
-+	enum aggregated_mode	aggr_mode;
-+	u32			init_cnt;
-+	struct mutex		lock;
-+};
-+
-+static int intel_cbphy_iphy_enable(struct intel_cbphy_iphy *iphy, bool set)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	u32 mask = BIT(cbphy->phy_mode * 2 + iphy->id);
-+	u32 val;
-+
-+	/* Register: 0 is enable, 1 is disable */
-+	val = set ? 0 : mask;
-+
-+	return regmap_update_bits(cbphy->hsiocfg, REG_CLK_DISABLE(cbphy->bid),
-+				  mask, val);
-+}
-+
-+static int intel_cbphy_pcie_refclk_cfg(struct intel_cbphy_iphy *iphy, bool set)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	u32 mask = BIT(cbphy->id * 2 + iphy->id);
-+	u32 val;
-+
-+	/* Register: 0 is enable, 1 is disable */
-+	val = set ? 0 : mask;
-+
-+	return regmap_update_bits(cbphy->syscfg, PAD_DIS_CFG, mask, val);
-+}
-+
-+static inline void combo_phy_w32_off_mask(void __iomem *base, unsigned int reg,
-+					  u32 mask, u32 val)
-+{
-+	u32 reg_val;
-+
-+	reg_val = readl(base + reg);
-+	reg_val &= ~mask;
-+	reg_val |= FIELD_PREP(mask, val);
-+	writel(reg_val, base + reg);
-+}
-+
-+static int intel_cbphy_iphy_cfg(struct intel_cbphy_iphy *iphy,
-+				int (*phy_cfg)(struct intel_cbphy_iphy *))
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	ret = phy_cfg(iphy);
-+	if (ret)
-+		return ret;
-+
-+	if (cbphy->aggr_mode != PHY_DL_MODE)
-+		return 0;
-+
-+	return phy_cfg(&cbphy->iphy[PHY_1]);
-+}
-+
-+static int intel_cbphy_pcie_en_pad_refclk(struct intel_cbphy_iphy *iphy)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	ret = intel_cbphy_pcie_refclk_cfg(iphy, true);
-+	if (ret) {
-+		dev_err(cbphy->dev, "Failed to enable PCIe pad refclk\n");
-+		return ret;
-+	}
-+
-+	if (cbphy->init_cnt)
-+		return 0;
-+
-+	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
-+			       PCIE_PHY_CLK_PAD, 0);
-+
-+	/* Delay for stable clock PLL */
-+	usleep_range(50, 100);
-+
-+	return 0;
-+}
-+
-+static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	ret = intel_cbphy_pcie_refclk_cfg(iphy, false);
-+	if (ret) {
-+		dev_err(cbphy->dev, "Failed to disable PCIe pad refclk\n");
-+		return ret;
-+	}
-+
-+	if (cbphy->init_cnt)
-+		return 0;
-+
-+	combo_phy_w32_off_mask(cbphy->app_base, PCIE_PHY_GEN_CTRL,
-+			       PCIE_PHY_CLK_PAD, 1);
-+
-+	return 0;
-+}
-+
-+static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
-+{
-+	enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
-+	enum aggregated_mode aggr = cbphy->aggr_mode;
-+	struct device *dev = cbphy->dev;
-+	enum intel_phy_mode mode;
-+	int ret;
-+
-+	mode = cbphy->phy_mode;
-+
-+	switch (mode) {
-+	case PHY_PCIE_MODE:
-+		cb_mode = (aggr == PHY_DL_MODE) ? PCIE_DL_MODE : PCIE0_PCIE1_MODE;
-+		break;
-+
-+	case PHY_XPCS_MODE:
-+		cb_mode = (aggr == PHY_DL_MODE) ? RXAUI_MODE : XPCS0_XPCS1_MODE;
-+		break;
-+
-+	case PHY_SATA_MODE:
-+		if (aggr == PHY_DL_MODE) {
-+			dev_err(dev, "Mode:%u not support dual lane!\n", mode);
-+			return -EINVAL;
-+		}
-+
-+		cb_mode = SATA0_SATA1_MODE;
-+		break;
-+	}
-+
-+	ret = regmap_write(cbphy->hsiocfg, REG_COMBO_MODE(cbphy->bid), cb_mode);
-+	if (ret)
-+		dev_err(dev, "Failed to set ComboPhy mode: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static void intel_cbphy_rst_assert(struct intel_combo_phy *cbphy)
-+{
-+	reset_control_assert(cbphy->core_rst);
-+	reset_control_assert(cbphy->phy_rst);
-+}
-+
-+static void intel_cbphy_rst_deassert(struct intel_combo_phy *cbphy)
-+{
-+	reset_control_deassert(cbphy->core_rst);
-+	reset_control_deassert(cbphy->phy_rst);
-+	/* Delay to ensure reset process is done */
-+	usleep_range(10, 20);
-+}
-+
-+static int intel_cbphy_iphy_power_on(struct intel_cbphy_iphy *iphy)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	if (!cbphy->init_cnt) {
-+		ret = clk_prepare_enable(cbphy->core_clk);
-+		if (ret) {
-+			dev_err(cbphy->dev, "Clock enable failed!\n");
-+			return ret;
-+		}
-+
-+		ret = clk_set_rate(cbphy->core_clk, cbphy->clk_rate);
-+		if (ret) {
-+			dev_err(cbphy->dev, "Clock freq set to %lu failed!\n",
-+				cbphy->clk_rate);
-+			goto clk_err;
-+		}
-+
-+		intel_cbphy_rst_assert(cbphy);
-+		intel_cbphy_rst_deassert(cbphy);
-+		ret = intel_cbphy_set_mode(cbphy);
-+		if (ret)
-+			goto clk_err;
-+	}
-+
-+	ret = intel_cbphy_iphy_enable(iphy, true);
-+	if (ret) {
-+		dev_err(cbphy->dev, "Failed enabling PHY core\n");
-+		goto clk_err;
-+	}
-+
-+	ret = reset_control_deassert(iphy->app_rst);
-+	if (ret) {
-+		dev_err(cbphy->dev, "PHY(%u:%u) reset deassert failed!\n",
-+			COMBO_PHY_ID(iphy), PHY_ID(iphy));
-+		goto clk_err;
-+	}
-+
-+	/* Delay to ensure reset process is done */
-+	udelay(1);
-+
-+	return 0;
-+
-+clk_err:
-+	clk_disable_unprepare(cbphy->core_clk);
-+
-+	return ret;
-+}
-+
-+static int intel_cbphy_iphy_power_off(struct intel_cbphy_iphy *iphy)
-+{
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	ret = reset_control_assert(iphy->app_rst);
-+	if (ret) {
-+		dev_err(cbphy->dev, "PHY(%u:%u) reset assert failed!\n",
-+			COMBO_PHY_ID(iphy), PHY_ID(iphy));
-+		return ret;
-+	}
-+
-+	ret = intel_cbphy_iphy_enable(iphy, false);
-+	if (ret) {
-+		dev_err(cbphy->dev, "Failed disabling PHY core\n");
-+		return ret;
-+	}
-+
-+	if (cbphy->init_cnt)
-+		return 0;
-+
-+	clk_disable_unprepare(cbphy->core_clk);
-+	intel_cbphy_rst_assert(cbphy);
-+
-+	return 0;
-+}
-+
-+static int intel_cbphy_init(struct phy *phy)
-+{
-+	struct intel_cbphy_iphy *iphy = phy_get_drvdata(phy);
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	mutex_lock(&cbphy->lock);
-+	ret = intel_cbphy_iphy_cfg(iphy, intel_cbphy_iphy_power_on);
-+	if (ret)
-+		goto err;
-+
-+	if (cbphy->phy_mode == PHY_PCIE_MODE) {
-+		ret = intel_cbphy_iphy_cfg(iphy, intel_cbphy_pcie_en_pad_refclk);
-+		if (ret)
-+			goto err;
-+	}
-+
-+	cbphy->init_cnt++;
-+
-+err:
-+	mutex_unlock(&cbphy->lock);
-+
-+	return ret;
-+}
-+
-+static int intel_cbphy_exit(struct phy *phy)
-+{
-+	struct intel_cbphy_iphy *iphy = phy_get_drvdata(phy);
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	int ret;
-+
-+	mutex_lock(&cbphy->lock);
-+	cbphy->init_cnt--;
-+	if (cbphy->phy_mode == PHY_PCIE_MODE) {
-+		ret = intel_cbphy_iphy_cfg(iphy, intel_cbphy_pcie_dis_pad_refclk);
-+		if (ret)
-+			goto err;
-+	}
-+
-+	ret = intel_cbphy_iphy_cfg(iphy, intel_cbphy_iphy_power_off);
-+
-+err:
-+	mutex_unlock(&cbphy->lock);
-+
-+	return ret;
-+}
-+
-+static int intel_cbphy_calibrate(struct phy *phy)
-+{
-+	struct intel_cbphy_iphy *iphy = phy_get_drvdata(phy);
-+	struct intel_combo_phy *cbphy = iphy->parent;
-+	void __iomem *cr_base = cbphy->cr_base;
-+	int val, ret, id;
-+
-+	if (cbphy->phy_mode != PHY_XPCS_MODE)
-+		return 0;
-+
-+	id = PHY_ID(iphy);
-+
-+	/* trigger auto RX adaptation */
-+	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
-+			       ADAPT_REQ_MSK, 3);
-+	/* Wait RX adaptation to finish */
-+	ret = readl_poll_timeout(cr_base + CR_ADDR(PCS_XF_RX_ADAPT_ACK, id),
-+				 val, val & RX_ADAPT_ACK_BIT, 10, 5000);
-+	if (ret)
-+		dev_err(cbphy->dev, "RX Adaptation failed!\n");
-+	else
-+		dev_dbg(cbphy->dev, "RX Adaptation success!\n");
-+
-+	/* Stop RX adaptation */
-+	combo_phy_w32_off_mask(cr_base, CR_ADDR(PCS_XF_ATE_OVRD_IN_2, id),
-+			       ADAPT_REQ_MSK, 0);
-+
-+	return ret;
-+}
-+
-+static int intel_cbphy_fwnode_parse(struct intel_combo_phy *cbphy)
-+{
-+	struct device *dev = cbphy->dev;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct fwnode_handle *fwnode = dev_fwnode(dev);
-+	struct fwnode_reference_args ref;
-+	int ret;
-+	u32 val;
-+
-+	cbphy->core_clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(cbphy->core_clk)) {
-+		ret = PTR_ERR(cbphy->core_clk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Get clk failed:%d!\n", ret);
-+		return ret;
-+	}
-+
-+	cbphy->core_rst = devm_reset_control_get_optional(dev, "core");
-+	if (IS_ERR(cbphy->core_rst)) {
-+		ret = PTR_ERR(cbphy->core_rst);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Get core reset control err: %d!\n", ret);
-+		return ret;
-+	}
-+
-+	cbphy->phy_rst = devm_reset_control_get_optional(dev, "phy");
-+	if (IS_ERR(cbphy->phy_rst)) {
-+		ret = PTR_ERR(cbphy->phy_rst);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Get PHY reset control err: %d!\n", ret);
-+		return ret;
-+	}
-+
-+	cbphy->iphy[0].app_rst = devm_reset_control_get_optional(dev, "iphy0");
-+	if (IS_ERR(cbphy->iphy[0].app_rst)) {
-+		ret = PTR_ERR(cbphy->iphy[0].app_rst);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Get phy0 reset control err: %d!\n", ret);
-+		return ret;
-+	}
-+
-+	cbphy->iphy[1].app_rst = devm_reset_control_get_optional(dev, "iphy1");
-+	if (IS_ERR(cbphy->iphy[1].app_rst)) {
-+		ret = PTR_ERR(cbphy->iphy[1].app_rst);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Get phy1 reset control err: %d!\n", ret);
-+		return ret;
-+	}
-+
-+	cbphy->app_base = devm_platform_ioremap_resource_byname(pdev, "app");
-+	if (IS_ERR(cbphy->app_base))
-+		return PTR_ERR(cbphy->app_base);
-+
-+	cbphy->cr_base = devm_platform_ioremap_resource_byname(pdev, "core");
-+	if (IS_ERR(cbphy->cr_base))
-+		return PTR_ERR(cbphy->cr_base);
-+
-+	/*
-+	 * syscfg and hsiocfg variables stores the handle of the registers set
-+	 * in which ComboPhy subsytem specific registers are subset. Using
-+	 * Register map framework to access the registers set.
-+	 */
-+	ret = fwnode_property_get_reference_args(fwnode, "intel,syscfg", NULL,
-+						 1, 0, &ref);
-+	if (ret < 0)
-+		return ret;
-+
-+	cbphy->id = ref.args[0];
-+	cbphy->syscfg = device_node_to_regmap(to_of_node(ref.fwnode));
-+	fwnode_handle_put(ref.fwnode);
-+
-+	ret = fwnode_property_get_reference_args(fwnode, "intel,hsio", NULL, 1,
-+						 0, &ref);
-+	if (ret < 0)
-+		return ret;
-+
-+	cbphy->bid = ref.args[0];
-+	cbphy->hsiocfg = device_node_to_regmap(to_of_node(ref.fwnode));
-+	fwnode_handle_put(ref.fwnode);
-+
-+	ret = fwnode_property_read_u32_array(fwnode, "intel,phy-mode", &val, 1);
-+	if (ret)
-+		return ret;
-+
-+	switch (val) {
-+	case PHY_TYPE_PCIE:
-+		cbphy->phy_mode = PHY_PCIE_MODE;
-+		break;
-+
-+	case PHY_TYPE_SATA:
-+		cbphy->phy_mode = PHY_SATA_MODE;
-+		break;
-+
-+	case PHY_TYPE_XPCS:
-+		cbphy->phy_mode = PHY_XPCS_MODE;
-+		break;
-+
-+	default:
-+		dev_err(dev, "Invalid PHY mode: %u\n", val);
-+		return -EINVAL;
-+	}
-+
-+	cbphy->clk_rate = intel_iphy_clk_rates[cbphy->phy_mode];
-+
-+	if (fwnode_property_present(fwnode, "intel,aggregation"))
-+		cbphy->aggr_mode = PHY_DL_MODE;
-+	else
-+		cbphy->aggr_mode = PHY_SL_MODE;
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops intel_cbphy_ops = {
-+	.init		= intel_cbphy_init,
-+	.exit		= intel_cbphy_exit,
-+	.calibrate	= intel_cbphy_calibrate,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static struct phy *intel_cbphy_xlate(struct device *dev,
-+				     struct of_phandle_args *args)
-+{
-+	struct intel_combo_phy *cbphy = dev_get_drvdata(dev);
-+	u32 iphy_id;
-+
-+	if (args->args_count < 1) {
-+		dev_err(dev, "Invalid number of arguments\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	iphy_id = args->args[0];
-+	if (iphy_id >= PHY_MAX_NUM) {
-+		dev_err(dev, "Invalid phy instance %d\n", iphy_id);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cbphy->aggr_mode == PHY_DL_MODE && iphy_id == PHY_1) {
-+		dev_err(dev, "Invalid. ComboPhy is in Dual lane mode %d\n", iphy_id);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return cbphy->iphy[iphy_id].phy;
-+}
-+
-+static int intel_cbphy_create(struct intel_combo_phy *cbphy)
-+{
-+	struct phy_provider *phy_provider;
-+	struct device *dev = cbphy->dev;
-+	struct intel_cbphy_iphy *iphy;
-+	int i;
-+
-+	for (i = 0; i < PHY_MAX_NUM; i++) {
-+		iphy = &cbphy->iphy[i];
-+		iphy->parent = cbphy;
-+		iphy->id = i;
-+
-+		/* In dual lane mode skip phy creation for the second phy */
-+		if (cbphy->aggr_mode == PHY_DL_MODE && iphy->id == PHY_1)
-+			continue;
-+
-+		iphy->phy = devm_phy_create(dev, NULL, &intel_cbphy_ops);
-+		if (IS_ERR(iphy->phy)) {
-+			dev_err(dev, "PHY[%u:%u]: create PHY instance failed!\n",
-+				COMBO_PHY_ID(iphy), PHY_ID(iphy));
-+
-+			return PTR_ERR(iphy->phy);
-+		}
-+
-+		phy_set_drvdata(iphy->phy, iphy);
-+	}
-+
-+	dev_set_drvdata(dev, cbphy);
-+	phy_provider = devm_of_phy_provider_register(dev, intel_cbphy_xlate);
-+	if (IS_ERR(phy_provider))
-+		dev_err(dev, "Register PHY provider failed!\n");
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static int intel_cbphy_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct intel_combo_phy *cbphy;
-+	int ret;
-+
-+	cbphy = devm_kzalloc(dev, sizeof(*cbphy), GFP_KERNEL);
-+	if (!cbphy)
-+		return -ENOMEM;
-+
-+	cbphy->dev = dev;
-+	cbphy->init_cnt = 0;
-+	mutex_init(&cbphy->lock);
-+	ret = intel_cbphy_fwnode_parse(cbphy);
-+	if (ret)
-+		return ret;
-+
-+	platform_set_drvdata(pdev, cbphy);
-+
-+	return intel_cbphy_create(cbphy);
-+}
-+
-+static int intel_cbphy_remove(struct platform_device *pdev)
-+{
-+	struct intel_combo_phy *cbphy = platform_get_drvdata(pdev);
-+
-+	intel_cbphy_rst_assert(cbphy);
-+	clk_disable_unprepare(cbphy->core_clk);
-+	return 0;
-+}
-+
-+static const struct of_device_id of_intel_cbphy_match[] = {
-+	{ .compatible = "intel,combo-phy" },
-+	{ .compatible = "intel,combophy-lgm" },
-+	{}
-+};
-+
-+static struct platform_driver intel_cbphy_driver = {
-+	.probe = intel_cbphy_probe,
-+	.remove = intel_cbphy_remove,
-+	.driver = {
-+		.name = "intel-combo-phy",
-+		.of_match_table = of_intel_cbphy_match,
-+	}
-+};
-+
-+module_platform_driver(intel_cbphy_driver);
-+
-+MODULE_DESCRIPTION("Intel Combo-phy driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.11.0
+Thanks for explanation. Previously I thought this somehow
+may be related to tracing data. Looks it is only for
+*constructing* type names. So it largely looks fine though.
 
+>    
+> However the code assumes we don't need the parentheses for
+> the array if we have encountered a pointer; that's never
+> the case.  We only should eliminate the opening parens
+> for a struct or union "{" in such cases, as in those cases
+> we have a pointer to the struct rather than a nested struct.
+> So that needs to be fixed. Are the other problems here you're
+> seeing that the above doesn't cover?
+
+A few minor comments in the above.
+
+> 
+>>> +	/* We may not be able to represent this type; bail to be safe */
+>>> +	if (i == BTF_SHOW_MAX_ITER)
+>>> +		return show->state.type_name;
+>>> +
+>>> +	if (!type_name)
+>>> +		type_name = btf_name_by_offset(show->btf, t->name_off);
+>>> +
+>>> +	switch (BTF_INFO_KIND(t->info)) {
+>>> +	case BTF_KIND_STRUCT:
+>>> +	case BTF_KIND_UNION:
+>>> +		prefix = BTF_INFO_KIND(t->info) == BTF_KIND_STRUCT ?
+>>> +			 "struct" : "union";
+>>> +		/* if it's an array of struct/union, parens is already set */
+>>> +		if (!(kinds & (BTF_KIND_BIT(BTF_KIND_ARRAY))))
+>>> +			parens = "{";
+>>> +		break;
+>>> +	case BTF_KIND_ENUM:
+>>> +		prefix = "enum";
+>>> +		break;
+>>> +	default:
+>>> +		allow_anon = false;
+[...]
+>>> +	if (elem_type && btf_type_is_int(elem_type)) {
+>>> +		u32 int_type = btf_type_int(elem_type);
+>>> +
+>>> +		encoding = BTF_INT_ENCODING(int_type);
+>>> +
+>>> +		/*
+>>> +		 * BTF_INT_CHAR encoding never seems to be set for
+>>> +		 * char arrays, so if size is 1 and element is
+>>> +		 * printable as a char, we'll do that.
+>>> +		 */
+>>> +		if (elem_size == 1) > +			encoding =
+>>> BTF_INT_CHAR;
+>>
+>> Some char array may be printable and some may not be printable,
+>> how did you differentiate this?
+>>
+> 
+> I should probably change the logic to ensure all chars
+> (before a \0) are printable. I'll do that for v2. We will always
+> have cases (e.g. the skb cb[] field) where the char[] is not
+> intended as a string, but I think the utility of showing them as
+> strings where possible is worthwhile.
+
+Make sense. Thanks!
+
+> 
+> Thanks again for reviewing!
+> 
+> Alan
+> 
