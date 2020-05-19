@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3507C1D9DEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3291D9DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 19:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729454AbgESRbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 13:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgESRbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 13:31:08 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1243AC08C5C0;
-        Tue, 19 May 2020 10:31:08 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l17so308256wrr.4;
-        Tue, 19 May 2020 10:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kwsJJSPwIW1RER2lwybPrjIu+9cw8TmM1I6Izb8Qnaw=;
-        b=dBhIFO6rkpy6660MNRUbiQSMw3OsR01yPDEYPqsNwYkENCVx2ZHgVf6EkFIqAWwIQT
-         tFa+jJTO9sQZMi18OLiTJvCGEe8yDDAmK2seGHLjD5p23enXlhEG10XzswqepdHl++i0
-         JjpgPvvrEHBzp0gtpVa0KqLBE8gc7x2X71RfCmBU5GYUyqSFVyafYI841v4nfLUDic7Z
-         ZeCKqDog8yPJwR7sVVAPKcEimvUIudPMVftzP4N9dCQBkkiEc1Jw1ZWH6Tj+UbTCbMda
-         lXxodAJLPuQ/gk9sz4iiSrlodCEux9EdBnn1hlJJTd6yI2YUQQjmbcxrkrm6VpVpU/5a
-         3krg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kwsJJSPwIW1RER2lwybPrjIu+9cw8TmM1I6Izb8Qnaw=;
-        b=Moc7873c48vHoyNen7YNVtVhVUNqS3aOOK5cXpPsigOlc83Lw8M1d8DMd1KcPbqomX
-         06C9Zuqz99LQLqeA4KbPxanYTcWlly2z4/rlAT95R6uvxIKNHmRBus6TMHJr9agjHZbo
-         Cg3L6c9KHvsLbtDqDqCRRJMQQhR+r3d5N+blDoj4WdJOm/bC92FeEk86ZQEI+5MV5wUd
-         aCLCPX0I0bdUUtyH9pZRnQgVJ9jbjkP/L/lkn9kY9twIwtaIqwKktkKhHtONbnCsHOEU
-         o1OyIqhTovBnI4A3NKSx13YUKH9wDK2KbyJKPac9f0eMaQcK4/VjZCflq+N7PXTuHGev
-         QaBw==
-X-Gm-Message-State: AOAM532iHe5xQ4DVNGJ2BggklDQAyPJT2JsgOXX8vhO/cupl421EQn1B
-        3fxm6wb1aL7ixC57rh5+S6w=
-X-Google-Smtp-Source: ABdhPJz4+NY5+8ioCpdwW4ZaMW+f3pW9y+pcWexTKP5iWLuCtP/HjhFZjq+mjF03TWuVGfY6nqTppQ==
-X-Received: by 2002:adf:9d91:: with SMTP id p17mr25952400wre.119.1589909466755;
-        Tue, 19 May 2020 10:31:06 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s11sm90421wrp.79.2020.05.19.10.31.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 10:31:05 -0700 (PDT)
-Subject: Re: [PATCH 4.19 01/80] net: dsa: Do not make user port errors fatal
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200518173450.097837707@linuxfoundation.org>
- <20200518173450.419156571@linuxfoundation.org> <20200519071707.GA2609@amd>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f11d7eba-17a4-28f9-0bb1-2fae1e0518a3@gmail.com>
-Date:   Tue, 19 May 2020 10:31:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.0
+        id S1729432AbgESRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 13:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726059AbgESRd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 13:33:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FCB4207D3;
+        Tue, 19 May 2020 17:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589909605;
+        bh=RbUlIvE4LT0SUt6DmGmYa7lxdWF2Wy9aH9szc8JNaGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VDgmFIJAzKKktnniXeaBnmhzP17wlvliuYaaV9Ry3Y67tMakXT2pIKGmll+EOsO7j
+         3KsWdb+dYvNTb0MxgnDtpV1Tz/uItHsg6dwU7pqNx1RnV5DbAsnC3atg+zqwTOfDaF
+         o7LRVU2FD/AyURy0P1NnIa77sqCfXwIc25JCr4WM=
+Date:   Tue, 19 May 2020 19:33:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>,
+        manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
+        wufan@codeaurora.org, pratanan@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
+Message-ID: <20200519173323.GB1158284@kroah.com>
+References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
+ <CAPM=9txXskVu_yD3DNuR0HgSUsE2v1Pv98dm=AHGvv_z2XKTAQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200519071707.GA2609@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9txXskVu_yD3DNuR0HgSUsE2v1Pv98dm=AHGvv_z2XKTAQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/19/2020 12:17 AM, Pavel Machek wrote:
-> Hi!
+On Tue, May 19, 2020 at 03:08:42PM +1000, Dave Airlie wrote:
+> On Fri, 15 May 2020 at 00:12, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+> >
+> > Introduction:
+> > Qualcomm Cloud AI 100 is a PCIe adapter card which contains a dedicated
+> > SoC ASIC for the purpose of efficently running Deep Learning inference
+> > workloads in a data center environment.
+> >
+> > The offical press release can be found at -
+> > https://www.qualcomm.com/news/releases/2019/04/09/qualcomm-brings-power-efficient-artificial-intelligence-inference
+> >
+> > The offical product website is -
+> > https://www.qualcomm.com/products/datacenter-artificial-intelligence
+> >
+> > At the time of the offical press release, numerious technology news sites
+> > also covered the product.  Doing a search of your favorite site is likely
+> > to find their coverage of it.
+> >
+> > It is our goal to have the kernel driver for the product fully upstream.
+> > The purpose of this RFC is to start that process.  We are still doing
+> > development (see below), and thus not quite looking to gain acceptance quite
+> > yet, but now that we have a working driver we beleive we are at the stage
+> > where meaningful conversation with the community can occur.
 > 
->> From: Florian Fainelli <f.fainelli@gmail.com>
->>
->> commit 86f8b1c01a0a537a73d2996615133be63cdf75db upstream.
->>
->> Prior to 1d27732f411d ("net: dsa: setup and teardown ports"), we would
->> not treat failures to set-up an user port as fatal, but after this
->> commit we would, which is a regression for some systems where interfaces
->> may be declared in the Device Tree, but the underlying hardware may not
->> be present (pluggable daughter cards for instance).
->>
 > 
->> +++ b/net/dsa/dsa2.c
->> @@ -412,7 +412,7 @@ static int dsa_tree_setup_switches(struc
->>  
->>  		err = dsa_switch_setup(ds);
->>  		if (err)
->> -			return err;
->> +			continue;
+> Hi Jeffery,
 > 
-> The error code is discarded here, so user can now wonder "why does not
-> my port work" with no indications in the logs... Should we do
-> dev_info() here?
+> Just wondering what the userspace/testing plans for this driver.
+> 
+> This introduces a new user facing API for a device without pointers to
+> users or tests for that API.
+> 
+> Although this isn't a graphics driver, and Greg will likely merge
+> anything to the kernel you throw at him, I do wonder how to validate
+> the uapi from a security perspective. It's always interesting when
+> someone wraps a DMA engine with user ioctls, and without enough
+> information to decide if the DMA engine is secure against userspace
+> misprogramming it.
 
-There are informational messages provided at various points where a
-failure can happen and especially in the net/dsa/slave.c file where most
-of the errors are. I do not think an additional is needed at all.
--- 
-Florian
+Hey, I'll not merge just anything!
+
+Oh, well, maybe, if it's in staging :)
+
+> Also if we don't understand the programming API on board the device,
+> we can't tell if the "core" on the device are able to reprogram the
+> device engines either.
+> 
+> Figuring this out is difficult at the best of times, it helps if there
+> is access to the complete device documentation or user space side
+> drivers in order to faciliate this.
+> 
+> The other area I mention is testing the uAPI, how do you envisage
+> regression testing and long term sustainability of the uAPI?
+
+I agree with this request, we should have some code that we can run in
+order to test that things work properly.
+
+thanks,
+
+greg k-h
