@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE1D1D9AAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E3E1D9AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 17:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgESPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 11:06:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727910AbgESPGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 11:06:22 -0400
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02EF820842;
-        Tue, 19 May 2020 15:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589900782;
-        bh=29TXNGWd/fhmzxIwOPHw0n8O5RIe1LfOq81Iyfco7wA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1lncfq4bQRql8j2TS2Wgze6M/ZcGlwO1+fkIQdkV/IW8TfwyMJhtgMCTFcF4VgJ6Z
-         8wrfyiDhSj6IpSkVByeGUSjrJkmtgJPElPcdodb+2Gj+0CJDHVPeiB4KdveoMQj0X/
-         wUhqBT3fvzumGtyJKbV99u7XSH2jt+4vK0BuQ7ks=
-Received: by mail-ej1-f43.google.com with SMTP id x1so12172320ejd.8;
-        Tue, 19 May 2020 08:06:21 -0700 (PDT)
-X-Gm-Message-State: AOAM53009rEustHcqM6mDrqwzasYQu88MuVr30WtxAYF2azZp2yus/Hs
-        qJ3hYLwMD+lxJqeOs5RxuWBywyzc0kxJ4+T2gg==
-X-Google-Smtp-Source: ABdhPJxqywpflae8clvRSoz205FDG3+5j2OG7HiXGl7nWU2mgAQwazM8mHI+SRKZTW7x6x9DfTSufqtqAiC8fcsPHqY=
-X-Received: by 2002:a17:907:724e:: with SMTP id ds14mr13708797ejc.260.1589900780280;
- Tue, 19 May 2020 08:06:20 -0700 (PDT)
+        id S1729191AbgESPKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 11:10:18 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:44388 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728737AbgESPKR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 11:10:17 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb3sk-0005GH-Fu; Tue, 19 May 2020 09:10:14 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jb3si-0001s6-RW; Tue, 19 May 2020 09:10:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Eric Biggers <ebiggers3@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200518055457.12302-1-keescook@chromium.org>
+Date:   Tue, 19 May 2020 10:06:32 -0500
+In-Reply-To: <20200518055457.12302-1-keescook@chromium.org> (Kees Cook's
+        message of "Sun, 17 May 2020 22:54:53 -0700")
+Message-ID: <87a724t153.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200518113156.25009-1-matthias.bgg@kernel.org> <20200518113156.25009-4-matthias.bgg@kernel.org>
-In-Reply-To: <20200518113156.25009-4-matthias.bgg@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 19 May 2020 23:06:08 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-Lh=4N2L9ZOrVw+wK1tSrCA=UuOH+7xs0U=12B3Qi7Ug@mail.gmail.com>
-Message-ID: <CAAOTY_-Lh=4N2L9ZOrVw+wK1tSrCA=UuOH+7xs0U=12B3Qi7Ug@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm64: dts: mt6797: Fix mmsys node name
-To:     matthias.bgg@kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-clk@vger.kernel.org, Allison Randal <allison@lohutok.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-XM-SPF: eid=1jb3si-0001s6-RW;;;mid=<87a724t153.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+A3FfcWjqtqqukiK5gO20MFpn1V2jd41Y=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4778]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa07 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 456 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 9 (2.0%), parse: 1.43 (0.3%),
+         extract_message_metadata: 22 (4.8%), get_uri_detail_list: 2.1 (0.5%),
+        tests_pri_-1000: 7 (1.6%), tests_pri_-950: 1.32 (0.3%),
+        tests_pri_-900: 1.07 (0.2%), tests_pri_-90: 183 (40.1%), check_bayes:
+        169 (37.1%), b_tokenize: 6 (1.3%), b_tok_get_all: 5 (1.2%),
+        b_comp_prob: 1.90 (0.4%), b_tok_touch_all: 153 (33.5%), b_finish: 1.04
+        (0.2%), tests_pri_0: 213 (46.7%), check_dkim_signature: 0.63 (0.1%),
+        check_dkim_adsp: 2.2 (0.5%), poll_dns_idle: 0.43 (0.1%), tests_pri_10:
+        2.5 (0.6%), tests_pri_500: 9 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/4] Relocate execve() sanity checks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+Kees Cook <keescook@chromium.org> writes:
 
-<matthias.bgg@kernel.org> =E6=96=BC 2020=E5=B9=B45=E6=9C=8818=E6=97=A5 =E9=
-=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:33=E5=AF=AB=E9=81=93=EF=BC=9A
+> Hi,
 >
-> From: Matthias Brugger <matthias.bgg@gmail.com>
+> While looking at the code paths for the proposed O_MAYEXEC flag, I saw
+> some things that looked like they should be fixed up.
 >
-> Node names are supposed to match the class of the device. The
-> mmsys node is a syscon as it provides more then just a clock controller.
-> Update the name.
+>   exec: Change uselib(2) IS_SREG() failure to EACCES
+> 	This just regularizes the return code on uselib(2).
+>
+>   exec: Relocate S_ISREG() check
+> 	This moves the S_ISREG() check even earlier than it was already.
+>
+>   exec: Relocate path_noexec() check
+> 	This adds the path_noexec() check to the same place as the
+> 	S_ISREG() check.
+>
+>   fs: Include FMODE_EXEC when converting flags to f_mode
+> 	This seemed like an oversight, but I suspect there is some
+> 	reason I couldn't find for why FMODE_EXEC doesn't get set in
+> 	f_mode and just stays in f_flags.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+So I took a look at this series.
 
->
-> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
->
-> ---
->
->  arch/arm64/boot/dts/mediatek/mt6797.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt6797.dtsi b/arch/arm64/boot/d=
-ts/mediatek/mt6797.dtsi
-> index 136ef9527a0d..3efd032481ce 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
-> @@ -233,7 +233,7 @@ uart3: serial@11005000 {
->                 status =3D "disabled";
->         };
->
-> -       mmsys: mmsys_config@14000000 {
-> +       mmsys: syscon@14000000 {
->                 compatible =3D "mediatek,mt6797-mmsys", "syscon";
->                 reg =3D <0 0x14000000 0 0x1000>;
->                 #clock-cells =3D <1>;
-> --
-> 2.26.2
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+I think the belt and suspenders approach of adding code in open and then
+keeping it in exec and uselib is probably wrong.  My sense of the
+situation is a belt and suspenders approach is more likely to be
+confusing and result in people making mistakes when maintaining the code
+than to actually be helpful.
+
+Eric
