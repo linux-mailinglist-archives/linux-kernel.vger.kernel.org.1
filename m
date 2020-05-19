@@ -2,231 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E0D1D9204
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F09B1D9218
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 10:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgESI3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 04:29:13 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55896 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgESI3N (ORCPT
+        id S1726640AbgESIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 04:35:02 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:50702 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgESIfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 04:29:13 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04J8T9oa106526;
-        Tue, 19 May 2020 03:29:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589876949;
-        bh=ZiduhVOg5MMMMQdQPVOx0auXP9xGjDBpjLfphpPRrss=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=EbYPn7i53B1QGcA2r/+RQRlTWtyxlor4rw10b0cp8uhtGkE8HL93a7eUlZlwNSoFL
-         Fx0guQY6HuTlr638BDdIXyqmFdMtP6gSXLorQBqud0plwxDEcKKkSYdQXypm4YCsZl
-         qh1CZyLHE70MsG/ywJJmNVUORye1yP1pHI9p02FU=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04J8T9sJ091602
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 19 May 2020 03:29:09 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 19
- May 2020 03:29:08 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 19 May 2020 03:29:08 -0500
-Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04J8T5Vj037768;
-        Tue, 19 May 2020 03:29:06 -0500
-Subject: Re: [PATCH v8 1/3] dt-bindings: phy: Add DT bindings for Xilinx
- ZynqMP PSGTR PHY
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20200513172239.26444-1-laurent.pinchart@ideasonboard.com>
- <20200513172239.26444-2-laurent.pinchart@ideasonboard.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <eaeba80e-9082-2eeb-8c66-7ef28b7fb895@ti.com>
-Date:   Tue, 19 May 2020 13:59:05 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 19 May 2020 04:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QwmitSwlirACqCyCNTRUZhDaJ4HYS/kaW8Cx57bX5c8=; b=lNIV2LUUjHNOY9YH9V1SHZvupD
+        Ap9O81Ry9Mm7QRxv1ir9txOzUjABze72YWF4n+e8jqzVQPpOz2Y0k1MmDdIem/y+1xlA+52ci/GBr
+        VhJgaAxUx6I8Pg8EKqkDJhytF0BSAvxYY8F35JnXJDYpJXdc/fpka+wNKxUlBo4ZaW9kOSumZRxwM
+        gKB/gcUCuqJkWEkWT/BdfO6O4Emzg6cUb6jUonsMqRKDT0LOMPDGPTFrM/zHqvdgFJG4hF0ZYeAHA
+        PyG8RS7VYQpLmw+y265BUaXen5nOl2xMNwH1nvP2Qiz8LHKmvzOVpG3SLpwUxDRCINsZ9jcDhybYT
+        ZjTch/FA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jaxd4-0006F1-1E; Tue, 19 May 2020 08:29:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C8AB304A59;
+        Tue, 19 May 2020 10:29:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 47C4C29E21566; Tue, 19 May 2020 10:29:26 +0200 (CEST)
+Date:   Tue, 19 May 2020 10:29:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>
+Subject: Re: [patch V6 00/37] x86/entry: Rework leftovers and merge plan
+Message-ID: <20200519082926.GB279861@hirez.programming.kicks-ass.net>
+References: <20200515234547.710474468@linutronix.de>
+ <20200518160750.GA279861@hirez.programming.kicks-ass.net>
+ <87h7wdvzuq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200513172239.26444-2-laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7wdvzuq.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 18, 2020 at 08:53:49PM +0200, Thomas Gleixner wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> > So on top of you entry-v8-full; I had to chase one of those
+> > instrumentation_end() escapes an (extended) basic block chase (again!).
+> >  
+> > +#ifdef CONFIG_DEBUG_ENTRY
+> 
+> Why this? We lose the kprobes runtime protection that way.
 
+Oh bugger indeed. I forgot about that :-(
 
-On 5/13/2020 10:52 PM, Laurent Pinchart wrote:
-> From: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-> 
-> Add DT bindings for the Xilinx ZynqMP PHY. ZynqMP SoCs have a High Speed
-> Processing System Gigabit Transceiver which provides PHY capabilities to
-> USB, SATA, PCIE, Display Port and Ehernet SGMII controllers.
-> 
-> Signed-off-by: Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+I added the CONFIG_DEBUG_ENTRY dependency to
+instrumentation_{begin,end}() because they now emit actual code, and I
+figured we shouldn't bother 'production' kernels with all them extra
+NOPs.
 
-Need RobH Ack for this to be merged.
+And then I figured (wrongly!) that since I have that, I might as well
+add noinstr to is.
 
-Thanks
-Kishon
-> ---
-> Changes since v7:
+> > +/* Section for code which can't be instrumented at all */
+> > +#define noinstr								\
+> > +	noinline notrace __attribute((__section__(".noinstr.text")))
+> > +
+> >  /* Begin/end of an instrumentation safe region */
+> > -#define instrumentation_begin() ({						\
+> > +#define instrumentation_begin() ({					\
+> >  	asm volatile("%c0:\n\t"						\
+> >  		     ".pushsection .discard.instr_begin\n\t"		\
+> >  		     ".long %c0b - .\n\t"				\
+> >  		     ".popsection\n\t" : : "i" (__COUNTER__));
 > 
-> - Switch to GPL-2.0-only OR BSD-2-Clause
-> 
-> Changes since v6:
-> 
-> - Fixed specification of compatible-dependent xlnx,tx-termination-fix
->   property
-> - Dropped status property from example
-> - Use 4 spaces to indent example
-> 
-> Changes since v5:
-> 
-> - Document clocks and clock-names properties
-> - Document resets and reset-names properties
-> - Replace subnodes with an additional entry in the PHY cells
-> - Drop lane frequency PHY cell, replaced by reference clock phandle
-> - Convert bindings to YAML
-> - Reword the subject line
-> - Drop Rob's R-b as the bindings have significantly changed
-> - Drop resets and reset-names properties
-> ---
->  .../bindings/phy/xlnx,zynqmp-psgtr.yaml       | 105 ++++++++++++++++++
->  include/dt-bindings/phy/phy.h                 |   1 +
->  2 files changed, 106 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> new file mode 100644
-> index 000000000000..09e3cde7ebca
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/xlnx,zynqmp-psgtr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx ZynqMP Gigabit Transceiver PHY Device Tree Bindings
-> +
-> +maintainers:
-> +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> +
-> +description: |
-> +  This binding describes the Xilinx ZynqMP Gigabit Transceiver (GTR) PHY. The
-> +  GTR provides four lanes and is used by USB, SATA, PCIE, Display port and
-> +  Ethernet SGMII controllers.
-> +
-> +properties:
-> +  "#phy-cells":
-> +    const: 4
-> +    description: |
-> +      The cells contain the following arguments.
-> +
-> +      - description: The GTR lane
-> +        minimum: 0
-> +        maximum: 3
-> +      - description: The PHY type
-> +        enum:
-> +          - PHY_TYPE_DP
-> +          - PHY_TYPE_PCIE
-> +          - PHY_TYPE_SATA
-> +          - PHY_TYPE_SGMII
-> +          - PHY_TYPE_USB
-> +      - description: The PHY instance
-> +        minimum: 0
-> +        maximum: 1 # for DP, SATA or USB
-> +        maximum: 3 # for PCIE or SGMII
-> +      - description: The reference clock number
-> +        minimum: 0
-> +        maximum: 3
-> +
-> +  compatible:
-> +    enum:
-> +      - xlnx,zynqmp-psgtr-v1.1
-> +      - xlnx,zynqmp-psgtr
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 4
-> +    description: |
-> +      Clock for each PS_MGTREFCLK[0-3] reference clock input. Unconnected
-> +      inputs shall not have an entry.
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 4
-> +    items:
-> +      pattern: "^ref[0-3]$"
-> +
-> +  reg:
-> +    items:
-> +      - description: SERDES registers block
-> +      - description: SIOU registers block
-> +
-> +  reg-names:
-> +    items:
-> +      - const: serdes
-> +      - const: siou
-> +
-> +  xlnx,tx-termination-fix:
-> +    description: |
-> +      Include this for fixing functional issue with the TX termination
-> +      resistance in GT, which can be out of spec for the XCZU9EG silicon
-> +      version.
-> +    type: boolean
-> +
-> +required:
-> +  - "#phy-cells"
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      const: xlnx,zynqmp-psgtr-v1.1
-> +
-> +then:
-> +  properties:
-> +    xlnx,tx-termination-fix: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy: phy@fd400000 {
-> +        compatible = "xlnx,zynqmp-psgtr-v1.1";
-> +        reg = <0x0 0xfd400000 0x0 0x40000>,
-> +              <0x0 0xfd3d0000 0x0 0x1000>;
-> +        reg-names = "serdes", "siou";
-> +        clocks = <&refclks 3>, <&refclks 2>, <&refclks 0>;
-> +        clock-names = "ref1", "ref2", "ref3";
-> +        #phy-cells = <4>;
-> +    };
-> +
-> +...
-> diff --git a/include/dt-bindings/phy/phy.h b/include/dt-bindings/phy/phy.h
-> index 1f3f866fae7b..f6bc83b66ae9 100644
-> --- a/include/dt-bindings/phy/phy.h
-> +++ b/include/dt-bindings/phy/phy.h
-> @@ -17,5 +17,6 @@
->  #define PHY_TYPE_USB3		4
->  #define PHY_TYPE_UFS		5
->  #define PHY_TYPE_DP		6
-> +#define PHY_TYPE_SGMII		7
->  
->  #endif /* _DT_BINDINGS_PHY */
-> 
+> Nifty.
+
+Yeah, took a bit of fiddling because objtool is a bit weird vs UD2, but
+if you order it just right in the WARN thing it works :-)
+
+You want a new delta without the noinstr thing on?
