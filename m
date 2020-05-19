@@ -2,212 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D031D9FB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A7E1D9FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 20:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgESSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 14:41:44 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2596 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgESSln (ORCPT
+        id S1727039AbgESSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 14:46:51 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:45868 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgESSqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 14:41:43 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec427d80000>; Tue, 19 May 2020 11:39:20 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 19 May 2020 11:41:43 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 19 May 2020 11:41:43 -0700
-Received: from [10.2.164.184] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 May
- 2020 18:41:42 +0000
-Subject: Re: [PATCH v1] sdhci: tegra: Remove warnings about missing
- device-tree properties
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200516154314.14769-1-digetx@gmail.com>
- <CAPDyKFo_Xp-zipqE26iMv4CFwUoMCQZy3Zr63Cp=uzePgWX7BA@mail.gmail.com>
- <b634e7a5-9a30-3bd1-126d-be62e4dd73e1@gmail.com>
- <20200519162444.GD2113674@ulmo>
- <b4eb368e-adc2-7b77-3ae9-fefdcfddaf3d@gmail.com>
- <11c93dac-f5ba-2193-6f44-63af27fdce09@nvidia.com>
-Message-ID: <aed72c87-0e16-6dea-a4e2-7fc6a97cd313@nvidia.com>
-Date:   Tue, 19 May 2020 11:41:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 19 May 2020 14:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JyzkKr1JhOCfKm02c+21XonEXostNDxmZnTbn9PYvN8=; b=CLqf0aifIj0VH4QIoZuacBPBRH
+        XB9v62HUkRhzdcxBtbtle/Qa6NG4mUhtE050hOmZBlTodi4nsxHG3Poh2MLG5g4V5v3lViVUy6DRF
+        cftEo7KzDlLTdAgvvCmHFfqm1Z9XrbHM5JC7qT5enwpzS/fKFe3v15WDiJkBKqpfkc0FWM5rD3qY1
+        TwifgQmOvMW2vxvSO6Y8wShS6rX6rYPKazo21kpk+1KbKGZ+kmzLG3lU+szhKliPDhqA6GMKnQgF0
+        q3re+w2qF6ZzmNWZNqxrr7tEzFBeIQXyTgIT/WWSzG8W4geQdsuB47Jdu7y4APnCa4lrOyqa7JPf7
+        YWANoo3A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jb7Bz-0008TD-6L; Tue, 19 May 2020 18:42:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3402D301A80;
+        Tue, 19 May 2020 20:42:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 238A125D60953; Tue, 19 May 2020 20:42:10 +0200 (CEST)
+Date:   Tue, 19 May 2020 20:42:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Fox <afox@redhat.com>,
+        Stephen Johnston <sjohnsto@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stanislaw Gruszka <sgruszka@redhat.com>
+Subject: Re: [PATCH v2] sched/cputime: make scale_stime() more precise
+Message-ID: <20200519184210.GD317569@hirez.programming.kicks-ass.net>
+References: <20190718131834.GA22211@redhat.com>
+ <20200127122817.GA10957@redhat.com>
+ <20200519172506.GA317395@hirez.programming.kicks-ass.net>
+ <CAHk-=wjjxDY6XzKKPEE1S+AUXycmo8XNpX2C-jO4fS+qU8ObpA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <11c93dac-f5ba-2193-6f44-63af27fdce09@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589913560; bh=iZlQs82j0ApbkPQdu87ucYsr+TgY4OnZJ+MHqCwsxLk=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=P9u4/1Sl9X+4HDsYW3u6yJb4qijrQmfBCuSzVUrjBrUY6igbhbyxSJrp/mkpT0FRJ
-         ewP1nIG4rzaLL7fV2lTa+dA37ETnXuGk9yE3HCh3ocftmjkyvhbeqa8LkNObg2+LVt
-         14crCDGIhhRzjRrWHttf+v9i4wksRPw6wYuI3gdllyBJCrhM8S441kOAh1uqQzQo2m
-         hce9U4Mavm5praAolVSCLO+sKqfUNi5r8t+K4gx/K0wupecEwHIA31V78RYf6k1xAx
-         0UIQUaLNyctGoRJbJIWc4qMdjPRNWOFj5jSFhAnKOqhmKern+NqDYBAPSHSgKfheHE
-         6NUd0EXU6sV1g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjjxDY6XzKKPEE1S+AUXycmo8XNpX2C-jO4fS+qU8ObpA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 19, 2020 at 11:33:34AM -0700, Linus Torvalds wrote:
+> On Tue, May 19, 2020 at 10:25 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > --- a/include/linux/math64.h
+> > +++ b/include/linux/math64.h
+> > @@ -263,6 +263,47 @@ static inline u64 mul_u64_u32_div(u64 a, u32 mul, u32 divisor)
+> >  }
+> >  #endif /* mul_u64_u32_div */
+> >
+> > +#ifndef mul_u64_u64_div_u64
+> > +static inline u64 mul_u64_u64_div_u64(u64 a, u64 b, u64 c)
+> 
+> Do we really want to inline this? Particularly if we expect this to be
+> the "architecture doesn't have a better version" case?
+> 
+> It's not like we'd expect people to call it with constant values that
+> could be optimized by inlining, do we? If any of the values are
+> actually constants and it's performance-critical, the code is likely
+> better off using some special helper rather than this anyway.
+> 
+> So I'd much rather see it as a weak function defined in
+> lib/math/div64.c, and then architectures don't even need to override
+> it at all. Just let them define their own (inline or not) function,
+> and we have this as a weak fallback.
 
-On 5/19/20 11:34 AM, Sowjanya Komatineni wrote:
->
-> On 5/19/20 9:33 AM, Dmitry Osipenko wrote:
->> 19.05.2020 19:24, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> On Tue, May 19, 2020 at 05:05:27PM +0300, Dmitry Osipenko wrote:
->>>> 19.05.2020 10:28, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>> On Sat, 16 May 2020 at 17:44, Dmitry Osipenko <digetx@gmail.com>=20
->>>>> wrote:
->>>>>> Several people asked me about the MMC warnings in the KMSG log and
->>>>>> I had to tell to ignore them because these warning are irrelevant to
->>>>>> pre-Tegra210 SoCs.
->>>>> Why are the warnings irrelevant?
->>>> That's what the DT binding doc says [1].
->>>>
->>>> [1]
->>>> https://www.kernel.org/doc/Documentation/devicetree/bindings/mmc/nvidi=
-a%2Ctegra20-sdhci.txt=20
->>>>
->>>>
->>>> Although, looking at the driver's code and TRM docs, it seems that all
->>>> those properties are really irrelevant only to the older Terga20=20
->>>> SoC. So
->>>> the binding doc is a bit misleading.
->>>>
->>>> Nevertheless, the binding explicitly says that the properties are
->>>> optional, which is correct.
->>> Optional only means that drivers must not fail if these properties
->>> aren't found, it doesn't mean that the driver can't warn that they
->>> are missing.
->>>
->>> Quite possibly the only reason why they were made optional is because
->>> they weren't part of the bindings since the beginning. Anything added
->>> to a binding after the first public release has to be optional by
->>> definition, otherwise DT ABI wouldn't be stable.
->>>
->>> I think these warnings were added on purpose, though I also see that
->>> there are only values for these in device tree for Tegra186 and=20
->>> Tegra194
->>> but not Tegra210 where these should also be necessary.
->
-> dt binding doc we have is common for MMC, SD and SDIO of all Tegras.=20
-> Its not mandatory to have both 3v3 and 1v8 in device tree as based on=20
-> signal mode.
->
-> As these driver strengths are SoC specific, they are part of Tegra SoC=20
-> specific device tree where same values will be applicable to all Tegra=20
-> SoC specific platforms.
->
-> Based on interface usage on platform, we use one or both of them like=20
-> sdcard supports dual voltage and we use both 3V3 and 1V8 but if same=20
-> interface is used for WIFI SD we use 1V8 only.
->
-> So made these dt properties as optional.
->
-> Other reason they are optional is, Tegra210 and prior has drive=20
-> strength settings part of apb_misc and Tegra186 and later has driver=20
-> strengths part of SDMMC controller. So,
->
-> - Pinctrls "sdmmc-3v3-drv" and "sdmmc-1v8-drv" for driver strengths=20
-> are applicable for Tegra210 and prior.
-> - dt properties pad-autocal-pull-up/down-offset-1v8/3v3-timeout are=20
-> for T186 onwards for driver strengths
->
-> Looks like dt binding doc need fix to clearly document these based on=20
-> SoC or agree with Yaml we can conditionally specify pinctrl or dt=20
-> properties based on SoC dependent.
->
->
->>> Adding Sowjanya who wrote this code. Perhaps she can clarify why the
->>> warnings were added. If these values /should/ be there on a subset of
->>> Tegra, then I think we should keep them, or add them again, but perhaps
->>> add a better way of identifying when they are necessary and when it is
->>> safe to work without them.
->>>
->>> That said, looking at those checks I wonder if they are perhaps just
->>> wrong. Or at the very least they seem redundant. It looks to me like
->>> they can just be:
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0if (tegra_host->pinctrl_state_XYZ =3D=3D NULL) =
-{
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>> =C2=A0=C2=A0=C2=A0=C2=A0}
->>>
->>> That !IS_ERR(...) doesn't seem to do anything. But in that case, it's
->>> also obvious why we're warning about them on platforms where these
->>> properties don't exist in DT.
->
-> As drive strengths are through dt properties for T186 and later and=20
-> thru pinctrl for T210 and prior, driver first checks for dt autocal=20
-> timeout pull-up/down properties and if they are not found, it then=20
-> checks for presence of pinctrl_state_xyx_drv only when valid=20
-> pinctrl_state_xyz is present.
->
-> Driver expects either pinctrl or dt properties and shows warning when=20
-> neither of them are present as its mandatory to use fixed driver=20
-> strengths when auto calibration fails.
->
-> =C2=A0=C2=A0=C2=A0 err =3D device_property_read_u32(host->mmc->parent,
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 "nvidia,pad-auto=
-cal-pull-down-offset-3v3-timeout",
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 &autocal->pull_d=
-own_3v3_timeout);
-> =C2=A0=C2=A0=C2=A0 if (err) {
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (!IS_ERR(tegra_host->pinctrl_sta=
-te_3v3) &&
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 (tegra_host->pin=
-ctrl_state_3v3_drv =3D=3D NULL))
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 pr_warn("%s: Mis=
-sing autocal timeout 3v3-pad drvs\n",
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
-=A0 mmc_hostname(host->mmc));
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 autocal->pull_down_3v3_timeout =3D =
-0;
-> =C2=A0=C2=A0=C2=A0 }
->
->>>
->>> So I think we either need to add those values where appropriate so that
->>> the warning doesn't show, or we need to narrow down where they are
->>> really needed and add a corresponding condition.
->>>
->>> But again, perhaps Sowjanya can help clarify if these really are only
->>> needed on Tegra210 and later or if these also apply to older chips.
->> Either way will be cleaner to convert the DT binding to YAML rather than
->> clutter the driver, IMO.
->>
->
->
->
-Auto calibration is present from Tegra30 onward and looking into change=20
-where autocalibration was added to sdhci driver somehow it was enabled=20
-only for T30/T210/T186/T194.
-
-tegra_sdhci_parse_pad_autocal_dt() was added when auto-calibration was=20
-added to driver and I see this dt parse is being done irrespective of=20
-NVQUIRK_HAS_PADCALIB quirk so even on platforms without auto cal enabled=20
-in driver, these messages shows up.
-
-This should be fixed in driver to allow=20
-tegra_sdhci_parse_pad_autocal_dt() only when NVQUIRK_HAS_PADCALIB is set=20
-to avoid dt parsing to happen on platforms that don't have auto cal enabled=
-.
-
+I completely forgot we had a .c file to go with all this. Yes, I'll put
+it in there.
