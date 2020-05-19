@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17311D974D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026C61D975B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 May 2020 15:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgESNNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 09:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727910AbgESNNO (ORCPT
+        id S1729004AbgESNOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 09:14:10 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:35693 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727057AbgESNOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 09:13:14 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B3EC08C5C0;
-        Tue, 19 May 2020 06:13:14 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id q2so1470264ljm.10;
-        Tue, 19 May 2020 06:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IiBhfRe0O8z+Axm2vMfGqvyp7JPaYqiUq9QQWtYRNd4=;
-        b=fXzgSz2ehuJEDLmyRKqrosO1Y8vOovGRSmfob7lDlHAKTKwg5HWy/Imym9qi6UizFY
-         ziqTt7zgvdaHbYouo9o54Dl2iPpgjJI4zjDtwAzn4UC+ipuB4HZ27838aRvPTudJ8oda
-         GgQW0/yF7SIOMRMYg/8FjbVSk29pPFanyDjdD1vy2pdiijNBTsJ/6Y7DPCFUBIcZgEit
-         F/ePmS9AmRE1hTmDrGPDmvaUfoOPMZ5dZ2rjjr47vYN84dTt1Q0tOZYAuORbdYkJIBWV
-         6hizaSjhRjZrj5ixj03upr3xzzJQaeVGfbUnIWYsJZQvag/te3ku1ovrDi0vEB1Q67ZP
-         VWWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IiBhfRe0O8z+Axm2vMfGqvyp7JPaYqiUq9QQWtYRNd4=;
-        b=W13NL2MLcbDQH9xrApwi7Cz5V8YdgDY+dHjBTjNedlTfX6uyNdofPPwDOphGFiMi4Q
-         j7jsoj//DmpEAJAj+wOqxzFGKjsBHXzFsbe1SY6sN2QY6FzvCVoKhlDusfCy/Tt929rH
-         qXnKWD6XXDrjRz0lPEoZy/CTYzQtFvn04idd4PPj9LfSSRmrT46CCOEQ+FEcyb/qBHna
-         ZRbPtEYPoOJsKQ18b+zuLtjj+3Nud044Ib1sV2j1aqAt7gEJT46k80RKftsirW8WntOz
-         owU7je2pzyA3xSEapFYHPyhY00tjIwBVqqfbNziFknWbY5J3xh5nbBqD6arIlUr9yb2C
-         ykJQ==
-X-Gm-Message-State: AOAM530fZNIJKKL+grLjJf18bPBt78kzjul2YTaUAWY+UPcQETvHNsrM
-        nVlKtij1LA04CiBhaLEGqoYgkVv1NxrLVPGhDLk=
-X-Google-Smtp-Source: ABdhPJz8QNjOdhwBE+X5ouHMRX7eiWIWw/6IuqAGZdCg/0ugMZIHG2gf36xBIhqHR0BKBmY2lUx4UEapUX4J1C/OWM4=
-X-Received: by 2002:a2e:601:: with SMTP id 1mr5498021ljg.126.1589893992637;
- Tue, 19 May 2020 06:13:12 -0700 (PDT)
+        Tue, 19 May 2020 09:14:07 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MLhwM-1jJMgm1Wuu-00HfcK; Tue, 19 May 2020 15:13:48 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sh: include linux/time_types.h for sockios
+Date:   Tue, 19 May 2020 15:13:13 +0200
+Message-Id: <20200519131327.1836482-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200519030036.1785-1-zhang.lyra@gmail.com> <20200519030036.1785-2-zhang.lyra@gmail.com>
-In-Reply-To: <20200519030036.1785-2-zhang.lyra@gmail.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Tue, 19 May 2020 21:13:01 +0800
-Message-ID: <CADBw62oep+5n+9d5Qmzj7HR4u5JXTp2qSi2ipDHFAemK5Wcjpg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: sprd: return correct type of value for _sprd_pll_recalc_rate
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ZzSBkp1oHrCNIXzAF1NuoPpvoa6TIn1Nifxi2otujO89+1FUOUT
+ yRAJvNkAj23ss9X6/6RNC0OTtXqC2zBhctD2Oz1JxNJlG/aR3IJHyMcyDOVQcVqHlLS/sVa
+ Uh0eg/yWoSBj5gf6EHj0CIQSi32j8/ADRbZc3+YMN1U5B85dkYFzqtaybbXNhyvr1tBYy54
+ Z8G3sDliCi0w+3AOllvIA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GytPdhjM1K4=:TgZKiIgJOBuOV0S/MjSmEJ
+ MZ29EINcvg6Rc9hmIf8hwo3U8JbjUysfYpqUj+RZgGvXalDGLjdIVXSp7kq2pnGY60O4T87pB
+ F4L2G4UbD5oTR+jxD+3zn5R9ZCnGcC6rJ/jUtF3CdVK0bNI/Da7nnrFxALvOym0Xoafi6f8si
+ BCrv6rcdzJoJaw2yTHrMQvjJSaExQMKFD1h0NOssN4r/InzABohqcLv+rYk38kS1LVm5rQBdn
+ 7U4mnvWZ1qSslQ2JSindWiOV3UbVfHja58EKsN22tSbxGsn2GlUXoOCzD7tbnsCTcv97b6mlw
+ FEe2bKWQCpWVEATUM8k1W6bctYqacZLMhCDUbdDV9oeBSGSI9Xl482ifBOOHb1p3nHRtbfUjx
+ CWiDnid/R/RNO7bkp6hBKUQ86nmDKNR9V51gw+rqYWQZ3qjXwZzk7LWhuXHgGMTjbH2hCFnPT
+ wogwVFe2x3wnnkPOuQnN8gqn5roca8CN1Egofx5j3HHkSSYGc3At3cA1R5LbdGDUOT9ZY2sP6
+ KORkn4q+9rdcls1WGq+EJG0/ta5Y+UvPHeOCNnwAavYQP5eEwXQyR0aOduUP5MoxE0/eAEX72
+ zodLf81N+Ee3pJDhsrnECIXTbV0DhMP94NlM6gXA+oyxkj12Tp1Q2vtIbzZAG8HRUe2VNp85v
+ eyTICJ46wtZ08xuTrJdGyeRkU+4HRl82N0ObTmvCHftRxp8xqmO3u9AChCUjHWFwL7Xh+yCYm
+ JYHR5W5IZ6R0zBjnjqrfsBbSin49mXl3LHTTlg2MWO2Z+NBqmF4VwPKts2fB4/GYGF11Uje39
+ dg0Mm7+lqNtxddbdI7+lLDaK+RMf8yGCA0mJT/Qafjs+ZHQZTM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:00 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
->
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
->
-> The function _sprd_pll_recalc_rate() defines return value to unsigned
-> long, but it would return a negative value when malloc fail, changing
-> to return its parent_rate makes more sense, since if the callback
-> .recalc_rate() is not set, the framework returns the parent_rate as
-> well.
->
-> Fixes: 3e37b005580b ("clk: sprd: add adjustable pll support")
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Using the socket ioctls on arch/sh (and only there) causes build
+time problems when __kernel_old_timeval/__kernel_old_timespec are
+not already visible to the compiler.
 
-Looks good to me.
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+Add an explict include line for the header that defines these
+structures.
 
+Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Fixes: 8c709f9a0693 ("y2038: sh: remove timeval/timespec usage from headers")
+Fixes: 0768e17073dc ("net: socket: implement 64-bit timestamps")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/sh/include/uapi/asm/sockios.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/sh/include/uapi/asm/sockios.h b/arch/sh/include/uapi/asm/sockios.h
+index 3da561453260..ef01ced9e169 100644
+--- a/arch/sh/include/uapi/asm/sockios.h
++++ b/arch/sh/include/uapi/asm/sockios.h
+@@ -2,6 +2,8 @@
+ #ifndef __ASM_SH_SOCKIOS_H
+ #define __ASM_SH_SOCKIOS_H
+ 
++#include <linux/time_types.h>
++
+ /* Socket-level I/O control calls. */
+ #define FIOGETOWN	_IOR('f', 123, int)
+ #define FIOSETOWN 	_IOW('f', 124, int)
 -- 
-Baolin Wang
+2.26.2
+
