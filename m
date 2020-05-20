@@ -2,112 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6C1DB87A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE60B1DB87D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgETPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 11:40:00 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38850 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbgETPjv (ORCPT
+        id S1726899AbgETPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 11:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgETPkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 11:39:51 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 856132A0313
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 6DD05480103; Wed, 20 May 2020 17:39:45 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ahmet Inan <inan@distec.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCHv3 5/5] Input: EXC3000: Add reset gpio support
-Date:   Wed, 20 May 2020 17:39:36 +0200
-Message-Id: <20200520153936.46869-6-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520153936.46869-1-sebastian.reichel@collabora.com>
-References: <20200520153936.46869-1-sebastian.reichel@collabora.com>
+        Wed, 20 May 2020 11:40:53 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7897DC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:40:52 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q24so1483671pjd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y1fs4yTARhwr8K0tG6MX4nh3naH0ZmYi8BIM1sTbmmk=;
+        b=SnnX5IlL2jOGPBbhnW+zn3VrPPJKbMei2u1IT8e5MY6RbTas9TC1b4PG7IY7TPI+k2
+         7/La7lh3gBjKXgJBAri9ts5V1YYXVmIsibUimG5DAxmGATbORH/0vE5AJeLxwF0lW5KC
+         MPf3f5TCil0ArCReccwkMXQtx2FL7cVc1zuqY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y1fs4yTARhwr8K0tG6MX4nh3naH0ZmYi8BIM1sTbmmk=;
+        b=ctv+m8SKcnC/Qs6CfibmDBLgr02Va6HmUUTbr2phUU2NBgfUMhTXSvniIJwbf1bPtM
+         DYEB3Cc6u1WeNbhQJ2m3g/AH3IxY7MwCdPGuv43EaIImaF7Ud8v97UHIrJZybr1RWjXB
+         DW9ZQzk9FLii5u3e+trXWb5jWcX5FE2LtABKAOeXq2ijUSloOityFkab4wEmym4s1Lv5
+         JNrOwM1yCcEasgRW3nraZKgrg4AXFCk0Msf+v23C7muRIhTN42i6YoT3nX+qjchRYF6i
+         XGGXnG30XaHRM9/q/PNowSmghRqXygqsEso4ODp3ZGqrXuYbKgWYd/4rRtUoazIWzy1Z
+         WHJQ==
+X-Gm-Message-State: AOAM5330hK7M4San05rXs0HERh8jtSVVkkw21qypuepDLSKhijDoEcpW
+        wAgoTISfepRfDcvaJNj5MfZzHA==
+X-Google-Smtp-Source: ABdhPJzUqLMoA1/x9EhQmhBk3k0L04+X2IjM0ZTqDWwb1s9RjOQf58DhCfsuP/AQ/DQfC6ncpfnROg==
+X-Received: by 2002:a17:90a:e54c:: with SMTP id ei12mr5800259pjb.129.1589989251909;
+        Wed, 20 May 2020 08:40:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p30sm2063906pgn.58.2020.05.20.08.40.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 08:40:50 -0700 (PDT)
+Date:   Wed, 20 May 2020 08:40:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] ACPICA: Replace one-element array and use struct_size()
+ helper
+Message-ID: <202005200831.41DA095B2@keescook>
+References: <20200518222722.GA7791@embeddedor>
+ <CAJZ5v0goZpvRQ6du214FqvFNQnqZHR9-kz=WhEgRsMJ3Zx0WiQ@mail.gmail.com>
+ <20200519225058.GA14138@embeddedor>
+ <CAJZ5v0jg9HoE2KEm45hxKNB1g61DzCn-GWH74w1goeHH3AKRaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jg9HoE2KEm45hxKNB1g61DzCn-GWH74w1goeHH3AKRaA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic support for an optional reset gpio.
+On Wed, May 20, 2020 at 11:15:18AM +0200, Rafael J. Wysocki wrote:
+> On Wed, May 20, 2020 at 12:46 AM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> >
+> > On Tue, May 19, 2020 at 12:25:13PM +0200, Rafael J. Wysocki wrote:
+> > > On Tue, May 19, 2020 at 12:22 AM Gustavo A. R. Silva
+> > > <gustavoars@kernel.org> wrote:
+> > > >
+> > > > The current codebase makes use of one-element arrays in the following
+> > > > form:
+> > > >
+> > > > struct something {
+> > > >     int length;
+> > > >     u8 data[1];
+> > > > };
+> > > >
+> > > > struct something *instance;
+> > > >
+> > > > instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+> > > > instance->length = size;
+> > > > memcpy(instance->data, source, size);
+> > > >
+> > > > but the preferred mechanism to declare variable-length types such as
+> > > > these ones is a flexible array member[1][2], introduced in C99:
+> > > >
+> > > > struct foo {
+> > > >         int stuff;
+> > > >         struct boo array[];
+> > > > };
+> > > >
+> > > > By making use of the mechanism above, we will get a compiler warning
+> > > > in case the flexible array does not occur last in the structure, which
+> > > > will help us prevent some kind of undefined behavior bugs from being
+> > > > inadvertently introduced[3] to the codebase from now on.
+> > >
+> > > However, the ACPICA code in the kernel comes from an external project
+> > > and changes of this type are generally not applicable to it unless
+> > > accepted upstream.
+> >
+> > Hi Rafael,
+> >
+> > By _accepted upstream_, in this case, you mean the adoption of the
+> > flexible-arrays in the whole codebase, first?
+> 
+> I meant whether or not the patch is accepted by the ACPICA upstream.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- .../input/touchscreen/eeti,exc3000.yaml         |  2 ++
- drivers/input/touchscreen/exc3000.c             | 17 +++++++++++++++++
- 2 files changed, 19 insertions(+)
+Is that here? https://github.com/acpica/acpica/commits/master
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-index 7e6e23f8fa00..007adbc89c14 100644
---- a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-+++ b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-@@ -22,6 +22,8 @@ properties:
-     const: 0x2a
-   interrupts:
-     maxItems: 1
-+  reset-gpios:
-+    maxItems: 1
-   touchscreen-size-x: true
-   touchscreen-size-y: true
-   touchscreen-inverted-x: true
-diff --git a/drivers/input/touchscreen/exc3000.c b/drivers/input/touchscreen/exc3000.c
-index b5a3bbb63504..de9d0ae1210a 100644
---- a/drivers/input/touchscreen/exc3000.c
-+++ b/drivers/input/touchscreen/exc3000.c
-@@ -8,7 +8,9 @@
-  */
- 
- #include <linux/bitops.h>
-+#include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/input.h>
- #include <linux/input/mt.h>
-@@ -33,6 +35,9 @@
- 
- #define EXC3000_TIMEOUT_MS		100
- 
-+#define EXC3000_RESET_MS		10
-+#define EXC3000_READY_MS		100
-+
- static const struct i2c_device_id exc3000_id[];
- 
- struct eeti_dev_info {
-@@ -66,6 +71,7 @@ struct exc3000_data {
- 	const struct eeti_dev_info *info;
- 	struct input_dev *input;
- 	struct touchscreen_properties prop;
-+	struct gpio_desc *reset;
- 	struct timer_list timer;
- 	u8 buf[2 * EXC3000_LEN_FRAME];
- 	struct completion wait_event;
-@@ -325,6 +331,17 @@ static int exc3000_probe(struct i2c_client *client)
- 	init_completion(&data->wait_event);
- 	mutex_init(&data->query_lock);
- 
-+	data->reset = devm_gpiod_get_optional(&client->dev, "reset",
-+					      GPIOD_OUT_HIGH);
-+	if (IS_ERR(data->reset))
-+		return PTR_ERR(data->reset);
-+
-+	if (data->reset) {
-+		msleep(EXC3000_RESET_MS);
-+		gpiod_set_value_cansleep(data->reset, 0);
-+		msleep(EXC3000_READY_MS);
-+	}
-+
- 	input = devm_input_allocate_device(&client->dev);
- 	if (!input)
- 		return -ENOMEM;
+> 
+> >  If this is the case
+> > notice that there are hundreds of these flexible-array conversions
+> > in mainline, already:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=flexible-array
+> >
+> > Is this what you mean?
+> 
+> I'm not actually sure what you mean here.
+
+I think this was just a misunderstanding about what "upstream" meant. :)
+
+I hope ACPICA will take these changes -- it seems like we keep running
+into these issues with the kernel's language feature clean-ups and ACPICA
+upstream, though each have been resolved so far! :) Flexible array
+members are a C99 feature, so it's hardly a new way to express things.
+In fact, it looks like ACPICA already builds with -c99 by default:
+https://github.com/acpica/acpica/blob/master/generate/unix/Makefile.config#L202
+https://github.com/acpica/acpica/blob/master/generate/efi/Makefile.config#L93
+
+MSVC has supported them (called "unsized arrays") since 7.1 in 2003.
+
+Gustavo, can you build a merge request for the ACPICA project directly?
+
 -- 
-2.26.2
-
+Kees Cook
