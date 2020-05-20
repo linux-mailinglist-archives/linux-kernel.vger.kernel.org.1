@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C631DBA1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12ED61DBA1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgETQtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:49:17 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:33142 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726566AbgETQtQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:49:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589993356; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=AtZzN9l3Kts69kOEIWpwwKUEDYmTk95ucmsOExLIP9E=; b=QUEybOHU+bZjTw8s6ljHyASKUvy3WrelI3VXSb8nrIpBROY53Gv0CoLjjJ2TDr4e0sYVmMFv
- 2QWteNXzPvW63BGmGU0sxRZV1ZQrWHw/haEoVNT44eCuN2SfN2DtszgG/Puk3LEmepRWatm4
- +qKCFRSL9ib3+iHWCB0voEN+3yo=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5ec55f7e45598550e6112a69 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 16:49:02
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17279C433CA; Wed, 20 May 2020 16:49:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 59946C433C6;
-        Wed, 20 May 2020 16:49:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 59946C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v3 1/7] bus: mhi: core: Abort suspends due to outgoing
- pending packets
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org
-References: <1589832241-13867-1-git-send-email-bbhatt@codeaurora.org>
- <1589832241-13867-2-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <f9badb81-989d-3c7f-63c1-d85a3e875fe7@codeaurora.org>
-Date:   Wed, 20 May 2020 10:48:59 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726886AbgETQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:49:34 -0400
+Received: from mga03.intel.com ([134.134.136.65]:29689 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgETQtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 12:49:31 -0400
+IronPort-SDR: pLP+2emcwG+cLwOCaYwGDlEHj4gn/y8BN1jOvbqrk0D5nJNdVviCSpTA1W0+I875yeRSW+k1U4
+ jYaj5FL6D7WA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 09:49:30 -0700
+IronPort-SDR: HnYbro/NjAr0r6UV/+lTENLyp3LauNTVC0VU7/HiFcTTE//uwh/rrcGdz43CpkdAvUpwtX8HEl
+ hO+ACXxNj4aQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="299992956"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 20 May 2020 09:49:29 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 4EE4017E; Wed, 20 May 2020 19:49:28 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-acpi@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/3] irqdomain: Make __irq_domain_add() less OF-dependent
+Date:   Wed, 20 May 2020 19:49:25 +0300
+Message-Id: <20200520164927.39090-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1589832241-13867-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/2020 2:03 PM, Bhaumik Bhatt wrote:
-> Add the missing check to abort suspends if a client has pending outgoing
-> packets to send to the device. This allows better utilization of the MHI
-> bus wherein clients on the host are not left waiting for longer suspend
-> or resume cycles to finish for data transfers.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
+__irq_domain_add() in some places relies on the fact that fwnode
+can be only type of OF. This prevents refactoring of the code
+to support other types of fwnode. Make it less OF-dependent
+by switching to use fwnode directly where it makes sense.
 
-Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ kernel/irq/irqdomain.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 35b8d97c3a1d..d59a4224f920 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -132,14 +132,13 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
+ 				    const struct irq_domain_ops *ops,
+ 				    void *host_data)
+ {
+-	struct device_node *of_node = to_of_node(fwnode);
+ 	struct irqchip_fwid *fwid;
+ 	struct irq_domain *domain;
+ 
+ 	static atomic_t unknown_domains;
+ 
+ 	domain = kzalloc_node(sizeof(*domain) + (sizeof(unsigned int) * size),
+-			      GFP_KERNEL, of_node_to_nid(of_node));
++			      GFP_KERNEL, of_node_to_nid(to_of_node(fwnode)));
+ 	if (!domain)
+ 		return NULL;
+ 
+@@ -177,15 +176,15 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
+ 
+ 		domain->fwnode = fwnode;
+ #endif
+-	} else if (of_node) {
++	} else if (is_of_node(fwnode)) {
+ 		char *name;
+ 
+ 		/*
+-		 * DT paths contain '/', which debugfs is legitimately
++		 * fwnode paths contain '/', which debugfs is legitimately
+ 		 * unhappy about. Replace them with ':', which does
+ 		 * the trick and is not as offensive as '\'...
+ 		 */
+-		name = kasprintf(GFP_KERNEL, "%pOF", of_node);
++		name = kasprintf(GFP_KERNEL, "%pfw", fwnode);
+ 		if (!name) {
+ 			kfree(domain);
+ 			return NULL;
+@@ -210,7 +209,7 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
+ 		domain->flags |= IRQ_DOMAIN_NAME_ALLOCATED;
+ 	}
+ 
+-	of_node_get(of_node);
++	fwnode_handle_get(fwnode);
+ 
+ 	/* Fill structure */
+ 	INIT_RADIX_TREE(&domain->revmap_tree, GFP_KERNEL);
+@@ -259,7 +258,7 @@ void irq_domain_remove(struct irq_domain *domain)
+ 
+ 	pr_debug("Removed domain %s\n", domain->name);
+ 
+-	of_node_put(irq_domain_get_of_node(domain));
++	fwnode_handle_put(domain->fwnode);
+ 	if (domain->flags & IRQ_DOMAIN_NAME_ALLOCATED)
+ 		kfree(domain->name);
+ 	kfree(domain);
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.26.2
+
