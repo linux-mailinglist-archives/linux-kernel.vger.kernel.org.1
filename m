@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7D51DB418
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A1B1DB42A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgETMsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgETMsU (ORCPT
+        id S1726838AbgETMxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:53:38 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:38274 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgETMxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:48:20 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C9DC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:48:19 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id l3so1219737qvo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=je/KbnslOZKPvi+gdbk2BorRQK9HerFcoy4nD5X6lMM=;
-        b=NKiIB31rUNec8vPy5B581Ac3XHacW4bKFkiRsrE64Ih4KYBq8+vE7e6JqfUsABdEEs
-         vpEWvb2tq7FEsIQQ7SlWvqCtsFj8Y6eQz8bHkER5KF5DxHCd3cF8ddiES1gge5xyggyC
-         woCsKccdrLS1Pa2+DKIj1RFtH4b/rdouJtV4rI89ssc0/a0Pfvbnrdcbpj5X1PYFe/du
-         NlfzXFkUIsb/bxVA1uLZfeUJib3SXDMEgFDgU+pr04YShYQZ1xwhYE3oe3BxJg+ltOav
-         rSDV7Wnut8vVcWwyY3O2fDe6KMHW5muXkuRMe6RltEdiK3sknldDfVTCcTf5EcwVoyMv
-         c5aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=je/KbnslOZKPvi+gdbk2BorRQK9HerFcoy4nD5X6lMM=;
-        b=PbhXe1JdAElWCO7OBz9Vy7H1H3gJ2novntRnCj7q+EjW5PvijanOVi9ddX5X3DKTUi
-         f6vWrdJWPY3FqiYEeBCYoYFNnQ/uCap7EWTkYIgENcery6X4FiBT1IYergNHZ1eO6vWx
-         wpPkhOOz/GHPXv5l02H1Ooi/ms4oW1M9vCTdgr6vkX97brqAKxrJ98rgBCxvpLe9scuT
-         /MkD3gSjR8MC1fi/xmIouKIJaDi4u0EtTN7sk0J2AFlzGjIzk/zZISwg904O8zuZ3jgb
-         E/uiJKeVRag10tFZIaPkpSwsHwRxpwePY72b7kHECNSMsOEkwdbUiCrxvtXrupJ9khaH
-         bnxQ==
-X-Gm-Message-State: AOAM531heG5bSiLK0+YzJqatBnDYulIJuc5TminVhmquRCE/4g+F6bXh
-        zZ5+0k2pJg942deTnfjyNMkc5A==
-X-Google-Smtp-Source: ABdhPJxB9IgoFEYhXyhWQbtJRUK6zs/WfyptsnOZKIDXlwXkNioof1JO/WpAsbbm3+41MY2mjsIJLg==
-X-Received: by 2002:a05:6214:42f:: with SMTP id a15mr4609714qvy.212.1589978898653;
-        Wed, 20 May 2020 05:48:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j83sm1912436qke.7.2020.05.20.05.48.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 May 2020 05:48:18 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jbO8v-00063L-Du; Wed, 20 May 2020 09:48:17 -0300
-Date:   Wed, 20 May 2020 09:48:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michel Lespinasse <walken@google.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Liam Howlett <Liam.Howlett@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        David Rientjes <rientjes@google.com>,
-        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: Re: [PATCH v5.5 10/10] mmap locking API: rename mmap_sem to mmap_lock
-Message-ID: <20200520124817.GG31189@ziepe.ca>
-References: <CANN689EnGsJXA8n6JvTryQfkCtARPvtZbkH+9Dd2a4X+fvqU9g@mail.gmail.com>
- <20200423015917.GA13910@bombadil.infradead.org>
- <20200424012612.GA158937@google.com>
- <20200424013958.GC158937@google.com>
- <f20ab834-cddb-eaa7-c03e-18f0c4897a33@linux.ibm.com>
- <20200519131009.GD189720@google.com>
- <7c540ac9-ba44-7187-5dc2-60b4c761e91c@linux.ibm.com>
- <20200519153251.GY16070@bombadil.infradead.org>
- <10d48b77-5c6e-2e10-84e6-16cdd76a45f1@nvidia.com>
- <CANN689EubtJL2mbcz5Au05nW87gVuY-19r7nZd9x0y320PUb0g@mail.gmail.com>
+        Wed, 20 May 2020 08:53:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0ybvT9DzlJF6vlSWGDITQ4VMJnl0WE8ge4NCMcPhnmk=; b=wl7ptPBvkgr3B5w12TuSs6M8JC
+        ado3HNexn7dI2Bk2SoAubviXOTtmRikBMAzx1by+tBCZ1pb37k/CIis3yYGq8wRyA/OCMSA6SyFmU
+        KV/aFy2o+YlbZsEwTrgK7KOtYOfK1azF8DYHYRBo7vmzy2EeoRDI9CKGCdmXBXSEe4KM8Yfwgp2Yz
+        k+MAqXK4H7rz+dkmsebbT0DyVuoJCe5m+Gug22Fw/GlkLHBZQxoQnufIIaWpURVEW4jEG1x8y8Fch
+        MsAV/5BVa7EDmUKTZmzjwrmI+0vvEAXHZC3m4NRLzuHC9DZAZlFyW4N+Qf7BGTm8pgsVoMtrRU267
+        cAyl9N4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbOBW-0000Nk-UL; Wed, 20 May 2020 12:50:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE7E530015A;
+        Wed, 20 May 2020 14:50:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 93F8529DB4FE3; Wed, 20 May 2020 14:50:56 +0200 (CEST)
+Date:   Wed, 20 May 2020 14:50:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: Endless soft-lockups for compiling workload since next-20200519
+Message-ID: <20200520125056.GC325280@hirez.programming.kicks-ass.net>
+References: <CAG=TAF6jUsQrW-fjbS3vpjkMfn8=MUDsuQxjk3NMfvQa250RHA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANN689EubtJL2mbcz5Au05nW87gVuY-19r7nZd9x0y320PUb0g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAG=TAF6jUsQrW-fjbS3vpjkMfn8=MUDsuQxjk3NMfvQa250RHA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 07:39:30PM -0700, Michel Lespinasse wrote:
-> > > I think this assertion should be deleted from this driver.  It's there
-> > > in case get_user_pages_fast() takes the mmap sem.  It would make sense to
-> > > have this assertion in get_user_pages_fast() in case we take the fast path
-> > > which doesn't acquire the mmap_sem.  Something like this:
-> 
-> I like this idea a lot - having might_lock assertions in
-> get_user_pages_fast makes a log more sense than doing the same at the
-> call sites.
+On Tue, May 19, 2020 at 11:58:17PM -0400, Qian Cai wrote:
+> Just a head up. Repeatedly compiling kernels for a while would trigger
+> endless soft-lockups since next-20200519 on both x86_64 and powerpc.
+> .config are in,
 
-+1 I've wanted to see more complete lockdep annotations in gup.c for a
-while now.. There has been a number of bugs this would have caught
+Could be 90b5363acd47 ("sched: Clean up scheduler_ipi()"), although I've
+not seen anything like that myself. Let me go have a look.
 
-Jason
+
+In as far as the logs are readable (they're a wrapped mess, please don't
+do that!), they contain very little useful, as is typical with IPIs :/
+
+> [ 1167.993773][    C1] WARNING: CPU: 1 PID: 0 at kernel/smp.c:127
+> flush_smp_call_function_queue+0x1fa/0x2e0
+> [ 1168.003333][    C1] Modules linked in: nls_iso8859_1 nls_cp437 vfat
+> fat kvm_amd ses kvm enclosure dax_pmem irqbypass dax_pmem_core efivars
+> acpi_cpufreq efivarfs ip_tables x_tables xfs sd_mod smartpqi
+> scsi_transport_sas tg3 mlx5_core libphy firmware_class dm_mirror
+> dm_region_hash dm_log dm_mod
+> [ 1168.029492][    C1] CPU: 1 PID: 0 Comm: swapper/1 Not tainted
+> 5.7.0-rc6-next-20200519 #1
+> [ 1168.037665][    C1] Hardware name: HPE ProLiant DL385
+> Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
+> [ 1168.046978][    C1] RIP: 0010:flush_smp_call_function_queue+0x1fa/0x2e0
+> [ 1168.053658][    C1] Code: 01 0f 87 c9 12 00 00 83 e3 01 0f 85 cc fe
+> ff ff 48 c7 c7 c0 55 a9 8f c6 05 f6 86 cd 01 01 e8 de 09 ea ff 0f 0b
+> e9 b2 fe ff ff <0f> 0b e9 52 ff ff ff 0f 0b e9 f2 fe ff ff 65 44 8b 25
+> 10 52 3f 71
+> [ 1168.073262][    C1] RSP: 0018:ffffc90000178918 EFLAGS: 00010046
+> [ 1168.079253][    C1] RAX: 0000000000000000 RBX: ffff8888430c58f8
+> RCX: ffffffff8ec26083
+> [ 1168.087156][    C1] RDX: 0000000000000003 RSI: dffffc0000000000
+> RDI: ffff8888430c58f8
+> [ 1168.095054][    C1] RBP: ffffc900001789a8 R08: ffffed1108618cec
+> R09: ffffed1108618cec
+> [ 1168.102964][    C1] R10: ffff8888430c675b R11: 0000000000000000
+> R12: ffff8888430c58e0
+> [ 1168.110866][    C1] R13: ffffffff8eb30c40 R14: ffff8888430c5880
+> R15: ffff8888430c58e0
+> [ 1168.118767][    C1] FS:  0000000000000000(0000)
+> GS:ffff888843080000(0000) knlGS:0000000000000000
+> [ 1168.127628][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1168.134129][    C1] CR2: 000055b169604560 CR3: 0000000d08a14000
+> CR4: 00000000003406e0
+> [ 1168.142026][    C1] Call Trace:
+> [ 1168.145206][    C1]  <IRQ>
+> [ 1168.147957][    C1]  ? smp_call_on_cpu_callback+0xd0/0xd0
+> [ 1168.153421][    C1]  ? rcu_read_lock_sched_held+0xac/0xe0
+> [ 1168.158880][    C1]  ? rcu_read_lock_bh_held+0xc0/0xc0
+> [ 1168.164076][    C1]  generic_smp_call_function_single_interrupt+0x13/0x2b
+> [ 1168.170938][    C1]  smp_call_function_single_interrupt+0x157/0x4e0
+> [ 1168.177278][    C1]  ? smp_call_function_interrupt+0x4e0/0x4e0
+> [ 1168.183172][    C1]  ? interrupt_entry+0xe4/0xf0
+> [ 1168.187846][    C1]  ? trace_hardirqs_off_caller+0x8d/0x1f0
+> [ 1168.193478][    C1]  ? trace_hardirqs_on_caller+0x1f0/0x1f0
+> [ 1168.199116][    C1]  ? _nohz_idle_balance+0x221/0x360
+> [ 1168.204228][    C1]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+> [ 1168.209690][    C1]  call_function_single_interrupt+0xf/0x20
