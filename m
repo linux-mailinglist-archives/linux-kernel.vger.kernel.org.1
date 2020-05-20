@@ -2,189 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E181DBAED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3DB1DBAF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgETRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:15:53 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51247 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726436AbgETRPw (ORCPT
+        id S1727011AbgETRQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:16:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46200 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726747AbgETRQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:15:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589994950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OEyJRilrGxuJXOTcMvcWPZ35/1jpr23zXv+p55lybnA=;
-        b=bVhXeNQVCuB/ZgIdy93a3ruopbXi6hh8wLoYZ86VFQ/87mGpj7ydcUa6JkwDiGMS0BbZYZ
-        L+WynT27/CIpoR7/RQoBuJ8r6Dpa8lNxszJWm9caED3CYmUCB5XG5Q2ku47Vn2UzEM8BRx
-        n3qZc72U/f0tYWkHZOyiGg9IWRdETOk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-W0dC6gyLN9298Tzg7y61cQ-1; Wed, 20 May 2020 13:15:49 -0400
-X-MC-Unique: W0dC6gyLN9298Tzg7y61cQ-1
-Received: by mail-ed1-f71.google.com with SMTP id a18so1540847eds.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:15:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=OEyJRilrGxuJXOTcMvcWPZ35/1jpr23zXv+p55lybnA=;
-        b=K3O6mzmWSeEFM1WaXVpyWFOmgAZ+hX+347LG3peC7sy6DzbGIF+x+Fisy5an04Z42o
-         owgfblP554yguLsEKpuB9mp/H7BW3hcgeJjuuRgFMZY8VjyOKdWBiQqst6Ss4FPu+rRk
-         9oNT1FXakAaLB/uZiygs5voAQ7UWhj9yd8NmMK69Bj4Efj+/tXHPp3NfAdXC5Md1zvG4
-         4DQMEgrOFsSz63fmtzI31eyEXpfYbo4EHpxMmQFMMAjS42p/7VoYd8z6N8a7N/9SoA2m
-         4x9YSfQOkIOGHOPTJw4pNkRLabA+tNs4x46xRrPxj8e34f20z0KawSpznhhMEK+wKZ8i
-         hTPg==
-X-Gm-Message-State: AOAM532uPpID2oJ8fYXiGDktQN4q8nsVUKgKoCz582JBzFpOJSKAy4gT
-        6caKeSxeA6MTdo9r/ewP3n5klHYyGMxlIOWqKdTpV+hL59A+Xg7AS1BxHVku0BXgslcZ6zKuYOx
-        db6cn0uxnjIbyJMk8xuTZumpV
-X-Received: by 2002:a17:906:f75b:: with SMTP id jp27mr76831ejb.141.1589994947880;
-        Wed, 20 May 2020 10:15:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpCdLX5itcas/cFUfuj2oJYMf6yRY6aXmA8ntcidBs0QcXg28m/fOk+cVMMuG/y4tfPHRcaw==
-X-Received: by 2002:a17:906:f75b:: with SMTP id jp27mr76814ejb.141.1589994947639;
-        Wed, 20 May 2020 10:15:47 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c7sm2308838edj.54.2020.05.20.10.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 10:15:46 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL unconditionally
-In-Reply-To: <0c1a0c81bbdcfaf4ae9af545f4a38439b1a56d11.camel@redhat.com>
-References: <20200520160740.6144-1-mlevitsk@redhat.com> <20200520160740.6144-3-mlevitsk@redhat.com> <874ksatvkr.fsf@vitty.brq.redhat.com> <0c1a0c81bbdcfaf4ae9af545f4a38439b1a56d11.camel@redhat.com>
-Date:   Wed, 20 May 2020 19:15:45 +0200
-Message-ID: <87sgfusf26.fsf@vitty.brq.redhat.com>
+        Wed, 20 May 2020 13:16:42 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04KH29vE131676;
+        Wed, 20 May 2020 13:16:06 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 314ua4jpse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 13:16:06 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04KHFsAw028148;
+        Wed, 20 May 2020 17:16:04 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 313xdhsn3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 17:16:04 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04KHG2QW3539244
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 17:16:02 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 370145204F;
+        Wed, 20 May 2020 17:16:02 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.85.95.247])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id DCDF95204E;
+        Wed, 20 May 2020 17:15:59 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Wed, 20 May 2020 22:45:59 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RESEND PATCH v7 3/5] powerpc/papr_scm: Fetch nvdimm health information from PHYP
+In-Reply-To: <20200520145430.GB3660833@iweiny-DESK2.sc.intel.com>
+References: <20200519190058.257981-1-vaibhav@linux.ibm.com> <20200519190058.257981-4-vaibhav@linux.ibm.com> <20200520145430.GB3660833@iweiny-DESK2.sc.intel.com>
+Date:   Wed, 20 May 2020 22:45:58 +0530
+Message-ID: <87tv0awmr5.fsf@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-20_12:2020-05-20,2020-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ cotscore=-2147483648 suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005200135
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-> On Wed, 2020-05-20 at 18:33 +0200, Vitaly Kuznetsov wrote:
->> Maxim Levitsky <mlevitsk@redhat.com> writes:
+Thanks for reviewing this this patch Ira. My responses below:
+
+Ira Weiny <ira.weiny@intel.com> writes:
+
+> On Wed, May 20, 2020 at 12:30:56AM +0530, Vaibhav Jain wrote:
+>> Implement support for fetching nvdimm health information via
+>> H_SCM_HEALTH hcall as documented in Ref[1]. The hcall returns a pair
+>> of 64-bit big-endian integers, bitwise-and of which is then stored in
+>> 'struct papr_scm_priv' and subsequently partially exposed to
+>> user-space via newly introduced dimm specific attribute
+>> 'papr/flags'. Since the hcall is costly, the health information is
+>> cached and only re-queried, 60s after the previous successful hcall.
 >> 
->> > This msr is only available when the host supports WAITPKG feature.
->> > 
->> > This breaks a nested guest, if the L1 hypervisor is set to ignore
->> > unknown msrs, because the only other safety check that the
->> > kernel does is that it attempts to read the msr and
->> > rejects it if it gets an exception.
->> > 
->> > Fixes: 6e3ba4abce KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL
->> > 
->> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->> > ---
->> >  arch/x86/kvm/x86.c | 4 ++++
->> >  1 file changed, 4 insertions(+)
->> > 
->> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> > index fe3a24fd6b263..9c507b32b1b77 100644
->> > --- a/arch/x86/kvm/x86.c
->> > +++ b/arch/x86/kvm/x86.c
->> > @@ -5314,6 +5314,10 @@ static void kvm_init_msr_list(void)
->> >  			if (msrs_to_save_all[i] - MSR_ARCH_PERFMON_EVENTSEL0 >=
->> >  			    min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
->> >  				continue;
->> > +			break;
->> > +		case MSR_IA32_UMWAIT_CONTROL:
->> > +			if (!kvm_cpu_cap_has(X86_FEATURE_WAITPKG))
->> > +				continue;
+>> The patch also adds a  documentation text describing flags reported by
+>> the the new sysfs attribute 'papr/flags' is also introduced at
+>> Documentation/ABI/testing/sysfs-bus-papr-scm.
 >> 
->> I'm probably missing something but (if I understand correctly) the only
->> effect of dropping MSR_IA32_UMWAIT_CONTROL from msrs_to_save would be
->> that KVM userspace won't see it in e.g. KVM_GET_MSR_INDEX_LIST. But why
->> is this causing an issue? I see both vmx_get_msr()/vmx_set_msr() have
->> 'host_initiated' check:
+>> [1] commit 58b278f568f0 ("powerpc: Provide initial documentation for
+>> PAPR hcalls")
 >> 
->>        case MSR_IA32_UMWAIT_CONTROL:
->>                 if (!msr_info->host_initiated && !vmx_has_waitpkg(vmx))
->>                         return 1;
->
-> Here it fails like that:
->
-> 1. KVM_GET_MSR_INDEX_LIST returns this msrs, and qemu notes that
->    it is supported in 'has_msr_umwait' global var
->
-> 2. Qemu does kvm_arch_get/put_registers->kvm_get/put_msrs->ioctl(KVM_GET_MSRS)
->    and while doing this it adds MSR_IA32_UMWAIT_CONTROL to that msr list.
->    That reaches 'svm_get_msr', and this one knows nothing about MSR_IA32_UMWAIT_CONTROL.
->
-> So the difference here is that vmx_get_msr not called at all.
-> I can add this msr to svm_get_msr instead but that feels wrong since this feature
-> is not yet supported on AMD.
-> When AMD adds support for this feature, then the VMX specific code can be moved to
-> kvm_get_msr_common I guess.
->
->
-
-Oh, SVM, I missed that completely) 
-
->
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+>> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> ---
+>> Changelog:
 >> 
->> so KVM userspace should be able to read/write this MSR even when there's
->> no hardware support for it. Or who's trying to read/write it?
+>> Resend:
+>> * None
 >> 
->> Also, kvm_cpu_cap_has() check is not equal to vmx_has_waitpkg() which
->> checks secondary execution controls.
+>> v6..v7 :
+>> * Used the exported buf_seq_printf() function to generate content for
+>>   'papr/flags'
+>> * Moved the PAPR_SCM_DIMM_* bit-flags macro definitions to papr_scm.c
+>>   and removed the papr_scm.h file [Mpe]
+>> * Some minor consistency issued in sysfs-bus-papr-scm
+>>   documentation. [Mpe]
+>> * s/dimm_mutex/health_mutex/g [Mpe]
+>> * Split drc_pmem_query_health() into two function one of which takes
+>>   care of caching and locking. [Mpe]
+>> * Fixed a local copy creation of dimm health information using
+>>   READ_ONCE(). [Mpe]
+>> 
+>> v5..v6 :
+>> * Change the flags sysfs attribute from 'papr_flags' to 'papr/flags'
+>>   [Dan Williams]
+>> * Include documentation for 'papr/flags' attr [Dan Williams]
+>> * Change flag 'save_fail' to 'flush_fail' [Dan Williams]
+>> * Caching of health bitmap to reduce expensive hcalls [Dan Williams]
+>> * Removed usage of PPC_BIT from 'papr-scm.h' header [Mpe]
+>> * Replaced two __be64 integers from papr_scm_priv to a single u64
+>>   integer [Mpe]
+>> * Updated patch description to reflect the changes made in this
+>>   version.
+>> * Removed avoidable usage of 'papr_scm_priv.dimm_mutex' from
+>>   flags_show() [Dan Williams]
+>> 
+>> v4..v5 :
+>> * None
+>> 
+>> v3..v4 :
+>> * None
+>> 
+>> v2..v3 :
+>> * Removed PAPR_SCM_DIMM_HEALTH_NON_CRITICAL as a condition for
+>>        	 NVDIMM unarmed [Aneesh]
+>> 
+>> v1..v2 :
+>> * New patch in the series.
+>> ---
+>>  Documentation/ABI/testing/sysfs-bus-papr-scm |  27 +++
+>>  arch/powerpc/platforms/pseries/papr_scm.c    | 169 ++++++++++++++++++-
+>>  2 files changed, 194 insertions(+), 2 deletions(-)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-bus-papr-scm
+>> 
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-papr-scm b/Documentation/ABI/testing/sysfs-bus-papr-scm
+>> new file mode 100644
+>> index 000000000000..6143d06072f1
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-bus-papr-scm
+>> @@ -0,0 +1,27 @@
+>> +What:		/sys/bus/nd/devices/nmemX/papr/flags
+>> +Date:		Apr, 2020
+>> +KernelVersion:	v5.8
+>> +Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
+>> +Description:
+>> +		(RO) Report flags indicating various states of a
+>> +		papr-scm NVDIMM device. Each flag maps to a one or
+>> +		more bits set in the dimm-health-bitmap retrieved in
+>> +		response to H_SCM_HEALTH hcall. The details of the bit
+>> +		flags returned in response to this hcall is available
+>> +		at 'Documentation/powerpc/papr_hcalls.rst' . Below are
+>> +		the flags reported in this sysfs file:
+>> +
+>> +		* "not_armed"	: Indicates that NVDIMM contents will not
+>> +				  survive a power cycle.
+>> +		* "flush_fail"	: Indicates that NVDIMM contents
+>> +				  couldn't be flushed during last
+>> +				  shut-down event.
+>> +		* "restore_fail": Indicates that NVDIMM contents
+>> +				  couldn't be restored during NVDIMM
+>> +				  initialization.
+>> +		* "encrypted"	: NVDIMM contents are encrypted.
+>> +		* "smart_notify": There is health event for the NVDIMM.
+>> +		* "scrubbed"	: Indicating that contents of the
+>> +				  NVDIMM have been scrubbed.
+>> +		* "locked"	: Indicating that NVDIMM contents cant
+>> +				  be modified until next power cycle.
+>> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+>> index f35592423380..142636e1a59f 100644
+>> --- a/arch/powerpc/platforms/pseries/papr_scm.c
+>> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+>> @@ -12,6 +12,7 @@
+>>  #include <linux/libnvdimm.h>
+>>  #include <linux/platform_device.h>
+>>  #include <linux/delay.h>
+>> +#include <linux/seq_buf.h>
+>>  
+>>  #include <asm/plpar_wrappers.h>
+>>  
+>> @@ -22,6 +23,44 @@
+>>  	 (1ul << ND_CMD_GET_CONFIG_DATA) | \
+>>  	 (1ul << ND_CMD_SET_CONFIG_DATA))
+>>  
+>> +/* DIMM health bitmap bitmap indicators */
+>> +/* SCM device is unable to persist memory contents */
+>> +#define PAPR_SCM_DIMM_UNARMED                   (1ULL << (63 - 0))
+>> +/* SCM device failed to persist memory contents */
+>> +#define PAPR_SCM_DIMM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
+>> +/* SCM device contents are persisted from previous IPL */
+>> +#define PAPR_SCM_DIMM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
+>> +/* SCM device contents are not persisted from previous IPL */
+>> +#define PAPR_SCM_DIMM_EMPTY                     (1ULL << (63 - 3))
+>> +/* SCM device memory life remaining is critically low */
+>> +#define PAPR_SCM_DIMM_HEALTH_CRITICAL           (1ULL << (63 - 4))
+>> +/* SCM device will be garded off next IPL due to failure */
+>> +#define PAPR_SCM_DIMM_HEALTH_FATAL              (1ULL << (63 - 5))
+>> +/* SCM contents cannot persist due to current platform health status */
+>> +#define PAPR_SCM_DIMM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
+>> +/* SCM device is unable to persist memory contents in certain conditions */
+>> +#define PAPR_SCM_DIMM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
+>> +/* SCM device is encrypted */
+>> +#define PAPR_SCM_DIMM_ENCRYPTED                 (1ULL << (63 - 8))
+>> +/* SCM device has been scrubbed and locked */
+>> +#define PAPR_SCM_DIMM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
+>> +
+>> +/* Bits status indicators for health bitmap indicating unarmed dimm */
+>> +#define PAPR_SCM_DIMM_UNARMED_MASK (PAPR_SCM_DIMM_UNARMED |		\
+>> +				    PAPR_SCM_DIMM_HEALTH_UNHEALTHY)
+>> +
+>> +/* Bits status indicators for health bitmap indicating unflushed dimm */
+>> +#define PAPR_SCM_DIMM_BAD_SHUTDOWN_MASK (PAPR_SCM_DIMM_SHUTDOWN_DIRTY)
+>> +
+>> +/* Bits status indicators for health bitmap indicating unrestored dimm */
+>> +#define PAPR_SCM_DIMM_BAD_RESTORE_MASK  (PAPR_SCM_DIMM_EMPTY)
+>> +
+>> +/* Bit status indicators for smart event notification */
+>> +#define PAPR_SCM_DIMM_SMART_EVENT_MASK (PAPR_SCM_DIMM_HEALTH_CRITICAL | \
+>> +					PAPR_SCM_DIMM_HEALTH_FATAL |	\
+>> +					PAPR_SCM_DIMM_HEALTH_UNHEALTHY)
+>> +
+>> +/* private struct associated with each region */
+>>  struct papr_scm_priv {
+>>  	struct platform_device *pdev;
+>>  	struct device_node *dn;
+>> @@ -39,6 +78,15 @@ struct papr_scm_priv {
+>>  	struct resource res;
+>>  	struct nd_region *region;
+>>  	struct nd_interleave_set nd_set;
+>> +
+>> +	/* Protect dimm health data from concurrent read/writes */
+>> +	struct mutex health_mutex;
+>> +
+>> +	/* Last time the health information of the dimm was updated */
+>> +	unsigned long lasthealth_jiffies;
+>> +
+>> +	/* Health information for the dimm */
+>> +	u64 health_bitmap;
 >
-> I was afraid that something like that will happen, but in this particular
-> case we can only check CPUID support and if supported, the then it means
-> we are dealing with intel system and thus vmx_get_msr will be called and
-> ignore that msr.
+> I wonder if this should be typed big endian as you mention that it is in the
+> commit message?
+This was discussed in an earlier review of the patch series at
+https://lore.kernel.org/linux-nvdimm/878sjetcis.fsf@mpe.ellerman.id.au
+
+Even though health bitmap is returned in big endian format (For ex
+value 0xC00000000000000 indicates bits 0,1 set), its value is never
+used. Instead only test for specific bits being set in the register is
+done.
+
+Hence using native cpu type instead of __be64 to store this value.
+
 >
-> Calling vmx_has_waitpkg from the common code doesn't seem right, and besides,
-> it checks the secondary controls which are set by the host and can change,
-> at least in theory during runtime (I don't know if KVM does this).
+>>  };
+>>  
+>>  static int drc_pmem_bind(struct papr_scm_priv *p)
+>> @@ -144,6 +192,62 @@ static int drc_pmem_query_n_bind(struct papr_scm_priv *p)
+>>  	return drc_pmem_bind(p);
+>>  }
+>>  
+>> +/*
+>> + * Issue hcall to retrieve dimm health info and populate papr_scm_priv with the
+>> + * health information.
+>> + */
+>> +static int __drc_pmem_query_health(struct papr_scm_priv *p)
+>> +{
+>> +	unsigned long ret[PLPAR_HCALL_BUFSIZE];
 >
-> Note that if I now understand correctly, the 'host_initiated' means
-> that MSR read/write is done by the host itself and not on behalf of the guest.
+> Is this exclusive to 64bit?  Why not u64?
+Yes this is specific to 64 bit as the array holds 64 bit register values
+returned from PHYP. Can u64 but here that will be a departure from existing
+practice within arch/powerpc code to use an unsigned long array to fetch
+returned values for PHYP.
 
-Yes, it does that. 
+>
+>> +	s64 rc;
+>
+> plpar_hcall() returns long and this function returns int and rc is declared
+> s64?
+>
+> Why not have them all be long to follow plpar_hcall?
+Yes 'long' type is better suited for variable 'rc' and I will get it fixed.
 
-We have kvm_x86_ops.has_emulated_msr() mechanism, can we use it here?
-E.g. completely untested
+But the value of variable 'rc' is never directly returned from this
+function, we always return kernel error codes instead. Hence the
+return type of this function is consistent.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 38f6aeefeb55..c19a9542e6c3 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3471,6 +3471,8 @@ static bool svm_has_emulated_msr(int index)
-        case MSR_IA32_MCG_EXT_CTL:
-        case MSR_IA32_VMX_BASIC ... MSR_IA32_VMX_VMFUNC:
-                return false;
-+       case MSR_IA32_UMWAIT_CONTROL:
-+               return false;
-        default:
-                break;
-        }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d786c7d27ce5..f45153ef3b81 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1183,7 +1183,6 @@ static const u32 msrs_to_save_all[] = {
-        MSR_IA32_RTIT_ADDR1_A, MSR_IA32_RTIT_ADDR1_B,
-        MSR_IA32_RTIT_ADDR2_A, MSR_IA32_RTIT_ADDR2_B,
-        MSR_IA32_RTIT_ADDR3_A, MSR_IA32_RTIT_ADDR3_B,
--       MSR_IA32_UMWAIT_CONTROL,
- 
-        MSR_ARCH_PERFMON_FIXED_CTR0, MSR_ARCH_PERFMON_FIXED_CTR1,
-        MSR_ARCH_PERFMON_FIXED_CTR0 + 2, MSR_ARCH_PERFMON_FIXED_CTR0 + 3,
-@@ -1266,6 +1265,7 @@ static const u32 emulated_msrs_all[] = {
-        MSR_IA32_VMX_PROCBASED_CTLS2,
-        MSR_IA32_VMX_EPT_VPID_CAP,
-        MSR_IA32_VMX_VMFUNC,
-+       MSR_IA32_UMWAIT_CONTROL,
- 
-        MSR_K7_HWCR,
-        MSR_KVM_POLL_CONTROL,
+>
+>> +
+>> +	/* issue the hcall */
+>> +	rc = plpar_hcall(H_SCM_HEALTH, ret, p->drc_index);
+>> +	if (rc != H_SUCCESS) {
+>> +		dev_err(&p->pdev->dev,
+>> +			 "Failed to query health information, Err:%lld\n", rc);
+>> +		rc = -ENXIO;
+>> +		goto out;
+>> +	}
+>> +
+>> +	p->lasthealth_jiffies = jiffies;
+>> +	p->health_bitmap = ret[0] & ret[1];
+>> +
+>> +	dev_dbg(&p->pdev->dev,
+>> +		"Queried dimm health info. Bitmap:0x%016lx Mask:0x%016lx\n",
+>> +		ret[0], ret[1]);
+>> +out:
+>> +	return rc;
+>> +}
+>> +
+>> +/* Min interval in seconds for assuming stable dimm health */
+>> +#define MIN_HEALTH_QUERY_INTERVAL 60
+>> +
+>> +/* Query cached health info and if needed call drc_pmem_query_health */
+>> +static int drc_pmem_query_health(struct papr_scm_priv *p)
+>> +{
+>> +	unsigned long cache_timeout;
+>> +	s64 rc;
+>> +
+>> +	/* Protect concurrent modifications to papr_scm_priv */
+>> +	rc = mutex_lock_interruptible(&p->health_mutex);
+>> +	if (rc)
+>> +		return rc;
+>> +
+>> +	/* Jiffies offset for which the health data is assumed to be same */
+>> +	cache_timeout = p->lasthealth_jiffies +
+>> +		msecs_to_jiffies(MIN_HEALTH_QUERY_INTERVAL * 1000);
+>> +
+>> +	/* Fetch new health info is its older than MIN_HEALTH_QUERY_INTERVAL */
+>> +	if (time_after(jiffies, cache_timeout))
+>> +		rc = __drc_pmem_query_health(p);
+>
+> And back to s64 after returning int?
+Agree, will change 's64 rc' to 'int rc'.
+
+>
+>> +	else
+>> +		/* Assume cached health data is valid */
+>> +		rc = 0;
+>> +
+>> +	mutex_unlock(&p->health_mutex);
+>> +	return rc;
+>> +}
+>>  
+>>  static int papr_scm_meta_get(struct papr_scm_priv *p,
+>>  			     struct nd_cmd_get_config_data_hdr *hdr)
+>> @@ -286,6 +390,64 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
+>>  	return 0;
+>>  }
+>>  
+>> +static ssize_t flags_show(struct device *dev,
+>> +				struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct nvdimm *dimm = to_nvdimm(dev);
+>> +	struct papr_scm_priv *p = nvdimm_provider_data(dimm);
+>> +	struct seq_buf s;
+>> +	u64 health;
+>> +	int rc;
+>> +
+>> +	rc = drc_pmem_query_health(p);
+>
+> and back to int...
+>
+drc_pmem_query_health() returns an 'int' so the type of variable 'rc'
+looks correct to me.
+
+> Just make them long all through...
+I think the return type for above all functions is 'int' with
+an issue in drc_pmem_query_health() that you pointed out.
+
+With that fixed the usage of 'int' return type for functions will become
+consistent.
+
+>
+> Ira
+>
+>> +	if (rc)
+>> +		return rc;
+>> +
+>> +	/* Copy health_bitmap locally, check masks & update out buffer */
+>> +	health = READ_ONCE(p->health_bitmap);
+>> +
+>> +	seq_buf_init(&s, buf, PAGE_SIZE);
+>> +	if (health & PAPR_SCM_DIMM_UNARMED_MASK)
+>> +		seq_buf_printf(&s, "not_armed ");
+>> +
+>> +	if (health & PAPR_SCM_DIMM_BAD_SHUTDOWN_MASK)
+>> +		seq_buf_printf(&s, "flush_fail ");
+>> +
+>> +	if (health & PAPR_SCM_DIMM_BAD_RESTORE_MASK)
+>> +		seq_buf_printf(&s, "restore_fail ");
+>> +
+>> +	if (health & PAPR_SCM_DIMM_ENCRYPTED)
+>> +		seq_buf_printf(&s, "encrypted ");
+>> +
+>> +	if (health & PAPR_SCM_DIMM_SMART_EVENT_MASK)
+>> +		seq_buf_printf(&s, "smart_notify ");
+>> +
+>> +	if (health & PAPR_SCM_DIMM_SCRUBBED_AND_LOCKED)
+>> +		seq_buf_printf(&s, "scrubbed locked ");
+>> +
+>> +	if (seq_buf_used(&s))
+>> +		seq_buf_printf(&s, "\n");
+>> +
+>> +	return seq_buf_used(&s);
+>> +}
+>> +DEVICE_ATTR_RO(flags);
+>> +
+>> +/* papr_scm specific dimm attributes */
+>> +static struct attribute *papr_scm_nd_attributes[] = {
+>> +	&dev_attr_flags.attr,
+>> +	NULL,
+>> +};
+>> +
+>> +static struct attribute_group papr_scm_nd_attribute_group = {
+>> +	.name = "papr",
+>> +	.attrs = papr_scm_nd_attributes,
+>> +};
+>> +
+>> +static const struct attribute_group *papr_scm_dimm_attr_groups[] = {
+>> +	&papr_scm_nd_attribute_group,
+>> +	NULL,
+>> +};
+>> +
+>>  static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
+>>  {
+>>  	struct device *dev = &p->pdev->dev;
+>> @@ -312,8 +474,8 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
+>>  	dimm_flags = 0;
+>>  	set_bit(NDD_LABELING, &dimm_flags);
+>>  
+>> -	p->nvdimm = nvdimm_create(p->bus, p, NULL, dimm_flags,
+>> -				  PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
+>> +	p->nvdimm = nvdimm_create(p->bus, p, papr_scm_dimm_attr_groups,
+>> +				  dimm_flags, PAPR_SCM_DIMM_CMD_MASK, 0, NULL);
+>>  	if (!p->nvdimm) {
+>>  		dev_err(dev, "Error creating DIMM object for %pOF\n", p->dn);
+>>  		goto err;
+>> @@ -399,6 +561,9 @@ static int papr_scm_probe(struct platform_device *pdev)
+>>  	if (!p)
+>>  		return -ENOMEM;
+>>  
+>> +	/* Initialize the dimm mutex */
+>> +	mutex_init(&p->health_mutex);
+>> +
+>>  	/* optional DT properties */
+>>  	of_property_read_u32(dn, "ibm,metadata-size", &metadata_size);
+>>  
+>> -- 
+>> 2.26.2
+>> _______________________________________________
+>> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
+>> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
 
 -- 
-Vitaly
-
+Cheers
+~ Vaibhav
