@@ -2,115 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37D61DA956
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727F51DA95A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgETEit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 00:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
+        id S1726692AbgETEjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 00:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgETEis (ORCPT
+        with ESMTP id S1726556AbgETEjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 00:38:48 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CF9C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:38:44 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id j145so1847812oib.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:38:44 -0700 (PDT)
+        Wed, 20 May 2020 00:39:19 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8BCC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:39:18 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id k3so811626ual.8
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/gvGtY5nqJXPbJ1LBsOILjTaDTKNBUV9oTxyk5neDx8=;
-        b=dfrdutoU73QiEI7RWhK3Xq9DKlTgEjQ31RRM66E++uRGGez1lIqk/qtQ6nML+l2lZs
-         USS7DkFQNTMxvkSA6GtCDuIxqfw0+hctBd7BT2ZqOlAPoPaCtDBsENa2oeLGb7jq8L7x
-         7uPnwTa5kqPTFR3E0k4uizFSdSWlFZfZycmtLC0dR4psle5GcCHgAvqTUNW8kWA7qOmn
-         L/B0MY1Z3P8UtYz2P6SnWc9qNRvmDximS79CwuLQGp51YGcQIjbjUwRdw5zifkUd7iPA
-         6dnNZT8JjtUBMG48gD0jlWbAA7NJXR7qigrkMF66XYS1/QSMKrLrxdKgEIzfyH7L/Z3p
-         mFyA==
+        bh=bN33/t2eLeTstLrZyjcuNRb4/1M2McULreC+aBLFsKY=;
+        b=KyvQdQznDyANTa17aPpiFcnsc1pQjQOaXWByaGMWwwPUJoy+Vg1dkYgIcK65pJoZF2
+         VNzctzXlIZuMmoaQrWgEZKPBCOGLq+uIgzNcQu/uaC5n/G5z2bd4j2Dpg8I1J7MVJHxO
+         z2tH5O19eHvt7m9LQdmxHU4qG/pA9Q5TdkIEbd4a5GLUi5YMdxG9SAVV60ltfWHtFhai
+         WrMdNPkPQ7QjZ6CCTa8YrBvcVJxXQM5uODY36M63RN+4YXHmbaFXsWZF6/tXNFSlnE04
+         J/6tM7QOy987xuyagLUrrR5fwb/ry/jPLNfzXL5dcDZNNXzpaszBWYWv8bzYy/Hrkr6H
+         5PaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/gvGtY5nqJXPbJ1LBsOILjTaDTKNBUV9oTxyk5neDx8=;
-        b=hPW6EjLj844jfewEPCuimNJ945vA/sLy1KxX7WZUtkX/TeXj8LyNyA9RC97D8/ZLr/
-         jwppZrwQ+PmlvmAhM0bK53/sTcANv2IEpSdLYbAognhjVR/pHuj2t4X/boU74Z/s50Kh
-         mzSGdFmoSvMgKQFJUkkW3Hh/42E6JDHTocKezYoDe3zsXqpM9nHOW6LGxKSNCskR04Bd
-         YxMKYa/U45D/Ezkz6rtBJUS8tvSROjoLbKk3TdyncGDefPuNrf/CiKJXD9p+y3mAhMTZ
-         x3jcD0hHV1R9A4x6CSEYxyYt/WeaKbKHAlRXahUCUz5TvTb+m3GLlgROjgehzfTtFJ+r
-         4cOw==
-X-Gm-Message-State: AOAM532uDd8OJ1Wj1LSbKC/wb2k0GVRh5MDM4NcXP6fTmlnxaL0mBZSb
-        FJ/XbWx9034dUZm7TDvLkB7NzxAXhQkHbk3pc5ZlsQ==
-X-Google-Smtp-Source: ABdhPJz9Do6JGTC2Xjtyghaq1P404WN1SjGSsMaszjfbRq1bSzqPkD5zd4sCBRDHzeDX5e2szj+lCQlb49uh9ew8Mz4=
-X-Received: by 2002:aca:f1c2:: with SMTP id p185mr1986908oih.69.1589949523526;
- Tue, 19 May 2020 21:38:43 -0700 (PDT)
+        bh=bN33/t2eLeTstLrZyjcuNRb4/1M2McULreC+aBLFsKY=;
+        b=blT5SCaflXK1XlXAHLZ9Kgm4X8Gq9xs0dg5IVBUfxTWkqchfWm8401siTePhpkL+he
+         GnQJ4Sv993vj5JfO1+tPXlPM/8f3nBDDcpfkvAC9JFVawW8ognEAg3Gz+BGMai1F5y4C
+         kXMYIcwe/LLqLvP4s6d+WmTmH5LmDPPHeweqgxgjutnkbvs7snmfxg1sSOIlwdgOWSe1
+         Le2fYtEtLJh3FdnFBOnVMcM9K2RNVhMmHvkhCljHWYDW3kdJvheZdMoDBjqCMGjc+Hcs
+         Xgqm7HuvXhukBzy4yLp7EbQ9ZN1vo15UINxeUfU4CBm7jg6DWjNSkiBoXiiqJaqZ1gvk
+         /0CQ==
+X-Gm-Message-State: AOAM533YU99Hj3qj0t+q3UoC7MKjWNp7BnUSglyDjvnFktmD7SSJSS7S
+        M2GkfhR+m1frpI78WBXfZ9bv05fPELV35+YIvoZNtzFi
+X-Google-Smtp-Source: ABdhPJy6+WnxGks0sYjseLzIGFwvoRP1i7vU1VbEroClHYYOmGdvgrA1p+RMSAPKyxJTpxhEvwDROVsDcyrC1WJjYvs=
+X-Received: by 2002:ab0:22c5:: with SMTP id z5mr2032418uam.48.1589949557845;
+ Tue, 19 May 2020 21:39:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200520043626.181820-1-saravanak@google.com>
-In-Reply-To: <20200520043626.181820-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 19 May 2020 21:38:07 -0700
-Message-ID: <CAGETcx9hYrnMF8JU+KV6jvxExq3jYgdg4Z_-TyjN4RUQnV8qvA@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Fix handling of SYNC_STATE_ONLY +
- STATELESS device links
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Android Kernel Team <kernel-team@android.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+References: <20200504181616.175477-1-srinivas.pandruvada@linux.intel.com> <20200504181616.175477-5-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20200504181616.175477-5-srinivas.pandruvada@linux.intel.com>
+From:   Amit Kucheria <amit.kucheria@verdurent.com>
+Date:   Wed, 20 May 2020 10:08:35 +0530
+Message-ID: <CAHLCerP5E9Ec10e6JfW=BS0wTsA-ETymCNbXLHvV0092KDgVpg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 4/5] thermal: Add support for setting polling interval
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+        Linux PM list <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 9:36 PM Saravana Kannan <saravanak@google.com> wrote:
+On Mon, May 4, 2020 at 11:47 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
 >
-> Commit 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link
-> implementation") didn't completely fix STATELESS + SYNC_STATE_ONLY
-> handling.
+> Add new attribute in the thermal syfs for setting temperature sampling
+> interval when CONFIG_THERMAL_USER_EVENT_INTERFACE is defined. The default
+> value is 0, which means no polling.
 >
-> What looks like an optimization in that commit is actually a bug that
-> causes an if condition to always take the else path. This prevents
-> reordering of devices in the dpm_list when a DL_FLAG_STATELESS device
-> link is create on top of an existing DL_FLAG_SYNC_STATE_ONLY device
-> link.
+> At this interval user space will get an event THERMAL_TEMP_SAMPLE with
+> temperature sample. This reuses existing polling mecahnism when polling
+> or passive delay is specified during zone registry. To avoid interference
+> with passive and polling delay, this new polling attribute can't be used
+> for those zones.
+
+Why should the kernel periodically emit events for userspace when the
+userspace is perfectly capable of deciding how frequently it wants to
+poll a file for changes?
+
 >
-> Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 > ---
-> Sigh... device links are tricky and hard! Sorry about the endless fixes :(
-> Also, how was this not caught by the compiler as a warning?
+>  drivers/thermal/thermal_core.c  |  7 +++++++
+>  drivers/thermal/thermal_sysfs.c | 36 +++++++++++++++++++++++++++++++--
+>  include/linux/thermal.h         |  1 +
+>  3 files changed, 42 insertions(+), 2 deletions(-)
 >
-> -Saravana
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 14770d882d42..17cd799b0073 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -313,6 +313,8 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
+>                 thermal_zone_device_set_polling(tz, tz->passive_delay);
+>         else if (tz->polling_delay)
+>                 thermal_zone_device_set_polling(tz, tz->polling_delay);
+> +       else if (tz->temp_polling_delay)
+> +               thermal_zone_device_set_polling(tz, tz->temp_polling_delay);
+>         else
+>                 thermal_zone_device_set_polling(tz, 0);
 >
->  drivers/base/core.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> @@ -446,6 +448,11 @@ static void update_temperature(struct thermal_zone_device *tz)
+>         tz->temperature = temp;
+>         mutex_unlock(&tz->lock);
 >
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 83a3e0b62ce3..dfd4e94ef790 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -543,12 +543,14 @@ struct device_link *device_link_add(struct device *consumer,
+> +       if (tz->temp_polling_delay) {
+> +               thermal_dev_send_event(tz->id, THERMAL_TEMP_SAMPLE, temp);
+> +               monitor_thermal_zone(tz);
+> +       }
+> +
+>         trace_thermal_temperature(tz);
+>         if (tz->last_temperature == THERMAL_TEMP_INVALID)
+>                 dev_dbg(&tz->device, "last_temperature N/A, current_temperature=%d\n",
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index aa85424c3ac4..0df7997993fe 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -248,6 +248,36 @@ create_thres_attr(temp_thres_low);
+>  create_thres_attr(temp_thres_high);
+>  create_thres_attr(temp_thres_hyst);
 >
->                 if (flags & DL_FLAG_STATELESS) {
->                         kref_get(&link->kref);
-> -                       link->flags |= DL_FLAG_STATELESS;
->                         if (link->flags & DL_FLAG_SYNC_STATE_ONLY &&
-> -                           !(link->flags & DL_FLAG_STATELESS))
-> +                           !(link->flags & DL_FLAG_STATELESS)) {
-> +                               link->flags |= DL_FLAG_STATELESS;
->                                 goto reorder;
-> -                       else
-> +                       } else {
-> +                               link->flags |= DL_FLAG_STATELESS;
->                                 goto out;
-> +                       }
->                 }
+> +static ssize_t
+> +temp_polling_delay_store(struct device *dev, struct device_attribute *attr,
+> +                  const char *buf, size_t count)
+> +{
+> +       struct thermal_zone_device *tz = to_thermal_zone(dev);
+> +       int val;
+> +
+> +       if (kstrtoint(buf, 10, &val))
+> +               return -EINVAL;
+> +
+> +       if (val && val < 1000)
+> +               return -EINVAL;
+> +
+> +       tz->temp_polling_delay = val;
+> +       thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
+> +
+> +       return count;
+> +}
+> +
+> +static ssize_t
+> +temp_polling_delay_show(struct device *dev, struct device_attribute *attr,
+> +                    char *buf)
+> +{
+> +       struct thermal_zone_device *tz = to_thermal_zone(dev);
+> +
+> +       return sprintf(buf, "%d\n", tz->temp_polling_delay);
+> +}
+> +
+> +static DEVICE_ATTR_RW(temp_polling_delay);
+> +
+>  static int create_user_events_attrs(struct thermal_zone_device *tz)
+>  {
+>         struct attribute **attrs;
+> @@ -260,8 +290,8 @@ static int create_user_events_attrs(struct thermal_zone_device *tz)
+>         if (tz->ops->get_temp_thres_high)
+>                 ++index;
 >
->                 /*
-
-Forgot to add stable@vger.kernel.org. Doing that now.
-
--Saravana
+> -       /* One additional space for NULL */
+> -       attrs = kcalloc(index + 1, sizeof(*attrs), GFP_KERNEL);
+> +       /* One additional space for NULL and temp_pollling_delay */
+> +       attrs = kcalloc(index + 2, sizeof(*attrs), GFP_KERNEL);
+>         if (!attrs)
+>                 return -ENOMEM;
+>
+> @@ -312,6 +342,8 @@ static int create_user_events_attrs(struct thermal_zone_device *tz)
+>                 attrs[index] = &tz->threshold_attrs[index].attr.attr;
+>                 ++index;
+>         }
+> +       if (!tz->polling_delay && !tz->passive_delay)
+> +               attrs[index++] = &dev_attr_temp_polling_delay.attr;
+>         attrs[index] = NULL;
+>         tz->threshold_attribute_group.attrs = attrs;
+>
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index ee9d79ace7ce..0ec4bd8c9c5c 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -216,6 +216,7 @@ struct thermal_zone_device {
+>         enum thermal_notify_event notify_event;
+>         struct attribute_group threshold_attribute_group;
+>         struct thermal_attr *threshold_attrs;
+> +       int temp_polling_delay;
+>  };
+>
+>  /**
+> --
+> 2.25.4
+>
