@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CEC1DBD77
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068DA1DBD82
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgETTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgETTAA (ORCPT
+        id S1726840AbgETTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:01:28 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:59746 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726510AbgETTB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:00:00 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E6C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id x12so3434187qts.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
-        b=xqOCj1hi7zsdkF4h7T7VpVsacljZUmQ98KBXk4BC/Dbn1LZa5faEmx2QjtoDIrVUFb
-         P6lu0RuOXjmco5U/CykEp8x4g7RdNl7UvG4m0sChWHzGk3hIX45vYFUqw7L/RamVwzoI
-         IUgUbP9dHwHRi8zBAlVHX2JlNghk6esJwZciA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
-        b=neFNAP24ryIy3PzhAIkk2ntfqyysmbbF7C9TPgjZc/2jlvyR4lHbGkvpaMjSKuNDix
-         Yh2/IuWBPmit+LzmJf0rb+og8rzeVSDecK4ORnx/YxorMjj2fw2fSVHFD/7twZUPDykq
-         Gs23AUTsRJunsxzKHZbPeu+YtNXF6dn2taAiTmEAa/6fYKVLfKwJpCCEXfTuRGl9jopF
-         iz1GFsqUua/W/1qPbclTpFqlJWY38qbk51lcLOFZynwuNwKkAZXVhI87oms3lSocAxh9
-         lN1ZhSdM2BXnzK/M+pxqRHaN7JvdBCC7txSU/QvOwT6USnHJhgzVB6WsL+T2bXNWuMOZ
-         PhEg==
-X-Gm-Message-State: AOAM5321TE3TMtDszOTRs7NRU3T2VPqWrLc6CpS/Xj5Bo16rNDGT254w
-        l7HSnLs0Cpy17fhHfwvqNC9s4Q==
-X-Google-Smtp-Source: ABdhPJxKFQ4mBEMmbP/Kvr56rfPGG/twBhTQVRIoKgmz5lGIunly4e1J2W2rXX4eFpW+AV4T6MpO7A==
-X-Received: by 2002:ac8:6a09:: with SMTP id t9mr6859997qtr.7.1590001198693;
-        Wed, 20 May 2020 11:59:58 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h12sm3428451qte.31.2020.05.20.11.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 11:59:58 -0700 (PDT)
-Date:   Wed, 20 May 2020 14:59:57 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
+        Wed, 20 May 2020 15:01:28 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 37B57100E7B40;
+        Wed, 20 May 2020 19:01:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1.013,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:105:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3743:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6691:7996:8531:10004:10400:10848:11026:11232:11657:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14777:21080:21324:21627:21939:21972:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: rest11_400c16426d18
+X-Filterd-Recvd-Size: 2981
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 20 May 2020 19:01:25 +0000 (UTC)
+Message-ID: <5725ba0a9efe2db07ff8c38ff673be172958d7ce.camel@perches.com>
+Subject: Re: [PATCH] x86/uv/time: Replace one-element array and save heap
+ space
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
- access
-Message-ID: <20200520185957.GB261674@google.com>
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
- <20200519201912.1564477-4-bigeasy@linutronix.de>
- <20200520102407.GF317569@hirez.programming.kicks-ass.net>
- <20200520120608.mwros5jurmidxxfv@linutronix.de>
- <20200520174259.GA247557@google.com>
- <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org H. Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date:   Wed, 20 May 2020 12:01:24 -0700
+In-Reply-To: <202005201017.72D1B3A@keescook>
+References: <20200518190114.GA7757@embeddedor>
+         <b03d196cdbbbc6e9e8456910c6c6673ab67f76cb.camel@perches.com>
+         <202005201017.72D1B3A@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 08:28:00PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
-> > Hi Sebastian,
-> Hi Joel,
-> 
-> > For pointer stability, can we just use get_local_ptr() and put_local_ptr()
-> > instead of adding an extra lock? This keeps the pointer stable while keeping
-> > the section preemptible on -rt. And we already have a lock in rcu_data, I
-> > prefer not to add another lock if possible.
-> 
-> What is this get_local_ptr() doing? I can't find it anywhere…
-
-I replied about it in the other thread.
-
- 
-> > > I remember Paul looked at that patch a few years ago and he said that
-> > > that disabling interrupts here is important and matches the other part
-> > > instance where the interrupts are disabled. Looking at it now, it seems
-> > > that there is just pointer stability but I can't tell if
-> > > rcu_segcblist_pend_cbs() needs more than just this.
+On Wed, 2020-05-20 at 10:19 -0700, Kees Cook wrote:
+> On Mon, May 18, 2020 at 12:09:16PM -0700, Joe Perches wrote:
+> > On Mon, 2020-05-18 at 14:01 -0500, Gustavo A. R. Silva wrote:
+> > > The current codebase makes use of one-element arrays in the following
+> > > form:
+> > > 
+> > > struct something {
+> > >     int length;
+> > >     u8 data[1];
+> > > };
+> > []
+> > > This issue has been out there since 2009.
+> > > This issue was found with the help of Coccinelle and fixed _manually_.
+> > []
+> > > diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
+[]
+> > > @@ -156,9 +156,8 @@ static __init int uv_rtc_allocate_timers(void)
+> > >  		struct uv_rtc_timer_head *head = blade_info[bid];
+> > >  
+> > >  		if (!head) {
+> > > -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
+> > > -				(uv_blade_nr_possible_cpus(bid) *
+> > > -					2 * sizeof(u64)),
+> > > +			head = kmalloc_node(struct_size(head, cpu,
+> > > +				uv_blade_nr_possible_cpus(bid)),
 > > 
-> > Which 'other part' are you referring to? Your patch removed local_irq_save()
-> > from other places as well right?
+> > It's probably safer to use kzalloc_node here as well.
 > 
-> The patch converted hunks.
+> Hm, I think it's not actually needed here.
+
+Right. Turns out it's not needed.
+
+> All three members are
+> immediately initialized and it doesn't look to ever be copied to
+> userspace.
+
+It's more that the reader doesn't have to lookup the
+struct to know all the members are initialized.
+
+It's also not a fast path so any extra time to zero
+is not significant.
+
+> > >  				GFP_KERNEL, nid);
+> > >  			if (!head) {
+> > >  				uv_rtc_deallocate_timers();
 > 
+> FWIW, I think this change is good as-is. Always nice to get back a
+> little memory. ;)
 
-So then there are no other local_irq_save() to match with. Or may be I did
-not understand your concern, could you share any threads from past
-discussions about disabling interrupts in this code? You mentioned about a
-discussion from few years ago.
+Saving space, 0 to 4 bytes at a time,
+depending on the heap sizes...
 
-> > 
-> >  - Joel
-> > 
-> > ---8<-----------------------
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 8ff71e5d0fe8b..5f49919205317 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -778,13 +778,17 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> >  	unsigned long tlast;
-> >  
-> >  	/* If the local srcu_data structure has callbacks, not idle.  */
-> > -	local_irq_save(flags);
-> > -	sdp = this_cpu_ptr(ssp->sda);
-> > +	sdp = get_local_ptr(ssp->sda);
-> > +	spin_lock_irqsave_rcu_node(sdp, flags);
-> 
-> You acquire the node lock which was not acquired before. Is that okay?
-> How is get_local_ptr() different to raw_cpu_ptr()?
+Using the struct_size is clearer though, so that's good too.
 
-get_cpu_ptr() disables preemption which you might not want, right?
-
-Most (all?) other paths are accessing the cblist under lock so I added it
-here to be safe. This is anyway called from a slowpath. Do you see a problem?
-
-thanks,
-
- - Joel
+cheers, Joe
 
