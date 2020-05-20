@@ -2,164 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054071DB048
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FBD1DB04C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgETKeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgETKeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:34:19 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34577C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:34:18 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f134so2073350wmf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wHwuK554VhbEDUoapI14azPz8Hgjvi50lBlxsWiVKX8=;
-        b=dZNC1J5ypymn1jU6Byg8EPaBtx0iN/1DIHceCLtkm5ZN62pZaAM6qLFo69H93K051w
-         nEFHjWsNPV4ljKXRdpDRbIC2GxHPUuneGdFOqCabJABeFbEy0qZNxTyUZWuFZXtPhR99
-         wwdZQtudQd/cHlInsliGMRW2QUx7CzktPvTf+BuhU4jurkcIzEs5qbRiHA8AWZAEjp6C
-         tUBhEENQN3hN8Ob/5r+eI+wuJ+/MghjTgXBB8HkB7aqzL8wuv8QiRuRJ3494heAyIw0a
-         WPD4KXjtaKv/JogXTODnC/Ip+MHz5vriC1ArcAq5dOXkzYPPdHABKpYeRBZMRq57iYHR
-         lgIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wHwuK554VhbEDUoapI14azPz8Hgjvi50lBlxsWiVKX8=;
-        b=bdKQMs3lx77nAF26iEqnS4aw2YX8w4Y/mAXaNX31DmSHCkCM6Z0Yv4ciiQz9d6Hngl
-         qevdaSjzrPdfwbKHGz3fxXJi9SF5wwEZvube0O2mIle6W2m1JNjxQEDaqsNlahM5ORaV
-         7lpu8JLHfiFMHjuSHxMJPcvGOBPPY52SRISSzoJM3eAs1Oi4PWpU04MUtAL+k9WHdESq
-         z7tDECjlZGfStAkDlWY8d/intLufWBEvfs9RX1KBBbXMwCe2boKZP2UeDRmMkggArnYf
-         8SSszM+nKGlXJLLdbyJtJwRdyJuisneiuCJ/TYsfD56hH4XdLIgTq2Twce4kpoq76iHz
-         ejVg==
-X-Gm-Message-State: AOAM532+7iEnQ7S2p+IFY1B2RLLyAiGW6lmvkLxGrnmJZAri9T32tPNG
-        txIQ7QyxUrQANWw4c7F3gVy6uQ==
-X-Google-Smtp-Source: ABdhPJxo5njsQyNYOEuPCeVVUlNTJmBhexBhhghXeVryIeeckAHJiBoMUenYHQrPUA509KHduFahjg==
-X-Received: by 2002:a7b:ce08:: with SMTP id m8mr3869535wmc.97.1589970856782;
-        Wed, 20 May 2020 03:34:16 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id f8sm2314536wrm.8.2020.05.20.03.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 03:34:16 -0700 (PDT)
-Date:   Wed, 20 May 2020 11:34:14 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        linux-next@vger.kernel.org, sumit.garg@linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH] kgdboc: Disable all the early code when kgdboc is a
- module
-Message-ID: <20200520103414.bejflo3s4exrcyzk@holly.lan>
-References: <20200519084345.1.I91670accc8a5ddabab227eb63bb4ad3e2e9d2b58@changeid>
+        id S1726820AbgETKfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:35:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:52642 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgETKfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:35:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E02A31B;
+        Wed, 20 May 2020 03:35:29 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.169.41.142])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5957E3F68F;
+        Wed, 20 May 2020 03:35:27 -0700 (PDT)
+From:   Bin Lu <bin.lu@arm.com>
+To:     catalin.marinas@arm.com
+Cc:     keno@juliacomputing.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        sudeep.holla@arm.com, will@kernel.org, Bin Lu <Bin.Lu@arm.com>
+Subject: Re: [PATCH] arm64: Fix PTRACE_SYSEMU semantics
+Date:   Wed, 20 May 2020 18:34:20 +0800
+Message-Id: <1589970860-62695-1-git-send-email-bin.lu@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20200519120725.GA20313@gaia>
+References: <20200519120725.GA20313@gaia>
+References: <20200515222253.GA38408@juliacomputing.com> <20200518114119.GB32394@willie-the-truck> <20200519120725.GA20313@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519084345.1.I91670accc8a5ddabab227eb63bb4ad3e2e9d2b58@changeid>
+In-Reply-To: <20200519120725.GA20313@gaia>
+X-Mutt-References: <20200519120725.GA20313@gaia>
+X-Mutt-Fcc: =ARM/Sent Items
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 08:44:02AM -0700, Douglas Anderson wrote:
-> When kgdboc is compiled as a module all of the "ekgdboc" and
-> "kgdb_earlycon" code isn't useful and, in fact, breaks compilation.
-> This is because early_param() isn't defined for modules and that's how
-> this code gets configured.
-> 
-> It turns out that this was broken by commit eae3e19ca930 ("kgdboc:
-> Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc") and then
-> made worse by commit 220995622da5 ("kgdboc: Add kgdboc_earlycon to
-> support early kgdb using boot consoles").  I guess the #ifdef wasn't
-> so useless, even if it wasn't obvious why it was useful.  When kgdboc
-> was compiled as a module only "CONFIG_KGDB_SERIAL_CONSOLE_MODULE" was
-> defined, not "CONFIG_KGDB_SERIAL_CONSOLE".  That meant that the old
-> module.
-> 
-> Let's basically do the same thing that the old code (pre-removal of
-> the #ifdef) did but use "IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)" to
-> make it more obvious what the point of the check is.  We'll fix
-> kgdboc_earlycon in a similar way.
-> 
-> Fixes: 220995622da5 ("kgdboc: Add kgdboc_earlycon to support early kgdb using boot consoles")
-> Fixes: eae3e19ca930 ("kgdboc: Remove useless #ifdef CONFIG_KGDB_SERIAL_CONSOLE in kgdboc")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+From: Bin Lu <Bin.Lu@arm.com>
 
-Applied, thanks!
+On Tue, May 19, 2020 at 01:07:27PM +0100, Catalin Marinas wrote:
+> On Mon, May 18, 2020 at 12:41:20PM +0100, Will Deacon wrote:
+> > On Fri, May 15, 2020 at 06:22:53PM -0400, Keno Fischer wrote:
+> > > Quoth the man page:
+> > > ```
+> > >        If the tracee was restarted by PTRACE_SYSCALL or PTRACE_SYSEMU, the
+> > >        tracee enters syscall-enter-stop just prior to entering any system
+> > >        call (which will not be executed if the restart was using
+> > >        PTRACE_SYSEMU, regardless of any change made to registers at this
+> > >        point or how the tracee is restarted after this stop).
+> > > ```
+> > >
+> > > The parenthetical comment is currently true on x86 and powerpc,
+> > > but not currently true on arm64. arm64 re-checks the _TIF_SYSCALL_EMU
+> > > flag after the syscall entry ptrace stop. However, at this point,
+> > > it reflects which method was used to re-start the syscall
+> > > at the entry stop, rather than the method that was used to reach it.
+> > > Fix that by recording the original flag before performing the ptrace
+> > > stop, bringing the behavior in line with documentation and x86/powerpc.
+> > >
+> > > Signed-off-by: Keno Fischer <keno@juliacomputing.com>
+> > > ---
+> > >  arch/arm64/kernel/ptrace.c | 8 +++++---
+> > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> > > index b3d3005d9515..b67b4d14aa17 100644
+> > > --- a/arch/arm64/kernel/ptrace.c
+> > > +++ b/arch/arm64/kernel/ptrace.c
+> > > @@ -1829,10 +1829,12 @@ static void tracehook_report_syscall(struct pt_regs *regs,
+> > >
+> > >  int syscall_trace_enter(struct pt_regs *regs)
+> > >  {
+> > > -	if (test_thread_flag(TIF_SYSCALL_TRACE) ||
+> > > -		test_thread_flag(TIF_SYSCALL_EMU)) {
+> > > +	u32 flags = READ_ONCE(current_thread_info()->flags) &
+> > > +		(_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE);
+> > > +
+> > > +	if (flags) {
+> >
+> > nit: but I'd rather the '&' operation was in the conditional so that the
+> > 'flags' variable holds all of the flags.
+> >
+> > With that:
+> >
+> > Acked-by: Will Deacon <will@kernel.org>
+> >
+> > Also needs:
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Fixes: f086f67485c5 ("arm64: ptrace: add support for syscall emulation")
+> >
+> > Catalin -- can you pick this up for 5.7 please, with my 'nit' addressed?
+>
+> I'll queue it with the above addressed. I think flags also needs to be
+> unsigned long rather than u32.
+>
+> However, before sending the pull request, I'd like Sudeep to confirm
+> that it doesn't break his original use-case for this feature.
+>
 
+Tested-by: Bin Lu <Bin.Lu@arm.com> (for gVisor)
 
-Daniel.
+I have just tested all gVisor syscall test cases with ptrace(Regs, FPRegs, TLS)
+on Arm64 platform.
+The test results are the same as before there was no patch.
 
+My idea is that this kernel patch has no bad effects on gVisor.
+Linux Kernel version: 5.7.0-rc6+
+gVisor version: release-20200511.0
 
-> ---
-> 
->  drivers/tty/serial/kgdboc.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 34b5e91dd245..fa6f7a3e73b9 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -43,9 +43,11 @@ static int			kgdb_tty_line;
->  
->  static struct platform_device *kgdboc_pdev;
->  
-> +#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
->  static struct kgdb_io		kgdboc_earlycon_io_ops;
->  static struct console		*earlycon;
->  static int                      (*earlycon_orig_exit)(struct console *con);
-> +#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
->  
->  #ifdef CONFIG_KDB_KEYBOARD
->  static int kgdboc_reset_connect(struct input_handler *handler,
-> @@ -140,10 +142,19 @@ static void kgdboc_unregister_kbd(void)
->  #define kgdboc_restore_input()
->  #endif /* ! CONFIG_KDB_KEYBOARD */
->  
-> -static void cleanup_kgdboc(void)
-> +#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
-> +static void cleanup_earlycon(void)
->  {
->  	if (earlycon)
->  		kgdb_unregister_io_module(&kgdboc_earlycon_io_ops);
-> +}
-> +#else /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
-> +static inline void cleanup_earlycon(void) { }
-> +#endif /* !IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
-> +
-> +static void cleanup_kgdboc(void)
-> +{
-> +	cleanup_earlycon();
->  
->  	if (configured != 1)
->  		return;
-> @@ -388,6 +399,7 @@ static struct kgdb_io kgdboc_io_ops = {
->  	.post_exception		= kgdboc_post_exp_handler,
->  };
->  
-> +#if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
->  static int kgdboc_option_setup(char *opt)
->  {
->  	if (!opt) {
-> @@ -544,6 +556,7 @@ static int __init kgdboc_earlycon_init(char *opt)
->  }
->  
->  early_param("kgdboc_earlycon", kgdboc_earlycon_init);
-> +#endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
->  
->  module_init(init_kgdboc);
->  module_exit(exit_kgdboc);
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
-> 
