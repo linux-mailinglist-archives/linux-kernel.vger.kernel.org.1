@@ -2,176 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260B31DBE72
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DA71DBE8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgETTyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:54:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36442 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726810AbgETTyx (ORCPT
+        id S1728110AbgETT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbgETT4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:54:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590004492;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q0USsO4OAfyA0Rib2bQap/oCXtEpVCchT8eYakLR9fg=;
-        b=hdslUeBoXPoQN8Ag/q0s/wZzVrlc5aDFlDdW0bDyosEBDCZjlprwwPudeoRj0uzDuLWAWb
-        B08i+tT8FK5qWqrmXMhLnDVvV3rcUix1qN6C1ERLOr+Uq5D7X63NFjo22eKMet4HXVGMwI
-        bvLlREFPLbi3UttbwKCi2gTwVebzDak=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-3nRglat6PC2i3f14OgnSeQ-1; Wed, 20 May 2020 15:54:50 -0400
-X-MC-Unique: 3nRglat6PC2i3f14OgnSeQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B077835B41;
-        Wed, 20 May 2020 19:54:49 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-91.ams2.redhat.com [10.36.112.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C7561943D;
-        Wed, 20 May 2020 19:54:48 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] virt: vbox: Add vbg_set_host_capabilities() helper function
+        Wed, 20 May 2020 15:56:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A15C08C5C0;
+        Wed, 20 May 2020 12:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=AvcdAD8zTTSJDfWEpIpfpetvjQ99drHMp3Vtm1fZek8=; b=ma/DUEc/VfLIdSMqChe6fBXtRM
+        KFPIi0kExGxuMcY7MKuOHO7HDRL3fZTdRlVLkDNs7CIr3Y81qhwST3zP5iggrt/WXayW1EKMqqag1
+        AvC/YCGpoRtlOhSsCppb9mDB78KuJpoGGXo5TuGPK9ngfY+jniQETGjxwv6oE9IfQ7Ni40xZ36pxh
+        qAk7tK35dbFwZz+5SSeM6/7oFaHXTh9RiaDcOrrmB/wNmgFnkW3elg7zIJsYQTCrm5fdS8GdfQvzi
+        bQ35oJTYDm0DTjgxdbe5Rw1DYcKft1UsNPhk9zD9I1wl67ev9qL0kSTZBwuDqU1mwQI7FPc3zZzm4
+        zSwwU/3A==;
+Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbUo3-0001ns-KW; Wed, 20 May 2020 19:55:12 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, linux-sctp@vger.kernel.org,
+        ceph-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-nfs@vger.kernel.org
+Subject: remove kernel_setsockopt and kernel_getsockopt v2
 Date:   Wed, 20 May 2020 21:54:36 +0200
-Message-Id: <20200520195440.38759-4-hdegoede@redhat.com>
-In-Reply-To: <20200520195440.38759-1-hdegoede@redhat.com>
-References: <20200520195440.38759-1-hdegoede@redhat.com>
+Message-Id: <20200520195509.2215098-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vbg_set_host_capabilities() helper function,  this is a preparation
-patch for adding support for the VBGL_IOCTL_GUEST_CAPS_ACQUIRE ioctl.
+Hi Dave,
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/virt/vboxguest/vboxguest_core.c | 79 ++++++++++++++-----------
- 1 file changed, 46 insertions(+), 33 deletions(-)
+this series removes the kernel_setsockopt and kernel_getsockopt
+functions, and instead switches their users to small functions that
+implement setting (or in one case getting) a sockopt directly using
+a normal kernel function call with type safety and all the other
+benefits of not having a function call.
 
-diff --git a/drivers/virt/vboxguest/vboxguest_core.c b/drivers/virt/vboxguest/vboxguest_core.c
-index aee5eff229f2..15b3cb618c6e 100644
---- a/drivers/virt/vboxguest/vboxguest_core.c
-+++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -661,6 +661,48 @@ static int vbg_reset_host_capabilities(struct vbg_dev *gdev)
- 	return vbg_status_code_to_errno(rc);
- }
- 
-+/**
-+ * Set guest capabilities on the host.
-+ * Must be called with gdev->session_mutex hold.
-+ * Return: 0 or negative errno value.
-+ * @gdev:			The Guest extension device.
-+ * @session:			The session.
-+ * @session_termination:	Set if we're called by the session cleanup code.
-+ */
-+static int vbg_set_host_capabilities(struct vbg_dev *gdev,
-+				     struct vbg_session *session,
-+				     bool session_termination)
-+{
-+	struct vmmdev_mask *req;
-+	u32 caps;
-+	int rc;
-+
-+	WARN_ON(!mutex_is_locked(&gdev->session_mutex));
-+
-+	caps = gdev->set_guest_caps_tracker.mask;
-+
-+	if (gdev->guest_caps_host == caps)
-+		return 0;
-+
-+	/* On termination the requestor is the kernel, as we're cleaning up. */
-+	req = vbg_req_alloc(sizeof(*req), VMMDEVREQ_SET_GUEST_CAPABILITIES,
-+			    session_termination ? VBG_KERNEL_REQUEST :
-+						  session->requestor);
-+	if (!req) {
-+		gdev->guest_caps_host = U32_MAX;
-+		return -ENOMEM;
-+	}
-+
-+	req->or_mask = caps;
-+	req->not_mask = ~caps;
-+	rc = vbg_req_perform(gdev, req);
-+	vbg_req_free(req, sizeof(*req));
-+
-+	gdev->guest_caps_host = (rc >= 0) ? caps : U32_MAX;
-+
-+	return vbg_status_code_to_errno(rc);
-+}
-+
- /**
-  * Sets the guest capabilities for a session. Takes the session spinlock.
-  * Return: 0 or negative errno value.
-@@ -678,23 +720,8 @@ static int vbg_set_session_capabilities(struct vbg_dev *gdev,
- 					u32 or_mask, u32 not_mask,
- 					bool session_termination)
- {
--	struct vmmdev_mask *req;
- 	u32 changed, previous;
--	int rc, ret = 0;
--
--	/*
--	 * Allocate a request buffer before taking the spinlock, when
--	 * the session is being terminated the requestor is the kernel,
--	 * as we're cleaning up.
--	 */
--	req = vbg_req_alloc(sizeof(*req), VMMDEVREQ_SET_GUEST_CAPABILITIES,
--			    session_termination ? VBG_KERNEL_REQUEST :
--						  session->requestor);
--	if (!req) {
--		if (!session_termination)
--			return -ENOMEM;
--		/* Ignore allocation failure, we must do session cleanup. */
--	}
-+	int ret = 0;
- 
- 	mutex_lock(&gdev->session_mutex);
- 
-@@ -709,23 +736,10 @@ static int vbg_set_session_capabilities(struct vbg_dev *gdev,
- 		goto out;
- 
- 	vbg_track_bit_usage(&gdev->set_guest_caps_tracker, changed, previous);
--	or_mask = gdev->set_guest_caps_tracker.mask;
--
--	if (gdev->guest_caps_host == or_mask || !req)
--		goto out;
--
--	gdev->guest_caps_host = or_mask;
--	req->or_mask = or_mask;
--	req->not_mask = ~or_mask;
--	rc = vbg_req_perform(gdev, req);
--	if (rc < 0) {
--		ret = vbg_status_code_to_errno(rc);
--
--		/* Failed, roll back (unless it's session termination time). */
--		gdev->guest_caps_host = U32_MAX;
--		if (session_termination)
--			goto out;
- 
-+	ret = vbg_set_host_capabilities(gdev, session, session_termination);
-+	/* Roll back on failure, unless it's session termination time. */
-+	if (ret < 0 && !session_termination) {
- 		vbg_track_bit_usage(&gdev->set_guest_caps_tracker, changed,
- 				    session->set_guest_caps);
- 		session->set_guest_caps = previous;
-@@ -733,7 +747,6 @@ static int vbg_set_session_capabilities(struct vbg_dev *gdev,
- 
- out:
- 	mutex_unlock(&gdev->session_mutex);
--	vbg_req_free(req, sizeof(*req));
- 
- 	return ret;
- }
--- 
-2.26.2
+In some cases these functions seem pretty heavy handed as they do
+a lock_sock even for just setting a single variable, but this mirrors
+the real setsockopt implementation unlike a few drivers that just set
+set the fields directly.
 
+
+Changes since v1:
+ - use ->getname for sctp sockets in dlm
+ - add a new ->bind_add struct proto method for dlm/sctp
+ - switch the ipv6 and remaining sctp helpers to inline function so that
+   the ipv6 and sctp modules are not pulled in by any module that could
+   potentially use ipv6 or sctp connections
+ - remove arguments to various sock_* helpers that are always used with
+   the same constant arguments
