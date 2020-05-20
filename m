@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487771DC006
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC1F1DC013
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgETUSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 16:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgETUSj (ORCPT
+        id S1727833AbgETU03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 16:26:29 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:45686 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726827AbgETU02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 16:18:39 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DC5C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:18:38 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id cx22so1836131pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GD7wbiQVI9rDR+L0sEdN/nHd36x0k4vATNQrzzfPzoU=;
-        b=NZ05gz8s6GydpM6eOuzSznetqGRW9eW/02dAMxNfEUCAM4R+pMFoXINk7ro5zVCii9
-         jjfDfQggtDRPOnsgnmOwbScCf7gWYW18dSNk7I2YE2Ow/un4uL71VpEsOYWOQLlUU3lV
-         xNwHfwD85yMZZpH43YizXLDKZaVzttOu0Yp4IXNdNVxaxk4eFnmWmSGXydslh/oebnfg
-         QEb6xgcB518MMvYDug8FuRQ3JAh34QHBEGJizbuoY6Sj4A4nr/MGGkM0Skdw8iqTmD3K
-         cxVwr/XsRe5yVRkEr0v1SQgB4XYpJQNJhqmCw1ya1EAFWgkHmuLkjhgU1mgssMgb/k9O
-         3wew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GD7wbiQVI9rDR+L0sEdN/nHd36x0k4vATNQrzzfPzoU=;
-        b=b6JcScbsWJI/uLkDKhPRVQ1yGunOKeAtis/GDg/3SUcprjXbj8tv88yeUQAJVnOgXf
-         q9Z22HUMhNsVzSfIhSu8NR3dTzCNIeyI73xb4WDu+/pyLTIE6wpNocuSrpRMbs+OP6UK
-         U+5f5+M1hL5I4bai6rQs3tAOi3/FmkFUIwZp/5balUPzU2BrUxgOXBC9KXmM/Qxcchak
-         mMOePvVv7SJu3XAuspBDxhUy8SOZ3WAHnMgqHITnQZ2URbYgebEJu7QTpJTgMghm7epP
-         ee4xHSerelZ+xyWLN079+eY/gHO3etqnVxxwHK1EM+gTBsQn6mSut57RADgFdP/aLtpp
-         AzEA==
-X-Gm-Message-State: AOAM533V8YVCw7RPnlILGpnTtNh/cwi3M34f10pqTdqacOB2ekZJDlGb
-        yR7ULYGFurzjEwtazNZJdF7IDA==
-X-Google-Smtp-Source: ABdhPJxusZNKzaTGl4uzCNSAer9ynGVb3v2uIj/wxTVjbrHKoqcG7zisYx84mtxQ+xz2+LlHEXh4oQ==
-X-Received: by 2002:a17:90a:648c:: with SMTP id h12mr7504923pjj.229.1590005918384;
-        Wed, 20 May 2020 13:18:38 -0700 (PDT)
-Received: from [192.168.86.156] (cpe-75-85-219-51.dc.res.rr.com. [75.85.219.51])
-        by smtp.gmail.com with ESMTPSA id h4sm2675419pfo.3.2020.05.20.13.18.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 May 2020 13:18:37 -0700 (PDT)
-Subject: Re: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set
- data->ctx and data->hctx in blk_mq_alloc_request_hctx
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org
-References: <20200518093155.GB35380@T590>
- <87imgty15d.fsf@nanos.tec.linutronix.de> <20200518115454.GA46364@T590>
- <20200518131634.GA645@lst.de> <20200518141107.GA50374@T590>
- <20200518165619.GA17465@lst.de> <20200519015420.GA70957@T590>
- <20200519153000.GB22286@lst.de> <20200520011823.GA415158@T590>
- <20200520030424.GI416136@T590> <20200520080357.GA4197@lst.de>
- <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk>
- <448d3660-0d83-889b-001f-a09ea53fa117@kernel.dk>
- <87tv0av1gu.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2a12a7aa-c339-1e51-de0d-9bc6ced14c64@kernel.dk>
-Date:   Wed, 20 May 2020 14:18:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 May 2020 16:26:28 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jbVIE-0002sC-AR; Wed, 20 May 2020 14:26:22 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jbVID-0004lz-BV; Wed, 20 May 2020 14:26:22 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Rob Landley <rob@landley.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andy Lutomirski <luto@amacapital.net>
+References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
+        <87sgga6ze4.fsf@x220.int.ebiederm.org>
+        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
+        <877dx822er.fsf_-_@x220.int.ebiederm.org>
+        <87o8qkzrxp.fsf_-_@x220.int.ebiederm.org>
+        <202005191111.9B389D33@keescook>
+        <875zcrpx1g.fsf@x220.int.ebiederm.org>
+        <202005191211.97BCF9DA@keescook>
+Date:   Wed, 20 May 2020 15:22:38 -0500
+In-Reply-To: <202005191211.97BCF9DA@keescook> (Kees Cook's message of "Tue, 19
+        May 2020 12:14:40 -0700")
+Message-ID: <87wo56gxv5.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <87tv0av1gu.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jbVID-0004lz-BV;;;mid=<87wo56gxv5.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18kgvN+Xbm23VQqCP+JxcT7Yj0OsUMkK+w=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4995]
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 579 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 10 (1.8%), b_tie_ro: 9 (1.6%), parse: 0.87 (0.2%),
+         extract_message_metadata: 11 (2.0%), get_uri_detail_list: 1.77 (0.3%),
+         tests_pri_-1000: 5 (0.9%), tests_pri_-950: 1.21 (0.2%),
+        tests_pri_-900: 1.07 (0.2%), tests_pri_-90: 68 (11.8%), check_bayes:
+        67 (11.5%), b_tokenize: 9 (1.5%), b_tok_get_all: 10 (1.8%),
+        b_comp_prob: 2.9 (0.5%), b_tok_touch_all: 42 (7.2%), b_finish: 0.78
+        (0.1%), tests_pri_0: 324 (55.9%), check_dkim_signature: 0.58 (0.1%),
+        check_dkim_adsp: 2.5 (0.4%), poll_dns_idle: 140 (24.1%), tests_pri_10:
+        3.0 (0.5%), tests_pri_500: 151 (26.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 3/8] exec: Convert security_bprm_set_creds into security_bprm_repopulate_creds
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/20 1:41 PM, Thomas Gleixner wrote:
-> Jens Axboe <axboe@kernel.dk> writes:
->> On 5/20/20 8:45 AM, Jens Axboe wrote:
->>> It just uses kthread_create_on_cpu(), nothing home grown. Pretty sure
->>> they just break affinity if that CPU goes offline.
->>
->> Just checked, and it works fine for me. If I create an SQPOLL ring with
->> SQ_AFF set and bound to CPU 3, if CPU 3 goes offline, then the kthread
->> just appears unbound but runs just fine. When CPU 3 comes online again,
->> the mask appears correct.
-> 
-> When exactly during the unplug operation is it unbound?
+Kees Cook <keescook@chromium.org> writes:
 
-When the CPU has been fully offlined. I check the affinity mask, it
-reports 0. But it's still being scheduled, and it's processing work.
-Here's an example, PID 420 is the thread in question:
+> On Tue, May 19, 2020 at 02:03:23PM -0500, Eric W. Biederman wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > On Mon, May 18, 2020 at 07:31:14PM -0500, Eric W. Biederman wrote:
+>> >> [...]
+>> >> diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+>> >> index d1217fcdedea..8605ab4a0f89 100644
+>> >> --- a/include/linux/binfmts.h
+>> >> +++ b/include/linux/binfmts.h
+>> >> @@ -27,10 +27,10 @@ struct linux_binprm {
+>> >>  	unsigned long argmin; /* rlimit marker for copy_strings() */
+>> >>  	unsigned int
+>> >>  		/*
+>> >> -		 * True if most recent call to cap_bprm_set_creds
+>> >> +		 * True if most recent call to security_bprm_set_creds
+>> >>  		 * resulted in elevated privileges.
+>> >>  		 */
+>> >> -		cap_elevated:1,
+>> >> +		active_secureexec:1,
+>> >
+>> > Also, I'd like it if this comment could be made more verbose as well, for
+>> > anyone trying to understand the binfmt execution flow for the first time.
+>> > Perhaps:
+>> >
+>> > 		/*
+>> > 		 * Must be set True during the any call to
+>> > 		 * bprm_set_creds hook where the execution would
+>> > 		 * reuslt in elevated privileges. (The hook can be
+>> > 		 * called multiple times during nested interpreter
+>> > 		 * resolution across binfmt_script, binfmt_misc, etc).
+>> > 		 */
+>> Well it is not during but after the call that it becomes true.
+>> I think most recent covers the case of multiple calls.
+>
+> I'm thinking of an LSM writing reading these comments to decide what
+> they need to do to the flags, so it's a direction to them to set it to
+> true if they have determined that privilege was gained. (Though in
+> theory, this is all moot since only the commoncap hook cares.)
 
-[root@archlinux cpu3]# taskset -p 420
-pid 420's current affinity mask: 8
-[root@archlinux cpu3]# echo 0 > online 
-[root@archlinux cpu3]# taskset -p 420
-pid 420's current affinity mask: 0
-[root@archlinux cpu3]# echo 1 > online 
-[root@archlinux cpu3]# taskset -p 420
-pid 420's current affinity mask: 8
+The comments for an LSM writer are in include/linux/lsm_hooks.h
 
-So as far as I can tell, it's working fine for me with the goals
-I have for that kthread.
+ * @bprm_repopulate_creds:
+ *	Assuming that the relevant bits of @bprm->cred->security have been
+ *	previously set, examine @bprm->file and regenerate them.  This is
+ *	so that the credentials derived from the interpreter the code is
+ *	actually going to run are used rather than credentials derived
+ *	from a script.  This done because the interpreter binary needs to
+ *	reopen script, and may end up opening something completely different.
+ *	This hook may also optionally check permissions (e.g. for
+ *	transitions between security domains).
+ *	The hook must set @bprm->active_secureexec to 1 if AT_SECURE should be set to
+ *	request libc enable secure mode.
+ *	@bprm contains the linux_binprm structure.
+ *	Return 0 if the hook is successful and permission is granted.
 
--- 
-Jens Axboe
+I hope that is detailed enough.
 
+I will leave the rest of the comments for the maintainer of the code.
+
+I really don't think we should duplicate the prescriptive comments in
+multiple locations.
+
+Eric
