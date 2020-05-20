@@ -2,130 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599E31DB919
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C671DB920
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgETQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:15:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETQPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:15:45 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A8C120671;
-        Wed, 20 May 2020 16:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589991344;
-        bh=h9MTIGPYQzOllbjEkIgnEniE41lTl+OD7Fs3cDvWlC4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dBQAsnvSt1BuQnO2Uz0LYcXqH8wrzmcE0sMq3dliKDQWy2VD07oQBTPN8C3Xz4q5j
-         EEp4TAFPoo5NVsbBnUlz3FFLpZ4E3P2l4+ULM4f39CP4KxODVhaYOqqg6ZguekD1Z4
-         YSmgsUdQndWtM7LDHv6BuDaL4cZ+TEEM751dZfMc=
-Date:   Wed, 20 May 2020 11:15:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "open list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>,
-        Julien Grall <julien.grall@arm.com>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
+        id S1726844AbgETQQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:16:09 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20818 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726486AbgETQQI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 12:16:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589991366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+MQD7bLAeWpGadatG4/J3oyu4QcEuGAp5bNd5T2B1Jw=;
+        b=d4CC/yycOkwyy9Nsn3Nax0MsqvNXlOJJvhhHXmrX5/sVB2V+SFRfxwZO1S4w73eITfclWX
+        +aF0GG8WncW4xYTrFasCKjjIsoOPS8WRzyHF1w23rghfh+nq36buiSJKDRr/xzq76NJSGi
+        YGFwJf+OCU+RobcKNHYzECemOeFGh9A=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-ayMapM5ZMs-hiuJmY0LrJg-1; Wed, 20 May 2020 12:16:04 -0400
+X-MC-Unique: ayMapM5ZMs-hiuJmY0LrJg-1
+Received: by mail-ej1-f71.google.com with SMTP id pj20so1561258ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:16:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+MQD7bLAeWpGadatG4/J3oyu4QcEuGAp5bNd5T2B1Jw=;
+        b=p13LihAKc0Qt11EppfxGaUuoJAfu+hN/ErVBPuh5AYhwhW+gjPv56mcgSxdy8C9wy6
+         cRiVbzcXg5BPHvMGmmhnFGK+IJSWpvnyruJWXWrDV/IoS8a+ZWgOVp9kV/Ol/n4ke0M2
+         B5OaUq6RyArEPYjMR8mfrhaWPeMwE2s2J3Yw1p9+R/ebVaXmEt9omQjEWPiQ4O03QWkm
+         dcRLquMy+tRrVWCYCMeqLMwnPxFFvwjOlMMWUNfAzbTiygmU2v5wRwQcNWugsVwjhrlv
+         ir5W/dnXsuzNNN3fdFHUrWTVFvk9kqol9lND/rWKPn+3pmYY4txkluhtwO9jrlGhp5zd
+         GgFw==
+X-Gm-Message-State: AOAM530RDb8AsW1NMm5hdQLeIYHWk++K5GG4Cnzvt0fd5FUorjckyIqV
+        /DjGQPAa59H/ofjKKgfxan544Z+ML2yB1GbOYCLwz584Kj15wDvwAoq1g/bhoIWa2EPfANPKn5m
+        TIfoEeFgt+MWVhLXPwW7z1ZB+
+X-Received: by 2002:a17:906:3943:: with SMTP id g3mr4316534eje.454.1589991363489;
+        Wed, 20 May 2020 09:16:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2hnM4vetLABm37y0fKnboEQ3oCgaMK3/TvHOMdlFMHyR+fDIP2LFNfyoNCg7yrAhnQSRTuQ==
+X-Received: by 2002:a17:906:3943:: with SMTP id g3mr4316513eje.454.1589991363274;
+        Wed, 20 May 2020 09:16:03 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id h12sm2186513ejj.40.2020.05.20.09.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 09:16:02 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 00/15] PCI: brcmstb: enable PCIe for STB chips
-Message-ID: <20200520161541.GA1089402@bjorn-Precision-5520>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] xen: move xen_setup_callback_vector() definition to include/xen/hvm.h
+Date:   Wed, 20 May 2020 18:16:00 +0200
+Message-Id: <20200520161600.361895-1-vkuznets@redhat.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519203419.12369-1-james.quinlan@broadcom.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 04:33:58PM -0400, Jim Quinlan wrote:
-> This patchset expands the usefulness of the Broadcom Settop Box PCIe
-> controller by building upon the PCIe driver used currently by the
-> Raspbery Pi.  Other forms of this patchset were submitted by me years
-> ago and not accepted; the major sticking point was the code required
-> for the DMA remapping needed for the PCIe driver to work [1].
-> 
-> There have been many changes to the DMA and OF subsystems since that
-> time, making a cleaner and less intrusive patchset possible.  This
-> patchset implements a generalization of "dev->dma_pfn_offset", except
-> that instead of a single scalar offset it provides for multiple
-> offsets via a function which depends upon the "dma-ranges" property of
-> the PCIe host controller.  This is required for proper functionality
-> of the BrcmSTB PCIe controller and possibly some other devices.
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/1516058925-46522-5-git-send-email-jim2101024@gmail.com/
-> 
-> Jim Quinlan (15):
->   PCI: brcmstb: PCIE_BRCMSTB depends on ARCH_BRCMSTB
->   ahci_brcm: fix use of BCM7216 reset controller
->   dt-bindings: PCI: Add bindings for more Brcmstb chips
->   PCI: brcmstb: Add compatibily of other chips
->   PCI: brcmstb: Add suspend and resume pm_ops
->   PCI: brcmstb: Asserting PERST is different for 7278
->   PCI: brcmstb: Add control of rescal reset
->   of: Include a dev param in of_dma_get_range()
->   device core: Add ability to handle multiple dma offsets
->   dma-direct: Invoke dma offset func if needed
->   arm: dma-mapping: Invoke dma offset func if needed
->   PCI: brcmstb: Set internal memory viewport sizes
->   PCI: brcmstb: Accommodate MSI for older chips
->   PCI: brcmstb: Set bus max burst side by chip type
->   PCI: brcmstb: add compatilbe chips to match list
+Kbuild test robot reports the following problem on ARM:
 
-If you have occasion to post a v2 for other reasons,
+>> drivers/xen/events/events_base.c:1664:6: warning: no previous prototype
+  for 'xen_setup_callback_vector' [-Wmissing-prototypes]
+1664 | void xen_setup_callback_vector(void) {}
+|      ^~~~~~~~~~~~~~~~~~~~~~~~~
+The problem is that xen_setup_callback_vector is a x86 only thing, its
+definition is present in arch/x86/xen/xen-ops.h but not on ARM. In
+events_base.c we have a stub for !CONFIG_XEN_PVHVM but it is not
+declared as 'static'.
 
-s/PCIE_BRCMSTB depends on ARCH_BRCMSTB/Allow PCIE_BRCMSTB on ARCH_BRCMSTB also/
-s/ahci_brcm: fix use of BCM7216 reset controller/ata: ahci_brcm: Fix .../
-s/Add compatibily of other chips/Add bcm7278 register info/
-s/Asserting PERST is different for 7278/Add bcm7278 PERST support/
-s/Set bus max burst side/Set bus max burst size/
-s/add compatilbe chips.*/Add bcm7211, bcm7216, bcm7445, bcm7278 to match list/
+On x86 the situation is hardly better: drivers/xen/events/events_base.c
+doesn't include 'xen-ops.h' from arch/x86/xen/, it includes its namesake
+from include/xen/ so we also get the 'no previous prototype' warning.
 
-Rewrap commit logs to use full 75 character lines (to allow for the 4
-spaces added by git log).
+Currently, xen_setup_callback_vector() has two call sites: one in
+drivers/xen/events_base.c and another in arch/x86/xen/suspend_hvm.c. The
+former is placed under #ifdef CONFIG_X86 and the later is only compiled
+in when CONFIG_XEN_PVHVM.
 
-In commit logs, s/This commit// (use imperative mood instead).
+Resolve the issue by moving xen_setup_callback_vector() declaration to
+arch neutral 'include/xen/hvm.h' as the implementation lives in arch
+neutral drivers/xen/events/events_base.c.
 
-In "Accommodate MSI for older chips" commit log, s/commont/common/.
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+- The patch needs to be applied on top of 'x86/xen: Split HVM vector callback
+ setup and interrupt gate allocation' ('tip/entry' branch currently). This
+ patch doesn't introduce the issue (and that's why I don't add 'Fixes:' tag)
+ but it renames xen_callback_vector() -> xen_setup_callback_vector().
+---
+ arch/x86/xen/suspend_hvm.c | 1 +
+ arch/x86/xen/xen-ops.h     | 1 -
+ include/xen/hvm.h          | 2 ++
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
->  .../bindings/pci/brcm,stb-pcie.yaml           |  40 +-
->  arch/arm/include/asm/dma-mapping.h            |  17 +-
->  drivers/ata/ahci_brcm.c                       |  14 +-
->  drivers/of/address.c                          |  54 ++-
->  drivers/of/device.c                           |   2 +-
->  drivers/of/of_private.h                       |   8 +-
->  drivers/pci/controller/Kconfig                |   4 +-
->  drivers/pci/controller/pcie-brcmstb.c         | 403 +++++++++++++++---
->  include/linux/device.h                        |   9 +-
->  include/linux/dma-direct.h                    |  16 +
->  include/linux/dma-mapping.h                   |  44 ++
->  kernel/dma/Kconfig                            |  12 +
->  12 files changed, 542 insertions(+), 81 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+diff --git a/arch/x86/xen/suspend_hvm.c b/arch/x86/xen/suspend_hvm.c
+index 5152afe16876..9d548b0c772f 100644
+--- a/arch/x86/xen/suspend_hvm.c
++++ b/arch/x86/xen/suspend_hvm.c
+@@ -2,6 +2,7 @@
+ #include <linux/types.h>
+ 
+ #include <xen/xen.h>
++#include <xen/hvm.h>
+ #include <xen/features.h>
+ #include <xen/interface/features.h>
+ 
+diff --git a/arch/x86/xen/xen-ops.h b/arch/x86/xen/xen-ops.h
+index 1cc1568bfe04..937a53e73ea5 100644
+--- a/arch/x86/xen/xen-ops.h
++++ b/arch/x86/xen/xen-ops.h
+@@ -55,7 +55,6 @@ void xen_enable_sysenter(void);
+ void xen_enable_syscall(void);
+ void xen_vcpu_restore(void);
+ 
+-void xen_setup_callback_vector(void);
+ void xen_hvm_init_shared_info(void);
+ void xen_unplug_emulated_devices(void);
+ 
+diff --git a/include/xen/hvm.h b/include/xen/hvm.h
+index 0b15f8cb17fc..b7fd7fc9ad41 100644
+--- a/include/xen/hvm.h
++++ b/include/xen/hvm.h
+@@ -58,4 +58,6 @@ static inline int hvm_get_parameter(int idx, uint64_t *value)
+ #define HVM_CALLBACK_VECTOR(x) (((uint64_t)HVM_CALLBACK_VIA_TYPE_VECTOR)<<\
+ 		HVM_CALLBACK_VIA_TYPE_SHIFT | (x))
+ 
++void xen_setup_callback_vector(void);
++
+ #endif /* XEN_HVM_H__ */
+-- 
+2.25.4
+
