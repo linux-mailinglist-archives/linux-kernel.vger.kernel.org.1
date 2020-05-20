@@ -2,207 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EAE1DA7EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3E11DA7F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgETCXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:23:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgETCXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:23:54 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4526F207C4;
-        Wed, 20 May 2020 02:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589941433;
-        bh=AmP0eFkWc8wsp6iIMlYlbeNdCWOguPIyObwy13obmPg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=yESldFIFnK6vk/Hw2X86qoR0noVH8ukGcNm5WzLEdXoNhpUBYaxDhLOOFqKFjKGkB
-         okrxGHaTdjx6WL436CHwpyA82iXv34YOqVWZdeD8UQMNJBNnZ5LEhQqSB/KDVJC8J3
-         1sueMBD3nhZrEd/PLo28VELJElOe/18VNxuqd2OM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 28B0A35227BA; Tue, 19 May 2020 19:23:53 -0700 (PDT)
-Date:   Tue, 19 May 2020 19:23:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        id S1728536AbgETC2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgETC2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 22:28:44 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13739C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 19:28:44 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id f89so672060qva.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 19:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=6Y7HJEX97OtUoScp+6aHU6PvBtaRCji4KFMDWzl/1dU=;
+        b=cQpNRMs3iNodzFhYuYipwiBMcUEGOJ3xUdc3cfUveLOQY59Je2GsuNTi2qpKEMxCpQ
+         3bqSWrAGjqBoAKndJjjTJrgrLfwV0bEtLHNG8higFC140vI+VtauJs/m9kOAIHQ6bdEw
+         QRu0U4nvggp52A00zOVb/a/qFsqC/GopXdX8Jhr4Op5hTwamyOUlKSvJCKIRDiAIwkTo
+         XfRXahdTu0FwM1JDD2xDu73FAuvNFDfQjV+Q3E36HgXNh7DUvzGr+s3+FZYeI/Wx2n+Q
+         +d1/j8ipY6CjVaaY4nrlOIakqFbwnltU0/SBa5QN+3728tuYh4pF+2SKKjug3/I9bVaB
+         +tpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=6Y7HJEX97OtUoScp+6aHU6PvBtaRCji4KFMDWzl/1dU=;
+        b=gLM/tbKiKzVlim1/fokAOHKuHEjZt3/GHLjxrdT+1PtfUxc6oQUHtFWdxIfbnC8aJv
+         wGsMTLhcmOzBGl03yDgEWuaei/dpx1bh/BvgmNWfq5eY1u2oUepNqT+jMBYZS0ROKG3c
+         OxNEcd2XM4fdxvvYFE5kzcA9rJ5WOBh8hDmhSmDr9JgLkfLrz7W2r2AhIe9yl2FwtPMf
+         waEhig0zjTFZzbgDU5Y242dROae4Ny1JiMK0qG0G/h/a5L5r9DWQuuQk1cODS2qYWdQQ
+         X5LfRGPVXvkxzUQCOeUCuiN12EPu0+O7ZXcIl9PIFczIHrIXChzfw0W9h3QVWbci2HAO
+         P3xA==
+X-Gm-Message-State: AOAM533s+Eu5oqll3Yg1kppv23HxLioAAUtcibI0WvsHMYi/3/2CuUye
+        GbFL9yC72sZF8428MaY9VIOLI8VhTAqDdQ==
+X-Google-Smtp-Source: ABdhPJxjYdKtmPOvMy1Q+JLwtSfq4dDdlPjcDcKr8rNqyafvMGhhzymtntu2oBRo1PCaBOT5oqbIQg==
+X-Received: by 2002:a05:6214:1c2:: with SMTP id c2mr2800690qvt.185.1589941723237;
+        Tue, 19 May 2020 19:28:43 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id y66sm988332qka.24.2020.05.19.19.28.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 May 2020 19:28:42 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
+Date:   Tue, 19 May 2020 22:28:41 -0400
+Message-Id: <360AFD09-27EC-4133-A5E3-149B8C0C4232@lca.pw>
+References: <87y2pn60ob.fsf@nanos.tec.linutronix.de>
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
         Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V6 12/37] x86/entry: Provide
- idtentry_entry/exit_cond_rcu()
-Message-ID: <20200520022353.GN2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200515234547.710474468@linutronix.de>
- <20200515235125.628629605@linutronix.de>
- <CALCETrWnkuwvTuJKr8Vuecgr_q+1ReBDrTv4XOqGaw7-ZpEeQQ@mail.gmail.com>
- <87ftbv7nsd.fsf@nanos.tec.linutronix.de>
- <87a7237k3x.fsf@nanos.tec.linutronix.de>
- <CALCETrXbQkE1zTW5Ly+ZQgDFLQQa3crPxzK6to0YR+BP5B9q+g@mail.gmail.com>
- <874ksb7hbg.fsf@nanos.tec.linutronix.de>
- <CALCETrWw7Vz39ROdBV1QxOQS3gMbPgNu5RRSuhBaXG+UVcFAzw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWw7Vz39ROdBV1QxOQS3gMbPgNu5RRSuhBaXG+UVcFAzw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+In-Reply-To: <87y2pn60ob.fsf@nanos.tec.linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 05:26:58PM -0700, Andy Lutomirski wrote:
-> On Tue, May 19, 2020 at 2:20 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > Andy Lutomirski <luto@kernel.org> writes:
-> > > On Tue, May 19, 2020 at 1:20 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > >> Thomas Gleixner <tglx@linutronix.de> writes:
-> > >> It's about this:
-> > >>
-> > >> rcu_nmi_enter()
-> > >> {
-> > >>         if (!rcu_is_watching()) {
-> > >>             make it watch;
-> > >>         } else if (!in_nmi()) {
-> > >>             do_magic_nohz_dyntick_muck();
-> > >>         }
-> > >>
-> > >> So if we do all irq/system vector entries conditional then the
-> > >> do_magic() gets never executed. After that I got lost...
-> > >
-> > > I'm also baffled by that magic, but I'm also not suggesting doing this
-> > > to *all* entries -- just the not-super-magic ones that use
-> > > idtentry_enter().
-> > >
-> > > Paul, what is this code actually trying to do?
-> >
-> > Citing Paul from IRC:
-> >
-> >   "The way things are right now, you can leave out the rcu_irq_enter()
-> >    if this is not a nohz_full CPU.
-> >
-> >    Or if this is a nohz_full CPU, and the tick is already
-> >    enabled, in that case you could also leave out the rcu_irq_enter().
-> >
-> >    Or even if this is a nohz_full CPU and it does not have the tick
-> >    enabled, if it has been in the kernel less than a few tens of
-> >    milliseconds, still OK to avoid invoking rcu_irq_enter()
-> >
-> >    But my guess is that it would be a lot simpler to just always call
-> >    it.
-> >
-> > Hope that helps.
-> 
-> Maybe?
-> 
-> Unless I've missed something, the effect here is that #PF hitting in
-> an RCU-watching context will skip rcu_irq_enter(), whereas all IRQs
-> (because you converted them) as well as other faults and traps will
-> call rcu_irq_enter().
-> 
-> Once upon a time, we did this horrible thing where, on entry from user
-> mode, we would turn on interrupts while still in CONTEXT_USER, which
-> means we could get an IRQ in an extended quiescent state.  This means
-> that the IRQ code had to end the EQS so that IRQ handlers could use
-> RCU.  But I killed this a few years ago -- x86 Linux now has a rule
-> that, if IF=1, we are *not* in an EQS with the sole exception of the
-> idle code.
-> 
-> In my dream world, we would never ever get IRQs while in an EQS -- we
-> would do MWAIT with IF=0 and we would exit the EQS before taking the
-> interrupt.  But I guess we still need to support HLT, which means we
-> have this mess.
-> 
-> But I still think we can plausibly get rid of the conditional.
 
-You mean the conditional in rcu_nmi_enter()?  In a NO_HZ_FULL=n system,
-this becomes:
 
-	if (!rcu_is_watching()) {
-	    make it watch;
-	} else if (!in_nmi()) {
-	    instrumentation_begin();
-	    if (tick_nohz_full_cpu(rdp->cpu) && ... {
-	    	do stuff
-	    }
-	    instrumentation_end();
-	}
+> On May 19, 2020, at 6:05 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
+>=20
+> Yes, it's unfortunate, but we have to stop making major concessions just
+> because tools are not up to the task.
+>=20
+> We've done that way too much in the past and this particular problem
+> clearly demonstrates that there are limits.
+>=20
+> Making brand new technology depend on sane tools is not asked too
+> much. And yes, it's inconvenient, but all of us have to build tools
+> every now and then to get our job done. It's not the end of the world.
+>=20
+> Building clang is trivial enough and pointing the make to the right
+> compiler is not rocket science either.
 
-But tick_nohz_full_cpu() is compile-time-known false, so as long as the
-compiler can ditch the instrumentation_begin() and instrumentation_end(),
-the entire "else if" clause evaporates.
-
->                                                                 If we
-> get an IRQ or (egads!) a fault in idle context, we'll have
-> !__rcu_is_watching(), but, AFAICT, we also have preemption off.
-
-Or we could be early in the kernel-entry code or late in the kernel-exit
-code, but as far as I know, preemption is disabled on those code paths.
-As are interrupts, right?  And interrupts are disabled on the portions
-of the CPU-hotplug code where RCU is not watching, if I recall correctly.
-
-I am guessing that interrupts from userspace are not at issue here, but
-completeness and all that.
-
->                                                                  So it
-> should be okay to do rcu_irq_enter().  OTOH, if we get an IRQ or a
-> fault anywhere else, then we either have a severe bug in the RCU code
-> itself and the RCU code faulted (in which case we get what we deserve)
-> or RCU is watching and all is well.  This means that the rule will be
-> that, if preemption is on, it's fine to schedule inside an
-> idtentry_begin()/idtentry_end() pair.
-
-On this, I must defer to you guys.
-
-> The remaining bit is just the urgent thing, and I don't understand
-> what's going on.  Paul, could we split out the urgent logic all by
-> itself so that the IRQ handlers could do rcu_poke_urgent()?  Or am I
-> entirely misunderstanding its purpose?
-
-A nohz_full CPU does not enable the scheduling-clock interrupt upon
-entry to the kernel.  Normally, this is fine because that CPU will very
-quickly exit back to nohz_full userspace execution, so that RCU will
-see the quiescent state, either by sampling it directly or by deducing
-the CPU's passage through that quiescent state by comparing with state
-that was captured earlier.  The grace-period kthread notices the lack
-of a quiescent state and will eventually set ->rcu_urgent_qs to
-trigger this code.
-
-But if the nohz_full CPU stays in the kernel for an extended time,
-perhaps due to OOM handling or due to processing of some huge I/O that
-hits in-memory buffers/cache, then RCU needs some way of detecting
-quiescent states on that CPU.  This requires the scheduling-clock
-interrupt to be alive and well.
-
-Are there other ways to get this done?  But of course!  RCU could
-for example use smp_call_function_single() or use workqueues to force
-execution onto that CPU and enable the tick that way.  This gets a
-little involved in order to avoid deadlock, but if the added check
-in rcu_nmi_enter() is causing trouble, something can be arranged.
-Though that something would cause more latency excursions than
-does the current code.
-
-Or did you have something else in mind?
-
-						Thanx, Paul
+Yes, it all make sense from that angle. On the other hand, I want to be focu=
+s on kernel rather than compilers by using a stable and rocket-solid version=
+. Not mentioned the time lost by compiling and properly manage my own toolch=
+ain in an automated environment, using such new version of compilers means t=
+hat I have to inevitably deal with compiler bugs occasionally. Anyway, it is=
+ just some other more bugs I have to deal with, and I don=E2=80=99t have a b=
+etter solution to offer right now.=
