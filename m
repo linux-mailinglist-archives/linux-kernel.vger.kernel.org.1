@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4E61DC323
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E5F1DC322
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgETXpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 19:45:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36922 "EHLO mail.kernel.org"
+        id S1728260AbgETXpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 19:45:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgETXpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 19:45:23 -0400
+        id S1726938AbgETXpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 19:45:24 -0400
 Received: from sstabellini-ThinkPad-T480s.hsd1.ca.comcast.net (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E850620884;
-        Wed, 20 May 2020 23:45:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58CB720899;
+        Wed, 20 May 2020 23:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1590018323;
-        bh=BdtSeWgXsb31UNe8YibrIGXB2m1r+NP2vHy9sK75VrU=;
+        bh=KOZVKoHc4nwdfLj2dJHT6a8axx8miTwmLiOrwBfDB1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D4juGHuWLwXCUQ4BiyjK2os9avjDJbMjWHGYOfBv0bIT/y1SSkYFzmXf+J0FUlGmI
-         uNxOlH4gYVmZy9fLvLCB6TRrezbkFec377Yz93CtKc+vcXA4qedTTTUz7DcXF6j/EL
-         PaBHNJUauI8pORC7ruz8zCF/f70GVyBFHjifAemc=
+        b=Zrzyv7dwGOoZVOjzN/lI6uRiajVHs9Vwy9l2vAnumI9ByScLvTFwCz0GbKgQGL6mH
+         nHTux0QWT9tRMSYP25Dz44CDAsqapcfHK1zzX6Jz+gOjOGZU9NJy7LnunoCzzI+fz8
+         hdxrCpqYM0hQY5MHAQFgGUEtfwix69+Jsu+d9KVs=
 From:   Stefano Stabellini <sstabellini@kernel.org>
 To:     jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
 Cc:     sstabellini@kernel.org, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org,
         Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: [PATCH 03/10] swiotlb-xen: add struct device* parameter to xen_phys_to_bus
-Date:   Wed, 20 May 2020 16:45:13 -0700
-Message-Id: <20200520234520.22563-3-sstabellini@kernel.org>
+Subject: [PATCH 04/10] swiotlb-xen: add struct device* parameter to xen_bus_to_phys
+Date:   Wed, 20 May 2020 16:45:14 -0700
+Message-Id: <20200520234520.22563-4-sstabellini@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
 References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
@@ -46,70 +46,58 @@ No functional changes.
 
 Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
 ---
- drivers/xen/swiotlb-xen.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/xen/swiotlb-xen.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index b5e0492b07b9..958ee5517e0b 100644
+index 958ee5517e0b..9b4306a56feb 100644
 --- a/drivers/xen/swiotlb-xen.c
 +++ b/drivers/xen/swiotlb-xen.c
-@@ -57,7 +57,7 @@ static unsigned long xen_io_tlb_nslabs;
-  * can be 32bit when dma_addr_t is 64bit leading to a loss in
-  * information if the shift is done before casting to 64bit.
-  */
--static inline dma_addr_t xen_phys_to_bus(phys_addr_t paddr)
-+static inline dma_addr_t xen_phys_to_bus(struct device *dev, phys_addr_t paddr)
- {
- 	unsigned long bfn = pfn_to_bfn(XEN_PFN_DOWN(paddr));
- 	dma_addr_t dma = (dma_addr_t)bfn << XEN_PAGE_SHIFT;
-@@ -78,9 +78,9 @@ static inline phys_addr_t xen_bus_to_phys(dma_addr_t baddr)
- 	return paddr;
+@@ -67,7 +67,7 @@ static inline dma_addr_t xen_phys_to_bus(struct device *dev, phys_addr_t paddr)
+ 	return dma;
  }
  
--static inline dma_addr_t xen_virt_to_bus(void *address)
-+static inline dma_addr_t xen_virt_to_bus(struct device *dev, void *address)
+-static inline phys_addr_t xen_bus_to_phys(dma_addr_t baddr)
++static inline phys_addr_t xen_bus_to_phys(struct device *dev, dma_addr_t baddr)
  {
--	return xen_phys_to_bus(virt_to_phys(address));
-+	return xen_phys_to_bus(dev, virt_to_phys(address));
- }
+ 	unsigned long xen_pfn = bfn_to_pfn(XEN_PFN_DOWN(baddr));
+ 	dma_addr_t dma = (dma_addr_t)xen_pfn << XEN_PAGE_SHIFT;
+@@ -339,7 +339,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
  
- static inline int range_straddles_page_boundary(phys_addr_t p, size_t size)
-@@ -309,7 +309,7 @@ xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
- 	 * Do not use virt_to_phys(ret) because on ARM it doesn't correspond
- 	 * to *dma_handle. */
- 	phys = *dma_handle;
--	dev_addr = xen_phys_to_bus(phys);
-+	dev_addr = xen_phys_to_bus(hwdev, phys);
- 	if (((dev_addr + size - 1 <= dma_mask)) &&
- 	    !range_straddles_page_boundary(phys, size))
- 		*dma_handle = dev_addr;
-@@ -367,7 +367,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
- 				unsigned long attrs)
+ 	/* do not use virt_to_phys because on ARM it doesn't return you the
+ 	 * physical address */
+-	phys = xen_bus_to_phys(dev_addr);
++	phys = xen_bus_to_phys(hwdev, dev_addr);
+ 
+ 	/* Convert the size to actually allocated. */
+ 	size = 1UL << (order + XEN_PAGE_SHIFT);
+@@ -420,7 +420,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
+ static void xen_swiotlb_unmap_page(struct device *hwdev, dma_addr_t dev_addr,
+ 		size_t size, enum dma_data_direction dir, unsigned long attrs)
  {
- 	phys_addr_t map, phys = page_to_phys(page) + offset;
--	dma_addr_t dev_addr = xen_phys_to_bus(phys);
-+	dma_addr_t dev_addr = xen_phys_to_bus(dev, phys);
+-	phys_addr_t paddr = xen_bus_to_phys(dev_addr);
++	phys_addr_t paddr = xen_bus_to_phys(hwdev, dev_addr);
  
  	BUG_ON(dir == DMA_NONE);
- 	/*
-@@ -392,7 +392,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
- 		return DMA_MAPPING_ERROR;
  
- 	phys = map;
--	dev_addr = xen_phys_to_bus(map);
-+	dev_addr = xen_phys_to_bus(dev, map);
- 
- 	/*
- 	 * Ensure that the address returned is DMA'ble
-@@ -536,7 +536,7 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
- static int
- xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
+@@ -436,7 +436,7 @@ static void
+ xen_swiotlb_sync_single_for_cpu(struct device *dev, dma_addr_t dma_addr,
+ 		size_t size, enum dma_data_direction dir)
  {
--	return xen_virt_to_bus(xen_io_tlb_end - 1) <= mask;
-+	return xen_virt_to_bus(hwdev, xen_io_tlb_end - 1) <= mask;
- }
+-	phys_addr_t paddr = xen_bus_to_phys(dma_addr);
++	phys_addr_t paddr = xen_bus_to_phys(dev, dma_addr);
  
- const struct dma_map_ops xen_swiotlb_dma_ops = {
+ 	if (!dev_is_dma_coherent(dev))
+ 		xen_dma_sync_for_cpu(dma_addr, paddr, size, dir);
+@@ -449,7 +449,7 @@ static void
+ xen_swiotlb_sync_single_for_device(struct device *dev, dma_addr_t dma_addr,
+ 		size_t size, enum dma_data_direction dir)
+ {
+-	phys_addr_t paddr = xen_bus_to_phys(dma_addr);
++	phys_addr_t paddr = xen_bus_to_phys(dev, dma_addr);
+ 
+ 	if (is_xen_swiotlb_buffer(dma_addr))
+ 		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
 -- 
 2.17.1
 
