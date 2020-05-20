@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1801DB2A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00261DB2A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgETMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETMDk (ORCPT
+        id S1727007AbgETMEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:04:34 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:34804 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETMEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:03:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB4BC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:03:39 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q24so1179230pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uSTZY+FCH/CsbXzCEs1ajXnnqSDIAGZV3gPCDr9dJDI=;
-        b=OKm4+EwS5DhdDxYcBsveRI/pq2+Eb7ZuGjPHfVxDACoZQJrihB8xe+Gw7dNU6tInkO
-         LgpV5U+BjMXzlu/DdJ2cj6KZbBRzfAxIVrLaSoF6jiHQxSCYjarqHiNlpoXCuybtrLa8
-         bKwHymbdwb+yNHuT7dvrS317yS09HDnhYwjK5Hl484kPz5A1++onfYG5rMBRX0kCcTz0
-         5RDUJo5HbvZoNRij6pQAICFEYaMXsV3hyX4ksvGz2EfGrDxOwuzyCpnr6z6j4JiBrwU9
-         i+FA3koeAUlMVqS2eN/PkBC1HHFvUYHbTLKmb9ffYEa24884t6YvPN5EUqGgf5LubRpx
-         nYSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uSTZY+FCH/CsbXzCEs1ajXnnqSDIAGZV3gPCDr9dJDI=;
-        b=XsUMYUPEp37Y2dvfsoZKJ+1804as1kdZsRdYM4/IIvLSv51SFrfWLIZFukndD4dnhu
-         AvD1Q01kqWsT9xcuwdx5zCBWbMPNykjPhtomPApnmksWO48URHHaPKd9gYhbmsSfebhN
-         pO8PDGl88RPkyufQVdVIUO/SjS4hHtHpg+Q2i8RtIG221rk3S5p4o6Z5olGi6Ly5zAzX
-         6D/5DgtDjVCHN3uamfrXeQoF+CR0hh+SDUaEz7Zl/3YR1niXumWV6+ZIJtdO+Do/ihwI
-         sS1wI01FfsIqc8zIxA4alNAVwaQkNxgjO3wx1vocTDycnOQrnCL4LwGzci/4v71RK+oN
-         /WZw==
-X-Gm-Message-State: AOAM531OvWsjYfuBfeEcGfnHUlYQQhMlURuKugSPvo+rqmL/G0FdEGIb
-        6faSoX00MhoUPxpl5yni5rNYzba+KGFqAajkbw0=
-X-Google-Smtp-Source: ABdhPJzlS0/QLumcsxy/AkcPqpC5Qj+ROn+VA0uMqCHu4uTcyy/8IRu5SVpkweJZ8phlfvhYFMenpmAcw+VhQDfw5Gg=
-X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr5160248pjb.228.1589976219013;
- Wed, 20 May 2020 05:03:39 -0700 (PDT)
+        Wed, 20 May 2020 08:04:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KC1RLG176850;
+        Wed, 20 May 2020 12:04:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=DsT4BnuEUbk/nScFx27b5DkH7xTb4qeH1YVdy3VSSQM=;
+ b=kGPLLIX0Prt6BXOx7Mq8sb8tZW75xBnRbwRphQfNern9VyDgqwBdqxL99NFA0eA5UgwY
+ Si9XdEnGFuccYUymIqm/oTyIl4vtrDLx6HHxF3mKhNjAfA4NVB2KFFOFUG/tae0cxhx0
+ +khMwq8mXgNiz9KYc67DO99gnSJ2IFcpA7JfbAzTCIToHlzMZxt2pBhw6OG2/e2V07W/
+ D7U+WcjzOsjwDEuOF4hkYMgGq8L19e0KpbGKNFRLX9SwHeF8IllT+bCE+CZ8MthredYm
+ StqmlblPMWdt11tzUhZPhC/+v0Gqp3Gpxcqew+yix4PC2TlXUrPU1jMkzxo14T0QSyGD pA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 31501r97fq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 May 2020 12:04:24 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KC2cs7119695;
+        Wed, 20 May 2020 12:04:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 313gj3dxae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 12:04:23 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04KC4LBe014899;
+        Wed, 20 May 2020 12:04:21 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 May 2020 05:04:20 -0700
+Date:   Wed, 20 May 2020 15:04:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] of: Fix a refcounting bug in __of_attach_node_sysfs()
+Message-ID: <20200520120414.GE172354@mwanda>
 MIME-Version: 1.0
-References: <202005201042.yjSO10j2%lkp@intel.com>
-In-Reply-To: <202005201042.yjSO10j2%lkp@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 20 May 2020 15:03:26 +0300
-Message-ID: <CAHp75VcwekGU3bQDWkaTmLE8SPU7NZoUY6Es9Fy8oG5E=LT81A@mail.gmail.com>
-Subject: Re: drivers/mux/adgs1408.c:112:34: warning: unused variable 'adgs1408_of_match'
-To:     kbuild test robot <lkp@intel.com>
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dx69az4.fsf@mpe.ellerman.id.au>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1015 priorityscore=1501 cotscore=-2147483648
+ impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 5:23 AM kbuild test robot <lkp@intel.com> wrote:
->
-> Hi Chris,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   115a54162a6c0d0ef2aef25ebd0b61fc5e179ebe
-> commit: e9e40543ad5b38b848879768359fd13650529961 spi: Add generic SPI multiplexer
-> date:   3 months ago
-> config: x86_64-randconfig-r022-20200519 (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 135b877874fae96b4372c8a3fbfaa8ff44ff86e3)
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         git checkout e9e40543ad5b38b848879768359fd13650529961
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
+The problem in this code is that if kobject_add() fails, then it should
+call of_node_put(np) to drop the reference count.  I've actually moved
+the of_node_get(np) later in the function to avoid needing to do clean
+up.
 
-Fix has been submitted:
-https://lore.kernel.org/lkml/20200520120122.67528-1-andriy.shevchenko@linux.intel.com/T/#u
+Fixes: 5b2c2f5a0ea3 ("of: overlay: add missing of_node_get() in __of_attach_node_sysfs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: move the of_node_get() instead of doing clean up.  Also the v1 had a
+    confusing typo in the commit message.
 
+ drivers/of/kobj.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
+index c72eef988041..a32e60b024b8 100644
+--- a/drivers/of/kobj.c
++++ b/drivers/of/kobj.c
+@@ -134,8 +134,6 @@ int __of_attach_node_sysfs(struct device_node *np)
+ 	if (!name)
+ 		return -ENOMEM;
+ 
+-	of_node_get(np);
+-
+ 	rc = kobject_add(&np->kobj, parent, "%s", name);
+ 	kfree(name);
+ 	if (rc)
+@@ -144,6 +142,7 @@ int __of_attach_node_sysfs(struct device_node *np)
+ 	for_each_property_of_node(np, pp)
+ 		__of_add_property_sysfs(np, pp);
+ 
++	of_node_get(np);
+ 	return 0;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
