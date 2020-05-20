@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF051DBE5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929DE1DBE59
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgETTts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbgETTtp (ORCPT
+        id S1727027AbgETTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:49:40 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:42552 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726754AbgETTtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:49:45 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BBEC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:49:45 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbUiM-0001bM-SA; Wed, 20 May 2020 21:49:19 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 5355A100C99; Wed, 20 May 2020 21:49:18 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     paulmck@kernel.org, Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Subject: Re: [patch V6 12/37] x86/entry: Provide idtentry_entry/exit_cond_rcu()
-In-Reply-To: <20200520180546.GQ2869@paulmck-ThinkPad-P72>
-References: <20200515235125.628629605@linutronix.de> <CALCETrWnkuwvTuJKr8Vuecgr_q+1ReBDrTv4XOqGaw7-ZpEeQQ@mail.gmail.com> <87ftbv7nsd.fsf@nanos.tec.linutronix.de> <87a7237k3x.fsf@nanos.tec.linutronix.de> <CALCETrXbQkE1zTW5Ly+ZQgDFLQQa3crPxzK6to0YR+BP5B9q+g@mail.gmail.com> <874ksb7hbg.fsf@nanos.tec.linutronix.de> <CALCETrWw7Vz39ROdBV1QxOQS3gMbPgNu5RRSuhBaXG+UVcFAzw@mail.gmail.com> <20200520022353.GN2869@paulmck-ThinkPad-P72> <CALCETrWAVTjsKwih06GeK237w7RLSE2D2+naiunA=VFEJY1meQ@mail.gmail.com> <CALCETrVPM1x5v8Gq7xyF+QqxSWSWTShhc7K02nGJZuB-oVDxNw@mail.gmail.com> <20200520180546.GQ2869@paulmck-ThinkPad-P72>
-Date:   Wed, 20 May 2020 21:49:18 +0200
-Message-ID: <87o8qiv135.fsf@nanos.tec.linutronix.de>
+        Wed, 20 May 2020 15:49:39 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5B045623A7A4;
+        Wed, 20 May 2020 21:49:37 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TH9rs0QSko1X; Wed, 20 May 2020 21:49:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 07759623A7CB;
+        Wed, 20 May 2020 21:49:37 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 8HTSTKpM1ZAC; Wed, 20 May 2020 21:49:36 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id DD072623A7A4;
+        Wed, 20 May 2020 21:49:36 +0200 (CEST)
+Date:   Wed, 20 May 2020 21:49:36 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
+Message-ID: <1547930539.249342.1590004176796.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML fixes for 5.7 final
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Index: 7oeqR7ADUshtFLOz07bQL7e19w9UfQ==
+Thread-Topic: UML fixes for 5.7 final
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-> On Wed, May 20, 2020 at 09:51:17AM -0700, Andy Lutomirski wrote:
->> Paul, the major change here is that if an IRQ hits normal kernel code
->> (i.e. code where RCU is watching and we're not in an EQS), the IRQ
->> won't call rcu_irq_enter() and rcu_irq_exit().  Instead it will call
->> rcu_tickle() on entry and nothing on exit.  Does that cover all the
->> bases?
->
-> From an RCU viewpoint, yes, give or take my concerns about someone
-> putting rcu_tickle() on entry and rcu_irq_exit() on exit.  Perhaps
-> I can bring some lockdep trickery to bear.
+Linus,
 
-An surplus rcu_irq_exit() should already trigger alarms today.
+The following changes since commit 1d2cc5ac6f6668cc15216d51051103c61467d7e8:
 
-> But I must defer to Thomas and Peter on the non-RCU/non-NO_HZ_FULL
-> portions of this.
+  Merge tag 'riscv-for-linus-5.7-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2020-04-29 09:25:32 -0700)
 
-I don't see a problem. Let me write that into actual testable patch
-form.
+are available in the Git repository at:
 
-Thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.7-rc6
 
-        tglx
+for you to fetch changes up to 2e27d33d22afa3d12746f854d6a4fad7ad7b86de:
+
+  um: Fix typo in vector driver transport option definition (2020-04-29 21:22:15 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following bug fixes for UML:
+
+- Two missing includes which cause build issues on recent systems
+- Correctly set TRANS_GRE_LEN in our vector network driver
+
+----------------------------------------------------------------
+Ignat Korchagin (1):
+      um: Fix typo in vector driver transport option definition
+
+Johannes Berg (2):
+      um: Fix xor.h include
+      um: syscall.c: include <asm/unistd.h>
+
+ arch/um/drivers/vector_user.h | 2 +-
+ arch/um/include/asm/xor.h     | 2 +-
+ arch/um/kernel/skas/syscall.c | 1 +
+ 3 files changed, 3 insertions(+), 2 deletions(-)
