@@ -2,151 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38481DBE10
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA331DBE27
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgETThg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
+        id S1726954AbgETTkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgETThf (ORCPT
+        with ESMTP id S1726548AbgETTke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:37:35 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B077C061A0E;
-        Wed, 20 May 2020 12:37:35 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbUWe-0001Mp-BQ; Wed, 20 May 2020 21:37:12 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id A319A100C99; Wed, 20 May 2020 21:37:11 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     stephen@networkplumber.org, a.darwish@linutronix.de,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        paulmck@kernel.org, bigeasy@linutronix.de, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
-In-Reply-To: <20200519.195722.1091264300612213554.davem@davemloft.net>
-Date:   Wed, 20 May 2020 21:37:11 +0200
-Message-ID: <87wo56v1nc.fsf@nanos.tec.linutronix.de>
+        Wed, 20 May 2020 15:40:34 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CFDC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:40:33 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u1so3582030wmn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zEshQ4RXawJgCwUu3H0A20vwPAUaqTy1SfLW1PuU2h8=;
+        b=f8o7H66EK7+jLQciN32W+2zxAI9l4Z+s+j3m6SnLezfaCfNXv3VtftiI8r55iYE4+X
+         XovUH1N5jI8K0sYTI+dh41vFvo801dOd2jq2yS8lNuhSJHeRgktNpvL7uPYa9hEbRrBo
+         vZIDMmchKqqyKc4TvIt3gAaiUxFlsunbfe5jk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zEshQ4RXawJgCwUu3H0A20vwPAUaqTy1SfLW1PuU2h8=;
+        b=nezrUHSG6BaXElo1pkAfI1UBDEgUihO4aosh7hI+DylwtASGRjROVXd/DfI6kfMtzQ
+         iPCp+CErTlDsbZ3LXEMblL6fNZAUsaOuh8jaXUEm85osmJcf1qF+o9xv8CxM0BtZ1b3b
+         8y6bTX3QKHbWzfm+VQbuDF1WCUVieU+N/36hujL3f8u3kUIwwYze0Hp73/PisofH5vRi
+         5khW620ghmLeiGMuyRogJEPgai1ZpDK2tcC5DmLE0uWHhvcH4X4pa1HQUBGIzQ+0D1ZI
+         yiODp91/Cl0hWAkYXHSKE9rflmdaYTC1oAhUZYrJcsnwnG8wAmlTG9MVRJPWTLK4fdu1
+         ss2w==
+X-Gm-Message-State: AOAM531W3SOLXNDEqL7gB7dPi//d1zYV1XVmzbcoYDWLnAVUEI1qCXjN
+        +xy9YQ+N+twmQGE4JsQl4BCj3g==
+X-Google-Smtp-Source: ABdhPJz0FOd3fwCL+MjyfIP86aAo9gZALiSzpecZpnD5irz2AoyRaqdBnLYwt0qg/IOO3H0g0C3Fdw==
+X-Received: by 2002:a05:600c:40d:: with SMTP id q13mr5971261wmb.69.1590003631679;
+        Wed, 20 May 2020 12:40:31 -0700 (PDT)
+Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
+        by smtp.gmail.com with ESMTPSA id h20sm3965317wma.6.2020.05.20.12.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 12:40:31 -0700 (PDT)
+Date:   Wed, 20 May 2020 19:40:29 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Xia Jiang <xia.jiang@mediatek.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rick Chang <rick.chang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v7 11/11] media: platform: Add jpeg dec/enc feature
+Message-ID: <20200520194029.GA38738@chromium.org>
+References: <20200303123446.20095-1-xia.jiang@mediatek.com>
+ <20200303123446.20095-12-xia.jiang@mediatek.com>
+ <20200306112337.GA163286@chromium.org>
+ <1587009795.24163.87.camel@mhfsdcap03>
+ <20200501173712.GB218308@chromium.org>
+ <1589020095.24163.150.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1589020095.24163.150.camel@mhfsdcap03>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Miller <davem@davemloft.net> writes:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Wed, 20 May 2020 01:42:30 +0200
->>> Please try, it isn't that hard..
->>>
->>> # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
->>>
->>> real	0m17.002s
->>> user	0m1.064s
->>> sys	0m0.375s
->> 
->> And that solves the incorrectness of the current code in which way?
->
-> You mentioned that there wasn't a test case, he gave you one to try.
+Hi Xia,
 
-If it makes you happy to compare incorrrect code with correct code, here
-you go:
+On Sat, May 09, 2020 at 06:28:15PM +0800, Xia Jiang wrote:
+> On Fri, 2020-05-01 at 17:37 +0000, Tomasz Figa wrote:
+> > Hi Xia,
+> > 
+> > On Thu, Apr 16, 2020 at 12:03:15PM +0800, Xia Jiang wrote:
+> > > On Fri, 2020-03-06 at 20:23 +0900, Tomasz Figa wrote:
+> > > > Hi Xia,
+> > > > 
+> > > > On Tue, Mar 03, 2020 at 08:34:46PM +0800, Xia Jiang wrote:
+> > > > > Add mtk jpeg encode v4l2 driver based on jpeg decode, because that jpeg
+> > > > > decode and encode have great similarities with function operation.
+> > > > 
+> > > > Thank you for the patch. Please see my comments inline.
+> > > 
+> > > Dear Tomasz,
+> > > 
+> > > Thank you for your reply. I have followed your advice and submited v8
+> > > version patch.
+> > > 
+> > > Please check my reply below.
+> Dear Tomasz,
+> I have some confuse about your advice, please check my reply below.
 
-5 runs of 1000 device add, 1000 device rename and 1000 device del
+Sorry for the late reply again. Please see my reply inline.
 
-CONFIG_PREEMPT_NONE=y
+> > [snip]
+> > > > 
+> > > > >  
+> > > > > -	switch (s->target) {
+> > > > > -	case V4L2_SEL_TGT_COMPOSE:
+> > > > > -		s->r.left = 0;
+> > > > > -		s->r.top = 0;
+> > > > > -		ctx->out_q.w = s->r.width;
+> > > > > -		ctx->out_q.h = s->r.height;
+> > > > > -		break;
+> > > > > -	default:
+> > > > > -		return -EINVAL;
+> > > > > +		switch (s->target) {
+> > > > > +		case V4L2_SEL_TGT_CROP:
+> > > > > +			s->r.left = 0;
+> > > > > +			s->r.top = 0;
+> > > > > +			ctx->out_q.w = s->r.width;
+> > > > > +			ctx->out_q.h = s->r.height;
+> > > > 
+> > > > What happens if the userspace provides a value bigger than current format?
+> > > we need get the min value of userspace value and current value,changed
+> > > it like this:
+> > > ctx->out_q.w = min(s->r.width, ctx->out_q.w);
+> > > ctx->out_q.h = min(s->r.height,ctx->out_q.h);
+> > 
+> > Since ctx->out_q is modified by this function, wouldn't that cause
+> > problems if S_SELECTION was called two times, first with a smaller
+> > rectangle and then with a bigger one? We should store the active crop
+> > and format separately and use the latter for min().
+> Add a member variable(struct v4l2_rect) in out_q structure for storing
+> the active crop, like this:
+> s->r.width =  min(s->r.width, ctx->out_q.w);
+> s->r.height = min(s->r.height,ctx->out_q.h);
+> ctx->out_q.rect.width = s->r.width;
+> ctx->out_q.rect.height =  s->r.height;
+> Is that ok?
 
-         Base      rwsem
- add     0:05.01   0:05.28
-	 0:05.93   0:06.11
-	 0:06.52   0:06.26
-	 0:06.06   0:05.74
-	 0:05.71   0:06.07
+Yes. I'd call it crop_rect and it can be simplified further into:
 
- rename  0:32.57   0:33.04
-	 0:32.91   0:32.45
-	 0:32.72   0:32.53
-	 0:39.65   0:34.18
-	 0:34.52   0:32.50
+ct->out_q.crop_rect = s->r;
 
- delete  3:48.65   3:48.91
-	 3:49.66   3:49.13
-	 3:45.29   3:48.26
-	 3:47.56   3:46.60
-	 3:50.01   3:48.06
+> > 
+> > [snip]
+> > > > >  
+> > > > >  	while ((vb = mtk_jpeg_buf_remove(ctx, q->type)))
+> > > > >  		v4l2_m2m_buf_done(vb, VB2_BUF_STATE_ERROR);
+> > > > > @@ -772,6 +1011,45 @@ static int mtk_jpeg_set_dec_dst(struct mtk_jpeg_ctx *ctx,
+> > > > >  	return 0;
+> > > > >  }
+> > > > >  
+> > > > > +static void mtk_jpeg_set_enc_dst(struct mtk_jpeg_ctx *ctx, void __iomem *base,
+> > > > > +				 struct vb2_buffer *dst_buf,
+> > > > > +				 struct mtk_jpeg_enc_bs *bs)
+> > > > > +{
+> > > > > +	bs->dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 0);
+> > > > > +	bs->dma_addr_offset = ctx->enable_exif ? MTK_JPEG_DEFAULT_EXIF_SIZE : 0;
+> > > > 
+> > > > Could you explain what is the meaning of the dma_addr_offset and where the
+> > > > default EXIF size comes from? Also, how is the encoder output affected by
+> > > > the enable_exif flag?
+> > > If enabled the exif mode, the real output will be filled at the locaiton
+> > > of dst_addr+ dma_addr_offset(exif size).The dma_addr_offset will be
+> > > filled by the application.
+> > > The default exif size is setted as constant value 64k according to the
+> > > spec.(Exif metadata are restricted in size to 64kB in JPEG images
+> > > because according to the specification this information must be
+> > > contained within a signed JPEG APP1 segment)
+> > 
+> > Okay, thanks. Then it sounds like MTK_JPEG_MAX_EXIF_SIZE could be a more
+> > appropriate name.
+> > 
+> > [snip]
+> > > > > +}
+> > > > > +
+> > > > >  static void mtk_jpeg_device_run(void *priv)
+> > > > >  {
+> > > > >  	struct mtk_jpeg_ctx *ctx = priv;
+> > > > > @@ -782,6 +1060,8 @@ static void mtk_jpeg_device_run(void *priv)
+> > > > >  	struct mtk_jpeg_src_buf *jpeg_src_buf;
+> > > > >  	struct mtk_jpeg_bs bs;
+> > > > >  	struct mtk_jpeg_fb fb;
+> > > > > +	struct mtk_jpeg_enc_bs enc_bs;
+> > > > > +	struct mtk_jpeg_enc_fb enc_fb;
+> > > > >  	int i;
+> > > > >  
+> > > > >  	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+> > > > > @@ -792,30 +1072,47 @@ static void mtk_jpeg_device_run(void *priv)
+> > > > >  		for (i = 0; i < dst_buf->vb2_buf.num_planes; i++)
+> > > > >  			vb2_set_plane_payload(&dst_buf->vb2_buf, i, 0);
+> > > > >  		buf_state = VB2_BUF_STATE_DONE;
+> > > > 
+> > > > About existing code, but we may want to explain this.
+> > > > What is this last frame handling above for?
+> > > if the user gives us a empty buffer(means it is the last frame),the
+> > > driver will not encode and done the buffer to the user.
+> > >
+> > 
+> > An empty buffer is not a valid way of signaling a last frame in V4L2. In
+> > general, I'm not sure there is such a thing in JPEG, because all frames
+> > are separate from each other and we always expect 1 input buffer and 1
+> > output buffer for one frame. We might want to remove the special
+> > handling in a follow up patch.
+> How does application to end jpeg operation in motion jpeg if we remove
+> this? I tryed to end with the condition that the input number equals
+> output number in UT, and is ok.
 
- -------------------------
+That's correct. The operation ends when the number of CAPTURE buffers
+dequeued is the same as the number of OUTPUT buffers queued.
 
-CONFIG_PREEMPT_VOLUNTARY=y
+> > 
+> > > > > -		goto dec_end;
+> > > > > +		goto device_run_end;
+> > > > >  	}
+> > > > >  
+> > > > > -	if (mtk_jpeg_check_resolution_change(ctx, &jpeg_src_buf->dec_param)) {
+> > > > > -		mtk_jpeg_queue_src_chg_event(ctx);
+> > > > > -		ctx->state = MTK_JPEG_SOURCE_CHANGE;
+> > > > > -		v4l2_m2m_job_finish(jpeg->m2m_dev, ctx->fh.m2m_ctx);
+> > > > > -		return;
+> > > > > -	}
+> > > > > +	if (jpeg->mode == MTK_JPEG_ENC) {
+> > > > > +		spin_lock_irqsave(&jpeg->hw_lock, flags);
+> > > > > +		mtk_jpeg_enc_reset(jpeg->reg_base);
+> > > > 
+> > > > Why do we need to reset every frame?
+> > > We do this operation is to ensure that all registers are cleared.
+> > > It's safer from the hardware point of view.
+> > 
+> > Wouldn't this only waste power? If we reset the hardware after powering
+> > up, the only registers that could change would be changed by the driver
+> > itself. The driver should program all registers properly when starting
+> > next frame anyway, so such a reset shouldn't be necessary.
+> I confirmed with hardware designer again that we need to reset every
+> frame. If we do not do like this, unexpected mistakes may occur.
 
-         Base      rwsem
- add     0:06.80   0:06.42
-	 0:04.77   0:05.03
-	 0:05.74   0:04.62
-	 0:05.87   0:04.34
-	 0:04.20   0:04.12
+Okay, thanks for double checking. Please add a comment to the code that it
+is a hardware requirement.
 
- rename  0:33.33   0:42.02
-	 0:42.36   0:32.55
-	 0:39.58   0:31.60
-	 0:33.69   0:35.08
-	 0:34.24   0:33.97
+> > 
+> > > > 
+> > > > > +
+> > > > > +		mtk_jpeg_set_enc_dst(ctx, jpeg->reg_base, &dst_buf->vb2_buf,
+> > > > > +				     &enc_bs);
+> > > > > +		mtk_jpeg_set_enc_src(ctx, jpeg->reg_base, &src_buf->vb2_buf,
+> > > > > +				     &enc_fb);
+> > > > > +		mtk_jpeg_enc_set_ctrl_cfg(jpeg->reg_base, ctx->enable_exif,
+> > > > > +					  ctx->enc_quality,
+> > > > > +					  ctx->restart_interval);
+> > > > > +
+> > > > > +		mtk_jpeg_enc_start(jpeg->reg_base);
+> > > > > +	} else {
+> > > > > +		if (mtk_jpeg_check_resolution_change
+> > > > > +			(ctx, &jpeg_src_buf->dec_param)) {
+> > > > > +			mtk_jpeg_queue_src_chg_event(ctx);
+> > > > > +			ctx->state = MTK_JPEG_SOURCE_CHANGE;
+> > > > > +			v4l2_m2m_job_finish(jpeg->m2m_dev, ctx->fh.m2m_ctx);
+> > > > 
+> > > > This is a bit strange. Resolution change should be signaled when the
+> > > > hardware attempted to decode a frame and detected a different resolution
+> > > > than current. It shouldn't be necessary for the userspace to queue a pair
+> > > > of buffers to signal it, as with the current code.
+> > > If the the resolution is bigger than current, the current buffer will
+> > > not be enough for the changed resolution.Shouldn't it tell the userspace
+> > > to queue new buffer and stream on again?
+> > 
+> > The V4L2 decode flow is as follows:
+> >  - application configures and starts only the OUTPUT queue,
+> >  - application queues an OUTPUT buffer with a frame worth of bitstream,
+> >  - decoder parses the bitstream headers, detects CAPTURE format and
+> >    signals the source change event,
+> >  - application reads CAPTURE format and configures and starts the
+> >    CAPTURE queue,
+> >  - application queues a CAPTURE buffer,
+> >  - decoder decodes the image to the queued buffer.
+> > 
+> > In case of subsequent (dynamic) resolution change:
+> >  - application queues an OUTPUT buffer and a CAPTURE buffer,
+> >  - decoder parses the bitstream, notices resolution change, updates
+> >    CAPTURE format and signals the source change event, refusing to
+> >    continue the decoding until the application acknowledges it,
+> >  - application either reallocates its CAPTURE buffers or confirms that
+> >    the existing buffers are fine and acknowledges resolution change,
+> >  - decoding continues.
+> > 
+> > For more details, please check the interface specification:
+> > https://www.kernel.org/doc/html/latest/media/uapi/v4l/dev-decoder.html
+> > 
+> I tryed to move this operation from device_run() to
+> mtk_jpeg_dec_buf_queue(),but have a problem in motion jpeg.For example,I
+> queued three buffers continuously,the third buffer has resolution
+> change(bigger than the second buffer),but the capture buffer used in
+> device run didn't changed.
+> How do we handle this case?
 
- delete  3:47.82   3:44.00
-	 3:47.42   3:51.00
-	 3:48.52   3:48.88
-	 3:48.50   3:48.09
-	 3:50.03   3:46.56
+Sorry, I think I misread the driver code. It looks like there is a code
+that parses the JPEG header from the source buffer called from
+mtk_jpeg_dec_buf_queue() and that is the moment the driver detects the new
+resolution. Then it only signals the event once all the previously queued
+frames have been decoded, i.e. when the first new resolution frame gets to
+device_run(). I think the current code should be fine then. Sorry for
+confusion again!
 
- -------------------------
+> > [snip]
+> > > > > -	ret = video_register_device(jpeg->dec_vdev, VFL_TYPE_GRABBER, 3);
+> > > > > +	ret = video_register_device(jpeg->vfd_jpeg, VFL_TYPE_GRABBER, -1);
+> > > > 
+> > > > FYI the type changed to VFL_TYPE_VIDEO recently.
+> > > I changed VFL_TYPE_GRABBER to VFL_TYPE_VIDEO,but builded fail.
+> > 
+> > What kernel version are you building with?
+> I build it with the latest kernel 5.7,but builed fail again.
 
-CONFIG_PREEMPT=y
+That's strange. There is no VFL_TYPE_GRABBER in 5.7 anymore:
+https://elixir.bootlin.com/linux/v5.7-rc6/source/include/media/v4l2-dev.h#L24
 
-         Base      rwsem
+Best regards,
+Tomasz
 
- add     0:07.89   0:07.72
-	 0:07.25   0:06.72
-	 0:07.42   0:06.51
-	 0:06.92   0:06.38
-	 0:06.20   0:06.72
-
- rename  0:41.77   0:32.39
-	 0:44.29   0:33.29
-	 0:36.19   0:34.86
-	 0:33.19   0:35.06
-	 0:37.00   0:34.78
-
- delete  2:36.96   2:39.97
-	 2:37.80   2:42.19
-	 2:44.66   2:48.40
-	 2:39.75   2:41.02
-	 2:40.77   2:38.36
-
-The runtime variation is rather large and when running the same in a VM
-I got complete random numbers for both base and rwsem. The most amazing
-was delete where the time varies from 30s to 6m20s.
-
-Btw, Sebastian noticed that rename spams dmesg:
-
-  netdev_info(dev, "renamed from %s\n", oldname);
-
-which eats about 50% of the Rename run time.
-
-         Base      netdev_info() removed
-
-Rename   0:34.84   0:17.48
-
-That number at least makes tons of sense
-
-Thanks,
-
-        tglx
