@@ -2,141 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C8D1DAAB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2721DAAC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgETGjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgETGjj (ORCPT
+        id S1726588AbgETGlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:41:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2610 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726369AbgETGlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:39:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B7CC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 23:39:39 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l18so1916423wrn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 23:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=t0COEyXj5D7NvkjtdvydID9BlBfxGe8of0Dfo1AtG48=;
-        b=JNEE1o6yhLVdcuKXhiGY+WKqOeJP/cguKffC8RXamxJeYUzNWMSAf5svkdHabJt3X2
-         fQ/ibhR69Q/0NTu4DHD1BhZyV7yp+1jx/ogls2VBx5Anqks+AxyaB+uFdCiAWepuXPml
-         fU++yx8fB9HPa9iEI3CLdd7jRQ8FEfbiI9/EAAJzPFP8dR3c/XRJncHAWqD0LnIOzUZh
-         U1ES+pAUkLOyI1r5UuXphntFHQOmYJ4LYw9cTLf2lsrZDPH1C0w9p4dv82Isr1hUoaU+
-         xcHPLrBKE0qyoZ45tbz1tXRA7gkPXpD3oBKkI2k0xxQrJ4CHs/8EbN1fojDjeTAKR2lR
-         mqcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=t0COEyXj5D7NvkjtdvydID9BlBfxGe8of0Dfo1AtG48=;
-        b=of57LKEF85O+ZnjmZZIb/W8PmPkwJCgkVvqcwNKwI/1gxy9Cyl/CpfMlJQLZ94kbej
-         wEC1Xl7P94AiFIysRp2JGOxPPWDK3MWkIHcJBxAz0FB5nvDVE4tLzUmFx1W8sEiWrTz2
-         EG/YTDGY/enhY+Z619/GqP2fl8RWEWq4dCFXhV5uSAbmrJ+mxxe8p2/eWRBuUp26iuQ7
-         aaybTPed71BiYVklCUnunmnAOc8x0MDx9aUDHPHKd9JP21TGSHvIrIMfA6hh56t4LYUN
-         fWoH3f+OK9YqH8NMDYset/vF+UmNSyPW/uWscReinN+qhE4BMDiz6bmKpiZULIrz0VCJ
-         3N7A==
-X-Gm-Message-State: AOAM533yvGVxp5L5EwtIiGwRm1tt55RsaR2eUI0X9nTUO0Ypzpwdye4/
-        hxD956xudKe80myC+h8ZIFyE6A==
-X-Google-Smtp-Source: ABdhPJz10hiF6TxXkTZa5JarAelnWM1tRH1Rh9uBwIjHWV9cX2CCPggm62zNbl3YzgDThSkN+F/BhA==
-X-Received: by 2002:a5d:43d1:: with SMTP id v17mr2579195wrr.282.1589956777948;
-        Tue, 19 May 2020 23:39:37 -0700 (PDT)
-Received: from dell ([95.149.164.102])
-        by smtp.gmail.com with ESMTPSA id z132sm2217692wmc.29.2020.05.19.23.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 23:39:37 -0700 (PDT)
-Date:   Wed, 20 May 2020 07:39:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     devicetree@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] mfd: Introduce QTI I2C PMIC controller
-Message-ID: <20200520063935.GZ271301@dell>
-References: <cover.1588115326.git.gurus@codeaurora.org>
- <5644dea146f8b49a5b827c56392ff916bfb343e9.1588115326.git.gurus@codeaurora.org>
- <20200429075010.GX3559@dell>
- <20200501011319.GA28441@codeaurora.org>
- <20200515104520.GK271301@dell>
- <20200519185757.GA13992@codeaurora.org>
+        Wed, 20 May 2020 02:41:06 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04K6WW2x075620;
+        Wed, 20 May 2020 02:41:01 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 314rxd24xk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 02:41:01 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04K6eqTe003282;
+        Wed, 20 May 2020 06:40:59 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 313xehk2qw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 06:40:58 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04K6euGd65470584
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 06:40:56 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 337DFA4060;
+        Wed, 20 May 2020 06:40:56 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E01AA4054;
+        Wed, 20 May 2020 06:40:54 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.79.188.115])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 20 May 2020 06:40:54 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        tytso@mit.edu, "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCHv5 0/5] Improve ext4 handling of ENOSPC with multi-threaded use-case
+Date:   Wed, 20 May 2020 12:10:31 +0530
+Message-Id: <cover.1589955723.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200519185757.GA13992@codeaurora.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-20_02:2020-05-19,2020-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 cotscore=-2147483648 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 May 2020, Guru Das Srinagesh wrote:
+Hello All,
 
-> On Fri, May 15, 2020 at 11:45:20AM +0100, Lee Jones wrote:
-> > On Thu, 30 Apr 2020, Guru Das Srinagesh wrote:
-> > 
-> > > On Wed, Apr 29, 2020 at 08:50:10AM +0100, Lee Jones wrote:
-> > > > On Tue, 28 Apr 2020, Guru Das Srinagesh wrote:
-> > > > 
-> > > > > The Qualcomm Technologies, Inc. I2C PMIC Controller is used by
-> > > > > multi-function PMIC devices which communicate over the I2C bus.  The
-> > > > > controller enumerates all child nodes as platform devices, and
-> > > > > instantiates a regmap interface for them to communicate over the I2C
-> > > > > bus.
-> > > > > 
-> > > > > The controller also controls interrupts for all of the children platform
-> > > > > devices.  The controller handles the summary interrupt by deciphering
-> > > > > which peripheral triggered the interrupt, and which of the peripheral
-> > > > > interrupts were triggered.  Finally, it calls the interrupt handlers for
-> > > > > each of the virtual interrupts that were registered.
-> > > > > 
-> > > > > Nicholas Troast is the original author of this driver.
-> > > > > 
-> > > > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> > > > > ---
-> > > > >  drivers/mfd/Kconfig         |  11 +
-> > > > >  drivers/mfd/Makefile        |   1 +
-> > > > >  drivers/mfd/qcom-i2c-pmic.c | 737 ++++++++++++++++++++++++++++++++++++++++++++
-> > > > 
-> > > > The vast majority of this driver deals with IRQ handling.  Why can't
-> > > > this be split out into its own IRQ Chip driver and moved to
-> > > > drivers/irqchip?
-> > > 
-> > > There appear to be quite a few in-tree MFD drivers that register IRQ
-> > > controllers, like this driver does:
-> > > 
-> > > $ grep --exclude-dir=.git -rnE "irq_domain_(add|create).+\(" drivers/mfd | wc -l
-> > > 23
-> > > 
-> > > As a further example, drivers/mfd/stpmic1.c closely resembles this
-> > > driver in that it uses both devm_regmap_add_irq_chip() as well as
-> > > devm_of_platform_populate().
-> > > 
-> > > As such, it seems like this driver is in line with some of the
-> > > architectural choices that have been accepted in already-merged drivers.
-> > > Could you please elaborate on your concerns?
-> > 
-> > It is true that *basic* IRQ domain support has been added to these
-> > drivers in the past.  However, IMHO the support added to this driver
-> > goes beyond those realms such that it would justify a driver of its
-> > own.
-> 
-> I am exploring an option to see if the regmap-irq APIs may be used in
-> this driver, similar to stpmic1.c. Just to let you know, it might be a
-> few days before I am able to post my next patchset as I'll have to make
-> the necessary changes and test them out first.
+Please note that these patches are based on top of mballoc cleanup series [2]
+which is also pending review. :)
 
-Take your time.
+v4 -> v5:
+1. Removed ext4_lock_group() from fastpath and added that in the retry attempt,
+so that the performance of fastpath is not affected.
 
-The next release is due imminently, so you have as long as you need.
+v3 -> v4:
+1. Splitted code cleanups and debug improvements as a separate patch series.
+2. Dropped rcu_barrier() approach since it did cause some latency
+in my testing of ENOSPC handling.
+3. This patch series takes a different approach to improve the multi-threaded
+ENOSPC handling in ext4 mballoc code. Below mail gives more details.
+
+
+Background
+==========
+Consider a case where your disk is close to full but still enough space
+remains for your multi-threaded application to run. Now when this application
+threads tries to write (e.g. sparse file followed by mmap write or
+even fallocate multiple files) in parallel, then with current code of
+ext4 multi-block allocator, the application may get an ENOSPC error in some
+cases. Examining disk space at this time, we see there is sufficient space
+remaining for your application to continue to run.
+
+Additional info:
+============================
+1. Our internal test team was easily able to reproduce this ENOSPC error on 
+   an upstream kernel with 2GB ext4 image, with 64K blocksize. They didn't try
+   above 2GB and reprorted this issue directly to dev team. On examining the
+   free space when the application gets ENOSPC, the free space left was more
+   then 50% of filesystem size in some cases.
+
+2. For debugging/development of these patches, I used below script [1] to
+   trigger this issue quite frequently on a 64K blocksize setup with 240MB
+   ext4 image.
+
+
+Summary of patches and problem with current design
+==================================================
+There were 3 main problems which these patches tries to address and hence
+improve the ENOSPC handling in ext4's multi-block allocator code.
+
+1. Patch-2: Earlier we were considering the group is good or not (means
+   checking if it has enough free blocks to serve your request) without taking
+   the group's lock. This could result into a race where, if another thread is
+   discarding the group's prealloc list, then the allocation thread will not
+   consider those about to be free blocks and will fail will return that group
+   is not fit for allocation thus eventually fails with ENOSPC error.
+
+2. Patch-4: Discard PA algoritm only scans the PA list to free up the
+   additional blocks which got added to PA. This is done by the same thread-A
+   which at 1st couldn't allocate any blocks. But there is a window where,
+   once the blocks were allocated (say by some other thread-B previously) we
+   drop the group's lock and then checks to see if some of these blocks could
+   be added to prealloc list of the group from where we allocated some blocks.
+   After that we take the lock and add these additional blocks allocated by
+   thread-B to the PA list. But say if thread-A tries to scan the PA list
+   between this time interval then there is possibilty that it won't find any
+   blocks added to the PA list and hence may return ENOSPC error.
+   Hence this patch tries to add those additional blocks to the PA list just
+   after the blocks are marked as used with the same group's spinlock held.
+   
+3. Patch-3: Introduces a per cpu discard_pa_seq counter which is increased
+   whenever there is block allocation/freeing or when the discarding of any
+   group's PA list has started. With this we could know when to stop the
+   retrying logic and return ENOSPC error if there is actually no free space
+   left.
+   There is an optimization done in the block allocation fast path with this
+   approach that, before starting the block allocation, we only sample the
+   percpu seq count on that cpu. Only when the allocation fails and discard
+   couldn't free up any of the blocks in all of the group's PA list, that is
+   when we sample the percpu seq counter sum over all possible cpus to check
+   if we need to retry.
+
+
+Testing:
+=========
+Tested fstests with default bs of 4K and bs == PAGESIZE ("-g auto")
+No new failures were reported with this patch series in this testing.
+
+NOTE:
+1. This patch series is based on top of mballoc code cleanup patch series
+posted at [2].
+
+References:
+===========
+[v3]: https://lkml.kernel.org/linux-ext4/cover.1588313626.git.riteshh@linux.ibm.com/
+[1]: https://github.com/riteshharjani/LinuxStudy/blob/master/tools/test_mballoc.sh
+[2]: https://lkml.kernel.org/linux-ext4/cover.1589086800.git.riteshh@linux.ibm.com/
+
+
+Ritesh Harjani (5):
+  ext4: mballoc: Add blocks to PA list under same spinlock after allocating blocks
+  ext4: mballoc: Refactor ext4_mb_discard_preallocations()
+  ext4: mballoc: Introduce pcpu seqcnt for freeing PA to improve ENOSPC handling
+  ext4: mballoc: Refactor ext4_mb_good_group()
+  ext4: mballoc: Use lock for checking free blocks while retrying
+
+ fs/ext4/ext4.h              |   2 +
+ fs/ext4/mballoc.c           | 247 ++++++++++++++++++++++++++----------
+ include/trace/events/ext4.h |   3 +-
+ 3 files changed, 185 insertions(+), 67 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.21.0
+
