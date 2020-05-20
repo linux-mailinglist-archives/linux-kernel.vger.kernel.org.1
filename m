@@ -2,149 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE60B1DB87D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46D71DB888
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgETPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 11:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
+        id S1727782AbgETPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 11:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgETPkx (ORCPT
+        with ESMTP id S1726596AbgETPlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 11:40:53 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7897DC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:40:52 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q24so1483671pjd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y1fs4yTARhwr8K0tG6MX4nh3naH0ZmYi8BIM1sTbmmk=;
-        b=SnnX5IlL2jOGPBbhnW+zn3VrPPJKbMei2u1IT8e5MY6RbTas9TC1b4PG7IY7TPI+k2
-         7/La7lh3gBjKXgJBAri9ts5V1YYXVmIsibUimG5DAxmGATbORH/0vE5AJeLxwF0lW5KC
-         MPf3f5TCil0ArCReccwkMXQtx2FL7cVc1zuqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y1fs4yTARhwr8K0tG6MX4nh3naH0ZmYi8BIM1sTbmmk=;
-        b=ctv+m8SKcnC/Qs6CfibmDBLgr02Va6HmUUTbr2phUU2NBgfUMhTXSvniIJwbf1bPtM
-         DYEB3Cc6u1WeNbhQJ2m3g/AH3IxY7MwCdPGuv43EaIImaF7Ud8v97UHIrJZybr1RWjXB
-         DW9ZQzk9FLii5u3e+trXWb5jWcX5FE2LtABKAOeXq2ijUSloOityFkab4wEmym4s1Lv5
-         JNrOwM1yCcEasgRW3nraZKgrg4AXFCk0Msf+v23C7muRIhTN42i6YoT3nX+qjchRYF6i
-         XGGXnG30XaHRM9/q/PNowSmghRqXygqsEso4ODp3ZGqrXuYbKgWYd/4rRtUoazIWzy1Z
-         WHJQ==
-X-Gm-Message-State: AOAM5330hK7M4San05rXs0HERh8jtSVVkkw21qypuepDLSKhijDoEcpW
-        wAgoTISfepRfDcvaJNj5MfZzHA==
-X-Google-Smtp-Source: ABdhPJzUqLMoA1/x9EhQmhBk3k0L04+X2IjM0ZTqDWwb1s9RjOQf58DhCfsuP/AQ/DQfC6ncpfnROg==
-X-Received: by 2002:a17:90a:e54c:: with SMTP id ei12mr5800259pjb.129.1589989251909;
-        Wed, 20 May 2020 08:40:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p30sm2063906pgn.58.2020.05.20.08.40.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 08:40:50 -0700 (PDT)
-Date:   Wed, 20 May 2020 08:40:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] ACPICA: Replace one-element array and use struct_size()
- helper
-Message-ID: <202005200831.41DA095B2@keescook>
-References: <20200518222722.GA7791@embeddedor>
- <CAJZ5v0goZpvRQ6du214FqvFNQnqZHR9-kz=WhEgRsMJ3Zx0WiQ@mail.gmail.com>
- <20200519225058.GA14138@embeddedor>
- <CAJZ5v0jg9HoE2KEm45hxKNB1g61DzCn-GWH74w1goeHH3AKRaA@mail.gmail.com>
+        Wed, 20 May 2020 11:41:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F45C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:41:40 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jbQqM-0008V0-GO; Wed, 20 May 2020 17:41:18 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jbQqL-0003hT-Eo; Wed, 20 May 2020 17:41:17 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: [PATCH v8 0/5] mainline Protonic boards
+Date:   Wed, 20 May 2020 17:41:11 +0200
+Message-Id: <20200520154116.12909-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jg9HoE2KEm45hxKNB1g61DzCn-GWH74w1goeHH3AKRaA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 11:15:18AM +0200, Rafael J. Wysocki wrote:
-> On Wed, May 20, 2020 at 12:46 AM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> >
-> > On Tue, May 19, 2020 at 12:25:13PM +0200, Rafael J. Wysocki wrote:
-> > > On Tue, May 19, 2020 at 12:22 AM Gustavo A. R. Silva
-> > > <gustavoars@kernel.org> wrote:
-> > > >
-> > > > The current codebase makes use of one-element arrays in the following
-> > > > form:
-> > > >
-> > > > struct something {
-> > > >     int length;
-> > > >     u8 data[1];
-> > > > };
-> > > >
-> > > > struct something *instance;
-> > > >
-> > > > instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
-> > > > instance->length = size;
-> > > > memcpy(instance->data, source, size);
-> > > >
-> > > > but the preferred mechanism to declare variable-length types such as
-> > > > these ones is a flexible array member[1][2], introduced in C99:
-> > > >
-> > > > struct foo {
-> > > >         int stuff;
-> > > >         struct boo array[];
-> > > > };
-> > > >
-> > > > By making use of the mechanism above, we will get a compiler warning
-> > > > in case the flexible array does not occur last in the structure, which
-> > > > will help us prevent some kind of undefined behavior bugs from being
-> > > > inadvertently introduced[3] to the codebase from now on.
-> > >
-> > > However, the ACPICA code in the kernel comes from an external project
-> > > and changes of this type are generally not applicable to it unless
-> > > accepted upstream.
-> >
-> > Hi Rafael,
-> >
-> > By _accepted upstream_, in this case, you mean the adoption of the
-> > flexible-arrays in the whole codebase, first?
-> 
-> I meant whether or not the patch is accepted by the ACPICA upstream.
+changes v8:
+- resend correct changes
 
-Is that here? https://github.com/acpica/acpica/commits/master
+changes v7:
+- VT7: reorder node alphabetically
+- VT7: rename "reg_12v_bl: regulator-bl-12v" to "reg_bl_12v0: regulator-bl-12v0"
+- VT7: remove panel and TS nodes. This drivers are currently not
+  mainline.
+- prti6q.dtsi: move reg_1v8 to prti6q.dts
+- prti6q.dtsi: remove pinctrl from the can1 node. It is done on almost
+  every board file.
 
-> 
-> >  If this is the case
-> > notice that there are hundreds of these flexible-array conversions
-> > in mainline, already:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=flexible-array
-> >
-> > Is this what you mean?
-> 
-> I'm not actually sure what you mean here.
+changes v6:
+- move fsl.yaml changes to separate patch
+- remove partitions, they are provided by the bootloader
+- update flash compatible
+- rename can3 to can
+- fix fsl,mode
+- fix interrupt in the wlan node on PRTI6Q
 
-I think this was just a misunderstanding about what "upstream" meant. :)
+changes v5:
+- PRTI6Q: remove status from the pwm-backlight node
+- drop the vendor-prefixes patch, it is already taken by Rob
+- add Reviewed-by: Rob Herring <robh@kernel.org>
 
-I hope ACPICA will take these changes -- it seems like we keep running
-into these issues with the kernel's language feature clean-ups and ACPICA
-upstream, though each have been resolved so far! :) Flexible array
-members are a C99 feature, so it's hardly a new way to express things.
-In fact, it looks like ACPICA already builds with -c99 by default:
-https://github.com/acpica/acpica/blob/master/generate/unix/Makefile.config#L202
-https://github.com/acpica/acpica/blob/master/generate/efi/Makefile.config#L93
+changes v4:
+- VT7: fix typo
 
-MSVC has supported them (called "unsized arrays") since 7.1 in 2003.
+changes v3:
+- move compatible to the start of node
+- move status to the end
+- use generic names in compatible
+- refactor dts/dtsi
+- use alphabet order for pinctrl and phandels
+- remove unused or currently not supported nodes
 
-Gustavo, can you build a merge request for the ACPICA project directly?
+changes v2:
+- squash PRTI6Q patches
+
+Oleksij Rempel (5):
+  ARM: dts: add Protonic PRTI6Q board
+  ARM: dts: add Protonic WD2 board
+  ARM: dts: add Protonic VT7 board
+  ARM: dts: add Protonic RVT board
+  dt-bindings: arm: fsl: add different Protonic boards
+
+ .../devicetree/bindings/arm/fsl.yaml          |   4 +
+ arch/arm/boot/dts/Makefile                    |   4 +
+ arch/arm/boot/dts/imx6dl-prtrvt.dts           | 182 ++++++
+ arch/arm/boot/dts/imx6dl-prtvt7.dts           | 411 +++++++++++++
+ arch/arm/boot/dts/imx6q-prti6q.dts            | 541 ++++++++++++++++++
+ arch/arm/boot/dts/imx6q-prtwd2.dts            | 188 ++++++
+ arch/arm/boot/dts/imx6qdl-prti6q.dtsi         | 165 ++++++
+ 7 files changed, 1495 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-prtrvt.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-prtvt7.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-prti6q.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-prtwd2.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-prti6q.dtsi
 
 -- 
-Kees Cook
+2.26.2
+
