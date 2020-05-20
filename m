@@ -2,103 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6D81DA939
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B883C1DA960
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgETE3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 00:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgETE3D (ORCPT
+        id S1726748AbgETElo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 00:41:44 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60626 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgETEln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 00:29:03 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5EDC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:29:02 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id i5so828942uaq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+qZZbuT843G0ykcP4WOBCe4Afr8ELi6EnDD0MmBi+I4=;
-        b=e4GAUZr0pYYlAbmqzr5mBscJHnTVsJRtiQmpa37SgUxJp1nut8NqINekK2P+p9iHP8
-         0O+ePxYtdOc+NKNqX5iCCyYeaMcxzXYdc2rGBUwQmAJNAVZjRTNIGmOFuqSqQBoQdoDc
-         vVkWvI/cl4u/oHEQE2LiLFT1n4xReLm9wvYiSSNEBVZlI84Rp3leRcc/ydVcl6rz8RXQ
-         OHqexNizzlctGtaXQkZY/ODZ46zQbQxP0KN1o8J9TDQ63u0K2uYX4DSyIO/eRfmmMEZ7
-         xbjGDFDYdO0w/nzf5Axr6TV3MTMVWwXt3bjgcfJfvrV5rYofoDP51e8cLqlekQsJXb3s
-         8LDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+qZZbuT843G0ykcP4WOBCe4Afr8ELi6EnDD0MmBi+I4=;
-        b=ahJgAWwL30004sIuOyZbrbNPoiO9MHFH1kdcvPNvYXhUyBP7t/aXu/IwzCLFPNEyXS
-         XE5IrvdQtLm/Hpt6v/35RX4JMHxxq4Wkv5TBVzg50nG3sVzoT/JGZ5GD1tyiJbYczvWA
-         4tw27QUpdpwTiCda30aeBPrsKUCmq+Q3EkVs4Cw3uKfwpDF0klWorfeGewKrmBMiP/WH
-         s/dCI+n2OZxCjO/80GSu3puK5KR6FR3GiDhPGYPHnD0Sy2g+dK+HpGv6gIqSZRMQfF04
-         v7JYioPh/aWArvJmn2DcRxEgv+43ObiUbHDgkE4DfM33nTRvhwSYKFKV/kwqTw83qU3g
-         aOew==
-X-Gm-Message-State: AOAM533Obuh6lAAcQqFYynXx9/+eP0jIhIzcARst2Esasq0ImikVNmLC
-        aLNfksropLOYWZhPz/Vcg0ZUPfohUwCZa02lJmpYlA==
-X-Google-Smtp-Source: ABdhPJz/7dzzKIcOTkCfA7HyKaMiShlW5edXQ9UXQspFQ4VSXLLphRu+GFq2HxwSJt8TDxiIDqOwpBhdbeS8jtJjiB4=
-X-Received: by 2002:ab0:30ba:: with SMTP id b26mr2042602uam.77.1589948941382;
- Tue, 19 May 2020 21:29:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504181616.175477-1-srinivas.pandruvada@linux.intel.com>
- <20200504181616.175477-4-srinivas.pandruvada@linux.intel.com>
- <a9af415d-9fd0-dcea-79ee-0fb90f45045e@linaro.org> <2cd6c73b890b3eab12420adf4ae29101672e6a0b.camel@linux.intel.com>
-In-Reply-To: <2cd6c73b890b3eab12420adf4ae29101672e6a0b.camel@linux.intel.com>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Wed, 20 May 2020 09:58:18 +0530
-Message-ID: <CAHLCerMfnHPuJnj6G4EvRPvODf1_Se4xM-OobA1o7eao5eetzg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/5] thermal: Add support for setting notification thresholds
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 May 2020 00:41:43 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 7AAA7299D5; Wed, 20 May 2020 00:41:42 -0400 (EDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Joshua Thompson" <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <b8bbeef197d6b3898e82ed0d231ad08f575a4b34.1589949122.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k/mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Wed, 20 May 2020 14:32:02 +1000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 5:10 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Mon, 2020-05-18 at 18:37 +0200, Daniel Lezcano wrote:
-> > On 04/05/2020 20:16, Srinivas Pandruvada wrote:
-> > > Add new attributes in thermal syfs when a thermal drivers provides
-> > > callbacks for them and CONFIG_THERMAL_USER_EVENT_INTERFACE is
-> > > defined.
-> > >
-> > > These attribute allow user space to stop polling for temperature.
-> > >
-> > > These attributes are:
-> > > - temp_thres_low: Specify a notification temperature for a low
-> > > temperature threshold event.
-> > > temp_thres_high: Specify a notification temperature for a high
-> > > temperature threshold event.
-> > > temp_thres_hyst: Specify a change in temperature to send
-> > > notification
-> > > again.
-> > >
-> > > This is implemented by adding additional sysfs attribute group. The
-> > > changes in this patch are trivial to add new attributes in thermal
-> > > sysfs as done for other attributes.
-> >
-> > Isn't it duplicate with the trip point?
-> A trip point is where an in-kernel governor takes some action. This is
-> not same as a notification temperature. For example at trip point
-> configured by ACPI at 85C, the thermal governor may start aggressive
-> throttling.
-> But a user space can set a notification threshold at 80C and start some
-> active controls like activate some fan to reduce the impact of passive
-> control on performance.
+There is no VIA2 chip on the Mac IIfx, so don't call via_flush_cache().
+This avoids a boot crash which appeared in v5.4.
 
-Then what is the use of thermal trip type "ACTIVE" ?
+printk: console [ttyS0] enabled
+printk: bootconsole [debug0] disabled
+printk: bootconsole [debug0] disabled
+Calibrating delay loop... 9.61 BogoMIPS (lpj=48064)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+devtmpfs: initialized
+random: get_random_u32 called from bucket_table_alloc.isra.27+0x68/0x194 with crng_init=0
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+NET: Registered protocol family 16
+Data read fault at 0x00000000 in Super Data (pc=0x8a6a)
+BAD KERNEL BUSERR
+Oops: 00000000
+Modules linked in:
+PC: [<00008a6a>] via_flush_cache+0x12/0x2c
+SR: 2700  SP: 01c1fe3c  a2: 01c24000
+d0: 00001119    d1: 0000000c    d2: 00012000    d3: 0000000f
+d4: 01c06840    d5: 00033b92    a0: 00000000    a1: 00000000
+Process swapper (pid: 1, task=01c24000)
+Frame format=B ssw=0755 isc=0200 isb=fff7 daddr=00000000 dobuf=01c1fed0
+baddr=00008a6e dibuf=0000004e ver=f
+Stack from 01c1fec4:
+        01c1fed0 00007d7e 00010080 01c1fedc 0000792e 00000001 01c1fef4 00006b40
+        01c80000 00040000 00000006 00000003 01c1ff1c 004a545e 004ff200 00040000
+        00000000 00000003 01c06840 00033b92 004a5410 004b6c88 01c1ff84 000021e2
+        00000073 00000003 01c06840 00033b92 0038507a 004bb094 004b6ca8 004b6c88
+        004b6ca4 004b6c88 000021ae 00020002 00000000 01c0685d 00000000 01c1ffb4
+        0049f938 00409c85 01c06840 0045bd40 00000073 00000002 00000002 00000000
+Call Trace: [<00007d7e>] mac_cache_card_flush+0x12/0x1c
+ [<00010080>] fix_dnrm+0x2/0x18
+ [<0000792e>] cache_push+0x46/0x5a
+ [<00006b40>] arch_dma_prep_coherent+0x60/0x6e
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<004a545e>] dma_atomic_pool_init+0x4e/0x188
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<00033b92>] parse_args+0x0/0x370
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<000021e2>] do_one_initcall+0x34/0x1be
+ [<00033b92>] parse_args+0x0/0x370
+ [<0038507a>] strcpy+0x0/0x1e
+ [<000021ae>] do_one_initcall+0x0/0x1be
+ [<00020002>] do_proc_dointvec_conv+0x54/0x74
+ [<0049f938>] kernel_init_freeable+0x126/0x190
+ [<0049f94c>] kernel_init_freeable+0x13a/0x190
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<00041798>] complete+0x0/0x3c
+ [<000b9b0c>] kfree+0x0/0x20a
+ [<0038df98>] schedule+0x0/0xd0
+ [<0038d604>] kernel_init+0x0/0xda
+ [<0038d610>] kernel_init+0xc/0xda
+ [<0038d604>] kernel_init+0x0/0xda
+ [<00002d38>] ret_from_kernel_thread+0xc/0x14
+Code: 0000 2079 0048 10da 2279 0048 10c8 d3c8 <1011> 0200 fff7 1280 d1f9 0048 10c8 1010 0000 0008 1080 4e5e 4e75 4e56 0000 2039
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-> We need a way to distinguish between temperature notification threshold
-> and actual trip point. Changing a trip point means that user wants
-> kernel to throttle at temperature.
+Thanks to Stan Johnson for capturing the console log and running git
+bisect.
+
+Git bisect said commit 8e3a68fb55e0 ("dma-mapping: make
+dma_atomic_pool_init self-contained") is the first "bad" commit. I don't
+know why. Perhaps mach_l2_flush first became reachable with that commit.
+
+Cc: Joshua Thompson <funaho@jurai.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ arch/m68k/include/asm/mac_via.h |  1 +
+ arch/m68k/mac/config.c          | 21 ++-------------------
+ arch/m68k/mac/via.c             |  6 +++++-
+ 3 files changed, 8 insertions(+), 20 deletions(-)
+
+diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
+index de1470c4d829..1149251ea58d 100644
+--- a/arch/m68k/include/asm/mac_via.h
++++ b/arch/m68k/include/asm/mac_via.h
+@@ -257,6 +257,7 @@ extern int rbv_present,via_alt_mapping;
+ 
+ struct irq_desc;
+ 
++extern void via_l2_flush(int writeback);
+ extern void via_register_interrupts(void);
+ extern void via_irq_enable(int);
+ extern void via_irq_disable(int);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 611f73bfc87c..d0126ab01360 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -59,7 +59,6 @@ extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+ extern void via_init_clock(irq_handler_t func);
+-extern void via_flush_cache(void);
+ extern void oss_init(void);
+ extern void psc_init(void);
+ extern void baboon_init(void);
+@@ -130,21 +129,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
+ 	return unknown;
+ }
+ 
+-/*
+- * Flip into 24bit mode for an instant - flushes the L2 cache card. We
+- * have to disable interrupts for this. Our IRQ handlers will crap
+- * themselves if they take an IRQ in 24bit mode!
+- */
+-
+-static void mac_cache_card_flush(int writeback)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	via_flush_cache();
+-	local_irq_restore(flags);
+-}
+-
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+@@ -175,9 +159,8 @@ void __init config_mac(void)
+ 	 * not.
+ 	 */
+ 
+-	if (macintosh_config->ident == MAC_MODEL_IICI
+-	    || macintosh_config->ident == MAC_MODEL_IIFX)
+-		mach_l2_flush = mac_cache_card_flush;
++	if (macintosh_config->ident == MAC_MODEL_IICI)
++		mach_l2_flush = via_l2_flush;
+ }
+ 
+ 
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 4e288f2b4fac..6cfdbfd3e397 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -295,10 +295,14 @@ void via_debug_dump(void)
+  * the system into 24-bit mode for an instant.
+  */
+ 
+-void via_flush_cache(void)
++void via_l2_flush(int writeback)
+ {
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	via2[gBufB] &= ~VIA2B_vMode32;
+ 	via2[gBufB] |= VIA2B_vMode32;
++	local_irq_restore(flags);
+ }
+ 
+ /*
+-- 
+2.26.2
+
