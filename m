@@ -2,168 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA271DA696
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0BA1DA69C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgETAap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:30:45 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:39680 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726348AbgETAam (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:30:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589934641; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OdYhjBKMQ6RWOSENJbzrmFx92mOQNyawWELNsr+IZCM=; b=kf6m2i0WrASHem9m3PH0jqIjz4guDcMLt7MIsBOJeMB8D4zKY3kUNza6BMmprwKNPzRiACvm
- ZNwpbctR7HYvYPGUe8MQLEc73EZVbTd+ML/5R/FbgCTRVxJOvfQDlXHbAk+ZqK002tqyzwLo
- HND+Y+2rJpHmzKPsvsKqbvN+MZM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec47a30.7f2e202db228-smtp-out-n05;
- Wed, 20 May 2020 00:30:40 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DE7C3C433CA; Wed, 20 May 2020 00:30:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1728458AbgETAa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728371AbgETAav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 20:30:51 -0400
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1FD94C43387;
-        Wed, 20 May 2020 00:30:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1FD94C43387
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 6/6] bus: mhi: core: Process execution environment changes serially
-Date:   Tue, 19 May 2020 17:30:31 -0700
-Message-Id: <1589934631-22752-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1589934631-22752-1-git-send-email-bbhatt@codeaurora.org>
-References: <1589934631-22752-1-git-send-email-bbhatt@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 15A0D20873
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 00:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589934651;
+        bh=IdKlOjcnp7gTR0MZGzUExPCTFZFEUt8s/UCERCdITGs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JX874BmGZAM6sq3Jy8T6kJcVyduKrKeFsEDJjle2fiVIRQsrwySWEvYs/8ExrgrU9
+         GBzdA0eakOcBHgqCJwN+PsM5Wa/mCz573a9QZPxSzKMVy7xJ8aChCcNeXCr3B4ygL7
+         Na1X/M2y/y/PTGQRS2ln21T2acH8ZDQvaNhElftA=
+Received: by mail-wr1-f45.google.com with SMTP id v12so1288179wrp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:30:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532/uLjoIC6v/B5YSJ8Dg2t6M+vDdR3eNymROXRQ1+8iwX+HXbL3
+        vZUoSNuDZ6/BYdNw9gR5sPZSxtpnoqaBF3IsSiqnmg==
+X-Google-Smtp-Source: ABdhPJz4SScRClG9+FY2bdUwrH/CT8Xfngef2cn9NrEmrWVCgU07Mg4YFEOVXkx9MZElnCTDh4UFQEwNs40GWJ96Ylw=
+X-Received: by 2002:adf:fe45:: with SMTP id m5mr1411855wrs.257.1589934649517;
+ Tue, 19 May 2020 17:30:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200515234547.710474468@linutronix.de> <20200515235127.007113214@linutronix.de>
+In-Reply-To: <20200515235127.007113214@linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 19 May 2020 17:30:38 -0700
+X-Gmail-Original-Message-ID: <CALCETrU4fu-GokwC5jUshwQ2e84qAj_+HJc7gKsdA7Ra=-iTGw@mail.gmail.com>
+Message-ID: <CALCETrU4fu-GokwC5jUshwQ2e84qAj_+HJc7gKsdA7Ra=-iTGw@mail.gmail.com>
+Subject: Re: [patch V6 26/37] x86/entry: Convert various system vectors
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current design, whenever the "bhi" interrupt is fired, the execution
-environment is updated. This can cause race conditions and impede any
-ongoing power up or power down processing. For example, if a power down
-is in progress and the host has updated the execution environment to a
-local "disabled" state, any BHI interrupt could replace it with the
-execution environment from the BHI EE register. Another example would
-be that the device can enter mission mode while the device creation for
-SBL is still ongoing leading to multiple attempts at opening the same
-channel.
+On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>
+> Convert various system vectors to IDTENTRY_SYSVEC
+>   - Implement the C entry point with DEFINE_IDTENTRY_SYSVEC
+>   - Emit the ASM stub with DECLARE_IDTENTRY_SYSVEC
+>   - Remove the ASM idtentries in 64bit
+>   - Remove the BUILD_INTERRUPT entries in 32bit
+>   - Remove the old prototypes
+>
+> No functional change.
 
-Ensure that EE changes are handled only from appropriate places and
-occur one after another.
-
-For RDDM, handle it as a critical event directly from the interrupt
-handler and remove RDDM EE change event from the control event ring to
-prevent the driver from issuing multiple callbacks. SBL handling
-requires no change. For AMSS/mission mode, hold off the update until
-the client is notified with a status callback.
-
-To sum it up, ensure client readiness before processing mission mode and
-move to an error state as soon as possible to avoid a bad state.
-
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 12 ++++--------
- drivers/bus/mhi/core/pm.c   | 21 +++++++++++++++++----
- 2 files changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index da32c23..d25f321 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -385,8 +385,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	}
- 
- 	state = mhi_get_mhi_state(mhi_cntrl);
--	ee = mhi_cntrl->ee;
--	mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+	ee = mhi_get_exec_env(mhi_cntrl);
- 	dev_dbg(dev, "local ee:%s device ee:%s dev_state:%s\n",
- 		TO_MHI_EXEC_STR(mhi_cntrl->ee), TO_MHI_EXEC_STR(ee),
- 		TO_MHI_STATE_STR(state));
-@@ -399,7 +398,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 			goto exit_intvec;
- 		}
- 
--		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
-+		if (ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
-+			mhi_cntrl->ee = MHI_EE_RDDM;
-+
- 			/* prevent clients from queueing any more packets */
- 			pm_state = mhi_tryset_pm_state(mhi_cntrl,
- 						       MHI_PM_SYS_ERR_DETECT);
-@@ -794,11 +795,6 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 				st = DEV_ST_TRANSITION_MISSION_MODE;
- 				break;
- 			case MHI_EE_RDDM:
--				mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
--				write_lock_irq(&mhi_cntrl->pm_lock);
--				mhi_cntrl->ee = event;
--				write_unlock_irq(&mhi_cntrl->pm_lock);
--				wake_up_all(&mhi_cntrl->state_event);
- 				break;
- 			default:
- 				dev_err(dev,
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 5041df9..4407338 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -377,22 +377,35 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
- {
- 	struct mhi_event *mhi_event;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-+	enum mhi_ee_type ee = MHI_EE_MAX;
- 	int i, ret;
- 
- 	dev_dbg(dev, "Processing Mission Mode transition\n");
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
--		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+		ee = mhi_get_exec_env(mhi_cntrl);
- 	write_unlock_irq(&mhi_cntrl->pm_lock);
- 
--	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee))
-+	if (!MHI_IN_MISSION_MODE(ee)) {
-+		dev_err(dev, "Invalid EE for Mission Mode: %s\n",
-+			TO_MHI_EXEC_STR(ee));
- 		return -EIO;
-+	}
- 
--	wake_up_all(&mhi_cntrl->state_event);
--
-+	/*
-+	 * let controller prepare for mission mode before making the execution
-+	 * environment change so as to defer core driver activity
-+	 */
- 	mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_MISSION_MODE);
- 
-+	/* ready the core driver for mission mode */
-+	write_lock_irq(&mhi_cntrl->pm_lock);
-+	mhi_cntrl->ee = ee;
-+	write_unlock_irq(&mhi_cntrl->pm_lock);
-+
-+	wake_up_all(&mhi_cntrl->state_event);
-+
- 	/* Force MHI to be in M0 state before continuing */
- 	ret = __mhi_device_get_sync(mhi_cntrl);
- 	if (ret)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Acked-by: Andy Lutomirski <luto@kernel.org>
