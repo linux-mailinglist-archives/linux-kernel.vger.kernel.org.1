@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED9A1DB1B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351761DB1C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgETL2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:28:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47278 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgETL2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:28:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8F94FAD78;
-        Wed, 20 May 2020 11:28:38 +0000 (UTC)
-Message-ID: <2aa6f276085319a5af7a96b3d7bdd0501641a7d7.camel@suse.de>
-Subject: Re: [PATCH 09/15] device core: Add ability to handle multiple dma
- offsets
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        id S1726791AbgETLbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:31:08 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57970 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETLbH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 07:31:07 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2D97180307C1;
+        Wed, 20 May 2020 11:31:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yGC09t4w11r0; Wed, 20 May 2020 14:31:00 +0300 (MSK)
+Date:   Wed, 20 May 2020 14:30:58 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
         <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>
-Date:   Wed, 20 May 2020 13:28:32 +0200
-In-Reply-To: <20200519203419.12369-10-james.quinlan@broadcom.com>
-References: <20200519203419.12369-1-james.quinlan@broadcom.com>
-         <20200519203419.12369-10-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Ttdr9J6hcKekh9mdkCgm"
-User-Agent: Evolution 3.36.2 
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 12/20] mips: MAAR: Add XPA mode support
+Message-ID: <20200520113058.nd7fsafrbhdcp2c7@mobilestation>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-13-Sergey.Semin@baikalelectronics.ru>
+ <20200519154213.GA15797@alpha.franken.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200519154213.GA15797@alpha.franken.de>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 19, 2020 at 05:42:13PM +0200, Thomas Bogendoerfer wrote:
+> On Wed, May 06, 2020 at 08:42:30PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > 
+> > When XPA mode is enabled the normally 32-bits MAAR pair registers
+> > are extended to be of 64-bits width as in pure 64-bits MIPS
+> > architecture. In this case the MAAR registers can enable the
+> > speculative loads/stores for addresses of up to 39-bits width.
+> > But in this case the process of the MAAR initialization changes a bit.
+> > The upper 32-bits of the registers are supposed to be accessed by mean
+> > of the dedicated instructions mfhc0/mthc0 and there is a CP0.MAAR.VH
+> > bit which should be set together with CP0.MAAR.VL as indication
+> > of the boundary validity. All of these peculiarities were taken into
+> > account in this commit so the speculative loads/stores would work
+> > when XPA mode is enabled.
+> > 
+> > Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Paul Burton <paulburton@kernel.org>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > ---
+> >  arch/mips/include/asm/maar.h     | 17 +++++++++++++++--
+> >  arch/mips/include/asm/mipsregs.h | 10 ++++++++++
+> >  arch/mips/mm/init.c              |  8 +++++++-
+> >  3 files changed, 32 insertions(+), 3 deletions(-)
+> 
+> applied to mips-next.
 
---=-Ttdr9J6hcKekh9mdkCgm
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Great! Thanks.
 
-Hi Jim,
-thanks for having a go at this! My two cents.
+-Sergey
 
-On Tue, 2020-05-19 at 16:34 -0400, Jim Quinlan wrote:
-> The device variable 'dma_pfn_offset' is used to do a single
-> linear map between cpu addrs and dma addrs.  The variable
-> 'dma_map' is added to struct device to point to an array
-> of multiple offsets which is required for some devices.
->=20
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
-
-[...]
-
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -493,6 +493,8 @@ struct dev_links_info {
->   * @bus_dma_limit: Limit of an upstream bridge or bus which imposes a sm=
-aller
->   *		DMA limit than the device itself supports.
->   * @dma_pfn_offset: offset of DMA memory range relatively of RAM
-> + * @dma_map:	Like dma_pfn_offset but used when there are multiple
-> + *		pfn offsets for multiple dma-ranges.
->   * @dma_parms:	A low level driver may set these to teach IOMMU code
-> about
->   * 		segment limitations.
->   * @dma_pools:	Dma pools (if dma'ble device).
-> @@ -578,7 +580,12 @@ struct device {
->  					     allocations such descriptors. */
->  	u64		bus_dma_limit;	/* upstream dma constraint */
->  	unsigned long	dma_pfn_offset;
-> -
-> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
-> +	const void *dma_offset_map;	/* Like dma_pfn_offset, but for
-> +					 * the unlikely case of multiple
-> +					 * offsets. If non-null, dma_pfn_offset
-> +					 * will be 0. */
-
-I get a bad feeling about separating the DMA offset handling into two disti=
-nct
-variables. Albeit generally frowned upon, there is a fair amount of tricker=
-y
-around dev->dma_pfn_offset all over the kernel. usb_alloc_dev() comes to mi=
-nd
-for example. And this obviously doesn't play well with it. I feel a potenti=
-al
-solution to multiple DMA ranges should completely integrate with the curren=
-t
-device DMA handling code, without special cases, on top of that, be transpa=
-rent
-to the user.
-
-In more concrete terms, I'd repackage dev->bus_dma_limit and
-dev->dma_pfn_offset into a list/array of DMA range structures and adapt/cre=
-ate
-the relevant getter/setter functions so as for DMA users not to have to wor=
-ry
-about the specifics of a device's DMA constraints. For example, instead of
-editing dev->dma_pfn_offset, you'd be passing a DMA range structure to the
-device core, and let it take the relevant decisions on how to handle it
-internally (overwrite, add a new entry, merge them, etc...).
-
-Easier said than done. :)
-
-Regards,
-Nicolas
-
-
---=-Ttdr9J6hcKekh9mdkCgm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7FFGAACgkQlfZmHno8
-x/62Gwf/ZcX0GjUG2kX8dOQj+DmylB81fPXdO67lCfYb36/3AaWub3SgdS6OElwx
-EUkGWiXfQspc2tFLJ9QHVOvKZ4dn1axmHzBdSUxOS3Y7K/5Ui7G7hzbi22njfPOR
-TjQzAlozY8g7HB3GWRHX6ptZwNsk2GgfywpFPTHQzZphJtsqhRkC+1NBVZJqcxUg
-PP0lJ4op3lIusNEoZXTvss0CGvIqPZroj3V6gxMllerV0UGayKnZRijn+VnqKhM0
-kJUKjAA7TXjaIHzJZYfVncgp2eZtNCpmP+WM7/YDKoNbbkJYHBelwCqCq42YEJhk
-50yZpb9YqlD0TwGBilnlPIHc33lp8g==
-=LCl4
------END PGP SIGNATURE-----
-
---=-Ttdr9J6hcKekh9mdkCgm--
-
+> 
+> Thomas.
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
