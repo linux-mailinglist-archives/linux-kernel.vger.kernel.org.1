@@ -2,291 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106121DA6C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CB51DA6CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgETAud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgETAud (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:50:33 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE72C061A0E;
-        Tue, 19 May 2020 17:50:33 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7184330C;
-        Wed, 20 May 2020 02:50:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1589935831;
-        bh=TOmzP22SIGV/a8c3Jvf3dFaO83IOFowTmTJZLReFhFc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ornY/va4NB6Alqny2AnXzUSQj53n90/F/oNX3ROukai8yj9ltbmcNxVk12TKqEhSM
-         dgnTBYoCi4aDQiJuDn1warrD2UOVRzPguNWU9Oa4le25dvjMcprK04vGjNzx3NlQFN
-         /5i1oBNvMRGHQWvPYoxo5DV3tQaXq50QW5qg1kus=
-Date:   Wed, 20 May 2020 03:50:20 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Subject: Re: [PATCH v9 2/4] media: i2c: Add MAX9286 driver
-Message-ID: <20200520005020.GQ3820@pendragon.ideasonboard.com>
-References: <20200512155105.1068064-1-kieran.bingham+renesas@ideasonboard.com>
- <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
- <20200516215103.GA857@valkosipuli.retiisi.org.uk>
- <930009cd-d887-752a-4f1f-567c795101ee@ideasonboard.com>
+        id S1728229AbgETAxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:53:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:25274 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgETAxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 20:53:39 -0400
+IronPort-SDR: JCF5/Vmu/djLMmOyVS5i9ZyqVWitC4/9DbEGYyhiAwURM0mo8rUMBwU3MlvzwZj5dI2MSl+dGY
+ onFRY/SplByA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 17:53:39 -0700
+IronPort-SDR: tVnx08PHSb6c9NwjAPiU/w/IktCBnbvOga6w7xs9suclrO7oyw5N1TDRAIUVomdAQLYA3wdn1U
+ 3SEIl+iuUWzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
+   d="scan'208";a="268080225"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by orsmga006.jf.intel.com with ESMTP; 19 May 2020 17:53:36 -0700
+Date:   Wed, 20 May 2020 08:52:18 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, lkp <lkp@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [tip:x86/mm 1/23] arch/x86/mm/init.c:75:6: warning: no previous
+ prototype for function 'x86_has_pat_wp'
+Message-ID: <20200520005218.GA3101@intel.com>
+References: <202005200123.gFjGzJEH%lkp@intel.com>
+ <20200519205505.GD444@zn.tnic>
+ <20200519212541.GA3580016@ubuntu-s3-xlarge-x86>
+ <CAKwvOdk+JwddxLaXc9S7SMMTye8bDaGEckcs7zu5tEMD0G3Yog@mail.gmail.com>
+ <831EE4E5E37DCC428EB295A351E6624952648ACF@shsmsx102.ccr.corp.intel.com>
+ <CAKwvOdmoA5ZFCiUQ5fVf7+970Y4bxvU=kYWb49NENQzxdm7F1Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <930009cd-d887-752a-4f1f-567c795101ee@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdmoA5ZFCiUQ5fVf7+970Y4bxvU=kYWb49NENQzxdm7F1Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Tue, May 19, 2020 at 05:26:18PM -0700, Nick Desaulniers wrote:
+> On Tue, May 19, 2020 at 4:49 PM Li, Philip <philip.li@intel.com> wrote:
+> >
+> > > Subject: Re: [tip:x86/mm 1/23] arch/x86/mm/init.c:75:6: warning: no previous
+> > > prototype for function 'x86_has_pat_wp'
+> > >
+> > > Masahiro and Philip,
+> > > We're seeing a bunch of -Wmissing-prototypes warnings from 0day bot
+> > > suddenly today.  Did something change on the Kbuild or 0day bot side?
+> > Hi Nick, W=1 was added to make. This leads to extra warnings.
+> 
+> Ah, ok.  Good to know the change is in 0day bot which rules out
+> changes to Kbuild and Clang.
+> 
+> It might be helpful to note in the email that this is a W=1 build,
+> since it's non obvious and cannot be set via config.
+thanks for reminding this, we will update the report info to reflect
+this, e.g. part of reproduce step.
 
-On Mon, May 18, 2020 at 12:45:18PM +0100, Kieran Bingham wrote:
-> Hi Sakari,
 > 
-> There are only fairly minor comments here, fix ups will be included in a
-> v10.
-> 
-> Is there anything major blocking integration?
-> 
-> On 16/05/2020 22:51, Sakari Ailus wrote:
-> > On Tue, May 12, 2020 at 04:51:03PM +0100, Kieran Bingham wrote:
-> > 
-> > ...
-> > 
-> >> +static int max9286_enum_mbus_code(struct v4l2_subdev *sd,
-> >> +				  struct v4l2_subdev_pad_config *cfg,
-> >> +				  struct v4l2_subdev_mbus_code_enum *code)
-> >> +{
-> >> +	if (code->pad || code->index > 0)
-> >> +		return -EINVAL;
-> >> +
-> >> +	code->code = MEDIA_BUS_FMT_UYVY8_2X8;
-> > 
-> > Why UYVY8_2X8 and not UYVY8_1X16? In general, the single sample / pixel
-> > variant of the format is generally used on the serial busses. This choice
-> > was made when serial busses were introduced.
+> Generally, the kernel is not W=1 clean.  I realize that 0day bot can
+got it, we have logic to limit that not to report too old error, so
+the idea is to scan recent submitted patches.
 
-This is a bit of a tricky one. On the camera size, for the RDACM20, the
-O10635 sensor outputs UYVY8_2X8. This if fed to the MAX9271 serializer,
-which doesn't care about the data type. The MAX9271 has a 16-bit input
-bus, with 10 bits reserved for data, 2 bits dynamically configurable
-to carry H/V sync or extra data, and 4 bits dynamically configurable to
-carry GPIOs or extra data. The 16-bit words are then serialized (it's a
-bit more complicated, when using the H/V sync signals they are
-transmitted in a different way, and the MAX9271 also supports a DDR mode
-that makes the "serial link word" carry up to 30 bits). Effectively, the
-two samples of UYVY8_2X8 are serialized in a 16-bit word each.
+> filter old vs new.  Why -Wmissing-prototypes is a problem is that:
+> 1. there are already many instances of it throughout the kernel;
+> references without forward declarations or correct includes.
+> 2. it's easy for someone to call a function like code that already
+> exists in the translation unit they're touching.
+> 
+> So by adding another implicit call, they get warned for the whole
+> file.  Generally, the fix is trivial; just include the correct header.
+> If that leads to tangly-sphagetti-limbo/circular includes, then raw
+> forward declarations can be used (though it's easy for those to get
+> out of sync, which can lead to spooky bugs).
+> 
+> I think having in the top of the warning that this is a W=1 build will
+> make it more obvious.
+> 
+> I get that -Wmissing-prototypes can be noisy, but it's trivial to fix.
+> I do worry what other warnings lurk in W=1 though...
+with some monitoring, so far, issue like unused-but-set-variable is quite
+helpful. We will keep monitor for other issues and feedbacks.
 
-Sakari, with this information in mind, what would you recommend ?
-
-> Ok - I presume this doesn't really have much effect anyway, they just
-> have to match for the transmitter/receiver?
 > 
-> But it makes sense to me, so I'll update to the 1x16 variant.
-> 
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static struct v4l2_mbus_framefmt *
-> >> +max9286_get_pad_format(struct max9286_priv *priv,
-> >> +		       struct v4l2_subdev_pad_config *cfg,
-> >> +		       unsigned int pad, u32 which)
-> >> +{
-> >> +	switch (which) {
-> >> +	case V4L2_SUBDEV_FORMAT_TRY:
-> >> +		return v4l2_subdev_get_try_format(&priv->sd, cfg, pad);
-> >> +	case V4L2_SUBDEV_FORMAT_ACTIVE:
-> >> +		return &priv->fmt[pad];
-> >> +	default:
-> >> +		return NULL;
-> >> +	}
-> >> +}
-> >> +
-> >> +static int max9286_set_fmt(struct v4l2_subdev *sd,
-> >> +			   struct v4l2_subdev_pad_config *cfg,
-> >> +			   struct v4l2_subdev_format *format)
-> >> +{
-> >> +	struct max9286_priv *priv = sd_to_max9286(sd);
-> >> +	struct v4l2_mbus_framefmt *cfg_fmt;
-> >> +
-> >> +	if (format->pad >= MAX9286_SRC_PAD)
-> >> +		return -EINVAL;
-> > 
-> > You can remove these checks; it's been already done by the caller.
-> > 
-> 
-> Ok.
-> 
-> 
-> > ...
-> > 
-> >> +static int max9286_parse_dt(struct max9286_priv *priv)
-> >> +{
-> >> +	struct device *dev = &priv->client->dev;
-> >> +	struct device_node *i2c_mux;
-> >> +	struct device_node *node = NULL;
-> >> +	unsigned int i2c_mux_mask = 0;
-> >> +
-> >> +	of_node_get(dev->of_node);
-> >> +	i2c_mux = of_find_node_by_name(dev->of_node, "i2c-mux");
-> >> +	if (!i2c_mux) {
-> >> +		dev_err(dev, "Failed to find i2c-mux node\n");
-> >> +		of_node_put(dev->of_node);
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >> +	/* Identify which i2c-mux channels are enabled */
-> >> +	for_each_child_of_node(i2c_mux, node) {
-> >> +		u32 id = 0;
-> >> +
-> >> +		of_property_read_u32(node, "reg", &id);
-> >> +		if (id >= MAX9286_NUM_GMSL)
-> >> +			continue;
-> >> +
-> >> +		if (!of_device_is_available(node)) {
-> >> +			dev_dbg(dev, "Skipping disabled I2C bus port %u\n", id);
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		i2c_mux_mask |= BIT(id);
-> >> +	}
-> >> +	of_node_put(node);
-> >> +	of_node_put(i2c_mux);
-> >> +
-> >> +	/* Parse the endpoints */
-> >> +	for_each_endpoint_of_node(dev->of_node, node) {
-> >> +		struct max9286_source *source;
-> >> +		struct of_endpoint ep;
-> >> +
-> >> +		of_graph_parse_endpoint(node, &ep);
-> >> +		dev_dbg(dev, "Endpoint %pOF on port %d",
-> >> +			ep.local_node, ep.port);
-> >> +
-> >> +		if (ep.port > MAX9286_NUM_GMSL) {
-> >> +			dev_err(dev, "Invalid endpoint %s on port %d",
-> >> +				of_node_full_name(ep.local_node), ep.port);
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		/* For the source endpoint just parse the bus configuration. */
-> >> +		if (ep.port == MAX9286_SRC_PAD) {
-> >> +			struct v4l2_fwnode_endpoint vep = {
-> >> +				.bus_type = V4L2_MBUS_CSI2_DPHY
-> >> +			};
-> >> +			int ret;
-> >> +
-> >> +			ret = v4l2_fwnode_endpoint_parse(
-> >> +					of_fwnode_handle(node), &vep);
-> >> +			if (ret) {
-> >> +				of_node_put(node);
-> >> +				of_node_put(dev->of_node);
-> >> +				return ret;
-> >> +			}
-> >> +
-> >> +			if (vep.bus_type != V4L2_MBUS_CSI2_DPHY) {
-> > 
-> > This won't happen, the bus type will stay if you set it to a non-zero
-> > value.
-> 
-> 
-> Ok - I'll remove this check.
-> 
-> 
-> > 
-> >> +				dev_err(dev,
-> >> +					"Media bus %u type not supported\n",
-> >> +					vep.bus_type);
-> >> +				v4l2_fwnode_endpoint_free(&vep);
-> >> +				of_node_put(node);
-> >> +				of_node_put(dev->of_node);
-> >> +				return -EINVAL;
-> >> +			}
-> >> +
-> >> +			priv->csi2_data_lanes =
-> >> +				vep.bus.mipi_csi2.num_data_lanes;
-> >> +			v4l2_fwnode_endpoint_free(&vep);
-> > 
-> > No need to call this unless you use v4l2_fwnode_endpoint_alloc_parse().
-> > 
-> > And as you don't, you also won't know which frequencies are known to be
-> > safe to use. That said, perhaps where this device is used having a random
-> > frequency on that bus could not be an issue. Perhaps.
-> 
-> Does this generate a range? or a list of static supported frequencies?
-> 
-> We configure the pixel clock based upon the number of cameras connected,
-> and their pixel rates etc ...
-> 
-> Are you saying that the frequency of this clock should be validated to
-> be a specific range? or are you talking about a different frequency?
-> 
-> 
-> For now I'll remove the v4l2_fwnode_endpoint_alloc_parse().
+> >
+> > >
+> > > On Tue, May 19, 2020 at 2:25 PM Nathan Chancellor
+> > > <natechancellor@gmail.com> wrote:
+> > > >
+> > > > On Tue, May 19, 2020 at 10:55:05PM +0200, Borislav Petkov wrote:
+> > > > > On Wed, May 20, 2020 at 01:51:25AM +0800, kbuild test robot wrote:
+> > > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+> > > > > > head:   bd1de2a7aace4d1d312fb1be264b8fafdb706208
+> > > > > > commit: 1f6f655e01adebf5bd5e6c3da2e843c104ded051 [1/23] x86/mm: Add
+> > > a x86_has_pat_wp() helper
+> > > > > > config: x86_64-randconfig-r012-20200519 (attached as .config)
+> > > > > > compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project
+> > > 135b877874fae96b4372c8a3fbfaa8ff44ff86e3)
+> > > > > > reproduce:
+> > > > > >         wget https://raw.githubusercontent.com/intel/lkp-
+> > > tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > > > >         chmod +x ~/bin/make.cross
+> > > > > >         # install x86_64 cross compiling tool for clang build
+> > > > > >         # apt-get install binutils-x86-64-linux-gnu
+> > > > > >         git checkout 1f6f655e01adebf5bd5e6c3da2e843c104ded051
+> > > > > >         # save the attached .config to linux build tree
+> > > > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang
+> > > make.cross ARCH=x86_64
+> > > > > >
+> > > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > > > >
+> > > > > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> > > > > >
+> > > > > > >> arch/x86/mm/init.c:75:6: warning: no previous prototype for function
+> > > 'x86_has_pat_wp' [-Wmissing-prototypes]
+> > > > > > bool x86_has_pat_wp(void)
+> > > > > > ^
+> > > > >
+> > > > > Triggers with gcc too:
+> > > > >
+> > > > > make W=1 arch/x86/mm/init.o
+> > > > >
+> > > > > ...
+> > > > >
+> > > > > arch/x86/mm/init.c:81:6: warning: no previous prototype for ‘x86_has_pat_wp’
+> > > [-Wmissing-prototypes]
+> > > > >    81 | bool x86_has_pat_wp(void)
+> > > > >       |      ^~~~~~~~~~~~~~
+> > > > >
+> > > > >
+> > > > > -Wmissing-prototypes is default off, though, dunno why clang 11 has it
+> > > > > on.
+> > > >
+> > > > It doesn't: https://godbolt.org/z/rU5_5H
+> > > >
+> > > > I assume this is caused by some sort of internal change to the 0day
+> > > > infrastructure (testing W=1?)
+> > > >
+> > > > I cannot see this without adding W=1 to make at the listed commit with
+> > > > the provided config.
+> > > >
+> > > > Cheers,
+> > > > Nathan
+> > > >
+> > > > > Anyway, something for Benni to fix. CCed and leaving the rest for him as
+> > > > > reference.
+> > > > >
+> > > > > > arch/x86/mm/init.c:75:1: note: declare 'static' if the function is not intended
+> > > to be used outside of this translation unit
+> > > > > > bool x86_has_pat_wp(void)
+> > > > > > ^
+> > > > > > static
+> > > > > > arch/x86/mm/init.c:866:13: warning: no previous prototype for function
+> > > 'mem_encrypt_free_decrypted_mem' [-Wmissing-prototypes]
+> > > > > > void __weak mem_encrypt_free_decrypted_mem(void) { }
+> > > > > > ^
+> > > > > > arch/x86/mm/init.c:866:1: note: declare 'static' if the function is not intended
+> > > to be used outside of this translation unit
+> > > > > > void __weak mem_encrypt_free_decrypted_mem(void) { }
+> > > > > > ^
+> > > > > > static
+> > > > > > 2 warnings generated.
+> > > > > >
+> > > > > > vim +/x86_has_pat_wp +75 arch/x86/mm/init.c
+> > > > > >
+> > > > > >     73
+> > > > > >     74      /* Check that the write-protect PAT entry is set for write-protect */
+> > > > > >   > 75      bool x86_has_pat_wp(void)
+> > > > > >     76      {
+> > > > > >     77              return __pte2cachemode_tbl[_PAGE_CACHE_MODE_WP] ==
+> > > _PAGE_CACHE_MODE_WP;
+> > > > > >     78      }
+> > > > > >     79
+> > > > > >
+> > > > > > ---
+> > > > > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > > > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Regards/Gruss,
+> > > > >     Boris.
+> > > > >
+> > > > > https://people.kernel.org/tglx/notes-about-netiquette
+> > > > >
+> > > >
+> > > > --
+> > > > You received this message because you are subscribed to the Google Groups
+> > > "Clang Built Linux" group.
+> > > > To unsubscribe from this group and stop receiving emails from it, send an email
+> > > to clang-built-linux+unsubscribe@googlegroups.com.
+> > > > To view this discussion on the web visit
+> > > https://groups.google.com/d/msgid/clang-built-
+> > > linux/20200519212541.GA3580016%40ubuntu-s3-xlarge-x86.
+> > >
+> > >
+> > >
+> > > --
+> > > Thanks,
+> > > ~Nick Desaulniers
 > 
 > 
 > 
-> >> +
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		/* Skip if the corresponding GMSL link is unavailable. */
-> >> +		if (!(i2c_mux_mask & BIT(ep.port)))
-> >> +			continue;
-> >> +
-> >> +		if (priv->sources[ep.port].fwnode) {
-> >> +			dev_err(dev,
-> >> +				"Multiple port endpoints are not supported: %d",
-> >> +				ep.port);
-> >> +
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		source = &priv->sources[ep.port];
-> >> +		source->fwnode = fwnode_graph_get_remote_endpoint(
-> >> +						of_fwnode_handle(node));
-> >> +		if (!source->fwnode) {
-> >> +			dev_err(dev,
-> >> +				"Endpoint %pOF has no remote endpoint connection\n",
-> >> +				ep.local_node);
-> >> +
-> >> +			continue;
-> >> +		}
-> >> +
-> >> +		priv->source_mask |= BIT(ep.port);
-> >> +		priv->nsources++;
-> >> +	}
-> >> +	of_node_put(node);
-> >> +	of_node_put(dev->of_node);
-> >> +
-> >> +	priv->route_mask = priv->source_mask;
-> >> +
-> >> +	return 0;
-> >> +}
-> > 
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+> -- 
+> Thanks,
+> ~Nick Desaulniers
