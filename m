@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879B21DB4BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58F1DB4C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgETNOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:14:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55548 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726790AbgETNOh (ORCPT
+        id S1726830AbgETNQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:16:24 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51004 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETNQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:14:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589980475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bQBk28+CfN7MxyBrv8xDw/DEBfvcuoXApS/KUph1C0=;
-        b=iA0jk59RgObfmVwiT0GsXBysMjQlK8+2dPfmSIEjHv8WJKkPhO4apNTCzVkzlAABOrLN/V
-        OpK7mpVBXyQiQNo3pQC1RJ3IfqTQwmLVN4mfNgybXacVj2Ga3E3pY+mo9bd5JDzeWga3Gn
-        nMYS3eCXpWDHWx2wKoBrrr2SrqmUiAg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-4dWvN2ifNbiGZzzcr1IFUg-1; Wed, 20 May 2020 09:14:32 -0400
-X-MC-Unique: 4dWvN2ifNbiGZzzcr1IFUg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C5F8EC1A1;
-        Wed, 20 May 2020 13:14:29 +0000 (UTC)
-Received: from krava (unknown [10.40.193.10])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9DACB1053B2C;
-        Wed, 20 May 2020 13:14:23 +0000 (UTC)
-Date:   Wed, 20 May 2020 15:14:22 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 1/7] perf metricgroup: Change evlist_used to a bitmap
-Message-ID: <20200520131422.GL157452@krava>
-References: <20200520072814.128267-1-irogers@google.com>
- <20200520072814.128267-2-irogers@google.com>
+        Wed, 20 May 2020 09:16:24 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04KDGIPK075879;
+        Wed, 20 May 2020 08:16:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1589980578;
+        bh=g5mxtIyMDGJIfjMohatgyirw9qrdm5M7LriXPEsGKOs=;
+        h=From:To:CC:Subject:Date;
+        b=Rsc7egtCVTnZ9rJ3AC75KqbJbnXiFZortrfw8p98+O/9/rJfiEL+gPjjKKLLZiXwF
+         JO8Ts9qbYTbLxlZOUdipIsJNH2Lrk+M+sBd53BrZSFD1519giTdG+BIuS3+ATSMbp8
+         LGkFjXBPKgKFpnJZh3FxGILUcx2pa1/hI6WdlMyE=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KDGIOC094815;
+        Wed, 20 May 2020 08:16:18 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
+ May 2020 08:16:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 20 May 2020 08:16:17 -0500
+Received: from deskari.lan (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KDGGnl086139;
+        Wed, 20 May 2020 08:16:16 -0500
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: [PATCH] media: videobuf2-dma-contig: fix bad kfree in vb2_dma_contig_clear_max_seg_size
+Date:   Wed, 20 May 2020 16:15:58 +0300
+Message-ID: <20200520131558.23009-1-tomi.valkeinen@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520072814.128267-2-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:28:08AM -0700, Ian Rogers wrote:
-> Use a bitmap rather than an array of bools.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Commit 9495b7e92f716ab2bd6814fab5e97ab4a39adfdd ("driver core: platform:
+Initialize dma_parms for platform devices") in v5.7-rc5 causes
+vb2_dma_contig_clear_max_seg_size() to kfree memory that was not
+allocated by vb2_dma_contig_set_max_seg_size().
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+The assumption in vb2_dma_contig_set_max_seg_size() seems to be that
+dev->dma_parms is always NULL when the driver is probed, and the case
+where dev->dma_parms has bee initialized by someone else than the driver
+(by calling vb2_dma_contig_set_max_seg_size) will cause a failure.
 
-thanks,
-jirka
+All the current users of these functions are platform devices, which now
+always have dma_parms set by the driver core. To fix the issue for v5.7,
+make vb2_dma_contig_set_max_seg_size() return an error if dma_parms is
+NULL to be on the safe side, and remove the kfree code from
+vb2_dma_contig_clear_max_seg_size().
 
-> ---
->  tools/perf/util/metricgroup.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 6772d256dfdf..a16f60da06ab 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -95,7 +95,7 @@ struct egroup {
->  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  				      struct expr_parse_ctx *pctx,
->  				      struct evsel **metric_events,
-> -				      bool *evlist_used)
-> +				      unsigned long *evlist_used)
->  {
->  	struct evsel *ev;
->  	bool leader_found;
-> @@ -105,7 +105,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  	double *val_ptr;
->  
->  	evlist__for_each_entry (perf_evlist, ev) {
-> -		if (evlist_used[j++])
-> +		if (test_bit(j++, evlist_used))
->  			continue;
->  		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
->  			if (!metric_events[i])
-> @@ -141,7 +141,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
->  			j++;
->  		}
->  		ev = metric_events[i];
-> -		evlist_used[ev->idx] = true;
-> +		set_bit(ev->idx, evlist_used);
->  	}
->  
->  	return metric_events[0];
-> @@ -157,13 +157,11 @@ static int metricgroup__setup_events(struct list_head *groups,
->  	int ret = 0;
->  	struct egroup *eg;
->  	struct evsel *evsel;
-> -	bool *evlist_used;
-> +	unsigned long *evlist_used;
->  
-> -	evlist_used = calloc(perf_evlist->core.nr_entries, sizeof(bool));
-> -	if (!evlist_used) {
-> -		ret = -ENOMEM;
-> -		return ret;
-> -	}
-> +	evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
-> +	if (!evlist_used)
-> +		return -ENOMEM;
->  
->  	list_for_each_entry (eg, groups, nd) {
->  		struct evsel **metric_events;
-> @@ -201,7 +199,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->  		list_add(&expr->nd, &me->head);
->  	}
->  
-> -	free(evlist_used);
-> +	bitmap_free(evlist_used);
->  
->  	return ret;
->  }
-> -- 
-> 2.26.2.761.g0e0b3e54be-goog
-> 
+For v5.8 we should remove the two functions and move the
+dma_set_max_seg_size() calls into the drivers.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+---
+
+Note: I have only fully tested this on linux-next, as the capture driver
+I use doesn't support unloading modules in v5.7.
+
+ drivers/media/common/videobuf2/videobuf2-dma-contig.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index d3a3ee5b597b..24f80b62ef94 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -726,9 +726,8 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_memops);
+ int vb2_dma_contig_set_max_seg_size(struct device *dev, unsigned int size)
+ {
+ 	if (!dev->dma_parms) {
+-		dev->dma_parms = kzalloc(sizeof(*dev->dma_parms), GFP_KERNEL);
+-		if (!dev->dma_parms)
+-			return -ENOMEM;
++		dev_err(dev, "Failed to set max_seg_size: dma_parms is NULL\n");
++		return -ENODEV;
+ 	}
+ 	if (dma_get_max_seg_size(dev) < size)
+ 		return dma_set_max_seg_size(dev, size);
+@@ -747,8 +746,6 @@ EXPORT_SYMBOL_GPL(vb2_dma_contig_set_max_seg_size);
+  */
+ void vb2_dma_contig_clear_max_seg_size(struct device *dev)
+ {
+-	kfree(dev->dma_parms);
+-	dev->dma_parms = NULL;
+ }
+ EXPORT_SYMBOL_GPL(vb2_dma_contig_clear_max_seg_size);
+ 
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
