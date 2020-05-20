@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C381DBCE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8401DBD0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgETS2j convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 14:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgETS2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:28:37 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE59C061A0E;
-        Wed, 20 May 2020 11:28:37 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jbTRg-0008Qk-Ns; Wed, 20 May 2020 20:28:00 +0200
-Date:   Wed, 20 May 2020 20:28:00 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
+        id S1726838AbgETSkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:40:40 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60593 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgETSkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 14:40:36 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jbTdq-0005JR-00; Wed, 20 May 2020 20:40:34 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id ABE3CC0153; Wed, 20 May 2020 20:30:57 +0200 (CEST)
+Date:   Wed, 20 May 2020 20:30:57 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
- access
-Message-ID: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
- <20200519201912.1564477-4-bigeasy@linutronix.de>
- <20200520102407.GF317569@hirez.programming.kicks-ass.net>
- <20200520120608.mwros5jurmidxxfv@linutronix.de>
- <20200520174259.GA247557@google.com>
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 18/20] mips: csrc-r4k: Decrease r4k-clocksource rating
+ if CPU_FREQ enabled
+Message-ID: <20200520183057.GA23855@alpha.franken.de>
+References: <20200511133121.cz5axbwynhmqkx7x@mobilestation>
+ <20200515074827.6p5zx4sb3bmavjih@mobilestation>
+ <20200515210647.GA22922@alpha.franken.de>
+ <20200518134820.wedoumgbsllvhem6@mobilestation>
+ <20200518163206.GA17800@alpha.franken.de>
+ <20200518205752.txbylbjt2zkwdwwe@mobilestation>
+ <20200519155053.GB15797@alpha.franken.de>
+ <20200520121201.wohv6u646rx5otkf@mobilestation>
+ <20200520133827.GA17714@alpha.franken.de>
+ <20200520134826.pc6si3k6boaexp4i@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200520174259.GA247557@google.com>
+In-Reply-To: <20200520134826.pc6si3k6boaexp4i@mobilestation>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
-> Hi Sebastian,
-Hi Joel,
-
-> For pointer stability, can we just use get_local_ptr() and put_local_ptr()
-> instead of adding an extra lock? This keeps the pointer stable while keeping
-> the section preemptible on -rt. And we already have a lock in rcu_data, I
-> prefer not to add another lock if possible.
-
-What is this get_local_ptr() doing? I can't find it anywhere…
-
-> I wrote a diff below with get_local_ptr() (just build tested). Does this
-> solve your issue?
-
-see below.
-
-> > I remember Paul looked at that patch a few years ago and he said that
-> > that disabling interrupts here is important and matches the other part
-> > instance where the interrupts are disabled. Looking at it now, it seems
-> > that there is just pointer stability but I can't tell if
-> > rcu_segcblist_pend_cbs() needs more than just this.
+On Wed, May 20, 2020 at 04:48:26PM +0300, Serge Semin wrote:
+> On Wed, May 20, 2020 at 03:38:27PM +0200, Thomas Bogendoerfer wrote:
+> > On Wed, May 20, 2020 at 03:12:01PM +0300, Serge Semin wrote:
+> > > Since you don't like the way I initially fixed it, suppose there we don't have
+> > > another way but to introduce something like CONFIG_MIPS_CPS_NS16550_WIDTH
+> > > parameter to select a proper accessors, like sw in our case, and sb by defaul).
+> > > Right?
+> > 
+> > to be on the safe side it's probably the best thing. But I don't know
+> > enough about CPS_NS16550 to judge whether shift value correlates with
+> > possible access width.
 > 
-> Which 'other part' are you referring to? Your patch removed local_irq_save()
-> from other places as well right?
+> The base address passed to the _mips_cps_putc() leaf is UART-base address. It
+> has nothing to do with CPS. See:
 
-The patch converted hunks.
+ok, I'm confused. So this isn't an uart inside CPS hardware, but an uart used
+by CPS code for debug output, right ? 
 
-> thanks,
-> 
->  - Joel
-> 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 8ff71e5d0fe8b..5f49919205317 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -778,13 +778,17 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
->  	unsigned long tlast;
->  
->  	/* If the local srcu_data structure has callbacks, not idle.  */
-> -	local_irq_save(flags);
-> -	sdp = this_cpu_ptr(ssp->sda);
-> +	sdp = get_local_ptr(ssp->sda);
-> +	spin_lock_irqsave_rcu_node(sdp, flags);
+To solve the issued please add CONFIG_MIPS_CPS_NS16550_WIDTH to select the
+correct access width.
 
-You acquire the node lock which was not acquired before. Is that okay?
-How is get_local_ptr() different to raw_cpu_ptr()?
+Thomas.
 
->  	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
-> -		local_irq_restore(flags);
-> +		spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +		put_local_ptr(sdp);
->  		return false; /* Callbacks already present, so not idle. */
->  	}
-> -	local_irq_restore(flags);
-> +
-> +	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> +	put_local_ptr(sdp);
->  
->  	/*
->  	 * No local callbacks, so probabalistically probe global state.
-
-Sebastian
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
