@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB651DC2E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AC01DC2EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgETX0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 19:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S1728929AbgETX0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 19:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728839AbgETX0O (ORCPT
+        with ESMTP id S1728846AbgETX0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 19:26:14 -0400
+        Wed, 20 May 2020 19:26:16 -0400
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951F3C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:14 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id m11so5525177qka.4
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46126C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:16 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id f189so5498381qkd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JD9BxGjYxOg6IYiFlF2HPLz+K3fq+w79j5nMBZBCwlM=;
-        b=Qi/qXzruuxtJLTXqrhZFDKcKb5REKlP74g21aFN90SZ3bhM87tqSeN8rVQv6r7t1Jp
-         ut9fAU8Db4oeQogAEkzCnYFRWK/Fy/RgT3GvUU03jI0bJbUbdhlbXZhd1FMvGRLLJLUk
-         OuRrTMw8YmUqWOUue4k+R7BWWDRHlz1kjM2X2QV/PeoaVgYRQVTZhsqb2a1+kxU1B5tw
-         FN6M4GOn/HpVF8XtR97Ne449r1UJ9oD9LLKkPOO7aOsgDwL2fHzuZIHi4/DN5/aFWpRz
-         sQoJTlYcMFNce6uwQl+iactFlQ494ZgLPLmf5I3Fc0qMfA5+YFyjlXDcll0G3Pgv9w/n
-         l8Fg==
+        bh=cWi8GUMvjXVcjgAmpN1v26MqAhRkGwn3WDFKVSmqebQ=;
+        b=OELmW9qLobpcB8i03ujKYrp+niXe2qkQDDyCEagaV+SP83teno7CkK8mwvctRBTkg1
+         Jn2aAhUzNJaZz9tfP80zhnf138nqWeO0vsvISlzXvS2SGVB93ZvUEVNaN3q2O+GkN7NE
+         bjg8Tg/TDJarAz+t2CHuC3NxYvV30ehHzuIqNk7gjrpRyt3UkikzztTsRkDHEd+njr0f
+         nM8CH+weltbNVSkCzZRV+t3r4RbdHr+Pw5a8Kuz1ujBKDCzLMMOzuAcXrX8etVZiQqlc
+         HFQ0hCpStUibnNrSOGGtuXoKx+Y7Xr81FW+cwTS/uhV6bMLBMl+hCXebE0sLmM8ZmxPZ
+         /01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JD9BxGjYxOg6IYiFlF2HPLz+K3fq+w79j5nMBZBCwlM=;
-        b=SSrVhTfAZRo8pa+ryBlN0LJJJt1yKIKa0MuPbsu2XVkXOrIN/PrxIpmML6+dIq3X76
-         2Qdz27c3HGP4ca4eKMN/CQFi5+smaii13gSgCWtQIUBMjRpXNdeZZmKRkOWcVvv1Vxi8
-         7FC+M0x3YHggivqVehljOVrzuxoEiP4gqVnRQ2rRdstQTCqh+ysFMHKqbEwjoUEEZdwK
-         ez0LdhrZjopcUMLBOn7JJKwpqRvedQ/8ohObAUdBtJxP9JWD6kWrcExC/B7JD4nGcPR0
-         ARBrfoivq6tkV8MA8hizVLirCy+HDsxCtf2Rivn2208bvnShRn/XkTFYM+YnE01l5bLA
-         tMnw==
-X-Gm-Message-State: AOAM533kOvB0YlpWrXw62HkOZA3yJSfCXdkqDNkFpjyY1Xxgw/tln6Az
-        8ZzDHW5S7XbObsinv3i/qU3mmw==
-X-Google-Smtp-Source: ABdhPJzSL6c+84ozsdZGZDu3uGWyllg+dwn1/sWq5j9UJIWTeTeGQbmBH2yrr6HAHp7qlRYoVWHveA==
-X-Received: by 2002:a37:4c48:: with SMTP id z69mr6380214qka.138.1590017173866;
-        Wed, 20 May 2020 16:26:13 -0700 (PDT)
+        bh=cWi8GUMvjXVcjgAmpN1v26MqAhRkGwn3WDFKVSmqebQ=;
+        b=JAdN8SARWVEmFdi2b+LLiE5WA5lmrPjahPZyXgQlwTa7PV9AEZJkvSP0sv0PAXD+TG
+         5AiwD2hoIRagYNvxW+eNOkqPRK4F10MzajZKlc79VT2jklJ0zLEvf5QgWJnX0pAakLqT
+         a33F6a5dqOmhGhrI/B9ENCPUMWH4LeMDPLnNnP4bm/dIAmd9qq6rEKwJQrrwRRHBReRF
+         wW/tHfMERM99QLiASJgsGWfkC7EgTkF5dB9Wxad+oQDiT5BF2VZPidg2hHccnPPHUN5F
+         h0TZtOdQBLcX3HUnoLadjDzCJZPduxKqbuQY8geOJ/DN4A0suyLgc/rbbhAZYaPoIPRW
+         OXbw==
+X-Gm-Message-State: AOAM533YN0dxHVtJApjVE1PzERn7WhATZOOwqzY5kNqJ0s/5gr9UJePq
+        MYxTGQlHynfT4diKgf4f55aqyQ0ZJbw=
+X-Google-Smtp-Source: ABdhPJw3U94cPbOfdJ5cTZaAWKG+ZGczSAYc2f5W6Y4QceSR5KNnjHRzPv09HTHZ8XUkGYZlDFHjoA==
+X-Received: by 2002:a37:bd81:: with SMTP id n123mr7017392qkf.57.1590017175541;
+        Wed, 20 May 2020 16:26:15 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:4708])
-        by smtp.gmail.com with ESMTPSA id z65sm3372453qkc.91.2020.05.20.16.26.12
+        by smtp.gmail.com with ESMTPSA id p22sm2693945qkp.109.2020.05.20.16.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 16:26:13 -0700 (PDT)
+        Wed, 20 May 2020 16:26:14 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     linux-mm@kvack.org
 Cc:     Rik van Riel <riel@surriel.com>,
@@ -56,9 +56,9 @@ Cc:     Rik van Riel <riel@surriel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 09/14] mm: deactivations shouldn't bias the LRU balance
-Date:   Wed, 20 May 2020 19:25:20 -0400
-Message-Id: <20200520232525.798933-10-hannes@cmpxchg.org>
+Subject: [PATCH 10/14] mm: only count actual rotations as LRU reclaim cost
+Date:   Wed, 20 May 2020 19:25:21 -0400
+Message-Id: <20200520232525.798933-11-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200520232525.798933-1-hannes@cmpxchg.org>
 References: <20200520232525.798933-1-hannes@cmpxchg.org>
@@ -69,66 +69,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Operations like MADV_FREE, FADV_DONTNEED etc. currently move any
-affected active pages to the inactive list to accelerate their reclaim
-(good) but also steer page reclaim toward that LRU type, or away from
-the other (bad).
+When shrinking the active file list we rotate referenced pages only
+when they're in an executable mapping. The others get deactivated.
+When it comes to balancing scan pressure, though, we count all
+referenced pages as rotated, even the deactivated ones. Yet they do
+not carry the same cost to the system: the deactivated page *might*
+refault later on, but the deactivation is tangible progress toward
+freeing pages; rotations on the other hand cost time and effort
+without getting any closer to freeing memory.
 
-The reason why this is undesirable is that such operations are not
-part of the regular page aging cycle, and rather a fluke that doesn't
-say much about the remaining pages on that list; they might all be in
-heavy use, and once the chunk of easy victims has been purged, the VM
-continues to apply elevated pressure on those remaining hot pages. The
-other LRU, meanwhile, might have easily reclaimable pages, and there
-was never a need to steer away from it in the first place.
+Don't treat both events as equal. The following patch will hook up LRU
+balancing to cache and anon refaults, which are a much more concrete
+cost signal for reclaiming one list over the other. Thus, remove the
+maybe-IO cost bias from page references, and only note the CPU cost
+for actual rotations that prevent the pages from getting reclaimed.
 
-As the previous patch outlined, we should focus on recording actually
-observed cost to steer the balance rather than speculating about the
-potential value of one LRU list over the other. In that spirit, leave
-explicitely deactivated pages to the LRU algorithm to pick up, and let
-rotations decide which list is the easiest to reclaim.
+v2: readable changelog (Michal Hocko)
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Minchan Kim <minchan@kernel.org>
 Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- mm/swap.c | 4 ----
- 1 file changed, 4 deletions(-)
+ mm/vmscan.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 5d62c5a0c651..d7912bfb597f 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -515,14 +515,12 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6ff63906a288..2c3fb8dd1159 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2054,7 +2054,6 @@ static void shrink_active_list(unsigned long nr_to_scan,
  
- 	if (active)
- 		__count_vm_event(PGDEACTIVATE);
--	lru_note_cost(lruvec, !file, hpage_nr_pages(page));
- }
- 
- static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec,
- 			    void *arg)
- {
- 	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
--		int file = page_is_file_lru(page);
- 		int lru = page_lru_base_type(page);
- 
- 		del_page_from_lru_list(page, lruvec, lru + LRU_ACTIVE);
-@@ -531,7 +529,6 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec,
- 		add_page_to_lru_list(page, lruvec, lru);
- 
- 		__count_vm_events(PGDEACTIVATE, hpage_nr_pages(page));
--		lru_note_cost(lruvec, !file, hpage_nr_pages(page));
- 	}
- }
- 
-@@ -556,7 +553,6 @@ static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec,
- 
- 		__count_vm_events(PGLAZYFREE, hpage_nr_pages(page));
- 		count_memcg_page_event(page, PGLAZYFREE);
--		lru_note_cost(lruvec, 0, hpage_nr_pages(page));
- 	}
- }
+ 		if (page_referenced(page, 0, sc->target_mem_cgroup,
+ 				    &vm_flags)) {
+-			nr_rotated += hpage_nr_pages(page);
+ 			/*
+ 			 * Identify referenced, file-backed active pages and
+ 			 * give them one more trip around the active list. So
+@@ -2065,6 +2064,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ 			 * so we ignore them here.
+ 			 */
+ 			if ((vm_flags & VM_EXEC) && page_is_file_lru(page)) {
++				nr_rotated += hpage_nr_pages(page);
+ 				list_add(&page->lru, &l_active);
+ 				continue;
+ 			}
+@@ -2080,10 +2080,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ 	 */
+ 	spin_lock_irq(&pgdat->lru_lock);
+ 	/*
+-	 * Count referenced pages from currently used mappings as rotated,
+-	 * even though only some of them are actually re-activated.  This
+-	 * helps balance scan pressure between file and anonymous pages in
+-	 * get_scan_count.
++	 * Rotating pages costs CPU without actually
++	 * progressing toward the reclaim goal.
+ 	 */
+ 	lru_note_cost(lruvec, file, nr_rotated);
  
 -- 
 2.26.2
