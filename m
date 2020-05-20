@@ -2,48 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB5A1DB913
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265061DB91E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgETQPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETQPN (ORCPT
+        id S1726824AbgETQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:15:58 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:36767 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726791AbgETQP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:15:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2368C061A0E;
-        Wed, 20 May 2020 09:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=KUsG4feXigEdZ3QpYALXvpu/1zKdm/ox7vuSCPQehrI=; b=cTN8MLqDM8INSNrXIHuE2+fp09
-        UNc+u5wyrqEtriUMCkNXq63TjVhwN90f8CssOrLD37dfcPJkAW9o2Cgplh5Urq3dBC2NZJVXmUPE4
-        Pn1oQxZYoUQ8NzPVUuB/PB6r3wsG1pao7sGlEs2Z5oG4z4/yCaFGGzaOiRv2YC8u+YwUre+rCPPat
-        DOAKg/QWoTChuBCw8tVTBhqJfhLVAXOGfmvTdJLPVSmjzL+O4fMpqU8EyvwB3kBWbCF3t4N6WUt6r
-        4uusMh5Bpe8D/t4OTl7ulP1uifl9IHKfAW6+3JuRA037ZRPEe84Z9uUZyjPmvLlEjavPow5eycrBO
-        IcHZf5lw==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbRN6-00083y-Lu; Wed, 20 May 2020 16:15:09 +0000
-Subject: Re: [next] i2c: mediatek: Use div_u64 for 64-bit division to fix
- 32-bit kernels
-To:     qii.wang@mediatek.com, wsa@the-dreams.de
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-References: <1589970713-19944-1-git-send-email-qii.wang@mediatek.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c92c499b-825d-bd28-3c0d-e63076cba1b6@infradead.org>
-Date:   Wed, 20 May 2020 09:15:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 20 May 2020 12:15:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589991356; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=W+H+ZNLN/PeeQd0HYlXgSjXVcP3NRkRb7E2OQ2VXotk=; b=ZZaYFFR77lS8tbSB/KMARhK8BENAfWBD1SJkaZmfsEcDKKXsEF0CWCx7aSb978Ij6hkB1Yg6
+ ty+BzOVbu/ZFAStwMhiaCzX4ezXZLeFKHRPcHtmwFwNGC0m04u7UdcNTEj1ACZX4fMysVmB0
+ NJkT5Wfrb3Y/9AJGI8To8PkQtyk=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5ec557a9e79e24225d646352 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 16:15:37
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0DF59C433C9; Wed, 20 May 2020 16:15:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DD45C433C6;
+        Wed, 20 May 2020 16:15:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0DD45C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Olof Johansson <olof.johansson@gmail.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        wufan@codeaurora.org, pratanan@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAKMK7uG-oP-tcOcNz-ZzTmGondEo-17BCN1kpFBPwb7F8QcM5w@mail.gmail.com>
+ <20200520051536.GA2141566@kroah.com>
+ <CAKMK7uEbwTK68sxhf452fPHzAreQqRbRc7=RLGX-9SesXnJnLQ@mail.gmail.com>
+ <5701b299-7800-1584-4b3a-6147e7ad3fca@codeaurora.org>
+ <20200520155943.GB3916378@kroah.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <543f7692-7b0e-eeab-fc6e-a292f1bc7640@codeaurora.org>
+Date:   Wed, 20 May 2020 10:15:33 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <1589970713-19944-1-git-send-email-qii.wang@mediatek.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200520155943.GB3916378@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -51,39 +74,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/20 3:31 AM, qii.wang@mediatek.com wrote:
-> From: Qii Wang <qii.wang@mediatek.com>
+On 5/20/2020 9:59 AM, Greg Kroah-Hartman wrote:
+> On Wed, May 20, 2020 at 08:48:13AM -0600, Jeffrey Hugo wrote:
+>> On 5/20/2020 2:34 AM, Daniel Vetter wrote:
+>>> On Wed, May 20, 2020 at 7:15 AM Greg Kroah-Hartman
+>>> <gregkh@linuxfoundation.org> wrote:
+>>>>
+>>>> On Tue, May 19, 2020 at 10:41:15PM +0200, Daniel Vetter wrote:
+>>>>> On Tue, May 19, 2020 at 07:41:20PM +0200, Greg Kroah-Hartman wrote:
+>>>>>> On Tue, May 19, 2020 at 08:57:38AM -0600, Jeffrey Hugo wrote:
+>>>>>>> On 5/18/2020 11:08 PM, Dave Airlie wrote:
+>>>>>>>> On Fri, 15 May 2020 at 00:12, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>>>>>>>>>
+>>>>>>>>> Introduction:
+>>>>>>>>> Qualcomm Cloud AI 100 is a PCIe adapter card which contains a dedicated
+>>>>>>>>> SoC ASIC for the purpose of efficently running Deep Learning inference
+>>>>>>>>> workloads in a data center environment.
+>>>>>>>>>
+>>>>>>>>> The offical press release can be found at -
+>>>>>>>>> https://www.qualcomm.com/news/releases/2019/04/09/qualcomm-brings-power-efficient-artificial-intelligence-inference
+>>>>>>>>>
+>>>>>>>>> The offical product website is -
+>>>>>>>>> https://www.qualcomm.com/products/datacenter-artificial-intelligence
+>>>>>>>>>
+>>>>>>>>> At the time of the offical press release, numerious technology news sites
+>>>>>>>>> also covered the product.  Doing a search of your favorite site is likely
+>>>>>>>>> to find their coverage of it.
+>>>>>>>>>
+>>>>>>>>> It is our goal to have the kernel driver for the product fully upstream.
+>>>>>>>>> The purpose of this RFC is to start that process.  We are still doing
+>>>>>>>>> development (see below), and thus not quite looking to gain acceptance quite
+>>>>>>>>> yet, but now that we have a working driver we beleive we are at the stage
+>>>>>>>>> where meaningful conversation with the community can occur.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Hi Jeffery,
+>>>>>>>>
+>>>>>>>> Just wondering what the userspace/testing plans for this driver.
+>>>>>>>>
+>>>>>>>> This introduces a new user facing API for a device without pointers to
+>>>>>>>> users or tests for that API.
+>>>>>>>
+>>>>>>> We have daily internal testing, although I don't expect you to take my word
+>>>>>>> for that.
+>>>>>>>
+>>>>>>> I would like to get one of these devices into the hands of Linaro, so that
+>>>>>>> it can be put into KernelCI.  Similar to other Qualcomm products. I'm trying
+>>>>>>> to convince the powers that be to make this happen.
+>>>>>>>
+>>>>>>> Regarding what the community could do on its own, everything but the Linux
+>>>>>>> driver is considered proprietary - that includes the on device firmware and
+>>>>>>> the entire userspace stack.  This is a decision above my pay grade.
+>>>>>>
+>>>>>> Ok, that's a decision you are going to have to push upward on, as we
+>>>>>> really can't take this without a working, open, userspace.
+>>>>>
+>>>>> Uh wut.
+>>>>>
+>>>>> So the merge criteria for drivers/accel (atm still drivers/misc but I
+>>>>> thought that was interim until more drivers showed up) isn't actually
+>>>>> "totally-not-a-gpu accel driver without open source userspace".
+>>>>>
+>>>>> Instead it's "totally-not-a-gpu accel driver without open source
+>>>>> userspace" _and_ you have to be best buddies with Greg. Or at least
+>>>>> not be on the naughty company list. Since for habanalabs all you
+>>>>> wanted is a few test cases to exercise the ioctls. Not the entire
+>>>>> userspace.
+>>>>
+>>>> Also, to be fair, I have changed my mind after seeing the mess of
+>>>> complexity that these "ioctls for everyone!" type of pass-through
+>>>> these kinds of drivers are creating.  You were right, we need open
+>>>> userspace code in order to be able to properly evaluate and figure out
+>>>> what they are doing is right or not and be able to maintain things over
+>>>> time correctly.
+>>>>
+>>>> So I was wrong, and you were right, my apologies for my previous
+>>>> stubbornness.
+>>>
+>>> Awesome and don't worry, I'm pretty sure we've all been stubborn
+>>> occasionally :-)
+>>>
+>>>   From a drivers/gpu pov I think still not quite there since we also
+>>> want to see the compiler for these programmable accelerator thingies.
+>>> But just having a fairly good consensus that "userspace library with
+>>> all the runtime stuff excluding compiler must be open" is a huge step
+>>> forward. Next step may be that we (kernel overall, drivers/gpu will
+>>> still ask for the full thing) have ISA docs for these programmable
+>>> things, so that we can also evaluate that aspect and gauge how many
+>>> security issues there might be. Plus have a fighting chance to fix up
+>>> the security leaks when (post smeltdown I don't really want to
+>>> consider this an if) someone finds a hole in the hw security wall. At
+>>> least in drivers/gpu we historically have a ton of drivers with
+>>> command checkers to validate what userspace wants to run on the
+>>> accelerator thingie. Both in cases where the hw was accidentally too
+>>> strict, and not strict enough.
+>>
+>> I think this provides a pretty clear guidance on what you/the community are
+>> looking for, both now and possibly in the future.
+>>
+>> Thank you.
+>>
+>>  From my perspective, it would be really nice if there was something like
+>> Mesa that was a/the standard for these sorts of accelerators.  Its somewhat
+>> the wild west, and we've struggled with it.
 > 
-> Use div_u64 for 64-bit division, and change sample_ns type to
-> unsigned int. Otherwise, the module will reference __udivdi3
-> under 32-bit kernels, which is not allowed in kernel space.
-> 
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+> Put a first cut at such a thing out there and see how it goes!  Nothing
+> is preventing you from starting such a project, and it would be most
+> welcome as you have seen.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-thanks.
-
-> ---
->  drivers/i2c/busses/i2c-mt65xx.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-> index 7020618..deef69e 100644
-> --- a/drivers/i2c/busses/i2c-mt65xx.c
-> +++ b/drivers/i2c/busses/i2c-mt65xx.c
-> @@ -551,7 +551,8 @@ static int mtk_i2c_check_ac_timing(struct mtk_i2c *i2c,
->  	const struct i2c_spec_values *spec;
->  	unsigned int su_sta_cnt, low_cnt, high_cnt, max_step_cnt;
->  	unsigned int sda_max, sda_min, clk_ns, max_sta_cnt = 0x3f;
-> -	long long sample_ns = (1000000000 * (sample_cnt + 1)) / clk_src;
-> +	unsigned int sample_ns = div_u64(1000000000ULL * (sample_cnt + 1),
-> +					 clk_src);
->  
->  	if (!i2c->dev_comp->timing_adjust)
->  		return 0;
-> 
-
+I wish.  I'll float the idea, but don't hold your breath.
 
 -- 
-~Randy
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
