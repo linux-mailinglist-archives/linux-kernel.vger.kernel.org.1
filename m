@@ -2,178 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E7A1DACC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 09:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A594F1DACCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgETH7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 03:59:39 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:37467 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgETH7j (ORCPT
+        id S1726747AbgETICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETICy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 03:59:39 -0400
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 04K7xUdE096136;
-        Wed, 20 May 2020 15:59:30 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
-        by Forcepoint Email with ESMTP id B9D79C5271EE9FAE1410;
-        Wed, 20 May 2020 15:59:30 +0800 (CST)
-In-Reply-To: <20200519142642.24131-10-p.yadav@ti.com>
-References: <20200519142642.24131-1-p.yadav@ti.com> <20200519142642.24131-10-p.yadav@ti.com>
-To:     "Pratyush Yadav" <p.yadav@ti.com>
-Cc:     "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Boris Brezillon" <boris.brezillon@collabora.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org,
-        "Ludovic Desroches" <ludovic.desroches@microchip.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
-        "Sekhar Nori" <nsekhar@ti.com>, "Pratyush Yadav" <p.yadav@ti.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>, juliensu@mxic.com.tw
-Subject: Re: [PATCH v5 09/19] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+        Wed, 20 May 2020 04:02:54 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43E5C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 01:02:53 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id g79so535132ybf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 01:02:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MMh4r2XDfrH+QhUAjbGNaAAedxRKs2n77NOZ3gAlNgM=;
+        b=j1tBNZ3vq8QjvMUxKQLFkSaXLnMqXwQrzxwRSQwsFakURnOmf52OxUufogNpo15Vi+
+         TqcklyRtsYt6ye34t3EbcbPFOWiFoXFKBPkjjm97yJrD7k3ilSGHzcoiLsffHpQWknjo
+         YATZgknEk4I7HHu7fnVchqq+bkDBzrh8l5gvO5p+v/4G0RHJ651mTilPUYKq2M2l1v9U
+         rR2V24mTZajqpmBGTbQL3SzWGzXWL02NaqCLZjcquUlfitFdAKw3WhsUuC81K71ZBr+P
+         QfwZ82hxj7CVZhB5ho1ZoDGwBUjyecyoU8I/PPQ/NgrVAcqzP9MAWcu+XW+TOijNZXxv
+         1S6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MMh4r2XDfrH+QhUAjbGNaAAedxRKs2n77NOZ3gAlNgM=;
+        b=ZbNdgGpT1h3NQDXiHtCVQxXgFQ85yvalwRaKW4TufkMIe1bkg883psC29E6pvVXbY9
+         keLG4KWZdUWoYIW85tbvTO5ZwXQy8CAs5jftz3zET+KzOKK7slOdqT1dnLNO/FrBHvo2
+         /ME7HYqTTRrQmmc6xDhz73xp/W4J8F2aqxTpKkgBLXKRLI46ym9+Bxcd9JXee40/bK64
+         E5eMK/a0H+fpi28jMXsO01iR/XRacfYF6RfcToOVnFvjGRaiCwmg9JLunfW66h3V30VS
+         QL7mrB6tQzS0uO6BV8tI2jBUZw4y9cgyN1wdCX6Bbx70OcwwQDswXluL0mzV71lkZoXA
+         mymw==
+X-Gm-Message-State: AOAM530y4rIstlcFXoH+GCu6u59KiJSXUXSq66JlavHHuZqZcu1Jl2y9
+        JQYtn0EcYfqw2jrYonKca04x24KEjuEZ9KFcE6q2gw==
+X-Google-Smtp-Source: ABdhPJwQP7HRbxwX6H9f7OR6UQElQShg+ArQT0pXrQiBLvOhGRi2/6SEChtkn7AJjr2RHgYOnsxQYJKuH+CxrxrzCk4=
+X-Received: by 2002:a25:ab4c:: with SMTP id u70mr4884998ybi.298.1589961772695;
+ Wed, 20 May 2020 01:02:52 -0700 (PDT)
 MIME-Version: 1.0
-X-KeepSent: 83616464:480FA751-4825856E:002A4483;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF83616464.480FA751-ON4825856E.002A4483-4825856E.002BE6AF@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Wed, 20 May 2020 15:59:31 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/05/20 PM 03:59:30,
-        Serialize complete at 2020/05/20 PM 03:59:30
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 04K7xUdE096136
+References: <20200422001422.232330-1-walken@google.com> <20200422001422.232330-11-walken@google.com>
+ <20200422015829.GR5820@bombadil.infradead.org> <CANN689EnGsJXA8n6JvTryQfkCtARPvtZbkH+9Dd2a4X+fvqU9g@mail.gmail.com>
+ <20200423015917.GA13910@bombadil.infradead.org> <20200424012612.GA158937@google.com>
+ <20200424013958.GC158937@google.com> <f20ab834-cddb-eaa7-c03e-18f0c4897a33@linux.ibm.com>
+ <20200519131009.GD189720@google.com> <7c540ac9-ba44-7187-5dc2-60b4c761e91c@linux.ibm.com>
+ <20200519153251.GY16070@bombadil.infradead.org> <10d48b77-5c6e-2e10-84e6-16cdd76a45f1@nvidia.com>
+ <CANN689EubtJL2mbcz5Au05nW87gVuY-19r7nZd9x0y320PUb0g@mail.gmail.com> <9c45327f-5542-c033-ec5e-201e9b0583aa@nvidia.com>
+In-Reply-To: <9c45327f-5542-c033-ec5e-201e9b0583aa@nvidia.com>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Wed, 20 May 2020 01:02:39 -0700
+Message-ID: <CANN689Gpg1dCRvujUiFE91r4STGk8MCiUOB7wpfO9eDGneeEiQ@mail.gmail.com>
+Subject: Re: [PATCH v5.5 10/10] mmap locking API: rename mmap_sem to mmap_lock
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 20, 2020 at 12:32 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> On 2020-05-19 19:39, Michel Lespinasse wrote:
+> >> That gives you additional options inside internal_get_user_pages_fast(), such
+> >> as, approximately:
+> >>
+> >> if (!(gup_flags & FOLL_FAST_ONLY))
+> >>          might_lock_read(&current->mm->mmap_lock);
+> >>
+> >> ...not that that is necessarily a great idea, seeing as how it merely changes
+> >> "might lock" into "maybe might lock".  :)
+> >
+> > I think that is completely fine, makes sure everyone not using
+> > FOLL_FAST_ONLY realizes that the call could block.
+> >
+> > Can I ask you to add that assertion in your patchset ? Based on
+> > Matthew's feedback, I would do it in my patchset, but it doesn't seem
+> > worth doing if we know this will conflict with your changes.
+>
+> Sure, that's no problem. Although it looks like my changes may land
+> in mmotm first, and then your patchset, so maybe the right move is to
+> make this change *after* both of those things happen, yes?
 
-Hi Pratyush, 
+I don't have a strong opinion on this. I would suggest you add the
+might_lock_read() assertion and whoever comes in second will deal with
+the conflict by changing mmap_sem to mmap_lock in that assertion.
 
-> +/**
-> + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
-> + * @nor:      pointer to a 'struct spi_nor'
-> + * @param_header:   pointer to the 'struct sfdp_parameter_header' 
-describing
-> + *         the 4-Byte Address Instruction Table length and version.
-> + * @params:      pointer to the 'struct spi_nor_flash_parameter' to be.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spi_nor_parse_profile1(struct spi_nor *nor,
-> +              const struct sfdp_parameter_header *profile1_header,
-> +              struct spi_nor_flash_parameter *params)
-> +{
-> +   u32 *table, opcode, addr;
-> +   size_t len;
-> +   int ret, i;
-> +
-> +   len = profile1_header->length * sizeof(*table);
-> +   table = kmalloc(len, GFP_KERNEL);
-> +   if (!table)
-> +      return -ENOMEM;
-> +
-> +   addr = SFDP_PARAM_HEADER_PTP(profile1_header);
-> +   ret = spi_nor_read_sfdp(nor, addr, len, table);
-> +   if (ret)
-> +      goto out;
-> +
-> +   /* Fix endianness of the table DWORDs. */
-> +   for (i = 0; i < profile1_header->length; i++)
-> +      table[i] = le32_to_cpu(table[i]);
-> +
-> +   /* Get 8D-8D-8D fast read opcode and dummy cycles. */
-> +   opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
-> +
-> +   /*
-> +    * Update the fast read settings. We set the default dummy cycles to 
-20
-> +    * here. Flashes can change this value if they need to when enabling
-> +    * octal mode.
-> +    */
-> +   spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-> +              0, 20, opcode,
-> +              SNOR_PROTO_8_8_8_DTR);
-> +
-
-
-I thought we have a agreement that only do parse here, no other read 
-parameters setting.
-
-Driver should get dummy cycles used for various frequencies 
-from 4th and 5th DWORD of xSPI table.[1]
- 
-[1] 
-https://patchwork.ozlabs.org/project/linux-mtd/patch/1587451187-6889-3-git-send-email-masonccyang@mxic.com.tw/ 
-
-
-In addition, 20 dummy cycles is for 200MHz but not for 100MHz, 133MHz and 
-166MHz
-in case of read performance concern.
-
-Given a correct dummy cycles for a specific device. [2] 
-
-[2] 
-https://patchwork.ozlabs.org/project/linux-mtd/patch/1587451187-6889-5-git-send-email-masonccyang@mxic.com.tw/ 
-
-
-
-> +   /*
-> +    * Set the Read Status Register dummy cycles and dummy address 
-bytes.
-> +    */
-> +   if (table[0] & PROFILE1_DWORD1_RDSR_DUMMY)
-> +      params->rdsr_dummy = 8;
-> +   else
-> +      params->rdsr_dummy = 4;
-> +
-> +   if (table[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
-> +      params->rdsr_addr_nbytes = 4;
-> +   else
-> +      params->rdsr_addr_nbytes = 0;
-> +
-> +out:
-> +   kfree(table);
-> +   return ret;
-> +}
-> +
-
-thanks & best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
