@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6761DC0EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3C61DC0EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgETVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33704 "EHLO mail.kernel.org"
+        id S1728284AbgETVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 17:08:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbgETVIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:08:00 -0400
+        id S1727018AbgETVIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:08:17 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA47720829;
-        Wed, 20 May 2020 21:07:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 835FC207E8;
+        Wed, 20 May 2020 21:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590008879;
-        bh=C3eLWDyOPein2shgCJHm4Hf7jANdUU9Z2764xm3IXxA=;
+        s=default; t=1590008896;
+        bh=c0V7GL4Nb2G+qi++78RB/y2wHCzv87xFGlB6Wz+fgi4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cb8SMlYJU3FWj1MqcEnKAu8tp4WlBQd0feNKOt7+WV3kyeQR3aIxdJp12LMSg30Rd
-         XHJlcv7YeCgOHdekGHYwzlssTon0VCU7ob8U/pjgNxaagzpmvYVS3wwZTKPLwRaOza
-         8KVZpS/MyOEP+AA9cAitUATa1e4KR+VW0oR6c1Es=
+        b=tWvh2OYjJ8q4o1t8obrsRMY94HKGKV8cmHxBBxtVQee24+dPxXoP/SShe7Zvq6isG
+         6rAsKIlc6nC2z6lk9ifH//A7oAxdgvKYPcEhPxRAkw5CdCjUxlJmCOt1dXlY0u7iMc
+         IQnWZVIf7YA5z4AkFfNWujMNARHFKrf3pY//W8fQ=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C3A3140AFD; Wed, 20 May 2020 18:07:57 -0300 (-03)
-Date:   Wed, 20 May 2020 18:07:57 -0300
+        id B5DB440AFD; Wed, 20 May 2020 18:08:14 -0300 (-03)
+Date:   Wed, 20 May 2020 18:08:14 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Changbin Du <changbin.du@gmail.com>
 Cc:     Jiri Olsa <jolsa@redhat.com>,
@@ -34,66 +34,113 @@ Cc:     Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/19] perf ftrace: add support for tracing children
- processes
-Message-ID: <20200520210757.GA32678@kernel.org>
+Subject: Re: [PATCH 13/19] perf ftrace: add option '-b/--buffer-size' to set
+ per-cpu buffer size
+Message-ID: <20200520210814.GB32678@kernel.org>
 References: <20200510150628.16610-1-changbin.du@gmail.com>
- <20200510150628.16610-13-changbin.du@gmail.com>
+ <20200510150628.16610-14-changbin.du@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200510150628.16610-13-changbin.du@gmail.com>
+In-Reply-To: <20200510150628.16610-14-changbin.du@gmail.com>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, May 10, 2020 at 11:06:21PM +0800, Changbin Du escreveu:
-> This adds an option '--trace-children' to allow us trace children
-> processes spawned by our target.
+Em Sun, May 10, 2020 at 11:06:22PM +0800, Changbin Du escreveu:
+> This adds an option '-b/--buffer-size' to allow us set the size of per-cpu
+> tracing buffer.
 
---inherit
-
-- Arnaldo
+-m
  
 > Signed-off-by: Changbin Du <changbin.du@gmail.com>
 > ---
->  tools/perf/builtin-ftrace.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  tools/perf/builtin-ftrace.c | 45 ++++++++++++++++++++++++++++---------
+>  1 file changed, 35 insertions(+), 10 deletions(-)
 > 
 > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index ab76ba66bd9e..8fd95c109fe8 100644
+> index 8fd95c109fe8..a93fbdac6aa4 100644
 > --- a/tools/perf/builtin-ftrace.c
 > +++ b/tools/perf/builtin-ftrace.c
-> @@ -46,6 +46,7 @@ struct perf_ftrace {
->  	bool			funcgraph_tail;
+> @@ -47,6 +47,7 @@ struct perf_ftrace {
 >  	bool			long_info;
 >  	unsigned		tracing_thresh;
-> +	bool			trace_children;
+>  	bool			trace_children;
+> +	unsigned		buffer_size_kb;
 >  };
 >  
 >  struct filter_entry {
-> @@ -200,6 +201,7 @@ static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
->  	write_tracing_option_file("irq-info", "0");
->  	write_tracing_option_file("userstacktrace", "0");
->  	write_tracing_option_file("sym-userobj", "0");
-> +	write_tracing_option_file("function-fork", "0");
+> @@ -187,6 +188,17 @@ static int read_tracing_file_to_stdout(const char *name)
+>  	return ret;
 >  }
 >  
->  static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
-> @@ -441,6 +443,17 @@ static int set_tracing_funcgraph_tail(struct perf_ftrace *ftrace)
+> +static int write_tracing_file_int(const char *name, int value)
+> +{
+> +	char buf[16];
+> +
+> +	snprintf(buf, sizeof(buf), "%d", value);
+> +	if (write_tracing_file(name, buf) < 0)
+> +		return -1;
+> +
+> +	return 0;
+> +}
+> +
+>  static int reset_tracing_cpu(void);
+>  static void reset_tracing_filters(void);
+>  
+> @@ -360,8 +372,6 @@ static void reset_tracing_filters(void)
+>  
+>  static int set_tracing_depth(struct perf_ftrace *ftrace)
+>  {
+> -	char buf[16];
+> -
+>  	if (ftrace->graph_depth == 0)
+>  		return 0;
+>  
+> @@ -370,9 +380,7 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
+>  		return -1;
+>  	}
+>  
+> -	snprintf(buf, sizeof(buf), "%d", ftrace->graph_depth);
+> -
+> -	if (write_tracing_file("max_graph_depth", buf) < 0)
+> +	if (write_tracing_file_int("max_graph_depth", ftrace->graph_depth) < 0)
+>  		return -1;
+>  
+>  	return 0;
+> @@ -419,14 +427,10 @@ static int set_tracing_long_info(struct perf_ftrace *ftrace)
+>  
+>  static int set_tracing_thresh(struct perf_ftrace *ftrace)
+>  {
+> -	char buf[16];
+> -
+>  	if (ftrace->tracing_thresh == 0)
+>  		return 0;
+>  
+> -	snprintf(buf, sizeof(buf), "%d", ftrace->tracing_thresh);
+> -
+> -	if (write_tracing_file("tracing_thresh", buf) < 0)
+> +	if (write_tracing_file_int("tracing_thresh", ftrace->tracing_thresh) < 0)
+>  		return -1;
+>  
+>  	return 0;
+> @@ -454,6 +458,20 @@ static int set_tracing_trace_children(struct perf_ftrace *ftrace)
 >  	return 0;
 >  }
 >  
-> +static int set_tracing_trace_children(struct perf_ftrace *ftrace)
+> +static int set_tracing_buffer_size_kb(struct perf_ftrace *ftrace)
 > +{
-> +	if (!ftrace->trace_children)
+> +	int ret;
+> +
+> +	if (ftrace->buffer_size_kb == 0)
 > +		return 0;
 > +
-> +	if (write_tracing_option_file("function-fork", "1") < 0)
-> +		return -1;
+> +	ret = write_tracing_file_int("buffer_size_kb", ftrace->buffer_size_kb);
+> +	if (ret < 0)
+> +		return ret;
 > +
 > +	return 0;
 > +}
@@ -101,24 +148,24 @@ Em Sun, May 10, 2020 at 11:06:21PM +0800, Changbin Du escreveu:
 >  static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
 >  {
 >  	char *trace_file;
-> @@ -539,6 +552,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+> @@ -557,6 +575,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
 >  		goto out_reset;
 >  	}
 >  
-> +	if (set_tracing_trace_children(ftrace) < 0) {
-> +		pr_err("failed to set tracing option function-fork\n");
+> +	if (set_tracing_buffer_size_kb(ftrace) < 0) {
+> +		pr_err("failed to set tracing per-cpu buffer size\n");
 > +		goto out_reset;
 > +	}
 > +
 >  	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
 >  		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
 >  		goto out_reset;
-> @@ -686,6 +704,8 @@ int cmd_ftrace(int argc, const char **argv)
->  		    "Show process names, PIDs, timestamps, irq-info if available"),
->  	OPT_UINTEGER(0, "tracing-thresh", &ftrace.tracing_thresh,
+> @@ -706,6 +729,8 @@ int cmd_ftrace(int argc, const char **argv)
 >  		     "Only show functions of which the duration is greater than <n>µs"),
-> +	OPT_BOOLEAN(0, "trace-children", &ftrace.trace_children,
-> +		    "Trace children processes"),
+>  	OPT_BOOLEAN(0, "trace-children", &ftrace.trace_children,
+>  		    "Trace children processes"),
+> +	OPT_UINTEGER('b', "buffer-size", &ftrace.buffer_size_kb,
+> +		     "size of per cpu buffer in kb"),
 >  	OPT_END()
 >  	};
 >  
