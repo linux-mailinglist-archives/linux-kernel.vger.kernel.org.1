@@ -2,185 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F93E1DB331
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437BA1DB339
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgETM3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgETM3v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:29:51 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BFBC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:29:51 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d7so2282622qtn.11
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gLsfEuBByJJ7dCDrAvPQMezrYld8qlmG1Yg21K/T1F4=;
-        b=jTnoWPWPrn1cH2mRULwKtugWBw37GcAzioZAUYuoTtZ4yDDwFR7g7O3LozaE2sTKYo
-         5XoQQYcbamNfssPv6RA2KCDdtsbtA/P+uIN5cqJKQF30IJoZg0twJivSEadMZWK+Mcxe
-         KO8XTFubiMVQIt0q0tG1snFEAytrpWUix/TM0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gLsfEuBByJJ7dCDrAvPQMezrYld8qlmG1Yg21K/T1F4=;
-        b=tim41dkpAMoqCVjbFZT6jYxgYJMsYBh0c0N9vrxnQo71CG7JkZddtxhsSmoUW9v/Jd
-         5lYCUMIu5jyqbuuszGc/aQtKTd+uVko8yMiOUQjf+nMY7K4wxPgoJxE5NzSpnHogY/Ev
-         8DTgiC9n29mu2aK5BD66+CQ4/X1CMGoRjoGij4HBzgsPizBvr+cDmU7WpTi8WJ4CbfhA
-         lSurC52PXkXZV2oMnJxBf9QvJFQOiuRLEu0xXk6tiuK/8hxYHGtos0J16xB2IpBu9zrK
-         SbNi/L09eVWVmaCIQozj2He8ixQqk1PZgakNGEB/7NnEMhY/Mn4EHo2s8UXjGbUattpz
-         Z+pQ==
-X-Gm-Message-State: AOAM531TUFCdoqbh/1iIBnCApC1NeSSD/FXN/80w28F6FOMg7bSWoEQ4
-        1EEzCTsRCteHN4OmYLNQjPNMrQ==
-X-Google-Smtp-Source: ABdhPJx39Jmypmux/XZQcDswfaSeTiv3yz3bER/JWeV7gpYGwuFT62vD/Y+xmacLrASw8TvNRr4ovA==
-X-Received: by 2002:ac8:c8b:: with SMTP id n11mr5108723qti.49.1589977790879;
-        Wed, 20 May 2020 05:29:50 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id m1sm2415383qtf.72.2020.05.20.05.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 05:29:50 -0700 (PDT)
-Date:   Wed, 20 May 2020 08:29:49 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 01/10] rcu: Directly lock rdp->nocb_lock on nocb code
- entrypoints
-Message-ID: <20200520122949.GB16672@google.com>
-References: <20200513164714.22557-1-frederic@kernel.org>
- <20200513164714.22557-2-frederic@kernel.org>
+        id S1726619AbgETMbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgETMbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 08:31:38 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 191D320756;
+        Wed, 20 May 2020 12:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589977897;
+        bh=rL8WkukpYlQE2FvyEL1Ca998vF4yjcYjdKtcskbOga4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LoxEWlrzY++Y0BFWiabgMwjNGX/nvadbakyFaRZq89IjX/nhET64+AAldhU56uv4y
+         /N2F8Ge6zCrPiaYs24N4AeJZ8C+ZXyDCJWLD1XynAuUuEF6n7NdU/UlXGv8qQP01VQ
+         yNqJhM8BUg7QoFPleCnp2BaLZ0B5zDCzVNny15Vs=
+Date:   Wed, 20 May 2020 13:31:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH 09/12] devfreq: add mediatek cci devfreq
+Message-ID: <20200520123135.GD4823@sirena.org.uk>
+References: <20200520034307.20435-1-andrew-sh.cheng@mediatek.com>
+ <20200520034307.20435-10-andrew-sh.cheng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
 Content-Disposition: inline
-In-Reply-To: <20200513164714.22557-2-frederic@kernel.org>
+In-Reply-To: <20200520034307.20435-10-andrew-sh.cheng@mediatek.com>
+X-Cookie: You can't get there from here.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 06:47:05PM +0200, Frederic Weisbecker wrote:
-> Pure NOCB code entrypoints (nocb_cb kthread, nocb_gp kthread, nocb
-> timers) can unconditionally lock rdp->nocb_lock as they always execute
-> in the context of an offloaded rdp.
-> 
-> This also prepare for toggling CPUs to/from callback's offloaded mode
-> where the offloaded state will possibly change when rdp->nocb_lock
-> isn't taken. We'll still want the entrypoints to lock the rdp in any
-> case.
 
-Suggested rewrite for change log:
-<wordsmithing>
-Make pure NOCB code entrypoints (nocb_cb kthread, nocb_gp kthread, nocb
-timers) unconditionally lock rdp->nocb_lock as they always execute in the
-context of an offloaded rdp.
+--2iBwrppp/7QCDedR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This prepares for future toggling of CPUs to/from callback's offloaded mode
-where the offloaded state can change when rdp->nocb_lock is not held. We'll
-still want the entrypoints to lock the rdp in any case.
-</wordsmithing>
+On Wed, May 20, 2020 at 11:43:04AM +0800, Andrew-sh.Cheng wrote:
 
-Also, can we inline rcu_nocb_lock_irqsave() into
-do_nocb_deferred_wakeup_common() since that's the only user, and then delete
-rcu_nocb_lock_irqsave() and the corresponding unlock? That would also remove
-confusion about which API to use for nocb locking (i.e. whether to directly
-acquire lock or call rcu_nocb_lock_irqsave()).
+> +	cci_df->proc_reg = devm_regulator_get_optional(cci_dev, "proc");
+> +	ret = PTR_ERR_OR_ZERO(cci_df->proc_reg);
+> +	if (ret) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(cci_dev, "failed to get regulator for CCI: %d\n",
+> +				ret);
+> +		return ret;
+> +	}
+> +	ret = regulator_enable(cci_df->proc_reg);
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+The code appears to require a regulator (and I'm guessing the device
+needs power) so why is this using regulator_get_optional()?
 
-thanks,
+--2iBwrppp/7QCDedR
+Content-Type: application/pgp-signature; name="signature.asc"
 
- - Joel
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7FIyYACgkQJNaLcl1U
+h9D0kAf/f2yyGL/KhJ2Y+J/Xvk72EFz2UdjxlDjJo9wXYf3J4HWB9sgTXydoZoRj
+bPlZzQtBeUPNmvX60Nczzt1V0KYNXns6mOfBOTueIAlSLeOnWBLV2+IUedCAVOJw
+NX2i3pZdZ2p7yOO9QGU2s8hxc3uwCHKETMa5U/B6ENwkQkkOlJCNkjVYYiuoAJn+
+9mIq1Ko2yfPHqJPyh/wP/CTC7AqXyPnQmO+rAlua+v8ua7RXRqAlkI/LpWhhpe1U
+PAdhYsvKa9TiyafrrUPW1TPbTBRnWpHd1s2gjhpiGuuDhJyEaGjxsm0dz82gs5ml
+aut3SlENmvhhRkfxSKh8LBYpjvJ0hA==
+=vHQ8
+-----END PGP SIGNATURE-----
 
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_plugin.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 097635c41135..523570469864 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1909,7 +1909,7 @@ static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
->  	struct rcu_data *rdp = from_timer(rdp, t, nocb_bypass_timer);
->  
->  	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Timer"));
-> -	rcu_nocb_lock_irqsave(rdp, flags);
-> +	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
->  	smp_mb__after_spinlock(); /* Timer expire before wakeup. */
->  	__call_rcu_nocb_wake(rdp, true, flags);
->  }
-> @@ -1942,7 +1942,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  	 */
->  	for (rdp = my_rdp; rdp; rdp = rdp->nocb_next_cb_rdp) {
->  		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
-> -		rcu_nocb_lock_irqsave(rdp, flags);
-> +		raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
->  		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
->  		if (bypass_ncbs &&
->  		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
-> @@ -1951,7 +1951,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  			(void)rcu_nocb_try_flush_bypass(rdp, j);
->  			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
->  		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
-> -			rcu_nocb_unlock_irqrestore(rdp, flags);
-> +			raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
->  			continue; /* No callbacks here, try next. */
->  		}
->  		if (bypass_ncbs) {
-> @@ -1996,7 +1996,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  		} else {
->  			needwake = false;
->  		}
-> -		rcu_nocb_unlock_irqrestore(rdp, flags);
-> +		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
->  		if (needwake) {
->  			swake_up_one(&rdp->nocb_cb_wq);
->  			gotcbs = true;
-> @@ -2084,7 +2084,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	rcu_do_batch(rdp);
->  	local_bh_enable();
->  	lockdep_assert_irqs_enabled();
-> -	rcu_nocb_lock_irqsave(rdp, flags);
-> +	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
->  	if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
->  	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq) &&
->  	    raw_spin_trylock_rcu_node(rnp)) { /* irqs already disabled. */
-> @@ -2092,7 +2092,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
->  	}
->  	if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
-> -		rcu_nocb_unlock_irqrestore(rdp, flags);
-> +		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
->  		if (needwake_gp)
->  			rcu_gp_kthread_wake();
->  		return;
-> @@ -2100,7 +2100,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  
->  	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("CBSleep"));
->  	WRITE_ONCE(rdp->nocb_cb_sleep, true);
-> -	rcu_nocb_unlock_irqrestore(rdp, flags);
-> +	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
->  	if (needwake_gp)
->  		rcu_gp_kthread_wake();
->  	swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
-> -- 
-> 2.25.0
-> 
+--2iBwrppp/7QCDedR--
