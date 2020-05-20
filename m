@@ -2,88 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087D51DB2F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F87C1DB2F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgETMRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:17:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24917 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETMRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:17:33 -0400
-IronPort-SDR: 14PYyW8NPhIq+CTNqIGa6g4dJIGIB/g+lkWMaruHCkt40uLT3c0ICDNKLvq8+2F0ODx8Qw4cZH
- /i+JOFBy3gOw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 05:17:32 -0700
-IronPort-SDR: 0OgppyOHBZqIfc8vIRqLSAl7ReKWQFtjaVUnxPTEofddvm//r+vVa2HGa+2xvPdFfBJMF82vDK
- BSMTzUOymp6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="289331424"
-Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
-  by fmsmga004.fm.intel.com with ESMTP; 20 May 2020 05:17:28 -0700
-Subject: Re: [PATCH v2 10/12] i2c: designware: Discard Cherry Trail model flag
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Jean Delvare <jdelvare@suse.de>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200306132001.1B875803087C@mail.baikalelectronics.ru>
- <20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru>
- <20200510095019.20981-11-Sergey.Semin@baikalelectronics.ru>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <f199b084-fc07-b2ee-fb74-1c2aadab13ef@linux.intel.com>
-Date:   Wed, 20 May 2020 15:17:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726838AbgETMSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:18:51 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:41287 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgETMSt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 08:18:49 -0400
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 04KCIMJ9022097;
+        Wed, 20 May 2020 21:18:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 04KCIMJ9022097
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589977103;
+        bh=g0zQPGJX5aE8iJ6qIRev+jPwAR5NWJr805RkASX1zTI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zJCoavnr9CixnplYluA9RyMAFjamyvoqQIyAE+p+amiGPrfqveVZHLzxsYL3jBM0Z
+         pqC+OQRHyzu4cxF5TvQZUsh09zyAdPU4uM+pl0Yi5qtnG+Y9YqLOoE7razAEK0gbb/
+         sZsG2u58E0UJknDCzuT1V5y7p4h8dOItt/Twd7Ti3VHw7yvAZqcpHGQDkZRZxjqbQ/
+         F6P48TyibU63KS87UtN3umI0cpbz8fNqIoUR8s0B/onheyh5rZmZbzbmB2ZaYZjwq7
+         dyeGsbBr7jGYBMabATN9MYcB4YKoE4CSww3k1X0jtbZY33zKQUp5tzsSGfg0RRb6CY
+         F9JLfnNEConGw==
+X-Nifty-SrcIP: [209.85.217.47]
+Received: by mail-vs1-f47.google.com with SMTP id 1so1661502vsl.9;
+        Wed, 20 May 2020 05:18:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531N5abF0iWdqDlqQVdE+bW7qYnS9GN4a4jiY9/H8XqCbTJwkEqI
+        crYYGtSc7kmovWw9m+dmOR9xRL7fttcu0vqRkbQ=
+X-Google-Smtp-Source: ABdhPJwS8xCBVayubCaHlqPYv6nB0mPqnUm6GC4Vnnq6e4EwAfmP7hY7SDE4Ws5oW5RVzm9M3oIuNl09taV32lbtlB0=
+X-Received: by 2002:a67:d016:: with SMTP id r22mr2799400vsi.215.1589977101116;
+ Wed, 20 May 2020 05:18:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200510095019.20981-11-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200517094859.2376211-1-masahiroy@kernel.org>
+ <20200517094859.2376211-4-masahiroy@kernel.org> <20200519102133.GA279905@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200519102133.GA279905@hirez.programming.kicks-ass.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 20 May 2020 21:17:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARkUkdRsW0D5cc5cEtXFJfnKhiVuZvrD6T1Xg3sr9kv=A@mail.gmail.com>
+Message-ID: <CAK7LNARkUkdRsW0D5cc5cEtXFJfnKhiVuZvrD6T1Xg3sr9kv=A@mail.gmail.com>
+Subject: Re: [PATCH 03/29] modpost: add read_text_file() and get_line() helpers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/20 12:50 PM, Serge Semin wrote:
-> A PM workaround activated by the flag MODEL_CHERRYTRAIL has been removed
-> since commit 9cbeeca05049 ("i2c: designware: Remove Cherry Trail PMIC I2C
-> bus pm_disabled workaround"), but the flag most likely by mistake has been
-> left in the Dw I2C drivers. Lets remove it.
-> 
-> By doing so we get rid from the last DW APB I2C IP-core model flag, so we
-> can remove the MODEL_MASK macro too.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> ---
->   drivers/i2c/busses/i2c-designware-core.h    | 3 ---
->   drivers/i2c/busses/i2c-designware-pcidrv.c  | 1 -
->   drivers/i2c/busses/i2c-designware-platdrv.c | 2 +-
->   3 files changed, 1 insertion(+), 5 deletions(-)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+On Tue, May 19, 2020 at 7:21 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sun, May 17, 2020 at 06:48:33PM +0900, Masahiro Yamada wrote:
+>
+> > +char *read_text_file(const char *filename)
+> > +{
+> > +     struct stat st;
+> > +     int fd;
+> > +     char *buf;
+> > +
+> > +     fd = open(filename, O_RDONLY);
+> > +     if (fd < 0)
+> > +             return NULL;
+> > +
+> > +     if (fstat(fd, &st) < 0)
+> > +             return NULL;
+> > +
+> > +     buf = NOFAIL(malloc(st.st_size + 1));
+> > +
+> > +     if (read(fd, buf, st.st_size) != st.st_size) {
+>
+> Is this sensible coding ? I've always been taught read() can return
+> early/short for a number of reasons and we must not assume this is an
+> error.
+>
+> The 'normal' way to read a file is something like:
+>
+>         for (;;) {
+>                 ssize_t ret = read(fd, buf + size, st.st_size - size);
+>                 if (ret < 0) {
+>                         free(buf);
+>                         buf = NULL;
+>                         goto close;
+>                 }
+>                 if (!ret)
+>                         break;
+>
+>                 size += ret;
+>         }
+>
+> > +             free(buf);
+> > +             buf = NULL;
+> > +             goto close;
+> > +     }
+> > +     buf[st.st_size] = '\0';
+> > +close:
+> > +     close(fd);
+> > +
+> > +     return buf;
+> > +}
+
+
+In theory, I think yes.
+
+But, is it necessary when we know
+it is reading a regular file?
+
+
+
+The specification [1] says this:
+
+"The value returned may be less than nbyte if the number of bytes
+left in the file is less than nbyte, if the read() request was
+interrupted by a signal, or if the file is a pipe or FIFO or
+special file and has fewer than nbyte bytes immediately available
+for reading."
+
+
+This case does not meet any of 'if ...' parts.
+
+[1] https://pubs.opengroup.org/onlinepubs/000095399/functions/read.html
+
+
+-- 
+Best Regards
+Masahiro Yamada
