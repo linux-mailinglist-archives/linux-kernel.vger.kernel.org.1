@@ -2,117 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB90B1DBD74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFDF1DBD7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgETS7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:59:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53205 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726548AbgETS7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:59:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590001179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pt7bvYYawn3sgSHXJPdnah6IgJnyPNreqW2IcI8c10c=;
-        b=BSaIZLFs2UUm5OHr9TY0MJLPHySUrewtxMoL+OGhQcoFGX182Bsvk5jBfGq4B+ENodgpfW
-        k+wh17K3P9GWeQOxnVJXrbxuoqeEUYWvpesJLwG/ZGIVDELF92SUIseWkxWwKChOu8kL6r
-        POCLWa1q1v3bbrUZLCUaVsFyatQcGjk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-xP25d97nM3SYT0bV7BcgHg-1; Wed, 20 May 2020 14:59:34 -0400
-X-MC-Unique: xP25d97nM3SYT0bV7BcgHg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5D491800D42;
-        Wed, 20 May 2020 18:59:32 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 40BFF7D96E;
-        Wed, 20 May 2020 18:59:25 +0000 (UTC)
-Date:   Wed, 20 May 2020 14:59:22 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Steve Grubb <sgrubb@redhat.com>
-Cc:     linux-audit@redhat.com, Paul Moore <paul@paul-moore.com>,
-        fw@strlen.de, LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
-Subject: Re: [PATCH ghak25 v6] audit: add subj creds to NETFILTER_CFG record
- to cover async unregister
-Message-ID: <20200520185922.vnutg5z3hwp7grjm@madcap2.tricolour.ca>
-References: <a585b9933896bc542347d8f3f26b08005344dd84.1589920939.git.rgb@redhat.com>
- <20200520165510.4l4q47vq6fyx7hh6@madcap2.tricolour.ca>
- <CAHC9VhRERV9_kgpcn2LBptgXGY0BB4A9CHT+V4-HFMcNd9_Ncg@mail.gmail.com>
- <17476338.hsbNre52Up@x2>
+        id S1726914AbgETTAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:00:31 -0400
+Received: from v6.sk ([167.172.42.174]:33176 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgETTAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 15:00:31 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 0281A610B3;
+        Wed, 20 May 2020 18:59:59 +0000 (UTC)
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] mfd: Add ENE KB3930 Embedded Controller driver
+Date:   Wed, 20 May 2020 20:59:53 +0200
+Message-Id: <20200520185955.2144252-1-lkundrak@v3.sk>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17476338.hsbNre52Up@x2>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-20 14:51, Steve Grubb wrote:
-> On Wednesday, May 20, 2020 2:40:45 PM EDT Paul Moore wrote:
-> > On Wed, May 20, 2020 at 12:55 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > On 2020-05-20 12:51, Richard Guy Briggs wrote:
-> > > > Some table unregister actions seem to be initiated by the kernel to
-> > > > garbage collect unused tables that are not initiated by any userspace
-> > > > actions.  It was found to be necessary to add the subject credentials
-> > > > to cover this case to reveal the source of these actions.  A sample
-> > > > record:
-> > > > 
-> > > > The uid, auid, tty, ses and exe fields have not been included since
-> > > > they
-> > > > are in the SYSCALL record and contain nothing useful in the non-user
-> > > > context.
-> > > > 
-> > > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat
-> > > >   family=bridge entries=0 op=unregister pid=153
-> > > >   subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2
-> >
-> > FWIW, that record looks good.
-> 
-> It's severely broken
-> 
-> cat log.file
-> type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat 
-> family=bridge entries=0 op=unregister pid=153 
-> subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2
-> 
-> ausearch -if log.file --format text
-> At 19:33:40 12/31/1969  did-unknown 
-> 
-> ausearch -if log.file --format csv
-> NODE,EVENT,DATE,TIME,SERIAL_NUM,EVENT_KIND,SESSION,SUBJ_PRIME,SUBJ_SEC,SUBJ_KIND,ACTION,RESULT,OBJ_PRIME,OBJ_SEC,OBJ_KIND,HOW
-> error normalizing NETFILTER_CFG
-> ,NETFILTER_CFG,12/31/1969,19:33:40,0,,,,,,,,,,
-> 
-> This is unusable. This is why the bug was filed in the first place.
+Hi,
 
-Have you applied this patchset?
-	https://www.redhat.com/archives/linux-audit/2020-May/msg00072.html
+please consider applying the patches chained to this message. It's the
+third version of the driver for the ENE KB3930 Embedded Controller.
 
-AUDIT_EVENT_LISTENER is also broken without this first patch.
+This version attempts to address the issues pointed out in review of v2.
+A more detailed change log it in the patch description of patch 2/2.
 
-> -Steve
-> 
-> > > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > > 
-> > > Self-NACK.  I forgot to remove cred and tty declarations.
+Thanks,
+Lubo
 
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
 
