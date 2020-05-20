@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1771DB5C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862DB1DB5A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgETN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:57:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45326 "EHLO mail.kernel.org"
+        id S1726844AbgETNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:52:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:56804 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETN5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:57:10 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B1B5206C3;
-        Wed, 20 May 2020 13:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589983030;
-        bh=5+IbKprRxyqw9NFTJTpxeEJkrQ0uTWF2tKNer2QzvW4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Q/rc+qik2yM/X4meIPkIhKjBgLcKmYsuhXCObjnXLXQ53nzwMll4Yv32dZYOOT1xE
-         tWoIGlrQa9rjeMjh+5+uDrP9wROLCoFgsVBfksIeeG1s4gEeIjL+DlC8/CFEq0rz34
-         dh199yR295AXjsr1E6Zq8j0sGBROxXWAjWbntkPo=
-Date:   Wed, 20 May 2020 08:57:08 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Paul Burton <paulburton@kernel.org>
-Cc:     Krzysztof Wilczynski <kw@linux.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: piix4-poweroff.c I/O BAR usage
-Message-ID: <20200520135708.GA1086370@bjorn-Precision-5520>
+        id S1726436AbgETNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:52:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8AB8930E;
+        Wed, 20 May 2020 06:52:55 -0700 (PDT)
+Received: from [10.37.8.206] (unknown [10.37.8.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31ED3F52E;
+        Wed, 20 May 2020 06:52:53 -0700 (PDT)
+Subject: Re: [PATCH V4 15/17] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64DFR0 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
+ <1589881254-10082-16-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5bad1e13-e498-b33e-5305-336d855c2c8b@arm.com>
+Date:   Wed, 20 May 2020 14:57:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <1589881254-10082-16-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
+> Enable MTPMU and TRACEFILT features bits in ID_AA64DFR0 register as per ARM
+> DDI 0487F.a specification.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h | 2 ++
+>   arch/arm64/kernel/cpufeature.c  | 2 ++
+>   2 files changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index a572069ccf6e..4bcd21cc2d68 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -766,6 +766,8 @@
+>   #define ID_AA64MMFR2_CNP_SHIFT		0
+>   
+>   /* id_aa64dfr0 */
+> +#define ID_AA64DFR0_MTPMU_SHIFT		48
+> +#define ID_AA64DFR0_TRACEFILT_SHIFT	40
+>   #define ID_AA64DFR0_PMSVER_SHIFT	32
+>   #define ID_AA64DFR0_CTX_CMPS_SHIFT	28
+>   #define ID_AA64DFR0_WRPS_SHIFT		20
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 6338151f263c..986974be0178 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -366,6 +366,8 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
+>   };
+>   
+>   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_MTPMU_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_TRACEFILT_SHIFT, 4, 0),
 
-This looks like it might be a bug:
+We maske both the fields for KVM in AArch32 ID registers. We should do 
+the same here.
 
-  static const int piix4_pm_io_region = PCI_BRIDGE_RESOURCES;
-
-  static int piix4_poweroff_probe(struct pci_dev *dev,
-                                  const struct pci_device_id *id)
-  {
-          ...
-          /* Request access to the PIIX4 PM IO registers */
-          res = pci_request_region(dev, piix4_pm_io_region,
-                                   "PIIX4 PM IO registers");
-
-pci_request_region() takes a BAR number (0-5), but here we're passing
-PCI_BRIDGE_RESOURCES (13 if CONFIG_PCI_IOV, or 7 otherwise), which is
-the bridge I/O window.
-
-I don't think this device ([8086:7113]) is a bridge, so that resource
-should be empty.
-
-Based on this spec:
-https://www.intel.com/Assets/PDF/datasheet/290562.pdf,
-it looks like it should be the PIIX4 power management function at
-function 3, which has no standard PCI BARs but does have a PMBA (Power
-Management Base Address) at 0x40 and an SMBBA (SMBus Base Address) at
-0x90 in config space.
-
-I suppose on an ACPI system the regions described by PMBA and SMBBA
-might be described via ACPI, since they're not discoverable by
-standard PCI enumeration?  Pretty sure you don't have ACPI on MIPS
-though.
-
-Maybe the driver should read PMBA and SMBBA and reserve those regions
-by hand with request_region()?
-
-Bjorn
+Suzuki
