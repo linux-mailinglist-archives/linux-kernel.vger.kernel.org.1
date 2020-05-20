@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929DE1DBE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759B11DBE5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgETTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:49:40 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:42552 "EHLO
+        id S1727825AbgETTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:49:42 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:42574 "EHLO
         lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbgETTtj (ORCPT
+        with ESMTP id S1726823AbgETTtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:49:39 -0400
+        Wed, 20 May 2020 15:49:41 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 5B045623A7A4;
-        Wed, 20 May 2020 21:49:37 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id 3F1E3623A7CB;
+        Wed, 20 May 2020 21:49:39 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TH9rs0QSko1X; Wed, 20 May 2020 21:49:37 +0200 (CEST)
+        with ESMTP id FIdXJt4u6WJt; Wed, 20 May 2020 21:49:39 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 07759623A7CB;
-        Wed, 20 May 2020 21:49:37 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id ED657623A7C5;
+        Wed, 20 May 2020 21:49:38 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 8HTSTKpM1ZAC; Wed, 20 May 2020 21:49:36 +0200 (CEST)
+        with ESMTP id q_X3_oYRrh_y; Wed, 20 May 2020 21:49:38 +0200 (CEST)
 Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id DD072623A7A4;
-        Wed, 20 May 2020 21:49:36 +0200 (CEST)
-Date:   Wed, 20 May 2020 21:49:36 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id D9BCF623A7CB;
+        Wed, 20 May 2020 21:49:38 +0200 (CEST)
+Date:   Wed, 20 May 2020 21:49:38 +0200 (CEST)
 From:   Richard Weinberger <richard@nod.at>
 To:     torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
-Message-ID: <1547930539.249342.1590004176796.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML fixes for 5.7 final
+        linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <294087931.249343.1590004178869.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBI/UBIFS fixes for 5.7 final
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [195.201.40.130]
 X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Index: 7oeqR7ADUshtFLOz07bQL7e19w9UfQ==
-Thread-Topic: UML fixes for 5.7 final
+Thread-Index: IIwsIXTW2IYy/sC4AclDYRhuEBVl8Q==
+Thread-Topic: UBI/UBIFS fixes for 5.7 final
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,33 +48,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-The following changes since commit 1d2cc5ac6f6668cc15216d51051103c61467d7e8:
+The following changes since commit c0cc271173b2e1c2d8d0ceaef14e4dfa79eefc0d:
 
-  Merge tag 'riscv-for-linus-5.7-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2020-04-29 09:25:32 -0700)
+  Merge tag 'modules-for-v5.7' of git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux (2020-04-09 12:52:34 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.7-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.7-rc6
 
-for you to fetch changes up to 2e27d33d22afa3d12746f854d6a4fad7ad7b86de:
+for you to fetch changes up to 0e7572cffe442290c347e779bf8bd4306bb0aa7c:
 
-  um: Fix typo in vector driver transport option definition (2020-04-29 21:22:15 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following bug fixes for UML:
-
-- Two missing includes which cause build issues on recent systems
-- Correctly set TRANS_GRE_LEN in our vector network driver
+  ubi: Fix seq_file usage in detailed_erase_block_info debugfs file (2020-05-17 23:38:21 +0200)
 
 ----------------------------------------------------------------
-Ignat Korchagin (1):
-      um: Fix typo in vector driver transport option definition
+This pull request contains the following bug fixes for UBI and UBIFS:
 
-Johannes Berg (2):
-      um: Fix xor.h include
-      um: syscall.c: include <asm/unistd.h>
+- Correctly set next cursor for detailed_erase_block_info debugfs file
+- Don't use crypto_shash_descsize() for digest size in UBIFS
+- Remove broken lazytime support from UBIFS
 
- arch/um/drivers/vector_user.h | 2 +-
- arch/um/include/asm/xor.h     | 2 +-
- arch/um/kernel/skas/syscall.c | 1 +
- 3 files changed, 3 insertions(+), 2 deletions(-)
+----------------------------------------------------------------
+Christoph Hellwig (1):
+      ubifs: remove broken lazytime support
+
+Eric Biggers (1):
+      ubifs: fix wrong use of crypto_shash_descsize()
+
+Richard Weinberger (1):
+      ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
+
+ drivers/mtd/ubi/debug.c | 12 ++----------
+ fs/ubifs/auth.c         | 17 ++++-------------
+ fs/ubifs/file.c         |  6 +-----
+ fs/ubifs/replay.c       | 13 ++-----------
+ 4 files changed, 9 insertions(+), 39 deletions(-)
