@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253FA1DBB09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E31DBB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgETRTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:19:18 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40946 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgETRTR (ORCPT
+        id S1726893AbgETRTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgETRTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:19:17 -0400
-Received: by mail-ot1-f67.google.com with SMTP id d26so3094426otc.7;
-        Wed, 20 May 2020 10:19:16 -0700 (PDT)
+        Wed, 20 May 2020 13:19:10 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21683C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:19:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id n15so1634613pjt.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S2xLidJ0hnI935YYnFtWGyJUIRc3KTILqlbh4Uyn5Nk=;
+        b=Ys5fYNwkAiCwQkbSl8A3xSidKXPIBkiPCsRQK1/xAMFnfuu0DH+Kcia9BOzgsHgvB2
+         hY+gBAkOB3dZsJ/IlBVMbWTXJoUOxzkHjcKnnPpO2LIhlL7NT0kyHrVGRi5dcUWusETo
+         ekDBfTEYDJSK6LwPWl39lHOJX+hCyNytLRhjE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DIDGZ0k2HNITwxdZwNAiFpKITQvWanJOgt4a8JrQu+0=;
-        b=qlhJYxEB0SxuIbPMlYvGWAuDeXK6NUiaTVXDm367vn9mOkwhbqnYHlX9ksCA/Z4e2P
-         8z7yN5QHIsBkV6YyQcBiAKX/XbK/wL7akwGlFTq4RxM8fGYkDpAF8W9cdH1zb9wyAUWn
-         aULKYPUsAb+Qm4J+0UnaVk+1CTbelFUTVCGBDnPDySWJrYRt/4ii/r1vQPFWfaY8xdjn
-         d5JhofCJp9O1XO6e5EahPOZi9F7CLkFGrstkbvg4YV4oIA9OzxCn88N+OSsJCasQ+Idy
-         E6UN6w2y5HyQVPv7ZKqEaNJBjvQrIwdpdSKkpFBmvk/hWuWCgyFhUpz45OvDdAPCpRZQ
-         gEkA==
-X-Gm-Message-State: AOAM530y42BmNykpom80/+TBmff+JX584++/atB9f4DlOaV9P8t1CIt2
-        K4PPStY+gD0HVzk/m1/aj4BMuYfXVfCJJqvResA=
-X-Google-Smtp-Source: ABdhPJx7pYVtrGhyKxucgb/Avt+fdqrfNfSyfVlSzygMnJZZgwowBhd2IaMVkZ3QUUgihnyXpGPpYq+/kzT0cY/bvXU=
-X-Received: by 2002:a9d:6356:: with SMTP id y22mr3803448otk.167.1589995156615;
- Wed, 20 May 2020 10:19:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200520133432.19738-1-dinghao.liu@zju.edu.cn> <CAKdAkRTyVL0uV0dGxHoEgMyB9FP6b0m60CHy7C4QXeR5WTGAJw@mail.gmail.com>
-In-Reply-To: <CAKdAkRTyVL0uV0dGxHoEgMyB9FP6b0m60CHy7C4QXeR5WTGAJw@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 20 May 2020 19:19:05 +0200
-Message-ID: <CAJZ5v0gruwb6sZM4qb3dTq2sPtF8Z77Jzo7orKA9JXMrAb9vcQ@mail.gmail.com>
-Subject: Re: [PATCH] Input: omap-keypad - fix runtime pm imbalance on error
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, Kangjie Lu <kjlu@umn.edu>,
-        Richard Fontana <rfontana@redhat.com>,
-        Allison Randal <allison@lohutok.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S2xLidJ0hnI935YYnFtWGyJUIRc3KTILqlbh4Uyn5Nk=;
+        b=pJuHsuOwodnpgD4R9NFHu3S8b0dudmQUglwZ32bdE7qopkAmLtOXSzTZ6dtm8OHKOp
+         YX7qfyfW5uEvtCsLb6ooLvip3txqpA1081zlZauUlJYQxVsEejEEibp8mzDX2OfNYUEs
+         YzEoLycQaqsxE9RgPtzqKpN/qbZuQj5UP0sJ0CVnH59BYPgg86W/J8xN3WXHNp3Hpk8y
+         THdmfFtm4/1OxQn7s35WiKm7RELBZrKbXKHBUXPWe/Vm8CyY15ek7Lpgz6c+KU71iHDy
+         gq404DEKQZCypWzwY6U5AYH8ANL5GPh7wFsP/KS+n7Hhl62uaZXwEKABypQJmOUSGvQq
+         Aycw==
+X-Gm-Message-State: AOAM530pLNVjSnHtD1VD94vLh7hDG9ImtOw23QYuAmDnAWkbayLQx/Lq
+        jZZvyJBhc9WNscgmxrqzMwYu1awsX7Jw2A==
+X-Google-Smtp-Source: ABdhPJxS8oFXRCCwkPUhDwoZ7BSTC8ta5ZZ0pp5FVpscOuK3PGI5YPCworulmUIJ9nn6NPqMSVXVdw==
+X-Received: by 2002:a17:902:aa94:: with SMTP id d20mr5339806plr.15.1589995149589;
+        Wed, 20 May 2020 10:19:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r1sm2260026pgb.37.2020.05.20.10.19.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 10:19:08 -0700 (PDT)
+Date:   Wed, 20 May 2020 10:19:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org H. Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] x86/uv/time: Replace one-element array and save heap
+ space
+Message-ID: <202005201017.72D1B3A@keescook>
+References: <20200518190114.GA7757@embeddedor>
+ <b03d196cdbbbc6e9e8456910c6c6673ab67f76cb.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b03d196cdbbbc6e9e8456910c6c6673ab67f76cb.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 7:02 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Dinghao,
->
-> On Wed, May 20, 2020 at 6:35 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
-> >
-> > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > the call returns an error code. Thus a pairing decrement is needed
-> > on the error handling path to keep the counter balanced.
->
-> This is a very surprising behavior and I wonder if this should be
-> fixed in the PM core (or the required cleanup steps need to be called
-> out in the function description).
+On Mon, May 18, 2020 at 12:09:16PM -0700, Joe Perches wrote:
+> On Mon, 2020-05-18 at 14:01 -0500, Gustavo A. R. Silva wrote:
+> > The current codebase makes use of one-element arrays in the following
+> > form:
+> > 
+> > struct something {
+> >     int length;
+> >     u8 data[1];
+> > };
+> []
+> > This issue has been out there since 2009.
+> > This issue was found with the help of Coccinelle and fixed _manually_.
+> []
+> > diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
+> > index 7af31b245636..993a8ae6fdfb 100644
+> > --- a/arch/x86/platform/uv/uv_time.c
+> > +++ b/arch/x86/platform/uv/uv_time.c
+> > @@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
+> >  	struct {
+> >  		int	lcpu;		/* systemwide logical cpu number */
+> >  		u64	expires;	/* next timer expiration for this cpu */
+> > -	} cpu[1];
+> > +	} cpu[];
+> >  };
+> >  
+> >  /*
+> > @@ -156,9 +156,8 @@ static __init int uv_rtc_allocate_timers(void)
+> >  		struct uv_rtc_timer_head *head = blade_info[bid];
+> >  
+> >  		if (!head) {
+> > -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
+> > -				(uv_blade_nr_possible_cpus(bid) *
+> > -					2 * sizeof(u64)),
+> > +			head = kmalloc_node(struct_size(head, cpu,
+> > +				uv_blade_nr_possible_cpus(bid)),
+> 
+> It's probably safer to use kzalloc_node here as well.
 
-It has been like that forever and it's intentional, because it allows
-certain pieces of code to do things like
+Hm, I think it's not actually needed here. All three members are
+immediately initialized and it doesn't look to ever be copied to
+userspace.
 
-pm_runtime_get_sync(dev);
-/* do something regardless of whether or not PM-runtime is enabled for dev */
-pm_runtime_put(dev);
+> 
+> >  				GFP_KERNEL, nid);
+> >  			if (!head) {
+> >  				uv_rtc_deallocate_timers();
+> 
 
-So I wouldn't really call it surprising.
+FWIW, I think this change is good as-is. Always nice to get back a
+little memory. ;)
 
-> I also see that a few drivers that
-> handle this situation correctly (?) call pm_runtime_put_noidle()
-> instead of pm_runtime_put_sync() in the error path.
->
-> Rafael, do you have any guidance here?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Feel free to improve the kerneldoc comment of __pm_runtime_resume(),
-although it is clear enough to me, and fix the callers that leak the
-refcount.
+-- 
+Kees Cook
