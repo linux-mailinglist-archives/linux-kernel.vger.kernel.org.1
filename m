@@ -2,57 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECBD1DACD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F101DACD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgETIEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 04:04:04 -0400
-Received: from verein.lst.de ([213.95.11.211]:48303 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETIED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 04:04:03 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AE88368C65; Wed, 20 May 2020 10:03:58 +0200 (CEST)
-Date:   Wed, 20 May 2020 10:03:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-block@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org
-Subject: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set
- data->ctx and data->hctx in blk_mq_alloc_request_hctx
-Message-ID: <20200520080357.GA4197@lst.de>
-References: <20200518093155.GB35380@T590> <87imgty15d.fsf@nanos.tec.linutronix.de> <20200518115454.GA46364@T590> <20200518131634.GA645@lst.de> <20200518141107.GA50374@T590> <20200518165619.GA17465@lst.de> <20200519015420.GA70957@T590> <20200519153000.GB22286@lst.de> <20200520011823.GA415158@T590> <20200520030424.GI416136@T590>
+        id S1726826AbgETIEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:04:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55745 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726436AbgETIEq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 04:04:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589961885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tODKxPEhKOy3EtWiEeXfICX4Oq3a9d2MWwv3RjPjgr8=;
+        b=HFRC4axwnvlDfvaRBPAKds6CcKzXO9TKcGFhVwrUU8WAgv1JD9cogxmfYQ47V9i0KiSxFO
+        A3/HW9adgMmLX/2cob1JLjT5CEUNsLSsY5R3DuS6XO5r0Qah0qBn17s6HYuPq6G9qIRecD
+        RcyaVrk0UtlD4DHV4zFHCX3bfi/d81E=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-469-xQsKOu-BMuekTitgqdHZ0A-1; Wed, 20 May 2020 04:04:44 -0400
+X-MC-Unique: xQsKOu-BMuekTitgqdHZ0A-1
+Received: by mail-wr1-f70.google.com with SMTP id l12so1064420wrw.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 01:04:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tODKxPEhKOy3EtWiEeXfICX4Oq3a9d2MWwv3RjPjgr8=;
+        b=pVrpY0JIXsIdrDmafDfun9WUK4ZrNn5V7iJvqi6rASn8nAcxiMFcYx9Jz9J/zPjAeK
+         +HYvvC9FIwqV7ZGF1Ab+wPZ+1lgQc/rN0s/v6wVltqDuOcJqnzQGIhA1vwwhRZMb4QnB
+         mNd/Xzv1wgX9X/LYKXpPVHJ+BHk8vHajqvg6Oxx1twXf4cnbBtaRdVpWDcDpcszQoqS2
+         fUq4C5IBTk/o7qOGFwfHL6S1xJ56Xq+pIvy7nZYYbxny5VwXF55qneofy2LjhjRkZZG1
+         5Ud/Thds8yt/046yQlXCsYJVvYwKwpoPOEX7w70gcwXh1bsL9gToH2f91e5OoeAdXpX7
+         uqpQ==
+X-Gm-Message-State: AOAM530k5YwU/Y+lYMhy4H2WBMByMq5VesgQuxcuIzYMt+aLppBISeez
+        hEbod9BLtNjhdxDgSyUUK6lTopkFqZiC7oxkMFR8rOqn22tfOAt7iq7mhM2y2JKba9uil5H4f9e
+        NXOzo/d5VUQGnpW4GMhA6G+u9
+X-Received: by 2002:a05:6000:11ca:: with SMTP id i10mr3138764wrx.10.1589961882841;
+        Wed, 20 May 2020 01:04:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzY2cSIgL58y2H/BiNwiTnt+p2jmmQ05xVyK44+WVRrlhAbO7zIFMCD6cJ85iRgSS3nhSobmg==
+X-Received: by 2002:a05:6000:11ca:: with SMTP id i10mr3138741wrx.10.1589961882676;
+        Wed, 20 May 2020 01:04:42 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
+        by smtp.gmail.com with ESMTPSA id n9sm2370316wmj.5.2020.05.20.01.04.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 01:04:42 -0700 (PDT)
+Subject: Re: [PATCH 2/3] objtool: Move struct objtool_file into
+ arch-independent header
+To:     Matt Helsley <mhelsley@vmware.com>, linux-kernel@vger.kernel.org
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <cover.1589913349.git.mhelsley@vmware.com>
+ <8a877bc283cbad704c7472ac3ef534d49629dd05.1589913349.git.mhelsley@vmware.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <46066936-eb20-1b64-eef1-9b57aeab3a73@redhat.com>
+Date:   Wed, 20 May 2020 09:04:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520030424.GI416136@T590>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <8a877bc283cbad704c7472ac3ef534d49629dd05.1589913349.git.mhelsley@vmware.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 11:04:24AM +0800, Ming Lei wrote:
-> On Wed, May 20, 2020 at 09:18:23AM +0800, Ming Lei wrote:
-> > On Tue, May 19, 2020 at 05:30:00PM +0200, Christoph Hellwig wrote:
-> > > On Tue, May 19, 2020 at 09:54:20AM +0800, Ming Lei wrote:
-> > > > As Thomas clarified, workqueue hasn't such issue any more, and only other
-> > > > per CPU kthreads can run until the CPU clears the online bit.
-> > > > 
-> > > > So the question is if IO can be submitted from such kernel context?
-> > > 
-> > > What other per-CPU kthreads even exist?
-> > 
-> > I don't know, so expose to wider audiences.
+
+
+On 5/19/20 9:55 PM, Matt Helsley wrote:
+> The objtool_file structure describes the files objtool works on,
+> is used by the check subcommand, and the check.h header is included
+> by the orc subcommands so it's presently used by all subcommands.
 > 
-> One user is io uring with IORING_SETUP_SQPOLL & IORING_SETUP_SQ_AFF, see
-> io_sq_offload_start(), and it is a IO submission kthread.
+> Since the structure will be useful in all subcommands besides check,
+> and some subcommands may not want to include check.h to get the
+> definition, split the structure out into a new header meant for use
+> by all objtool subcommands.
+> 
+> Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 
-As far as I can tell that code is buggy, as it still needs to migrate
-the thread away when the cpu is offlined.  This isn't a per-cpu kthread
-in the sene of having one for each CPU.
+Reviewed-by: Julien Thierry <jthierry@redhat.com>
 
-Jens?
+-- 
+Julien Thierry
+
