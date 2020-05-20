@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5FB1DB9BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A09B1DB9B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgETQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:37:50 -0400
-Received: from mailomta10-re.btinternet.com ([213.120.69.103]:13612 "EHLO
-        re-prd-fep-045.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726548AbgETQhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:37:50 -0400
-Received: from re-prd-rgout-003.btmx-prd.synchronoss.net ([10.2.54.6])
-          by re-prd-fep-045.btinternet.com with ESMTP
-          id <20200520163747.HDJO4077.re-prd-fep-045.btinternet.com@re-prd-rgout-003.btmx-prd.synchronoss.net>;
-          Wed, 20 May 2020 17:37:47 +0100
-Authentication-Results: btinternet.com;
-    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
-X-Originating-IP: [31.53.141.224]
-X-OWM-Source-IP: 31.53.141.224 (GB)
-X-OWM-Env-Sender: j.oldman998@btinternet.com
-X-VadeSecure-score: verdict=clean score=0/300, class=clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedruddtledguddttdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemuceutffkvffkuffjvffgnffgvefqofdpqfgfvfenuceurghilhhouhhtmecufedtudenucenucfjughrpefhvffufffkofestddtredtredttdenucfhrhhomheplfhohhhnucfqlhgumhgrnhcuoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqnecuggftrfgrthhtvghrnhepgeeftdfhfeeuiefhgfekfeethedutddtfeduteevleevfedvfefhjeeijefhgffgnecukfhppeefuddrheefrddugedurddvvdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghlohephhgvnhhrhidrhhhomhgvpdhinhgvthepfedurdehfedrudeguddrvddvgedpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeouggvvhgvlhesughrihhvvghruggvvhdrohhsuhhoshhlrdhorhhgqedprhgtphhtthhopeeoghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgqedprhgtphhtthhopeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from henry.home (31.53.141.224) by re-prd-rgout-003.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
-        id 5EC3CE9B003C9616; Wed, 20 May 2020 17:37:47 +0100
-From:   John Oldman <john.oldman@polehill.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        John Oldman <john.oldman@polehill.co.uk>
-Subject: [PATCH] staging: rtl8192e:  Using comparison to true is error prone
-Date:   Wed, 20 May 2020 17:37:19 +0100
-Message-Id: <20200520163719.14463-1-john.oldman@polehill.co.uk>
-X-Mailer: git-send-email 2.17.1
+        id S1726920AbgETQhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:37:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgETQhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 12:37:41 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 391662065F;
+        Wed, 20 May 2020 16:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589992661;
+        bh=XKH8YKiyyHaQWTAdORIbFB6zMNH1cV6fYmuuCpvCKIs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KR8EoktP99veoD1Zs1CmCeyY/TAK9bDrMrkQZ+CAo88/EGCRblErKZf8uZGt++2sP
+         nJ8OF2W1CbzcDYEL+0sESZH71kCTquvfLVn1gzMsyHzEN3R4AM2qls7n7MkD4W9Ykg
+         QixYVtCNFahEP9l3xmIYFfFLDQS1AqsznQPGpyGg=
+Date:   Wed, 20 May 2020 11:37:39 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: tegra: fix runtime pm imbalance on error
+Message-ID: <20200520163739.GA1100601@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520095908.GD2136208@ulmo>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix below issue reported by checkpatch.pl:
+On Wed, May 20, 2020 at 11:59:08AM +0200, Thierry Reding wrote:
+> On Wed, May 20, 2020 at 04:52:23PM +0800, Dinghao Liu wrote:
+> > pm_runtime_get_sync() increments the runtime PM usage counter even
+> > it returns an error code. Thus a pairing decrement is needed on
+> 
+> s/even it/even when it/
+> 
+> Might also be a good idea to use a different subject prefix because I
+> was almost not going to look at the other patch, taking this to be a
+> replacement for it.
 
-CHECK: Using comparison to true is error prone
-CHECK: Using comparison to false is error prone
+Amen.  This would be a good change to start using "PCI: tegra194" or
+something for pcie-tegra194.c.  Or will there be tegra195, tegra 196,
+etc added to this driver?
 
-Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
----
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Also, please capitalize the first word and "PM" in the subjects:
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-index b093b5629171..5b1392deb0a7 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -514,7 +514,7 @@ static void rtw_dev_remove(struct sdio_func *func)
- 
- 	rtw_unregister_netdevs(dvobj);
- 
--	if (padapter->bSurpriseRemoved == false) {
-+	if (!padapter->bSurpriseRemoved) {
- 		int err;
- 
- 		/* test surprise remove */
-@@ -554,12 +554,12 @@ static int rtw_sdio_suspend(struct device *dev)
- 	struct adapter *padapter = psdpriv->if1;
- 	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
- 
--	if (padapter->bDriverStopped == true) {
-+	if (padapter->bDriverStopped) {
- 		DBG_871X("%s bDriverStopped = %d\n", __func__, padapter->bDriverStopped);
- 		return 0;
- 	}
- 
--	if (pwrpriv->bInSuspend == true) {
-+	if (pwrpriv->bInSuspend) {
- 		DBG_871X("%s bInSuspend = %d\n", __func__, pwrpriv->bInSuspend);
- 		pdbgpriv->dbg_suspend_error_cnt++;
- 		return 0;
-@@ -574,7 +574,7 @@ static int rtw_resume_process(struct adapter *padapter)
- 	struct dvobj_priv *psdpriv = padapter->dvobj;
- 	struct debug_priv *pdbgpriv = &psdpriv->drv_dbg;
- 
--	if (pwrpriv->bInSuspend == false) {
-+	if (!pwrpriv->bInSuspend) {
- 		pdbgpriv->dbg_resume_error_cnt++;
- 		DBG_871X("%s bInSuspend = %d\n", __func__, pwrpriv->bInSuspend);
- 		return -1;
--- 
-2.17.1
+  PCI: tegra194: Fix runtime PM imbalance on error
 
+Bjorn
