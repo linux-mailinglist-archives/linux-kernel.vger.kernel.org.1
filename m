@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07031DB4F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5F11DB4F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgETN1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:27:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:30752 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbgETN1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:27:44 -0400
-IronPort-SDR: 702/lacGYT8hEPHthzihBeB2yJ9dkfjg1nfQg9IsQlKRyPXgrr85FqypyGRboij5atShrUyeO8
- imGaGil/tWeg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 06:27:43 -0700
-IronPort-SDR: cv4BF2+S190M0BuNw9T1f7pRHZsNf3Jgigha8gssDa5mRFFCBDNOv9/HheNr1f1HNkSwuvWqyx
- X2TPB5wzr11w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
-   d="scan'208";a="374076597"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 20 May 2020 06:27:40 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 20 May 2020 16:27:39 +0300
-Date:   Wed, 20 May 2020 16:27:39 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Christian Lamparter <chunkeey@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
-        USB list <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v13 2/5] usb: renesas-xhci: Add the renesas xhci driver
-Message-ID: <20200520132739.GK1298122@kuha.fi.intel.com>
-References: <20200506060025.1535960-1-vkoul@kernel.org>
- <20200506060025.1535960-3-vkoul@kernel.org>
- <20200519114528.GC1298122@kuha.fi.intel.com>
- <CAAd0S9AEOsOLrnry4xNRVOi5fXwm3KXYzQsUMCm9tVxHr2sr1w@mail.gmail.com>
+        id S1726870AbgETN2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:28:44 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:42792 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgETN2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:28:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6NkSTATdc+EBN2bxaA8ZPvbxxQ8lXoj7UgY/0mXcj9k=; b=RW2QbuLn9NBBL5Ykp3VpYkYVK0
+        2QNe8a4ubFLEZvO+Xg4Zz+fE/zYWHk6ltL6wsg/Q6fSJuiylDg5wEP/mGW5UFVVwFJPXK9uGxpkOs
+        p1KwU6uUjytXoEbpFBIEN9k8jkh3NUFBXNP9cNFlOtYjdnmJrxxlrBNfsCmR/xi2eiwqknezBEx4h
+        3xfZ9PUg5TWi1rF6keaONy8Bylcx/xJf/CcA1/knUU/zBe43ZTuzP1D/Gw5v80xebfPZWhoWXw2l2
+        /AhcxfIcq8G996Rw56IGeY3uiKUh5Sb+Sw0/meDSw4qdNJvTiq4VktmzQn7cF4u0bgswUaDh1jfkz
+        deF2yhmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbOlK-0001KT-Ry; Wed, 20 May 2020 13:27:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0826303DA0;
+        Wed, 20 May 2020 15:27:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1FEB029DB5053; Wed, 20 May 2020 15:27:55 +0200 (CEST)
+Date:   Wed, 20 May 2020 15:27:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
+ access
+Message-ID: <20200520132755.GM317569@hirez.programming.kicks-ass.net>
+References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+ <20200519201912.1564477-4-bigeasy@linutronix.de>
+ <20200520102407.GF317569@hirez.programming.kicks-ass.net>
+ <20200520120608.mwros5jurmidxxfv@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAd0S9AEOsOLrnry4xNRVOi5fXwm3KXYzQsUMCm9tVxHr2sr1w@mail.gmail.com>
+In-Reply-To: <20200520120608.mwros5jurmidxxfv@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 10:19:03PM +0200, Christian Lamparter wrote:
-> Hello,
-> 
-> On Tue, May 19, 2020 at 1:45 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> > On Wed, May 06, 2020 at 11:30:22AM +0530, Vinod Koul wrote:
-> > > From: Christian Lamparter <chunkeey@googlemail.com>
-> > >
-> > > This add a new driver for renesas xhci which is basically a firmware
-> > > loader for uPD720201 and uPD720202 w/o ROM. The xhci-pci driver will
-> > > invoke this driver for loading/unloading on relevant devices.
-> > >
-> > > This patch adds a firmware loader for the uPD720201K8-711-BAC-A
-> > > and uPD720202K8-711-BAA-A variant. Both of these chips are listed
-> > > in Renesas' R19UH0078EJ0500 Rev.5.00 "User's Manual: Hardware" as
-> > > devices which need the firmware loader on page 2 in order to
-> > > work as they "do not support the External ROM".
-> > >
-> > > The "Firmware Download Sequence" is describe in chapter
-> > > "7.1 FW Download Interface" R19UH0078EJ0500 Rev.5.00 page 131.
-> > >
-> > > The firmware "K2013080.mem" is available from a USB3.0 Host to
-> > > PCIe Adapter (PP2U-E card) "Firmware download" archive. An
-> > > alternative version can be sourced from Netgear's WNDR4700 GPL
-> > > archives.
-> > >
-> > > The release notes of the PP2U-E's "Firmware Download" ver 2.0.1.3
-> > > (2012-06-15) state that the firmware is for the following devices:
-> > >  - uPD720201 ES 2.0 sample whose revision ID is 2.
-> > >  - uPD720201 ES 2.1 sample & CS sample & Mass product, ID is 3.
-> > >  - uPD720202 ES 2.0 sample & CS sample & Mass product, ID is 2.
-> >
-> > You wouldn't happen to have access to the documentation of the
-> > "original" uPD720200 USB 3.0 controller?
-> >
-> > It would be cool if we could support that too with this driver.
-> 
-> ???. I have one of those "original" uPD720200(A) working "just fine"
-> in my Laptop currently.
-> It's an really old HP dv6-6003eg from around 2011 that came with two
-> USB 3.0 Ports, which
-> are driven by a "NEC Corporation uPD720200 USB 3.0 Host Controller"
-> 1033:0194 (Rev 04).
-> 
-> As for supporting the uPD720200 (flasher) with this serises.... There
-> are some bad news:
-> 
-> "In addition, the programming interface for the uPD720200 and uPD720200A
-> is different from the uPD720202, needs different programming tools, and relies
-> on proprietary chip features that cannot be disclosed outside of Renesas."
-> <https://mail.coreboot.org/pipermail/flashrom/2013-February/010498.html> :-(
+On Wed, May 20, 2020 at 02:06:08PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-05-20 12:24:07 [+0200], Peter Zijlstra wrote:
 
-Too bad. That's what I was hoping to do with this driver. There are
-still boards out there equipped with uPD720200/uPD720200A that have
-older firmware. If you don't have the latest firmware (which is also
-from 2012), then PME and a few other things will not work (so resume
-from D3 does not work for example).
+> > Would it perhaps make sense to stick the local_lock in struct srcu_data ?
+> 
+> In that case we would need something for pointer stability before the
+> lock is acquired.
 
-thanks,
+Maybe I need sleep; but I think this will work.
 
--- 
-heikki
+ &x->foo = x + foo-offset
+
+ this_cpu_ptr(x) = x + cpu-offset
+
+ &this_cpu_ptr(x)->foo = (x + cpu-offset) + foo-offset
+                       = (x + foo-offset) + cpu-offset
+		       = this_cpu_ptr(&x->foo)
+
+---
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -13,6 +13,7 @@
+ 
+ #include <linux/rcu_node_tree.h>
+ #include <linux/completion.h>
++#include <linux/locallock.h>
+ 
+ struct srcu_node;
+ struct srcu_struct;
+@@ -22,6 +23,8 @@ struct srcu_struct;
+  * to rcu_node.
+  */
+ struct srcu_data {
++	struct local_lock llock;
++
+ 	/* Read-side state. */
+ 	unsigned long srcu_lock_count[2];	/* Locks per CPU. */
+ 	unsigned long srcu_unlock_count[2];	/* Unlocks per CPU. */
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -778,13 +778,13 @@ static bool srcu_might_be_idle(struct sr
+ 	unsigned long tlast;
+ 
+ 	/* If the local srcu_data structure has callbacks, not idle.  */
+-	local_irq_save(flags);
++	local_lock_irqsave(&ssp->sda->llock, flags);
+ 	sdp = this_cpu_ptr(ssp->sda);
+ 	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&ssp->sda->llock, flags);
+ 		return false; /* Callbacks already present, so not idle. */
+ 	}
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&ssp->sda->llock, flags);
+ 
+ 	/*
+ 	 * No local callbacks, so probabalistically probe global state.
+@@ -864,7 +864,7 @@ static void __call_srcu(struct srcu_stru
+ 	}
+ 	rhp->func = func;
+ 	idx = srcu_read_lock(ssp);
+-	local_irq_save(flags);
++	local_lock_irqsave(&ssp->sda->llock, flags);
+ 	sdp = this_cpu_ptr(ssp->sda);
+ 	spin_lock_rcu_node(sdp);
+ 	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+@@ -880,7 +880,8 @@ static void __call_srcu(struct srcu_stru
+ 		sdp->srcu_gp_seq_needed_exp = s;
+ 		needexp = true;
+ 	}
+-	spin_unlock_irqrestore_rcu_node(sdp, flags);
++	spin_unlock_rcu_node(sdp);
++	local_unlock_irqrestore(&ssp->sda->llock, flags);
+ 	if (needgp)
+ 		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
+ 	else if (needexp)
