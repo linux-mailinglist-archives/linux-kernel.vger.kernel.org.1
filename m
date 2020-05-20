@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4A01DB694
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31F51DB6B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgETOZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 10:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        id S1728004AbgETO0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728371AbgETOZl (ORCPT
+        with ESMTP id S1727972AbgETO0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 10:25:41 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBE0C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:25:40 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id b91so3264831edf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:25:40 -0700 (PDT)
+        Wed, 20 May 2020 10:26:40 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F98C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:26:40 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id 79so3319174iou.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:26:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=wMA33dnba4I1xySChm1PiZx/HzxTpqEY+2IJD7PaIUo=;
-        b=UXPruK/n94mCL0Cf+r1Ubc53NG+qGqAjJZ3m1rxiheqyt+TgR43B2MZbM3G5oGBvzH
-         AOmqtTnWkh5iqqbiEkcBoF/eGI9s12ijRF5DSEFdXYqldqojRK/RtnCu58WVNOX+2pRm
-         wgliTMuFTtUZrWBUOF9mxC0NFJq5ZwsahXtew=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=QXI3AhsJFuu80HNeDGjlcqyYsQXhBnzU3PD21Vsg8a+mO4Q2Q3Zo7+25LRjD7PeQAJ
+         gxQsWrm8PdByABReSUxmoTr0akiX3W4UPRRs5FY887cFgrTw3ZKAEsK/RydmdiLBAZ31
+         1cnLhgHpT4CAGIL1iYQqB3xj3krydNoLfUc0YnuchCkpQUGDU0TOpQZOKmU1ofAJZp3r
+         ZKK0HxYvIUZb9s1RV1P8NTGZMqkeM6oI7LekmMweWXLDxbxcJgKsBcexR8KBsX3fOc4Q
+         JEUIYuoCrNL3EMqjXoFDVj3cpvSGu+zwD0vyCpl+m49V4rCtfiZhfuN25WI/XueEP8QH
+         26bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=wMA33dnba4I1xySChm1PiZx/HzxTpqEY+2IJD7PaIUo=;
-        b=ZwKLMvhS0bhFsJZiENYNb/8LyTufCwBI3AIx23b5chDAC7T8B3ZWU6vP3FXJcNKpGt
-         jRQgDdYFnnJLmKx76Ko5O8artMKsXNh8XdWvqwM/6DyHcxkyZZVCdoOIgAXHAZqmNXWl
-         6YbpAcYDf4iUk1fAdxK574NOg15YRttJEODB21OGe68uWicIrHLvnQjVnnyfBY6xr9hh
-         jc5NT0FSXKsva8jg/nmPvbRbPtVEuYcg5U9r39JHHPfEQEJejwT1hBWCujB8HvimkPTV
-         AqgtbugZcBwf7pItevI2vIv8QNSeW/nmhGpwLT65AAENUFi6yBuOkU8ew34LLrwIBzNq
-         SQng==
-X-Gm-Message-State: AOAM532LVAL5Y82esbFmM6CFe6N+THUp7eOFFOg69h0pgeE8wc49R2di
-        IMQ30seeMDsn9akJNDzS85z09aKq19XKaQ==
-X-Google-Smtp-Source: ABdhPJy10hSN7EIWDkG1mJa1W1U+NkhQqewSXt1VJ7mXWUfgHVHzkudGM39RqPLVe4KIr1tJs9kLSA==
-X-Received: by 2002:aa7:d042:: with SMTP id n2mr1976267edo.226.1589984739557;
-        Wed, 20 May 2020 07:25:39 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-212-96-48-140.catv.broadband.hu. [212.96.48.140])
-        by smtp.gmail.com with ESMTPSA id o18sm2029759eji.97.2020.05.20.07.25.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 07:25:38 -0700 (PDT)
-Date:   Wed, 20 May 2020 16:25:37 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs fixes for 5.7-rc7
-Message-ID: <20200520142537.GD13131@miu.piliscsaba.redhat.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
+        b=c9MgqqAY+snh1aZvtE/kmbnJaiPy3UeNwloJunZtQWDu9sXZGs+99iNOJm1/sb/wkY
+         gE5hu27o7VQ4jh48hNP51el/5Xyo/jHkQw8N3UPcVCkOZP6q7mSjU6I+RH57w6uxy/d9
+         tryx1u0ggNfi1wAAKQ/UJ+toIifmF199Q2aKWsdxDv9l5gn9XEK9tNJZ6NiXcS83uP0J
+         WVCsosEnujs9W+OVeU4JHBAhZAwj364IDVP/kftnWHaowDAUEeM8Nt8WQ6YFCHrA3Edj
+         4/l7Gi4pbr8vkXBtjzvldQWIdscofvqZSDIuDKSK7ufjRGMw1oLoYXpXy/6SLnZ0ET6R
+         BAcQ==
+X-Gm-Message-State: AOAM532IvBYHO4Xpkeg9+NnL5ZDmE3lGfe4meGfn7j5niZ70KkK5MMXT
+        EgGXv2VjF/roObwbypMkAY3+Sn2m3rZK2b+BRM4=
+X-Google-Smtp-Source: ABdhPJy+OT3d9UeZgPhApw3yAq0eFS8PyeMlXf6XgRvTm9Kb2P3i426CBivvIrrJ5Z55y1SDDZ2S5Oq0+3ueoIqin8g=
+X-Received: by 2002:a6b:ba02:: with SMTP id k2mr3649695iof.25.1589984799614;
+ Wed, 20 May 2020 07:26:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a4f:f546:0:0:0:0:0 with HTTP; Wed, 20 May 2020 07:26:38
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   Shayma <shaymamarwan08@gmail.com>
+Date:   Wed, 20 May 2020 14:26:38 +0000
+Message-ID: <CA+HOoT38AdaO_NtFCtLPkLvDPM+qOXWD8YY8C+LT-QC+8g4Y1w@mail.gmail.com>
+Subject: From Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Please pull from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-fixes-5.7-rc7
-
-Fix two bugs introduced in this cycle and one introduced in v5.5.
-
-Thanks,
-Miklos
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      ovl: potential crash in ovl_fid_to_fh()
-
-Vivek Goyal (2):
-      ovl: clear ATTR_FILE from attr->ia_valid
-      ovl: clear ATTR_OPEN from attr->ia_valid
-
----
- fs/overlayfs/export.c |  3 +++
- fs/overlayfs/inode.c  | 18 ++++++++++++++++++
- 2 files changed, 21 insertions(+)
+Hallo, ich hoffe du hast meine Nachricht erhalten.
+Ich brauche schnelle Reaktionen
+Danke
+Michelle
