@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABDE1DBAD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECFA1DBADE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgETRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgETRNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:13:16 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7E162070A
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 17:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589994796;
-        bh=aBnQahn6Rx4syCQPw6nXrqo1bJDUJ1S1WtEdZT9KUVU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rn6dTu/QCsIPsOlSXLkiFei4+NqNuuqFItyUj6DdLTF34ZlAaZDFIkQOMJQA7U+Nk
-         oqNXL0qad5AFDjx7MV0m86sudtZbzrhw+JDDLoPLfl2W1um0wYcfyZR72QRKOzs63a
-         HwcCIMSjA6Bram1Uq1Y2yu4M6c5cm0GG6pnDXEoI=
-Received: by mail-wm1-f42.google.com with SMTP id g14so483614wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:13:15 -0700 (PDT)
-X-Gm-Message-State: AOAM533kyldfMU3mEyYOpGnolM+fIFCPwUHrSp8hpIinXoLFWTDzygA1
-        Rw5Z2qsLtfo+HadusBe8IotuUJDVTVo3M/bnmB++fw==
-X-Google-Smtp-Source: ABdhPJyqE73tj45GgRcuRENdcBFo/oFYikprLfZkfLqP5QSlvVEuV3i4EoHFUJ9qCHMejxr93zIxieuEnsbiXY8vsqs=
-X-Received: by 2002:a1c:9893:: with SMTP id a141mr3075808wme.176.1589994794103;
- Wed, 20 May 2020 10:13:14 -0700 (PDT)
+        id S1727047AbgETRN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:13:28 -0400
+Received: from mail-mw2nam10on2131.outbound.protection.outlook.com ([40.107.94.131]:52672
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726691AbgETRNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 13:13:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AdRjfK0SuYZQn1T/0d38O3urrLDl8q33jrJq0v1A36d2XaoKc1eQEVZEYH0wpXTWZlhc29ciPp34hrP23tSEdrgeV8XD4FjFI/xuvQipg1EjXai/552nuTQuPpQOH51o+Hw768e8VnR2PK3TLDJNXtU8jQFWL+UHpCjVmWpUVT/LjC3CTrUIl9QUxbrVTu4LeEay56oGl/vXt51B3oHsTE+y2AUMOIzpWnn1D/FjM6NhrGaUNZkyAxWxinebSGHOF4jxoIZW4DLIDlQ52VmApO6+RBmwaFZ0I9EKadw7W7KdraOoudg7CKAybQBbLeBZjpZg0pDuj5qSE9MgkKiToA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WENrl9nfjP9FJdafxG3aKM2i7jya30XQF8Yj/HGtyWk=;
+ b=PgypsH6FKmevzGaGsK87F/SC4LRF+AniecGwwAQjZU9vru4lIb9SvcBtNKwgXBKABxl+TS3tzHYS17crLQOEjT0u8lU8IahZRACP/UFiJw74F9MHxT4SENuE2mA1mozeAcOpnvsOUHj6zbY3titgDXtWfttmlduyvATW6qdCDNuxb49UdkF8PFbrMx+ruZO+jmHmqW2u+wjv3qRWYG9U0R1xIqfGeVq5VS+RZD7NhWQmn13xOclTMLIgL7UZRKXVQx4ey1G8WmT3x9uLQPjlTKJBgFDAFsWeiKVRYdz71xuIb9k0B87x8dqP1i3CS+L9M/fAOARz+QKoNrkq2Ym2nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WENrl9nfjP9FJdafxG3aKM2i7jya30XQF8Yj/HGtyWk=;
+ b=I4eSfLbl8s//QLDLZWumiNb84hwghk4mvgdWkyUaTPrLFr/JgwmJYU7y3MlXMOORWigbl9JQCLMk8JgOJ1+BRoW+bX6J3RFsmifUSGzxgAlwKEeOjO1GKSHpLhfRehgD/Xle9ul30qlhjdgvGwE1/TRTMlgD6BB7bYwfLBqWYYk=
+Authentication-Results: amperecomputing.com; dkim=none (message not signed)
+ header.d=none;amperecomputing.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
+ BYAPR01MB5333.prod.exchangelabs.com (2603:10b6:a03:127::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3021.24; Wed, 20 May 2020 17:13:15 +0000
+Received: from BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::296c:b848:8bf0:6f2c]) by BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::296c:b848:8bf0:6f2c%5]) with mapi id 15.20.3021.020; Wed, 20 May 2020
+ 17:13:15 +0000
+From:   Tuan Phan <tuanphan@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] ACPI/IORT: Fix PMCG node single ID mapping handling
+Date:   Wed, 20 May 2020 10:13:07 -0700
+Message-Id: <1589994787-28637-1-git-send-email-tuanphan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR05CA0008.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::13) To BYAPR01MB4598.prod.exchangelabs.com
+ (2603:10b6:a03:8a::18)
 MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235127.996226788@linutronix.de>
- <CALCETrVwTZA6OwrMDhhaNgpkvwsn9ajfuwrfH6xYExvCsFcXjQ@mail.gmail.com> <87lflm4owm.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87lflm4owm.fsf@nanos.tec.linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 20 May 2020 10:13:02 -0700
-X-Gmail-Original-Message-ID: <CALCETrVCBMjEZmohRmJ0=F26LjYxyxP0L_x=c68ExGUampVk3g@mail.gmail.com>
-Message-ID: <CALCETrVCBMjEZmohRmJ0=F26LjYxyxP0L_x=c68ExGUampVk3g@mail.gmail.com>
-Subject: Re: [patch V6 36/37] x86/entry: Move paranoid irq tracing out of ASM code
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BY3PR05CA0008.namprd05.prod.outlook.com (2603:10b6:a03:254::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3045.8 via Frontend Transport; Wed, 20 May 2020 17:13:15 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [4.28.12.214]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 58b8a3b5-99d9-46da-7b96-08d7fce1156a
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5333:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB5333A5ADD9B14CDA31B803E8E0B60@BYAPR01MB5333.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:913;
+X-Forefront-PRVS: 04097B7F7F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9/KqEewnTk2P8hKH4FZRdKQokBQbYC2EDWUMBaU73wntm1ELJ6epWdHWQsrcFm+q69HPfImiuIK0rins/xeOEr2j6xUTP2YvEPR60FG8tC+LAOTlV4gInTOEUlWd/FlGlpwAl4E5hJsUIqhFoOnmcvOjuFxTQojKc1VqCKq7Bbaw7smou1YvSYyfQB9FCgkslQYCYW5jVkcW9obNtbGU5sKf0zkLSX/bk9sBkaNygcdxu97WqlmDfoizlaIPiYm0CZFsRxvu/4qpHvwqpIH6nLanCX2x7CEuuHW6kfECILBvkAn5wF+UVeTPWL71rX6l3T3DrmG4l/2810R8xdF9OlCqG02I8EITEN7geJuOyFLd9qpVmaEzXCpVgtHSCxII
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39840400004)(136003)(396003)(376002)(366004)(346002)(66556008)(66476007)(66946007)(5660300002)(52116002)(86362001)(109986005)(4326008)(478600001)(2616005)(956004)(2906002)(6666004)(26005)(7416002)(16526019)(6512007)(8676002)(186003)(6486002)(6506007)(54906003)(8936002)(316002)(266003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: sR89Fbdc94eFdHBahJ/6b860c6HfWhup5sNa0R7InerdYaafAW8Dpk72//504qn6VmDqAYUDFHV+yXHQFFvKErcCUH7cyznoXfuHC3nrCGrodzWNda0dRHWisswtz2zZ1zM8C/J1YvayyE3WPaMuXleiwWs/cJwV0KRRAmqjTyOVVFIJbGaxM7D0YE9OjzYkwxE8LZQM/WwMXkRIMWsGnCXLITJdRpHOE83hWVjLEjoEGcjpPRTb2m0xillOWzQcbbi2NkTJQ+DFOh9/KkZoZDV8z2xNf+QR07PELwQl4ur5dMtVJDcI9kMS/nsETWMI0qFUvRuUNPuAQk4VgDU4ASpYPNVgkt27mAQ0frefa9IJIv09tiUXSTatmRCqgrWbG9a2wc44XHUKqvAdJe6oZsxQRbCjKsjizX1XW+062Tcglb27MJoLtxEFRl1j8eo997NuUMUMrcUl+TzUFW/qK8TXTVpMH0bnacLlLVzFxsM=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58b8a3b5-99d9-46da-7b96-08d7fce1156a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 17:13:15.7553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V78J6wMR8LocacTieVbsvR81AMi1z25U9Sps6cM4+ySKcT9j90rpcbBrjO8vUpcSXnXmc7+SGPRe9vHAXl45iTdmNC6/eynqZVuka8lIGsSy1QrRCJpY+oiSj8fCsEpv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5333
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 8:17 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Andy Lutomirski <luto@kernel.org> writes:
->
-> > On Fri, May 15, 2020 at 5:11 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > I think something's missing here.  With this patch applied, don't we
-> > get to exc_debug_kernel() -> handle_debug() without doing
-> > idtentry_enter() or equivalent?  And that can even enable IRQs.
-> >
-> > Maybe exc_debug_kernel() should wrap handle_debug() in some
-> > appropriate _enter() / _exit() pair?
->
-> I'm the one who is missing something here, i.e. the connection of this
-> patch to #DB. exc_debug_kernel() still looks like this:
->
->         nmi_enter_notrace();
->         handle_debug(regs, dr6, false);
->         nmi_exit_notrace();
->
-> Confused.
->
+An IORT PMCG node can have no ID mapping if its overflow interrupt is
+wire based therefore the code that parses the PMCG node can not assume
+the node will always have a single mapping present at index 0.
 
-Hmm.  I guess the code is correct-ish or at least as correct as it
-ever was.  But $SUBJECT says "Move paranoid irq tracing out of ASM
-code" but you didn't move it into all the users.  So now the NMI code
-does trace_hardirqs_on_prepare() but the #DB code doesn't.  Perhaps
-the changelog should mention this.
+Fix iort_get_id_mapping_index() by checking for an overflow interrupt
+and mapping count.
 
-exc_kernel_debug() is an atrocity.  Every now and then I get started
-on cleanup it up and so far I always get mired in the giant amount of
-indirection.
+Fixes: 24e516049360 ("ACPI/IORT: Add support for PMCG")
 
-So Acked-by: Andy Lutomirski <luto@kernel.org> if you write a credible
-changelog.
+Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Hanjun Guo <guoahanjun@huawei.com>
+Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+---
+v1 -> v2:
+- Use pmcg node to detect wired base overflow interrupt.
+
+v2 -> v3:
+- Address Hanjun and Robin's comments.
+
+v3 -> v4:
+- Update the title and description as mentioned by Lorenzo.
+
+v4 -> v5:
+- Remove period in the title and commit references.
+
+ drivers/acpi/arm64/iort.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index ed3d2d1..12bb70e 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -414,6 +414,7 @@ static struct acpi_iort_node *iort_node_get_id(struct acpi_iort_node *node,
+ static int iort_get_id_mapping_index(struct acpi_iort_node *node)
+ {
+ 	struct acpi_iort_smmu_v3 *smmu;
++	struct acpi_iort_pmcg *pmcg;
+ 
+ 	switch (node->type) {
+ 	case ACPI_IORT_NODE_SMMU_V3:
+@@ -441,6 +442,10 @@ static int iort_get_id_mapping_index(struct acpi_iort_node *node)
+ 
+ 		return smmu->id_mapping_index;
+ 	case ACPI_IORT_NODE_PMCG:
++		pmcg = (struct acpi_iort_pmcg *)node->node_data;
++		if (pmcg->overflow_gsiv || node->mapping_count == 0)
++			return -EINVAL;
++
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.7.4
+
