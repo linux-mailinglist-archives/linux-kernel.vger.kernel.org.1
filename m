@@ -2,169 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E97E1DC0B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC771DC0BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgETU6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 16:58:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbgETU6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 16:58:04 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 301E220758;
-        Wed, 20 May 2020 20:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590008283;
-        bh=wiqzcgRCvAbOQmETqVfIbYHquqrneyQnyLrXMEG/i3c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x8lIteOkw6m7KI5NLnVrvk3aShdaFP1+8WcsyXjRRGRnY8fXHlpxGF7Hhf3pym3RI
-         cDDTzFd8OApSNKhWdzO1r6f2kiXiJt9daHQDSfwHwq8iHamlfBEYmAt0fIaCn1smLE
-         6AygEvpPfMb1ZlZuo3mpmRa/7NnY1wJC83+cebyk=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 31FD140AFD; Wed, 20 May 2020 17:58:01 -0300 (-03)
-Date:   Wed, 20 May 2020 17:58:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/19] perf ftrace: add support for tracing option
- 'func_stack_trace'
-Message-ID: <20200520205801.GR32678@kernel.org>
-References: <20200510150628.16610-1-changbin.du@gmail.com>
- <20200510150628.16610-5-changbin.du@gmail.com>
+        id S1728166AbgETU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 16:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgETU7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 16:59:38 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F774C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:59:38 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z22so3219972lfd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e/Xdk+2Qjc16LzOVa9lnuQqAqYFbaHhJYfbPjyOMWM0=;
+        b=jAMH1927IOAoBJgvE2Gbj2cFEfC8mJsV3BVmnk97PIGu2VwPko5fwcFleC8sU0XF/G
+         ITqIoW9YRkeABtk+sSwOOTV+vC5TF+URq5GRPfWFvNrh9ZDc41Ack3poVNcJGSL2iOnv
+         ExgXaWUZCNd7yo8NhRoyf0iALymd6I61WzQ9E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e/Xdk+2Qjc16LzOVa9lnuQqAqYFbaHhJYfbPjyOMWM0=;
+        b=hy+YEeGztlBp9gqZwN0oTKLXqes8vxJ7RRWW9RDalo00ZS++vPwxefYCFubRtBhWq9
+         juefp6tJ20wdNJcn/9H2OmrrYR8d46nJW64ybSCCtsSca8YlYjbYGuE+chH2AVHeZhio
+         8ZY7sikklSj+OvnFpG4GM7zTsJuvhoO28Y7pqooQ5sU/8rUbPMSAl5PQyAyQGW7T5/Hd
+         ArgLTU8fckkpoXHemswcNXScruBccMHANth4Nc9N+xE91cNRcKfJEsf3pGfeJW1d4yd6
+         faezPkxi/rqSvcv4BBcbfOBKQGAL2Yrv+bWHC2TntsZmu6pegx1s+EFPwq7cUTWCxEay
+         jOtg==
+X-Gm-Message-State: AOAM530p8bEbVm9f28XSMnr9riJK+w0mb0tBwOjw9NLESBVvhYLrJkT9
+        cVPUwqHVjZS9KeUWE/EkTsL7L1uMYTk=
+X-Google-Smtp-Source: ABdhPJwXV2MusE6afo0ZkmlW6HKHPLkXxWRp26wge9Ksm4PdMhq/rRRFisyooFSzOjIQeSLPGfu9AQ==
+X-Received: by 2002:ac2:5a07:: with SMTP id q7mr3454053lfn.77.1590008375449;
+        Wed, 20 May 2020 13:59:35 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id v17sm1269883ljd.76.2020.05.20.13.59.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 13:59:34 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id g1so5515832ljk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:59:32 -0700 (PDT)
+X-Received: by 2002:a05:651c:3c6:: with SMTP id f6mr3496652ljp.138.1590008372306;
+ Wed, 20 May 2020 13:59:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510150628.16610-5-changbin.du@gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20190906185931.19288-1-navid.emamdoost@gmail.com>
+ <CA+ASDXMnp-GTkrT7B5O+dtopJUmGBay=Tn=-nf1LW1MtaVOr+w@mail.gmail.com>
+ <878shwtiw3.fsf@kamboji.qca.qualcomm.com> <CA+ASDXOgechejxzN4-xPcuTW-Ra7z9Z6EeiQ4wMrEowZc-p+uA@mail.gmail.com>
+In-Reply-To: <CA+ASDXOgechejxzN4-xPcuTW-Ra7z9Z6EeiQ4wMrEowZc-p+uA@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Wed, 20 May 2020 13:59:20 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXM6w-t85hZWcbTqTBA8aye0oka3Nw5YYZH2LqixO-PJzg@mail.gmail.com>
+Message-ID: <CA+ASDXM6w-t85hZWcbTqTBA8aye0oka3Nw5YYZH2LqixO-PJzg@mail.gmail.com>
+Subject: Re: [PATCH] ath9k: release allocated buffer if timed out
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Navid Emamdoost <emamd001@umn.edu>,
+        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, May 10, 2020 at 11:06:13PM +0800, Changbin Du escreveu:
-> This adds support to display call trace for function tracer. To do this,
-> just specify a '-s' option.
-> 
-> $ sudo perf ftrace -T vfs_read -s
->  iio-sensor-prox-855   [003]   6168.369657: vfs_read <-ksys_read
->  iio-sensor-prox-855   [003]   6168.369677: <stack trace>
->  => vfs_read
->  => ksys_read
->  => __x64_sys_read
->  => do_syscall_64
->  => entry_SYSCALL_64_after_hwframe
->  ...
+On Wed, May 13, 2020 at 12:02 PM Brian Norris <briannorris@chromium.org> wrote:
+>
+> On Wed, May 13, 2020 at 12:05 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+> > Actually it's already reverted in -next, nobody just realised that it's
+> > a regression from commit 728c1e2a05e4:
+> >
+> > ced21a4c726b ath9k: Fix use-after-free Read in htc_connect_service
+>
+> Nice.
+>
+> > v5.8-rc1 should be the first release having the fix.
+>
+> So I guess we have to wait until 5.8-rc1 (when this lands in mainline)
+> to send this manually to stable@vger.kernel.org?
 
-So, for the reason stated in my response to the patch 03/19, I think we
-should start here with --call-graph for this, instead of
---func-stack-trace. And for now don't provide a one-letter equivalent.
+For the record, there are more reports of this, if I'm reading them right:
 
-- Arnaldo
- 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  tools/perf/builtin-ftrace.c | 38 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 57e656c35d28..1d30c2d5f88b 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -38,6 +38,7 @@ struct perf_ftrace {
->  	struct list_head	graph_funcs;
->  	struct list_head	nograph_funcs;
->  	int			graph_depth;
-> +	bool			func_stack_trace;
->  };
->  
->  struct filter_entry {
-> @@ -128,9 +129,27 @@ static int append_tracing_file(const char *name, const char *val)
->  	return __write_tracing_file(name, val, true);
->  }
->  
-> +static int write_tracing_option_file(const char *name, const char *val)
-> +{
-> +	char *file;
-> +	int ret;
-> +
-> +	if (asprintf(&file, "options/%s", name) < 0)
-> +		return -1;
-> +
-> +	ret = __write_tracing_file(file, val, false);
-> +	free(file);
-> +	return ret;
-> +}
-> +
->  static int reset_tracing_cpu(void);
->  static void reset_tracing_filters(void);
->  
-> +static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
-> +{
-> +	write_tracing_option_file("func_stack_trace", "0");
-> +}
-> +
->  static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
->  {
->  	if (write_tracing_file("tracing_on", "0") < 0)
-> @@ -149,6 +168,7 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
->  		return -1;
->  
->  	reset_tracing_filters();
-> +	reset_tracing_options(ftrace);
->  	return 0;
->  }
->  
-> @@ -204,6 +224,17 @@ static int set_tracing_cpu(struct perf_ftrace *ftrace)
->  	return set_tracing_cpumask(cpumap);
->  }
->  
-> +static int set_tracing_func_stack_trace(struct perf_ftrace *ftrace)
-> +{
-> +	if (!ftrace->func_stack_trace)
-> +		return 0;
-> +
-> +	if (write_tracing_option_file("func_stack_trace", "1") < 0)
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
->  static int reset_tracing_cpu(void)
->  {
->  	struct perf_cpu_map *cpumap = perf_cpu_map__new(NULL);
-> @@ -326,6 +357,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  		goto out_reset;
->  	}
->  
-> +	if (set_tracing_func_stack_trace(ftrace) < 0) {
-> +		pr_err("failed to set tracing option func_stack_trace\n");
-> +		goto out_reset;
-> +	}
-> +
->  	if (set_tracing_filters(ftrace) < 0) {
->  		pr_err("failed to set tracing filters\n");
->  		goto out_reset;
-> @@ -459,6 +495,8 @@ int cmd_ftrace(int argc, const char **argv)
->  		     "trace given functions only", parse_filter_func),
->  	OPT_CALLBACK('N', "notrace-funcs", &ftrace.notrace, "func",
->  		     "do not trace given functions", parse_filter_func),
-> +	OPT_BOOLEAN('s', "func-stack-trace", &ftrace.func_stack_trace,
-> +		    "Show kernel stack trace for function tracer"),
->  	OPT_CALLBACK_DEFAULT('G', "graph-funcs", &ftrace.graph_funcs, "func",
->  		     "Set graph filter on given functions (imply to use function_graph tracer)",
->  		     parse_filter_func, "*"),
-> -- 
-> 2.25.1
-> 
-
--- 
-
-- Arnaldo
+https://bugzilla.kernel.org/show_bug.cgi?id=207797
