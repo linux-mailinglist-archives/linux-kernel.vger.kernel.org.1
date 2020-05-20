@@ -2,138 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CE81DAA9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35821DAABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgETG34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgETG34 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:29:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B29C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 23:29:55 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jbIEf-00079z-7S; Wed, 20 May 2020 08:29:49 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jbIEV-0007jK-N7; Wed, 20 May 2020 08:29:39 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Kubecek <mkubecek@suse.cz>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>
-Subject: [PATCH net-next v3 2/2] net: phy: tja11xx: add SQI support
-Date:   Wed, 20 May 2020 08:29:15 +0200
-Message-Id: <20200520062915.29493-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520062915.29493-1-o.rempel@pengutronix.de>
-References: <20200520062915.29493-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1726564AbgETGkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:40:08 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:39850 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgETGkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 02:40:06 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 446571A02DF;
+        Wed, 20 May 2020 08:40:04 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F71C1A02D9;
+        Wed, 20 May 2020 08:40:00 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 181F4402B3;
+        Wed, 20 May 2020 14:39:54 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] ARM: dts: imx: Make tempmon node as child of anatop node
+Date:   Wed, 20 May 2020 14:30:16 +0800
+Message-Id: <1589956216-22499-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements reading of the Signal Quality Index for better
-cable/link troubleshooting.
+i.MX6/7 SoCs' temperature sensor is inside anatop module from HW
+perspective, so it should be a child node of anatop.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- drivers/net/phy/nxp-tja11xx.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/arm/boot/dts/imx6qdl.dtsi | 22 +++++++++++-----------
+ arch/arm/boot/dts/imx6sl.dtsi  | 20 ++++++++++----------
+ arch/arm/boot/dts/imx6sll.dtsi | 20 ++++++++++----------
+ arch/arm/boot/dts/imx6sx.dtsi  | 20 ++++++++++----------
+ arch/arm/boot/dts/imx6ul.dtsi  | 20 ++++++++++----------
+ arch/arm/boot/dts/imx7s.dtsi   | 20 ++++++++++----------
+ 6 files changed, 61 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/net/phy/nxp-tja11xx.c b/drivers/net/phy/nxp-tja11xx.c
-index 0d4f9067ca715..1e79c30ca81a5 100644
---- a/drivers/net/phy/nxp-tja11xx.c
-+++ b/drivers/net/phy/nxp-tja11xx.c
-@@ -53,6 +53,8 @@
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 39d4afd..43d44d5 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -69,17 +69,6 @@
+ 		};
+ 	};
  
- #define MII_COMMSTAT			23
- #define MII_COMMSTAT_LINK_UP		BIT(15)
-+#define MII_COMMSTAT_SQI_STATE		GENMASK(7, 5)
-+#define MII_COMMSTAT_SQI_MAX		7
+-	tempmon: tempmon {
+-		compatible = "fsl,imx6q-tempmon";
+-		interrupt-parent = <&gpc>;
+-		interrupts = <0 49 IRQ_TYPE_LEVEL_HIGH>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
+-		#thermal-sensor-cells = <0>;
+-	};
+-
+ 	ldb: ldb {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -795,6 +784,17 @@
+ 					anatop-min-voltage = <725000>;
+ 					anatop-max-voltage = <1450000>;
+ 				};
++
++				tempmon: tempmon {
++					compatible = "fsl,imx6q-tempmon";
++					interrupt-parent = <&gpc>;
++					interrupts = <0 49 IRQ_TYPE_LEVEL_HIGH>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
++					#thermal-sensor-cells = <0>;
++				};
+ 			};
  
- #define MII_GENSTAT			24
- #define MII_GENSTAT_PLL_LOCKED		BIT(14)
-@@ -329,6 +331,22 @@ static int tja11xx_read_status(struct phy_device *phydev)
- 	return 0;
- }
+ 			usbphy1: usbphy@20c9000 {
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index 911d8cf..d8efc0a 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -93,16 +93,6 @@
+ 		};
+ 	};
  
-+static int tja11xx_get_sqi(struct phy_device *phydev)
-+{
-+	int ret;
+-	tempmon: tempmon {
+-		compatible = "fsl,imx6q-tempmon";
+-		interrupts = <0 49 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-parent = <&gpc>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX6SL_CLK_PLL3_USB_OTG>;
+-	};
+-
+ 	pmu {
+ 		compatible = "arm,cortex-a9-pmu";
+ 		interrupt-parent = <&gpc>;
+@@ -628,6 +618,16 @@
+ 					anatop-min-voltage = <725000>;
+ 					anatop-max-voltage = <1450000>;
+ 				};
 +
-+	ret = phy_read(phydev, MII_COMMSTAT);
-+	if (ret < 0)
-+		return ret;
++				tempmon: tempmon {
++					compatible = "fsl,imx6q-tempmon";
++					interrupts = <0 49 IRQ_TYPE_LEVEL_HIGH>;
++					interrupt-parent = <&gpc>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX6SL_CLK_PLL3_USB_OTG>;
++				};
+ 			};
+ 
+ 			usbphy1: usbphy@20c9000 {
+diff --git a/arch/arm/boot/dts/imx6sll.dtsi b/arch/arm/boot/dts/imx6sll.dtsi
+index edd3abb..bf7f048 100644
+--- a/arch/arm/boot/dts/imx6sll.dtsi
++++ b/arch/arm/boot/dts/imx6sll.dtsi
+@@ -105,16 +105,6 @@
+ 		clock-output-names = "ipp_di1";
+ 	};
+ 
+-	tempmon: temperature-sensor {
+-		compatible = "fsl,imx6sll-tempmon", "fsl,imx6sx-tempmon";
+-		interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-parent = <&gpc>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX6SLL_CLK_PLL3_USB_OTG>;
+-	};
+-
+ 	soc {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+@@ -531,6 +521,16 @@
+ 					anatop-max-voltage = <3400000>;
+ 					anatop-enable-bit = <0>;
+ 				};
 +
-+	return FIELD_GET(MII_COMMSTAT_SQI_STATE, ret);
-+}
++				tempmon: temperature-sensor {
++					compatible = "fsl,imx6sll-tempmon", "fsl,imx6sx-tempmon";
++					interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
++					interrupt-parent = <&gpc>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX6SLL_CLK_PLL3_USB_OTG>;
++				};
+ 			};
+ 
+ 			usbphy1: usb-phy@20c9000 {
+diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
+index e031337..8c4473b 100644
+--- a/arch/arm/boot/dts/imx6sx.dtsi
++++ b/arch/arm/boot/dts/imx6sx.dtsi
+@@ -134,16 +134,6 @@
+ 		clock-output-names = "anaclk2";
+ 	};
+ 
+-	tempmon: tempmon {
+-		compatible = "fsl,imx6sx-tempmon", "fsl,imx6q-tempmon";
+-		interrupt-parent = <&gpc>;
+-		interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX6SX_CLK_PLL3_USB_OTG>;
+-	};
+-
+ 	pmu {
+ 		compatible = "arm,cortex-a9-pmu";
+ 		interrupt-parent = <&gpc>;
+@@ -696,6 +686,16 @@
+ 					anatop-min-voltage = <725000>;
+ 					anatop-max-voltage = <1450000>;
+ 				};
 +
-+static int tja11xx_get_sqi_max(struct phy_device *phydev)
-+{
-+	return MII_COMMSTAT_SQI_MAX;
-+}
++				tempmon: tempmon {
++					compatible = "fsl,imx6sx-tempmon", "fsl,imx6q-tempmon";
++					interrupt-parent = <&gpc>;
++					interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX6SX_CLK_PLL3_USB_OTG>;
++				};
+ 			};
+ 
+ 			usbphy1: usbphy@20c9000 {
+diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
+index 35e7301..505fd4f 100644
+--- a/arch/arm/boot/dts/imx6ul.dtsi
++++ b/arch/arm/boot/dts/imx6ul.dtsi
+@@ -131,16 +131,6 @@
+ 		clock-output-names = "ipp_di1";
+ 	};
+ 
+-	tempmon: tempmon {
+-		compatible = "fsl,imx6ul-tempmon", "fsl,imx6sx-tempmon";
+-		interrupt-parent = <&gpc>;
+-		interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX6UL_CLK_PLL3_USB_OTG>;
+-	};
+-
+ 	pmu {
+ 		compatible = "arm,cortex-a7-pmu";
+ 		interrupt-parent = <&gpc>;
+@@ -611,6 +601,16 @@
+ 					anatop-min-voltage = <725000>;
+ 					anatop-max-voltage = <1450000>;
+ 				};
 +
- static int tja11xx_get_sset_count(struct phy_device *phydev)
- {
- 	return ARRAY_SIZE(tja11xx_hw_stats);
-@@ -683,6 +701,8 @@ static struct phy_driver tja11xx_driver[] = {
- 		.config_aneg	= tja11xx_config_aneg,
- 		.config_init	= tja11xx_config_init,
- 		.read_status	= tja11xx_read_status,
-+		.get_sqi	= tja11xx_get_sqi,
-+		.get_sqi_max	= tja11xx_get_sqi_max,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
- 		.set_loopback   = genphy_loopback,
-@@ -699,6 +719,8 @@ static struct phy_driver tja11xx_driver[] = {
- 		.config_aneg	= tja11xx_config_aneg,
- 		.config_init	= tja11xx_config_init,
- 		.read_status	= tja11xx_read_status,
-+		.get_sqi	= tja11xx_get_sqi,
-+		.get_sqi_max	= tja11xx_get_sqi_max,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
- 		.set_loopback   = genphy_loopback,
-@@ -715,6 +737,8 @@ static struct phy_driver tja11xx_driver[] = {
- 		.config_aneg	= tja11xx_config_aneg,
- 		.config_init	= tja11xx_config_init,
- 		.read_status	= tja11xx_read_status,
-+		.get_sqi	= tja11xx_get_sqi,
-+		.get_sqi_max	= tja11xx_get_sqi_max,
- 		.match_phy_device = tja1102_p0_match_phy_device,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
-@@ -736,6 +760,8 @@ static struct phy_driver tja11xx_driver[] = {
- 		.config_aneg	= tja11xx_config_aneg,
- 		.config_init	= tja11xx_config_init,
- 		.read_status	= tja11xx_read_status,
-+		.get_sqi	= tja11xx_get_sqi,
-+		.get_sqi_max	= tja11xx_get_sqi_max,
- 		.match_phy_device = tja1102_p1_match_phy_device,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
++				tempmon: tempmon {
++					compatible = "fsl,imx6ul-tempmon", "fsl,imx6sx-tempmon";
++					interrupt-parent = <&gpc>;
++					interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX6UL_CLK_PLL3_USB_OTG>;
++				};
+ 			};
+ 
+ 			usbphy1: usbphy@20c9000 {
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 8bac491..3904558 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -147,16 +147,6 @@
+ 		};
+ 	};
+ 
+-	tempmon: tempmon {
+-		compatible = "fsl,imx7d-tempmon";
+-		interrupt-parent = <&gpc>;
+-		interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
+-		fsl,tempmon = <&anatop>;
+-		nvmem-cells = <&tempmon_calib>,	<&fuse_grade>;
+-		nvmem-cell-names = "calib", "temp_grade";
+-		clocks = <&clks IMX7D_PLL_SYS_MAIN_CLK>;
+-	};
+-
+ 	timer {
+ 		compatible = "arm,armv7-timer";
+ 		interrupt-parent = <&intc>;
+@@ -586,6 +576,16 @@
+ 					anatop-max-voltage = <1300000>;
+ 					anatop-enable-bit = <0>;
+ 				};
++
++				tempmon: tempmon {
++					compatible = "fsl,imx7d-tempmon";
++					interrupt-parent = <&gpc>;
++					interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
++					fsl,tempmon = <&anatop>;
++					nvmem-cells = <&tempmon_calib>,	<&fuse_grade>;
++					nvmem-cell-names = "calib", "temp_grade";
++					clocks = <&clks IMX7D_PLL_SYS_MAIN_CLK>;
++				};
+ 			};
+ 
+ 			snvs: snvs@30370000 {
 -- 
-2.26.2
+2.7.4
 
