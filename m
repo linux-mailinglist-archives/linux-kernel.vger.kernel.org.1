@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7936F1DBD01
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38301DBCC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgETSjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:39:12 -0400
-Received: from 1.mo173.mail-out.ovh.net ([178.33.111.180]:51486 "EHLO
-        1.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgETSjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:39:12 -0400
-X-Greylist: delayed 925 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 14:39:11 EDT
-Received: from player792.ha.ovh.net (unknown [10.110.103.180])
-        by mo173.mail-out.ovh.net (Postfix) with ESMTP id 2D00213CDD9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 20:23:45 +0200 (CEST)
-Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
-        (Authenticated sender: groug@kaod.org)
-        by player792.ha.ovh.net (Postfix) with ESMTPSA id 6F0A9129C9408;
-        Wed, 20 May 2020 18:23:37 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-101G00477dc0413-69de-485b-8c2c-a864b1457d08,D4AE9CB3A4750E3488E7135F1D4D455A9A9A4933) smtp.auth=groug@kaod.org
-Date:   Wed, 20 May 2020 20:23:36 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, paulus@samba.org, mpe@ellerman.id.au,
-        sukadev@linux.ibm.com, linuxram@us.ibm.com
-Subject: Re: [PATCH v2] KVM: PPC: Book3S HV: relax check on H_SVM_INIT_ABORT
-Message-ID: <20200520202336.661ae973@bahia.lan>
-In-Reply-To: <20200520174308.77820-1-ldufour@linux.ibm.com>
-References: <20200520193259.0b66db32@bahia.lan>
-        <20200520174308.77820-1-ldufour@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726892AbgETSYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:24:41 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48214 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726576AbgETSYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 14:24:40 -0400
+IronPort-SDR: kA9uCOfTHe/oxYHbNSjaXhst4gFYypz6Mprf7aRR+DELzHIgYO/MJsM58L3pF1oNpZk0zUNC+j
+ mCWBkvmRl8Zw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 11:24:40 -0700
+IronPort-SDR: Ypm2z3nWDUG7ZmbZjO9jywFjZeA+GSi0EFdtJ0UuVCGZ3MgXju9knWwr+ZM3x71Gu15lssgik/
+ GE7M1iRmlNXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="289446544"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga004.fm.intel.com with ESMTP; 20 May 2020 11:24:39 -0700
+Date:   Wed, 20 May 2020 11:24:39 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH 21/24] KVM: x86: always update CR3 in VMCB
+Message-ID: <20200520182439.GC18102@linux.intel.com>
+References: <20200520172145.23284-1-pbonzini@redhat.com>
+ <20200520172145.23284-22-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 8480559574304070084
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedruddtledguddvvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgsehtjeertdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeehkefhtdehgeehheejledufeekhfdvleefvdeihefhkefhudffhfeuuedvffdthfenucfkpheptddrtddrtddrtddpkedvrddvheefrddvtdekrddvgeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeelvddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520172145.23284-22-pbonzini@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 May 2020 19:43:08 +0200
-Laurent Dufour <ldufour@linux.ibm.com> wrote:
+Oh, and it'd be nice to do s/VMCB/VMCB\/VMCS in the subject, I almost
+glossed over this patch because it explicitly said VMCB :-)
 
-> The commit 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_*
-> Hcalls") added checks of secure bit of SRR1 to filter out the Hcall
-> reserved to the Ultravisor.
+On Wed, May 20, 2020 at 01:21:42PM -0400, Paolo Bonzini wrote:
+> vmx_load_mmu_pgd is delaying the write of GUEST_CR3 to prepare_vmcs02 as
+> an optimization, but this is only correct before the nested vmentry.
+> If userspace is modifying CR3 with KVM_SET_SREGS after the VM has
+> already been put in guest mode, the value of CR3 will not be updated.
+> Remove the optimization, which almost never triggers anyway.
 > 
-> However, the Hcall H_SVM_INIT_ABORT is made by the Ultravisor passing the
-> context of the VM calling UV_ESM. This allows the Hypervisor to return to
-> the guest without going through the Ultravisor. Thus the Secure bit of SRR1
-> is not set in that particular case.
+> This also applies to SVM, where the code was added in commit 689f3bf21628
+> ("KVM: x86: unify callbacks to load paging root", 2020-03-16) just to keep the
+> two vendor-specific modules closer.
 > 
-> In the case a regular VM is calling H_SVM_INIT_ABORT, this hcall will be
-> filtered out in kvmppc_h_svm_init_abort() because kvm->arch.secure_guest is
-> not set in that case.
-> 
-> Fixes: 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_* Hcalls")
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> Fixes: 04f11ef45810 ("KVM: nVMX: Always write vmcs02.GUEST_CR3 during nested VM-Enter")
+> Fixes: 689f3bf21628 ("KVM: x86: unify callbacks to load paging root")
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
-
-Reviewed-by: Greg Kurz <groug@kaod.org>
-
->  arch/powerpc/kvm/book3s_hv.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 93493f0cbfe8..6ad1a3b14300 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -1099,9 +1099,12 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
->  			ret = kvmppc_h_svm_init_done(vcpu->kvm);
->  		break;
->  	case H_SVM_INIT_ABORT:
-> -		ret = H_UNSUPPORTED;
-> -		if (kvmppc_get_srr1(vcpu) & MSR_S)
-> -			ret = kvmppc_h_svm_init_abort(vcpu->kvm);
-> +		/*
-> +		 * Even if that call is made by the Ultravisor, the SSR1 value
-> +		 * is the guest context one, with the secure bit clear as it has
-> +		 * not yet been secured. So we can't check it here.
-> +		 */
-> +		ret = kvmppc_h_svm_init_abort(vcpu->kvm);
->  		break;
->  
->  	default:
-
