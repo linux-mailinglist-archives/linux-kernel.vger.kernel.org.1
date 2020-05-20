@@ -2,62 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350D91DBA4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1838A1DBA52
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgETQyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:54:50 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:46942 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726439AbgETQyt (ORCPT
+        id S1726977AbgETQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgETQyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:54:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589993689; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=gxYqEOOkayddAnw0ckDfHD32duduiZrUguhEIEvrKtU=; b=GB8tJXBjg/sgve2n3QfEtoEQhz9s+D4r9N1v0YfNf+elRh2/x3kbrA+oMEdz/uJGydrYM23y
- LBXqDcY/Ely/fP4z6LhY+Waqn06zU98+S+wnTar2ms4n612SWyT0BYiq/gwRI+JTRJ75Ph85
- mAz3taqMAve6Pi8GcnmeO7+KpTo=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5ec560d84c3faf51e25fae23 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 16:54:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 69490C433C9; Wed, 20 May 2020 16:54:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53B24C433C6;
-        Wed, 20 May 2020 16:54:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53B24C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v3 2/7] bus: mhi: core: Introduce independent voting
- mechanism
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org
-References: <1589832241-13867-1-git-send-email-bbhatt@codeaurora.org>
- <1589832241-13867-3-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <a12e693d-a8bb-3ecf-e799-c46de7429b5d@codeaurora.org>
-Date:   Wed, 20 May 2020 10:54:43 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 May 2020 12:54:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CFFC061A0E;
+        Wed, 20 May 2020 09:54:55 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 1E3692A2D17
+Subject: Re: [PATCHv3 5/5] Input: EXC3000: Add reset gpio support
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ahmet Inan <inan@distec.de>,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20200520153936.46869-1-sebastian.reichel@collabora.com>
+ <20200520153936.46869-6-sebastian.reichel@collabora.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <da93ba98-b3e1-69ac-9248-0058270fca17@collabora.com>
+Date:   Wed, 20 May 2020 18:54:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <1589832241-13867-3-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200520153936.46869-6-sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,19 +42,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/2020 2:03 PM, Bhaumik Bhatt wrote:
-> Allow independent votes from clients such that they can choose to vote
-> for either the device or the bus or both. This helps in cases where the
-> device supports autonomous low power mode wherein it can move to M2
-> state without the need to notify the host. Clients can also vote only to
-> keep the underlying bus active without having the device in M0 state to
-> support offload use cases.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
+Hi Sebastian,
 
-I wonder, why doesn't this fit with runtimePM?
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+On 20/5/20 17:39, Sebastian Reichel wrote:
+> Add basic support for an optional reset gpio.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+Thanks to address the comments I did in second version. so,
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+> ---
+>  .../input/touchscreen/eeti,exc3000.yaml         |  2 ++
+>  drivers/input/touchscreen/exc3000.c             | 17 +++++++++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+> index 7e6e23f8fa00..007adbc89c14 100644
+> --- a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
+> @@ -22,6 +22,8 @@ properties:
+>      const: 0x2a
+>    interrupts:
+>      maxItems: 1
+> +  reset-gpios:
+> +    maxItems: 1
+>    touchscreen-size-x: true
+>    touchscreen-size-y: true
+>    touchscreen-inverted-x: true
+> diff --git a/drivers/input/touchscreen/exc3000.c b/drivers/input/touchscreen/exc3000.c
+> index b5a3bbb63504..de9d0ae1210a 100644
+> --- a/drivers/input/touchscreen/exc3000.c
+> +++ b/drivers/input/touchscreen/exc3000.c
+> @@ -8,7 +8,9 @@
+>   */
+>  
+>  #include <linux/bitops.h>
+> +#include <linux/delay.h>
+>  #include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/i2c.h>
+>  #include <linux/input.h>
+>  #include <linux/input/mt.h>
+> @@ -33,6 +35,9 @@
+>  
+>  #define EXC3000_TIMEOUT_MS		100
+>  
+> +#define EXC3000_RESET_MS		10
+> +#define EXC3000_READY_MS		100
+> +
+>  static const struct i2c_device_id exc3000_id[];
+>  
+>  struct eeti_dev_info {
+> @@ -66,6 +71,7 @@ struct exc3000_data {
+>  	const struct eeti_dev_info *info;
+>  	struct input_dev *input;
+>  	struct touchscreen_properties prop;
+> +	struct gpio_desc *reset;
+>  	struct timer_list timer;
+>  	u8 buf[2 * EXC3000_LEN_FRAME];
+>  	struct completion wait_event;
+> @@ -325,6 +331,17 @@ static int exc3000_probe(struct i2c_client *client)
+>  	init_completion(&data->wait_event);
+>  	mutex_init(&data->query_lock);
+>  
+> +	data->reset = devm_gpiod_get_optional(&client->dev, "reset",
+> +					      GPIOD_OUT_HIGH);
+> +	if (IS_ERR(data->reset))
+> +		return PTR_ERR(data->reset);
+> +
+> +	if (data->reset) {
+> +		msleep(EXC3000_RESET_MS);
+> +		gpiod_set_value_cansleep(data->reset, 0);
+> +		msleep(EXC3000_READY_MS);
+> +	}
+> +
+>  	input = devm_input_allocate_device(&client->dev);
+>  	if (!input)
+>  		return -ENOMEM;
+> 
