@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759B11DBE5A
+	by mail.lfdr.de (Postfix) with ESMTP id E45631DBE5B
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgETTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:49:42 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:42574 "EHLO
+        id S1727837AbgETTto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:49:44 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:42594 "EHLO
         lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgETTtl (ORCPT
+        with ESMTP id S1726754AbgETTtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 20 May 2020 15:49:41 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3F1E3623A7CB;
-        Wed, 20 May 2020 21:49:39 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id 2A69E609D2FA;
+        Wed, 20 May 2020 21:49:40 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FIdXJt4u6WJt; Wed, 20 May 2020 21:49:39 +0200 (CEST)
+        with ESMTP id B_oiLUskh1rM; Wed, 20 May 2020 21:49:39 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id ED657623A7C5;
-        Wed, 20 May 2020 21:49:38 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id DB8C0609D2CC;
+        Wed, 20 May 2020 21:49:39 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id q_X3_oYRrh_y; Wed, 20 May 2020 21:49:38 +0200 (CEST)
+        with ESMTP id HB01SdQYLnl2; Wed, 20 May 2020 21:49:39 +0200 (CEST)
 Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id D9BCF623A7CB;
-        Wed, 20 May 2020 21:49:38 +0200 (CEST)
-Date:   Wed, 20 May 2020 21:49:38 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id BEA53623A7C5;
+        Wed, 20 May 2020 21:49:39 +0200 (CEST)
+Date:   Wed, 20 May 2020 21:49:39 +0200 (CEST)
 From:   Richard Weinberger <richard@nod.at>
 To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+Cc:     miquel.raynal@bootlin.com, vigneshr@ti.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <294087931.249343.1590004178869.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UBI/UBIFS fixes for 5.7 final
+Message-ID: <1270319593.249344.1590004179760.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] MTD fixes for 5.7 final
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [195.201.40.130]
 X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Index: IIwsIXTW2IYy/sC4AclDYRhuEBVl8Q==
-Thread-Topic: UBI/UBIFS fixes for 5.7 final
+Thread-Index: zzLpiIOUyD076SaYCqVKbuiKIraQlg==
+Thread-Topic: MTD fixes for 5.7 final
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,37 +49,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-The following changes since commit c0cc271173b2e1c2d8d0ceaef14e4dfa79eefc0d:
+The following changes since commit 9b1f2cbdb6d3062c468d3f9b579501f0f7ce330b:
 
-  Merge tag 'modules-for-v5.7' of git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux (2020-04-09 12:52:34 -0700)
+  Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2020-05-17 12:33:00 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.7-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/fixes-for-5.7-rc6
 
-for you to fetch changes up to 0e7572cffe442290c347e779bf8bd4306bb0aa7c:
+for you to fetch changes up to f3a6a6c5e0f5a303fd8ec84ea33c0da5869d715f:
 
-  ubi: Fix seq_file usage in detailed_erase_block_info debugfs file (2020-05-17 23:38:21 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following bug fixes for UBI and UBIFS:
-
-- Correctly set next cursor for detailed_erase_block_info debugfs file
-- Don't use crypto_shash_descsize() for digest size in UBIFS
-- Remove broken lazytime support from UBIFS
+  mtd:rawnand: brcmnand: Fix PM resume crash (2020-05-19 10:24:49 +0200)
 
 ----------------------------------------------------------------
-Christoph Hellwig (1):
-      ubifs: remove broken lazytime support
+This pull request contains the following bug fixes for MTD:
 
-Eric Biggers (1):
-      ubifs: fix wrong use of crypto_shash_descsize()
+- Fix a PM regression in brcmnand driver
+- Propagate ECC information correctly on SPI-NAND
+- Make sure no MTD name is used multiple time in nvmem
 
-Richard Weinberger (1):
-      ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
+----------------------------------------------------------------
+Kamal Dasu (1):
+      mtd:rawnand: brcmnand: Fix PM resume crash
 
- drivers/mtd/ubi/debug.c | 12 ++----------
- fs/ubifs/auth.c         | 17 ++++-------------
- fs/ubifs/file.c         |  6 +-----
- fs/ubifs/replay.c       | 13 ++-----------
- 4 files changed, 9 insertions(+), 39 deletions(-)
+Miquel Raynal (1):
+      mtd: spinand: Propagate ECC information to the MTD structure
+
+Ricardo Ribalda Delgado (1):
+      mtd: Fix mtd not registered due to nvmem name collision
+
+ drivers/mtd/mtdcore.c                    | 2 +-
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 3 +--
+ drivers/mtd/nand/spi/core.c              | 4 ++++
+ 3 files changed, 6 insertions(+), 3 deletions(-)
