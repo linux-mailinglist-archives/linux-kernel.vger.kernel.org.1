@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E59F1DB425
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0491DB431
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgETMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgETMvb (ORCPT
+        id S1726845AbgETMy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:54:29 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36728 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgETMy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:51:31 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC757C061A0E;
-        Wed, 20 May 2020 05:51:30 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id z15so2317843pjb.0;
-        Wed, 20 May 2020 05:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XVrZcEQ3Ohwq93lQaVh49GHURIxMEGS078tmEHwT2JQ=;
-        b=aOST2MULZ/U9WisiPYmah4vmhjjvFf/jMZY3I2re/kUa5PCYb2JOrvRfx6QapIT4PT
-         DdPWlxNkXXtABiJ8ZLQH8y+tCiMkVBQWvKF4e2r5teEkEILQrJS3mwV0fC/BwUE4SOYl
-         5rVAlIyi4b5/dEdVT5XZYzXE6e1RTsrPrBfaOzmhYJAzNkayzQaheIjaZhsNU9xer7RZ
-         eHtsX04xOAXnBxnfhnloASIpXviTlUD+5kQoMRjM0P8lrJdK81kDkxDJMwj2mpNAaJJ7
-         2pJTZ3q+BTp4lYWkc7Bl8sUZrWBba9QxiFNRZdlJijDTq67sB2lDV/CzXVP0OamL3PS4
-         Pshg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XVrZcEQ3Ohwq93lQaVh49GHURIxMEGS078tmEHwT2JQ=;
-        b=cP/9GVALplibfpPTuggHEiOCzkFtE+neE+68DxTy514ZEBwrBCC5795MJPt0x9qGID
-         pDlOqv2OibDAT33KPi2KjxeqofF1PLqYTrJT2XABs1sUFdRh2qNtFgTVjsabWrPsgKB9
-         xUz6WFHupDkd45LRvXZN4Cc44Q/6pCV5s5xoK7XnSwwsr0kj0M/TQzxFpfGQEvQcou1D
-         myC6EE+XBZzmd6MEj0T7maf/MhmrffsMDI3FDKAkIYA2fDXykfBYNOnNqBbjgBbI6Vtz
-         RXc9jWfpcXixKSOqTOtXE4LYRInXzWMTBzuLbaEFMR30EAzbNG/MFtJGMq4SCo2wLk3l
-         mDgw==
-X-Gm-Message-State: AOAM533dZe61vcyio66nBDvjgNqgMThKkaemjLOpi74FfLy/xPZmnJme
-        7AT4d4CobclGn5gmckqGKzMHcjKh
-X-Google-Smtp-Source: ABdhPJz/vfz6SPgr2I4WPUNz2HX9I6wa5WPDb+JOB4wSOa/i95lO65KxDD4uC82ktZiTA2FuyRsamg==
-X-Received: by 2002:a17:90b:1288:: with SMTP id fw8mr5179133pjb.160.1589979090211;
-        Wed, 20 May 2020 05:51:30 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id mn19sm2109266pjb.8.2020.05.20.05.51.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 May 2020 05:51:29 -0700 (PDT)
-Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a
- seqcount
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200519214547.352050-2-a.darwish@linutronix.de>
- <33cec6a9-2f6e-3d3c-99ac-9b2a3304ec26@gmail.com>
- <20200520064246.GA353513@debian-buster-darwi.lab.linutronix.de>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <1498089b-08bd-d776-1570-d8b34463c702@gmail.com>
-Date:   Wed, 20 May 2020 05:51:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 20 May 2020 08:54:27 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KCrF3r040394;
+        Wed, 20 May 2020 12:54:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=j3qY+AimdnUvnxFvl+25yJx20/yrC+woZBSTpFQ9VfY=;
+ b=VhF9Q366W2dpeQzzwA6sxglfaiUhtsndVFTY7kQD6Q5FKMHMiVGHgnM+M46HIlvi7kky
+ dPIxOgCRik2CD0GruE+jtY+7Iz42Wd+8i65qyHzChwVuiL230UAEECh5v7fK0ktNHPkO
+ xgJ8KrRd2pxOhjI3uDuzY92RMZY1jVcxhcZVUKZVQRqJGOseelXbV9DlWA2UWb1x4R12
+ TsjcvsG9Y5hTlHl0OuXHKoflhAFxBTKeJbF1aDuSf58sWAPBn0samw6HIB86fYN+23xI
+ X2BlgISO0aif6TQRWzgenMwLHFXPTcGj+wJM8lzKxhydu+usAzbfy9ZGOzPkDCtN+Clj +g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3127kraxey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 May 2020 12:54:21 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KCnDV3074147;
+        Wed, 20 May 2020 12:52:21 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3150208722-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 12:52:21 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04KCqIYg021917;
+        Wed, 20 May 2020 12:52:18 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 May 2020 05:52:17 -0700
+Date:   Wed, 20 May 2020 15:52:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     christian.koenig@amd.com
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Rui Huang <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Yintian Tao <yttao@amd.com>
+Subject: Re: [PATCH] drm/amdgpu: off by on in
+ amdgpu_device_attr_create_groups() error handling
+Message-ID: <20200520125209.GP3041@kadam>
+References: <20200520120054.GB172354@mwanda>
+ <62d9d539-8401-233a-3f20-984042489987@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200520064246.GA353513@debian-buster-darwi.lab.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <62d9d539-8401-233a-3f20-984042489987@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 suspectscore=1 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=1 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/19/20 11:42 PM, Ahmed S. Darwish wrote:
-> Hello Eric,
+On Wed, May 20, 2020 at 02:05:19PM +0200, Christian König wrote:
+> Am 20.05.20 um 14:00 schrieb Dan Carpenter:
+> > This loop in the error handling code should start a "i - 1" and end at
+> > "i == 0".  Currently it starts a "i" and ends at "i == 1".  The result
+> > is that it removes one attribute that wasn't created yet, and leaks the
+> > zeroeth attribute.
+> > 
+> > Fixes: 4e01847c38f7 ("drm/amdgpu: optimize amdgpu device attribute code")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c | 5 ++---
+> >   1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> > index b75362bf0742..ee4a8e44fbeb 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+> > @@ -1931,7 +1931,7 @@ static int amdgpu_device_attr_create_groups(struct amdgpu_device *adev,
+> >   					    uint32_t mask)
+> >   {
+> >   	int ret = 0;
+> > -	uint32_t i = 0;
+> > +	int i;
+> >   	for (i = 0; i < counts; i++) {
+> >   		ret = amdgpu_device_attr_create(adev, &attrs[i], mask);
+> > @@ -1942,9 +1942,8 @@ static int amdgpu_device_attr_create_groups(struct amdgpu_device *adev,
+> >   	return 0;
+> >   failed:
+> > -	for (; i > 0; i--) {
+> > +	while (--i >= 0)
 > 
-> On Tue, May 19, 2020 at 07:01:38PM -0700, Eric Dumazet wrote:
->>
->> On 5/19/20 2:45 PM, Ahmed S. Darwish wrote:
->>> Sequence counters write paths are critical sections that must never be
->>> preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
->>>
->>> Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
->>> netdev name retrieval.") handled a deadlock, observed with
->>> CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
->>> infinitely spinning: it got scheduled after the seqcount write side
->>> blocked inside its own critical section.
->>>
->>> To fix that deadlock, among other issues, the commit added a
->>> cond_resched() inside the read side section. While this will get the
->>> non-preemptible kernel eventually unstuck, the seqcount reader is fully
->>> exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
->>>
->>> The fix is also still broken: if the seqcount reader belongs to a
->>> real-time scheduling policy, it can spin forever and the kernel will
->>> livelock.
->>>
->>> Disabling preemption over the seqcount write side critical section will
->>> not work: inside it are a number of GFP_KERNEL allocations and mutex
->>> locking through the drivers/base/ :: device_rename() call chain.
->>>
->>> From all the above, replace the seqcount with a rwsem.
->>>
->>> Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
->>> Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
->>> Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
->>> Cc: <stable@vger.kernel.org>
->>> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
->>> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->>> ---
->>>  net/core/dev.c | 30 ++++++++++++------------------
->>>  1 file changed, 12 insertions(+), 18 deletions(-)
->>>
->>
->> Seems fine to me, assuming rwsem prevent starvation of the writer.
->>
-> 
-> Thanks for the review.
-> 
-> AFAIK, due to 5cfd92e12e13 ("locking/rwsem: Adaptive disabling of reader
-> optimistic spinning"), using a rwsem shouldn't lead to writer starvation
-> in the contended case.
+> As far as I know the common idiom for this is while (i--) which even works
+> without changing the type of i to signed.
 
-Hmm this was in linux-5.3, so very recent stuff.
+It's about 50/50, one way or the other.  To me --i >= 0 seems far more
+readable.
 
-Has this patch been backported to stable releases ?
+I've been trying to figure out which tool tells people to make iterators
+unsigned so I can help them avoid it.  :/  I understand how in theory
+iterators could go above INT_MAX but if we're going above INT_MAX then
+probably we should use a 64 bit type.  There are very few times where 2
+billion iterations is not enough but in those situations probably 4
+billion is not enough either.  So unsigned int iterators never or seldom
+solve real life bugs but they regularly cause them.
 
-With all the Fixes: tags you added, stable teams will backport this networking patch to
-all stable versions.
-
-Do we have a way to tune a dedicare rwsem to 'give preference to the (unique in this case) writer" over
-a myriad of potential readers ?
-
-Thanks.
+regards,
+dan carpenter
 
