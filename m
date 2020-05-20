@@ -2,183 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A743C1DAA1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3845F1DAA23
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgETFwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 01:52:05 -0400
-Received: from mga04.intel.com ([192.55.52.120]:50453 "EHLO mga04.intel.com"
+        id S1727864AbgETFym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 01:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgETFwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 01:52:04 -0400
-IronPort-SDR: haZydlc9YcJTqhdvtxNFn+BKBA3Q1ZiBu+U0TXswybznaLUm86KUaoZ9yRxRgrqDmJpItZNpNL
- fEjXqI9UXciA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 22:52:03 -0700
-IronPort-SDR: UqobXSmEwRTjlptyugyavpbdTWpj1ZhPLIJjNN1KtkVe7cqWqZH3AOOCQL2FrBwAP0N8H8NYOA
- QUKnztn5vTHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
-   d="scan'208";a="282569337"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 19 May 2020 22:52:01 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jbHe5-00063D-02; Wed, 20 May 2020 13:52:00 +0800
-Date:   Wed, 20 May 2020 13:51:32 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- d505b8af58912ae1e1a211fabc9995b19bd40828
-Message-ID: <5ec4c564.tEoeFobhBZzwk409%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726473AbgETFyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 01:54:41 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7BCE206BE;
+        Wed, 20 May 2020 05:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589954081;
+        bh=O1pxQ7INrnCuQd9hdPVcKnLdagTuvEY7W8FKjx0XYjk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VaohILpBk5Xp5pUB5JwSmDjhNqhA1R0IS1WQ46OuiSvgRrJAohcZeNHS3U8w/yGZg
+         jvEagtePlwuZDA1FcquzPzAs+PYNS6VAaWdtGAzwkgZ7Qrx/oGoS9a6JVra+mSTWq8
+         /OsRI2R3+ULWqk8LhQfItfv4wJx7c2FyhnPB/NYk=
+Date:   Wed, 20 May 2020 07:54:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Olof Johansson <olof.johansson@gmail.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        wufan@codeaurora.org, pratanan@codeaurora.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
+Message-ID: <20200520055438.GA2236242@kroah.com>
+References: <CAKMK7uG-oP-tcOcNz-ZzTmGondEo-17BCN1kpFBPwb7F8QcM5w@mail.gmail.com>
+ <20200520045900.GA2105777@kroah.com>
+ <20200520051135.GA11847@yoga>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200520051135.GA11847@yoga>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/core
-branch HEAD: d505b8af58912ae1e1a211fabc9995b19bd40828  sched: Defend cfs and rt bandwidth quota against overflow
+On Tue, May 19, 2020 at 10:11:35PM -0700, Bjorn Andersson wrote:
+> On Tue 19 May 21:59 PDT 2020, Greg Kroah-Hartman wrote:
+> 
+> > On Tue, May 19, 2020 at 10:41:15PM +0200, Daniel Vetter wrote:
+> > > > Ok, that's a decision you are going to have to push upward on, as we
+> > > > really can't take this without a working, open, userspace.
+> > > 
+> > > Uh wut.
+> > > 
+> > > So the merge criteria for drivers/accel (atm still drivers/misc but I
+> > > thought that was interim until more drivers showed up) isn't actually
+> > > "totally-not-a-gpu accel driver without open source userspace".
+> > > 
+> > > Instead it's "totally-not-a-gpu accel driver without open source
+> > > userspace" _and_ you have to be best buddies with Greg. Or at least
+> > > not be on the naughty company list. Since for habanalabs all you
+> > > wanted is a few test cases to exercise the ioctls. Not the entire
+> > > userspace.
+> > 
+> > Habanalabs now has their full library opensourced that their tools use
+> > directly, so that's not an argument anymore.
+> > 
+> > My primary point here is the copyright owner of this code, because of
+> > that, I'm not going to objet to allowing this to be merged without open
+> > userspace code.
+> > 
+> 
+> So because it's copyright Linux Foundation you are going to accept it
+> without user space, after all?
 
-i386-tinyconfig vmlinux size:
+Huh, no, the exact opposite, sorry, drop the "not" in that above
+sentence.  My bad.
 
-+-------+------------------------------------+------------------------------------------+
-| DELTA |               SYMBOL               |                  COMMIT                  |
-+-------+------------------------------------+------------------------------------------+
-|  +485 | TOTAL                              | 2a0a24ebb499..d505b8af5891 (ALL COMMITS) |
-|  +466 | TOTAL                              | 9013196a467e Merge branch 'sched/urgent' |
-|  +410 | TEXT                               | 2a0a24ebb499..d505b8af5891 (ALL COMMITS) |
-|  +391 | TEXT                               | 9013196a467e Merge branch 'sched/urgent' |
-|   +72 | DATA                               | 9013196a467e Merge branch 'sched/urgent' |
-| +1355 | balance_dirty_pages()              | 9013196a467e Merge branch 'sched/urgent' |
-|  +615 | __setup_rt_frame()                 | 9013196a467e Merge branch 'sched/urgent' |
-|  +113 | klist_release()                    | 9013196a467e Merge branch 'sched/urgent' |
-|   +93 | change_clocksource()               | 9013196a467e Merge branch 'sched/urgent' |
-|   +86 | release_bdi()                      | 9013196a467e Merge branch 'sched/urgent' |
-|   +84 | kobject_release()                  | 9013196a467e Merge branch 'sched/urgent' |
-|   +64 | noop_backing_dev_info              | 9013196a467e Merge branch 'sched/urgent' |
-|   -68 | bdi_put()                          | 9013196a467e Merge branch 'sched/urgent' |
-|   -77 | kobject_put()                      | 9013196a467e Merge branch 'sched/urgent' |
-|   -79 | timekeeping_notify()               | 9013196a467e Merge branch 'sched/urgent' |
-|   -99 | klist_dec_and_del()                | 9013196a467e Merge branch 'sched/urgent' |
-|  -136 | arch/x86/events/zhaoxin/built-in.* | 9013196a467e Merge branch 'sched/urgent' |
-|  -555 | do_signal()                        | 9013196a467e Merge branch 'sched/urgent' |
-| -1383 | balance_dirty_pages_ratelimited()  | 9013196a467e Merge branch 'sched/urgent' |
-+-------+------------------------------------+------------------------------------------+
-
-elapsed time: 487m
-
-configs tested: 98
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200519
-i386                 randconfig-a005-20200519
-i386                 randconfig-a001-20200519
-i386                 randconfig-a003-20200519
-i386                 randconfig-a004-20200519
-i386                 randconfig-a002-20200519
-x86_64               randconfig-a003-20200519
-x86_64               randconfig-a005-20200519
-x86_64               randconfig-a004-20200519
-x86_64               randconfig-a006-20200519
-x86_64               randconfig-a002-20200519
-x86_64               randconfig-a001-20200519
-i386                 randconfig-a012-20200519
-i386                 randconfig-a014-20200519
-i386                 randconfig-a016-20200519
-i386                 randconfig-a011-20200519
-i386                 randconfig-a015-20200519
-i386                 randconfig-a013-20200519
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
