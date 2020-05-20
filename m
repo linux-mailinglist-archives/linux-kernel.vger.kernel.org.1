@@ -2,356 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BA51DBB2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82BC1DBB42
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgETRWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:22:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34612 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728244AbgETRW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:22:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589995347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=R+/Wgs4EpdRHJ+M//PKLQIAi6WzuAJ7i4HLViCKSV/E=;
-        b=h+3oZ79skz4mPRcmeTdjkYt81byViyZp44jPPA+/QSSQfX/l6aV6btMMBDlVvlaTqXwhSn
-        0dPw8DOwqaDIkG+tbyKJAXG+NYndaZ89U9qTDo4krUd8DOJsnXK6QjMVuzXzBIU+xKBY0V
-        gQTiurJHz6XYq9z6oORDTKhc0mp3U4s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-9wcHcTE1NUifyILaOAfyZA-1; Wed, 20 May 2020 13:22:25 -0400
-X-MC-Unique: 9wcHcTE1NUifyILaOAfyZA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727937AbgETRXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728138AbgETRXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 13:23:13 -0400
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 770E788EF2B;
-        Wed, 20 May 2020 17:22:16 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0989E60554;
-        Wed, 20 May 2020 17:22:14 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 24/24] KVM: nSVM: implement KVM_GET_NESTED_STATE and KVM_SET_NESTED_STATE
-Date:   Wed, 20 May 2020 13:21:45 -0400
-Message-Id: <20200520172145.23284-25-pbonzini@redhat.com>
-In-Reply-To: <20200520172145.23284-1-pbonzini@redhat.com>
-References: <20200520172145.23284-1-pbonzini@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        by mail.kernel.org (Postfix) with ESMTPSA id 82CAD20899
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 17:23:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589995392;
+        bh=BFLQ/xq4FnWU6i5c9z1NolKnkBi9zZFq5E30La70Lg8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nBfvpKHE44qsSO+QmT+g2rruAlPKAgHvdSBWsGy4VQIoUumXO2FbQ+ka6HJa1dHlA
+         lhbZnnm0aa7OXw6BR7aENphWEmDmm7kwF+2co5hIEShPUydU0KifdTdTAkDKAQirkx
+         jm6IKJRr6G5tIq92umLeJHet4YHv6nBFXIJK9qhc=
+Received: by mail-wr1-f53.google.com with SMTP id l17so3987150wrr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:23:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531/uQgRzUf7fUkNi13C0c8JBDa86PlYC+C2QXLB4xx6gYzj61QI
+        9UOQHNS+4uxmEz0KZiJGG3LtJ5lEr8evpeeJxLFMvw==
+X-Google-Smtp-Source: ABdhPJzWvveFwpAQLFHvuEIoe9jrHdH4/Ldhlhxp5aUDQkEtAEipDdH3KGVIbAT358jzodam/q3jU4pN6EJiOrd/mnk=
+X-Received: by 2002:adf:a389:: with SMTP id l9mr5199865wrb.18.1589995390910;
+ Wed, 20 May 2020 10:23:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200515234547.710474468@linutronix.de> <20200515235125.425810667@linutronix.de>
+ <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
+ <87imgr7nwp.fsf@nanos.tec.linutronix.de> <CALCETrW4BxfTVzv8mXntNXiAPnKxqdMEv7djUknGZcrno2WJHg@mail.gmail.com>
+ <87y2pm4ruh.fsf@nanos.tec.linutronix.de> <CALCETrUvH5DQvL6Lo6EkM04pr7wWj+7eZbTg3H_eLNXcZsH0FA@mail.gmail.com>
+In-Reply-To: <CALCETrUvH5DQvL6Lo6EkM04pr7wWj+7eZbTg3H_eLNXcZsH0FA@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 20 May 2020 10:22:59 -0700
+X-Gmail-Original-Message-ID: <CALCETrX4Zy2iuc39XTifYd_mvezCEUtW2ax3=ec1TF=yZxAHDg@mail.gmail.com>
+Message-ID: <CALCETrX4Zy2iuc39XTifYd_mvezCEUtW2ax3=ec1TF=yZxAHDg@mail.gmail.com>
+Subject: Re: [patch V6 10/37] x86/entry: Switch XEN/PV hypercall entry to IDTENTRY
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to VMX, the state that is captured through the currently available
-IOCTLs is a mix of L1 and L2 state, dependent on whether the L2 guest was
-running at the moment when the process was interrupted to save its state.
+On Wed, May 20, 2020 at 8:16 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Wed, May 20, 2020 at 7:13 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > Andy Lutomirski <luto@kernel.org> writes:
+> > > On Tue, May 19, 2020 at 11:58 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >> Which brings you into the situation that you call schedule() from the
+> > >> point where we just moved it out. If we would go there we'd need to
+> > >> ensure that RCU is watching as well. idtentry_exit() might have it
+> > >> turned off ....
+> > >
+> > > I don't think this is possible.  Once you untangle all the wrappers,
+> > > the call sites are effectively:
+> > >
+> > > __this_cpu_write(xen_in_preemptible_hcall, true);
+> > > CALL_NOSPEC to the hypercall page
+> > > __this_cpu_write(xen_in_preemptible_hcall, false);
+> > >
+> > > I think IF=1 when this happens, but I won't swear to it.  RCU had
+> > > better be watching.
+> > >
+> > > As I understand it, the one and only situation Xen wants to handle is
+> > > that an interrupt gets delivered during the hypercall.  The hypervisor
+> > > is too clever for its own good and deals with this by rewinding RIP to
+> > > the beginning of whatever instruction did the hypercall and delivers
+> > > the interrupt, and we end up in this handler.  So, if this happens,
+> > > the idea is to not only handle the interrupt but to schedule if
+> > > scheduling would be useful.
+> > >
+> > > So I don't think we need all this RCU magic.  This really ought to be
+> > > able to be simplified to:
+> > >
+> > > idtentry_exit();
+> > >
+> > > if (appropriate condition)
+> > >   schedule();
+> >
+> > This is exactly the kind of tinkering which causes all kinds of trouble.
+> >
+> > idtentry_exit()
+> >
+> >         if (user_mode(regs)) {
+> >                 prepare_exit_to_usermode(regs);
+> >         } else if (regs->flags & X86_EFLAGS_IF) {
+> >                 /* Check kernel preemption, if enabled */
+> >                 if (IS_ENABLED(CONFIG_PREEMPTION)) {
+> >                     ....
+> >                 }
+> >                 instrumentation_begin();
+> >                 /* Tell the tracer that IRET will enable interrupts */
+> >                 trace_hardirqs_on_prepare();
+> >                 lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+> >                 instrumentation_end();
+> >                 rcu_irq_exit();
+> >                 lockdep_hardirqs_on(CALLER_ADDR0);
+> >         } else {
+> >                 /* IRQ flags state is correct already. Just tell RCU */
+> >                 rcu_irq_exit();
+> >         }
+> >
+> > So in case IF is set then this already told the tracer and lockdep that
+> > interrupts are enabled. And contrary to the ugly version this exit path
+> > does not use rcu_irq_exit_preempt() which is there to warn about crappy
+> > RCU state when trying to schedule.
+> >
+> > So we went great length to sanitize _all_ of this and make it consistent
+> > just to say: screw it for that xen thingy.
+> >
+> > The extra checks and extra warnings for scheduling come with the
+> > guarantee to bitrot when idtentry_exit() or any logic invoked from there
+> > is changed. It's going to look like this:
+> >
+> >         /*
+> >          * If the below causes problems due to inconsistent state
+> >          * or out of sync sanity checks, please complain to
+> >          * luto@kernel.org directly.
+> >          */
+> >         idtentry_exit();
+> >
+> >         if (user_mode(regs) || !(regs->flags & X86_FlAGS_IF))
+> >                 return;
+> >
+> >         if (!__this_cpu_read(xen_in_preemptible_hcall))
+> >                 return;
+> >
+> >         rcu_sanity_check_for_preemption();
+> >
+> >         if (need_resched()) {
+> >                 instrumentation_begin();
+> >                 xen_maybe_preempt_hcall();
+> >                 trace_hardirqs_on();
+> >                 instrumentation_end();
+> >         }
+> >
+> > Of course you need the extra rcu_sanity_check_for_preemption() function
+> > just for this muck.
+> >
+> > That's a true win on all ends? I don't think so.
+>
+> Hmm, fair enough.  I guess the IRQ tracing messes a bunch of this logic up.
+>
+> Let's keep your patch as is and consider cleanups later.  One approach
+> might be to make this work more like extable handling: instead of
+> trying to schedule from inside the interrupt handler here, patch up
+> RIP and perhaps some other registers and let the actual Xen code just
+> do cond_resched().  IOW, try to make this work the way it always
+> should have:
+>
+> int ret;
+> do {
+>   ret = issue_the_hypercall();
+>   cond_resched();
+> } while (ret == EAGAIN);
 
-In particular, the SVM-specific state for nested virtualization includes
-the L1 saved state (including the interrupt flag), the cached L2 controls,
-and the GIF.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/uapi/asm/kvm.h |  17 +++-
- arch/x86/kvm/cpuid.h            |   5 ++
- arch/x86/kvm/svm/nested.c       | 147 ++++++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.c          |   1 +
- arch/x86/kvm/vmx/nested.c       |   5 --
- arch/x86/kvm/x86.c              |   3 +-
- 6 files changed, 171 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-index 3f3f780c8c65..12075a9de1c1 100644
---- a/arch/x86/include/uapi/asm/kvm.h
-+++ b/arch/x86/include/uapi/asm/kvm.h
-@@ -385,18 +385,22 @@ struct kvm_sync_regs {
- #define KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT (1 << 4)
- 
- #define KVM_STATE_NESTED_FORMAT_VMX	0
--#define KVM_STATE_NESTED_FORMAT_SVM	1	/* unused */
-+#define KVM_STATE_NESTED_FORMAT_SVM	1
- 
- #define KVM_STATE_NESTED_GUEST_MODE	0x00000001
- #define KVM_STATE_NESTED_RUN_PENDING	0x00000002
- #define KVM_STATE_NESTED_EVMCS		0x00000004
- #define KVM_STATE_NESTED_MTF_PENDING	0x00000008
-+#define KVM_STATE_NESTED_GIF_SET	0x00000100
- 
- #define KVM_STATE_NESTED_SMM_GUEST_MODE	0x00000001
- #define KVM_STATE_NESTED_SMM_VMXON	0x00000002
- 
- #define KVM_STATE_NESTED_VMX_VMCS_SIZE	0x1000
- 
-+#define KVM_STATE_NESTED_SVM_VMCB_SIZE	0x1000
-+
-+
- struct kvm_vmx_nested_state_data {
- 	__u8 vmcs12[KVM_STATE_NESTED_VMX_VMCS_SIZE];
- 	__u8 shadow_vmcs12[KVM_STATE_NESTED_VMX_VMCS_SIZE];
-@@ -411,6 +415,15 @@ struct kvm_vmx_nested_state_hdr {
- 	} smm;
- };
- 
-+struct kvm_svm_nested_state_data {
-+	/* Save area only used if KVM_STATE_NESTED_RUN_PENDING.  */
-+	__u8 vmcb12[KVM_STATE_NESTED_SVM_VMCB_SIZE];
-+};
-+
-+struct kvm_svm_nested_state_hdr {
-+	__u64 vmcb_pa;
-+};
-+
- /* for KVM_CAP_NESTED_STATE */
- struct kvm_nested_state {
- 	__u16 flags;
-@@ -419,6 +432,7 @@ struct kvm_nested_state {
- 
- 	union {
- 		struct kvm_vmx_nested_state_hdr vmx;
-+		struct kvm_svm_nested_state_hdr svm;
- 
- 		/* Pad the header to 128 bytes.  */
- 		__u8 pad[120];
-@@ -431,6 +445,7 @@ struct kvm_nested_state {
- 	 */
- 	union {
- 		struct kvm_vmx_nested_state_data vmx[0];
-+		struct kvm_svm_nested_state_data svm[0];
- 	} data;
- };
- 
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index 63a70f6a3df3..05434cd9342f 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -303,4 +303,9 @@ static __always_inline void kvm_cpu_cap_check_and_set(unsigned int x86_feature)
- 		kvm_cpu_cap_set(x86_feature);
- }
- 
-+static inline bool page_address_valid(struct kvm_vcpu *vcpu, gpa_t gpa)
-+{
-+	return PAGE_ALIGNED(gpa) && !(gpa >> cpuid_maxphyaddr(vcpu));
-+}
-+
- #endif
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 087a04ae74e4..001d1f830076 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -25,6 +25,7 @@
- #include "trace.h"
- #include "mmu.h"
- #include "x86.h"
-+#include "cpuid.h"
- #include "lapic.h"
- #include "svm.h"
- 
-@@ -243,6 +244,8 @@ static void load_nested_vmcb_control(struct vcpu_svm *svm,
- {
- 	copy_vmcb_control_area(&svm->nested.ctl, control);
- 
-+	/* Copy it here because nested_svm_check_controls will check it.  */
-+	svm->nested.ctl.asid           = control->asid;
- 	svm->nested.ctl.msrpm_base_pa &= ~0x0fffULL;
- 	svm->nested.ctl.iopm_base_pa  &= ~0x0fffULL;
- }
-@@ -870,6 +873,150 @@ int nested_svm_exit_special(struct vcpu_svm *svm)
- 	return NESTED_EXIT_CONTINUE;
- }
- 
-+static int svm_get_nested_state(struct kvm_vcpu *vcpu,
-+				struct kvm_nested_state __user *user_kvm_nested_state,
-+				u32 user_data_size)
-+{
-+	struct vcpu_svm *svm;
-+	struct kvm_nested_state kvm_state = {
-+		.flags = 0,
-+		.format = KVM_STATE_NESTED_FORMAT_SVM,
-+		.size = sizeof(kvm_state),
-+	};
-+	struct vmcb __user *user_vmcb = (struct vmcb __user *)
-+		&user_kvm_nested_state->data.svm[0];
-+
-+	if (!vcpu)
-+		return kvm_state.size + KVM_STATE_NESTED_SVM_VMCB_SIZE;
-+
-+	svm = to_svm(vcpu);
-+
-+	if (user_data_size < kvm_state.size)
-+		goto out;
-+
-+	/* First fill in the header and copy it out.  */
-+	if (is_guest_mode(vcpu)) {
-+		kvm_state.hdr.svm.vmcb_pa = svm->nested.vmcb;
-+		kvm_state.size += KVM_STATE_NESTED_SVM_VMCB_SIZE;
-+		kvm_state.flags |= KVM_STATE_NESTED_GUEST_MODE;
-+
-+		if (svm->nested.nested_run_pending)
-+			kvm_state.flags |= KVM_STATE_NESTED_RUN_PENDING;
-+	}
-+
-+	if (gif_set(svm))
-+		kvm_state.flags |= KVM_STATE_NESTED_GIF_SET;
-+
-+	if (copy_to_user(user_kvm_nested_state, &kvm_state, sizeof(kvm_state)))
-+		return -EFAULT;
-+
-+	if (!is_guest_mode(vcpu))
-+		goto out;
-+
-+	/*
-+	 * Copy over the full size of the VMCB rather than just the size
-+	 * of the struct.
-+	 */
-+	if (memzero_user(user_vmcb, KVM_STATE_NESTED_SVM_VMCB_SIZE))
-+		return -EFAULT;
-+	if (copy_to_user(&user_vmcb->control, &svm->nested.ctl,
-+			 sizeof(user_vmcb->control)))
-+		return -EFAULT;
-+	if (copy_to_user(&user_vmcb->save, &svm->nested.hsave->save,
-+			 sizeof(user_vmcb->save)))
-+		return -EFAULT;
-+
-+out:
-+	return kvm_state.size;
-+}
-+
-+static int svm_set_nested_state(struct kvm_vcpu *vcpu,
-+				struct kvm_nested_state __user *user_kvm_nested_state,
-+				struct kvm_nested_state *kvm_state)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	struct vmcb *hsave = svm->nested.hsave;
-+	struct vmcb __user *user_vmcb = (struct vmcb __user *)
-+		&user_kvm_nested_state->data.svm[0];
-+	struct vmcb_control_area ctl;
-+	struct vmcb_save_area save;
-+	u32 cr0;
-+
-+	if (kvm_state->format != KVM_STATE_NESTED_FORMAT_SVM)
-+		return -EINVAL;
-+
-+	if (kvm_state->flags & ~(KVM_STATE_NESTED_GUEST_MODE |
-+				 KVM_STATE_NESTED_RUN_PENDING |
-+				 KVM_STATE_NESTED_GIF_SET))
-+		return -EINVAL;
-+
-+	/*
-+	 * If in guest mode, vcpu->arch.efer actually refers to the L2 guest's
-+	 * EFER.SVME, but EFER.SVME still has to be 1 for VMRUN to succeed.
-+	 */
-+	if (!(vcpu->arch.efer & EFER_SVME)) {
-+		/* GIF=1 and no guest mode are required if SVME=0.  */
-+		if (kvm_state->flags != KVM_STATE_NESTED_GIF_SET)
-+			return -EINVAL;
-+	}
-+
-+	/* SMM temporarily disables SVM, so we cannot be in guest mode.  */
-+	if (is_smm(vcpu) && (kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE))
-+		return -EINVAL;
-+
-+	if (!(kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE)) {
-+		svm_leave_nested(svm);
-+		goto out_set_gif;
-+	}
-+
-+	if (!page_address_valid(vcpu, kvm_state->hdr.svm.vmcb_pa))
-+		return -EINVAL;
-+	if (kvm_state->size < sizeof(*kvm_state) + KVM_STATE_NESTED_SVM_VMCB_SIZE)
-+		return -EINVAL;
-+	if (copy_from_user(&ctl, &user_vmcb->control, sizeof(ctl)))
-+		return -EFAULT;
-+	if (copy_from_user(&save, &user_vmcb->save, sizeof(save)))
-+		return -EFAULT;
-+
-+	if (!nested_vmcb_check_controls(&ctl))
-+		return -EINVAL;
-+
-+	/*
-+	 * Processor state contains L2 state.  Check that it is
-+	 * valid for guest mode (see nested_vmcb_checks).
-+	 */
-+	cr0 = kvm_read_cr0(vcpu);
-+        if (((cr0 & X86_CR0_CD) == 0) && (cr0 & X86_CR0_NW))
-+                return -EINVAL;
-+
-+	/*
-+	 * Validate host state saved from before VMRUN (see
-+	 * nested_svm_check_permissions).
-+	 * TODO: validate reserved bits for all saved state.
-+	 */
-+	if (!(save.cr0 & X86_CR0_PG))
-+		return -EINVAL;
-+
-+	/*
-+	 * All checks done, we can enter guest mode.  L1 control fields
-+	 * come from the nested save state.  Guest state is already
-+	 * in the registers, the save area of the nested state instead
-+	 * contains saved L1 state.
-+	 */
-+	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
-+	hsave->save = save;
-+
-+	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
-+	load_nested_vmcb_control(svm, &ctl);
-+	nested_prepare_vmcb_control(svm);
-+
-+out_set_gif:
-+	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-+	return 0;
-+}
-+
- struct kvm_x86_nested_ops svm_nested_ops = {
- 	.check_events = svm_check_nested_events,
-+	.get_state = svm_get_nested_state,
-+	.set_state = svm_set_nested_state,
- };
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 56be704ffe95..f64d071715d2 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1191,6 +1191,7 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 		svm->avic_is_running = true;
- 
- 	svm->nested.hsave = page_address(hsave_page);
-+	clear_page(svm->nested.hsave);
- 
- 	svm->msrpm = page_address(msrpm_pages);
- 	svm_vcpu_init_msrpm(svm->msrpm);
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 51ebb60e1533..106fc6fceb97 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -437,11 +437,6 @@ static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
- 	}
- }
- 
--static bool page_address_valid(struct kvm_vcpu *vcpu, gpa_t gpa)
--{
--	return PAGE_ALIGNED(gpa) && !(gpa >> cpuid_maxphyaddr(vcpu));
--}
--
- static int nested_vmx_check_io_bitmap_controls(struct kvm_vcpu *vcpu,
- 					       struct vmcs12 *vmcs12)
- {
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0001b2addc66..3e9252737f9d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4626,7 +4626,8 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 
- 		if (kvm_state.flags &
- 		    ~(KVM_STATE_NESTED_RUN_PENDING | KVM_STATE_NESTED_GUEST_MODE
--		      | KVM_STATE_NESTED_EVMCS | KVM_STATE_NESTED_MTF_PENDING))
-+		      | KVM_STATE_NESTED_EVMCS | KVM_STATE_NESTED_MTF_PENDING
-+		      | KVM_STATE_NESTED_GIF_SET))
- 			break;
- 
- 		/* nested_run_pending implies guest_mode.  */
--- 
-2.18.2
-
+Andrew Cooper pointed out that there is too much magic in Xen for this
+to work.  So never mind.
