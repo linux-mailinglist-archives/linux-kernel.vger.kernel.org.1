@@ -2,233 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FB41DAD42
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AF71DAD15
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgETI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 04:26:54 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39624 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbgETI0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 04:26:54 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9481D1A02DC;
-        Wed, 20 May 2020 10:26:51 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 276F11A02DD;
-        Wed, 20 May 2020 10:26:46 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 692A540299;
-        Wed, 20 May 2020 16:26:39 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3] dt-bindings: thermal: Convert i.MX to json-schema
-Date:   Wed, 20 May 2020 16:16:59 +0800
-Message-Id: <1589962619-28256-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726576AbgETIRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:17:54 -0400
+Received: from mail-eopbgr00062.outbound.protection.outlook.com ([40.107.0.62]:3583
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726425AbgETIRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 04:17:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ntLUXTA6n6ndgFJ2FNaTYsORCeW0nvSmzeYmfDIkvxcwq+l4lEcqy5YlRA84Xgt8xLVv8TZ0ZUoZCzNl8a5oLevnbAhiM8J2NvEniUryj+Q+qGc9JW8hBun2Wx+Pi145ECqYd5WBjPPgGjpgOskN3OuxxSnSoDJ76gsMcms96N1of8blYlCROFYFDbo1k1scB7M9z/FfcflThKIPrgnEWZ1azmcpq1MKM5Yd4j46Rs2RpSbfzs9YCvEvi7NOglI3+twYwmxAfy9hmniCpuZQ927nsI4f5kDiygGU+y0yFadUp+02PM2Ipk+1ubA2449WSBv4WTMQ1A8QndW1z3Mztw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QgQ4W8a5enBsXawiIyDQaeEEweUOE+ZzsYGBSLSmaeA=;
+ b=lyZ3F3AbBshpmhZ9RxpD7wwNOEyYL8Ph60lLrNXZthx2ITWMU1bWyLhzYkCL8BiPZNQMPN0HyeH1+A+Tf3w8jiozU0HUFUQgWi2Gq7Ic7+Jjl2E+MZ9xtLwvH4RNEYqB/7RfVKlDI5EwhtDRsb44jSNDCSeKyU3MAlcW9vPjGn6wAB78CDCNH0W/p0MlQrWdxeZxSRvCkxN5VpTvHOeL4J8yaDrYfeU3emZmiybA62MNrl+eIURHQq04b5BTMdxdukmtn+0APYtflJqcFnHXLeRgXHu2+gDgEDv7FdN8zBFT9IN5vprlJsjPOUqQbgLdYmvAJhoKDiUi2jZeH7urCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QgQ4W8a5enBsXawiIyDQaeEEweUOE+ZzsYGBSLSmaeA=;
+ b=GvRsV3UnU9eBrkBUErR+XRfAAsyGQZc07vXYMOCfPF0UHBloAYjS1uOOx0PAENcFMAu7jDz1PizgJnZU7v30WqidxtzSrtkbwmjwEYnMv+WELUuNKhkT8Dj6RebRig+hwVbeCemNP1bCIQjhjWoma/ehupZBDmrQaz07Dq/JDE8=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24)
+ by AM6PR04MB6600.eurprd04.prod.outlook.com (2603:10a6:20b:fa::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Wed, 20 May
+ 2020 08:17:49 +0000
+Received: from AM6PR04MB4038.eurprd04.prod.outlook.com
+ ([fe80::a915:1f41:6468:75ea]) by AM6PR04MB4038.eurprd04.prod.outlook.com
+ ([fe80::a915:1f41:6468:75ea%7]) with mapi id 15.20.3021.020; Wed, 20 May 2020
+ 08:17:49 +0000
+Subject: Re: [PATCH] crypto: engine - do not requeue in case of fatal error
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <1589926645-32686-1-git-send-email-iuliana.prodan@nxp.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <98058a95-ce97-4d3b-a2b5-acfe750ce3c7@nxp.com>
+Date:   Wed, 20 May 2020 11:17:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <1589926645-32686-1-git-send-email-iuliana.prodan@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM6PR0202CA0055.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3a::32) To AM6PR04MB4038.eurprd04.prod.outlook.com
+ (2603:10a6:209:44::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (84.117.251.185) by AM6PR0202CA0055.eurprd02.prod.outlook.com (2603:10a6:20b:3a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Wed, 20 May 2020 08:17:48 +0000
+X-Originating-IP: [84.117.251.185]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4a302e84-8aac-4f22-e162-08d7fc964890
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6600:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB66005D1C8936F3633AB6EC5398B60@AM6PR04MB6600.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04097B7F7F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xwamilyUFIlzJ8pyJr7gtQ+5QZ/JHXfinSOUiXnot7WBGNfXglqUpznbgZeqg2fjXlFpWm8ushelaMLRfDCk6pf/KYH8ShljSBKbbOojw5WMHwt1vvdMsD9hbmP1yw8mouD2hUmp87jqLOD1qwJDxbgJkkk9dj4wbZzOUyyr/8Nxdev/LUyhvrReitwNIAWGqaYtigFY6+v7/LLh43LpJ3FmnKuwxa3NnFtbjQVLzQzB+2L0dFaUGWAMNxWtFdIQtTKXl2N7NnbPy1YkS+jYkeCvujgfxau/gHGIyFOyP+NWlOJndtb96aWHWqATXAGVhvOA1wwhyApduh4OJgLMTzIu05My9d3n4IUbBBrZur/RU9PSs1CEJLJcw1xDggg4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4038.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(366004)(16526019)(4326008)(52116002)(66946007)(186003)(31686004)(4744005)(26005)(478600001)(6486002)(5660300002)(36756003)(6666004)(16576012)(8936002)(316002)(54906003)(110136005)(66556008)(66476007)(2616005)(31696002)(8676002)(86362001)(2906002)(956004)(53546011)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: OkBvWfFEFopGBW6ObtRbeJVii0vM0iI8sJ2BWqP3HNlmpDywqeosOS/4ZgprBWV7kFVt1CGVI/rSjVIeF1V817KYiZiNvPvDMMZ8KVsDOxLsCpXa/UyEmOzgBvbHXF5g+LwUvuOIwKX0s56QAER+nY/kpodiHewKO+XufGhcJVfzrL8VsCow3zWt3I/fxpRnOIGuDD3a4510p8pFdHWNMVeB2klVMjDoMCb/Z/oDdJdlxi7XGW9JbuW/06oQSwK2p6ODoVIe9pAvdKoAhANJ5eGWgsCBVblxqeVLZNYz30z2XEUphMrau5o+0IWO0zEhMyIalSCT0z8G1pDyrDMyW15sy0NiXH37xhS9YEA/OfSFI+5slPLR6K/2QPSkx0qcnOI0VkCtwUZ3eZiux0H1H4G9n7AToZ2zGLs15Z4RMsR2dbp9a1mmsr9Hvnh1bebmjt2JUG6KUEQxNEvKGpEyTH59McuK5bDCiBHCz8tfepOBrPrShsnlKvfg+T0l/vlZ
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a302e84-8aac-4f22-e162-08d7fc964890
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 08:17:49.0681
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VMAnpKl8tw7aMH9QiEiBHMn046ZQZeNCfGRWvQ29pFWET/w092tiUIl9QZzJcq2LlpspWijYWrbc9izpTSr0uQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6600
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX thermal binding to DT schema format using json-schema
+On 5/20/2020 1:17 AM, Iuliana Prodan wrote:
+> Now, in crypto-engine, if hardware queue is full (-ENOSPC),
+> requeue request regardless of MAY_BACKLOG flag.
+> If hardware throws any other error code (like -EIO, -EINVAL,
+> -ENOMEM, etc.) only MAY_BACKLOG requests are enqueued back into
+> crypto-engine's queue, since the others can be dropped.
+> The latter case can be fatal error, so those cannot be recovered from.
+> For example, in CAAM driver, -EIO is returned in case the job descriptor
+> is broken, so there is no possibility to fix the job descriptor.
+> Therefore, these errors might be fatal error, so we shouldn’t
+> requeue the request. This will just be pass back and forth between
+> crypto-engine and hardware.
+> 
+> Fixes: 6a89f492f8e5 ("crypto: engine - support for parallel requests based on retry mechanism")
+> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+Reported-by: Horia Geantă <horia.geanta@nxp.com>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V2:
-	- remove unnecessary property in compatible;
-	- add detail description for interrupts;
-	- add description for each item of nvmem-cells;
-	- add more detail for "fsl,tempmon" description.
----
- .../devicetree/bindings/thermal/imx-thermal.txt    |  61 ------------
- .../devicetree/bindings/thermal/imx-thermal.yaml   | 102 +++++++++++++++++++++
- 2 files changed, 102 insertions(+), 61 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/imx-thermal.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/imx-thermal.yaml
-
-diff --git a/Documentation/devicetree/bindings/thermal/imx-thermal.txt b/Documentation/devicetree/bindings/thermal/imx-thermal.txt
-deleted file mode 100644
-index 823e417..0000000
---- a/Documentation/devicetree/bindings/thermal/imx-thermal.txt
-+++ /dev/null
-@@ -1,61 +0,0 @@
--* Temperature Monitor (TEMPMON) on Freescale i.MX SoCs
--
--Required properties:
--- compatible : must be one of following:
--  - "fsl,imx6q-tempmon" for i.MX6Q,
--  - "fsl,imx6sx-tempmon" for i.MX6SX,
--  - "fsl,imx7d-tempmon" for i.MX7S/D.
--- interrupts : the interrupt output of the controller:
--  i.MX6Q has one IRQ which will be triggered when temperature is higher than high threshold,
--  i.MX6SX and i.MX7S/D have two more IRQs than i.MX6Q, one is IRQ_LOW and the other is IRQ_PANIC,
--  when temperature is below than low threshold, IRQ_LOW will be triggered, when temperature
--  is higher than panic threshold, system will auto reboot by SRC module.
--- fsl,tempmon : phandle pointer to system controller that contains TEMPMON
--  control registers, e.g. ANATOP on imx6q.
--- nvmem-cells: A phandle to the calibration cells provided by ocotp.
--- nvmem-cell-names: Should be "calib", "temp_grade".
--
--Deprecated properties:
--- fsl,tempmon-data : phandle pointer to fuse controller that contains TEMPMON
--  calibration data, e.g. OCOTP on imx6q.  The details about calibration data
--  can be found in SoC Reference Manual.
--
--Direct access to OCOTP via fsl,tempmon-data is incorrect on some newer chips
--because it does not handle OCOTP clock requirements.
--
--Optional properties:
--- clocks : thermal sensor's clock source.
--
--Example:
--ocotp: ocotp@21bc000 {
--	#address-cells = <1>;
--	#size-cells = <1>;
--	compatible = "fsl,imx6sx-ocotp", "syscon";
--	reg = <0x021bc000 0x4000>;
--	clocks = <&clks IMX6SX_CLK_OCOTP>;
--
--	tempmon_calib: calib@38 {
--		reg = <0x38 4>;
--	};
--
--	tempmon_temp_grade: temp-grade@20 {
--		reg = <0x20 4>;
--	};
--};
--
--tempmon: tempmon {
--	compatible = "fsl,imx6sx-tempmon", "fsl,imx6q-tempmon";
--	interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
--	fsl,tempmon = <&anatop>;
--	nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
--	nvmem-cell-names = "calib", "temp_grade";
--	clocks = <&clks IMX6SX_CLK_PLL3_USB_OTG>;
--};
--
--Legacy method (Deprecated):
--tempmon {
--	compatible = "fsl,imx6q-tempmon";
--	fsl,tempmon = <&anatop>;
--	fsl,tempmon-data = <&ocotp>;
--	clocks = <&clks 172>;
--};
-diff --git a/Documentation/devicetree/bindings/thermal/imx-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx-thermal.yaml
-new file mode 100644
-index 0000000..8bfd9f9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/imx-thermal.yaml
-@@ -0,0 +1,102 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/imx-thermal.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX Thermal Binding
-+
-+maintainers:
-+  - Shawn Guo <shawn.guo@linaro.org>
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx6q-tempmon
-+      - fsl,imx6sx-tempmon
-+      - fsl,imx7d-tempmon
-+
-+  interrupts:
-+    description: |
-+      The interrupt output of the controller, i.MX6Q has IRQ_HIGH which
-+      will be triggered when temperature is higher than high threshold,
-+      i.MX6SX and i.MX7S/D have two more IRQs than i.MX6Q, one is IRQ_LOW
-+      and the other is IRQ_PANIC, when temperature is lower than low
-+      threshold, IRQ_LOW will be triggered, when temperature is higher
-+      than panic threshold, IRQ_PANIC will be triggered, and system can
-+      be configured to auto reboot by SRC module for IRQ_PANIC. IRQ_HIGH,
-+      IRQ_LOW and IRQ_PANIC share same interrupt output of controller.
-+    maxItems: 1
-+
-+  nvmem-cells:
-+    items:
-+      - description: Phandle to the calibration data provided by ocotp
-+      - description: Phandle to the temperature grade provided by ocotp
-+
-+  nvmem-cell-names:
-+    items:
-+      - const: calib
-+      - const: temp_grade
-+
-+  fsl,tempmon:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: Phandle to the temperature sensor register map node.
-+
-+  fsl,tempmon-data:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Deprecated property, phandle pointer to fuse controller that contains
-+      TEMPMON calibration data, e.g. OCOTP on imx6q. The details about
-+      calibration data can be found in SoC Reference Manual.
-+    deprecated: true
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - interrupts
-+  - fsl,tempmon
-+  - nvmem-cells
-+  - nvmem-cell-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx6sx-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    efuse@21bc000 {
-+         #address-cells = <1>;
-+         #size-cells = <1>;
-+         compatible = "fsl,imx6sx-ocotp", "syscon";
-+         reg = <0x021bc000 0x4000>;
-+         clocks = <&clks IMX6SX_CLK_OCOTP>;
-+
-+         tempmon_calib: calib@38 {
-+             reg = <0x38 4>;
-+         };
-+
-+         tempmon_temp_grade: temp-grade@20 {
-+             reg = <0x20 4>;
-+         };
-+    };
-+
-+    anatop@20c8000 {
-+        compatible = "fsl,imx6q-anatop", "syscon", "simple-mfd";
-+        reg = <0x020c8000 0x1000>;
-+        interrupts = <0 49 IRQ_TYPE_LEVEL_HIGH>,
-+                     <0 54 IRQ_TYPE_LEVEL_HIGH>,
-+                     <0 127 IRQ_TYPE_LEVEL_HIGH>;
-+
-+        tempmon {
-+             compatible = "fsl,imx6sx-tempmon";
-+             interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
-+             fsl,tempmon = <&anatop>;
-+             nvmem-cells = <&tempmon_calib>, <&tempmon_temp_grade>;
-+             nvmem-cell-names = "calib", "temp_grade";
-+             clocks = <&clks IMX6SX_CLK_PLL3_USB_OTG>;
-+        };
-+    };
--- 
-2.7.4
-
+Thanks,
+Horia
