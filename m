@@ -2,538 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBF41DB14B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C65D1DB151
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgETLRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:17:03 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:53746 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726452AbgETLRC (ORCPT
+        id S1726846AbgETLRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgETLRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:17:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589973420; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=x2QeAKoeum0/WUVq47LRs8/u1TfnZeJl9NoUecmRu0w=; b=wenHAhdGpu02lXJQHMTjzJiG0noCmUodsTFSHLQGxGVlvD4GerSFBTZAU4eMnGExMnfNv2X3
- VEgBKpNbRknMMU+e3jqZzyY8HagKpJ3ul6TWjsmhMt+n5rahS0n5u+6oytVq4Knzt+W9sG/4
- 9LNfkj9odCxD3H5yVymzO+hQvFE=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ec511ac087f08818e97d4ac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 11:17:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 572E4C433CA; Wed, 20 May 2020 11:16:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [183.83.65.109])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 276B7C433C8;
-        Wed, 20 May 2020 11:16:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 276B7C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH V1 2/3] mmc: sdhci-msm: Use internal voltage control
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Vijay Viswanath <vviswana@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
- <1589541535-8523-3-git-send-email-vbadigan@codeaurora.org>
- <20200518195711.GH2165@builder.lan>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <1f546a8b-7f10-95e7-efc2-8e3d5787aee6@codeaurora.org>
-Date:   Wed, 20 May 2020 16:46:49 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 20 May 2020 07:17:22 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD53C061A0E;
+        Wed, 20 May 2020 04:17:21 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id g9so2673939edr.8;
+        Wed, 20 May 2020 04:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fznr8YKSw5EsgmJSzEUboYxavDTpPHDc5z8WMGGxO9c=;
+        b=ReUsnM81SRQYlgOMWEj0WKTvLJLHCKMf8HznDi7j9yY3mzyc5RrfQ6KZwD1LBMQC5V
+         arrmAojM6hm9SLDnsgkv+TWwUnNDvI5Sa1ycUq5cQJHZ9YTES4ypz9wf47refDqECC8a
+         Aq21ol4/5k6aA7EmpidjknvimRUhQ2td9HrFOHrot0OFk5oPgs1+MptplHxNXC6s/u+q
+         BKZHK79j868Y8z4+K3EIjS+e2+gqiQAmmIHI8rL7FyCkNv+CfPOn0IBRKjZgWrUJz82m
+         qaEY1AXMeIFa2p75KHI2pmcwxYf05nWy9MN0XZbgoGrp5wSzzZi2nI8bawcsG6mrSRQC
+         Aw3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fznr8YKSw5EsgmJSzEUboYxavDTpPHDc5z8WMGGxO9c=;
+        b=d3hT+wP3mwuYhnEUGZ5MkehFvva4Hb64mzSxwHOquO2jL2mrsQFZDDyCW5fyth4YKe
+         R38Hz1gQWBPlbixoGiTKnrpHxhh/trOYZ/Ht4ynHOwEwuZlbNogxKM04sMZvwGitoq2K
+         fwghM/PX2XgeIK/BsizQI56567MHM1Ip5EUakzfbw60BwA9+nkR8fS9d0KFMm0PHBXqk
+         MWglr0knpYSyS4/NED6Ksiz1xRF/NxPrGrUim7z0ILU5PKtX3cDiD8c57Ky/d1msOn+g
+         xud64ComVwqZnfs6cdulFhhPeG2+h6lR1AKQT1VvV/FennyYn9olDVVCnpnKjv3qhryW
+         OiLg==
+X-Gm-Message-State: AOAM533r+5Mb0Zzqt4/dBBvJBWb79fbmvh038Z0S3GzsifORu5shN0mt
+        NlHUeuZ1Ot/D9dJeOIXK274=
+X-Google-Smtp-Source: ABdhPJwdo+Z/Jmz0cYRNQafz+lRqspmOePEfutF9rB4j2wxxQAGj6BXTvTnIs69FX7Fzp6tql3PKaA==
+X-Received: by 2002:a50:da06:: with SMTP id z6mr2800642edj.372.1589973439719;
+        Wed, 20 May 2020 04:17:19 -0700 (PDT)
+Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
+        by smtp.gmail.com with ESMTPSA id h8sm1689202edk.72.2020.05.20.04.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 04:17:18 -0700 (PDT)
+Date:   Wed, 20 May 2020 13:17:17 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>,
+        Alan Mikhak <alan.mikhak@sifive.com>
+Subject: Re: [PATCH] PCI: dwc: Warn only for non-prefetchable memory resource
+ size >4GB
+Message-ID: <20200520111717.GB2141681@ulmo>
+References: <20200513190855.23318-1-vidyas@nvidia.com>
+ <20200513223508.GA352288@bjorn-Precision-5520>
+ <20200518155435.GA2299@e121166-lin.cambridge.arm.com>
+ <cd62a9da-5c47-ceb2-10e7-4cf657f07801@nvidia.com>
+ <20200519145816.GB21261@e121166-lin.cambridge.arm.com>
+ <DM5PR12MB1276C836FEE46B113112FA92DAB90@DM5PR12MB1276.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200518195711.GH2165@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4SFOXa2GPu3tIq4H"
+Content-Disposition: inline
+In-Reply-To: <DM5PR12MB1276C836FEE46B113112FA92DAB90@DM5PR12MB1276.namprd12.prod.outlook.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Thanks Bjorn for the review. For major comments I'm responding.
-Other comments, i will take care of them in my next patch-set.
+--4SFOXa2GPu3tIq4H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/19/2020 1:27 AM, Bjorn Andersson wrote:
-> On Fri 15 May 04:18 PDT 2020, Veerabhadrarao Badiganti wrote:
->
->> From: Vijay Viswanath <vviswana@codeaurora.org>
->>
->> On qcom SD host controllers voltage switching be done after the HW
->> is ready for it. The HW informs its readiness through power irq.
->> The voltage switching should happen only then.
->>
->> Use the internal voltage switching and then control the voltage
->> switching using power irq.
->>
->> Set the regulator load as well so that regulator can be configured
->> in LPM mode when in is not being used.
->>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
->> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> Please note that per Documentation/process/submitting-patches.rst
-> section 11) this states:
->
-> 1) You wrote the patch (From:) without stating that its Certificate of
-> origin.
->
-> 2) Then Asutosh took your patch (in full or part) and guarantees that
-> he's allowed to contribute it to the project.
->
-> 3) Then you took his patch (in full or part) and guarantee that you're
-> allowed to contribute it to the project.
->
-> 4) Then Veerabhadrarao took your patch (in full or part) and guarantees
-> that he's allowed to contribute it to the project
->
-> 5) Then somehow it came out of your inbox - even if Veerabhadrarao was
-> the one who handled it last.
->
->
-> As author you should be the first one to certify, and as poster to LKML
-> you should be the last one.
->
-> If you worked together on this, then list Asutosh and Veerabhadrarao as
-> Co-developed-by.
->
->> ---
->>   drivers/mmc/host/sdhci-msm.c | 215 +++++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 207 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
->> index 97758fa..a10e955 100644
->> --- a/drivers/mmc/host/sdhci-msm.c
->> +++ b/drivers/mmc/host/sdhci-msm.c
->> @@ -36,7 +36,9 @@
->>   #define CORE_PWRCTL_IO_LOW	BIT(2)
->>   #define CORE_PWRCTL_IO_HIGH	BIT(3)
->>   #define CORE_PWRCTL_BUS_SUCCESS BIT(0)
->> +#define CORE_PWRCTL_BUS_FAIL    BIT(1)
->>   #define CORE_PWRCTL_IO_SUCCESS	BIT(2)
->> +#define CORE_PWRCTL_IO_FAIL     BIT(3)
->>   #define REQ_BUS_OFF		BIT(0)
->>   #define REQ_BUS_ON		BIT(1)
->>   #define REQ_IO_LOW		BIT(2)
->> @@ -263,6 +265,9 @@ struct sdhci_msm_host {
->>   	bool use_cdr;
->>   	u32 transfer_mode;
->>   	bool updated_ddr_cfg;
->> +	u32 vmmc_load;
->> +	u32 vqmmc_load;
->> +	bool vqmmc_enabled;
->>   };
->>   
->>   static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
->> @@ -1298,6 +1303,78 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
->>   		sdhci_msm_hs400(host, &mmc->ios);
->>   }
->>   
->> +static int sdhci_msm_set_vmmc(struct sdhci_msm_host *msm_host,
->> +			      struct mmc_host *mmc, int level)
->> +{
->> +	int load, ret;
->> +
->> +	if (IS_ERR(mmc->supply.vmmc))
->> +		return 0;
->> +
->> +	if (msm_host->vmmc_load) {
->> +		load = level ? msm_host->vmmc_load : 0;
->> +		ret = regulator_set_load(mmc->supply.vmmc, load);
-> I started on the comment about regulator_set_load() that you can find
-> below...
->
->> +		if (ret)
->> +			goto out;
->> +	}
->> +
->> +	ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
-> ...but I don't see that mmc->ios.vdd necessarily is in sync with
-> "level". Or do you here simply set the load based on what the hardware
-> tell you and then orthogonally to that let the core enable/disable the
-> regulator?
->
-> Perhaps I'm just missing something obvious, but if not I believe this
-> warrants a comment describing that you're lowering the power level
-> regardless of the actual power being disabled.
+On Tue, May 19, 2020 at 10:08:54PM +0000, Gustavo Pimentel wrote:
+> On Tue, May 19, 2020 at 15:58:16, Lorenzo Pieralisi=20
+> <lorenzo.pieralisi@arm.com> wrote:
+>=20
+> > On Tue, May 19, 2020 at 07:25:02PM +0530, Vidya Sagar wrote:
+> > >=20
+> > >=20
+> > > On 18-May-20 9:24 PM, Lorenzo Pieralisi wrote:
+> > > > External email: Use caution opening links or attachments
+> > > >=20
+> > > >=20
+> > > > On Wed, May 13, 2020 at 05:35:08PM -0500, Bjorn Helgaas wrote:
+> > > > > [+cc Alan; please cc authors of relevant commits,
+> > > > > updated Andrew's email address]
+> > > > >=20
+> > > > > On Thu, May 14, 2020 at 12:38:55AM +0530, Vidya Sagar wrote:
+> > > > > > commit 9e73fa02aa009 ("PCI: dwc: Warn if MEM resource size exce=
+eds max for
+> > > > > > 32-bits") enables warning for MEM resources of size >4GB but pr=
+efetchable
+> > > > > >   memory resources also come under this category where sizes ca=
+n go beyond
+> > > > > > 4GB. Avoid logging a warning for prefetchable memory resources.
+> > > > > >=20
+> > > > > > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> > > > > > ---
+> > > > > >   drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
+> > > > > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > >=20
+> > > > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c =
+b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > index 42fbfe2a1b8f..a29396529ea4 100644
+> > > > > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > @@ -366,7 +366,8 @@ int dw_pcie_host_init(struct pcie_port *pp)
+> > > > > >                      pp->mem =3D win->res;
+> > > > > >                      pp->mem->name =3D "MEM";
+> > > > > >                      mem_size =3D resource_size(pp->mem);
+> > > > > > -                   if (upper_32_bits(mem_size))
+> > > > > > +                   if (upper_32_bits(mem_size) &&
+> > > > > > +                       !(win->res->flags & IORESOURCE_PREFETCH=
+))
+> > > > > >                              dev_warn(dev, "MEM resource size e=
+xceeds max for 32 bits\n");
+> > > > > >                      pp->mem_size =3D mem_size;
+> > > > > >                      pp->mem_bus_addr =3D pp->mem->start - win-=
+>offset;
+> > > >=20
+> > > > That warning was added for a reason - why should not we log legitim=
+ate
+> > > > warnings ? AFAIU having resources larger than 4GB can lead to undef=
+ined
+> > > > behaviour given the current ATU programming API.
+> > > Yeah. I'm all for a warning if the size is larger than 4GB in case of
+> > > non-prefetchable window as one of the ATU outbound translation
+> > > channels is being used,
+> >=20
+> > Is it true for all DWC host controllers ? Or there may be another
+> > exception whereby we would be forced to disable this warning altogether
+> > ?
+> >=20
+> > > but, we are not employing any ATU outbound translation channel for
+> >=20
+> > What does this mean ? "we are not employing any ATU outbound...", is
+> > this the tegra driver ? And what guarantees that this warning is not
+> > legitimate on DWC host controllers that do use the ATU outbound
+> > translation for prefetchable windows ?
+> >=20
+> > Can DWC maintainers chime in and clarify please ?
+>=20
+> Before this code section, there is the following function call=20
+> pci_parse_request_of_pci_ranges(), which performs a simple validation for=
+=20
+> the IORESOURCE_MEM resource type.
+> This validation checks if the resource is marked as prefetchable, if so,=
+=20
+> an error message "non-prefetchable memory resource required" is given and=
+=20
+> a return code with the -EINVAL value.
 
-ios.vdd will be in sync with level. Vdd will be either 0 or a valid 
-voltage (3v).
+That's not what the code is doing. pci_parse_request_of_pci_range() will
+traverse over the whole list of resources that it can find for the given
+host controller and checks whether one of the resources defines prefetch
+memory (note the res_valid |=3D ...). The error will only be returned if
+no prefetchable memory region was found.
 
-This indirectly gets triggered/invoked through power-irq when driver 
-writes 0
-or valid voltage to SDHCI_POWER_CONTROL register from 
-sdhci_set_power_noreg().
->> +out:
->> +	if (ret)
->> +		pr_err("%s: vmmc set load/ocr failed: %d\n",
->> +				mmc_hostname(mmc), ret);
-> Please use:
-> 	dev_err(mmc_dev(mmc), ...);
->
->> +
->> +	return ret;
->> +}
->> +
->> +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
->> +			      struct mmc_host *mmc, int level)
-> vqmmc_enabled is a bool and "level" sounds like an int with several
-> possible values. So please make level bool here as well, to make it
-> easer to read..
->
->> +{
->> +	int load, ret;
->> +	struct mmc_ios ios;
->> +
->> +	if (IS_ERR(mmc->supply.vqmmc)			 ||
->> +	    (mmc->ios.power_mode == MMC_POWER_UNDEFINED) ||
->> +	    (msm_host->vqmmc_enabled == level))
->> +		return 0;
->> +
->> +	if (msm_host->vqmmc_load) {
->> +		load = level ? msm_host->vqmmc_load : 0;
->> +		ret = regulator_set_load(mmc->supply.vqmmc, load);
-> Since v5.0 the "load" of a regulator consumer is only taken into
-> consideration if the consumer is enabled. So given that you're toggling
-> the regulator below there's no need to change this here.
->
-> Just specify the "active load" at probe time.
+dw_pcie_host_init() will then again traverse the list of resources and
+it will typically encounter two resource of type IORESOURCE_MEM, one for
+non-prefetchable memory and another for prefetchable memory.
 
-For eMMC case, we don't disable this Vccq2 regulator by having always-on 
-flag
-in the regulator node. Only for SDcard Vccq2 will be disabled.
-Sice driver is common for both eMMC and SDcard, I have to set 0 load to make
-it generic and to ensure eMMC Vccq2 regulator will be in LPM mode.
+Vidya's patch is to differentiate between these two resources and allow
+prefetchable memory regions to exceed sizes of 4 GiB.
 
->
->> +		if (ret)
->> +			goto out;
->> +	}
->> +
->> +	/*
->> +	 * The IO voltage regulator may not always support a voltage close to
->> +	 * vdd. Set IO voltage based on capability of the regulator.
->> +	 */
-> Is this comment related to the if/else-if inside the conditional? If so
-> please move it one line down.
->
->> +	if (level) {
->> +		if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
->> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
->> +		else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
->> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
-> Please add a space here, to indicate that the if statement on the next
-> line is unrelated to the if/elseif above.
->
->> +		if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
->> +			pr_debug("%s: %s: setting signal voltage: %d\n",
->> +					mmc_hostname(mmc), __func__,
->> +					ios.signal_voltage);
-> I strongly believe you should replace these debug prints with
-> tracepoints, throughout the driver.
->
->> +			ret = mmc_regulator_set_vqmmc(mmc, &ios);
->> +			if (ret < 0)
->> +				goto out;
->> +		}
->> +		ret = regulator_enable(mmc->supply.vqmmc);
->> +	} else {
->> +		ret = regulator_disable(mmc->supply.vqmmc);
->> +	}
-> Given that you don't need to regulator_set_load() this function is now
-> just one large if/else condition on a constant passed as an argument.
-> Please split it into sdhci_msm_enable_vqmmc() and
-> sdhci_msm_disable_vqmmc().
+That said, I wonder if there isn't a bigger problem at hand here. From
+looking at the code it doesn't seem like the DWC driver makes any
+distinction between prefetchable and non-prefetchable memory. Or at
+least it doesn't allow both to be stored in struct pcie_port.
 
+Am I missing something? Or can anyone explain how we're programming the
+apertures for prefetchable vs. non-prefetchable memory? Perhaps this is
+what Vidya was referring to when he said: "we are not using an outbound
+ATU translation channel for prefetchable memory".
 
-Same response as above
-For eMMC case, we don't disable this Vccq2 regulator by having always-on 
-flag
-in the regulator node. Only for SDcard Vccq2 will be disabled.
-Sice driver is common for both eMMC and SDcard, I have to set 0 load to make
-it generic and to ensure eMMC Vccq2 regulator will be in LPM mode.
+It looks to me like we're also getting partially lucky, or perhaps that
+is by design, in that Tegra194 defines PCI regions in the following
+order: I/O, prefetchable memory, non-prefetchable memory. That means
+that the DWC core code will overwrite prefetchable memory data with that
+of non-prefetchable memory and hence the non-prefetchable region ends up
+stored in struct pcie_port and is then used to program the ATU outbound
+channel.
 
->> +out:
->> +	if (ret)
->> +		pr_err("%s: vqmmc failed: %d\n", mmc_hostname(mmc), ret);
-> I think it would be useful to know if this error came from
-> mmc_regulator_set_vqmmc() or regulator_enable() - or
-> regulator_disable().
->
-> So please move this up and add some context in the error message, and
-> please use dev_err().
->
->> +	else
->> +		msm_host->vqmmc_enabled = level;
->> +
->> +	return ret;
->> +}
->> +
->>   static inline void sdhci_msm_init_pwr_irq_wait(struct sdhci_msm_host *msm_host)
->>   {
->>   	init_waitqueue_head(&msm_host->pwr_irq_wait);
->> @@ -1401,8 +1478,9 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->>   {
->>   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
->>   	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
->> +	struct mmc_host *mmc = host->mmc;
->>   	u32 irq_status, irq_ack = 0;
->> -	int retry = 10;
->> +	int retry = 10, ret = 0;
-> There's no need to initialize ret, in all occasions it's assigned before
-> being read.
->
->>   	u32 pwr_state = 0, io_level = 0;
->>   	u32 config;
->>   	const struct sdhci_msm_offset *msm_offset = msm_host->offset;
->> @@ -1438,14 +1516,35 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->>   
->>   	/* Handle BUS ON/OFF*/
->>   	if (irq_status & CORE_PWRCTL_BUS_ON) {
->> -		pwr_state = REQ_BUS_ON;
->> -		io_level = REQ_IO_HIGH;
->> -		irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->> +		ret = sdhci_msm_set_vmmc(msm_host, mmc, 1);
->> +		if (!ret)
->> +			ret = sdhci_msm_set_vqmmc(msm_host, mmc, 1);
-> I find this quite complex to follow. Wouldn't it be cleaner to retain
-> the 4 checks on irq_status as they are and then before the writel of
-> irq_ack check pwr_state and io_level and call sdhci_msm_set_{vmmc,vqmmc}
-> accordingly?
+> In other words, to reach the code that Vidya is changing, it can be only=
+=20
+> if the resource is a non-prefetchable, any prefetchable resource will be=
+=20
+> blocked by the previous call, if I'm not mistaken.
+>=20
+> Having this in mind, Vidya's change will not make the expected result=20
+> aimed by him.
 
-I will see if i can update as you suggested.
+Given the above I think it does. We've also seen this patch eliminate a
+warning that we were seeing before, so I think it has the intended
+effect.
 
->> +
->> +		if (!ret) {
->> +			pwr_state = REQ_BUS_ON;
->> +			io_level = REQ_IO_HIGH;
->> +			irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->> +		} else {
->> +			pr_err("%s: BUS_ON req failed(%d). irq_status: 0x%08x\n",
->> +					mmc_hostname(mmc), ret, irq_status);
-> You already printed that this failed in sdhci_msm_set_{vmmc,vqmmc}, no
-> need to print again.
->
->> +			irq_ack |= CORE_PWRCTL_BUS_FAIL;
->> +			sdhci_msm_set_vmmc(msm_host, mmc, 0);
->> +		}
->>   	}
->>   	if (irq_status & CORE_PWRCTL_BUS_OFF) {
->> -		pwr_state = REQ_BUS_OFF;
->> -		io_level = REQ_IO_LOW;
->> -		irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->> +		ret = sdhci_msm_set_vmmc(msm_host, mmc, 0);
->> +		if (!ret)
->> +			ret = sdhci_msm_set_vqmmc(msm_host, mmc, 0);
->> +
->> +		if (!ret) {
->> +			pwr_state = REQ_BUS_OFF;
->> +			io_level = REQ_IO_LOW;
->> +			irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
->> +		} else {
->> +			pr_err("%s: BUS_ON req failed(%d). irq_status: 0x%08x\n",
->> +					mmc_hostname(mmc), ret, irq_status);
->> +			irq_ack |= CORE_PWRCTL_BUS_FAIL;
->> +		}
->>   	}
->>   	/* Handle IO LOW/HIGH */
->>   	if (irq_status & CORE_PWRCTL_IO_LOW) {
->> @@ -1457,6 +1556,15 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
->>   		irq_ack |= CORE_PWRCTL_IO_SUCCESS;
->>   	}
->>   
->> +	if (io_level && !IS_ERR(mmc->supply.vqmmc) && !pwr_state) {
->> +		ret = mmc_regulator_set_vqmmc(mmc, &mmc->ios);
-> Didn't you already call this through sdhci_msm_set_vqmmc()?
+> I don't see any problem by having resources larger than 4GB, from what=20
+> I'm seeing in the databook there isn't any restricting related to that as=
+=20
+> long they don't consume the maximum space that is addressable by the=20
+> system (depending on if they are 32-bit or 64-bit system address).
+>=20
+> To be honest, I'm not seeing a system that could have this resource=20
+> larger than 4GB, but it might exist some exception that I don't know of,=
+=20
+> that's why I accepted Alan's patch to warn the user that the resource=20
+> exceeds the maximum for the 32 bits so that he can be aware that he=20
+> *might* be consuming the maximum space addressable.
 
-No.sdhci_msm_set_vqmmc handles only vqmmc ON/OFF. While turning it ON it 
-sets
-Vqmmc to possbile default IO level (1.8v or 3.0v).
-Where this is only to make IO lines high (3.0v) or Low (1.8v).
->> +		if (ret < 0)
->> +			pr_err("%s: IO_level setting failed(%d). signal_voltage: %d, vdd: %d irq_status: 0x%08x\n",
->> +					mmc_hostname(mmc), ret,
->> +					mmc->ios.signal_voltage, mmc->ios.vdd,
->> +					irq_status);
->> +	}
->> +
->>   	/*
->>   	 * The driver has to acknowledge the interrupt, switch voltages and
->>   	 * report back if it succeded or not to this register. The voltage
->> @@ -1833,6 +1941,91 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
->>   	sdhci_reset(host, mask);
->>   }
->>   
->> +static int sdhci_msm_register_vreg(struct sdhci_msm_host *msm_host)
->> +{
->> +	int ret = 0;
-> No need to initialize ret, first use is an assignment.
->
->> +	struct mmc_host *mmc = msm_host->mmc;
->> +
->> +	ret = mmc_regulator_get_supply(msm_host->mmc);
->> +	if (ret)
->> +		return ret;
->> +	device_property_read_u32(&msm_host->pdev->dev,
->> +			"vmmc-max-load-microamp",
->> +			&msm_host->vmmc_load);
->> +	device_property_read_u32(&msm_host->pdev->dev,
->> +			"vqmmc-max-load-microamp",
->> +			&msm_host->vqmmc_load);
-> These properties are not documented. Do they vary enough to mandate
-> being read from DT or could they simply be approximated by a define
-> instead?
+I think it's pretty common to have this type of prefetchable memory
+region when you connect discrete GPUs to PCIe. It's not unusual for
+high-end GPUs to have 8 GiB or even more dedicated video memory and
+those will typically be mapped to a prefetchable memory region on
+the PCI device.
 
-I can use defines. But since these values are different for eMMC and SDcard
-I will have to maintain two sets and need to have logic during probe to
-identify SDcard or eMMC and use the assign the set accordingly.
-So we tought, getting from dt is simpler and clean.
-In case Rob didn't agree with dt entries, I will go with this approach.
+Thierry
 
->> +
->> +	sdhci_msm_set_regulator_caps(msm_host);
->> +	mmc->ios.power_mode = MMC_POWER_UNDEFINED;
->> +
->> +	return 0;
->> +
->> +}
->> +
->> +static int sdhci_msm_start_signal_voltage_switch(struct mmc_host *mmc,
->> +				      struct mmc_ios *ios)
->> +{
->> +	struct sdhci_host *host = mmc_priv(mmc);
->> +	u16 ctrl;
->> +
->> +	/*
->> +	 * Signal Voltage Switching is only applicable for Host Controllers
->> +	 * v3.00 and above.
->> +	 */
->> +	if (host->version < SDHCI_SPEC_300)
->> +		return 0;
->> +
->> +	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
->> +
->> +	switch (ios->signal_voltage) {
->> +	case MMC_SIGNAL_VOLTAGE_330:
->> +		if (!(host->flags & SDHCI_SIGNALING_330))
->> +			return -EINVAL;
->> +		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
->> +		ctrl &= ~SDHCI_CTRL_VDD_180;
->> +		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
->> +
->> +		/* 3.3V regulator output should be stable within 5 ms */
-> What mechanism ensures that the readw won't return withing 5ms from the
-> writew above?
+--4SFOXa2GPu3tIq4H
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks for pointing this. This delay got missed. I will add it in next 
-patchset.
->> +		ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
->> +		if (!(ctrl & SDHCI_CTRL_VDD_180))
->> +			return 0;
->> +
->> +		pr_warn("%s: 3.3V regulator output did not became stable\n",
->> +			mmc_hostname(mmc));
->> +
->> +		return -EAGAIN;
-> The body of the 330 and 180 cases are quite similar, can you perhaps
-> deal with those after the switch, once?
+-----BEGIN PGP SIGNATURE-----
 
-Sure. Will check this.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7FEbkACgkQ3SOs138+
+s6F6yg//fBafWy3d6e0tL7M5stxppWxWvQDR4/Z5dSLrjT7jNJWWRO315MZRLlVz
+NOLteGGxX0u8AuPUrWpbT9Jh+Vzh4vT4QaauJ7xIUl1MTEf/P3csUfXx7n/AoETj
+coBkKHNLXbLf1IwgkSaVepYp73Ml9Vr84n8Z+yf8cL1kNp8FBra/QrjcRTUGAgbJ
+3fdGjAvAMVOpbes39E1O6JcL0nlDNyKL7XLfWk/g1Wc+9Ny+iUY+RlsFhPv/QGlk
+fcwEWYCAjEyWeihxkQJaWHcyuXpjGQyc0RzQh/KI+3dQxO8m/ks5u+LiWa0kyNOa
+vTAFx5PA3pYCElo7qraiGINzdBZ2plF0JnOMQDUb9OTPkdDZOQujT2jQLEyY7AGz
+WD48DgbKotZ2B4I5YD9oBv5NULOEeVO/b+uifv3HzprM2Mxuqf5ptm90GLi6AUDQ
+fkdEVUYQR4qiXCs9a9X/27HboiUhBVQ8gFB/IVV8w3Eatut2j1+NfOLUfRn/Y+iF
+eWhra2JQAntY3fep8CrFurDgoyzF39+Ys7QLeJpHmcbEdlU+WpA2dvxFXv2+rTpg
+8YjtT6IwrS9qBgmSIeF6kpFBEQCAgnOV1mLbqvJ1ImZAtDr2Tc3bPWONCCiQY5C3
+YEPX9oPa6+xyGzSX2cpFc85K0vFMJmISXSoaf/Oe2YxxPJ2aXVU=
+=0Qo8
+-----END PGP SIGNATURE-----
 
->> +	case MMC_SIGNAL_VOLTAGE_180:
->> +		if (!(host->flags & SDHCI_SIGNALING_180))
->> +			return -EINVAL;
->> +
->> +		/*
->> +		 * Enable 1.8V Signal Enable in the Host Control2
->> +		 * register
->> +		 */
->> +		ctrl |= SDHCI_CTRL_VDD_180;
->> +		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
->> +
->> +		/* 1.8V regulator output should be stable within 5 ms */
->> +		ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
->> +		if (ctrl & SDHCI_CTRL_VDD_180)
->> +			return 0;
->> +
->> +		pr_warn("%s: 1.8V regulator output did not became stable\n",
->> +			mmc_hostname(mmc));
->> +
->> +		return -EAGAIN;
->> +	case MMC_SIGNAL_VOLTAGE_120:
->> +		if (!(host->flags & SDHCI_SIGNALING_120))
->> +			return -EINVAL;
->> +		return 0;
->> +	default:
->> +		/* No signal voltage switch required */
->> +		return 0;
->> +	}
->> +
-> Empty line.
->
-> Regards,
-> Bjorn
->
->> +}
->> +
->>   static const struct sdhci_msm_variant_ops mci_var_ops = {
->>   	.msm_readl_relaxed = sdhci_msm_mci_variant_readl_relaxed,
->>   	.msm_writel_relaxed = sdhci_msm_mci_variant_writel_relaxed,
->> @@ -1880,6 +2073,7 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
->>   	.write_w = sdhci_msm_writew,
->>   	.write_b = sdhci_msm_writeb,
->>   	.irq	= sdhci_msm_cqe_irq,
->> +	.set_power = sdhci_set_power_noreg,
->>   };
->>   
->>   static const struct sdhci_pltfm_data sdhci_msm_pdata = {
->> @@ -2072,6 +2266,10 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->>   	if (core_major == 1 && core_minor >= 0x49)
->>   		msm_host->updated_ddr_cfg = true;
->>   
->> +	ret = sdhci_msm_register_vreg(msm_host);
->> +	if (ret)
->> +		goto clk_disable;
->> +
->>   	/*
->>   	 * Power on reset state may trigger power irq if previous status of
->>   	 * PWRCTL was either BUS_ON or IO_HIGH_V. So before enabling pwr irq
->> @@ -2116,6 +2314,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->>   					 MSM_MMC_AUTOSUSPEND_DELAY_MS);
->>   	pm_runtime_use_autosuspend(&pdev->dev);
->>   
->> +	host->mmc_host_ops.start_signal_voltage_switch =
->> +		sdhci_msm_start_signal_voltage_switch;
->>   	host->mmc_host_ops.execute_tuning = sdhci_msm_execute_tuning;
->>   	if (of_property_read_bool(node, "supports-cqe"))
->>   		ret = sdhci_msm_cqe_add_host(host, pdev);
->> @@ -2123,7 +2323,6 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->>   		ret = sdhci_add_host(host);
->>   	if (ret)
->>   		goto pm_runtime_disable;
->> -	sdhci_msm_set_regulator_caps(msm_host);
->>   
->>   	pm_runtime_mark_last_busy(&pdev->dev);
->>   	pm_runtime_put_autosuspend(&pdev->dev);
->> -- 
->> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
->>
+--4SFOXa2GPu3tIq4H--
