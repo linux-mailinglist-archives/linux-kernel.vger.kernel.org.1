@@ -2,126 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4063F1DB06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A3F1DB077
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgETKlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgETKlR (ORCPT
+        id S1726791AbgETKoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:44:54 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:48308 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETKow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:41:17 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE97C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:41:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u35so1237672pgk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Vu4oMQkSuoGOXfFHpOqFu4wgCH5lCjTUemxJNi8wieQ=;
-        b=UhlRLXYYEATpth6j1TeIipbgC/1L2D7NAaUOXXURlOHPJLah1s/8sUAoOVUDVuS01c
-         A3qQfCauN38n/MizGoFoUKQ8dcXZLgyGaJJS0iSq4GnK9Ppx9ZqHnvcmoypUiw6WJ+KP
-         syH9nZTcYVzfQJb9CNNxUcsuelHIm6RyxF78uPDIdTjwEVGUPOdqdoWpwCKe6peFWs7z
-         ANAcLGlyaQhg1Jy/Nbbq12ZAFILiKn8/1g1gDk0vmmoZhbVZqLyd9iGsUY1DidR3lwci
-         19Dwm7b+ku5B+5xT6WRw+LKqfaXJAH9W7EQuWKFEtCNXewO9mX+0TOkZqaOqbc59iYtB
-         Rw/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Vu4oMQkSuoGOXfFHpOqFu4wgCH5lCjTUemxJNi8wieQ=;
-        b=d9Z26TF6uYr2HQ+rWc79sRLqboKSRLYDJ/+so09VHbc1iIWn+f8qaCeIRK/fTkdY6q
-         kAnIcZPijrEm8ELIifyCpdlyoS13t25VQF8sJF1Ax01jX3CyYm7uQJiMqCDe5tUSjzYX
-         7U6DIMVxA9Fxy0T1pFmBtjrGtzYGaucxX3wJ4pfNFj7LEcwPDECvkT0m4knnt1qCLPur
-         q/LlTRFek2tLOeY/APg5fBa0R5PHgcYxWEWLBjgxm3JeDNqBrwyAtkNzQe+MTj4tCK+S
-         QgYnID3I1Rcmg1oRP5OOHbkzN2TcdTGo7nEzuZHsIqkwEnYjfxb8Hf3JO1fC/1Fpxblm
-         PYqg==
-X-Gm-Message-State: AOAM530pEtxOd4EZ9bApbSLZiZfb5ZlnLaH/VnAzuxFI0UowjJywdxWa
-        xnLEWJZEWtvTuzeMLf6NXaMkog==
-X-Google-Smtp-Source: ABdhPJxQQ1pFsaJADTmPZi0u3cSTXP5ZH2PUQJLqTJo8h3/YhhA4y+qDzvJk/4aSW+rSWdBpctZ1vQ==
-X-Received: by 2002:a63:5864:: with SMTP id i36mr3454636pgm.231.1589971271703;
-        Wed, 20 May 2020 03:41:11 -0700 (PDT)
-Received: from localhost ([122.167.130.103])
-        by smtp.gmail.com with ESMTPSA id d20sm1710031pgl.72.2020.05.20.03.41.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 May 2020 03:41:10 -0700 (PDT)
-Date:   Wed, 20 May 2020 16:11:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
-        Thanu.Rangarajan@arm.com, Sudeep Holla <Sudeep.Holla@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 1/2] cpufreq: change '.set_boost' to act on only
- one policy
-Message-ID: <20200520104109.b7vrp7stnyopmwr6@vireshk-i7>
-References: <1589888489-13828-1-git-send-email-wangxiongfeng2@huawei.com>
- <1589888489-13828-2-git-send-email-wangxiongfeng2@huawei.com>
- <20200520045911.amww3nm3e7cezcbf@vireshk-i7>
- <CAJZ5v0gooW-qN0s03rU9ksxsNvxU4ZSZgXGSGaEcg-s16TnvUw@mail.gmail.com>
+        Wed, 20 May 2020 06:44:52 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200520104449euoutp015d4f975969ddb3980840e7e9323d320c~QtqVaNobS2434624346euoutp01H;
+        Wed, 20 May 2020 10:44:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200520104449euoutp015d4f975969ddb3980840e7e9323d320c~QtqVaNobS2434624346euoutp01H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1589971489;
+        bh=6CPRq4ULqK4ssuhc8hx4tHsC9pvXqnG/nhCQu807Mtk=;
+        h=From:To:Cc:Subject:In-Reply-To:Date:References:From;
+        b=lT0Mu8TQU3QCwLx2oV5ASGQJ3uKAscQvHrBQSsj0MR4yRsBXvPJbfWuX43I87MgBk
+         m+sNlwdWS7YwHp+PLLu0XX4l7Te3dJvJAYDwAkgzIfrWT5a9H04jKLQFJkFL/OdiQC
+         QkSn31bItydkK67cFhQmVASPbWJWhjaEqQQ3HTxY=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200520104449eucas1p1f58225b60dd7909e0c145619450697ae~QtqVABDTY1237912379eucas1p19;
+        Wed, 20 May 2020 10:44:49 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 95.24.60698.12A05CE5; Wed, 20
+        May 2020 11:44:49 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200520104448eucas1p122e9a8ed84d5276a1b796e10ef5e1964~QtqUjLTwx2400824008eucas1p19;
+        Wed, 20 May 2020 10:44:48 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200520104448eusmtrp288e8ca9495b3f2c380cd4d434cf8a5f3~QtqUiYFfW3067630676eusmtrp2T;
+        Wed, 20 May 2020 10:44:48 +0000 (GMT)
+X-AuditID: cbfec7f5-a0fff7000001ed1a-86-5ec50a2171d9
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id D7.F9.08375.02A05CE5; Wed, 20
+        May 2020 11:44:48 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200520104448eusmtip17a58f4a9cc7f66dd304079cdd8c37cee~QtqUYUA4n2150821508eusmtip1I;
+        Wed, 20 May 2020 10:44:48 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v2 1/2] hwrng: iproc-rng200 - Set the quality value
+In-Reply-To: <15745285.MnsZKaK4VV@tauon.chronox.de> (Stephan Mueller's
+        message of "Wed, 20 May 2020 11:18:32 +0200")
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Wed, 20 May 2020 12:44:33 +0200
+Message-ID: <dleftjh7wa3my6.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gooW-qN0s03rU9ksxsNvxU4ZSZgXGSGaEcg-s16TnvUw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SaUwTURDH87rb7dJYshTUERW1AY0aQcXoMx7RaHSJmEjCBzSxUnUDBFqg
+        BTwTDyKHCGLxoqJUMJSU07VWMF7BAy9Y5DB4olijtIp4JYp4tF1M+PabN/Of+c/k0YSyggqk
+        E3RpnF6nSVJRctJ+56cwa4r8tnr2icxR+LfxjgyfP1knxTX5t0ks5FoIPNh/S4Yzy+sonOec
+        gA+/cRFYEOplmH/zWIp7Xv6U4I7LJRQ+KVyTYHORQ4rN9gKE3xZfoHB/lQPhYw9qSNx8N5dY
+        5s/+GjQi1tTTQrFfOjslbKPphYwt569TrP1GCMtbcyn2+ulqGXvh3B62wGZFbEFfPWLrbF0k
+        u/9+tpT9yget890gX7yVS0rI4PRhS2Pl8VVl7SjFFbT90vmUvej1uIPIhwZmHvSbh6iDSE4r
+        mUoEfe1HSDH4huDcq4Hh4CuC7C4j+i9pK+GRmLAg4J2CRAzeIcgTPrklNE0xoVBTE+MRBDDT
+        oSu71DuDYFqlMHSqnfAk/JnVcLa7gvSwD5MBQ88+eHk0sxBs73tkHiaZEHj7ZMDLCmYBPBUc
+        EpH94F6xw1tPMFooFj54HQHjoMGa1Ut4TACzEu51Bomu/cHZbJOJPAH+NpZKxJI9UGScL0oP
+        IbCX/CDFmkXwvHWQEmuWwztBLaIvdH/0E6f6gtF+YniQAnKylKIwGGoPXxluEgj5zsrhs7HQ
+        97jFa0DJZCH4XplaiCabRuxiGrGLyd2VcB+u7nKY+DwTKs66CJGXQG3tJ9KMpFY0lks3aOM4
+        Q7iO2xZq0GgN6bq40C3JWh65f+yDP83fG9C1oc1NiKGRapSiu/GmWinVZBh2aJtQsLtTb31V
+        Gwokdck6ThWgKHzfpFYqtmp27OT0yZv06UmcoQmNp0nVWEV4Wd9GJROnSeMSOS6F0//PSmif
+        wL0IzEfuN+RUJ7jYdsuuSWPW9qyLy4ox2Q6Ydn9OSosK57tuqZ2tUyIS5047Gp8zvtq1bL11
+        TkzRltqo55acxNi2A8URl2Ijj/MKv/U/stOjLzZ2tKWuebhw36Or0asjQqpWqKc6LZoA5/a5
+        YRPTolc1TB/IPbNrZWT5itgbeeN8yZbMBSrSEK+ZM4PQGzT/AH+j0Fi5AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0iTYRjHe/cdNq3F25z1tkpkWFTWp99M9xoaQURfF0mHG8m0hn5o6DbZ
+        t83qotIubNN0GUEuLcvU0nQ6RcsO5kxnJ2ZmkoVZHig1LIwusuPmCLr78fz/z5//A4+EkF2m
+        FJLDOiNv0GmylHQg+eS3e3hjaGB3SmTXUCT+VdIjxk0XHBSuP9NNYo+lhsBzMw/F+FSlg8YF
+        Uytx8dg0gT2eRjF2jg1SeOTtdxF+0V5G4wue+yJccW6cwhWtRQBPlDbTeKZuHODzT+pJ7O61
+        EFuDuB9zJYCzjzyjudmBARF32z4s5iqdHTTX+mA156y10FxH+U0x13ztBFfUUgu4oslGwDla
+        XpJc3uN8ivvqDNm9eD8TZ9CbjHxohl4wxiuTWKxi2FjMqDbFMmyUOnmzKloZsSUujc86bOYN
+        EVsOMRl1V/tB9nTIkbam7JPg/XIrCJAguAn1lTmBFQRKZLAKoJs/u2krkHgFBbpRnu73BKGf
+        g1baxzI4AZDbbfJZaMig+vpE31gO16GX+ZdpXwwB2yn0pmCQ8glBcAe68qqa9HEANCPL0zGR
+        P0eF8q7bgI+DYSxq+Tgi9jEJV6OJoS/zLIVq9NozLvLzEvSodHw+h4CZ6FvdB8IGoP0/yf6f
+        ZPfWI7ydHO0R/nE4qr4yTfg5HjU0fCYrAFUL5LxJ0KZrBZYRNFrBpEtnUvVaJ/A+RGvP9+Zb
+        oL9pnwtACVAukkbe7UqRURqzcFTrAmHemNHGuj6gIHV6Ha+US20fXSkyaZrm6DHeoD9oMGXx
+        ggtEe+85SyiCU/XeV9MZD7LRrBrHsuoodVQMVi6TnoadB2QwXWPkM3k+mzf82xNJAhQnwaqm
+        uP6uXSZX2ackOVMaP6UgckpSy8y1l17ERe99vnTBtsUxk1mf9zRutazLkZOuDQNtaxZ+yVix
+        PeF4SEt7+EUn3HeiN4bdeel64WxebrG5YdrdE1M42xtlW6vMdSQasneJCn91zP3prAm7d27F
+        +VzHHRVIqAoZLep7Z3QkF5aHKkkhQ8OuJwyC5i8OYmq8MgMAAA==
+X-CMS-MailID: 20200520104448eucas1p122e9a8ed84d5276a1b796e10ef5e1964
+X-Msg-Generator: CA
+X-RootMTR: 20200520104448eucas1p122e9a8ed84d5276a1b796e10ef5e1964
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200520104448eucas1p122e9a8ed84d5276a1b796e10ef5e1964
+References: <15745285.MnsZKaK4VV@tauon.chronox.de>
+        <CGME20200520104448eucas1p122e9a8ed84d5276a1b796e10ef5e1964@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-05-20, 12:36, Rafael J. Wysocki wrote:
-> On Wed, May 20, 2020 at 6:59 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 19-05-20, 19:41, Xiongfeng Wang wrote:
-> > > Macro 'for_each_active_policy()' is defined internally. To avoid some
-> > > cpufreq driver needing this macro to iterate over all the policies in
-> > > '.set_boost' callback, we redefine '.set_boost' to act on only one
-> > > policy and pass the policy as an argument.
-> > > 'cpufreq_boost_trigger_state()' iterate over all the policies to set
-> > > boost for the system. This is preparation for adding SW BOOST support
-> > > for CPPC.
-> > >
-> > > Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> > > ---
-> > >  drivers/cpufreq/acpi-cpufreq.c |  4 ++--
-> > >  drivers/cpufreq/cpufreq.c      | 53 +++++++++++++++++++++---------------------
-> > >  include/linux/cpufreq.h        |  2 +-
-> > >  3 files changed, 30 insertions(+), 29 deletions(-)
-> > >
-> > > diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> > > index 289e8ce..b0a9eb5 100644
-> > > --- a/drivers/cpufreq/acpi-cpufreq.c
-> > > +++ b/drivers/cpufreq/acpi-cpufreq.c
-> > > @@ -126,7 +126,7 @@ static void boost_set_msr_each(void *p_en)
-> > >       boost_set_msr(enable);
-> > >  }
-> > >
-> > > -static int set_boost(int val)
-> > > +static int set_boost(struct cpufreq_policy *policy, int val)
-> > >  {
-> > >       get_online_cpus();
-> > >       on_each_cpu(boost_set_msr_each, (void *)(long)val, 1);
-> >
-> > I think (Rafael can confirm), that you need to update this as well. You don't
-> > need to run for each cpu now, but for each CPU in the policy.
-> 
-> Right, the caller will iterate over policies.
-> 
-> Accordingly, the CPU hotplug locking needs to go to the caller too.
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, why is that required ? Can't we call boost_set_msr_each() for all
-CPUs of a policy under the locks ? And then let the next call take the
-lock again ? I thought we don't want a CPU to disappear while we are
-trying to run boost_set_msr_each() for it (or miss one that just got
-added) and that should work with the locks being there in this routine.
+It was <2020-05-20 =C5=9Bro 11:18>, when Stephan Mueller wrote:
+> Am Mittwoch, 20. Mai 2020, 11:10:32 CEST schrieb Lukasz Stelmach:
+>> It was <2020-05-20 =C5=9Bro 08:23>, when Stephan Mueller wrote:
+>>> Am Dienstag, 19. Mai 2020, 23:25:51 CEST schrieb =C5=81ukasz Stelmach:
+>>>> The value was estimaded with ea_iid[1] using on 10485760 bytes read
+>>>> from the RNG via /dev/hwrng. The min-entropy value calculated using
+>>>> the most common value estimate (NIST SP 800-90P[2], section 6.3.1)
+>>>> was 7.964464.
+>>>=20
+>>> I am sorry, but I think I did not make myself clear: testing random
+>>> numbers post-processing with the statistical tools does NOT give any
+>>> idea about the entropy rate. Thus, all that was calculated is the
+>>> proper implementation of the post-processing operation and not the
+>>> actual noise source.
+>>>=20
+>>> What needs to happen is that we need access to raw, unconditioned
+>>> data from the noise source that is analyzed with the statistical
+>>> methods.
+>>=20
+>> I did understand you and I assure you the data I tested were obtained
+>> directly from RNGs. As I pointed before[1], that is how /dev/hwrng
+>> works[2].
+>
+> I understand that /dev/hwrng pulls the data straight from the
+> hardware. But the data from the hardware usually is not obtained
+> straight from the noise source.
+>
+> Typically you have a noise source (e.g. a ring oscillator) whose data
+> is digitized then fed into a compression function like an LFSR or a
+> hash. Then a cryptographic operation like a CBC-MAC, hash or even a
+> DRBG is applied to that data when the caller wants to have random
+> numbers.
 
--- 
-viresh
+I do understand your point (but not entirely, see below). [opinion]
+However, I am really not sure that this is a "typical" setting for a HW
+RNG, at least not among RNGs supported by Linux. Otherwise there would
+be no hw_random framework and no rngd(8) which are suppsed to
+post-process imperfectly random data from HW. [/opinion]
+
+> In order to estimate entropy, we need the raw unconditioned data from
+> the, say, ring oscillator and not from the (cryptographic) output
+> operation.
+
+Can you tell, why it matters in this case? If I understand correctly,
+the quality field describes not the randomness created by the noise
+generator but the one delivered by the driver to other software
+components.
+
+> That said, the illustrated example is typical for hardware RNGs. Yet
+> it is never guaranteed to work that way. Thus, if you can point to
+> architecture documentation of your specific hardware RNGs showing that
+> the data read from the hardware is pure unconditioned noise data, then
+> I have no objections to the patch.
+
+I can tell for sure that this is the case for exynos-trng[1]. There is a
+post-processor which I have forgotten about since writing the driver,
+because from the very beginning I didn't intend to use it. I knew there
+is the software framework for post-processing and simply didn't bother.
+
+With regards to iproc-rng200 I cannot be sure.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/char/hw_random/exynos-trng.c?h=3Dv5.6#n100
+
+Kind regards,
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl7FChEACgkQsK4enJil
+gBCsvQgAhq2NdaCOe4RS5Cfyu6s7rYJIijngIdzcEg3V+VmN2vniWJYNobIUL8S6
+et4cCzQKSbxw/FgDCmZKpffRz7Md+98M4hpkWCfuhqhXj8kXV8e5Oa7QAyMo6H+s
+kpATmCe9Jkbx8K4ufD5bDnON6kv8dP1iJMOdkoiIN7F/HvTbuIgW33XoP+n8IU7o
+QRuNwK+C8IhgOppNU6fPYLUcBVtIvW4wplMc5mEZQNNIsRSPH7pNgK8X6BihA3eR
+j2BsGU3dv7tfVvVTV7EZ/k1lmFWwd3lusLirmrHly9Hodsfj4AWmLRorgnCBCM7D
+gGwIZrzGXyx9M54bg+LoADhurlMakQ==
+=CU9M
+-----END PGP SIGNATURE-----
+--=-=-=--
