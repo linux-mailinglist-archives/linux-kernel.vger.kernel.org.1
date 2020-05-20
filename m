@@ -2,122 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514F61DC107
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA5D1DC110
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgETVNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:13:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35234 "EHLO mail.kernel.org"
+        id S1728469AbgETVNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 17:13:52 -0400
+Received: from muru.com ([72.249.23.125]:55326 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbgETVNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:13:34 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 427DE207E8;
-        Wed, 20 May 2020 21:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590009213;
-        bh=h8fC05BVgyXTMfZW2gMKUk11RB5bo0QHQjDfQi04XJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dLycay3TtfSKG6S+RUYkMr5TyZINOrM1gzs+mppVl3KTUH4qBT0od3ZDKLxCqudSn
-         j+CHKmFa67jqXhORNvNzfJTwVSqX9u5i4LCPe6RCKwrBGBPtKZyOJDxRTiR+9S9JkY
-         NkDQD4ZMU3j5rFn8gH/1XrwPuuo+YJ/krkEIJwp4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4BF3540AFD; Wed, 20 May 2020 18:13:31 -0300 (-03)
-Date:   Wed, 20 May 2020 18:13:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/19] perf ftrace: add option -d/--delay to delay tracing
-Message-ID: <20200520211331.GA3898@kernel.org>
-References: <20200510150628.16610-1-changbin.du@gmail.com>
- <20200510150628.16610-18-changbin.du@gmail.com>
+        id S1728439AbgETVNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:13:51 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 2F99D8108;
+        Wed, 20 May 2020 21:14:40 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     "Andrew F . Davis" <afd@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH 4/6] soc: ti: omap-prm: Configure omap4 and 5 l4_abe power domain
+Date:   Wed, 20 May 2020 14:13:32 -0700
+Message-Id: <20200520211334.61814-5-tony@atomide.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200520211334.61814-1-tony@atomide.com>
+References: <20200520211334.61814-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510150628.16610-18-changbin.du@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, May 10, 2020 at 11:06:26PM +0800, Changbin Du escreveu:
-> This adds an option '-d/--delay' to allow us to start tracing some
-> times later after workload is launched.
+Let's add omap4 and 5 l4_abe interconnect instance for the power
+domain.
 
-[acme@five perf]$ perf record -h delay
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/soc/ti/omap_prm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -D, --delay <n>       ms to wait before starting measurement after program start
-
-[acme@five perf]$
+diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
+--- a/drivers/soc/ti/omap_prm.c
++++ b/drivers/soc/ti/omap_prm.c
+@@ -145,6 +145,10 @@ static const struct omap_rst_map rst_map_012[] = {
  
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  tools/perf/builtin-ftrace.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 8d04e5afe2d3..d376b37c53fc 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -49,6 +49,7 @@ struct perf_ftrace {
->  	bool			trace_children;
->  	unsigned		buffer_size_kb;
->  	bool			no_pager;
-> +	unsigned		initial_delay;
->  };
->  
->  struct filter_entry {
-> @@ -617,13 +618,23 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  	/* display column headers */
->  	read_tracing_file_to_stdout("trace");
->  
-> -	if (write_tracing_file("tracing_on", "1") < 0) {
-> -		pr_err("can't enable tracing\n");
-> -		goto out_close_fd;
-> +	if (!ftrace->initial_delay) {
-> +		if (write_tracing_file("tracing_on", "1") < 0) {
-> +			pr_err("can't enable tracing\n");
-> +			goto out_close_fd;
-> +		}
->  	}
->  
->  	perf_evlist__start_workload(ftrace->evlist);
->  
-> +	if (ftrace->initial_delay) {
-> +		usleep(ftrace->initial_delay * 1000);
-> +		if (write_tracing_file("tracing_on", "1") < 0) {
-> +			pr_err("can't enable tracing\n");
-> +			goto out_close_fd;
-> +		}
-> +	}
-> +
->  	while (!done) {
->  		if (poll(&pollfd, 1, -1) < 0)
->  			break;
-> @@ -747,6 +758,8 @@ int cmd_ftrace(int argc, const char **argv)
->  		     "size of per cpu buffer in kb"),
->  	OPT_BOOLEAN('P', "no-pager", &ftrace.no_pager,
->  		    "Do not use pager"),
-> +	OPT_UINTEGER('d', "delay", &ftrace.initial_delay,
-> +		     "Wait <n> ms before tracing"),
->  	OPT_END()
->  	};
->  
-> -- 
-> 2.25.1
-> 
-
+ static const struct omap_prm_data omap4_prm_data[] = {
+ 	{ .name = "tesla", .base = 0x4a306400, .rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_01 },
++	{
++		.name = "abe", .base = 0x4a306500,
++		.pwrstctrl = 0, .pwrstst = 0x4, .dmap = &omap_prm_all,
++	},
+ 	{ .name = "core", .base = 0x4a306700, .rstctrl = 0x210, .rstst = 0x214, .clkdm_name = "ducati", .rstmap = rst_map_012 },
+ 	{ .name = "ivahd", .base = 0x4a306f00, .rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_012 },
+ 	{ .name = "device", .base = 0x4a307b00, .rstctrl = 0x0, .rstst = 0x4, .rstmap = rst_map_01, .flags = OMAP_PRM_HAS_RSTCTRL | OMAP_PRM_HAS_NO_CLKDM },
+@@ -153,6 +157,10 @@ static const struct omap_prm_data omap4_prm_data[] = {
+ 
+ static const struct omap_prm_data omap5_prm_data[] = {
+ 	{ .name = "dsp", .base = 0x4ae06400, .rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_01 },
++	{
++		.name = "abe", .base = 0x4ae06500,
++		.pwrstctrl = 0, .pwrstst = 0x4, .dmap = &omap_prm_nooff,
++	},
+ 	{ .name = "core", .base = 0x4ae06700, .rstctrl = 0x210, .rstst = 0x214, .clkdm_name = "ipu", .rstmap = rst_map_012 },
+ 	{ .name = "iva", .base = 0x4ae07200, .rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_012 },
+ 	{ .name = "device", .base = 0x4ae07c00, .rstctrl = 0x0, .rstst = 0x4, .rstmap = rst_map_01, .flags = OMAP_PRM_HAS_RSTCTRL | OMAP_PRM_HAS_NO_CLKDM },
 -- 
-
-- Arnaldo
+2.26.2
