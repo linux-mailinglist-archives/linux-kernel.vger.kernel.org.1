@@ -2,75 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE241DA9F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4BA1DA9F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgETFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 01:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
+        id S1726620AbgETFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 01:36:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:58244 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbgETFcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 01:32:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3AA4206C3;
-        Wed, 20 May 2020 05:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589952768;
-        bh=7tEu4O1iMPzJPaYi3or7v6LTpc9n4YdaGJ9B5P21rKA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOnX2eEtKR8opNi+mBlx3JMw2exVc736Qy8loEWgXm3kMJbk+Wh5KjafcOlHxkrvO
-         YsCrSNJ6NUfqVOPrwLbgGBoKcZzs75niXIPWWnicZ4QMf4m3db06WTOrPpvvjllBna
-         xE11nJe3i4to4HoSi6Ppd4IIdogLyYO403kD+g/0=
-Date:   Wed, 20 May 2020 07:32:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        manivannan.sadhasivam@linaro.org, bjorn.andersson@linaro.org,
-        wufan@codeaurora.org, pratanan@codeaurora.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/8] Qualcomm Cloud AI 100 driver
-Message-ID: <20200520053245.GA2154372@kroah.com>
-References: <1589465266-20056-1-git-send-email-jhugo@codeaurora.org>
- <CAPM=9txXskVu_yD3DNuR0HgSUsE2v1Pv98dm=AHGvv_z2XKTAQ@mail.gmail.com>
- <93238096-5861-c140-b94f-6137977c3d65@codeaurora.org>
- <20200519174120.GC1158284@kroah.com>
- <ce0e69ef-116c-df95-c136-d4714e02e96e@codeaurora.org>
- <20200519181256.GA1215993@kroah.com>
- <f7ea166b-7ccb-22e2-7db0-bfd255ba0134@codeaurora.org>
+        id S1726309AbgETFgo (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 01:36:44 -0400
+IronPort-SDR: 6QE4SB5lb+7MX0ZJbG35mFZ9Zh9eGY46aS790F4EYM8LiAQOrsDlBNhrqQmkPdKbwer1EvBMkO
+ XEEfDTRpzrdw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 22:36:43 -0700
+IronPort-SDR: 87gc2lov21YAmGt3hHVbONHx3bH/K5qKm/iMkLTJkaMCftMIYpxn4KPqrUtVoJ19OBanL+diPi
+ Yn+sAvLNj6bA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
+   d="scan'208";a="373965863"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by fmsmga001.fm.intel.com with ESMTP; 19 May 2020 22:36:41 -0700
+Subject: Re: [PATCH] perf evsel: Get group fd from CPU0 for system wide event
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200430013451.17196-1-yao.jin@linux.intel.com>
+ <20200501102337.GA1761222@krava>
+ <b799b66a-42aa-6c55-647e-7b718473632a@linux.intel.com>
+ <20200505000352.GH1916255@krava>
+ <3e813227-4954-0d4b-bc7a-ca272b18454a@linux.intel.com>
+ <68e53765-6f45-9483-7543-0a2f961cdc62@linux.intel.com>
+ <20200515083312.GB3511648@krava>
+ <5fe2efe4-f8a3-04ef-f5e8-7b9c433d4142@linux.intel.com>
+Message-ID: <82da23c8-94dd-4096-a987-a17087e2642f@linux.intel.com>
+Date:   Wed, 20 May 2020 13:36:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7ea166b-7ccb-22e2-7db0-bfd255ba0134@codeaurora.org>
+In-Reply-To: <5fe2efe4-f8a3-04ef-f5e8-7b9c433d4142@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 12:26:01PM -0600, Jeffrey Hugo wrote:
-> On 5/19/2020 12:12 PM, Greg Kroah-Hartman wrote:
-> > > > Especially given the copyright owner of this code, that would be just
-> > > > crazy and foolish to not have open userspace code as well.  Firmware
-> > > > would also be wonderful as well, go poke your lawyers about derivative
-> > > > work issues and the like for fun conversations :)
-> > > 
-> > > Those are the kind of conversations I try to avoid  :)
-> > 
-> > Sounds like you are going to now have to have them, have fun!
+Hi Jiri,
+
+On 5/18/2020 11:28 AM, Jin, Yao wrote:
+> Hi Jiri,
 > 
-> Honestly, I fail to see where you think there is a derivative work, so, I'm
-> not really sure what discussions I need to revisit with our lawyers.
+> On 5/15/2020 4:33 PM, Jiri Olsa wrote:
+>> On Fri, May 15, 2020 at 02:04:57PM +0800, Jin, Yao wrote:
+>>
+>> SNIP
+>>
+>>> I think I get the root cause. That should be a serious bug in get_group_fd, access violation!
+>>>
+>>> For a group mixed with system-wide event and per-core event and the group
+>>> leader is system-wide event, access violation will happen.
+>>>
+>>> perf_evsel__alloc_fd allocates one FD member for system-wide event (only FD(evsel, 0, 0) is valid).
+>>>
+>>> But for per core event, perf_evsel__alloc_fd allocates N FD members (N =
+>>> ncpus). For example, for ncpus is 8, FD(evsel, 0, 0) to FD(evsel, 7, 0) are
+>>> valid.
+>>>
+>>> get_group_fd(struct evsel *evsel, int cpu, int thread)
+>>> {
+>>>      struct evsel *leader = evsel->leader;
+>>>
+>>>      fd = FD(leader, cpu, thread);    /* access violation may happen here */
+>>> }
+>>>
+>>> If leader is system-wide event, only the FD(leader, 0, 0) is valid.
+>>>
+>>> When get_group_fd accesses FD(leader, 1, 0), access violation happens.
+>>>
+>>> My fix is:
+>>>
+>>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+>>> index 28683b0eb738..db05b8a1e1a8 100644
+>>> --- a/tools/perf/util/evsel.c
+>>> +++ b/tools/perf/util/evsel.c
+>>> @@ -1440,6 +1440,9 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
+>>>          if (evsel__is_group_leader(evsel))
+>>>                  return -1;
+>>>
+>>> +       if (leader->core.system_wide && !evsel->core.system_wide)
+>>> +               return -2;
+>>
+>> so this effectively stops grouping system_wide events with others,
+>> and I think it's correct, how about events that differ in cpumask?
+>>
+> 
+> My understanding for the events that differ in cpumaks is, if the leader's cpumask is not fully 
+> matched with the evsel's cpumask then we stop the grouping. Is this understanding correct?
+> 
+> I have done some tests and get some conclusions:
+> 
+> 1. If the group is mixed with core and uncore events, the system_wide checking can distinguish them.
+> 
+> 2. If the group is mixed with core and uncore events and "-a" is specified, the system_wide for core 
+> event is also false. So system_wide checking can distinguish them too
+> 
+> 3. In my test, the issue only occurs when we collect the metric which is mixed with uncore event and 
+> core event, so maybe checking the system_wide is OK.
+> 
+>> should we perhaps ensure this before we call open? go throught all
+>> groups and check they are on the same cpus?
+>>
+> 
+> The issue doesn't happen at most of the time (only for the metric consisting of uncore event and 
+> core event), so fallback to stop grouping if call open is failed looks reasonable.
+> 
+> Thanks
+> Jin Yao
+> 
+>> thanks,
+>> jirka
+>>
+>>
+>>> +
+>>>          /*
+>>>           * Leader must be already processed/open,
+>>>           * if not it's a bug.
+>>> @@ -1665,6 +1668,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>>>                                  pid = perf_thread_map__pid(threads, thread);
+>>>
+>>>                          group_fd = get_group_fd(evsel, cpu, thread);
+>>> +                       if (group_fd == -2) {
+>>> +                               errno = EINVAL;
+>>> +                               err = -EINVAL;
+>>> +                               goto out_close;
+>>> +                       }
+>>>   retry_open:
+>>>                          test_attr__ready();
+>>>
+>>> It enables the perf_evlist__reset_weak_group. And in the second_pass (in
+>>> __run_perf_stat), the events will be opened successfully.
+>>>
+>>> I have tested OK for this fix on cascadelakex.
+>>>
+>>> Thanks
+>>> Jin Yao
+>>>
+>>
 
-Given that we are not lawyers, why don't we leave those types of
-discussions up to the lawyers, and not depend on people like me and you
-for that?  :)
+Is this fix OK?
 
-If your lawyers think that the code division is fine as-is, that's
-great, I'd be glad to review it if they add their signed-off-by: on it
-verifying that the api divide is approved by them.
+Another thing is, do you think if we need to rename "evsel->core.system_wide" to 
+"evsel->core.has_cpumask".
 
-thanks!
+The "system_wide" may misleading.
 
-greg k-h
+evsel->core.system_wide = pmu ? pmu->is_uncore : false;
+
+"pmu->is_uncore" is true if PMU has a "cpumask". But it's not just uncore PMU which has cpumask. 
+Some other PMUs, e.g. cstate_pkg, also have cpumask. So for this case, "has_cpumask" should be better.
+
+But I'm not sure if the change is OK for other case, e.g. PT, which also uses 
+"evsel->core.system_wide".
+
+Thanks
+Jin Yao
