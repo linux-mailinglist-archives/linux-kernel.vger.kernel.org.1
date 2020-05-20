@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0BF1DB1ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D2A1DB1D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgETLiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:38:24 -0400
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:56676 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgETLiX (ORCPT
+        id S1726757AbgETLdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETLdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:38:23 -0400
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: 84iK1yZ81elW9v6wX/8JlsUWvCrnxYXB8qmY4V2t2ZFfInudAu588lA+HkkADnrmFrkn3CTkiS
- 0gOzPd2PmM+IQyhfSspQzytUSXSPl1R6fFzEjfJYIHoKhL+0ZVUGQPg7BmE/5cx55FcAnYLwcA
- S6d4DPKu9NCN4S+yKrYmGZ5VDFcFQGgMb6nt0wsFcd81EotnQmW6hv1YUVQRtKZbOzisakRA4T
- sK3h/+CPAfBThI/N9xLyyra2hwyDh1vqcIxOF5rtlu5fFCft/1ivdqT8J9e38crYFg42pEkxwJ
- 6q8=
-X-SBRS: 2.7
-X-MesageID: 17967281
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.73,413,1583211600"; 
-   d="scan'208";a="17967281"
-Subject: Re: [patch V6 10/37] x86/entry: Switch XEN/PV hypercall entry to
- IDTENTRY
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Joel Fernandes" <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20200515234547.710474468@linutronix.de>
- <20200515235125.425810667@linutronix.de>
- <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
- <87imgr7nwp.fsf@nanos.tec.linutronix.de>
- <CALCETrW4BxfTVzv8mXntNXiAPnKxqdMEv7djUknGZcrno2WJHg@mail.gmail.com>
- <3dd0e972-1b80-cd6b-6490-5b745ada68c8@suse.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <a6c3b5b5-89d3-2d05-47eb-8d4caf34fe0a@citrix.com>
-Date:   Wed, 20 May 2020 12:31:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 May 2020 07:33:38 -0400
+Received: from mail-vs1-xe61.google.com (mail-vs1-xe61.google.com [IPv6:2607:f8b0:4864:20::e61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0378AC05BD43
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 04:33:36 -0700 (PDT)
+Received: by mail-vs1-xe61.google.com with SMTP id u79so1613238vsu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 04:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=footclan-ninja.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/ac2SaHHPe23aQybxirdwZDUTCApkczJdZwYl+fN8E=;
+        b=C07mdIPZd8txhfFv6idlqagpEMKGITPX6yQo9EBE6MLBAPN/AjzG3TKiltGTpmC32/
+         Yr79nmOW8lYtfbm3M1ZRHU11lRfXDlCM65Z86vSEZcVibOPl+nCTtKBgh9F/1+2Xl78P
+         EZWCoXWqWqsCbzq25V/GQndnXt+hvNeqnvQHSY+2Ts6zDyjmBNNtSl0s9IlAt8WnBTFN
+         PYisqSi6kG1vBmPrI6K6ybh6ePr517FjmyS0aTlIr+wo774U3opWBls3Bum4AzzwXpJn
+         u3oCA1p2eJzUo0FP1Z/rqUy5bZelt0zEP1Tpgo1YjGiz1bpHjG+38Npdsa2aJv8oTzM/
+         CEBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/ac2SaHHPe23aQybxirdwZDUTCApkczJdZwYl+fN8E=;
+        b=Et3IfvUFZ/+RPwuVpQtovDORhKr0Y3dco0sk/qCsEwt1yxxavKVDKQFH6thOMOzpMX
+         ERq7RLpKM7cFPAhTJ+tezBExVwB4JOmXiGdWiup/oOVj+RuMJNEAV5VmJsE02pktG6q5
+         GOyGsArzwWwo6Ov5JAc+5XmCYChnR7O/H4ee1HeopotpPgbxY9txx5E8sWnRh4knpAD3
+         9GY+RGmwq57mu4XTEri1hy+HMFyAPcIy96XT6+J2NHBhqDwuAH5GnkU9PgrVC7VXm4lR
+         3KMGZVRtlW7XHXPj7F5DPyNTl3LA0JPDraSNHUKOtGczrNjNmvEEVI4O73788Yo+kvzn
+         TPlQ==
+X-Gm-Message-State: AOAM531zgZF2Sy2vs3QP3Y4hlUiOAoxyiWiaoy+N2exLIfFvIlB+pn/K
+        7flwSP/4oFVy/6gFAc92ce13oaYxtPXSu7yclftpLRlOO+U4Rg==
+X-Google-Smtp-Source: ABdhPJwAb+JstEdpvktOlEmxSiHdZ284xxf3MlUVpKackA/Bois9z0hs1Tsfiq0uP62wU/JT5NJM7XzpVpJ3
+X-Received: by 2002:a05:6102:1043:: with SMTP id h3mr3047743vsq.229.1589974416017;
+        Wed, 20 May 2020 04:33:36 -0700 (PDT)
+Received: from localhost.localdomain (pa49-180-69-106.pa.nsw.optusnet.com.au. [49.180.69.106])
+        by smtp-relay.gmail.com with ESMTPS id h13sm217126vka.13.2020.05.20.04.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 04:33:36 -0700 (PDT)
+X-Relaying-Domain: footclan.ninja
+From:   Matt Jolly <Kangie@footclan.ninja>
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Matt Jolly <Kangie@footclan.ninja>
+Subject: [PATCH] USB: serial: qcserial: Add DW5816e QDL support
+Date:   Wed, 20 May 2020 21:32:58 +1000
+Message-Id: <20200520113258.5496-1-Kangie@footclan.ninja>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <3dd0e972-1b80-cd6b-6490-5b745ada68c8@suse.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: FTLPEX02CAS03.citrite.net (10.13.99.94) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2020 09:06, Jürgen Groß wrote:
-> On 19.05.20 21:44, Andy Lutomirski wrote:
->> On Tue, May 19, 2020 at 11:58 AM Thomas Gleixner <tglx@linutronix.de>
->> wrote:
->>>
->>> Andy Lutomirski <luto@kernel.org> writes:
->>>> B: Turn this thing around.  Specifically, in the one and only case we
->>>> care about, we know pretty much exactly what context we got this entry
->>>> in: we're running in a schedulable context doing an explicitly
->>>> preemptible hypercall, and we have RIP pointing at a SYSCALL
->>>> instruction (presumably, but we shouldn't bet on it) in the hypercall
->>>> page.  Ideally we would change the Xen PV ABI so the hypercall would
->>>> return something like EAGAIN instead of auto-restarting and we could
->>>> ditch this mess entirely.  But the ABI seems to be set in stone or at
->>>> least in molasses, so how about just:
->>>>
->>>> idt_entry(exit(regs));
->>>> if (inhcall && need_resched())
->>>>    schedule();
->>>
->>> Which brings you into the situation that you call schedule() from the
->>> point where we just moved it out. If we would go there we'd need to
->>> ensure that RCU is watching as well. idtentry_exit() might have it
->>> turned off ....
->>
->> I don't think this is possible.  Once you untangle all the wrappers,
->> the call sites are effectively:
->>
->> __this_cpu_write(xen_in_preemptible_hcall, true);
->> CALL_NOSPEC to the hypercall page
->> __this_cpu_write(xen_in_preemptible_hcall, false);
->>
->> I think IF=1 when this happens, but I won't swear to it.  RCU had
->> better be watching.
->
-> Preemptible hypercalls are never done with interrupts off. To be more
-> precise: they are only ever done during ioctl() processing.
->
-> I can add an ASSERT() to xen_preemptible_hcall_begin() if you want.
->
->>
->> As I understand it, the one and only situation Xen wants to handle is
->> that an interrupt gets delivered during the hypercall.  The hypervisor
->> is too clever for its own good and deals with this by rewinding RIP to
->> the beginning of whatever instruction did the hypercall and delivers
->> the interrupt, and we end up in this handler.  So, if this happens,
->> the idea is to not only handle the interrupt but to schedule if
->> scheduling would be useful.
->
-> Correct. More precise: the hypercalls in question can last very long
-> (up to several seconds) and so they need to be interruptible. As said
-> before: the interface how this is done is horrible. :-(
+Add support for Dell Wireless 5816e Download Mode (AKA boot & hold mode /
+QDL download mode) to drivers/usb/serial/qcserial.c
 
-Forget seconds.  DOMCTL_domain_kill gets to ~14 minutes for a 2TB domain.
+This is required to update device firmware.
 
-The reason for the existing logic is to be able voluntarily preempt.
+Signed-off-by: Matt Jolly <Kangie@footclan.ninja>
+---
+ drivers/usb/serial/qcserial.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-It doesn't need to remain the way it is, but some adequate form of
-pre-emption does need to stay.
+diff --git a/drivers/usb/serial/qcserial.c b/drivers/usb/serial/qcserial.c
+index ce0401d3137f..d80ccf58a638 100644
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -173,6 +173,7 @@ static const struct usb_device_id id_table[] = {
+ 	{DEVICE_SWI(0x413c, 0x81b3)},	/* Dell Wireless 5809e Gobi(TM) 4G LTE Mobile Broadband Card (rev3) */
+ 	{DEVICE_SWI(0x413c, 0x81b5)},	/* Dell Wireless 5811e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81b6)},	/* Dell Wireless 5811e QDL */
++	{DEVICE_SWI(0x413c, 0x81cb)),	/* Dell Wireless 5816e QDL */
+ 	{DEVICE_SWI(0x413c, 0x81cc)},	/* Dell Wireless 5816e */
+ 	{DEVICE_SWI(0x413c, 0x81cf)},   /* Dell Wireless 5819 */
+ 	{DEVICE_SWI(0x413c, 0x81d0)},   /* Dell Wireless 5819 */
+-- 
+2.26.2
 
-~Andrew
