@@ -2,86 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DB1DB5A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD7B1DB5CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgETNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:52:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:56804 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:52:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8AB8930E;
-        Wed, 20 May 2020 06:52:55 -0700 (PDT)
-Received: from [10.37.8.206] (unknown [10.37.8.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31ED3F52E;
-        Wed, 20 May 2020 06:52:53 -0700 (PDT)
-Subject: Re: [PATCH V4 15/17] arm64/cpufeature: Add remaining feature bits in
- ID_AA64DFR0 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-16-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <5bad1e13-e498-b33e-5305-336d855c2c8b@arm.com>
-Date:   Wed, 20 May 2020 14:57:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726697AbgETN6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:58:21 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49000 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726486AbgETN6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:58:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589983098;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+6p4jdAvCMC0iizzaffYOBefDLg5kSFsX+MrN5miuVs=;
+        b=J5Ja4BtSGU3XkqkWRPtxpGj6vrrpoa0kJTGFo8mXYgInJmNjt4hYe2SjaLwLo/hWYxDV9c
+        y9TdJxBB0n/ZXoedWxcTKujYB0uO8G01r3mwXwFTKvsBSqXNP9KjQAb7Uz4xVW30Iw4DvW
+        /Lg7G22KMIkCi0DWEHCehQpWnM0GiGo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-0iyzYYn5PaSCCe8Ux0C1bQ-1; Wed, 20 May 2020 09:58:14 -0400
+X-MC-Unique: 0iyzYYn5PaSCCe8Ux0C1bQ-1
+Received: by mail-ej1-f71.google.com with SMTP id c9so1364359ejr.16
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:58:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+6p4jdAvCMC0iizzaffYOBefDLg5kSFsX+MrN5miuVs=;
+        b=DNgw8QmHV8K6RejRdloGMhetifn2BcDWyc5o338AnOA3fHgHrGe1mUqB9H1WBTQHQh
+         TLMG7PQrmYbwBE95iUKtkgxvojPPoRsVE9kxZlgRAJtJjwxaKtorZXr7G0KmrsrOhXTj
+         EBQ+AhUiyiv/srIvBqCXCr1aac3fk9OwlBh8FCObV+hUXbfBdUo181i0IWcKcWJHU7tZ
+         Q2gGuL0du7N3c4bFglf9NiBJX4qwukMcdFGj8yCoOd4hnUOpxiNrL/ZjyRXcrb/h3ns4
+         wS2CjtE7fDWhvmwHxxknKiLOz4GEelr9bIQgTPU7nvI0SpeQCknHPloyhofZd9zExgkr
+         RV6Q==
+X-Gm-Message-State: AOAM533+BMRlyvNJnWrm+gPPUeuHUDWlmrmN/o5D/fVVew3F2GGkQ/rI
+        p+D9GrKf+w7pofxOFWLslVNoNm7aeeFdI9jNmOW/tNJ3Adja8YYAgP+vLBQW1Q49P99Zmb9Mo+h
+        Tnn7mQ8cinHbpCEp9ohDMio/DwOp82imJe8HP3gU0
+X-Received: by 2002:a17:906:ce39:: with SMTP id sd25mr3923285ejb.477.1589983093410;
+        Wed, 20 May 2020 06:58:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyyhdjVDrVULc74i7yTtFnNL3+QsexeKRP5wQGf5rAUvj8ueQ+O8jEvI/aEw7C2H8EXSJVg5cL2ciozwIH0Grs=
+X-Received: by 2002:a17:906:ce39:: with SMTP id sd25mr3923259ejb.477.1589983093142;
+ Wed, 20 May 2020 06:58:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1589881254-10082-16-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAE4VaGD8DUEi6JnKd8vrqUL_8HZXnNyHMoK2D+1-F5wo+5Z53Q@mail.gmail.com>
+ <20200312214736.GA3818@techsingularity.net> <CAE4VaGCfDpu0EuvHNHwDGbR-HNBSAHY=yu3DJ33drKgymMTTOw@mail.gmail.com>
+ <CAE4VaGC09OfU2zXeq2yp_N0zXMbTku5ETz0KEocGi-RSiKXv-w@mail.gmail.com>
+ <20200320152251.GC3818@techsingularity.net> <CAE4VaGBGbTT8dqNyLWAwuiqL8E+3p1_SqP6XTTV71wNZMjc9Zg@mail.gmail.com>
+ <20200320163843.GD3818@techsingularity.net> <CAE4VaGCf0P2ht+7nbGFHV8Dd=e4oDEUPNdRUUBokRWgKRxofAA@mail.gmail.com>
+ <20200507155422.GD3758@techsingularity.net> <CAE4VaGCDTeE16nNmSS8fGzCBvHsO=qkJAW6yDiORAxgsPi-Ziw@mail.gmail.com>
+ <20200507174934.GD19331@lorien.usersys.redhat.com> <20200508034741.13036-1-hdanton@sina.com>
+ <CAE4VaGDBAquxbBjuzzyaT1WPR95wiaiHsrEPs-eOP2W+r=fQFg@mail.gmail.com> <20200519043154.10876-1-hdanton@sina.com>
+In-Reply-To: <20200519043154.10876-1-hdanton@sina.com>
+From:   Jirka Hladky <jhladky@redhat.com>
+Date:   Wed, 20 May 2020 15:58:01 +0200
+Message-ID: <CAE4VaGAxqK_gr7gstk1S8z3vx+9c6rG-Xo_kUiAzuOWpqOR4cQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
+ balancer v6
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Douglas Shakshober <dshaks@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>,
+        "aokuliar@redhat.com" <aokuliar@redhat.com>,
+        "kkolakow@redhat.com" <kkolakow@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
-> Enable MTPMU and TRACEFILT features bits in ID_AA64DFR0 register as per ARM
-> DDI 0487F.a specification.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   arch/arm64/include/asm/sysreg.h | 2 ++
->   arch/arm64/kernel/cpufeature.c  | 2 ++
->   2 files changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index a572069ccf6e..4bcd21cc2d68 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -766,6 +766,8 @@
->   #define ID_AA64MMFR2_CNP_SHIFT		0
->   
->   /* id_aa64dfr0 */
-> +#define ID_AA64DFR0_MTPMU_SHIFT		48
-> +#define ID_AA64DFR0_TRACEFILT_SHIFT	40
->   #define ID_AA64DFR0_PMSVER_SHIFT	32
->   #define ID_AA64DFR0_CTX_CMPS_SHIFT	28
->   #define ID_AA64DFR0_WRPS_SHIFT		20
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 6338151f263c..986974be0178 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -366,6 +366,8 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
->   };
->   
->   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
-> +	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_MTPMU_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_TRACEFILT_SHIFT, 4, 0),
+Hi Hillf, Mel and all,
 
-We maske both the fields for KVM in AArch32 ID registers. We should do 
-the same here.
+thanks for the patch! It has produced really GOOD results.
 
-Suzuki
+1) It has fixed performance problems with 5.7 vanilla kernel for
+single-tenant workload and low system load scenarios, without
+performance degradation for the multi-tenant tasks. It's producing the
+same results as the previous proof-of-concept patch where
+adjust_numa_imbalance function was modified to be a no-op (returning
+the same value of imbalance as it gets on the input).
+
+2) We have also added Mel's netperf-cstate-small-cross-socket test to
+our test battery:
+https://github.com/gormanm/mmtests/blob/master/configs/config-network-netperf-cstate-small-cross-socket
+
+Mel told me that he had seen significant performance improvements with
+5.7 over 5.6 for the netperf-cstate-small-cross-socket scenario.
+
+Out of 6 different patches we have tested, your patch has performed
+the best for this scenario. Compared to vanilla, we see minimal
+performance degradation of 2.5% for the udp stream throughput and 0.6%
+for the tcp throughput. The testing was done on a dual-socket system
+with Gold 6132 CPU.
+
+@Mel - could you please test Hillf's patch with your full testing
+suite? So far, it looks very promising, but I would like to check the
+patch thoroughly to make sure it does not hurt performance in other
+areas.
+
+Thanks a lot!
+Jirka
+
+
+
+
+
+
+
+
+
+
+
+
+On Tue, May 19, 2020 at 6:32 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+>
+> Hi Jirka
+>
+> On Mon, 18 May 2020 16:52:52 +0200 Jirka Hladky wrote:
+> >
+> > We have compared it against kernel with adjust_numa_imbalance disabled
+> > [1], and both kernels perform at the same level for the single-tenant
+> > jobs, but the proposed patch is bad for the multitenancy mode. The
+> > kernel with adjust_numa_imbalance disabled is a clear winner here.
+>
+> Double thanks to you for the tests!
+>
+> > We would be very interested in what others think about disabling
+> > adjust_numa_imbalance function. The patch is bellow. It would be great
+>
+> A minute...
+>
+> > to collect performance results for different scenarios to make sure
+> > the results are objective.
+>
+> I don't have another test case but a diff trying to confine the tool
+> in question back to the hard-coded 2's field.
+>
+> It's used in the first hunk below to detect imbalance before migrating
+> a task, and a small churn of code is added at another call site when
+> balancing idle CPUs.
+>
+> Thanks
+> Hillf
+>
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1916,20 +1916,26 @@ static void task_numa_find_cpu(struct ta
+>          * imbalance that would be overruled by the load balancer.
+>          */
+>         if (env->dst_stats.node_type == node_has_spare) {
+> -               unsigned int imbalance;
+> -               int src_running, dst_running;
+> +               unsigned int imbalance = 2;
+>
+> -               /*
+> -                * Would movement cause an imbalance? Note that if src has
+> -                * more running tasks that the imbalance is ignored as the
+> -                * move improves the imbalance from the perspective of the
+> -                * CPU load balancer.
+> -                * */
+> -               src_running = env->src_stats.nr_running - 1;
+> -               dst_running = env->dst_stats.nr_running + 1;
+> -               imbalance = max(0, dst_running - src_running);
+> -               imbalance = adjust_numa_imbalance(imbalance, src_running);
+> +               //No imbalance computed without spare capacity
+> +               if (env->dst_stats.node_type != env->src_stats.node_type)
+> +                       goto check_imb;
+> +
+> +               imbalance = adjust_numa_imbalance(imbalance,
+> +                                               env->src_stats.nr_running);
+> +
+> +               //Do nothing without imbalance
+> +               if (!imbalance) {
+> +                       imbalance = 2;
+> +                       goto check_imb;
+> +               }
+> +
+> +               //Migrate task if it's likely to grow balance
+> +               if (env->dst_stats.nr_running + 1 < env->src_stats.nr_running)
+> +                       imbalance = 0;
+>
+> +check_imb:
+>                 /* Use idle CPU if there is no imbalance */
+>                 if (!imbalance) {
+>                         maymove = true;
+> @@ -9011,12 +9017,13 @@ static inline void calculate_imbalance(s
+>                         env->migration_type = migrate_task;
+>                         env->imbalance = max_t(long, 0, (local->idle_cpus -
+>                                                  busiest->idle_cpus) >> 1);
+> -               }
+>
+> -               /* Consider allowing a small imbalance between NUMA groups */
+> -               if (env->sd->flags & SD_NUMA)
+> -                       env->imbalance = adjust_numa_imbalance(env->imbalance,
+> -                                               busiest->sum_nr_running);
+> +                       /* Consider allowing a small imbalance between NUMA groups */
+> +                       if (env->sd->flags & SD_NUMA &&
+> +                           local->group_type == busiest->group_type)
+> +                               env->imbalance = adjust_numa_imbalance(env->imbalance,
+> +                                                       busiest->sum_nr_running);
+> +               }
+>
+>                 return;
+>         }
+> --
+>
+
+
+-- 
+-Jirka
+
