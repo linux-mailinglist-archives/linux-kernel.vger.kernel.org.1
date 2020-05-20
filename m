@@ -2,58 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920C01DC0F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D780A1DC0F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728331AbgETVIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgETVIs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:08:48 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5684C061A0E;
-        Wed, 20 May 2020 14:08:48 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1EB0F1210A409;
-        Wed, 20 May 2020 14:08:45 -0700 (PDT)
-Date:   Wed, 20 May 2020 14:08:42 -0700 (PDT)
-Message-Id: <20200520.140842.1711606625827492143.davem@davemloft.net>
-To:     jhubbard@nvidia.com
-Cc:     syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com,
-        akpm@linux-foundation.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] rds: fix crash in rds_info_getsockopt()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200520194147.127137-1-jhubbard@nvidia.com>
-References: <00000000000000d71e05a6185662@google.com>
-        <20200520194147.127137-1-jhubbard@nvidia.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 20 May 2020 14:08:46 -0700 (PDT)
+        id S1728265AbgETVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 17:09:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727083AbgETVJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:09:17 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1549207E8;
+        Wed, 20 May 2020 21:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590008956;
+        bh=ptqItCDH9o9pF0WAAEe7vrVWcF72lf1db3H1PlvvZBI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BIX6dy2uSkCaZ2ZWGiTohSWyIBcIUVDfHCgMwKaYLKy/xHaqmVCqC+QEm7GCJtqgE
+         hM7FAdVBM0uSXlrg3366o6ZRc6IhD9ONoKGuXHJJdasKurTCFEJKcmNrsQvGZSu1jW
+         1gJMaXGRSwH/nGj978U79DnXinPmbxQAy0rqhzUA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D4B9A40AFD; Wed, 20 May 2020 18:09:14 -0300 (-03)
+Date:   Wed, 20 May 2020 18:09:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/19] perf ftrace: add option -P/--no-pager to disable
+ pager
+Message-ID: <20200520210914.GC32678@kernel.org>
+References: <20200510150628.16610-1-changbin.du@gmail.com>
+ <20200510150628.16610-15-changbin.du@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200510150628.16610-15-changbin.du@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
-Date: Wed, 20 May 2020 12:41:47 -0700
+Em Sun, May 10, 2020 at 11:06:23PM +0800, Changbin Du escreveu:
+> Sometimes we want perf displays trace immediately. So this adds an option
+> '-P/--no-pager' to disable pager if needed.
 
-> The conversion to pin_user_pages() had a bug: it overlooked
-> the case of allocation of pages failing. Fix that by restoring
-> an equivalent check.
+
+Try:
+
+perf record sleep 5
+perf script
+
+Then:
+
+perf --no-pager script
+
+I.e. its there already.
+
+- Arnaldo
+
 > 
-> Reported-by: syzbot+118ac0af4ac7f785a45b@syzkaller.appspotmail.com
-> Fixes: dbfe7d74376e ("rds: convert get_user_pages() --> pin_user_pages()")
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  tools/perf/builtin-ftrace.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> index a93fbdac6aa4..64c22f367ba2 100644
+> --- a/tools/perf/builtin-ftrace.c
+> +++ b/tools/perf/builtin-ftrace.c
+> @@ -48,6 +48,7 @@ struct perf_ftrace {
+>  	unsigned		tracing_thresh;
+>  	bool			trace_children;
+>  	unsigned		buffer_size_kb;
+> +	bool			no_pager;
+>  };
+>  
+>  struct filter_entry {
+> @@ -56,6 +57,7 @@ struct filter_entry {
+>  };
+>  
+>  static volatile int workload_exec_errno;
+> +static bool interrupted;
+>  static bool done;
+>  
+>  static void sig_handler(int sig __maybe_unused)
+> @@ -63,6 +65,12 @@ static void sig_handler(int sig __maybe_unused)
+>  	done = true;
+>  }
+>  
+> +static void sig_handler_int(int sig __maybe_unused)
+> +{
+> +	sig_handler(sig);
+> +	interrupted = 1;
+> +}
+> +
+>  /*
+>   * perf_evlist__prepare_workload will send a SIGUSR1 if the fork fails, since
+>   * we asked by setting its exec_error to the function below,
+> @@ -492,7 +500,7 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+>  		return -1;
+>  	}
+>  
+> -	signal(SIGINT, sig_handler);
+> +	signal(SIGINT, sig_handler_int);
+>  	signal(SIGUSR1, sig_handler);
+>  	signal(SIGCHLD, sig_handler);
+>  	signal(SIGPIPE, sig_handler);
+> @@ -585,7 +593,8 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+>  		goto out_reset;
+>  	}
+>  
+> -	setup_pager();
+> +	if (!ftrace->no_pager)
+> +		setup_pager();
+>  
+>  	trace_file = get_tracing_file("trace_pipe");
+>  	if (!trace_file) {
+> @@ -636,7 +645,7 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+>  	}
+>  
+>  	/* read remaining buffer contents */
+> -	while (true) {
+> +	while (true && !interrupted) {
+>  		int n = read(trace_fd, buf, sizeof(buf));
+>  		if (n <= 0)
+>  			break;
+> @@ -731,6 +740,8 @@ int cmd_ftrace(int argc, const char **argv)
+>  		    "Trace children processes"),
+>  	OPT_UINTEGER('b', "buffer-size", &ftrace.buffer_size_kb,
+>  		     "size of per cpu buffer in kb"),
+> +	OPT_BOOLEAN('P', "no-pager", &ftrace.no_pager,
+> +		    "Do not use pager"),
+>  	OPT_END()
+>  	};
+>  
+> -- 
+> 2.25.1
+> 
 
-Applied to net-next, thanks.
+-- 
+
+- Arnaldo
