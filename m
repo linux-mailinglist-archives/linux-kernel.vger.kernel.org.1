@@ -2,134 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB611DB3ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DED11DB40A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgETMn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:43:58 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:25053 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726224AbgETMn5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:43:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1589978637; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=nLaK/ohEQ1OzRdH5EY+kSAjwbEK+2E1W0vY/2r749BI=;
- b=vSBpiFYhyP1w7t8DlT703O7bKqtKvbvGWCbWwiNV/nZPwt2mlk1ualoafEinU1QxXpTgP2xh
- 85h1QkGcF4I7g0SrmiFnvlbjo//LtSdmeIbuYdX5vYq92lyLJB8VMiZtIBJnYFMDoXVJfTbs
- JzOpIvOsSja/8U+Mv7/JZbaV++Q=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5ec526044c3faf51e2931685 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 12:43:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 83CE0C433A0; Wed, 20 May 2020 12:43:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rananta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5A10C433C8;
-        Wed, 20 May 2020 12:43:46 +0000 (UTC)
+        id S1726959AbgETMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:46:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15615 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgETMqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 08:46:20 -0400
+IronPort-SDR: Eu2VlE2GRbcpXYVXmEuRhA+bOmmeTMOpzOtSTH6faSKoXPkPQuPEtLABpnhZHzIusBO1BxXltE
+ Kh7+Zj1g2+Lg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 05:46:16 -0700
+IronPort-SDR: V6E/Ng3sk5KplKOJ4ojalPDdqw5sr7/ivO8RmkZKGAyG8bBoS9rBKNudLOOSWl9jP9CFatvZ/G
+ 33VvxL6a2tcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="289337876"
+Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
+  by fmsmga004.fm.intel.com with ESMTP; 20 May 2020 05:46:12 -0700
+Subject: Re: [PATCH v2 08/12] i2c: designware: Introduce platform drivers glue
+ layer interface
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20200306132001.1B875803087C@mail.baikalelectronics.ru>
+ <20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru>
+ <20200510095019.20981-9-Sergey.Semin@baikalelectronics.ru>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <4950bb1e-302f-947e-1924-452a8169b504@linux.intel.com>
+Date:   Wed, 20 May 2020 15:46:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200510095019.20981-9-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 May 2020 05:43:46 -0700
-From:   rananta@codeaurora.org
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, andrew@daynix.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] tty: hvc: Fix data abort due to race in hvc_open
-In-Reply-To: <f84a9da7-bb0f-7538-fa00-968c9625335b@suse.cz>
-References: <20200520064708.24278-1-rananta@codeaurora.org>
- <f84a9da7-bb0f-7538-fa00-968c9625335b@suse.cz>
-Message-ID: <5895803be5c8fd4c5e7725b57ffe79e4@codeaurora.org>
-X-Sender: rananta@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-20 01:59, Jiri Slaby wrote:
-> On 20. 05. 20, 8:47, Raghavendra Rao Ananta wrote:
->> Potentially, hvc_open() can be called in parallel when two tasks calls
->> open() on /dev/hvcX. In such a scenario, if the 
->> hp->ops->notifier_add()
->> callback in the function fails, where it sets the tty->driver_data to
->> NULL, the parallel hvc_open() can see this NULL and cause a memory 
->> abort.
->> Hence, do a NULL check at the beginning, before proceeding ahead.
->> 
->> The issue can be easily reproduced by launching two tasks 
->> simultaneously
->> that does an open() call on /dev/hvcX.
->> For example:
->> $ cat /dev/hvc0 & cat /dev/hvc0 &
->> 
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Raghavendra Rao Ananta <rananta@codeaurora.org>
->> ---
->>  drivers/tty/hvc/hvc_console.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/tty/hvc/hvc_console.c 
->> b/drivers/tty/hvc/hvc_console.c
->> index 436cc51c92c3..80709f754cc8 100644
->> --- a/drivers/tty/hvc/hvc_console.c
->> +++ b/drivers/tty/hvc/hvc_console.c
->> @@ -350,6 +350,9 @@ static int hvc_open(struct tty_struct *tty, struct 
->> file * filp)
->>  	unsigned long flags;
->>  	int rc = 0;
->> 
->> +	if (!hp)
->> +		return -ENODEV;
->> +
+Hi
+
+On 5/10/20 12:50 PM, Serge Semin wrote:
+> Seeing the DW I2C platform driver is getting overcomplicated with a lot of
+> vendor-specific configs let's introduce a glue-layer interface so new
+> platforms which equipped with Synopsys Designware APB I2C IP-core would
+> be able to handle their peculiarities in the dedicated objects.
 > 
-> This is still not fixing the bug properly. See:
-> https://lore.kernel.org/linuxppc-dev/0f7791f5-0a53-59f6-7277-247a789f30c2@suse.cz/
-> 
-> In particular, the paragraph starting "IOW".
-> 
-You are right. This doesn't fix the problem entirely. There are other 
-parts to it which is
-not handled in a clean way by the driver. Apart from the things you've 
-mentioned, it doesn't
-seem to handle the hp->port.count correctly as well.
+Comment to this patch and patches 9/12 and 12/12:
 
-hvc_open:
-   hp->port.count++
-   hp->ops->notifier_add(hp, hp->data) fails
-   tty->driver_data = NULL
+Currently i2c-designware-platdrv.c is about 500 lines of code so I don't 
+think it's too overcomplicated. But I feel we have already too many 
+Kconfig options and source modules for i2c-designware and obviously 
+would like to push back a little from adding more.
 
-hvc_close:
-   returns immediately as tty->driver_data == NULL, without 
-hp->port.count--
+I don't think i2c-designware-platdrv.c becomes yet too complicated if 
+Baikal related code is added there, perhaps under #ifdef CONFIG_OF like 
+MSCC Ocelot code is currently.
 
-This would leave the port in a stale state, and the second caller of 
-hvc_open doesn't get
-a chance to call/retry hp->ops->notifier_add(hp, hp->data);
-
-However, the patch is not trying to address the logical issues with 
-hvc_open and hvc_close.
-It's only trying to eliminate the potential NULL pointer dereference, 
-leading to a panic.
- From what I see, the hvc_open is serialized by tty_lock, and adding a 
-NULL check here is
-preventing the second caller.
-> thanks,
-
-Thank you.
-Raghavendra
+-- 
+Jarkko
