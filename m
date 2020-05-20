@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3E11DA7F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E5E1DA80C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgETC2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgETC2o (ORCPT
+        id S1728666AbgETCc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:32:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34898 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728653AbgETCc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:28:44 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13739C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 19:28:44 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id f89so672060qva.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 19:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=6Y7HJEX97OtUoScp+6aHU6PvBtaRCji4KFMDWzl/1dU=;
-        b=cQpNRMs3iNodzFhYuYipwiBMcUEGOJ3xUdc3cfUveLOQY59Je2GsuNTi2qpKEMxCpQ
-         3bqSWrAGjqBoAKndJjjTJrgrLfwV0bEtLHNG8higFC140vI+VtauJs/m9kOAIHQ6bdEw
-         QRu0U4nvggp52A00zOVb/a/qFsqC/GopXdX8Jhr4Op5hTwamyOUlKSvJCKIRDiAIwkTo
-         XfRXahdTu0FwM1JDD2xDu73FAuvNFDfQjV+Q3E36HgXNh7DUvzGr+s3+FZYeI/Wx2n+Q
-         +d1/j8ipY6CjVaaY4nrlOIakqFbwnltU0/SBa5QN+3728tuYh4pF+2SKKjug3/I9bVaB
-         +tpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=6Y7HJEX97OtUoScp+6aHU6PvBtaRCji4KFMDWzl/1dU=;
-        b=gLM/tbKiKzVlim1/fokAOHKuHEjZt3/GHLjxrdT+1PtfUxc6oQUHtFWdxIfbnC8aJv
-         wGsMTLhcmOzBGl03yDgEWuaei/dpx1bh/BvgmNWfq5eY1u2oUepNqT+jMBYZS0ROKG3c
-         OxNEcd2XM4fdxvvYFE5kzcA9rJ5WOBh8hDmhSmDr9JgLkfLrz7W2r2AhIe9yl2FwtPMf
-         waEhig0zjTFZzbgDU5Y242dROae4Ny1JiMK0qG0G/h/a5L5r9DWQuuQk1cODS2qYWdQQ
-         X5LfRGPVXvkxzUQCOeUCuiN12EPu0+O7ZXcIl9PIFczIHrIXChzfw0W9h3QVWbci2HAO
-         P3xA==
-X-Gm-Message-State: AOAM533s+Eu5oqll3Yg1kppv23HxLioAAUtcibI0WvsHMYi/3/2CuUye
-        GbFL9yC72sZF8428MaY9VIOLI8VhTAqDdQ==
-X-Google-Smtp-Source: ABdhPJxjYdKtmPOvMy1Q+JLwtSfq4dDdlPjcDcKr8rNqyafvMGhhzymtntu2oBRo1PCaBOT5oqbIQg==
-X-Received: by 2002:a05:6214:1c2:: with SMTP id c2mr2800690qvt.185.1589941723237;
-        Tue, 19 May 2020 19:28:43 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id y66sm988332qka.24.2020.05.19.19.28.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 19:28:42 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
-Date:   Tue, 19 May 2020 22:28:41 -0400
-Message-Id: <360AFD09-27EC-4133-A5E3-149B8C0C4232@lca.pw>
-References: <87y2pn60ob.fsf@nanos.tec.linutronix.de>
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-In-Reply-To: <87y2pn60ob.fsf@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: iPhone Mail (17E262)
+        Tue, 19 May 2020 22:32:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K2Vs2o033096;
+        Wed, 20 May 2020 02:32:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=X6vv7tWVQrBAO4K18SYCEFYN7GEzDFVuXe+yt1Qayfo=;
+ b=dGm5fEaF7VynVI4gpxVMff3uxrEe+MFEF6j3wkkY7r9yWIR8X9NxKtPNtHJkm7eqadk0
+ aQsyLcWryfMDzZ2/qBdMnZ72qskcwcDGCXT0G0OD+xlZ2V87ZvkepxEymbIaxG2/2Iex
+ 2ZZsbZSqhxkhpkJF88a0C5D0T0MfE2YZVf+m7P6C/LZSd4s4/JL7oaxVg8umJQIJH+PT
+ Bw3ixWJGxkrlfmRY74elfPCkH8GW1NafZSqmr5FoARoY3FurwXBwcHVvOseDxvw+gVCr
+ JEjNpZBfDerVK+LkJz0pIuKIOD56Gd/DLsjWO2PD7qPpmX1pneLgZgqGE9lRQpONTnjl 5g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 31284m0md8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 May 2020 02:32:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K2SZJU064497;
+        Wed, 20 May 2020 02:30:19 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 313gj2mf5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 02:30:19 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04K2UIWC028013;
+        Wed, 20 May 2020 02:30:18 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 May 2020 19:30:18 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.vnet.ibm.com, John Garry <john.garry@huawei.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linuxarm@huawei.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] hisi_sas: Some misc patches
+Date:   Tue, 19 May 2020 22:30:06 -0400
+Message-Id: <158994171817.20861.14065822562297716117.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <1589552025-165012-1-git-send-email-john.garry@huawei.com>
+References: <1589552025-165012-1-git-send-email-john.garry@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200018
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
+ cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005200019
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 May 2020 22:13:41 +0800, John Garry wrote:
 
+> This series includes some misc patches, generally tidy-up. The most
+> significant is the patch to not reset the phy up timer for when the
+> phy is already up - the HW designers do not have an answer for why this
+> occurs, so we workaround.
+> 
+> John Garry (1):
+>   scsi: hisi_sas: Stop returning error code from slot_complete_vX_hw()
+> 
+> [...]
 
-> On May 19, 2020, at 6:05 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
-> Yes, it's unfortunate, but we have to stop making major concessions just
-> because tools are not up to the task.
->=20
-> We've done that way too much in the past and this particular problem
-> clearly demonstrates that there are limits.
->=20
-> Making brand new technology depend on sane tools is not asked too
-> much. And yes, it's inconvenient, but all of us have to build tools
-> every now and then to get our job done. It's not the end of the world.
->=20
-> Building clang is trivial enough and pointing the make to the right
-> compiler is not rocket science either.
+Applied to 5.8/scsi-queue, thanks!
 
-Yes, it all make sense from that angle. On the other hand, I want to be focu=
-s on kernel rather than compilers by using a stable and rocket-solid version=
-. Not mentioned the time lost by compiling and properly manage my own toolch=
-ain in an automated environment, using such new version of compilers means t=
-hat I have to inevitably deal with compiler bugs occasionally. Anyway, it is=
- just some other more bugs I have to deal with, and I don=E2=80=99t have a b=
-etter solution to offer right now.=
+[1/4] scsi: hisi_sas: Do not reset phy timer to wait for stray phy up
+      https://git.kernel.org/mkp/scsi/c/e16b9ed61e07
+[2/4] scsi: hisi_sas: Modify the commit information for DSM method
+      https://git.kernel.org/mkp/scsi/c/1e954d1f002d
+[3/4] scsi: hisi_sas: Add SAS_RAS_INTR0 to debugfs register name list
+      https://git.kernel.org/mkp/scsi/c/1a0efb55b2bb
+[4/4] scsi: hisi_sas: Stop returning error code from slot_complete_vX_hw()
+      https://git.kernel.org/mkp/scsi/c/1cdee0044261
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
