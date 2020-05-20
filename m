@@ -2,95 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28BA1DB23B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEF01DB240
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgETLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:49:28 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34265 "EHLO mga06.intel.com"
+        id S1726881AbgETLtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:49:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:54246 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETLt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:49:28 -0400
-IronPort-SDR: luJ9WmqpTkppN5ANoXkKYFNr6zVaLQf4/WRuOkByLeWokAi01j5vhmVeqMd+cbIOMoG2bUJOB5
- IUMiyNIW4IUQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 04:49:27 -0700
-IronPort-SDR: a/+Fpg54o+8PTDC2WA+m5PdUJa0V8mJpZ3R5KEtl27Vp1YaBQPYo9Gd+f4hN621W9nP6OxLRAh
- AaEUA68Jxk4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="253582839"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007.jf.intel.com with ESMTP; 20 May 2020 04:49:23 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jbNDx-007pYn-Jd; Wed, 20 May 2020 14:49:25 +0300
-Date:   Wed, 20 May 2020 14:49:25 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Avi Fishman <avifishman70@gmail.com>
-Cc:     Tali Perry <tali.perry1@gmail.com>, ofery@google.com,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Tomer Maimon <tmaimon77@gmail.com>, kfting@nuvoton.com,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>, wsa@the-dreams.de,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller
- driver
-Message-ID: <20200520114925.GQ1634618@smile.fi.intel.com>
-References: <20200520095113.185414-1-tali.perry1@gmail.com>
- <20200520095113.185414-3-tali.perry1@gmail.com>
- <20200520102452.GP1634618@smile.fi.intel.com>
- <CAKKbWA5L_n7iC6-d22Am62SOoDBwNWO87+sXtRbwxwuVdjmRYA@mail.gmail.com>
+        id S1726224AbgETLtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 07:49:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEDD61045;
+        Wed, 20 May 2020 04:49:49 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC6C13F52E;
+        Wed, 20 May 2020 04:49:48 -0700 (PDT)
+Date:   Wed, 20 May 2020 12:49:42 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/cpufeature: Move BUG_ON() inside
+ get_arm64_ftr_reg()
+Message-ID: <20200520114941.GB18302@gaia>
+References: <1589937774-20479-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKKbWA5L_n7iC6-d22Am62SOoDBwNWO87+sXtRbwxwuVdjmRYA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1589937774-20479-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 02:37:13PM +0300, Avi Fishman wrote:
-> On Wed, May 20, 2020 at 1:24 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Wed, May 20, 2020 at 12:51:12PM +0300, Tali Perry wrote:
-> > > Add Nuvoton NPCM BMC I2C controller driver.
-> >
-> > ...
-> >
-> > > +#ifdef CONFIG_DEBUG_FS
-> >
-> > Why?!
+On Wed, May 20, 2020 at 06:52:54AM +0530, Anshuman Khandual wrote:
+> There is no way to proceed when requested register could not be searched in
+> arm64_ftr_reg[]. Requesting for a non present register would be an error as
+> well. Hence lets just BUG_ON() when the search fails in get_arm64_ftr_reg()
+> rather than checking for return value and doing the same in some individual
+> callers.
 > 
-> It is made to save code size if CONFIG_DEBUG_FS is not defined?
+> But there are some callers that dont BUG_ON() upon search failure. It adds
+> an argument 'failsafe' that provides required switch between callers based
+> on whether they could proceed or not.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Nope (in cases I have commented on). Try again.
+BTW, there should be no empty line between the Cc block and the SoB.
 
-> We see a lot of kernel code that is doing it.
+The patch looks fine. Just a note that the patch transforms a current
+WARN_ON in a BUG_ON but that's fine by me.
 
-Cargo cult, okay. So, somebody should try to understand what they are doing.
-
-> So could you elaborate what is the problem?
-
-Problem 1: ugly code.
-Problem 2: some of the code is not guarded (seems never been tested with disabled debugfs).
-Problem 3: it's not needed.
-
-> > > +#include <linux/debugfs.h>
-> > > +#endif
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
