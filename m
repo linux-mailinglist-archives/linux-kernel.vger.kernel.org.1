@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A061DAB2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88051DAB2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgETG4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:56:33 -0400
-Received: from v6.sk ([167.172.42.174]:59870 "EHLO v6.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726401AbgETG4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:56:32 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id F17D161300;
-        Wed, 20 May 2020 06:56:29 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH] dmaengine: mmp_pdma: Do not warn when IRQ is shared by all chans
-Date:   Wed, 20 May 2020 08:56:26 +0200
-Message-Id: <20200520065626.2119120-1-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
+        id S1726486AbgETG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:58:03 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27964 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726369AbgETG6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 02:58:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589957881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=22TzjxdhHFi3fn0C24natifEiTLxnXkUr54Z/g+wEUs=;
+        b=BCUvdjCBsf0EemBnvclEYaBY1bLa2ACyTX+yufBxQexzzmRcj9K5vxs0sJBa9xh4RQlMgh
+        Ah9smhv4K5DX1zO2Rz14gt+UcnGEKFjAQk5IYuSP6USWznalKjBZeRTTo3e0tDBmptY0bm
+        hIV+oukdnnzZMwPfl7EkPtQYNImL6tw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-DvYFG_85MiaNU-EosSvcVg-1; Wed, 20 May 2020 02:58:00 -0400
+X-MC-Unique: DvYFG_85MiaNU-EosSvcVg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0FBC8005AA;
+        Wed, 20 May 2020 06:57:58 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-246.pek2.redhat.com [10.72.13.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E92A526198;
+        Wed, 20 May 2020 06:57:52 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        mst@redhat.com, Jason Wang <jasowang@redhat.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] m68k: add missing __user annotation in get_user()
+Date:   Wed, 20 May 2020 14:57:50 +0800
+Message-Id: <20200520065750.8401-1-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there's a single interrupt for all the DMA channels, the
-unsuccessful attempt to request separate IRQs emits useless warnings:
+The ptr is a pointer to userspace memory. So we need annotate it with
+__user otherwise we may get sparse warnings like:
 
-  [    1.370381] mmp-pdma d4000000.dma: IRQ index 1 not found
-  ...
-  [    1.412398] mmp-pdma d4000000.dma: IRQ index 15 not found
-  [    1.418308] mmp-pdma d4000000.dma: initialized 16 channels
+drivers/vhost/vhost.c:1603:13: sparse: sparse: incorrect type in initializer (different address spaces) @@    expected void const *__gu_ptr @@    got unsigned int [noderef] [usertypvoid const *__gu_ptr @@
+drivers/vhost/vhost.c:1603:13: sparse:    expected void const *__gu_ptr
+drivers/vhost/vhost.c:1603:13: sparse:    got unsigned int [noderef] [usertype] <asn:1> *idxp
 
-Avoid that, treating the IRQs as optional.
-
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/dma/mmp_pdma.c | 2 +-
+ arch/m68k/include/asm/uaccess_mm.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/mmp_pdma.c b/drivers/dma/mmp_pdma.c
-index ad06f260e907..41c542eaa23a 100644
---- a/drivers/dma/mmp_pdma.c
-+++ b/drivers/dma/mmp_pdma.c
-@@ -1060,7 +1060,7 @@ static int mmp_pdma_probe(struct platform_device *op)
- 	pdev->dma_channels = dma_channels;
- 
- 	for (i = 0; i < dma_channels; i++) {
--		if (platform_get_irq(op, i) > 0)
-+		if (platform_get_irq_optional(op, i) > 0)
- 			irq_num++;
- 	}
- 
+diff --git a/arch/m68k/include/asm/uaccess_mm.h b/arch/m68k/include/asm/uaccess_mm.h
+index 7e85de984df1..9ae9f8d05925 100644
+--- a/arch/m68k/include/asm/uaccess_mm.h
++++ b/arch/m68k/include/asm/uaccess_mm.h
+@@ -142,7 +142,7 @@ asm volatile ("\n"					\
+ 		__get_user_asm(__gu_err, x, ptr, u32, l, r, -EFAULT);	\
+ 		break;							\
+ 	case 8: {							\
+-		const void *__gu_ptr = (ptr);				\
++		const void __user *__gu_ptr = (ptr);			\
+ 		union {							\
+ 			u64 l;						\
+ 			__typeof__(*(ptr)) t;				\
 -- 
-2.26.2
+2.20.1
 
