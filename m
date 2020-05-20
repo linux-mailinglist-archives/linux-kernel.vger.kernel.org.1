@@ -2,121 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946F01DBDA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB261DBDB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgETTJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbgETTJK (ORCPT
+        id S1726821AbgETTN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:13:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44629 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726566AbgETTN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:09:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23098C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:09:10 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id s19so4324814edt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tl5hNSaq9jwtAfQ3H4b6ZmG+ScLEKqnmbeQTtX38GBs=;
-        b=ejWrZ/jfJqN1W3XBa5rEh8Lk4R2pGtjUsAfERal12GI7QfCZfWLDd9UtMrTSYE1/tI
-         FovDCSwIGfbaaHj8cZJ1IKJDULyXaqYHAyGtIE65kUKbthWtIjz/KQGrx+y85v2kRRQb
-         81QOjyfbBp6VHvsSe4y3k88jU+q/CRx/ohQyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tl5hNSaq9jwtAfQ3H4b6ZmG+ScLEKqnmbeQTtX38GBs=;
-        b=lzLL4kKJbY/6s/UKIX6rvmZ4rhXD2HRkQJMLfEWZMBhJe99e6CIixnQYpY1JfW+Wsq
-         cO74nhbXG/6X3L816qR0kyoUKDqo94FgptKbiF7mGXXi7YGzrkGKgGjGAd0luH22FD0+
-         QQcjOYWd43Wsi0Xy1LSUn1kblirsjFyuXT68CVQrKD283ZCMQMKgkx4pywBDwJtRiHcM
-         I7u+WrWI2qr+E+2a04SyYOQzMuAxmKpf1b6cULZK3LA/VfgcTLOS7i9VthpXlCud8C9Z
-         pMDj4kWoleWyvSZSnIIBbLlBqm4iHTeE+1fggxlYBTj1+oGoJN9dQoJC2YLKMO7/AEiH
-         RyEw==
-X-Gm-Message-State: AOAM531DQQbJU+3guy0qf6NRifgQPy8aEHqStVJsemz2x4K3TnaPWg+d
-        oD7FXip7Q6LTNRPtvrhV4pPlgOhbaHdA5CLg
-X-Google-Smtp-Source: ABdhPJweTP3W62AzAZrqweXxsUYkSWvtaZ1Wr8JxuA7F/wzgya+W3/hBf6pFGJ7YDBt9fmp3P99NeQ==
-X-Received: by 2002:a50:9312:: with SMTP id m18mr4674386eda.252.1590001748698;
-        Wed, 20 May 2020 12:09:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:758d])
-        by smtp.gmail.com with ESMTPSA id g21sm2514869edw.9.2020.05.20.12.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 12:09:08 -0700 (PDT)
-Date:   Wed, 20 May 2020 20:09:06 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-Message-ID: <20200520190906.GA558281@chrisdown.name>
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz>
- <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz>
- <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+        Wed, 20 May 2020 15:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590002007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVj+MsI3l6KMi5hkuPwd7L6S2NyrXRTHPrxS0K9UsOs=;
+        b=ZntZSa1aATOrGrEaFf5WIOPm4vh0Z3DSsq8k4b8/fBfwnp0zSK7YWLpO+JKWPxwfUHtkPd
+        1xIHlbkAh9beAREc6hhM7GfDT32O9n/kLmB9SOe0jwVoDThmT14LpZsOekw16K7OR9Vk/9
+        B86JmXaTWU4fdS9AMToEkfNAmOMHCcE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-TUkh5LkHMQm8KIdAbJot0w-1; Wed, 20 May 2020 15:13:23 -0400
+X-MC-Unique: TUkh5LkHMQm8KIdAbJot0w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCBBB461;
+        Wed, 20 May 2020 19:13:21 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-121.rdu2.redhat.com [10.10.114.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 476375C1BE;
+        Wed, 20 May 2020 19:13:21 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C16CD22036E; Wed, 20 May 2020 15:13:20 -0400 (EDT)
+Date:   Wed, 20 May 2020 15:13:20 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        stable@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Subject: Re: [PATCH v3 2/2] x86/copy_mc: Introduce copy_mc_generic()
+Message-ID: <20200520191320.GA3255@redhat.com>
+References: <158992635164.403910.2616621400995359522.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <158992636214.403910.12184670538732959406.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+In-Reply-To: <158992636214.403910.12184670538732959406.stgit@dwillia2-desk3.amr.corp.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
+On Tue, May 19, 2020 at 03:12:42PM -0700, Dan Williams wrote:
+> The original copy_mc_fragile() implementation had negative performance
+> implications since it did not use the fast-string instruction sequence
+> to perform copies. For this reason copy_mc_to_kernel() fell back to
+> plain memcpy() to preserve performance on platform that did not indicate
+> the capability to recover from machine check exceptions. However, that
+> capability detection was not architectural and now that some platforms
+> can recover from fast-string consumption of memory errors the memcpy()
+> fallback now causes these more capable platforms to fail.
+> 
+> Introduce copy_mc_generic() as the fast default implementation of
+> copy_mc_to_kernel() and finalize the transition of copy_mc_fragile() to
+> be a platform quirk to indicate 'fragility'. With this in place
+> copy_mc_to_kernel() is fast and recovery-ready by default regardless of
+> hardware capability.
+> 
+> Thanks to Vivek for identifying that copy_user_generic() is not suitable
+> as the copy_mc_to_user() backend since the #MC handler explicitly checks
+> ex_has_fault_handler().
 
-Naresh Kamboju writes:
->As a part of investigation on this issue LKFT teammate Anders Roxell
->git bisected the problem and found bad commit(s) which caused this problem.
->
->The following two patches have been reverted on next-20200519 and retested the
->reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
->( invoked oom-killer is gone now)
->
->Revert "mm, memcg: avoid stale protection values when cgroup is above
->protection"
->    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
->
->Revert "mm, memcg: decouple e{low,min} state mutations from protection
->checks"
->    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
+/me is curious to know why #MC handler mandates use of _ASM_EXTABLE_FAULT().
 
-Thanks Anders and Naresh for tracking this down and reverting.
+[..]
+> +/*
+> + * copy_mc_generic - memory copy with exception handling
+> + *
+> + * Fast string copy + fault / exception handling. If the CPU does
+> + * support machine check exception recovery, but does not support
+> + * recovering from fast-string exceptions then this CPU needs to be
+> + * added to the copy_mc_fragile_key set of quirks. Otherwise, absent any
+> + * machine check recovery support this version should be no slower than
+> + * standard memcpy.
+> + */
+> +SYM_FUNC_START(copy_mc_generic)
+> +	ALTERNATIVE "jmp copy_mc_fragile", "", X86_FEATURE_ERMS
+> +	movq %rdi, %rax
+> +	movq %rdx, %rcx
+> +.L_copy:
+> +	rep movsb
+> +	/* Copy successful. Return zero */
+> +	xorl %eax, %eax
+> +	ret
+> +SYM_FUNC_END(copy_mc_generic)
+> +EXPORT_SYMBOL_GPL(copy_mc_generic)
+> +
+> +	.section .fixup, "ax"
+> +.E_copy:
+> +	/*
+> +	 * On fault %rcx is updated such that the copy instruction could
+> +	 * optionally be restarted at the fault position, i.e. it
+> +	 * contains 'bytes remaining'. A non-zero return indicates error
+> +	 * to copy_safe() users, or indicate short transfers to
 
-I'll take a look tomorrow. I don't see anything immediately obviously wrong in 
-either of those commits from a (very) cursory glance, but they should only be 
-taking effect if protections are set.
+copy_safe() is vestige of terminology of previous patches?
 
-Since you have i386 hardware available, and I don't, could you please apply 
-only "avoid stale protection" again and check if it only happens with that 
-commit, or requires both? That would help narrow down the suspects.
+> +	 * user-copy routines.
+> +	 */
+> +	movq %rcx, %rax
+> +	ret
+> +
+> +	.previous
+> +
+> +	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
 
-Do you use any memcg protections in these tests?
+A question for my education purposes.
 
-Thank you!
+So copy_mc_generic() can handle MCE both on source and destination
+addresses? (Assuming some device can generate MCE on stores too).
+On the other hand copy_mc_fragile() handles MCE recovery only on
+source and non-MCE recovery on destination.
 
-Chris
+Thanks
+Vivek
+
