@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A4A1DC20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E531DC21D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgETWbC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 18:31:02 -0400
-Received: from mailoutvs40.siol.net ([185.57.226.231]:51865 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728270AbgETWbC (ORCPT
+        id S1728614AbgETWga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 18:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728596AbgETWg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 18:31:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 5F0AD521CA5;
-        Thu, 21 May 2020 00:30:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WVPCA-mzMnE8; Thu, 21 May 2020 00:30:58 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id E1B7A521CA2;
-        Thu, 21 May 2020 00:30:57 +0200 (CEST)
-Received: from jernej-laptop.localnet (cpe-194-152-20-232.static.triera.net [194.152.20.232])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 6D5FC521C9C;
-        Thu, 21 May 2020 00:30:57 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, paul.kocialkowski@bootlin.com,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, wens@csie.org,
-        hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] media: cedrus: Add support for VP8 decoding
-Date:   Thu, 21 May 2020 00:30:56 +0200
-Message-ID: <2875977.BS6FNRR2HQ@jernej-laptop>
-In-Reply-To: <ee0aa12fdf1655c4e563b8fc9753a5ab5e52f4cf.camel@ndufresne.ca>
-References: <20200520210129.132816-1-jernej.skrabec@siol.net> <ee0aa12fdf1655c4e563b8fc9753a5ab5e52f4cf.camel@ndufresne.ca>
+        Wed, 20 May 2020 18:36:29 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D48CC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:36:29 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id s19so4983749edt.12
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:36:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GvwSKpaoA5x+DSqsB+f1AMPpFVRxKHKEv8uKqvEucYw=;
+        b=Fgom0UCJlXX6ZYR7ap+K4eVw6kw8QxPm179ZYKb9zJL1ujJpwqE+yUcYYVKhISNCKw
+         eUIQaWUe3fIt6OpRVq9Ow1v3BRUVMxeFwBNOWlT0rnL7AS49gmO9Xw4h9OIl14fCirK2
+         FQfW+BFCJLJPRy4aHwTKnMRM5TTXt/qv0UQQUPJGmlDDAZpWofyqRgko5igoobKJyV38
+         +5ZHqbzjGWZC3YPOjJ33hygbzTUqyIEtsYXE14kO8S9yd8eSNWi4I3wXOHKUlX2Fo1Pt
+         U3ogH66IRdy/zoRJoFEk8/rEbmVKMP4ECMXL7fpIBt6nYq2jYm69D7ABBcGcbPCGGfLT
+         RbYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GvwSKpaoA5x+DSqsB+f1AMPpFVRxKHKEv8uKqvEucYw=;
+        b=MK66dfvpDKmgB2wl3fpE0aPdfbvN76mu8El4zUZcsHl24OMcGyvUfSjR0RPwAjnXLe
+         7T5XcOR2tqS56mi7hYSx0GI9J325ue8VvXpykX3W+PozMw8a92sgsFSiG7/Qd6yPWb4X
+         gaP/iZBAK3o+HI/NkUQ3/LSWumAq9EQdOCeHoKbuB4IvyC2DnolijLfi16c0JjQcT3/+
+         xcYB3GclkWhKAfYDQC0Gxc7F+nYu1YX5LxFoGl6Z80i1CC5TYEq+haUonPgCwCUete8o
+         ZW1zScTionBskVZvJU1XWbqS73joVMSeYcAxcYzEV7NhQtj2XEGi6rFnv22s5IiVWPLA
+         +sdQ==
+X-Gm-Message-State: AOAM530yNbvt9pa5nFyBTbCvaUabB0I3spt6bWInPTgHQGmuehw76fTS
+        RyWxBKwUy5DeI0v1+WYGKZlepiuFMab0AxX1VPuH5olH
+X-Google-Smtp-Source: ABdhPJy8SxNT7xctFY/cpsgQsvbHUXb6kaGpLDboGiOV9UTKzcQNszwcdpuF74K9ew+mqEwKaaO+9CyvU7oVeY7VHro=
+X-Received: by 2002:a50:c2d9:: with SMTP id u25mr5738913edf.123.1590014188051;
+ Wed, 20 May 2020 15:36:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+References: <20200519203419.12369-1-james.quinlan@broadcom.com>
+ <20200519203419.12369-10-james.quinlan@broadcom.com> <20200520174216.GA11770@lst.de>
+ <CA+-6iNzy_nELB0ptE0vH5KrGMFq4CctFKDipk3ZzXnjnT9hfuQ@mail.gmail.com>
+In-Reply-To: <CA+-6iNzy_nELB0ptE0vH5KrGMFq4CctFKDipk3ZzXnjnT9hfuQ@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 20 May 2020 15:36:16 -0700
+Message-ID: <CAPcyv4jOGE0F4wCFM+cC8g=SofiXaNCBfAEPumUv=7nCM6KJ6Q@mail.gmail.com>
+Subject: Re: [PATCH 09/15] device core: Add ability to handle multiple dma offsets
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 20. maj 2020 ob 23:43:40 CEST je Nicolas Dufresne napisal(a):
-> Le mercredi 20 mai 2020 à 23:01 +0200, Jernej Skrabec a écrit :
-> > VP8 in Cedrus shares same engine as H264.
-> > 
-> > Note that it seems necessary to call bitstream parsing functions,
-> > to parse frame header, otherwise decoded image is garbage. This is
-> > contrary to what is driver supposed to do. However, values are not
-> > really used, so this might be acceptable. It's possible that bitstream
-> 
-> Have you verified that all values passed through controls are not used
-> ? To remain a stateless driver, there is no requirement for parsed data
-> to be used, the only requirement is that the reference are used.
-> Otherwise doing parallel decoding of two stream of different stream
-> would be broken. Have you verified that parallel decoding is working as
-> expected ?
+On Wed, May 20, 2020 at 11:27 AM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+>
+> Sorry, I meant to put you on the to-list for all patches.   The last
+> time I sent out this many patches using a collective cc-list for all
+> patches I was told to reduce my cc-list.
 
-I'm not sure if you understand what I meant. Although userspace app parses 
-frame header and fills all data in VP8 control, driver parses frame header 
-again, using HW bitstream parsing functionality in cedrus_read_header(). 
-Without that second header parsing in HW, decoded image is garbage. Note that 
-cedrus_read_header() discards all parsed values and relies on those provided 
-in controls.
+You'd be forgiven. There are some developers that are ok to go read
+the thread on something like lore if they are cc'd only a subset and
+some that require the whole thread copied to them. Perhaps we need an
+entry in MAINTAINERS that makes this preference discoverable? To date
+I have been manually keeping track of those who want full threads and
+those that would prefer to just be cc'd on the cover letter and the
+one patch that directly affects their maintenance area.
 
-This parsing doesn't cause any problems with parallel decoding or anything. 
-It's done during frame decoding job, so it doesn't affect any state. It's just 
-that we shouldn't need to parse header in driver because all data is already 
-provided in controls. It seems that Cedrus core was never tested without that 
-HW frame header parsing. I found out that HEVC and H264 frames can sometimes 
-also be wrongly decoded if no bitstream parsing function is triggered in HW 
-before final decoding.
-
-I spend a lot of time trying to avoid that header parsing, but I couldn't find 
-any way around it.
-
-In another words, Cedrus VPU provides two functionalities - HW bitstream 
-parsing (to speed up header parsing) and video decoding. One would thought 
-that video decoding can be used independently, if all data from header is 
-already known, but it can't be.
-
-Best regards,
-Jernej
-
-> 
-> > parsing functions set some internal VPU state, which is later necessary
-> > for proper decoding. Biggest suspect is "VP8 probs update" trigger.
-> > 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > ---
-> > 
-> >  drivers/staging/media/sunxi/cedrus/Makefile   |   3 +-
-> >  drivers/staging/media/sunxi/cedrus/cedrus.c   |   8 +
-> >  drivers/staging/media/sunxi/cedrus/cedrus.h   |  15 +
-> >  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   5 +
-> >  .../staging/media/sunxi/cedrus/cedrus_hw.c    |   1 +
-> >  .../staging/media/sunxi/cedrus/cedrus_regs.h  |  80 ++
-> >  .../staging/media/sunxi/cedrus/cedrus_video.c |   9 +
-> >  .../staging/media/sunxi/cedrus/cedrus_vp8.c   | 699 ++++++++++++++++++
-> >  8 files changed, 819 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/staging/media/sunxi/cedrus/cedrus_vp8.c
-
-
-
+Certainly blindly cc'ing everyone recommended by
+scripts/get_maintainers.pl is overkill, but finding that subset is a
+bit of an art.
