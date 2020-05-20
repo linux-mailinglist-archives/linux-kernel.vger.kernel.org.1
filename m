@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3041DA8F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397001DA8ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgETEHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 00:07:25 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45900 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726430AbgETEHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 00:07:24 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 55C131A0288;
-        Wed, 20 May 2020 06:07:22 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EE45D1A02A0;
-        Wed, 20 May 2020 06:07:19 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E6E8840299;
-        Wed, 20 May 2020 12:07:16 +0800 (SGT)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     leoyang.li@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhao Qiang <qiang.zhao@nxp.com>
-Subject: [PATCH v3 2/2] arm64: dts: Add ds26522 node to dts to ls1043ardb
-Date:   Wed, 20 May 2020 12:02:21 +0800
-Message-Id: <20200520040221.10536-2-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200520040221.10536-1-qiang.zhao@nxp.com>
-References: <20200520040221.10536-1-qiang.zhao@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726452AbgETECi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 00:02:38 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46170 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725785AbgETECi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 00:02:38 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B82F6D02038ABE41E2AF;
+        Wed, 20 May 2020 12:02:35 +0800 (CST)
+Received: from [127.0.0.1] (10.67.102.197) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
+ 12:02:26 +0800
+Subject: Re: [PATCH v4 0/4] cleaning up the sysctls table (hung_task watchdog)
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <mcgrof@kernel.org>, <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <mingo@kernel.org>,
+        <gpiccoli@canonical.com>, <rdna@fb.com>, <patrick.bellasi@arm.com>,
+        <sfr@canb.auug.org.au>, <mhocko@suse.com>,
+        <penguin-kernel@i-love.sakura.ne.jp>, <vbabka@suse.cz>,
+        <tglx@linutronix.de>, <peterz@infradead.org>,
+        <Jisheng.Zhang@synaptics.com>, <khlebnikov@yandex-team.ru>,
+        <bigeasy@linutronix.de>, <pmladek@suse.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <wangle6@huawei.com>, <alex.huangjianhui@huawei.com>
+References: <1589859071-25898-1-git-send-email-nixiaoming@huawei.com>
+ <20200519203141.f3152a41dce4bc848c5dded7@linux-foundation.org>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <5574b304-e890-76a9-8190-f705eba8082d@huawei.com>
+Date:   Wed, 20 May 2020 12:02:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <20200519203141.f3152a41dce4bc848c5dded7@linux-foundation.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Qiang <qiang.zhao@nxp.com>
+On 2020/5/20 11:31, Andrew Morton wrote:
+> On Tue, 19 May 2020 11:31:07 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
+> 
+>> Kernel/sysctl.c
+> 
+> eek!
+> 
+>>
+>>   fs/proc/proc_sysctl.c        |   2 +-
+>>   include/linux/sched/sysctl.h |  14 +--
+>>   include/linux/sysctl.h       |  13 ++-
+>>   kernel/hung_task.c           |  77 +++++++++++++++-
+>>   kernel/sysctl.c              | 214 +++++++------------------------------------
+>>   kernel/watchdog.c            | 101 ++++++++++++++++++++
+>>   6 files changed, 224 insertions(+), 197 deletions(-)
+> 
+> Here's what we presently have happening in linux-next's kernel/sysctl.c:
+> 
+>   sysctl.c | 3109 ++++++++++++++++++++++++++++++---------------------------------
+>   1 file changed, 1521 insertions(+), 1588 deletions(-)
+> 
+> 
+> So this is not a good time for your patch!
+> 
+> Can I suggest that you set the idea aside and take a look after 5.8-rc1
+> is released?
+> 
 
-Add ds26522 node to fsl-ls1043a-rdb.dts
+ok, I will make v5 patch based on 5.8-rc1 after 5.8-rc1 is released,
+And add more sysctl table cleanup.
 
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
----
-v3:
- - use "arm64: dts:" format for subject
- 
-arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Thanks
+Xiaoming Ni
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-index 44d9343..1cb265f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts
-@@ -94,6 +94,22 @@
- 		reg = <0>;
- 		spi-max-frequency = <1000000>; /* input clock */
- 	};
-+
-+	slic@2 {
-+		compatible = "maxim,ds26522";
-+		reg = <2>;
-+		spi-max-frequency = <2000000>;
-+		fsl,spi-cs-sck-delay = <100>;
-+		fsl,spi-sck-cs-delay = <50>;
-+	};
-+
-+	slic@3 {
-+		compatible = "maxim,ds26522";
-+		reg = <3>;
-+		spi-max-frequency = <2000000>;
-+		fsl,spi-cs-sck-delay = <100>;
-+		fsl,spi-sck-cs-delay = <50>;
-+	};
- };
- 
- &duart0 {
--- 
-2.7.4
 
