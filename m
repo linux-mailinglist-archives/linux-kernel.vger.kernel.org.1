@@ -2,141 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45741DA7A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C601DA7B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgETCCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:02:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11305 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbgETCCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:02:34 -0400
-IronPort-SDR: KXF6qd43oAx8/UnDSaK4asVuHJ+/bSNwS+SENonGqW++3WS/7MnzVhNci1siOL6aCqWtPKxamD
- w17MzyKZycIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 19:02:34 -0700
-IronPort-SDR: m/fhxx6jPbq7qZ0zgedcE0xpHxfN3zP7A9oZnB302QnVzCHxMgMIzOf8NbcKm47m7FnUyO55hO
- +uQHaEVufyJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
-   d="scan'208";a="282519935"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga002.jf.intel.com with ESMTP; 19 May 2020 19:02:33 -0700
-Date:   Tue, 19 May 2020 19:02:33 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/9] fs/ext4: Disallow encryption if inode is DAX
-Message-ID: <20200520020232.GA3470571@iweiny-DESK2.sc.intel.com>
-References: <20200513054324.2138483-1-ira.weiny@intel.com>
- <20200513054324.2138483-4-ira.weiny@intel.com>
- <20200516020253.GG1009@sol.localdomain>
- <20200518050315.GA3025231@iweiny-DESK2.sc.intel.com>
- <20200518162447.GA954@sol.localdomain>
+        id S1728384AbgETCMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:12:45 -0400
+Received: from mail-eopbgr140085.outbound.protection.outlook.com ([40.107.14.85]:61919
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726178AbgETCMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 22:12:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V+KxzhBK9kSFqRzc+syu+R5slMxxnmv9fLmUUQ6qzIrzZ+8pk4RW+jHZhwhnL8P7+Gn7WDVKRVSlBZr/pp5OvXDMDj+f44nj2m9EI+ixPspf/rcVrSFJP9p5Y5ixF8qHiuGvZL4D5dGd6wDla2GeUU8aQRN7D1TxubbUammMMmc7lT5I3TSlUPkSF9dPCO+DGcJAinZdZyyJBEEgvf1zm70RUleieGfNaVnIinGjKQJEzAWTMfqEhvoTs+YiTkwj7TnYRnfZB83C9cE+XMR1wmK9DNIceQ/lhcM2+hp+cRiHp8RjhHCs0mJ8QFRqhQaPgGEgR8BYc1M6Le0rxFJqig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0RnblXTQDwrw8LX5NWOSDTxGQELjPog/KQM1EDqmLzQ=;
+ b=WoZ2wjBcofuMhTeD2lttzUBDFB0+i26a6qAMbfCn3Qg9GkG/XW3JeA/OGx2+r7EyJJ313866FkC5H2hQdXHYwvzrh4DphtjrDV2V2u1H7v5RV3C2xY4i2SM22bzP7dnK8FQ3ebdngmm9/ZgqwcjS25IaUs4+LVmN8+JTha7H4szoIQDb2HCRv7vfZOyFhB0HfpuNRZp9DLIo7wLie2RPQLg54hOhwS3ePJBlu1nh19ytDJVSqmAVcUsTHXqTIlmWBN26EBVgvpspsEBdX9zq1xmv/lfY6jXrQJGz12YPcL/jmX8ytuCIa/EjzBUgxYynjlzWPvg0yIdousxm4fwMfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0RnblXTQDwrw8LX5NWOSDTxGQELjPog/KQM1EDqmLzQ=;
+ b=YjE1Eqv0ZR6yyaA1DvZr9CqmS0NTxu/65MDohTaytp2VxzzB5ali/tEs6PeZgiaF6AZsOKbzLmoDFeRGS5CYqRs8LTQEf+aA0km4zW2dX8gbvfHhZohkyZmTTi9hAiom/Wwcn8lEQOaqmnsZ/EFh5JNt2CyxptnVtpFjICjHsD8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2741.eurprd04.prod.outlook.com (2603:10a6:4:98::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Wed, 20 May
+ 2020 02:12:41 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.3021.020; Wed, 20 May 2020
+ 02:12:40 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, fabio.estevam@nxp.com, kernel@pengutronix.de,
+        aisheng.dong@nxp.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, leonard.crestez@nxp.com, daniel.baluta@nxp.com,
+        l.stach@pengutronix.de, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/4] arm64: dts: imx8m: dtb aliases update
+Date:   Wed, 20 May 2020 10:02:42 +0800
+Message-Id: <1589940166-736-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0099.apcprd01.prod.exchangelabs.com
+ (2603:1096:3:15::25) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518162447.GA954@sol.localdomain>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0099.apcprd01.prod.exchangelabs.com (2603:1096:3:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.23 via Frontend Transport; Wed, 20 May 2020 02:12:36 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 31591d5e-9bcc-403c-505f-08d7fc63460c
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2741:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB2741C54F5CC80208463F57E788B60@DB6PR0402MB2741.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-Forefront-PRVS: 04097B7F7F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SZvIT+cNPamcFxqNAELrAYJVVSZynZbro46VYoG/n3YwHr4PhvoWYkRrEHBzqlr+IIoQfswV4rbfywwUIP9m/MNCuU20XKZ/CgFyndC6FwOwiQyeJst/Mnu7/ALF6xqApnSBI/f+2EGdmLCtI97vMyhP2hEI2csnhdsPM+OL51NVzRjJmKd3zLAyfbFioCLmznO3J1zlSZvyYmN/u6kVRvKMtdrPoi2akquTZSSAIkUX3qb+KSVAf+e1XcvYV/t27NUbqshAtttwMOVaL7JcZqlO9CO85z3oT/1Ud8myQoTH4DBEJEyzgO/ZUQ9cvdsVkwwFf7B5YQtZbZzQnwOVtqI0EETmfKXrZLnMLiCkxeElcaBhwTQTKqLK458ecu/kORnasBYGn4KDY91x6suaXHb04mtkNZkvHcHYDiMZlOjp4M824WLECS2dVnSAiUXzu18v4mruOpW9nq3jXFyD9F08W8fuOH49UYyPVpkB5HVB2rRZ6RO8j0Nunu92PzobjgQ0iv3X7C1e/ivKdxFPCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(39860400002)(136003)(396003)(36756003)(8676002)(6512007)(86362001)(6666004)(52116002)(9686003)(66946007)(66556008)(66476007)(8936002)(478600001)(316002)(5660300002)(4744005)(15650500001)(26005)(6486002)(69590400007)(6506007)(4326008)(2616005)(956004)(2906002)(186003)(16526019)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tCyhM1K8IvEyQO6y8iZ+emTcKC94L27RbIQfz6fmG/n7F+shXQ+//V/MwjqzqWB7WxnvCiIGIkLnkdahN42afO4OSwcLf9/ULov2yJpyR95hH8xBsvGIAJDRDBM11lBaIYWx6QiXZP20i0or59bn7PzmByQcIdfN+FvvrGnLF7wuqCtQEZCvgxXkO+rY/8texp7fCtci3uN4YEUEKJ1V+iZmpaAHKdnVZ6s6tAPSjLal7emHTQtq0V4KrBYd9Dh4Czswdf7tU7kewGnwpRTA1zY+3VdHIkUyy/vVMC7dVTdzC+aJ5qHfRwPgkaWupb7s/pQnY6XevHi7sxVnh9RYVjRUQLHNB6TxYFjVLuqsFuCwjRyjcYnxOcGRQ9a7nG4x8R1uNroDjXSJ4TAePY1S6dRFGUk8f3iZgfcFlQakP6ZeV7s/Zosh5EDifjXnLSG/67rsD8eV/hK7qDEsHEZMDK6X9xEOhq87meCZp9wbx5Bhwl8tIgZ5RBwkpdFmiy70
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31591d5e-9bcc-403c-505f-08d7fc63460c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 02:12:40.7386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j7/1vRP+eQabKj1pJ/9ZBqoIuhaNxG6MZbc11Vrq8xVzO45nmUlJe8SsYbrzMIk2x8qs3AT3ERkX8p6QTmNJKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2741
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 09:24:47AM -0700, Eric Biggers wrote:
-> On Sun, May 17, 2020 at 10:03:15PM -0700, Ira Weiny wrote:
+From: Peng Fan <peng.fan@nxp.com>
 
-First off...  OMG...
+Minor patchset to update device tree aliases
 
-I'm seeing some possible user pitfalls which are complicating things IMO.  It
-probably does not matter because most users don't care and have either enabled
-DAX on _every_ mount or _not_ enabled DAX on _every_ mount.  And have _not_
-used verity nor encryption while using DAX.
+Peng Fan (4):
+  arm64: dts: imx8mq: Add mmc aliases
+  arm64: dts: imx8mq: Add ethernet alias
+  arm64: dts: imx8mm: sort the aliases
+  arm64: dts: imx8mp: add i2c aliases
 
-Verity is a bit easier because verity is not inherited and we only need to
-protect against setting it if DAX is on.
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 16 ++++++++--------
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi |  6 ++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi |  3 +++
+ 3 files changed, 17 insertions(+), 8 deletions(-)
 
-However, it can be weird for the user thusly:
-
-1) mount _without_ DAX
-2) enable verity on individual inodes
-3) unmount/mount _with_ DAX
-
-Now the verity files are not enabled for DAX without any indication...  <sigh>
-This is still true with my patch.  But at least it closes the hole of trying to
-change the DAX flag after the fact (because verity was set).
-
-Also both this check and the verity need to be maintained to keep the mount
-option working as it was before...
-
-For encryption it is more complicated because encryption can be set on
-directories and inherited so the IS_DAX() check does nothing while '-o dax' is
-used.  Therefore users can:
-
-1) mount _with_ DAX
-2) enable encryption on a directory
-3) files created in that directory will not have DAX set
-
-And I now understand why the WARN_ON() was there...  To tell users about this
-craziness.
-
-...
-
-> > This is, AFAICS, not going to affect correctness.  It will only be confusing
-> > because the user will be able to set both DAX and encryption on the directory
-> > but files there will only see encryption being used...  :-(
-> > 
-> > Assuming you are correct about this call path only being valid on directories.
-> > It seems this IS_DAX() needs to be changed to check for EXT4_DAX_FL in
-> > "fs/ext4: Introduce DAX inode flag"?  Then at that point we can prevent DAX and
-> > encryption on a directory.  ...  and at this point IS_DAX() could be removed at
-> > this point in the series???
-> 
-> I haven't read the whole series, but if you are indeed trying to prevent a
-> directory with EXT4_DAX_FL from being encrypted, then it does look like you'd
-> need to check EXT4_DAX_FL, not S_DAX.
-> 
-> The other question is what should happen when a file is created in an encrypted
-> directory when the filesystem is mounted with -o dax.  Actually, I think I
-> missed something there.  Currently (based on reading the code) the DAX flag will
-> get set first, and then ext4_set_context() will see IS_DAX() && i_size == 0 and
-> clear the DAX flag when setting the encrypt flag.
-
-I think you are correct.
-
->
-> So, the i_size == 0 check is actually needed.
-> Your patch (AFAICS) just makes creating an encrypted file fail
-> when '-o dax'.  Is that intended?
-
-Yes that is what I intended but it is more complicated I see now.
-
-The intent is that IS_DAX() should _never_ be true on an encrypted or verity
-file...  even if -o dax is specified.  Because IS_DAX() should be a result of
-the inode flags being checked.  The order of the setting of those flags is a
-bit odd for the encrypted case.  I don't really like that DAX is set then
-un-set.  It is convoluted but I'm not clear right now how to fix it.
-
-> If not, maybe you should change it to check
-> S_NEW instead of i_size == 0 to make it clearer?
-
-The patch is completely unnecessary.
-
-It is much easier to make (EXT4_ENCRYPT_FL | EXT4_VERITY_FL) incompatible with
-EXT4_DAX_FL when it is introduced later in the series.  Furthermore this mutual
-exclusion can be done on directories in the encrypt case.  Which I think will
-be nicer for the user if they get an error when trying to set one when the other
-is set.
-
-Ira
+-- 
+2.16.4
 
