@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01111DB290
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1801DB2A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgETMBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:01:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:54448 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbgETMBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:01:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1560730E;
-        Wed, 20 May 2020 05:01:14 -0700 (PDT)
-Received: from [10.37.8.50] (unknown [10.37.8.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F8003F52E;
-        Wed, 20 May 2020 05:01:12 -0700 (PDT)
-Subject: Re: [PATCH v3 0/6] arm64: add the time namespace support
-To:     Andrei Vagin <avagin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>
-References: <20200416052618.804515-1-avagin@gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <08e3ee73-8048-b84e-61b3-e87f3500e022@arm.com>
-Date:   Wed, 20 May 2020 13:02:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726896AbgETMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETMDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 08:03:40 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB4BC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:03:39 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id q24so1179230pjd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 05:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uSTZY+FCH/CsbXzCEs1ajXnnqSDIAGZV3gPCDr9dJDI=;
+        b=OKm4+EwS5DhdDxYcBsveRI/pq2+Eb7ZuGjPHfVxDACoZQJrihB8xe+Gw7dNU6tInkO
+         LgpV5U+BjMXzlu/DdJ2cj6KZbBRzfAxIVrLaSoF6jiHQxSCYjarqHiNlpoXCuybtrLa8
+         bKwHymbdwb+yNHuT7dvrS317yS09HDnhYwjK5Hl484kPz5A1++onfYG5rMBRX0kCcTz0
+         5RDUJo5HbvZoNRij6pQAICFEYaMXsV3hyX4ksvGz2EfGrDxOwuzyCpnr6z6j4JiBrwU9
+         i+FA3koeAUlMVqS2eN/PkBC1HHFvUYHbTLKmb9ffYEa24884t6YvPN5EUqGgf5LubRpx
+         nYSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uSTZY+FCH/CsbXzCEs1ajXnnqSDIAGZV3gPCDr9dJDI=;
+        b=XsUMYUPEp37Y2dvfsoZKJ+1804as1kdZsRdYM4/IIvLSv51SFrfWLIZFukndD4dnhu
+         AvD1Q01kqWsT9xcuwdx5zCBWbMPNykjPhtomPApnmksWO48URHHaPKd9gYhbmsSfebhN
+         pO8PDGl88RPkyufQVdVIUO/SjS4hHtHpg+Q2i8RtIG221rk3S5p4o6Z5olGi6Ly5zAzX
+         6D/5DgtDjVCHN3uamfrXeQoF+CR0hh+SDUaEz7Zl/3YR1niXumWV6+ZIJtdO+Do/ihwI
+         sS1wI01FfsIqc8zIxA4alNAVwaQkNxgjO3wx1vocTDycnOQrnCL4LwGzci/4v71RK+oN
+         /WZw==
+X-Gm-Message-State: AOAM531OvWsjYfuBfeEcGfnHUlYQQhMlURuKugSPvo+rqmL/G0FdEGIb
+        6faSoX00MhoUPxpl5yni5rNYzba+KGFqAajkbw0=
+X-Google-Smtp-Source: ABdhPJzlS0/QLumcsxy/AkcPqpC5Qj+ROn+VA0uMqCHu4uTcyy/8IRu5SVpkweJZ8phlfvhYFMenpmAcw+VhQDfw5Gg=
+X-Received: by 2002:a17:90b:3651:: with SMTP id nh17mr5160248pjb.228.1589976219013;
+ Wed, 20 May 2020 05:03:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200416052618.804515-1-avagin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202005201042.yjSO10j2%lkp@intel.com>
+In-Reply-To: <202005201042.yjSO10j2%lkp@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 20 May 2020 15:03:26 +0300
+Message-ID: <CAHp75VcwekGU3bQDWkaTmLE8SPU7NZoUY6Es9Fy8oG5E=LT81A@mail.gmail.com>
+Subject: Re: drivers/mux/adgs1408.c:112:34: warning: unused variable 'adgs1408_of_match'
+To:     kbuild test robot <lkp@intel.com>
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrei,
+On Wed, May 20, 2020 at 5:23 AM kbuild test robot <lkp@intel.com> wrote:
+>
+> Hi Chris,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   115a54162a6c0d0ef2aef25ebd0b61fc5e179ebe
+> commit: e9e40543ad5b38b848879768359fd13650529961 spi: Add generic SPI multiplexer
+> date:   3 months ago
+> config: x86_64-randconfig-r022-20200519 (attached as .config)
+> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 135b877874fae96b4372c8a3fbfaa8ff44ff86e3)
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         git checkout e9e40543ad5b38b848879768359fd13650529961
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
 
-On 4/16/20 6:26 AM, Andrei Vagin wrote:
-> Allocate the time namespace page among VVAR pages and add the logic
-> to handle faults on VVAR properly.
-> 
-> If a task belongs to a time namespace then the VVAR page which contains
-> the system wide VDSO data is replaced with a namespace specific page
-> which has the same layout as the VVAR page. That page has vdso_data->seq
-> set to 1 to enforce the slow path and vdso_data->clock_mode set to
-> VCLOCK_TIMENS to enforce the time namespace handling path.
-> 
-> The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-> update of the VDSO data is in progress, is not really affecting regular
-> tasks which are not part of a time namespace as the task is spin waiting
-> for the update to finish and vdso_data->seq to become even again.
-> 
-> If a time namespace task hits that code path, it invokes the corresponding
-> time getter function which retrieves the real VVAR page, reads host time
-> and then adds the offset for the requested clock which is stored in the
-> special VVAR page.
-> 
-> v2: Code cleanups suggested by Vincenzo.
-> v3: use OPTIMIZER_HIDE_VAR() instead of inline assembly in
->     __arch_get_timens_vdso_data.
-> 
-
-Nit: If you re-post, I would remove the OPTIMIZER_HIDE_VAR() reference because
-it does not reflect the current status of the patches.
-
-I tested it again with your latest change in the test code and it works for me
-(thank you for sending a patch for the test as well).
-
-With this:
-
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-
-> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Dmitry Safonov <dima@arista.com>
-> 
-> v3 on github (if someone prefers `git pull` to `git am`):
-> https://github.com/avagin/linux-task-diag/tree/arm64/timens-v3
-> 
-> Andrei Vagin (6):
->   arm64/vdso: use the fault callback to map vvar pages
->   arm64/vdso: Zap vvar pages when switching to a time namespace
->   arm64/vdso: Add time napespace page
->   arm64/vdso: Handle faults on timens page
->   arm64/vdso: Restrict splitting VVAR VMA
->   arm64: enable time namespace support
-> 
->  arch/arm64/Kconfig                            |   1 +
->  .../include/asm/vdso/compat_gettimeofday.h    |  11 ++
->  arch/arm64/include/asm/vdso/gettimeofday.h    |   8 ++
->  arch/arm64/kernel/vdso.c                      | 134 ++++++++++++++++--
->  arch/arm64/kernel/vdso/vdso.lds.S             |   3 +-
->  arch/arm64/kernel/vdso32/vdso.lds.S           |   3 +-
->  include/vdso/datapage.h                       |   1 +
->  7 files changed, 147 insertions(+), 14 deletions(-)
-> 
+Fix has been submitted:
+https://lore.kernel.org/lkml/20200520120122.67528-1-andriy.shevchenko@linux.intel.com/T/#u
 
 -- 
-Regards,
-Vincenzo
+With Best Regards,
+Andy Shevchenko
