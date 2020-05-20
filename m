@@ -2,270 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7071DAF74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BA01DAF7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgETJyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 05:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgETJys (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 05:54:48 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAADC061A0E;
-        Wed, 20 May 2020 02:54:48 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 33A912A2A94
-Subject: Re: next/master bisection: baseline.login on panda
-To:     Joerg Roedel <jroedel@suse.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <5ec4eb8e.1c69fb81.19b63.0b07@mx.google.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Joerg Roedel <joro@8bytes.org>, linux-next@vger.kernel.org
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <d30e5ea4-85ae-75c2-2334-f9f951026afd@collabora.com>
-Date:   Wed, 20 May 2020 10:54:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726861AbgETJzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 05:55:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8515 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgETJzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 05:55:42 -0400
+IronPort-SDR: mTLrMgFXjpXAab8H3bxEcFN37UQtt+v0Lm7DBDJzdAOk+pUM+LEwfjUfMAA8IOloY0iIIbB8Ck
+ 6eBuP3K1hQ+A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 02:55:42 -0700
+IronPort-SDR: vXF5zD8yKbpY5jOhsprh76fGDznj+RJpK0rHEhpVYaELfVi5rS3LrwvSZdH8BS3r+trxR+lNNP
+ l/QViiFzs01g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
+   d="scan'208";a="343446400"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 20 May 2020 02:55:41 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jbLRp-0009nD-P5; Wed, 20 May 2020 17:55:37 +0800
+Date:   Wed, 20 May 2020 17:55:09 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/entry] BUILD SUCCESS
+ 095b7a3e7745e6fb7cf0a1c09967c4f43e76f8f4
+Message-ID: <5ec4fe7d.zezI5nmdygRQktCt%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <5ec4eb8e.1c69fb81.19b63.0b07@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please see the bisection report below about a boot failure.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/entry
+branch HEAD: 095b7a3e7745e6fb7cf0a1c09967c4f43e76f8f4  x86/entry: Convert double fault exception to IDTENTRY_DF
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+elapsed time: 705m
 
-Unfortunately there isn't anything in the kernel log, it's
-probably crashing very early on.  The bisection was run on
-omap4-panda, and there seems to be the same issue on
-omap3-beagle-xm as it's also failing to boot.
+configs tested: 87
+configs skipped: 1
 
-Please let us know if anyone is able to debug the issue or if we
-need to rerun the KernelCI job with earlyprintk enabled or any
-debug config option.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Guillaume
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+m68k                             allyesconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200519
+x86_64               randconfig-a003-20200519
+x86_64               randconfig-a005-20200519
+x86_64               randconfig-a004-20200519
+x86_64               randconfig-a006-20200519
+x86_64               randconfig-a002-20200519
+x86_64               randconfig-a001-20200519
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                                defconfig
+s390                             allmodconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-On 20/05/2020 09:34, kernelci.org bot wrote:
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> 
-> next/master bisection: baseline.login on panda
-> 
-> Summary:
->   Start:      fb57b1fabcb28 Add linux-next specific files for 20200519
->   Plain log:  https://storage.kernelci.org/next/master/next-20200519/arm/omap2plus_defconfig/gcc-8/lab-baylibre/baseline-omap4-panda.txt
->   HTML log:   https://storage.kernelci.org/next/master/next-20200519/arm/omap2plus_defconfig/gcc-8/lab-baylibre/baseline-omap4-panda.html
->   Result:     ce574c27ae275 iommu: Move iommu_group_create_direct_mappings() out of iommu_group_add_device()
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       next
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->   Branch:     master
->   Target:     panda
->   CPU arch:   arm
->   Lab:        lab-baylibre
->   Compiler:   gcc-8
->   Config:     omap2plus_defconfig
->   Test case:  baseline.login
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit ce574c27ae275bc51b6437883fc9cd1c46b498e5
-> Author: Joerg Roedel <jroedel@suse.de>
-> Date:   Wed Apr 29 15:36:50 2020 +0200
-> 
->     iommu: Move iommu_group_create_direct_mappings() out of iommu_group_add_device()
->     
->     After the previous changes the iommu group may not have a default
->     domain when iommu_group_add_device() is called. With no default domain
->     iommu_group_create_direct_mappings() will do nothing and no direct
->     mappings will be created.
->     
->     Rename iommu_group_create_direct_mappings() to
->     iommu_create_device_direct_mappings() to better reflect that the
->     function creates direct mappings only for one device and not for all
->     devices in the group. Then move the call to the places where a default
->     domain actually exists.
->     
->     Signed-off-by: Joerg Roedel <jroedel@suse.de>
->     Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
->     Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
->     Link: https://lore.kernel.org/r/20200429133712.31431-13-joro@8bytes.org
->     Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 7de0e29db3338..834a45da0ed0f 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -89,6 +89,8 @@ static int __iommu_attach_group(struct iommu_domain *domain,
->  				struct iommu_group *group);
->  static void __iommu_detach_group(struct iommu_domain *domain,
->  				 struct iommu_group *group);
-> +static int iommu_create_device_direct_mappings(struct iommu_group *group,
-> +					       struct device *dev);
->  
->  #define IOMMU_GROUP_ATTR(_name, _mode, _show, _store)		\
->  struct iommu_group_attribute iommu_group_attr_##_name =		\
-> @@ -243,6 +245,8 @@ static int __iommu_probe_device_helper(struct device *dev)
->  	if (group->default_domain)
->  		ret = __iommu_attach_device(group->default_domain, dev);
->  
-> +	iommu_create_device_direct_mappings(group, dev);
-> +
->  	iommu_group_put(group);
->  
->  	if (ret)
-> @@ -263,6 +267,7 @@ static int __iommu_probe_device_helper(struct device *dev)
->  int iommu_probe_device(struct device *dev)
->  {
->  	const struct iommu_ops *ops = dev->bus->iommu_ops;
-> +	struct iommu_group *group;
->  	int ret;
->  
->  	WARN_ON(dev->iommu_group);
-> @@ -285,6 +290,10 @@ int iommu_probe_device(struct device *dev)
->  	if (ret)
->  		goto err_module_put;
->  
-> +	group = iommu_group_get(dev);
-> +	iommu_create_device_direct_mappings(group, dev);
-> +	iommu_group_put(group);
-> +
->  	if (ops->probe_finalize)
->  		ops->probe_finalize(dev);
->  
-> @@ -736,8 +745,8 @@ int iommu_group_set_name(struct iommu_group *group, const char *name)
->  }
->  EXPORT_SYMBOL_GPL(iommu_group_set_name);
->  
-> -static int iommu_group_create_direct_mappings(struct iommu_group *group,
-> -					      struct device *dev)
-> +static int iommu_create_device_direct_mappings(struct iommu_group *group,
-> +					       struct device *dev)
->  {
->  	struct iommu_domain *domain = group->default_domain;
->  	struct iommu_resv_region *entry;
-> @@ -841,8 +850,6 @@ int iommu_group_add_device(struct iommu_group *group, struct device *dev)
->  
->  	dev->iommu_group = group;
->  
-> -	iommu_group_create_direct_mappings(group, dev);
-> -
->  	mutex_lock(&group->mutex);
->  	list_add_tail(&device->list, &group->devices);
->  	if (group->domain)
-> @@ -1736,6 +1743,7 @@ static void probe_alloc_default_domain(struct bus_type *bus,
->  		gtype.type = iommu_def_domain_type;
->  
->  	iommu_group_alloc_default_domain(bus, group, gtype.type);
-> +
->  }
->  
->  static int iommu_group_do_dma_attach(struct device *dev, void *data)
-> @@ -1760,6 +1768,21 @@ static int __iommu_group_dma_attach(struct iommu_group *group)
->  					  iommu_group_do_dma_attach);
->  }
->  
-> +static int iommu_do_create_direct_mappings(struct device *dev, void *data)
-> +{
-> +	struct iommu_group *group = data;
-> +
-> +	iommu_create_device_direct_mappings(group, dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int iommu_group_create_direct_mappings(struct iommu_group *group)
-> +{
-> +	return __iommu_group_for_each_dev(group, group,
-> +					  iommu_do_create_direct_mappings);
-> +}
-> +
->  static int bus_iommu_probe(struct bus_type *bus)
->  {
->  	const struct iommu_ops *ops = bus->iommu_ops;
-> @@ -1792,6 +1815,8 @@ static int bus_iommu_probe(struct bus_type *bus)
->  				continue;
->  			}
->  
-> +			iommu_group_create_direct_mappings(group);
-> +
->  			ret = __iommu_group_dma_attach(group);
->  
->  			mutex_unlock(&group->mutex);
-> @@ -2632,7 +2657,7 @@ request_default_domain_for_dev(struct device *dev, unsigned long type)
->  		iommu_domain_free(group->default_domain);
->  	group->default_domain = domain;
->  
-> -	iommu_group_create_direct_mappings(group, dev);
-> +	iommu_create_device_direct_mappings(group, dev);
->  
->  	dev_info(dev, "Using iommu %s mapping\n",
->  		 type == IOMMU_DOMAIN_DMA ? "dma" : "direct");
-> -------------------------------------------------------------------------------
-> 
-> 
-> Git bisection log:
-> 
-> -------------------------------------------------------------------------------
-> git bisect start
-> # good: [642b151f45dd54809ea00ecd3976a56c1ec9b53d] Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity
-> git bisect good 642b151f45dd54809ea00ecd3976a56c1ec9b53d
-> # bad: [fb57b1fabcb28f358901b2df90abd2b48abc1ca8] Add linux-next specific files for 20200519
-> git bisect bad fb57b1fabcb28f358901b2df90abd2b48abc1ca8
-> # good: [8b3dd8b61115d665572dcac44bc6b3e95c8f34f2] Merge remote-tracking branch 'crypto/master'
-> git bisect good 8b3dd8b61115d665572dcac44bc6b3e95c8f34f2
-> # bad: [144c0fb86d53982ba156b518e7b3fbee71f56655] Merge remote-tracking branch 'spi/for-next'
-> git bisect bad 144c0fb86d53982ba156b518e7b3fbee71f56655
-> # good: [1a90af6b9ad8a56d9929e69a28b21aa1132fc42c] Merge remote-tracking branch 'amdgpu/drm-next'
-> git bisect good 1a90af6b9ad8a56d9929e69a28b21aa1132fc42c
-> # good: [a27ba83aed2e6a01f16fd56dd322839c9c179c38] Merge remote-tracking branch 'block/for-next'
-> git bisect good a27ba83aed2e6a01f16fd56dd322839c9c179c38
-> # good: [7f58fc25a6c6c9ac84701be427c477d4a09f197e] Merge remote-tracking branch 'integrity/next-integrity'
-> git bisect good 7f58fc25a6c6c9ac84701be427c477d4a09f197e
-> # good: [59ffe4ed0725de96f4710013c34de387fbeac90c] dt-bindings: ehci/ohci: Allow iommus property
-> git bisect good 59ffe4ed0725de96f4710013c34de387fbeac90c
-> # bad: [f74794b89196349ad42fce396d3537672b4db157] Merge remote-tracking branch 'iommu/next'
-> git bisect bad f74794b89196349ad42fce396d3537672b4db157
-> # bad: [14b3526d5909f01e1d1baa05f50952788bb7418e] iommu/vt-d: Allow PCI sub-hierarchy to use DMA domain
-> git bisect bad 14b3526d5909f01e1d1baa05f50952788bb7418e
-> # bad: [21acf6599cfb4407e9745b36f69c93cf99a3d189] iommu/virtio: Convert to probe/release_device() call-backs
-> git bisect bad 21acf6599cfb4407e9745b36f69c93cf99a3d189
-> # good: [cf193888bfbd3d57e03a511e49d26f7d9c6f76df] iommu: Move new probe_device path to separate function
-> git bisect good cf193888bfbd3d57e03a511e49d26f7d9c6f76df
-> # bad: [dce8d6964ebdb333383bacf5e7ab8c27df151218] iommu/amd: Convert to probe/release_device() call-backs
-> git bisect bad dce8d6964ebdb333383bacf5e7ab8c27df151218
-> # bad: [ce574c27ae275bc51b6437883fc9cd1c46b498e5] iommu: Move iommu_group_create_direct_mappings() out of iommu_group_add_device()
-> git bisect bad ce574c27ae275bc51b6437883fc9cd1c46b498e5
-> # good: [deac0b3bed26bb5d04486696b1071d8ec3851100] iommu: Split off default domain allocation from group assignment
-> git bisect good deac0b3bed26bb5d04486696b1071d8ec3851100
-> # first bad commit: [ce574c27ae275bc51b6437883fc9cd1c46b498e5] iommu: Move iommu_group_create_direct_mappings() out of iommu_group_add_device()
-> -------------------------------------------------------------------------------
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
