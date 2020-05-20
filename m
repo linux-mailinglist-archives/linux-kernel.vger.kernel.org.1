@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A2B1DA6F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4855A1DA6F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgETBIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 21:08:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32798 "EHLO mail.kernel.org"
+        id S1728377AbgETBI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 21:08:56 -0400
+Received: from mx.h4ck.space ([159.69.146.50]:58828 "EHLO mx.h4ck.space"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbgETBIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 21:08:01 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55AA920829;
-        Wed, 20 May 2020 01:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589936881;
-        bh=b1m2H/qspG4/kk7t+fgNctP8zL54Vuj9IU/1FvM90+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nVU2J3ujhHu3+vxfjxo+AzVJ7w7oEHdUsXWm/3bbT3pBhdwOoeDHd6rRogrzIwDAJ
-         pqXiWnS22c6QtGq72UW5y47uiSFV6xt74+xeyZW0PykGkB+/FGVUTzsJdgJxPB8P36
-         l6oU328dkaq3KHBa755CNNA+UKvTmAyP3fP/X+IU=
-Date:   Wed, 20 May 2020 09:07:57 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/zte: remove unneeded semicolon
-Message-ID: <20200520010756.GG11739@dragon>
-References: <20200504113230.40588-1-yanaijie@huawei.com>
+        id S1726352AbgETBIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 21:08:55 -0400
+Date:   Wed, 20 May 2020 03:08:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=notmuch.email;
+        s=mail; t=1589936933;
+        bh=eD1JwKxV0IM6VPh2p6kr6Xs6kEAiC5RCKFBXJxQjb4A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=kACaUp8rFsWqT+WvaE/embZRx2TrgrMj05jZLSFPC2E6wqVW+NSUYDl6D5UsSdxl5
+         D9BYIyjLWIFczonYdLbGwxFAz6M4m0NJc3MBxwjqmy7WXxSzQDlQoP0hchZd/nGrHn
+         fYbyQeUFkONBUHaHqwVLOMNs070TXS3WD5O02VV0=
+From:   andi@notmuch.email
+To:     Brendan Shanks <bshanks@codeweavers.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: umip: AMD Ryzen 3900X, pagefault after emulate SLDT/SIDT
+ instruction
+Message-ID: <20200520010853.635wep2ewq4zpn2y@wrt>
+References: <20200519143815.cpsd2xfx2kl3khsq@wrt>
+ <2330FAB4-A6CE-49E7-921C-B7D55763BDED@codeweavers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200504113230.40588-1-yanaijie@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2330FAB4-A6CE-49E7-921C-B7D55763BDED@codeweavers.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 04, 2020 at 07:32:30PM +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
-> 
-> drivers/gpu/drm/zte/zx_vga.c:158:2-3: Unneeded semicolon
-> drivers/gpu/drm/zte/zx_vga.c:171:2-3: Unneeded semicolon
-> drivers/gpu/drm/zte/zx_vga.c:179:2-3: Unneeded semicolon
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+On 11:56 19.05.20, Brendan Shanks wrote:
+> The problem is that the kernel does not emulate/spoof the SLDT instruction, only SGDT, SIDT, and SMSW.
+> SLDT and STR weren't thought to be commonly used, so emulation/spoofing wasn’t added.
+> In the last few months I have seen reports of one or two (32-bit) Windows games that use SLDT though.
+> Can you share more information about the application you’re running?
 
-Acked-by: Shawn Guo <shawnguo@kernel.org>
+I'll try to create a very simple reproducer for this case in the next
+days. Unfortunately I don't have the source of the original application.
+I can mail you instructions about it directly, if required.
+
+> Maybe the best path is to add kernel emulation/spoofing for SLDT and
+> STR on 32 and 64-bit, just to cover all the cases. It should be a
+> pretty simple patch, I’ll start working on it.
+
+Check the other mail from Ricardo, you can probably safe that effort :-)
+
+> Alternately, I did work on a Wine patch to emulate the UMIP
+> instructions in user-space, but it adds a lot of code and I don’t
+> think there’s much appetite for it in upstream Wine (especially since
+> the kernel emulation is sufficient for almost all cases).
+> https://www.winehq.org/pipermail/wine-devel/2020-February/160027.html
+
+Yeah that seems like the less favorable effort. My best guess is that
+this might not be limited to Wine thus handling in the kernel might be
+best.
+
+> In the meantime, an easy way to disable UMIP without rebuilding the
+> kernel is to pass 'clearcpuid=514’ on the kernel command line.
+
+Nice, I'll use that next time :-)
