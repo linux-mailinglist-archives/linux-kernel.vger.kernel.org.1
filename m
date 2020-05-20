@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4A11DB639
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF921DB62E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727947AbgETOW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 10:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726546AbgETOWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 10:22:38 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461CBC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:22:38 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id a4so2387868lfh.12
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UHLQVyByllAsLV9q0W4W++svAyzlYBPAqfr50eKbfzo=;
-        b=COUxdVvelmP88VBI3mT2/KoKOC6ICS6YuLHK5a1Y0gCSVMBPhjeyGH9lNT/eSf28W8
-         +i1NYwu0rHLChGdfKFvIdDMOXY5bUNAHXNDJWFmCR8mOz0NPtTWrKzPofbybotKy4I4G
-         vUgnJSjCrdWpm3a39CLtQYOAD05vthRJlpPdUR3b8MhGPx6YdhAzvsC/LmqyB5c4s25h
-         Ckl/lbgOPPVh/DD4/tcJNFty/GHN2tleCAMP+NRa3CEnUVEtr2Es7fpMQyQb5jkBpCc+
-         O/is04JNtWtCAMb/qwjRsCLfteGgQGFzrAqtYC61yF724jeEAO9A3yEhtsCylIlAelWk
-         z/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UHLQVyByllAsLV9q0W4W++svAyzlYBPAqfr50eKbfzo=;
-        b=t7SdrhtWvx0NqY6kqPApSMyF2i17trexKEQqkPSYPxS0+KxHiaqTmYGNSb21YeXo2+
-         k1l/iVMd1HFeJoGsQTX/tR9FVBEOM7IesU2HfkJVwpI6TETW7Ytb9NX7R0Zkuy2mp5fh
-         g12FZLf7/b+BacZMlUCRj3qTnAn13ZzqqLIh4Bjp/yKrRi/XeIbnCOSV7DXWL645KCjv
-         tnD68hrsggPlpy9b5cJl3JNUqAzsj4jWtZimvccYmxcIfYlyz1M3I7rx8dTQgviRkG85
-         rNlFDMPY5Gg6eyAat3xKv+5WqLQpzACU1yZ3PzfoiD4ARiWplN6lqr0MP7uksBPo6GTB
-         uHAg==
-X-Gm-Message-State: AOAM530ccHFe/W0BjuaJ5zm2yoEQtq2v8wF2XNEz6+xLhKwtfnL13JkB
-        LodFgg96gsRue1tdBd3ZHYki1A==
-X-Google-Smtp-Source: ABdhPJxWVfMEMFuUY2WYAiK6bM9GpKNsS0vYqJqSFoizkjBB9A0n8JG6mgKEO9U+dC0YZDti3nlxww==
-X-Received: by 2002:a19:ad49:: with SMTP id s9mr2753439lfd.9.1589984556554;
-        Wed, 20 May 2020 07:22:36 -0700 (PDT)
-Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
-        by smtp.gmail.com with ESMTPSA id u15sm1096636lfg.92.2020.05.20.07.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 07:22:35 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     sre@kernel.org, robh@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] power: reset: vexpress: fix build issue
-Date:   Wed, 20 May 2020 16:21:44 +0200
-Message-Id: <20200520142144.520139-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727835AbgETOWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726898AbgETOWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 10:22:24 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 815D9205CB;
+        Wed, 20 May 2020 14:22:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589984543;
+        bh=0KQyo8UdRMkIcGaMdLxSxaIbtmxzWJO28gXwA2MXpeo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ma9mGE3baOMl907jY5WV1VgEBfFNjnh/XkoRUlaoAV9QG/306Qr0ZaRmGHJI3AUki
+         dXPtqWyOqcvwSYwQa5wyQtQVs+GmfBnnTb2FU1EqYpeSa9NfzleTVrA2GBPwARIgSB
+         zfsloof6SF9lCC1YinWGo1LLuZtvL78q/7YR4x6g=
+Date:   Wed, 20 May 2020 23:22:20 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 0/3] tracing/kprobes: Fix event generation API etc.
+Message-Id: <20200520232220.ec89497aab17d7e6507b9886@kernel.org>
+In-Reply-To: <158779373972.6082.16695832932765258919.stgit@devnote2>
+References: <158779373972.6082.16695832932765258919.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An allmodconfig kernel makes CONFIG_VEXPRESS_CONFIG a module and
-CONFIG_POWER_RESET_VEXPRESS builtin. That makes us see this build
-error:
+Hi Steve,
 
-aarch64-linux-gnu-ld: drivers/power/reset/vexpress-poweroff.o: in function `vexpress_reset_probe':
-../drivers/power/reset/vexpress-poweroff.c:119: undefined reference to `devm_regmap_init_vexpress_config'
-../drivers/power/reset/vexpress-poweroff.c:119:(.text+0x48c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol
-`devm_regmap_init_vexpress_config'
-make[1]: *** [/srv/src/kernel/next/Makefile:1126: vmlinux] Error 1
+It seems this fixes are not picked up yet.
+Would you have any consideration?
 
-Rework so that POWER_RESET_VEXPRESS depends on 'VEXPRESS_CONFIG=y'.
+Thank you,
 
-Fixes: d06cfe3f123c ("bus: vexpress-config: Merge vexpress-syscfg into vexpress-config")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- drivers/power/reset/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, 25 Apr 2020 14:48:59 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 4dfac618b942..f07b982c8dff 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -191,7 +191,7 @@ config POWER_RESET_VERSATILE
- config POWER_RESET_VEXPRESS
- 	bool "ARM Versatile Express power-off and reset driver"
- 	depends on ARM || ARM64
--	depends on VEXPRESS_CONFIG
-+	depends on VEXPRESS_CONFIG=y
- 	help
- 	  Power off and reset support for the ARM Ltd. Versatile
- 	  Express boards.
+> Hello,
+> 
+> Here are bugfix/cleanup patches for the kprobe tracer, [1/3]
+> is a typo fix, [2/3] is fixing boot-time tracer and [3/3] is
+> error checking for the new in-kernel kprobe event API.
+> 
+> Tom, I found that your commit 29a154810546 ("tracing: Change
+> trace_boot to use kprobe_event interface") broke the boot-time
+> tracer's kprobe event because of wrong API usage. Could you
+> review it?
+> 
+> I marked [3/3] as a bugfix, because if the loc == NULL, 
+> __kprobe_event_gen_cmd_start() obviously does not work.
+> But it reports actual error at kprobe_event_gen_cmd_end().
+> That is not good for developers to debug it.
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (3):
+>       tracing/kprobes: Fix a double initialization typo
+>       tracing/boottime: Fix kprobe event API usage
+>       tracing/kprobes: Reject new event if loc is NULL
+> 
+> 
+>  kernel/trace/trace_boot.c   |   20 ++++++++------------
+>  kernel/trace/trace_kprobe.c |    8 +++++++-
+>  2 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
 -- 
-2.26.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
