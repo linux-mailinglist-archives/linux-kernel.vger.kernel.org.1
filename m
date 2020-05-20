@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A1B1DB42A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E59F1DB425
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgETMxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:53:38 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:38274 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgETMxe (ORCPT
+        id S1726806AbgETMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgETMvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:53:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0ybvT9DzlJF6vlSWGDITQ4VMJnl0WE8ge4NCMcPhnmk=; b=wl7ptPBvkgr3B5w12TuSs6M8JC
-        ado3HNexn7dI2Bk2SoAubviXOTtmRikBMAzx1by+tBCZ1pb37k/CIis3yYGq8wRyA/OCMSA6SyFmU
-        KV/aFy2o+YlbZsEwTrgK7KOtYOfK1azF8DYHYRBo7vmzy2EeoRDI9CKGCdmXBXSEe4KM8Yfwgp2Yz
-        k+MAqXK4H7rz+dkmsebbT0DyVuoJCe5m+Gug22Fw/GlkLHBZQxoQnufIIaWpURVEW4jEG1x8y8Fch
-        MsAV/5BVa7EDmUKTZmzjwrmI+0vvEAXHZC3m4NRLzuHC9DZAZlFyW4N+Qf7BGTm8pgsVoMtrRU267
-        cAyl9N4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbOBW-0000Nk-UL; Wed, 20 May 2020 12:50:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE7E530015A;
-        Wed, 20 May 2020 14:50:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 93F8529DB4FE3; Wed, 20 May 2020 14:50:56 +0200 (CEST)
-Date:   Wed, 20 May 2020 14:50:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wed, 20 May 2020 08:51:31 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC757C061A0E;
+        Wed, 20 May 2020 05:51:30 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id z15so2317843pjb.0;
+        Wed, 20 May 2020 05:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XVrZcEQ3Ohwq93lQaVh49GHURIxMEGS078tmEHwT2JQ=;
+        b=aOST2MULZ/U9WisiPYmah4vmhjjvFf/jMZY3I2re/kUa5PCYb2JOrvRfx6QapIT4PT
+         DdPWlxNkXXtABiJ8ZLQH8y+tCiMkVBQWvKF4e2r5teEkEILQrJS3mwV0fC/BwUE4SOYl
+         5rVAlIyi4b5/dEdVT5XZYzXE6e1RTsrPrBfaOzmhYJAzNkayzQaheIjaZhsNU9xer7RZ
+         eHtsX04xOAXnBxnfhnloASIpXviTlUD+5kQoMRjM0P8lrJdK81kDkxDJMwj2mpNAaJJ7
+         2pJTZ3q+BTp4lYWkc7Bl8sUZrWBba9QxiFNRZdlJijDTq67sB2lDV/CzXVP0OamL3PS4
+         Pshg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XVrZcEQ3Ohwq93lQaVh49GHURIxMEGS078tmEHwT2JQ=;
+        b=cP/9GVALplibfpPTuggHEiOCzkFtE+neE+68DxTy514ZEBwrBCC5795MJPt0x9qGID
+         pDlOqv2OibDAT33KPi2KjxeqofF1PLqYTrJT2XABs1sUFdRh2qNtFgTVjsabWrPsgKB9
+         xUz6WFHupDkd45LRvXZN4Cc44Q/6pCV5s5xoK7XnSwwsr0kj0M/TQzxFpfGQEvQcou1D
+         myC6EE+XBZzmd6MEj0T7maf/MhmrffsMDI3FDKAkIYA2fDXykfBYNOnNqBbjgBbI6Vtz
+         RXc9jWfpcXixKSOqTOtXE4LYRInXzWMTBzuLbaEFMR30EAzbNG/MFtJGMq4SCo2wLk3l
+         mDgw==
+X-Gm-Message-State: AOAM533dZe61vcyio66nBDvjgNqgMThKkaemjLOpi74FfLy/xPZmnJme
+        7AT4d4CobclGn5gmckqGKzMHcjKh
+X-Google-Smtp-Source: ABdhPJz/vfz6SPgr2I4WPUNz2HX9I6wa5WPDb+JOB4wSOa/i95lO65KxDD4uC82ktZiTA2FuyRsamg==
+X-Received: by 2002:a17:90b:1288:: with SMTP id fw8mr5179133pjb.160.1589979090211;
+        Wed, 20 May 2020 05:51:30 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id mn19sm2109266pjb.8.2020.05.20.05.51.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 05:51:29 -0700 (PDT)
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a
+ seqcount
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: Endless soft-lockups for compiling workload since next-20200519
-Message-ID: <20200520125056.GC325280@hirez.programming.kicks-ass.net>
-References: <CAG=TAF6jUsQrW-fjbS3vpjkMfn8=MUDsuQxjk3NMfvQa250RHA@mail.gmail.com>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-2-a.darwish@linutronix.de>
+ <33cec6a9-2f6e-3d3c-99ac-9b2a3304ec26@gmail.com>
+ <20200520064246.GA353513@debian-buster-darwi.lab.linutronix.de>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <1498089b-08bd-d776-1570-d8b34463c702@gmail.com>
+Date:   Wed, 20 May 2020 05:51:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG=TAF6jUsQrW-fjbS3vpjkMfn8=MUDsuQxjk3NMfvQa250RHA@mail.gmail.com>
+In-Reply-To: <20200520064246.GA353513@debian-buster-darwi.lab.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:58:17PM -0400, Qian Cai wrote:
-> Just a head up. Repeatedly compiling kernels for a while would trigger
-> endless soft-lockups since next-20200519 on both x86_64 and powerpc.
-> .config are in,
-
-Could be 90b5363acd47 ("sched: Clean up scheduler_ipi()"), although I've
-not seen anything like that myself. Let me go have a look.
 
 
-In as far as the logs are readable (they're a wrapped mess, please don't
-do that!), they contain very little useful, as is typical with IPIs :/
+On 5/19/20 11:42 PM, Ahmed S. Darwish wrote:
+> Hello Eric,
+> 
+> On Tue, May 19, 2020 at 07:01:38PM -0700, Eric Dumazet wrote:
+>>
+>> On 5/19/20 2:45 PM, Ahmed S. Darwish wrote:
+>>> Sequence counters write paths are critical sections that must never be
+>>> preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
+>>>
+>>> Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
+>>> netdev name retrieval.") handled a deadlock, observed with
+>>> CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
+>>> infinitely spinning: it got scheduled after the seqcount write side
+>>> blocked inside its own critical section.
+>>>
+>>> To fix that deadlock, among other issues, the commit added a
+>>> cond_resched() inside the read side section. While this will get the
+>>> non-preemptible kernel eventually unstuck, the seqcount reader is fully
+>>> exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
+>>>
+>>> The fix is also still broken: if the seqcount reader belongs to a
+>>> real-time scheduling policy, it can spin forever and the kernel will
+>>> livelock.
+>>>
+>>> Disabling preemption over the seqcount write side critical section will
+>>> not work: inside it are a number of GFP_KERNEL allocations and mutex
+>>> locking through the drivers/base/ :: device_rename() call chain.
+>>>
+>>> From all the above, replace the seqcount with a rwsem.
+>>>
+>>> Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
+>>> Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
+>>> Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
+>>> Cc: <stable@vger.kernel.org>
+>>> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+>>> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>>> ---
+>>>  net/core/dev.c | 30 ++++++++++++------------------
+>>>  1 file changed, 12 insertions(+), 18 deletions(-)
+>>>
+>>
+>> Seems fine to me, assuming rwsem prevent starvation of the writer.
+>>
+> 
+> Thanks for the review.
+> 
+> AFAIK, due to 5cfd92e12e13 ("locking/rwsem: Adaptive disabling of reader
+> optimistic spinning"), using a rwsem shouldn't lead to writer starvation
+> in the contended case.
 
-> [ 1167.993773][    C1] WARNING: CPU: 1 PID: 0 at kernel/smp.c:127
-> flush_smp_call_function_queue+0x1fa/0x2e0
-> [ 1168.003333][    C1] Modules linked in: nls_iso8859_1 nls_cp437 vfat
-> fat kvm_amd ses kvm enclosure dax_pmem irqbypass dax_pmem_core efivars
-> acpi_cpufreq efivarfs ip_tables x_tables xfs sd_mod smartpqi
-> scsi_transport_sas tg3 mlx5_core libphy firmware_class dm_mirror
-> dm_region_hash dm_log dm_mod
-> [ 1168.029492][    C1] CPU: 1 PID: 0 Comm: swapper/1 Not tainted
-> 5.7.0-rc6-next-20200519 #1
-> [ 1168.037665][    C1] Hardware name: HPE ProLiant DL385
-> Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
-> [ 1168.046978][    C1] RIP: 0010:flush_smp_call_function_queue+0x1fa/0x2e0
-> [ 1168.053658][    C1] Code: 01 0f 87 c9 12 00 00 83 e3 01 0f 85 cc fe
-> ff ff 48 c7 c7 c0 55 a9 8f c6 05 f6 86 cd 01 01 e8 de 09 ea ff 0f 0b
-> e9 b2 fe ff ff <0f> 0b e9 52 ff ff ff 0f 0b e9 f2 fe ff ff 65 44 8b 25
-> 10 52 3f 71
-> [ 1168.073262][    C1] RSP: 0018:ffffc90000178918 EFLAGS: 00010046
-> [ 1168.079253][    C1] RAX: 0000000000000000 RBX: ffff8888430c58f8
-> RCX: ffffffff8ec26083
-> [ 1168.087156][    C1] RDX: 0000000000000003 RSI: dffffc0000000000
-> RDI: ffff8888430c58f8
-> [ 1168.095054][    C1] RBP: ffffc900001789a8 R08: ffffed1108618cec
-> R09: ffffed1108618cec
-> [ 1168.102964][    C1] R10: ffff8888430c675b R11: 0000000000000000
-> R12: ffff8888430c58e0
-> [ 1168.110866][    C1] R13: ffffffff8eb30c40 R14: ffff8888430c5880
-> R15: ffff8888430c58e0
-> [ 1168.118767][    C1] FS:  0000000000000000(0000)
-> GS:ffff888843080000(0000) knlGS:0000000000000000
-> [ 1168.127628][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1168.134129][    C1] CR2: 000055b169604560 CR3: 0000000d08a14000
-> CR4: 00000000003406e0
-> [ 1168.142026][    C1] Call Trace:
-> [ 1168.145206][    C1]  <IRQ>
-> [ 1168.147957][    C1]  ? smp_call_on_cpu_callback+0xd0/0xd0
-> [ 1168.153421][    C1]  ? rcu_read_lock_sched_held+0xac/0xe0
-> [ 1168.158880][    C1]  ? rcu_read_lock_bh_held+0xc0/0xc0
-> [ 1168.164076][    C1]  generic_smp_call_function_single_interrupt+0x13/0x2b
-> [ 1168.170938][    C1]  smp_call_function_single_interrupt+0x157/0x4e0
-> [ 1168.177278][    C1]  ? smp_call_function_interrupt+0x4e0/0x4e0
-> [ 1168.183172][    C1]  ? interrupt_entry+0xe4/0xf0
-> [ 1168.187846][    C1]  ? trace_hardirqs_off_caller+0x8d/0x1f0
-> [ 1168.193478][    C1]  ? trace_hardirqs_on_caller+0x1f0/0x1f0
-> [ 1168.199116][    C1]  ? _nohz_idle_balance+0x221/0x360
-> [ 1168.204228][    C1]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-> [ 1168.209690][    C1]  call_function_single_interrupt+0xf/0x20
+Hmm this was in linux-5.3, so very recent stuff.
+
+Has this patch been backported to stable releases ?
+
+With all the Fixes: tags you added, stable teams will backport this networking patch to
+all stable versions.
+
+Do we have a way to tune a dedicare rwsem to 'give preference to the (unique in this case) writer" over
+a myriad of potential readers ?
+
+Thanks.
+
