@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CC21DA6ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD60A1DA6F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgETBGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 21:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgETBGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 21:06:04 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE4A620708;
-        Wed, 20 May 2020 01:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589936764;
-        bh=zor48bXJQ4c2kAxaJluW7+9Ew89ICgOqiSGEW4LgzI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=alcv5suyhyRxqBPQAM026Gtjv1cHG5anqpF86KMAtYP0hwh+PBQlJF/PVGXhNv4py
-         BdZ2zF9jIdu1TFQSXWQHstetWrldKlrOCS89qy6W4QoeRvKVUGZi21LE4NNxm3hWte
-         jSQa+8bLDq2vusmQL0Q7BQVLd8MkMS+Qp6fNoi9g=
-Date:   Wed, 20 May 2020 09:05:59 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mm: Add node for SPDIF
-Message-ID: <20200520010558.GF11739@dragon>
-References: <20200502132011.196045-1-aford173@gmail.com>
+        id S1728294AbgETBHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 21:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727029AbgETBHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 21:07:01 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0B6C08C5C0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 18:07:01 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id f4so1309867iov.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 18:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ef1MTgEAKFw6adwkz7lKMErPGJSzzTLWzjNkQKbUYbc=;
+        b=AhxrKwXAmjHzOJ5Xm4UqFAMN/dj34O1RgzeJqSgw1WAMPI9gCHvTKGIqu7rjRUIMv7
+         5MzUsQ9OmZoVMiatmlJuK/8s78Gn4GjptxfVI7nUEV4HCjH10Z6SUQHYP6kmSSduKoCz
+         jI3N5ao2ay+oV31N7IgrvdMis7f7LyDa10rCZSq4WbnyOc7ieTfRTQISd6TcLvay9QV6
+         RgQiVhD1zqUeinj+NfDbvvgvSmx21eyH63TnO/3YmEI535Es0TApgVmZRgq1cQaThcur
+         u4580hIbRdQlRyImB8AxL0dHhqP7QGdVCQIXSqDAgnOgTrUrVQ/DSUF2QjTzrFW+6arK
+         tjBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ef1MTgEAKFw6adwkz7lKMErPGJSzzTLWzjNkQKbUYbc=;
+        b=RZBiCnTHWkVuCUI8WjOcod++RH6V26SE79l+v8i9TMffHsCb+BHcYnVhixqrlohhuh
+         QUvwvSpv+TMaDMyCPZXc+7gEu5Fy3YJ3A0KQUL58xuqjGL9ESedaTc6JkUTi9r7bqwgX
+         vlLLOTP5otHHf2+uWSbPUZKnfbHCnqRxU1SwoDq872utXU6h+QWHdTNR3rCvMRavURPv
+         CAU8NRMcs9Z6pVdsGv+VaV4RmLggaG6Y/NVVg+A6le08IcL+CRKTjFttsW3TupP3kMPZ
+         S7FIfqVfaF9ABpnKA8l6vfsvG2ED1TvyX7shin1nZpCPTt5/wv4+uwGX/7sRa2+SEAES
+         L3UQ==
+X-Gm-Message-State: AOAM533oUSUidSWWRXfH4apT0XHPGque1pn06OF3ZMmDG25XmTMmOWSQ
+        xpkjYAF61M4fqzCFWiIxmryHzl6KmRcL9ftRxmo=
+X-Google-Smtp-Source: ABdhPJy4Z1hVSQaT7VplxzvaN4PD2pG45f7Pma74SkGkx2+mk8bz+uO9emKsZs/IjbRUtD33AvnbxOQim6l5B0doZOg=
+X-Received: by 2002:a02:77c7:: with SMTP id g190mr2264613jac.140.1589936820538;
+ Tue, 19 May 2020 18:07:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200502132011.196045-1-aford173@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a05:6e02:1061:0:0:0:0 with HTTP; Tue, 19 May 2020 18:07:00
+ -0700 (PDT)
+Reply-To: mrs.minaabrunel30@gmail.com
+From:   "Mrs. Mina A. Brunel" <musaik36@gmail.com>
+Date:   Wed, 20 May 2020 03:07:00 +0200
+Message-ID: <CAA-ARrBbavTQJOAy7M2XZeCf_u-H7ArdgE+8WTPEW2hrZZ-OvQ@mail.gmail.com>
+Subject: My Dear in the lord
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 02, 2020 at 08:20:11AM -0500, Adam Ford wrote:
-> The i.MX8M Mini can support SPIDF which is very similar to the
-> IP used on the i.MX35.
-> 
-> This patch adds the SPIF node.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index d46e727fc362..00aad55ece65 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -358,6 +358,29 @@ micfil: micfil@30080000 {
->  				status = "disabled";
->  			};
->  
-> +			spdif1: spdif@30090000 {
+My Dear in the lord
 
-It should be in a patch series with previous micfil one, as it cannot be
-applied independently.
 
-> +				compatible = "fsl,imx8mm-spdif", "fsl,imx35-spdif";
-> +				reg = <0x30090000 0x10000>;
-> +				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
-> +					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
-> +					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
-> +					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
-> +					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
-> +					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
-> +					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
-> +					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
-> +					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
-> +					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
-> +				clock-names = "core", "rxtx0",
-> +					      "rxtx1", "rxtx2",
-> +					      "rxtx3", "rxtx4",
-> +					      "rxtx5", "rxtx6",
-> +					      "rxtx7", "spba";
-> +				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-> +				dma-names = "rx", "tx";
-> +				status = "disabled";
-> +			};
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in
+Burkina Faso, I am married to Mr. Brunel Patrice, a politician who
+owns a small gold company in Burkina Faso; He died of Leprosy and
+Radesyge, in the year February 2010, During his lifetime he deposited
+the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundred thousand
+Euros in a bank in Ouagadougou the capital city of Burkina Faso in
+West Africa. The money was from the sale of his company and death
+benefits payment and entitlements of my deceased husband by his
+company.
 
-Have a newline between nodes.
+I am sending you this message with heavy tears in my eyes and great
+sorrow in my heart, and also praying that it will reach you in good
+health because I am not in good health, I sleep every night without
+knowing if I may be alive to see the next day. I am suffering from
+long time cancer and presently I am partially suffering from Leprosy,
+which has become difficult for me to move around. I was married to my
+late husband for more than 6 years without having a child and my
+doctor confided that I have less chance to live, having to know when
+the cup of death will come, I decided to contact you to claim the fund
+since I don't have any relation I grew up from an orphanage home.
 
-Shawn
+I have decided to donate this money for the support of helping
+Motherless babies/Less privileged/Widows and churches also to build
+the house of God because I am dying and diagnosed with cancer for
+about 3 years ago. I have decided to donate from what I have inherited
+from my late husband to you for the good work of Almighty God; I will
+be going in for an operation surgery soon.
 
->  			gpio1: gpio@30200000 {
->  				compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
->  				reg = <0x30200000 0x10000>;
-> -- 
-> 2.25.1
-> 
+Now I want you to stand as my next of kin to claim the funds for
+charity purposes. Because of this money remains unclaimed after my
+death, the bank executives or the government will take the money as
+unclaimed fund and maybe use it for selfishness and worthless
+ventures, I need a very honest person who can claim this money and use
+it for Charity works, for orphanages, widows and also build schools
+and churches for less privilege that will be named after my late
+husband and my name.
+
+I need your urgent answer to know if you will be able to execute this
+project, and I will give you more information on how the fund will be
+transferred to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
