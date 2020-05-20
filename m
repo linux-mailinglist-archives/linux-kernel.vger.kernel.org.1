@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9791DB59A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688CF1DB59D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgETNuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgETNuv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:50:51 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6B4C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:50:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f134so2613459wmf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lTWjeswxH0l98lyAxNqRNJAIOGggfbasSyUWJF3O/mI=;
-        b=CjbbxN8hygEVQLVlGrH7l+/V/HdHKau/Ebvqwk35rM13T4gaQNRQy7FepGskwmW3na
-         +RHf7e1uuO7h0fovTB5z0nEvtSTAPxYrR+kFXWhjKT9xQIyhn1hzLCv7DYoGzBdAU2cy
-         /DVgXsWaQCgLoKd3OHE1X0o8+YbdAu18dWgfo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lTWjeswxH0l98lyAxNqRNJAIOGggfbasSyUWJF3O/mI=;
-        b=rKfvJsvJMuaDUTlHbi+edvFnck5gATG7h6o5FndzOk9oUPun6U25CgUUtJh87jCB/l
-         UW29prKGfzLyrf56N2JHMZaK2gtmGI2i93s2eorjIVs269d/PkCxqd2M3OGmZ7ykLtOF
-         PPd2EFSclK69VQpBex39UH+lAFtNIihWdi6jYE2GDzvveZYvXQyX0rJqkFpk23WLodxD
-         EKuzRlhzGEAaoLxxIszWK/tR12P+XwNZjs7IQbQSQPrpK0lgPcZhW++QaBXJp73W/tan
-         3K/TzF0kAsKosoN/KmChA1MCrpqiGGMhs78qm+ERsBCXHBrtZ19cpjXXMuAtdCQrcnl0
-         i0fw==
-X-Gm-Message-State: AOAM532X4xx5hwR0lpQdDaAn+HbX8wMOJ5o/QchwYqQnpAyMjm8tyTCL
-        3mYFAy+ZH4lUugvuioFxzyAl5pNR3d/y+B/gE7BLUw==
-X-Google-Smtp-Source: ABdhPJyaXGaSNp9tyc7HR3h1s5MPA9ExbrcjOq9FSNfXd4CqVCIoj7d0aI/ZbycoUGoC9EKycGOKogZNdnICVdwHSus=
-X-Received: by 2002:a05:600c:d6:: with SMTP id u22mr4468679wmm.45.1589982649690;
- Wed, 20 May 2020 06:50:49 -0700 (PDT)
+        id S1726823AbgETNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:51:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55290 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgETNvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:51:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5774FAC46;
+        Wed, 20 May 2020 13:51:49 +0000 (UTC)
+Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
+ obj_to_index()
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-5-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0e0616f2-6c5a-8911-7d37-6f2027c2930b@suse.cz>
+Date:   Wed, 20 May 2020 15:51:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200519203419.12369-1-james.quinlan@broadcom.com>
- <20200519203419.12369-10-james.quinlan@broadcom.com> <20200520054349.GB2180554@kroah.com>
-In-Reply-To: <20200520054349.GB2180554@kroah.com>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Wed, 20 May 2020 09:50:36 -0400
-Message-ID: <CA+-6iNyQFauYc0ZNbzRmao_oOZD8XM+1D0XE133HP_-zgMLzuA@mail.gmail.com>
-Subject: Re: [PATCH 09/15] device core: Add ability to handle multiple dma offsets
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200422204708.2176080-5-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 1:43 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, May 19, 2020 at 04:34:07PM -0400, Jim Quinlan wrote:
-> > diff --git a/include/linux/device.h b/include/linux/device.h
-> > index ac8e37cd716a..6cd916860b5f 100644
-> > --- a/include/linux/device.h
-> > +++ b/include/linux/device.h
-> > @@ -493,6 +493,8 @@ struct dev_links_info {
-> >   * @bus_dma_limit: Limit of an upstream bridge or bus which imposes a smaller
-> >   *           DMA limit than the device itself supports.
-> >   * @dma_pfn_offset: offset of DMA memory range relatively of RAM
-> > + * @dma_map: Like dma_pfn_offset but used when there are multiple
-> > + *           pfn offsets for multiple dma-ranges.
-> >   * @dma_parms:       A low level driver may set these to teach IOMMU code about
-> >   *           segment limitations.
-> >   * @dma_pools:       Dma pools (if dma'ble device).
-> > @@ -578,7 +580,12 @@ struct device {
-> >                                            allocations such descriptors. */
-> >       u64             bus_dma_limit;  /* upstream dma constraint */
-> >       unsigned long   dma_pfn_offset;
-> > -
-> > +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
-> > +     const void *dma_offset_map;     /* Like dma_pfn_offset, but for
-> > +                                      * the unlikely case of multiple
-> > +                                      * offsets. If non-null, dma_pfn_offset
-> > +                                      * will be 0. */
-> > +#endif
-> >       struct device_dma_parameters *dma_parms;
-> >
-> >       struct list_head        dma_pools;      /* dma pools (if dma'ble) */
->
-> I'll defer to Christoph here, but I thought we were trying to get rid of
-> stuff like this from struct device, not add new things to it for dma
-Hi Greg,
+On 4/22/20 10:46 PM, Roman Gushchin wrote:
+> This commit implements SLUB version of the obj_to_index() function,
+> which will be required to calculate the offset of obj_cgroup in the
+> obj_cgroups vector to store/obtain the objcg ownership data.
+> 
+> To make it faster, let's repeat the SLAB's trick introduced by
+> commit 6a2d7a955d8d ("[PATCH] SLAB: use a multiply instead of a
+> divide in obj_to_index()") and avoid an expensive division.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Christoph Lameter <cl@linux.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I wasn't aware of this policy.  I put it in 'struct device' because
-just like the existing dma_pfn_offset; it seemed to be the only way to
-pull this off.  I'll certainly follow any ideas on alternative
-strategies from Christoph et al.
+There's already a slab_index() doing the same without the trick, with only
+SLUB_DEBUG callers. Maybe just improve it and perhaps rename? (obj_to_index()
+seems more descriptive). The difference is that it takes the result of
+page_addr() instead of doing that, as it's being called in a loop on objects
+from a single page, so you'd have to perhaps split to obj_to_index(page) and
+__obj_to_index(addr) or something.
 
-> apis.  And why is it a void *?
-Just wanted to minimize the number of lines I've added to device.h, no
-other reason.
+> ---
+>  include/linux/slub_def.h | 9 +++++++++
+>  mm/slub.c                | 1 +
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+> index d2153789bd9f..200ea292f250 100644
+> --- a/include/linux/slub_def.h
+> +++ b/include/linux/slub_def.h
+> @@ -8,6 +8,7 @@
+>   * (C) 2007 SGI, Christoph Lameter
+>   */
+>  #include <linux/kobject.h>
+> +#include <linux/reciprocal_div.h>
+>  
+>  enum stat_item {
+>  	ALLOC_FASTPATH,		/* Allocation from cpu slab */
+> @@ -86,6 +87,7 @@ struct kmem_cache {
+>  	unsigned long min_partial;
+>  	unsigned int size;	/* The size of an object including metadata */
+>  	unsigned int object_size;/* The size of an object without metadata */
+> +	struct reciprocal_value reciprocal_size;
+>  	unsigned int offset;	/* Free pointer offset */
+>  #ifdef CONFIG_SLUB_CPU_PARTIAL
+>  	/* Number of per cpu partial objects to keep around */
+> @@ -182,4 +184,11 @@ static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
+>  	return result;
+>  }
+>  
+> +static inline unsigned int obj_to_index(const struct kmem_cache *cache,
+> +					const struct page *page, void *obj)
+> +{
+> +	return reciprocal_divide(kasan_reset_tag(obj) - page_address(page),
+> +				 cache->reciprocal_size);
+> +}
+> +
+>  #endif /* _LINUX_SLUB_DEF_H */
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 03071ae5ff07..8d16babe1829 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3660,6 +3660,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>  	 */
+>  	size = ALIGN(size, s->align);
+>  	s->size = size;
+> +	s->reciprocal_size = reciprocal_value(size);
+>  	if (forced_order >= 0)
+>  		order = forced_order;
+>  	else
+> 
 
-Thanks,
-Jim
->
-> thanks,
->
-> greg k-h
