@@ -2,84 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FD71DBE76
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67151DBF77
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgETTzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:55:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46675 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727040AbgETTy7 (ORCPT
+        id S1727912AbgETT4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726837AbgETT4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:54:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590004498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sqmyv9Uj/6QITFVDuBCzR+kX0VyYFXB5wU0RIVSK914=;
-        b=dMj7N53vvtmqpk11IHAuQKZigZd+bsmbvU5GjlxD9W0uvSl04/LigX6feawLB1/Bf9TWl2
-        lvD1fdaa//dXFpsHG8rbL+DnMc9hNORcuYvXVo+csbEf2GDOWMVSstugiAF+ujUJQFlVmG
-        FTqK9zopJGzkgsmOUBXYdKfGSqM7nfk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-5bhEgzfuPdatDtmzqzhxYQ-1; Wed, 20 May 2020 15:54:55 -0400
-X-MC-Unique: 5bhEgzfuPdatDtmzqzhxYQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22431100530A;
-        Wed, 20 May 2020 19:54:54 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-91.ams2.redhat.com [10.36.112.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31EC41943D;
-        Wed, 20 May 2020 19:54:53 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] virt: vbox: Fix some comments which talk about the "session spinlock"
+        Wed, 20 May 2020 15:56:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D80C061A0E;
+        Wed, 20 May 2020 12:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=LnylUFmE6LGjXbTh/304lIDcSEDmTsi7Z0jAT1kL31A=; b=CdXPAUVRNHUd4djUXKzygY6eqY
+        pddYRAuSDCjKp5OLMvV5HFWp4+1lnoX+ce1HqqmdjML9v7HulBDUQiiS8N9RR3VhaHOVH38CeV1Hd
+        7vMQxFQ8UF/Ls3XjtwWajwKgAUY5Stczl7TojeRxwxl0vSDd8MAt8Orwg8ea/rwWafbJoOUpqFgf2
+        15nXAAHDd2ojx+DTSyebVz7TaPqLOz6dNV6vfzQQONLM4L9Aiy6XYCo6Nr77PHrYECfy6ErFSuvsI
+        23bogPEg1gNuVFfIzjo7W+dOfZWQgPOv3UOqQmHorx1wuqcokze0WXWraldOcl6Z3ugZc5nHsYKPU
+        iKLCwkTQ==;
+Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbUoD-0001yn-Ef; Wed, 20 May 2020 19:55:22 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>, drbd-dev@lists.linbit.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nvme@lists.infradead.org, target-devel@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        netdev@vger.kernel.org, linux-sctp@vger.kernel.org,
+        ceph-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-nfs@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>
+Subject: [PATCH 04/33] net: add sock_no_linger
 Date:   Wed, 20 May 2020 21:54:40 +0200
-Message-Id: <20200520195440.38759-8-hdegoede@redhat.com>
-In-Reply-To: <20200520195440.38759-1-hdegoede@redhat.com>
-References: <20200520195440.38759-1-hdegoede@redhat.com>
+Message-Id: <20200520195509.2215098-5-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200520195509.2215098-1-hch@lst.de>
+References: <20200520195509.2215098-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The session lock is a mutex, not a spinlock, fix the comments to match.
+Add a helper to directly set the SO_LINGER sockopt from kernel space
+with onoff set to true and a linger time of 0 without going through a
+fake uaccess.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/virt/vboxguest/vboxguest_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/host/tcp.c   |  9 +--------
+ drivers/nvme/target/tcp.c |  6 +-----
+ include/net/sock.h        |  1 +
+ net/core/sock.c           |  9 +++++++++
+ net/rds/tcp.h             |  1 -
+ net/rds/tcp_connect.c     |  2 +-
+ net/rds/tcp_listen.c      | 13 +------------
+ net/sunrpc/svcsock.c      | 12 ++----------
+ 8 files changed, 16 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/virt/vboxguest/vboxguest_core.c b/drivers/virt/vboxguest/vboxguest_core.c
-index e0e343d0ba93..d99c19551d04 100644
---- a/drivers/virt/vboxguest/vboxguest_core.c
-+++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -559,7 +559,7 @@ static int vbg_reset_host_event_filter(struct vbg_dev *gdev,
-  * Changes the event filter mask for the given session.
-  *
-  * This is called in response to VBG_IOCTL_CHANGE_FILTER_MASK as well as to
-- * do session cleanup. Takes the session spinlock.
-+ * do session cleanup. Takes the session mutex.
-  *
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-@@ -811,7 +811,7 @@ static int vbg_acquire_session_capabilities(struct vbg_dev *gdev,
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index c15a92163c1f7..e72d87482eb78 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1313,7 +1313,6 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl,
+ {
+ 	struct nvme_tcp_ctrl *ctrl = to_tcp_ctrl(nctrl);
+ 	struct nvme_tcp_queue *queue = &ctrl->queues[qid];
+-	struct linger sol = { .l_onoff = 1, .l_linger = 0 };
+ 	int ret, opt, rcv_pdu_size;
+ 
+ 	queue->ctrl = ctrl;
+@@ -1361,13 +1360,7 @@ static int nvme_tcp_alloc_queue(struct nvme_ctrl *nctrl,
+ 	 * close. This is done to prevent stale data from being sent should
+ 	 * the network connection be restored before TCP times out.
+ 	 */
+-	ret = kernel_setsockopt(queue->sock, SOL_SOCKET, SO_LINGER,
+-			(char *)&sol, sizeof(sol));
+-	if (ret) {
+-		dev_err(nctrl->device,
+-			"failed to set SO_LINGER sock opt %d\n", ret);
+-		goto err_sock;
+-	}
++	sock_no_linger(queue->sock->sk);
+ 
+ 	if (so_priority > 0) {
+ 		ret = kernel_setsockopt(queue->sock, SOL_SOCKET, SO_PRIORITY,
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index 40757a63f4553..e0801494b097f 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -1429,7 +1429,6 @@ static int nvmet_tcp_set_queue_sock(struct nvmet_tcp_queue *queue)
+ {
+ 	struct socket *sock = queue->sock;
+ 	struct inet_sock *inet = inet_sk(sock->sk);
+-	struct linger sol = { .l_onoff = 1, .l_linger = 0 };
+ 	int ret;
+ 
+ 	ret = kernel_getsockname(sock,
+@@ -1447,10 +1446,7 @@ static int nvmet_tcp_set_queue_sock(struct nvmet_tcp_queue *queue)
+ 	 * close. This is done to prevent stale data from being sent should
+ 	 * the network connection be restored before TCP times out.
+ 	 */
+-	ret = kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
+-			(char *)&sol, sizeof(sol));
+-	if (ret)
+-		return ret;
++	sock_no_linger(sock->sk);
+ 
+ 	if (so_priority > 0) {
+ 		ret = kernel_setsockopt(sock, SOL_SOCKET, SO_PRIORITY,
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 2ec085044790c..6ed00bf009bbe 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2688,6 +2688,7 @@ static inline bool sk_dev_equal_l3scope(struct sock *sk, int dif)
+ 
+ void sock_def_readable(struct sock *sk);
+ 
++void sock_no_linger(struct sock *sk);
+ void sock_set_reuseaddr(struct sock *sk);
+ 
+ #endif	/* _SOCK_H */
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 18eb84fdf5fbe..f0f09524911c8 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -720,6 +720,15 @@ void sock_set_reuseaddr(struct sock *sk)
+ }
+ EXPORT_SYMBOL(sock_set_reuseaddr);
+ 
++void sock_no_linger(struct sock *sk)
++{
++	lock_sock(sk);
++	sk->sk_lingertime = 0;
++	sock_set_flag(sk, SOCK_LINGER);
++	release_sock(sk);
++}
++EXPORT_SYMBOL(sock_no_linger);
++
+ /*
+  *	This is meant for all protocols to use and covers goings on
+  *	at the socket level. Everything here is generic.
+diff --git a/net/rds/tcp.h b/net/rds/tcp.h
+index 3c69361d21c73..d640e210b97b6 100644
+--- a/net/rds/tcp.h
++++ b/net/rds/tcp.h
+@@ -73,7 +73,6 @@ void rds_tcp_listen_data_ready(struct sock *sk);
+ int rds_tcp_accept_one(struct socket *sock);
+ int rds_tcp_keepalive(struct socket *sock);
+ void *rds_tcp_listen_sock_def_readable(struct net *net);
+-void rds_tcp_set_linger(struct socket *sock);
+ 
+ /* tcp_recv.c */
+ int rds_tcp_recv_init(void);
+diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+index 008f50fb25dd2..4e64598176b05 100644
+--- a/net/rds/tcp_connect.c
++++ b/net/rds/tcp_connect.c
+@@ -207,7 +207,7 @@ void rds_tcp_conn_path_shutdown(struct rds_conn_path *cp)
+ 
+ 	if (sock) {
+ 		if (rds_destroy_pending(cp->cp_conn))
+-			rds_tcp_set_linger(sock);
++			sock_no_linger(sock->sk);
+ 		sock->ops->shutdown(sock, RCV_SHUTDOWN | SEND_SHUTDOWN);
+ 		lock_sock(sock->sk);
+ 		rds_tcp_restore_callbacks(sock, tc); /* tc->tc_sock = NULL */
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 810a3a49e9474..bbb31b9c0b391 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -111,17 +111,6 @@ struct rds_tcp_connection *rds_tcp_accept_one_path(struct rds_connection *conn)
+ 	return NULL;
  }
  
- /**
-- * Sets the guest capabilities for a session. Takes the session spinlock.
-+ * Sets the guest capabilities for a session. Takes the session mutex.
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-  * @session:			The session.
+-void rds_tcp_set_linger(struct socket *sock)
+-{
+-	struct linger no_linger = {
+-		.l_onoff = 1,
+-		.l_linger = 0,
+-	};
+-
+-	kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
+-			  (char *)&no_linger, sizeof(no_linger));
+-}
+-
+ int rds_tcp_accept_one(struct socket *sock)
+ {
+ 	struct socket *new_sock = NULL;
+@@ -241,7 +230,7 @@ int rds_tcp_accept_one(struct socket *sock)
+ 	 * be pending on it. By setting linger, we achieve the side-effect
+ 	 * of avoiding TIME_WAIT state on new_sock.
+ 	 */
+-	rds_tcp_set_linger(new_sock);
++	sock_no_linger(new_sock->sk);
+ 	kernel_sock_shutdown(new_sock, SHUT_RDWR);
+ 	ret = 0;
+ out:
+diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+index 023514e392b31..6773dacc64d8e 100644
+--- a/net/sunrpc/svcsock.c
++++ b/net/sunrpc/svcsock.c
+@@ -323,17 +323,9 @@ static int svc_tcp_has_wspace(struct svc_xprt *xprt)
+ 
+ static void svc_tcp_kill_temp_xprt(struct svc_xprt *xprt)
+ {
+-	struct svc_sock *svsk;
+-	struct socket *sock;
+-	struct linger no_linger = {
+-		.l_onoff = 1,
+-		.l_linger = 0,
+-	};
++	struct svc_sock *svsk = container_of(xprt, struct svc_sock, sk_xprt);
+ 
+-	svsk = container_of(xprt, struct svc_sock, sk_xprt);
+-	sock = svsk->sk_sock;
+-	kernel_setsockopt(sock, SOL_SOCKET, SO_LINGER,
+-			  (char *)&no_linger, sizeof(no_linger));
++	sock_no_linger(svsk->sk_sock->sk);
+ }
+ 
+ /*
 -- 
 2.26.2
 
