@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118231DBAB4
+	by mail.lfdr.de (Postfix) with ESMTP id F2F491DBAB6
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgETRHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:07:24 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:34983 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726560AbgETRHW (ORCPT
+        id S1727025AbgETRH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:07:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51110 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726838AbgETRHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:07:22 -0400
+        Wed, 20 May 2020 13:07:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589994440;
+        s=mimecast20190719; t=1589994441;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=05KQX8lVPlCt8vmRWHdvXIWoBaoV9a3Uogcp9WxiQ8g=;
-        b=dpf5fKUsxaKIDTiQMZYZpXZqpnsXuKEYMVeKYO4eyI5dPwxI0ve2ZPaOhor7oWAytRDk6b
-        rWBwFO0z5c+1vtawytRylBrVjsqbaNoH85pGWU6MSWhC+dWlucolq2dpQOk1Q9tjjLWiSH
-        TphmDVS61eU4m6SPbXgjt0Fw1VkCH4k=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-Ym2gmKKSM9ycGxwYlqcrFQ-1; Wed, 20 May 2020 13:07:19 -0400
-X-MC-Unique: Ym2gmKKSM9ycGxwYlqcrFQ-1
-Received: by mail-wm1-f69.google.com with SMTP id g10so1521562wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:07:18 -0700 (PDT)
+        bh=enl1W2uIu4fZuLT8iyT7NS/nMICLBarNGTfzsJ5XBJ0=;
+        b=HKN5cKwh2Q8JRPbGvTBX6T8Ec1ueBvnd//Saf8QnSci31tzVqX5024kpF9nE17SqNypXWm
+        YCEHMefFUy1LPf1V0cST1jC9dghDweDL/yjb5KvgspKqYkjd4u/H9vrzNg/iHhG0+ylZ7s
+        7UKqC1WSN9KEABMqPjvrFGBiboCfwy0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-KrfpwmQAMUaURuS7YLryMQ-1; Wed, 20 May 2020 13:07:19 -0400
+X-MC-Unique: KrfpwmQAMUaURuS7YLryMQ-1
+Received: by mail-wm1-f70.google.com with SMTP id e15so227136wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:07:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=05KQX8lVPlCt8vmRWHdvXIWoBaoV9a3Uogcp9WxiQ8g=;
-        b=evmwEQkHiHbqTeCqmbTbPmhRBWO/FaZcwM3AwrMJHkvjfsH4f6dBBlXJYP9wVuqQ+9
-         Q89Sl782Qwi+waSQIqhjjw0o9rsB8Q6MEQdQC6HrykrRpraj8KrdxRuifYdC8vRxpb7v
-         RgwvRkN0iGXIm+5PLhVexU266wFNomBCWd9utUnujZSJMktHeRdBDJBo4n2eJ/wjnun3
-         zRMU0gJEe3sGiEpL8klcX7jg2VleXzmzmm3r829C92psax2+PLaKQiAlv7pQ7Q6jhwY6
-         5A7qCk+drAzHfPdnfVO2Fv0jn78wvyC/Ztegz/5JaHgkGmUTWHq53WZGaQBSX1EoTDpw
-         03EQ==
-X-Gm-Message-State: AOAM533BkWXu8ae12F+ACzyL2KvkkolX6Yl+N+ZUjkqDv4rWwD3f53CH
-        zSCJ2O7t7tL118ziTUEecsKJ9S2Rh60jAjqtbomb/k+mIuODJnuMC+vb5aQlGVe1AYQXGVs3I2G
-        bazPnDcGXYSMf2iDDXeG8g8nU
-X-Received: by 2002:adf:a15c:: with SMTP id r28mr256970wrr.337.1589994437574;
-        Wed, 20 May 2020 10:07:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+adX5YucyY7E4vzhaND3YOzLEGdbHzr9/aBODa2oQodWTjohpKwnZCVuELuNx5MWcx6XbzQ==
-X-Received: by 2002:adf:a15c:: with SMTP id r28mr256959wrr.337.1589994437393;
-        Wed, 20 May 2020 10:07:17 -0700 (PDT)
+        bh=enl1W2uIu4fZuLT8iyT7NS/nMICLBarNGTfzsJ5XBJ0=;
+        b=gARuq338wA8XorRccqE33eXC/5oRqSYdPXsGxe0E/2wI0WdCgJMak0VCdxC/yc1L0E
+         VTiZy6wDaKE/mxMj7dsOhuzSJ6yo0Exm00vS1Mx6zbJDf7tyc2t6R+O99tHd2Ju7Yh0E
+         RBT/234xhNg1OEFuRFh5RhcolufeBUdwlnufg8KXK3aGOKbCi7zQu69EL11HSopCQ9SD
+         KSVmCjcKSHjMV3+nqlQZdK/tuOnKS/TGO9CIe+eIguqMqRvLzAHqYDn/HX2BfjzDOkv5
+         /UWff308m3uMz8UT3fISVNqdzVAJyHSlKPzHAlxCjVMph2UBIpfCpj2pduyLc6zm6HF+
+         w8ZQ==
+X-Gm-Message-State: AOAM532odrB6i4YCcKGWo+K1464MdmP/P689a/9n7vtKr5lTRb8wCo3k
+        i4X0PfKcHU8BJDOIW9Dfova3YTnQXodpdF1X8PmTO8o4rnwfLSNybP7gIKWTvpTamcIA/caqU46
+        TYMPRRafmQ3BooPnfPpFioMeA
+X-Received: by 2002:a05:6000:4:: with SMTP id h4mr4863656wrx.36.1589994438801;
+        Wed, 20 May 2020 10:07:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/oL0fpnDNlWDRl/DQpqVURE2ukinpGD7z7G2S6eeKrBlnPSAq1QGG74sJXqhvE+E43M0SYg==
+X-Received: by 2002:a05:6000:4:: with SMTP id h4mr4863645wrx.36.1589994438575;
+        Wed, 20 May 2020 10:07:18 -0700 (PDT)
 Received: from steredhat.redhat.com ([79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id u74sm3768614wmu.13.2020.05.20.10.07.16
+        by smtp.gmail.com with ESMTPSA id u74sm3768614wmu.13.2020.05.20.10.07.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 10:07:16 -0700 (PDT)
+        Wed, 20 May 2020 10:07:17 -0700 (PDT)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Subject: [PATCH liburing v2 1/5] Add CQ ring 'flags' field
-Date:   Wed, 20 May 2020 19:07:10 +0200
-Message-Id: <20200520170714.68156-2-sgarzare@redhat.com>
+Subject: [PATCH liburing v2 2/5] man/io_uring_setup.2: add 'flags' field in the struct io_cqring_offsets
+Date:   Wed, 20 May 2020 19:07:11 +0200
+Message-Id: <20200520170714.68156-3-sgarzare@redhat.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200520170714.68156-1-sgarzare@redhat.com>
 References: <20200520170714.68156-1-sgarzare@redhat.com>
@@ -67,57 +67,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-io_uring provides the new CQ ring 'flags' field if 'cq_off.flags'
-is not zero. In this case we set the 'cq->kflags' pointer, otherwise
-it will be NULL.
-
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- src/include/liburing.h          | 1 +
- src/include/liburing/io_uring.h | 4 +++-
- src/setup.c                     | 2 ++
- 3 files changed, 6 insertions(+), 1 deletion(-)
+ man/io_uring_setup.2 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/src/include/liburing.h b/src/include/liburing.h
-index 4311325..adc8db9 100644
---- a/src/include/liburing.h
-+++ b/src/include/liburing.h
-@@ -41,6 +41,7 @@ struct io_uring_cq {
- 	unsigned *ktail;
- 	unsigned *kring_mask;
- 	unsigned *kring_entries;
-+	unsigned *kflags;
- 	unsigned *koverflow;
- 	struct io_uring_cqe *cqes;
- 
-diff --git a/src/include/liburing/io_uring.h b/src/include/liburing/io_uring.h
-index a279151..9860a8a 100644
---- a/src/include/liburing/io_uring.h
-+++ b/src/include/liburing/io_uring.h
-@@ -205,7 +205,9 @@ struct io_cqring_offsets {
- 	__u32 ring_entries;
- 	__u32 overflow;
- 	__u32 cqes;
--	__u64 resv[2];
-+	__u32 flags;
-+	__u32 resv1;
-+	__u64 resv2;
+diff --git a/man/io_uring_setup.2 b/man/io_uring_setup.2
+index d48bb32..c929cb7 100644
+--- a/man/io_uring_setup.2
++++ b/man/io_uring_setup.2
+@@ -325,7 +325,8 @@ struct io_cqring_offsets {
+     __u32 ring_entries;
+     __u32 overflow;
+     __u32 cqes;
+-    __u32 resv[4];
++    __u32 flags;
++    __u32 resv[3];
  };
- 
- /*
-diff --git a/src/setup.c b/src/setup.c
-index f783b6a..860c112 100644
---- a/src/setup.c
-+++ b/src/setup.c
-@@ -76,6 +76,8 @@ err:
- 	cq->kring_entries = cq->ring_ptr + p->cq_off.ring_entries;
- 	cq->koverflow = cq->ring_ptr + p->cq_off.overflow;
- 	cq->cqes = cq->ring_ptr + p->cq_off.cqes;
-+	if (p->cq_off.flags)
-+		cq->kflags = cq->ring_ptr + p->cq_off.flags;
- 	return 0;
- }
- 
+ .EE
+ .in
 -- 
 2.25.4
 
