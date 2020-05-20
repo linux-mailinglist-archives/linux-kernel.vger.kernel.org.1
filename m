@@ -2,242 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C051DC112
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960DE1DC108
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgETVN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:13:59 -0400
-Received: from muru.com ([72.249.23.125]:55340 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728439AbgETVN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:13:56 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id B6EBD81BF;
-        Wed, 20 May 2020 21:14:43 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     "Andrew F . Davis" <afd@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 6/6] ARM: dts: Configure omap4 and 5 l4_abe for genpd and drop platform data
-Date:   Wed, 20 May 2020 14:13:34 -0700
-Message-Id: <20200520211334.61814-7-tony@atomide.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520211334.61814-1-tony@atomide.com>
-References: <20200520211334.61814-1-tony@atomide.com>
+        id S1728351AbgETVNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 17:13:42 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50598 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727018AbgETVNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:13:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590009220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9q+MVTxOqNCDfm1aFUF9Xo/SKnt2cacs55IlEoGNHvA=;
+        b=B1T1VzFxSUC/pqOEcG1rBsEQdkZcu5zm4X2ILt0AICYvxTVXM+n/oQFLblptWol9GBdA7r
+        3ApZg4tvq6TxRWc9Cqhlq6J0pt6bpJRq0jt0G5stgHyGNx6Pxbm37DJ1C+cYIThPHlRLdz
+        i22JZwAMuUHB6i0lJxr1b/oRQi5/PPA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-9W5n5iydNK6pOlWyQoUr6w-1; Wed, 20 May 2020 17:13:38 -0400
+X-MC-Unique: 9W5n5iydNK6pOlWyQoUr6w-1
+Received: by mail-ej1-f72.google.com with SMTP id o23so1859201ejx.21
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 14:13:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9q+MVTxOqNCDfm1aFUF9Xo/SKnt2cacs55IlEoGNHvA=;
+        b=BzRoIjI8p4IEYGf8BaQG5per1CKur7nrLQTELg0c3+gwzjabBGt8zJzwu/v1pcA0I5
+         OVjUzqE+31YjPuBGTw2oIDbVEi4Mst3oWWCLAn3MCvPAJqIELuM3Ony75Me5qSdaAnDz
+         GJ/CI0vRjHuAaWlohGpN4/MhYkAmzRG8EEgwR9TXm+rvNkjRcrgauEQCvveAjqYp+2k9
+         MPS2WO7nZWfDe3MACbuBD6gBVD9roYT1t8Ly/JagppBydUYu5SHBErDWNxyF8h5cDUGg
+         9sJ49aiZG32XfZBtWS7SdtIKn6D0QjwsDHrYGOaK4Ruy3OZQK4VD0yIJS7ZJ0Wo9DhMu
+         0lIw==
+X-Gm-Message-State: AOAM530LO0rIbar6gKedgvXpS2t1nY3wnZUfIo/pHiGdb1rT9IkNp2pU
+        DFgA3XPCYlRvUP79z5Utlx433pDhH0MbQaRW0idAHUqxIwNakJlJZ6n16jVupdUcSRxqK0jAPUK
+        VgKbhhKWO3FhfNyQ0ioMX3nPn
+X-Received: by 2002:a17:906:4886:: with SMTP id v6mr932537ejq.11.1590009217557;
+        Wed, 20 May 2020 14:13:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQQ/ymyohkomsuFQ61gv/edSNt58FILtFnlIurwiVtnbBAEtNk/6YFqAQpcZtu96ld+iDlDQ==
+X-Received: by 2002:a17:906:4886:: with SMTP id v6mr932525ejq.11.1590009217375;
+        Wed, 20 May 2020 14:13:37 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:1c48:1dd8:fe63:e3da? ([2001:b07:6468:f312:1c48:1dd8:fe63:e3da])
+        by smtp.gmail.com with ESMTPSA id g20sm2820206edp.31.2020.05.20.14.13.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 14:13:36 -0700 (PDT)
+Subject: Re: [PATCH 22/24] uaccess: add memzero_user
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, Joerg Roedel <jroedel@suse.de>
+References: <20200520172145.23284-1-pbonzini@redhat.com>
+ <20200520172145.23284-23-pbonzini@redhat.com>
+ <20200520204036.GA1335@infradead.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e2e23a99-f682-1556-dad0-408e78233eb6@redhat.com>
+Date:   Wed, 20 May 2020 23:13:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200520204036.GA1335@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can power off l4_abe domain when not in use when we configure it for
-genpd. And with that change, we can now also drop the old unused legacy
-platform data.
+On 20/05/20 22:40, Christoph Hellwig wrote:
+> On Wed, May 20, 2020 at 01:21:43PM -0400, Paolo Bonzini wrote:
+>> +			unsafe_put_user(val, (unsigned long __user *) from, err_fault);
+> This adds a way too long line.  In many ways it would be much nicer if
+> you used an unsigned long __user * variable internally, a that would
+> remove all these crazy casts and actually make the code readable.
+> 
 
-Note that we also need to now use "simple-pm-bus" instead of "simple-bus"
-for PM runtime to get enabled for the bus.
+Good idea, thanks.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/omap4-l4-abe.dtsi        |  6 ++--
- arch/arm/boot/dts/omap4.dtsi               |  6 ++++
- arch/arm/boot/dts/omap5-l4-abe.dtsi        |  6 ++--
- arch/arm/boot/dts/omap5.dtsi               |  6 ++++
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c | 33 ----------------------
- arch/arm/mach-omap2/omap_hwmod_54xx_data.c | 31 --------------------
- 6 files changed, 20 insertions(+), 68 deletions(-)
+Paolo
 
-diff --git a/arch/arm/boot/dts/omap4-l4-abe.dtsi b/arch/arm/boot/dts/omap4-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap4-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap4-l4-abe.dtsi
-@@ -1,14 +1,16 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap4-l4-abe", "simple-bus";
-+	compatible = "ti,omap4-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	/* OMAP4_L4_ABE_CLKCTRL is read-only */
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -637,6 +637,12 @@ prm_tesla: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/boot/dts/omap5-l4-abe.dtsi b/arch/arm/boot/dts/omap5-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap5-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap5-l4-abe.dtsi
-@@ -1,14 +1,16 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap5-l4-abe", "simple-bus";
-+	compatible = "ti,omap5-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	/* OMAP5_L4_ABE_CLKCTRL is read-only */
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -563,6 +563,12 @@ prm_dsp: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-@@ -124,21 +124,6 @@ static struct omap_hwmod_class omap44xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap44xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap44xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP4_CM1_ABE_L4ABE_CLKCTRL_OFFSET,
--			.context_offs = OMAP4_RM_ABE_AESS_CONTEXT_OFFSET,
--			.lostcontext_mask = OMAP4430_LOSTMEM_AESSMEM_MASK,
--			.flags	      = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap44xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -1007,22 +992,6 @@ static struct omap_hwmod_ocp_if omap44xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_abe = {
--	.master		= &omap44xx_l3_main_1_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "l3_div_ck",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_mpu__l4_abe = {
--	.master		= &omap44xx_mpu_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "ocp_abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_cfg = {
- 	.master		= &omap44xx_l3_main_1_hwmod,
-@@ -1266,8 +1235,6 @@ static struct omap_hwmod_ocp_if *omap44xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap44xx_l3_main_1__l3_main_3,
- 	&omap44xx_l3_main_2__l3_main_3,
- 	&omap44xx_l4_cfg__l3_main_3,
--	&omap44xx_l3_main_1__l4_abe,
--	&omap44xx_mpu__l4_abe,
- 	&omap44xx_l3_main_1__l4_cfg,
- 	&omap44xx_l3_main_2__l4_per,
- 	&omap44xx_l4_cfg__l4_wkup,
-diff --git a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-@@ -121,19 +121,6 @@ static struct omap_hwmod_class omap54xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap54xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap54xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP54XX_CM_ABE_L4_ABE_CLKCTRL_OFFSET,
--			.flags = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap54xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -618,22 +605,6 @@ static struct omap_hwmod_ocp_if omap54xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_abe = {
--	.master		= &omap54xx_l3_main_1_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_mpu__l4_abe = {
--	.master		= &omap54xx_mpu_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_cfg = {
- 	.master		= &omap54xx_l3_main_1_hwmod,
-@@ -741,8 +712,6 @@ static struct omap_hwmod_ocp_if *omap54xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap54xx_l3_main_1__l3_main_3,
- 	&omap54xx_l3_main_2__l3_main_3,
- 	&omap54xx_l4_cfg__l3_main_3,
--	&omap54xx_l3_main_1__l4_abe,
--	&omap54xx_mpu__l4_abe,
- 	&omap54xx_l3_main_1__l4_cfg,
- 	&omap54xx_l3_main_2__l4_per,
- 	&omap54xx_l3_main_1__l4_wkup,
--- 
-2.26.2
