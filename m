@@ -2,170 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FBB1DBC4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A36B1DBC50
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgETSGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:06:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:46831 "EHLO mga14.intel.com"
+        id S1726993AbgETSGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:06:55 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47203 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726856AbgETSGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:06:49 -0400
-IronPort-SDR: 40H4e4sivOBPskR5/hEKzrEX/mKs4VWjbxWNj+bOXl5RJhU+Dppt3ywGtFm/FV+MlYwA+D3JHk
- HnC6V5sY4TSw==
+        id S1726964AbgETSGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 14:06:54 -0400
+IronPort-SDR: CYh3q2d11wKl5AfaRMqB3l8bSMmjXNbKahiHqHB2GFd+3QzrubrCjl2zlhE5jBRgeg3vlRSgLL
+ MFApj09NAN9w==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 11:06:48 -0700
-IronPort-SDR: u9gDP6FZblclJIaNTvy38fhxPFfJMkwzF6VBOKC6I6jaf45Dkik35TYjIPEz9l6IO27V5+BmnD
- kJhWRiHCVbcQ==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 11:06:53 -0700
+IronPort-SDR: y4TAj5LuH/3XDp/qr/BXcqJuuf3jzmX8mc87XEewhYq9zb08w8kkZbOUihK3Msf4wb8K7inFvA
+ nUWpA3oj1dRg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
-   d="scan'208";a="289442253"
-Received: from ydandeka-mobl.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.5.7])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 11:06:47 -0700
-From:   Sean V Kelley <sean.v.kelley@linux.intel.com>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>
-Subject: [PATCH V3 3/3] PCI: Add helpers to enable/disable CXL.mem and CXL.cache
-Date:   Wed, 20 May 2020 11:06:40 -0700
-Message-Id: <20200520180640.1911202-4-sean.v.kelley@linux.intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520180640.1911202-1-sean.v.kelley@linux.intel.com>
-References: <20200520180640.1911202-1-sean.v.kelley@linux.intel.com>
+   d="scan'208";a="268351859"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 20 May 2020 11:06:53 -0700
+Received: from [10.249.231.6] (abudanko-mobl.ccr.corp.intel.com [10.249.231.6])
+        by linux.intel.com (Postfix) with ESMTP id CD19B580100;
+        Wed, 20 May 2020 11:06:50 -0700 (PDT)
+Subject: Re: [PATCH v3 8/9] perf record: implement control commands handling
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com>
+ <25f98682-5ef2-4257-f302-93b29da707a9@linux.intel.com>
+ <20200520123833.GG157452@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <df2cd76d-a9ae-7092-1ee2-83fee8f557c8@linux.intel.com>
+Date:   Wed, 20 May 2020 21:06:49 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200520123833.GG157452@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With these helpers, a device driver can enable/disable access to
-CXL.mem and CXL.cache. Note that the device driver is responsible for
-managing the memory area.
 
-Signed-off-by: Sean V Kelley <sean.v.kelley@linux.intel.com>
----
- drivers/pci/cxl.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci.h |  8 +++++
- 2 files changed, 92 insertions(+)
+On 20.05.2020 15:38, Jiri Olsa wrote:
+> On Wed, May 13, 2020 at 11:04:25AM +0300, Alexey Budankov wrote:
+>>
+>> Implement handling of 'enable' and 'disable' control commands
+>> coming from control file descriptor.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  tools/perf/builtin-record.c | 18 +++++++++++++++++-
+>>  1 file changed, 17 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index 50dc2fe626e5..72f388623364 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -1505,6 +1505,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  	bool disabled = false, draining = false;
+>>  	int fd;
+>>  	float ratio = 0;
+>> +	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
+>>  
+>>  	atexit(record__sig_exit);
+>>  	signal(SIGCHLD, sig_handler);
+>> @@ -1802,8 +1803,23 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  			 * Propagate error, only if there's any. Ignore positive
+>>  			 * number of returned events and interrupt error.
+>>  			 */
+>> -			if (err > 0 || (err < 0 && errno == EINTR))
+>> +			if (err > 0 || (err < 0 && errno == EINTR)) {
+>>  				err = 0;
+>> +				if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
+>> +					switch (cmd) {
+>> +					case EVLIST_CTL_CMD_ENABLE:
+>> +						pr_info(EVLIST_ENABLED_MSG);
+>> +						break;
+>> +					case EVLIST_CTL_CMD_DISABLE:
+>> +						pr_info(EVLIST_DISABLED_MSG);
+>> +						break;
+>> +					case EVLIST_CTL_CMD_ACK:
+>> +					case EVLIST_CTL_CMD_UNSUPPORTED:
+>> +					default:
+>> +						break;
+>> +					}
+>> +				}
+>> +			}
+> 
+> so this will be processed only when:
+> 
+> 	if (hits == rec->samples) {
+> 
+> what if there's always somethign in the buffer? will this stall?
+> 
+>>  			waking++;
+>>  
+>>  			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
+> 
+> evlist__filter_pollfd will trigger draining if all the maps are closed,
+> but there's one more fd in pollfd now, will this prevent draining?
 
-diff --git a/drivers/pci/cxl.c b/drivers/pci/cxl.c
-index 4497c597347f..e58e5262b59a 100644
---- a/drivers/pci/cxl.c
-+++ b/drivers/pci/cxl.c
-@@ -24,6 +24,90 @@
- #define PCI_CXL_HDM_COUNT(reg)		(((reg) & (3 << 4)) >> 4)
- #define PCI_CXL_VIRAL			BIT(14)
- 
-+#define PCI_CXL_CONFIG_LOCK		BIT(0)
-+
-+static void pci_cxl_unlock(struct pci_dev *dev)
-+{
-+	int cxl = dev->cxl_cap;
-+	u16 lock;
-+
-+	pci_read_config_word(dev, cxl + PCI_CXL_LOCK, &lock);
-+	lock &= ~PCI_CXL_CONFIG_LOCK;
-+	pci_write_config_word(dev, cxl + PCI_CXL_LOCK, lock);
-+}
-+
-+static void pci_cxl_lock(struct pci_dev *dev)
-+{
-+	int cxl = dev->cxl_cap;
-+	u16 lock;
-+
-+	pci_read_config_word(dev, cxl + PCI_CXL_LOCK, &lock);
-+	lock |= PCI_CXL_CONFIG_LOCK;
-+	pci_write_config_word(dev, cxl + PCI_CXL_LOCK, lock);
-+}
-+
-+/*
-+ * CXL DVSEC CTRL registers have Read-Write-Lockable attributes.
-+ * PCI_CXL_CONFIG_LOCK locks these CTRL registers by making them RO.
-+ * This lock prevents future changes to configuration and is not intended
-+ * for enforcing mutual exclusion. See CXL 1.1, sec 7.1.1.6
-+ */
-+static int pci_cxl_enable_disable_feature(struct pci_dev *dev, int enable,
-+					  u16 feature)
-+{
-+	int cxl = dev->cxl_cap;
-+	int ret;
-+	u16 reg;
-+
-+	if (!dev->cxl_cap)
-+		return -EINVAL;
-+
-+	/* Only for Device 0 Function 0, Root Complex Integrated Endpoints */
-+	if (dev->devfn != 0 || (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_END))
-+		return -EINVAL;
-+
-+	pci_cxl_unlock(dev);
-+	ret = pci_read_config_word(dev, cxl + PCI_CXL_CTRL, &reg);
-+	if (ret)
-+		goto lock;
-+
-+	if (enable)
-+		reg |= feature;
-+	else
-+		reg &= ~feature;
-+
-+	ret = pci_write_config_word(dev, cxl + PCI_CXL_CTRL, reg);
-+
-+lock:
-+	pci_cxl_lock(dev);
-+
-+	return ret;
-+}
-+
-+int pci_cxl_mem_enable(struct pci_dev *dev)
-+{
-+	return pci_cxl_enable_disable_feature(dev, true, PCI_CXL_MEM);
-+}
-+EXPORT_SYMBOL_GPL(pci_cxl_mem_enable);
-+
-+void pci_cxl_mem_disable(struct pci_dev *dev)
-+{
-+	pci_cxl_enable_disable_feature(dev, false, PCI_CXL_MEM);
-+}
-+EXPORT_SYMBOL_GPL(pci_cxl_mem_disable);
-+
-+int pci_cxl_cache_enable(struct pci_dev *dev)
-+{
-+	return pci_cxl_enable_disable_feature(dev, true, PCI_CXL_CACHE);
-+}
-+EXPORT_SYMBOL_GPL(pci_cxl_cache_enable);
-+
-+void pci_cxl_cache_disable(struct pci_dev *dev)
-+{
-+	pci_cxl_enable_disable_feature(dev, false, PCI_CXL_CACHE);
-+}
-+EXPORT_SYMBOL_GPL(pci_cxl_cache_disable);
-+
- /*
-  * pci_find_cxl_capability - Identify and return offset to Vendor-Specific
-  * capabilities.
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index d9905e2dee95..5ec7fa0eb709 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -472,8 +472,16 @@ static inline void pci_restore_ats_state(struct pci_dev *dev) { }
- #ifdef CONFIG_PCI_CXL
- /* Compute eXpress Link */
- void pci_cxl_init(struct pci_dev *dev);
-+int pci_cxl_mem_enable(struct pci_dev *dev);
-+void pci_cxl_mem_disable(struct pci_dev *dev);
-+int pci_cxl_cache_enable(struct pci_dev *dev);
-+void pci_cxl_cache_disable(struct pci_dev *dev);
- #else
- static inline void pci_cxl_init(struct pci_dev *dev) { }
-+static inline int pci_cxl_mem_enable(struct pci_dev *dev) { return 0; }
-+static inline void pci_cxl_mem_disable(struct pci_dev *dev) { }
-+static inline int pci_cxl_cache_enable(struct pci_dev *dev) { return 0; }
-+static inline void pci_cxl_cache_disable(struct pci_dev *dev) { }
- #endif
- 
- #ifdef CONFIG_PCI_PRI
--- 
-2.26.2
+Good catch. This needs redesign to notice pending commands during 
+active trace streaming. The same is regarding draining.
+
+> 
+> I wonder this would fit better to the sideband thread (util/sideband_evlist.c)
+> so we don't disturb the main thread with another check
+
+~Alexey
 
