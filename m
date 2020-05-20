@@ -2,287 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EF51DA691
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC481DA65C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgETAa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:30:28 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56780 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgETAa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:30:26 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 948661A0210;
-        Wed, 20 May 2020 02:30:23 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7BF0F1A0237;
-        Wed, 20 May 2020 02:30:18 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2401F402BB;
-        Wed, 20 May 2020 08:30:12 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: gpio: Convert mxs to json-schema
-Date:   Wed, 20 May 2020 08:20:35 +0800
-Message-Id: <1589934035-5309-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728279AbgETAU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgETAU5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 20:20:57 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C5BC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:20:57 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ee19so535382qvb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LBB46rtW2d9K5WUtTRAG4fGkmmxRO4txDBDNhv1nb3I=;
+        b=aufPXHafyAKGS85jzWFQOmgEWdqs2c3vqfnjP5CTdSPYXzcd9jfZDjoFw7/fNhSpkq
+         IEZvwy3nKg/7g5wAsBDxBkWyxPLi0cj4q3usRy4fSHicFZVt61hbduN29GYLULTU3gPr
+         Q7V7t+NzRRNytV7oV32b0dXWPTuzrqLtQT5r6hIF73tiiSOpCL7QS877pdVlaLjAS6N7
+         UBfvfG4X9vrVciR1zgfzlhvxP9ALidemtfWxUeq9f3OWI2jyqIvHIHbU5TEQLYHeFsSS
+         MMrEe9j7jF8ybu7VVS564vbdG9pPvCrzDHDqF1D3h/arpm778fP207M1EnuLnsBaOaqN
+         NlPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LBB46rtW2d9K5WUtTRAG4fGkmmxRO4txDBDNhv1nb3I=;
+        b=bUtG2I1DBEzcnTPWRjmc0OecCqp5khsjbAxjj6J6QiIDuf9pWRF6fndHTLPb5i34RK
+         iO7Kif2fB1g8Jyp5uljpAL6OmfH5m7YoqRUB/ImwuYL9ADWU+mIcHHAsc6wj4fteTj7m
+         5v+AP+veD/VvAN3iMeH+7bTDK8018xv5erQM87WFygF5r3oRP8qJb0SxfETrqjRUb/43
+         UYvJmwBVhDtV6+Q/6QXccDTHU0rWnrCdF46CymJJzDOB5/mEbeCHJW4NxqyJEnZA+SLp
+         4EOMEyWlIyNHi+795HY0C0xs+5/Z7/gUnYNdZFEPsanhdVWgZkM7hKsp4iSc8AIGhe8h
+         FC5A==
+X-Gm-Message-State: AOAM5333GXfRqKc5OgZND2K39uAoVo9eTM9KzGIiPP+obVdv2mnTr/N1
+        Ly6+Vtil3GEMGCS8s5vGk87IAg==
+X-Google-Smtp-Source: ABdhPJzUB+q2wwwWl7HLqKjiszG5tdFF+m444eib+1trXjL6fLEd1NOT5DuZ5jvnviZDurr8gfCNzw==
+X-Received: by 2002:ad4:4a8b:: with SMTP id h11mr2482355qvx.232.1589934056694;
+        Tue, 19 May 2020 17:20:56 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y66sm769077qka.24.2020.05.19.17.20.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 May 2020 17:20:56 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jbCTf-0003SK-R4; Tue, 19 May 2020 21:20:55 -0300
+Date:   Tue, 19 May 2020 21:20:55 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, peterx@redhat.com
+Subject: Re: [PATCH 2/2] vfio: Introduce strict PFNMAP mappings
+Message-ID: <20200520002055.GC31189@ziepe.ca>
+References: <158947414729.12590.4345248265094886807.stgit@gimli.home>
+ <158947512947.12590.4756232870747830161.stgit@gimli.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158947512947.12590.4756232870747830161.stgit@gimli.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the MXS GPIO binding to DT schema format using json-schema.
+On Thu, May 14, 2020 at 10:52:09AM -0600, Alex Williamson wrote:
+>  	vfio_unregister_iommu_driver(&vfio_noiommu_ops);
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 62ba6bd8a486..8d6286d89230 100644
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -61,6 +61,11 @@ module_param_named(dma_entry_limit, dma_entry_limit, uint, 0644);
+>  MODULE_PARM_DESC(dma_entry_limit,
+>  		 "Maximum number of user DMA mappings per container (65535).");
+>  
+> +static bool strict_mmio_maps = true;
+> +module_param_named(strict_mmio_maps, strict_mmio_maps, bool, 0644);
+> +MODULE_PARM_DESC(strict_mmio_maps,
+> +		 "Restrict DMA mappings of MMIO to those provided by vfio bus drivers supporting invalidation (true).");
+> +
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/gpio/gpio-mxs.txt          |  88 -------------
- .../devicetree/bindings/gpio/gpio-mxs.yaml         | 136 +++++++++++++++++++++
- 2 files changed, 136 insertions(+), 88 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-mxs.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-mxs.yaml
+This should probably explain that 'false' allows some kind of security
+issue and maybe taint the kernel?
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-mxs.txt b/Documentation/devicetree/bindings/gpio/gpio-mxs.txt
-deleted file mode 100644
-index 1e677a4..0000000
---- a/Documentation/devicetree/bindings/gpio/gpio-mxs.txt
-+++ /dev/null
-@@ -1,88 +0,0 @@
--* Freescale MXS GPIO controller
--
--The Freescale MXS GPIO controller is part of MXS PIN controller.  The
--GPIOs are organized in port/bank.  Each port consists of 32 GPIOs.
--
--As the GPIO controller is embedded in the PIN controller and all the
--GPIO ports share the same IO space with PIN controller, the GPIO node
--will be represented as sub-nodes of MXS pinctrl node.
--
--Required properties for GPIO node:
--- compatible : Should be "fsl,<soc>-gpio".  The supported SoCs include
--  imx23 and imx28.
--- interrupts : Should be the port interrupt shared by all 32 pins.
--- gpio-controller : Marks the device node as a gpio controller.
--- #gpio-cells : Should be two.  The first cell is the pin number and
--  the second cell is used to specify the gpio polarity:
--      0 = active high
--      1 = active low
--- interrupt-controller: Marks the device node as an interrupt controller.
--- #interrupt-cells : Should be 2.  The first cell is the GPIO number.
--  The second cell bits[3:0] is used to specify trigger type and level flags:
--      1 = low-to-high edge triggered.
--      2 = high-to-low edge triggered.
--      4 = active high level-sensitive.
--      8 = active low level-sensitive.
--
--Note: Each GPIO port should have an alias correctly numbered in "aliases"
--node.
--
--Examples:
--
--aliases {
--	gpio0 = &gpio0;
--	gpio1 = &gpio1;
--	gpio2 = &gpio2;
--	gpio3 = &gpio3;
--	gpio4 = &gpio4;
--};
--
--pinctrl@80018000 {
--	compatible = "fsl,imx28-pinctrl", "simple-bus";
--	reg = <0x80018000 2000>;
--
--	gpio0: gpio@0 {
--		compatible = "fsl,imx28-gpio";
--		interrupts = <127>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--	};
--
--	gpio1: gpio@1 {
--		compatible = "fsl,imx28-gpio";
--		interrupts = <126>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--	};
--
--	gpio2: gpio@2 {
--		compatible = "fsl,imx28-gpio";
--		interrupts = <125>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--	};
--
--	gpio3: gpio@3 {
--		compatible = "fsl,imx28-gpio";
--		interrupts = <124>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--	};
--
--	gpio4: gpio@4 {
--		compatible = "fsl,imx28-gpio";
--		interrupts = <123>;
--		gpio-controller;
--		#gpio-cells = <2>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-mxs.yaml b/Documentation/devicetree/bindings/gpio/gpio-mxs.yaml
-new file mode 100644
-index 0000000..ccf5b50
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/gpio-mxs.yaml
-@@ -0,0 +1,136 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/gpio-mxs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale MXS GPIO controller
-+
-+maintainers:
-+  - Shawn Guo <shawn.guo@linaro.org>
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+description: |
-+  The Freescale MXS GPIO controller is part of MXS PIN controller.
-+  The GPIOs are organized in port/bank, each port consists of 32 GPIOs.
-+  As the GPIO controller is embedded in the PIN controller and all the
-+  GPIO ports share the same IO space with PIN controller, the GPIO node
-+  will be represented as sub-nodes of MXS pinctrl node.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx23-pinctrl
-+      - fsl,imx28-pinctrl
-+
-+  '#address-cells':
-+    const: 1
-+  '#size-cells':
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+patternProperties:
-+  "gpio@[0-9]+$":
-+    type: object
-+    properties:
-+      compatible:
-+        enum:
-+          - fsl,imx23-gpio
-+          - fsl,imx28-gpio
-+
-+      reg:
-+        maxItems: 1
-+
-+      interrupts:
-+        description: Should be the port interrupt shared by all 32 pins.
-+        maxItems: 1
-+
-+      interrupt-controller: true
-+
-+      "#interrupt-cells":
-+        const: 2
-+
-+      "#gpio-cells":
-+        const: 2
-+
-+      gpio-controller: true
-+
-+    required:
-+      - compatible
-+      - reg
-+      - interrupts
-+      - interrupt-controller
-+      - "#interrupt-cells"
-+      - "#gpio-cells"
-+      - gpio-controller
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#address-cells'
-+  - '#size-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pinctrl@80018000 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        compatible = "fsl,imx28-pinctrl";
-+        reg = <0x80018000 0x2000>;
-+
-+        gpio@0 {
-+                compatible = "fsl,imx28-gpio";
-+                reg = <0>;
-+                interrupts = <127>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+        };
-+
-+        gpio@1 {
-+                compatible = "fsl,imx28-gpio";
-+                reg = <1>;
-+                interrupts = <126>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+        };
-+
-+        gpio@2 {
-+                compatible = "fsl,imx28-gpio";
-+                reg = <2>;
-+                interrupts = <125>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+        };
-+
-+        gpio@3 {
-+                compatible = "fsl,imx28-gpio";
-+                reg = <3>;
-+                interrupts = <124>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+        };
-+
-+        gpio@4 {
-+                compatible = "fsl,imx28-gpio";
-+                reg = <4>;
-+                interrupts = <123>;
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+                interrupt-controller;
-+                #interrupt-cells = <2>;
-+        };
-+    };
--- 
-2.7.4
+Do you think there is a reason to have this anyhow?
 
+Jason
