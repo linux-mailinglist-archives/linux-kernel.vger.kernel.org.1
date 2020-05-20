@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE111DA72A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7610C1DA72E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgETB1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 21:27:10 -0400
-Received: from sonic301-19.consmr.mail.sg3.yahoo.com ([106.10.242.82]:46411
-        "EHLO sonic301-19.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726352AbgETB1J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 21:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1589938026; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=hAoYYTlG0orVDQrY7KEDxsvHRn+X7LD0mofKESx40pHJ5LMl/VFscFhgLssBRT/B0Hitlzogmvy+NcxbAwvdjkMohdG5zruYbL6iR9zIUlm/F9LPveYLhNZvyC7tSphMncmJfgl+evMdpNwG2oURikgUWGBcWL5tL5s/01J1GtxPJDSid3jtWHwk9ifPeCQCwy3mFtiAxl3d4WuYDsSSzx7ugoHwSoqPoxseGG/K0Fjppu0QXJicwK2dM05A8gf7qiX6+5BxLw01fmgbCOvGJD1ye+S0cDXBRSsNirh3TJPV0vTtVtkvhIssyANcAfaWCFgyc1uZrSENtK1L4IYggw==
-X-YMail-OSG: O3VcDrkVM1knVeTe6rzGEOFvaIe6ppsKo6kKUiRJF9lGZGMioz0QSYKFOkpjL4J
- mqBvKuj5Fe7sHCO4c15TjPQI9D7cbvKhFQvZS8I0lzzCzo.NNU92.tP.T8i3rc9puZIJvT6PUCPR
- a.a48FI0es6JUAf2sQv2zzK3SlOdN9wYYU7JWmXZQJwy3dJP2TlbhyyTFKQ_.UdgOltDThFhi6ue
- 8Yz680EmBLUt7Rk.K36fzZhchxlDET5gpqamt8klNhenkfOAsZ19z7_plr3h2pGs8P2RQvWgnBaY
- F_brH.4DjFRVHORbumBz.XDrwwKD11eQi_mB93YIuHMfzWDf_PdB7XAz.X_GZ0gMBFh4uf9ctI4n
- Na5cxhcvYT9UoWPPqP5tkYij6UVPGUzcMm2t8WGEPaoEGH.STriOT_r28N2Lj0sNdl2d.od636qY
- NEQya5s.esJHj9FEMCxrdH6gdV9fxK8JiAv8RSSXPMHtVZdDM5oAXaM8fv5p_GGCXvIKFERJ05XE
- krlPCWk7A2iDEleUh.SZPzYbbeNeK3QJ4GROajHdg561V4yeel7olL7kEkaRo7D.wkCmpGI1FFD6
- W_CrNT8WmR3euIfU.qKnN0fBJdIpREr2z6h7FzLiB9kH1pBX2AhIlBf_MKu_0fk0RB_4oBbrucI7
- of_U9N9Ae.dz9J9_pqOmitStKyJGkSKJOrJbkuzEaBKO3S4VyIyeR6HfSqqqa2TcR7AG4Vh8lc41
- RExdcgzWTUMXZcwoMiN_2mlIhm9avIb8nSZmkadhOynQGuJz9wvUGMMNXvJexU7uG_gP5Oql026u
- LYjo6itxamml5lSxbXA0wy35Puk_fH9iwLKMiRsXHaSehXJ8JSlP3Z8xtcc8H3uH58tl6yIYTm..
- Sq.seYNakdgZS95dYddo6G3fchpBRnRFza1tD9h6oyyQuXRPb4FbmUZvjuqslu5CL03QEyxYIVif
- _Cm8syqICr589e.U3rhfJFQ12eg6XQzVJFGOPtRoG1pMeaqlrTnLe2Cy7WStpZjdkIhTu6H6ATBP
- ItbyLqU7WQ65rxl250qnpMMzJemot93hgZCI5YruNwZlkfsjk73Oxc5YuqADUObVtaiS02PXSfKz
- TmX_BRiyetMWrAz4kwEYmePuqH48Qm90owfNUcGY0NQXyg5VZqB5lyJufAVeMM3d4u0feoi6vobR
- QdB3bMiQZAOG2u9r8yndSg0P_nvvKc1PaaYX36z.3wsZKjjCba2W6wrLjeqsnsYBYQk4BAcYunoz
- h0zwhPTNrqmSEkq8q0eoUHeMd6ljdtQjHWw_2tg6GkcQ6xGNJXt.ffb6WcXPnJ6x83CHJOnK6kgc
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.sg3.yahoo.com with HTTP; Wed, 20 May 2020 01:27:06 +0000
-Date:   Wed, 20 May 2020 01:27:01 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrsminaabrunel2@gmail.com>
-Reply-To: smrsminaabrunel63@gmail.com
-Message-ID: <2092666631.1251927.1589938021818@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1728351AbgETB2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 21:28:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgETB2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 21:28:06 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8517207C4;
+        Wed, 20 May 2020 01:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589938086;
+        bh=yaMpbg/CqIf6nS95IhGjsX1jBrk4yx1tjQoacauEKM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QoUNqcK649U1kMFA8EAx6Mqn6NBCNVbih/trnWoHHfzaGMojBkRiHOmQj3XJ6o8HJ
+         LvOvm0VxpaKwySo3YFYwUUIPTDLMOnaFBVfOyJ+dvQTEze8wbKBZ+DFb3GFNGdDWuT
+         njJJG3akXFzjrqa7jkwBaBIMhSDg7+NXA1cbpURA=
+Date:   Wed, 20 May 2020 09:27:59 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     peng.fan@nxp.com
+Cc:     s.hauer@pengutronix.de, leonard.crestez@nxp.com, abel.vesa@nxp.com,
+        aisheng.dong@nxp.com, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, Anson.Huang@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH V3 00/10] clk: imx: fixes and improve for i.MX8M
+Message-ID: <20200520012758.GJ11739@dragon>
+References: <1588830979-11586-1-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2092666631.1251927.1589938021818.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15960 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588830979-11586-1-git-send-email-peng.fan@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 07, 2020 at 01:56:09PM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Patches rebased on for-next
+> 
+> V3:
+>  Add R-b tag for patch 1-6,10
+>  Use clk_mux_ops in patch 7, explain more details in commit log
+>  Boot test on i.MX8MM/N/MQ/P
+> 
+> V2:
+>  Patch 7, drop wait after write, add one line comment for write twice
+> 
+> V1:
+> Patch 1,2 is to fix the lockdep warning reported by Leonard
+> Patch 3 is to fix pll mux bit
+> Patch 4 is align with other i.MX8M using gate
+> Patch 5 is to simplify i.MX8MP clk root using composite
+> 
+> Patch 3~5 is actually https://patchwork.kernel.org/patch/11402761/
+> with a minimal change to patch 5 here.
+> 
+> Patch 6 is to use composite core clk for A53 clk root
+> Patch 7,8,9 is actually to fix CORE/BUS clk slice issue.
+>  This issue is triggerred after we update U-Boot to include
+>  the A53 clk fixes to sources from PLL, not from A53 root clk,
+>  because of the signoff timing is 1GHz. U-Boot set the A53 root
+>  mux to 2, sys pll2 500MHz. Kernel will set the A53 root mux to
+>  4, sys pll1 800MHz, then gate off sys pll2 500MHz. Then kernel
+>  will gate off A53 root because clk_ignore_unsed, A53 directly sources
+>  PLL, so it is ok to gate off A53 root. However when gate off A53
+>  root clk, system hang, because the original mux sys pll2 500MHz
+>  gated off with CLK_OPS_PARENT_ENABLE flag.
+> 
+>  It is lucky that we not met issue for other core/bus clk slice
+>  except A53 ROOT core slice. But it is always triggerred after
+>  U-Boot and Linux both switch to use ARM PLL for A53 core, but
+>  have different mux settings for A53 root clk slice.
+> 
+>  So the three patches is to address this issue.
+> 
+> Patch 10 is make memrepair as critical.
+> 
+> Peng Fan (10):
+>   arm64: dts: imx8m: assign clocks for A53
+>   clk: imx8m: drop clk_hw_set_parent for A53
+>   clk: imx: imx8mp: fix pll mux bit
+>   clk: imx8mp: Define gates for pll1/2 fixed dividers
+>   clk: imx8mp: use imx8m_clk_hw_composite_core to simplify code
+>   clk: imx8m: migrate A53 clk root to use composite core
+>   clk: imx: add mux ops for i.MX8M composite clk
+>   clk: imx: add imx8m_clk_hw_composite_bus
+>   clk: imx: use imx8m_clk_hw_composite_bus for i.MX8M bus clk slice
 
+Applied 1 ~ 9, thanks.
 
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+>   clk: imx8mp: mark memrepair clock as critical
