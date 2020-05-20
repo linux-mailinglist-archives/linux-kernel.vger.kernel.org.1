@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007831DB08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317831DB085
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgETKsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:48:43 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:58838 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726224AbgETKsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:48:43 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCXOQTYCsVeqwPgAA--.5693S4;
-        Wed, 20 May 2020 18:47:56 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/nouveau/dispnv50: fix runtime pm imbalance on error
-Date:   Wed, 20 May 2020 18:47:48 +0800
-Message-Id: <20200520104750.21335-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCXOQTYCsVeqwPgAA--.5693S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoWDurXE9r
-        4kua12gr4YkrZ2qw47Cw4rZryI9ws8u3WxXr10qrySy3y7Awn8WryUGwn5Zr43Wa4xXryq
-        yFZ8WFyUArWI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbT8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
-        67AK6r4DMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
-        6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOlkVUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
+        id S1726688AbgETKsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:48:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgETKsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:48:05 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A11A72075F;
+        Wed, 20 May 2020 10:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589971685;
+        bh=jKhsmsyLFXoihUbF/B/35L1ZU7aEq2DseqmlMnceMAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YPHpQpi0v5x/sevQNKxbaN8EgZ8Ct+om2eRSTLE0IWOhELgIXqp9kpRLB3moL+7mb
+         OSaeE3It7I5hHCVpH32Ait3m/boXCuwsoBjbAUekp3ux5kRuynmYzyNaidCXuawLSf
+         0JTKWaApZ/1tREXvuwZQzAC5dZjYXuHC/TOYEyUE=
+Date:   Wed, 20 May 2020 12:48:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1] drivers property: When no children in primary, try
+ secondary
+Message-ID: <20200520104802.GB3231313@kroah.com>
+References: <20200520102959.34812-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0heg9w=k1yqkECNo9XLP2hZny_WJQv4EJq_Wh0dVT137g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0heg9w=k1yqkECNo9XLP2hZny_WJQv4EJq_Wh0dVT137g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+On Wed, May 20, 2020 at 12:34:06PM +0200, Rafael J. Wysocki wrote:
+> On Wed, May 20, 2020 at 12:30 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Software firmware nodes can provide a child node to its parent.
+> > Since software node can be secondary, we need a mechanism to access
+> > the children. The idea is to list children of the primary node first
+> > and when they are finished, continue with secondary node if available.
+> 
+> Makes sense.
+> 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Greg, do you want me to apply it?
+> 
+> If you'd rather take it yourself, please feel free to add
+> 
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/gpu/drm/nouveau/dispnv50/disp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I can take it, there's other driver core patches in my tree already :)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index 6be9df1820c5..e670756664ff 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -1123,8 +1123,10 @@ nv50_mstc_detect(struct drm_connector *connector,
- 		return connector_status_disconnected;
- 
- 	ret = pm_runtime_get_sync(connector->dev->dev);
--	if (ret < 0 && ret != -EACCES)
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put_autosuspend(connector->dev->dev);
- 		return connector_status_disconnected;
-+	}
- 
- 	ret = drm_dp_mst_detect_port(connector, ctx, mstc->port->mgr,
- 				     mstc->port);
--- 
-2.17.1
+thanks,
 
+greg k-h
