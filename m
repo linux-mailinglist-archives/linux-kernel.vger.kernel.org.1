@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8611DAA18
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977661DAA1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgETFuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 01:50:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44847 "EHLO mga12.intel.com"
+        id S1727997AbgETFwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 01:52:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47885 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgETFux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 01:50:53 -0400
-IronPort-SDR: X2xs1z5JYulKFcCh5nwefi/8dA6rUZrEKlOU+KcR2NgNyTxpcBKQnN+zavn1SUaFqKVXKQe4Cp
- wJNTX+r4MiNA==
+        id S1726435AbgETFwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 01:52:03 -0400
+IronPort-SDR: 1yo+7TpGUqsQ4LXhiJQzJCS+zfhyZaQn8sejmPn18EofYeYjm8eo5SaCY+PDKzbcpna7SkfN9l
+ zOG2PVIxIsQA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 22:50:53 -0700
-IronPort-SDR: NqUxgRIyi3F/0wIuxUY7v4g/Mmy/fN1KD9MUCV5R+2q39GBgXx2R41Oz6NSn2lPUEZEDPtSz+O
- xzZgf06b0jlA==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 22:52:03 -0700
+IronPort-SDR: RFx6BrSxpHFNyjQm7Vq8UkfCceXU+2DUTLQWOQ2l3T+jVmRvaLi5kzwsdd4Z9MZBF8E+AifzwL
+ fe8Anbu6VOeg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
-   d="scan'208";a="373969917"
+   d="scan'208";a="289234738"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 19 May 2020 22:50:52 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 19 May 2020 22:52:02 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jbHcx-000Ghm-DM; Wed, 20 May 2020 13:50:51 +0800
-Date:   Wed, 20 May 2020 13:50:40 +0800
+        id 1jbHe5-000673-Bk; Wed, 20 May 2020 13:52:01 +0800
+Date:   Wed, 20 May 2020 13:51:00 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- 39f23ce07b9355d05a64ae303ce20d1c4b92b957
-Message-ID: <5ec4c530.yDZmEYMk1Cu3TTJ1%lkp@intel.com>
+Subject: [tip:locking/core] BUILD SUCCESS
+ db78538c75e49c09b002a2cd96a19ae0c39be771
+Message-ID: <5ec4c544.8027aRcchTvAlDsm%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,8 +43,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/urgent
-branch HEAD: 39f23ce07b9355d05a64ae303ce20d1c4b92b957  sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  locking/core
+branch HEAD: db78538c75e49c09b002a2cd96a19ae0c39be771  locking/lockdep: Replace zero-length array with flexible-array
 
 elapsed time: 486m
 
@@ -66,9 +66,9 @@ sparc                            allyesconfig
 mips                             allyesconfig
 m68k                             allyesconfig
 i386                              allnoconfig
+i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                             allyesconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -83,16 +83,16 @@ csky                             allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
 nios2                               defconfig
 nios2                            allyesconfig
 openrisc                            defconfig
 c6x                              allyesconfig
 c6x                               allnoconfig
 openrisc                         allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
 arc                                 defconfig
 arc                              allyesconfig
 sh                               allmodconfig
@@ -141,10 +141,10 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
-um                               allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allmodconfig
+um                               allyesconfig
 x86_64                                   rhel
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
