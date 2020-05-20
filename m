@@ -2,172 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826441DB4E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07031DB4F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgETN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:26:38 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:33781 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726452AbgETN0h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:26:37 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id bOjujbxAAdPgTbOjxjMhAf; Wed, 20 May 2020 15:26:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1589981194; bh=4/ctTwsXiPSb4NvmDrcyK5FdCsKojjn+cNP9JMI3QBg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=D2qZ2l/Z28Uf7C5bqYrMpTwYRRn7vMimvP7piDPZS1zpq3KJb5DjRJWMrl5qyO6pw
-         vtfBQRZX5sFQwr21G9xgwl1kQzIJX0lCVf9sGxGrOwrqK04XZGfbbmZwHOAvAiMFHA
-         34CyqsALCVF4trphNCZ2K8OcJfHlzJqUIxaQeNPvWRP8/8eBCVAWdRw1dgqoG1KFzU
-         Zlf87K3Jln8jbJwQhzG/WbuNptt03ItLiM3OGLNhVakXLB2uWN+PrKlmeuKrPu91A/
-         ZGBCyXV/nKCZDcm2ZSi8yWdW0zmzY8xG8zaOcUwcpxpaXikA2C11a9McHSVxR1EI4f
-         UuMOnbAtNsc+w==
-Subject: Re: [PATCH v4 2/3] media: uapi: Add VP9 stateless decoder controls
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        gustavo.padovan@collabora.com,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-References: <20200518174011.15543-1-ezequiel@collabora.com>
- <20200518174011.15543-3-ezequiel@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c9e71d67-746c-b71e-c8df-d41d7074c20a@xs4all.nl>
-Date:   Wed, 20 May 2020 15:26:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726830AbgETN1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:27:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:30752 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgETN1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:27:44 -0400
+IronPort-SDR: 702/lacGYT8hEPHthzihBeB2yJ9dkfjg1nfQg9IsQlKRyPXgrr85FqypyGRboij5atShrUyeO8
+ imGaGil/tWeg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 06:27:43 -0700
+IronPort-SDR: cv4BF2+S190M0BuNw9T1f7pRHZsNf3Jgigha8gssDa5mRFFCBDNOv9/HheNr1f1HNkSwuvWqyx
+ X2TPB5wzr11w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="374076597"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 20 May 2020 06:27:40 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 20 May 2020 16:27:39 +0300
+Date:   Wed, 20 May 2020 16:27:39 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Christian Lamparter <chunkeey@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
+        USB list <linux-usb@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v13 2/5] usb: renesas-xhci: Add the renesas xhci driver
+Message-ID: <20200520132739.GK1298122@kuha.fi.intel.com>
+References: <20200506060025.1535960-1-vkoul@kernel.org>
+ <20200506060025.1535960-3-vkoul@kernel.org>
+ <20200519114528.GC1298122@kuha.fi.intel.com>
+ <CAAd0S9AEOsOLrnry4xNRVOi5fXwm3KXYzQsUMCm9tVxHr2sr1w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200518174011.15543-3-ezequiel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfIJN1LDVCGpOOo4VPXXfFlMHaUJJAd/AzWJlRmvlAOexvk5d2LNhMkOV/xVHo+mBUAFmxCzGZBHvRsKcHAtPEfivxyjvjA2CpNqAtWQ8eppn2Djj/WnU
- A7AVgS2PvvB4++xi6hR9XDeFHoImYe5u5JTZc9qpGjamLxsJYEDdhpGjH7XLpJRs5tIMrC4+hU5nap6FIA/gX20Svb82dcmMpAYm1BGsA6AsRY19C66K+2WW
- 3K6DWb0HnHDuguuGcji+dv7PJcqB1mO5bXjCGPnszee7y/f1dGBN14lNaMgWk63GF5NAO3cSisZ0Z7Uil/5xaIXGWIBJZY4M8ZyAkDTo+LhFy4DO3lDBADYb
- Ua9FtQPKCcU9RPyFiQ+uex0LD99XbJuSLlQZuAwdI74szKk2d/wvCXymBr4gqBQ7zS3oXfl5C6g/4cnlx3JR9BsxlHNNGDLj8S04DdPHpBRYI3WI9+oTgxjU
- hUGlAZFlgkUAPKSEhalLm9bojCEbuPUEIaMVoqf3EZaxo6/oLlv7h4m++7qE7AwV7ywCElLoE1GBc4LN5/UeLjw2mvNA0r//RVyFJH9rhntz0UXXEGR2CjLJ
- aM2ws8yzc6n2+6nWA5RhcNbx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAd0S9AEOsOLrnry4xNRVOi5fXwm3KXYzQsUMCm9tVxHr2sr1w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/05/2020 19:40, Ezequiel Garcia wrote:
-> From: Boris Brezillon <boris.brezillon@collabora.com>
+On Tue, May 19, 2020 at 10:19:03PM +0200, Christian Lamparter wrote:
+> Hello,
 > 
-> Add the VP9 stateless decoder controls plus the documentation that goes
-> with it.
+> On Tue, May 19, 2020 at 1:45 PM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> > On Wed, May 06, 2020 at 11:30:22AM +0530, Vinod Koul wrote:
+> > > From: Christian Lamparter <chunkeey@googlemail.com>
+> > >
+> > > This add a new driver for renesas xhci which is basically a firmware
+> > > loader for uPD720201 and uPD720202 w/o ROM. The xhci-pci driver will
+> > > invoke this driver for loading/unloading on relevant devices.
+> > >
+> > > This patch adds a firmware loader for the uPD720201K8-711-BAC-A
+> > > and uPD720202K8-711-BAA-A variant. Both of these chips are listed
+> > > in Renesas' R19UH0078EJ0500 Rev.5.00 "User's Manual: Hardware" as
+> > > devices which need the firmware loader on page 2 in order to
+> > > work as they "do not support the External ROM".
+> > >
+> > > The "Firmware Download Sequence" is describe in chapter
+> > > "7.1 FW Download Interface" R19UH0078EJ0500 Rev.5.00 page 131.
+> > >
+> > > The firmware "K2013080.mem" is available from a USB3.0 Host to
+> > > PCIe Adapter (PP2U-E card) "Firmware download" archive. An
+> > > alternative version can be sourced from Netgear's WNDR4700 GPL
+> > > archives.
+> > >
+> > > The release notes of the PP2U-E's "Firmware Download" ver 2.0.1.3
+> > > (2012-06-15) state that the firmware is for the following devices:
+> > >  - uPD720201 ES 2.0 sample whose revision ID is 2.
+> > >  - uPD720201 ES 2.1 sample & CS sample & Mass product, ID is 3.
+> > >  - uPD720202 ES 2.0 sample & CS sample & Mass product, ID is 2.
+> >
+> > You wouldn't happen to have access to the documentation of the
+> > "original" uPD720200 USB 3.0 controller?
+> >
+> > It would be cool if we could support that too with this driver.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  .../userspace-api/media/v4l/biblio.rst        |  10 +
->  .../media/v4l/ext-ctrls-codec.rst             | 550 ++++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c          | 239 ++++++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
->  include/media/v4l2-ctrls.h                    |   1 +
->  include/media/vp9-ctrls.h                     | 485 +++++++++++++++
->  6 files changed, 1286 insertions(+)
->  create mode 100644 include/media/vp9-ctrls.h
+> ???. I have one of those "original" uPD720200(A) working "just fine"
+> in my Laptop currently.
+> It's an really old HP dv6-6003eg from around 2011 that came with two
+> USB 3.0 Ports, which
+> are driven by a "NEC Corporation uPD720200 USB 3.0 Host Controller"
+> 1033:0194 (Rev 04).
 > 
-
-<snip>
-
-> +/**
-> + * struct v4l2_vp9_quantization - VP9 quantization parameters
-> + *
-> + * @base_q_idx: indicates the base frame qindex
-> + * @delta_q_y_dc: indicates the Y DC quantizer relative to base_q_idx
-> + * @delta_q_uv_dc: indicates the UV DC quantizer relative to base_q_idx
-> + * @delta_q_uv_ac indicates the UV AC quantizer relative to base_q_idx
-> + * @padding: padding bytes to align things on 64 bits. Must be set to 0
-> + *
-> + * Encodes the quantization parameters. See section '7.2.9 Quantization params
-> + * syntax' of the VP9 specification for more details.
-> + */
-> +struct v4l2_vp9_quantization {
-> +	__u8 base_q_idx;
-> +	__s8 delta_q_y_dc;
-> +	__s8 delta_q_uv_dc;
-> +	__s8 delta_q_uv_ac;
-> +	__u8 padding[4];
-
-Are you sure this padding field is needed? What goes wrong if this is dropped?
-
-> +};
-
-<snip>
-
-> +struct v4l2_ctrl_vp9_frame_decode_params {
-> +	__u32 flags;
-> +	__u16 compressed_header_size;
-> +	__u16 uncompressed_header_size;
-> +	__u8 profile;
-> +	__u8 reset_frame_context;
-> +	__u8 frame_context_idx;
-> +	__u8 bit_depth;
-> +	__u8 interpolation_filter;
-> +	__u8 tile_cols_log2;
-> +	__u8 tile_rows_log2;
-> +	__u8 tx_mode;
-> +	__u8 reference_mode;
-> +	__u8 padding[6];
-
-This doesn't look right: this should be 7 if you want to align at 64 bits. Don't
-forget to update the documentation when you change this. In fact, the documentation
-doesn't mention the size of the array, it just says 'u8 padding'.
-
-I thought pahole flags something like this?
-
-> +	__u16 frame_width_minus_1;
-> +	__u16 frame_height_minus_1;
-> +	__u16 render_width_minus_1;
-> +	__u16 render_height_minus_1;
-> +	__u64 refs[V4L2_REF_ID_CNT];
-> +	struct v4l2_vp9_loop_filter lf;
-
-sizeof(lf) is an odd-number of bytes, so...
-
-> +	struct v4l2_vp9_quantization quant;
-
-... even though sizeof(quant) == 8 with the padding bytes, that would still not
-align at 64 bits.
-
-> +	struct v4l2_vp9_segmentation seg;
-> +	struct v4l2_vp9_probabilities probs;
-> +};
-> +
-> +#define V4L2_VP9_NUM_FRAME_CTX	4
-> +
-> +/**
-> + * struct v4l2_ctrl_vp9_frame_ctx - VP9 frame context control
-> + *
-> + * @probs: VP9 probabilities
-> + *
-> + * This control is accessed in both direction. The user should initialize the
-> + * 4 contexts with default values just after starting the stream. Then before
-> + * decoding a frame it should query the current frame context (the one passed
-> + * through &v4l2_ctrl_vp9_frame_decode_params.frame_context_idx) to initialize
-> + * &v4l2_ctrl_vp9_frame_decode_params.probs. The probs are then adjusted based
-> + * on the bitstream info and passed to the kernel. The codec should update
-> + * the frame context after the frame has been decoded, so that next time
-> + * userspace query this context it contains the updated probabilities.
-> + */
-> +struct v4l2_ctrl_vp9_frame_ctx {
-> +	struct v4l2_vp9_probabilities probs;
-> +};
-> +
-> +#endif /* _VP9_CTRLS_H_ */
+> As for supporting the uPD720200 (flasher) with this serises.... There
+> are some bad news:
 > 
+> "In addition, the programming interface for the uPD720200 and uPD720200A
+> is different from the uPD720202, needs different programming tools, and relies
+> on proprietary chip features that cannot be disclosed outside of Renesas."
+> <https://mail.coreboot.org/pipermail/flashrom/2013-February/010498.html> :-(
 
-Regards,
+Too bad. That's what I was hoping to do with this driver. There are
+still boards out there equipped with uPD720200/uPD720200A that have
+older firmware. If you don't have the latest firmware (which is also
+from 2012), then PME and a few other things will not work (so resume
+from D3 does not work for example).
 
-	Hans
+thanks,
+
+-- 
+heikki
