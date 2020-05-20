@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BE61DB2A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260D41DB2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgETMEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETME3 (ORCPT
+        id S1727039AbgETMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:05:30 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:33314 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETMFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:04:29 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C811C061A0E;
-        Wed, 20 May 2020 05:04:29 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbNSR-0007C7-Fx; Wed, 20 May 2020 14:04:23 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id D83D3100C99; Wed, 20 May 2020 14:04:22 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     syzbot <syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com>,
-        fweisbec@gmail.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, mingo@kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: linux-next boot error: BUG: Invalid wait context ]
-In-Reply-To: <000000000000598a2905a60d50cd@google.com>
-References: <000000000000598a2905a60d50cd@google.com>
-Date:   Wed, 20 May 2020 14:04:22 +0200
-Message-ID: <877dx66ce1.fsf@nanos.tec.linutronix.de>
+        Wed, 20 May 2020 08:05:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=38+C5Zoh655MjDoYal0GbmhQ7BoxPfmu6rmjyrpKqf0=; b=nBiynwC+G9IbOG9lMv9Zy7crdl
+        AQrm5dA/+vHlhFNZPqfj4eL6H6tdDccbv4DYukMm7wGEW3W8L4PyyqBR29pA/ynFeDM1GNxYjOLuU
+        Ei0Swoik7D3D3V025LhGyFzsstlXX+02BiP5+8Mdu4obZtHUqYbs72fyz/wXe4uDGF9cJT50+JRtW
+        WKnxupe6b9Zv4vbceE05FsEq8CHbvLuaob+eRi77QvdZV7Rqg9935SUKZdb/F2SK25zYVLHUyJJHM
+        JagSPdbrEVII0RIME2a1H61bdIKh7LtTBGEQpw6IPpmnWiUz+Pb1vqkB8szovp7x5okJrflXHVWiX
+        Qy7UkS1Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbNSy-0007YR-Mt; Wed, 20 May 2020 12:04:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D101530067C;
+        Wed, 20 May 2020 14:04:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8A81425E3797C; Wed, 20 May 2020 14:04:50 +0200 (CEST)
+Date:   Wed, 20 May 2020 14:04:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/8] locking: Introduce local_lock()
+Message-ID: <20200520120450.GL317569@hirez.programming.kicks-ass.net>
+References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+ <20200519201912.1564477-2-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519201912.1564477-2-bigeasy@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com> writes:
-> Hello,
->
-> syzbot found the following crash on:
->
-> HEAD commit:    fb57b1fa Add linux-next specific files for 20200519
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17c9196e100000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2522f758a3588c2d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=08003d278f04ed0944e0
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
->
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com
->
-> =============================
-> [ BUG: Invalid wait context ]
-> 5.7.0-rc6-next-20200519-syzkaller #0 Not tainted
-> -----------------------------
-> swapper/1/0 is trying to lock:
-> ffff8880ae737518 (&pool->lock){..-.}-{3:3}, at: spin_lock include/linux/spinlock.h:353 [inline]
-> ffff8880ae737518 (&pool->lock){..-.}-{3:3}, at: __queue_work+0x2bf/0x1350 kernel/workqueue.c:1448
+On Tue, May 19, 2020 at 10:19:05PM +0200, Sebastian Andrzej Siewior wrote:
+> +/**
+> + * DEFINE_LOCAL_LOCK - Define and initialize a per CPU local lock
+> + * @lock:	Name of the lock instance
+> + */
+> +#define DEFINE_LOCAL_LOCK(lvar)					\
+> +	DEFINE_PER_CPU(struct local_lock, lvar) = { INIT_LOCAL_LOCK(lvar) }
+> +
+> +/**
+> + * DECLARE_LOCAL_LOCK - Declare a defined per CPU local lock
+> + * @lock:	Name of the lock instance
+> + */
+> +#define DECLARE_LOCAL_LOCK(lvar)				\
+> +	DECLARE_PER_CPU(struct local_lock, lvar)
 
-Can you please disable CONFIG_PROVE_RAW_LOCK_NESTING for now?
+So I think I'm going to argue having these is a mistake. The local_lock
+should be put in a percpu structure along with the data it actually
+protects.
 
-From the help text:
 
-NOTE:
-  There are known nesting problems. So if you enable this option expect
-  lockdep splats until these problems have been fully addressed which is
-  work in progress. This config switch allows to identify and analyze
-  these problems. It will be removed and the check permanentely enabled
-  once the main issues have been fixed.
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +# define LL_DEP_MAP_INIT(lockname)	.dep_map = { .name = #lockname }
 
-Thanks,
+That wants to be:
 
-        tglx
+	.dep_map = {
+		.name = #lockname,
+		.wait_type_inner = LD_WAIT_SPIN,
+	}
+
+> +#else
+> +# define LL_DEP_MAP_INIT(lockname)
+> +#endif
