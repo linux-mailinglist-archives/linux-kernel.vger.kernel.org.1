@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157EE1DAFFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B831DB004
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgETKVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbgETKV0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:21:26 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B21C061A0E;
-        Wed, 20 May 2020 03:21:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Rpgm1t8fz9sTd;
-        Wed, 20 May 2020 20:21:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1589970084;
-        bh=ssWyo9ZQJwmqYStKYRADo5+sDEqCMcXmhdC1gF6qDqM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WzbVoL/yC+Jrcwa7p4qGBgTBgeF4acYHgkbV1TzuKraCxn65F/0bmo57zyti4qA1o
-         1Iw0qqgzwDMtikA0rDL6f5xltAVs/Kk2MjjR1U0zbY6F3zIx3OVIzVrC5NRazX9iqI
-         SvLC/VX0s7mVwaSd/l9P83W2mHqfhujst9p34GXBnMN57QKOD+B/sdUIp84G1EJkcw
-         3+x4oEzwNn218UB381dZd1awE3UutN0znwDAZMEKG9RTFA4JTeWtLOPOvRM30sYMry
-         CBLgkWEmcy30U0B/7f+LngH+OxNDEqVmkm/9Dzi5lCK1EJ8cs1DNGIXEGMzokZxIKH
-         TLuO1kVN2BK+g==
-Date:   Wed, 20 May 2020 20:21:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the imx-mxs tree
-Message-ID: <20200520202115.5409186e@canb.auug.org.au>
+        id S1726845AbgETKWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:22:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35600 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726435AbgETKWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:22:23 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1DACEE65830E18F0CE88;
+        Wed, 20 May 2020 18:22:20 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.10) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
+ 18:22:13 +0800
+Subject: Re: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
+        <xiexiuqi@huawei.com>, <mark.rutland@arm.com>,
+        <guohanjun@huawei.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <wangnan0@huawei.com>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
+ <20200520070551.GC110644@krava>
+From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Message-ID: <ac38c44e-ebce-28eb-37f5-bf05572b9232@huawei.com>
+Date:   Wed, 20 May 2020 18:22:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+BnUBuvl01NHTg1FTRfF8Vg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200520070551.GC110644@krava>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.10]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+BnUBuvl01NHTg1FTRfF8Vg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+在 2020/5/20 15:05, Jiri Olsa 写道:
+> On Wed, May 20, 2020 at 11:32:16AM +0800, Wang ShaoBo wrote:
+>> key_scan_pos is a pointer for getting scan position in
+>> bpf__obj_config_map() for each BPF map configuration term,
+>> but it's misused when error not happened.
+>>
+>> Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
+>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+>> ---
+>>   tools/perf/util/bpf-loader.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+>> index 10c187b8b8ea..460056bc072c 100644
+>> --- a/tools/perf/util/bpf-loader.c
+>> +++ b/tools/perf/util/bpf-loader.c
+>> @@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
+>>   out:
+>>   	free(map_name);
+>>   	if (!err)
+>> -		key_scan_pos += strlen(map_opt);
+>> +		*key_scan_pos += strlen(map_opt);
+> seems good, was there something failing because of this?
+>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
+> thanks,
+> jirka
 
-Commit
+   I found this problem when i checked this code, I think it is
 
-  089795766399 ("arm64: dts: ls1028a: sl28: keep switch port names consiste=
-nt")
+   an implicit question, but if we delete the two line,  the problem
 
-is missing a Signed-off-by from its committer.
+   also no longer exists.
 
---=20
-Cheers,
-Stephen Rothwell
+   thanks,
 
---Sig_/+BnUBuvl01NHTg1FTRfF8Vg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+   Wang ShaoBo
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7FBJsACgkQAVBC80lX
-0GyzIQf6AmglBY/53f0CkeyESbfZ1PXb5miCeortN/6N+7dWscsR42hJs2rseH6y
-vPQSlh6AwXMyrveq66gTPoCWvgNm9djiUmWONuH88AGn0+U+4sUH13S2OHuIRvek
-mPh+dSn4IGE90s9F64jtPMJV7g3ZHmF7TpXXU+63Bp/YLrAqNVerNNGkO5vWYeoM
-p+Kxt3un+Fb6T0vgEsVUu6z6WjENS4NYG8EiqNrgHIyCu2e/RU4Ax1EaA+gHPpC1
-sL2fHjaZpGq29XZxHEaD8zQcUC+KcyEbfVfVJY9acRMzHF4QfMLcMvhsd/YxaH/A
-0y8fKxZPpf7YSdJVDL3OOEybpm1nTQ==
-=UdoQ
------END PGP SIGNATURE-----
-
---Sig_/+BnUBuvl01NHTg1FTRfF8Vg--
