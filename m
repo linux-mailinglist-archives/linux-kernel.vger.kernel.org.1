@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1838A1DBA52
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77F21DBA55
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgETQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgETQyz (ORCPT
+        id S1726999AbgETQzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:55:25 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47462 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726436AbgETQzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:54:55 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CFFC061A0E;
-        Wed, 20 May 2020 09:54:55 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 1E3692A2D17
-Subject: Re: [PATCHv3 5/5] Input: EXC3000: Add reset gpio support
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ahmet Inan <inan@distec.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20200520153936.46869-1-sebastian.reichel@collabora.com>
- <20200520153936.46869-6-sebastian.reichel@collabora.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <da93ba98-b3e1-69ac-9248-0058270fca17@collabora.com>
-Date:   Wed, 20 May 2020 18:54:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 20 May 2020 12:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589993724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zwa0MajcbgkU5nITVNmkMZzy8QDk2TJnCFI7ljAY5W0=;
+        b=N19XSSiHnqpXzjALMYZfZSi/0lyS/lfL4yeraFXNTPumZWK3L86ydILRYNKQu7jJrgN07D
+        8hujDoIpw5o6KZRXJXftJ6gYcsqW+l3qrhZwGYrTGDPuwDHeezsMwxo2jIKf0f2VBpfcqD
+        rVpHohlrHHIXQVUPdFAEjoCbi01fdFc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-7V8LUDUJOuyvUyRsJiWNBg-1; Wed, 20 May 2020 12:55:22 -0400
+X-MC-Unique: 7V8LUDUJOuyvUyRsJiWNBg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC61E835B41;
+        Wed, 20 May 2020 16:55:20 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E64C60554;
+        Wed, 20 May 2020 16:55:13 +0000 (UTC)
+Date:   Wed, 20 May 2020 12:55:10 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     fw@strlen.de, twoerner@redhat.com, eparis@parisplace.org,
+        tgraf@infradead.org
+Subject: Re: [PATCH ghak25 v6] audit: add subj creds to NETFILTER_CFG record
+ to cover async unregister
+Message-ID: <20200520165510.4l4q47vq6fyx7hh6@madcap2.tricolour.ca>
+References: <a585b9933896bc542347d8f3f26b08005344dd84.1589920939.git.rgb@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200520153936.46869-6-sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a585b9933896bc542347d8f3f26b08005344dd84.1589920939.git.rgb@redhat.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
-
-On 20/5/20 17:39, Sebastian Reichel wrote:
-> Add basic support for an optional reset gpio.
+On 2020-05-20 12:51, Richard Guy Briggs wrote:
+> Some table unregister actions seem to be initiated by the kernel to
+> garbage collect unused tables that are not initiated by any userspace
+> actions.  It was found to be necessary to add the subject credentials to
+> cover this case to reveal the source of these actions.  A sample record:
 > 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> The uid, auid, tty, ses and exe fields have not been included since they
+> are in the SYSCALL record and contain nothing useful in the non-user
+> context.
+> 
+>   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat family=bridge entries=0 op=unregister pid=153 subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:2
+> 
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 
-Thanks to address the comments I did in second version. so,
-
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Self-NACK.  I forgot to remove cred and tty declarations.
 
 > ---
->  .../input/touchscreen/eeti,exc3000.yaml         |  2 ++
->  drivers/input/touchscreen/exc3000.c             | 17 +++++++++++++++++
->  2 files changed, 19 insertions(+)
+> Changelog:
+> v6
+> - remove uid, auid fields as duplicates or unset
 > 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-> index 7e6e23f8fa00..007adbc89c14 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/eeti,exc3000.yaml
-> @@ -22,6 +22,8 @@ properties:
->      const: 0x2a
->    interrupts:
->      maxItems: 1
-> +  reset-gpios:
-> +    maxItems: 1
->    touchscreen-size-x: true
->    touchscreen-size-y: true
->    touchscreen-inverted-x: true
-> diff --git a/drivers/input/touchscreen/exc3000.c b/drivers/input/touchscreen/exc3000.c
-> index b5a3bbb63504..de9d0ae1210a 100644
-> --- a/drivers/input/touchscreen/exc3000.c
-> +++ b/drivers/input/touchscreen/exc3000.c
-> @@ -8,7 +8,9 @@
->   */
->  
->  #include <linux/bitops.h>
-> +#include <linux/delay.h>
->  #include <linux/device.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/i2c.h>
->  #include <linux/input.h>
->  #include <linux/input/mt.h>
-> @@ -33,6 +35,9 @@
->  
->  #define EXC3000_TIMEOUT_MS		100
->  
-> +#define EXC3000_RESET_MS		10
-> +#define EXC3000_READY_MS		100
-> +
->  static const struct i2c_device_id exc3000_id[];
->  
->  struct eeti_dev_info {
-> @@ -66,6 +71,7 @@ struct exc3000_data {
->  	const struct eeti_dev_info *info;
->  	struct input_dev *input;
->  	struct touchscreen_properties prop;
-> +	struct gpio_desc *reset;
->  	struct timer_list timer;
->  	u8 buf[2 * EXC3000_LEN_FRAME];
->  	struct completion wait_event;
-> @@ -325,6 +331,17 @@ static int exc3000_probe(struct i2c_client *client)
->  	init_completion(&data->wait_event);
->  	mutex_init(&data->query_lock);
->  
-> +	data->reset = devm_gpiod_get_optional(&client->dev, "reset",
-> +					      GPIOD_OUT_HIGH);
-> +	if (IS_ERR(data->reset))
-> +		return PTR_ERR(data->reset);
-> +
-> +	if (data->reset) {
-> +		msleep(EXC3000_RESET_MS);
-> +		gpiod_set_value_cansleep(data->reset, 0);
-> +		msleep(EXC3000_READY_MS);
-> +	}
-> +
->  	input = devm_input_allocate_device(&client->dev);
->  	if (!input)
->  		return -ENOMEM;
+> v5
+> - rebase on upstreamed ghak28 on audit/next v5.7-rc1
+> - remove tty, ses and exe fields as duplicates or unset
+> - drop upstreamed patches 1&2 from set
 > 
+> v4
+> - rebase on audit/next v5.7-rc1
+> - fix checkpatch.pl errors/warnings in 1/3 and 2/3
+> 
+> v3
+> - rebase on v5.6-rc1 audit/next
+> - change audit_nf_cfg to audit_log_nfcfg
+> - squash 2,3,4,5 to 1 and update patch descriptions
+> - add subject credentials to cover garbage collecting kernel threads
+> 
+> v2
+> - Rebase (audit/next 5.5-rc1) to get audit_context access and ebt_register_table ret code
+> - Split x_tables and ebtables updates
+> - Check audit_dummy_context
+> - Store struct audit_nfcfg params in audit_context, abstract to audit_nf_cfg() call
+> - Restore back to "table, family, entries" from "family, table, entries"
+> - Log unregistration of tables
+> - Add "op=" at the end of the AUDIT_NETFILTER_CFG record
+> - Defer nsid patch (ghak79) to once nsid patchset upstreamed (ghak32)
+> - Add ghak refs
+> - Ditch NETFILTER_CFGSOLO record
+> 
+>  kernel/auditsc.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index cfe3486e5f31..e646055adb0b 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -2557,12 +2557,21 @@ void __audit_log_nfcfg(const char *name, u8 af, unsigned int nentries,
+>  		       enum audit_nfcfgop op)
+>  {
+>  	struct audit_buffer *ab;
+> +	const struct cred *cred;
+> +	struct tty_struct *tty;
+> +	char comm[sizeof(current->comm)];
+>  
+>  	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_NETFILTER_CFG);
+>  	if (!ab)
+>  		return;
+>  	audit_log_format(ab, "table=%s family=%u entries=%u op=%s",
+>  			 name, af, nentries, audit_nfcfgs[op].s);
+> +
+> +	cred = current_cred();
+> +	audit_log_format(ab, " pid=%u", task_pid_nr(current));
+> +	audit_log_task_context(ab); /* subj= */
+> +	audit_log_format(ab, " comm=");
+> +	audit_log_untrustedstring(ab, get_task_comm(comm, current));
+>  	audit_log_end(ab);
+>  }
+>  EXPORT_SYMBOL_GPL(__audit_log_nfcfg);
+> -- 
+> 1.8.3.1
+> 
+> --
+> Linux-audit mailing list
+> Linux-audit@redhat.com
+> https://www.redhat.com/mailman/listinfo/linux-audit
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
