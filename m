@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568901DBDB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68E81DBDAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgETTOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726693AbgETTOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:14:04 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9C3C05BD43
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:14:04 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id z26so908124oog.8
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FRPY2XoLC1HQ0rwn66pqOU81U3Fi4846T5ndJoAtH6c=;
-        b=Yg9w9UDs6tUntrB8W23rRvi1y7E7NEUOuEnjPj0mpeq+am0z5b0QbPNF4VDCSYPmNw
-         sBKAPvUKJzHKaDsnJH2JZpY+FDRJKMQvzx3iFRit/JfcMVrpJTmpnbVON7Bxf/XfxXhx
-         SqiWGOZt4iUaAr+64SgvFOUa9XCxMkdB6tCyl/NUpElBr6edcOltHM/5iVm0zqFlnR6B
-         Yb7RDU9oYm08GbL3xXfcqX/RZN1Ku84LRuC3b4+YrMeIBDOc5ogEIiVlGEFj2UD6Rtxn
-         7GHIxjZo9asxYbuP015cF2S2T+fsqaJGBwfVzgfZO6eo7G0AmhoP/sm90raRXD6asDHf
-         GitQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FRPY2XoLC1HQ0rwn66pqOU81U3Fi4846T5ndJoAtH6c=;
-        b=qhVxcGlJXQmXf4Cy/lAraQsnp7iX6KQBGvfO7rZEP6YA/RMCoT5U7qqRaoQldMtlBb
-         blsir3cRtYiUpoGu7m0QpbB4Iecl5C/vOrRyPPe4JzBDPxNChQ6I3648QIprAmlTKKqw
-         RRW/Z1SrxwT2A9QenQrtYIHhpuXZ7zkqNsP+57ImYjVT60doUVhc0GJ/qIXUHEKCThzw
-         tfys8Yf0JIZebNiBSbldD+FkwO5yedjLklyU6sE+bCX6KYI1BOT9CGhWSSReGASq9zgq
-         Mz63Yg/SwtNLezpnHX8yum1mZhxMcL+1Jz7jxC3VdnVcLUMDG8PLnFe0pdNIva4nc+nA
-         SeSA==
-X-Gm-Message-State: AOAM533SVAPPeXme+EyfL3FiCE8VuoSLUO2EcgPSCjFHio5E07RItnNK
-        8u1vrbCuqroDgICg8j6uizpUIQt/M6RwE/7M4BKrGQ==
-X-Google-Smtp-Source: ABdhPJyGZsapr+npAruEBsDKJ42yyXDu4Y+4ye6UYWC88Y9NpvopN4BSuewmoE4/1wwkovB0eTsyoA2KR87k48NO6+A=
-X-Received: by 2002:a4a:b389:: with SMTP id p9mr4566919ooo.84.1590002043642;
- Wed, 20 May 2020 12:14:03 -0700 (PDT)
+        id S1726829AbgETTL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgETTLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 15:11:25 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEB1D206B6;
+        Wed, 20 May 2020 19:11:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590001885;
+        bh=xy+F+Xk6Eh27TpQwycM8KVFcBwkkldw7VDh+CKoRc4U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KeoSit7FEot91Av1rOcj3Y6AZne6zDmV1+pKSeffKQzno+1EiIAnhhGWSISar8/Pa
+         iyW9G2sGEdej30zDTh+qWDjG+s1ZHjb0qpaBvJb5JrGH6zvJFw3U556+wlYe3qWca+
+         qTTiWm7UY5NJeeWD2hRKxSRFH0Yxz5Zt5AaXvxys=
+Date:   Wed, 20 May 2020 14:16:13 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH perf/core] perf branch: Replace zero-length array with
+ flexible-array
+Message-ID: <20200520191613.GA26869@embeddedor>
 MIME-Version: 1.0
-References: <20200512125327.1868-1-georgi.djakov@linaro.org>
- <20200512125327.1868-10-georgi.djakov@linaro.org> <20200519185836.GA469006@bogus>
- <CAGETcx8+NZYT863ySLf6XvgLBm8PM_4euue2=zbDscgmDFh+7g@mail.gmail.com> <3a392629be195fa6bebca18309efffab@codeaurora.org>
-In-Reply-To: <3a392629be195fa6bebca18309efffab@codeaurora.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 20 May 2020 12:13:27 -0700
-Message-ID: <CAGETcx9a=9pMonfyoNGqkkfaDwJ+=U6OqK1op5UYM2zQbktsXQ@mail.gmail.com>
-Subject: Re: [PATCH v8 09/10] dt-bindings: interconnect: Add interconnect-tags bindings
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Evan Green <evgreen@chromium.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 11:51 AM Sibi Sankar <sibis@codeaurora.org> wrote:
->
-> On 2020-05-20 01:27, Saravana Kannan wrote:
-> > On Tue, May 19, 2020 at 11:58 AM Rob Herring <robh@kernel.org> wrote:
-> >>
-> >> On Tue, May 12, 2020 at 03:53:26PM +0300, Georgi Djakov wrote:
-> >> > From: Sibi Sankar <sibis@codeaurora.org>
-> >> >
-> >> > Add interconnect-tags bindings to enable passing of optional
-> >> > tag information to the interconnect framework.
-> >> >
-> >> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> >> > Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> >> > ---
-> >> > v8:
-> >> > * New patch, picked from here:
-> >> >   https://lore.kernel.org/r/20200504202243.5476-10-sibis@codeaurora.org
-> >> >
-> >> >  .../devicetree/bindings/interconnect/interconnect.txt        | 5 +++++
-> >> >  1 file changed, 5 insertions(+)
-> >> >
-> >> > diff --git a/Documentation/devicetree/bindings/interconnect/interconnect.txt b/Documentation/devicetree/bindings/interconnect/interconnect.txt
-> >> > index 6f5d23a605b7..c1a226a934e5 100644
-> >> > --- a/Documentation/devicetree/bindings/interconnect/interconnect.txt
-> >> > +++ b/Documentation/devicetree/bindings/interconnect/interconnect.txt
-> >> > @@ -55,6 +55,11 @@ interconnect-names : List of interconnect path name strings sorted in the same
-> >> >                        * dma-mem: Path from the device to the main memory of
-> >> >                                   the system
-> >> >
-> >> > +interconnect-tags : List of interconnect path tags sorted in the same order as the
-> >> > +                 interconnects property. Consumers can append a specific tag to
-> >> > +                 the path and pass this information to the interconnect framework
-> >> > +                 to do aggregation based on the attached tag.
-> >>
-> >> Why isn't this information in the 'interconnect' arg cells?
-> >>
-> >> We have 'interconnect-names' because strings don't mix with cells. An
-> >> expanding list of 'interconnect-.*' is not a good pattern IMO.
->
-> Rob,
-> Currently the interconnect paths
-> assume a default tag and only few
-> icc paths require tags that differ
-> from the default ones. Encoding the
-> tags in the interconnect arg cells
-> would force all paths to specify
-> the tags. I guess that's okay.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-I think that's the right thing. Those cells are meant to be "args" to
-the provider.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-> >
-> > Also, is there an example for interconnect-tags that I missed? Is it a
-> > list of strings, numbers, etc?
->
-> Saravana,
-> https://patchwork.kernel.org/patch/11527589/
-> ^^ is an example of interconnect-tag useage.
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-If we actually merge interconnect-tags, I think the doc should be
-updated. Instead of having to grep around.
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
--Saravana
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle and audited _manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ tools/perf/util/branch.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/branch.h b/tools/perf/util/branch.h
+index 4d3f02fa223df..17b2ccc61094b 100644
+--- a/tools/perf/util/branch.h
++++ b/tools/perf/util/branch.h
+@@ -46,7 +46,7 @@ struct branch_entry {
+ struct branch_stack {
+ 	u64			nr;
+ 	u64			hw_idx;
+-	struct branch_entry	entries[0];
++	struct branch_entry	entries[];
+ };
+ 
+ /*
+-- 
+2.26.2
+
