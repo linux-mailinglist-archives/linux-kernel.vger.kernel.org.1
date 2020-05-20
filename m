@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B961DA882
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996691DA884
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgETDQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 23:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
+        id S1728635AbgETDSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 23:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgETDQu (ORCPT
+        with ESMTP id S1728176AbgETDSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 23:16:50 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D5EC061A0E;
-        Tue, 19 May 2020 20:16:50 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u1so1190769wmn.3;
-        Tue, 19 May 2020 20:16:50 -0700 (PDT)
+        Tue, 19 May 2020 23:18:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D12EC061A0E;
+        Tue, 19 May 2020 20:18:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 23so882859pfy.8;
+        Tue, 19 May 2020 20:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2nEgJxLKt7sGcW4byyIraWO1xaiKoTWBDlRHFJajGbA=;
-        b=pVrZ/6JYUCpdV2hhkhm7yrMiS01LBziQOrCkZ6n0GgF/zakoeC3l8pUyrUqJQSnpr5
-         CJWskLnBBEGyi+WQU6/AKHCItey6jDnYeEC6yEUHqUncP3LgVUErZdFoItEOxfC9O3gD
-         OARa/Ia9GOS3xcjEeOOis//2hccJ/63PkdQqXnSphetieu/le6wV3X3ZA9zMM1WqH7KT
-         FwnMJKe/v+GNdlPE4T5KcOCGHOU94BUjWa28lktuvIdHSf0tPCD7eAey47N5DvdvSbFB
-         2Nxkiqifr7JEgNuIOFkREHViK0S3cxUjcej+1WtMfP9bT4BRUB4LeBRt6gRZx4HOavtn
-         zrDg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5WJmSfBCJ9T93UY4usILNY67jnm3iHHEW+ii4uy79rA=;
+        b=a2zFSYje3WXYsySWDH3RMzx0U5fYPGVj7Rjb2+WGbvq9lB/IA44wj2HOVze+8NAk3h
+         SpAjRZAlMqacFIWLp+DW/APzTrI8A1ULtaTXVZHDpw9gGa92kstm3VcyO8bS14b7j+LU
+         +nFXjmLiKaih88zLlkBG/dynHppeDHoC8gvWlKuSZI3o8sqovnTYpAXC7D8TPEElKE+u
+         wa8IFA0UqUKMwTWdu1HgUUD6lYRkS1PYwkqtJv8oQ1j1DAjOcRCXeGWqTrp6WTE3cI46
+         /IcdnToawUSE/JzvU7KfdbbRd0QNm8QAWXMfHpNXvzSkPCufefKttAWVk0spAUlZcCko
+         MIfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2nEgJxLKt7sGcW4byyIraWO1xaiKoTWBDlRHFJajGbA=;
-        b=hD5UVDpjsx6EZpp3tAY7g5RSOskM0LnBzn+cqwRoMrWe257pI6V4dZ5kIMpFOPULIJ
-         CFba0Ex8VEr5vR/FBXt6/MoZvSvoWsINKyurIhMdQa3xq99psWdwrwvFQeqhBxXeDbmo
-         1CVEe9Xi2WPPWCTvyVCCYcQM3vgEs3bPk2XBsQ5COh+74K6cTD3ceENYq8ZymkJkSPHE
-         pTtc38uUgOGAcp7SRX2rGdLXzrTfxo12rmKLIlXlYkosXOdqvS5+xbLTdDWUF7L6oRMj
-         uPumfnieARCgtDOx1tX0FAN1VrrQShu/zw7Z7DyDE1kwksPgO1/NCF2dE2YhR1wurKdl
-         m0og==
-X-Gm-Message-State: AOAM530YKos5Jv8anRLVBsAlMQoTIuDT717aZehuyKzulQpA4dhSnM2u
-        SHbJwubFmtI/it4P9+C1+3aMDp9JlMZI9nVKSBo=
-X-Google-Smtp-Source: ABdhPJyorx9rIYjwfGWs5c/+/DTWQX+XeyqUNrSLPfIgnzjXlY3Gkag4N7ICwQCMyFJikPmFhna+ncTjCURuT8j3rrU=
-X-Received: by 2002:a7b:c413:: with SMTP id k19mr2459883wmi.124.1589944608931;
- Tue, 19 May 2020 20:16:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5WJmSfBCJ9T93UY4usILNY67jnm3iHHEW+ii4uy79rA=;
+        b=EKRCpQm5fCjH3ci9R0yA4VgyB1EvmI9dnpbPCSNi7c/ZLk8wf0jlZygN5/yfnKn9lN
+         ZRnuYqT00WGB6Uw2eAMrQDNCEQQVdP7OCiyyxtro1CC/vWG6FgiuYvFCLXmwZ0HcaA7S
+         Z5u+2Fmr3vwY9GczvY1TM2oJcJ55cmegHTFgNjAgh4cj88g9yC4zQFHUPz2obPYCZwVW
+         gS/Yb23tycKSiJjGu6tRKzuLzorCAg6U5+gg2p8NhIWLw18ZwqTFcoQpswvbj4F+8DTO
+         3y4BnZDGnjB6IludobiaU9FqmD2qqITcobinB+RUhvLLx5+F9eyOmv8Y1vnM0mEWvxOB
+         2UEA==
+X-Gm-Message-State: AOAM530tHfamjI552yF4kJpjPa+INQlMpHOjFknHLVanGI51l4UkVm6P
+        ljr/0RAjC6wAQKRpv564/oMKJdmr
+X-Google-Smtp-Source: ABdhPJwkjDvodLcK7vqo6B6/QVUPQqLUzmdpLFumoYrm8ZpWi1hAKBksPhhb1C5gHePDo5HU2zAmyg==
+X-Received: by 2002:a63:c58:: with SMTP id 24mr2226622pgm.246.1589944702433;
+        Tue, 19 May 2020 20:18:22 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id n205sm733624pfd.50.2020.05.19.20.18.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 May 2020 20:18:21 -0700 (PDT)
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a
+ seqcount
+To:     David Miller <davem@davemloft.net>, tglx@linutronix.de
+Cc:     stephen@networkplumber.org, a.darwish@linutronix.de,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        paulmck@kernel.org, bigeasy@linutronix.de, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org
+References: <87v9kr5zt7.fsf@nanos.tec.linutronix.de>
+ <20200519161141.5fbab730@hermes.lan> <87lfln5w61.fsf@nanos.tec.linutronix.de>
+ <20200519.195722.1091264300612213554.davem@davemloft.net>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <886041df-d889-3d88-59fe-e190d15f9c98@gmail.com>
+Date:   Tue, 19 May 2020 20:18:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200516042303.6070-1-andrew.smirnov@gmail.com> <befcc520-6556-b09b-0464-fe0b5f28cf1e@nxp.com>
-In-Reply-To: <befcc520-6556-b09b-0464-fe0b5f28cf1e@nxp.com>
-From:   Andrey Smirnov <andrew.smirnov@gmail.com>
-Date:   Wed, 20 May 2020 03:16:37 +0000
-Message-ID: <CAHQ1cqHWGJgZUf0zpPt9oX7hbokkwXf7gFGwbgtGSPTRpvNvaQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: caam - make soc match data optional
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Chris Healy <cphealy@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200519.195722.1091264300612213554.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 6:59 PM Horia Geant=C4=83 <horia.geanta@nxp.com> wr=
-ote:
->
-> On 5/16/2020 7:23 AM, Andrey Smirnov wrote:
-> > Vyrbrid devices don't have any clock that need to be taken care of, so
-> > make clock data optional on i.MX.
-> >
-> Vybrid Security RM states that IPG clock used by CAAM
-> can be gated by CCM_CCGR11[CG176].
->
 
-Cool, looks like I missed this when I was looking through RM.
 
-> Clock driver needs to be updated accordingly,
-> and so will CAAM driver and DT node.
->
-> I don't have a board at hand, so patch below is not tested.
->
+On 5/19/20 7:57 PM, David Miller wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Wed, 20 May 2020 01:42:30 +0200
+> 
+>> Stephen Hemminger <stephen@networkplumber.org> writes:
+>>> On Wed, 20 May 2020 00:23:48 +0200
+>>> Thomas Gleixner <tglx@linutronix.de> wrote:
+>>>> No. We did not. -ENOTESTCASE
+>>>
+>>> Please try, it isn't that hard..
+>>>
+>>> # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
+>>>
+>>> real	0m17.002s
+>>> user	0m1.064s
+>>> sys	0m0.375s
+>>
+>> And that solves the incorrectness of the current code in which way?
+> 
+> You mentioned that there wasn't a test case, he gave you one to try.
+> 
 
-I'll take it from here and test/submit appropriate patches. Thanks!
+I do not think this would ever use device rename, nor netdev_get_name()
 
-> Horia
->
-> ------ >8 ------
->
-> Subject: [PATCH] clk: imx: vf610: add CAAM clock
->
-> According to Vybrid Security RM, CCM_CCGR11[CG176] can be used to
-> gate CAAM ipg clock.
->
-> Signed-off-by: Horia Geant=C4=83 <horia.geanta@nxp.com>
-> ---
->  drivers/clk/imx/clk-vf610.c             | 2 ++
->  include/dt-bindings/clock/vf610-clock.h | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/imx/clk-vf610.c b/drivers/clk/imx/clk-vf610.c
-> index cd04e7dc1878..4f3066cf1b89 100644
-> --- a/drivers/clk/imx/clk-vf610.c
-> +++ b/drivers/clk/imx/clk-vf610.c
-> @@ -439,6 +439,8 @@ static void __init vf610_clocks_init(struct device_no=
-de *ccm_node)
->         clk[VF610_CLK_DAP] =3D imx_clk_gate("dap", "platform_bus", CCM_CC=
-SR, 24);
->         clk[VF610_CLK_OCOTP] =3D imx_clk_gate("ocotp", "ipg_bus", CCM_CCG=
-R6, CCM_CCGRx_CGn(5));
->
-> +       clk[VF610_CLK_CAAM] =3D imx_clk_gate2("caam", "ipg_bus", CCM_CCGR=
-11, CCM_CCGRx_CGn(0));
-> +
->         imx_check_clocks(clk, ARRAY_SIZE(clk));
->
->         clk_set_parent(clk[VF610_CLK_QSPI0_SEL], clk[VF610_CLK_PLL1_PFD4]=
-);
-> diff --git a/include/dt-bindings/clock/vf610-clock.h b/include/dt-binding=
-s/clock/vf610-clock.h
-> index 95394f35a74a..0f2d60e884dc 100644
-> --- a/include/dt-bindings/clock/vf610-clock.h
-> +++ b/include/dt-bindings/clock/vf610-clock.h
-> @@ -195,6 +195,7 @@
->  #define VF610_CLK_WKPU                 186
->  #define VF610_CLK_TCON0                        187
->  #define VF610_CLK_TCON1                        188
-> -#define VF610_CLK_END                  189
-> +#define VF610_CLK_CAAM                 189
-> +#define VF610_CLK_END                  190
->
->  #endif /* __DT_BINDINGS_CLOCK_VF610_H */
-> --
-> 2.17.1
+None of this stuff is fast path really.
+
+# time for ((i=1;i<1000;i++)); do ip li add dev dummy$i type dummy; done
+
+real	0m1.127s
+user	0m0.270s
+sys	0m1.039s
