@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D80D1DAD28
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504F61DAD30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgETIWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 04:22:49 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:41796 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726570AbgETIWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 04:22:49 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app3 (Coremail) with SMTP id cC_KCgB3f0PG6MRe6UTfAA--.12230S4;
-        Wed, 20 May 2020 16:22:35 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: rcar: fix runtime pm imbalance on error
-Date:   Wed, 20 May 2020 16:22:28 +0800
-Message-Id: <20200520082228.26881-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgB3f0PG6MRe6UTfAA--.12230S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW5ZF15Jr17CrWrKFy7trb_yoWfWrb_u3
-        WY9Fs7Crs5Gr9Ikry2ya13ZF9YvasIq3Wqg3WrtF1ayaySvws8Xr97XFZ8Zrs5Cr45AF1q
-        yr1q9F1xurWUujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb-kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
-        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
-        14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
-        Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbqQ6JUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
+        id S1726830AbgETIXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726403AbgETIXa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 04:23:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4432C061A0E;
+        Wed, 20 May 2020 01:23:30 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ci23so905568pjb.5;
+        Wed, 20 May 2020 01:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ydJr1FI/eDhp6ARKNzCABXniNl9l6KBQGwfYvbwjzD4=;
+        b=WVhCmGX5+bbu2oNKUHCJMjgJVZwHDvqEyXVHcxsbWR3VIz9AfzMHjjRpXnSCRKz8f4
+         Ku+Ea9yzFJSt6uljgh+evfBdgKBAnUfp00LPRHXg0VbCtBJNDR0TykAU5vd/hRcF8Vki
+         a3RiBdTVnURtwQHzNed2Gb7Ik1XNr8DzOG6dL+bzf6qDTsHTNx3IZ9I5XZUbM6KfjDGy
+         M4WPpwpJsQUos+wGjK1i72k2SFftXoj4QvDA5lT1xQ9B2eZ4YjNk+9N8E7RiIMwGt78f
+         TvvwZr7GbZ2BsNJyc4N6EaWJXrXODxHl+Y5ds4Brg4hX+xQHWU2AgDiKNqkz9LB3hdCH
+         F9tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ydJr1FI/eDhp6ARKNzCABXniNl9l6KBQGwfYvbwjzD4=;
+        b=sEu2+3RskjWzLTBbWq0b9ghNWOd4u0w/Sn76nz0CPNjKgfV7OWOu9kubiQPzPMZVAS
+         hJ1uDGY1t9vcJbI0ROCdAhaln6XbR3924IYg7vqSzdaVDOJ9p3Xe9Kx7z6x9NJTtiWh5
+         sx7fNuSV9HpiinvBOJV0V6oBQVGL5Z/rNqFVn04WhlRHfEl5bQPpG+VY+4mgEF24GJSo
+         o4QV1PGaUYMwtO9WYZs9lJknXRn628YcqdvApEGdq4Se37CyzTBN6lgZcwiOdi2IHg/e
+         FkMK7IoY3VZKugW8I8vLRVAsW3X28ixRuQHHVsd+ojuGIhqdzp/++chCDniDrtQuV7u+
+         XqjA==
+X-Gm-Message-State: AOAM530nIR+34kqTlECt2Xdt4VP6TvC9EB0VlKmGPjEx0bGdg+HiwrC0
+        T2FLCPL5aP5TJHAY8ydCY65kegzWBcnOdRHVTqlsldaNKyo=
+X-Google-Smtp-Source: ABdhPJx1cbItXqm/dq+8SPg/JJ59McZbevS+5zuzZUw+JrFXOf1S9QaDE+zP72JnAbxSTImWrgH1IaIfNuliCSXK1Rk=
+X-Received: by 2002:a17:90b:113:: with SMTP id p19mr4126093pjz.129.1589963010284;
+ Wed, 20 May 2020 01:23:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200520073125.30808-1-jonathan.albrieux@gmail.com> <20200520073125.30808-2-jonathan.albrieux@gmail.com>
+In-Reply-To: <20200520073125.30808-2-jonathan.albrieux@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 20 May 2020 11:23:18 +0300
+Message-ID: <CAHp75VcWBe=3j68t9pmRk=xigsym_f_EHG4HLLKe_cmQi5E6mA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: iio: magnetometer: ak8975: convert
+ txt format to yaml
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Allison Randal <allison@lohutok.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Jilayne Lovejoy <opensource@jilayne.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+On Wed, May 20, 2020 at 10:32 AM Jonathan Albrieux
+<jonathan.albrieux@gmail.com> wrote:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/pci/controller/pcie-rcar.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> +maintainers:
+> +  - can't find a maintainer, author is Laxman Dewangan <ldewangan@nvidia.com>
 
-diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
-index 759c6542c5c8..a9de65438051 100644
---- a/drivers/pci/controller/pcie-rcar.c
-+++ b/drivers/pci/controller/pcie-rcar.c
-@@ -1207,9 +1207,8 @@ static int rcar_pcie_probe(struct platform_device *pdev)
- 	irq_dispose_mapping(pcie->msi.irq1);
- 
- err_pm_put:
--	pm_runtime_put(dev);
--
- err_pm_disable:
-+	pm_runtime_put(dev);
- 	pm_runtime_disable(dev);
- 	pci_free_resource_list(&pcie->resources);
- 
+Alas, you'll never go forward with this.
+One (easiest way) is to drop this patch completely if you won't be a
+maintainer of the binding.
+
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
