@@ -2,55 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233621DB5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE491DB5D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgETNyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:54:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:56844 "EHLO foss.arm.com"
+        id S1726720AbgETOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:00:56 -0400
+Received: from mga05.intel.com ([192.55.52.43]:42179 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbgETNyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:54:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17B7830E;
-        Wed, 20 May 2020 06:54:13 -0700 (PDT)
-Received: from [10.37.8.206] (unknown [10.37.8.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7975A3F52E;
-        Wed, 20 May 2020 06:54:11 -0700 (PDT)
-Subject: Re: [PATCH V4 17/17] arm64/cpuinfo: Add ID_MMFR4_EL1 into the
- cpuinfo_arm64 context
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-18-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <7ec45dbb-f1f5-6ee9-9fbc-d5da4b97a1ea@arm.com>
-Date:   Wed, 20 May 2020 14:58:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726436AbgETOAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 10:00:55 -0400
+IronPort-SDR: qzy7/cdMpUZ8dyCUFDUz2huK80ibYlYixSSNuwN1rRqgrLVTBhA5rFgQI8Fq8CX8LTK28RflbU
+ XTmEe/AJY95g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 07:00:54 -0700
+IronPort-SDR: YxqroxTKwIzxY6ucUpAnsBTI86ASQQd6VG2HGha0NGmWLHK5WVOwbOqYDto+t9MKbXk4o3xVNm
+ sBH+BSYuEiVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
+   d="scan'208";a="268275311"
+Received: from ttluu1x-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.239])
+  by orsmga006.jf.intel.com with ESMTP; 20 May 2020 07:00:45 -0700
+Date:   Wed, 20 May 2020 17:00:44 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, sean.j.christopherson@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, josh@joshtriplett.org, luto@kernel.org,
+        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
+        puiterwijk@redhat.com, Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v30 01/20] x86/cpufeatures: x86/msr: Add Intel SGX
+ hardware bits
+Message-ID: <20200520140044.GA34750@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+ <20200515004410.723949-2-jarkko.sakkinen@linux.intel.com>
+ <20200520121604.GF1457@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <1589881254-10082-18-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520121604.GF1457@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
-> ID_MMFR4_EL1 has been missing in the CPU context (i.e cpuinfo_arm64). This
-> just adds the register along with other required changes.
+On Wed, May 20, 2020 at 02:16:21PM +0200, Borislav Petkov wrote:
+> On Fri, May 15, 2020 at 03:43:51AM +0300, Jarkko Sakkinen wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > Add X86_FEATURE_SGX from CPUID.(EAX=7, ECX=1), which informs whether the
+> > CPU has SGX.
+> > 
+> > Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=12H, ECX=0),
+> > which describe the level of SGX support available [1].
+> > 
+> > Remap CPUID.(EAX=12H, ECX=0) bits to the Linux fake CPUID 8 in order to
+> > conserve some space. Keep the bit positions intact because KVM requires
+> > this. Reserve bits 0-7 for SGX in order to maintain this invariant also
+> > when new SGX specific feature bits get added.
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> That paragraph needs dropping now.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+I dropped it (in my tree).
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
