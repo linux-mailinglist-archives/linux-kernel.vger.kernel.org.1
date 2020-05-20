@@ -2,60 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E561DC2D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561E01DC2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgETXYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 19:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        id S1728739AbgETX0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 19:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728462AbgETXYD (ORCPT
+        with ESMTP id S1728462AbgETX0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 19:24:03 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA3BC061A0E;
-        Wed, 20 May 2020 16:24:03 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477:9e51:a893:b0fe:602a])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9CDFF12728305;
-        Wed, 20 May 2020 16:23:58 -0700 (PDT)
-Date:   Wed, 20 May 2020 16:23:55 -0700 (PDT)
-Message-Id: <20200520.162355.2212209708127373208.davem@davemloft.net>
-To:     marcelo.leitner@gmail.com
-Cc:     hch@lst.de, kuba@kernel.org, edumazet@google.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, vyasevich@gmail.com,
-        nhorman@tuxdriver.com, jmaloy@redhat.com, ying.xue@windriver.com,
-        drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-        target-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, netdev@vger.kernel.org,
-        linux-sctp@vger.kernel.org, ceph-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 31/33] sctp: add sctp_sock_set_nodelay
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200520231001.GU2491@localhost.localdomain>
-References: <20200520195509.2215098-1-hch@lst.de>
-        <20200520195509.2215098-32-hch@lst.de>
-        <20200520231001.GU2491@localhost.localdomain>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 20 May 2020 16:23:59 -0700 (PDT)
+        Wed, 20 May 2020 19:26:02 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6495C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:00 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id v4so4103670qte.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29qrSLO3a0Xt52/LRlvTsiLnKnN+GSkKRdsahYMpe80=;
+        b=UvqFuo731M0lFWYv2fhK1zJ/DLeXPrhcF9LP+b2mL19ohXpkgrlfY4S4lb7K+ltnBK
+         LG29mz0nURpPxOSnqCos/MgUxRHKt1kgGLu5xUdxzqHn56nV/kpf7HyTOeHFGSlTXpZ1
+         ytVQV/0+bgn/i2ZuABmRlrGThXfZmVbY7sep1DbE9LuUooo22iV/cGFrmvw3ukiu5u2C
+         m46JWbzAsnsWBvAXU5o1iVNPD8hla/vMibusyVRhOAVhcJeKHYsMXZPxV8bR37tEMPx6
+         qRF9GyEA6+/BdW/YQR6xQhjoqzfugRA3FJJbHQBPAs6VkF7mis504iLPeUeWMR3iIVjN
+         e1dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29qrSLO3a0Xt52/LRlvTsiLnKnN+GSkKRdsahYMpe80=;
+        b=Ayoc246Qh9uKr0zYT/BtjtTmh2so1h7kGuF0efLTlBoZzab4sMKDmWafLQ813QAAjx
+         n2vt1q4NJtYWPrU6PPPl4bkrSrfBeEDwAnQ+wJj4AqM1ZBZZuLKS8ADHhrbgfYfXFl3V
+         5DCwq3ZC8dXDa1qmP7eDENRhjaoNdG6Fm5Y1IRKOBTn4Wh8cvYvDRAkga4SHK1KAbyV0
+         ens4yQgCA4NJF2ji3l2G6/x0pbUxaewoGsWXTN+q6GvQ6hmEBtgWWIn0n5Y4IB7fZc2M
+         piVY4Z9Zp50YQFIn01Ka4zhCiP5cJpEurX7epgu1jpOuadnagUWQsFSSRJh/svfsHfXU
+         BSMg==
+X-Gm-Message-State: AOAM532Iux99SFi/9ctSIww2XEqpvJvRWuCf2AJ07xm7ozqJD0ZXG2cB
+        MgDxnVOL2v2KMKyBoBUVChVAbEt/jqs=
+X-Google-Smtp-Source: ABdhPJx1Fbr2rSi9Smk+KrQo8U2nQOWt+IZgeMvnccpiQ6wM12CCBMYh9+jOyldr6lzQTAuAED/USQ==
+X-Received: by 2002:aed:3f67:: with SMTP id q36mr8071439qtf.237.1590017159806;
+        Wed, 20 May 2020 16:25:59 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4708])
+        by smtp.gmail.com with ESMTPSA id k43sm4105259qtk.67.2020.05.20.16.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 16:25:59 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     linux-mm@kvack.org
+Cc:     Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan.kim@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/14] mm: balance LRU lists based on relative thrashing v2
+Date:   Wed, 20 May 2020 19:25:11 -0400
+Message-Id: <20200520232525.798933-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Date: Wed, 20 May 2020 20:10:01 -0300
+The reclaim code that balances between swapping and cache reclaim
+tries to predict likely reuse based on in-memory reference patterns
+alone. This works in many cases, but when it fails it cannot detect
+when the cache is thrashing pathologically, or when we're in the
+middle of a swap storm.
 
-> The duplication with sctp_setsockopt_nodelay() is quite silly/bad.
-> Also, why have the 'true' hardcoded? It's what dlm uses, yes, but the
-> API could be a bit more complete than that.
+The high seek cost of rotational drives under which the algorithm
+evolved also meant that mistakes could quickly result in lockups from
+too aggressive swapping (which is predominantly random IO). As a
+result, the balancing code has been tuned over time to a point where
+it mostly goes for page cache and defers swapping until the VM is
+under significant memory pressure.
 
-The APIs are being designed based upon what in-tree users actually
-make use of.  We can expand things later if necessary.
+The resulting strategy doesn't make optimal caching decisions - where
+optimal is the least amount of IO required to execute the workload.
+
+The proliferation of fast random IO devices such as SSDs, in-memory
+compression such as zswap, and persistent memory technologies on the
+horizon, has made this undesirable behavior very noticable: Even in
+the presence of large amounts of cold anonymous memory and a capable
+swap device, the VM refuses to even seriously scan these pages, and
+can leave the page cache thrashing needlessly.
+
+This series sets out to address this. Since commit ("a528910e12ec mm:
+thrash detection-based file cache sizing") we have exact tracking of
+refault IO - the ultimate cost of reclaiming the wrong pages. This
+allows us to use an IO cost based balancing model that is more
+aggressive about scanning anonymous memory when the cache is
+thrashing, while being able to avoid unnecessary swap storms.
+
+These patches base the LRU balance on the rate of refaults on each
+list, times the relative IO cost between swap device and filesystem
+(swappiness), in order to optimize reclaim for least IO cost incurred.
+
+	History
+
+I floated these changes in 2016. At the time they were incomplete and
+full of workarounds due to a lack of infrastructure in the reclaim
+code: We didn't have PageWorkingset, we didn't have hierarchical
+cgroup statistics, and problems with the cgroup swap controller. As
+swapping wasn't too high a priority then, the patches stalled out.
+With all dependencies in place now, here we are again with much
+cleaner, feature-complete patches.
+
+I kept the acks for patches that stayed materially the same :-)
+
+Below is a series of test results that demonstrate certain problematic
+behavior of the current code, as well as showcase the new code's more
+predictable and appropriate balancing decisions.
+
+	Test #1: No convergence
+
+This test shows an edge case where the VM currently doesn't converge
+at all on a new file workingset with a stale anon/tmpfs set.
+
+The test sets up a cold anon set the size of 3/4 RAM, then tries to
+establish a new file set half the size of RAM (flat access pattern).
+
+The vanilla kernel refuses to even scan anon pages and never
+converges. The file set is perpetually served from the filesystem.
+
+The first test kernel is with the series up to the workingset patch
+applied. This allows thrashing page cache to challenge the anonymous
+workingset. The VM then scans the lists based on the current
+scanned/rotated balancing algorithm. It converges on a stable state
+where all cold anon pages are pushed out and the fileset is served
+entirely from cache:
+
+			    noconverge/5.7-rc5-mm	noconverge/5.7-rc5-mm-workingset
+Scanned			417719308.00 (    +0.00%)		64091155.00 (   -84.66%)
+Reclaimed		417711094.00 (    +0.00%)		61640308.00 (   -85.24%)
+Reclaim efficiency %	      100.00 (    +0.00%)		      96.18 (    -3.78%)
+Scanned file		417719308.00 (    +0.00%)		59211118.00 (   -85.83%)
+Scanned anon			0.00 (    +0.00%)	         4880037.00 (          )
+Swapouts			0.00 (    +0.00%)	         2439957.00 (          )
+Swapins				0.00 (    +0.00%)		     257.00 (          )
+Refaults		415246605.00 (    +0.00%)		59183722.00 (   -85.75%)
+Restore refaults		0.00 (    +0.00%)	        54988252.00 (          )
+
+The second test kernel is with the full patch series applied, which
+replaces the scanned/rotated ratios with refault/swapin rate-based
+balancing. It evicts the cold anon pages more aggressively in the
+presence of a thrashing cache and the absence of swapins, and so
+converges with about 60% of the IO and reclaim activity:
+
+			noconverge/5.7-rc5-mm-workingset	noconverge/5.7-rc5-mm-lrubalance
+Scanned				64091155.00 (    +0.00%)		37579741.00 (   -41.37%)
+Reclaimed			61640308.00 (    +0.00%)		35129293.00 (   -43.01%)
+Reclaim efficiency %		      96.18 (    +0.00%)		      93.48 (    -2.78%)
+Scanned file			59211118.00 (    +0.00%)		32708385.00 (   -44.76%)
+Scanned anon			 4880037.00 (    +0.00%)		 4871356.00 (    -0.18%)
+Swapouts			 2439957.00 (    +0.00%)		 2435565.00 (    -0.18%)
+Swapins				     257.00 (    +0.00%)		     262.00 (    +1.94%)
+Refaults			59183722.00 (    +0.00%)		32675667.00 (   -44.79%)
+Restore refaults		54988252.00 (    +0.00%)		28480430.00 (   -48.21%)
+
+We're triggering this case in host sideloading scenarios: When a
+host's primary workload is not saturating the machine (primary load is
+usually driven by user activity), we can optimistically sideload a
+batch job; if user activity picks up and the primary workload needs
+the whole host during this time, we freeze the sideload and rely on it
+getting pushed to swap. Frequently that swapping doesn't happen and
+the completely inactive sideload simply stays resident while the
+expanding primary worklad is struggling to gain ground.
+
+	Test #2: Kernel build
+
+This test is a a kernel build that is slightly memory-restricted (make
+-j4 inside a 400M cgroup).
+
+Despite the very aggressive swapping of cold anon pages in test #1,
+this test shows that the new kernel carefully balances swap against
+cache refaults when both the file and the cache set are pressured.
+
+It shows the patched kernel to be slightly better at finding the
+coldest memory from the combined anon and file set to evict under
+pressure. The result is lower aggregate reclaim and paging activity:
+
+				    5.7-rc5-mm	5.7-rc5-mm-lrubalance
+Real time		   210.60 (    +0.00%)	   210.97 (    +0.18%)
+User time		   745.42 (    +0.00%)	   746.48 (    +0.14%)
+System time		    69.78 (    +0.00%)	    69.79 (    +0.02%)
+Scanned file		354682.00 (    +0.00%)	293661.00 (   -17.20%)
+Scanned anon		465381.00 (    +0.00%)	378144.00 (   -18.75%)
+Swapouts		185920.00 (    +0.00%)	147801.00 (   -20.50%)
+Swapins			 34583.00 (    +0.00%)	 32491.00 (    -6.05%)
+Refaults		212664.00 (    +0.00%)	172409.00 (   -18.93%)
+Restore refaults	 48861.00 (    +0.00%)	 80091.00 (   +63.91%)
+Total paging IO		433167.00 (    +0.00%)	352701.00 (   -18.58%)
+
+	Test #3: Overload
+
+This next test is not about performance, but rather about the
+predictability of the algorithm. The current balancing behavior
+doesn't always lead to comprehensible results, which makes performance
+analysis and parameter tuning (swappiness e.g.) very difficult.
+
+The test shows the balancing behavior under equivalent anon and file
+input. Anon and file sets are created of equal size (3/4 RAM), have
+the same access patterns (a hot-cold gradient), and synchronized
+access rates. Swappiness is raised from the default of 60 to 100 to
+indicate equal IO cost between swap and cache.
+
+With the vanilla balancing code, anon scans make up around 9% of the
+total pages scanned, or a ~1:10 ratio. This is a surprisingly skewed
+ratio, and it's an outcome that is hard to explain given the input
+parameters to the VM.
+
+The new balancing model targets a 1:2 balance: All else being equal,
+reclaiming a file page costs one page IO - the refault; reclaiming an
+anon page costs two IOs - the swapout and the swapin. In the test we
+observe a ~1:3 balance.
+
+The scanned and paging IO numbers indicate that the anon LRU algorithm
+we have in place right now does a slightly worse job at picking the
+coldest pages compared to the file algorithm. There is ongoing work to
+improve this, like Joonsoo's anon workingset patches; however, it's
+difficult to compare the two aging strategies when the balancing
+between them is behaving unintuitively.
+
+The slightly less efficient anon reclaim results in a deviation from
+the optimal 1:2 scan ratio we would like to see here - however, 1:3 is
+much closer to what we'd want to see in this test than the vanilla
+kernel's aging of 10+ cache pages for every anonymous one:
+
+			overload-100/5.7-rc5-mm-workingset	overload-100/5.7-rc5-mm-lrubalance-realfile
+Scanned				 533633725.00 (    +0.00%)			  595687785.00 (   +11.63%)
+Reclaimed			 494325440.00 (    +0.00%)			  518154380.00 (    +4.82%)
+Reclaim efficiency %			92.63 (    +0.00%)				 86.98 (    -6.03%)
+Scanned file			 484532894.00 (    +0.00%)			  456937722.00 (    -5.70%)
+Scanned anon			  49100831.00 (    +0.00%)			  138750063.00 (  +182.58%)
+Swapouts			   8096423.00 (    +0.00%)			   48982142.00 (  +504.98%)
+Swapins				  10027384.00 (    +0.00%)			   62325044.00 (  +521.55%)
+Refaults			 479819973.00 (    +0.00%)			  451309483.00 (    -5.94%)
+Restore refaults		 426422087.00 (    +0.00%)			  399914067.00 (    -6.22%)
+Total paging IO			 497943780.00 (    +0.00%)			  562616669.00 (   +12.99%)
+
+	Test #4: Parallel IO
+
+It's important to note that these patches only affect the situation
+where the kernel has to reclaim workingset memory, which is usually a
+transitionary period. The vast majority of page reclaim occuring in a
+system is from trimming the ever-expanding page cache.
+
+These patches don't affect cache trimming behavior. We never swap as
+long as we only have use-once cache moving through the file LRU, we
+only consider swapping when the cache is actively thrashing.
+
+The following test demonstrates this. It has an anon workingset that
+takes up half of RAM and then writes a file that is twice the size of
+RAM out to disk.
+
+As the cache is funneled through the inactive file list, no anon pages
+are scanned (aside from apparently some background noise of 10 pages):
+
+					  5.7-rc5-mm		          5.7-rc5-mm-lrubalance
+Scanned			    10714722.00 (    +0.00%)		       10723445.00 (    +0.08%)
+Reclaimed		    10703596.00 (    +0.00%)		       10712166.00 (    +0.08%)
+Reclaim efficiency %		  99.90 (    +0.00%)			     99.89 (    -0.00%)
+Scanned file		    10714722.00 (    +0.00%)		       10723435.00 (    +0.08%)
+Scanned anon			   0.00 (    +0.00%)			     10.00 (          )
+Swapouts			   0.00 (    +0.00%)			      7.00 (          )
+Swapins				   0.00 (    +0.00%)			      0.00 (    +0.00%)
+Refaults			  92.00 (    +0.00%)			     41.00 (   -54.84%)
+Restore refaults		   0.00 (    +0.00%)			      0.00 (    +0.00%)
+Total paging IO			  92.00 (    +0.00%)			     48.00 (   -47.31%)
+
+These patches are based on v5.7-rc5-mm (minus linux-next and up).
+
+ Documentation/admin-guide/sysctl/vm.rst |  23 ++++--
+ fs/cifs/file.c                          |  10 +--
+ fs/fuse/dev.c                           |   2 +-
+ include/linux/memcontrol.h              |  13 ++++
+ include/linux/mmzone.h                  |  21 ++----
+ include/linux/swap.h                    |   5 +-
+ include/linux/vm_event_item.h           |   4 ++
+ include/linux/vmstat.h                  |   1 +
+ kernel/sysctl.c                         |   3 +-
+ mm/khugepaged.c                         |   8 +--
+ mm/memcontrol.c                         |  18 ++---
+ mm/memory.c                             |   2 +-
+ mm/shmem.c                              |   6 +-
+ mm/swap.c                               |  90 +++++++++++------------
+ mm/swap_state.c                         |   7 +-
+ mm/vmscan.c                             | 114 ++++++++++++------------------
+ mm/vmstat.c                             |   4 ++
+ mm/workingset.c                         |  21 ++++--
+ 18 files changed, 180 insertions(+), 172 deletions(-)
+
+
