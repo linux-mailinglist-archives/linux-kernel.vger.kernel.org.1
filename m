@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CBD1DA9EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2CC1DA9E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgETF34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 01:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S1728236AbgETF3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 01:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727948AbgETF32 (ORCPT
+        with ESMTP id S1727974AbgETF3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 01:29:28 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676D1C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:28 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id n36so2426180qvg.22
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:28 -0700 (PDT)
+        Wed, 20 May 2020 01:29:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF460C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:30 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k186so793079ybc.19
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=m0T6T+70wSFyJpcmVviJFbhlAnWz1/NcVo+29dwBHOg=;
-        b=QbHMgP/Nig7fT3isiChQjfZKm91tA6CwwAN/Ni4maGfQgte+us6j3UCl2hydLIRd2e
-         uCPWpBZi8mxGT5MRc/Z5W6dFC/DSSKJdiaWAyI48ZVRk7imlbTJc7OI/NbMLdgY2Q5Wy
-         0Ep6vckOzmrsdSHoDjWtyTasqal/xXzRFtfiA1bn/GZw/aHgcB4ogUOpcnDawY/Lh9hU
-         XdAsYW1xG9j4/Ozmw2bs5h8sJWpABV6n7b8ga52ZHY1uGeL0U8Du12SkGrgZvZTQWEmS
-         /19vryTT69cYt45ryU2SIsSRLRDAq7SyaXmiJgqSM0IZwMQR+H44cmKKObQOEmEcqeIS
-         Nh0g==
+        bh=baUrqRjT3RvpPQiJbNrpdqbCcCfZQeZzSpidKaRl4yM=;
+        b=XgZ0MYBjp/QQ5RAKRllpCcwYravdKAtbrF5pMXkCUVf2NCm/jXuE1rxMjvK40nn86F
+         DBqDKWi3pmk69dsffz+PyGCYlsCNUn8xFoDFJtM630/9YiCIvg0En7kluix7NcPVTnxc
+         5M8kncj7yYHBYxSf6fjrMpqIY5h3RWdgz6NHEmAH8SS+sHsXvemZvUZkC5DHGZzSX7Vz
+         alNNdWUB7/5QfWcZghaVCMiep/3qn3af4qAXrYIb8747nRYG77iUkvCEXzUycAnqu3vv
+         OGtEbq7oPzUP8zHBnAV62mt1zrq8ygagulTDW7PNy9va3lOGHo8KrHBiIE4WyjrXOnGN
+         8Rbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=m0T6T+70wSFyJpcmVviJFbhlAnWz1/NcVo+29dwBHOg=;
-        b=n64Rmf6Ji3e4LNwCivJKhjGypOUNpbexhr4BTmMNw6Rmhprp717KjWsb1aaCLeV6DJ
-         e7WWcws09k/a86fa+2KDSiXV0xtwVW5TMqlynQ1p4iHvCOp1RP8MwjW+08xZAHR6NBIF
-         Is4miEBCisruGAIiTS1bXVZX1JGqak1FgwtzhUOTAi9z7tMU/b2QKFqmZBA6MS1eT+WK
-         U+mPIjsm+SccUtm/yuut0zYJFtQ9oJDrlYZwjk5+o5g/orxHOgR7XGJEhaXT0oHekW6l
-         OKtfojvpYpTV55hgWLBQx5TekkniFBIt7o0lYPncInEi7i3l7+n4+RgcNMOszYJEk2gJ
-         X6ag==
-X-Gm-Message-State: AOAM533v9wPftpjMQg1d7o7jF2WlDfAElkcORR8DaEiK2BNyzaIxrnnX
-        kZHbie6aifLoWH+iAG+XSSTOt8CqK7U=
-X-Google-Smtp-Source: ABdhPJxoVK6kzfbip/jyp4MIxHt+TXYAM3wE7U0C5wiZEdI/3dI5eGJJjv/gAGIl6SeusJsJcxC/cs8FXlc=
-X-Received: by 2002:a0c:f3ca:: with SMTP id f10mr3336511qvm.66.1589952567603;
- Tue, 19 May 2020 22:29:27 -0700 (PDT)
-Date:   Tue, 19 May 2020 22:29:03 -0700
+        bh=baUrqRjT3RvpPQiJbNrpdqbCcCfZQeZzSpidKaRl4yM=;
+        b=TJVIs0WYKsZ4ywPz5e51SwOldAMQdgvagqkogveAHPvfUUhGW5zv3SeGKZkksyyQs1
+         C0C9vDWHuvrOjNn+KLGvBEXsmXrgtumYJhRGYUv/QtX8YQJd5SFcDZjhyi3pEVO84Cpa
+         pVVFVTyFD7vsWfSFTNaQKT8JaTysm+MV/CmkYwvVu+VEivaf7Lb9GcL2Fr73iQl6O59H
+         GnArjSNTNNr27TSxV+NKZkc1m9WJZlFUquqTMHteKLriSpNzZuYPJtAMaz2WoMmO4pri
+         onaZyID6J6VVQ+DkgAVkHBSTL6O0Ur3xFdde4WJLWTkTDq+1zx9og3K8OTVAsAf4R0O4
+         iYFQ==
+X-Gm-Message-State: AOAM531AS7lZdDds1ISEJNYOsjkxIcSkngWhGJDmGYDO0iQV5DcwSBBj
+        Y7Ts/eRPIZ6t2pM019igI/v6v+foJyk=
+X-Google-Smtp-Source: ABdhPJwX7AKolR7rvFLD8FiK5S+rC4975CmSeuOF7aUaBCeim62UAoqyPuR4CPyNCTa4l4lVobVU5TsjgDE=
+X-Received: by 2002:a5b:345:: with SMTP id q5mr4540485ybp.494.1589952569960;
+ Tue, 19 May 2020 22:29:29 -0700 (PDT)
+Date:   Tue, 19 May 2020 22:29:04 -0700
 In-Reply-To: <20200520052908.204642-1-walken@google.com>
-Message-Id: <20200520052908.204642-8-walken@google.com>
+Message-Id: <20200520052908.204642-9-walken@google.com>
 Mime-Version: 1.0
 References: <20200520052908.204642-1-walken@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH v6 07/12] mmap locking API: add mmap_read_trylock_non_owner()
+Subject: [PATCH v6 08/12] mmap locking API: add MMAP_LOCK_INITIALIZER
 From:   Michel Lespinasse <walken@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm <linux-mm@kvack.org>
@@ -74,96 +74,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a couple APIs used by kernel/bpf/stackmap.c only:
-- mmap_read_trylock_non_owner()
-- mmap_read_unlock_non_owner() (may be called from a work queue).
-
-It's still not ideal that bpf/stackmap subverts the lock ownership
-in this way. Thanks to Peter Zijlstra for suggesting this API as the
-least-ugly way of addressing this in the short term.
+Define a new initializer for the mmap locking api.
+Initially this just evaluates to __RWSEM_INITIALIZER as the API
+is defined as wrappers around rwsem.
 
 Signed-off-by: Michel Lespinasse <walken@google.com>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Reviewed-by: Laurent Dufour <ldufour@linux.ibm.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/mmap_lock.h | 14 ++++++++++++++
- kernel/bpf/stackmap.c     | 17 +++++------------
- 2 files changed, 19 insertions(+), 12 deletions(-)
+ arch/x86/kernel/tboot.c    | 2 +-
+ drivers/firmware/efi/efi.c | 2 +-
+ include/linux/mmap_lock.h  | 3 +++
+ mm/init-mm.c               | 2 +-
+ 4 files changed, 6 insertions(+), 3 deletions(-)
 
+diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+index b89f6ac6a0c0..885058325c20 100644
+--- a/arch/x86/kernel/tboot.c
++++ b/arch/x86/kernel/tboot.c
+@@ -90,7 +90,7 @@ static struct mm_struct tboot_mm = {
+ 	.pgd            = swapper_pg_dir,
+ 	.mm_users       = ATOMIC_INIT(2),
+ 	.mm_count       = ATOMIC_INIT(1),
+-	.mmap_sem       = __RWSEM_INITIALIZER(init_mm.mmap_sem),
++	MMAP_LOCK_INITIALIZER(init_mm)
+ 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+ 	.mmlist         = LIST_HEAD_INIT(init_mm.mmlist),
+ };
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 911a2bd0f6b7..916313ec8acb 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -54,7 +54,7 @@ struct mm_struct efi_mm = {
+ 	.mm_rb			= RB_ROOT,
+ 	.mm_users		= ATOMIC_INIT(2),
+ 	.mm_count		= ATOMIC_INIT(1),
+-	.mmap_sem		= __RWSEM_INITIALIZER(efi_mm.mmap_sem),
++	MMAP_LOCK_INITIALIZER(efi_mm)
+ 	.page_table_lock	= __SPIN_LOCK_UNLOCKED(efi_mm.page_table_lock),
+ 	.mmlist			= LIST_HEAD_INIT(efi_mm.mmlist),
+ 	.cpu_bitmap		= { [BITS_TO_LONGS(NR_CPUS)] = 0},
 diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index a757cb30ae77..d1826ce42f00 100644
+index d1826ce42f00..acac1bf5ecd2 100644
 --- a/include/linux/mmap_lock.h
 +++ b/include/linux/mmap_lock.h
-@@ -56,4 +56,18 @@ static inline void mmap_read_unlock(struct mm_struct *mm)
- 	up_read(&mm->mmap_sem);
- }
+@@ -1,6 +1,9 @@
+ #ifndef _LINUX_MMAP_LOCK_H
+ #define _LINUX_MMAP_LOCK_H
  
-+static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-+{
-+	if (down_read_trylock(&mm->mmap_sem)) {
-+		rwsem_release(&mm->mmap_sem.dep_map, _RET_IP_);
-+		return true;
-+	}
-+	return false;
-+}
++#define MMAP_LOCK_INITIALIZER(name) \
++	.mmap_sem = __RWSEM_INITIALIZER((name).mmap_sem),
 +
-+static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
-+{
-+	up_read_non_owner(&mm->mmap_sem);
-+}
-+
- #endif /* _LINUX_MMAP_LOCK_H */
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 11d41f0c7005..998968659892 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -33,7 +33,7 @@ struct bpf_stack_map {
- /* irq_work to run up_read() for build_id lookup in nmi context */
- struct stack_map_irq_work {
- 	struct irq_work irq_work;
--	struct rw_semaphore *sem;
-+	struct mm_struct *mm;
- };
- 
- static void do_up_read(struct irq_work *entry)
-@@ -44,8 +44,7 @@ static void do_up_read(struct irq_work *entry)
- 		return;
- 
- 	work = container_of(entry, struct stack_map_irq_work, irq_work);
--	up_read_non_owner(work->sem);
--	work->sem = NULL;
-+	mmap_read_unlock_non_owner(work->mm);
- }
- 
- static DEFINE_PER_CPU(struct stack_map_irq_work, up_read_work);
-@@ -317,7 +316,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
- 	 * with build_id.
- 	 */
- 	if (!user || !current || !current->mm || irq_work_busy ||
--	    mmap_read_trylock(current->mm) == 0) {
-+	    !mmap_read_trylock_non_owner(current->mm)) {
- 		/* cannot access current->mm, fall back to ips */
- 		for (i = 0; i < trace_nr; i++) {
- 			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
-@@ -342,16 +341,10 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
- 	}
- 
- 	if (!work) {
--		mmap_read_unlock(current->mm);
-+		mmap_read_unlock_non_owner(current->mm);
- 	} else {
--		work->sem = &current->mm->mmap_sem;
-+		work->mm = current->mm;
- 		irq_work_queue(&work->irq_work);
--		/*
--		 * The irq_work will release the mmap_sem with
--		 * up_read_non_owner(). The rwsem_release() is called
--		 * here to release the lock from lockdep's perspective.
--		 */
--		rwsem_release(&current->mm->mmap_sem.dep_map, _RET_IP_);
- 	}
- }
- 
+ static inline void mmap_init_lock(struct mm_struct *mm)
+ {
+ 	init_rwsem(&mm->mmap_sem);
+diff --git a/mm/init-mm.c b/mm/init-mm.c
+index 19603302a77f..fe9c03d8e07b 100644
+--- a/mm/init-mm.c
++++ b/mm/init-mm.c
+@@ -31,7 +31,7 @@ struct mm_struct init_mm = {
+ 	.pgd		= swapper_pg_dir,
+ 	.mm_users	= ATOMIC_INIT(2),
+ 	.mm_count	= ATOMIC_INIT(1),
+-	.mmap_sem	= __RWSEM_INITIALIZER(init_mm.mmap_sem),
++	MMAP_LOCK_INITIALIZER(init_mm)
+ 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+ 	.arg_lock	=  __SPIN_LOCK_UNLOCKED(init_mm.arg_lock),
+ 	.mmlist		= LIST_HEAD_INIT(init_mm.mmlist),
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
