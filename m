@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406061DB380
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05CD1DB38F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgETMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:34:46 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44389 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726820AbgETMen (ORCPT
+        id S1726937AbgETMfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:35:06 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:37503 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727900AbgETMe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:34:43 -0400
-X-UUID: e1c8184ea9fe4d3b8efd7702e403f7f4-20200520
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=MLbI5UBGcTLgx4Lz76VmpfjIP0jdV5jjzRMAfolENLM=;
-        b=ZHJAeTohXtMtqJHUaFkHx8ZX+2QT43MbXtc3Iult843/mwvPxzBQJ/VLaYfx/b3b1/OLsCWBDqEgH3iR5ric4rKszkGgoZq3Xkce8lqVks5eQoG2yEMgqDWL3NDxjWGqRlmk/CdziBlrtZVEFP9iZ7aVLNt+WFvaaAZGFKeJPME=;
-X-UUID: e1c8184ea9fe4d3b8efd7702e403f7f4-20200520
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1792537476; Wed, 20 May 2020 20:34:37 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 20 May 2020 20:34:35 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 May 2020 20:34:34 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: [PATCH v5 1/4] rcu/kasan: record and print call_rcu() call stack
-Date:   Wed, 20 May 2020 20:34:34 +0800
-Message-ID: <20200520123434.3888-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 20 May 2020 08:34:59 -0400
+Received: by mail-oi1-f196.google.com with SMTP id r25so2762003oij.4;
+        Wed, 20 May 2020 05:34:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F/u+6tnly2BFfAMjAK8M1DKWCRzqZwn5wyDMJLDJi3s=;
+        b=lYT9RRCH6Z3f847C4QRguS5MW3TKtYbUoOvBU26yXjn67k3CdUZSiGtoC2i4l5n8NE
+         8Zf5ED+8lxj4mXuJeycTsKxWt2Hr+VJrWXznE7uSyAuvG4mX3IqcgBtOFa0NE0OPUGdA
+         BcVFG/EkdffKBAuj+BhSgXTIBWTZdpeVBS/AEHzAXU/WETTAnhqk4QGusOXZi4tfGUNI
+         yTbzAQHqG6MTk28jt7F+gY2dbgUd8epv+7eDzjp5rK8Cev2HkGFf3u83Kb75MU4TSVOf
+         i+SuSrPDuQyQk7UxGnRmFb6x5DGPAkfPiGlQFkGzf6MTBf+WpzqdGXNcQEQYVSCLPxxE
+         InEA==
+X-Gm-Message-State: AOAM532t/xcHgD8hl27b5G2+B1EUQY8YxC3AXkM7X5DuGVy4OQblcqcn
+        Jr2o33p4OeSiMn7fb4IPlKS7KZsf0RjvVdNc0xU=
+X-Google-Smtp-Source: ABdhPJwOCOKGJWDMvkrJ0xNeetJajHrD/IP3CJbDZJ76726JW+VglbUl0g5pNhwQURwdBQbNda+mABt+2A5T1kia3c0=
+X-Received: by 2002:aca:210a:: with SMTP id 10mr1526706oiz.153.1589978097806;
+ Wed, 20 May 2020 05:34:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200511145257.22970-1-geert+renesas@glider.be> <20200520121420.GA1867563@smile.fi.intel.com>
+In-Reply-To: <20200520121420.GA1867563@smile.fi.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 May 2020 14:34:46 +0200
+Message-ID: <CAMuHMdW9EsRLYYTL0pd-PqqZs5WcUfK8i2uceNwJnSvAQKuVgw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] gpio: Add GPIO Aggregator
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harish Jenny K N <harish_kandiga@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Alexander Graf <graf@amazon.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBmZWF0dXJlIHdpbGwgcmVjb3JkIHRoZSBsYXN0IHR3byBjYWxsX3JjdSgpIGNhbGwgc3Rh
-Y2tzIGFuZA0KcHJpbnRzIHVwIHRvIDIgY2FsbF9yY3UoKSBjYWxsIHN0YWNrcyBpbiBLQVNBTiBy
-ZXBvcnQuDQoNCldoZW4gY2FsbF9yY3UoKSBpcyBjYWxsZWQsIHdlIHN0b3JlIHRoZSBjYWxsX3Jj
-dSgpIGNhbGwgc3RhY2sgaW50bw0Kc2x1YiBhbGxvYyBtZXRhLWRhdGEsIHNvIHRoYXQgdGhlIEtB
-U0FOIHJlcG9ydCBjYW4gcHJpbnQgcmN1IHN0YWNrLg0KDQpbMV1odHRwczovL2J1Z3ppbGxhLmtl
-cm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTE5ODQzNw0KWzJdaHR0cHM6Ly9ncm91cHMuZ29vZ2xl
-LmNvbS9mb3J1bS8jIXNlYXJjaGluL2thc2FuLWRldi9iZXR0ZXIkMjBzdGFjayQyMHRyYWNlcyQy
-MGZvciQyMHJjdSU3Q3NvcnQ6ZGF0ZS9rYXNhbi1kZXYvS1FzalRfODhoREUvN3JOVVpwclJCZ0FK
-DQoNClNpZ25lZC1vZmYtYnk6IFdhbHRlciBXdSA8d2FsdGVyLXpoLnd1QG1lZGlhdGVrLmNvbT4N
-ClN1Z2dlc3RlZC1ieTogRG1pdHJ5IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KQWNrZWQt
-Ynk6IFBhdWwgRS4gTWNLZW5uZXkgPHBhdWxtY2tAa2VybmVsLm9yZz4NCkNjOiBBbmRyZXkgUnlh
-YmluaW4gPGFyeWFiaW5pbkB2aXJ0dW96em8uY29tPg0KQ2M6IERtaXRyeSBWeXVrb3YgPGR2eXVr
-b3ZAZ29vZ2xlLmNvbT4NCkNjOiBBbGV4YW5kZXIgUG90YXBlbmtvIDxnbGlkZXJAZ29vZ2xlLmNv
-bT4NCkNjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KQ2M6IEpv
-c2ggVHJpcGxldHQgPGpvc2hAam9zaHRyaXBsZXR0Lm9yZz4NCkNjOiBNYXRoaWV1IERlc25veWVy
-cyA8bWF0aGlldS5kZXNub3llcnNAZWZmaWNpb3MuY29tPg0KQ2M6IExhaSBKaWFuZ3NoYW4gPGpp
-YW5nc2hhbmxhaUBnbWFpbC5jb20+DQpDYzogSm9lbCBGZXJuYW5kZXMgPGpvZWxAam9lbGZlcm5h
-bmRlcy5vcmc+DQpDYzogQW5kcmV5IEtvbm92YWxvdiA8YW5kcmV5a252bEBnb29nbGUuY29tPg0K
-LS0tDQogaW5jbHVkZS9saW51eC9rYXNhbi5oIHwgIDIgKysNCiBrZXJuZWwvcmN1L3RyZWUuYyAg
-ICAgfCAgMiArKw0KIG1tL2thc2FuL2NvbW1vbi5jICAgICB8ICA0ICsrLS0NCiBtbS9rYXNhbi9n
-ZW5lcmljLmMgICAgfCAyMSArKysrKysrKysrKysrKysrKysrKysNCiBtbS9rYXNhbi9rYXNhbi5o
-ICAgICAgfCAxMCArKysrKysrKysrDQogbW0va2FzYW4vcmVwb3J0LmMgICAgIHwgMjQgKysrKysr
-KysrKysrKysrKysrKysrKysrDQogNiBmaWxlcyBjaGFuZ2VkLCA2MSBpbnNlcnRpb25zKCspLCAy
-IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9rYXNhbi5oIGIvaW5j
-bHVkZS9saW51eC9rYXNhbi5oDQppbmRleCAzMTMxNGNhN2M2MzUuLjIzYjdlZTAwNTcyZCAxMDA2
-NDQNCi0tLSBhL2luY2x1ZGUvbGludXgva2FzYW4uaA0KKysrIGIvaW5jbHVkZS9saW51eC9rYXNh
-bi5oDQpAQCAtMTc0LDExICsxNzQsMTMgQEAgc3RhdGljIGlubGluZSBzaXplX3Qga2FzYW5fbWV0
-YWRhdGFfc2l6ZShzdHJ1Y3Qga21lbV9jYWNoZSAqY2FjaGUpIHsgcmV0dXJuIDA7IH0NCiANCiB2
-b2lkIGthc2FuX2NhY2hlX3NocmluayhzdHJ1Y3Qga21lbV9jYWNoZSAqY2FjaGUpOw0KIHZvaWQg
-a2FzYW5fY2FjaGVfc2h1dGRvd24oc3RydWN0IGttZW1fY2FjaGUgKmNhY2hlKTsNCit2b2lkIGth
-c2FuX3JlY29yZF9hdXhfc3RhY2sodm9pZCAqcHRyKTsNCiANCiAjZWxzZSAvKiBDT05GSUdfS0FT
-QU5fR0VORVJJQyAqLw0KIA0KIHN0YXRpYyBpbmxpbmUgdm9pZCBrYXNhbl9jYWNoZV9zaHJpbmso
-c3RydWN0IGttZW1fY2FjaGUgKmNhY2hlKSB7fQ0KIHN0YXRpYyBpbmxpbmUgdm9pZCBrYXNhbl9j
-YWNoZV9zaHV0ZG93bihzdHJ1Y3Qga21lbV9jYWNoZSAqY2FjaGUpIHt9DQorc3RhdGljIGlubGlu
-ZSB2b2lkIGthc2FuX3JlY29yZF9hdXhfc3RhY2sodm9pZCAqcHRyKSB7fQ0KIA0KICNlbmRpZiAv
-KiBDT05GSUdfS0FTQU5fR0VORVJJQyAqLw0KIA0KZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJl
-ZS5jIGIva2VybmVsL3JjdS90cmVlLmMNCmluZGV4IDA2NTQ4ZTJlYmI3Mi4uMzZhNGZmN2YzMjBi
-IDEwMDY0NA0KLS0tIGEva2VybmVsL3JjdS90cmVlLmMNCisrKyBiL2tlcm5lbC9yY3UvdHJlZS5j
-DQpAQCAtNTcsNiArNTcsNyBAQA0KICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQogI2luY2x1ZGUg
-PGxpbnV4L3NjaGVkL2lzb2xhdGlvbi5oPg0KICNpbmNsdWRlIDxsaW51eC9zY2hlZC9jbG9jay5o
-Pg0KKyNpbmNsdWRlIDxsaW51eC9rYXNhbi5oPg0KICNpbmNsdWRlICIuLi90aW1lL3RpY2staW50
-ZXJuYWwuaCINCiANCiAjaW5jbHVkZSAidHJlZS5oIg0KQEAgLTI2NjgsNiArMjY2OSw3IEBAIF9f
-Y2FsbF9yY3Uoc3RydWN0IHJjdV9oZWFkICpoZWFkLCByY3VfY2FsbGJhY2tfdCBmdW5jKQ0KIAlo
-ZWFkLT5mdW5jID0gZnVuYzsNCiAJaGVhZC0+bmV4dCA9IE5VTEw7DQogCWxvY2FsX2lycV9zYXZl
-KGZsYWdzKTsNCisJa2FzYW5fcmVjb3JkX2F1eF9zdGFjayhoZWFkKTsNCiAJcmRwID0gdGhpc19j
-cHVfcHRyKCZyY3VfZGF0YSk7DQogDQogCS8qIEFkZCB0aGUgY2FsbGJhY2sgdG8gb3VyIGxpc3Qu
-ICovDQpkaWZmIC0tZ2l0IGEvbW0va2FzYW4vY29tbW9uLmMgYi9tbS9rYXNhbi9jb21tb24uYw0K
-aW5kZXggMjkwNjM1OGU0MmYwLi44YmM2MTgyODliYjEgMTAwNjQ0DQotLS0gYS9tbS9rYXNhbi9j
-b21tb24uYw0KKysrIGIvbW0va2FzYW4vY29tbW9uLmMNCkBAIC00MSw3ICs0MSw3IEBADQogI2lu
-Y2x1ZGUgImthc2FuLmgiDQogI2luY2x1ZGUgIi4uL3NsYWIuaCINCiANCi1zdGF0aWMgaW5saW5l
-IGRlcG90X3N0YWNrX2hhbmRsZV90IHNhdmVfc3RhY2soZ2ZwX3QgZmxhZ3MpDQorZGVwb3Rfc3Rh
-Y2tfaGFuZGxlX3Qga2FzYW5fc2F2ZV9zdGFjayhnZnBfdCBmbGFncykNCiB7DQogCXVuc2lnbmVk
-IGxvbmcgZW50cmllc1tLQVNBTl9TVEFDS19ERVBUSF07DQogCXVuc2lnbmVkIGludCBucl9lbnRy
-aWVzOw0KQEAgLTU0LDcgKzU0LDcgQEAgc3RhdGljIGlubGluZSBkZXBvdF9zdGFja19oYW5kbGVf
-dCBzYXZlX3N0YWNrKGdmcF90IGZsYWdzKQ0KIHN0YXRpYyBpbmxpbmUgdm9pZCBzZXRfdHJhY2so
-c3RydWN0IGthc2FuX3RyYWNrICp0cmFjaywgZ2ZwX3QgZmxhZ3MpDQogew0KIAl0cmFjay0+cGlk
-ID0gY3VycmVudC0+cGlkOw0KLQl0cmFjay0+c3RhY2sgPSBzYXZlX3N0YWNrKGZsYWdzKTsNCisJ
-dHJhY2stPnN0YWNrID0ga2FzYW5fc2F2ZV9zdGFjayhmbGFncyk7DQogfQ0KIA0KIHZvaWQga2Fz
-YW5fZW5hYmxlX2N1cnJlbnQodm9pZCkNCmRpZmYgLS1naXQgYS9tbS9rYXNhbi9nZW5lcmljLmMg
-Yi9tbS9rYXNhbi9nZW5lcmljLmMNCmluZGV4IDU2ZmY4ODg1ZmUyZS4uOGFjZjQ4ODgyYmEyIDEw
-MDY0NA0KLS0tIGEvbW0va2FzYW4vZ2VuZXJpYy5jDQorKysgYi9tbS9rYXNhbi9nZW5lcmljLmMN
-CkBAIC0zMjUsMyArMzI1LDI0IEBAIERFRklORV9BU0FOX1NFVF9TSEFET1coZjIpOw0KIERFRklO
-RV9BU0FOX1NFVF9TSEFET1coZjMpOw0KIERFRklORV9BU0FOX1NFVF9TSEFET1coZjUpOw0KIERF
-RklORV9BU0FOX1NFVF9TSEFET1coZjgpOw0KKw0KK3ZvaWQga2FzYW5fcmVjb3JkX2F1eF9zdGFj
-ayh2b2lkICphZGRyKQ0KK3sNCisJc3RydWN0IHBhZ2UgKnBhZ2UgPSBrYXNhbl9hZGRyX3RvX3Bh
-Z2UoYWRkcik7DQorCXN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZTsNCisJc3RydWN0IGthc2FuX2Fs
-bG9jX21ldGEgKmFsbG9jX2luZm87DQorCXZvaWQgKm9iamVjdDsNCisNCisJaWYgKCEocGFnZSAm
-JiBQYWdlU2xhYihwYWdlKSkpDQorCQlyZXR1cm47DQorDQorCWNhY2hlID0gcGFnZS0+c2xhYl9j
-YWNoZTsNCisJb2JqZWN0ID0gbmVhcmVzdF9vYmooY2FjaGUsIHBhZ2UsIGFkZHIpOw0KKwlhbGxv
-Y19pbmZvID0gZ2V0X2FsbG9jX2luZm8oY2FjaGUsIG9iamVjdCk7DQorDQorCS8qDQorCSAqIHJl
-Y29yZCB0aGUgbGFzdCB0d28gY2FsbF9yY3UoKSBjYWxsIHN0YWNrcy4NCisJICovDQorCWFsbG9j
-X2luZm8tPmF1eF9zdGFja1sxXSA9IGFsbG9jX2luZm8tPmF1eF9zdGFja1swXTsNCisJYWxsb2Nf
-aW5mby0+YXV4X3N0YWNrWzBdID0ga2FzYW5fc2F2ZV9zdGFjayhHRlBfTk9XQUlUKTsNCit9DQpk
-aWZmIC0tZ2l0IGEvbW0va2FzYW4va2FzYW4uaCBiL21tL2thc2FuL2thc2FuLmgNCmluZGV4IGU4
-ZjM3MTk5ZDg4NS4uYTczOTFiYzgzMDcwIDEwMDY0NA0KLS0tIGEvbW0va2FzYW4va2FzYW4uaA0K
-KysrIGIvbW0va2FzYW4va2FzYW4uaA0KQEAgLTEwNCw3ICsxMDQsMTUgQEAgc3RydWN0IGthc2Fu
-X3RyYWNrIHsNCiANCiBzdHJ1Y3Qga2FzYW5fYWxsb2NfbWV0YSB7DQogCXN0cnVjdCBrYXNhbl90
-cmFjayBhbGxvY190cmFjazsNCisjaWZkZWYgQ09ORklHX0tBU0FOX0dFTkVSSUMNCisJLyoNCisJ
-ICogY2FsbF9yY3UoKSBjYWxsIHN0YWNrIGlzIHN0b3JlZCBpbnRvIHN0cnVjdCBrYXNhbl9hbGxv
-Y19tZXRhLg0KKwkgKiBUaGUgZnJlZSBzdGFjayBpcyBzdG9yZWQgaW50byBzdHJ1Y3Qga2FzYW5f
-ZnJlZV9tZXRhLg0KKwkgKi8NCisJZGVwb3Rfc3RhY2tfaGFuZGxlX3QgYXV4X3N0YWNrWzJdOw0K
-KyNlbHNlDQogCXN0cnVjdCBrYXNhbl90cmFjayBmcmVlX3RyYWNrW0tBU0FOX05SX0ZSRUVfU1RB
-Q0tTXTsNCisjZW5kaWYNCiAjaWZkZWYgQ09ORklHX0tBU0FOX1NXX1RBR1NfSURFTlRJRlkNCiAJ
-dTggZnJlZV9wb2ludGVyX3RhZ1tLQVNBTl9OUl9GUkVFX1NUQUNLU107DQogCXU4IGZyZWVfdHJh
-Y2tfaWR4Ow0KQEAgLTE1OSw2ICsxNjcsOCBAQCB2b2lkIGthc2FuX3JlcG9ydF9pbnZhbGlkX2Zy
-ZWUodm9pZCAqb2JqZWN0LCB1bnNpZ25lZCBsb25nIGlwKTsNCiANCiBzdHJ1Y3QgcGFnZSAqa2Fz
-YW5fYWRkcl90b19wYWdlKGNvbnN0IHZvaWQgKmFkZHIpOw0KIA0KK2RlcG90X3N0YWNrX2hhbmRs
-ZV90IGthc2FuX3NhdmVfc3RhY2soZ2ZwX3QgZmxhZ3MpOw0KKw0KICNpZiBkZWZpbmVkKENPTkZJ
-R19LQVNBTl9HRU5FUklDKSAmJiBcDQogCShkZWZpbmVkKENPTkZJR19TTEFCKSB8fCBkZWZpbmVk
-KENPTkZJR19TTFVCKSkNCiB2b2lkIHF1YXJhbnRpbmVfcHV0KHN0cnVjdCBrYXNhbl9mcmVlX21l
-dGEgKmluZm8sIHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSk7DQpkaWZmIC0tZ2l0IGEvbW0va2Fz
-YW4vcmVwb3J0LmMgYi9tbS9rYXNhbi9yZXBvcnQuYw0KaW5kZXggODBmMjNjOWRhNmIwLi4yOWE4
-MDFkNWNkNzQgMTAwNjQ0DQotLS0gYS9tbS9rYXNhbi9yZXBvcnQuYw0KKysrIGIvbW0va2FzYW4v
-cmVwb3J0LmMNCkBAIC0xMDUsNiArMTA1LDE3IEBAIHN0YXRpYyB2b2lkIGVuZF9yZXBvcnQodW5z
-aWduZWQgbG9uZyAqZmxhZ3MpDQogCWthc2FuX2VuYWJsZV9jdXJyZW50KCk7DQogfQ0KIA0KKyNp
-ZmRlZiBDT05GSUdfS0FTQU5fR0VORVJJQw0KK3N0YXRpYyB2b2lkIHByaW50X3N0YWNrKGRlcG90
-X3N0YWNrX2hhbmRsZV90IHN0YWNrKQ0KK3sNCisJdW5zaWduZWQgbG9uZyAqZW50cmllczsNCisJ
-dW5zaWduZWQgaW50IG5yX2VudHJpZXM7DQorDQorCW5yX2VudHJpZXMgPSBzdGFja19kZXBvdF9m
-ZXRjaChzdGFjaywgJmVudHJpZXMpOw0KKwlzdGFja190cmFjZV9wcmludChlbnRyaWVzLCBucl9l
-bnRyaWVzLCAwKTsNCit9DQorI2VuZGlmDQorDQogc3RhdGljIHZvaWQgcHJpbnRfdHJhY2soc3Ry
-dWN0IGthc2FuX3RyYWNrICp0cmFjaywgY29uc3QgY2hhciAqcHJlZml4KQ0KIHsNCiAJcHJfZXJy
-KCIlcyBieSB0YXNrICV1OlxuIiwgcHJlZml4LCB0cmFjay0+cGlkKTsNCkBAIC0xOTIsNiArMjAz
-LDE5IEBAIHN0YXRpYyB2b2lkIGRlc2NyaWJlX29iamVjdChzdHJ1Y3Qga21lbV9jYWNoZSAqY2Fj
-aGUsIHZvaWQgKm9iamVjdCwNCiAJCWZyZWVfdHJhY2sgPSBrYXNhbl9nZXRfZnJlZV90cmFjayhj
-YWNoZSwgb2JqZWN0LCB0YWcpOw0KIAkJcHJpbnRfdHJhY2soZnJlZV90cmFjaywgIkZyZWVkIik7
-DQogCQlwcl9lcnIoIlxuIik7DQorDQorI2lmZGVmIENPTkZJR19LQVNBTl9HRU5FUklDDQorCQlp
-ZiAoYWxsb2NfaW5mby0+YXV4X3N0YWNrWzBdKSB7DQorCQkJcHJfZXJyKCJMYXN0IGNhbGxfcmN1
-KCk6XG4iKTsNCisJCQlwcmludF9zdGFjayhhbGxvY19pbmZvLT5hdXhfc3RhY2tbMF0pOw0KKwkJ
-CXByX2VycigiXG4iKTsNCisJCX0NCisJCWlmIChhbGxvY19pbmZvLT5hdXhfc3RhY2tbMV0pIHsN
-CisJCQlwcl9lcnIoIlNlY29uZCB0byBsYXN0IGNhbGxfcmN1KCk6XG4iKTsNCisJCQlwcmludF9z
-dGFjayhhbGxvY19pbmZvLT5hdXhfc3RhY2tbMV0pOw0KKwkJCXByX2VycigiXG4iKTsNCisJCX0N
-CisjZW5kaWYNCiAJfQ0KIA0KIAlkZXNjcmliZV9vYmplY3RfYWRkcihjYWNoZSwgb2JqZWN0LCBh
-ZGRyKTsNCi0tIA0KMi4xOC4wDQo=
+Hi Andy,
 
+On Wed, May 20, 2020 at 2:14 PM Andy Shevchenko
+<andriy.shevchenko@intel.com> wrote:
+> On Mon, May 11, 2020 at 04:52:51PM +0200, Geert Uytterhoeven wrote:
+> > GPIO controllers are exported to userspace using /dev/gpiochip*
+> > character devices.  Access control to these devices is provided by
+> > standard UNIX file system permissions, on an all-or-nothing basis:
+> > either a GPIO controller is accessible for a user, or it is not.
+> > Currently no mechanism exists to control access to individual GPIOs.
+> >
+> > Hence this adds a GPIO driver to aggregate existing GPIOs, and expose
+> > them as a new gpiochip.  This is useful for implementing access control,
+> > and assigning a set of GPIOs to a specific user.  Furthermore, this
+> > simplifies and hardens exporting GPIOs to a virtual machine, as the VM
+> > can just grab the full GPIO controller, and no longer needs to care
+> > about which GPIOs to grab and which not, reducing the attack surface.
+> > This has been implemented for ARM virt in QEMU[1].
+> >
+> > Recently, other use cases have been discovered[2], like describing
+> > simple GPIO-operated devices in DT, and using the GPIO Aggregator as a
+> > generic GPIO driver for userspace, which is useful for industrial
+> > control.
+> >
+> > Note that the first patch of this series ("i2c: i801: Use GPIO_LOOKUP()
+> > helper macro") has been applied to i2c/for-next.
+>
+> Sorry for late reply, recently noticed this nice idea.
+> The comment I have is, please, can we reuse bitmap parse algorithm and syntax?
+> We have too many different formats and parsers in the kernel and bitmap's one
+> seems suitable here.
+
+Thank you, I wasn't aware of that.
+
+Which one do you mean? The documentation seems to be confusing,
+and incomplete.
+My first guess was bitmap_parse(), but that one assumes hex values?
+And given it processes the unsigned long bitmap in u32 chunks, I guess
+it doesn't work as expected on big-endian 64-bit?
+
+bitmap_parselist() looks more suitable, and the format seems to be
+compatible with what's currently used, so it won't change ABI.
+Is that the one you propose?
+
+> (Despite other small clean ups, like strstrip() use)
+
+Aka strim()? There are too many of them, to know all of them by heart ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
