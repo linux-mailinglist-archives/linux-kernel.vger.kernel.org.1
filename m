@@ -2,205 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221391DC249
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1E51DC251
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgETWmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 18:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S1728595AbgETWsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 18:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgETWmQ (ORCPT
+        with ESMTP id S1728424AbgETWsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 18:42:16 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A742DC08C5C0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:42:15 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id d10so382091ybk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:42:15 -0700 (PDT)
+        Wed, 20 May 2020 18:48:17 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CABC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:48:17 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id v23so1194411vke.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dvtn9Vcw9Mu98E89DI4uU9zUHcPKNAC6K0uYrY5V7wY=;
-        b=maeJMRB/Bw0/93huxTAw8NYf3nSth3kkbZ9jMF+IJqT2fe0A1xTTw4sEh4NoG95aLe
-         Po+q2bJp4eS3oJEc2sXJ28TdPUqHJomesT1sCV/yvkD5m2S/y+tyufRNDIthIIJSW7A7
-         4R74ipSexjHgkb5kBTwWB0n//Uv7rtfY+XcPhEdVvWr6PMUKImP+vDaym8neM/m/akuJ
-         x/ZIZragkSbzTAAi7cgYW+o7RWmwH7edNLhOggQ0iO1loGe/bCbX128N/G5Fp73Gojzp
-         4bQjoHC+yDjmPHbFXbQs4Rn9HfWdBHyr/2fLKdDeBB7OWbY00I7QzxbFcrtG1pesDBJG
-         jWXA==
+        bh=47LWty0h4lFiVFN17MSJUE+uaQH/Kp+4z/ot0VIo9pg=;
+        b=Lk2pKb+1a/iz6NJQA6L1mx1V04sa3fommdf5Ng9euSWqmIv3ljCRIHh25CIUVCynMp
+         4opGi0a8VG4L6kakNxcjbuKsRpZMI4tYjOCkSjfygKBv+aOJiatcnonG4QcAnW7C11YT
+         cHLtL1uLlJcwVCuJkFnspzzIw1rpGrJn9jsRI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dvtn9Vcw9Mu98E89DI4uU9zUHcPKNAC6K0uYrY5V7wY=;
-        b=P701173ENgb03QjRhfQXnV8sD7+57/PIvg1GLUnMfs8HLIIr//ii7BsvT6IsnnLoxM
-         ya54jjrO4xDWzfeFFmHOAePYcyvkTCT9tHbcGrapx4NFtzNmGIFd+y86kwlxUo5vEy87
-         kOKRVuC1UZj9W+xpDrF1NLkLJGuDq+iYSxxHQNaZwaqeLMPSpT5yTGs+miEIIgIYssyo
-         ZiGSaw0zq+wbFbq4QJj3hN/krBf4AkKny2ji51j9vkEYMc/Rgk4pBW+R7aXflh+Kelrl
-         dAsI38kfTreaPWHR4V8Uc+FH1Q6gyhtQZQVpKj+lKG7kphgutI85GPte/R8xClDb2bvn
-         h9Pw==
-X-Gm-Message-State: AOAM530L9wBeyOr7S+zjdhYD6H1BRaz7vSugmEhGL27HIOifV33lKNvu
-        Gf3tffcFK+RLXwMe/wmvo0wTFMqEd/LZ62Ke3iXwVw==
-X-Google-Smtp-Source: ABdhPJzs+ERhRHgOSK3Jl85Xe9DI8Tn03w4ppBuvTG+XjaVacohus9qdYiAG5C64Y7dMx6LihN2Z+owKtQ2E0CUdUUI=
-X-Received: by 2002:a25:790e:: with SMTP id u14mr10909068ybc.324.1590014534392;
- Wed, 20 May 2020 15:42:14 -0700 (PDT)
+        bh=47LWty0h4lFiVFN17MSJUE+uaQH/Kp+4z/ot0VIo9pg=;
+        b=BuheDBwH4H1LKJO2dTsnq8SOA7lBl+kyzgMPqyTJ5fenQqT/kK1KyPL/cgR8fqsLlG
+         iAUqgyvCJwxAPvukEj/bHkmy1r1MyEEEqGhw/GD/1uhIJBFiNYO/Bn79SBzxn0R4b2do
+         x8hEQJefIKKOP4coaXOqpptXLlqqIjfkwgWHcW9joTF2sOvEEtAtuoGnC+9SpoFS7052
+         Pxf7mF2Dnl3sJD2Xo9ElzRiHCytBmpDx/ubUrcLgkuUfuLMdxKf6IQ5jO+8P1VIMDHCs
+         QN3+TnLIJVOS6iwd35ILX7p/jGwtCTM3vYywTvzruQ4JvOaBNklbuYECFecPVv/kckjD
+         /ehg==
+X-Gm-Message-State: AOAM533TnVgE0VwC/zOGy4szxdS0TLnRHidlG28QRzfPJJtAjFJOfYHp
+        LG/przqlClGs6RKLyheqlnn+zpL5oQw=
+X-Google-Smtp-Source: ABdhPJxgS2cOc0GhdoEb9Y0SBsZHNAYR0zi8hpRZloHInRTUpYl+QzJNrA8OhAuiIa4s1fPY//Li6w==
+X-Received: by 2002:a1f:9716:: with SMTP id z22mr5590804vkd.55.1590014895584;
+        Wed, 20 May 2020 15:48:15 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id o9sm613542vko.18.2020.05.20.15.48.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 15:48:14 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id i5so1892789uaq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:48:13 -0700 (PDT)
+X-Received: by 2002:a9f:230a:: with SMTP id 10mr3392329uae.0.1590014893375;
+ Wed, 20 May 2020 15:48:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200520072814.128267-1-irogers@google.com> <20200520072814.128267-6-irogers@google.com>
- <20200520134847.GM157452@krava> <CAP-5=fVGf9i7hvQcht_8mnMMjzhQYdFqPzZFraE-iMR7Vcr1tw@mail.gmail.com>
- <20200520220912.GP157452@krava>
-In-Reply-To: <20200520220912.GP157452@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 20 May 2020 15:42:02 -0700
-Message-ID: <CAP-5=fU12vP45Sg3uRSuz-xoceTPTKw9-XZieKv1PaTnREMdrw@mail.gmail.com>
-Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+References: <1589307480-27508-1-git-send-email-rbokka@codeaurora.org>
+ <1589307480-27508-3-git-send-email-rbokka@codeaurora.org> <ffaccce7-95c0-2f95-ad3b-55f1da42eaee@linaro.org>
+ <14e1fa51-066c-6e1b-01a4-2103612de9e9@codeaurora.org> <d5902226-21b3-7941-6405-688d7a115142@linaro.org>
+ <b80aaca0-0594-e04b-5320-b5b3c4478161@codeaurora.org> <d76e4eb2-fa6a-0b76-3912-83bce678bc96@linaro.org>
+ <CAD=FV=XW7GymV_pr_0SvUPWwL6WnPhqMq-crq-RbR_us3-ShNA@mail.gmail.com> <9864496c-b066-3fe8-5608-bd9af69663f4@linaro.org>
+In-Reply-To: <9864496c-b066-3fe8-5608-bd9af69663f4@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 20 May 2020 15:48:01 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UbZPQ74COXJbOikq9Wcx1UvtuMuMA+nqkx44uySoqggg@mail.gmail.com>
+Message-ID: <CAD=FV=UbZPQ74COXJbOikq9Wcx1UvtuMuMA+nqkx44uySoqggg@mail.gmail.com>
+Subject: Re: [RFC v1 2/3] drivers: nvmem: Add driver for QTI qfprom-efuse support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        dhavalp@codeaurora.org, mturney@codeaurora.org,
+        sparate@codeaurora.org, c_rbokka@codeaurora.org,
+        mkurumel@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 3:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
+Hi,
+
+On Wed, May 20, 2020 at 7:35 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
 >
-> On Wed, May 20, 2020 at 09:50:13AM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> > > > +             }
-> > >
-> > > is the groupping still enabled when we merge groups? could part
-> > > of the metric (events) be now computed in different groups?
+> On 18/05/2020 19:31, Doug Anderson wrote:
+> > Hi,
 > >
-> > By default the change will take two metrics and allow the shorter
-> > metric (in terms of number of events) to share the events of the
-> > longer metric. If the events for the shorter metric aren't in the
-> > longer metric then the shorter metric must use its own group of
-> > events. If sharing has occurred then the bitmap is used to work out
-> > which events and groups are no longer in use.
+> > On Mon, May 18, 2020 at 3:45 AM Srinivas Kandagatla
+> > <srinivas.kandagatla@linaro.org> wrote:
+> >>
+> >> On 18/05/2020 11:39, Ravi Kumar Bokka (Temp) wrote:
+> >>>
+> >>> Based on the compatible, do i need to separate probe function for
+> >>> qfprom-efuse and maintain separate nvmem object to register nvmem
+> >>> framework. Is this what you are suggesting to implementing this in to
+> >>> one existing driver?
+> >>
+> >> Yes for same driver we should add new compatible string and add support
+> >> to this in existing qfprom driver.
+> >> Ideally we should allocate nvmem_config object at probe with different
+> >> parameters based on compatible string.
 > >
-> > With --metric-no-group then any event can be used for a metric as
-> > there is no grouping. This is why more events can be eliminated.
+> > I wish I had better documentation for exactly what was in the SoC
+> > instead of the heavily redacted stuff Qualcomm provides.  Really the
+> > answer here is: how do you best describe the hardware?  OK, so I just
+> > spent the past hour or so trying to patch together all the bits and
+> > fragments that Qualcomm provided me.  Just like a scavenger hunt!
+> > Fun!  The best I can patch together is that there is a single QFPROM
+> > with these ranges:
 > >
-> > With --metric-no-merge then the logic to share events between
-> > different metrics is disabled and every metric is in a group. This
-> > allows the current behavior to be had.
+> > 0x00780000 - 0x007800FF
+> > QFPROM HW registers, range 1/2
 > >
-> > There are some corner cases, such as metrics with constraints (that
-> > don't group) and duration_time that is never placed into a group.
-> >
-> > Partial sharing, with one event in 1 weak event group and 1 in another
-> > is never performed. Using --metric-no-group allows something similar.
-> > Given multiplexing, I'd be concerned about accuracy problems if events
-> > between groups were shared - say for IPC, were you measuring
-> > instructions and cycles at the same moment?
->
-> hum, I think that's also concern if you are multiplexing 2 groups and one
-> metric getting events from both groups that were not meassured together
->
-> it makes sense to me put all the merged events into single weak group
-> anything else will have the issue you described above, no?
->
-> and perhaps add command line option for merging that to make sure it's
-> what user actuly wants
-
-I'm not sure I'm following. With the patch set if we have 3 metrics
-with the event groups shown:
-M1: {A,B,C}:W
-M2: {A,B}:W
-M3: {A,B,D}:W
-
-then what happens is we sort the metrics in to M1, M3, M2 then when we
-come to match the events:
-
- - by default: match events allowing sharing if all events come from
-the same group. So in the example M1 will first match with {A,B,C}
-then M3 will fail to match the group {A,B,C} but match {A,B,D}; M2
-will succeed with matching {A,B} from M1. The events/group for M2 can
-be removed as they are no longer used. This kind of sharing is
-opportunistic and respects existing groupings. While it may mean a
-metric is computed from a group that now multiplexes, that group will
-run for more of the time as there are fewer groups to multiplex with.
-In this example we've gone from 3 groups down to 2, 8 events down to
-6. An improvement would be to realize that A,B is in both M1 and M3,
-so when we print the stat we could combine these values.
-
- - with --metric-no-merge: no events are shared by metrics M1, M2 and
-M3 have their events and computation as things currently are. There
-are 3 groups and 8 events.
-
- - with --metric-no-group: all groups are removed and so the evlist
-has A,B,C,A,B,A,B,D in it. The matching will now match M1 to A,B,C at
-the beginning of the list, M2 to the first A,B and M3 to the same A,B
-and D at the end of the list. We've got no groups and the events have
-gone from 8 down to 4.
-
-It is difficult to reason about which grouping is most accurate. If we
-have 4 counters (no NMI watchdog) then this example will fit with no
-multiplexing. The default above should achieve less multiplexing, in
-the same way merging PMU events currently does - this patch is trying
-to mirror the --no-merge functionality to a degree. Considering
-TopDownL1 then we go from metrics that never sum to 100%, to metrics
-that do in either the default or --metric-no-group cases.
-
-I'm not sure what user option is missing with these combinations? The
-default is trying to strike a compromise and I think user interaction
-is unnecessary, just as --no-merge doesn't cause interaction. If the
-existing behavior is wanted using --metric-no-merge will give that.
-The new default and --metric-no-group are hopefully going to reduce
-the number of groups and events. I'm somewhat agnostic as to what the
-flag functionality should be as what I'm working with needs either the
-default or --metric-no-group, I can use whatever flag is agreed upon.
-
-Thanks,
-Ian
-
-> thanks,
-> jirka
->
->
-> >
-> > > I was wondering if we could merge all the hasmaps into single
-> > > one before the parse the evlist.. this way we won't need removing
-> > > later.. but I did not thought this through completely, so it
-> > > might not work at some point
-> >
-> > This could be done in the --metric-no-group case reasonably easily
-> > like the current hashmap. For groups you'd want something like a set
-> > of sets of events, but then you'd only be able to share events if the
-> > sets were the same. A directed acyclic graph could capture the events
-> > and the sharing relationships, it may be possible to optimize cases
-> > like {A,B,C}, {A,B,D}, {A,B} so that the small group on the end shares
-> > events with both the {A,B,C} and {A,B,D} group. This may be good
-> > follow up work. We could also solve this in the json, for example
-> > create a "phony" group of {A,B,C,D} that all three metrics share from.
-> > You could also use --metric-no-group to achieve that sharing now.
-> >
-> > Thanks,
-> > Ian
-> >
-> > > jirka
-> > >
+> > 0x00780120 - 0x007808FF
+> > QFPROM "raw" space
 > >
 >
+> so this is the only region is the QFPROM fuses can be programmed!
+>
+> > 0x00782000 - 0x007820FF
+> > QFPROM HW registers, range 2/2
+> >
+> > 0x00784120 - 0x007848FF
+> > QFPROM "corrected" space
+>
+> Is this some kind of FEC corrected regions?
+
+Yes.
+
+
+> > 0x00786000 - 0x00786FFF
+> > QFPROM memory range that I don't really understand and maybe we don't
+> > worry about right now?
+>
+> >
+> > Did I get that right?  If so, is there a prize for winning the scavenger hunt?
+> >
+> > ---
+> >
+> > If so then, IMO, it wouldn't be insane to actually keep it as two
+> > drivers and two device tree nodes, as you've done.  I'd defer to
+> > Srinivas and Rob Herring, though.  The existing driver would be a
+> > read-only driver and provide access to the "corrected" versions of all
+> > the registers.  Its node would have "#address-cells = <1>" and
+> > "#size-cells = <1>" because it's expected that other drivers might
+> > need to refer to data stored here.
+> >
+> > Your new driver would be read-write and provide access to the "raw"
+> > values.  A read from your new driver would not necessarily equal a
+> > read from the old driver if the FEC (forward error correction) kicked
+>
+> Is this only applicable for corrected address space?
+
+I guess I was proposing a two dts-node / two drive approach here.
+
+dts node #1:just covers the memory range for accessing the FEC-corrected data
+driver #1: read-only and reads the FEC-corrected data
+
+dts node #2: covers the memory range that's _not_ the FEC-corrected
+memory range.
+driver #2: read-write.  reading reads uncorrected data
+
+Does that seem sane?
+
+
+> > in.  Other drivers should never refer to the non-corrected values so
+> > you wouldn't have "#address-cells" and "#size-cells".  The only way to
+> > really read or write it would be through sysfs.
+> >
+> > It would be super important to document what's happening, of course.
+> > ...and ideally name them to make it clearer too.
+> >
+> > ---
+> >
+> > Another alternative (if Srinivas and/or Rob H prefer it) would be to
+> > deprecate the old driver and/or bindings and say that there really
+> > should just be one node and one driver.  In that case you'd replace
+> > the old node with:
+> >
+> > qfprom@780000 {
+> >    compatible = "qcom,sc7180-qfprom-efuse";
+>
+> May be "qcom,sc7180-qfprom"
+>
+>
+> >    reg = <0 0x00780000 0 0x6fff>;
+> >    #address-cells = <1>;
+> >    #size-cells = <1>;
+> >
+> >    clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
+> >    clock-names = "sec";
+> >
+> >    qusb2p_hstx_trim: hstx-trim-primary@25b {
+> >      reg = <0x25b 0x1>;
+> >      bits = <1 3>;
+> >    };
+> > };
+> >
+> > You'd use the of_match_table solution to figure out the relevant
+> > offsets (0x120, 0x2000, 0x4120, 0x6000) for sc7180 and this new driver
+> > would be responsible for being able to read the corrected values and
+>
+>
+> Encompassing these offsets in driver as part of the register defines
+> itself should be a good start!
+>
+> It will also be nice to understand how similar this thing is with w.rt
+> other Qcom SoCs?
+
+At least sdm845 is about the same.  I cross-referenced docs I had with
+sc7180 and sdm845 and that's how I came up with my model for how this
+works.
+
+
+> > also for programming.  In this case I'm not sure how (assuming it's
+> > valuable) you'd provide read access to the uncorrected data.
+> I will leave this question to the author of the driver.
+>
+> --srini
+>
+> >
+> >
+> > -Doug
+> >
