@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACB91DBAE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F101F1DBAD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgETRNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgETRN2 (ORCPT
+        id S1726847AbgETRM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:12:27 -0400
+Received: from mailoutvs21.siol.net ([185.57.226.212]:35666 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726436AbgETRM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:13:28 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBEEC061A0E;
-        Wed, 20 May 2020 10:13:28 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 23so1866245pfy.8;
-        Wed, 20 May 2020 10:13:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=arFxXWIilJc8yilr6THATlL+mM94NJsqQ+xYHRPI28o=;
-        b=eQ8ZueCAAmKF481dSsTzEfptXR3E56PhUUH9kEaE5lcwybZBOx13OC+Xi9wkqf8yJl
-         eMd1L2e88OjzLZqUwjft5kT4q1ykz42UQV6MVOEia2NuXW7QNNZ7A34YWkJl2fTeKnXd
-         x57lOvCSMymfWq5CIUCMSTFmCQ+QTFXWfQxGIl0MyJIAsxvIWaGoYNiaL9FYDbjjsASH
-         yrczDke/1e9q5QAzunll1NsU34AZd3fkwQAvuZ8SyOMsHhrXwdE+C5ocxHRWMG94nAuo
-         mFEYgVnx+pQB6bpLbpXdPCQm3xxHlbpl8IjeNyIIG5xyCXVHShY2DHAh3VorO1Fq2dCg
-         0CDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=arFxXWIilJc8yilr6THATlL+mM94NJsqQ+xYHRPI28o=;
-        b=P2vjEHQ9VpwPhDtvoFr5CY/Z/Uil7iUvKz0eU+UOO48q1oM+iWteBSQmDqzBOjIBw1
-         dxLbmqEBWWJsa6b7Psk+5GkQcGk4dY9m6wZIFDNFd2XmgxShF21VXw27C9ioXh6ZWFYn
-         iCFeuV2ykQXQE+mM9AieND7fQizRm+xX5NY1BUSxKeCS4h7GRdLwDBVO/kvGGPQpSUyk
-         tuL2Zp0AJuuREaoS34pnFB5jXBX8JXjZsYh8Uk6olVG0G5tKt+wzUep4PgDtGMmgjhqt
-         KrqVYd8ck39aj2OyQ9ZDhMEHQDF+agPPKw+fuNCt+nazZ121qIf7PDZSh6v669KPr9Aw
-         uOxA==
-X-Gm-Message-State: AOAM530wd0LcDgNuhXOoeRM0JhTm/wO5pLtGEA2sU4I34Z5465jafcO7
-        dXsO/xO0pAt8WLLqQyZ3sJg=
-X-Google-Smtp-Source: ABdhPJzPAJW/ATUYvu+6WYxM82y1cMxLnDMGV4gQ97nd84re0gsoxcS0Os/XSLxbUD3hZDiX3Ghrxw==
-X-Received: by 2002:a05:6a00:150e:: with SMTP id q14mr5106146pfu.325.1589994807327;
-        Wed, 20 May 2020 10:13:27 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id e1sm2512647pjv.54.2020.05.20.10.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 10:13:26 -0700 (PDT)
-Date:   Wed, 20 May 2020 10:13:24 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: input: touchscreen: edt-ft5x06: change reg
- property
-Message-ID: <20200520171324.GS89269@dtor-ws>
-References: <20200520073327.6016-1-jbx6244@gmail.com>
+        Wed, 20 May 2020 13:12:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTP id 7177252262E;
+        Wed, 20 May 2020 19:12:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Zb2kWSo0VfZD; Wed, 20 May 2020 19:12:23 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTPS id 0DB3E5227F4;
+        Wed, 20 May 2020 19:12:23 +0200 (CEST)
+Received: from kista.localdomain (cpe-194-152-20-232.static.triera.net [194.152.20.232])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Zimbra) with ESMTPSA id 1D040522746;
+        Wed, 20 May 2020 19:12:17 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, paul.kocialkowski@bootlin.com
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, wens@csie.org,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: cedrus: Add support for additional output formats
+Date:   Wed, 20 May 2020 19:14:57 +0200
+Message-Id: <20200520171457.11937-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520073327.6016-1-jbx6244@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+If VPU supports untiled output, it actually supports several different
+YUV 4:2:0 layouts, namely NV12, NV21, YUV420 and YVU420.
 
-On Wed, May 20, 2020 at 09:33:27AM +0200, Johan Jonker wrote:
-> A test with the command below gives this error:
-> 
-> arch/arm/boot/dts/rk3188-bqedison2qc.dt.yaml:
-> touchscreen@3e: reg:0:0: 56 was expected
-> 
-> The touchscreen chip on 'rk3188-bqedison2qc' and other BQ models
-> was shipped with different addresses then the binding currently allows.
-> Change the reg property that any address will pass.
-> 
-> make ARCH=arm dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/input/touchscreen/
-> edt-ft5x06.yaml
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> index 383d64a91..baa8e8f7e 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> @@ -42,7 +42,7 @@ properties:
->        - focaltech,ft6236
->  
->    reg:
-> -    const: 0x38
-> +    maxItems: 1
+Add support for all of them.
 
-Should we have a list of valid addresses instead of allowing any
-address? Controllers usually have only a couple of addresses that they
-support.
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ drivers/staging/media/sunxi/cedrus/cedrus_hw.c | 18 +++++++++++++++++-
+ .../staging/media/sunxi/cedrus/cedrus_video.c  | 18 ++++++++++++++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-Thanks.
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_hw.c b/drivers/sta=
+ging/media/sunxi/cedrus/cedrus_hw.c
+index daf5f244f93b..c119fd8c4b92 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_hw.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_hw.c
+@@ -83,9 +83,25 @@ void cedrus_dst_format_set(struct cedrus_dev *dev,
+=20
+ 	switch (fmt->pixelformat) {
+ 	case V4L2_PIX_FMT_NV12:
++	case V4L2_PIX_FMT_NV21:
++	case V4L2_PIX_FMT_YUV420:
++	case V4L2_PIX_FMT_YVU420:
+ 		chroma_size =3D ALIGN(width, 16) * ALIGN(height, 16) / 2;
+=20
+-		reg =3D VE_PRIMARY_OUT_FMT_NV12;
++		switch (fmt->pixelformat) {
++		case V4L2_PIX_FMT_NV12:
++			reg =3D VE_PRIMARY_OUT_FMT_NV12;
++			break;
++		case V4L2_PIX_FMT_NV21:
++			reg =3D VE_PRIMARY_OUT_FMT_NV21;
++			break;
++		case V4L2_PIX_FMT_YUV420:
++			reg =3D VE_PRIMARY_OUT_FMT_YU12;
++			break;
++		case V4L2_PIX_FMT_YVU420:
++			reg =3D VE_PRIMARY_OUT_FMT_YV12;
++			break;
++		}
+ 		cedrus_write(dev, VE_PRIMARY_OUT_FMT, reg);
+=20
+ 		reg =3D chroma_size / 2;
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/=
+staging/media/sunxi/cedrus/cedrus_video.c
+index 15cf1f10221b..016021d71df2 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+@@ -55,6 +55,21 @@ static struct cedrus_format cedrus_formats[] =3D {
+ 		.directions	=3D CEDRUS_DECODE_DST,
+ 		.capabilities	=3D CEDRUS_CAPABILITY_UNTILED,
+ 	},
++	{
++		.pixelformat	=3D V4L2_PIX_FMT_NV21,
++		.directions	=3D CEDRUS_DECODE_DST,
++		.capabilities	=3D CEDRUS_CAPABILITY_UNTILED,
++	},
++	{
++		.pixelformat	=3D V4L2_PIX_FMT_YUV420,
++		.directions	=3D CEDRUS_DECODE_DST,
++		.capabilities	=3D CEDRUS_CAPABILITY_UNTILED,
++	},
++	{
++		.pixelformat	=3D V4L2_PIX_FMT_YVU420,
++		.directions	=3D CEDRUS_DECODE_DST,
++		.capabilities	=3D CEDRUS_CAPABILITY_UNTILED,
++	},
+ };
+=20
+ #define CEDRUS_FORMATS_COUNT	ARRAY_SIZE(cedrus_formats)
+@@ -130,6 +145,9 @@ void cedrus_prepare_format(struct v4l2_pix_format *pi=
+x_fmt)
+ 		break;
+=20
+ 	case V4L2_PIX_FMT_NV12:
++	case V4L2_PIX_FMT_NV21:
++	case V4L2_PIX_FMT_YUV420:
++	case V4L2_PIX_FMT_YVU420:
+ 		/* 16-aligned stride. */
+ 		bytesperline =3D ALIGN(width, 16);
+=20
+--=20
+2.26.2
 
--- 
-Dmitry
