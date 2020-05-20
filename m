@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872BB1DA68F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0821DA699
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgETAaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728039AbgETAaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:30:24 -0400
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728440AbgETAax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:30:53 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:45534 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727941AbgETAav (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 20:30:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589934650; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=08T20vkMrFw3x6P4M+RR60tE7Brr4jauqOh0eFtfops=; b=V36KtfUJ+5kG5lpk/gwAseC9GjslXQ7oPOMwfSnCsPptGuKLyPq79WtVZ8b28tnT6PAkoThy
+ b91FKCe9muTqPpUKzmQkbKDc5odlbHD35HhO9ZOpLo0p4UJ2tlBebUvQijSnbg4xMEpgO0Qw
+ BchTdCi1rkJw8J1T2ujQI8r3H1Q=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec47a2e.7f978273ba40-smtp-out-n01;
+ Wed, 20 May 2020 00:30:38 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB2B1C43395; Wed, 20 May 2020 00:30:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2470120899
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 00:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589934624;
-        bh=wf3QGE+jOUgmDKaZ/bBj5o/Z9+gYbBdvv8wlYlrwj8g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OrxovbxHlmzoeGQHeuWbhgPKUSPliHFTim5aE6wMy5V55VrIeo53jicjdlphiZk6g
-         jgsvHR9YsW7YpiC3KucPvb1UuUWKO1EHbq2u/8h+WWHnY22Ncbe81enLXY8SuvCXuD
-         FHVOxGx+d1rO7PirMgVfYMjCziEFlTUekzEm1U4I=
-Received: by mail-wm1-f47.google.com with SMTP id z4so971391wmi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:30:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532d4ZQ3PyZ4bZ1Wnuwc5uvLp60Tlcx8zZ4+KAoRFj5WrsZrSnSw
-        ex3IvMDmjxOxKbXEuWxhD/+1JtGFqGgpKwxe5Dl1gQ==
-X-Google-Smtp-Source: ABdhPJzbCL+4VtDsIgdlH29i1OM9yNGiM76+CoE3hV6Mp7SAcNJ3H5jJEJgrh7/IUEWh5u79FwKzy5DJEQ4EAiZgU+8=
-X-Received: by 2002:a1c:b3c1:: with SMTP id c184mr1898104wmf.36.1589934622625;
- Tue, 19 May 2020 17:30:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235127.101900776@linutronix.de>
-In-Reply-To: <20200515235127.101900776@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 19 May 2020 17:30:10 -0700
-X-Gmail-Original-Message-ID: <CALCETrWSMtpMMpYAAYa1jyBugNOFhcM1nM=MpXidfYFx6AQsEA@mail.gmail.com>
-Message-ID: <CALCETrWSMtpMMpYAAYa1jyBugNOFhcM1nM=MpXidfYFx6AQsEA@mail.gmail.com>
-Subject: Re: [patch V6 27/37] x86/entry: Convert KVM vectors to IDTENTRY_SYSVEC
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 63F44C43387;
+        Wed, 20 May 2020 00:30:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 63F44C43387
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v1 0/6] Bug fixes and bootup and shutdown improvements
+Date:   Tue, 19 May 2020 17:30:25 -0700
+Message-Id: <1589934631-22752-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->
-> Convert KVM specific system vectors to IDTENTRY_SYSVEC*:
->
-> The two empty stub handlers which only increment the stats counter do no
-> need to run on the interrupt stack. Use IDTENTRY_SYSVEC_DIRECT for them.
->
-> The wakeup handler does more work and runs on the interrupt stack.
->
-> None of these handlers need to save and restore the irq_regs pointer.
+Bug fixes for handling of execution environment in bootup/shutdown scenarios
+and to improve host view of device state.
+Introduced feature for manual mission mode image loading and allow for mission
+mode image load from SBL handling.
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+Build dependencies:
+Patch "bus: mhi: core: Mark device inactive soon after host issues a shutdown"
+depends on: "bus: mhi: core: Introduce helper function to check device state".
+
+Bhaumik Bhatt (6):
+  bus: mhi: core: Improve shutdown handling after link down detection
+  bus: mhi: core: Mark device inactive soon after host issues a shutdown
+  bus: mhi: core: Check for RDDM support before forcing a device crash
+  bus: mhi: core: Use common name for BHI firmware load function
+  bus: mhi: core: Introduce support for manual AMSS loading
+  bus: mhi: core: Process execution environment changes serially
+
+ drivers/bus/mhi/core/boot.c     | 100 ++++++++++++++++++++--------------------
+ drivers/bus/mhi/core/init.c     |   1 +
+ drivers/bus/mhi/core/internal.h |   1 +
+ drivers/bus/mhi/core/main.c     |  45 ++++++++++++------
+ drivers/bus/mhi/core/pm.c       |  80 +++++++++++++++++++++++---------
+ include/linux/mhi.h             |  10 ++++
+ 6 files changed, 151 insertions(+), 86 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
