@@ -2,51 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BB81DA95F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C52C1DA951
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgETElo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 00:41:44 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60648 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgETEln (ORCPT
+        id S1726501AbgETEgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 00:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgETEge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 00:41:43 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 4CC4E299D6; Wed, 20 May 2020 00:41:42 -0400 (EDT)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <10dff3e7c17d363a4b239aae7b3ebab32bef3547.1589949122.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Remove misleading comment
-Date:   Wed, 20 May 2020 14:32:02 +1000
+        Wed, 20 May 2020 00:36:34 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B47C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:36:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i62so706595ybc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 21:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=e5FkQX0hqXPwtmuVi/mPOXIImVD+5LE0Q+GlPxmL3Pk=;
+        b=rtAxFjFXV3814BoP15yfVrUr8n8lCx4bVdnb1JuGCEaQ12FTW3houE0z8K6gheZl4I
+         WhwvC6LyK8HIjNZWDUZcg7DadvOF1GbRBMGG9xraVURZ2m4OsBd+Elh1gMYyUF4URPmm
+         7q5FCzulqn+YHhavRqKGRlzeANp3KftrKlUkcUVfRCnkt4GL4A+Cr+MZ5XQ4SYlQt/XR
+         0Y2Uv6dlv9qDDbaGYTynFO94cZtbQPB++NQfK8ciGLX5pcs9oNKn5CxOCyWKbJ/2HV1i
+         n7rYlEsxwVnpzeEoUve0hKu5GM9TUgfvtjc9jaNdwmHwQicf+PxcV/JZAx/axeVQrAgJ
+         2+ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=e5FkQX0hqXPwtmuVi/mPOXIImVD+5LE0Q+GlPxmL3Pk=;
+        b=k1xW+Ox2t4UVCmmdJc711cZ1fAQ2CL8tLsafNpv1w0fUL+PGmz6iNQYiX6rgvGriWp
+         RUQ0KTsduicE3pam/80I8hxI5T0K447lCPniP24MOzKg9xCU9cxA1mfwIWJ+yPJesnbJ
+         MFCoxRmb+j1OzcGZIM5JkwGVl8uKeiz62a41om4jGWA07ucezbikk0lCVtSGI916HCvs
+         x5RrOwpiUhxEbG4hLGNfigjyS8FnSSNsx5SWegjrPBH2e/IZT764z1kPvcA0BMJqzrA9
+         +LxkABUJCRIyq0HRG+p/s3ZfWjohvcxRp0qIChnsljz5gXkN584+Zx0ySmoKtfkAFOGu
+         Vhpg==
+X-Gm-Message-State: AOAM530aYW6V2vxa/DQI769J/0g10iuFFfYOLic+uDxO5gJjbCrME0ih
+        NneXDuGg0em95xRiejZpa6qGik5QtyGVK6c=
+X-Google-Smtp-Source: ABdhPJw9heR6jKgjPLq3w01G+O3G0CkpM+fWQcg/NH2AUEED1dmphVKNO3erXOVNgIFhB2E9Wp1NTxJvysp+Rbg=
+X-Received: by 2002:a25:d181:: with SMTP id i123mr4316128ybg.316.1589949393316;
+ Tue, 19 May 2020 21:36:33 -0700 (PDT)
+Date:   Tue, 19 May 2020 21:36:26 -0700
+Message-Id: <20200520043626.181820-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+Subject: [PATCH v1] driver core: Fix handling of SYNC_STATE_ONLY + STATELESS
+ device links
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     kernel-team@android.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code path was tested on a Quadra 950 a long time ago and the
-comment isn't needed.
+Commit 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link
+implementation") didn't completely fix STATELESS + SYNC_STATE_ONLY
+handling.
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+What looks like an optimization in that commit is actually a bug that
+causes an if condition to always take the else path. This prevents
+reordering of devices in the dpm_list when a DL_FLAG_STATELESS device
+link is create on top of an existing DL_FLAG_SYNC_STATE_ONLY device
+link.
+
+Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- arch/m68k/mac/iop.c | 1 -
- 1 file changed, 1 deletion(-)
+Sigh... device links are tricky and hard! Sorry about the endless fixes :(
+Also, how was this not caught by the compiler as a warning?
 
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 100e5112fd9e..d99c7ea08d8c 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -299,7 +299,6 @@ void __init iop_init(void)
+-Saravana
+
+ drivers/base/core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 83a3e0b62ce3..dfd4e94ef790 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -543,12 +543,14 @@ struct device_link *device_link_add(struct device *consumer,
  
- /*
-  * Register the interrupt handler for the IOPs.
-- * TODO: might be wrong for non-OSS machines. Anyone?
-  */
+ 		if (flags & DL_FLAG_STATELESS) {
+ 			kref_get(&link->kref);
+-			link->flags |= DL_FLAG_STATELESS;
+ 			if (link->flags & DL_FLAG_SYNC_STATE_ONLY &&
+-			    !(link->flags & DL_FLAG_STATELESS))
++			    !(link->flags & DL_FLAG_STATELESS)) {
++				link->flags |= DL_FLAG_STATELESS;
+ 				goto reorder;
+-			else
++			} else {
++				link->flags |= DL_FLAG_STATELESS;
+ 				goto out;
++			}
+ 		}
  
- void __init iop_register_interrupts(void)
+ 		/*
 -- 
-2.26.2
+2.26.2.761.g0e0b3e54be-goog
 
