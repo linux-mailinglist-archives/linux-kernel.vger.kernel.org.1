@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D445A1DBE0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBE01DBE37
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgETTgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
+        id S1726886AbgETToM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgETTgn (ORCPT
+        with ESMTP id S1726548AbgETToL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:36:43 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDD1C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:36:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id y8so2837956ybn.20
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=AVVfiQR/7pisBCGTKoQl1KucA/6VNUwh3DKASPprRvc=;
-        b=NLqxSrFnKkZcAGnV8zbrPjaSqtdTtqC6WvnCQ6SzwmjdO1Y1A4F8KO5jePbf4Ld4vU
-         28TZNpeQFNkATsX+wqdm37YvRNjMEIJWOynydl7FMOR9zWc2pJMGJ/dm0ByXmA3wOy6f
-         jEyGYA4c992ndf4FDE2XNOvJHqfNQkgp29X6JoGzCqYzfY6kPRseR8x89YXJLR67lkNi
-         tb/oT6vlfiQs/gPcIri5IW4wS0mr2Ln1pssXe77Az1wxZw93TVFzUCSWqhO0oeLFPAfe
-         dYcLUAA/fVV0ZOQy7v/R+8oS99/oCi9P0XhQli9FNC18szcQtd/4G7ZjiZx+ArvXOIfe
-         ejJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=AVVfiQR/7pisBCGTKoQl1KucA/6VNUwh3DKASPprRvc=;
-        b=Dzw9Jd7BucWlCR53MCJSxeqx+0KH5OGmQ0OBJzpznDsjFaW+BBgL6Fz1gJTwUG9ZS2
-         lNK9TpFefqVCvpAlihSW9ZGY/+mR4e7bjSNktEC2HCIU0TSlqeU4T7o42lZqrvWjUg2W
-         IUCPs4iY98W4SLqgAFmBVeDyc8/AYme+jKdumzdXo5tcjb1+ol4tkfWOxtOF2IBL/mpc
-         /rqlYdHs7Zzf/G5mph82x0mX93DMrVpCssBDR9HlaRu/wM+pMHmFAZguunLUG6DiABEu
-         eOWBlkWLGrCFWO4iu7K0wPasEQhIlUjECfv5ZGUCqnYvxj2aQCR3LDfVz5hwB8nwiMfO
-         OfUw==
-X-Gm-Message-State: AOAM5339YBd0iJk3wiG4l7cf92TO4wyrCEmquJhQjN292wKt/vbwFDG4
-        4joKGMbiQT7z2Rf2ObRIuaUUJ3x1eh/WYSSLjpE=
-X-Google-Smtp-Source: ABdhPJwbmZUSDN6st0s//rLv1KZNYKNcyqaF9cXBCgx9X5BHJdWUMRAcv2Kb8IflvnhjGtC0I4kw9o2KKivp+wgPlNc=
-X-Received: by 2002:a25:73d2:: with SMTP id o201mr8570814ybc.490.1590003402844;
- Wed, 20 May 2020 12:36:42 -0700 (PDT)
-Date:   Wed, 20 May 2020 12:36:36 -0700
-In-Reply-To: <10f4fb0b-1012-b0e6-af05-0aa5a906de21@redhat.com>
-Message-Id: <20200520193637.6015-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <10f4fb0b-1012-b0e6-af05-0aa5a906de21@redhat.com>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH v2] Makefile: support compressed debug info
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Clifton <nickc@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        David Blaikie <blakie@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 20 May 2020 15:44:11 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 May 2020 12:44:11 PDT
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F676C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 12:44:11 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id C6D98C009; Wed, 20 May 2020 21:37:02 +0200 (CEST)
+Date:   Wed, 20 May 2020 21:36:47 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     jgross@suse.com, lucho@ionkov.net, ericvh@gmail.com,
+        rminnich@sandia.gov, linux-kernel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+Subject: Re: [V9fs-developer] [PATCH] 9p/xen: increase XEN_9PFS_RING_ORDER
+Message-ID: <20200520193647.GA17565@nautica>
+References: <20200520184113.24727-1-sstabellini@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200520184113.24727-1-sstabellini@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As debug information gets larger and larger, it helps significantly save
-the size of vmlinux images to compress the information in the debug
-information sections. Note: this debug info is typically split off from
-the final compressed kernel image, which is why vmlinux is what's used
-in conjunction with GDB. Minimizing the debug info size should have no
-impact on boot times, or final compressed kernel image size.
+Stefano Stabellini wrote on Wed, May 20, 2020:
+> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> 
+> Increase XEN_9PFS_RING_ORDER to 9 for performance reason. Order 9 is the
+> max allowed by the protocol.
+> 
+> We can't assume that all backends will support order 9. The xenstore
+> property max-ring-page-order specifies the max order supported by the
+> backend. We'll use max-ring-page-order for the size of the ring.
+> 
+> This means that the size of the ring is not static
+> (XEN_FLEX_RING_SIZE(9)) anymore. Change XEN_9PFS_RING_SIZE to take an
+> argument and base the calculation on the order chosen at setup time.
+> 
+> 
+> Finally, modify p9_xen_trans.maxsize to be divided by 4 compared to the
+> original value. We need to divide it by 2 because we have two rings
+> coming off the same order allocation: the in and out rings. This was a
+> mistake in the original code. Also divide it further by 2 because we
+> don't want a single request/reply to fill up the entire ring. There can
+> be multiple requests/replies outstanding at any given time and if we use
+> the full ring with one, we risk forcing the backend to wait for the
+> client to read back more replies before continuing, which is not
+> performant.
 
-All of the debug sections will have a `C` flag set.
-$ readelf -S <object file>
+Sounds good to me overall. A couple of comments inline.
+Also worth noting I need to rebuild myself a test setup so might take a
+bit of time to actually run tests, but I might just trust you on this
+one for now if it builds with no new warning... Looks like it would
+probably work :p
 
-$ bloaty vmlinux.gcc75.compressed.dwarf4 -- \
-    vmlinux.gcc75.uncompressed.dwarf4
+> [...]
+> @@ -264,7 +265,7 @@ static irqreturn_t xen_9pfs_front_event_handler(int irq, void *r)
+>  
+>  static struct p9_trans_module p9_xen_trans = {
+>  	.name = "xen",
+> -	.maxsize = 1 << (XEN_9PFS_RING_ORDER + XEN_PAGE_SHIFT),
+> +	.maxsize = 1 << (XEN_9PFS_RING_ORDER + XEN_PAGE_SHIFT - 2),
+>  	.def = 1,
+>  	.create = p9_xen_create,
+>  	.close = p9_xen_close,
+> [...]
+> @@ -401,8 +405,10 @@ static int xen_9pfs_front_probe(struct xenbus_device *dev,
+>  		return -EINVAL;
+>  	max_ring_order = xenbus_read_unsigned(dev->otherend,
+>  					      "max-ring-page-order", 0);
+> -	if (max_ring_order < XEN_9PFS_RING_ORDER)
+> -		return -EINVAL;
+> +	if (max_ring_order > XEN_9PFS_RING_ORDER)
+> +		max_ring_order = XEN_9PFS_RING_ORDER;
 
-    FILE SIZE        VM SIZE
- --------------  --------------
-  +0.0%     +18  [ = ]       0    [Unmapped]
- -73.3%  -114Ki  [ = ]       0    .debug_aranges
- -76.2% -2.01Mi  [ = ]       0    .debug_frame
- -73.6% -2.89Mi  [ = ]       0    .debug_str
- -80.7% -4.66Mi  [ = ]       0    .debug_abbrev
- -82.9% -4.88Mi  [ = ]       0    .debug_ranges
- -70.5% -9.04Mi  [ = ]       0    .debug_line
- -79.3% -10.9Mi  [ = ]       0    .debug_loc
- -39.5% -88.6Mi  [ = ]       0    .debug_info
- -18.2%  -123Mi  [ = ]       0    TOTAL
+(If there are backends with very small max_ring_orders, we no longer
+error out when we encounter one, it might make sense to add a min
+define? Although to be honest 9p works with pretty small maxsizes so I
+don't see much reason to error out, and even order 0 will be one page
+worth.. I hope there is no xenbus that small though :))
 
-$ bloaty vmlinux.clang11.compressed.dwarf4 -- \
-    vmlinux.clang11.uncompressed.dwarf4
+> +	if (p9_xen_trans.maxsize > XEN_FLEX_RING_SIZE(max_ring_order))
+> +		p9_xen_trans.maxsize = XEN_FLEX_RING_SIZE(max_ring_order);
 
-    FILE SIZE        VM SIZE
- --------------  --------------
-  +0.0%     +23  [ = ]       0    [Unmapped]
- -65.6%    -871  [ = ]       0    .debug_aranges
- -77.4% -1.84Mi  [ = ]       0    .debug_frame
- -82.9% -2.33Mi  [ = ]       0    .debug_abbrev
- -73.1% -2.43Mi  [ = ]       0    .debug_str
- -84.8% -3.07Mi  [ = ]       0    .debug_ranges
- -65.9% -8.62Mi  [ = ]       0    .debug_line
- -86.2% -40.0Mi  [ = ]       0    .debug_loc
- -42.0% -64.1Mi  [ = ]       0    .debug_info
- -22.1%  -122Mi  [ = ]       0    TOTAL
+So base maxsize initial value is 1 << (order + page_shift - 2) ; but
+this is 1 << (order + page_shift - 1) -- I agree with the logic you gave
+in commit message so would think this needs to be shifted down one more
+like the base value as well.
+What do you think?
 
-For x86_64 defconfig + LLVM=1 (before):
-Elapsed (wall clock) time (h:mm:ss or m:ss): 3:22.03
-Maximum resident set size (kbytes): 43856
-
-For x86_64 defconfig + LLVM=1 (after):
-Elapsed (wall clock) time (h:mm:ss or m:ss): 3:32.52
-Maximum resident set size (kbytes): 1566776
-
-Suggested-by: David Blaikie <blakie@google.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Suggested-by: Nick Clifton <nickc@redhat.com>
-Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V1 -> V2:
-* rebase on linux-next.
-* Add assembler flags as per Fangrui.
-* Add note about KDEB_COMPRESS+scripts/package/builddeb
-  as per Sedat and Masahiro.
-* Add note about bintutils version requirements as per Nick C.
-* Add note about measured increased build time and max RSS.
-
- Makefile          |  6 ++++++
- lib/Kconfig.debug | 15 +++++++++++++++
- 2 files changed, 21 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index 71687bfe1cd9..be8835296754 100644
---- a/Makefile
-+++ b/Makefile
-@@ -822,6 +822,12 @@ DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
- 		   $(call cc-option,-fno-var-tracking)
- endif
- 
-+ifdef CONFIG_DEBUG_INFO_COMPRESSED
-+DEBUG_CFLAGS	+= -gz=zlib
-+KBUILD_AFLAGS	+= -Wa,--compress-debug-sections=zlib
-+KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
-+endif
-+
- KBUILD_CFLAGS += $(DEBUG_CFLAGS)
- export DEBUG_CFLAGS
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index b8f023e054b9..5a423cbfaea4 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -225,6 +225,21 @@ config DEBUG_INFO_REDUCED
- 	  DEBUG_INFO build and compile times are reduced too.
- 	  Only works with newer gcc versions.
- 
-+config DEBUG_INFO_COMPRESSED
-+	bool "Compressed debugging information"
-+	depends on DEBUG_INFO
-+	depends on $(cc-option,-gz=zlib)
-+	depends on $(as-option,-Wa,--compress-debug-sections=zlib)
-+	depends on $(ld-option,--compress-debug-sections=zlib)
-+	help
-+	  Compress the debug information using zlib.  Requires GCC 5.0+ or Clang
-+	  5.0+, binutils 2.26+, and zlib.
-+
-+	  Users of dpkg-deb via scripts/package/builddeb may
-+	  wish to set the $KDEB_COMPRESS env var to "none" to avoid recompressing
-+	  the debug info again with a different compression scheme, which can
-+	  result in larger binaries.
-+
- config DEBUG_INFO_SPLIT
- 	bool "Produce split debuginfo in .dwo files"
- 	depends on DEBUG_INFO
 -- 
-2.26.2.761.g0e0b3e54be-goog
-
+Dominique
