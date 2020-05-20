@@ -2,156 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E4B1DAD27
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC201DAD2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgETIWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 04:22:14 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:46074 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726425AbgETIWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 04:22:13 -0400
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 36B272E15D2;
-        Wed, 20 May 2020 11:22:10 +0300 (MSK)
-Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id qWncYU4vfQ-M8TSm8Ge;
-        Wed, 20 May 2020 11:22:10 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1589962930; bh=X96Uw2L+REBtZsBYuhXcIA170g1njmPsYoLuNgo9Yr0=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=QzeIZdQrC/aKYzxPtZYUcPnkBfxq8OMpr6nOxCVO28jq8kqmp/8D/mL+OFRGfhVQ6
-         x0TGummHXjAQMPenYTs0qb9++h2MDWfh6Ruh9h1tJ04miiw1TvzYG4nWoO86aNvm49
-         ZqdT9s/RimBRZhSKVEBzoja6HMDA2++ScM42ITJ4=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:704::1:9])
-        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id gJswpWQIQn-M8Xe24Cd;
-        Wed, 20 May 2020 11:22:08 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH] futex: send SIGBUS if argument is not aligned on a
- four-byte boundary
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>
-Cc:     Maxim Samoylov <max7255@yandex-team.ru>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org
-References: <158955700764.647498.18025770126733698386.stgit@buzz>
- <87sgfv5yfv.fsf@nanos.tec.linutronix.de>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <1fac8d40-fb00-f09f-8b13-2348d0cd74a2@yandex-team.ru>
-Date:   Wed, 20 May 2020 11:22:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726819AbgETIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:23:13 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38488 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726403AbgETIXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 04:23:12 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP2jB6MReLuc2AA--.129S3;
+        Wed, 20 May 2020 16:22:26 +0800 (CST)
+Subject: Re: [PATCH v4 3/4] mm/memory.c: Add memory read privilege on page
+ fault handling
+To:     Andrew Morton <akpm@linux-foundation.org>
+References: <1589882610-7291-1-git-send-email-maobibo@loongson.cn>
+ <1589882610-7291-3-git-send-email-maobibo@loongson.cn>
+ <20200519183035.14fc56ba957266dde87a7778@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <55379391-7c1f-7d0e-773e-d44fa95e0e24@loongson.cn>
+Date:   Wed, 20 May 2020 16:22:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <87sgfv5yfv.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
+In-Reply-To: <20200519183035.14fc56ba957266dde87a7778@linux-foundation.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxP2jB6MReLuc2AA--.129S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4DtF1fWF4rKFyxJr1fWFg_yoW8ury7pF
+        ykCF1jvF4DJr17AFyxGws7ur1fC3yfKFsrurn3KryDC3Z8JrnYgrs7JayYgFy8GF4jv3Wr
+        Ar4qqFZ8ZanFvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvEb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
+        xwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjxUg0D7DUUUU
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2020 01.53, Thomas Gleixner wrote:
-> Konstantin Khlebnikov <khlebnikov@yandex-team.ru> writes:
-> 
->> Userspace implementations of mutexes (including glibc) in some cases
->> retries operation without checking error code from syscall futex.
->> This is good for performance because most errors are impossible when
->> locking code trusts itself.
-> 
-> This argument is blantantly wrong. It's the justification for bad
-> programming. Code ignoring error returns is simply buggy.
 
-I knew you'll love it. =)
 
+On 05/20/2020 09:30 AM, Andrew Morton wrote:
+> On Tue, 19 May 2020 18:03:29 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
 > 
->> Some errors which could came from outer code are handled automatically,
->> for example invalid address triggers SIGSEGV on atomic fast path.
+>> Here add pte_sw_mkyoung function to make page readable on MIPS
+>> platform during page fault handling. This patch improves page
+>> fault latency about 10% on my MIPS machine with lmbench
+>> lat_pagefault case.
 >>
->> But one case turns into nasty busy-loop: when address is unaligned.
->> futex(FUTEX_WAIT) returns EINVAL immediately and loop goes to retry.
-> 
-> Why is that something the kernel has to care about? The kernel returns
-> EINVAl as documented and when user space decides to ignore then it goes
-> to retry for a full timeslice for nothing.
-> 
-> You have to come up with a better argument why we want to send a signal
-> here.
-> 
-> Along with an argument why SIGBUS is the right thing when a user space
-> fast path violation results in a SIGSEGV as you stated above.
-
-SIGSEGV comes only if address points to unmapped area.
-This case doesn't need special care unlike to misaligned address.
-
-> 
-> Plus a patch which documents this change in the futex man page.
-
-Yep, will do.
-
-> 
->> Example which loops inside second call rather than hung peacefully:
+>> It is noop function on other arches, there is no negative
+>> influence on those architectures.
 >>
->> #include <stdlib.h>
->> #include <pthread.h>
->>
->> int main(int argc, char **argv)
->> {
->> 	char buf[sizeof(pthread_mutex_t) + 1];
->> 	pthread_mutex_t *mutex = (pthread_mutex_t *)(buf + 1);
->>
->> 	pthread_mutex_init(mutex, NULL);
->> 	pthread_mutex_lock(mutex);
->> 	pthread_mutex_lock(mutex);
->> }
+>> --- a/arch/mips/include/asm/pgtable.h
+>> +++ b/arch/mips/include/asm/pgtable.h
+>> @@ -414,6 +414,8 @@ static inline pte_t pte_mkyoung(pte_t pte)
+>>  	return pte;
+>>  }
+>>  
+>> +#define pte_sw_mkyoung	pte_mkyoung
+>> +
+>>  #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
+>>  static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE; }
+>>  
+>> --- a/include/asm-generic/pgtable.h
+>> +++ b/include/asm-generic/pgtable.h
+>> @@ -227,6 +227,21 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>>  }
+>>  #endif
+>>  
+>> +/*
+>> + * On some architectures hardware does not set page access bit when accessing
+>> + * memory page, it is responsibilty of software setting this bit. It brings
+>> + * out extra page fault penalty to track page access bit. For optimization page
+>> + * access bit can be set during all page fault flow on these arches.
+>> + * To be differentiate with macro pte_mkyoung, this macro is used on platforms
+>> + * where software maintains page access bit.
+>> + */
+>> +#ifndef pte_sw_mkyoung
+>> +static inline pte_t pte_sw_mkyoung(pte_t pte)
+>> +{
+>> +	return pte;
+>> +}
+>> +#endif
 > 
-> And this broken code is a kernel problem because?
+> Yup, that's neat enough.  Thanks for making this change.  It looks like
+> all architectures include asm-generic/pgtable.h so that's fine.
+> 
+> It's conventional to add a
+> 
+> #define pte_sw_mkyoung pte_sw_mkyoung
+> 
+> immediately above the #endif there, so we can't try to implement
+> pte_sw_mkyoung() twice if this header gets included twice.  But the
+> header has #ifndef _ASM_GENERIC_PGTABLE_H around the whole thing so
+> that should be OK.
 
-That's just distilled example how pthread primitives works
-when application passes misaligned pointer.
+Sure, will do, and thanks for your kindly help and guidance
 
-> 
->> It seems there is no practical usage for calling syscall futex for
->> unaligned address. This may be only bug in user space. Let's help and
->> handle this gracefully without adding extra code on fast path.
-> 
-> How does that help?
-> 
-> Are you going to stick SIGBUS in _ALL_ syscalls which might be retried
-> in a loop just because user space fails to evaluate the error code
-> properly?
-> 
-> You have to come up with a better argument to justify this change.
+ 
 
-This particular case is important because buggy code is in glibc.
-Definitely most frequently used library ever.  Musl is buggy too.
-
-Bug is here for ages and it took another decade to spread update.
-In modern containerized setup kernel updates much more frequently.
-
-All this hides bugs: application might recover from loop
-if another thread unlock mutex from atomic fast path.
-But mutex works as spin-lock wasting cpu time.
-
-So, these few lines of code might prevent significant CO2 emission =)
-
-> 
->> This patch sends SIGBUS signal to slay task and break busy-loop.
-> 
-> I'm pretty sure that I asked you to read and follow documentation
-> before. If I did not:
-> 
->   git grep 'This patch' Documentation/process/
-
-Force of habit. =/
-Definitely should be in checkpatch.pl
-
-> 
-> Thanks,
-> 
->          tglx
