@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8721DB1CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0BF1DB1ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgETLba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:31:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49062 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETLba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:31:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 19F54B13D;
-        Wed, 20 May 2020 11:31:31 +0000 (UTC)
-Subject: Re: [PATCH v3 02/19] mm: memcg: prepare for byte-sized vmstat items
-To:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-References: <20200422204708.2176080-1-guro@fb.com>
- <20200422204708.2176080-3-guro@fb.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <a63f9190-e91b-97d7-f579-8ccf0fce46c7@suse.cz>
-Date:   Wed, 20 May 2020 13:31:27 +0200
+        id S1726830AbgETLiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:38:24 -0400
+Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:56676 "EHLO
+        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETLiX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 07:38:23 -0400
+Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: 84iK1yZ81elW9v6wX/8JlsUWvCrnxYXB8qmY4V2t2ZFfInudAu588lA+HkkADnrmFrkn3CTkiS
+ 0gOzPd2PmM+IQyhfSspQzytUSXSPl1R6fFzEjfJYIHoKhL+0ZVUGQPg7BmE/5cx55FcAnYLwcA
+ S6d4DPKu9NCN4S+yKrYmGZ5VDFcFQGgMb6nt0wsFcd81EotnQmW6hv1YUVQRtKZbOzisakRA4T
+ sK3h/+CPAfBThI/N9xLyyra2hwyDh1vqcIxOF5rtlu5fFCft/1ivdqT8J9e38crYFg42pEkxwJ
+ 6q8=
+X-SBRS: 2.7
+X-MesageID: 17967281
+X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.73,413,1583211600"; 
+   d="scan'208";a="17967281"
+Subject: Re: [patch V6 10/37] x86/entry: Switch XEN/PV hypercall entry to
+ IDTENTRY
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Joel Fernandes" <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200515234547.710474468@linutronix.de>
+ <20200515235125.425810667@linutronix.de>
+ <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
+ <87imgr7nwp.fsf@nanos.tec.linutronix.de>
+ <CALCETrW4BxfTVzv8mXntNXiAPnKxqdMEv7djUknGZcrno2WJHg@mail.gmail.com>
+ <3dd0e972-1b80-cd6b-6490-5b745ada68c8@suse.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <a6c3b5b5-89d3-2d05-47eb-8d4caf34fe0a@citrix.com>
+Date:   Wed, 20 May 2020 12:31:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200422204708.2176080-3-guro@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3dd0e972-1b80-cd6b-6490-5b745ada68c8@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: FTLPEX02CAS03.citrite.net (10.13.99.94) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/20 10:46 PM, Roman Gushchin wrote:
-> To implement per-object slab memory accounting, we need to
-> convert slab vmstat counters to bytes. Actually, out of
-> 4 levels of counters: global, per-node, per-memcg and per-lruvec
-> only two last levels will require byte-sized counters.
-> It's because global and per-node counters will be counting the
-> number of slab pages, and per-memcg and per-lruvec will be
-> counting the amount of memory taken by charged slab objects.
-> 
-> Converting all vmstat counters to bytes or even all slab
-> counters to bytes would introduce an additional overhead.
-> So instead let's store global and per-node counters
-> in pages, and memcg and lruvec counters in bytes.
-> 
-> To make the API clean all access helpers (both on the read
-> and write sides) are dealing with bytes.
-> 
-> To avoid back-and-forth conversions a new flavor of helpers
-> is introduced, which always returns values in pages:
-> node_page_state_pages() and global_node_page_state_pages().
-> 
-> Actually new helpers are just reading raw values. Old helpers are
-> simple wrappers, which perform a conversion if the vmstat items are
-> in bytes. Because at the moment no one actually need bytes,
-> there are WARN_ON_ONCE() macroses inside to warn about inappropriate
-> use cases.
-> 
-> Thanks to Johannes Weiner for the idea of having the byte-sized API
-> on top of the page-sized internal storage.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On 20/05/2020 09:06, Jürgen Groß wrote:
+> On 19.05.20 21:44, Andy Lutomirski wrote:
+>> On Tue, May 19, 2020 at 11:58 AM Thomas Gleixner <tglx@linutronix.de>
+>> wrote:
+>>>
+>>> Andy Lutomirski <luto@kernel.org> writes:
+>>>> B: Turn this thing around.  Specifically, in the one and only case we
+>>>> care about, we know pretty much exactly what context we got this entry
+>>>> in: we're running in a schedulable context doing an explicitly
+>>>> preemptible hypercall, and we have RIP pointing at a SYSCALL
+>>>> instruction (presumably, but we shouldn't bet on it) in the hypercall
+>>>> page.  Ideally we would change the Xen PV ABI so the hypercall would
+>>>> return something like EAGAIN instead of auto-restarting and we could
+>>>> ditch this mess entirely.  But the ABI seems to be set in stone or at
+>>>> least in molasses, so how about just:
+>>>>
+>>>> idt_entry(exit(regs));
+>>>> if (inhcall && need_resched())
+>>>>    schedule();
+>>>
+>>> Which brings you into the situation that you call schedule() from the
+>>> point where we just moved it out. If we would go there we'd need to
+>>> ensure that RCU is watching as well. idtentry_exit() might have it
+>>> turned off ....
+>>
+>> I don't think this is possible.  Once you untangle all the wrappers,
+>> the call sites are effectively:
+>>
+>> __this_cpu_write(xen_in_preemptible_hcall, true);
+>> CALL_NOSPEC to the hypercall page
+>> __this_cpu_write(xen_in_preemptible_hcall, false);
+>>
+>> I think IF=1 when this happens, but I won't swear to it.  RCU had
+>> better be watching.
+>
+> Preemptible hypercalls are never done with interrupts off. To be more
+> precise: they are only ever done during ioctl() processing.
+>
+> I can add an ASSERT() to xen_preemptible_hcall_begin() if you want.
+>
+>>
+>> As I understand it, the one and only situation Xen wants to handle is
+>> that an interrupt gets delivered during the hypercall.  The hypervisor
+>> is too clever for its own good and deals with this by rewinding RIP to
+>> the beginning of whatever instruction did the hypercall and delivers
+>> the interrupt, and we end up in this handler.  So, if this happens,
+>> the idea is to not only handle the interrupt but to schedule if
+>> scheduling would be useful.
+>
+> Correct. More precise: the hypercalls in question can last very long
+> (up to several seconds) and so they need to be interruptible. As said
+> before: the interface how this is done is horrible. :-(
 
-Reviewed-By: Vlastimil Babka <vbabka@suse.cz>
+Forget seconds.  DOMCTL_domain_kill gets to ~14 minutes for a 2TB domain.
 
-But it's somewhat complicated, so it would be great to document it in comments
-of e.g. include/linux/vmstat.h that what the API returns as unsigned long, can
-be either bytes or pages depending on vmstat_item_in_bytes().
+The reason for the existing logic is to be able voluntarily preempt.
 
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -204,6 +204,11 @@ enum node_stat_item {
->  	NR_VM_NODE_STAT_ITEMS
->  };
->  
-> +static __always_inline bool vmstat_item_in_bytes(enum node_stat_item item)
+It doesn't need to remain the way it is, but some adequate form of
+pre-emption does need to stay.
 
-This should also have a comment explaining if it's talking about API or storage,
-as it's not immediately obvious.
-
-> +{
-> +	return false;
-> +}
-> +
->  /*
->   * We do arithmetic on the LRU lists in various places in the code,
->   * so it is important to keep the active lists LRU_ACTIVE higher in
-
-
-
+~Andrew
