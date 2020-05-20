@@ -2,166 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379BE1DBD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C2D1DBD41
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgETSrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:47:21 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44546 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726650AbgETSrU (ORCPT
+        id S1726940AbgETSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:47:58 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49002 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726510AbgETSrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:47:20 -0400
+        Wed, 20 May 2020 14:47:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590000438;
+        s=mimecast20190719; t=1590000472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jSG/oozEGBB+wreBtcOAcaklJS2J1XYJf5hXt9QTC0I=;
-        b=hl2Fd0liDzoWxhm0jNqiqiV2ESCxTYNGI+qNlypmh4y7BVrBftKSqrGxU8gvPuKCqihK/P
-        6S3t14ABDzp5cEEw+0aJS5Ox6Iya+q2yVqhclpDRQ5ZtWhkGd/NJxVBvCyaeeeZa0wnjkH
-        2QDLTXj7EjlPFECowEqAc71PI5D+LDI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-dhM2DisFOkyZ3EHAJxPJCQ-1; Wed, 20 May 2020 14:47:16 -0400
-X-MC-Unique: dhM2DisFOkyZ3EHAJxPJCQ-1
-Received: by mail-wr1-f71.google.com with SMTP id c14so621344wrm.15
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:47:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jSG/oozEGBB+wreBtcOAcaklJS2J1XYJf5hXt9QTC0I=;
-        b=Mn1OUIWvkmvaFvE8iG+0xbQUMkJQYj+OXKhEuGO5HbatFR8GDOHrkYsqCQD8B4XDao
-         otHszhkYRzxkBIPDiEvTDZVPxRo7u9wZQr2IZnY92BUd0uGmyZbn/rfxsVfZ7FdBQxtu
-         x4Xft7cdM6XB7hHh+7fJTgoAwdIwOvAFlP+I1S1ZbcVve/xLHxDRvAB4uiIeeRb73vXH
-         DRXAzi/x0PZtFxvq0jj6g4uo13sksGBAgrtNXNN6tnxBhsR8vuvVGO7cq3mTiKx3XLwe
-         siwz3n9jLHUKF8LKHA0lqKzob8EIvTaYUqdd/lzdz0h7q/pxsknX0jiRFq12GB5sL5Sa
-         MuTA==
-X-Gm-Message-State: AOAM5319E+BIx0TU0KnmhkojIE07sePdoGSB+gl80njEdKeoKk3YdaQM
-        IHKb0PRgkq9txgQx9T7Z31KinUt7QXWAvu8jZ3+36jACJ+WZ8q/dMr37ESCt/GIpC2Ww0jYDIMd
-        7awmHcVU0W6qgDrD69MxXYYGK
-X-Received: by 2002:adf:e707:: with SMTP id c7mr1623845wrm.131.1590000434925;
-        Wed, 20 May 2020 11:47:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/444M6gu2lvxnsKEHp57G+dEY7Zs3tO1KVHc9YAOP3hFZ7wUijx67VIx/qTzNLIBRBH2vFA==
-X-Received: by 2002:adf:e707:: with SMTP id c7mr1623828wrm.131.1590000434600;
-        Wed, 20 May 2020 11:47:14 -0700 (PDT)
-Received: from localhost.localdomain ([151.68.137.74])
-        by smtp.gmail.com with ESMTPSA id j2sm3642693wrp.47.2020.05.20.11.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 11:47:13 -0700 (PDT)
-Date:   Wed, 20 May 2020 20:47:10 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] tick/sched: update full_nohz status after SCHED dep
- is cleared
-Message-ID: <20200520184710.GO10078@localhost.localdomain>
-References: <20200520140402.358880-1-juri.lelli@redhat.com>
- <20200520162400.GA8800@lenoir>
- <20200520164925.GM10078@localhost.localdomain>
- <20200520170215.GB8800@lenoir>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520170215.GB8800@lenoir>
+         to:to:cc:cc; bh=FbstOtZHjkI5WT/d0lTEZRtt+wY/I8Pmam5TWWakNYU=;
+        b=IFXkmBFugo3bbhA4djINt4b1HZ74ZByF/vrQdRLdBYDMBEmK+S8TdVYvjr7yNwXOrm1Q9N
+        p14xr/T9doDfssj1VDk6be5FmVrYQWurYrLTKcpmwW+KqA8Ny+6prtwx4dPdEpPQpUjOpx
+        Jy6MSCfxxR2idjOBw6nJXqmqQcy+230=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-kNT_esMuNGqglWWRk1wHxw-1; Wed, 20 May 2020 14:47:47 -0400
+X-MC-Unique: kNT_esMuNGqglWWRk1wHxw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E597E107ACCA;
+        Wed, 20 May 2020 18:47:45 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 833435C1BE;
+        Wed, 20 May 2020 18:47:37 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
+        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
+        eparis@parisplace.org, tgraf@infradead.org,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak25 v6a] audit: add subj creds to NETFILTER_CFG record to cover async unregister
+Date:   Wed, 20 May 2020 14:47:13 -0400
+Message-Id: <6404938413ca29b0e0196dd74bacb9b0c1cb6f42.1589993784.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/20 19:02, Frederic Weisbecker wrote:
-> On Wed, May 20, 2020 at 06:49:25PM +0200, Juri Lelli wrote:
-> > On 20/05/20 18:24, Frederic Weisbecker wrote:
-> > 
-> > Hummm, so I enabled 'timer:*', anything else you think I should be
-> > looking at?
-> 
-> Are you sure you also enabled timer_expire_entry?
-> Because:
+Some table unregister actions seem to be initiated by the kernel to
+garbage collect unused tables that are not initiated by any userspace
+actions.  It was found to be necessary to add the subject credentials to
+cover this case to reveal the source of these actions.  A sample record:
 
-I run with
+The uid, auid, tty, ses and exe fields have not been included since they
+are in the SYSCALL record and contain nothing useful in the non-user
+context.
 
-trace-cmd record -e sched_switch -e sched_wakeup -e sched_migrate_task \
--e 'timer:*' -e 'irq_vectors:*' -e 'irq:softirq*' \
--e 'irq:irq_handler*' taskset --cpu-list 4-35 ./sysjitter/sysjitter \
---runtime 10 200
+Here are two sample orphaned records:
 
-And
+  type=NETFILTER_CFG msg=audit(2020-05-20 12:14:36.505:5) : table=filter family=ipv4 entries=0 op=register pid=1 subj=kernel comm=swapper/0
 
-$ grep ' timer_expire_entry:' trace.txt | wc -l
-1173
+  type=NETFILTER_CFG msg=audit(2020-05-20 12:15:27.701:301) : table=nat family=bridge entries=0 op=unregister pid=30 subj=system_u:system_r:kernel_t:s0 comm=kworker/u4:1
 
-seems to confirm that the event was indeed enabled, e.g.
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+Changelog:
+v6
+- remove uid, auid fields as duplicates or unset
+- update sample records in patch description
 
-ksoftirqd/11-100   [011]   159.270023: timer_expire_entry:   timer=0xffff9807df8a5a60 function=delayed_work_timer_fn now=4294826418 baseclk=4294825984
+v5
+- rebase on upstreamed ghak28 on audit/next v5.7-rc1
+- remove tty, ses and exe fields as duplicates or unset
+- drop upstreamed patches 1&2 from set
 
-> 
-> > 
-> > ...
-> > ksoftirqd/13-117   [013]   148.265945: softirq_entry:        vec=1 [action=TIMER]
-> 
-> ...the timer softirq keep triggering without any timer callback executed. If that's the
-> case, we may be dealing with an interesting issue.
-> 
-> Thanks.
-> 
-> > ksoftirqd/13-117   [013]   148.265947: softirq_exit:         vec=1 [action=TIMER]
-> > ksoftirqd/13-117   [013]   148.265948: softirq_entry:        vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.265950: softirq_exit:         vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.265952: sched_switch:         ksoftirqd/13:117 [120] S ==> sysjitter:2536 [120]
-> >    sysjitter-2536  [013]   148.266912: local_timer_entry:    vector=236
-> >    sysjitter-2536  [013]   148.266914: hrtimer_cancel:       hrtimer=0xffff9807df91bee0
-> >    sysjitter-2536  [013]   148.266916: hrtimer_expire_entry: hrtimer=0xffff9807df91bee0 now=148249107837 function=tick_sched_timer/0x0
-> >    sysjitter-2536  [013]   148.266918: softirq_raise:        vec=1 [action=TIMER]
-> >    sysjitter-2536  [013]   148.266920: softirq_raise:        vec=7 [action=SCHED]
-> >    sysjitter-2536  [013]   148.266922: hrtimer_expire_exit:  hrtimer=0xffff9807df91bee0
-> >    sysjitter-2536  [013]   148.266924: hrtimer_start:        hrtimer=0xffff9807df91bee0 function=tick_sched_timer/0x0 expires=148250105422 softexpires=148250105422
-> >    sysjitter-2536  [013]   148.266926: local_timer_exit:     vector=236
-> >    sysjitter-2536  [013]   148.266930: sched_wakeup:         ksoftirqd/13:117 [120] success=1 CPU:013
-> >    sysjitter-2536  [013]   148.266932: tick_stop:            success=0 dependency=SCHED
-> >    sysjitter-2536  [013]   148.266934: irq_work_entry:       vector=246
-> >    sysjitter-2536  [013]   148.266936: irq_work_exit:        vector=246
-> >    sysjitter-2536  [013]   148.266937: tick_stop:            success=0 dependency=SCHED
-> >    sysjitter-2536  [013]   148.266940: sched_switch:         sysjitter:2536 [120] R ==> ksoftirqd/13:117 [120]
-> > ksoftirqd/13-117   [013]   148.266943: softirq_entry:        vec=1 [action=TIMER]
-> > ksoftirqd/13-117   [013]   148.266946: softirq_exit:         vec=1 [action=TIMER]
-> > ksoftirqd/13-117   [013]   148.266946: softirq_entry:        vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.266948: softirq_exit:         vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.266950: sched_switch:         ksoftirqd/13:117 [120] S ==> sysjitter:2536 [120]
-> >    sysjitter-2536  [013]   148.267912: local_timer_entry:    vector=236
-> >    sysjitter-2536  [013]   148.267914: hrtimer_cancel:       hrtimer=0xffff9807df91bee0
-> >    sysjitter-2536  [013]   148.267916: hrtimer_expire_entry: hrtimer=0xffff9807df91bee0 now=148250107750 function=tick_sched_timer/0x0
-> >    sysjitter-2536  [013]   148.267918: softirq_raise:        vec=1 [action=TIMER]
-> >    sysjitter-2536  [013]   148.267920: softirq_raise:        vec=7 [action=SCHED]
-> >    sysjitter-2536  [013]   148.267922: hrtimer_expire_exit:  hrtimer=0xffff9807df91bee0
-> >    sysjitter-2536  [013]   148.267924: hrtimer_start:        hrtimer=0xffff9807df91bee0 function=tick_sched_timer/0x0 expires=148251105422 softexpires=148251105422
-> >    sysjitter-2536  [013]   148.267926: local_timer_exit:     vector=236
-> >    sysjitter-2536  [013]   148.267929: sched_wakeup:         ksoftirqd/13:117 [120] success=1 CPU:013
-> >    sysjitter-2536  [013]   148.267931: tick_stop:            success=0 dependency=SCHED
-> >    sysjitter-2536  [013]   148.267934: irq_work_entry:       vector=246
-> >    sysjitter-2536  [013]   148.267936: irq_work_exit:        vector=246
-> >    sysjitter-2536  [013]   148.267937: tick_stop:            success=0 dependency=SCHED
-> >    sysjitter-2536  [013]   148.267940: sched_switch:         sysjitter:2536 [120] R ==> ksoftirqd/13:117 [120]
-> > ksoftirqd/13-117   [013]   148.267943: softirq_entry:        vec=1 [action=TIMER]
-> > ksoftirqd/13-117   [013]   148.267945: softirq_exit:         vec=1 [action=TIMER]
-> > ksoftirqd/13-117   [013]   148.267946: softirq_entry:        vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.267947: softirq_exit:         vec=7 [action=SCHED]
-> > ksoftirqd/13-117   [013]   148.267949: sched_switch:         ksoftirqd/13:117 [120] S ==> sysjitter:2536 [120]
-> >    sysjitter-2536  [013]   148.268865: call_function_single_entry: vector=251
-> >    sysjitter-2536  [013]   148.268867: call_function_single_exit: vector=251
-> >    sysjitter-2536  [013]   148.268870: tick_stop:            success=1 dependency=NONE
-> >    sysjitter-2536  [013]   148.268872: hrtimer_cancel:       hrtimer=0xffff9807df91bee0
-> >    sysjitter-2536  [013]   148.268876: call_function_single_entry: vector=251
-> >    sysjitter-2536  [013]   148.268878: call_function_single_exit: vector=251
-> > ...
-> > 
-> > it looks like tick sched timer is kept armed until tick_stop
-> > succedes (because of the check performed after _single_exit)?
-> > 
-> > Thanks for your quick reply!
-> > 
-> 
+v4
+- rebase on audit/next v5.7-rc1
+- fix checkpatch.pl errors/warnings in 1/3 and 2/3
+
+v3
+- rebase on v5.6-rc1 audit/next
+- change audit_nf_cfg to audit_log_nfcfg
+- squash 2,3,4,5 to 1 and update patch descriptions
+- add subject credentials to cover garbage collecting kernel threads
+
+v2
+- Rebase (audit/next 5.5-rc1) to get audit_context access and ebt_register_table ret code
+- Split x_tables and ebtables updates
+- Check audit_dummy_context
+- Store struct audit_nfcfg params in audit_context, abstract to audit_nf_cfg() call
+- Restore back to "table, family, entries" from "family, table, entries"
+- Log unregistration of tables
+- Add "op=" at the end of the AUDIT_NETFILTER_CFG record
+- Defer nsid patch (ghak79) to once nsid patchset upstreamed (ghak32)
+- Add ghak refs
+- Ditch NETFILTER_CFGSOLO record
+
+ kernel/auditsc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index cfe3486e5f31..468a23390457 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -2557,12 +2557,18 @@ void __audit_log_nfcfg(const char *name, u8 af, unsigned int nentries,
+ 		       enum audit_nfcfgop op)
+ {
+ 	struct audit_buffer *ab;
++	char comm[sizeof(current->comm)];
+ 
+ 	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_NETFILTER_CFG);
+ 	if (!ab)
+ 		return;
+ 	audit_log_format(ab, "table=%s family=%u entries=%u op=%s",
+ 			 name, af, nentries, audit_nfcfgs[op].s);
++
++	audit_log_format(ab, " pid=%u", task_pid_nr(current));
++	audit_log_task_context(ab); /* subj= */
++	audit_log_format(ab, " comm=");
++	audit_log_untrustedstring(ab, get_task_comm(comm, current));
+ 	audit_log_end(ab);
+ }
+ EXPORT_SYMBOL_GPL(__audit_log_nfcfg);
+-- 
+1.8.3.1
 
