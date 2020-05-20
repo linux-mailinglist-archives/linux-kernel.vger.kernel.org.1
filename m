@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE171DB5BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A778E1DB59B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgETNzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:55:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42938 "EHLO mail.kernel.org"
+        id S1726804AbgETNv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:51:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:56758 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgETNzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:55:18 -0400
-Received: from localhost (unknown [122.178.227.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FEB6206C3;
-        Wed, 20 May 2020 13:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589982917;
-        bh=77eBqGPO9oS6IAJe/Q1U2VGxJbTGtULUpvt12elCIEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MDVoSJtml/vZvPY+QL93DOKrAz8b2rx0MEzt0MpJSeplTEHUtTelisIA5A49pwfqN
-         OGfnznwwcy3P5ERnzc8tsw1WuOnvrsfrm/LMe9Cju45/aJ3WiPmWC6M9nHMJTdbOQj
-         gtw87WVzkIHsiXScRyFyXtT4Jktbt1UD/9phXEeQ=
-Date:   Wed, 20 May 2020 19:25:09 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, slawomir.blauciak@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/2] soundwire: intel: use a single module
-Message-ID: <20200520135509.GY374218@vkoul-mobl.Dlink>
-References: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
+        id S1726510AbgETNv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:51:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A25530E;
+        Wed, 20 May 2020 06:51:25 -0700 (PDT)
+Received: from [10.37.8.206] (unknown [10.37.8.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2B023F52E;
+        Wed, 20 May 2020 06:51:23 -0700 (PDT)
+Subject: Re: [PATCH V4 14/17] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64MMFR2 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
+ <1589881254-10082-15-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <3be71452-abd3-cd6f-c859-697447657a3f@arm.com>
+Date:   Wed, 20 May 2020 14:56:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519191903.6557-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <1589881254-10082-15-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-05-20, 03:19, Bard Liao wrote:
-> From: Rander Wang <rander.wang@intel.com>
+On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
+> Enable EVT, BBM, TTL, IDS, ST, NV and CCIDX features bits in ID_AA64MMFR2
+> register as per ARM DDI 0487F.a specification.
 > 
-> It's not clear why we have two modules for the Intel controller/master
-> support when there is a single Kconfig. This adds complexity for no
-> good reason, the two parts need to work together anyways.
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Applied, thanks
+Please note that there other series addressing TTL. So might
+have conflicts.
 
--- 
-~Vinod
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
