@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9AC1DB53F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7241DB557
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgETNkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
+        id S1726748AbgETNl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgETNkC (ORCPT
+        with ESMTP id S1726436AbgETNl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:40:02 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B394CC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:40:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s8so3163904wrt.9
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:40:00 -0700 (PDT)
+        Wed, 20 May 2020 09:41:58 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF67C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:41:58 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id a23so2544412qto.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 06:41:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=Qjc4OrRPkEdastgYUwoUcRKr2jRXKRxjYFjsu/ZAOsuAa1DYX4MCqpmHdPHA1WXo6/
-         n8Zo4V0KUwByteIrGChjpzGYtbhv5R1O6I0dlG+j5ZOZSO1Kr+9J65JrU63S6ouqnoZm
-         pVteCH4Nswo88SBoGHBUg/ildUKBZfo0md1cPw/WlASJ+DE5D4PZUZtfGv7uQ039KbeM
-         +Bi+8xkNUN48K3QStRXo7IJVP/r2vCQL2ZWK/8XpMAitX/d8GoDtIzUqgK0dc1xa8LQL
-         MpotsDvrIY/5wg2GPJftg5qyz3e3hCO9m78z4q5YrOiO6c1i8j6HwjJLz4PkP+yQQ1JD
-         YZJA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0V2YdmdsPWdKOdrPaJCwbEh29ibmH+HakgeEAIazLoU=;
+        b=qC/4F699airF84eCWUHyAnJB2w/aPWBgGWneKHzTy6qapry8QGNFK5UmiB5clWhkUD
+         ggrB7niieo2jjQVXpglDBJb7ukXKkzrkVarquFn4tm1uu2dajOKsFVM5z66yImWDvg/n
+         e0LSe7TWd8zLwI9BVGuPxyk4wl1zCBkVrtmrEdgy90J45DrtDPZhLrfNNaUSGeqDZb4V
+         Ohs7FLbLPjpkLw1yfxZKSavEOB6tO/0daVpWkCS1Zajo6To+piVtmILV8UNr33bAD5uX
+         fK1dZdDvTXtkO+JqrxVuanC5knpnBNpif9cuHsTAeKkYe4hPnNM/jDZt16d03+R5FHv7
+         VPCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Z7X3cka+AdPSdxPCZBdSJ7XBQjZ/UHjC7K8wR41cTew=;
-        b=oYltc+ry6KF+lLseBDb8C1FGQO9tJQW7I2fYdQiZy7tFCgJEQR7EsVe1QsKDLaP0CF
-         FZzNUCjwdiUeUt5DgZ+K7vGkGVrNrzaEpq/R/DXaqEccxcSTSM2O3jow/rmwQEM/umwE
-         j/dTLE143ez96deaCReJz1Y22rsIsqps0PUToYxrmy9jZa8trrE6+dF4T+h6DkC4udIw
-         ytUP9QMz25b+4Gx0pRxFD621zGgEJ7FpSELQ0Zu+UGnW+3uvzLsi98z7zEWAOj6kCybC
-         c4fm5UKKJvj7xSCJz6V2gaYvRFDHPFpGx7Ll5xUW2qlL1EtU/tPH3jGaUNoWn89e2S1d
-         yERQ==
-X-Gm-Message-State: AOAM5336Y4wTdZUUQVexg8W8rMyATi+JhxrmLvud4D2pcu1Nho8XWBu7
-        sShtmE+StC9ChWUo5XCyhx7amIzI4tvGaLYN8LrTyVhbD1E=
-X-Google-Smtp-Source: ABdhPJwOr9FE+15+EiNeP8D3cSJZTOe13Ccr4DocyEeoL+ouLVE7xwlrtSUjBZSi7pvTivG9wiXmfn64HXrGduPEFcc=
-X-Received: by 2002:adf:a1c1:: with SMTP id v1mr2717107wrv.205.1589981999427;
- Wed, 20 May 2020 06:39:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0V2YdmdsPWdKOdrPaJCwbEh29ibmH+HakgeEAIazLoU=;
+        b=arRiMUG98nUtz9mtam1C+NZ2Kw7jZZkerTs6B6shY+5nanPN1zcSTn8rAaCB78UP6D
+         2ozH+D0eJuyBeWAKwpDp8bnPDDPU0XKyQgK8P6bzgjgOobxpffBgvVL0XEmpI65qJu7d
+         ZaPoCOWGh6MObEm7OzmFHEu7/BIocwe29qxFi0QEdFAUtnF52oi2hEcdwnMJr6P5JwJR
+         wUmQXvzEO62Cd/11JfF4Y3qwaY8BQKoDdmeD/FiOOBQeQjJorEusX4yolHkTLBUyowmd
+         utohfA4mpBDhYdy2wMGDdvrAqgt9g1WwzGHVHwZ88DkFaVcFS/pvN9oWbpSIdw1bgy12
+         sbdw==
+X-Gm-Message-State: AOAM533kKc47xn49oTiBvxzCSYDf/nTqrXLeAVPN9xTxSO+4ngUO1pA6
+        tQcOmoSAo1mJiyS7840GNHISN88AwZH54Ppt/MUfZQ==
+X-Google-Smtp-Source: ABdhPJzdPKAs0FcB021TXKJADOyr7L07b4L1TgAmLuJZwsC2A0ftVTV4M5T7ShHJQofye20SE1BJoCJsElyH3SJIfec=
+X-Received: by 2002:aed:3668:: with SMTP id e95mr5404706qtb.50.1589982117153;
+ Wed, 20 May 2020 06:41:57 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:adf:82e6:0:0:0:0:0 with HTTP; Wed, 20 May 2020 06:39:58
- -0700 (PDT)
-Reply-To: Michellegoodman45@gmail.com
-From:   Michelle Goodman <michellegoodman323@gmail.com>
-Date:   Wed, 20 May 2020 13:39:58 +0000
-Message-ID: <CAEJQfw=ioFToaHrFUTCKbQcD1WWL7siB7mHGYLyABL-T_dBpLQ@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
+References: <000000000000598a2905a60d50cd@google.com> <877dx66ce1.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <877dx66ce1.fsf@nanos.tec.linutronix.de>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 20 May 2020 15:41:45 +0200
+Message-ID: <CACT4Y+apEBx58B7q7XOMrPzzXZiQ6zvnVLRypD1MxCURwNkkMg@mail.gmail.com>
+Subject: Re: linux-next boot error: BUG: Invalid wait context ]
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Danke
-Michelle
+On Wed, May 20, 2020 at 2:04 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> syzbot <syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com> writes:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    fb57b1fa Add linux-next specific files for 20200519
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17c9196e100000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=2522f758a3588c2d
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=08003d278f04ed0944e0
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+08003d278f04ed0944e0@syzkaller.appspotmail.com
+> >
+> > =============================
+> > [ BUG: Invalid wait context ]
+> > 5.7.0-rc6-next-20200519-syzkaller #0 Not tainted
+> > -----------------------------
+> > swapper/1/0 is trying to lock:
+> > ffff8880ae737518 (&pool->lock){..-.}-{3:3}, at: spin_lock include/linux/spinlock.h:353 [inline]
+> > ffff8880ae737518 (&pool->lock){..-.}-{3:3}, at: __queue_work+0x2bf/0x1350 kernel/workqueue.c:1448
+>
+> Can you please disable CONFIG_PROVE_RAW_LOCK_NESTING for now?
+>
+> From the help text:
+>
+> NOTE:
+>   There are known nesting problems. So if you enable this option expect
+>   lockdep splats until these problems have been fully addressed which is
+>   work in progress. This config switch allows to identify and analyze
+>   these problems. It will be removed and the check permanentely enabled
+>   once the main issues have been fixed.
+
+Hi Thomas,
+
+Done:
+https://github.com/google/syzkaller/commit/4afdfa205b55633e7eb9db03a9d099d7aa324801
+
+We can obsolete this then:
+
+#syz invalid
