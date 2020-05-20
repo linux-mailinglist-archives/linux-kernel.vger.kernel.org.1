@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B351DA9EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D4A1DA9EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 07:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbgETF3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 01:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
+        id S1728312AbgETF3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 01:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbgETF3f (ORCPT
+        with ESMTP id S1728226AbgETF3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 01:29:35 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5875C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:35 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s8so789834ybj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:35 -0700 (PDT)
+        Wed, 20 May 2020 01:29:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAEFC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q16so791645ybg.18
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 22:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=RrikTmw7tkKR8j1RKmHSLRVaXrgipAWAZuExbNYUkgA=;
-        b=MU7TNwoJ6QqArvgk1mucJAEriyJLMYw8Xb9eCdknhhUu3f41Kiz4K2OM03tapZRaf1
-         HiAeBNv1cYsayQ2cCbEgxWP3q9RE3HWDOPcM9pP7ONsu1Navv29v85p6ajk7rKBJZotv
-         iAVk9eyrQwX4LArMPLSLx0XCJ51ZFBucGOp1WnHjQZc2hd3AGghqAHt5wvUvlkQJcj1O
-         6UU9zoSDoHO/iwD14Q8I3w5QpVdZ/D8Iz3RyldEudZE3PrJqeepzjZSUOntg0Ejr9EVp
-         Jf5Zw2RX7f8s4zDK5uVwAtDPO1a5Oa7GiAID4dwwb8UjHigBCjYKo9SDfc5CvTKIFXHm
-         heqw==
+        bh=/1mJLG8XKzvlTqN2TpWDva8gM5dCg31OBJnLj221hJg=;
+        b=ju1uTzOVIAW84CbTWrWJ3Us3p26+isy1bBXzabiZU3dQSqIhdBXILHVaKi2yqf7HdG
+         0BAxLvKUw5v9VfPLkDGBrPqBcLW0Xm5z+3HqQ8KBbsQos3GIq1+1exANw3Xyy5e1lklg
+         pGQ5RkAzkhINt83R2VqaQuutCB8nob+lazQFPy74L8W3EzBmAeMCZtWwk7acBERa3KMw
+         BBfkmksV+ThKgP2pBesBNc1RQekm1fTCRAHzHpnFMVfLoM2Ne28+sMl6gtGVSYXfsmc6
+         XxL5a4AGvetzSRPuiDK5KQSMVFgtzvN4jcSb+6yRnQpOI7XJmMKQPm61ri4A2yEswM7I
+         x3iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=RrikTmw7tkKR8j1RKmHSLRVaXrgipAWAZuExbNYUkgA=;
-        b=hfvgersSYubwx9Ec7NWmWsb2FLTqGzejx87s9F7HIt9KBjk+OCvaS5CbOULJ4VBClW
-         8y53cBB0xuyCyekFevd0Ry4eJd8gm9/y1s25jR+GBw8g0lXlNELQqqfI7eJnxem3s/EQ
-         b18xn3TSNVOWAlDgdDC8TmKlYNaqDdssh5GCDSgKe5vOVsvrdohgUkJ/8I0qjQoWoaxw
-         p8e7NyH4kzf/C7/bUdSan2Sq9crz/tcvHoTiOUTdYDhjI/G0XdltKhtwX5hPLdLJdMzW
-         pKUrXtcYnkmNKJjj6LN55/CcffbtV8ngW+CNmloUmnTGxgZ/zIC8L7fkYAzrr5Sj1rUZ
-         QSwA==
-X-Gm-Message-State: AOAM530fDk3oFzE1+ivaTTfAZGPLNgNxeITVleZ8aVPeS5f1sE/Lfa9e
-        d1+5n05r0Bt9fdeuXdz+6SEcnntmWxs=
-X-Google-Smtp-Source: ABdhPJzIYk4ESLhciP+gpGkUxCXLRu0Lf2AY6ECrC+loFsBWs23BizNjpSayw5HRciDB8q2oaIYyjLCazoM=
-X-Received: by 2002:a25:6046:: with SMTP id u67mr4722745ybb.54.1589952574874;
- Tue, 19 May 2020 22:29:34 -0700 (PDT)
-Date:   Tue, 19 May 2020 22:29:06 -0700
+        bh=/1mJLG8XKzvlTqN2TpWDva8gM5dCg31OBJnLj221hJg=;
+        b=KbVkGY8046zid9B7Y/OMqA0ngjmNFIjtXq6RXPj4C47H7A83RTKTrwvjuaiALBPulk
+         cyYqHiNSrvXYkxXorOWOv6Rbmb4TA52KGqtQJmTtPu0I1GLWWRR7WceBqNUDGM9bwU8i
+         HERWUgzMZMW4/5QT3U+jCajOo+fzM+U/XsOC/i41GEKHyauEcRntfRdpNPPMbQcsbiaL
+         QUc/bftgjaeXsvk/I2Qm72mDhssTwtzjE1LnEoOTjFQ0chgDUFVAyTWEsLoR3pLI8k1j
+         32zbU0AZoRQQbF7tkuHQhatuZE8X8Eprl6zt5Pn4Q5xF0ESgEbi77gwhJIbOhCBElPIK
+         pBxQ==
+X-Gm-Message-State: AOAM532Cq71G9MWlWmFORiog4nKna2DZATwKBpyPcFa96YlPLtY8AHpz
+        ykEOcstJm7RM+JUqodcjXXiyyQC1GYY=
+X-Google-Smtp-Source: ABdhPJxgpO99UNnwPRp2qhvMJLQBREzeLQxujHkqEtxjljxhUnoickJo/XO5GhACXOzTi3h9QiJbvGTSqRc=
+X-Received: by 2002:a5b:584:: with SMTP id l4mr4775081ybp.232.1589952577126;
+ Tue, 19 May 2020 22:29:37 -0700 (PDT)
+Date:   Tue, 19 May 2020 22:29:07 -0700
 In-Reply-To: <20200520052908.204642-1-walken@google.com>
-Message-Id: <20200520052908.204642-11-walken@google.com>
+Message-Id: <20200520052908.204642-12-walken@google.com>
 Mime-Version: 1.0
 References: <20200520052908.204642-1-walken@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH v6 10/12] mmap locking API: rename mmap_sem to mmap_lock
+Subject: [PATCH v6 11/12] mmap locking API: convert mmap_sem API comments
 From:   Michel Lespinasse <walken@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm <linux-mm@kvack.org>
@@ -74,236 +74,496 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the mmap_sem field to mmap_lock. Any new uses of this lock
-should now go through the new mmap locking api. The mmap_lock is
-still implemented as a rwsem, though this could change in the future.
+Convert comments that reference old mmap_sem APIs to reference
+corresponding new mmap locking APIs instead.
 
 Signed-off-by: Michel Lespinasse <walken@google.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- arch/ia64/mm/fault.c                  |  4 +--
- arch/x86/mm/fault.c                   |  2 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.c |  2 +-
- include/linux/mm_types.h              |  2 +-
- include/linux/mmap_lock.h             | 38 +++++++++++++--------------
- mm/memory.c                           |  2 +-
- mm/mmap.c                             |  4 +--
- mm/mmu_notifier.c                     |  2 +-
- 8 files changed, 28 insertions(+), 28 deletions(-)
+ Documentation/vm/hmm.rst       |  6 +++---
+ arch/alpha/mm/fault.c          |  2 +-
+ arch/ia64/mm/fault.c           |  2 +-
+ arch/m68k/mm/fault.c           |  2 +-
+ arch/microblaze/mm/fault.c     |  2 +-
+ arch/mips/mm/fault.c           |  2 +-
+ arch/nds32/mm/fault.c          |  2 +-
+ arch/nios2/mm/fault.c          |  2 +-
+ arch/openrisc/mm/fault.c       |  2 +-
+ arch/parisc/mm/fault.c         |  2 +-
+ arch/riscv/mm/fault.c          |  2 +-
+ arch/sh/mm/fault.c             |  2 +-
+ arch/sparc/mm/fault_32.c       |  2 +-
+ arch/sparc/mm/fault_64.c       |  2 +-
+ arch/xtensa/mm/fault.c         |  2 +-
+ drivers/android/binder_alloc.c |  4 ++--
+ fs/hugetlbfs/inode.c           |  2 +-
+ fs/userfaultfd.c               |  2 +-
+ mm/filemap.c                   |  2 +-
+ mm/gup.c                       | 12 ++++++------
+ mm/huge_memory.c               |  4 ++--
+ mm/khugepaged.c                |  2 +-
+ mm/ksm.c                       |  2 +-
+ mm/memory.c                    |  4 ++--
+ mm/mempolicy.c                 |  2 +-
+ mm/migrate.c                   |  4 ++--
+ mm/mmap.c                      |  2 +-
+ mm/oom_kill.c                  |  8 ++++----
+ net/ipv4/tcp.c                 |  2 +-
+ 29 files changed, 43 insertions(+), 43 deletions(-)
 
+diff --git a/Documentation/vm/hmm.rst b/Documentation/vm/hmm.rst
+index 4e3e9362afeb..046817505033 100644
+--- a/Documentation/vm/hmm.rst
++++ b/Documentation/vm/hmm.rst
+@@ -194,15 +194,15 @@ The usage pattern is::
+ 
+  again:
+       range.notifier_seq = mmu_interval_read_begin(&interval_sub);
+-      down_read(&mm->mmap_sem);
++      mmap_read_lock(mm);
+       ret = hmm_range_fault(&range);
+       if (ret) {
+-          up_read(&mm->mmap_sem);
++          mmap_read_unlock(mm);
+           if (ret == -EBUSY)
+                  goto again;
+           return ret;
+       }
+-      up_read(&mm->mmap_sem);
++      mmap_read_unlock(mm);
+ 
+       take_lock(driver->update);
+       if (mmu_interval_read_retry(&ni, range.notifier_seq) {
+diff --git a/arch/alpha/mm/fault.c b/arch/alpha/mm/fault.c
+index 36efa778ee1a..c2303a8c2b9f 100644
+--- a/arch/alpha/mm/fault.c
++++ b/arch/alpha/mm/fault.c
+@@ -171,7 +171,7 @@ do_page_fault(unsigned long address, unsigned long mmcsr,
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			 /* No need to up_read(&mm->mmap_sem) as we would
++			 /* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
 diff --git a/arch/ia64/mm/fault.c b/arch/ia64/mm/fault.c
-index 693f00b117e1..9b95050c2048 100644
+index 9b95050c2048..0f788992608a 100644
 --- a/arch/ia64/mm/fault.c
 +++ b/arch/ia64/mm/fault.c
-@@ -70,8 +70,8 @@ ia64_do_page_fault (unsigned long address, unsigned long isr, struct pt_regs *re
- 	mask = ((((isr >> IA64_ISR_X_BIT) & 1UL) << VM_EXEC_BIT)
- 		| (((isr >> IA64_ISR_W_BIT) & 1UL) << VM_WRITE_BIT));
+@@ -169,7 +169,7 @@ ia64_do_page_fault (unsigned long address, unsigned long isr, struct pt_regs *re
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
  
--	/* mmap_sem is performance critical.... */
--	prefetchw(&mm->mmap_sem);
-+	/* mmap_lock is performance critical.... */
-+	prefetchw(&mm->mmap_lock);
+-			 /* No need to up_read(&mm->mmap_sem) as we would
++			 /* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+index 650acab0d77d..a94a814ad6ad 100644
+--- a/arch/m68k/mm/fault.c
++++ b/arch/m68k/mm/fault.c
+@@ -165,7 +165,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/microblaze/mm/fault.c b/arch/microblaze/mm/fault.c
+index 9d7c423dea1d..ebf1ac50b291 100644
+--- a/arch/microblaze/mm/fault.c
++++ b/arch/microblaze/mm/fault.c
+@@ -239,7 +239,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index 9ef2dd39111e..01b168a90434 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -181,7 +181,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
+index 21bab96fd6c3..ea370f84ac54 100644
+--- a/arch/nds32/mm/fault.c
++++ b/arch/nds32/mm/fault.c
+@@ -248,7 +248,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			/* No need to up_read(&mm->mmap_sem) as we would
++			/* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/nios2/mm/fault.c b/arch/nios2/mm/fault.c
+index 2c873f9eea1b..775e9fe1eddc 100644
+--- a/arch/nios2/mm/fault.c
++++ b/arch/nios2/mm/fault.c
+@@ -160,7 +160,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long cause,
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/openrisc/mm/fault.c b/arch/openrisc/mm/fault.c
+index 1dbce831f960..d6f203667361 100644
+--- a/arch/openrisc/mm/fault.c
++++ b/arch/openrisc/mm/fault.c
+@@ -183,7 +183,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long address,
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			 /* No need to up_read(&mm->mmap_sem) as we would
++			 /* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index bc840fdb398f..66ac0719bd49 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -329,7 +329,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 			current->min_flt++;
+ 		if (fault & VM_FAULT_RETRY) {
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+index cd7f4af95e56..996db5ebbf39 100644
+--- a/arch/riscv/mm/fault.c
++++ b/arch/riscv/mm/fault.c
+@@ -147,7 +147,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/sh/mm/fault.c b/arch/sh/mm/fault.c
+index beb83e8ec0b3..ce9f492f9049 100644
+--- a/arch/sh/mm/fault.c
++++ b/arch/sh/mm/fault.c
+@@ -484,7 +484,7 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+ 			/*
+-			 * No need to up_read(&mm->mmap_sem) as we would
++			 * No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
+index e69bcd957c78..18e97b2a8413 100644
+--- a/arch/sparc/mm/fault_32.c
++++ b/arch/sparc/mm/fault_32.c
+@@ -263,7 +263,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			/* No need to up_read(&mm->mmap_sem) as we would
++			/* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/sparc/mm/fault_64.c b/arch/sparc/mm/fault_64.c
+index 43ecd88a9d6f..2e79d7d050ed 100644
+--- a/arch/sparc/mm/fault_64.c
++++ b/arch/sparc/mm/fault_64.c
+@@ -451,7 +451,7 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			/* No need to up_read(&mm->mmap_sem) as we would
++			/* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/arch/xtensa/mm/fault.c b/arch/xtensa/mm/fault.c
+index 1c8d22a0cf46..c4decc73fd86 100644
+--- a/arch/xtensa/mm/fault.c
++++ b/arch/xtensa/mm/fault.c
+@@ -130,7 +130,7 @@ void do_page_fault(struct pt_regs *regs)
+ 		if (fault & VM_FAULT_RETRY) {
+ 			flags |= FAULT_FLAG_TRIED;
+ 
+-			 /* No need to up_read(&mm->mmap_sem) as we would
++			 /* No need to mmap_read_unlock(mm) as we would
+ 			 * have already released it in __lock_page_or_retry
+ 			 * in mm/filemap.c.
+ 			 */
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index cbdc43ed0f9f..42c672f1584e 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -933,7 +933,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+ 	if (!mmget_not_zero(mm))
+ 		goto err_mmget;
+ 	if (!mmap_read_trylock(mm))
+-		goto err_down_read_mmap_sem_failed;
++		goto err_mmap_read_lock_failed;
+ 	vma = binder_alloc_get_vma(alloc);
+ 
+ 	list_lru_isolate(lru, item);
+@@ -960,7 +960,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+ 	mutex_unlock(&alloc->mutex);
+ 	return LRU_REMOVED_RETRY;
+ 
+-err_down_read_mmap_sem_failed:
++err_mmap_read_lock_failed:
+ 	mmput_async(mm);
+ err_mmget:
+ err_page_already_freed:
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 991c60c7ffe0..a890f78aa80c 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -186,7 +186,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ }
+ 
+ /*
+- * Called under down_write(mmap_sem).
++ * Called under mmap_write_lock(mm).
+  */
+ 
+ #ifndef HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 12b492409040..3a63d75ed2fd 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1248,7 +1248,7 @@ static __always_inline void wake_userfault(struct userfaultfd_ctx *ctx,
+ 	/*
+ 	 * To be sure waitqueue_active() is not reordered by the CPU
+ 	 * before the pagetable update, use an explicit SMP memory
+-	 * barrier here. PT lock release or up_read(mmap_sem) still
++	 * barrier here. PT lock release or mmap_read_unlock(mm) still
+ 	 * have release semantics that can allow the
+ 	 * waitqueue_active() to be reordered before the pte update.
+ 	 */
+diff --git a/mm/filemap.c b/mm/filemap.c
+index a4cc12653a39..10d21d0b0536 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1376,7 +1376,7 @@ EXPORT_SYMBOL_GPL(__lock_page_killable);
+  * Return values:
+  * 1 - page is locked; mmap_sem is still held.
+  * 0 - page is not locked.
+- *     mmap_sem has been released (up_read()), unless flags had both
++ *     mmap_lock has been released (mmap_read_unlock(), unless flags had both
+  *     FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_RETRY_NOWAIT set, in
+  *     which case mmap_sem is still held.
+  *
+diff --git a/mm/gup.c b/mm/gup.c
+index c1c0b37d0e8f..a8606213bdec 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1967,19 +1967,19 @@ EXPORT_SYMBOL(get_user_pages);
+  *
+  * get_user_pages_locked() is suitable to replace the form:
+  *
+- *      down_read(&mm->mmap_sem);
++ *      mmap_read_lock(mm);
+  *      do_something()
+  *      get_user_pages(tsk, mm, ..., pages, NULL);
+- *      up_read(&mm->mmap_sem);
++ *      mmap_read_unlock(mm);
+  *
+  *  to:
+  *
+  *      int locked = 1;
+- *      down_read(&mm->mmap_sem);
++ *      mmap_read_lock(mm);
+  *      do_something()
+  *      get_user_pages_locked(tsk, mm, ..., pages, &locked);
+  *      if (locked)
+- *          up_read(&mm->mmap_sem);
++ *          mmap_read_unlock(mm);
+  */
+ long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
+ 			   unsigned int gup_flags, struct page **pages,
+@@ -2003,9 +2003,9 @@ EXPORT_SYMBOL(get_user_pages_locked);
+ /*
+  * get_user_pages_unlocked() is suitable to replace the form:
+  *
+- *      down_read(&mm->mmap_sem);
++ *      mmap_read_lock(mm);
+  *      get_user_pages(tsk, mm, ..., pages, NULL);
+- *      up_read(&mm->mmap_sem);
++ *      mmap_read_unlock(mm);
+  *
+  *  with:
+  *
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 6ecd1045113b..aa940124396d 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2038,9 +2038,9 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
+ 		goto unlock;
  
  	/*
- 	 * If we're in an interrupt or have no user context, we must not take the fault..
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 181f66b9049f..35f530f9dfc0 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1522,7 +1522,7 @@ dotraplinkage void
- do_page_fault(struct pt_regs *regs, unsigned long hw_error_code,
- 		unsigned long address)
- {
--	prefetchw(&current->mm->mmap_sem);
-+	prefetchw(&current->mm->mmap_lock);
- 	trace_page_fault_entries(regs, hw_error_code, address);
- 
- 	if (unlikely(kmmio_fault(regs, address)))
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-index dc9ef302f517..701f3995f621 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-@@ -661,7 +661,7 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
- 	struct etnaviv_gem_userptr *userptr = &etnaviv_obj->userptr;
- 	int ret, pinned = 0, npages = etnaviv_obj->base.size >> PAGE_SHIFT;
- 
--	might_lock_read(&current->mm->mmap_sem);
-+	might_lock_read(&current->mm->mmap_lock);
- 
- 	if (userptr->mm != current->mm)
- 		return -EPERM;
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 4aba6c0c2ba8..d13b90399c16 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -436,7 +436,7 @@ struct mm_struct {
- 		spinlock_t page_table_lock; /* Protects page tables and some
- 					     * counters
- 					     */
--		struct rw_semaphore mmap_sem;
-+		struct rw_semaphore mmap_lock;
- 
- 		struct list_head mmlist; /* List of maybe swapped mm's.	These
- 					  * are globally strung together off
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 43ef914e6468..b5bd86778cca 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -4,67 +4,67 @@
- #include <linux/mmdebug.h>
- 
- #define MMAP_LOCK_INITIALIZER(name) \
--	.mmap_sem = __RWSEM_INITIALIZER((name).mmap_sem),
-+	.mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
- 
- static inline void mmap_init_lock(struct mm_struct *mm)
- {
--	init_rwsem(&mm->mmap_sem);
-+	init_rwsem(&mm->mmap_lock);
- }
- 
- static inline void mmap_write_lock(struct mm_struct *mm)
- {
--	down_write(&mm->mmap_sem);
-+	down_write(&mm->mmap_lock);
- }
- 
- static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
- {
--	down_write_nested(&mm->mmap_sem, subclass);
-+	down_write_nested(&mm->mmap_lock, subclass);
- }
- 
- static inline int mmap_write_lock_killable(struct mm_struct *mm)
- {
--	return down_write_killable(&mm->mmap_sem);
-+	return down_write_killable(&mm->mmap_lock);
- }
- 
- static inline bool mmap_write_trylock(struct mm_struct *mm)
- {
--	return down_write_trylock(&mm->mmap_sem) != 0;
-+	return down_write_trylock(&mm->mmap_lock) != 0;
- }
- 
- static inline void mmap_write_unlock(struct mm_struct *mm)
- {
--	up_write(&mm->mmap_sem);
-+	up_write(&mm->mmap_lock);
- }
- 
- static inline void mmap_write_downgrade(struct mm_struct *mm)
- {
--	downgrade_write(&mm->mmap_sem);
-+	downgrade_write(&mm->mmap_lock);
- }
- 
- static inline void mmap_read_lock(struct mm_struct *mm)
- {
--	down_read(&mm->mmap_sem);
-+	down_read(&mm->mmap_lock);
- }
- 
- static inline int mmap_read_lock_killable(struct mm_struct *mm)
- {
--	return down_read_killable(&mm->mmap_sem);
-+	return down_read_killable(&mm->mmap_lock);
- }
- 
- static inline bool mmap_read_trylock(struct mm_struct *mm)
- {
--	return down_read_trylock(&mm->mmap_sem) != 0;
-+	return down_read_trylock(&mm->mmap_lock) != 0;
- }
- 
- static inline void mmap_read_unlock(struct mm_struct *mm)
- {
--	up_read(&mm->mmap_sem);
-+	up_read(&mm->mmap_lock);
- }
- 
- static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
- {
--	if (down_read_trylock(&mm->mmap_sem)) {
--		rwsem_release(&mm->mmap_sem.dep_map, _RET_IP_);
-+	if (down_read_trylock(&mm->mmap_lock)) {
-+		rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
- 		return true;
- 	}
- 	return false;
-@@ -72,19 +72,19 @@ static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
- 
- static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
- {
--	up_read_non_owner(&mm->mmap_sem);
-+	up_read_non_owner(&mm->mmap_lock);
- }
- 
- static inline void mmap_assert_locked(struct mm_struct *mm)
- {
--	lockdep_assert_held(&mm->mmap_sem);
--	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
-+	lockdep_assert_held(&mm->mmap_lock);
-+	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
- }
- 
- static inline void mmap_assert_write_locked(struct mm_struct *mm)
- {
--	lockdep_assert_held_write(&mm->mmap_sem);
--	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_sem), mm);
-+	lockdep_assert_held_write(&mm->mmap_lock);
-+	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
- }
- 
- #endif /* _LINUX_MMAP_LOCK_H */
+-	 * In case prot_numa, we are under down_read(mmap_sem). It's critical
++	 * In case prot_numa, we are under mmap_read_lock(mm). It's critical
+ 	 * to not clear pmd intermittently to avoid race with MADV_DONTNEED
+-	 * which is also under down_read(mmap_sem):
++	 * which is also under mmap_read_lock(mm):
+ 	 *
+ 	 *	CPU0:				CPU1:
+ 	 *				change_huge_pmd(prot_numa=1)
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 100e61be4379..a173ed7eb2bf 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1444,7 +1444,7 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
+ 		/*
+ 		 * Check vma->anon_vma to exclude MAP_PRIVATE mappings that
+ 		 * got written to. These VMAs are likely not worth investing
+-		 * down_write(mmap_sem) as PMD-mapping is likely to be split
++		 * mmap_write_lock(mm) as PMD-mapping is likely to be split
+ 		 * later.
+ 		 *
+ 		 * Not that vma->anon_vma check is racy: it can be set up after
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 17302642bcbf..0283d4969ef3 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2362,7 +2362,7 @@ static struct rmap_item *scan_get_next_rmap_item(struct page **page)
+ 	} else {
+ 		mmap_read_unlock(mm);
+ 		/*
+-		 * up_read(&mm->mmap_sem) first because after
++		 * mmap_read_unlock(mm) first because after
+ 		 * spin_unlock(&ksm_mmlist_lock) run, the "mm" may
+ 		 * already have been freed under us by __ksm_exit()
+ 		 * because the "mm_slot" is still hashed and
 diff --git a/mm/memory.c b/mm/memory.c
-index 20f98ea8968e..c2963e7affa9 100644
+index c2963e7affa9..3c9a5f6ac9f0 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -4811,7 +4811,7 @@ void __might_fault(const char *file, int line)
- 	__might_sleep(file, line, 0);
- #if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
- 	if (current->mm)
--		might_lock_read(&current->mm->mmap_sem);
-+		might_lock_read(&current->mm->mmap_lock);
- #endif
- }
- EXPORT_SYMBOL(__might_fault);
+@@ -3322,10 +3322,10 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+ 	 * pte_offset_map() on pmds where a huge pmd might be created
+ 	 * from a different thread.
+ 	 *
+-	 * pte_alloc_map() is safe to use under down_write(mmap_sem) or when
++	 * pte_alloc_map() is safe to use under mmap_write_lock(mm) or when
+ 	 * parallel threads are excluded by other means.
+ 	 *
+-	 * Here we only have down_read(mmap_sem).
++	 * Here we only have mmap_read_lock(mm).
+ 	 */
+ 	if (pte_alloc(vma->vm_mm, vmf->pmd))
+ 		return VM_FAULT_OOM;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 202505195642..a1247d3553da 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2188,7 +2188,7 @@ static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
+  *
+  * 	This function allocates a page from the kernel page pool and applies
+  *	a NUMA policy associated with the VMA or the current process.
+- *	When VMA is not NULL caller must hold down_read on the mmap_sem of the
++ *	When VMA is not NULL caller must read-lock the mmap_lock of the
+  *	mm_struct of the VMA to prevent it from going away. Should be used for
+  *	all allocations for pages that will be mapped into user space. Returns
+  *	NULL when no page can be allocated.
+diff --git a/mm/migrate.c b/mm/migrate.c
+index fc05d721b032..c3dc86ccb808 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2772,10 +2772,10 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+ 	 * pte_offset_map() on pmds where a huge pmd might be created
+ 	 * from a different thread.
+ 	 *
+-	 * pte_alloc_map() is safe to use under down_write(mmap_sem) or when
++	 * pte_alloc_map() is safe to use under mmap_write_lock(mm) or when
+ 	 * parallel threads are excluded by other means.
+ 	 *
+-	 * Here we only have down_read(mmap_sem).
++	 * Here we only have mmap_read_lock(mm).
+ 	 */
+ 	if (pte_alloc(mm, pmdp))
+ 		goto abort;
 diff --git a/mm/mmap.c b/mm/mmap.c
-index 2f4ffccc5972..80a47031d5db 100644
+index 80a47031d5db..dcdda8473012 100644
 --- a/mm/mmap.c
 +++ b/mm/mmap.c
-@@ -3474,7 +3474,7 @@ static void vm_lock_anon_vma(struct mm_struct *mm, struct anon_vma *anon_vma)
- 		 * The LSB of head.next can't change from under us
- 		 * because we hold the mm_all_locks_mutex.
- 		 */
--		down_write_nest_lock(&anon_vma->root->rwsem, &mm->mmap_sem);
-+		down_write_nest_lock(&anon_vma->root->rwsem, &mm->mmap_lock);
- 		/*
- 		 * We can safely modify head.next after taking the
- 		 * anon_vma->root->rwsem. If some other vma in this mm shares
-@@ -3504,7 +3504,7 @@ static void vm_lock_mapping(struct mm_struct *mm, struct address_space *mapping)
- 		 */
- 		if (test_and_set_bit(AS_MM_ALL_LOCKS, &mapping->flags))
- 			BUG();
--		down_write_nest_lock(&mapping->i_mmap_rwsem, &mm->mmap_sem);
-+		down_write_nest_lock(&mapping->i_mmap_rwsem, &mm->mmap_lock);
- 	}
+@@ -1361,7 +1361,7 @@ static inline bool file_mmap_ok(struct file *file, struct inode *inode,
  }
  
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 24eb9d1ed0a7..2f348b6c9c9a 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -983,7 +983,7 @@ int mmu_interval_notifier_insert(struct mmu_interval_notifier *interval_sub,
- 	struct mmu_notifier_subscriptions *subscriptions;
- 	int ret;
+ /*
+- * The caller must hold down_write(&current->mm->mmap_sem).
++ * The caller must write-lock current->mm->mmap_lock.
+  */
+ unsigned long do_mmap(struct file *file, unsigned long addr,
+ 			unsigned long len, unsigned long prot,
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index be9f0a78c408..df99b255d510 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -577,8 +577,8 @@ static bool oom_reap_task_mm(struct task_struct *tsk, struct mm_struct *mm)
+ 	/*
+ 	 * MMF_OOM_SKIP is set by exit_mmap when the OOM reaper can't
+ 	 * work on the mm anymore. The check for MMF_OOM_SKIP must run
+-	 * under mmap_sem for reading because it serializes against the
+-	 * down_write();up_write() cycle in exit_mmap().
++	 * under mmap_lock for reading because it serializes against the
++	 * mmap_write_lock();mmap_write_unlock() cycle in exit_mmap().
+ 	 */
+ 	if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
+ 		trace_skip_task_reaping(tsk->pid);
+@@ -611,7 +611,7 @@ static void oom_reap_task(struct task_struct *tsk)
+ 	int attempts = 0;
+ 	struct mm_struct *mm = tsk->signal->oom_mm;
  
--	might_lock(&mm->mmap_sem);
-+	might_lock(&mm->mmap_lock);
+-	/* Retry the down_read_trylock(mmap_sem) a few times */
++	/* Retry the mmap_read_trylock(mm) a few times */
+ 	while (attempts++ < MAX_OOM_REAP_RETRIES && !oom_reap_task_mm(tsk, mm))
+ 		schedule_timeout_idle(HZ/10);
  
- 	subscriptions = smp_load_acquire(&mm->notifier_subscriptions);
- 	if (!subscriptions || !subscriptions->has_itree) {
+@@ -629,7 +629,7 @@ static void oom_reap_task(struct task_struct *tsk)
+ 
+ 	/*
+ 	 * Hide this mm from OOM killer because it has been either reaped or
+-	 * somebody can't call up_write(mmap_sem).
++	 * somebody can't call mmap_write_unlock(mm).
+ 	 */
+ 	set_bit(MMF_OOM_SKIP, &mm->flags);
+ 
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index c4aee8379f97..a083d92ef3b9 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1734,7 +1734,7 @@ int tcp_mmap(struct file *file, struct socket *sock,
+ 		return -EPERM;
+ 	vma->vm_flags &= ~(VM_MAYWRITE | VM_MAYEXEC);
+ 
+-	/* Instruct vm_insert_page() to not down_read(mmap_sem) */
++	/* Instruct vm_insert_page() to not mmap_read_lock(mm) */
+ 	vma->vm_flags |= VM_MIXEDMAP;
+ 
+ 	vma->vm_ops = &tcp_vm_ops;
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
