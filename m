@@ -2,97 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866911DAE54
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD851DAE58
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgETJFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 05:05:33 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37907 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgETJFb (ORCPT
+        id S1726820AbgETJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 05:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgETJF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 05:05:31 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e1so2330019wrt.5;
-        Wed, 20 May 2020 02:05:29 -0700 (PDT)
+        Wed, 20 May 2020 05:05:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B386C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 02:05:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ci23so950998pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 02:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=f0a69KoHD271I3l1GldQGAeZxMsJyy1bxo8ro0OOOBc=;
+        b=I0oks8CnC3Swt6NOYWkSoYwAlTa1Z18E+vy0NEVZUTl9z/ravaz96K/tIcUbsu1Y6W
+         Hxp7noqE3XCRjRxE0x6TEN2WBUg9KaEOdBoCSm/qJ4djaXmD8m/HEZb/oL7iXCiG0mzf
+         /JjxXftN/N2U7elLIJ+kX26ycp5kSgQ1WWtmo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vtfSRZ5+Mpa+t2H3i2M/rGbjqAT1nghsWbPTQRPMsMw=;
-        b=d5Eoz5FdaSeRO5kqfNEDtNAH/dYSo1Vg0tW6dExIv5PUNWaqXVDDjJVhHGK9NfcLZM
-         C5gN6wXUF7pE5kZZvPAZ6LoIs3TxdVfZ8EngHnTiPwHgc2qBSVvQbDIro8iY+lD7+LAx
-         iXA3tCQcQnKlCeMwjH/Qgt0PeXTIQizifTROIc/7xN6jFJkEr7Pw+6ZabIhWtK4w9Hjw
-         PI49Vb+w+KG+hFbL65QcU4VjxfsgWZVfOKFVrvOQUC7MtiNlDzQw8JdfEcH7ZhLLFCfs
-         INNjdEgYup2HgsOw/mWfciaSVlG5AjBImIwMDNz3l/oxbTIAZTUwXWg55QXQTm1au8kq
-         Z6gg==
-X-Gm-Message-State: AOAM530QkVX6cwhOZElxHUqmZxu7HRg0sIce4TdH8yoeMUGzHL36I8Y+
-        FoVw/QOiZ8UCBsQKDIjC2CcNf/84
-X-Google-Smtp-Source: ABdhPJyzoz8h8MG0oOus3GEacF8QkZaDE2L2XQMW4XNvl8vXP8FFFDpG+5YfhZ9nfMMMlhhuemWlHA==
-X-Received: by 2002:a5d:4e81:: with SMTP id e1mr3253024wru.83.1589965528830;
-        Wed, 20 May 2020 02:05:28 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id n9sm2526625wmj.5.2020.05.20.02.05.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=f0a69KoHD271I3l1GldQGAeZxMsJyy1bxo8ro0OOOBc=;
+        b=ObLTPCK3crYLHhK6Ll2z+RVmEW30FI7QACAAlRpSNaVMaqcnfa3bKTa08uT0vq+GEm
+         gUGS0obA0GXDF4yPP7hf77l0wbTy3ceBp+ag3+l4t/zMDhBAWX9o5Q584f/E9ZAMis29
+         MXCjax0TP1V92UuOSsUDXESbk5pQpy5GQ19CxxD5RFmpVA3Z4F6ioADQMUO367NFjCuO
+         +k228eVyaZuZsP09OSIjZzkztznj4y7Xs2QgK3f4zCPnNqk4r5AKXwSAnGi1RixX1qcx
+         Ka1zMbc2X2H9bSlYt297UYyd2aqiXR9BYXPlWNU4r3nBIzCw03Txnw8oGWJpPdAekeb7
+         UZYw==
+X-Gm-Message-State: AOAM532JTIrz3Oc5U3h4zX5ZRqs0Tdn7iWv1aYYTE7zTZgOcj/ikdski
+        xVolpqK24hh+C3LRGLMnu4aPAA==
+X-Google-Smtp-Source: ABdhPJx9xcLw9LPIYUhEzAw0K95oX+/gO7XOj/7Uvb9MrC6NYusB6jmqCxfjtPfSpomQsd5Zkm1hHA==
+X-Received: by 2002:a17:902:b186:: with SMTP id s6mr3591908plr.111.1589965559001;
+        Wed, 20 May 2020 02:05:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m4sm1662711pje.47.2020.05.20.02.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 02:05:28 -0700 (PDT)
-Date:   Wed, 20 May 2020 09:05:26 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH] x86/Hyper-V: Support for free page reporting
-Message-ID: <20200520090526.un3zvgpciy6ptta7@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
-References: <SN4PR2101MB0880BB5C9780A854B2609992C0B90@SN4PR2101MB0880.namprd21.prod.outlook.com>
- <87ftbvt21h.fsf@vitty.brq.redhat.com>
+        Wed, 20 May 2020 02:05:58 -0700 (PDT)
+Date:   Wed, 20 May 2020 02:05:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/exec: Add binfmt_script regression test
+Message-ID: <202005200204.D07DF079@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ftbvt21h.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 10:59:22AM +0200, Vitaly Kuznetsov wrote:
-> Sunil Muthuswamy <sunilmut@microsoft.com> writes:
-[...]
-> > +EXPORT_SYMBOL_GPL(hv_query_ext_cap);
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index ebf34c7bc8bc..2de3f692c8bf 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -224,11 +224,13 @@ static void __init ms_hyperv_init_platform(void)
-> >  	 * Extract the features and hints
-> >  	 */
-> >  	ms_hyperv.features = cpuid_eax(HYPERV_CPUID_FEATURES);
-> > +	ms_hyperv.b_features = cpuid_ebx(HYPERV_CPUID_FEATURES);
-> >  	ms_hyperv.misc_features = cpuid_edx(HYPERV_CPUID_FEATURES);
-> >  	ms_hyperv.hints    = cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
-> >  
-> > -	pr_info("Hyper-V: features 0x%x, hints 0x%x, misc 0x%x\n",
-> > -		ms_hyperv.features, ms_hyperv.hints, ms_hyperv.misc_features);
-> > +	pr_info("Hyper-V: features 0x%x, additional features: 0x%x, hints 0x%x, misc 0x%x\n",
-> > +		ms_hyperv.features, ms_hyperv.b_features, ms_hyperv.hints,
-> > +		ms_hyperv.misc_features);
-> 
-> HYPERV_CPUID_FEATURES(0x40000003) EAX and EBX correspond to Partition
-> Privilege Flags (TLFS), I'd suggest to take the opportunity and rename
-> this to something like 'privilege flags low=0x%x high=0x%x'.
-> 
-> Also, I don't quite like 'ms_hyperv.b_features' as I'll always have to
-> look at what it's being assigned to understand what it holds. I'd even
-> suggest to rename ms_hyperv.features to ms_hyperv.priv_low and
-> ms_hyperv.b_features tp ms_hyperv.priv_high. Or maybe even better, pack
-> them to the same 'u64 ms_hyperv.privileges'.
+While working on commit b5372fe5dc84 ("exec: load_script: Do not exec
+truncated interpreter path"), I wrote a series of test scripts to verify
+corner cases. However, soon after, commit 6eb3c3d0a52d ("exec: increase
+BINPRM_BUF_SIZE to 256") landed, resulting in the tests needing to be
+refactored for the larger BINPRM_BUF_SIZE, which got lost on my TODO
+list. During the recent exec refactoring work[1], the need for these tests
+resurfaced, so I've finished them up for addition to the kernel selftests.
 
-+1 for this. :-)
+[1] https://lore.kernel.org/lkml/202005191144.E3112135@keescook/
 
-Wei.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/exec/Makefile      |   1 +
+ tools/testing/selftests/exec/binfmt_script | 171 +++++++++++++++++++++
+ 2 files changed, 172 insertions(+)
+ create mode 100755 tools/testing/selftests/exec/binfmt_script
+
+diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
+index 33339e31e365..7f4527f897c4 100644
+--- a/tools/testing/selftests/exec/Makefile
++++ b/tools/testing/selftests/exec/Makefile
+@@ -3,6 +3,7 @@ CFLAGS = -Wall
+ CFLAGS += -Wno-nonnull
+ CFLAGS += -D_GNU_SOURCE
+ 
++TEST_PROGS := binfmt_script
+ TEST_GEN_PROGS := execveat
+ TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir
+ # Makefile is a run-time dependency, since it's accessed by the execveat test
+diff --git a/tools/testing/selftests/exec/binfmt_script b/tools/testing/selftests/exec/binfmt_script
+new file mode 100755
+index 000000000000..05f94a741c7a
+--- /dev/null
++++ b/tools/testing/selftests/exec/binfmt_script
+@@ -0,0 +1,171 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++#
++# Test that truncation of bprm->buf doesn't cause unexpected execs paths, along
++# with various other pathological cases.
++import os, subprocess
++
++# Relevant commits
++#
++# b5372fe5dc84 ("exec: load_script: Do not exec truncated interpreter path")
++# 6eb3c3d0a52d ("exec: increase BINPRM_BUF_SIZE to 256")
++
++# BINPRM_BUF_SIZE
++SIZE=256
++
++NAME_MAX=int(subprocess.check_output(["getconf", "NAME_MAX", "."]))
++
++test_num=0
++
++code='''#!/usr/bin/perl
++print "Executed interpreter! Args:\n";
++print "0 : '$0'\n";
++$counter = 1;
++foreach my $a (@ARGV) {
++    print "$counter : '$a'\n";
++    $counter++;
++}
++'''
++
++##
++# test - produce a binfmt_script hashbang line for testing
++#
++# @size:     bytes for bprm->buf line, including hashbang but not newline
++# @good:     whether this script is expected to execute correctly
++# @hashbang: the special 2 bytes for running binfmt_script
++# @leading:  any leading whitespace before the executable path
++# @root:     start of executable pathname
++# @target:   end of executable pathname
++# @arg:      bytes following the executable pathname
++# @fill:     character to fill between @root and @target to reach @size bytes
++# @newline:  character to use as newline, not counted towards @size
++# ...
++def test(name, size, good=True, leading="", root="./", target="/perl",
++                     fill="A", arg="", newline="\n", hashbang="#!"):
++    global test_num, tests, NAME_MAX
++    test_num += 1
++    if test_num > tests:
++        raise ValueError("more binfmt_script tests than expected! (want %d, expected %d)"
++                         % (test_num, tests))
++
++    middle = ""
++    remaining = size - len(hashbang) - len(leading) - len(root) - len(target) - len(arg)
++    # The middle of the pathname must not exceed NAME_MAX
++    while remaining >= NAME_MAX:
++        middle += fill * (NAME_MAX - 1)
++        middle += '/'
++        remaining -= NAME_MAX
++    middle += fill * remaining
++
++    dirpath = root + middle
++    binary = dirpath + target
++    if len(target):
++        os.makedirs(dirpath, mode=0o755, exist_ok=True)
++        open(binary, "w").write(code)
++        os.chmod(binary, 0o755)
++
++    buf=hashbang + leading + root + middle + target + arg + newline
++    if len(newline) > 0:
++        buf += 'echo this is not really perl\n'
++
++    script = "binfmt_script-%s" % (name)
++    open(script, "w").write(buf)
++    os.chmod(script, 0o755)
++
++    proc = subprocess.Popen(["./%s" % (script)], shell=True,
++                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
++    stdout = proc.communicate()[0]
++
++    if proc.returncode == 0 and b'Executed interpreter' in stdout:
++        if good:
++            print("ok %d - binfmt_script %s (successful good exec)"
++                  % (test_num, name))
++        else:
++            print("not ok %d - binfmt_script %s succeeded when it should have failed"
++                  % (test_num, name))
++    else:
++        if good:
++            print("not ok %d - binfmt_script %s failed when it should have succeeded (rc:%d)"
++                  % (test_num, name, proc.returncode))
++        else:
++            print("ok %d - binfmt_script %s (correctly failed bad exec)"
++                  % (test_num, name))
++
++    # Clean up crazy binaries
++    os.unlink(script)
++    if len(target):
++        elements = binary.split('/')
++        os.unlink(binary)
++        elements.pop()
++        while len(elements) > 1:
++            os.rmdir("/".join(elements))
++            elements.pop()
++
++tests=27
++print("TAP version 1.3")
++print("1..%d" % (tests))
++
++### FAIL (8 tests)
++
++# Entire path is well past the BINFMT_BUF_SIZE.
++test(name="too-big",        size=SIZE+80, good=False)
++# Path is right at max size, making it impossible to tell if it was truncated.
++test(name="exact",          size=SIZE,    good=False)
++# Same as above, but with leading whitespace.
++test(name="exact-space",    size=SIZE,    good=False, leading=" ")
++# Huge buffer of only whitespace.
++test(name="whitespace-too-big", size=SIZE+71, good=False, root="",
++                                              fill=" ", target="")
++# A good path, but it gets truncated due to leading whitespace.
++test(name="truncated",      size=SIZE+17, good=False, leading=" " * 19)
++# Entirely empty except for #!
++test(name="empty",          size=2,       good=False, root="",
++                                          fill="", target="", newline="")
++# Within size, but entirely spaces
++test(name="spaces",         size=SIZE-1,  good=False, root="", fill=" ",
++                                          target="", newline="")
++# Newline before binary.
++test(name="newline-prefix", size=SIZE-1,  good=False, leading="\n",
++                                          root="", fill=" ", target="")
++
++### ok (19 tests)
++
++# The original test case that was broken by commit:
++# 8099b047ecc4 ("exec: load_script: don't blindly truncate shebang string")
++test(name="test.pl",        size=439, leading=" ",
++     root="./nix/store/bwav8kz8b3y471wjsybgzw84mrh4js9-perl-5.28.1/bin",
++     arg=" -I/nix/store/x6yyav38jgr924nkna62q3pkp0dgmzlx-perl5.28.1-File-Slurp-9999.25/lib/perl5/site_perl -I/nix/store/ha8v67sl8dac92r9z07vzr4gv1y9nwqz-perl5.28.1-Net-DBus-1.1.0/lib/perl5/site_perl -I/nix/store/dcrkvnjmwh69ljsvpbdjjdnqgwx90a9d-perl5.28.1-XML-Parser-2.44/lib/perl5/site_perl -I/nix/store/rmji88k2zz7h4zg97385bygcydrf2q8h-perl5.28.1-XML-Twig-3.52/lib/perl5/site_perl")
++# One byte under size, leaving newline visible.
++test(name="one-under",           size=SIZE-1)
++# Two bytes under size, leaving newline visible.
++test(name="two-under",           size=SIZE-2)
++# Exact size, but trailing whitespace visible instead of newline
++test(name="exact-trunc-whitespace", size=SIZE, arg=" ")
++# Exact size, but trailing space and first arg char visible instead of newline.
++test(name="exact-trunc-arg",     size=SIZE, arg=" f")
++# One bute under, with confirmed non-truncated arg since newline now visible.
++test(name="one-under-full-arg",  size=SIZE-1, arg=" f")
++# Short read buffer by one byte.
++test(name="one-under-no-nl",     size=SIZE-1, newline="")
++# Short read buffer by half buffer size.
++test(name="half-under-no-nl",    size=int(SIZE/2), newline="")
++# One byte under with whitespace arg. leaving wenline visible.
++test(name="one-under-trunc-arg", size=SIZE-1, arg=" ")
++# One byte under with whitespace leading. leaving wenline visible.
++test(name="one-under-leading",   size=SIZE-1, leading=" ")
++# One byte under with whitespace leading and as arg. leaving newline visible.
++test(name="one-under-leading-trunc-arg",  size=SIZE-1, leading=" ", arg=" ")
++# Same as above, but with 2 bytes under
++test(name="two-under-no-nl",     size=SIZE-2, newline="")
++test(name="two-under-trunc-arg", size=SIZE-2, arg=" ")
++test(name="two-under-leading",   size=SIZE-2, leading=" ")
++test(name="two-under-leading-trunc-arg",   size=SIZE-2, leading=" ", arg=" ")
++# Same as above, but with buffer half filled
++test(name="two-under-no-nl",     size=int(SIZE/2), newline="")
++test(name="two-under-trunc-arg", size=int(SIZE/2), arg=" ")
++test(name="two-under-leading",   size=int(SIZE/2), leading=" ")
++test(name="two-under-lead-trunc-arg", size=int(SIZE/2), leading=" ", arg=" ")
++
++if test_num != tests:
++    raise ValueError("fewer binfmt_script tests than expected! (ran %d, expected %d"
++                     % (test_num, tests))
+-- 
+2.20.1
+
+
+-- 
+Kees Cook
