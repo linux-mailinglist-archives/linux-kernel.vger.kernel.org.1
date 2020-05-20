@@ -2,200 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6926D1DAF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0861DAEFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgETJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 05:40:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45036 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726875AbgETJkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 05:40:32 -0400
-IronPort-SDR: nUK0YTKTiqGRZ0zfcn/GmzD+36O4wEqQLTJUdITupdhoiuCIyUB4HyMdWXQAxbUoV3FbanJXaQ
- 9M8z79g165JA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 02:40:31 -0700
-IronPort-SDR: oNsiOol+UfTCeUBdpw8FcUELr2JoDoZuovpo3UnSJkQha/jEnPeOm37f7KNP7Mu9hxT2Bv+h1w
- 4FTeqSvDyZgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="254979466"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 20 May 2020 02:40:29 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jbLDB-000Edw-Ps; Wed, 20 May 2020 17:40:29 +0800
-Date:   Wed, 20 May 2020 17:39:55 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.05.17a] BUILD SUCCESS
- 15f5e34cc82fdac679c19e5d9203d7f921618007
-Message-ID: <5ec4faeb.uyMXUGmCwUJsip3d%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726870AbgETJk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 05:40:26 -0400
+Received: from twhmllg3.macronix.com ([211.75.127.131]:28393 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726835AbgETJkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 05:40:24 -0400
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+        by TWHMLLG3.macronix.com with ESMTP id 04K9eIBI083374;
+        Wed, 20 May 2020 17:40:18 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+        by Forcepoint Email with ESMTP id A1FE788066B5031CEC31;
+        Wed, 20 May 2020 17:40:18 +0800 (CST)
+In-Reply-To: <20200520085534.yra4f5ww5xs23c4j@ti.com>
+References: <20200519142642.24131-1-p.yadav@ti.com> <20200519142642.24131-10-p.yadav@ti.com> <OF83616464.480FA751-ON4825856E.002A4483-4825856E.002BE6AF@mxic.com.tw> <20200520085534.yra4f5ww5xs23c4j@ti.com>
+To:     "Pratyush Yadav" <p.yadav@ti.com>
+Cc:     "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        "Boris Brezillon" <boris.brezillon@collabora.com>,
+        "Mark Brown" <broonie@kernel.org>, juliensu@mxic.com.tw,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org,
+        "Ludovic Desroches" <ludovic.desroches@microchip.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
+        "Sekhar Nori" <nsekhar@ti.com>,
+        "Richard Weinberger" <richard@nod.at>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re: [PATCH v5 09/19] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-KeepSent: 98344913:4BF4C313-4825856E:0032A810;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF98344913.4BF4C313-ON4825856E.0032A810-4825856E.00352141@mxic.com.tw>
+From:   masonccyang@mxic.com.tw
+Date:   Wed, 20 May 2020 17:40:19 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2020/05/20 PM 05:40:18,
+        Serialize complete at 2020/05/20 PM 05:40:18
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG3.macronix.com 04K9eIBI083374
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.05.17a
-branch HEAD: 15f5e34cc82fdac679c19e5d9203d7f921618007  squash! rcutorture: Add races with task-exit processing
 
-i386-tinyconfig vmlinux size:
+Hi Pratyush, 
+ 
+> > > +/**
+> > > + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
+> > > + * @nor:      pointer to a 'struct spi_nor'
+> > > + * @param_header:   pointer to the 'struct sfdp_parameter_header' 
+> > describing
+> > > + *         the 4-Byte Address Instruction Table length and version.
+> > > + * @params:      pointer to the 'struct spi_nor_flash_parameter' to 
+be.
+> > > + *
+> > > + * Return: 0 on success, -errno otherwise.
+> > > + */
+> > > +static int spi_nor_parse_profile1(struct spi_nor *nor,
+> > > +              const struct sfdp_parameter_header *profile1_header,
+> > > +              struct spi_nor_flash_parameter *params)
+> > > +{
+> > > +   u32 *table, opcode, addr;
+> > > +   size_t len;
+> > > +   int ret, i;
+> > > +
+> > > +   len = profile1_header->length * sizeof(*table);
+> > > +   table = kmalloc(len, GFP_KERNEL);
+> > > +   if (!table)
+> > > +      return -ENOMEM;
+> > > +
+> > > +   addr = SFDP_PARAM_HEADER_PTP(profile1_header);
+> > > +   ret = spi_nor_read_sfdp(nor, addr, len, table);
+> > > +   if (ret)
+> > > +      goto out;
+> > > +
+> > > +   /* Fix endianness of the table DWORDs. */
+> > > +   for (i = 0; i < profile1_header->length; i++)
+> > > +      table[i] = le32_to_cpu(table[i]);
+> > > +
+> > > +   /* Get 8D-8D-8D fast read opcode and dummy cycles. */
+> > > +   opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
+> > > +
+> > > +   /*
+> > > +    * Update the fast read settings. We set the default dummy 
+cycles to 
+> > 20
+> > > +    * here. Flashes can change this value if they need to when 
+enabling
+> > > +    * octal mode.
+> > > +    */
+> > > + spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
+> > > +              0, 20, opcode,
+> > > +              SNOR_PROTO_8_8_8_DTR);
+> > > +
+> > 
+> > 
+> > I thought we have a agreement that only do parse here, no other read 
+> > parameters setting.
+> 
+> Yes, and I considered it. But it didn't make much sense to me to 
+> introduce an extra member in struct spi_nor just to make this call in 
+> some other function later.
+> 
+> Why exactly do you think doing this here is bad? The way I see it, we 
+> avoid carrying around an extra member in spi_nor and this also allows 
+> flashes to change the read settings easily in a post-sfdp hook. The 
+> 4bait parsing function does something similar.
 
-========================================================================================================================================
- TOTAL  TEXT  built-in.*  arch/x86/events/zhaoxin/built-in.*                                                                            
-========================================================================================================================================
-  -225  -224                                            -136  f21d375f5014 Merge branch 'kcsan-dev.2020.04.13c' into HEAD               
-     0     0                                            +136  a2dbbcab9f92 Merge branch 'lkmm-dev.2020.05.16a' into HEAD                
-     0     0                                            -136  0ccf50efbcde torture:  Remove qemu dependency on EFI firmware             
-     0     0                                                  68ba178084b7 torture: Add script to smoke-test commits in a branch        
-   +38   +38                                                  1ed85645da6f fork: Annotate a data race in vm_area_dup()                  
-     0     0                                                  9706e500af92 x86/mm/pat: Mark an intentional data race                    
-    +1     0                                                  73143a2756f2 rculist: Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init 
-     0     0                                                  df9e0d326c58 locktorture: Use true and false to assign to bool variables  
-     0     0                                                  31836e7f3957 srcu: Fix a typo in comment "amoritized"->"amortized"        
-     0     0                                                  8dc81894e15e rcu: Simplify the calculation of rcu_state.ncpus             
-     0     0                                                  866d35bc4268 docs: RCU: Convert checklist.txt to ReST                     
-     0     0                                                  a5a641694e90 docs: RCU: Convert lockdep-splat.txt to ReST                 
-     0     0                                                  075d262d495a docs: RCU: Convert lockdep.txt to ReST                       
-     0     0                                                  030f202e9320 docs: RCU: Convert rculist_nulls.txt to ReST                 
-     0     0                                                  719a5977c19e docs: RCU: Convert torture.txt to ReST                       
-     0     0                                                  07fda9360cb8 docs: RCU: Convert rcuref.txt to ReST                        
-     0     0                                                  43a6aa111c1b docs: RCU: Convert stallwarn.txt to ReST                     
-     0     0                                                  fb821a0f1ae9 docs: RCU: Don't duplicate chapter names in rculist_nulls.rs 
-     0     0                                                  f684413ca0fe rcutorture: Add races with task-exit processing              
-     0     0                                                  642c60ddf812 torture: Set configfile variable to current scenario         
-     0     0                                                  358b76258c2b rcutorture: Handle non-statistic bang-string error messages  
-     0     0                                                  6b38c8a9e78b rcutorture: NULL rcu_torture_current earlier in cleanup code 
-     0     0                                                  6d9c6773218b kcsan: Add test suite                                        
-     0     0                                                  58a00281305d doc: Timer problems can cause RCU CPU stall warnings         
-     0     0                                                  7286dcd8100f rcu: Add callbacks-invoked counters                          
-     0     0                                                  eee5c02a9c54 rcu: Add comment documenting rcu_callback_map's purpose      
-     0     0                                                  196d069523d7 Revert b8c17e6664c4 ("rcu: Maintain special bits at bottom o 
-     0     0                                                  517213014c07 rcu/tree: Add better tracing for dyntick-idle                
-     0     0                                                  e18e6adf3fb1 rcu/tree: Clean up dynticks counter usage                    
-     0     0                                                  035be4f36ec9 rcu/tree: Remove dynticks_nmi_nesting counter                
-     0     0                                                  cd3a9f7eb268 trace: events: rcu: Change description of rcu_dyntick trace  
-     0     0                                                  15e6274bd8e0 torture: Remove whitespace from identify_qemu_vcpus output   
-     0     0                                                  8e2bb86cf48f torture: Add --allcpus argument to the kvm.sh script         
-     0     0                                                  0e47cb02a13f rcu: Grace-period-kthread related sleeps to idle priority    
-     0     0                                                  de75483d02eb rcu: Priority-boost-related sleeps to idle priority          
-     0     0                                                  0d6fb0eb3c27 rcu: No-CBs-related sleeps to idle priority                  
-     0     0                                                  04172e98fa9a rcu: Expedited grace-period sleeps to idle priority          
-     0     0                                                  4f41f854eff3 rcu-tasks: Convert sleeps to idle priority                   
-     0     0                                                  dae667494ffa fs/btrfs: Add cond_resched() for try_release_extent_mapping( 
-     0     0                                                  b1b2ccd81f39 locking/osq_lock: Annotate a data race in osq_lock           
-     0     0                                                  531c3224d19f doc: Tasks RCU must protect instructions before trampoline   
-     0     0                                                  0fcfee4481c1 ubsan, kcsan: Don't combine sanitizer with kcov on clang     
-     0     0                                                  c2c970dec439 doc: Update comment from rsp->rcu_gp_seq to rsp->gp_seq      
-     0     0                                                  68cd9f4e7238 tick/nohz: Narrow down noise while setting current task's ti 
-     0     0     +139278                                      de71843fb726 rcu: fix some kernel-doc warnings                            
-     0     0           0                                      b5b8f9797dfa rcu: Remove initialized but unused rnp from check_slow_task( 
-     0     0           0                                      15f5e34cc82f squash! rcutorture: Add races with task-exit processing      
-  -177  -177     +139278                                -136  0adeeee7dd32..15f5e34cc82f (ALL COMMITS)                                  
-========================================================================================================================================
+I think it's not a question for good or bad. 
 
-elapsed time: 545m
+4bait parsing function parse the 4-Byte Address Instruction Table
+and set up read/pp parameters there for sure.
 
-configs tested: 86
-configs skipped: 1
+Here we give the function name spi_nor_parse_profile1() but also 
+do others setting that has nothing to do with it, 
+it seems not good for SW module design. 
+oh, it's my humble opinion.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-m68k                             allyesconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200519
-i386                 randconfig-a005-20200519
-i386                 randconfig-a001-20200519
-i386                 randconfig-a003-20200519
-i386                 randconfig-a004-20200519
-i386                 randconfig-a002-20200519
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+> 
+> What are the benefits of doing it otherwise?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+For other Octal Flash like mx25*
+
+> 
+> Note that I did remove HWCAPS selection from here, which did seem like a 
+
+> sane idea.
+> 
+> > Driver should get dummy cycles used for various frequencies 
+> > from 4th and 5th DWORD of xSPI table.[1]
+> > 
+> > [1] 
+> > 
+https://patchwork.ozlabs.org/project/linux-mtd/patch/1587451187-6889-3-git-
+
+> send-email-masonccyang@mxic.com.tw/ 
+> > 
+> > 
+> > In addition, 20 dummy cycles is for 200MHz but not for 100MHz, 133MHz 
+and 
+> > 166MHz
+> > in case of read performance concern.
+> > 
+> > Given a correct dummy cycles for a specific device. [2] 
+> > 
+> > [2] 
+> > 
+https://patchwork.ozlabs.org/project/linux-mtd/patch/1587451187-6889-5-git-
+
+> send-email-masonccyang@mxic.com.tw/ 
+> 
+> The problem is that we don't know what speed the controller is driving 
+> the flash at, and whether it is using Data Strobe. BFPT tells us the 
+> maximum speed of the flash based on if Data Strobe is being used. The 
+> controller can also drive it slower than the maximum. And it can drive 
+> it with or without DS.
+
+This is for flash, not every Octal flash could work in 200MHz,
+The Max operation speeds for other Octal Flash is 100, 133 , or 166MHz.
+
+If a specific Octal Flash could work in 166MHz(Max), and driver setup the
+correct 16 dummy cycles for it rather than 20 dummy cycles.
+it's for performance concern.
+
+> 
+> So, we have to be conservative and just use the dummy cycles for the 
+> maximum speed so we can at least make sure the flash works, albeit at 
+> slightly less efficiency. I hard-coded it to 20 but I suppose we can 
+> find it out from the Profile 1.0 table and use that (though we'd have to 
+
+> round it to an even value to avoid tripping up controllers). Will fix in 
+
+> next version (or, Tudor if you're fine with fixup! patches, I can send 
+> that too because I suspect it will be a small change).
+> 
+> > 
+
+thanks & best regards,
+Mason
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
