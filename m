@@ -2,157 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096421DAA8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9351DAA94
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgETGWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:22:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61121 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgETGWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:22:20 -0400
-IronPort-SDR: A78DgxbT3IZ+HPaCCo5Fxq3vBn0G48U6TE3UEkVAgucf8hfoqWRQc+Gy0EyHcCzsqlI6jBU5As
- MNAt9IP0etjw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 23:22:20 -0700
-IronPort-SDR: AgFQ3zoO/v/a6DhdebjmI0/KlfkiAknW8lWvMi/gsTCWFBTvScqCJ5J7K46u1qdGL+5SeQoGjq
- NzfTgVar4zYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
-   d="scan'208";a="300347721"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 19 May 2020 23:22:19 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jbI7O-00050n-F3; Wed, 20 May 2020 14:22:18 +0800
-Date:   Wed, 20 May 2020 14:21:39 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/kprobes] BUILD SUCCESS
- 66e9b0717102507e64f638790eaece88765cc9e5
-Message-ID: <5ec4cc73.9rZr1SUiYSBh/t+h%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726634AbgETGYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726556AbgETGYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 02:24:14 -0400
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF565C061A0E;
+        Tue, 19 May 2020 23:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1589955852;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=Z4L+tBCvVk7qL7s3FzIU5Gn5ddNv0VVuMlfTJxRK4xo=;
+        b=kGWFRlz9NM8mT6kFmGVT8S1Yq/Vz3WhjmqRIrILy9U6dWCcfapHiF7RPldl9CQtSJT
+        DIo6qIesRXu/1uGG/Egdg5DYB7Ti0idWfekb28itbRmpT0AiExi3tSZqpC2g+GxzsjYq
+        ArQorMYESDJKXWdrE79/2c76XgDHCv/2RuEaQ7e3ZHyLobE/yQ8kRK9IhHN51ujO0/bT
+        ui+Ukqw3Iiy1lP6eP/BQda0Aydbql38tkfdDF6CVqPeMYgIlO3muLtSX6BYtF2Tjta5n
+        ZqAt9h9RZN1RD3FonxbZO8Hbm4UWfpAdRlDQRxb62KHH4SniAgggtUYwA02tf7ryE8Kb
+        aNUg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbI/Sc5g=="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 46.7.0 DYNA|AUTH)
+        with ESMTPSA id k09005w4K6Nx34M
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 20 May 2020 08:23:59 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     =?utf-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Stefan Wahren <wahrenst@gmx.net>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v2 1/2] hwrng: iproc-rng200 - Set the quality value
+Date:   Wed, 20 May 2020 08:23:59 +0200
+Message-ID: <1748331.j7eDFAdTc1@tauon.chronox.de>
+In-Reply-To: <20200519212552.11671-2-l.stelmach@samsung.com>
+References: <20200514190734.32746-1-l.stelmach@samsung.com> <CGME20200519212619eucas1p22fa5d3db2521096dc4b79f6e53016d17@eucas1p2.samsung.com> <20200519212552.11671-2-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/kprobes
-branch HEAD: 66e9b0717102507e64f638790eaece88765cc9e5  kprobes: Prevent probes in .noinstr.text section
+Am Dienstag, 19. Mai 2020, 23:25:51 CEST schrieb =C5=81ukasz Stelmach:
 
-elapsed time: 491m
+Hi =C5=81ukasz,
 
-configs tested: 98
-configs skipped: 1
+> The value was estimaded with ea_iid[1] using on 10485760 bytes read from
+> the RNG via /dev/hwrng. The min-entropy value calculated using the most
+> common value estimate (NIST SP 800-90P[2], section 6.3.1) was 7.964464.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I am sorry, but I think I did not make myself clear: testing random numbers=
+=20
+post-processing with the statistical tools does NOT give any idea about the=
+=20
+entropy rate. Thus, all that was calculated is the proper implementation of=
+=20
+the post-processing operation and not the actual noise source.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-m68k                             allyesconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20200519
-i386                 randconfig-a005-20200519
-i386                 randconfig-a001-20200519
-i386                 randconfig-a003-20200519
-i386                 randconfig-a004-20200519
-i386                 randconfig-a002-20200519
-x86_64               randconfig-a003-20200519
-x86_64               randconfig-a005-20200519
-x86_64               randconfig-a004-20200519
-x86_64               randconfig-a006-20200519
-x86_64               randconfig-a002-20200519
-x86_64               randconfig-a001-20200519
-i386                 randconfig-a012-20200519
-i386                 randconfig-a014-20200519
-i386                 randconfig-a016-20200519
-i386                 randconfig-a011-20200519
-i386                 randconfig-a015-20200519
-i386                 randconfig-a013-20200519
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-x86_64                              defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+What needs to happen is that we need access to raw, unconditioned data from=
+=20
+the noise source that is analyzed with the statistical methods.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Ciao
+Stephan
+
+
