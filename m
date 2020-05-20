@@ -2,124 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3906F1DA877
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952861DA883
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgETDGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 23:06:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55408 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726379AbgETDGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 23:06:48 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 94CA74A8013FC1636D76;
-        Wed, 20 May 2020 11:06:45 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.101) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
- 11:06:40 +0800
-Subject: Re: [PATCH] firmware: arm_sdei: remove unused interfaces
-To:     James Morse <james.morse@arm.com>, Christoph Hellwig <hch@lst.de>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200504164224.2842960-1-hch@lst.de>
- <7c127e49-b1c6-c7ac-69bf-9fc0a6dba4c4@arm.com>
- <6d0adc02-bcd8-2217-c145-d609528fbe77@huawei.com>
- <0ac1444b-bbdf-1efb-54e6-db90fe6ac707@arm.com>
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Message-ID: <f3944635-39d3-f68c-9adb-9471e51ee3be@huawei.com>
-Date:   Wed, 20 May 2020 11:06:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1728588AbgETDRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 23:17:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:38904 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgETDRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 23:17:33 -0400
+IronPort-SDR: qNJsdOxnKyF9POqMVKZZJTuBI/VW0bi/uuGj9WGWhlEdAmvph9W7vmkhhQMp+fLny1pKYYMlrO
+ livZKCa1YJCQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 20:17:33 -0700
+IronPort-SDR: BE8fhbLj04vyBfYPFkpO6ipuSrpsR/f1qoS8MMQbMbPvUjYAese/2EUrwMJyTAbsWSQePDSGQR
+ WtCTwA937IEQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
+   d="scan'208";a="264535105"
+Received: from unknown (HELO yhuang-mobile.sh.intel.com) ([10.238.6.207])
+  by orsmga003.jf.intel.com with ESMTP; 19 May 2020 20:17:30 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH -V2] swap: Reduce lock contention on swap cache from swap slots allocation
+Date:   Wed, 20 May 2020 11:15:02 +0800
+Message-Id: <20200520031502.175659-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <0ac1444b-bbdf-1efb-54e6-db90fe6ac707@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.101]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+In some swap scalability test, it is found that there are heavy lock
+contention on swap cache even if we have split one swap cache radix
+tree per swap device to one swap cache radix tree every 64 MB trunk in
+commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
 
-On 2020/5/19 23:47, James Morse wrote:
-> Hi Xiongfeng,
-> 
-> On 05/05/2020 03:08, Xiongfeng Wang wrote:
->> On 2020/5/5 1:14, James Morse wrote:
->>> Hi Christoph,
->>>
->>> (CC: +Xiongfeng)
->>>
->>> Thanks for the reminder - I was just searching for who was using this.
->>
->> Thanks for CC me. We do have a driver that are using it.
-> 
->>> On 04/05/2020 17:42, Christoph Hellwig wrote:
->>>> The export symbols to register/unregister and enable/disable events
->>>> aren't ever used outside of arm_sdei.c, so mark them static.
->>>
->>> Xiongfeng, you have drivers using this, could they be posted upstream. Or can we stop
->>> exporting these?
->>
->> It's the SDEI Wathchdog which is used for hardlockup detection. But I wasn't
->> able to push it upstream because we have Pseudo-NMI in mainline.
-> 
-> Hmm, that shouldn't be directly relevant, unless your SDEI watchdog is using the
-> bindable-irq thing?
+The reason is as follow.  After the swap device becomes fragmented so
+that there's no free swap cluster, the swap device will be scanned
+linearly to find the free swap slots.  swap_info_struct->cluster_next
+is the next scanning base that is shared by all CPUs.  So nearby free
+swap slots will be allocated for different CPUs.  The probability for
+multiple CPUs to operate on the same 64 MB trunk is high.  This causes
+the lock contention on the swap cache.
 
-Yes, we are using the bindable-irq thing. It's easier for the UEFI team.
-Firmware doesn't need to too much modification.
+To solve the issue, in this patch, for SSD swap device, a percpu
+version next scanning base (cluster_next_cpu) is added.  Every CPU
+will use its own per-cpu next scanning base.  And after finishing
+scanning a 64MB trunk, the per-cpu scanning base will be changed to
+the beginning of another randomly selected 64MB trunk.  In this way,
+the probability for multiple CPUs to operate on the same 64 MB trunk
+is reduced greatly.  Thus the lock contention is reduced too.  For
+HDD, because sequential access is more important for IO performance,
+the original shared next scanning base is used.
 
-> 
-> 
-> If your firmware offers an event-id for the watchdog, please upstream the driver. Half of
-> the event-id space is reserved for vendor stuff like this.
+To test the patch, we have run 16-process pmbench memory benchmark on
+a 2-socket server machine with 48 cores.  One ram disk is configured
+as the swap device per socket.  The pmbench working-set size is much
+larger than the available memory so that swapping is triggered.  The
+memory read/write ratio is 80/20 and the accessing pattern is random.
+In the original implementation, the lock contention on the swap cache
+is heavy.  The perf profiling data of the lock contention code path is
+as following,
 
-My origin thought is using a new event-id. But the firmware guys are new to SDEI
-and don't know how to add a new event-id.
+_raw_spin_lock_irq.add_to_swap_cache.add_to_swap.shrink_page_list:      7.91
+_raw_spin_lock_irqsave.__remove_mapping.shrink_page_list:               7.11
+_raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 2.51
+_raw_spin_lock_irqsave.swap_cgroup_record.mem_cgroup_uncharge_swap:     1.66
+_raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:      1.29
+_raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages:         1.03
+_raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node:        0.93
 
-> 
-> If firmware needs to be told to re-configure the watchdog irq to make this work, then pNMI
-> is a much better fit. Having firmware and linux modifying the irqchip hardware is a
-> nightmare best avoided.
-> 
+After applying this patch, it becomes,
 
-Yes, we are using the secure timer irq as the watchdog irq. So the firmware
-needs to disable and enable the irq when we disable and enable the event. But
-linux don't need to modify the irqchip hardware about the secure timer irq.
+_raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 3.58
+_raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:      2.3
+_raw_spin_lock_irqsave.swap_cgroup_record.mem_cgroup_uncharge_swap:     2.26
+_raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node:        1.8
+_raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages:         1.19
 
-All works well except the kdump situation. Because in sdei_handler the secure
-timer irq, which is routed to EL3, remains active. We clear the EOI when we
-complete the event. So when we panic and start kdump in sdei_handler, the EL2
-interrupt of the second kernel can not be taken. We add a hack to clear the EOI
-before start kdump.
+The lock contention on the swap cache is almost eliminated.
 
-Yes, the pNMI is a much better fit. We don't need such a hack. But the product
-department seems to have get used to the SDEI watchdog method. It works well and
-they don't want much change.
+And the pmbench score increases 18.5%.  The swapin throughput
+increases 18.7% from 2.96 GB/s to 3.51 GB/s.  While the swapout
+throughput increases 18.5% from 2.99 GB/s to 3.54 GB/s.
 
-Thanks,
-Xiongfeng
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+---
 
-> 
->>> (they were originally added for the GHES RAS thing, but by the time it was all merged
->>> upstream, it wasn't possible to build it as a module)
->>
->> The SDEI Watchdog driver also can't be built as a module. We still need to
->> modify the origin kernel. So I think this patch doesn't affect me. Thanks for CC me.
-> 
-> Okay, I'll pick this up to drop the module exports.
-> 
-> I'd prefer not to make all this static as these register/unregister calls are the
-> interface that is supposed to be used. If we are going to gut it, we should do it completely.
-> 
-> 
-> Thanks,
-> 
-> James
-> 
-> .
-> 
+Changelog:
+
+v2:
+
+- Rebased on latest mmotm tree (v5.7-rc5-mmots-2020-05-15-16-36), the
+  mem cgroup change has influence on performance data.
+
+- Fix cluster_next_cpu initialization per Andrew and Daniel's comments.
+
+- Change per-cpu scan base every 64MB per Andrew's comments.
+
+---
+ include/linux/swap.h |  1 +
+ mm/swapfile.c        | 54 ++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 51 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index b42fb47d8cbe..e96820fb7472 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -252,6 +252,7 @@ struct swap_info_struct {
+ 	unsigned int inuse_pages;	/* number of those currently in use */
+ 	unsigned int cluster_next;	/* likely index for next allocation */
+ 	unsigned int cluster_nr;	/* countdown to next cluster search */
++	unsigned int __percpu *cluster_next_cpu; /*percpu index for next allocation */
+ 	struct percpu_cluster __percpu *percpu_cluster; /* per cpu's swap location */
+ 	struct rb_root swap_extent_root;/* root of the swap extent rbtree */
+ 	struct block_device *bdev;	/* swap device or bdev of swap file */
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 423c234aca15..f5e3ab06bf18 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -615,7 +615,8 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+ 			 * discarding, do discard now and reclaim them
+ 			 */
+ 			swap_do_scheduled_discard(si);
+-			*scan_base = *offset = si->cluster_next;
++			*scan_base = this_cpu_read(*si->cluster_next_cpu);
++			*offset = *scan_base;
+ 			goto new_cluster;
+ 		} else
+ 			return false;
+@@ -721,6 +722,34 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 	}
+ }
+ 
++static void set_cluster_next(struct swap_info_struct *si, unsigned long next)
++{
++	unsigned long prev;
++
++	if (!(si->flags & SWP_SOLIDSTATE)) {
++		si->cluster_next = next;
++		return;
++	}
++
++	prev = this_cpu_read(*si->cluster_next_cpu);
++	/*
++	 * Cross the swap address space size aligned trunk, choose
++	 * another trunk randomly to avoid lock contention on swap
++	 * address space if possible.
++	 */
++	if ((prev >> SWAP_ADDRESS_SPACE_SHIFT) !=
++	    (next >> SWAP_ADDRESS_SPACE_SHIFT)) {
++		/* No free swap slots available */
++		if (si->highest_bit <= si->lowest_bit)
++			return;
++		next = si->lowest_bit +
++			prandom_u32_max(si->highest_bit - si->lowest_bit + 1);
++		next = ALIGN(next, SWAP_ADDRESS_SPACE_PAGES);
++		next = max_t(unsigned int, next, si->lowest_bit);
++	}
++	this_cpu_write(*si->cluster_next_cpu, next);
++}
++
+ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 			       unsigned char usage, int nr,
+ 			       swp_entry_t slots[])
+@@ -745,7 +774,16 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	 */
+ 
+ 	si->flags += SWP_SCANNING;
+-	scan_base = offset = si->cluster_next;
++	/*
++	 * Use percpu scan base for SSD to reduce lock contention on
++	 * cluster and swap cache.  For HDD, sequential access is more
++	 * important.
++	 */
++	if (si->flags & SWP_SOLIDSTATE)
++		scan_base = this_cpu_read(*si->cluster_next_cpu);
++	else
++		scan_base = si->cluster_next;
++	offset = scan_base;
+ 
+ 	/* SSD algorithm */
+ 	if (si->cluster_info) {
+@@ -834,7 +872,6 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	unlock_cluster(ci);
+ 
+ 	swap_range_alloc(si, offset, 1);
+-	si->cluster_next = offset + 1;
+ 	slots[n_ret++] = swp_entry(si->type, offset);
+ 
+ 	/* got enough slots or reach max slots? */
+@@ -883,6 +920,7 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	}
+ 
+ done:
++	set_cluster_next(si, offset + 1);
+ 	si->flags -= SWP_SCANNING;
+ 	return n_ret;
+ 
+@@ -2827,6 +2865,11 @@ static struct swap_info_struct *alloc_swap_info(void)
+ 	p = kvzalloc(struct_size(p, avail_lists, nr_node_ids), GFP_KERNEL);
+ 	if (!p)
+ 		return ERR_PTR(-ENOMEM);
++	p->cluster_next_cpu = alloc_percpu(unsigned int);
++	if (!p->cluster_next_cpu) {
++		kvfree(p);
++		return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	spin_lock(&swap_lock);
+ 	for (type = 0; type < nr_swapfiles; type++) {
+@@ -3202,7 +3245,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		 * select a random position to start with to help wear leveling
+ 		 * SSD
+ 		 */
+-		p->cluster_next = 1 + prandom_u32_max(p->highest_bit);
++		for_each_possible_cpu(cpu) {
++			per_cpu(*p->cluster_next_cpu, cpu) =
++				1 + prandom_u32_max(p->highest_bit);
++		}
+ 		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+ 
+ 		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+-- 
+2.26.2
 
