@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E71D1DA794
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB931DA798
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgETBzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 21:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgETBzr (ORCPT
+        id S1728508AbgETB6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 21:58:03 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51516 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgETB6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 21:55:47 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70AAC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 18:55:47 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id g20so627642qvb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 18:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=ghTZqejRfgfS5fU2jVg75uMDbgGX4TrDcdfAaAdauPM=;
-        b=ZOSedoTXRdCITrmaNoTnIMCXK7FvETKzbgoMB6JrmV4a5WGgI4bUyJioFolzQmGVrq
-         o84jZ9Q029nIsm59ickCSKRAQ01KYsQEUK+O0c4WczRv54WM0OVp426vCrLLCpKR37Mw
-         m5+8b6DcRSebQJ0RTOCsPoR2ZIbKjuquYzCasav1Nxy8+/U0kUkQUoatHY5OrIxy9YtL
-         yAVmCyNuLc+1DjGAfNtUnT7YgFJbNpFsbuQn2zlgnGL6qXiPYNQ0+P32QGnABRJpe8HR
-         nVBWLJcjfkd+mQxUSjqqoCgfYXpimBamkomH/UGmqkYwxDWuFhnC7r08aRZk4wq13M7K
-         eJcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=ghTZqejRfgfS5fU2jVg75uMDbgGX4TrDcdfAaAdauPM=;
-        b=n3tBGyOqWrIWo5OEB8Y0ObyNNBH1Teqgbqe9fYUomHL7LUSwXYCabyPfpQ+iFYwMZv
-         uID98L1/ETeswZIgYF/W/RoyaPczY5l4g7AMK87KOHzcAkh/mR2z463iByhlsjRU1jmA
-         NxzoY0UwNNw5Er0eMRCpvxkbtzVKDJRzrMjBRRcee55CBDHSD3iB9oTF5Nz87621lYsz
-         I3TT7ugK0C4yr692uRRWx8Wt3ahToFRRmNoWVexY+X1pxzzh57ZOI/x3wU1GZoosYlHl
-         YfshO9JbmSeOUynzV5t2KSs/0544BAlOkuxwviQ5UU/n/d4igtuB7MMo8fEyr+JUjFkS
-         Wq3w==
-X-Gm-Message-State: AOAM530IXX4T7o92MR3xzUcsqXu3FI3udoEKFFpVCE/tAD1tNCSA4hKV
-        ReGzBYzyoQ5Okac4dYFUbBU9xA==
-X-Google-Smtp-Source: ABdhPJyy1uyJk+Gqjg5bwcSBKIbQNOr6J5nfgaVGYYnWbcx1hDrSKyd/Hr8zTt2MLIvCkn1/+n7iIQ==
-X-Received: by 2002:ad4:466f:: with SMTP id z15mr2750441qvv.101.1589939746442;
-        Tue, 19 May 2020 18:55:46 -0700 (PDT)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id j3sm1007064qkf.9.2020.05.19.18.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 May 2020 18:55:45 -0700 (PDT)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: UBSAN: array-index-out-of-bounds in kernel/bpf/arraymap.c:177
-Date:   Tue, 19 May 2020 21:55:45 -0400
-Message-Id: <FE7742FF-713E-4310-95E7-9B217662E53E@lca.pw>
-References: <CAEf4BzZKCh7+2TL8GVetxrOKYCoL0U7jTGsO5CbDExs7Px+bYQ@mail.gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-In-Reply-To: <CAEf4BzZKCh7+2TL8GVetxrOKYCoL0U7jTGsO5CbDExs7Px+bYQ@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: iPhone Mail (17E262)
+        Tue, 19 May 2020 21:58:03 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K1pbPZ078876;
+        Wed, 20 May 2020 01:57:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=/KpLfiF3yE04CnWO301FHWY+Pb0/izJPSpL1Ck1Oh3E=;
+ b=H9rgqIVIO8tVMlKGHRMeKD6zV3D9RcXUiaLMlJDpth4bKowufEIkgg2NkSud4P76X/Z4
+ bYmWn6dwvWv8cASbpNSIS74DP69/GLncfPNGAJScC+CYxPx/E9XFOK5fg5PqPJb1j5Um
+ hw/17lZbJQezSw/J84qkWMMLGU56hEpl2CYmrWLQFx6q8MQqLH7rgG/reydpXpDMtCt2
+ R3EPeRCV/yndL2KvpG121w+EWY5aSUHXr2euAnVQY45q6DcG0CmgLVDls8X9XKSHeTeg
+ cd0XjwdIyfkUXQ3ANL1wtG5PYZhvgMtib0cZo7WuDqiBLPKbbx9hUmqpHPAZ/PJRVtHp 2Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 3128tngfrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 May 2020 01:57:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K1sUOx095184;
+        Wed, 20 May 2020 01:57:51 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 314gm64dpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 01:57:50 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04K1vmT4008030;
+        Wed, 20 May 2020 01:57:48 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 May 2020 18:57:47 -0700
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kai =?utf-8?Q?M=C3=A4kisara?= <Kai.Makisara@kolumbus.fi>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH] scsi: st: convert convert get_user_pages() -->
+ pin_user_pages()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1d06zweqg.fsf@ca-mkp.ca.oracle.com>
+References: <20200519045525.2446851-1-jhubbard@nvidia.com>
+        <7440e420-009b-20cc-e1e6-7e2a212f65fa@nvidia.com>
+Date:   Tue, 19 May 2020 21:57:45 -0400
+In-Reply-To: <7440e420-009b-20cc-e1e6-7e2a212f65fa@nvidia.com> (John Hubbard's
+        message of "Tue, 19 May 2020 13:12:11 -0700")
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200014
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 cotscore=-2147483648 suspectscore=1 lowpriorityscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200013
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+John,
 
-> On May 19, 2020, at 7:23 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->=20
-> I agree, it's bad to have this noise. But again, there is nothing
-> wrong with the way it's used in BPF code base. We'd gladly use
-> flexible array, if we could. But given we can't, I'd say the proper
-> solution (in order of my preference) would be:
->=20
->  - don't trigger false error, if zero-sized array is the member of union;
->  - or have some sort of annotation at field declaration site (not a
-> field access site).
->=20
-> Is that possible?
+> Looks like I accidentally doubled a word on the subject line: "convert
+> convert".
+>
+> I'd appreciate it a maintainer could remove one of those for me, while
+> applying the patch, assuming that we don't need a v2 for other
+> reasons.
 
-I am not a compiler expert, but with my experience with all those compiler i=
-nstrumental technology like KCSAN, KASAN and UBSAN, it seems both options yo=
-u prop need to modify compilers, i.e., -fsanitize=3Dundefined=
+I can fix that up. But I'll give Kai a chance to review before I apply.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
