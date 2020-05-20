@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3831DB76A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41D31DB772
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgETOun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 10:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgETOun (ORCPT
+        id S1726977AbgETOvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:51:43 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:39736 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgETOvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 10:50:43 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5216C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:50:42 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id m10so1109011ybf.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ajOsEVzBBmvLmCdJ2Fdc///Cfm2T2Xmx2TMwaA04DAo=;
-        b=I8m8YrPTQXsy55nnqHyJdwIhm6QdarEOtspEoGcg9nkXM0Ew5AiYBTRIXjdtZxXD6S
-         izOaYJYXE9XhaKVivA15X9QwZB3PnP3Qtl7QtzesZcYYMbCOjlRer0BjLRwvbWrr3bKz
-         vk+zY7elcJGaeObSkGHGPxyQecLQW8tuncrc2tGZPsmNSar4qJEW9mJ2sKXaBeXLnFb1
-         knwneHaygvC8zuiYEbffnkfuYqr7AB8BPsN2D0fzE8BkWD983alvNMTYO3pCTscKsJsU
-         UoCgPcIVR5XrlFoUhmm56VsMLBd29uLTatSh8xwvQO3OY7NoruCYGaLLv2KyCDTa7hrJ
-         7ZHQ==
+        Wed, 20 May 2020 10:51:43 -0400
+Received: by mail-ot1-f67.google.com with SMTP id d7so2666419ote.6;
+        Wed, 20 May 2020 07:51:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ajOsEVzBBmvLmCdJ2Fdc///Cfm2T2Xmx2TMwaA04DAo=;
-        b=M5dxZLRD6Numbk7m9XBMq0Yypz23KPk2NWuBLzDmGQzhtTN5lrjFLY2YbJZCoxdEMk
-         1Hcpn93IkWKDTD8nTkEFEcWnw4+59uOjI9msY6RKJeL/ABMliDfRsw/v4CRIHgYQAHLU
-         VtKcDSMiTKpSjxO3ZTs9rwnAgIa8Qr+c0/vMTpwaDMGkr5svzGoqz2NnbI4UJU5IXxrj
-         Yjh2BAlsoGLBZ/1Qsjdz96OaH2Xo4+q/gtN5JyxDSq/PpunoKiy6NvKuM+cLZM9HrUiO
-         yAXO/0SImAj8RPymEQe64Py1pyZw+KPyz7/tvxlxuBLz0ZakNhAdVMbfzOGFDCKalT46
-         iubQ==
-X-Gm-Message-State: AOAM530FNKfnzVxXUcoSJV3DKEBmrHGfZie27+H8lrccxVOeKoy57XEj
-        TSlngNhLvloRPk5zILDfHpkDRaU9/YGc47v+AA8MWw==
-X-Google-Smtp-Source: ABdhPJwUG/n0zhdUFbriSJsXmMxGywwDOeEtiLHjve+29uytAAbLo+u0KRAoTbKvizTmfvhGt1A2X7ckmp17h3/0lU0=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr7502533yba.41.1589986241692;
- Wed, 20 May 2020 07:50:41 -0700 (PDT)
+        bh=AXv+TNr2XiVo0uUaNtBITgiwBxKOFe0DS+6v0ILeFxI=;
+        b=qA2G1xYPeumIbUQMqbvCcNdTi7mS0tvAl96pvwMVp7M/lxZp+XfpBsA3BzHLw88YVo
+         DJ/tFKcOYPstuu8yVAndW3KEdtOPydhe3BavwmBPfDXCZL8oVlvHaiDsDFj83wGS8o7q
+         j9xz3rxF4RQo1TcuWVE9wtwE1SelqY0lhI1tLkCXXg9Z0MsbMcbr2lpwBUWcwuztB718
+         5lDDv4vxuHo95piBmUOUEIWORaB9L0xLcgf3a7kQXzgg4U6caqJ0s4mFkgKuKLzD/ool
+         bUOybC8IWSEBn02/F34/aSJZl1xIh/mvbvLiKbnzwpDeM4//3DtSeir86Ssud1iRLF9r
+         qOrg==
+X-Gm-Message-State: AOAM531f6FeZ0FbLoA88RjwUcP6vicvVuAvUWMxg3Tc93y1Mp6YUj4rW
+        gr/LeKqO7iwOuDt4aGeibA9QXMRgmUBFsajmU8U=
+X-Google-Smtp-Source: ABdhPJxAwRThCmkc+DNYRZR+y7CAkXfsqNOLlqLFegX9/SaGSsgCmV+X0Gmarfvoyg/1Biw+kTnPoN6/bdmDpWCv4AQ=
+X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr3214703ote.107.1589986302015;
+ Wed, 20 May 2020 07:51:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200520072814.128267-1-irogers@google.com> <20200520131359.GJ157452@krava>
-In-Reply-To: <20200520131359.GJ157452@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 20 May 2020 07:50:30 -0700
-Message-ID: <CAP-5=fXZVmjuiGyRsjzjfsBOpN50SeA+Gi66Of_wa61j7f6X5Q@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Share events between metrics
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
+References: <20200519131327.1836482-1-arnd@arndb.de> <20200519181034.58c67eb5bea24aae24d33421@linux-foundation.org>
+ <CAK8P3a281ZLKwkWCKkAdQvA6=XA4=+mKWbwEzK_BR4Uu1c5DNQ@mail.gmail.com>
+ <CAMuHMdUx9zKbc7n164Gi+N9k-NhmbgXtU+Z4yZ9SvdxeCMtJKw@mail.gmail.com> <CAK8P3a0+RWNUroSAtdVazxMV=o+FYpTX9Wvkbr5gODh4=zODkQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a0+RWNUroSAtdVazxMV=o+FYpTX9Wvkbr5gODh4=zODkQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 20 May 2020 16:51:30 +0200
+Message-ID: <CAMuHMdWKOZMn-pMpE6MgKo1ArL701fp4ZR65sa5yGfozf7Yu4Q@mail.gmail.com>
+Subject: Re: [PATCH] sh: include linux/time_types.h for sockios
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 6:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, May 20, 2020 at 12:28:07AM -0700, Ian Rogers wrote:
-> > Metric groups contain metrics. Metrics create groups of events to
-> > ideally be scheduled together. Often metrics refer to the same events,
-> > for example, a cache hit and cache miss rate. Using separate event
-> > groups means these metrics are multiplexed at different times and the
-> > counts don't sum to 100%. More multiplexing also decreases the
-> > accuracy of the measurement.
-> >
-> > This change orders metrics from groups or the command line, so that
-> > the ones with the most events are set up first. Later metrics see if
-> > groups already provide their events, and reuse them if
-> > possible. Unnecessary events and groups are eliminated.
-> >
-> > The option --metric-no-group is added so that metrics aren't placed in
-> > groups. This affects multiplexing and may increase sharing.
-> >
-> > The option --metric-mo-merge is added and with this option the
-> > existing grouping behavior is preserved.
-> >
-> > Using skylakex metrics I ran the following shell code to count the
-> > number of events for each metric group (this ignores metric groups
-> > with a single metric, and one of the duplicated TopdownL1 and
-> > TopDownL1 groups):
->
-> hi,
-> I'm getting parser error with:
->
-> [jolsa@krava perf]$ sudo ./perf stat -M IPC,CPI -a -I 1000
-> event syntax error: '..ed.thread}:W{inst_retired.any,cpu_clk_unhalted.thread}:W,{inst_retired.any,cycles}:W'
->                                   \___ parser error
->
-> jirka
+Hi Arnd,
 
-Ah, looks like an issue introduced by:
-https://lore.kernel.org/lkml/20200520072814.128267-8-irogers@google.com/
-as there is a missing comma. I'll investigate after some breakfast.
+On Wed, May 20, 2020 at 4:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Wed, May 20, 2020 at 1:47 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, May 20, 2020 at 10:32 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Wed, May 20, 2020 at 3:10 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > > On Tue, 19 May 2020 15:13:13 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+> > > > > Using the socket ioctls on arch/sh (and only there) causes build
+> > > > > time problems when __kernel_old_timeval/__kernel_old_timespec are
+> > > > > not already visible to the compiler.
+> > > > >
+> > > > > Add an explict include line for the header that defines these
+> > > > > structures.
+> > > >
+> > > > I can grab this.
+> > >
+> > > Thanks!
+> > >
+> > > > > Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> > > > > Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> > > > > Fixes: 8c709f9a0693 ("y2038: sh: remove timeval/timespec usage from headers")
+> > > > > Fixes: 0768e17073dc ("net: socket: implement 64-bit timestamps")
+> > > >
+> > > > cc:stable?
+> > >
+> > > Yes, I missed that.
+> >
+> > Doesn't matter, the stable bots will pick it up anyway, based on the Fixes tag.
+>
+> I normally prefer to be explicit, as some bug fixes may address
+> something that has been caused by an earlier commit, but should not
+> be backported for some reason.
 
-Thanks,
-Ian
+Which means that with the current "intelligent' backporting, you need a
+Not-for-stable tag instead...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
