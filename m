@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C788A1DAFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F3A1DAFCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgETKNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:13:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETKNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:13:52 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AED12207D3;
-        Wed, 20 May 2020 10:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589969631;
-        bh=IVSnV5Zs83u0Q/v+413J2jZCbX69Sl91AspXga0LPsk=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=CJQPmU8Kguq0DZQa5djF9OdBOcz92f+Hj9SwGnDFi7PsD8XsSXIJN4F9dDjJBT/Ke
-         IaFBhtgvUUuCbWC6ShZSjVhMNR3n6rgMvrcycbsSz+dChnyMliZJOUdhWP3e9jvjp5
-         RPnXMSM1giSuViT2fsQlN58JCPNc02BgEMYD3+00=
-Content-Type: text/plain; charset="utf-8"
+        id S1726845AbgETKO3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 06:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETKO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:14:29 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0CDC061A0E;
+        Wed, 20 May 2020 03:14:29 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jbLjZ-0004in-6g; Wed, 20 May 2020 12:13:57 +0200
+Date:   Wed, 20 May 2020 12:13:57 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/8] radix-tree: Use local_lock for protection
+Message-ID: <20200520101357.y4unmdqvztjllqy3@linutronix.de>
+References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+ <20200519201912.1564477-3-bigeasy@linutronix.de>
+ <20200519204545.GA16070@bombadil.infradead.org>
+ <20200519165453.0a795ca1@gandalf.local.home>
+ <20200520020516.GB16070@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200401201736.2980433-2-enric.balletbo@collabora.com>
-References: <20200401201736.2980433-1-enric.balletbo@collabora.com> <20200401201736.2980433-2-enric.balletbo@collabora.com>
-Subject: Re: [PATCH v2 2/4] clk / soc: mediatek: Bind clock and gpu driver for mt2712
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>, matthias.bgg@kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        ck.hu@mediatek.com, mark.rutland@arm.com,
-        ulrich.hecht+renesas@gmail.com
-Date:   Wed, 20 May 2020 03:13:50 -0700
-Message-ID: <158996963088.215346.15782560941924531394@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200520020516.GB16070@bombadil.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Enric Balletbo i Serra (2020-04-01 13:17:34)
-> Now that the mmsys driver is the top-level entry point for the
-> multimedia subsystem, we could bind the clock and the gpu driver on
-> those devices that is expected to work, so the drm driver is
-> intantiated by the mmsys driver and display, hopefully, working again on
-> those devices.
->=20
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
+On 2020-05-19 19:05:16 [-0700], Matthew Wilcox wrote:
+> >  https://lore.kernel.org/r/20200519201912.1564477-1-bigeasy@linutronix.de
+> > 
+> > With lore and b4, it should now be easy to get full patch series.
+> 
+> Thats asking too much of the random people cc'd on random patches.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Well, other complain that they don't care about the other 20 patches
+just because one patch affects them. And they can look it up if needed
+so you can't make everyone happy.
+
+> What is b4 anyway?
+
+  git://git.kernel.org/pub/scm/utils/b4/b4.git
+
+It is a tool written by Konstantin which can grab a whole series giving
+the message-id of one patch in series, save the series as mbox, patch
+series and collect all the tags (like replies with acked/tested/…-by)
+and fold those tags it into the right patches.
+
+Sebastian
