@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133961DB042
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0C61DB049
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgETKde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:33:34 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42511 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726224AbgETKde (ORCPT
+        id S1726801AbgETKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:34:22 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:39913 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgETKeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:33:34 -0400
-X-UUID: 3de7439d6daf48d7a894be21cd30af4d-20200520
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=HfMRe5GvWTMoSjJho2QVFn7+uU1oZw2rKqKzYM8kbw8=;
-        b=CsYMkHaV/YWUmJ+CGZVffs2aeo35GtyfEDEt0YrxwqU7ePpMqx1rWkKVeZeJogPzMiaLV6OdmQ1p2xKVkMBCsLV+XdY182O+1ovxF5YPemseaj5gAB0o9iHCDb/wytWMr6iicwLEMjNhfdiYgWaQSWJJ+Xu6VxQKTt0m3c0pjvc=;
-X-UUID: 3de7439d6daf48d7a894be21cd30af4d-20200520
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1810491927; Wed, 20 May 2020 18:33:30 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 20 May 2020 18:33:27 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 20 May 2020 18:33:27 +0800
-From:   <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>
-Subject: [next] i2c: mediatek: Use div_u64 for 64-bit division to fix 32-bit kernels
-Date:   Wed, 20 May 2020 18:31:53 +0800
-Message-ID: <1589970713-19944-1-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 20 May 2020 06:34:20 -0400
+Received: by mail-ot1-f67.google.com with SMTP id d7so2048113ote.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:34:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C9NRsCAHn82ubkftxUZ5kSJRCBH4nCc/jtP3ymsxx+c=;
+        b=FIIPxPPapDKTzAxu7UM0kIPF6vAts2ED9GSTZXHzgz6aJd3NdiuR9UFiMWipkFgUq+
+         pOi2dyR8Y/nkZ8bWcwWXHmfe3ZTgmdX0JtHNwfvNJYStxYfyI8DasW7z200jWo32MDt2
+         iy1NJYm+85F4t9jFji35kcqcHpragugG26HWd4sLVgpsmSuWqKJT8FTC5I2S9ukRk1Oy
+         Rl5ZQiBl56WSNs+UbAv7mMcvyV10PXuIOHWJOh/lCnLVu87L4XJ8WvIDfe2bXq2u/pMM
+         J4EKbaWWmXdbbfiIUb3nLhbohwusWIQoeJO1p3hXxKQYcAIs+N/b3uxlD9sdOgjiwGwz
+         0Bnw==
+X-Gm-Message-State: AOAM5312bxwdmdwQk5lF9tNLcBTb5th5eB7CZk5/KnROFAGvNsQtWBvr
+        +WdqcGESVDN0EUoY1lZ5/BhHWUeW0b9rC+eV7So=
+X-Google-Smtp-Source: ABdhPJxlgZArAm2RiUC1pmsRfzqwCNnAnn7Yu1P7DFwtZeQw7Ci04BDpbLAo0GnI06KfIHdKb6TZVpWlDqcNCgonvmg=
+X-Received: by 2002:a9d:6c0f:: with SMTP id f15mr1016333otq.118.1589970857339;
+ Wed, 20 May 2020 03:34:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200520102959.34812-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20200520102959.34812-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 20 May 2020 12:34:06 +0200
+Message-ID: <CAJZ5v0heg9w=k1yqkECNo9XLP2hZny_WJQv4EJq_Wh0dVT137g@mail.gmail.com>
+Subject: Re: [PATCH v1] drivers property: When no children in primary, try secondary
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCg0KVXNlIGRpdl91NjQgZm9y
-IDY0LWJpdCBkaXZpc2lvbiwgYW5kIGNoYW5nZSBzYW1wbGVfbnMgdHlwZSB0bw0KdW5zaWduZWQg
-aW50LiBPdGhlcndpc2UsIHRoZSBtb2R1bGUgd2lsbCByZWZlcmVuY2UgX191ZGl2ZGkzDQp1bmRl
-ciAzMi1iaXQga2VybmVscywgd2hpY2ggaXMgbm90IGFsbG93ZWQgaW4ga2VybmVsIHNwYWNlLg0K
-DQpTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQog
-ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8IDMgKystDQogMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9p
-MmMvYnVzc2VzL2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMN
-CmluZGV4IDcwMjA2MTguLmRlZWY2OWUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2kyYy9idXNzZXMv
-aTJjLW10NjV4eC5jDQorKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQpAQCAt
-NTUxLDcgKzU1MSw4IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19jaGVja19hY190aW1pbmcoc3RydWN0
-IG10a19pMmMgKmkyYywNCiAJY29uc3Qgc3RydWN0IGkyY19zcGVjX3ZhbHVlcyAqc3BlYzsNCiAJ
-dW5zaWduZWQgaW50IHN1X3N0YV9jbnQsIGxvd19jbnQsIGhpZ2hfY250LCBtYXhfc3RlcF9jbnQ7
-DQogCXVuc2lnbmVkIGludCBzZGFfbWF4LCBzZGFfbWluLCBjbGtfbnMsIG1heF9zdGFfY250ID0g
-MHgzZjsNCi0JbG9uZyBsb25nIHNhbXBsZV9ucyA9ICgxMDAwMDAwMDAwICogKHNhbXBsZV9jbnQg
-KyAxKSkgLyBjbGtfc3JjOw0KKwl1bnNpZ25lZCBpbnQgc2FtcGxlX25zID0gZGl2X3U2NCgxMDAw
-MDAwMDAwVUxMICogKHNhbXBsZV9jbnQgKyAxKSwNCisJCQkJCSBjbGtfc3JjKTsNCiANCiAJaWYg
-KCFpMmMtPmRldl9jb21wLT50aW1pbmdfYWRqdXN0KQ0KIAkJcmV0dXJuIDA7DQotLSANCjEuOS4x
-DQo=
+On Wed, May 20, 2020 at 12:30 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Software firmware nodes can provide a child node to its parent.
+> Since software node can be secondary, we need a mechanism to access
+> the children. The idea is to list children of the primary node first
+> and when they are finished, continue with secondary node if available.
 
+Makes sense.
+
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Greg, do you want me to apply it?
+
+If you'd rather take it yourself, please feel free to add
+
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+> ---
+>  drivers/base/property.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index 5f35c0ccf5e0..1e6d75e65938 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -708,14 +708,23 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
+>                                                  struct fwnode_handle *child)
+>  {
+>         struct acpi_device *adev = ACPI_COMPANION(dev);
+> -       struct fwnode_handle *fwnode = NULL;
+> +       struct fwnode_handle *fwnode = NULL, *next;
+>
+>         if (dev->of_node)
+>                 fwnode = &dev->of_node->fwnode;
+>         else if (adev)
+>                 fwnode = acpi_fwnode_handle(adev);
+>
+> -       return fwnode_get_next_child_node(fwnode, child);
+> +       /* Try to find a child in primary fwnode */
+> +       next = fwnode_get_next_child_node(fwnode, child);
+> +       if (next)
+> +               return next;
+> +
+> +       /* When no more children in primary, continue with secondary */
+> +       if (!IS_ERR_OR_NULL(fwnode->secondary))
+> +               next = fwnode_get_next_child_node(fwnode->secondary, child);
+> +
+> +       return next;
+>  }
+>  EXPORT_SYMBOL_GPL(device_get_next_child_node);
+>
+> --
+> 2.26.2
+>
