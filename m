@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FE11DA89C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E084F1DA8A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgETDcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 23:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgETDcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 23:32:01 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC7DC061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:32:01 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o13so1382979otl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 20:32:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E2vK9F/eA14thO30W50mK/uC9vmImhp6JcvtaBfalus=;
-        b=Txe/8vd30AxuY9Cp9qMRIiPjVlgPWo9BHR/CL3Wgqy6AE7SyYWidotTjxY0/jDStqh
-         Ixc+8EiaFrLUnoBWEHJctLDH3m2qq2KwDbsdtadTMfx8EJueY6SL2X56MtvhsbDsQygO
-         6q1W7v95tPKwj9Eev816CGRFvjir6CPE2KBugcO5cOJW04maMQuakYqFLoZFLY1LmDF/
-         FoPvJZTz23UQT8nTIKEIoQ+iA5H5ibQx15P4TJmxhdMn20D6ir8WmVscb8VWNl/4z1WK
-         YreGTJSkEOkBfXnxGJ3pH4P4WBre0cPzeQ+MoI2jsi8a/LX7Ie/gSCRdY8R2gadala6/
-         i+Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E2vK9F/eA14thO30W50mK/uC9vmImhp6JcvtaBfalus=;
-        b=pZo9L0AfYnAhrbYPsSvCHem2FpwlgZTkNq/gA5xVp2EXmZGseH8/yzIKh12H6Sm1Rb
-         42yRDfSEhT95SI4sSAh1LoeuHb/BlcY9pBDDumJzIDP1Hmr05Q9RZ7YAQ+yCzhmJTgY3
-         RUuYKoiL4uzVPf6LmavvKgnAl4vwDt37c46r10r9k1HdBxz/Rh4cn+KSQ3fM4dgRLcZ5
-         4Pqubl1O3u/hxJ2EWlOMH8fxThODas082mcoT6kG9lLIJKJboxqS5kHkILqBrdAvtjFK
-         NUby4PS4tt77RU48udWKyjXWCDGwW/Mdir571+mMO2Mau6HXwVY+ftN9xxIqJMxZI106
-         JWGg==
-X-Gm-Message-State: AOAM530Ps+Sjtp8jCo9/zJzo1qN9upPDqXyxLN2jhbKKb0ZJd7wG3JLb
-        yk1jcPCPn/zokGeVSUqoES4GDXy9N9GVrj2bjTaYjP+4
-X-Google-Smtp-Source: ABdhPJywljdbI8qKbuGjHOrWr51yAQbdJYFS68Iblc4CXacS9JbRL4urQsSQ7MZdskoTOc7xW/bRxIc2g+gIQ9jUNu8=
-X-Received: by 2002:a9d:32b4:: with SMTP id u49mr1768191otb.304.1589945521027;
- Tue, 19 May 2020 20:32:01 -0700 (PDT)
+        id S1728673AbgETDcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 23:32:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:46564 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726432AbgETDcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 23:32:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAA5630E;
+        Tue, 19 May 2020 20:32:44 -0700 (PDT)
+Received: from [10.163.75.101] (unknown [10.163.75.101])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8F2E3F52E;
+        Tue, 19 May 2020 20:32:42 -0700 (PDT)
+Subject: Re: [RFC V2] mm/vmstat: Add events for PMD based THP migration
+ without split
+To:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org
+Cc:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Zi Yan <ziy@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+References: <1589784156-28831-1-git-send-email-anshuman.khandual@arm.com>
+ <67be2597-c019-63c1-b551-d4571a44f1a5@nvidia.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <88aa238d-9de1-9f6a-a3b0-51fbe073090d@arm.com>
+Date:   Wed, 20 May 2020 09:02:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <1588151843-2133-1-git-send-email-peng.fan@nxp.com> <20200520005638.GA11739@dragon>
-In-Reply-To: <20200520005638.GA11739@dragon>
-From:   Shawn Guo <shawn.gsc@gmail.com>
-Date:   Wed, 20 May 2020 11:31:50 +0800
-Message-ID: <CAJBJ56J-q7BreW9L4B7QbCkmxPEkpY6YMrBbzG3HWk3FL+wJwg@mail.gmail.com>
-Subject: Re: [PATCH V2 0/3] ARM: imx: move cpu code to drivers/soc/imx
-To:     peng.fan@nxp.com
-Cc:     linux-arm-kernel@lists.infradead.org, abel.vesa@nxp.com,
-        Anson Huang <Anson.Huang@nxp.com>, ard.biesheuvel@linaro.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>, git@andred.net,
-        leonard.crestez@nxp.com, info@metux.net, allison@lohutok.net
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <67be2597-c019-63c1-b551-d4571a44f1a5@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 8:57 AM Shawn Guo <shawnguo@kernel.org> wrote:
->
-> On Wed, Apr 29, 2020 at 05:17:20PM +0800, peng.fan@nxp.com wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > V2:
-> >  Keep i.MX1/2/3/5 cpu type for completness
-> >  Correct return value in patch 1/3
-> >  use CONFIG_ARM to guard compile soc-imx.c in patch 3/3
-> >
-> > V1:
-> > https://patchwork.kernel.org/cover/11433689/
-> > RFC version :
-> > https://patchwork.kernel.org/cover/11336433/
-> >
-> > Nothing changed in v1, just rename to formal patches
-> >
-> > Shawn,
-> >  The original concern has been eliminated in RFC discussion,
-> >  so this patchset is ready to be in next.
-> > Thanks.
-> >
-> > Follow i.MX8, move the soc device register code to drivers/soc/imx
-> > to simplify arch/arm/mach-imx/cpu.c
-> >
-> > I planned to use similar logic as soc-imx8m.c to restructure soc-imx.c
-> > and merged the two files into one. But not sure, so still keep
-> > the logic in cpu.c.
-> >
-> > There is one change is the platform devices are not under
-> > /sys/devices/soc0 after patch 1/4. Actually ARM64 platform
-> > devices are not under /sys/devices/soc0, such as i.MX8/8M.
-> > So it should not hurt to let the platform devices under platform dir.
-> >
-> > Peng Fan (3):
-> >   ARM: imx: use device_initcall for imx_soc_device_init
-> >   ARM: imx: move cpu definitions into a header
-> >   soc: imx: move cpu code to drivers/soc/imx
->
-> Applied all, thanks.
 
-Unfortunately, I have to drop this, as it turns out the series needs a
-rebase onto for-next.  The series conflicts with 'ARM: vf610: report
-soc info via soc device' there.
 
-Shawn
+On 05/19/2020 01:40 AM, John Hubbard wrote:
+> On 2020-05-17 23:42, Anshuman Khandual wrote:
+> ...
+>> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+>> index ffef0f279747..23d8f9884c2b 100644
+>> --- a/include/linux/vm_event_item.h
+>> +++ b/include/linux/vm_event_item.h
+>> @@ -91,6 +91,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>>           THP_ZERO_PAGE_ALLOC_FAILED,
+>>           THP_SWPOUT,
+>>           THP_SWPOUT_FALLBACK,
+>> +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
+> 
+> 
+> Hi Anshuman,
+> 
+> These new events look great to me. I have some nits below, plus one
+> lightly controversial suggestion which I'd really like to have someone
+> more experienced weigh in on, which is:
+> 
+> How about not being quite so granular on the THP config options, and
+> just guarding these events with the overall CONFIG_TRANSPARENT_HUGEPAGE
+> option, instead of the sub-option CONFIG_ARCH_ENABLE_THP_MIGRATION?
+> 
+> I tentatively think it's harmless and not really misleading to have
+> /proc/vmstat showing this in all THP-enabled configurations:
+> 
+> thp_pmd_migration_success 0
+> thp_pmd_migration_failure 0
+> 
+> ...if THP is enabled, and *whether or not* _THP_MIGRATION is enabled.
+> And this simplifies things a bit. Given how the .config options can get,
+> I think simplifying would be nice.
+> 
+> However, I'm ready to be corrected on that, if it's a bad idea for
+> other API reasons perhaps.  Can anyone please comment?
+
+There is no THP migration events to track unless it is enabled. Why to
+show these statistics (as 0) when its not even possible. If the config
+simplicity is the only intended rationale here, it might not be the
+case either. These events and their tracking would still need to be
+wrapped with CONFIG_TRANSPARENT_HUGEPAGE otherwise.
+
+If your concern is more towards CONFIG_ARCH_ENABLE_THP_MIGRATION being
+unsuitable or with complex dependencies, then that is something how THP
+migration feature itself is implemented currently and adding VM events
+does not address that. A possible patch in the future patch could solve
+all these (together).
+
+But sure, let's hear it for what others have to say on this.
+
+> 
+> 
+>> +        THP_PMD_MIGRATION_SUCCESS,
+>> +        THP_PMD_MIGRATION_FAILURE,
+>> +#endif
+>>   #endif
+>>   #ifdef CONFIG_MEMORY_BALLOON
+>>           BALLOON_INFLATE,
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index 7160c1556f79..5325700a3e90 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -1170,6 +1170,18 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>>   #define ICE_noinline
+>>   #endif
+>>   +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
+>> +static inline void thp_migration_success(bool success)
+> 
+> 
+> I think this should be named
+> 
+>     thp_pmd_migration_success()
+> 
+> , since that's what you're really counting. Or, you could
+> name the events THP_MIGRATION_SUCCESS|FAILURE. Either way,
+> just so the function name matches the events it's counting.
+
+Makes sense but IMHO we should keep _pmd_ to be more specific.
+Will change the name here as thp_pmd_migration_success().
+
+> 
+> 
+>> +{
+>> +    if (success)
+>> +        count_vm_event(THP_PMD_MIGRATION_SUCCESS);
+>> +    else
+>> +        count_vm_event(THP_PMD_MIGRATION_FAILURE);
+>> +}
+>> +#else
+>> +static inline void thp_migration_success(bool success) { }
+> 
+> 
+> This whole ifdef clause would disappear if my suggestion above is
+
+We will have to protect these with CONFIG_TRANSPARENT_HUGEPAGE as
+the events are still conditionally available.
+
+> accepted. However, if not, then I believe the convention for this
+> kind of situation is:
+> 
+> static inline void thp_migration_success(bool success)
+> {
+> }
+
+AFAIK, we have examples both ways but will change if this is preferred.
