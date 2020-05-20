@@ -2,141 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AF11DBA32
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6771DBA39
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgETQvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726824AbgETQvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:51:32 -0400
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8AC320873
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589993491;
-        bh=NNmpX8qsqR07aMp56pZuUcOFtIh8+LhgnAJftGVYzEM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xSFef6/9WTIA9gsF7U0oTKLdFFtDT7skpEeFDtg0drWZNmO0ap3cywUZlzeJ4iG+Z
-         8CniZZHwLLd0cY4ibCWb4HYFE+SSSyJClGCSUFmSVx+lpOsPsA9l0fUfh+x8Z0Th/d
-         D4yFlW1VnBscXFJ2AEe3FnBon/D+HmH2IkeM/U18=
-Received: by mail-wr1-f53.google.com with SMTP id e1so3878391wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:51:30 -0700 (PDT)
-X-Gm-Message-State: AOAM5336j88yfYw6CTIz40uXlvuzWOdSX7zIIQH9/Al3ywcOgkWf9iTV
-        zQYZrxkOzPajQ/iGFTxARjr6bjuGWTjMTaFsY72nBA==
-X-Google-Smtp-Source: ABdhPJwXSDXAhEaAEQaJT+UVc4mYYhYzepKhMQ2ehfJYM0DYVk0xMXG0PzV6aEFM/MlrF0qmW9R55uHd0Dy6BOVxm+w=
-X-Received: by 2002:adf:a298:: with SMTP id s24mr4857429wra.184.1589993489259;
- Wed, 20 May 2020 09:51:29 -0700 (PDT)
+        id S1727812AbgETQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgETQvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 12:51:55 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46729C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:51:55 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d7so3053769qtn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uCbIDnmbNb/xu62b5tooWAb+6qi8tujvE6x6ac0v/iU=;
+        b=h9J16NzSlg3JV6ahuk3Cz7vW9mS71GGHOJsvtWXV/OhEqA115o493JYJT5neianrkT
+         8nb/lO4XJjaix3BGuGg7pGmHyyrmqlSmT44lwrhNwmLORSVOHl0fjA+p6k7EF01If26v
+         Vtvc1KweE5OUCkM3/Por0KoMn8ykmOGsBB5H8z39O/Tb6axHXh6a+3ZMoky6Md6iuZk+
+         HDee2q5k6T0Dn4ugXpn9HlqPjl0wjA+VELcBuoY3l37PIObJdU8TvHkGglRjKiW0ODnb
+         JCizuvakRxoXGSr2L/HDSHWCk5lpVA13/B7kAR9YVydF2g7LZVdrsYh9+kchKd36A+a6
+         QhUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uCbIDnmbNb/xu62b5tooWAb+6qi8tujvE6x6ac0v/iU=;
+        b=W1QyTZPuET6XrHrI///VOD5fyaf/jF4BGNzlOtCidgi4fTidsBoc2A0LyhoPHpm0Xp
+         /uzBbrUS8NeDKwTwqf0wTOhepUHSn2u2Y34jQ7PWeAmqjqUKDABzacf+CHW588SJ95JS
+         wmzi3Of1Z6ahtfIytJ9Am7DaW7Y9RSAIw6m/IPfjnQjB3+L6iWKVZOb32gfcF10hxlbv
+         +bzdIgd7Rn78jY/ro3rLHPdYPWa/j8JQLCnZGAb3/hm3UuwKdw2DXE9keHGfyYq491n4
+         ZaiO0M2/9qHHwFNXFpgug7S83bfDqid1w78rkmdBdoadb2Wgmo0NybjyUjq2B++V7l3y
+         GIvg==
+X-Gm-Message-State: AOAM531zkVYFp7IyjuHIYD40olVXRfA+XG1zZd6za7wP9/3HO27m/pPB
+        A1fDGkGZvHAC8NkPJr5JzfsyXchniyc=
+X-Google-Smtp-Source: ABdhPJw6ggJ8wCSJvBlsLOuaKgIMkvBTDwzygxZftVoWK3+Q5wPJrDCRnCOYTf/UH4XJd5VTz0QvZw==
+X-Received: by 2002:aed:3949:: with SMTP id l67mr5993780qte.313.1589993514300;
+        Wed, 20 May 2020 09:51:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4708])
+        by smtp.gmail.com with ESMTPSA id f198sm2663370qke.46.2020.05.20.09.51.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 09:51:53 -0700 (PDT)
+Date:   Wed, 20 May 2020 12:51:31 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200520165131.GB630613@cmpxchg.org>
+References: <20200520143712.GA749486@chrisdown.name>
+ <20200520160756.GE6462@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20200515234547.710474468@linutronix.de> <20200515235125.628629605@linutronix.de>
- <CALCETrWnkuwvTuJKr8Vuecgr_q+1ReBDrTv4XOqGaw7-ZpEeQQ@mail.gmail.com>
- <87ftbv7nsd.fsf@nanos.tec.linutronix.de> <87a7237k3x.fsf@nanos.tec.linutronix.de>
- <CALCETrXbQkE1zTW5Ly+ZQgDFLQQa3crPxzK6to0YR+BP5B9q+g@mail.gmail.com>
- <874ksb7hbg.fsf@nanos.tec.linutronix.de> <CALCETrWw7Vz39ROdBV1QxOQS3gMbPgNu5RRSuhBaXG+UVcFAzw@mail.gmail.com>
- <20200520022353.GN2869@paulmck-ThinkPad-P72> <CALCETrWAVTjsKwih06GeK237w7RLSE2D2+naiunA=VFEJY1meQ@mail.gmail.com>
-In-Reply-To: <CALCETrWAVTjsKwih06GeK237w7RLSE2D2+naiunA=VFEJY1meQ@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 20 May 2020 09:51:17 -0700
-X-Gmail-Original-Message-ID: <CALCETrVPM1x5v8Gq7xyF+QqxSWSWTShhc7K02nGJZuB-oVDxNw@mail.gmail.com>
-Message-ID: <CALCETrVPM1x5v8Gq7xyF+QqxSWSWTShhc7K02nGJZuB-oVDxNw@mail.gmail.com>
-Subject: Re: [patch V6 12/37] x86/entry: Provide idtentry_entry/exit_cond_rcu()
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520160756.GE6462@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 8:36 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Tue, May 19, 2020 at 7:23 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, May 19, 2020 at 05:26:58PM -0700, Andy Lutomirski wrote:
-> > > On Tue, May 19, 2020 at 2:20 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Wed, May 20, 2020 at 06:07:56PM +0200, Michal Hocko wrote:
+> On Wed 20-05-20 15:37:12, Chris Down wrote:
+> > In Facebook production, we've seen cases where cgroups have been put
+> > into allocator throttling even when they appear to have a lot of slack
+> > file caches which should be trivially reclaimable.
+> > 
+> > Looking more closely, the problem is that we only try a single cgroup
+> > reclaim walk for each return to usermode before calculating whether or
+> > not we should throttle. This single attempt doesn't produce enough
+> > pressure to shrink for cgroups with a rapidly growing amount of file
+> > caches prior to entering allocator throttling.
+> > 
+> > As an example, we see that threads in an affected cgroup are stuck in
+> > allocator throttling:
+> > 
+> >     # for i in $(cat cgroup.threads); do
+> >     >     grep over_high "/proc/$i/stack"
+> >     > done
+> >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+> >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+> >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+> > 
+> > ...however, there is no I/O pressure reported by PSI, despite a lot of
+> > slack file pages:
+> > 
+> >     # cat memory.pressure
+> >     some avg10=78.50 avg60=84.99 avg300=84.53 total=5702440903
+> >     full avg10=78.50 avg60=84.99 avg300=84.53 total=5702116959
+> >     # cat io.pressure
+> >     some avg10=0.00 avg60=0.00 avg300=0.00 total=78051391
+> >     full avg10=0.00 avg60=0.00 avg300=0.00 total=78049640
+> >     # grep _file memory.stat
+> >     inactive_file 1370939392
+> >     active_file 661635072
+> > 
+> > This patch changes the behaviour to retry reclaim either until the
+> > current task goes below the 10ms grace period, or we are making no
+> > reclaim progress at all. In the latter case, we enter reclaim throttling
+> > as before.
+> 
+> Let me try to understand the actual problem. The high memory reclaim has
+> a target which is proportional to the amount of charged memory. For most
+> requests that would be SWAP_CLUSTER_MAX though (resp. N times that where
+> N is the number of memcgs in excess up the hierarchy). I can see to be
+> insufficient if the memcg is already in a large excess but if the
+> reclaim can make a forward progress this should just work fine because
+> each charging context should reclaim at least the contributed amount.
+> 
+> Do you have any insight on why this doesn't work in your situation?
+> Especially with such a large inactive file list I would be really
+> surprised if the reclaim was not able to make a forward progress.
 
-First, the patch as you submitted it is Acked-by: Andy Lutomirski
-<luto@kernel.org>.  I think there are cleanups that should happen, but
-I think the patch is correct.
+The workload we observed this in was downloading a large file and
+writing it to disk, which means that a good chunk of that memory was
+dirty. The first reclaim pass appears to make little progress because
+it runs into dirty pages.
 
-About cleanups, concretely:  I think that everything that calls
-__idtenter_entry() is called in one of a small number of relatively
-sane states:
+> Now to your patch. I do not like it much to be honest.
+> MEM_CGROUP_RECLAIM_RETRIES is quite arbitrary and I neither like it in
+> memory_high_write because the that is an interruptible context so there
+> shouldn't be a good reason to give up after $FOO number of failed
+> attempts. try_charge and memory_max_write are slightly different because
+> we are invoking OOM killer based on the number of failed attempts.
 
-1. User mode.  This is easy.
+The same is true for memory.high. We are invoking the userspace OOM
+killer when memory.high reclaim fails and we put tasks to sleep.
 
-2. Kernel, RCU is watching, everything is sane.  We don't actually
-need to do any RCU entry/exit pairs -- we should be okay with just a
-hypothetical RCU tickle (and IRQ tracing, etc).  This variant can
-sleep after the entry part finishes if regs->flags & IF and no one
-turned off preemption.
+The actual number of retries is arbitrary, correct. That's because OOM
+is arbitrary. It's a sampled state, and this is our sampling period.
 
-3. Kernel, RCU is not watching, system was idle.  This can only be an
-actual interrupt.
+But it's not that important. The much more important thing is that we
+continue reclaiming as long as there is forward progress. How many
+times we retry when there is no forward progress is less critical -
+but it's nice to have the same cutoff for OOM situations everywhere.
 
-So maybe the code can change to:
+> Also if the current high reclaim scaling is insufficient then we should
+> be handling that via memcg_nr_pages_over_high rather than effectivelly
+> unbound number of reclaim retries.
 
-    if (user_mode(regs)) {
-        enter_from_user_mode();
-    } else {
-        if (!__rcu_is_watching()) {
-            /*
-             * If RCU is not watching then the same careful
-             * sequence vs. lockdep and tracing is required.
-             *
-             * This only happens for IRQs that hit the idle loop, and
-             * even that only happens if we aren't using the sane
-             * MWAIT-while-IF=0 mode.
-             */
-            lockdep_hardirqs_off(CALLER_ADDR0);
-            rcu_irq_enter();
-            instrumentation_begin();
-            trace_hardirqs_off_prepare();
-            instrumentation_end();
-            return true;
-        } else {
-            /*
-             * If RCU is watching then the combo function
-             * can be used.
-             */
-            instrumentation_begin();
-            trace_hardirqs_off();
-            rcu_tickle();
-            instrumentation_end();
-        }
-    }
-    return false;
-
-This is exactly what you have except that the cond_rcu part is gone
-and I added rcu_tickle().
-
-Paul, the major change here is that if an IRQ hits normal kernel code
-(i.e. code where RCU is watching and we're not in an EQS), the IRQ
-won't call rcu_irq_enter() and rcu_irq_exit().  Instead it will call
-rcu_tickle() on entry and nothing on exit.  Does that cover all the
-bases?
+???
