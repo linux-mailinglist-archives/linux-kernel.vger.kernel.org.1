@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A276B1DBE02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C351DBE13
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgETTaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40562 "EHLO mail.kernel.org"
+        id S1726944AbgETTij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:38:39 -0400
+Received: from cloud.peff.net ([104.130.231.41]:52292 "EHLO cloud.peff.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgETTaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:30:04 -0400
-Subject: Re: [GIT PULL] Power management fix for v5.7-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590003003;
-        bh=DBC1ySMu3GUFU7h8ZiQfJ32UKjW5VmXm7PUvd/lAiEI=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=2UggvqTCXsA4NNHtOvB1Zv6vHn+MKoWMuCL5CFZ1EU4UkRGG5cBDscDYBw08fBffJ
-         m80ioFhURTvLhj7c8rVk/CKfvjIsmCjZI9PHQJVT8cdFRDBMVn7D19FFM/zXPN/erI
-         xPd5MGxP6D1bCz4UON8JY0jBDa3QowDYfn5aAvO0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0jE6tnyd741Y1B_1gzVMtcf112e1EOqjJ1AR+oUd5ee_w@mail.gmail.com>
-References: <CAJZ5v0jE6tnyd741Y1B_1gzVMtcf112e1EOqjJ1AR+oUd5ee_w@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0jE6tnyd741Y1B_1gzVMtcf112e1EOqjJ1AR+oUd5ee_w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.7-rc7
-X-PR-Tracked-Commit-Id: 607b9df63057a56f6172d560d5366cca6a030c76
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2ea1940b84e55420a9e8feddcafd173edfe4df11
-Message-Id: <159000300388.7201.5708064379590396620.pr-tracker-bot@kernel.org>
-Date:   Wed, 20 May 2020 19:30:03 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1726548AbgETTij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 15:38:39 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 15:38:38 EDT
+Received: (qmail 8527 invoked by uid 109); 20 May 2020 19:31:57 -0000
+Received: from Unknown (HELO peff.net) (10.0.1.2)
+ by cloud.peff.net (qpsmtpd/0.94) with ESMTP; Wed, 20 May 2020 19:31:57 +0000
+Authentication-Results: cloud.peff.net; auth=none
+Received: (qmail 17064 invoked by uid 111); 20 May 2020 19:31:57 -0000
+Received: from coredump.intra.peff.net (HELO sigill.intra.peff.net) (10.0.0.2)
+ by peff.net (qpsmtpd/0.94) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPS; Wed, 20 May 2020 15:31:57 -0400
+Authentication-Results: peff.net; auth=none
+Date:   Wed, 20 May 2020 15:31:56 -0400
+From:   Jeff King <peff@peff.net>
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     git@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: Re: [ANNOUNCE] Git v2.27.0-rc1
+Message-ID: <20200520193156.GA4700@coredump.intra.peff.net>
+References: <xmqqsgfuv2ko.fsf@gitster.c.googlers.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <xmqqsgfuv2ko.fsf@gitster.c.googlers.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 20 May 2020 17:17:02 +0200:
+On Wed, May 20, 2020 at 12:17:11PM -0700, Junio C Hamano wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.7-rc7
+> Git 2.27 Release Notes (draft)
+> ==============================
+> 
+> Updates since v2.26
+> -------------------
+> 
+> Backward compatibility notes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2ea1940b84e55420a9e8feddcafd173edfe4df11
+Is it worth mentioning here the reversion of v2 as the default protocol?
 
-Thank you!
+It does end up (along with the actual code fix) in the "fixes from
+v2.26" section:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+>  * Those fetching over protocol v2 from linux-next and other kernel
+>    repositories are reporting that v2 often fetches way too much than
+>    needed.
+>    (merge 11c7f2a30b jn/demote-proto2-from-default later to maint).
+> 
+>  * The upload-pack protocol v2 gave up too early before finding a
+>    common ancestor, resulting in a wasteful fetch from a fork of a
+>    project.  This has been corrected to match the behaviour of v0
+>    protocol.
+>    (merge 2f0a093dd6 jt/v2-fetch-nego-fix later to maint).
+
+but that's somewhat buried. I dunno. It is not likely to introduce _new_
+compatibility issues, but perhaps folks looking into compatibility stuff
+may want to know about the revert.
+
+-Peff
