@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D15B1DB5F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985F91DB602
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgETOLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 10:11:43 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:14684 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETOLn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 10:11:43 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75ec53a8cfaa-6b731; Wed, 20 May 2020 22:11:24 +0800 (CST)
-X-RM-TRANSID: 2ee75ec53a8cfaa-6b731
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.3.208.33])
-        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25ec53a89ff6-60b9b;
-        Wed, 20 May 2020 22:11:24 +0800 (CST)
-X-RM-TRANSID: 2ee25ec53a89ff6-60b9b
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] driver core: platform: Fix spelling errors in platform.c
-Date:   Wed, 20 May 2020 22:12:02 +0800
-Message-Id: <20200520141202.19568-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1726838AbgETONY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:13:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgETONY (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 10:13:24 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2C0B207F9;
+        Wed, 20 May 2020 14:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589984003;
+        bh=11URDiH9fhaUtaMINC8AwSJTzPEpmnUhW8fYbWAtjb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fBgdN1VKLG8rPKZ7lESchnXOWqeDeDawX+ebOizzct6tzoLJinx2DZkLnGSifhAF0
+         6tHRMQn8QC21CA9yJKqK0iQ9XPSGf7GTqxd7gfqhPndY7iwFq9wpq2GP0jL88KS1q6
+         hDfUEX3I6Fh+9anrpKNgNyJFGPXuikkHysOlG9v4=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EE11340AFD; Wed, 20 May 2020 11:13:19 -0300 (-03)
+Date:   Wed, 20 May 2020 11:13:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v6 0/5] perf stat: Support overall statistics for
+ interval mode
+Message-ID: <20200520141319.GI32678@kernel.org>
+References: <20200520042737.24160-1-yao.jin@linux.intel.com>
+ <20200520105406.GB157452@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520105406.GB157452@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a word spelling mistake of 'Unegisters', thus
-it should be fixed.
+Em Wed, May 20, 2020 at 12:54:06PM +0200, Jiri Olsa escreveu:
+> On Wed, May 20, 2020 at 12:27:32PM +0800, Jin Yao wrote:
+> >  v6:
+> >  ---
+> >  1. Add comments in perf_evlist__save_aggr_prev_raw_counts.
+> >  2. Move init_stats(&walltime_nsecs_stats) under interval condition check.
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/base/platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> >  Following patches are changed in v6.
+> >     perf stat: Save aggr value to first member of prev_raw_counts
+> >     perf stat: Report summary for interval mode
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 7fa654f12..15ae9428a 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -967,7 +967,7 @@ EXPORT_SYMBOL_GPL(__platform_register_drivers);
-  * @drivers: an array of drivers to unregister
-  * @count: the number of drivers to unregister
-  *
-- * Unegisters platform drivers specified by an array. This is typically used
-+ * Unregisters platform drivers specified by an array. This is typically used
-  * to complement an earlier call to platform_register_drivers(). Drivers are
-  * unregistered in the reverse order in which they were registered.
-  */
--- 
-2.20.1.windows.1
+> Reviewed-by: Jiri Olsa <jolsa@redhat.com>
 
+Thanks, applied,
 
-
+- Arnaldo
