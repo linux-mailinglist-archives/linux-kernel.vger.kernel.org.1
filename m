@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3085C1DAFC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF0C1DAFCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgETKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:14:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETKN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:13:59 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726862AbgETKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:14:50 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21069 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726570AbgETKOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:14:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589969689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8bLHtz3BV/L39/FW/oh2sYThZNFwq67XjK/qDci+qxM=;
+        b=WuO/L4wO4LlyvpyuTe3c+K8SmtdWkaUTDX5fwtnrX9YNy+8LeEwuM866A+00y9/2I2qyNF
+        g3hkFbzC2sSGd8GuNrAjwFaun8Dh1wQe2Onji8VeE5C+Iizyh2PLzTJOHHti1dgNVOi7Dt
+        f6MO/6wudMvGyB3eG5wmxX5hKlB5zxM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-jycBi55nM4SRI02W8w7-FA-1; Wed, 20 May 2020 06:14:44 -0400
+X-MC-Unique: jycBi55nM4SRI02W8w7-FA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CC04207ED;
-        Wed, 20 May 2020 10:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589969639;
-        bh=bzscWCamTKP633DohUL18ThPT4Suxkr+K04/JWo2SbE=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YjluWWsene3/m6vsco3Mtv4PIkw1xscptzGe0ymdkIHpGzOZCtRisn6YyccYIBqpH
-         Lry9Djww0v4KqCk+PtbadD9Rh8o6rP8AC4K+wbmJXRsKL49n9XP6QktCIxOXjdFeq4
-         Ee8+x2QxlAvfJ+SVUuza/QEyZfgOTUEAElhasP4A=
-Content-Type: text/plain; charset="utf-8"
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2C32100CCC4;
+        Wed, 20 May 2020 10:14:42 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-191.ams2.redhat.com [10.36.113.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C419707B8;
+        Wed, 20 May 2020 10:14:39 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers via Libc-alpha <libc-alpha@sourceware.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-api@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ben Maurer <bmaurer@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        Paul Turner <pjt@google.com>,
+        Joseph Myers <joseph@codesourcery.com>
+Subject: Re: [PATCH glibc 2/3] glibc: sched_getcpu(): use rseq cpu_id TLS on Linux (v7)
+References: <20200501021439.2456-1-mathieu.desnoyers@efficios.com>
+        <20200501021439.2456-3-mathieu.desnoyers@efficios.com>
+Date:   Wed, 20 May 2020 12:14:38 +0200
+In-Reply-To: <20200501021439.2456-3-mathieu.desnoyers@efficios.com> (Mathieu
+        Desnoyers via Libc-alpha's message of "Thu, 30 Apr 2020 22:14:38
+        -0400")
+Message-ID: <87imgqdib5.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200401201736.2980433-3-enric.balletbo@collabora.com>
-References: <20200401201736.2980433-1-enric.balletbo@collabora.com> <20200401201736.2980433-3-enric.balletbo@collabora.com>
-Subject: Re: [PATCH v2 3/4] clk / soc: mediatek: Bind clock and gpu driver for mt2701
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>, matthias.bgg@kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        ck.hu@mediatek.com, mark.rutland@arm.com,
-        ulrich.hecht+renesas@gmail.com
-Date:   Wed, 20 May 2020 03:13:58 -0700
-Message-ID: <158996963892.215346.7498020261398211458@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Enric Balletbo i Serra (2020-04-01 13:17:35)
-> Now that the mmsys driver is the top-level entry point for the
-> multimedia subsystem, we could bind the clock and the gpu driver on
-> those devices that is expected to work, so the drm driver is
-> intantiated by the mmsys driver and display, hopefully, working again.
->=20
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
+* Mathieu Desnoyers via Libc-alpha:
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+> diff --git a/sysdeps/unix/sysv/linux/sched_getcpu.c b/sysdeps/unix/sysv/l=
+inux/sched_getcpu.c
+> index c019cfb3cf..2269c4f2bd 100644
+> --- a/sysdeps/unix/sysv/linux/sched_getcpu.c
+> +++ b/sysdeps/unix/sysv/linux/sched_getcpu.c
+> @@ -18,10 +18,15 @@
+>  #include <errno.h>
+>  #include <sched.h>
+>  #include <sysdep.h>
+> +#include <atomic.h>
+>  #include <sysdep-vdso.h>
+>=20=20
+> -int
+> -sched_getcpu (void)
+> +#ifdef HAVE_GETCPU_VSYSCALL
+> +# define HAVE_VSYSCALL
+> +#endif
+
+I think the #ifdef is a result of an incorrect merge of commit
+d0def09ff6bbf1537beec305fdfe96a21174fb31 ("linux: Fix vDSO macros build
+with time64 interfaces") and it should be removed.
+
+The commit subject should probably say =E2=80=9CLinux: Use rseq in sched_ge=
+tcpu
+if available=E2=80=9D.
+
+Thanks,
+Florian
+
