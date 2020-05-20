@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406B81DB28C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F11DB291
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgETMAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:00:45 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39196 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgETMAp (ORCPT
+        id S1727006AbgETMBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:01:17 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60536 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgETMBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:00:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KBvw0S100740;
-        Wed, 20 May 2020 12:00:34 GMT
+        Wed, 20 May 2020 08:01:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KBvY8D173181;
+        Wed, 20 May 2020 12:01:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=zYw0CIqLQPQjZf813z+RcnjB+lAB2/Yov6H6AlW2Ba0=;
- b=XiDxFzSvYv5EPCuvFARWejtgr2wJvPaXE2ITysQ0m3iDDhY6XtgJla57x7E/1oYu8/V3
- bHL2qLY410MKcFcZapZiWuKWtKEB9E0juKbvFQcnO9Gs1cJp33sSoidCoc5QECdrowsv
- oHEyvEEBgwySs7Kp4KK314ifOQpDNEbop52hjeGeu6DSWsORM0W+dOsmGtRPNwo0JBXU
- BZSzaYR+FoRhnogsahbY7GKo3o4ZCBRB84o9zQt4VajIVIvEFIIpvSCxGViiTHHJdmF/
- ee85S+PMV4/a/da6AKiMvOBzoW+6pE7qJjRUtG+CEyGqdm+qs+TYfYFDe3hUTH1z5fry Qw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 31284m2p0q-1
+ bh=68JDAbvefgoH93PS1ZCGMUKwpNrUM0Es7ihpXKYD3SQ=;
+ b=YRc3iz024NVv0RIMObb+nH8HqskR8SsNAB++dS9Ryu9eT2P9OAxdFZHQa/zungABs/84
+ F61hJvddLjsvEq9YKKQAVNgsXanV/ROCEjrzJ4B0MP6TwH9tZSi8hCgygDPClnGyrWAe
+ dy7dBmUb9FsTHxckibNELYF5Y+IwA1PAHTaX/sIi2UPcwXUHfrk+ksYOqUWIbMO+CWsd
+ zvyYqtdZ7GnaGGZL3iTcTENkxUgFaNEMJAxWKN1E8nSFe8gsk98z1R6PuEIl2dnSnnO2
+ Z8wEOj28LtiOiTF0wq6cKBLHdyftmpqvdVzAvlpR2l60IF1iZju45zqks7BmPQYTPULp tw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31501r96wd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 May 2020 12:00:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KBrABx064080;
-        Wed, 20 May 2020 12:00:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3150205ke2-1
+        Wed, 20 May 2020 12:01:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KBsR7x107085;
+        Wed, 20 May 2020 12:01:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 314gm6xwa3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 May 2020 12:00:33 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04KC0Pds014045;
-        Wed, 20 May 2020 12:00:25 GMT
+        Wed, 20 May 2020 12:01:06 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04KC13SD003438;
+        Wed, 20 May 2020 12:01:03 GMT
 Received: from mwanda (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 May 2020 05:00:25 -0700
-Date:   Wed, 20 May 2020 15:00:19 +0300
+        with ESMTP ; Wed, 20 May 2020 05:01:02 -0700
+Date:   Wed, 20 May 2020 15:00:54 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Evgeniy Polyakov <zbr@ioremap.net>,
-        Akira Shimahara <akira215corp@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        Allison Randal <allison@lohutok.net>,
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Rui Huang <ray.huang@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Yintian Tao <yttao@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] w1_therm: Free the correct variable
-Message-ID: <20200520120019.GA172354@mwanda>
+Subject: [PATCH] drm/amdgpu: off by on in amdgpu_device_attr_create_groups()
+ error handling
+Message-ID: <20200520120054.GB172354@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 suspectscore=2 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005200104
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200104
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0
- cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005200104
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1011 priorityscore=1501 cotscore=-2147483648
+ impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005200104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is that we change "p_args" to point to the middle of the
-string so when we free it at the end of the function it's not freeing
-the same pointer that we originally allocated.
+This loop in the error handling code should start a "i - 1" and end at
+"i == 0".  Currently it starts a "i" and ends at "i == 1".  The result
+is that it removes one attribute that wasn't created yet, and leaks the
+zeroeth attribute.
 
-Fixes: e2c94d6f5720 ("w1_therm: adding alarm sysfs entry")
+Fixes: 4e01847c38f7 ("drm/amdgpu: optimize amdgpu device attribute code")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
-From static analysis.  I guess it must not cause too much of a problem
-at run time?
+ drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- drivers/w1/slaves/w1_therm.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
-index cc4b88056b33..a6c85e486671 100644
---- a/drivers/w1/slaves/w1_therm.c
-+++ b/drivers/w1/slaves/w1_therm.c
-@@ -1526,8 +1526,9 @@ static ssize_t alarms_store(struct device *device,
- 	int temp, ret = -EINVAL;
- 	char *token = NULL;
- 	s8 tl, th, tt;	/* 1 byte per value + temp ring order */
--	char *p_args = kmalloc(size, GFP_KERNEL);
-+	char *p_args, *orig;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+index b75362bf0742..ee4a8e44fbeb 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+@@ -1931,7 +1931,7 @@ static int amdgpu_device_attr_create_groups(struct amdgpu_device *adev,
+ 					    uint32_t mask)
+ {
+ 	int ret = 0;
+-	uint32_t i = 0;
++	int i;
  
-+	p_args = orig = kmalloc(size, GFP_KERNEL);
- 	/* Safe string copys as buf is const */
- 	if (!p_args) {
- 		dev_warn(device,
-@@ -1611,7 +1612,7 @@ static ssize_t alarms_store(struct device *device,
+ 	for (i = 0; i < counts; i++) {
+ 		ret = amdgpu_device_attr_create(adev, &attrs[i], mask);
+@@ -1942,9 +1942,8 @@ static int amdgpu_device_attr_create_groups(struct amdgpu_device *adev,
+ 	return 0;
  
- free_m:
- 	/* free allocated memory */
--	kfree(p_args);
-+	kfree(orig);
+ failed:
+-	for (; i > 0; i--) {
++	while (--i >= 0)
+ 		amdgpu_device_attr_remove(adev, &attrs[i]);
+-	}
  
- 	return size;
+ 	return ret;
  }
 -- 
 2.26.2
