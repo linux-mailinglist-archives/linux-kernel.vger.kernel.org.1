@@ -2,202 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD8A1DC2C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C64D1DC2C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgETXVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 19:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728573AbgETXVa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 19:21:30 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F384DC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:21:29 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t40so2095240pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:21:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d9DQ+P49I61QAM9lR3N7+GDsq5XLFYN6aPsU2WBNwdA=;
-        b=bCMe/xufpajCZo6YgMImSf+lTdCreI01DMnL4oJeCB9u0gQLrDRGQXxGTumbBbuvzh
-         VcDJZT4Ny6BwS+JLq9FHho1IX9jfdQ5sOuExaKvGL2AH4X9KmCptFgKjxP7aRYaoUPhQ
-         MvhYfmWH85jfcUsMu6h5WaoUBoQDcA5Xz5PjP4SSNumiMXRgBSoFPNgKFJXJAXaFSF7W
-         Dj68ICN+nMquOckHkYDdNE2pkCqZco9LR5I/Z9OxvsAygMVao2Igz+p8fVdBRnQFah+G
-         VJRV3RSxoanGFJDrODq6TgaQU6H2uRSdyfPYRmr1/x6IfXd439j6kC5Q1wyfsFdAE7Vi
-         GUEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d9DQ+P49I61QAM9lR3N7+GDsq5XLFYN6aPsU2WBNwdA=;
-        b=m7Y4S4oDe7UlzWVobdul0lgj48g9UG9WoRreYVicahvknMMkwg8i+ejn4v6XIWqd+y
-         67PSNAibmANAeXenU9vv/LvIvq4OjVp9nNNYJCZgORSBuITVWf8ySeKYD4CfuhGzBLGo
-         /9MkAZNdLDi4mZSPhsjuvyhlM0QVbPg0xAeoutC2MeudbF0U8uLPA5lraxS1tFyqDHOe
-         SrS7uPUv3ezH93haZ5EI0LYSuXdKsJ9pPZggXPP27JY7eD7f6mnSB93sAbzQzckwf4pV
-         02KaTuXuwRGyzsKdZo04o9/MFmEYJJdutW32YPYLfXYYyiSIzgghHKuLg/PGZbYx216I
-         tn0A==
-X-Gm-Message-State: AOAM5318RFNC1pII95j+49bXml7umWHD9EhwpB+fNsD0bpLUs4OWKoCB
-        8oWHzvjj6bLMYKZP6ZQ6eL9yD+bxtpflec8ZOEaGkQ==
-X-Google-Smtp-Source: ABdhPJwOuhDXljbe3Nx6PNNntzvSd8QVlDkOKG7LEakLPOWFDiFba7EgO8kLFoBlCMhfiiYSeVeFn7z/GM0hKI6vqEs=
-X-Received: by 2002:a17:90b:19cc:: with SMTP id nm12mr7431934pjb.25.1590016889009;
- Wed, 20 May 2020 16:21:29 -0700 (PDT)
+        id S1728735AbgETXVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 19:21:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728694AbgETXVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 19:21:50 -0400
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EDB820C56
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590016909;
+        bh=WwJNj5w/54NjB1ri+DkJJcorVEhoVNcHPfB3LzjxW0E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wip68iPVRN/1kE7eGetNhcgk3qhXGso1NSPAD3vnVBXMLtFtO2tAErmsPcKdu/ZyU
+         9IhXJBRv7wJpLAv3SrE/gnN36uBQyYG9gGE2cdhk3FwQZGiEvs+RmKtIy/gcPUxBIe
+         nn9YSl1ykQDYvSb08Xk5aSfXicvNSiOINR11D9qk=
+Received: by mail-wm1-f45.google.com with SMTP id u188so4598103wmu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:21:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533Tdun+aq5sQdG4aB2LK0TUEpaZT9eSeqRnMxc4q6EMy1RVIQ5p
+        /bHmG8Sb9o26ER7JZTaxepFLGZL+KkBmkS0Z0O+QEA==
+X-Google-Smtp-Source: ABdhPJynzyEtBDxtXZsGNmVJtcNhxS+BO9Pf3Crs8l7l7L8Yiqs0lgITY4XiltjeURyPkDKem+4pxrINEGrYoDkMK+8=
+X-Received: by 2002:a1c:8141:: with SMTP id c62mr6385044wmd.21.1590016907726;
+ Wed, 20 May 2020 16:21:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <10f4fb0b-1012-b0e6-af05-0aa5a906de21@redhat.com> <20200520193637.6015-1-ndesaulniers@google.com>
-In-Reply-To: <20200520193637.6015-1-ndesaulniers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 20 May 2020 16:21:17 -0700
-Message-ID: <CAKwvOd=LvSSrg6ynWwnmg4oYS+Ti_rcUrQNudwQLCnEgt6Uzyg@mail.gmail.com>
-Subject: Re: [PATCH v2] Makefile: support compressed debug info
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Clifton <nickc@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Blaikie <blaikie@google.com>
+References: <20200515234547.710474468@linutronix.de> <20200515235125.425810667@linutronix.de>
+ <CALCETrUqK6hv4AuGL=GtK+12TCmr5nBA7CBy=X7TNA=w_Jk0Qw@mail.gmail.com>
+ <87imgr7nwp.fsf@nanos.tec.linutronix.de> <CALCETrW4BxfTVzv8mXntNXiAPnKxqdMEv7djUknGZcrno2WJHg@mail.gmail.com>
+ <87y2pm4ruh.fsf@nanos.tec.linutronix.de> <CALCETrUvH5DQvL6Lo6EkM04pr7wWj+7eZbTg3H_eLNXcZsH0FA@mail.gmail.com>
+ <CALCETrX4Zy2iuc39XTifYd_mvezCEUtW2ax3=ec1TF=yZxAHDg@mail.gmail.com> <871rnewh5w.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <871rnewh5w.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 20 May 2020 16:21:36 -0700
+X-Gmail-Original-Message-ID: <CALCETrU4xaawDfFkYCLzaEFf3TJ2JTcD3ba_q5jbqhmJQ7qV0A@mail.gmail.com>
+Message-ID: <CALCETrU4xaawDfFkYCLzaEFf3TJ2JTcD3ba_q5jbqhmJQ7qV0A@mail.gmail.com>
+Subject: Re: [patch V6 10/37] x86/entry: Switch XEN/PV hypercall entry to IDTENTRY
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 12:36 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, May 20, 2020 at 12:17 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> As debug information gets larger and larger, it helps significantly save
-> the size of vmlinux images to compress the information in the debug
-> information sections. Note: this debug info is typically split off from
-> the final compressed kernel image, which is why vmlinux is what's used
-> in conjunction with GDB. Minimizing the debug info size should have no
-> impact on boot times, or final compressed kernel image size.
+> Andy Lutomirski <luto@kernel.org> writes:
+> > Andrew Cooper pointed out that there is too much magic in Xen for this
+> > to work.  So never mind.
 >
-> All of the debug sections will have a `C` flag set.
-> $ readelf -S <object file>
+> :)
 >
-> $ bloaty vmlinux.gcc75.compressed.dwarf4 -- \
->     vmlinux.gcc75.uncompressed.dwarf4
->
->     FILE SIZE        VM SIZE
->  --------------  --------------
->   +0.0%     +18  [ = ]       0    [Unmapped]
->  -73.3%  -114Ki  [ = ]       0    .debug_aranges
->  -76.2% -2.01Mi  [ = ]       0    .debug_frame
->  -73.6% -2.89Mi  [ = ]       0    .debug_str
->  -80.7% -4.66Mi  [ = ]       0    .debug_abbrev
->  -82.9% -4.88Mi  [ = ]       0    .debug_ranges
->  -70.5% -9.04Mi  [ = ]       0    .debug_line
->  -79.3% -10.9Mi  [ = ]       0    .debug_loc
->  -39.5% -88.6Mi  [ = ]       0    .debug_info
->  -18.2%  -123Mi  [ = ]       0    TOTAL
->
-> $ bloaty vmlinux.clang11.compressed.dwarf4 -- \
->     vmlinux.clang11.uncompressed.dwarf4
->
->     FILE SIZE        VM SIZE
->  --------------  --------------
->   +0.0%     +23  [ = ]       0    [Unmapped]
->  -65.6%    -871  [ = ]       0    .debug_aranges
->  -77.4% -1.84Mi  [ = ]       0    .debug_frame
->  -82.9% -2.33Mi  [ = ]       0    .debug_abbrev
->  -73.1% -2.43Mi  [ = ]       0    .debug_str
->  -84.8% -3.07Mi  [ = ]       0    .debug_ranges
->  -65.9% -8.62Mi  [ = ]       0    .debug_line
->  -86.2% -40.0Mi  [ = ]       0    .debug_loc
->  -42.0% -64.1Mi  [ = ]       0    .debug_info
->  -22.1%  -122Mi  [ = ]       0    TOTAL
->
-> For x86_64 defconfig + LLVM=1 (before):
-> Elapsed (wall clock) time (h:mm:ss or m:ss): 3:22.03
-> Maximum resident set size (kbytes): 43856
->
-> For x86_64 defconfig + LLVM=1 (after):
-> Elapsed (wall clock) time (h:mm:ss or m:ss): 3:32.52
-> Maximum resident set size (kbytes): 1566776
->
-> Suggested-by: David Blaikie <blakie@google.com>
+> But you made me stare more at that stuff and I came up with a way
+> simpler solution. See below.
 
-Sorry, I have mistyped David's email, it should be:
-Suggested-by: David Blaikie <blaikie@google.com>
-(I missed the first `i` in the last name)
+I like it, but I bet it can be even simpler if you do the
+tickle_whatever_paulmck_call_it() change:
 
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Nick Clifton <nickc@redhat.com>
-> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes V1 -> V2:
-> * rebase on linux-next.
-> * Add assembler flags as per Fangrui.
-> * Add note about KDEB_COMPRESS+scripts/package/builddeb
->   as per Sedat and Masahiro.
-> * Add note about bintutils version requirements as per Nick C.
-> * Add note about measured increased build time and max RSS.
->
->  Makefile          |  6 ++++++
->  lib/Kconfig.debug | 15 +++++++++++++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index 71687bfe1cd9..be8835296754 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -822,6 +822,12 @@ DEBUG_CFLAGS       += $(call cc-option, -femit-struct-debug-baseonly) \
->                    $(call cc-option,-fno-var-tracking)
->  endif
->
-> +ifdef CONFIG_DEBUG_INFO_COMPRESSED
-> +DEBUG_CFLAGS   += -gz=zlib
-> +KBUILD_AFLAGS  += -Wa,--compress-debug-sections=zlib
-> +KBUILD_LDFLAGS += --compress-debug-sections=zlib
-> +endif
+> +__visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
+> +{
+> +       struct pt_regs *old_regs;
+> +       bool inhcall;
 > +
->  KBUILD_CFLAGS += $(DEBUG_CFLAGS)
->  export DEBUG_CFLAGS
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index b8f023e054b9..5a423cbfaea4 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -225,6 +225,21 @@ config DEBUG_INFO_REDUCED
->           DEBUG_INFO build and compile times are reduced too.
->           Only works with newer gcc versions.
->
-> +config DEBUG_INFO_COMPRESSED
-> +       bool "Compressed debugging information"
-> +       depends on DEBUG_INFO
-> +       depends on $(cc-option,-gz=zlib)
-> +       depends on $(as-option,-Wa,--compress-debug-sections=zlib)
-> +       depends on $(ld-option,--compress-debug-sections=zlib)
-> +       help
-> +         Compress the debug information using zlib.  Requires GCC 5.0+ or Clang
-> +         5.0+, binutils 2.26+, and zlib.
+> +       idtentry_enter(regs);
+> +       old_regs = set_irq_regs(regs);
 > +
-> +         Users of dpkg-deb via scripts/package/builddeb may
-> +         wish to set the $KDEB_COMPRESS env var to "none" to avoid recompressing
-> +         the debug info again with a different compression scheme, which can
-> +         result in larger binaries.
+> +       run_on_irqstack(__xen_pv_evtchn_do_upcall, NULL, regs);
 > +
->  config DEBUG_INFO_SPLIT
->         bool "Produce split debuginfo in .dwo files"
->         depends on DEBUG_INFO
-> --
-> 2.26.2.761.g0e0b3e54be-goog
->
+> +       set_irq_regs(old_regs);
+> +
+> +       inhcall = get_and_clear_inhcall();
+> +       __idtentry_exit(regs, inhcall);
+> +       restore_inhcall(inhcall);
 
+How about:
 
--- 
-Thanks,
-~Nick Desaulniers
+       inhcall = get_and_clear_inhcall();
+       if (inhcall) {
+        if (!WARN_ON_ONCE((regs->flags & X86_EFLAGS_IF) || preempt_count()) {
+          local_irq_enable();
+          cond_resched();
+          local_irq_disable();
+        }
+     }
+     restore_inhcall(inhcall);
+     idtentry_exit(regs);
+
+This could probably be tidied up by having a xen_maybe_preempt() that
+does the inhcall and resched mess.
+
+The point is that, with the tickle_nohz_ stuff, there is nothing
+actually preventing IRQ handlers from sleeping as long as they aren't
+on the IRQ stack and as long as the interrupted context was safe to
+sleep in.
+
+--Andy
