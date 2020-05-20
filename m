@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750F51DAA74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B9C1DAA91
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgETGOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbgETGOT (ORCPT
+        id S1726560AbgETGYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:24:14 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:59685 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725998AbgETGYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:14:19 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE88C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 23:14:19 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t40so774354pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 23:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wMChkmNgO38kmLmBamx1KyuI/0Qmetg62NTnm+IHgR8=;
-        b=YMevjxcGr0pBC5pur4aECmA4953I9pPKEaB7XzAdeyG/MuEmsu97dZru1srzGFctvh
-         BgKJvCF+oHQDKRZoJiOljLMD5h/ZYOTqGbOagOeMH+94Es9oZJSCVq7Br28VtLC/3Hrc
-         6piDPFLUeotpbrjBN0Wi2DtXtcg6ZroHY70KVglpS16ija0//aLlHZKnduRLQhGWyLeA
-         33NfZ4nKJFpf8tt7FMBL1VNBxr7Y/hJ1edQBIFVGM9IcBcA7PZQSTttChfyeG8PnV7V5
-         dNF0l1nbRTlf6CuPbwczsPy1806kE3HNEnI9EYtur8flLzQxwNk5T14Dy3WwSqt25BH+
-         hVoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wMChkmNgO38kmLmBamx1KyuI/0Qmetg62NTnm+IHgR8=;
-        b=d0Rkw3lBsJhA1tDZeYmyWflzjcuwsC8fGAbyIl2WljMZMxN3a2qTGq/KB6j/MC4yU8
-         gJ3KwcHn/1AxVx9FRbUGvXkdhvSZcf5Mgtvtc4owKmDepfat2ujYOvmZHwfpwWCz7Jm0
-         ylRikzUvz/znoxvTojxjAdsjVj3dBiloy3ZID56ilvMKfOcX5XtdA1Gq9VWV9TXbCo11
-         8u9VFQUCbilDhNn2CQ2AYSJErei7fjqnT6wQN2O+sbd4CTTp4OvGcX9AR5Rhrbv8QXCw
-         yirLfaU8/KIIubXerYBVxF8wHiWWrlgocIjavrtcPhFTLwR0jxAF/H0GYUDDPqh5Qt/1
-         DWAQ==
-X-Gm-Message-State: AOAM531uFgt7TEcCtW05HR6tZ5RQn9PKIvvEhXFcw96yNAo8WvCPVROk
-        Ch4/8zI+jujvIF/5v4TEOqSnDA==
-X-Google-Smtp-Source: ABdhPJz2dv2yzNLD7cibiASunEXoep0JLsfaI6ofpzIrW+Jcy2OaJDiqObZ6z54bqyX+f8mX7BhZzA==
-X-Received: by 2002:a17:90a:36a9:: with SMTP id t38mr3586040pjb.48.1589955259196;
-        Tue, 19 May 2020 23:14:19 -0700 (PDT)
-Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id a16sm1162808pfl.167.2020.05.19.23.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 23:14:18 -0700 (PDT)
-Date:   Tue, 19 May 2020 23:14:16 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Eli Riggs <eli@rje.li>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: Add initial sm6125 SoC support
-Message-ID: <20200520061416.GB11847@yoga>
-References: <20200517115410.3374-1-eli@rje.li>
- <20200517115410.3374-2-eli@rje.li>
- <20200519060848.GB2165@builder.lan>
- <20200519041846.3892747b@casper>
+        Wed, 20 May 2020 02:24:14 -0400
+X-Greylist: delayed 457 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 02:24:13 EDT
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 4A81EC4E;
+        Wed, 20 May 2020 02:16:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 20 May 2020 02:16:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=3XNYaKnp2YGCe91EplwF85srPK8
+        6i5OIm/TZfO+r/A4=; b=boZgr2GGEoSCPOnQyY7adWYwLGs6cKNwB4tPIHroF9Q
+        6nBi0D14HFNTaPEDK3mIToWgpFD/SoE7jIoA7nd1Ehuqfj2nkYSu+jP+xit2P2md
+        XyTPT8i1+WR8EI2wlndxzZ0JCoY2jwiZnEzCWg0NvPuRyoDazEcAnX0KRzebYOeh
+        EVRIWQ0WD1GjnazMVjqf/Ab6PxSId5ikiYxDPAipIlx+4a5HXOeE1cQFGijcK+4Z
+        ro7MyN64kh82CxC5mgEKPkcegXkk23zwMsIVa12ZzhglXUSQa+C08eKEbhYQ3M8h
+        svQd995a84sj/zPAqYjaoID1dZyUcdtTmLgXBJ1n/1g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3XNYaK
+        np2YGCe91EplwF85srPK86i5OIm/TZfO+r/A4=; b=kvz2/WezRA3U7KeAYIoye/
+        GsK/JdQkFZfgnTnjy2U5r+nWxYV6BqcjDpSfSvImK33U8NDqHQjjWgIddB9ItzE5
+        VQoDX9qFU83BCNZmvLoTQJxyRMkt/SBkeuaDt6CGdf22EfiLsSvhWCjXL0WoaOWk
+        G5jP6/vgh7y54m0i6/oDos61fHKztdduCD99IIrEyuVmehl96QhRMEnhO2T+4zxM
+        mrEi/nZR2z10IjvG0j3QEp6j/7Tf+5KyCS0BRWTIBwlN0LIkwsudGJ9r4vB+Kz9F
+        mWRnnA6e+WTUa1SICCmLKb+BxjRygr+OCe+Nvn1RFo54RJDyhj0Q4OjeYX7twCiw
+        ==
+X-ME-Sender: <xms:PMvEXtybO761tUOfUtM1Uqz2bHplKGTEmVGoIF0G3kzcLSXeGp8BQQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddtkedguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueei
+    vedttdegteejkedvfeegfefhnecukfhppedukedtrddvfeehrdefrdehgeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhi
+    sehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:PMvEXtQgL0xVSCOkaJchdgOBsjqZ2eLoEvsuUCzy-o2rOR9gqAeSCg>
+    <xmx:PMvEXnXKX9pr1U5wgNkSMjZe8QCjXPg31XSMjzBCpwtmJubMfnKZXw>
+    <xmx:PMvEXvi9bWn-4QBYxqXPK1RYyfQElyNhwIe9R9yz2xMB1_c_Ji2mjg>
+    <xmx:QsvEXrtMztEFg7yl7BxqGmfpINuyC9xWvXo4xPA7p_oJD80NbveZlEi0-BA>
+Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp [180.235.3.54])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 42D9C3066434;
+        Wed, 20 May 2020 02:16:26 -0400 (EDT)
+Date:   Wed, 20 May 2020 15:16:24 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        kernel-hardening@lists.openwall.com,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        "Lev R . Oshvang ." <levonshe@gmail.com>
+Subject: Re: [PATCH v2] firewire: Remove function callback casts
+Message-ID: <20200520061624.GA25690@workstation>
+Mail-Followup-To: Oscar Carter <oscar.carter@gmx.com>,
+        Kees Cook <keescook@chromium.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        kernel-hardening@lists.openwall.com,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, alsa-devel@alsa-project.org,
+        "Lev R . Oshvang ." <levonshe@gmail.com>
+References: <20200519173425.4724-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519041846.3892747b@casper>
+In-Reply-To: <20200519173425.4724-1-oscar.carter@gmx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 19 May 04:18 PDT 2020, Eli Riggs wrote:
+Hi,
 
-> On Mon, 18 May 2020 23:08:48 -0700
-> Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+On Tue, May 19, 2020 at 07:34:25PM +0200, Oscar Carter wrote:
+> In an effort to enable -Wcast-function-type in the top-level Makefile to
+> support Control Flow Integrity builds, remove all the function callback
+> casts.
 > 
-> > Please use dual GPL/BSD license for dts files, if you can.
+> To do this, modify the "fw_iso_context_create" function prototype adding
+> a new parameter for the multichannel callback. Also, fix all the
+> function calls accordingly.
 > 
-> Unfortunately the downstream tree I ported has a GPL-2-only header.
+> In the "fw_iso_context_create" function return an error code if both
+> callback parameters are NULL and also set the "ctx->callback.sc"
+> explicity to NULL in this case. It is not necessary set to NULL the
+> "ctx->callback.mc" variable because this and "ctx->callback.sc" are an
+> union and setting one implies setting the other one to the same value.
 > 
-> > [...review]
+> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+> ---
+> Changelog v1->v2
+> -Set explicity to NULL the "ctx->callback.sc" variable and return an error
+>  code in "fw_iso_context_create" function if both callback parameters are
+>  NULL as Lev R. Oshvang suggested.
+> -Modify the commit changelog accordingly.
 > 
-> OK
-> 
-> > Given that you won't get very far without GCC and e.g.  pinctrl
-> > driver I would prefer to see some patches for those as well, to
-> > ensure that this will be able to go beyond basic UART.
-> 
-> Cleaning up my gcc and clk-smd-rpm drivers now, as well as another
-> patchset for pm6125, qusb2-phy, dwc3, and sdhci. TLMM in the vague
-> future.
-> 
+>  drivers/firewire/core-cdev.c        | 12 +++++++-----
+>  drivers/firewire/core-iso.c         | 14 ++++++++++++--
+>  drivers/firewire/net.c              |  2 +-
+>  drivers/media/firewire/firedtv-fw.c |  3 ++-
+>  include/linux/firewire.h            |  3 ++-
+>  sound/firewire/amdtp-stream.c       |  2 +-
+>  sound/firewire/isight.c             |  4 ++--
+>  7 files changed, 27 insertions(+), 13 deletions(-)
 
-Looking forward to review these!
+I'm an author of ALSA firewire stack and thanks for the patch. I agree with
+your intention to remove the cast of function callback toward CFI build.
 
-Regards,
-Bjorn
+Practically, the isochronous context with FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL
+is never used by in-kernel drivers. Here, I propose to leave current
+kernel API (fw_iso_context_create() with fw_iso_callback_t) as is.
+Alternatively, a new kernel API for the context (e.g.
+fw_iso_mc_context_create() with fw_iso_mc_callback_t). This idea leaves
+current drivers as is and the change is done inner firewire-core driver,
+therefore existent kernel API is not changed.
+
+Later I post two patches for the proposal. I'd like you to review it and
+I'm glad to receive your comments.
+
+
+Regards
+
+Takashi Sakamoto
