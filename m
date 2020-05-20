@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561E01DAFA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAACA1DAFA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgETKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:05:53 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:54966 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726224AbgETKFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726852AbgETKFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 20 May 2020 06:05:52 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app2 (Coremail) with SMTP id by_KCgAnKeDRAMVeTUqMAQ--.58846S4;
-        Wed, 20 May 2020 18:05:08 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/etnaviv: fix runtime pm imbalance on error
-Date:   Wed, 20 May 2020 18:05:04 +0800
-Message-Id: <20200520100504.13360-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAnKeDRAMVeTUqMAQ--.58846S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoW3KFc_Cw
-        15Zrn3JrsIqr1vqr17Z3y5ZFyIvF93Xa92gw4ktas3K342vr1DXrykZryDX345XFWxWF1D
-        Ja1vqa4fAr1DWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbT8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
-        JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
-        67AK6r4DMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
-        6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOlkVUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
+Received: from foss.arm.com ([217.140.110.172]:52018 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgETKFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:05:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98C0F31B;
+        Wed, 20 May 2020 03:05:51 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 873B53F68F;
+        Wed, 20 May 2020 03:05:50 -0700 (PDT)
+Date:   Wed, 20 May 2020 11:05:44 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Will Deacon <will@kernel.org>, will.deacon@arm.com,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Keno Fischer <keno@juliacomputing.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: Fix PTRACE_SYSEMU semantics
+Message-ID: <20200520100543.GA18302@gaia>
+References: <20200515222253.GA38408@juliacomputing.com>
+ <20200518114119.GB32394@willie-the-truck>
+ <20200519120725.GA20313@gaia>
+ <20200520100330.GA25430@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520100330.GA25430@bogus>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+On Wed, May 20, 2020 at 11:03:30AM +0100, Sudeep Holla wrote:
+> On Tue, May 19, 2020 at 01:07:27PM +0100, Catalin Marinas wrote:
+> > On Mon, May 18, 2020 at 12:41:20PM +0100, Will Deacon wrote:
+> > > On Fri, May 15, 2020 at 06:22:53PM -0400, Keno Fischer wrote:
+> > > > Quoth the man page:
+> > > > ```
+> > > >        If the tracee was restarted by PTRACE_SYSCALL or PTRACE_SYSEMU, the
+> > > >        tracee enters syscall-enter-stop just prior to entering any system
+> > > >        call (which will not be executed if the restart was using
+> > > >        PTRACE_SYSEMU, regardless of any change made to registers at this
+> > > >        point or how the tracee is restarted after this stop).
+> > > > ```
+> > > >
+> > > > The parenthetical comment is currently true on x86 and powerpc,
+> > > > but not currently true on arm64. arm64 re-checks the _TIF_SYSCALL_EMU
+> > > > flag after the syscall entry ptrace stop. However, at this point,
+> > > > it reflects which method was used to re-start the syscall
+> > > > at the entry stop, rather than the method that was used to reach it.
+> > > > Fix that by recording the original flag before performing the ptrace
+> > > > stop, bringing the behavior in line with documentation and x86/powerpc.
+> > > >
+> > > > Signed-off-by: Keno Fischer <keno@juliacomputing.com>
+> > > > ---
+> > > >  arch/arm64/kernel/ptrace.c | 8 +++++---
+> > > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> > > > index b3d3005d9515..b67b4d14aa17 100644
+> > > > --- a/arch/arm64/kernel/ptrace.c
+> > > > +++ b/arch/arm64/kernel/ptrace.c
+> > > > @@ -1829,10 +1829,12 @@ static void tracehook_report_syscall(struct pt_regs *regs,
+> > > >
+> > > >  int syscall_trace_enter(struct pt_regs *regs)
+> > > >  {
+> > > > -	if (test_thread_flag(TIF_SYSCALL_TRACE) ||
+> > > > -		test_thread_flag(TIF_SYSCALL_EMU)) {
+> > > > +	u32 flags = READ_ONCE(current_thread_info()->flags) &
+> > > > +		(_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE);
+> > > > +
+> > > > +	if (flags) {
+> > >
+> > > nit: but I'd rather the '&' operation was in the conditional so that the
+> > > 'flags' variable holds all of the flags.
+> > >
+> > > With that:
+> > >
+> > > Acked-by: Will Deacon <will@kernel.org>
+> > >
+> > > Also needs:
+> > >
+> > > Cc: <stable@vger.kernel.org>
+> > > Fixes: f086f67485c5 ("arm64: ptrace: add support for syscall emulation")
+> > >
+> > > Catalin -- can you pick this up for 5.7 please, with my 'nit' addressed?
+> >
+> > I'll queue it with the above addressed. I think flags also needs to be
+> > unsigned long rather than u32.
+> >
+> > However, before sending the pull request, I'd like Sudeep to confirm
+> > that it doesn't break his original use-case for this feature.
+> 
+> I just tested it with my simple programs I had before. I have also asked
+> teams working on gvisor to test. They have tested it and see no
+> regression. I will ask them to reply here.
+> 
+> Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks Sudeep.
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index a31eeff2b297..da3f6ca5849f 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -1691,6 +1691,9 @@ static int etnaviv_gpu_bind(struct device *dev, struct device *master,
- 	return 0;
- 
- out_sched:
-+#ifdef CONFIG_PM
-+	pm_runtime_put_autosuspend(gpu->dev);
-+#endif
- 	etnaviv_sched_fini(gpu);
- 
- out_workqueue:
 -- 
-2.17.1
-
+Catalin
