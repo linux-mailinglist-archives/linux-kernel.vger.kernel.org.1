@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929C51DBB89
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A4C1DC56B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 05:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgETRcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:32:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43403 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgETRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:32:05 -0400
-IronPort-SDR: 2QcuSoLY//wNsExo5tNdfpsQBNMIq7t+lmWut8RmzgRmJ6TUBaPn88iC/w3P0ig6Ypc+6C+bVr
- jUdi2QPeDF6Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 10:32:04 -0700
-IronPort-SDR: lbS/aYOO9aOTVAqsFs+5KVTl+glo3BcQkWbHrpP73J6Yf83Z8J7s7o4ZDIfrHHx/eHJOMd7CdE
- nSNT0AjdSrUw==
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
-   d="scan'208";a="268343011"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.101.53]) ([10.254.101.53])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 10:32:03 -0700
-Subject: Re: [PATCH V6 0/4] x86/resctrl: Enable user to view and select thread
- throttling mode
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
-        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1589922949.git.reinette.chatre@intel.com>
- <20200519213516.GF444@zn.tnic>
- <1d9ee0f0-8078-e8b6-ce66-6c0bf51cb3b4@intel.com>
- <20200520071109.GA1457@zn.tnic>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <5c044d17-e42e-1493-28a5-3ecac043c8f1@intel.com>
-Date:   Wed, 20 May 2020 10:32:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727992AbgEUDBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 23:01:04 -0400
+Received: from 19.mo4.mail-out.ovh.net ([87.98.179.66]:33096 "EHLO
+        19.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726861AbgEUDBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 23:01:03 -0400
+X-Greylist: delayed 32998 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 23:01:02 EDT
+Received: from player732.ha.ovh.net (unknown [10.108.57.150])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 0A5A523673D
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 19:33:09 +0200 (CEST)
+Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
+        (Authenticated sender: groug@kaod.org)
+        by player732.ha.ovh.net (Postfix) with ESMTPSA id F18101274FFBC;
+        Wed, 20 May 2020 17:33:01 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R00501e830cb-d745-4bc0-ad5d-5f7e91f631ff,D4AE9CB3A4750E3488E7135F1D4D455A9A9A4933) smtp.auth=groug@kaod.org
+Date:   Wed, 20 May 2020 19:32:59 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, paulus@samba.org, mpe@ellerman.id.au,
+        sukadev@linux.ibm.com, linuxram@us.ibm.com
+Subject: Re: [PATCH] KVM: PPC: Book3S HV: relax check on H_SVM_INIT_ABORT
+Message-ID: <20200520193259.0b66db32@bahia.lan>
+In-Reply-To: <20200520165110.71020-1-ldufour@linux.ibm.com>
+References: <20200520165110.71020-1-ldufour@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200520071109.GA1457@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 7626001547735570884
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedruddtledgudduvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgsehtjeertdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeehkefhtdehgeehheejledufeekhfdvleefvdeihefhkefhudffhfeuuedvffdthfenucfkpheptddrtddrtddrtddpkedvrddvheefrddvtdekrddvgeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefvddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+On Wed, 20 May 2020 18:51:10 +0200
+Laurent Dufour <ldufour@linux.ibm.com> wrote:
 
-On 5/20/2020 12:11 AM, Borislav Petkov wrote:
-> On Tue, May 19, 2020 at 03:13:59PM -0700, Reinette Chatre wrote:
->> I am very sorry. I was hoping that this series could be considered for
->> inclusion into v5.8 and submitted it seven weeks ago because of that.
->> The recent feedback addressed seemed to be the final few small comments
->> needed to be ready for inclusion and I was afraid that waiting long to
->> address this would cause me to miss opportunity to be considered for
->> inclusion since we are already at rc6.
+> The commit 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_*
+> Hcalls") added checks of secure bit of SRR1 to filter out the Hcall
+> reserved to the Ultravisor.
 > 
-> That's understandable but does it really matter when it goes in? If not
-> in 5.8, then 5.9. I.e., there's always a next kernel.
+> However, the Hcall H_SVM_INIT_ABORT is made by the Ultravisor passing the
+> context of the VM calling UV_ESM. This allows the Hypervisor to return to
+> the guest without going through the Ultravisor. Thus the Secure bit of SRR1
+> is not set in that particular case.
 > 
-> So why the hurry?
+> In the case a regular VM is calling H_SVM_INIT_ABORT, this hcall will be
+> filtered out in kvmppc_h_svm_init_abort() because kvm->arch.secure_guest is
+> not set in that case.
 > 
 
-I was told that these enhancements really needed to get into v5.8,
-otherwise the OSV intercepts will be much further out. Certainly not of
-concern to you and not your problem, I am just answering your question
-as an explanation for my goal for inclusion into v5.8.
+Why not checking vcpu->kvm->arch.secure_guest then ?
 
-It seems inappropriate that I have the title of maintainer and not be
-able to have patches considered for inclusion during an entire release
-cycle. I completely understand that you are under tremendous load and
-expect that you have an incredible amount of things demanding your
-attention. I was wrong to expect a higher level of visibility of these
-patches and I am sorry that I spammed you with this patchset.
+> Fixes: 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_* Hcalls")
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> ---
+>  arch/powerpc/kvm/book3s_hv.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 93493f0cbfe8..eb1f96cb7b72 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -1099,9 +1099,7 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
+>  			ret = kvmppc_h_svm_init_done(vcpu->kvm);
+>  		break;
+>  	case H_SVM_INIT_ABORT:
+> -		ret = H_UNSUPPORTED;
+> -		if (kvmppc_get_srr1(vcpu) & MSR_S)
+> -			ret = kvmppc_h_svm_init_abort(vcpu->kvm);
 
-Reinette
+or at least put a comment to explain why H_SVM_INIT_ABORT
+doesn't have the same sanity check as the other SVM hcalls.
+
+> +		ret = kvmppc_h_svm_init_abort(vcpu->kvm);
+>  		break;
+>  
+>  	default:
+
