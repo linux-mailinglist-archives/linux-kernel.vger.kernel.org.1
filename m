@@ -2,131 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408011DA6C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106121DA6C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgETArb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:47:31 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:3458 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgETAra (ORCPT
+        id S1728172AbgETAud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgETAud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:47:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1589935650; x=1621471650;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=X/ckMTm6DagFws+fgX1faFpSPzIF3DucNoEn8weBuyo=;
-  b=I7uLrec0Xalpo4n/NQUlnBc+WmfPpUasx+smBW3pnK4ENF+rZblRF5O0
-   yWTaQs6Zcr3REffrR4GHfrqfk1wJSZk/xsDmarjkmgGnic8EWJgmA+gVE
-   +fVMojPBqy+dG2/PoGtMAVh471UFWU3G6saOUojR3p3qfhN1EEq341g8T
-   8=;
-IronPort-SDR: A0JlgZVp7ZmZCqPbiZNe/UGepZ/OL/GEy6bzxI/M9lhcAjVXFCB7yL6hroJ0+T2ShdGNW4s6IC
- e0lVsBO2RPog==
-X-IronPort-AV: E=Sophos;i="5.73,412,1583193600"; 
-   d="scan'208";a="44534246"
-Subject: Re: [PATCH v2 4/4] arch/x86: Add L1D flushing Documentation
-Thread-Topic: [PATCH v2 4/4] arch/x86: Add L1D flushing Documentation
-Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.47.23.34])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 20 May 2020 00:47:26 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id A5014A20D5;
-        Wed, 20 May 2020 00:47:24 +0000 (UTC)
-Received: from EX13D01UWB001.ant.amazon.com (10.43.161.75) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 May 2020 00:47:24 +0000
-Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
- EX13d01UWB001.ant.amazon.com (10.43.161.75) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 20 May 2020 00:47:23 +0000
-Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
- EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
- Wed, 20 May 2020 00:47:23 +0000
-From:   "Singh, Balbir" <sblbir@amazon.com>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "keescook@chromium.org" <keescook@chromium.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-Thread-Index: AQHWC8KTBtatWwah2kid46QoFKC446ivz/CAgACY/YA=
-Date:   Wed, 20 May 2020 00:47:23 +0000
-Message-ID: <fc9bc2f25fa082865d1b5ec98bfd7d02fe7cf00d.camel@amazon.com>
-References: <20200406031946.11815-1-sblbir@amazon.com>
-         <20200406031946.11815-5-sblbir@amazon.com>
-         <5def424d-c7d5-c6fa-60b9-363f6bca6bc6@infradead.org>
-In-Reply-To: <5def424d-c7d5-c6fa-60b9-363f6bca6bc6@infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.100]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EFBBED2A1FBA17459853E791DB97C90C@amazon.com>
-Content-Transfer-Encoding: base64
+        Tue, 19 May 2020 20:50:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE72C061A0E;
+        Tue, 19 May 2020 17:50:33 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7184330C;
+        Wed, 20 May 2020 02:50:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1589935831;
+        bh=TOmzP22SIGV/a8c3Jvf3dFaO83IOFowTmTJZLReFhFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ornY/va4NB6Alqny2AnXzUSQj53n90/F/oNX3ROukai8yj9ltbmcNxVk12TKqEhSM
+         dgnTBYoCi4aDQiJuDn1warrD2UOVRzPguNWU9Oa4le25dvjMcprK04vGjNzx3NlQFN
+         /5i1oBNvMRGHQWvPYoxo5DV3tQaXq50QW5qg1kus=
+Date:   Wed, 20 May 2020 03:50:20 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: [PATCH v9 2/4] media: i2c: Add MAX9286 driver
+Message-ID: <20200520005020.GQ3820@pendragon.ideasonboard.com>
+References: <20200512155105.1068064-1-kieran.bingham+renesas@ideasonboard.com>
+ <20200512155105.1068064-3-kieran.bingham+renesas@ideasonboard.com>
+ <20200516215103.GA857@valkosipuli.retiisi.org.uk>
+ <930009cd-d887-752a-4f1f-567c795101ee@ideasonboard.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <930009cd-d887-752a-4f1f-567c795101ee@ideasonboard.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA1LTE5IGF0IDA4OjM5IC0wNzAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
-IA0KPiBIaS0tDQo+IA0KPiBDb21tZW50cyBiZWxvdy4gU29ycnkgYWJvdXQgdGhlIGRlbGF5Lg0K
-PiANCj4gT24gNC81LzIwIDg6MTkgUE0sIEJhbGJpciBTaW5naCB3cm90ZToNCj4gPiBBZGQgZG9j
-dW1lbnRhdGlvbiBvZiBsMWQgZmx1c2hpbmcsIGV4cGxhaW4gdGhlIG5lZWQgZm9yIHRoZQ0KPiA+
-IGZlYXR1cmUgYW5kIGhvdyBpdCBjYW4gYmUgdXNlZC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBCYWxiaXIgU2luZ2ggPHNibGJpckBhbWF6b24uY29tPg0KPiA+IC0tLQ0KPiA+ICBEb2N1bWVu
-dGF0aW9uL2FkbWluLWd1aWRlL2h3LXZ1bG4vaW5kZXgucnN0ICAgfCAgMSArDQo+ID4gIC4uLi9h
-ZG1pbi1ndWlkZS9ody12dWxuL2wxZF9mbHVzaC5yc3QgICAgICAgICB8IDQwICsrKysrKysrKysr
-KysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCspDQo+ID4gIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2h3LXZ1bG4vbDFkX2Zs
-dXNoLnJzdA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2h3LXZ1
-bG4vbDFkX2ZsdXNoLnJzdCBiL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvaHctdnVsbi9sMWRf
-Zmx1c2gucnN0DQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAw
-MDAuLjczZWU5ZTQ5MWE3NA0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0
-aW9uL2FkbWluLWd1aWRlL2h3LXZ1bG4vbDFkX2ZsdXNoLnJzdA0KPiA+IEBAIC0wLDAgKzEsNDAg
-QEANCj4gPiArTDFEIEZsdXNoaW5nIGZvciB0aGUgcGFyYW5vaWQNCj4gPiArPT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0NCj4gPiArDQo+ID4gK1dpdGggYW4gaW5jcmVhc2luZyBudW1iZXIg
-b2YgdnVsbmVyYWJpbGl0aWVzIGJlaW5nIHJlcG9ydGVkIGFyb3VuZCBkYXRhDQo+ID4gK2xlYWtz
-IGZyb20gTDFELCBhIG5ldyB1c2VyIHNwYWNlIG1lY2hhbmlzbSB0byBmbHVzaCB0aGUgTDFEIGNh
-Y2hlIG9uDQo+ID4gK2NvbnRleHQgc3dpdGNoIGlzIGFkZGVkIHRvIHRoZSBrZXJuZWwuIFRoaXMg
-c2hvdWxkIGhlbHAgYWRkcmVzcw0KPiA+ICtDVkUtMjAyMC0wNTUwIGFuZCBmb3IgcGFyYW5vaWQg
-YXBwbGljYXRpb25zLCBrZWVwIHRoZW0gc2FmZSBmcm9tIGFueQ0KPiA+ICt5ZXQgdG8gYmUgZGlz
-Y292ZXJlZCB2dWxuZXJhYmlsaXRpZXMsIHJlbGF0ZWQgdG8gbGVha3MgZnJvbSB0aGUgTDFEDQo+
-ID4gK2NhY2hlLg0KPiA+ICsNCj4gPiArVGFza3MgY2FuIG9wdCBpbiB0byB0aGlzIG1lY2hhbmlz
-bSBieSB1c2luZyBhbiBhcmNoaXRlY3R1cmUgc3BlY2lmaWMNCj4gPiArcHJjdGwgKHg4NiBvbmx5
-IGF0IHRoZSBtb21lbnQpLg0KPiA+ICsNCj4gPiArUmVsYXRlZCBDVkVTDQo+IA0KPiAgICAgICAg
-ICAgIENWRXMNCj4gDQo+ID4gKy0tLS0tLS0tLS0tLQ0KPiA+ICtBdCB0aGUgcHJlc2VudCBtb21l
-bnQsIHRoZSBmb2xsb3dpbmcgQ1ZFcyBjYW4gYmUgYWRkcmVzc2VkIGJ5IHRoaXMNCj4gPiArbWVj
-aGFuaXNtDQo+ID4gKw0KPiA+ICsgICAgPT09PT09PT09PT09PSAgICAgICA9PT09PT09PT09PT09
-PT09PT09PT09PT0gICAgID09PT09PT09PT09PT09PT09PQ0KPiA+ICsgICAgQ1ZFLTIwMjAtMDU1
-MCAgICAgICBJbXByb3BlciBEYXRhIEZvcndhcmRpbmcgICAgIE9TIHJlbGF0ZWQgYXNwZWN0cw0K
-PiA+ICsgICAgPT09PT09PT09PT09PSAgICAgICA9PT09PT09PT09PT09PT09PT09PT09PT0gICAg
-ID09PT09PT09PT09PT09PT09PQ0KPiA+ICsNCj4gPiArVXNhZ2UgR3VpZGVsaW5lcw0KPiA+ICst
-LS0tLS0tLS0tLS0tLS0tDQo+ID4gK0FwcGxpY2F0aW9ucyBjYW4gY2FsbCBgYGFyY2hfcHJjdGwo
-MilgYCB3aXRoIG9uZSBvZiB0aGVzZSB0d28gYXJndW1lbnRzDQo+IA0KPiBlbmQgYWJvdmUgc2Vu
-dGVuY2Ugd2l0aCBwZXJpb2Qgb3IgY29sb24gKGNvbG9uIG1pZ2h0IHJlcXVpcmUgdGhlIGZvbGxv
-d2luZw0KPiBidWxsZXQgaXRlbXMgdG8gYmUgaW5kZW50ZWQgLS0gSSdtIG5vdCBzdXJlIGFib3V0
-IHRoYXQpLg0KDQpJJ2xsIHRha2UgYSBsb29rDQoNCj4gDQo+ID4gKw0KPiA+ICsxLiBBUkNIX1NF
-VF9MMURfRkxVU0ggLSBmbHVzaCB0aGUgTDFEIGNhY2hlIG9uIGNvbnRleHQgc3dpdGNoIChvdXQp
-DQo+ID4gKzIuIEFSQ0hfR0VUX0wxRF9GTFVTSCAtIGdldCB0aGUgY3VycmVudCBzdGF0ZSBvZiB0
-aGUgTDFEIGNhY2hlIGZsdXNoLCByZXR1cm5zIDENCj4gPiArICAgaWYgc2V0IGFuZCAwIGlmIG5v
-dCBzZXQuDQo+ID4gKw0KPiA+ICsqKk5PVEUqKjogVGhlIGZlYXR1cmUgaXMgZGlzYWJsZWQgYnkg
-ZGVmYXVsdCwgYXBwbGljYXRpb25zIHRvIG5lZWQgdG8gc3BlY2lmaWNhbGx5DQo+IA0KPiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVmYXVsdDsgYXBwbGljYXRpb25z
-IG5lZWQgdG8NCj4gDQo+ID4gK29wdCBpbnRvIHRoZSBmZWF0dXJlIHRvIGVuYWJsZSBpdC4NCj4g
-PiArDQo+ID4gK01pdGlnYXRpb24NCj4gPiArLS0tLS0tLS0tLQ0KPiA+ICtXaGVuIEFSQ0hfU0VU
-X0wxRF9GTFVTSCBpcyBlbmFibGVkIGZvciBhIHRhc2ssIG9uIHN3aXRjaGluZyB0YXNrcyAod2hl
-bg0KPiA+ICt0aGUgYWRkcmVzcyBzcGFjZSBjaGFuZ2VzKSwgYSBmbHVzaCBvZiB0aGUgTDFEIGNh
-Y2hlIGlzIHBlcmZvcm1lZCBmb3INCj4gPiArdGhlIHRhc2sgd2hlbiBpdCBsZWF2ZXMgdGhlIENQ
-VS4gSWYgdGhlIHVuZGVybHlpbmcgQ1BVIHN1cHBvcnRzIEwxRA0KPiA+ICtmbHVzaGluZyBpbiBo
-YXJkd2FyZSwgdGhlIGhhcmR3YXJlIG1lY2hhbmlzbSBpcyB1c2VkLCBvdGhlcndpc2UgYSBzb2Z0
-d2FyZQ0KPiA+ICtmYWxsYmFjaywgc2ltaWxhciB0byB0aGUgbWVjaGFuaXNtIHVzZWQgYnkgTDFU
-RiBpcyB1c2VkLg0KPiA+IA0KPiANCg0KSSdsbCB3b3JrIG9uIHRoZXNlIGFuZCB1cGRhdGUgYmFz
-ZWQgb24gbW9yZSBmZWVkYmFjayBvbiB0aGUgcmVzdCBvZiB0aGUgc2VyaWVzLg0KDQpCYWxiaXIg
-U2luZ2guDQoNCg==
+Hi Sakari,
+
+On Mon, May 18, 2020 at 12:45:18PM +0100, Kieran Bingham wrote:
+> Hi Sakari,
+> 
+> There are only fairly minor comments here, fix ups will be included in a
+> v10.
+> 
+> Is there anything major blocking integration?
+> 
+> On 16/05/2020 22:51, Sakari Ailus wrote:
+> > On Tue, May 12, 2020 at 04:51:03PM +0100, Kieran Bingham wrote:
+> > 
+> > ...
+> > 
+> >> +static int max9286_enum_mbus_code(struct v4l2_subdev *sd,
+> >> +				  struct v4l2_subdev_pad_config *cfg,
+> >> +				  struct v4l2_subdev_mbus_code_enum *code)
+> >> +{
+> >> +	if (code->pad || code->index > 0)
+> >> +		return -EINVAL;
+> >> +
+> >> +	code->code = MEDIA_BUS_FMT_UYVY8_2X8;
+> > 
+> > Why UYVY8_2X8 and not UYVY8_1X16? In general, the single sample / pixel
+> > variant of the format is generally used on the serial busses. This choice
+> > was made when serial busses were introduced.
+
+This is a bit of a tricky one. On the camera size, for the RDACM20, the
+O10635 sensor outputs UYVY8_2X8. This if fed to the MAX9271 serializer,
+which doesn't care about the data type. The MAX9271 has a 16-bit input
+bus, with 10 bits reserved for data, 2 bits dynamically configurable
+to carry H/V sync or extra data, and 4 bits dynamically configurable to
+carry GPIOs or extra data. The 16-bit words are then serialized (it's a
+bit more complicated, when using the H/V sync signals they are
+transmitted in a different way, and the MAX9271 also supports a DDR mode
+that makes the "serial link word" carry up to 30 bits). Effectively, the
+two samples of UYVY8_2X8 are serialized in a 16-bit word each.
+
+Sakari, with this information in mind, what would you recommend ?
+
+> Ok - I presume this doesn't really have much effect anyway, they just
+> have to match for the transmitter/receiver?
+> 
+> But it makes sense to me, so I'll update to the 1x16 variant.
+> 
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static struct v4l2_mbus_framefmt *
+> >> +max9286_get_pad_format(struct max9286_priv *priv,
+> >> +		       struct v4l2_subdev_pad_config *cfg,
+> >> +		       unsigned int pad, u32 which)
+> >> +{
+> >> +	switch (which) {
+> >> +	case V4L2_SUBDEV_FORMAT_TRY:
+> >> +		return v4l2_subdev_get_try_format(&priv->sd, cfg, pad);
+> >> +	case V4L2_SUBDEV_FORMAT_ACTIVE:
+> >> +		return &priv->fmt[pad];
+> >> +	default:
+> >> +		return NULL;
+> >> +	}
+> >> +}
+> >> +
+> >> +static int max9286_set_fmt(struct v4l2_subdev *sd,
+> >> +			   struct v4l2_subdev_pad_config *cfg,
+> >> +			   struct v4l2_subdev_format *format)
+> >> +{
+> >> +	struct max9286_priv *priv = sd_to_max9286(sd);
+> >> +	struct v4l2_mbus_framefmt *cfg_fmt;
+> >> +
+> >> +	if (format->pad >= MAX9286_SRC_PAD)
+> >> +		return -EINVAL;
+> > 
+> > You can remove these checks; it's been already done by the caller.
+> > 
+> 
+> Ok.
+> 
+> 
+> > ...
+> > 
+> >> +static int max9286_parse_dt(struct max9286_priv *priv)
+> >> +{
+> >> +	struct device *dev = &priv->client->dev;
+> >> +	struct device_node *i2c_mux;
+> >> +	struct device_node *node = NULL;
+> >> +	unsigned int i2c_mux_mask = 0;
+> >> +
+> >> +	of_node_get(dev->of_node);
+> >> +	i2c_mux = of_find_node_by_name(dev->of_node, "i2c-mux");
+> >> +	if (!i2c_mux) {
+> >> +		dev_err(dev, "Failed to find i2c-mux node\n");
+> >> +		of_node_put(dev->of_node);
+> >> +		return -EINVAL;
+> >> +	}
+> >> +
+> >> +	/* Identify which i2c-mux channels are enabled */
+> >> +	for_each_child_of_node(i2c_mux, node) {
+> >> +		u32 id = 0;
+> >> +
+> >> +		of_property_read_u32(node, "reg", &id);
+> >> +		if (id >= MAX9286_NUM_GMSL)
+> >> +			continue;
+> >> +
+> >> +		if (!of_device_is_available(node)) {
+> >> +			dev_dbg(dev, "Skipping disabled I2C bus port %u\n", id);
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		i2c_mux_mask |= BIT(id);
+> >> +	}
+> >> +	of_node_put(node);
+> >> +	of_node_put(i2c_mux);
+> >> +
+> >> +	/* Parse the endpoints */
+> >> +	for_each_endpoint_of_node(dev->of_node, node) {
+> >> +		struct max9286_source *source;
+> >> +		struct of_endpoint ep;
+> >> +
+> >> +		of_graph_parse_endpoint(node, &ep);
+> >> +		dev_dbg(dev, "Endpoint %pOF on port %d",
+> >> +			ep.local_node, ep.port);
+> >> +
+> >> +		if (ep.port > MAX9286_NUM_GMSL) {
+> >> +			dev_err(dev, "Invalid endpoint %s on port %d",
+> >> +				of_node_full_name(ep.local_node), ep.port);
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		/* For the source endpoint just parse the bus configuration. */
+> >> +		if (ep.port == MAX9286_SRC_PAD) {
+> >> +			struct v4l2_fwnode_endpoint vep = {
+> >> +				.bus_type = V4L2_MBUS_CSI2_DPHY
+> >> +			};
+> >> +			int ret;
+> >> +
+> >> +			ret = v4l2_fwnode_endpoint_parse(
+> >> +					of_fwnode_handle(node), &vep);
+> >> +			if (ret) {
+> >> +				of_node_put(node);
+> >> +				of_node_put(dev->of_node);
+> >> +				return ret;
+> >> +			}
+> >> +
+> >> +			if (vep.bus_type != V4L2_MBUS_CSI2_DPHY) {
+> > 
+> > This won't happen, the bus type will stay if you set it to a non-zero
+> > value.
+> 
+> 
+> Ok - I'll remove this check.
+> 
+> 
+> > 
+> >> +				dev_err(dev,
+> >> +					"Media bus %u type not supported\n",
+> >> +					vep.bus_type);
+> >> +				v4l2_fwnode_endpoint_free(&vep);
+> >> +				of_node_put(node);
+> >> +				of_node_put(dev->of_node);
+> >> +				return -EINVAL;
+> >> +			}
+> >> +
+> >> +			priv->csi2_data_lanes =
+> >> +				vep.bus.mipi_csi2.num_data_lanes;
+> >> +			v4l2_fwnode_endpoint_free(&vep);
+> > 
+> > No need to call this unless you use v4l2_fwnode_endpoint_alloc_parse().
+> > 
+> > And as you don't, you also won't know which frequencies are known to be
+> > safe to use. That said, perhaps where this device is used having a random
+> > frequency on that bus could not be an issue. Perhaps.
+> 
+> Does this generate a range? or a list of static supported frequencies?
+> 
+> We configure the pixel clock based upon the number of cameras connected,
+> and their pixel rates etc ...
+> 
+> Are you saying that the frequency of this clock should be validated to
+> be a specific range? or are you talking about a different frequency?
+> 
+> 
+> For now I'll remove the v4l2_fwnode_endpoint_alloc_parse().
+> 
+> 
+> 
+> >> +
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		/* Skip if the corresponding GMSL link is unavailable. */
+> >> +		if (!(i2c_mux_mask & BIT(ep.port)))
+> >> +			continue;
+> >> +
+> >> +		if (priv->sources[ep.port].fwnode) {
+> >> +			dev_err(dev,
+> >> +				"Multiple port endpoints are not supported: %d",
+> >> +				ep.port);
+> >> +
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		source = &priv->sources[ep.port];
+> >> +		source->fwnode = fwnode_graph_get_remote_endpoint(
+> >> +						of_fwnode_handle(node));
+> >> +		if (!source->fwnode) {
+> >> +			dev_err(dev,
+> >> +				"Endpoint %pOF has no remote endpoint connection\n",
+> >> +				ep.local_node);
+> >> +
+> >> +			continue;
+> >> +		}
+> >> +
+> >> +		priv->source_mask |= BIT(ep.port);
+> >> +		priv->nsources++;
+> >> +	}
+> >> +	of_node_put(node);
+> >> +	of_node_put(dev->of_node);
+> >> +
+> >> +	priv->route_mask = priv->source_mask;
+> >> +
+> >> +	return 0;
+> >> +}
+> > 
+> 
+
+-- 
+Regards,
+
+Laurent Pinchart
