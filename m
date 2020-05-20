@@ -2,85 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20C21DA7AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06C31DA7D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgETCF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgETCF0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:05:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EC3C061A0E;
-        Tue, 19 May 2020 19:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lz/fgGTegv3Vw8bKhUOxZNBgmTWewtj8bcybw8IaH6Y=; b=Ht9zTnd8qZSO8pVr+tEfSmR7ng
-        87al1q64oL/b+1Fm1HtRX15bBmhD/rPl/xZI9GlNYJZbhIqTfZhujWsh7CgimT/ZhhctMxkV4LJte
-        w3KzxbTjh8j2sgd6qy8hkvnndnc+S/jeSuutx5KESxbaiP1FgX0UUKE60TzG/jUdVTrAl3RQ9FKa1
-        3tN/iB+D+HGOpBuyTR369QYk4CLqGkQXSnQhOwhakuWf2+SxFK7Hl0gIdJ7RNbQZ2oigBUkOtzj5E
-        ZcBJJh0BbNItr2Gd0BkRMQbUS9vCWFGPTAq62O6IW8+kW5zZFcKrm3o4QieUCg2C8rlCVO+V6Lkxq
-        hkQPChaQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbE6e-0004S2-5O; Wed, 20 May 2020 02:05:16 +0000
-Date:   Tue, 19 May 2020 19:05:16 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/8] radix-tree: Use local_lock for protection
-Message-ID: <20200520020516.GB16070@bombadil.infradead.org>
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
- <20200519201912.1564477-3-bigeasy@linutronix.de>
- <20200519204545.GA16070@bombadil.infradead.org>
- <20200519165453.0a795ca1@gandalf.local.home>
+        id S1728425AbgETCQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:16:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726348AbgETCQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 22:16:35 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C4682070A;
+        Wed, 20 May 2020 02:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589940994;
+        bh=jVfQCmVSe5q+HbZv22SYMCrJmhartmws7vIlM/FdgK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tWAU2UMkPA7Ni8bd+0fhafQ+4UU70Ipswc5r5+Z+cUbQE/gY/udP81Y2x5EtY9jWP
+         wuQbUZQdQp5RqhDFA1aUOK5ipngLS4xvDNrHi+FqEqnLRg1nvGCg7gcGn1Ug4MmSfa
+         HNOnyoOahPHnkBvKkAsvkvJ9im79cpJ4r6RGxo0U=
+Date:   Wed, 20 May 2020 10:16:30 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: imx6qdl-gw560x: add lsm9ds1 iio imu/magn
+ support
+Message-ID: <20200520021629.GN11739@dragon>
+References: <1589317177-8703-1-git-send-email-tharvey@gateworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200519165453.0a795ca1@gandalf.local.home>
+In-Reply-To: <1589317177-8703-1-git-send-email-tharvey@gateworks.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 04:54:53PM -0400, Steven Rostedt wrote:
-> On Tue, 19 May 2020 13:45:45 -0700
-> Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, May 12, 2020 at 01:59:37PM -0700, Tim Harvey wrote:
+> Add one node for the accel/gyro i2c device and another for the separate
+> magnetometer device in the lsm9ds1.
 > 
-> > On Tue, May 19, 2020 at 10:19:06PM +0200, Sebastian Andrzej Siewior wrote:
-> > > The radix-tree and idr preload mechanisms use preempt_disable() to protect
-> > > the complete operation between xxx_preload() and xxx_preload_end().
-> > > 
-> > > As the code inside the preempt disabled section acquires regular spinlocks,
-> > > which are converted to 'sleeping' spinlocks on a PREEMPT_RT kernel and
-> > > eventually calls into a memory allocator, this conflicts with the RT
-> > > semantics.
-> > > 
-> > > Convert it to a local_lock which allows RT kernels to substitute them with
-> > > a real per CPU lock. On non RT kernels this maps to preempt_disable() as
-> > > before, but provides also lockdep coverage of the critical region.
-> > > No functional change.  
-> > 
-> > I don't seem to have a locallock.h in my tree.  Where can I find more
-> > information about it?
-> 
-> PATCH 1 ;-)
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 
-... this is why we have the convention to cc everybody on all the patches.
-
->  https://lore.kernel.org/r/20200519201912.1564477-1-bigeasy@linutronix.de
-> 
-> With lore and b4, it should now be easy to get full patch series.
-
-Thats asking too much of the random people cc'd on random patches.
-What is b4 anyway?
+Applied, thanks.
