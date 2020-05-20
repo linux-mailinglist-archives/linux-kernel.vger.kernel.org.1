@@ -2,163 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED4E1DB394
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7BB1DC04B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgETMfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:35:15 -0400
-Received: from mail-eopbgr50083.outbound.protection.outlook.com ([40.107.5.83]:10702
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726510AbgETMfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:35:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NGN5lXjDX6hPXvE+wWrgfZgJPlEEICr0J/dGGsYOEk+SyVqciZnKvX99MNgUywAY3EPgUgUowngJ7geEJ+EocwCx5dOlWY9ZxCFDhv0zR4sHkd4I9dItzsmtYUr9GbgO2gzBB0Xlp0ygWAPHqEsIZ3/ySjD0f1ehvDgIN/Gv8PvybDQ9DBu3MANaBylDxbfB+yQ/EoFPKJfnS2BUcJLgQ2pCyJB0TT3Z0zqinMfMl2qflXW292qowWVL4fI2tYnmoS3AkiUZut2Oas/+3acqIU2BY3eWiOLbd5pCGdopVdCEiFIwrGi0g7jdBWpyELaYyYDbgA2nzalPoaOo7MuE6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PVa9IWELyHni7gn3nuBup0HmNm+xItFbTKwgykt4ySE=;
- b=nmSr4ggtOv9JLOPkAh19OYFJ/Klj3XaTo4oFbtbdQRfwAGxjhu6XsJCFUkOKaL9rIU9AP2w6Mt7aNEBFgSp5B1dal3OCNcivW04uT4HZBfuEEgPbLS+nsq+NgbBvg5GdWQmUWRIgR2rEQEEwqQ0InB3iV5pm942TeKbZE3AgHWfzjxG0+TYSiX4cuJJaBR3ZsZwZBMPE51b713cR3Dh7DIShy53cAxnx1wvUX1NtiGw8i9Uc7We3q9gHVQAei923ofx3sBoSKJidTawW2X+swK0NXQcyxGnIBWUmg/VIgL9jHnCKk9JobmPWuoyl2OYWBGVg40Vp0btUiCK4L2yTCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PVa9IWELyHni7gn3nuBup0HmNm+xItFbTKwgykt4ySE=;
- b=Wxt5J1a1C+v2V2NWBnfem7KK20+N2WFAbusMZtZJcZSQkr1KhrK9e00A6kSQmqYJkrkDA9iQywqalwZDXz3Q2du1I37br+2DMpWI9vN+3Qq91HzwKrwcDk5Dy+2bqY8OMpMeBAIqX9az+sxMj/rneNvMo7n0NvKdQOIuKqs3uvU=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB6630.eurprd04.prod.outlook.com (2603:10a6:20b:f4::33)
- by AM6PR04MB4279.eurprd04.prod.outlook.com (2603:10a6:209:4a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Wed, 20 May
- 2020 12:35:07 +0000
-Received: from AM6PR04MB6630.eurprd04.prod.outlook.com
- ([fe80::bdbc:dab3:70f7:d5fa]) by AM6PR04MB6630.eurprd04.prod.outlook.com
- ([fe80::bdbc:dab3:70f7:d5fa%6]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 12:35:07 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
-        catalin.marinas@arm.com, vkoul@kernel.org, will.deacon@arm.com,
-        shawnguo@kernel.org, festevam@gmail.com, s.hauer@pengutronix.de,
-        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
-        dan.j.williams@intel.com
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-Subject: [PATCH v8 13/13] dmaengine: imx-sdma: add uart rom script
-Date:   Thu, 21 May 2020 04:34:25 +0800
-Message-Id: <1590006865-20900-14-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590006865-20900-1-git-send-email-yibin.gong@nxp.com>
-References: <1590006865-20900-1-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0103.apcprd03.prod.outlook.com
- (2603:1096:4:7c::31) To AM6PR04MB6630.eurprd04.prod.outlook.com
- (2603:10a6:20b:f4::33)
+        id S1727799AbgETUgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 16:36:52 -0400
+Received: from smtprelay0233.hostedemail.com ([216.40.44.233]:54170 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726827AbgETUgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 16:36:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id BD62F100E7B47;
+        Wed, 20 May 2020 20:36:50 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3872:3874:4321:4605:4837:5007:6120:7875:9010:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14659:14721:21080:21451:21627:21740:21809:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shake90_010f55826d18
+X-Filterd-Recvd-Size: 2078
+Received: from XPS-9350 (unknown [172.58.35.10])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 20 May 2020 20:36:48 +0000 (UTC)
+Message-ID: <19a8c717f8d9dc76f2b09e6dd19f3fbb71bf29c5.camel@perches.com>
+Subject: Re: [RFC PATCH 2/2] init: Allow multi-line output of kernel command
+ line
+From:   Joe Perches <joe@perches.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chenggang Wang <wangchenggang@vivo.com>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Wed, 20 May 2020 13:36:45 -0700
+In-Reply-To: <20200520121000.GF520@jagdpanzerIV.localdomain>
+References: <cover.1589916689.git.joe@perches.com>
+         <2b3832fed9370f0f8dfd1ea33dddb1d05a36e265.1589916689.git.joe@perches.com>
+         <20200520044127.GB938@jagdpanzerIV.localdomain>
+         <ae3aff79301c130aa15b3fe0ff801804bb019384.camel@perches.com>
+         <20200520121000.GF520@jagdpanzerIV.localdomain>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR03CA0103.apcprd03.prod.outlook.com (2603:1096:4:7c::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.12 via Frontend Transport; Wed, 20 May 2020 12:35:01 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e1de97e8-79b2-446a-8858-08d7fcba3a23
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4279:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR04MB42793DF2DD3B098C7941420B89B60@AM6PR04MB4279.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 04097B7F7F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mi5hlGs0tdYjOFEuLNJVEN4cK+IsTNWO9ex87kFhJy7KIL/63WKYILmbjVTq7NAk+xtBn8KLx7k6lFkM6wuQbqLMeKTM8S8yNgYkXFbt19bVG7PYjuhEIjG9GFcJ6FbFWLIyTbGv2p4avTqgaVpIPTDvRPUVl4hhVTKhycWqMhDfitmHv3hCukE32qQbnHDWPkvYCGRs3LtbIcJUX7vgYLNCmIgPj4B8wJO1tgCczIJgSaIecty4SXo6lGg+PgdOOTdZ8kauHIm5/V4TAwd6aeWZgdcru5KGjDiNw03z2wYWR0s+GbXQ4NbAssqchq7zTq3CBpq5ip07EXB0k3Y2311r2EonnX28+CNIrVkiQSjSo53H5a29FaZatqB8+KGmN/Zs9JnqzF0RcuFjIiJ0SttrUsHPW0j5fCtMSg0lJ4H0aE7ywmAVydaDsk24WpInl4mKehF6R0pko8CJK9VewdTk4IU6jO+BA7VIBRQ1j3tAK+iPmR37+NDBOx/d996dGkB0IcVvXwYOHt6uT3R9i/BKvWxmhU9o1hMP80XJNM8QvQi5es+sIjhTKLq5E1Y+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(376002)(136003)(396003)(39860400002)(6512007)(36756003)(8676002)(6666004)(52116002)(66946007)(66556008)(7416002)(8936002)(66476007)(86362001)(5660300002)(186003)(966005)(478600001)(316002)(26005)(6506007)(6486002)(956004)(2616005)(4326008)(2906002)(16526019)(921003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: mUvhQsFsX7x9AG0T9clLFbQ8Zix1LHkokOt5dtPfBYdV+ryvMb0GQeP8gkN93Xbah5N6MqU/F2Mhmw0IAsvWY66qCcLvRgWnTVnm6M8Ou/fPU11B9SlGg14zB/L+xzwFM/hR4kPkPAcNu9J3fAI9N5Ov8NQeRr1yC3UTw9jb52B0OjBUVt0RQVKVIfys70E/tEGteLHmNKXHOBRl+P5SmTig8RocKdIG8xqn3bfwg0ud68PtN9lxPfblsnMFTwCt/2K8Q7LPlblt2UDdDHtKvDgv4Ajx0TnbQfQhWFX3ss8FSeNM3qK8kKKc4xNDr5iZqak5DFcJZJxLJKZq3278ayL84foQzC3OYLV1kbDMVAW7tTPDJLfyQNVQZTzQor7d8m1htJMHwBSVHwiMiCrk1c9voGtYXCyGZrOOAvKbLQEq7QF8y9+x8K2NVDKGYGcjEJPEed+fCrnHPh2KvFNovhXE16Fkgi4OtrcEsGitP0c=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1de97e8-79b2-446a-8858-08d7fcba3a23
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 12:35:07.1475
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QHqH0MGLCroThVXnRdh6qnqA0ODuYsoL2CWRLacVz1yvkNq4W5x0U1S+/hOPbmvPaV9Cl6zKFsUJnE9PmgVzKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4279
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the compatibility of NXP internal legacy kernel before 4.19 which
-is based on uart ram script and upstreaming kernel based on uart rom
-script, add both uart ram/rom script in latest sdma firmware. By default
-uart rom script used.
-Besides, add two multi-fifo scripts for SAI/PDM on i.mx8m/8mm and add
-back qspi script miss for v4(i.mx7d/8m/8mm family, but v3 is for i.mx6).
+On Wed, 2020-05-20 at 21:10 +0900, Sergey Senozhatsky wrote:
+> On (20/05/19 21:58), Joe Perches wrote:
+> [..]
+> > >  Maybe we can
+> > > use here something rather random and much shorter instead. E.g.
+> > > 256 chars. Hmm. How 
+> > 
+> > 	min(some_max like 132/256, PRINTK_LOG_LINE_MAX)
+> > 
+> > would work.
+> 
+> An alternative approach would be to do what we do in the
+> print_modules() (the list of modules which can definitely
+> be longer than 1K chars).
+> 
+> We can split command line in a loop - memchr(pos, ' ') - and
+> pr_cont() parts of the command line. pr_cont() has overflow
+> control and it flushes cont buffer before it overflows, so
+> we should not lose anything.
 
-rom script:
-        uart_2_mcu_addr
-	uartsh_2_mcu_addr /* through spba bus */
-am script:
-	uart_2_mcu_ram_addr
-	uartsh_2_mcu_ram_addr /* through spba bus */
+It doesn't matter much here, but I believe
+there's an 8k max buffer for pr_cont output.
 
-Please get latest sdma firmware from the below and put them into the path
-(/lib/firmware/imx/sdma/):
-https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-/tree/imx/sdma
+include/linux/printk.h:#define CONSOLE_EXT_LOG_MAX      8192
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/dma/imx-sdma.c                     | 4 ++--
- include/linux/platform_data/dma-imx-sdma.h | 8 ++++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+Anyway, no worries, it simplifies the loop if
+done that way.
 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 320104f..2ca7935 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -1718,8 +1718,8 @@ static void sdma_issue_pending(struct dma_chan *chan)
- 
- #define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V1	34
- #define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V2	38
--#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V3	41
--#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V4	42
-+#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V3	45
-+#define SDMA_SCRIPT_ADDRS_ARRAY_SIZE_V4	46
- 
- static void sdma_add_scripts(struct sdma_engine *sdma,
- 		const struct sdma_script_start_addrs *addr)
-diff --git a/include/linux/platform_data/dma-imx-sdma.h b/include/linux/platform_data/dma-imx-sdma.h
-index 30e676b..e12d2e8 100644
---- a/include/linux/platform_data/dma-imx-sdma.h
-+++ b/include/linux/platform_data/dma-imx-sdma.h
-@@ -20,12 +20,12 @@ struct sdma_script_start_addrs {
- 	s32 per_2_firi_addr;
- 	s32 mcu_2_firi_addr;
- 	s32 uart_2_per_addr;
--	s32 uart_2_mcu_addr;
-+	s32 uart_2_mcu_ram_addr;
- 	s32 per_2_app_addr;
- 	s32 mcu_2_app_addr;
- 	s32 per_2_per_addr;
- 	s32 uartsh_2_per_addr;
--	s32 uartsh_2_mcu_addr;
-+	s32 uartsh_2_mcu_ram_addr;
- 	s32 per_2_shp_addr;
- 	s32 mcu_2_shp_addr;
- 	s32 ata_2_mcu_addr;
-@@ -52,6 +52,10 @@ struct sdma_script_start_addrs {
- 	s32 zcanfd_2_mcu_addr;
- 	s32 zqspi_2_mcu_addr;
- 	s32 mcu_2_ecspi_addr;
-+	s32 mcu_2_sai_addr;
-+	s32 sai_2_mcu_addr;
-+	s32 uart_2_mcu_addr;
-+	s32 uartsh_2_mcu_addr;
- 	/* End of v3 array */
- 	s32 mcu_2_zqspi_addr;
- 	/* End of v4 array */
--- 
-2.7.4
 
