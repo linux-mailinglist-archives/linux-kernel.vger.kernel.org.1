@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03DA1DC2EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603421DC2FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 01:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgETX0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 19:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S1728631AbgETXeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 19:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728901AbgETX0b (ORCPT
+        with ESMTP id S1726688AbgETXeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 19:26:31 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7DBC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:30 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id i15so4823364wrx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:26:30 -0700 (PDT)
+        Wed, 20 May 2020 19:34:01 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2465C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:34:00 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 142so5515455qkl.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 16:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=XQj0KuafA6rqxjjwjiH0uiqBGMfrXq9B8u6LHiRahoY=;
-        b=XTWlThUuLFfp0AXcYsOWhbDBsC2jigF2wh06CcO/RNWQ1mPqzq2JV1awnIPu/gMSW4
-         ZrxLpbgThc+NwB7ZZFA2vb8Lu9lTkRtwuU3/+Cftj9C+RtG9gp3DN0kKEox6XYv6Cjgu
-         mRbm/7RL8ZmrGytfmWZQx+awifYXzS2424XwH4I+oa835meQ5zuU8SVOABFNTx8YAiNR
-         yFa0jtiEc3NHKQSyb8TTJZEg4Q3qY4en1q4LpkA8RTrlPLbz/mt0u0ZFyjl/fJiKg7Hb
-         9iD8qt6+LRy9jEEkYOFRw6fg+HokyHwarPaJvkY3wWg2P3kwapYc24/yyi++/YwgDt4X
-         qvcw==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YN/C/nPSeqwpOmMsu0A2/GbXKwpRdgogY0506hnF2AU=;
+        b=Q43nKW9cYrcnDbWaXj0WHNqTytEw5KpgnX8SMGHcivqlK52J0+zWIWuu3rrJl3OKFn
+         NrrPyJHbz3I1/9whPwE9ICxAfS3y05q73lf40fgNiCMDpCh9CZDVHJGAMeO9je/ECs11
+         5q/D/6Nkuvknz9pfIOu1aDkvmLcK4MM7gorLIP1JlxvJQ95a09Wmp3TSfVVDd5XDtKv4
+         I+6Zatj51eVt190mridJ35FnoDykmDnsiZhTeqsM4U2RnpNJIQ+4MajBAe+m9EsdCMjO
+         llS8jxXWJ/Qx9kNZ8e84cZw5f3VIfFFLiSRxb60t+2lGq6B9CtQwA9nxCQyk1/WdnNjX
+         nNoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XQj0KuafA6rqxjjwjiH0uiqBGMfrXq9B8u6LHiRahoY=;
-        b=V13D6Ku369BhyFcnQ4qS244pyYS8364eT4Ce8Q+9tBnyMowpz3kb4+8IzY4ZHcs5bR
-         D/uisKDZuraVcDoDqWNrDraQJQLUITYNr66SCTY6uLKnLB5TNfDi/3XAEsB8Njj//4cy
-         S5tXCUzPRSCVNJC7cxLbujIjIZXD6jhkCNvquT3l7+tdasc41t1m0h/tO5p7r5zCa9wV
-         /ahXNZPg0Kc3I+2aDeGBRkcglWppGjXNdUM1fKHYe3e+CRSX+85c3QC0FOT97249rY5l
-         DuB4vItklzqMcwJ+HO5dwSpMLGH47UaqM5/Oboj8ywK+pPx1dglhWtKLbzb+UYInUFyJ
-         YrWw==
-X-Gm-Message-State: AOAM533iVEhIp2rIbA/evWnm85vOhQqkWE+Z2Yc4cm9xHUj1uE4/Pyl9
-        DA/C72t/vwfwb2aA17naZA==
-X-Google-Smtp-Source: ABdhPJwS0Oc08++7oTKH4IYWa8YQ4ljm/jdHQ4MxgGfEuLFVwJLFyp9sloQn8AlZ3oJWGJPYc/4+nA==
-X-Received: by 2002:adf:f5c4:: with SMTP id k4mr5707115wrp.23.1590017189567;
-        Wed, 20 May 2020 16:26:29 -0700 (PDT)
-Received: from localhost (42.red-83-37-136.dynamicip.rima-tde.net. [83.37.136.42])
-        by smtp.gmail.com with ESMTPSA id u7sm4398657wmm.8.2020.05.20.16.26.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 May 2020 16:26:29 -0700 (PDT)
-Subject: Re: [dm-devel] [PATCH v4 0/2] Historical Service Time Path Selector
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>, agk@redhat.com,
-        snitzer@redhat.com
-Cc:     breeves@redhat.com, linux-kernel@vger.kernel.org,
-        khazhy@google.com, song@kernel.org, dm-devel@redhat.com,
-        mpatocka@redhat.com, kernel@collabora.com
-References: <20200511163910.3778467-1-krisman@collabora.com>
-From:   Xose Vazquez Perez <xose.vazquez@gmail.com>
-Message-ID: <ee987451-6d17-b978-809e-e0fe56dc13ce@gmail.com>
-Date:   Thu, 21 May 2020 01:26:27 +0200
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YN/C/nPSeqwpOmMsu0A2/GbXKwpRdgogY0506hnF2AU=;
+        b=hozLa0mmWle1CshE7pLCfYjnrggoQ2RXCbK9+ICzxR3PjgTlRiTgx1K0yU7CoVTxgj
+         ajeujqGqOsk4XSxdyiysQLUN71PBNIzZGugZq5a5w0dopBHDM9ELQe9L2KAoXOqcIfF1
+         M6AfEHh3DwbnD7PAw/ehNsDhEMceGvrlQ0MwblbcmWjXV6HcGoGQoR6pEO8m/RZ0MLGl
+         Ii/9JhutUqefaOY+OPcy0HnxhfZubFvwWyXyntMZpG3cgWFqqIz6qKZxVU1vSR5yMR+o
+         umgS54nb7UP62Nhv8X3PBHv77C7ynMdEY2Xb2bYKoANFPJgYpqugxmfiLqmzhAMttIaz
+         mYIw==
+X-Gm-Message-State: AOAM533h7g3Oefh6LSn8aibeIEzyX4PDRRy4ZjVrOBWIW5YoZNRkCpgH
+        tDd2iincN688S4RfMPsjVW0=
+X-Google-Smtp-Source: ABdhPJy3lsR8y97bWe3GbLi94RgqKcFsjZ572pj5nCblnmDnj3mgB2iYAo4+AM4CUEqu59pKBe4DGQ==
+X-Received: by 2002:a37:9781:: with SMTP id z123mr6946590qkd.266.1590017639870;
+        Wed, 20 May 2020 16:33:59 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id t21sm3856926qtb.0.2020.05.20.16.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 16:33:59 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 20 May 2020 19:33:57 -0400
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     clang-built-linux@googlegroups.com, x86@kernel.org,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] x86/boot: lld fix
+Message-ID: <20200520233357.GA4160490@rani.riverdale.lan>
+References: <20200520225654.4144534-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <20200511163910.3778467-1-krisman@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200520225654.4144534-1-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/20 6:39 PM, Gabriel Krisman Bertazi wrote:
+On Wed, May 20, 2020 at 06:56:53PM -0400, Arvind Sankar wrote:
+> arch/x86/boot/setup.elf currently has an orphan section .text.startup,
+> and lld git as of ebf14d9b6d8b is breaking on 64-bit due to what seems
+> to be a change in behavior on orphan section placement (details in patch
+> commit message).
+> 
+> I'm not sure if this was an intentional change in lld, but it seems like
+> a good idea to explicitly include .text.startup anyway.
+> 
+> Arvind Sankar (1):
+>   x86/boot: Add .text.startup to setup.ld
+> 
+>  arch/x86/boot/setup.ld | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> -- 
+> 2.26.2
+> 
 
-> This fourth version of HST applies the suggestion from Mikulas Patocka
-> to do the ktime_get_ns inside the mpath map_bio instead of generic
-> device-mapper code. This means that struct dm_mpath_io gained another
-> 64bit field.  For the request-based case, we continue to use the block
-> layer start time information.
-
-You should add some info to the multipath.conf.5 man page ( 
-https://git.opensvc.com/gitweb.cgi?p=multipath-tools/.git;a=blob;f=multipath/multipath.conf.5;h=05a5e8ffeb110d969f3b2381eb3b88d7f28380f6;hb=HEAD#l189 ),
-or none one is going to use it.
-
-
-Thanks.
+Actually I'm not sure this is a recent change. I updated to the git tip
+because on my system (gentoo with gcc-10), lld-10.0.0 segfaults when
+trying to link the compressed kernel, and updating to lld git fixed
+that. So I previously probably didn't get to the stage where it links
+setup.elf.
