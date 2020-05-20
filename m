@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4891DB020
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18AA1DB02B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgETK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
+        id S1726757AbgETK3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgETK0k (ORCPT
+        with ESMTP id S1726720AbgETK3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:26:40 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7821C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:26:40 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jbLvm-00053v-Dk; Wed, 20 May 2020 12:26:34 +0200
-Date:   Wed, 20 May 2020 12:26:34 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Song Bao Hua <song.bao.hua@hisilicon.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH 8/8] mm/zswap: Use local lock to protect per-CPU data
-Message-ID: <20200520102634.pin4mzyytmfqtuo2@linutronix.de>
-References: <20200519201912.1564477-1-bigeasy@linutronix.de>
- <20200519201912.1564477-9-bigeasy@linutronix.de>
- <B926444035E5E2439431908E3842AFD24AFEC5@DGGEMI525-MBS.china.huawei.com>
+        Wed, 20 May 2020 06:29:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6057C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 03:29:23 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1jbLyS-0004HF-Sa; Wed, 20 May 2020 12:29:20 +0200
+Message-ID: <d7a0646840374e1d7515bfea7da2badd94df0042.camel@pengutronix.de>
+Subject: Re: [PATCH] drm/etnaviv: fix memory leak when mapping prime
+ imported buffers
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
+Cc:     stable@vger.kernel.org,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        etnaviv@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Wed, 20 May 2020 12:29:19 +0200
+In-Reply-To: <1589969500-6554-1-git-send-email-martin.fuzzey@flowbird.group>
+References: <1589969500-6554-1-git-send-email-martin.fuzzey@flowbird.group>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <B926444035E5E2439431908E3842AFD24AFEC5@DGGEMI525-MBS.china.huawei.com>
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-19 21:46:06 [+0000], Song Bao Hua wrote:
-> Hi Luis,
-> In the below patch, in order to use the acomp APIs to leverage the power of hardware compressors. I have moved to mutex:
-> https://marc.info/?l=linux-crypto-vger&m=158941285830302&w=2
-> https://marc.info/?l=linux-crypto-vger&m=158941287930311&w=2
+Hi Martin,
+
+Am Mittwoch, den 20.05.2020, 12:10 +0200 schrieb Martin Fuzzey:
+> When using mmap() on a prime imported buffer allocated by a
+> different driver (such as imx-drm) the later munmap() does
+> not correctly decrement the refcount of the original enaviv_gem_object,
+> leading to a leak.
 > 
-> so once we get some progress on that one, I guess we don't need a special patch for RT any more.
+> Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+> Cc: stable@vger.kernel.org
 
-If you convert this way from the current concept then we could drop it
-from the series.
-The second patch shows the following hunk:
+What's the use-case where you did hit this issue? mmap'ing of imported
+buffers through the etnaviv DRM device is currently not well defined
+and I was pondering the idea of forbidding it completely by not
+returning a mmap offset for those objects.
 
-|@@ -1075,11 +1124,20 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
-| 
-| 	/* compress */
-| 	dst = get_cpu_var(zswap_dstmem);
-|	acomp_ctx = *this_cpu_ptr(entry->pool->acomp_ctx);
-|	put_cpu_var(zswap_dstmem);
+Regards,
+Lucas
 
-So here you get per-CPU version of `dst' and `acomp_ctx' and then allow
-preemption again.
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> index f24dd21..28a01b8 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c
+> @@ -93,7 +93,25 @@ static void *etnaviv_gem_prime_vmap_impl(struct etnaviv_gem_object *etnaviv_obj)
+>  static int etnaviv_gem_prime_mmap_obj(struct etnaviv_gem_object *etnaviv_obj,
+>  		struct vm_area_struct *vma)
+>  {
+> -	return dma_buf_mmap(etnaviv_obj->base.dma_buf, vma, 0);
+> +	int ret;
+> +
+> +	ret = dma_buf_mmap(etnaviv_obj->base.dma_buf, vma, 0);
+> +
+> +	/* drm_gem_mmap_obj() has already been called before this function
+> +	 * and has incremented our refcount, expecting it to be decremented
+> +	 * on unmap() via drm_gem_vm_close().
+> +	 * However dma_buf_mmap() invokes drm_gem_cma_prime_mmap()
+> +	 * that ends up updating the vma->vma_private_data to point to the
+> +	 * dma_buf's gem object.
+> +	 * Hence our gem object here will not have its refcount decremented
+> +	 * when userspace does unmap().
+> +	 * So decrement the refcount here to avoid a memory leak if the dma
+> +	 * buf mapping was successful.
+> +	 */
+> +	if (!ret)
+> +		drm_gem_object_put_unlocked(&etnaviv_obj->base);
+> +
+> +	return ret;
+>  }
+>  
+>  static const struct etnaviv_gem_ops etnaviv_gem_prime_ops = {
 
-|	mutex_lock(&acomp_ctx->mutex);
-|
-|	src = kmap(page);
-|	sg_init_one(&input, src, PAGE_SIZE);
-|	/* zswap_dstmem is of size (PAGE_SIZE * 2). Reflect same in sg_list */
-|	sg_init_one(&output, dst, PAGE_SIZE * 2);
-
-and here you use `dst' and `acomp_ctx' after the preempt_disable() has
-been dropped so I don't understand why you used get_cpu_var(). It is
-either protected by the mutex and doesn't require get_cpu_var() or it
-isn't (and should have additional protection).
-
-|	acomp_request_set_params(acomp_ctx->req, &input, &output, PAGE_SIZE, dlen);
-|	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
-|	dlen = acomp_ctx->req->dlen;
-|	kunmap(page);
-|
-| 	if (ret) {
-| 		ret = -EINVAL;
-| 		goto put_dstmem;
-|
-
-Sebastian
