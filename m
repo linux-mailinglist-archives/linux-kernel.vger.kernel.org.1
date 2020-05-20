@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F095B1DC00C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07FD1DC017
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 22:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgETUYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 16:24:42 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13641 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbgETUYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 16:24:42 -0400
-IronPort-SDR: afjfcTGcUMaZ/GXfs8xFl0OeHgtlhx2FY8DNf+Qv2I3bfdYrWdBqyBujYqNRHZUa3t5GTk4wqg
- mDprX2MvJkQQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 13:24:41 -0700
-IronPort-SDR: 5Pcl5kLFOaYs3NYO7bCucja3dcJ0D3dSdiHsXs6UuzLGjqN8YyM5G0PyPqKLqbM/+2sfaAQpMP
- NQGrvwULfIIQ==
-X-IronPort-AV: E=Sophos;i="5.73,415,1583222400"; 
-   d="scan'208";a="268388157"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.254.101.53]) ([10.254.101.53])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 13:24:41 -0700
-Subject: Re: [PATCH V6 0/4] x86/resctrl: Enable user to view and select thread
- throttling mode
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, ravi.v.shankar@intel.com,
-        mingo@redhat.com, babu.moger@amd.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1589922949.git.reinette.chatre@intel.com>
- <20200519213516.GF444@zn.tnic>
- <1d9ee0f0-8078-e8b6-ce66-6c0bf51cb3b4@intel.com>
- <20200520071109.GA1457@zn.tnic>
- <5c044d17-e42e-1493-28a5-3ecac043c8f1@intel.com>
- <20200520183508.GI1457@zn.tnic>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <0e2b37d4-1b43-c666-b8b1-4caeceaf48e0@intel.com>
-Date:   Wed, 20 May 2020 13:24:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727873AbgETU0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 16:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726827AbgETU0x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 16:26:53 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DAEC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:26:52 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x1so5802731ejd.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 13:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pyAjRlnWUUT1mywco3FJeiLGJZLmkRz0VQZk3yUWI70=;
+        b=PGibgYQ1AtG2afha5buPGXZKWooA7vXxvQmNmO1Idq+C1zDslsESBmlsaVApchVa1L
+         glQJr13dgRd6TvmwuLCmKqJbXvyxIQU3mUqKj5WsYxSaRPgBreBPMdk+Dj13fIlUFGXk
+         IeF+KqfHBc9dvaXAutyupqPzuLkHNVKW3WeOo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pyAjRlnWUUT1mywco3FJeiLGJZLmkRz0VQZk3yUWI70=;
+        b=stwn7/hAC6AspRAMW+MCoDG14GoKvQ5dKgacVH3O4KA1DC6RLibAmTyBg3GQXwXoep
+         4TqY9ogGEwVr6i9KEXPhVHyrZDDF4Pe/7brClwvNRZ9SMtGFHXfZKRhUctmtupv65/Qx
+         vpBIWTqfkNvVQHvsRA+Bl06p2jZ1gTXG6ZP5Ks3e/s6BvkH+dbYPUYzLNOov9/xZKoR5
+         IGMzijdJ95nu6qoGjNKVLImbg2Fe92q+ziDQZV32wXzaqFiAOlitu9hInUNQjFfWUT3h
+         AIIwXMDt1gi+Cv7mzw3+otKSWqqVFiLcpcTiaAn5Nyy8kgIWbCr5mJFU+AxxexD5qZfT
+         fQag==
+X-Gm-Message-State: AOAM532SF41Xdrrwyb/zt0qQDPg0bMn4WEHU8r4FAyuggIYwmuZYhGup
+        xVXMKK+YTp9Ce7Oyn6VBkSKGCXPhgCSPoHcg
+X-Google-Smtp-Source: ABdhPJwgeeyXXyd9EvAUvOOxDLmw29QD9rJLdjvxlqGZ1Pj+7iwL+qGPnFCbaSDWyDov/XvQHBVs0A==
+X-Received: by 2002:a17:906:7a1c:: with SMTP id d28mr756450ejo.10.1590006410840;
+        Wed, 20 May 2020 13:26:50 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:758d])
+        by smtp.gmail.com with ESMTPSA id dt12sm2822454ejb.102.2020.05.20.13.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 13:26:50 -0700 (PDT)
+Date:   Wed, 20 May 2020 21:26:50 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200520202650.GB558281@chrisdown.name>
+References: <20200520143712.GA749486@chrisdown.name>
+ <20200520160756.GE6462@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200520183508.GI1457@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200520160756.GE6462@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+Michal Hocko writes:
+>Let me try to understand the actual problem. The high memory reclaim has
+>a target which is proportional to the amount of charged memory. For most
+>requests that would be SWAP_CLUSTER_MAX though (resp. N times that where
+>N is the number of memcgs in excess up the hierarchy). I can see to be
+>insufficient if the memcg is already in a large excess but if the
+>reclaim can make a forward progress this should just work fine because
+>each charging context should reclaim at least the contributed amount.
+>
+>Do you have any insight on why this doesn't work in your situation?
+>Especially with such a large inactive file list I would be really
+>surprised if the reclaim was not able to make a forward progress.
 
-On 5/20/2020 11:35 AM, Borislav Petkov wrote:
-> On Wed, May 20, 2020 at 10:32:02AM -0700, Reinette Chatre wrote:
-> 
->> It seems inappropriate that I have the title of maintainer and not be
->> able to have patches considered for inclusion during an entire release
->> cycle.
-> 
-> Well, we try very hard to be fair when looking at patchsets. In your
-> case, I already took a patchset from you this cycle and there are other
-> patchsets waiting for a lot longer than yours - even patchsets from your
-> colleagues at Intel.
-> 
-> So I understand that you think it might be inappropriate but please try
-> to understand it also from our standpoint in that we try to round-robin
-> between everyone as fair as possible.
+Reclaim can fail for any number of reasons, which is why we have retries 
+sprinkled all over for it already. It doesn't seem hard to believe that it 
+might just fail for transient reasons and drive us deeper into the hole as a 
+result.
 
-I understand now. Thank you very much.
+In this case, a.) the application is producing tons of dirty pages, and b.) we 
+have really heavy systemwide I/O contention on the affected machines. This high 
+load is one of the reasons that direct and kswapd reclaim cannot keep up, and 
+thus nr_pages can become a number of orders of magnitude larger than 
+SWAP_CLUSTER_MAX. This is trivially reproducible on these machines, it's not an 
+edge case.
 
-> 
-> So I will try to look at yours in the next days but I cannot promise you
-> anything.
+Putting a trace_printk("%d\n", __LINE__) at non-successful reclaim in 
+shrink_page_list shows that what's happening is always (and I really mean 
+always) the "dirty page and you're not kswapd" check, as expected:
 
-Please don't. That would be unfair to everybody waiting longer then me
-as well set a bad precedent.
+	if (PageDirty(page)) {
+		/*
+		 * Only kswapd can writeback filesystem pages
+		 * to avoid risk of stack overflow. But avoid
+		 * injecting inefficient single-page IO into
+		 * flusher writeback as much as possible: only
+		 * write pages when we've encountered many
+		 * dirty pages, and when we've already scanned
+		 * the rest of the LRU for clean pages and see
+		 * the same dirty pages again (PageReclaim).
+		 */
+		if (page_is_file_lru(page) &&
+			(!current_is_kswapd() || !PageReclaim(page) ||
+			!test_bit(PGDAT_DIRTY, &pgdat->flags))) {
+			/*
+			 * Immediately reclaim when written back.
+			 * Similar in principal to deactivate_page()
+			 * except we already have the page isolated
+			 * and know it's dirty
+			 */
+			inc_node_page_state(page, NR_VMSCAN_IMMEDIATE);
+			SetPageReclaim(page);
 
-Reinette
+			goto activate_locked;
+		}
 
+>Now to your patch. I do not like it much to be honest.
+>MEM_CGROUP_RECLAIM_RETRIES is quite arbitrary and I neither like it in
+>memory_high_write because the that is an interruptible context so there
+>shouldn't be a good reason to give up after $FOO number of failed
+>attempts. try_charge and memory_max_write are slightly different because
+>we are invoking OOM killer based on the number of failed attempts.
+
+As Johannes mentioned, the very intent of memory.high is to have it managed 
+using a userspace OOM killer, which monitors PSI. As such, I'm not sure this 
+distinction means much.
