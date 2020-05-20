@@ -2,217 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDE21DBCFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AAF1DBD3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgETShC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:37:02 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13139 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgETShB (ORCPT
+        id S1726836AbgETSrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:47:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50828 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726510AbgETSrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:37:01 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec5787e0001>; Wed, 20 May 2020 11:35:42 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 20 May 2020 11:37:01 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 20 May 2020 11:37:01 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 May
- 2020 18:36:58 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 20 May 2020 18:36:58 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ec578c90005>; Wed, 20 May 2020 11:36:57 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH] nouveau/hmm: fix migrate zero page to GPU
-Date:   Wed, 20 May 2020 11:36:52 -0700
-Message-ID: <20200520183652.21633-1-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 20 May 2020 14:47:52 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04KIXVV2138512;
+        Wed, 20 May 2020 14:47:17 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312c8q7uux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 14:47:17 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04KIVE7B025479;
+        Wed, 20 May 2020 18:37:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 313x4xhpqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 18:37:45 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04KIbhLR60227640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 18:37:43 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7080C4C052;
+        Wed, 20 May 2020 18:37:43 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCDA54C046;
+        Wed, 20 May 2020 18:37:40 +0000 (GMT)
+Received: from vajain21-in-ibm-com (unknown [9.199.32.8])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 20 May 2020 18:37:40 +0000 (GMT)
+Received: by vajain21-in-ibm-com (sSMTP sendmail emulation); Thu, 21 May 2020 00:07:39 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RESEND PATCH v7 4/5] ndctl/papr_scm,uapi: Add support for PAPR nvdimm specific methods
+In-Reply-To: <20200520153209.GC3660833@iweiny-DESK2.sc.intel.com>
+References: <20200519190058.257981-1-vaibhav@linux.ibm.com> <20200519190058.257981-5-vaibhav@linux.ibm.com> <20200520153209.GC3660833@iweiny-DESK2.sc.intel.com>
+Date:   Thu, 21 May 2020 00:07:39 +0530
+Message-ID: <87o8qiwiz0.fsf@linux.ibm.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1589999742; bh=qnRRPm8US23d/hFk1NYbhQ7k/2eulBbsURi/MjGsi3Q=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=P6YVFEYpA241+7WHmIB7wmBoS+Y2AIkvac9gi6/5dug0MvAFiHSAmAbj/yM4zbrK4
-         I7H7eoCVLxoKOeEZ6DmCDPV0/Gycuai/nF72W9V+Ts1W1zwiqaiVZA6qBToKYvXGfP
-         t7gZlJafbWJgkgkj6x+jteZSD7orpinSfLRfm3HeI/QjyS3X6XuilImjWLvcS63BHh
-         IOUKKa43+VYpxsVMrVNHibTQ6UP9fGpYauRIycYpWnDhUeeycyAD615NOh3Zt9+xlf
-         2J3ofDPoxn130Q/HwgWQOMxNBjlWwgzpzsw5edXKvRoMIW8EVZnkCdcBkXNz4o9bGV
-         MANaeyPAkhiaQ==
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-20_14:2020-05-20,2020-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=8
+ lowpriorityscore=0 cotscore=-2147483648 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200149
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling OpenCL clEnqueueSVMMigrateMem() on a region of memory that
-is backed by pte_none() or zero pages, migrate_vma_setup() will fill the
-source PFN array with an entry indicating the source page is zero.
-Use this to optimize migration to device private memory by allocating
-GPU memory and zero filling it instead of failing to migrate the page.
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
+Thanks for reviewing this patch Ira. My responses below:
 
-This patch applies cleanly to Jason's Gunthorpe's hmm tree plus two
-patches I posted earlier. The first is queued in Ben Skegg's nouveau
-tree and the second is still pending review/not queued.
-[1] ("nouveau/hmm: map pages after migration")
-https://lore.kernel.org/linux-mm/20200304001339.8248-5-rcampbell@nvidia.com=
-/
-[2] ("nouveau/hmm: fix nouveau_dmem_chunk allocations")
-https://lore.kernel.org/lkml/20200421231107.30958-1-rcampbell@nvidia.com/
+Ira Weiny <ira.weiny@intel.com> writes:
 
- drivers/gpu/drm/nouveau/nouveau_dmem.c | 75 ++++++++++++++++++++++----
- 1 file changed, 66 insertions(+), 9 deletions(-)
+> On Wed, May 20, 2020 at 12:30:57AM +0530, Vaibhav Jain wrote:
+>> Introduce support for Papr nvDimm Specific Methods (PDSM) in papr_scm
+>> modules and add the command family to the white list of NVDIMM command
+>> sets. Also advertise support for ND_CMD_CALL for the dimm
+>> command mask and implement necessary scaffolding in the module to
+>> handle ND_CMD_CALL ioctl and PDSM requests that we receive.
+>> 
+>> The layout of the PDSM request as we expect from libnvdimm/libndctl is
+>> described in newly introduced uapi header 'papr_scm_pdsm.h' which
+>> defines a new 'struct nd_pdsm_cmd_pkg' header. This header is used
+>> to communicate the PDSM request via member
+>> 'nd_pkg_papr_scm->nd_command' and size of payload that need to be
+>> sent/received for servicing the PDSM.
+>> 
+>> A new function is_cmd_valid() is implemented that reads the args to
+>> papr_scm_ndctl() and performs sanity tests on them. A new function
+>> papr_scm_service_pdsm() is introduced and is called from
+>> papr_scm_ndctl() in case of a PDSM request is received via ND_CMD_CALL
+>> command from libnvdimm.
+>> 
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+>> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+>> ---
+>> Changelog:
+>> 
+>> Resend:
+>> * None
+>> 
+>> v6..v7 :
+>> * Removed the re-definitions of __packed macro from papr_scm_pdsm.h
+>>   [Mpe].
+>> * Removed the usage of __KERNEL__ macros in papr_scm_pdsm.h [Mpe].
+>> * Removed macros that were unused in papr_scm.c from papr_scm_pdsm.h
+>>   [Mpe].
+>> * Made functions defined in papr_scm_pdsm.h as static inline. [Mpe]
+>> 
+>> v5..v6 :
+>> * Changed the usage of the term DSM to PDSM to distinguish it from the
+>>   ACPI term [ Dan Williams ]
+>> * Renamed papr_scm_dsm.h to papr_scm_pdsm.h and updated various struct
+>>   to reflect the new terminology.
+>> * Updated the patch description and title to reflect the new terminology.
+>> * Squashed patch to introduce new command family in 'ndctl.h' with
+>>   this patch [ Dan Williams ]
+>> * Updated the papr_scm_pdsm method starting index from 0x10000 to 0x0
+>>   [ Dan Williams ]
+>> * Removed redundant license text from the papr_scm_psdm.h file.
+>>   [ Dan Williams ]
+>> * s/envelop/envelope/ at various places [ Dan Williams ]
+>> * Added '__packed' attribute to command package header to gaurd
+>>   against different compiler adding paddings between the fields.
+>>   [ Dan Williams]
+>> * Converted various pr_debug to dev_debug [ Dan Williams ]
+>> 
+>> v4..v5 :
+>> * None
+>> 
+>> v3..v4 :
+>> * None
+>> 
+>> v2..v3 :
+>> * Updated the patch prefix to 'ndctl/uapi' [Aneesh]
+>> 
+>> v1..v2 :
+>> * None
+>> ---
+>>  arch/powerpc/include/uapi/asm/papr_scm_pdsm.h | 134 ++++++++++++++++++
+>>  arch/powerpc/platforms/pseries/papr_scm.c     | 101 ++++++++++++-
+>>  include/uapi/linux/ndctl.h                    |   1 +
+>>  3 files changed, 230 insertions(+), 6 deletions(-)
+>>  create mode 100644 arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
+>> 
+>> diff --git a/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h b/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
+>> new file mode 100644
+>> index 000000000000..671693439c1c
+>> --- /dev/null
+>> +++ b/arch/powerpc/include/uapi/asm/papr_scm_pdsm.h
+>> @@ -0,0 +1,134 @@
+>> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+>> +/*
+>> + * PAPR-SCM Dimm specific methods (PDSM) and structs for libndctl
+>> + *
+>> + * (C) Copyright IBM 2020
+>> + *
+>> + * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
+>> + */
+>> +
+>> +#ifndef _UAPI_ASM_POWERPC_PAPR_SCM_PDSM_H_
+>> +#define _UAPI_ASM_POWERPC_PAPR_SCM_PDSM_H_
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +/*
+>> + * PDSM Envelope:
+>> + *
+>> + * The ioctl ND_CMD_CALL transfers data between user-space and kernel via
+>> + * 'envelopes' which consists of a header and user-defined payload sections.
+>> + * The header is described by 'struct nd_pdsm_cmd_pkg' which expects a
+>> + * payload following it and offset of which relative to the struct is provided
+>> + * by 'nd_pdsm_cmd_pkg.payload_offset'. *
+>> + *
+>> + *  +-------------+---------------------+---------------------------+
+>> + *  |   64-Bytes  |       8-Bytes       |       Max 184-Bytes       |
+>> + *  +-------------+---------------------+---------------------------+
+>> + *  |               nd_pdsm_cmd_pkg |                           |
+>> + *  |-------------+                     |                           |
+>> + *  |  nd_cmd_pkg |                     |                           |
+>> + *  +-------------+---------------------+---------------------------+
+>> + *  | nd_family   |			|			    |
+>> + *  | nd_size_out | cmd_status          |			    |
+>> + *  | nd_size_in  | payload_version     |      PAYLOAD		    |
+>> + *  | nd_command  | payload_offset ----->			    |
+>> + *  | nd_fw_size  |                     |			    |
+>> + *  +-------------+---------------------+---------------------------+
+>> + *
+>> + * PDSM Header:
+>> + *
+>> + * The header is defined as 'struct nd_pdsm_cmd_pkg' which embeds a
+>> + * 'struct nd_cmd_pkg' instance. The PDSM command is assigned to member
+>> + * 'nd_cmd_pkg.nd_command'. Apart from size information of the envelope which is
+>> + * contained in 'struct nd_cmd_pkg', the header also has members following
+>> + * members:
+>> + *
+>> + * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
+>> + * 'payload_version'	: (In/Out) Version number associated with the payload.
+>> + * 'payload_offset'	: (In)Relative offset of payload from start of envelope.
+>> + *
+>> + * PDSM Payload:
+>> + *
+>> + * The layout of the PDSM Payload is defined by various structs shared between
+>> + * papr_scm and libndctl so that contents of payload can be interpreted. During
+>> + * servicing of a PDSM the papr_scm module will read input args from the payload
+>> + * field by casting its contents to an appropriate struct pointer based on the
+>> + * PDSM command. Similarly the output of servicing the PDSM command will be
+>> + * copied to the payload field using the same struct.
+>> + *
+>> + * 'libnvdimm' enforces a hard limit of 256 bytes on the envelope size, which
+>> + * leaves around 184 bytes for the envelope payload (ignoring any padding that
+>> + * the compiler may silently introduce).
+>> + *
+>> + * Payload Version:
+>> + *
+>> + * A 'payload_version' field is present in PDSM header that indicates a specific
+>> + * version of the structure present in PDSM Payload for a given PDSM command.
+>> + * This provides backward compatibility in case the PDSM Payload structure
+>> + * evolves and different structures are supported by 'papr_scm' and 'libndctl'.
+>> + *
+>> + * When sending a PDSM Payload to 'papr_scm', 'libndctl' should send the version
+>> + * of the payload struct it supports via 'payload_version' field. The 'papr_scm'
+>> + * module when servicing the PDSM envelope checks the 'payload_version' and then
+>> + * uses 'payload struct version' == MIN('payload_version field',
+>> + * 'max payload-struct-version supported by papr_scm') to service the PDSM.
+>> + * After servicing the PDSM, 'papr_scm' put the negotiated version of payload
+>> + * struct in returned 'payload_version' field.
+>
+> FWIW many people believe using a size rather than version is more sustainable.
+> It is expected that new payload structures are larger (more features) than the
+> previous payload structure.
+>
+> I can't find references at the moment through.
+>
+> What does payload_version provide us that the command size in/out does
+> not?
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouve=
-au/nouveau_dmem.c
-index cbc71567f9a5..e5c230d9ae24 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-@@ -56,6 +56,8 @@ enum nouveau_aper {
- typedef int (*nouveau_migrate_copy_t)(struct nouveau_drm *drm, u64 npages,
- 				      enum nouveau_aper, u64 dst_addr,
- 				      enum nouveau_aper, u64 src_addr);
-+typedef int (*nouveau_clear_page_t)(struct nouveau_drm *drm, u32 length,
-+				      enum nouveau_aper, u64 dst_addr);
-=20
- struct nouveau_dmem_chunk {
- 	struct list_head list;
-@@ -67,6 +69,7 @@ struct nouveau_dmem_chunk {
-=20
- struct nouveau_dmem_migrate {
- 	nouveau_migrate_copy_t copy_func;
-+	nouveau_clear_page_t clear_func;
- 	struct nouveau_channel *chan;
- };
-=20
-@@ -436,6 +439,52 @@ nvc0b5_migrate_copy(struct nouveau_drm *drm, u64 npage=
-s,
- 	return 0;
- }
-=20
-+static int
-+nvc0b5_migrate_clear(struct nouveau_drm *drm, u32 length,
-+		     enum nouveau_aper dst_aper, u64 dst_addr)
-+{
-+	struct nouveau_channel *chan =3D drm->dmem->migrate.chan;
-+	u32 launch_dma =3D (1 << 10) /* REMAP_ENABLE_TRUE */ |
-+			 (1 << 8) /* DST_MEMORY_LAYOUT_PITCH. */ |
-+			 (1 << 7) /* SRC_MEMORY_LAYOUT_PITCH. */ |
-+			 (1 << 2) /* FLUSH_ENABLE_TRUE. */ |
-+			 (2 << 0) /* DATA_TRANSFER_TYPE_NON_PIPELINED. */;
-+	u32 remap =3D (4 <<  0) /* DST_X_CONST_A */ |
-+		    (5 <<  4) /* DST_Y_CONST_B */ |
-+		    (3 << 16) /* COMPONENT_SIZE_FOUR */ |
-+		    (1 << 24) /* NUM_DST_COMPONENTS_TWO */;
-+	int ret;
-+
-+	ret =3D RING_SPACE(chan, 12);
-+	if (ret)
-+		return ret;
-+
-+	switch (dst_aper) {
-+	case NOUVEAU_APER_VRAM:
-+		BEGIN_IMC0(chan, NvSubCopy, 0x0264, 0);
-+			break;
-+	case NOUVEAU_APER_HOST:
-+		BEGIN_IMC0(chan, NvSubCopy, 0x0264, 1);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	launch_dma |=3D 0x00002000; /* DST_TYPE_PHYSICAL. */
-+
-+	BEGIN_NVC0(chan, NvSubCopy, 0x0700, 3);
-+	OUT_RING(chan, 0);
-+	OUT_RING(chan, 0);
-+	OUT_RING(chan, remap);
-+	BEGIN_NVC0(chan, NvSubCopy, 0x0408, 2);
-+	OUT_RING(chan, upper_32_bits(dst_addr));
-+	OUT_RING(chan, lower_32_bits(dst_addr));
-+	BEGIN_NVC0(chan, NvSubCopy, 0x0418, 1);
-+	OUT_RING(chan, length >> 3);
-+	BEGIN_NVC0(chan, NvSubCopy, 0x0300, 1);
-+	OUT_RING(chan, launch_dma);
-+	return 0;
-+}
-+
- static int
- nouveau_dmem_migrate_init(struct nouveau_drm *drm)
- {
-@@ -445,6 +494,7 @@ nouveau_dmem_migrate_init(struct nouveau_drm *drm)
- 	case  VOLTA_DMA_COPY_A:
- 	case TURING_DMA_COPY_A:
- 		drm->dmem->migrate.copy_func =3D nvc0b5_migrate_copy;
-+		drm->dmem->migrate.clear_func =3D nvc0b5_migrate_clear;
- 		drm->dmem->migrate.chan =3D drm->ttm.chan;
- 		return 0;
- 	default:
-@@ -487,21 +537,28 @@ static unsigned long nouveau_dmem_migrate_copy_one(st=
-ruct nouveau_drm *drm,
- 	unsigned long paddr;
-=20
- 	spage =3D migrate_pfn_to_page(src);
--	if (!spage || !(src & MIGRATE_PFN_MIGRATE))
-+	if (!(src & MIGRATE_PFN_MIGRATE))
- 		goto out;
-=20
- 	dpage =3D nouveau_dmem_page_alloc_locked(drm);
- 	if (!dpage)
- 		goto out;
-=20
--	*dma_addr =3D dma_map_page(dev, spage, 0, PAGE_SIZE, DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(dev, *dma_addr))
--		goto out_free_page;
--
- 	paddr =3D nouveau_dmem_page_addr(dpage);
--	if (drm->dmem->migrate.copy_func(drm, 1, NOUVEAU_APER_VRAM,
--			paddr, NOUVEAU_APER_HOST, *dma_addr))
--		goto out_dma_unmap;
-+	if (spage) {
-+		*dma_addr =3D dma_map_page(dev, spage, 0, page_size(spage),
-+					 DMA_BIDIRECTIONAL);
-+		if (dma_mapping_error(dev, *dma_addr))
-+			goto out_free_page;
-+		if (drm->dmem->migrate.copy_func(drm, page_size(spage),
-+			NOUVEAU_APER_VRAM, paddr, NOUVEAU_APER_HOST, *dma_addr))
-+			goto out_dma_unmap;
-+	} else {
-+		*dma_addr =3D DMA_MAPPING_ERROR;
-+		if (drm->dmem->migrate.clear_func(drm, page_size(dpage),
-+			NOUVEAU_APER_VRAM, paddr))
-+			goto out_free_page;
-+	}
-=20
- 	*pfn =3D NVIF_VMM_PFNMAP_V0_V | NVIF_VMM_PFNMAP_V0_VRAM |
- 		((paddr >> PAGE_SHIFT) << NVIF_VMM_PFNMAP_V0_ADDR_SHIFT);
-@@ -528,7 +585,7 @@ static void nouveau_dmem_migrate_chunk(struct nouveau_d=
-rm *drm,
- 	for (i =3D 0; addr < args->end; i++) {
- 		args->dst[i] =3D nouveau_dmem_migrate_copy_one(drm, args->src[i],
- 				dma_addrs + nr_dma, pfns + i);
--		if (args->dst[i])
-+		if (!dma_mapping_error(drm->dev->dev, dma_addrs[nr_dma]))
- 			nr_dma++;
- 		addr +=3D PAGE_SIZE;
- 	}
---=20
-2.20.1
+Taking constrains 1 & 2 mentioned below in section "Backward
+Compatibility" into account, there should be a 1:1 mapping between set of
+valid 'payload_versions' and set of corrosponding in/out sizes.
 
+However its much more intutive and convenient to figure out the struct
+type to use from version number rather than sizes. For example:
+
+struct v1 { u64 a; };    sizeof(v1) == 8
+struct v2 { u64 a, b; }; sizeof(v2) == 16
+
+With version numbers its easy to figure out which type to use. However
+with in/out size an extra lookup is needed to identify the type to be used.
+
+>
+>> + *
+>> + * Libndctl on receiving the envelope back from papr_scm again checks the
+>> + * 'payload_version' field and based on it use the appropriate version dsm
+>> + * struct to parse the results.
+>> + *
+>> + * Backward Compatibility:
+>> + *
+>> + * Above scheme of exchanging different versioned PDSM struct between libndctl
+>> + * and papr_scm should provide backward compatibility until following two
+>> + * assumptions/conditions when defining new PDSM structs hold:
+>> + *
+>> + * Let T(X) = { set of attributes in PDSM struct 'T' versioned X }
+>> + *
+>> + * 1. T(X) is a proper subset of T(Y) if X > Y.
+>
+> Proper superset?  Or Y > X?
+>
+Good catch. This should be Y > X. Will get this fixed.
+
+> Ira
+>
+>> + *    i.e Each new version of PDSM struct should retain existing struct
+>> + *    attributes from previous version
+>> + *
+>> + * 2. If an entity (libndctl or papr_scm) supports a PDSM struct T(X) then
+>> + *    it should also support T(1), T(2)...T(X - 1).
+>> + *    i.e When adding support for new version of a PDSM struct, libndctl
+>> + *    and papr_scm should retain support of the existing PDSM struct
+>> + *    version they support.
+>> + */
+>> +
+>> +/* Papr-scm-header + payload expected with ND_CMD_CALL ioctl from libnvdimm */
+>> +struct nd_pdsm_cmd_pkg {
+>> +	struct nd_cmd_pkg hdr;	/* Package header containing sub-cmd */
+>> +	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
+>> +	__u16 payload_offset;	/* In: offset from start of struct */
+>> +	__u16 payload_version;	/* In/Out: version of the payload */
+>> +	__u8 payload[];		/* In/Out: Sub-cmd data buffer */
+>> +} __packed;
+>> +
+>> +/*
+>> + * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
+>> + * via 'nd_pdsm_cmd_pkg.hdr.nd_command' member of the ioctl struct
+>> + */
+>> +enum papr_scm_pdsm {
+>> +	PAPR_SCM_PDSM_MIN = 0x0,
+>> +	PAPR_SCM_PDSM_MAX,
+>> +};
+>> +
+>> +/* Convert a libnvdimm nd_cmd_pkg to pdsm specific pkg */
+>> +static inline struct nd_pdsm_cmd_pkg *nd_to_pdsm_cmd_pkg(struct nd_cmd_pkg *cmd)
+>> +{
+>> +	return (struct nd_pdsm_cmd_pkg *) cmd;
+>> +}
+>> +
+>> +/* Return the payload pointer for a given pcmd */
+>> +static inline void *pdsm_cmd_to_payload(struct nd_pdsm_cmd_pkg *pcmd)
+>> +{
+>> +	if (pcmd->hdr.nd_size_in == 0 && pcmd->hdr.nd_size_out == 0)
+>> +		return NULL;
+>> +	else
+>> +		return (void *)((__u8 *) pcmd + pcmd->payload_offset);
+>> +}
+>> +
+>> +#endif /* _UAPI_ASM_POWERPC_PAPR_SCM_PDSM_H_ */
+>> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+>> index 142636e1a59f..ed4b49a6f1e1 100644
+>> --- a/arch/powerpc/platforms/pseries/papr_scm.c
+>> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+>> @@ -15,13 +15,15 @@
+>>  #include <linux/seq_buf.h>
+>>  
+>>  #include <asm/plpar_wrappers.h>
+>> +#include <asm/papr_scm_pdsm.h>
+>>  
+>>  #define BIND_ANY_ADDR (~0ul)
+>>  
+>>  #define PAPR_SCM_DIMM_CMD_MASK \
+>>  	((1ul << ND_CMD_GET_CONFIG_SIZE) | \
+>>  	 (1ul << ND_CMD_GET_CONFIG_DATA) | \
+>> -	 (1ul << ND_CMD_SET_CONFIG_DATA))
+>> +	 (1ul << ND_CMD_SET_CONFIG_DATA) | \
+>> +	 (1ul << ND_CMD_CALL))
+>>  
+>>  /* DIMM health bitmap bitmap indicators */
+>>  /* SCM device is unable to persist memory contents */
+>> @@ -350,16 +352,97 @@ static int papr_scm_meta_set(struct papr_scm_priv *p,
+>>  	return 0;
+>>  }
+>>  
+>> +/*
+>> + * Validate the inputs args to dimm-control function and return '0' if valid.
+>> + * This also does initial sanity validation to ND_CMD_CALL sub-command packages.
+>> + */
+>> +static int is_cmd_valid(struct nvdimm *nvdimm, unsigned int cmd, void *buf,
+>> +		       unsigned int buf_len)
+>> +{
+>> +	unsigned long cmd_mask = PAPR_SCM_DIMM_CMD_MASK;
+>> +	struct nd_pdsm_cmd_pkg *pkg = nd_to_pdsm_cmd_pkg(buf);
+>> +	struct papr_scm_priv *p;
+>> +
+>> +	/* Only dimm-specific calls are supported atm */
+>> +	if (!nvdimm)
+>> +		return -EINVAL;
+>> +
+>> +	/* get the provider date from struct nvdimm */
+>> +	p = nvdimm_provider_data(nvdimm);
+>> +
+>> +	if (!test_bit(cmd, &cmd_mask)) {
+>> +		dev_dbg(&p->pdev->dev, "Unsupported cmd=%u\n", cmd);
+>> +		return -EINVAL;
+>> +	} else if (cmd == ND_CMD_CALL) {
+>> +
+>> +		/* Verify the envelope package */
+>> +		if (!buf || buf_len < sizeof(struct nd_pdsm_cmd_pkg)) {
+>> +			dev_dbg(&p->pdev->dev, "Invalid pkg size=%u\n",
+>> +				buf_len);
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		/* Verify that the PDSM family is valid */
+>> +		if (pkg->hdr.nd_family != NVDIMM_FAMILY_PAPR_SCM) {
+>> +			dev_dbg(&p->pdev->dev, "Invalid pkg family=0x%llx\n",
+>> +				pkg->hdr.nd_family);
+>> +			return -EINVAL;
+>> +
+>> +		}
+>> +
+>> +		/* We except a payload with all PDSM commands */
+>> +		if (pdsm_cmd_to_payload(pkg) == NULL) {
+>> +			dev_dbg(&p->pdev->dev,
+>> +				"Empty payload for sub-command=0x%llx\n",
+>> +				pkg->hdr.nd_command);
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	/* Command looks valid */
+>> +	return 0;
+>> +}
+>> +
+>> +static int papr_scm_service_pdsm(struct papr_scm_priv *p,
+>> +				struct nd_pdsm_cmd_pkg *call_pkg)
+>> +{
+>> +	/* unknown subcommands return error in packages */
+>> +	if (call_pkg->hdr.nd_command <= PAPR_SCM_PDSM_MIN ||
+>> +	    call_pkg->hdr.nd_command >= PAPR_SCM_PDSM_MAX) {
+>> +		dev_dbg(&p->pdev->dev, "Invalid PDSM request 0x%llx\n",
+>> +			call_pkg->hdr.nd_command);
+>> +		call_pkg->cmd_status = -EINVAL;
+>> +		return 0;
+>> +	}
+>> +
+>> +	/* Depending on the DSM command call appropriate service routine */
+>> +	switch (call_pkg->hdr.nd_command) {
+>> +	default:
+>> +		dev_dbg(&p->pdev->dev, "Unsupported PDSM request 0x%llx\n",
+>> +			call_pkg->hdr.nd_command);
+>> +		call_pkg->cmd_status = -ENOENT;
+>> +		return 0;
+>> +	}
+>> +}
+>> +
+>>  static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
+>>  			  struct nvdimm *nvdimm, unsigned int cmd, void *buf,
+>>  			  unsigned int buf_len, int *cmd_rc)
+>>  {
+>>  	struct nd_cmd_get_config_size *get_size_hdr;
+>>  	struct papr_scm_priv *p;
+>> +	struct nd_pdsm_cmd_pkg *call_pkg = NULL;
+>> +	int rc;
+>>  
+>> -	/* Only dimm-specific calls are supported atm */
+>> -	if (!nvdimm)
+>> -		return -EINVAL;
+>> +	/* Use a local variable in case cmd_rc pointer is NULL */
+>> +	if (cmd_rc == NULL)
+>> +		cmd_rc = &rc;
+>> +
+>> +	*cmd_rc = is_cmd_valid(nvdimm, cmd, buf, buf_len);
+>> +	if (*cmd_rc) {
+>> +		pr_debug("Invalid cmd=0x%x. Err=%d\n", cmd, *cmd_rc);
+>> +		return *cmd_rc;
+>> +	}
+>>  
+>>  	p = nvdimm_provider_data(nvdimm);
+>>  
+>> @@ -381,13 +464,19 @@ static int papr_scm_ndctl(struct nvdimm_bus_descriptor *nd_desc,
+>>  		*cmd_rc = papr_scm_meta_set(p, buf);
+>>  		break;
+>>  
+>> +	case ND_CMD_CALL:
+>> +		call_pkg = nd_to_pdsm_cmd_pkg(buf);
+>> +		*cmd_rc = papr_scm_service_pdsm(p, call_pkg);
+>> +		break;
+>> +
+>>  	default:
+>> -		return -EINVAL;
+>> +		dev_dbg(&p->pdev->dev, "Unknown command = %d\n", cmd);
+>> +		*cmd_rc = -EINVAL;
+>>  	}
+>>  
+>>  	dev_dbg(&p->pdev->dev, "returned with cmd_rc = %d\n", *cmd_rc);
+>>  
+>> -	return 0;
+>> +	return *cmd_rc;
+>>  }
+>>  
+>>  static ssize_t flags_show(struct device *dev,
+>> diff --git a/include/uapi/linux/ndctl.h b/include/uapi/linux/ndctl.h
+>> index de5d90212409..99fb60600ef8 100644
+>> --- a/include/uapi/linux/ndctl.h
+>> +++ b/include/uapi/linux/ndctl.h
+>> @@ -244,6 +244,7 @@ struct nd_cmd_pkg {
+>>  #define NVDIMM_FAMILY_HPE2 2
+>>  #define NVDIMM_FAMILY_MSFT 3
+>>  #define NVDIMM_FAMILY_HYPERV 4
+>> +#define NVDIMM_FAMILY_PAPR_SCM 5
+>>  
+>>  #define ND_IOCTL_CALL			_IOWR(ND_IOCTL, ND_CMD_CALL,\
+>>  					struct nd_cmd_pkg)
+>> -- 
+>> 2.26.2
+>> _______________________________________________
+>> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
+>> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
+
+-- 
+Cheers
+~ Vaibhav
