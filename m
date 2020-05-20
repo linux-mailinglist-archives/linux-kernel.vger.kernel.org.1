@@ -2,85 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F401DB8D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20241DB8E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726940AbgETP46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 11:56:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56404 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726596AbgETP45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 11:56:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589990216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sno0GmQ/eQv+Rs74eF1UQLVprtgb41HhzSqFhBF9Z8s=;
-        b=RScn9haiZyNpcqVRHR2LISRYxtfzc/yjpW5MALnYdN7PdzY5h5TJHqhxpdcClvWPcIYAdE
-        Qs8QDbTTKz+LAVy48/4kK8k/i+B4Yp0DhLEtuOlRK1eNrgOtcJaDG4PgKWC6IrJsq1C0kZ
-        0koJdXL07hlnXmJZAaMzqcLMuLmNbNk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-sIzVUj7MM16DmhemM8TuYQ-1; Wed, 20 May 2020 11:56:52 -0400
-X-MC-Unique: sIzVUj7MM16DmhemM8TuYQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF91580183C;
-        Wed, 20 May 2020 15:56:50 +0000 (UTC)
-Received: from ceranb (unknown [10.40.192.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECE755D9CA;
-        Wed, 20 May 2020 15:56:47 +0000 (UTC)
-Date:   Wed, 20 May 2020 17:56:47 +0200
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     <jiri@resnulli.us>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <roopa@cumulusnetworks.com>, <nikolay@cumulusnetworks.com>,
-        <andrew@lunn.ch>, <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH 2/3] switchdev: mrp: Remove the variable mrp_ring_state
-Message-ID: <20200520175647.32e6f5eb@ceranb>
-In-Reply-To: <20200520130923.3196432-3-horatiu.vultur@microchip.com>
-References: <20200520130923.3196432-1-horatiu.vultur@microchip.com>
-        <20200520130923.3196432-3-horatiu.vultur@microchip.com>
+        id S1726838AbgETP7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 11:59:43 -0400
+Received: from verein.lst.de ([213.95.11.211]:50490 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726560AbgETP7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 11:59:43 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EB05F68BEB; Wed, 20 May 2020 17:59:40 +0200 (CEST)
+Date:   Wed, 20 May 2020 17:59:40 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: clean up kernel_{read,write} & friends v2
+Message-ID: <20200520155940.GA4313@lst.de>
+References: <20200513065656.2110441-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513065656.2110441-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 May 2020 13:09:22 +0000
-Horatiu Vultur <horatiu.vultur@microchip.com> wrote:
+ping?
 
-> Remove the variable mrp_ring_state from switchdev_attr because is not
-> used anywhere.
-> The ring state is set using SWITCHDEV_OBJ_ID_RING_STATE_MRP.
+On Wed, May 13, 2020 at 08:56:42AM +0200, Christoph Hellwig wrote:
+> Hi Al,
 > 
-> Fixes: c284b5459008 ("switchdev: mrp: Extend switchdev API to offload MRP")
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  include/net/switchdev.h | 1 -
->  1 file changed, 1 deletion(-)
+> this series fixes a few issues and cleans up the helpers that read from
+> or write to kernel space buffers, and ensures that we don't change the
+> address limit if we are using the ->read_iter and ->write_iter methods
+> that don't need the changed address limit.
 > 
-> diff --git a/include/net/switchdev.h b/include/net/switchdev.h
-> index ae7aeb0d1f9ca..db519957e134b 100644
-> --- a/include/net/switchdev.h
-> +++ b/include/net/switchdev.h
-> @@ -62,7 +62,6 @@ struct switchdev_attr {
->  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
->  		u8 mrp_port_state;			/* MRP_PORT_STATE */
->  		u8 mrp_port_role;			/* MRP_PORT_ROLE */
-> -		u8 mrp_ring_state;			/* MRP_RING_STATE */
->  #endif
->  	} u;
->  };
-
-Acked-by: Ivan Vecera <ivecera@redhat.com>
-
+> Changes since v1:
+>  - __kernel_write must not take sb_writers
+>  - unexported __kernel_write
+---end quoted text---
