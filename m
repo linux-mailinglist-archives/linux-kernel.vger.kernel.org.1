@@ -2,321 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41501DBDBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CEC1DBD77
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 21:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgETTPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 15:15:39 -0400
-Received: from v6.sk ([167.172.42.174]:33218 "EHLO v6.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgETTPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 15:15:38 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 1426861301;
-        Wed, 20 May 2020 19:15:05 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v3 2/2] mfd: ene-kb3930: Add driver for ENE KB3930 Embedded Controller
-Date:   Wed, 20 May 2020 20:59:55 +0200
-Message-Id: <20200520185955.2144252-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200520185955.2144252-1-lkundrak@v3.sk>
-References: <20200520185955.2144252-1-lkundrak@v3.sk>
+        id S1726903AbgETTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 15:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgETTAA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 15:00:00 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E6C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so3434187qts.9
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
+        b=xqOCj1hi7zsdkF4h7T7VpVsacljZUmQ98KBXk4BC/Dbn1LZa5faEmx2QjtoDIrVUFb
+         P6lu0RuOXjmco5U/CykEp8x4g7RdNl7UvG4m0sChWHzGk3hIX45vYFUqw7L/RamVwzoI
+         IUgUbP9dHwHRi8zBAlVHX2JlNghk6esJwZciA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ARORx90bNZfE3lIvpSPFr7pFGC2F13RJPiz07NfvAWg=;
+        b=neFNAP24ryIy3PzhAIkk2ntfqyysmbbF7C9TPgjZc/2jlvyR4lHbGkvpaMjSKuNDix
+         Yh2/IuWBPmit+LzmJf0rb+og8rzeVSDecK4ORnx/YxorMjj2fw2fSVHFD/7twZUPDykq
+         Gs23AUTsRJunsxzKHZbPeu+YtNXF6dn2taAiTmEAa/6fYKVLfKwJpCCEXfTuRGl9jopF
+         iz1GFsqUua/W/1qPbclTpFqlJWY38qbk51lcLOFZynwuNwKkAZXVhI87oms3lSocAxh9
+         lN1ZhSdM2BXnzK/M+pxqRHaN7JvdBCC7txSU/QvOwT6USnHJhgzVB6WsL+T2bXNWuMOZ
+         PhEg==
+X-Gm-Message-State: AOAM5321TE3TMtDszOTRs7NRU3T2VPqWrLc6CpS/Xj5Bo16rNDGT254w
+        l7HSnLs0Cpy17fhHfwvqNC9s4Q==
+X-Google-Smtp-Source: ABdhPJxKFQ4mBEMmbP/Kvr56rfPGG/twBhTQVRIoKgmz5lGIunly4e1J2W2rXX4eFpW+AV4T6MpO7A==
+X-Received: by 2002:ac8:6a09:: with SMTP id t9mr6859997qtr.7.1590001198693;
+        Wed, 20 May 2020 11:59:58 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id h12sm3428451qte.31.2020.05.20.11.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 11:59:58 -0700 (PDT)
+Date:   Wed, 20 May 2020 14:59:57 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
+ access
+Message-ID: <20200520185957.GB261674@google.com>
+References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+ <20200519201912.1564477-4-bigeasy@linutronix.de>
+ <20200520102407.GF317569@hirez.programming.kicks-ass.net>
+ <20200520120608.mwros5jurmidxxfv@linutronix.de>
+ <20200520174259.GA247557@google.com>
+ <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200520182800.sdp6t6bgbhn4kkqk@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver provides access to the EC RAM of said embedded controller
-attached to the I2C bus as well as optionally supporting its slightly weird
-power-off/restart protocol.
+On Wed, May 20, 2020 at 08:28:00PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-05-20 13:42:59 [-0400], Joel Fernandes wrote:
+> > Hi Sebastian,
+> Hi Joel,
+> 
+> > For pointer stability, can we just use get_local_ptr() and put_local_ptr()
+> > instead of adding an extra lock? This keeps the pointer stable while keeping
+> > the section preemptible on -rt. And we already have a lock in rcu_data, I
+> > prefer not to add another lock if possible.
+> 
+> What is this get_local_ptr() doing? I can't find it anywhere…
 
-A particular implementation of the EC firmware can be identified by a
-model byte. If this driver identifies the Dell Ariel platform, it
-registers the appropriate cells.
+I replied about it in the other thread.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
----
-Changes since v2:
-- Sort the includes
-- s/EC_MODEL_ID/EC_MODEL/
-- Add a couple of clarifying comments
-- Use #defines for values used in poweroff routine
-- Remove priority from a restart notifier block
-- s/priv/ddata/
-- s/ec_ram/ram_regmap/ for the regmap name
-- Fix the error handling when getting off gpios was not successful
-- Remove a useless dev_info at the end of probe()
-- Use i2c probe_new() callback, drop i2c_device_id
-- Modify the logic in checking the model ID
-
- drivers/mfd/Kconfig      |  10 ++
- drivers/mfd/Makefile     |   1 +
- drivers/mfd/ene-kb3930.c | 215 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 226 insertions(+)
- create mode 100644 drivers/mfd/ene-kb3930.c
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 0a59249198d3..dae18a2beab5 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -398,6 +398,16 @@ config MFD_DLN2
- 	  etc. must be enabled in order to use the functionality of
- 	  the device.
  
-+config MFD_ENE_KB3930
-+	tristate "ENE KB3930 Embedded Controller support"
-+	depends on I2C
-+	depends on MACH_MMP3_DT || COMPILE_TEST
-+	select MFD_CORE
-+	help
-+	  This adds support for accessing the registers on ENE KB3930, Embedded
-+	  Controller. Additional drivers such as LEDS_ARIEL must be enabled in
-+	  order to use the functionality of the device.
-+
- config MFD_EXYNOS_LPASS
- 	tristate "Samsung Exynos SoC Low Power Audio Subsystem"
- 	depends on ARCH_EXYNOS || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index f935d10cbf0f..2d2f5bc12841 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_BCM2835)	+= bcm2835-pm.o
- obj-$(CONFIG_MFD_BCM590XX)	+= bcm590xx.o
- obj-$(CONFIG_MFD_BD9571MWV)	+= bd9571mwv.o
- obj-$(CONFIG_MFD_CROS_EC_DEV)	+= cros_ec_dev.o
-+obj-$(CONFIG_MFD_ENE_KB3930)	+= ene-kb3930.o
- obj-$(CONFIG_MFD_EXYNOS_LPASS)	+= exynos-lpass.o
- 
- obj-$(CONFIG_HTC_PASIC3)	+= htc-pasic3.o
-diff --git a/drivers/mfd/ene-kb3930.c b/drivers/mfd/ene-kb3930.c
-new file mode 100644
-index 000000000000..0d44c4c524f0
---- /dev/null
-+++ b/drivers/mfd/ene-kb3930.c
-@@ -0,0 +1,215 @@
-+// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
-+/*
-+ * ENE KB3930 Embedded Controller Driver
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/mfd/core.h>
-+#include <linux/module.h>
-+#include <linux/reboot.h>
-+#include <linux/regmap.h>
-+
-+/* I2C registers that are multiplexing access to the EC RAM. */
-+enum {
-+	EC_DATA_IN	= 0x00,
-+	EC_RAM_OUT	= 0x80,
-+	EC_RAM_IN	= 0x81,
-+};
-+
-+/* EC RAM registers. */
-+enum {
-+	EC_MODEL	= 0x30,
-+	EC_VERSION_MAJ	= 0x31,
-+	EC_VERSION_MIN	= 0x32,
-+};
-+
-+struct kb3930 {
-+	struct i2c_client *client;
-+	struct regmap *ram_regmap;
-+	struct gpio_descs *off_gpios;
-+};
-+
-+struct kb3930 *global_kb3930;
-+
-+#define EC_GPIO_WAVE		0
-+#define EC_GPIO_OFF_MODE	1
-+
-+#define EC_OFF_MODE_REBOOT	0
-+#define EC_OFF_MODE_POWER	1
-+
-+static void kb3930_off(struct kb3930 *ddata, int off_mode)
-+{
-+	gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_OFF_MODE],
-+			       off_mode);
-+
-+	/*
-+	 * The EC initiates a shutdown when it detects a 10 MHz wave, inspecting the
-+	 * other GPIO pin to decide whether it's supposed to turn the power off or
-+	 * reset the board.
-+	 */
-+	while (1) {
-+		mdelay(50);
-+		gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_WAVE], 0);
-+		mdelay(50);
-+		gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_WAVE], 1);
-+	}
-+}
-+
-+static int kb3930_restart(struct notifier_block *this,
-+			  unsigned long mode, void *cmd)
-+{
-+	kb3930_off(global_kb3930, EC_OFF_MODE_REBOOT);
-+	return NOTIFY_DONE;
-+}
-+
-+static void kb3930_power_off(void)
-+{
-+	kb3930_off(global_kb3930, EC_OFF_MODE_POWER);
-+}
-+
-+static struct notifier_block kb3930_restart_nb = {
-+	.notifier_call = kb3930_restart,
-+};
-+
-+static const struct mfd_cell ariel_ec_cells[] = {
-+	{ .name = "dell-wyse-ariel-led", },
-+	{ .name = "dell-wyse-ariel-power", },
-+};
-+
-+static int kb3930_ec_ram_reg_write(void *context, unsigned int reg,
-+				   unsigned int val)
-+{
-+	struct kb3930 *ddata = context;
-+
-+	return i2c_smbus_write_word_data(ddata->client, EC_RAM_OUT,
-+					 (val << 8) | reg);
-+}
-+
-+static int kb3930_ec_ram_reg_read(void *context, unsigned int reg,
-+				  unsigned int *val)
-+{
-+	struct kb3930 *ddata = context;
-+	int ret;
-+
-+	ret = i2c_smbus_write_word_data(ddata->client, EC_RAM_IN, reg);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = i2c_smbus_read_word_data(ddata->client, EC_DATA_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = ret >> 8;
-+	return 0;
-+}
-+
-+static const struct regmap_config kb3930_ram_regmap_config = {
-+	.name = "ec_ram",
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.reg_stride = 1,
-+	.max_register = 0xff,
-+	.reg_write = kb3930_ec_ram_reg_write,
-+	.reg_read = kb3930_ec_ram_reg_read,
-+	.fast_io = false,
-+};
-+
-+static int kb3930_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct device_node *np = dev->of_node;
-+	struct kb3930 *ddata;
-+	unsigned int model;
-+	int ret;
-+
-+	if (global_kb3930)
-+		return -EEXIST;
-+
-+	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
-+	if (!ddata)
-+		return -ENOMEM;
-+
-+	global_kb3930 = ddata;
-+	ddata->client = client;
-+	i2c_set_clientdata(client, ddata);
-+
-+	ddata->ram_regmap = devm_regmap_init(dev, NULL, ddata,
-+					     &kb3930_ram_regmap_config);
-+	if (IS_ERR(ddata->ram_regmap))
-+		return PTR_ERR(ddata->ram_regmap);
-+
-+	ret = regmap_read(ddata->ram_regmap, EC_MODEL, &model);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Currently we only support the cells present on Dell Ariel model. */
-+	if (model != 'J') {
-+		dev_err(dev, "unknown board model: %02x\n", model);
-+		return -ENODEV;
-+	}
-+
-+	/* These are the cells valid for model == 'J' only. */
-+	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO,
-+				   ariel_ec_cells,
-+				   ARRAY_SIZE(ariel_ec_cells),
-+				   NULL, 0, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (of_property_read_bool(np, "system-power-controller")) {
-+		ddata->off_gpios =
-+			devm_gpiod_get_array_optional(dev, "off", GPIOD_IN);
-+		if (IS_ERR(ddata->off_gpios))
-+			return PTR_ERR(ddata->off_gpios);
-+		if (ddata->off_gpios->ndescs < 2) {
-+			dev_err(dev, "invalid off-gpios property\n");
-+			return -EINVAL;
-+		}
-+	}
-+	if (ddata->off_gpios) {
-+		register_restart_handler(&kb3930_restart_nb);
-+		if (pm_power_off == NULL)
-+			pm_power_off = kb3930_power_off;
-+	}
-+
-+	return 0;
-+}
-+
-+static int kb3930_remove(struct i2c_client *client)
-+{
-+	struct kb3930 *ddata = i2c_get_clientdata(client);
-+
-+	if (ddata->off_gpios) {
-+		if (pm_power_off == kb3930_power_off)
-+			pm_power_off = NULL;
-+		unregister_restart_handler(&kb3930_restart_nb);
-+	}
-+	global_kb3930 = NULL;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id kb3930_dt_ids[] = {
-+	{ .compatible = "ene,kb3930" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, kb3930_dt_ids);
-+
-+static struct i2c_driver kb3930_driver = {
-+	.probe_new = kb3930_probe,
-+	.remove = kb3930_remove,
-+	.driver = {
-+		.name = "ene-kb3930",
-+		.of_match_table = of_match_ptr(kb3930_dt_ids),
-+	},
-+};
-+
-+module_i2c_driver(kb3930_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("ENE KB3930 Embedded Controller Driver");
-+MODULE_LICENSE("Dual BSD/GPL");
--- 
-2.26.2
+> > > I remember Paul looked at that patch a few years ago and he said that
+> > > that disabling interrupts here is important and matches the other part
+> > > instance where the interrupts are disabled. Looking at it now, it seems
+> > > that there is just pointer stability but I can't tell if
+> > > rcu_segcblist_pend_cbs() needs more than just this.
+> > 
+> > Which 'other part' are you referring to? Your patch removed local_irq_save()
+> > from other places as well right?
+> 
+> The patch converted hunks.
+> 
+
+So then there are no other local_irq_save() to match with. Or may be I did
+not understand your concern, could you share any threads from past
+discussions about disabling interrupts in this code? You mentioned about a
+discussion from few years ago.
+
+> > 
+> >  - Joel
+> > 
+> > ---8<-----------------------
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 8ff71e5d0fe8b..5f49919205317 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -778,13 +778,17 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+> >  	unsigned long tlast;
+> >  
+> >  	/* If the local srcu_data structure has callbacks, not idle.  */
+> > -	local_irq_save(flags);
+> > -	sdp = this_cpu_ptr(ssp->sda);
+> > +	sdp = get_local_ptr(ssp->sda);
+> > +	spin_lock_irqsave_rcu_node(sdp, flags);
+> 
+> You acquire the node lock which was not acquired before. Is that okay?
+> How is get_local_ptr() different to raw_cpu_ptr()?
+
+get_cpu_ptr() disables preemption which you might not want, right?
+
+Most (all?) other paths are accessing the cblist under lock so I added it
+here to be safe. This is anyway called from a slowpath. Do you see a problem?
+
+thanks,
+
+ - Joel
 
