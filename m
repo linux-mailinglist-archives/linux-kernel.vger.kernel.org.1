@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF731DB1E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4744F1DB1C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgETLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 07:36:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52826 "EHLO mx2.suse.de"
+        id S1726827AbgETL37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:29:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:33065 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbgETLgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 07:36:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B5FDBAE61;
-        Wed, 20 May 2020 11:36:12 +0000 (UTC)
-Subject: Re: [PATCH v3 02/19] mm: memcg: prepare for byte-sized vmstat items
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-References: <20200422204708.2176080-1-guro@fb.com>
- <20200422204708.2176080-3-guro@fb.com>
- <a63f9190-e91b-97d7-f579-8ccf0fce46c7@suse.cz>
-Message-ID: <ab1e0eae-9baf-eccf-82cb-9e47dbbab13b@suse.cz>
-Date:   Wed, 20 May 2020 13:36:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <a63f9190-e91b-97d7-f579-8ccf0fce46c7@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726403AbgETL37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 07:29:59 -0400
+IronPort-SDR: Tv+oiap8EimFtvKTfrqHsqt/7QEE8AOEVhv947PaFNjc3x78LFv9Nh/KLMeECn6E8RepYLWwlt
+ sPHmcPsxLowA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 04:29:59 -0700
+IronPort-SDR: 01NBMwqFV8OTmqOCteBCh16e5yCHeDTeT7iKrAJkcOynoejJMDsEoXlkUo0K0hfz/LdDHFdB0w
+ FYQuTav0J2lA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
+   d="scan'208";a="268239004"
+Received: from unknown (HELO linuxpc.iind.intel.com) ([10.223.107.108])
+  by orsmga006.jf.intel.com with ESMTP; 20 May 2020 04:29:56 -0700
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     rui.zhang@intel.com, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     andriy.shevchenko@intel.com, srinivas.pandruvada@linux.intel.com,
+        sumeet.r.pawnikar@intel.com
+Subject: [PATCH] powercap: remove unused local MSR define
+Date:   Wed, 20 May 2020 17:06:18 +0530
+Message-Id: <1589974578-26791-1-git-send-email-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 1.7.9.5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/20 1:31 PM, Vlastimil Babka wrote:
-> On 4/22/20 10:46 PM, Roman Gushchin wrote:
->> To implement per-object slab memory accounting, we need to
->> convert slab vmstat counters to bytes. Actually, out of
->> 4 levels of counters: global, per-node, per-memcg and per-lruvec
->> only two last levels will require byte-sized counters.
->> It's because global and per-node counters will be counting the
->> number of slab pages, and per-memcg and per-lruvec will be
->> counting the amount of memory taken by charged slab objects.
->> 
->> Converting all vmstat counters to bytes or even all slab
->> counters to bytes would introduce an additional overhead.
->> So instead let's store global and per-node counters
->> in pages, and memcg and lruvec counters in bytes.
->> 
->> To make the API clean all access helpers (both on the read
->> and write sides) are dealing with bytes.
->> 
->> To avoid back-and-forth conversions a new flavor of helpers
->> is introduced, which always returns values in pages:
->> node_page_state_pages() and global_node_page_state_pages().
->> 
->> Actually new helpers are just reading raw values. Old helpers are
->> simple wrappers, which perform a conversion if the vmstat items are
->> in bytes. Because at the moment no one actually need bytes,
->> there are WARN_ON_ONCE() macroses inside to warn about inappropriate
->> use cases.
->> 
->> Thanks to Johannes Weiner for the idea of having the byte-sized API
->> on top of the page-sized internal storage.
->> 
->> Signed-off-by: Roman Gushchin <guro@fb.com>
-> 
-> Reviewed-By: Vlastimil Babka <vbabka@suse.cz>
-> 
-> But it's somewhat complicated, so it would be great to document it in comments
-> of e.g. include/linux/vmstat.h that what the API returns as unsigned long, can
-> be either bytes or pages depending on vmstat_item_in_bytes().
+From: "Pawnikar, Sumeet" <sumeet.r.pawnikar@intel.com>
 
-Also forgot to add that if those WARN_ON_ONCEs are going to stay, they should
-rather become VM_WARN_ON_ONCEs
+Remove unused PLATFORM_POWER_LIMIT MSR local definition from file
+intel_rapl_common.c. This was missed while splitting old RAPL code
+intel_rapl.c file into two new files intel_rapl_msr.c and
+intel_rapl_common.c as per the commit 3382388d7148
+("intel_rapl: abstract RAPL common code"). Currently, this #define
+entry is being used only in intel_rapl_msr.c file and local definition
+present in this file.
+
+Signed-off-by: Pawnikar, Sumeet <sumeet.r.pawnikar@intel.com>
+---
+ drivers/powercap/intel_rapl_common.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+index eb328655bc01..5527a7c76309 100644
+--- a/drivers/powercap/intel_rapl_common.c
++++ b/drivers/powercap/intel_rapl_common.c
+@@ -26,9 +26,6 @@
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ 
+-/* Local defines */
+-#define MSR_PLATFORM_POWER_LIMIT	0x0000065C
+-
+ /* bitmasks for RAPL MSRs, used by primitive access functions */
+ #define ENERGY_STATUS_MASK      0xffffffff
+ 
+-- 
+1.7.9.5
+
