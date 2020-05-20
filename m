@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFA11DBC90
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FE21DBCA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 20:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgETSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 14:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S1727779AbgETSVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 14:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgETSUT (ORCPT
+        with ESMTP id S1726688AbgETSUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 14:20:19 -0400
+        Wed, 20 May 2020 14:20:21 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C056C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:20:19 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id q16so2614281ybg.18
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:20:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C87C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:20:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i62so2618887ybc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 11:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=HirrhLtLdWXctOmYl+GGXlhELiHQimzvAAf/lgliNtM=;
-        b=Lymp+HoZWtdVPsEhkUCFjvzZfmfCdrJ+0vpCWb9rwEx/Xmetsrtm/o00bCY08F4/Rq
-         VR186IkjVvsURWe54okR8cFkJoanJBuOvCIDJfSXLGVyGTHR4Gl1kSzMhDgKfzkNSjKA
-         ph3Q4CRNvIOxysyDzInQidifLpqLr/GuDHaiDa6SonZLSHveVv61Ic1rCyzPDIZwAH1e
-         xHeiKA+Iu5rKPGvcC40LPkBoq0OLz6Fg0KfD9S1GV1+t8iVrCm2T7YX5sNCVLIosG+q9
-         wSn9njOb1jLeO6X1Uj7oJpkXY5ZC1pYeyyD8ZfBirweSpGYPa/8icc4aYlO69VD621/L
-         n+Eg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=pg8X3zsQYx36UMQsRQzJQNRzKxV0haL9XJi6KY3pltg=;
+        b=VBmrZvCCpRZVw1T00v/lESnT7gpttLx7jwELUa4fEJrn+8/2Qq2iBQEZgVtggT3VpY
+         oZjN4qja7wDJO/zdNXgBwIUSdj1m+WWHmrOHth5G5BXVE7IIu83QLP7zROmuGAotOer+
+         qixha/bEOroun3NqM9wWI2EB94vwbuJ6tQdUC3py+QuhMajVTXUpxbfku/4qjJY5j6WM
+         BteNzNNVPYViB4OGzMKxxlwXAWoaDLecZFdaHaj1DkWN0+62sXbuFUkhgJzey7XjgpoD
+         95R1tIP9t5kbtyo4sZfSJ7tfZAcunS0EXb7v3z4FXlXuWc5SQjl5og0y5tFfKRUxuJcw
+         K4RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=HirrhLtLdWXctOmYl+GGXlhELiHQimzvAAf/lgliNtM=;
-        b=WFgy7ogmWmIETA5nHsh84VSnoteaHYCl+pNL9I9DgjoEQ7fc5xTNsPCNkOopSNdVD8
-         NrogX5O/YLO+Bflyi+9A6I7xaNdTsuKL/1077pWOeI9WKweCPL9Yx7VFJepX1dQK/pXl
-         /Vni6outmsua8iHdEkiEG5/2hQTopLUe/6c+MteLquINmAmmreJCpqm/10fqfK+l1t0c
-         zs2FsAryMweM9sqMeyG+oFvtq8pKjy9jafHhSJYr/zpOUY5R7OtL7CLhq2etsOM15c0p
-         /ABuDDD13okN+mM+XrhNax0bK/IqLA5Hvu4DoLuDy9YF42v9xeT4/xJ/XJcVUlDhq4Dc
-         bl7w==
-X-Gm-Message-State: AOAM530Dsd7y1W/5RGCf0N5Loqm21KU9bGbkT+hnWP/8dNxzDekjPFl0
-        YuV6b5EKIbNPZ4aAv6DFF1NEn/QDTNzp
-X-Google-Smtp-Source: ABdhPJycvTSovxfJnyx4j6fte7xJCX7Uvo5rFBgeP48/vmM2CXzcwrtEtZojGSQO78TM+7YUq6KB9+mLPl2J
-X-Received: by 2002:a25:d8cf:: with SMTP id p198mr8525330ybg.119.1589998818599;
- Wed, 20 May 2020 11:20:18 -0700 (PDT)
-Date:   Wed, 20 May 2020 11:20:04 -0700
-Message-Id: <20200520182011.32236-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=pg8X3zsQYx36UMQsRQzJQNRzKxV0haL9XJi6KY3pltg=;
+        b=OREb9Z6eClcsdc4DVyeHDIiQjf5b++MadmswBgvtQk+zcyeNI2rE3qY9ICZ/dY3s+t
+         iSqk9qiIIgOmZ/0BTaSeTz6fW3fuSCnmdepGRhdn2Yk+iGkMJcG8ZpDvjAp31PdpWou7
+         LSLl9jV7gwuxblySNpUJLprCnpuJQKUzEKZ8LAietI/MCpxJDSM6/Uv1KxSh/3qOYU4t
+         k2Xby1G7WXRHjJwhdBo/s3jsWkNNGqqTeJeU2KyuubWjjteG+egIUFDHOY1D1CYW7dMc
+         X2EgTduq2+qU5ZWHHZBMGJS5joBz75OahwYVTQs7Ixt5rUh0xSnvSw98wazY2R1C0sw6
+         tx3Q==
+X-Gm-Message-State: AOAM5324Jve5zojh8ctzzeDvgbNSbJpnXmx/FE+qTg6GBtdSwpTT55nj
+        3XtPygaq6cZWWQhnyyodDzY3brbz2aeD
+X-Google-Smtp-Source: ABdhPJxXHOCLByEfiE0YgbrkzsO6F5SEvxAk7PYQaNFmnyIGcAQwXMWYQqMTZjQYQw78N+QHO0iimvN0QFh7
+X-Received: by 2002:a25:9805:: with SMTP id a5mr3939790ybo.26.1589998820800;
+ Wed, 20 May 2020 11:20:20 -0700 (PDT)
+Date:   Wed, 20 May 2020 11:20:05 -0700
+In-Reply-To: <20200520182011.32236-1-irogers@google.com>
+Message-Id: <20200520182011.32236-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200520182011.32236-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH v2 0/7] Share events between metrics
+Subject: [PATCH v2 1/7] perf metricgroup: Always place duration_time last
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,134 +82,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Metric groups contain metrics. Metrics create groups of events to
-ideally be scheduled together. Often metrics refer to the same events,
-for example, a cache hit and cache miss rate. Using separate event
-groups means these metrics are multiplexed at different times and the
-counts don't sum to 100%. More multiplexing also decreases the
-accuracy of the measurement.
+If a metric contains the duration_time event then the event is placed
+outside of the metric's group of events. Rather than split the group,
+make it so the duration_time is immediately after the group.
 
-This change orders metrics from groups or the command line, so that
-the ones with the most events are set up first. Later metrics see if
-groups already provide their events, and reuse them if
-possible. Unnecessary events and groups are eliminated.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/metricgroup.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-The option --metric-no-group is added so that metrics aren't placed in
-groups. This affects multiplexing and may increase sharing.
-
-The option --metric-mo-merge is added and with this option the
-existing grouping behavior is preserved.
-
-Using skylakex metrics I ran the following shell code to count the
-number of events for each metric group (this ignores metric groups
-with a single metric, and one of the duplicated TopdownL1 and
-TopDownL1 groups):
-
-for i in all Branches BrMispredicts Cache_Misses FLOPS Instruction_Type Memory_BW Pipeline Power SMT Summary TopdownL1 TopdownL1_SMT
-do
-  echo Metric group: $i
-  echo -n " - No merging (old default, now --metric-no-merge): "
-  /tmp/perf/perf stat -a --metric-no-merge -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]" | wc -l
-  echo -n " - Merging over metrics (new default)             : "
-  /tmp/perf/perf stat -a -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]"|wc -l
-  echo -n " - No event groups and merging (--metric-no-group): "
-  /tmp/perf/perf stat -a --metric-no-group -M $i sleep 1 2>&1 | grep -v "^ *#" | egrep " +[0-9,.]+ [^s]"|wc -l
-done
-
-Metric group: all
- - No merging (old default, now --metric-no-merge): 193
- - Merging over metrics (new default)             : 142
- - No event groups and merging (--metric-no-group): 84
-Metric group: Branches
- - No merging (old default, now --metric-no-merge): 8
- - Merging over metrics (new default)             : 8
- - No event groups and merging (--metric-no-group): 4
-Metric group: BrMispredicts
- - No merging (old default, now --metric-no-merge): 11
- - Merging over metrics (new default)             : 11
- - No event groups and merging (--metric-no-group): 10
-Metric group: Cache_Misses
- - No merging (old default, now --metric-no-merge): 11
- - Merging over metrics (new default)             : 9
- - No event groups and merging (--metric-no-group): 6
-Metric group: FLOPS
- - No merging (old default, now --metric-no-merge): 18
- - Merging over metrics (new default)             : 10
- - No event groups and merging (--metric-no-group): 10
-Metric group: Instruction_Type
- - No merging (old default, now --metric-no-merge): 6
- - Merging over metrics (new default)             : 6
- - No event groups and merging (--metric-no-group): 4
-Metric group: Pipeline
- - No merging (old default, now --metric-no-merge): 6
- - Merging over metrics (new default)             : 6
- - No event groups and merging (--metric-no-group): 5
-Metric group: Power
- - No merging (old default, now --metric-no-merge): 16
- - Merging over metrics (new default)             : 16
- - No event groups and merging (--metric-no-group): 10
-Metric group: SMT
- - No merging (old default, now --metric-no-merge): 11
- - Merging over metrics (new default)             : 8
- - No event groups and merging (--metric-no-group): 7
-Metric group: Summary
- - No merging (old default, now --metric-no-merge): 19
- - Merging over metrics (new default)             : 17
- - No event groups and merging (--metric-no-group): 17
-Metric group: TopdownL1
- - No merging (old default, now --metric-no-merge): 16
- - Merging over metrics (new default)             : 7
- - No event groups and merging (--metric-no-group): 7
-Metric group: TopdownL1_SMT
- - No merging (old default, now --metric-no-merge): 24
- - Merging over metrics (new default)             : 7
- - No event groups and merging (--metric-no-group): 7
-
-There are 5 out of 12 metric groups where no events are shared, such
-as Power, however, disabling grouping of events always reduces the
-number of events.
-
-The result for Memory_BW needs explanation:
-
-Metric group: Memory_BW
- - No merging (old default, now --metric-no-merge): 9
- - Merging over metrics (new default)             : 5
- - No event groups and merging (--metric-no-group): 11
-
-Both with and without merging the groups fail to be set up and so the
-event counts here are for broken metrics. The --metric-no-group number
-is accurate as all the events are scheduled. Ideally a constraint
-would be added for these metrics in the json code to avoid grouping.
-
-v2. rebases on kernel/git/acme/linux.git branch tmp.perf/core, fixes a
-missing comma with metric lists (reported-by Jiri Olsa
-<jolsa@redhat.com>) and adds early returns to metricgroup__add_metric
-(suggested-by Jiri Olsa).
-
-v1. was prepared on kernel/git/acme/linux.git branch tmp.perf/core
-
-Compared to RFC v3: fix a bug where unnecessary commas were passed to
-parse-events and were echoed. Fix a bug where the same event could be
-matched more than once with --metric-no-group, causing there to be
-events missing.
-https://lore.kernel.org/lkml/20200508053629.210324-1-irogers@google.com/
-
-Ian Rogers (7):
-  perf metricgroup: Always place duration_time last
-  perf metricgroup: Use early return in add_metric
-  perf metricgroup: Delay events string creation
-  perf metricgroup: Order event groups by size
-  perf metricgroup: Remove duped metric group events
-  perf metricgroup: Add options to not group or merge
-  perf metricgroup: Remove unnecessary ',' from events
-
- tools/perf/Documentation/perf-stat.txt |  19 ++
- tools/perf/builtin-stat.c              |  11 +-
- tools/perf/util/metricgroup.c          | 239 ++++++++++++++++++-------
- tools/perf/util/metricgroup.h          |   6 +-
- tools/perf/util/stat.h                 |   2 +
- 5 files changed, 207 insertions(+), 70 deletions(-)
-
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index a16f60da06ab..7a43ee0a2e40 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -410,8 +410,8 @@ static void metricgroup__add_metric_weak_group(struct strbuf *events,
+ 					       struct expr_parse_ctx *ctx)
+ {
+ 	struct hashmap_entry *cur;
+-	size_t bkt, i = 0;
+-	bool no_group = false;
++	size_t bkt;
++	bool no_group = true, has_duration = false;
+ 
+ 	hashmap__for_each_entry((&ctx->ids), cur, bkt) {
+ 		pr_debug("found event %s\n", (const char *)cur->key);
+@@ -421,20 +421,20 @@ static void metricgroup__add_metric_weak_group(struct strbuf *events,
+ 		 * group.
+ 		 */
+ 		if (!strcmp(cur->key, "duration_time")) {
+-			if (i > 0)
+-				strbuf_addf(events, "}:W,");
+-			strbuf_addf(events, "duration_time");
+-			no_group = true;
++			has_duration = true;
+ 			continue;
+ 		}
+ 		strbuf_addf(events, "%s%s",
+-			i == 0 || no_group ? "{" : ",",
++			no_group ? "{" : ",",
+ 			(const char *)cur->key);
+ 		no_group = false;
+-		i++;
+ 	}
+-	if (!no_group)
++	if (!no_group) {
+ 		strbuf_addf(events, "}:W");
++		if (has_duration)
++			strbuf_addf(events, ",duration_time");
++	} else if (has_duration)
++		strbuf_addf(events, "duration_time");
+ }
+ 
+ static void metricgroup__add_metric_non_group(struct strbuf *events,
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
