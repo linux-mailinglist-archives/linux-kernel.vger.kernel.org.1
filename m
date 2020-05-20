@@ -2,54 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103871DBADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACB91DBAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgETRNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:13:23 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:51252 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgETRNU (ORCPT
+        id S1727119AbgETRNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgETRN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:13:20 -0400
-Received: from marcel-macbook.fritz.box (p4fefc5a7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 778F6CED0C;
-        Wed, 20 May 2020 19:23:02 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] Bluetooth: hci_qca: Fix uninitialized access to hdev
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200520093206.1.I1a56163c173e14d1cc7a8b639147466171525eab@changeid>
-Date:   Wed, 20 May 2020 19:13:17 +0200
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <E8200AE2-ACBD-4A0D-B268-B6354194B254@holtmann.org>
-References: <20200520093206.1.I1a56163c173e14d1cc7a8b639147466171525eab@changeid>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Wed, 20 May 2020 13:13:28 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBEEC061A0E;
+        Wed, 20 May 2020 10:13:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 23so1866245pfy.8;
+        Wed, 20 May 2020 10:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=arFxXWIilJc8yilr6THATlL+mM94NJsqQ+xYHRPI28o=;
+        b=eQ8ZueCAAmKF481dSsTzEfptXR3E56PhUUH9kEaE5lcwybZBOx13OC+Xi9wkqf8yJl
+         eMd1L2e88OjzLZqUwjft5kT4q1ykz42UQV6MVOEia2NuXW7QNNZ7A34YWkJl2fTeKnXd
+         x57lOvCSMymfWq5CIUCMSTFmCQ+QTFXWfQxGIl0MyJIAsxvIWaGoYNiaL9FYDbjjsASH
+         yrczDke/1e9q5QAzunll1NsU34AZd3fkwQAvuZ8SyOMsHhrXwdE+C5ocxHRWMG94nAuo
+         mFEYgVnx+pQB6bpLbpXdPCQm3xxHlbpl8IjeNyIIG5xyCXVHShY2DHAh3VorO1Fq2dCg
+         0CDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=arFxXWIilJc8yilr6THATlL+mM94NJsqQ+xYHRPI28o=;
+        b=P2vjEHQ9VpwPhDtvoFr5CY/Z/Uil7iUvKz0eU+UOO48q1oM+iWteBSQmDqzBOjIBw1
+         dxLbmqEBWWJsa6b7Psk+5GkQcGk4dY9m6wZIFDNFd2XmgxShF21VXw27C9ioXh6ZWFYn
+         iCFeuV2ykQXQE+mM9AieND7fQizRm+xX5NY1BUSxKeCS4h7GRdLwDBVO/kvGGPQpSUyk
+         tuL2Zp0AJuuREaoS34pnFB5jXBX8JXjZsYh8Uk6olVG0G5tKt+wzUep4PgDtGMmgjhqt
+         KrqVYd8ck39aj2OyQ9ZDhMEHQDF+agPPKw+fuNCt+nazZ121qIf7PDZSh6v669KPr9Aw
+         uOxA==
+X-Gm-Message-State: AOAM530wd0LcDgNuhXOoeRM0JhTm/wO5pLtGEA2sU4I34Z5465jafcO7
+        dXsO/xO0pAt8WLLqQyZ3sJg=
+X-Google-Smtp-Source: ABdhPJzPAJW/ATUYvu+6WYxM82y1cMxLnDMGV4gQ97nd84re0gsoxcS0Os/XSLxbUD3hZDiX3Ghrxw==
+X-Received: by 2002:a05:6a00:150e:: with SMTP id q14mr5106146pfu.325.1589994807327;
+        Wed, 20 May 2020 10:13:27 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
+        by smtp.gmail.com with ESMTPSA id e1sm2512647pjv.54.2020.05.20.10.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 10:13:26 -0700 (PDT)
+Date:   Wed, 20 May 2020 10:13:24 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: input: touchscreen: edt-ft5x06: change reg
+ property
+Message-ID: <20200520171324.GS89269@dtor-ws>
+References: <20200520073327.6016-1-jbx6244@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520073327.6016-1-jbx6244@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
+Hi Johan,
 
-> hdev is always allocated and not only when power control is required.
+On Wed, May 20, 2020 at 09:33:27AM +0200, Johan Jonker wrote:
+> A test with the command below gives this error:
 > 
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> arch/arm/boot/dts/rk3188-bqedison2qc.dt.yaml:
+> touchscreen@3e: reg:0:0: 56 was expected
+> 
+> The touchscreen chip on 'rk3188-bqedison2qc' and other BQ models
+> was shipped with different addresses then the binding currently allows.
+> Change the reg property that any address will pass.
+> 
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/input/touchscreen/
+> edt-ft5x06.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
+>  Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> drivers/bluetooth/hci_qca.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+> index 383d64a91..baa8e8f7e 100644
+> --- a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+> @@ -42,7 +42,7 @@ properties:
+>        - focaltech,ft6236
+>  
+>    reg:
+> -    const: 0x38
+> +    maxItems: 1
 
-patch has been applied to bluetooth-next tree.
+Should we have a list of valid addresses instead of allowing any
+address? Controllers usually have only a couple of addresses that they
+support.
 
-Regards
+Thanks.
 
-Marcel
-
+-- 
+Dmitry
