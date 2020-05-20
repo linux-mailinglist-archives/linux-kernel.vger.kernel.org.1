@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960591DA81C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233281DA810
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgETChX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:37:23 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:33586 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgETChW (ORCPT
+        id S1728546AbgETCdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgETCdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:37:22 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K2RFM8084713;
-        Wed, 20 May 2020 02:30:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=kUGQDr/v7sUBLEwDb3Xz/wcZpIxXeDLcJONr9yOjouM=;
- b=0VG26ibhj4o06wk5NIrulWnIbUFLGsNIIdbQxMijaOKLRluFV/d2rrBlv+CSOu/M1gV5
- qQ/mbVtPg4m6fsoryBM0fApAWQ/O4r+pk1QAWQV3RS8z77XQTwrIgElSedcHo4Z86DpQ
- QGAW/DJvIE/f4w/GcfA0X/5DRuk9dWrN1UVNGjEbWMTykR+9S7AXsr2ZxPPgTspRzVi6
- HWnCEbcGvs8/O/vkLMBlzLbgA7YajdcGK8z8QZP0eDpVFEzhBhmJi11EOyzBUw6oifIJ
- +UNtA95siBDFG1SpeeYvaTErkSOdlJ/XA3xjVqEzC0c5P0LTXd8PvXInvI8gTqsdajWC MQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3127kr8n9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 May 2020 02:30:25 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04K2SZ5v064335;
-        Wed, 20 May 2020 02:30:24 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 313gj2mf8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 May 2020 02:30:24 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04K2UNTS011820;
-        Wed, 20 May 2020 02:30:23 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 May 2020 19:30:22 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Ye Bin <yebin10@huawei.com>, jejb@linux.ibm.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: Refactor scsi_mq_setup_tags function
-Date:   Tue, 19 May 2020 22:30:10 -0400
-Message-Id: <158994171818.20861.13541589109613423066.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200518074732.39679-1-yebin10@huawei.com>
-References: <20200518074732.39679-1-yebin10@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=952
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005200018
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=998 malwarescore=0 cotscore=-2147483648
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005200018
+        Tue, 19 May 2020 22:33:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF22C061A0E;
+        Tue, 19 May 2020 19:33:12 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id z15so1808987pjb.0;
+        Tue, 19 May 2020 19:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=BwDIrBXiNjaNz3sG9XWNN0+BTSmsf3erXnkyJQzGLzI=;
+        b=Z8f6KuRo4EWgcL3PMTyVvvSNgU0tmmvrMjN6uxyXU2nszwe3HCzMMtkOxiYzfzoK4Y
+         3fdPzf6RukbQKC7WTlixVM2LfcZhISfWGUjwAquCrxgZC6LDBvGYB3LGMNi5Rg7ZiB6U
+         GrLEeUzKkE5ev6tNquiHmTN7M4BuyTNf49Hz5e3IcQ1/Qkau4XkEUpWqRyWqNKofauoZ
+         w5wcJ4kwIEV35b0gObCkDtLRF1jp+vIwpBY14Y23OHyu9CW8HWGP0BrfhkbYyLRIAe51
+         Jygd3bVaGiaKpKrqjW69KscBv0vhYwcVYEzJ4pGRDm+Bzc1OHEE+oizovEAVAg8X8Lit
+         t9Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=BwDIrBXiNjaNz3sG9XWNN0+BTSmsf3erXnkyJQzGLzI=;
+        b=DDiI2LrLjeznnr+2XhwWJK01XbgkVs+cBNumn40atajKdAna4fBpL2HTSL66TD+nXV
+         wp8h0/GXld9Pow+jg9aAtNJaM09AREUw9g1hSiw4nvGpYLHtB6kuYNSTWbaWRqH60Izp
+         CV7xAaE/WI6Di9S+8nzY0HHnlVDyF3E/Ch+VWFb5M2SAY0o6y1WlUNRZ6ESpMkgv+P08
+         dlLIvujqLxEEErlghpMBygn2ObjSLvu7K5LyGMHQYWfAn4eC6AWG9AdHyIfRjgV/e+vz
+         jvUkKml/G38HPkpQbvt/dlXkX1fKon0a//WvchJggowwVbH9+MiRl0wAQhLC/AkvyTrf
+         HVug==
+X-Gm-Message-State: AOAM533lZEsNt5fytIcroDiqRjQ3TJ3nUZUXgnpVsHqDimEcPwGwKt6c
+        ZDUMl7NO6fmNThEeHtF6YyM=
+X-Google-Smtp-Source: ABdhPJxLssJreMhxQDprWZeb6hHopnxv+jYg4bnwEbtDXeRJ+cFIy9AaD/D2G1zU3jzWNUFJVhTaZw==
+X-Received: by 2002:a17:90a:8918:: with SMTP id u24mr2625764pjn.71.1589941990928;
+        Tue, 19 May 2020 19:33:10 -0700 (PDT)
+Received: from localhost.localdomain (c-73-170-106-24.hsd1.ca.comcast.net. [73.170.106.24])
+        by smtp.gmail.com with ESMTPSA id k24sm651418pfk.134.2020.05.19.19.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 May 2020 19:33:10 -0700 (PDT)
+From:   Alan Mikhak <alanmikhak@gmail.com>
+X-Google-Original-From: Alan Mikhak <amikhak@wirelessfabric.com>
+To:     gustavo.pimentel@synopsys.com
+Cc:     alan.mikhak@sifive.com, amurray@thegoodpenguin.co.uk,
+        bhelgaas@google.com, helgaas@kernel.org, jingoohan1@gmail.com,
+        jonathanh@nvidia.com, kthota@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, mmaddireddy@nvidia.com,
+        sagar.tv@gmail.com, thierry.reding@gmail.com, vidyas@nvidia.com,
+        Alan Mikhak <amikhak@wirelessfabric.com>
+Subject: Re: PCI: dwc: Warn only for non-prefetchable memory resource size >4GB
+Date:   Tue, 19 May 2020 19:33:04 -0700
+Message-Id: <20200520023304.14348-1-amikhak@wirelessfabric.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <DM5PR12MB1276C836FEE46B113112FA92DAB90@DM5PR12MB1276.namprd12.prod.outlook.com>
+References: <DM5PR12MB1276C836FEE46B113112FA92DAB90@DM5PR12MB1276.namprd12.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 15:47:32 +0800, Ye Bin wrote:
+Hi Lorenzo,
 
->   "shost->tag_set" is used too many times, introduce temporary parameter
-> "tag_set" instead of "&shost->tag_set".
+I came across this issue when implementing a Linux NVMe endpoint function
+driver under the Linux PCI Endpoint Framework:
+https://lwn.net/Articles/804369/
 
-Applied to 5.8/scsi-queue, thanks!
+I needed to map up to 128GB of host memory using a single ATU window
+from the endpoint side because NVMe PRPs can be scattered all over host
+memory. In the process, I came across this 4GB limitation where the
+maximum size of memory that can be mapped is limited by what a u32 value
+can represent.
 
-[1/1] scsi: core: Refactor scsi_mq_setup_tags function
-      https://git.kernel.org/mkp/scsi/c/840e1b55bb75
+I submitted a separate patch to fix an undefined behavior that may also
+happen in dw_pcie_prog_outbound_atu_unroll() under some circumstances
+when the size of the memory being mapped is greater than what a u32 value
+can represent.
+https://patchwork.kernel.org/patch/11469701/
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The above patch has been accepted. However, the variable pp->mem_size
+in dw_pcie_host_init() is still a u32 whereas the value returned by
+resource_size() is u64. If the resource size has non-zero upper 32-bits,
+those upper 32-bits will be lost when assigning:
+ pp->mem_size = resource_size(pp->mem).
+
+Since current callers seem happy with the existing 4GB implementation
+and fixing the u32 limit is beyond my available resources and has a long
+high-impact tail, a warning seemed to be a good choice to highlight
+this issue in case someone else decides to map a MEM region that is
+greater than 4GB.
+
+Removing the warning will avoid such discussions. Without this warning,
+this limitation will go unnoticed and will only impact whoever has to
+deal with it. It cost me time to figure it out when I had an application
+that needed a region larger than 4GB. I figured the most I could do about
+it is to raise the issue by adding a warning.
+
+Regards,
+Alan
+
+
+
+
+
+
