@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C241DAF54
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2E51DAF58
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgETJvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 05:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETJvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 05:51:16 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E245E2070A;
-        Wed, 20 May 2020 09:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589968276;
-        bh=I05Xto4txiriKlSQmPh36CUF6ZigsJtHe1MV6gwtr0U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S5Vh1MMq9WJW18SFE3kUQ8DtR8pbNSiT3Ru/nq0BUk3EydRVMxyVGi4Qgna5ySx1x
-         GqWO0lWjvCDXqz0/JOtjLr8fGgRQJKeGER+jFvbKxfLyua4Uyh8kSV3ZN27k6hI1BW
-         CNsiSQ8J4Ykr6uK6QILOCF6bf650ZaRATlvwSDhY=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jbLNa-00Dshk-89; Wed, 20 May 2020 10:51:14 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 20 May 2020 10:51:14 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Qian Cai <cai@lca.pw>, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: BUG: sleeping function called from atomic due to "Balance initial
- LPI affinity across CPUs"
-In-Reply-To: <81796a6e-718a-aa93-d183-6747e0654c8c@huawei.com>
-References: <CAG=TAF6hJL-wfGLq3oa-ZGk3-YGEtuMyO2V9ePFUcbv99NWVSw@mail.gmail.com>
- <81796a6e-718a-aa93-d183-6747e0654c8c@huawei.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <e07d73938a7534c6c2cd0517de378fcd@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, cai@lca.pw, sfr@canb.auug.org.au, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1726819AbgETJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 05:52:07 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:53562 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726224AbgETJwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 05:52:06 -0400
+X-Greylist: delayed 4296 seconds by postgrey-1.27 at vger.kernel.org; Wed, 20 May 2020 05:52:04 EDT
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app2 (Coremail) with SMTP id by_KCgDnzpG1_cRe4SSMAQ--.43211S4;
+        Wed, 20 May 2020 17:51:53 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: staging: tegra-vde: fix runtime pm imbalance on error
+Date:   Wed, 20 May 2020 17:51:48 +0800
+Message-Id: <20200520095148.10995-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgDnzpG1_cRe4SSMAQ--.43211S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW5ZF15Jr17CrWrKFy7trb_yoW3KFc_Cr
+        s0qw1xu345Ar4xtr17K3W3ZrySvFWDua18tF1SyrW3Gw4jvFy3GrykZrnrC3ZrXay2gry2
+        vr93uF1Syr4fAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbT8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
+        67AK6r4fMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
+        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+        6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU8KZXUUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+pm_runtime_get_sync() increments the runtime PM usage counter even
+it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-On 2020-05-20 09:43, John Garry wrote:
-> On 19/05/2020 23:09, Qian Cai wrote:
->> Reverted the linux-next commit f068a62c548c ("irqchip/gic-v3-its:
->> Balance initial LPI affinity across CPUs") fixed these warnings during
->> boot,
-> 
-> Thanks for the notice. So we need the following set to see this:
-> CONFIG_CPUMASK_OFFSTACK=y
-> CONFIG_DEBUG_ATOMIC_SLEEP=y
-> CONFIG_DEBUG_PER_CPU_MAPS=y
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/staging/media/tegra-vde/vde.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah, thanks for pointing this out.
-
->> its_select_cpu at drivers/irqchip/irq-gic-v3-its.c:1572
->> 
->> [  332.819381][ T3359] BUG: sleeping function called from invalid
->> context at mm/slab.h:568
->> [  332.827405][ T3359] in_atomic(): 1, irqs_disabled(): 128,
->> non_block: 0, pid: 3359, name: irqbalance
->> [  332.836455][ T3359] INFO: lockdep is turned off.
->> [  332.841076][ T3359] irq event stamp: 0
->> [  332.844836][ T3359] hardirqs last  enabled at (0): 
->> [<0000000000000000>] 0x0
->> [  332.851828][ T3359] hardirqs last disabled at (0):
->> [<ffff9000101ea65c>] copy_process+0x98c/0x1f34
->> [  332.860710][ T3359] softirqs last  enabled at (0):
->> [<ffff9000101ea690>] copy_process+0x9c0/0x1f34
->> [  332.869586][ T3359] softirqs last disabled at (0): 
->> [<0000000000000000>] 0x0
->> [  332.876560][ T3359] CPU: 155 PID: 3359 Comm: irqbalance Tainted: G
->>        W    L    5.7.0-rc6-next-20200519 #1
->> [  332.886563][ T3359] Hardware name: HPE Apollo 70
->> /C01_APACHE_MB         , BIOS L50_5.13_1.11 06/18/2019
->> [  332.897000][ T3359] Call trace:
->> [  332.900151][ T3359]  dump_backtrace+0x0/0x22c
->> [  332.904514][ T3359]  show_stack+0x28/0x34
->> [  332.908543][ T3359]  dump_stack+0x104/0x194
->> [  332.912738][ T3359]  ___might_sleep+0x314/0x328
->> [  332.917274][ T3359]  __might_sleep+0x7c/0xe0
->> [  332.921563][ T3359]  slab_pre_alloc_hook+0x44/0x8c
->> [  332.926360][ T3359]  __kmalloc_node+0xb0/0x618
->> [  332.930811][ T3359]  alloc_cpumask_var_node+0x48/0x94
-> 
-> We could use GFP_ATOMIC flag at the callsite here, but maybe there is
-> a better solution.
-
-I don't see one, and I doubt it is worth the hassle to have anything
-but GFP_ATOMIC. The default arm64 config is to have on-stack cpumasks,
-and only DEBUG_PER_CPU_MAPS allows this to be changed.
-
-I'll stash a patch on top.
-
-Thanks,
-
-         M.
+diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
+index d3e63512a765..dd134a3a15c7 100644
+--- a/drivers/staging/media/tegra-vde/vde.c
++++ b/drivers/staging/media/tegra-vde/vde.c
+@@ -777,7 +777,7 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
+ 
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0)
+-		goto unlock;
++		goto put_runtime_pm;
+ 
+ 	/*
+ 	 * We rely on the VDE registers reset value, otherwise VDE
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
