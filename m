@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437BA1DB339
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA761DB35C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgETMbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbgETMbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:31:38 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 191D320756;
-        Wed, 20 May 2020 12:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589977897;
-        bh=rL8WkukpYlQE2FvyEL1Ca998vF4yjcYjdKtcskbOga4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LoxEWlrzY++Y0BFWiabgMwjNGX/nvadbakyFaRZq89IjX/nhET64+AAldhU56uv4y
-         /N2F8Ge6zCrPiaYs24N4AeJZ8C+ZXyDCJWLD1XynAuUuEF6n7NdU/UlXGv8qQP01VQ
-         yNqJhM8BUg7QoFPleCnp2BaLZ0B5zDCzVNny15Vs=
-Date:   Wed, 20 May 2020 13:31:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Subject: Re: [PATCH 09/12] devfreq: add mediatek cci devfreq
-Message-ID: <20200520123135.GD4823@sirena.org.uk>
-References: <20200520034307.20435-1-andrew-sh.cheng@mediatek.com>
- <20200520034307.20435-10-andrew-sh.cheng@mediatek.com>
+        id S1727000AbgETMda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:33:30 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17708 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726868AbgETMd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 08:33:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1589977932; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=Ik0Yigs8kImtKhjXZnlMAInonF7b/WsWonJh+gODoNZXScAlhj+leFUpuOQGOFU2QVL9m0hstajj9njFXh7BeEZaD+0c4rMG0bmZ1bVV4eYTYBdiYHVXXU+dbZpfnZMHhqZzKu+IH4SW6Yfa6ycINAoyAeAUkFgTsG7I36u/mbc=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1589977932; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=TJqmWfeUuN5LE75nul3wH3FZ6nQ1yQSdQfK6PtOHOHs=; 
+        b=O2Au6E6yKNllX40+daihOylvmzJCdZenyqgJHZaYbeCGZvSlQ5nEjMfUDwDKkZjsYDs8M70ZoKeYOuT4P0dGYpi2Pgv0TRAPtO714bx/bs3nFrIbvdEwcTjNi5Xhvz8Lz0dmIyfboL2mB4nLD+YDyMnSmmGYKXW3n9gpM22f3ik=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589977932;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=TJqmWfeUuN5LE75nul3wH3FZ6nQ1yQSdQfK6PtOHOHs=;
+        b=FPh8G8GY+zJnnKuDxur7rUuF/DurU4V4e9Wx3Za4T0yrgFvXXKgl8Q/MJRyK+zby
+        5p529MSsXY5b722bnTsLlU5d6PaW5DfyXR+SCdodNEMEmHQY5Ntpxo1uvU3c+Uo+1jj
+        M5MLJ7GLWH66SmoY4v3+X+wGHp0Sz5Tasa2+cKw8=
+Received: from [127.0.0.1] (223.104.210.187 [223.104.210.187]) by mx.zoho.com.cn
+        with SMTPS id 1589977929817309.0615537915593; Wed, 20 May 2020 20:32:09 +0800 (CST)
+Date:   Wed, 20 May 2020 20:32:01 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>
+CC:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, tsbogend@alpha.franken.de,
+        paulburton@kernel.org, chenhc@lemote.com, tglx@linutronix.de,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org,
+        keescook@chromium.org, krzk@kernel.org, hns@goldelico.com,
+        ebiederm@xmission.com, dongsheng.qiu@ingenic.com,
+        yanfei.li@ingenic.com, rick.tyliu@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: Re: [PATCH v8 1/6] MIPS: JZ4780: Introduce SMP support.
+User-Agent: K-9 Mail for Android
+Reply-to: jiaxun.yang@flygoat.com
+In-Reply-To: <M3OMAQ.GEVVI159THK33@crapouillou.net>
+References: <1589898923-60048-1-git-send-email-zhouyanjie@wanyeetech.com> <1589898923-60048-3-git-send-email-zhouyanjie@wanyeetech.com> <M1GLAQ.UK9S5G64TOOO3@crapouillou.net> <5EC4DADD.1000801@wanyeetech.com> <M3OMAQ.GEVVI159THK33@crapouillou.net>
+Message-ID: <13934660-2138-489A-A87E-A6AA222F6218@flygoat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
-Content-Disposition: inline
-In-Reply-To: <20200520034307.20435-10-andrew-sh.cheng@mediatek.com>
-X-Cookie: You can't get there from here.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---2iBwrppp/7QCDedR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, May 20, 2020 at 11:43:04AM +0800, Andrew-sh.Cheng wrote:
+=E4=BA=8E 2020=E5=B9=B45=E6=9C=8820=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=887=
+:33:22, Paul Cercueil <paul@crapouillou=2Enet> =E5=86=99=E5=88=B0:
+>>=20
+>> Yes, the current way is indeed a little problem, it will cause=20
+>> num_possible_cpus() =3D=3D NR_CPUS, I will try to find a better way=2E
+>
+>You can do:
+>
+>for_each_of_cpu_node(cpu_node) {
+>       cpu =3D of_cpu_node_to_id(cpu_node);
+>       __cpu_number_map[cpu] =3D cpu;
+>       __cpu_logical_map[cpu] =3D cpu;
+>       set_cpu_possible(cpu, true);
+>}
+>
 
-> +	cci_df->proc_reg = devm_regulator_get_optional(cci_dev, "proc");
-> +	ret = PTR_ERR_OR_ZERO(cci_df->proc_reg);
-> +	if (ret) {
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(cci_dev, "failed to get regulator for CCI: %d\n",
-> +				ret);
-> +		return ret;
-> +	}
-> +	ret = regulator_enable(cci_df->proc_reg);
+FYI: There is a abandoned DeviceTree[1], parser=2E You can take it=2E
 
-The code appears to require a regulator (and I'm guessing the device
-needs power) so why is this using regulator_get_optional()?
+I'm going to submit this topology clean-up for next release cycle
+but you can pick it for now=2E
 
---2iBwrppp/7QCDedR
-Content-Type: application/pgp-signature; name="signature.asc"
+[=2E=2E=2E]
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7FIyYACgkQJNaLcl1U
-h9D0kAf/f2yyGL/KhJ2Y+J/Xvk72EFz2UdjxlDjJo9wXYf3J4HWB9sgTXydoZoRj
-bPlZzQtBeUPNmvX60Nczzt1V0KYNXns6mOfBOTueIAlSLeOnWBLV2+IUedCAVOJw
-NX2i3pZdZ2p7yOO9QGU2s8hxc3uwCHKETMa5U/B6ENwkQkkOlJCNkjVYYiuoAJn+
-9mIq1Ko2yfPHqJPyh/wP/CTC7AqXyPnQmO+rAlua+v8ua7RXRqAlkI/LpWhhpe1U
-PAdhYsvKa9TiyafrrUPW1TPbTBRnWpHd1s2gjhpiGuuDhJyEaGjxsm0dz82gs5ml
-aut3SlENmvhhRkfxSKh8LBYpjvJ0hA==
-=vHQ8
------END PGP SIGNATURE-----
-
---2iBwrppp/7QCDedR--
+[1]: https://lkml=2Eorg/lkml/2020/4/11/1088
+--=20
+Jiaxun Yang
