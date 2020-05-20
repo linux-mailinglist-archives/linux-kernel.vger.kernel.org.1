@@ -2,77 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBFB1DBA25
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769031DBA2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgETQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:50:16 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39390 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgETQuP (ORCPT
+        id S1727117AbgETQuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726984AbgETQu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:50:15 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id EE5282A07CC
-Subject: Re: [PATCHv3 2/5] Input: EXC3000: switch to i2c's probe_new API
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ahmet Inan <inan@distec.de>,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20200520153936.46869-1-sebastian.reichel@collabora.com>
- <20200520153936.46869-3-sebastian.reichel@collabora.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <1d0d7e26-379f-5918-451f-b4445a652272@collabora.com>
-Date:   Wed, 20 May 2020 18:50:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 20 May 2020 12:50:28 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890D4C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:50:27 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id o134so1311122ybg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKYd+eEqh94+PPSxeT0mEN4CuPeMB4JjYrAni6yKOek=;
+        b=Eh6SNc8kXSnAsUcJ5NDUp1JxID73klNpgan5mB/uvuYRnEWgar9pgqlkZSuIvpsVcJ
+         5D5oeNsStNFxA5sYJNZ+t216Rv2BDcgEUT+Mhe6/MaxnYjKFV5VEe6GxiBoERmOmBrSG
+         RVtGXez/y2uvR9MXKV3qNOX9QlYr+FXL6PLilyrvR3Ykp4Q2AWMM9PXTjASyVKPeInsW
+         Rs9Ery4sW/GeLu7I76XKp55D0+vk0kEAdXO3YC+5xGkPWviutxFd6lHb9qBEYaHV4dPl
+         vSyLhhI8q5fbkzAwG2N8Uwip8g5oXJfipPY8OlZN9Q6/Wodsd6B81xf5GdR53xHbKpRO
+         qgdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKYd+eEqh94+PPSxeT0mEN4CuPeMB4JjYrAni6yKOek=;
+        b=Rp4YaLCjC79w2/GDnYe9aWS/j+HdYlQ8DETT1JIyIN9tM+unEvJkOE6qKapXeWppp0
+         amTKjAV0LOkkqrKBryWake5TFFG8/zwqg8xXdq21fQcyINTctfpkj7VsMnYxKV9AsXw+
+         yVE+y6Zxa3CrKKxCc5kdOOsubTRF3wQexWrlQP0TG42kxKY6aPmd5brALZKNGBXZ5uH2
+         NH5E5Jf4yAhQJuFw74c/vfRrUaFIqI5QtF/I+2masZFgqrvkvSwiL+dnqcQVaiKtSFPq
+         8v6fTYihElch/C2eZ1JGKKvsHlKYxiyOhHxvZoHtodXb2eJNED6Shyns9GsU0XJSAtFA
+         VVLA==
+X-Gm-Message-State: AOAM533n5rS52GSlBNa9TsA7JS58+RBbVPiCgYrPZj0kP5xvTx/BsQPJ
+        rNP4fn6VVdNkBcVHUhH7fRJ05lBO0YdnbVzyrgd1HQ==
+X-Google-Smtp-Source: ABdhPJy5M4bW3EQJOtlA1J3fukdU3GsXBm5ahWMZ7f1tynRhLuSFHjlXX7HP519wXpXurP8N9XDEwnsZVT7E1P4g7iM=
+X-Received: by 2002:a25:790e:: with SMTP id u14mr8671529ybc.324.1589993426351;
+ Wed, 20 May 2020 09:50:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200520153936.46869-3-sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200520072814.128267-1-irogers@google.com> <20200520072814.128267-6-irogers@google.com>
+ <20200520134847.GM157452@krava>
+In-Reply-To: <20200520134847.GM157452@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 20 May 2020 09:50:13 -0700
+Message-ID: <CAP-5=fVGf9i7hvQcht_8mnMMjzhQYdFqPzZFraE-iMR7Vcr1tw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+On Wed, May 20, 2020 at 6:49 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, May 20, 2020 at 12:28:12AM -0700, Ian Rogers wrote:
+>
+> SNIP
+>
+> >
+> > @@ -157,7 +183,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+> >       int i = 0;
+> >       int ret = 0;
+> >       struct egroup *eg;
+> > -     struct evsel *evsel;
+> > +     struct evsel *evsel, *tmp;
+> >       unsigned long *evlist_used;
+> >
+> >       evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
+> > @@ -173,7 +199,8 @@ static int metricgroup__setup_events(struct list_head *groups,
+> >                       ret = -ENOMEM;
+> >                       break;
+> >               }
+> > -             evsel = find_evsel_group(perf_evlist, &eg->pctx, metric_events,
+> > +             evsel = find_evsel_group(perf_evlist, &eg->pctx,
+> > +                                     eg->has_constraint, metric_events,
+> >                                       evlist_used);
+> >               if (!evsel) {
+> >                       pr_debug("Cannot resolve %s: %s\n",
+> > @@ -200,6 +227,12 @@ static int metricgroup__setup_events(struct list_head *groups,
+> >               list_add(&expr->nd, &me->head);
+> >       }
+> >
+> > +     evlist__for_each_entry_safe(perf_evlist, tmp, evsel) {
+> > +             if (!test_bit(evsel->idx, evlist_used)) {
+> > +                     evlist__remove(perf_evlist, evsel);
+> > +                     evsel__delete(evsel);
+> > +             }
+>
+> is the groupping still enabled when we merge groups? could part
+> of the metric (events) be now computed in different groups?
 
-On 20/5/20 17:39, Sebastian Reichel wrote:
-> Switch to the "new" I2C probe API.
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+By default the change will take two metrics and allow the shorter
+metric (in terms of number of events) to share the events of the
+longer metric. If the events for the shorter metric aren't in the
+longer metric then the shorter metric must use its own group of
+events. If sharing has occurred then the bitmap is used to work out
+which events and groups are no longer in use.
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+With --metric-no-group then any event can be used for a metric as
+there is no grouping. This is why more events can be eliminated.
 
-> ---
->  drivers/input/touchscreen/exc3000.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/exc3000.c b/drivers/input/touchscreen/exc3000.c
-> index e007e2e8f626..555a14305cd4 100644
-> --- a/drivers/input/touchscreen/exc3000.c
-> +++ b/drivers/input/touchscreen/exc3000.c
-> @@ -145,8 +145,7 @@ static irqreturn_t exc3000_interrupt(int irq, void *dev_id)
->  	return IRQ_HANDLED;
->  }
->  
-> -static int exc3000_probe(struct i2c_client *client,
-> -			 const struct i2c_device_id *id)
-> +static int exc3000_probe(struct i2c_client *client)
->  {
->  	struct exc3000_data *data;
->  	struct input_dev *input;
-> @@ -210,7 +209,7 @@ static struct i2c_driver exc3000_driver = {
->  		.of_match_table = of_match_ptr(exc3000_of_match),
->  	},
->  	.id_table	= exc3000_id,
-> -	.probe		= exc3000_probe,
-> +	.probe_new	= exc3000_probe,
->  };
->  
->  module_i2c_driver(exc3000_driver);
-> 
+With --metric-no-merge then the logic to share events between
+different metrics is disabled and every metric is in a group. This
+allows the current behavior to be had.
+
+There are some corner cases, such as metrics with constraints (that
+don't group) and duration_time that is never placed into a group.
+
+Partial sharing, with one event in 1 weak event group and 1 in another
+is never performed. Using --metric-no-group allows something similar.
+Given multiplexing, I'd be concerned about accuracy problems if events
+between groups were shared - say for IPC, were you measuring
+instructions and cycles at the same moment?
+
+> I was wondering if we could merge all the hasmaps into single
+> one before the parse the evlist.. this way we won't need removing
+> later.. but I did not thought this through completely, so it
+> might not work at some point
+
+This could be done in the --metric-no-group case reasonably easily
+like the current hashmap. For groups you'd want something like a set
+of sets of events, but then you'd only be able to share events if the
+sets were the same. A directed acyclic graph could capture the events
+and the sharing relationships, it may be possible to optimize cases
+like {A,B,C}, {A,B,D}, {A,B} so that the small group on the end shares
+events with both the {A,B,C} and {A,B,D} group. This may be good
+follow up work. We could also solve this in the json, for example
+create a "phony" group of {A,B,C,D} that all three metrics share from.
+You could also use --metric-no-group to achieve that sharing now.
+
+Thanks,
+Ian
+
+> jirka
+>
