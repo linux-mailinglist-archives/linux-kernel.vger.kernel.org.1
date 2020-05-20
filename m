@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89961DB765
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879E41DB76F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 16:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgETOtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 10:49:40 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51448 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726439AbgETOtk (ORCPT
+        id S1726959AbgETOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 10:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgETOus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 10:49:40 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04KEgDW0028385;
-        Wed, 20 May 2020 16:49:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=mF9hCf7Xk61Z6neQPdNS3sUzpshBFvjsTt55Bt0GOQQ=;
- b=fdVcLj1oCPsKC4aG1U8RGJ2JWpTune9Ufd4VVsdOLuWtcqjiXMMKS0fKZIzKYiq/CriI
- aLf5UuEaoaw83BUhGH7z2p1D+TpgAJdKnxPHAEhw0vaoxiiRHdfY9FwniGxx1Pev7Rck
- 0x+N1FZ3ztGI8ykbZLAGBH14VpBYdTGSG9mkIwvbK2Xo5UZxnuSJorfFmWy75I9V/pD8
- A3mvvUz0FDb73Qw8quPShJyOKC0ZRgXAsQehsjTIhIr99bVibEWzoKKzgYFJ/6BtB2mI
- AP/FAvy4LcgByRwBBsDOlgg8++LPqXnkzlq/+cQ7T0bBo+C8CikGr4OzB56ZjQz1HkUF zA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31272h8phx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 May 2020 16:49:33 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E289110002A;
-        Wed, 20 May 2020 16:49:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D38652B7FD4;
-        Wed, 20 May 2020 16:49:32 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.51) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 May
- 2020 16:49:32 +0200
-Subject: Re: [PATCH v6 0/3] rpmsg: core: Add support for name extension
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <ohad@wizery.com>, <s-anna@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xiang Xiao <xiaoxiang@xiaomi.com>
-References: <20200515205642.13529-1-mathieu.poirier@linaro.org>
- <20200515210914.GA408178@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <bbc97b0d-b36c-c088-a972-d1d10f7eed17@st.com>
-Date:   Wed, 20 May 2020 16:49:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 20 May 2020 10:50:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD248C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:50:47 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b190so1667556pfg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 07:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V+zvcybwxg+mJmXSgIbTzNMcYmg5RQvOvv6kYw20xX4=;
+        b=ijz61wyVhqbEsginy5IPC1uQNyW9SOkrsH4hT0JQ1rfisF39jHhixH4I6nBovhVRul
+         NiJ5yUsLyMqWP48G0NRJ8y1hw9jisf3Vru0zTOO+knL2pCecpgboOlbHn5ak7+k/xxjK
+         RH5V+p0FjP88bgo9LkXtPryrtGRz9AkfZfglJ+S1xFy+yWji/yJB6qRCQZzEpTldgTvd
+         o9wh1C1BgWO0xZMJJ/7WTvWzsjSx/0DT7WtgXtH6p8sZvljzOCDI6kJyc0FwGF588xtb
+         G1QZDpZFWZ/Gu1CQcGDszJwBYaFXWQD7z+fhDnvBBlkGMhwZxS5Ksy4unPUmKBwiAj3W
+         W2jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V+zvcybwxg+mJmXSgIbTzNMcYmg5RQvOvv6kYw20xX4=;
+        b=rftsfbDnXgfSP9nJqO0STz6kNRgRqrN3rU4FAqfwZdga+kdXRG+62ESgEYbFESWDPX
+         oS90ZJPuyWqdW2Z7ii3ahKexFsOiDn2xONK0gApTkrdiGWraFZv5RAciWaZ7OOHuUzkr
+         aI/UBC1UmcH0OLEd+jJ8W6Njdxo6PMIIUSASE6oHFFApqJwMGtTPTuzKQkcjtd1bWXtE
+         1juuzC0Qu/fxblnnV3HHDOps6Hm1A0ZUYtpk5e5qRz5+nCU5VINtLbl3D/vp61xQbur+
+         +QhgQWqNj4i5fx2KKSdl4Ed7dohcCP7kBA1qw9f4n5M4gJNmYebt6SBwRsa+clrZWp3R
+         GxsQ==
+X-Gm-Message-State: AOAM533k8twI4XPOUjIcW3vgKhsdI9ljaa1c6ARREOwXnbFhkFwzcERi
+        Mhl766IShzOKwE5tT1rLkk71JYiZt5d7BQ==
+X-Google-Smtp-Source: ABdhPJwala6VR6c/ivc6Qn71EXKVWPs4UfJLmpHy3oesN3JrPA2ADSGGW51nelHvngEWs+TAnUlHIA==
+X-Received: by 2002:a63:4d4e:: with SMTP id n14mr2763515pgl.93.1589986247345;
+        Wed, 20 May 2020 07:50:47 -0700 (PDT)
+Received: from Smcdef-MBP.lan ([103.136.220.72])
+        by smtp.gmail.com with ESMTPSA id m9sm2072349pgd.1.2020.05.20.07.50.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 May 2020 07:50:46 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mingo@kernel.org, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Cc:     allison@lohutok.net, gregkh@linuxfoundation.org,
+        rfontana@redhat.com, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] kprobes/x86: Skip the assignment to ip when there is no post_handler
+Date:   Wed, 20 May 2020 22:50:07 +0800
+Message-Id: <20200520145007.35479-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20200515210914.GA408178@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-20_10:2020-05-20,2020-05-20 signatures=0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+When there is no post_handler, the assignment to ip of regs is
+meaningless. So just skip it.
 
-On 5/15/20 11:09 PM, Bjorn Andersson wrote:
-> On Fri 15 May 13:56 PDT 2020, Mathieu Poirier wrote:
-> 
->> This patchset adds the capability to supplement the base definition
->> published by an rpmsg_driver with a postfix description so that it
->> is easy to differentiate entities that use the same name service.
->>
->> Applies cleanly on rpmsg-next (4f05fc33bebd).
->>
-> 
-> Thanks Mathieu, this series does look good.
-> 
-> 
-> But before merging this, can someone show me a real example where this
-> is being/would be used? What are some real channel names and extensions?
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ arch/x86/kernel/kprobes/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On ST side, This is something we plan to integrate in the TTY over RPMSG support.
-The use case is the support of multi-instances. We already provided to our
-customer a TTY service supporting it but without name extension. 
-Some feed-backs are: how can we know which TTY instances to use to communicate
-to the expected remote application in case of multi-instance.
-A concrete example would be one instance to control a remote processor
-application, the other instance to get the remote system logs.
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index 681a4b36e9bbe..f1edc0dc860a2 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -39,8 +39,8 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 			 * Emulate singlestep (and also recover regs->ip)
+ 			 * as if there is a 5byte nop
+ 			 */
+-			regs->ip = (unsigned long)p->addr + MCOUNT_INSN_SIZE;
+ 			if (unlikely(p->post_handler)) {
++				regs->ip = (unsigned long)p->addr + MCOUNT_INSN_SIZE;
+ 				kcb->kprobe_status = KPROBE_HIT_SSDONE;
+ 				p->post_handler(p, regs, 0);
+ 			}
+-- 
+2.11.0
 
-Then in rpmsg TTY proposed for upstream the extension could also been used to
-differentiate the data from the control channels, as discussed with Mathieu
-during reviews: https://lkml.org/lkml/2020/4/3/964. 
-Means the service is the TTY, the sub-services are the data and the control.
-
-An other usecase i have in mind is the management of the rpmsg flow control for
-the QOS.
-This could be reused to create a core flow control manager based on the
-service extension, which could be quite smooth in term of legacy support.
-
-Suman and Xiang(added in CC) have probably also some usecases as they 
-proposed similar patches...
-
-Regards,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> New for V6:
->> - Added example on how to use the new API.
->>
->> Thanks,
->> Mathieu
->>
->>
->> Mathieu Poirier (3):
->>   rpmsg: core: Add wildcard match for name service
->>   rpmsg: core: Add support to retrieve name extension
->>   sample/rpmsg: Print out RPMSG device name extension
->>
->>  drivers/rpmsg/rpmsg_core.c          | 115 +++++++++++++++++++++++++++-
->>  include/linux/rpmsg.h               |  13 ++++
->>  samples/rpmsg/rpmsg_client_sample.c |   5 ++
->>  3 files changed, 132 insertions(+), 1 deletion(-)
->>
->> -- 
->> 2.20.1
->>
