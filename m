@@ -2,59 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A778E1DB59B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162481DB5C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgETNv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:51:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:56758 "EHLO foss.arm.com"
+        id S1726916AbgETN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 09:56:34 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41284 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgETNv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:51:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A25530E;
-        Wed, 20 May 2020 06:51:25 -0700 (PDT)
-Received: from [10.37.8.206] (unknown [10.37.8.206])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2B023F52E;
-        Wed, 20 May 2020 06:51:23 -0700 (PDT)
-Subject: Re: [PATCH V4 14/17] arm64/cpufeature: Add remaining feature bits in
- ID_AA64MMFR2 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-15-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <3be71452-abd3-cd6f-c859-697447657a3f@arm.com>
-Date:   Wed, 20 May 2020 14:56:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726452AbgETN4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 09:56:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=yW9W/HhlxheuNaE5i574WexC9r5Wyq1J3+gq8UzHE+Q=; b=nD/2Mhlv7UcVTvWEFNNokHYfcu
+        uQbQ6t/mZCHTTAvEUgO8TnmDiQ3iJmGwLFsq4IqH/+G7AcXDwmcrkzBVgqE8nkuh9txLbOLNl8qQw
+        KTMcEBTtxzfJi85j0acg0xofLT1SozMJE5gNJeZU0EDs8f2Qml/f52Oc8ybr6wTvRWi4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jbPCq-002oL3-GJ; Wed, 20 May 2020 15:56:24 +0200
+Date:   Wed, 20 May 2020 15:56:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add RGMII internal
+ delay for DP83869
+Message-ID: <20200520135624.GC652285@lunn.ch>
+References: <20200520121835.31190-1-dmurphy@ti.com>
+ <20200520121835.31190-4-dmurphy@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1589881254-10082-15-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520121835.31190-4-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
-> Enable EVT, BBM, TTL, IDS, ST, NV and CCIDX features bits in ID_AA64MMFR2
-> register as per ARM DDI 0487F.a specification.
+On Wed, May 20, 2020 at 07:18:34AM -0500, Dan Murphy wrote:
+> Add the internal delay values into the header and update the binding
+> with the internal delay properties.
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  .../devicetree/bindings/net/ti,dp83869.yaml    | 16 ++++++++++++++++
+>  include/dt-bindings/net/ti-dp83869.h           | 18 ++++++++++++++++++
+>  2 files changed, 34 insertions(+)
 > 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> diff --git a/Documentation/devicetree/bindings/net/ti,dp83869.yaml b/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+> index 5b69ef03bbf7..344015ab9081 100644
+> --- a/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+> +++ b/Documentation/devicetree/bindings/net/ti,dp83869.yaml
+> @@ -64,6 +64,20 @@ properties:
+>         Operational mode for the PHY.  If this is not set then the operational
+>         mode is set by the straps. see dt-bindings/net/ti-dp83869.h for values
+>  
+> +  ti,rx-internal-delay:
+> +    $ref: /schemas/types.yaml#definitions/uint32
+> +    description: |
+> +      RGMII Receive Clock Delay - see dt-bindings/net/ti-dp83869.h
+> +      for applicable values. Required only if interface type is
+> +      PHY_INTERFACE_MODE_RGMII_ID or PHY_INTERFACE_MODE_RGMII_RXID.
 
-Please note that there other series addressing TTL. So might
-have conflicts.
+Hi Dan
 
+Having it required with PHY_INTERFACE_MODE_RGMII_ID or
+PHY_INTERFACE_MODE_RGMII_RXID is pretty unusual. Normally these
+properties are used to fine tune the delay, if the default of 2ns does
+not work.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+    Andrew
