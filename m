@@ -2,268 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0994C1DA790
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F9D1DA795
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 03:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgETByl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 21:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
+        id S1728495AbgETB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 21:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbgETByk (ORCPT
+        with ESMTP id S1726379AbgETB4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 21:54:40 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F9CC061A0E;
-        Tue, 19 May 2020 18:54:40 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f189so2098992qkd.5;
-        Tue, 19 May 2020 18:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BPvyg9aLzZSidK2jwc9A0a0QJdM14HLsmNAc4UqNnWw=;
-        b=bk9VOWrZdxtWejU0wwUrEp92cbcxU7B4aoAEjFQYKbbnVl6rGUy+EieyvVidJILCbL
-         gTRQkA8oEKJhQIJunYnEJBUyQSPPYNVuylvgkZACCKWLtScx9mG5kXopOKta4haFkq8R
-         tBe85Ue+vLedLp8lkdz/ouKo09pVJ3EVlrP/yoE/Pee5eR/AmsSjQQYvE/011Gux5tEW
-         gBpmUPdWWKnW1sfrOXRDY9hfdxoJIEPeF6+6fjThv4YhtNz8rKCXxG4p92jVtjDA+omE
-         fIVgnorp2z7FqUiieat8JWySNIETtfnx3nFWX7dUarPHSU2WKyrgLfDRWHxqnvfNFuLj
-         fywQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BPvyg9aLzZSidK2jwc9A0a0QJdM14HLsmNAc4UqNnWw=;
-        b=ctiZLUeCv9CUxOXlVYDcOzYJlvM3PTGDamV39uR8POUJoMspZTYeZ7W23GeB0k9dca
-         2BzNzT5/+aUM5+nGjbHaLcySLwDNauOJbdAToyw9ZvxNrLxc4PTgV7wK5niz6gD/odVs
-         0UOauGktqMq3YBApK2SNF0tzXF2qXPQjsCRpri6dOz7JPpAbtZ54UgfirsL3apyK/g0m
-         ZJ5jl1qNVlLw/WcWu+Ji6F36oUdGdkxuCGLaxwFJf5bZPUwTM71O1BH12WGcwHRrNs3M
-         8kvsSl9ojqlAOLxfF0Nk6UDfe/4D4ab46426SWLnebzvfPyZSvUSVx1SdNVLLT3PkVnR
-         tUcQ==
-X-Gm-Message-State: AOAM531VfhN/24bZocKN27pozCZApPAbYjmghwGVlQ/NocxB0ogzQAud
-        X9QRihZOOef31OdLut0mA3I=
-X-Google-Smtp-Source: ABdhPJwk113WUqIfuE5VIhiW41+BCys+lB/+jo3XMFC+9vurf7YNZnW9plOPJVw2XMvLxOfpEEH0Iw==
-X-Received: by 2002:a37:9d09:: with SMTP id g9mr2511807qke.154.1589939679414;
-        Tue, 19 May 2020 18:54:39 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id x24sm1382927qth.57.2020.05.19.18.54.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 18:54:38 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B8ED840AFD; Tue, 19 May 2020 22:54:35 -0300 (-03)
-Date:   Tue, 19 May 2020 22:54:35 -0300
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3] perf record: add dummy event during system wide
- synthesis
-Message-ID: <20200520015435.GB32678@kernel.org>
-References: <20200422173615.59436-1-irogers@google.com>
+        Tue, 19 May 2020 21:56:15 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA96C061A0E;
+        Tue, 19 May 2020 18:56:15 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbDxG-0005nh-7R; Wed, 20 May 2020 03:55:34 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 77588100D00; Wed, 20 May 2020 03:55:33 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead of a seqcount
+In-Reply-To: <20200519170637.56d1a20a@hermes.lan>
+References: <20200519214547.352050-1-a.darwish@linutronix.de> <20200519214547.352050-2-a.darwish@linutronix.de> <20200519150159.4d91af93@hermes.lan> <87v9kr5zt7.fsf@nanos.tec.linutronix.de> <20200519161141.5fbab730@hermes.lan> <87lfln5w61.fsf@nanos.tec.linutronix.de> <20200519170637.56d1a20a@hermes.lan>
+Date:   Wed, 20 May 2020 03:55:33 +0200
+Message-ID: <87d06z5q0a.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422173615.59436-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Apr 22, 2020 at 10:36:15AM -0700, Ian Rogers escreveu:
-> During the processing of /proc during event synthesis new processes may
-> start. Add a dummy event if /proc is to be processed, to capture mmaps
-> for starting processes. This reuses the existing logic for
-> initial-delay.
-> 
-> v3 fixes the attr test of test-record-C0
-> v2 fixes the dummy event configuration and a branch stack issue.
+Stephen Hemminger <stephen@networkplumber.org> writes:
+> On Wed, 20 May 2020 01:42:30 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>> Stephen Hemminger <stephen@networkplumber.org> writes:
+>> > On Wed, 20 May 2020 00:23:48 +0200
+>> > Thomas Gleixner <tglx@linutronix.de> wrote:  
+>> >> No. We did not. -ENOTESTCASE  
+>> >
+>> > Please try, it isn't that hard..
+>> >
+>> > # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
+>> >
+>> > real	0m17.002s
+>> > user	0m1.064s
+>> > sys	0m0.375s  
+>> 
+>> And that solves the incorrectness of the current code in which way?
+>
+> Agree that the current code is has evolved over time to a state where it is not
+> correct in the case of Preempt-RT.
 
-Something I noticed only now is that this ends up in the perf.data file,
-and we don't need it at all there, i.e.
+That's not a RT problem as explained in great length in the changelog
+and as I pointed out in my previous reply.
 
-  # perf record -I
+ Realtime scheduling classes are available on stock kernels and all
+ those attempts to "fix" the livelock problem are ignoring that fact.
 
-I.e. system wide, asking for registers now ends up with:
+Just because you or whoever involved are not using them or do not care
+is not making the code more correct.
 
-[root@quaco ~]# perf record -I
-^C[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 2.855 MB perf.data (4902 samples) ]
-[root@quaco ~]# perf evlist
-cycles
-dummy:HG
-[root@quaco ~]# perf evlist -v
-cycles: size: 120, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD|REGS_INTR, read_format: ID, disabled: 1, inherit: 1, freq: 1, precise_ip: 3, sample_id_all: 1, exclude_guest: 1, sample_regs_intr: 0xff0fff
-dummy:HG: type: 1, size: 120, config: 0x9, { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|ID|CPU|PERIOD|REGS_INTR, read_format: ID, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1, sample_regs_intr: 0xff0fff
-[root@quaco ~]#
+> The motivation for the changes to seqcount goes back many years when
+> there were ISP's that were concerned about scaling of tunnels, vlans
+> etc.
 
-For perf top is ok to reuse the main evlist, as those are not going to
-hit the disk, but for 'perf record' it pollutes the perf.data file with
-that dummy event.
+I completely understand where this comes from, but that is not a
+justification for incorrect code at all.
 
-This was a problem introduced with initial-delay, that IIRC predates the
-side band thread tho, I'll have to think about it, just writing this
-down to revisit this, as may raise some eyebrows by now being more
-exposed.
+> Is it too much to ask for a simple before/after test of your patch as part 
+> of the submission. You probably measure latency changes to the
+> nanosecond.
 
-- Arnaldo
- 
-> Suggested-by: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-record.c             | 19 +++++++---
->  tools/perf/tests/attr/system-wide-dummy | 50 +++++++++++++++++++++++++
->  tools/perf/tests/attr/test-record-C0    | 12 +++++-
->  tools/perf/util/evsel.c                 |  5 ++-
->  4 files changed, 78 insertions(+), 8 deletions(-)
->  create mode 100644 tools/perf/tests/attr/system-wide-dummy
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 1ab349abe904..8d1e93351298 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -805,19 +805,28 @@ static int record__open(struct record *rec)
->  	int rc = 0;
->  
->  	/*
-> -	 * For initial_delay we need to add a dummy event so that we can track
-> -	 * PERF_RECORD_MMAP while we wait for the initial delay to enable the
-> -	 * real events, the ones asked by the user.
-> +	 * For initial_delay or system wide, we need to add a dummy event so
-> +	 * that we can track PERF_RECORD_MMAP to cover the delay of waiting or
-> +	 * event synthesis.
->  	 */
-> -	if (opts->initial_delay) {
-> +	if (opts->initial_delay || target__has_cpu(&opts->target)) {
->  		if (perf_evlist__add_dummy(evlist))
->  			return -ENOMEM;
->  
-> +		/* Disable tracking of mmaps on lead event. */
->  		pos = evlist__first(evlist);
->  		pos->tracking = 0;
-> +		/* Set up dummy event. */
->  		pos = evlist__last(evlist);
->  		pos->tracking = 1;
-> -		pos->core.attr.enable_on_exec = 1;
-> +		/*
-> +		 * Enable the dummy event when the process is forked for
-> +		 * initial_delay, immediately for system wide.
-> +		 */
-> +		if (opts->initial_delay)
-> +			pos->core.attr.enable_on_exec = 1;
-> +		else
-> +			pos->immediate = 1;
->  	}
->  
->  	perf_evlist__config(evlist, opts, &callchain_param);
-> diff --git a/tools/perf/tests/attr/system-wide-dummy b/tools/perf/tests/attr/system-wide-dummy
-> new file mode 100644
-> index 000000000000..eba723cc0d38
-> --- /dev/null
-> +++ b/tools/perf/tests/attr/system-wide-dummy
-> @@ -0,0 +1,50 @@
-> +# Event added by system-wide or CPU perf-record to handle the race of
-> +# processes starting while /proc is processed.
-> +[event]
-> +fd=1
-> +group_fd=-1
-> +cpu=*
-> +pid=-1
-> +flags=8
-> +type=1
-> +size=120
-> +config=9
-> +sample_period=4000
-> +sample_type=455
-> +read_format=4
-> +# Event will be enabled right away.
-> +disabled=0
-> +inherit=1
-> +pinned=0
-> +exclusive=0
-> +exclude_user=0
-> +exclude_kernel=0
-> +exclude_hv=0
-> +exclude_idle=0
-> +mmap=1
-> +comm=1
-> +freq=1
-> +inherit_stat=0
-> +enable_on_exec=0
-> +task=1
-> +watermark=0
-> +precise_ip=0
-> +mmap_data=0
-> +sample_id_all=1
-> +exclude_host=0
-> +exclude_guest=0
-> +exclude_callchain_kernel=0
-> +exclude_callchain_user=0
-> +mmap2=1
-> +comm_exec=1
-> +context_switch=0
-> +write_backward=0
-> +namespaces=0
-> +use_clockid=0
-> +wakeup_events=0
-> +bp_type=0
-> +config1=0
-> +config2=0
-> +branch_sample_type=0
-> +sample_regs_user=0
-> +sample_stack_user=0
-> diff --git a/tools/perf/tests/attr/test-record-C0 b/tools/perf/tests/attr/test-record-C0
-> index 93818054ae20..317730b906dd 100644
-> --- a/tools/perf/tests/attr/test-record-C0
-> +++ b/tools/perf/tests/attr/test-record-C0
-> @@ -9,6 +9,14 @@ cpu=0
->  # no enable on exec for CPU attached
->  enable_on_exec=0
->  
-> -# PERF_SAMPLE_IP | PERF_SAMPLE_TID PERF_SAMPLE_TIME | # PERF_SAMPLE_PERIOD
-> +# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
-> +# PERF_SAMPLE_ID | PERF_SAMPLE_PERIOD
->  # + PERF_SAMPLE_CPU added by -C 0
-> -sample_type=391
-> +sample_type=455
-> +
-> +# Dummy event handles mmaps, comm and task.
-> +mmap=0
-> +comm=0
-> +task=0
-> +
-> +[event:system-wide-dummy]
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 6a571d322bb2..ca8f9533d8f9 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1163,11 +1163,14 @@ void perf_evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	}
->  
->  	/*
-> +	 * A dummy event never triggers any actual counter and therefore
-> +	 * cannot be used with branch_stack.
-> +	 *
->  	 * For initial_delay, a dummy event is added implicitly.
->  	 * The software event will trigger -EOPNOTSUPP error out,
->  	 * if BRANCH_STACK bit is set.
->  	 */
-> -	if (opts->initial_delay && is_dummy_event(evsel))
-> +	if (is_dummy_event(evsel))
->  		perf_evsel__reset_sample_bit(evsel, BRANCH_STACK);
->  }
->  
-> -- 
-> 2.26.2.303.gf8c07b1a785-goog
-> 
+It's not too much to ask and I'm happy to provide the numbers.
 
--- 
+But before I waste my time and produce them, can you please explain how
+any numbers provided are going to change the fact that the code is
+incorrect?
 
-- Arnaldo
+  A bug, is a bug no matter what the numbers are.
+
+I don't have a insta reproducer at hand for the problem which made that
+code go belly up, but the net result is simply:
+
+      Before:			After:
+	real	INFINTE         0mxx.yyys
+
+And the 'Before' comes with the extra benefit of stall warnings (if
+enabled in the config).
+
+If you insist I surely can go the extra mile and write up the insta
+reproducer and stick it into a bugzilla for you.
+
+Thanks,
+
+        tglx
