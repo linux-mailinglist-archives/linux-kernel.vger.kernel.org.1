@@ -2,130 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66FC1DB80E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B7F1DB816
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgETPXz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 20 May 2020 11:23:55 -0400
-Received: from mga09.intel.com ([134.134.136.24]:32705 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgETPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 11:23:54 -0400
-IronPort-SDR: WR8+yPwwH0i1D9vtMloCx6u1fLFkLvn+oalhwokfYdK68XRQPpjAW/b7JGj2PYOXXE+zHk7iWY
- ebPxIYhqm9VA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 08:23:53 -0700
-IronPort-SDR: AkeQM6LZ3P7X6Oi8bFUdxbhbbvsvujPavT2OPZY5Aa8oNm0QW2ltDRhi5803B9ircrW61/80KB
- 0byOG3sFXlVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,414,1583222400"; 
-   d="scan'208";a="253700519"
-Received: from fmsmsx108.amr.corp.intel.com ([10.18.124.206])
-  by fmsmga007.fm.intel.com with ESMTP; 20 May 2020 08:23:53 -0700
-Received: from fmsmsx115.amr.corp.intel.com (10.18.116.19) by
- FMSMSX108.amr.corp.intel.com (10.18.124.206) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 20 May 2020 08:23:53 -0700
-Received: from fmsmsx108.amr.corp.intel.com ([169.254.9.97]) by
- fmsmsx115.amr.corp.intel.com ([169.254.4.85]) with mapi id 14.03.0439.000;
- Wed, 20 May 2020 08:23:53 -0700
-From:   "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>
-CC:     David Airlie <airlied@linux.ie>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        "Rui Huang" <ray.huang@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Evan Quan <evan.quan@amd.com>,
-        "Kenneth Feng" <kenneth.feng@amd.com>,
-        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Yintian Tao <yttao@amd.com>
-Subject: RE: [PATCH v2] drm/amdgpu: off by on in
- amdgpu_device_attr_create_groups() error handling
-Thread-Topic: [PATCH v2] drm/amdgpu: off by on in
- amdgpu_device_attr_create_groups() error handling
-Thread-Index: AQHWLqgW9uvuDNiQMEi3BV2xZkJF36ixF+EA
-Date:   Wed, 20 May 2020 15:23:52 +0000
-Message-ID: <14063C7AD467DE4B82DEDB5C278E8663010E2302FA@FMSMSX108.amr.corp.intel.com>
-References: <20200520125209.GP3041@kadam> <20200520130812.GA177222@mwanda>
-In-Reply-To: <20200520130812.GA177222@mwanda>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1726868AbgETPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 11:24:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52261 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726560AbgETPYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 11:24:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589988289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RAAW2dLc29k3ISiLIOXrXt0G/ZR+WHztHlZgdr/wJG0=;
+        b=CTwfs+a4QPOkX4HMuqibO2PH+aNqmERzj2rAP0NktQf8jXhThSyIsgfNrMAKUQL7dSMk1t
+        lNj7K8egAcW1K+Z+EnU/kSdghm+x/oj0HxTuaYalsygEOp8xpiKR0KV5lvZLcpZjxcqfA8
+        vqgvVw8/FABC4YIAKkJhXR2X8vFIzy8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-zUJOX02RMHOhlDxOi7R1KQ-1; Wed, 20 May 2020 11:24:47 -0400
+X-MC-Unique: zUJOX02RMHOhlDxOi7R1KQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 943858018A5;
+        Wed, 20 May 2020 15:24:46 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.108])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BC6D519451;
+        Wed, 20 May 2020 15:24:41 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 20 May 2020 17:24:46 +0200 (CEST)
+Date:   Wed, 20 May 2020 17:24:40 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Fox <afox@redhat.com>,
+        Stephen Johnston <sjohnsto@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Stanislaw Gruszka <sgruszka@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2] sched/cputime: make scale_stime() more precise
+Message-ID: <20200520152439.GC26470@redhat.com>
+References: <20190718131834.GA22211@redhat.com>
+ <20200127122817.GA10957@redhat.com>
+ <20200519172506.GA317395@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519172506.GA317395@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"off by on"
+On 05/19, Peter Zijlstra wrote:
+>
+> > The new implementation does the additional div64_u64_rem() but according
+> > to my naive measurements it is faster on x86_64, much faster if rtime/etc
+> > are big enough. See
+> >
+> > 	https://lore.kernel.org/lkml/20200123130541.GA30620@redhat.com/
+>
+> Right, so -m32 when ran on x86_64 CPUs isn't really fair, because then
+> it still has hardware fls() for ilog2() and a massively fast mult and
+> division instruction. Try and run this on a puny 32bit ARM that maybe
+> has a hardware multiplier on.
 
-or 
+OK,
 
-"off by one"
+> Anyway, how about we write it like the below and then when some puny
+> architecture comes complaining we can use Linus' original algorithm for
+> their arch implementation.
 
-?
+Sure, I am fine either way, but...
 
-M
+> +static inline u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div)
+>  {
+>  	u64 q;
+>  
+>  	asm ("mulq %2; divq %3" : "=a" (q)
+> -				: "a" (a), "rm" ((u64)mul), "rm" ((u64)div)
+> +				: "a" (a), "rm" (mul), "rm" (div)
+>  				: "rdx");
 
->-----Original Message-----
->From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of Dan
->Carpenter
->Sent: Wednesday, May 20, 2020 9:08 AM
->To: Alex Deucher <alexander.deucher@amd.com>; Kevin Wang
-><kevin1.wang@amd.com>
->Cc: David Airlie <airlied@linux.ie>; kernel-janitors@vger.kernel.org; linux-
->kernel@vger.kernel.org; amd-gfx@lists.freedesktop.org; Hawking Zhang
-><Hawking.Zhang@amd.com>; Rui Huang <ray.huang@amd.com>; dri-
->devel@lists.freedesktop.org; Evan Quan <evan.quan@amd.com>; Kenneth
->Feng <kenneth.feng@amd.com>; Christian König
-><christian.koenig@amd.com>; Yintian Tao <yttao@amd.com>
->Subject: [PATCH v2] drm/amdgpu: off by on in
->amdgpu_device_attr_create_groups() error handling
->
->This loop in the error handling code should start a "i - 1" and end at
->"i == 0".  Currently it starts a "i" and ends at "i == 1".  The result
->is that it removes one attribute that wasn't created yet, and leaks the
->zeroeth attribute.
->
->Fixes: 4e01847c38f7 ("drm/amdgpu: optimize amdgpu device attribute code")
->Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->---
->v2: style change
->
-> drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c           | 3 +--
-> 1 files changed, 1 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
->b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
->index b75362bf0742..e809534fabd4 100644
->--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
->+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
->@@ -1942,9 +1942,8 @@ static int amdgpu_device_attr_create_groups(struct
->amdgpu_device *adev,
-> 	return 0;
->
-> failed:
->-	for (; i > 0; i--) {
->+	while (i--)
-> 		amdgpu_device_attr_remove(adev, &attrs[i]);
->-	}
->
-> 	return ret;
-> }
->_______________________________________________
->dri-devel mailing list
->dri-devel@lists.freedesktop.org
->https://lists.freedesktop.org/mailman/listinfo/dri-devel
+...
+
+> +#ifndef mul_u64_u64_div_u64
+> +static inline u64 mul_u64_u64_div_u64(u64 a, u64 b, u64 c)
+> +{
+> +	u64 res = 0, div, rem;
+> +	int shift;
+> +
+> +	/* can a * b overflow ? */
+> +	if (ilog2(a) + ilog2(b) > 62) {
+> +		/*
+> +		 * (b * a) / c is equal to
+> +		 *
+> +		 *	(b / c) * a +
+> +		 *	(b % c) * a / c
+> +		 *
+> +		 * if nothing overflows. Can the 1st multiplication
+> +		 * overflow? Yes, but we do not care: this can only
+> +		 * happen if the end result can't fit in u64 anyway.
+> +		 *
+> +		 * So the code below does
+> +		 *
+> +		 *	res = (b / c) * a;
+> +		 *	b = b % c;
+> +		 */
+> +		div = div64_u64_rem(b, c, &rem);
+> +		res = div * a;
+> +		b = rem;
+> +
+> +		shift = ilog2(a) + ilog2(b) - 62;
+> +		if (shift > 0) {
+> +			/* drop precision */
+> +			b >>= shift;
+> +			c >>= shift;
+> +			if (!c)
+> +				return res;
+> +		}
+> +	}
+> +
+> +	return res + div64_u64(a * b, c);
+> +}
+
+Note that according to my measurements the "asm" version is slower than
+the generic code above when "a * b" doesn't fit u64.
+
+Nevermind, I agree with your version. Will you send this patch or do you
+want me to make V3 ?
+
+Oleg.
+
