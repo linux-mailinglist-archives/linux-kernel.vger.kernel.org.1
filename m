@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414F41DC1B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5061DC1B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgETV7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:59:54 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43567 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728046AbgETV7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:59:53 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49S69f0563z9sTN;
-        Thu, 21 May 2020 07:59:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590011991;
-        bh=9C6FrJ77beTpNxWh+pD6MyfUV83fIBDXa4d8Y0TzOSM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SJdjEkS8jmUSJNvTL2/OgiIK1vFpPkNTyafthYft2xoB9en3dZURUoXdwLpzoYXtz
-         h8AuZykvsQQRYh9l2SILQhUmjmi5jt+dJTi7GUUJPaylmPA2orAFhM8yw6/RoVMGQ6
-         7eO5S1fQzrAG06c10NdCjySS0KCa7sTG73hZHOHdPprnMegcKZMoo3+SCKwzW00dMN
-         2vgxs5fexrQ0x+WaCGxi0sS0ek/LKkzdFqcEZsz2gwRwpAJCJuCcO+rnUtGWHyTDMM
-         YeXrm1fJ60Bdb9eOOa25t+1gjNW7TvwSk6ibuG0KK/e1wdTWZyjpEhvF6vHltW9pwi
-         KYmmIHrPyjMQw==
-Date:   Thu, 21 May 2020 07:59:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: linux-next: Fixes tags needs some work in the tip tree
-Message-ID: <20200521075949.6db68c4a@canb.auug.org.au>
+        id S1728478AbgETWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 18:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgETWA3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 18:00:29 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278C6C061A0E;
+        Wed, 20 May 2020 15:00:28 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id n15so2001761pjt.4;
+        Wed, 20 May 2020 15:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4JmOvD2TyoQ5PlnHW0M+2Uibc7d3SIyYFIVbY6RyYR4=;
+        b=eqXsTGiKOHrK015U2Y69X7/wA962a5nOkMWhK/QYqV3Ec4k+eK/DQmXSpX/CqX6/yN
+         yuuOKMtnGf/bYh3jZOShjjLlv71HKx1JfVt4swZvykjPSpdZvapniIjP/MqnIGgZTiNA
+         Cqem/NJDSvkiQiFoK1kMzTQTFckzl4nV+qFmemtAG6Ookv4mf7mpE5eWzPY5cf33TWO2
+         h/UsrNigz28COgyfWhXekLtDmF2VOZKdFza4I0Bm6nUnA7/LM/e+Q4Ns5Dyeu7SY+XKd
+         3/O5LWa41yiDdY+xQ99xOLfw+z5J/VI91WCSusOJu0nCO7mghPAHtejqTqJBnrED78HQ
+         4rKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4JmOvD2TyoQ5PlnHW0M+2Uibc7d3SIyYFIVbY6RyYR4=;
+        b=L5HbOC7rdFp2N5Gl4ICqM7Y7MZ9fSsDGGi2BfDJl1GLspIrXqsc2tujAC2jE9vrA1K
+         rK3SekYqcTpsi/d3da5ulagtRBzD50VMaGBWDuGHL75GLdFgvqaa0epajNlSJIPfvEL7
+         WuGyV7v/M+V7Fy9OxFcXEa+fz1P9YldHvI7697Rjab7Ky4rpZR7xKkAvsP86O8/Rr9di
+         IMBZ6wpRI4hRpm0Wm2JZWs4SHz+gwllOYbzNbLOQzIUivf3Fe+4hWEgHx4l6MmZX7qNC
+         DmuRHkJV7kYr2jFO8ZbgSUOpau0l9D/Ce0D2trpjobaPKpZYY0Ix3LcL57GNS0QsSYaI
+         cSXA==
+X-Gm-Message-State: AOAM530h3IQqkqS/07VOk72fMHJNL1Za3jHa5EPMWTroWqmW6KrqQCpd
+        ZJyjQaAVBZ+rfBrJSvMdx5s=
+X-Google-Smtp-Source: ABdhPJze/d22doq9O8a6Meb4pDynDLvbyPjQsLlo2DAFKxSBmbXNXijOFROsXNsb7fYPLGuichLTIQ==
+X-Received: by 2002:a17:90a:a62:: with SMTP id o89mr7680765pjo.217.1590012026445;
+        Wed, 20 May 2020 15:00:26 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:cf67:1de0:170f:be65])
+        by smtp.gmail.com with ESMTPSA id gg8sm2760738pjb.39.2020.05.20.15.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 15:00:25 -0700 (PDT)
+Date:   Wed, 20 May 2020 15:00:23 -0700
+From:   Jonathan Nieder <jrnieder@gmail.com>
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Jeff King <peff@peff.net>, git@vger.kernel.org,
+        Derrick Stolee <dstolee@microsoft.com>
+Subject: Protocol v2 in v2.27 (Re: Re* [ANNOUNCE] Git v2.27.0-rc1)
+Message-ID: <20200520220023.GB3648@google.com>
+References: <xmqqsgfuv2ko.fsf@gitster.c.googlers.com>
+ <20200520193156.GA4700@coredump.intra.peff.net>
+ <xmqq5zcquz4t.fsf_-_@gitster.c.googlers.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/brJGB.HyXKGJi3d5CyS7j6P";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xmqq5zcquz4t.fsf_-_@gitster.c.googlers.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/brJGB.HyXKGJi3d5CyS7j6P
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+(other lists -> bcc)
+Junio C Hamano wrote:
+> Jeff King <peff@peff.net> writes:
 
-Hi all,
+>> Is it worth mentioning here the reversion of v2 as the default protocol?
+>>
+>> It does end up (along with the actual code fix) in the "fixes from
+>> v2.26" section:
+>>
+>>>  * Those fetching over protocol v2 from linux-next and other kernel
+>>>    repositories are reporting that v2 often fetches way too much than
+>>>    needed.
+>>>    (merge 11c7f2a30b jn/demote-proto2-from-default later to maint).
+>>>
+>>>  * The upload-pack protocol v2 gave up too early before finding a
+>>>    common ancestor, resulting in a wasteful fetch from a fork of a
+>>>    project.  This has been corrected to match the behaviour of v0
+>>>    protocol.
+>>>    (merge 2f0a093dd6 jt/v2-fetch-nego-fix later to maint).
+>>
+>> but that's somewhat buried. I dunno. It is not likely to introduce _new_
+>> compatibility issues, but perhaps folks looking into compatibility stuff
+>> may want to know about the revert.
+>
+> The promotion in Git 2.26 was buried in the "performance &
+> implementation details" section and not in the backward
+> compatibility section, so it feels a bit funny to highlight the
+> reversion.  In any case, here is what I prepared (but not committed
+> yet)
 
-In commit
+Speaking of which, should we enable protocol v2 by default for people
+with feature.experimental enabled, like this?
 
-  39f23ce07b93 ("sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list")
+(This isn't part of the rest of the feature.experimental handling
+because those are tied to a repository object, whereas this code path
+is used for operations like "git ls-remote" that do not require a
+repository.)
 
-Fixes tag
+Signed-off-by: Jonathan Nieder <jrnieder@gmail.com>
 
-  Fixes: fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-In commit
-
-  b34cb07dde7c ("sched/fair: Fix enqueue_task_fair() warning some more")
-
-Fixes tag
-
-  Fixes: fe61468b2cb ("sched/fair: Fix enqueue_task_fair warning")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/brJGB.HyXKGJi3d5CyS7j6P
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7FqFUACgkQAVBC80lX
-0GzARQf/SI6L16TURENQFR2YyrVsoAzQhqRQENLRo7GxNnQ6jku/l/i1LI83tIc+
-UNACByZhdFoWxDO4ili44MDzWCbphEgnoYhUpXFQn7Q4ZQxemHAFBCcZs4LkPShV
-lFFpILeYMe+B4EaF3a+qUDMRui7FD3ptdLslmGNPgSyKC8pAJJpm1cEMvlVVkiH9
-wkLWFbgzjO+cHtj9net6dtcNPcQD2nDZju5LUwPDutt4HzglWobyY4Vr6qfA0Ir+
-vUSrq2Z94r6BbKfZq0+1eMPIr+saP0/xBpTSC5sNHTLRwQzDMGAM2aFQaHbQ9daa
-hia8MHohaU/3KfOuANTKowjL5mR9UQ==
-=E8PV
------END PGP SIGNATURE-----
-
---Sig_/brJGB.HyXKGJi3d5CyS7j6P--
+diff --git c/Documentation/config/protocol.txt i/Documentation/config/protocol.txt
+index 0b40141613e..c46e9b3d00a 100644
+--- c/Documentation/config/protocol.txt
++++ i/Documentation/config/protocol.txt
+@@ -48,7 +48,8 @@ protocol.version::
+ 	If set, clients will attempt to communicate with a server
+ 	using the specified protocol version.  If the server does
+ 	not support it, communication falls back to version 0.
+-	If unset, the default is `0`.
++	If unset, the default is `0`, unless `feature.experimental`
++	is enabled, in which case the default is `2`.
+ 	Supported versions:
+ +
+ --
+diff --git c/protocol.c i/protocol.c
+index d390391ebac..d1dd3424bba 100644
+--- c/protocol.c
++++ i/protocol.c
+@@ -17,6 +17,7 @@ static enum protocol_version parse_protocol_version(const char *value)
+ enum protocol_version get_protocol_version_config(void)
+ {
+ 	const char *value;
++	int val;
+ 	const char *git_test_k = "GIT_TEST_PROTOCOL_VERSION";
+ 	const char *git_test_v;
+ 
+@@ -30,6 +31,9 @@ enum protocol_version get_protocol_version_config(void)
+ 		return version;
+ 	}
+ 
++	if (!git_config_get_bool("feature.experimental", &val) && val)
++		return protocol_v2;
++
+ 	git_test_v = getenv(git_test_k);
+ 	if (git_test_v && *git_test_v) {
+ 		enum protocol_version env = parse_protocol_version(git_test_v);
