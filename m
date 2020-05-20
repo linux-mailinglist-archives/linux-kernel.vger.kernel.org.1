@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505501DBBFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5994C1DBC03
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgETRxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:53:04 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38238 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgETRxE (ORCPT
+        id S1726985AbgETRxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:53:44 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:3932 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726729AbgETRxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:53:04 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04KHqxnO082673;
-        Wed, 20 May 2020 12:52:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589997179;
-        bh=SMQCS5BSmnxFa3H5C1NH1s5D+HnAPmg4JMl1668xgyk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dyYg60zw1ySiaIyZRM5p11q9kuuiMv8NHWPI4TdTk63YMLiREgGYPxMEXmyRXoPfO
-         PFrRJCD23iboJFkIrXzbziBc6O59UMetynvTUjUBXqVytAdEwRoUjKEJXp6xkvmg/G
-         xMWR0ZllagvfR9c9ul+z5B9SCkUzKRoYi3PEerTU=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04KHqwVi036168
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 May 2020 12:52:59 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- May 2020 12:52:58 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 May 2020 12:52:58 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KHqw5O074199;
-        Wed, 20 May 2020 12:52:58 -0500
-Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add RGMII internal
- delay for DP83869
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     <hkallweit1@gmail.com>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20200520121835.31190-1-dmurphy@ti.com>
- <20200520121835.31190-4-dmurphy@ti.com> <20200520135624.GC652285@lunn.ch>
- <770e42bb-a5d7-fb3e-3fc1-b6f97a9aeb83@ti.com>
- <20200520153631.GH652285@lunn.ch>
- <95ab99bf-2fb5-c092-ad14-1b0a47c782a4@ti.com>
- <20200520164313.GI652285@lunn.ch>
- <d5d46c21-0afa-0c51-9baf-4f99de94bbd5@ti.com>
- <41101897-5b29-4a9d-0c14-9b8080089850@gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <7e117c01-fa6e-45f3-05b7-4efe7a3c1943@ti.com>
-Date:   Wed, 20 May 2020 12:52:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <41101897-5b29-4a9d-0c14-9b8080089850@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 20 May 2020 13:53:39 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 20 May 2020 10:53:39 -0700
+Received: from asutoshd-linux1.qualcomm.com ([10.46.160.39])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 20 May 2020 10:53:38 -0700
+Received: by asutoshd-linux1.qualcomm.com (Postfix, from userid 92687)
+        id 6325420B91; Wed, 20 May 2020 10:53:38 -0700 (PDT)
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     cang@codeaurora.org, martin.petersen@oracle.com,
+        PedroM.Sousa@synopsys.com, linux-scsi@vger.kernel.org
+Cc:     Asutosh Das <asutoshd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 1/2] scsi: ufs: export hibern8 entry
+Date:   Wed, 20 May 2020 10:53:16 -0700
+Message-Id: <186237103353b5a79c3496e619fca894dbc78600.1589997078.git.asutoshd@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian
+Qualcomm controllers need to be in hibern8 before scaling up
+or down the clocks. Hence, export the hibern8 entry function.
 
-On 5/20/20 12:45 PM, Florian Fainelli wrote:
->
-> On 5/20/2020 10:20 AM, Dan Murphy wrote:
->> Andrew/Florian
->>
->> On 5/20/20 11:43 AM, Andrew Lunn wrote:
->>>> I am interested in knowing where that is documented.  I want to RTM I
->>>> grepped for a few different words but came up empty
->>> Hi Dan
->>>
->>> It probably is not well documented, but one example would be
->>>
->>> Documentation/devicetree/bindings/net/ethernet-controller.yaml
->>>
->>> says:
->>>
->>>         # RX and TX delays are added by the MAC when required
->>>         - rgmii
->>>
->>>         # RGMII with internal RX and TX delays provided by the PHY,
->>>         # the MAC should not add the RX or TX delays in this case
->>>         - rgmii-id
->>>
->>>         # RGMII with internal RX delay provided by the PHY, the MAC
->>>         # should not add an RX delay in this case
->>>         - rgmii-rxid
->>>
->>>         # RGMII with internal TX delay provided by the PHY, the MAC
->>>         # should not add an TX delay in this case
->>>
->>>         Andrew
->> OKI I read that.  I also looked at a couple other drivers too.
->>
->> I am wondering if rx-internal-delay and tx-internal-delay should become
->> a common property like tx/rx fifo-depth
->>> And properly document how to use it or at least the expectation on use.
-> Yes they should, and they should have an unit associated with the name.
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 4 ++--
+ drivers/scsi/ufs/ufshcd.h | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-
-UGH I think I just got volunteered to do make them common.
-
-Dan
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index c3389c9..aaf4adf 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -243,7 +243,6 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+ 				 bool skip_ref_clk);
+ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
+ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba);
+ static void ufshcd_resume_clkscaling(struct ufs_hba *hba);
+@@ -3877,7 +3876,7 @@ static int __ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ 	return ret;
+ }
+ 
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ {
+ 	int ret = 0, retries;
+ 
+@@ -3889,6 +3888,7 @@ static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ out:
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(ufshcd_uic_hibern8_enter);
+ 
+ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)
+ {
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 88d4202..defc12c 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -835,6 +835,7 @@ int ufshcd_wait_for_register(struct ufs_hba *hba, u32 reg, u32 mask,
+ void ufshcd_parse_dev_ref_clk_freq(struct ufs_hba *hba, struct clk *refclk);
+ void ufshcd_update_reg_hist(struct ufs_err_reg_hist *reg_hist,
+ 			    u32 reg);
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ 
+ static inline void check_upiu_size(void)
+ {
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
