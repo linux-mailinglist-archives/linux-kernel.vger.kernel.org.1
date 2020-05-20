@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ADE1DAF37
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622C41DAF61
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 11:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgETJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 05:48:42 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33996 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726435AbgETJsk (ORCPT
+        id S1726993AbgETJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 05:52:43 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:49178 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726650AbgETJwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 05:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589968119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wpd1XgqS+on5KAHh5sZLVRwtFA9YQca65tKtlXZA2os=;
-        b=I0n0ifLzvIxBZbCwwmRz6SiGAz5z6m0GrcA1JJkbxPglZCAtKisZHc5ttj3HyCmtmtG3zt
-        /WZyAI+LGZldYJcBVEJjSON8eoTL82XCaLJ2zKssHdaJM3Rmr9mka8JCxK6ex2ul4Fr7CE
-        lgwK24NWw13M7P+hJSXgVIuurm5Zb64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-xkI0fkMXN5ObdsgU6-QH9A-1; Wed, 20 May 2020 05:48:37 -0400
-X-MC-Unique: xkI0fkMXN5ObdsgU6-QH9A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10832474;
-        Wed, 20 May 2020 09:48:36 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-148.pek2.redhat.com [10.72.12.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 98BED5D9CA;
-        Wed, 20 May 2020 09:48:33 +0000 (UTC)
-Date:   Wed, 20 May 2020 17:48:29 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     akpm@linux-foundation.org, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, vgoyal@redhat.com
-Subject: Re: [PATCH] MAINTAINERS: add files related to kdump
-Message-ID: <20200520094829.GA21486@dhcp-128-65.nay.redhat.com>
-References: <20200520080557.13260-1-bhe@redhat.com>
- <20200520091440.GA5052@dhcp-128-65.nay.redhat.com>
- <20200520094359.GV5029@MiWiFi-R3L-srv>
+        Wed, 20 May 2020 05:52:40 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 04K9pZjj016025;
+        Wed, 20 May 2020 12:51:35 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id E12D3639C0; Wed, 20 May 2020 12:51:34 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     ofery@google.com, brendanhiggins@google.com,
+        avifishman70@gmail.com, tmaimon77@gmail.com, kfting@nuvoton.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        robh+dt@kernel.org, wsa@the-dreams.de,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH v11 0/3] i2c: npcm7xx: add NPCM i2c controller driver
+Date:   Wed, 20 May 2020 12:51:10 +0300
+Message-Id: <20200520095113.185414-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520094359.GV5029@MiWiFi-R3L-srv>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/20/20 at 05:43pm, Baoquan He wrote:
-> On 05/20/20 at 05:14pm, Dave Young wrote:
-> > Hi Baoquan,
-> > On 05/20/20 at 04:05pm, Baoquan He wrote:
-> > > Kdump is implemented based on kexec, however some files are only
-> > > related to crash dumping and missing, add them to KDUMP entry.
-> > > 
-> > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > > ---
-> > >  MAINTAINERS | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 83cf5c43242a..2f9eefd33114 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -9251,6 +9251,11 @@ L:	kexec@lists.infradead.org
-> > >  S:	Maintained
-> > >  W:	http://lse.sourceforge.net/kdump/
-> > >  F:	Documentation/admin-guide/kdump/
-> > > +F:	fs/proc/vmcore.c
-> > > +F:	include/linux/crash_core.h
-> > > +F:	include/linux/crash_dump.h
-> > > +F:	include/uapi/linux/vmcore.h
-> > > +F:	kernel/crash.*
-> > 
-> > ls kernel/crash.*
-> > ls: cannot access 'kernel/crash.*': No such file or directory
-> > 
-> > But ls kernel/crash*
-> > kernel/crash_core.c  kernel/crash_dump.c
-> 
-> Is below patten ok? Surely kernel/crash* is also OK to me. Thanks.
-> 
-> F:	kernel/crash_*.c
+This patch set adds i2c controller support 
+for the Nuvoton NPCM Baseboard Management Controller (BMC).
 
-Yes, looks good, thanks!
+NPCM7xx includes 16 I2C controllers. This driver operates the controller.
+This module also includes a slave mode.
 
-Acked-by: Dave Young <dyoung@redhat.com>
+---
+v11 -> v10:
+	- Fix according to maintainer comments.
+	- Init clk simplified.
+	- Comments in c99
+	- Split master irq function.
+	- debugfs not mandatory.
+	- yaml file fix.
 
-Thanks
-Dave
+v10 -> v9:
+	- Fix according to maintainer comments.
+	- binding file changed to yaml format.
+	- Shorten recovery flow.
+	- Add support for health monitoring counters.
+
+v9 -> v8:
+	- Fix according to maintainer comments.
+	- Split lines of iowrite..(ioread..) to separate lines.
+	- Use readx_poll_timeout_atomic
+	- resolve various style issues.
+	 
+v8 -> v7:
+	- Split to two commits, one for master, one for slave.
+	- Rename smb to i2c.
+	- Remove global vars.
+
+v7 -> v6:
+	- Rebased on Linux 5.4-rc8  (was Linux 5.4-rc7).
+	- Fix issue found by kbuild test robot (redundant include).
+	- Note: left a warning related to fall through. This fall through is
+	  intentional.
+	
+v6 -> v5:
+	- Update documentation
+
+v5 -> v4:
+	- support recovery
+	- master-slave switch support needed for IPMB
+
+v4 -> v3:
+	- typo on cover letter.
+
+v3 -> v2:
+	- fix dt binding: compatible name: omit "bus"
+
+v2 -> v1:
+	- run check patch in strict mode.
+	- use linux crc.
+	- define regs in constant offset without base.
+	- remove debug prints.
+	- no declarations for local functions.
+	
+v1: initial version
+
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+
+---
+Tali Perry (3):
+  dt-bindings: i2c: npcm7xx: add NPCM I2C controller documentation
+  i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver
+  i2c: npcm7xx: Add support for slave mode for Nuvoton NPCM BMC I2C
+    controller driver.
+
+ .../bindings/i2c/nuvoton,npcm7xx-i2c.yaml     |   62 +
+ drivers/i2c/busses/Kconfig                    |    9 +
+ drivers/i2c/busses/Makefile                   |    1 +
+ drivers/i2c/busses/i2c-npcm7xx.c              | 2480 +++++++++++++++++
+ 4 files changed, 2552 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
+ create mode 100644 drivers/i2c/busses/i2c-npcm7xx.c
+
+
+base-commit: b9bbe6ed63b2b9f2c9ee5cbd0f2c946a2723f4ce
+-- 
+2.22.0
 
