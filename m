@@ -2,118 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634AF1DAA81
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDF01DAA8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 08:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgETGTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 02:19:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55036 "EHLO mx2.suse.de"
+        id S1726574AbgETGU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 02:20:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:46235 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725998AbgETGTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 02:19:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C3567AD45;
-        Wed, 20 May 2020 06:19:07 +0000 (UTC)
-Date:   Wed, 20 May 2020 16:18:51 +1000
-From:   Aleksa Sarai <asarai@suse.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726369AbgETGU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 02:20:56 -0400
+IronPort-SDR: 3WGr83E05yR+PXCRzPI4nvXNPZba6LsfkqgUG2vOWpFpeCmpS3l7mmm5Iv8N3iR04E+mbQVKxB
+ 1YS9f5qvDWRw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 23:20:56 -0700
+IronPort-SDR: x2Fdt2xSOHw7YfPmhCxnMFRGeCK3edMifCh80yTjNtpGNXLXkte9VzyvKxcs266zgc0cA436t1
+ U8J5oTH25sTw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,413,1583222400"; 
+   d="scan'208";a="373977914"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga001.fm.intel.com with ESMTP; 19 May 2020 23:20:55 -0700
+Date:   Tue, 19 May 2020 23:20:55 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
         Kees Cook <keescook@chromium.org>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: seccomp feature development
-Message-ID: <20200520061851.rxxgz2frffqt66q6@yavin.dot.cyphar.com>
-References: <202005181120.971232B7B@keescook>
- <CAG48ez1LrQvR2RHD5-ZCEihL4YT1tVgoAJfGYo+M3QukumX=OQ@mail.gmail.com>
- <20200519024846.b6dr5cjojnuetuyb@yavin.dot.cyphar.com>
- <CAADnVQKRCCHRQrNy=V7ue38skb8nKCczScpph2WFv7U_jsS3KQ@mail.gmail.com>
- <20200520012045.5yqejh6kic3gbkyw@yavin.dot.cyphar.com>
- <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3 25/75] x86/sev-es: Add support for handling IOIO
+ exceptions
+Message-ID: <20200520062055.GA17090@linux.intel.com>
+References: <20200428151725.31091-1-joro@8bytes.org>
+ <20200428151725.31091-26-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rn7hnswmzhtvif3b"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200520051703.wh7s2bnpnrqxpk5j@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200428151725.31091-26-joro@8bytes.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 05:16:35PM +0200, Joerg Roedel wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> Add support for decoding and handling #VC exceptions for IOIO events.
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> [ jroedel@suse.de: Adapted code to #VC handling framework ]
+> Co-developed-by: Joerg Roedel <jroedel@suse.de>
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/boot/compressed/sev-es.c |  32 +++++
+>  arch/x86/kernel/sev-es-shared.c   | 202 ++++++++++++++++++++++++++++++
+>  2 files changed, 234 insertions(+)
+> 
+> diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
+> index 1241697dd156..17765e471e28 100644
+> --- a/arch/x86/boot/compressed/sev-es.c
+> +++ b/arch/x86/boot/compressed/sev-es.c
+> @@ -23,6 +23,35 @@
 
---rn7hnswmzhtvif3b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On 2020-05-19, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> On Wed, May 20, 2020 at 11:20:45AM +1000, Aleksa Sarai wrote:
-> > No it won't become copy_from_user(), nor will there be a TOCTOU race.
-> >=20
-> > The idea is that seccomp will proactively copy the struct (and
-> > recursively any of the struct pointers inside) before the syscall runs
-> > -- as this is done by seccomp it doesn't require any copy_from_user()
-> > primitives in cBPF. We then run the cBPF filter on the copied struct,
-> > just like how cBPF programs currently operate on seccomp_data (how this
-> > would be exposed to the cBPF program as part of the seccomp ABI is the
-> > topic of discussion here).
-> >=20
-> > Then, when the actual syscall code runs, the struct will have already
-> > been copied and the syscall won't copy it again.
->=20
-> Let's take bpf syscall as an example.
-> Are you suggesting that all of syscall logic of conditionally parsing
-> the arguments will be copy-pasted into seccomp-syscall infra, then
-> it will do copy_from_user() all the data and replace all aligned_u64
-> in "union bpf_attr" with kernel copied pointers instead of user pointers
-> and make all of bpf syscall's copy_from_user() actions to be conditional ?
-> If seccomp is on, use kernel pointers... if seccomp is off, do copy_from_=
-user ?
-> And the same idea will be replicated for all syscalls?
+> +static enum es_result vc_handle_ioio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+> +{
+> +	struct pt_regs *regs = ctxt->regs;
+> +	u64 exit_info_1, exit_info_2;
+> +	enum es_result ret;
+> +
+> +	ret = vc_ioio_exitinfo(ctxt, &exit_info_1);
+> +	if (ret != ES_OK)
+> +		return ret;
+> +
+> +	if (exit_info_1 & IOIO_TYPE_STR) {
+> +		int df = (regs->flags & X86_EFLAGS_DF) ? -1 : 1;
+> +		unsigned int io_bytes, exit_bytes;
+> +		unsigned int ghcb_count, op_count;
+> +		unsigned long es_base;
+> +		u64 sw_scratch;
+> +
+> +		/*
+> +		 * For the string variants with rep prefix the amount of in/out
+> +		 * operations per #VC exception is limited so that the kernel
+> +		 * has a chance to take interrupts an re-schedule while the
+> +		 * instruction is emulated.
 
-This would be done optionally per-syscall. Only syscalls which want to
-opt-in to such a mechanism (such as clone3 and openat2) would be
-affected. Also, bpf is possibly the least-friendly syscall to pick as an
-example of these types of filters -- openat2/clone3 is much simpler to
-consider.
+Doesn't this also suppress single-step #DBs?
 
-The point is that if we both agree that seccomp needs to have a way to
-do "deep argument inspection" (filtering based on the struct argument to
-a syscall), then some sort of caching mechanism is simply necessary to
-solve the problem. Otherwise there's a trivial TOCTOU and seccomp
-filtering for such syscalls would be rendered almost useless.
+> +		 */
+> +		io_bytes   = (exit_info_1 >> 4) & 0x7;
+> +		ghcb_count = sizeof(ghcb->shared_buffer) / io_bytes;
+> +
+> +		op_count    = (exit_info_1 & IOIO_REP) ? regs->cx : 1;
+> +		exit_info_2 = min(op_count, ghcb_count);
+> +		exit_bytes  = exit_info_2 * io_bytes;
+> +
+> +		es_base = insn_get_seg_base(ctxt->regs, INAT_SEG_REG_ES);
+> +
+> +		if (!(exit_info_1 & IOIO_TYPE_IN)) {
+> +			ret = vc_insn_string_read(ctxt,
+> +					       (void *)(es_base + regs->si),
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
+SEV(-ES) is 64-bit only, why bother with the es_base charade?
 
---rn7hnswmzhtvif3b
-Content-Type: application/pgp-signature; name="signature.asc"
+> +					       ghcb->shared_buffer, io_bytes,
+> +					       exit_info_2, df);
 
------BEGIN PGP SIGNATURE-----
+df handling is busted, it's aways non-zero.  Same goes for the SI/DI
+adjustments below.
 
-iQIzBAABCAAdFiEEXzbGxhtUYBJKdfWmnhiqJn3bjbQFAl7Ey8kACgkQnhiqJn3b
-jbS1aw/+Ke+3XabRAdGNQcKJl07/uM/ddqclXOauVrhWiCSAxWSnWVu97XP7n4Ce
-gQq6Da4u3IVhScgvfuR7utNO0uprnaW7Aj4Seb8ioajFA4I5DCWzn1JJHl90et7n
-0oonnFE/IQuCwcWfCJ8EVcv6HdLBxpGPXEciCX9qXUyi6ipEAlmaRI1am7SeUFcF
-dfc6Nz4azXPMtrTaXlQbwQ4pLHDF1pW+rBa06mgyJlQYgvcmsmxkE3fRxhJxauBX
-4sWTYrkVQu0aB3CnSONO5sqfZiZuEf0rGJqF8ETgTYSBBQ5hGT1uuvQYnCz7jtM6
-AbTq8BGAMG3Ox/2s/sezHLsWJx2ypoQ34NMSSfRgacBmse56OdHGP8zEDJJRm/OA
-RNqpL5ZJ9HWG8H9zor9FTcc4CvvdxUpX326QCL+l3eJrt+Afd++erZyOpfbzZhKH
-MKb7aSSmhvy+NgVpZpjj8CF3mzYdAlTFVldgXRa5rvKwshz75+8uA9dCZa7MidDQ
-Vmw4vIkdcWXY8c5VABuKw0p4Z41OCV15eKBDzK4e6fR4HDTM8QHe6X4sk8f3cR9F
-4P5JEuO6YOfXuDGClgc0Nb89IqtwBB61EJyt/LZbwIcu4A6htR2lTsxlSJfqWHCz
-Z3haeWiCQoaPN9Sgt/NXhPOn+MYJq/xqle4SAHCzKC+YdjWyvrQ=
-=Iji/
------END PGP SIGNATURE-----
+> +			if (ret)
+> +				return ret;
+> +		}
+> +
+> +		sw_scratch = __pa(ghcb) + offsetof(struct ghcb, shared_buffer);
+> +		ghcb_set_sw_scratch(ghcb, sw_scratch);
+> +		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO,
+> +				   exit_info_1, exit_info_2);
+> +		if (ret != ES_OK)
+> +			return ret;
 
---rn7hnswmzhtvif3b--
+Batching the memory accesses and I/O accesses separately is technically
+wrong, e.g. a #DB on a memory access will result in bogus data being shown
+in the debugger.  In practice it seems unlikely to matter, but I'm curious
+as to why string I/O is supported in the first place.  I didn't think there
+was that much string I/O in the kernel?
+
+> +
+> +		/* Everything went well, write back results */
+> +		if (exit_info_1 & IOIO_TYPE_IN) {
+> +			ret = vc_insn_string_write(ctxt,
+> +						(void *)(es_base + regs->di),
+> +						ghcb->shared_buffer, io_bytes,
+> +						exit_info_2, df);
+> +			if (ret)
+> +				return ret;
+> +
+> +			if (df)
+> +				regs->di -= exit_bytes;
+> +			else
+> +				regs->di += exit_bytes;
+> +		} else {
+> +			if (df)
+> +				regs->si -= exit_bytes;
+> +			else
+> +				regs->si += exit_bytes;
+> +		}
+> +
+> +		if (exit_info_1 & IOIO_REP)
+> +			regs->cx -= exit_info_2;
+> +
+> +		ret = regs->cx ? ES_RETRY : ES_OK;
+> +
+> +	} else {
+> +		int bits = (exit_info_1 & 0x70) >> 1;
+> +		u64 rax = 0;
+> +
+> +		if (!(exit_info_1 & IOIO_TYPE_IN))
+> +			rax = lower_bits(regs->ax, bits);
+> +
+> +		ghcb_set_rax(ghcb, rax);
+> +
+> +		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO, exit_info_1, 0);
+> +		if (ret != ES_OK)
+> +			return ret;
+> +
+> +		if (exit_info_1 & IOIO_TYPE_IN) {
+> +			if (!ghcb_is_valid_rax(ghcb))
+> +				return ES_VMM_ERROR;
+> +			regs->ax = lower_bits(ghcb->save.rax, bits);
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> -- 
+> 2.17.1
+> 
