@@ -2,213 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5A81DB989
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2A11DB962
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgETQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:32:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58864 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgETQcv (ORCPT
+        id S1727004AbgETQbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbgETQbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:32:51 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04KGWZf8064345;
-        Wed, 20 May 2020 11:32:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1589992355;
-        bh=kv17vzIbbuAt+RZqE4vM8KTFUmvobKYZHpLC7UN2u9I=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=xsBDpi6AO8dQSj/DR+hGcqiQ3LorO4By3oB3q3HlP+sNJ3tOCPZQoPhvHBgIug3vX
-         Y8pQvxZXW3zOhjTLPGmxNWesQ2MsY1KSLIYpg4P9af5wjnOwQHaErcZ1Tbt7AhvTVB
-         9gCb28kSH/+97h4X3rGGeXf7V8tgG4r/ABddPDqs=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KGWZiB110942;
-        Wed, 20 May 2020 11:32:35 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
- May 2020 11:32:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 20 May 2020 11:32:34 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04KGUsxi001551;
-        Wed, 20 May 2020 11:32:30 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Mason Yang <masonccyang@mxic.com.tw>
-Subject: [PATCH v6 19/19] mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
-Date:   Wed, 20 May 2020 22:00:53 +0530
-Message-ID: <20200520163053.24357-20-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200520163053.24357-1-p.yadav@ti.com>
-References: <20200520163053.24357-1-p.yadav@ti.com>
+        Wed, 20 May 2020 12:31:46 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1FAC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:31:44 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id f13so3135457edr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=17jQ1Ah04oBToqJwXezLZCoVZLFH+XvWoWdyyqn9mN4=;
+        b=ToruOqWtIPegGVdd3B6jTVoD/jM+3Af1McEs8wIdfzwADuzejeup3xOJQYdm11S4EZ
+         65f5gLqFmKnxcngv/RXN+x6KKrFXbF2QNkJJEO/INc/RjX4WvlQPN+Bi7MjzN0mt+0WH
+         8YSuiL7L4Tj+3phhD1zTvajIoimjSyRefUirY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=17jQ1Ah04oBToqJwXezLZCoVZLFH+XvWoWdyyqn9mN4=;
+        b=obYwGdQPK23l0r1fCwSX9aJb9i6fZic1MF87/nfMRQlIPh7djf90vEZ1+Q9CKLL9/Q
+         bSQxxbtLBM+c3WmpMNCV6gtjeclVaOW9oWaF8hGEBiLOaf9/EpoJfIdLqwWPxXRi19sc
+         07HvhzIASuG66DHLUIDg/d4Ootcic63D+gecl0lcFS+lvO6DjeVj6M7dS/3pMy/6VcCI
+         +kWWwPUjFxMDn1Fci9kWFJ6rfZb8e6g0knaHEh4/IWlYpVB3dEh3V41lhLQeEGnOCLWb
+         L3LIcgdNm08h40U/7p0mLzX/hJ6q23oZoFtkhJs765YrLWZTBJvkHYUk7XQVasKPc6Ve
+         XaLw==
+X-Gm-Message-State: AOAM531d44mQVbHWv6q2eRGuNc4zrkyfZIOWpN5joMYQr13FSLL3Sw4U
+        mJK6wYgX/fHEUZzxylb5V+oxVg==
+X-Google-Smtp-Source: ABdhPJy4Y8SAoa9B33qnxj6nB4l/32rU1XrBuIH6bGgBO5u/ZSRq37k2+8ilcS54Hv60sCMxDciDKg==
+X-Received: by 2002:a50:9b19:: with SMTP id o25mr4312664edi.141.1589992303655;
+        Wed, 20 May 2020 09:31:43 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:758d])
+        by smtp.gmail.com with ESMTPSA id gx25sm2279074ejb.63.2020.05.20.09.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 09:31:43 -0700 (PDT)
+Date:   Wed, 20 May 2020 17:31:42 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm, memcg: unify reclaim retry limits with page allocator
+Message-ID: <20200520163142.GA808793@chrisdown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-fast read settings.
+Reclaim retries have been set to 5 since the beginning of time in
+66e1707bc346 ("Memory controller: add per cgroup LRU and reclaim").
+However, we now have a generally agreed-upon standard for page reclaim:
+MAX_RECLAIM_RETRIES (currently 16), added many years later in
+0a0337e0d1d1 ("mm, oom: rework oom detection").
 
-Enable Octal DTR mode with 20 dummy cycles to allow running at the
-maximum supported frequency of 200Mhz.
+In the absence of a compelling reason to declare an OOM earlier in memcg
+context than page allocator context, it seems reasonable to supplant
+MEM_CGROUP_RECLAIM_RETRIES with MAX_RECLAIM_RETRIES, making the page
+allocator and memcg internals more similar in semantics when reclaim
+fails to produce results, avoiding premature OOMs or throttling.
 
-The flash supports the soft reset sequence. So, add the flag in the
-flash's info.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Signed-off-by: Chris Down <chris@chrisdown.name>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
 ---
- drivers/mtd/spi-nor/micron-st.c | 112 +++++++++++++++++++++++++++++++-
- 1 file changed, 111 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 3dca5b9af3b6..3414c44a5c96 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,10 +8,120 @@
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b040951ccd6b..d3b23c57bed4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -73,9 +73,6 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
  
- #include "core.h"
+ struct mem_cgroup *root_mem_cgroup __read_mostly;
  
-+#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-+#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
-+#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
-+#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
-+#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
-+#define SPINOR_MT_DTR_NO_DQS	0xc7	/* Enable Octal DTR without DQS. */
-+#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
-+
-+static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_MT_DTR_NO_DQS;
-+	else
-+		*buf = SPINOR_MT_EXSPI;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt35xu512aba_setup(struct spi_nor *nor,
-+			      const struct spi_nor_hwcaps *hwcaps)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width = 3;
-+	int ret;
-+
-+	if (!nor->spimem) {
-+		dev_err(nor->dev,
-+			"operation not supported for non-spimem drivers\n");
-+		return -ENOTSUPP;
-+	}
-+
-+	/* Set dummy cycles for Fast Read to the default of 20. */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	*buf = 20;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR1V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+
-+	return spi_nor_default_setup(nor, hwcaps);
-+}
-+
-+static void mt35xu512aba_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
-+	nor->params->setup = mt35xu512aba_setup;
-+}
-+
-+static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, SPINOR_OP_MT_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
-+	nor->params->rdsr_dummy = 8;
-+	nor->params->rdsr_addr_nbytes = 0;
-+}
-+
-+static struct spi_nor_fixups mt35xu512aba_fixups = {
-+	.default_init = mt35xu512aba_default_init,
-+	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
-+};
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_4B_OPCODES) },
-+			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &mt35xu512aba_fixups},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
- 			    SPI_NOR_4B_OPCODES) },
+-/* The number of times we should retry reclaim failures before giving up. */
+-#define MEM_CGROUP_RECLAIM_RETRIES	5
+-
+ /* Socket memory accounting disabled? */
+ static bool cgroup_memory_nosocket;
+ 
+@@ -2386,7 +2383,7 @@ void mem_cgroup_handle_over_high(void)
+ 	unsigned long pflags;
+ 	unsigned long nr_reclaimed;
+ 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
+-	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++	int nr_retries = MAX_RECLAIM_RETRIES;
+ 	struct mem_cgroup *memcg;
+ 
+ 	if (likely(!nr_pages))
+@@ -2438,7 +2435,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		      unsigned int nr_pages)
+ {
+ 	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+-	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++	int nr_retries = MAX_RECLAIM_RETRIES;
+ 	struct mem_cgroup *mem_over_limit;
+ 	struct page_counter *counter;
+ 	unsigned long nr_reclaimed;
+@@ -2557,7 +2554,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+ 	switch (oom_status) {
+ 	case OOM_SUCCESS:
+-		nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+ 	case OOM_FAILED:
+ 		goto force;
+@@ -3168,7 +3165,7 @@ static inline bool memcg_has_children(struct mem_cgroup *memcg)
+  */
+ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+ {
+-	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++	int nr_retries = MAX_RECLAIM_RETRIES;
+ 
+ 	/* we call try-to-free pages for make this cgroup empty */
+ 	lru_add_drain_all();
+@@ -6001,7 +5998,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 				 char *buf, size_t nbytes, loff_t off)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+-	unsigned int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+ 	bool drained = false;
+ 	unsigned long high;
+ 	int err;
+@@ -6049,7 +6046,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+ 				char *buf, size_t nbytes, loff_t off)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+-	unsigned int nr_reclaims = MEM_CGROUP_RECLAIM_RETRIES;
++	unsigned int nr_reclaims = MAX_RECLAIM_RETRIES;
+ 	bool drained = false;
+ 	unsigned long max;
+ 	int err;
 -- 
 2.26.2
 
