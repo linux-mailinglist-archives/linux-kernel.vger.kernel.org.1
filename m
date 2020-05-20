@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671DD1DB7F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91C21DB809
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 17:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgETPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 11:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        id S1726858AbgETPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 11:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETPUD (ORCPT
+        with ESMTP id S1726545AbgETPXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 11:20:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69816C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:20:03 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jbQVh-0005kX-IH; Wed, 20 May 2020 17:19:57 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jbQVg-0002uG-9b; Wed, 20 May 2020 17:19:56 +0200
-Date:   Wed, 20 May 2020 17:19:56 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v7 0/5] mainline Protonic boards
-Message-ID: <20200520151956.sdkbxh3xkmoj7jvx@pengutronix.de>
-References: <20200520092937.15797-1-o.rempel@pengutronix.de>
+        Wed, 20 May 2020 11:23:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688ACC061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:23:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n18so1723010pfa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 08:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=q/sKPgEYp3g3cebHBn38ukD6oq83OtlMsqDeM2dlT2s=;
+        b=S/C8q0u1+H6mmpXkFnd+U1cMWvHcjrZbgtYPv8vmiMr2HBXRFa05Xaukja1+yAc0nj
+         Gl9tEsA7MFacod1B+/lF7+tlBsSy/goNENRi9nZuALTFtX8t1hYMg6dVkxsOiOqIJ/xu
+         8GuerfD5ZHBRFwTvp5W0/wUUGXkQIouY0qV37HJiWjeY6f2aV2uaDrwfXdPPDL0pD25v
+         yk+vS0XmimnbqTY6bf7lgulMI3B4GeDbVJqRY2j9TCeaKQoJ/wRxlSwmf7BXFZ6OeNb6
+         wVI1cgBnLy0zG7haievzWmun2dC3jSlduuUWOp397IU8Lq/C1QI56+X8ut6thbGYbIUV
+         vwuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q/sKPgEYp3g3cebHBn38ukD6oq83OtlMsqDeM2dlT2s=;
+        b=EW6Y9aYxQkNSBgaGPRnx4qGrzICeEOd+W5qk0MbWRPwyOr44Kux7F9bkGrz66B52iE
+         F80nnln0X9q1u3dfaIW/klfdqhGk+g2VtyTPXFB8Ow6NQARsk+Agz0O8M0o0ERNTYSnV
+         T1BL9fPOaNSqvR5LGAQr5AAv0V1rg5714+5Cqb4Fp5HmhGj+0Y23Wh1xkUW30imApOaE
+         xpwfiSGGDfYH1k32MtAJ0iH82rDZPGxeH2NL+Xi/a6mJapZ00P/X7M9jVYcXIfLaqexp
+         Qot+R33sUPFoShscqy3UjseIbSAkq+gAA73tzlvNIDFnmxCx963HbCvllsNUrdPXXLv3
+         4Eyw==
+X-Gm-Message-State: AOAM5339WENpMvXPwgpBkp5+lVkWuB9gMgfkYWa3XTmlS0p0k6/BG2E2
+        BhT0KyRc5AIc4Axa+x8jukBruX4N7Jc=
+X-Google-Smtp-Source: ABdhPJwli/yOPULvtKHWFg0JjlFST9zIaDeZJYeKHoqoUEmaQIOAwFunV33sHbFGnPJcrs+wZY6JzQ==
+X-Received: by 2002:a63:5b1f:: with SMTP id p31mr4691882pgb.335.1589988182905;
+        Wed, 20 May 2020 08:23:02 -0700 (PDT)
+Received: from [192.168.86.156] (cpe-75-85-219-51.dc.res.rr.com. [75.85.219.51])
+        by smtp.gmail.com with ESMTPSA id d18sm2473267pjv.34.2020.05.20.08.23.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 May 2020 08:23:02 -0700 (PDT)
+Subject: Re: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set
+ data->ctx and data->hctx in blk_mq_alloc_request_hctx
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-block@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org
+References: <20200518093155.GB35380@T590>
+ <87imgty15d.fsf@nanos.tec.linutronix.de> <20200518115454.GA46364@T590>
+ <20200518131634.GA645@lst.de> <20200518141107.GA50374@T590>
+ <20200518165619.GA17465@lst.de> <20200519015420.GA70957@T590>
+ <20200519153000.GB22286@lst.de> <20200520011823.GA415158@T590>
+ <20200520030424.GI416136@T590> <20200520080357.GA4197@lst.de>
+ <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk>
+Message-ID: <448d3660-0d83-889b-001f-a09ea53fa117@kernel.dk>
+Date:   Wed, 20 May 2020 09:20:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rtjclzefu7dbfjwq"
-Content-Disposition: inline
-In-Reply-To: <20200520092937.15797-1-o.rempel@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:18:55 up 187 days,  6:37, 194 users,  load average: 0.05, 0.07,
- 0.11
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/20/20 8:45 AM, Jens Axboe wrote:
+> On 5/20/20 2:03 AM, Christoph Hellwig wrote:
+>> On Wed, May 20, 2020 at 11:04:24AM +0800, Ming Lei wrote:
+>>> On Wed, May 20, 2020 at 09:18:23AM +0800, Ming Lei wrote:
+>>>> On Tue, May 19, 2020 at 05:30:00PM +0200, Christoph Hellwig wrote:
+>>>>> On Tue, May 19, 2020 at 09:54:20AM +0800, Ming Lei wrote:
+>>>>>> As Thomas clarified, workqueue hasn't such issue any more, and only other
+>>>>>> per CPU kthreads can run until the CPU clears the online bit.
+>>>>>>
+>>>>>> So the question is if IO can be submitted from such kernel context?
+>>>>>
+>>>>> What other per-CPU kthreads even exist?
+>>>>
+>>>> I don't know, so expose to wider audiences.
+>>>
+>>> One user is io uring with IORING_SETUP_SQPOLL & IORING_SETUP_SQ_AFF, see
+>>> io_sq_offload_start(), and it is a IO submission kthread.
+>>
+>> As far as I can tell that code is buggy, as it still needs to migrate
+>> the thread away when the cpu is offlined.  This isn't a per-cpu kthread
+>> in the sene of having one for each CPU.
+>>
+>> Jens?
+> 
+> It just uses kthread_create_on_cpu(), nothing home grown. Pretty sure
+> they just break affinity if that CPU goes offline.
 
---rtjclzefu7dbfjwq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just checked, and it works fine for me. If I create an SQPOLL ring with
+SQ_AFF set and bound to CPU 3, if CPU 3 goes offline, then the kthread
+just appears unbound but runs just fine. When CPU 3 comes online again,
+the mask appears correct.
 
-Please ignore this version, i used wrong commit hash to format-patch.
+So don't think there's anything wrong on that side. The affinity is a
+performance optimization, not a correctness issue. Really not much we
+can do if the chosen CPU is offlined, apart from continue to chug along.
 
-On Wed, May 20, 2020 at 11:29:32AM +0200, Oleksij Rempel wrote:
-> changes v7:
-> - VT7: reorder node alphabetically
-> - VT7: rename "reg_12v_bl: regulator-bl-12v" to "reg_bl_12v0: regulator-b=
-l-12v0"
-> - VT7: remove panel and TS nodes. This drivers are currently not
->   mainline.
-> - prti6q.dtsi: move reg_1v8 to prti6q.dts
-> - prti6q.dtsi: remove pinctrl from the can1 node. It is done on almost
->   every board file.
->=20
-> changes v6:
-> - move fsl.yaml changes to separate patch
-> - remove partitions, they are provided by the bootloader
-> - update flash compatible
-> - rename can3 to can
-> - fix fsl,mode
-> - fix interrupt in the wlan node on PRTI6Q
->=20
-> changes v5:
-> - PRTI6Q: remove status from the pwm-backlight node
-> - drop the vendor-prefixes patch, it is already taken by Rob
-> - add Reviewed-by: Rob Herring <robh@kernel.org>
->=20
-> changes v4:
-> - VT7: fix typo
->=20
-> changes v3:
-> - move compatible to the start of node
-> - move status to the end
-> - use generic names in compatible
-> - refactor dts/dtsi
-> - use alphabet order for pinctrl and phandels
-> - remove unused or currently not supported nodes
->=20
-> changes v2:
-> - squash PRTI6Q patches
->=20
-> Oleksij Rempel (5):
->   ARM: dts: add Protonic PRTI6Q board
->   ARM: dts: add Protonic WD2 board
->   ARM: dts: add Protonic VT7 board
->   ARM: dts: add Protonic RVT board
->   dt-bindings: arm: fsl: add different Protonic boards
->=20
->  .../devicetree/bindings/arm/fsl.yaml          |   4 +
->  arch/arm/boot/dts/Makefile                    |   4 +
->  arch/arm/boot/dts/imx6dl-prtrvt.dts           | 182 ++++++
->  arch/arm/boot/dts/imx6dl-prtvt7.dts           | 472 ++++++++++++++++
->  arch/arm/boot/dts/imx6q-prti6q.dts            | 529 ++++++++++++++++++
->  arch/arm/boot/dts/imx6q-prtwd2.dts            | 188 +++++++
->  arch/arm/boot/dts/imx6qdl-prti6q.dtsi         | 174 ++++++
->  7 files changed, 1553 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6dl-prtrvt.dts
->  create mode 100644 arch/arm/boot/dts/imx6dl-prtvt7.dts
->  create mode 100644 arch/arm/boot/dts/imx6q-prti6q.dts
->  create mode 100644 arch/arm/boot/dts/imx6q-prtwd2.dts
->  create mode 100644 arch/arm/boot/dts/imx6qdl-prti6q.dtsi
->=20
-> --=20
-> 2.26.2
->=20
->=20
+-- 
+Jens Axboe
 
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---rtjclzefu7dbfjwq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl7FSpgACgkQ4omh9DUa
-UbPNBBAAgrOuGaQL3A6w7l6/WjkgEYXtLUlTmqnvmGT93ref/kOZCGB6euAiNOhF
-1JORufLhqt3fpT3j0x1RZ0gPzahQr3iVSDVHe0zvFJMVPlzeYDEG+qVq4ozDanSL
-LIA6H9D/IWnLNF0C7Z2ho9fyymgRguyjUwUQZCqiNnfbOMLOJbf2HUvTMoF2nLES
-NTSHPHTQa7qBLpxsu7XRPHbXPqwDsnfSYzbRxcvE0hu2YGk7Jsz+4NZXoVd7XXS2
-cQIkSp9Su2Uh0qnTB/UGm/PeKgqqt1cHypIhoISSkjjyzlAtG+RciEpA1lbDgeBC
-mP0ga3d/we+PU98hShT1ElK7GJyXSjTqeXsumgibl1d7NnwZuHFtDHgzq0vj+Yfh
-pWWmpG2uteAgf41u0k0ezn9B9c9a2VetaHRlHPyUlsp8GYEremqG/X81fL+uIslM
-4Y22irZ7JzuOpI6E8s/fS0UUPJmJikPhUlpaboylRoIAH5B78kOI+H0PpdnicMXi
-ioLyL82aJyNgkPrvVSSdZivxeQ69ShpDKTbUmGlSii9kMgfzZtiMtCebaIg7gE+A
-gB7ikUefVpFUcHupR52vdcnutB8HmZFfZDDxWGaKRPK7p2DP02aJ8eQpnpZVTNAI
-mj85FrbM1whU+KiK5xU+cRsQWglHs5nDXElkVtQ36HOK56IyATg=
-=MQg1
------END PGP SIGNATURE-----
-
---rtjclzefu7dbfjwq--
