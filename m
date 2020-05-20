@@ -2,298 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4531DC1C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704881DC1B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 00:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgETWFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 18:05:24 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:42680 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgETWFY (ORCPT
+        id S1728345AbgETWCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 18:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgETWCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 18:05:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jbWq1-0003v3-Uh; Wed, 20 May 2020 16:05:22 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jbWpz-0004Ll-GJ; Wed, 20 May 2020 16:05:21 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <202005200204.D07DF079@keescook>
-Date:   Wed, 20 May 2020 17:01:34 -0500
-In-Reply-To: <202005200204.D07DF079@keescook> (Kees Cook's message of "Wed, 20
-        May 2020 02:05:56 -0700")
-Message-ID: <87o8qigta9.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 20 May 2020 18:02:08 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6B4C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:02:08 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id l21so6249383eji.4
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 15:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zb7O+OsRlJ4ZhW1N495+RjDIqGKHuZiwClTZ+SkOEVo=;
+        b=GUYHGAJ/HZdlTz7FAL3kk1Q1ZKredBwA78I2wjW6Qe6iDcBlNTUAgHtpRtnD2XwOzD
+         PZc/2vtLlgy5Z3Gp2OvfAyF2skRpoA3PmJzy3YQQ+j8oCRN1/qm2GK3XdFQLW68yHLqm
+         6HXncPCDT5Q5zy+uVH2gQRzLVKbMu9Vz3zcCPzDG/I7NoiR7H8jO1m+xrFlnZA2KOCUU
+         friZf8XqGJY6n80MFrhBLl1npN10BCJRzxOlaTFc/dqWG7i4Sy4AwX29Zr+RyQVwxm4A
+         CbP5clCQjJQ1Iu4VwS8xqKpxaLdENXW2tLnpek4+sLubnRM/J1/XKxaIRoDqf8gvPBsz
+         iPtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zb7O+OsRlJ4ZhW1N495+RjDIqGKHuZiwClTZ+SkOEVo=;
+        b=o1xKuZ7U8GRI+wA9Ic50szIRklBwRFVRbukcboLRKFVAmQiDZyy2LshF7oQxbFkGQX
+         bdJugVUTTN+F2U91KjsT7KA8K0RkCS9iklGkWMVDGGv15ARny7b/2dotTRSV9qfE84z7
+         +Ftam5S93pHKMgZmdtG+o0ObWVjbZ9u3ATD7PSc8C1318lGZeiTapJt9i+KFDF9eq5M7
+         vlklN/oPL10avb79ZmeplNOJjIoGul65Ko5+lJM0Zwj2Mk0f2pfGQ1MYAhVuaAVxZwP2
+         ipX2sq9eE4SlGij7hZe+10BNkUCrpZcflYdACCzHeIzImmFUa2VELa9V3r/A7e9GIrov
+         pjBg==
+X-Gm-Message-State: AOAM530NL3XzGnBxqSv+wRrCJ5419IJtKtCMAwPbsRDFP8r5z+d9bpss
+        ZiDN5+G3kfvmHSm8QsJNhehCEQ==
+X-Google-Smtp-Source: ABdhPJydr2OxyDSE1NNU/8zJYhWpt8hsi8i5qypj2a/FIrillUdRhiXkFiLgeiTx532XbbKT+FTZ/w==
+X-Received: by 2002:a17:906:b79a:: with SMTP id dt26mr992211ejb.121.1590012126776;
+        Wed, 20 May 2020 15:02:06 -0700 (PDT)
+Received: from x1 ([2001:16b8:5c90:fc01:e5e5:b2fe:677e:9a51])
+        by smtp.gmail.com with ESMTPSA id i2sm2747185edy.30.2020.05.20.15.02.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 15:02:05 -0700 (PDT)
+Date:   Thu, 21 May 2020 00:02:03 +0200
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Subject: Re: [PATCH] arm: dts: am33xx-bone-common: add gpio-line-names
+Message-ID: <20200520220203.GA363398@x1>
+References: <20200508165821.GA14555@x1>
+ <CACRpkdb+ZP6rfjGg6Ef9_wYvNf6qmSc7LZyYBVKA3XWCtxPfqQ@mail.gmail.com>
+ <20200518141843.GA916914@x1>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jbWpz-0004Ll-GJ;;;mid=<87o8qigta9.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+UszcqdoCLCsvg49JkI5pp8HuydAxM6HQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
-        T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1490 ms - load_scoreonly_sql: 0.10 (0.0%),
-        signal_user_changed: 12 (0.8%), b_tie_ro: 10 (0.7%), parse: 1.95
-        (0.1%), extract_message_metadata: 28 (1.9%), get_uri_detail_list: 8
-        (0.6%), tests_pri_-1000: 8 (0.5%), tests_pri_-950: 1.77 (0.1%),
-        tests_pri_-900: 1.48 (0.1%), tests_pri_-90: 227 (15.2%), check_bayes:
-        208 (14.0%), b_tokenize: 21 (1.4%), b_tok_get_all: 13 (0.9%),
-        b_comp_prob: 4.2 (0.3%), b_tok_touch_all: 165 (11.1%), b_finish: 1.00
-        (0.1%), tests_pri_0: 1190 (79.9%), check_dkim_signature: 0.71 (0.0%),
-        check_dkim_adsp: 2.1 (0.1%), poll_dns_idle: 0.45 (0.0%), tests_pri_10:
-        2.1 (0.1%), tests_pri_500: 13 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] selftests/exec: Add binfmt_script regression test
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518141843.GA916914@x1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Mon, May 18, 2020 at 04:18:43PM +0200, Drew Fustini wrote:
+> On Mon, May 18, 2020 at 09:11:07AM +0200, Linus Walleij wrote:
+> > On Fri, May 8, 2020 at 6:57 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > 
+> > > Add gpio-line-names properties to the gpio controller nodes.
+> > > BeagleBone boards have P8 and P9 headers [0] which expose many the
+> > > AM3358 SoC balls to stacking expansion boards called "capes", or to
+> > > other external connections like jumper wires to a breadboard.
+> > >
+> > > Many of the P8/P9 header pins can muxed to a gpio line.  The
+> > > gpio-line-names describe which P8/P9 pin that line goes to and the
+> > > default mux for that P8/P9 pin.  Some lines are not routed to the
+> > > P8/P9 headers, but instead are dedicated to some functionality such as
+> > > status LEDs.  The line name will indicate this.  Some line names are
+> > > left empty as the corresponding AM3358 balls are not connected.
+> > >
+> > > The goal is to make it easier for a user viewing the output of gpioinfo
+> > > to determine which P8/P9 pin is connected to a line.  The output of
+> > > gpioinfo on a BeagleBone Black will now look like this:
+> > >
+> > > gpiochip0 - 32 lines:
+> > >         line   0:   "ethernet"       unused   input  active-high
+> > >         line   1:   "ethernet"       unused   input  active-high
+> > 
+> > Why are the ethernet lines not tagged with respective signal name
+> > when right below the SPI lines are explicitly tagged with
+> > sclk, cs0 etc?
+> > 
+> > Ethernet is usually RGMII and has signal names like
+> > tx_clk, tx_d0, tx_en etc.
+> 
+> Thank you for the feedback, Linus.
+> 
+> My desire is to communicate that the AM3358 balls corresponding to these
+> GPIO lines are being used for Ethernet and not exposed to the P8 and P9
+> expansion headers.
+> 
+> I am happy to switch these labels to the actual Ethernet signals such as
+> RGMII and MDIO signal names if you think that is better.
+> 
+> For example, AM3358 ZCZ ball M17 is both gpio0_0 and mdio_data [0].  On 
+> BeagleBone, the ball is routed to the Ethernet PHY and used for MDIO [1]
+> Thus gpiochio 0 line 0 is not connected to the P8 or P9 expansion header.
+> 
+> Which of the following line name would be best?
+> 
+> 1) "[MDIO_DATA]"
+> 
+> precise signal name, placed in brackets to denote is not possible to 
+> use as GPIO on the P8 or P9 headers
+> 
+> 2) "[ethernet]" 
+> 
+> instead of the precise signal name, just indicate that it is used for
+> Ethernet and is not usable for GPIO on the P8 or P9 headers
+> 
+> 3) ""
+> 
+> no label as this gpio line is not connected to the P8/P9 and is
+> hardwired in the PCB layout for Ethernet (MDIO).
+> 
+> > Also some lines seem to be tagged with the pin number
+> > like P9_22, P2_21 below, it seems a bit inconsistent
+> > to have much information on some pins and very sketchy
+> > information on some.
+> 
+> The goal for these line names is make it easier for a BeagleBone user to
+> identify which GPIO lines are connected to the P8 and P9 expansion
+> headers.  Our users are most likely to refer to cape-headers.png [2] as
+> it is part of the bone101 out-of-the-box tutorial [3]. 
+> 
+> Some GPIO lines are free to be used for GPIO in the default
+> configuration.  For example, gpiochip 1 line 12 is connected to P8_12
+> and it is not used by another peripheral by default. I used the label:
+> "P8_12 gpio"
+> 
+> However, gpiochip 1 line 0 is connected to P8_25 but is also used by the
+> on-board eMMC.  The eMMc is enabled by default so this line can not be
+> used for GPIO unless the user modifies the pinmux in the device tree.  
+> 
+> Thus, I used this label: "P8_25 emmc"
+> 
+> Maybe a better label would be "P8_25 [EMMC]"?
+> 
+> > 
+> > >         line  18:        "usb"       unused   input  active-high
+> > >         line  19:       "hdmi"       unused   input  active-high
+> > 
+> > Similar comments for these.
+> 
+> 
+> These are similar to the Ethernet MDIO example above.  The balls
+> corresponding to these GPIO lines are not connected to the P8 or P9 
+> headers and are hardwired on the PCB for other peripherals like USB
+> and HDMI.
+> 
+> For example, gpiochip 0 line 18 is USB0_DRVVBUS so I simplified it to
+> "usb" to indicate it can not be used for GPIO. Maybe "[USB]" is better?
+> 
+> gpiochip 0 line 19 is AM3358 ZCZ ball A15 and the BeagleBone Black
+> schematic shows that this is connected to the CEC clock for the HDMI
+> framer [4].  I though "hdmi" was a nice way to summarize that this is
+> used for HDMI and can not be changed, though maybe "[HDMI]" is better
+> or no label at all.
+> 
+> In conclusion, the motivation of these line names is to be a quick
+> reference for a user to find GPIO lines on the P8 and P9 headers.
+> 
+> Thanks,
+> Drew
+> 
+> [0] http://www.ti.com/lit/ds/symlink/am3358.pdf
+> [1] https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#ethernet-processor-interface
+> [2] http://beagleboard.org/static/images/cape-headers.png
+> [3] https://beagleboard.org/Support/bone101
+> [4] https://github.com/beagleboard/beaglebone-black/blob/master/BBB_SCH.pdf
+> 
 
-> While working on commit b5372fe5dc84 ("exec: load_script: Do not exec
-> truncated interpreter path"), I wrote a series of test scripts to verify
-> corner cases. However, soon after, commit 6eb3c3d0a52d ("exec: increase
-> BINPRM_BUF_SIZE to 256") landed, resulting in the tests needing to be
-> refactored for the larger BINPRM_BUF_SIZE, which got lost on my TODO
-> list. During the recent exec refactoring work[1], the need for these tests
-> resurfaced, so I've finished them up for addition to the kernel
-> selftests.
+I've posted a v2 which I hope improves the intent of the line names. [0]
 
-I have to say there is something poetic about testing binfmt_script
-with Parot.  Parot is what you get when you combined perl and python
-isn't it?
+I'm happy to integrate any feedback and create a v3 - especially if it
+is prefered for me to list the specific peripherial signals instead of
+an abstract term like "[ethernet]" or "[emmc]".  This is for lines that
+can not be used because they are not routed to the expansion headers.
 
-I will apply this to my exec-next tree right after the patchset under
-discussion.
+thanks,
+drew
 
-Eric
-
-
-> [1] https://lore.kernel.org/lkml/202005191144.E3112135@keescook/
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/exec/Makefile      |   1 +
->  tools/testing/selftests/exec/binfmt_script | 171 +++++++++++++++++++++
->  2 files changed, 172 insertions(+)
->  create mode 100755 tools/testing/selftests/exec/binfmt_script
->
-> diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
-> index 33339e31e365..7f4527f897c4 100644
-> --- a/tools/testing/selftests/exec/Makefile
-> +++ b/tools/testing/selftests/exec/Makefile
-> @@ -3,6 +3,7 @@ CFLAGS = -Wall
->  CFLAGS += -Wno-nonnull
->  CFLAGS += -D_GNU_SOURCE
->  
-> +TEST_PROGS := binfmt_script
->  TEST_GEN_PROGS := execveat
->  TEST_GEN_FILES := execveat.symlink execveat.denatured script subdir
->  # Makefile is a run-time dependency, since it's accessed by the execveat test
-> diff --git a/tools/testing/selftests/exec/binfmt_script b/tools/testing/selftests/exec/binfmt_script
-> new file mode 100755
-> index 000000000000..05f94a741c7a
-> --- /dev/null
-> +++ b/tools/testing/selftests/exec/binfmt_script
-> @@ -0,0 +1,171 @@
-> +#!/usr/bin/env python3
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Test that truncation of bprm->buf doesn't cause unexpected execs paths, along
-> +# with various other pathological cases.
-> +import os, subprocess
-> +
-> +# Relevant commits
-> +#
-> +# b5372fe5dc84 ("exec: load_script: Do not exec truncated interpreter path")
-> +# 6eb3c3d0a52d ("exec: increase BINPRM_BUF_SIZE to 256")
-> +
-> +# BINPRM_BUF_SIZE
-> +SIZE=256
-> +
-> +NAME_MAX=int(subprocess.check_output(["getconf", "NAME_MAX", "."]))
-> +
-> +test_num=0
-> +
-> +code='''#!/usr/bin/perl
-> +print "Executed interpreter! Args:\n";
-> +print "0 : '$0'\n";
-> +$counter = 1;
-> +foreach my $a (@ARGV) {
-> +    print "$counter : '$a'\n";
-> +    $counter++;
-> +}
-> +'''
-> +
-> +##
-> +# test - produce a binfmt_script hashbang line for testing
-> +#
-> +# @size:     bytes for bprm->buf line, including hashbang but not newline
-> +# @good:     whether this script is expected to execute correctly
-> +# @hashbang: the special 2 bytes for running binfmt_script
-> +# @leading:  any leading whitespace before the executable path
-> +# @root:     start of executable pathname
-> +# @target:   end of executable pathname
-> +# @arg:      bytes following the executable pathname
-> +# @fill:     character to fill between @root and @target to reach @size bytes
-> +# @newline:  character to use as newline, not counted towards @size
-> +# ...
-> +def test(name, size, good=True, leading="", root="./", target="/perl",
-> +                     fill="A", arg="", newline="\n", hashbang="#!"):
-> +    global test_num, tests, NAME_MAX
-> +    test_num += 1
-> +    if test_num > tests:
-> +        raise ValueError("more binfmt_script tests than expected! (want %d, expected %d)"
-> +                         % (test_num, tests))
-> +
-> +    middle = ""
-> +    remaining = size - len(hashbang) - len(leading) - len(root) - len(target) - len(arg)
-> +    # The middle of the pathname must not exceed NAME_MAX
-> +    while remaining >= NAME_MAX:
-> +        middle += fill * (NAME_MAX - 1)
-> +        middle += '/'
-> +        remaining -= NAME_MAX
-> +    middle += fill * remaining
-> +
-> +    dirpath = root + middle
-> +    binary = dirpath + target
-> +    if len(target):
-> +        os.makedirs(dirpath, mode=0o755, exist_ok=True)
-> +        open(binary, "w").write(code)
-> +        os.chmod(binary, 0o755)
-> +
-> +    buf=hashbang + leading + root + middle + target + arg + newline
-> +    if len(newline) > 0:
-> +        buf += 'echo this is not really perl\n'
-> +
-> +    script = "binfmt_script-%s" % (name)
-> +    open(script, "w").write(buf)
-> +    os.chmod(script, 0o755)
-> +
-> +    proc = subprocess.Popen(["./%s" % (script)], shell=True,
-> +                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-> +    stdout = proc.communicate()[0]
-> +
-> +    if proc.returncode == 0 and b'Executed interpreter' in stdout:
-> +        if good:
-> +            print("ok %d - binfmt_script %s (successful good exec)"
-> +                  % (test_num, name))
-> +        else:
-> +            print("not ok %d - binfmt_script %s succeeded when it should have failed"
-> +                  % (test_num, name))
-> +    else:
-> +        if good:
-> +            print("not ok %d - binfmt_script %s failed when it should have succeeded (rc:%d)"
-> +                  % (test_num, name, proc.returncode))
-> +        else:
-> +            print("ok %d - binfmt_script %s (correctly failed bad exec)"
-> +                  % (test_num, name))
-> +
-> +    # Clean up crazy binaries
-> +    os.unlink(script)
-> +    if len(target):
-> +        elements = binary.split('/')
-> +        os.unlink(binary)
-> +        elements.pop()
-> +        while len(elements) > 1:
-> +            os.rmdir("/".join(elements))
-> +            elements.pop()
-> +
-> +tests=27
-> +print("TAP version 1.3")
-> +print("1..%d" % (tests))
-> +
-> +### FAIL (8 tests)
-> +
-> +# Entire path is well past the BINFMT_BUF_SIZE.
-> +test(name="too-big",        size=SIZE+80, good=False)
-> +# Path is right at max size, making it impossible to tell if it was truncated.
-> +test(name="exact",          size=SIZE,    good=False)
-> +# Same as above, but with leading whitespace.
-> +test(name="exact-space",    size=SIZE,    good=False, leading=" ")
-> +# Huge buffer of only whitespace.
-> +test(name="whitespace-too-big", size=SIZE+71, good=False, root="",
-> +                                              fill=" ", target="")
-> +# A good path, but it gets truncated due to leading whitespace.
-> +test(name="truncated",      size=SIZE+17, good=False, leading=" " * 19)
-> +# Entirely empty except for #!
-> +test(name="empty",          size=2,       good=False, root="",
-> +                                          fill="", target="", newline="")
-> +# Within size, but entirely spaces
-> +test(name="spaces",         size=SIZE-1,  good=False, root="", fill=" ",
-> +                                          target="", newline="")
-> +# Newline before binary.
-> +test(name="newline-prefix", size=SIZE-1,  good=False, leading="\n",
-> +                                          root="", fill=" ", target="")
-> +
-> +### ok (19 tests)
-> +
-> +# The original test case that was broken by commit:
-> +# 8099b047ecc4 ("exec: load_script: don't blindly truncate shebang string")
-> +test(name="test.pl",        size=439, leading=" ",
-> +     root="./nix/store/bwav8kz8b3y471wjsybgzw84mrh4js9-perl-5.28.1/bin",
-> +     arg=" -I/nix/store/x6yyav38jgr924nkna62q3pkp0dgmzlx-perl5.28.1-File-Slurp-9999.25/lib/perl5/site_perl -I/nix/store/ha8v67sl8dac92r9z07vzr4gv1y9nwqz-perl5.28.1-Net-DBus-1.1.0/lib/perl5/site_perl -I/nix/store/dcrkvnjmwh69ljsvpbdjjdnqgwx90a9d-perl5.28.1-XML-Parser-2.44/lib/perl5/site_perl -I/nix/store/rmji88k2zz7h4zg97385bygcydrf2q8h-perl5.28.1-XML-Twig-3.52/lib/perl5/site_perl")
-> +# One byte under size, leaving newline visible.
-> +test(name="one-under",           size=SIZE-1)
-> +# Two bytes under size, leaving newline visible.
-> +test(name="two-under",           size=SIZE-2)
-> +# Exact size, but trailing whitespace visible instead of newline
-> +test(name="exact-trunc-whitespace", size=SIZE, arg=" ")
-> +# Exact size, but trailing space and first arg char visible instead of newline.
-> +test(name="exact-trunc-arg",     size=SIZE, arg=" f")
-> +# One bute under, with confirmed non-truncated arg since newline now visible.
-> +test(name="one-under-full-arg",  size=SIZE-1, arg=" f")
-> +# Short read buffer by one byte.
-> +test(name="one-under-no-nl",     size=SIZE-1, newline="")
-> +# Short read buffer by half buffer size.
-> +test(name="half-under-no-nl",    size=int(SIZE/2), newline="")
-> +# One byte under with whitespace arg. leaving wenline visible.
-> +test(name="one-under-trunc-arg", size=SIZE-1, arg=" ")
-> +# One byte under with whitespace leading. leaving wenline visible.
-> +test(name="one-under-leading",   size=SIZE-1, leading=" ")
-> +# One byte under with whitespace leading and as arg. leaving newline visible.
-> +test(name="one-under-leading-trunc-arg",  size=SIZE-1, leading=" ", arg=" ")
-> +# Same as above, but with 2 bytes under
-> +test(name="two-under-no-nl",     size=SIZE-2, newline="")
-> +test(name="two-under-trunc-arg", size=SIZE-2, arg=" ")
-> +test(name="two-under-leading",   size=SIZE-2, leading=" ")
-> +test(name="two-under-leading-trunc-arg",   size=SIZE-2, leading=" ", arg=" ")
-> +# Same as above, but with buffer half filled
-> +test(name="two-under-no-nl",     size=int(SIZE/2), newline="")
-> +test(name="two-under-trunc-arg", size=int(SIZE/2), arg=" ")
-> +test(name="two-under-leading",   size=int(SIZE/2), leading=" ")
-> +test(name="two-under-lead-trunc-arg", size=int(SIZE/2), leading=" ", arg=" ")
-> +
-> +if test_num != tests:
-> +    raise ValueError("fewer binfmt_script tests than expected! (ran %d, expected %d"
-> +                     % (test_num, tests))
-> -- 
-> 2.20.1
+[0] https://lore.kernel.org/linux-omap/20200520214757.GA362547@x1/T/#u
