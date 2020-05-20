@@ -2,165 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769031DBA2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C701DBA34
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 18:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgETQuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 12:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726984AbgETQu2 (ORCPT
+        id S1727770AbgETQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 12:51:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38576 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726727AbgETQvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 12:50:28 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890D4C061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:50:27 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id o134so1311122ybg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 09:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dKYd+eEqh94+PPSxeT0mEN4CuPeMB4JjYrAni6yKOek=;
-        b=Eh6SNc8kXSnAsUcJ5NDUp1JxID73klNpgan5mB/uvuYRnEWgar9pgqlkZSuIvpsVcJ
-         5D5oeNsStNFxA5sYJNZ+t216Rv2BDcgEUT+Mhe6/MaxnYjKFV5VEe6GxiBoERmOmBrSG
-         RVtGXez/y2uvR9MXKV3qNOX9QlYr+FXL6PLilyrvR3Ykp4Q2AWMM9PXTjASyVKPeInsW
-         Rs9Ery4sW/GeLu7I76XKp55D0+vk0kEAdXO3YC+5xGkPWviutxFd6lHb9qBEYaHV4dPl
-         vSyLhhI8q5fbkzAwG2N8Uwip8g5oXJfipPY8OlZN9Q6/Wodsd6B81xf5GdR53xHbKpRO
-         qgdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dKYd+eEqh94+PPSxeT0mEN4CuPeMB4JjYrAni6yKOek=;
-        b=Rp4YaLCjC79w2/GDnYe9aWS/j+HdYlQ8DETT1JIyIN9tM+unEvJkOE6qKapXeWppp0
-         amTKjAV0LOkkqrKBryWake5TFFG8/zwqg8xXdq21fQcyINTctfpkj7VsMnYxKV9AsXw+
-         yVE+y6Zxa3CrKKxCc5kdOOsubTRF3wQexWrlQP0TG42kxKY6aPmd5brALZKNGBXZ5uH2
-         NH5E5Jf4yAhQJuFw74c/vfRrUaFIqI5QtF/I+2masZFgqrvkvSwiL+dnqcQVaiKtSFPq
-         8v6fTYihElch/C2eZ1JGKKvsHlKYxiyOhHxvZoHtodXb2eJNED6Shyns9GsU0XJSAtFA
-         VVLA==
-X-Gm-Message-State: AOAM533n5rS52GSlBNa9TsA7JS58+RBbVPiCgYrPZj0kP5xvTx/BsQPJ
-        rNP4fn6VVdNkBcVHUhH7fRJ05lBO0YdnbVzyrgd1HQ==
-X-Google-Smtp-Source: ABdhPJy5M4bW3EQJOtlA1J3fukdU3GsXBm5ahWMZ7f1tynRhLuSFHjlXX7HP519wXpXurP8N9XDEwnsZVT7E1P4g7iM=
-X-Received: by 2002:a25:790e:: with SMTP id u14mr8671529ybc.324.1589993426351;
- Wed, 20 May 2020 09:50:26 -0700 (PDT)
+        Wed, 20 May 2020 12:51:45 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04KGXM0h064606;
+        Wed, 20 May 2020 12:51:18 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312bg8q2q4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 12:51:17 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04KGUb1P012254;
+        Wed, 20 May 2020 16:51:15 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 313xehm0t1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 May 2020 16:51:14 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04KGpCUR63701082
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 May 2020 16:51:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A799911C04C;
+        Wed, 20 May 2020 16:51:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4065C11C050;
+        Wed, 20 May 2020 16:51:12 +0000 (GMT)
+Received: from pomme.tlslab.ibm.com (unknown [9.145.151.133])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 20 May 2020 16:51:12 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, paulus@samba.org
+Cc:     mpe@ellerman.id.au, sukadev@linux.ibm.com, linuxram@us.ibm.com
+Subject: [PATCH] KVM: PPC: Book3S HV: relax check on H_SVM_INIT_ABORT
+Date:   Wed, 20 May 2020 18:51:10 +0200
+Message-Id: <20200520165110.71020-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200520072814.128267-1-irogers@google.com> <20200520072814.128267-6-irogers@google.com>
- <20200520134847.GM157452@krava>
-In-Reply-To: <20200520134847.GM157452@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 20 May 2020 09:50:13 -0700
-Message-ID: <CAP-5=fVGf9i7hvQcht_8mnMMjzhQYdFqPzZFraE-iMR7Vcr1tw@mail.gmail.com>
-Subject: Re: [PATCH 5/7] perf metricgroup: Remove duped metric group events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-20_10:2020-05-20,2020-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 cotscore=-2147483648 malwarescore=0
+ mlxscore=0 suspectscore=0 spamscore=0 phishscore=0 impostorscore=0
+ mlxlogscore=996 clxscore=1011 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005200135
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 6:49 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, May 20, 2020 at 12:28:12AM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> >
-> > @@ -157,7 +183,7 @@ static int metricgroup__setup_events(struct list_head *groups,
-> >       int i = 0;
-> >       int ret = 0;
-> >       struct egroup *eg;
-> > -     struct evsel *evsel;
-> > +     struct evsel *evsel, *tmp;
-> >       unsigned long *evlist_used;
-> >
-> >       evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
-> > @@ -173,7 +199,8 @@ static int metricgroup__setup_events(struct list_head *groups,
-> >                       ret = -ENOMEM;
-> >                       break;
-> >               }
-> > -             evsel = find_evsel_group(perf_evlist, &eg->pctx, metric_events,
-> > +             evsel = find_evsel_group(perf_evlist, &eg->pctx,
-> > +                                     eg->has_constraint, metric_events,
-> >                                       evlist_used);
-> >               if (!evsel) {
-> >                       pr_debug("Cannot resolve %s: %s\n",
-> > @@ -200,6 +227,12 @@ static int metricgroup__setup_events(struct list_head *groups,
-> >               list_add(&expr->nd, &me->head);
-> >       }
-> >
-> > +     evlist__for_each_entry_safe(perf_evlist, tmp, evsel) {
-> > +             if (!test_bit(evsel->idx, evlist_used)) {
-> > +                     evlist__remove(perf_evlist, evsel);
-> > +                     evsel__delete(evsel);
-> > +             }
->
-> is the groupping still enabled when we merge groups? could part
-> of the metric (events) be now computed in different groups?
+The commit 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_*
+Hcalls") added checks of secure bit of SRR1 to filter out the Hcall
+reserved to the Ultravisor.
 
-By default the change will take two metrics and allow the shorter
-metric (in terms of number of events) to share the events of the
-longer metric. If the events for the shorter metric aren't in the
-longer metric then the shorter metric must use its own group of
-events. If sharing has occurred then the bitmap is used to work out
-which events and groups are no longer in use.
+However, the Hcall H_SVM_INIT_ABORT is made by the Ultravisor passing the
+context of the VM calling UV_ESM. This allows the Hypervisor to return to
+the guest without going through the Ultravisor. Thus the Secure bit of SRR1
+is not set in that particular case.
 
-With --metric-no-group then any event can be used for a metric as
-there is no grouping. This is why more events can be eliminated.
+In the case a regular VM is calling H_SVM_INIT_ABORT, this hcall will be
+filtered out in kvmppc_h_svm_init_abort() because kvm->arch.secure_guest is
+not set in that case.
 
-With --metric-no-merge then the logic to share events between
-different metrics is disabled and every metric is in a group. This
-allows the current behavior to be had.
+Fixes: 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_* Hcalls")
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+ arch/powerpc/kvm/book3s_hv.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-There are some corner cases, such as metrics with constraints (that
-don't group) and duration_time that is never placed into a group.
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 93493f0cbfe8..eb1f96cb7b72 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -1099,9 +1099,7 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
+ 			ret = kvmppc_h_svm_init_done(vcpu->kvm);
+ 		break;
+ 	case H_SVM_INIT_ABORT:
+-		ret = H_UNSUPPORTED;
+-		if (kvmppc_get_srr1(vcpu) & MSR_S)
+-			ret = kvmppc_h_svm_init_abort(vcpu->kvm);
++		ret = kvmppc_h_svm_init_abort(vcpu->kvm);
+ 		break;
+ 
+ 	default:
+-- 
+2.26.2
 
-Partial sharing, with one event in 1 weak event group and 1 in another
-is never performed. Using --metric-no-group allows something similar.
-Given multiplexing, I'd be concerned about accuracy problems if events
-between groups were shared - say for IPC, were you measuring
-instructions and cycles at the same moment?
-
-> I was wondering if we could merge all the hasmaps into single
-> one before the parse the evlist.. this way we won't need removing
-> later.. but I did not thought this through completely, so it
-> might not work at some point
-
-This could be done in the --metric-no-group case reasonably easily
-like the current hashmap. For groups you'd want something like a set
-of sets of events, but then you'd only be able to share events if the
-sets were the same. A directed acyclic graph could capture the events
-and the sharing relationships, it may be possible to optimize cases
-like {A,B,C}, {A,B,D}, {A,B} so that the small group on the end shares
-events with both the {A,B,C} and {A,B,D} group. This may be good
-follow up work. We could also solve this in the json, for example
-create a "phony" group of {A,B,C,D} that all three metrics share from.
-You could also use --metric-no-group to achieve that sharing now.
-
-Thanks,
-Ian
-
-> jirka
->
