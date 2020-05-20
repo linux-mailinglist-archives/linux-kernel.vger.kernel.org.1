@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1424F1DB3F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4B01DB3DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 14:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgETMom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 08:44:42 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:55702 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgETMom (ORCPT
+        id S1727011AbgETMlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 08:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgETMlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 08:44:42 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jbO5F-0003RP-BL; Wed, 20 May 2020 06:44:29 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jbO5D-00014Z-VJ; Wed, 20 May 2020 06:44:29 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     James Morris <jmorris@namei.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Rob Landley <rob@landley.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andy Lutomirski <luto@amacapital.net>
-References: <87h7wujhmz.fsf@x220.int.ebiederm.org>
-        <87sgga6ze4.fsf@x220.int.ebiederm.org>
-        <87v9l4zyla.fsf_-_@x220.int.ebiederm.org>
-        <877dx822er.fsf_-_@x220.int.ebiederm.org>
-        <87o8qkzrxp.fsf_-_@x220.int.ebiederm.org>
-        <alpine.LRH.2.21.2005200750490.30843@namei.org>
-Date:   Wed, 20 May 2020 07:40:45 -0500
-In-Reply-To: <alpine.LRH.2.21.2005200750490.30843@namei.org> (James Morris's
-        message of "Wed, 20 May 2020 07:52:42 +1000 (AEST)")
-Message-ID: <871rnen5iq.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 20 May 2020 08:41:04 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12105C061A0E;
+        Wed, 20 May 2020 05:41:04 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t40so1226023pjb.3;
+        Wed, 20 May 2020 05:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oByZiP5udJbQzBWklBptE2RceP4HV/dxPc97SQf5r9I=;
+        b=bMPUbzd4w8Xckix21mTZAu4nqS8lo47Q1IuxRu1bg7ZEfkEGQ8nXx5annWGMvSJpUG
+         Ik/OdHHZVFQzOUM1UtH3eq53mId64W2QngOShgah4eBAgtzA8wecG2nCqBzMqTNljtsD
+         I/obKtjGl79PBq18fdqrzfjBAgO5nXDSxTC6ja6DWm6PPpb0EEEoMoUqBYfL2jgwEY31
+         ny9uKMDOQHdpq3EmyqBSW1qcC/9hybhjlqyzXdhMmUELkNCHd+FG4uFvvhSZ89c0FYk8
+         Wc8Amekl/xkn7XYPvcq8vhfKVysczN0Bay8pc2ehG7MO/QFdv0+hAQ81qW7BWXJ5hvL3
+         f5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oByZiP5udJbQzBWklBptE2RceP4HV/dxPc97SQf5r9I=;
+        b=iTW//rTfh2OraISO7oFTfovkDbK4B1c7WKL8cgXuLQsQo2yeCoAp/BgGh/ME/lexIe
+         tiryTnPHC7lnY/p08ako84JAvN2CVoFl9HG6hNjD2h0SR5geUslhmJ2awjX6HX5lxxeV
+         WSm25aZZ0Kbm0Bw4yYFRdhghYoEY4IUEZJUzhN7MVtJ0MDy1D92oKWdnw6LPkG6SrtqZ
+         0oBaP7eezwTJExDI+QZQ3ohnlpNL8/3FpDD/Wsgjt4IAPp17dOImCW7E4Q73EnWAxPIl
+         jYSakU3hWyzqiCsfj+Dx6ZGLRRL6ue5NbtxbM4wRfw19aT/BiFMAZc657dWcGUogltbr
+         NpNQ==
+X-Gm-Message-State: AOAM5323YLnml1jSvYNjN9OL7TPbxbF+sIoxe3zCEJqgC9ezlmuccjAl
+        aR9XUcTAH1jDyuCL42l072fBNaBHhFTUC6tjpCk=
+X-Google-Smtp-Source: ABdhPJyjV9IcI4Rvhp2yDHZ0cMw5+9uLEMBQuP44Edg6AhPbW7DTGRWOGVfUVIEgCtyep5Po1iHo+g/GYI8TVSX85T8=
+X-Received: by 2002:a17:90a:1704:: with SMTP id z4mr5093444pjd.181.1589978463619;
+ Wed, 20 May 2020 05:41:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jbO5D-00014Z-VJ;;;mid=<871rnen5iq.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18udNvJx+c1yIl5NydlUzC7C5ZchehH+PU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa05 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;James Morris <jmorris@namei.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 884 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 13 (1.5%), b_tie_ro: 11 (1.3%), parse: 1.40
-        (0.2%), extract_message_metadata: 17 (1.9%), get_uri_detail_list: 1.62
-        (0.2%), tests_pri_-1000: 8 (0.9%), tests_pri_-950: 1.76 (0.2%),
-        tests_pri_-900: 1.43 (0.2%), tests_pri_-90: 59 (6.7%), check_bayes: 57
-        (6.5%), b_tokenize: 9 (1.0%), b_tok_get_all: 7 (0.8%), b_comp_prob:
-        2.7 (0.3%), b_tok_touch_all: 35 (3.9%), b_finish: 1.10 (0.1%),
-        tests_pri_0: 768 (86.9%), check_dkim_signature: 0.73 (0.1%),
-        check_dkim_adsp: 3.4 (0.4%), poll_dns_idle: 1.23 (0.1%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 8 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 3/8] exec: Convert security_bprm_set_creds into security_bprm_repopulate_creds
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200511145257.22970-1-geert+renesas@glider.be>
+ <20200520121420.GA1867563@smile.fi.intel.com> <CAMuHMdW9EsRLYYTL0pd-PqqZs5WcUfK8i2uceNwJnSvAQKuVgw@mail.gmail.com>
+ <CAHp75Vc9=1cD81TDuaGuFQpBcHaKqEZKv8tA7ZGBbDJ6MKq6kw@mail.gmail.com>
+In-Reply-To: <CAHp75Vc9=1cD81TDuaGuFQpBcHaKqEZKv8tA7ZGBbDJ6MKq6kw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 20 May 2020 15:40:52 +0300
+Message-ID: <CAHp75VcARgxf-Ty77mk2PJ0BUxJsXQdDLMffiDdv1gCkF_VMtg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] gpio: Add GPIO Aggregator
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harish Jenny K N <harish_kandiga@mentor.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Alexander Graf <graf@amazon.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-James Morris <jmorris@namei.org> writes:
-
-> On Mon, 18 May 2020, Eric W. Biederman wrote:
+On Wed, May 20, 2020 at 3:40 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Wed, May 20, 2020 at 3:38 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, May 20, 2020 at 2:14 PM Andy Shevchenko
+> > <andriy.shevchenko@intel.com> wrote:
+> > > On Mon, May 11, 2020 at 04:52:51PM +0200, Geert Uytterhoeven wrote:
 >
->> diff --git a/fs/exec.c b/fs/exec.c
->> index 9e70da47f8d9..8e3b93d51d31 100644
->> --- a/fs/exec.c
->> +++ b/fs/exec.c
->> @@ -1366,7 +1366,7 @@ int begin_new_exec(struct linux_binprm * bprm)
->>  	 * the final state of setuid/setgid/fscaps can be merged into the
->>  	 * secureexec flag.
->>  	 */
->> -	bprm->secureexec |= bprm->cap_elevated;
->> +	bprm->secureexec |= bprm->active_secureexec;
+> ...
 >
-> Which kernel tree are these patches for? Seems like begin_new_exec() is 
-> from a prerequisite patchset.
+> > > Sorry for late reply, recently noticed this nice idea.
+> > > The comment I have is, please, can we reuse bitmap parse algorithm and syntax?
+> > > We have too many different formats and parsers in the kernel and bitmap's one
+> > > seems suitable here.
+> >
+> > Thank you, I wasn't aware of that.
+> >
+> > Which one do you mean? The documentation seems to be confusing,
+> > and incomplete.
+> > My first guess was bitmap_parse(), but that one assumes hex values?
+> > And given it processes the unsigned long bitmap in u32 chunks, I guess
+> > it doesn't work as expected on big-endian 64-bit?
+> >
+> > bitmap_parselist() looks more suitable, and the format seems to be
 
-The base is:
-git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-next
+> > compatible with what's currently used, so it won't change ABI.
 
-I should have mentioned.  I am several round deep in cleaning up exec
-already.
+What ABI? We didn't have a release with it, right? So, we are quite
+flexible for few more weeks to amend it.
 
-begin_new_exec is essentially forget_old_exec.
+> > Is that the one you propose?
+>
+> Yes, sorry for the confusion.
+>
+> > > (Despite other small clean ups, like strstrip() use)
+> >
+> > Aka strim()? There are too many of them, to know all of them by heart ;-)
+>
+> The difference between them is __must_check flag. But yes.
 
-Eric
 
 
+-- 
+With Best Regards,
+Andy Shevchenko
