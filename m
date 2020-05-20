@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EA21DBAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDE1DBAD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 19:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbgETRO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 13:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgETROz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 13:14:55 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E219C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:14:55 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id v63so1863882pfb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dn1wLG2S34dD5g+JaUALnTVvVDB4i9x8X9j9vbjn1mQ=;
-        b=eYRaTbLg32v2n4LboXQ7BpLYdJHHgJjmtDERcQzxYAE46+NrISJKRTNSeONXsRVLc8
-         41c8t0oyF+Br6sTOM1my9WzJulOPR6kTy6bMLMlWCDlWWOHUMOxb1oQw0SiDdLNbJKL2
-         ZPE16C8urAfkDoxV4ZqLZ5JdCzNdnQwJzP9RpQPQU5sFbz+I73z9NWU8MN4p55XPwUhl
-         T5LQxQg9Phroeg5QalUHtc04iC6NfVwIJGUQyKqx8MHQg4hvovZ+CCck9QAGx5Iifaeb
-         fSHCvu05t4TbJr8kbvpERmKSOefq93O458vMZlPowaso+bBw9sr1bMGIXKsjyTS4JyBy
-         HKrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dn1wLG2S34dD5g+JaUALnTVvVDB4i9x8X9j9vbjn1mQ=;
-        b=JVgppjxUD6OMlV32WZ8u5eDW5eQd9QrFouCeCV6Gvh/lAvABJbUuecTsyQeSFa9Zu/
-         /LYjklgMfjTLutprbcUHUNMgJJUCv6zFS03R9a1Ex0Wy4FtAHwRwD3ZTABOWcjbzxIBY
-         VQiv9AWuM/5q8bAiQ45AyLFXOn+Ybli6WqRSae2b1/xZSisPU4/I9n0nc3CXi06F9OCf
-         a52O/61X2ivRkHr0EXwIEXRb2rF8GA/Bq8Tq7Fn1T35AF5D+TD+0DGsqzFQWU0BgAczi
-         WUbytUjrK34GNNI2b1OMxYWaHdrpebF216j5MvL/UC7xazzdfFmTKhiuM/8ORnDlGzcq
-         r9fA==
-X-Gm-Message-State: AOAM531IYgFfqeoKX5oN8QoW7D9efpS5ZKZp1Z0wROiJ7EMhog8DK56g
-        jeTmwX04BFG6iU5/JDPKzQOCmA==
-X-Google-Smtp-Source: ABdhPJxsetNXDZAFzwa40fTy5sAqcqTSGbhcYbY6aZ5qPn0ABomlOnOtHeDNfNDBSxnLFRwY+bxGnA==
-X-Received: by 2002:aa7:829a:: with SMTP id s26mr1582866pfm.40.1589994894665;
-        Wed, 20 May 2020 10:14:54 -0700 (PDT)
-Received: from [192.168.86.156] (cpe-75-85-219-51.dc.res.rr.com. [75.85.219.51])
-        by smtp.gmail.com with ESMTPSA id d20sm2328183pgl.72.2020.05.20.10.14.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 May 2020 10:14:54 -0700 (PDT)
-Subject: Re: [PATCH liburing v2 0/5] liburing: add helpers to enable/disable
- eventfd notifications
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-References: <20200520170714.68156-1-sgarzare@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f910cc65-9075-0e54-c4aa-656fb073d626@kernel.dk>
-Date:   Wed, 20 May 2020 11:12:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726954AbgETRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 13:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgETRNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 13:13:16 -0400
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7E162070A
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 17:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589994796;
+        bh=aBnQahn6Rx4syCQPw6nXrqo1bJDUJ1S1WtEdZT9KUVU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rn6dTu/QCsIPsOlSXLkiFei4+NqNuuqFItyUj6DdLTF34ZlAaZDFIkQOMJQA7U+Nk
+         oqNXL0qad5AFDjx7MV0m86sudtZbzrhw+JDDLoPLfl2W1um0wYcfyZR72QRKOzs63a
+         HwcCIMSjA6Bram1Uq1Y2yu4M6c5cm0GG6pnDXEoI=
+Received: by mail-wm1-f42.google.com with SMTP id g14so483614wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 10:13:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533kyldfMU3mEyYOpGnolM+fIFCPwUHrSp8hpIinXoLFWTDzygA1
+        Rw5Z2qsLtfo+HadusBe8IotuUJDVTVo3M/bnmB++fw==
+X-Google-Smtp-Source: ABdhPJyqE73tj45GgRcuRENdcBFo/oFYikprLfZkfLqP5QSlvVEuV3i4EoHFUJ9qCHMejxr93zIxieuEnsbiXY8vsqs=
+X-Received: by 2002:a1c:9893:: with SMTP id a141mr3075808wme.176.1589994794103;
+ Wed, 20 May 2020 10:13:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200520170714.68156-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200515234547.710474468@linutronix.de> <20200515235127.996226788@linutronix.de>
+ <CALCETrVwTZA6OwrMDhhaNgpkvwsn9ajfuwrfH6xYExvCsFcXjQ@mail.gmail.com> <87lflm4owm.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87lflm4owm.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 20 May 2020 10:13:02 -0700
+X-Gmail-Original-Message-ID: <CALCETrVCBMjEZmohRmJ0=F26LjYxyxP0L_x=c68ExGUampVk3g@mail.gmail.com>
+Message-ID: <CALCETrVCBMjEZmohRmJ0=F26LjYxyxP0L_x=c68ExGUampVk3g@mail.gmail.com>
+Subject: Re: [patch V6 36/37] x86/entry: Move paranoid irq tracing out of ASM code
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/20 11:07 AM, Stefano Garzarella wrote:
-> This series is based on top of a new IORING_CQ_EVENTFD_DISABLED
-> flag available in the CQ ring flags.
-> 
-> I added io_uring_cq_eventfd_enabled() to get the status of eventfd
-> notifications, and io_uring_cq_eventfd_toggle() to disable/enabled
-> eventfd notifications.
-> 
-> I updated man pages and I added a eventfd-disable.c test case.
-> 
-> v1 -> v2:
->   - renamed io_uring_cq_eventfd_toggle()
->   - return EOPNOTSUPP only if we need to change the flag
+On Wed, May 20, 2020 at 8:17 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Andy Lutomirski <luto@kernel.org> writes:
+>
+> > On Fri, May 15, 2020 at 5:11 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > I think something's missing here.  With this patch applied, don't we
+> > get to exc_debug_kernel() -> handle_debug() without doing
+> > idtentry_enter() or equivalent?  And that can even enable IRQs.
+> >
+> > Maybe exc_debug_kernel() should wrap handle_debug() in some
+> > appropriate _enter() / _exit() pair?
+>
+> I'm the one who is missing something here, i.e. the connection of this
+> patch to #DB. exc_debug_kernel() still looks like this:
+>
+>         nmi_enter_notrace();
+>         handle_debug(regs, dr6, false);
+>         nmi_exit_notrace();
+>
+> Confused.
+>
 
-Applied, thanks.
+Hmm.  I guess the code is correct-ish or at least as correct as it
+ever was.  But $SUBJECT says "Move paranoid irq tracing out of ASM
+code" but you didn't move it into all the users.  So now the NMI code
+does trace_hardirqs_on_prepare() but the #DB code doesn't.  Perhaps
+the changelog should mention this.
 
--- 
-Jens Axboe
+exc_kernel_debug() is an atrocity.  Every now and then I get started
+on cleanup it up and so far I always get mired in the giant amount of
+indirection.
 
+So Acked-by: Andy Lutomirski <luto@kernel.org> if you write a credible
+changelog.
