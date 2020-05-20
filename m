@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF0C1DAFCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1B11DAFD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgETKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:14:50 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21069 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726570AbgETKOu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:14:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589969689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8bLHtz3BV/L39/FW/oh2sYThZNFwq67XjK/qDci+qxM=;
-        b=WuO/L4wO4LlyvpyuTe3c+K8SmtdWkaUTDX5fwtnrX9YNy+8LeEwuM866A+00y9/2I2qyNF
-        g3hkFbzC2sSGd8GuNrAjwFaun8Dh1wQe2Onji8VeE5C+Iizyh2PLzTJOHHti1dgNVOi7Dt
-        f6MO/6wudMvGyB3eG5wmxX5hKlB5zxM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-jycBi55nM4SRI02W8w7-FA-1; Wed, 20 May 2020 06:14:44 -0400
-X-MC-Unique: jycBi55nM4SRI02W8w7-FA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2C32100CCC4;
-        Wed, 20 May 2020 10:14:42 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-191.ams2.redhat.com [10.36.113.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C419707B8;
-        Wed, 20 May 2020 10:14:39 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers via Libc-alpha <libc-alpha@sourceware.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-api@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Subject: Re: [PATCH glibc 2/3] glibc: sched_getcpu(): use rseq cpu_id TLS on Linux (v7)
-References: <20200501021439.2456-1-mathieu.desnoyers@efficios.com>
-        <20200501021439.2456-3-mathieu.desnoyers@efficios.com>
-Date:   Wed, 20 May 2020 12:14:38 +0200
-In-Reply-To: <20200501021439.2456-3-mathieu.desnoyers@efficios.com> (Mathieu
-        Desnoyers via Libc-alpha's message of "Thu, 30 Apr 2020 22:14:38
-        -0400")
-Message-ID: <87imgqdib5.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1726946AbgETKPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:15:16 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:55786 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726546AbgETKPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:15:15 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app2 (Coremail) with SMTP id by_KCgA3H5IeA8VeqWyMAQ--.51301S4;
+        Wed, 20 May 2020 18:14:58 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau/debugfs: fix runtime pm imbalance on error
+Date:   Wed, 20 May 2020 18:14:53 +0800
+Message-Id: <20200520101453.15221-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgA3H5IeA8VeqWyMAQ--.51301S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrWrZF15CFyUGr4xXF1UKFg_yoWDCwbEgw
+        1fAF17Wr1fKFWqqr47Cw45ZFWI93y5XF1xZF4vvFyfAr42vr98GryxXrn8Zr45Xw1Ig34D
+        J3yqqF9xAr929jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
+        JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+        uYvjfU5iihUUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers via Libc-alpha:
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a pairing decrement is needed
+on the error handling path to keep the counter balanced.
 
-> diff --git a/sysdeps/unix/sysv/linux/sched_getcpu.c b/sysdeps/unix/sysv/l=
-inux/sched_getcpu.c
-> index c019cfb3cf..2269c4f2bd 100644
-> --- a/sysdeps/unix/sysv/linux/sched_getcpu.c
-> +++ b/sysdeps/unix/sysv/linux/sched_getcpu.c
-> @@ -18,10 +18,15 @@
->  #include <errno.h>
->  #include <sched.h>
->  #include <sysdep.h>
-> +#include <atomic.h>
->  #include <sysdep-vdso.h>
->=20=20
-> -int
-> -sched_getcpu (void)
-> +#ifdef HAVE_GETCPU_VSYSCALL
-> +# define HAVE_VSYSCALL
-> +#endif
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I think the #ifdef is a result of an incorrect merge of commit
-d0def09ff6bbf1537beec305fdfe96a21174fb31 ("linux: Fix vDSO macros build
-with time64 interfaces") and it should be removed.
-
-The commit subject should probably say =E2=80=9CLinux: Use rseq in sched_ge=
-tcpu
-if available=E2=80=9D.
-
-Thanks,
-Florian
+diff --git a/drivers/gpu/drm/nouveau/nouveau_debugfs.c b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
+index 15a3d40edf02..db3711436577 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_debugfs.c
++++ b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
+@@ -181,8 +181,11 @@ nouveau_debugfs_pstate_set(struct file *file, const char __user *ubuf,
+ 	}
+ 
+ 	ret = pm_runtime_get_sync(drm->dev);
+-	if (ret < 0 && ret != -EACCES)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_autosuspend(drm->dev);
+ 		return ret;
++	}
++
+ 	ret = nvif_mthd(ctrl, NVIF_CONTROL_PSTATE_USER, &args, sizeof(args));
+ 	pm_runtime_put_autosuspend(drm->dev);
+ 	if (ret < 0)
+-- 
+2.17.1
 
