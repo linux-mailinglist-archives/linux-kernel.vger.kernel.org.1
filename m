@@ -2,65 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4841DA89E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B141DA8A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgETDcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 23:32:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59806 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726432AbgETDcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 23:32:32 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 251B519E1456738066EC;
-        Wed, 20 May 2020 11:32:30 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
- 11:32:23 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <xiexiuqi@huawei.com>, <mark.rutland@arm.com>,
-        <bobo.shaobowang@huawei.com>, <guohanjun@huawei.com>,
-        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <wangnan0@huawei.com>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-Subject: [PATCH] perf bpf-loader: Add missing '*' for key_scan_pos
-Date:   Wed, 20 May 2020 11:32:16 +0800
-Message-ID: <20200520033216.48310-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728547AbgETDeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 23:34:19 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:41327 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727029AbgETDeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 23:34:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1589945657; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kT7pJZVYUNeErjNCfzDEueg8X+vHXLZgH98ZFiEznHw=;
+ b=QjMjZhbbZLFp67fyDWu7F9lu4yHDq9tl1fWlPg9AzWbOSgZ4MXc4EEgRnuqEiqOdnI5C0Wm4
+ SUR28hWtwCKKNQfN++ktl9nV24MrPyE9aYUdq/TC+vUL/7Yz2yr5LdeSCBO0c3g7AYcRXr+w
+ 3mSBxR/BFHgmaei1U9HXDbxjxIs=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5ec4a539c070baad3c48b125 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 20 May 2020 03:34:17
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BA541C433CA; Wed, 20 May 2020 03:34:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC015C433C8;
+        Wed, 20 May 2020 03:34:15 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 20 May 2020 09:04:15 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v10] arm64: dts: qcom: sc7180: Add WCN3990 WLAN module
+ device node
+In-Reply-To: <1589914405-6674-1-git-send-email-pillair@codeaurora.org>
+References: <1589914405-6674-1-git-send-email-pillair@codeaurora.org>
+Message-ID: <ce4c480a92a9162dd687a6ffcfc6a8c3@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-key_scan_pos is a pointer for getting scan position in
-bpf__obj_config_map() for each BPF map configuration term,
-but it's misused when error not happened.
+Hey Rakesh,
 
-Fixes: 066dacbf2a32 ("perf bpf: Add API to set values to map entries in a bpf object")
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
----
- tools/perf/util/bpf-loader.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020-05-20 00:23, Rakesh Pillai wrote:
+> Add device node for the ath10k SNOC platform driver probe
+> and add resources required for WCN3990 on sc7180 soc.
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+> Changes from v9:
+> - Place the wlan_fw_mem under reserved-memory node
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts |  7 +++++++
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi    | 27 
+> +++++++++++++++++++++++++++
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index 4e9149d..38b102e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -389,6 +389,13 @@
+>  	};
+>  };
+> 
+> +&wifi {
+> +	status = "okay";
+> +	wifi-firmware {
+> +		iommus = <&apps_smmu 0xc2 0x1>;
+> +	};
+> +};
+> +
+>  /* PINCTRL - additions to nodes defined in sc7180.dtsi */
+> 
+>  &qspi_clk {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index f1280e0..19bd7d0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -106,6 +106,11 @@
+>  			no-map;
+>  		};
+> 
+> +		wlan_fw_mem: memory@94100000 {
+> +			reg = <0 0x94100000 0 0x200000>;
+> +			no-map;
+> +		};
+> +
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 10c187b8b8ea..460056bc072c 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -1225,7 +1225,7 @@ bpf__obj_config_map(struct bpf_object *obj,
- out:
- 	free(map_name);
- 	if (!err)
--		key_scan_pos += strlen(map_opt);
-+		*key_scan_pos += strlen(map_opt);
- 	return err;
- }
- 
+You can skip ^^, its already
+present as wlan_mem in the
+board dts.
+
+>  		rmtfs_mem: memory@84400000 {
+>  			compatible = "qcom,rmtfs-mem";
+>  			reg = <0x0 0x84400000 0x0 0x200000>;
+> @@ -944,6 +949,28 @@
+>  			};
+>  		};
+> 
+> +		wifi: wifi@18800000 {
+> +			compatible = "qcom,wcn3990-wifi";
+> +			reg = <0 0x18800000 0 0x800000>;
+> +			reg-names = "membase";
+> +			iommus = <&apps_smmu 0xc0 0x1>;
+> +			interrupts =
+> +				<GIC_SPI 414 IRQ_TYPE_LEVEL_HIGH /* CE0 */ >,
+> +				<GIC_SPI 415 IRQ_TYPE_LEVEL_HIGH /* CE1 */ >,
+> +				<GIC_SPI 416 IRQ_TYPE_LEVEL_HIGH /* CE2 */ >,
+> +				<GIC_SPI 417 IRQ_TYPE_LEVEL_HIGH /* CE3 */ >,
+> +				<GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH /* CE4 */ >,
+> +				<GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH /* CE5 */ >,
+> +				<GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH /* CE6 */ >,
+> +				<GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH /* CE7 */ >,
+> +				<GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH /* CE8 */ >,
+> +				<GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH /* CE9 */ >,
+> +				<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH /* CE10 */>,
+> +				<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH /* CE11 */>;
+> +			memory-region = <&wlan_fw_mem>;
+
+Its named as wlan_mem in sc7180-idp.dts
+
+> +			status = "disabled";
+> +		};
+> +
+>  		config_noc: interconnect@1500000 {
+>  			compatible = "qcom,sc7180-config-noc";
+>  			reg = <0 0x01500000 0 0x28000>;
+
 -- 
-2.17.1
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
