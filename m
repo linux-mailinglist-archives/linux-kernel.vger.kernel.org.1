@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ADB1DB49F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 15:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FDC1DB110
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 13:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbgETNKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 09:10:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47878 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgETNKh (ORCPT
+        id S1726785AbgETLLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 07:11:19 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:4072 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETLLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 09:10:37 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KD8JFi064189;
-        Wed, 20 May 2020 13:10:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=R7gtf0kiWbCNJ0UhI5MwvQ47qSSl1HmSUaTx5bHu6G0=;
- b=o4m1NTL434XJQbAkIuOB//h3s4FworvA3R42ve4vzv2KBNyiMoH/EbmcxuhOlXbZd+A9
- vJW4rNRvhlnDIx2czecGKoM7wSEB7Cm4Lt0EGB05DA1cOixhUrZ2Uk434gcFJoJr4h30
- EvBTF06GCH/PagknjE+aV2ROHM1ySQqhjKRMgDwfwkqEXlYbNtDw4UfSzcqXBnc626oh
- rQYKowjZKekgM+ykGLa/pW7YGTtZdX3t4A6hKcwuW799AcWvhQafXS7J6Ej6Nl/+rxAb
- sKyP2sKE+2DnK+TCtqHM1Hz9D1ld0gFjEnAevWLNbstcYQpLpg0tNinE6yVGMpu3/Tst GQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3127krb14d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 20 May 2020 13:10:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04KD8SBh188047;
-        Wed, 20 May 2020 13:08:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 314gm724eb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 May 2020 13:08:30 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04KD8Lud010719;
-        Wed, 20 May 2020 13:08:21 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 May 2020 06:08:20 -0700
-Date:   Wed, 20 May 2020 16:08:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
-        Rui Huang <ray.huang@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        Yintian Tao <yttao@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] drm/amdgpu: off by on in
- amdgpu_device_attr_create_groups() error handling
-Message-ID: <20200520130812.GA177222@mwanda>
+        Wed, 20 May 2020 07:11:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1589973078; x=1621509078;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JsYCUzXlsDfKtKNFoYWxhgyWbE9JFx+fChYZvOyLb/8=;
+  b=SUYQ1pucnAgYEwtQuj2gjBGZwjgXq454vsILk42bKqWu5a8oNbqXd6J6
+   PZlBny0nuZciH4T2iTdqjARlNajgkMi6iZom5p9xgDlmpl5pAA3PsgtbX
+   v/poxcSekk8fig4KObsS1toDVxctS0Mdb3EbPFW0kWCzrR3LS8+xzx/Nb
+   dTmcS7MP3yB95pc+u7ngDp8rLjVXPGP5rKrnyViBt8J+8v+Tida0esDiN
+   NNBFojgowf53pZfBoPoHo0KiKlUoqS0iJ+3FekcTTHOUtJEGp7zEfc30/
+   sfARI+jno19elgLCtzckg9GwBM/9+JNNP7bqiSAxysfoPrSouuPuZ+EQ4
+   A==;
+IronPort-SDR: hULINyyKvQELhKkzLfoNOWo8H94vU3VkTHKWL7m5CJNyeDJEKBR7za+GwI7t1sDbkib2qZJ/PF
+ Kgfgk3nhWAqlM6tijoAOM6Nr+ZL388Z2Bc6TPfwA9LX9oqrxAnIXsaJyGfm0Af2jE/+qXfaqqZ
+ ogNDnJNELpXYKl9PEb2XF9f8XiCwb+1x+egtNYLCu9BYnTTdAemaynnesU2muKjdsy2hdN0CUS
+ t+mKg0MJ6jF98Z3gyi5WGyad/BTjqtLM9vkkp2g1ZkJsNZbnLe3lEMzpBS21enjtOLeqmvS8zg
+ 6CE=
+X-IronPort-AV: E=Sophos;i="5.73,413,1583218800"; 
+   d="scan'208";a="77278923"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 May 2020 04:11:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 20 May 2020 04:11:17 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Wed, 20 May 2020 04:11:14 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <roopa@cumulusnetworks.com>,
+        <nikolay@cumulusnetworks.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH 0/3] net: bridge: mrp: Add small fixes to MRP
+Date:   Wed, 20 May 2020 13:09:20 +0000
+Message-ID: <20200520130923.3196432-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520125209.GP3041@kadam>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005200113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9626 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 cotscore=-2147483648
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005200113
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This loop in the error handling code should start a "i - 1" and end at
-"i == 0".  Currently it starts a "i" and ends at "i == 1".  The result
-is that it removes one attribute that wasn't created yet, and leaks the
-zeroeth attribute.
+This patch series adds small fixes to MRP implementation.
+The following are fixed in this patch series:
+- now is not allow to add the same port to multiple MRP rings
+- remove unused variable
+- restore the port state according to the bridge state when the MRP instance
+  is deleted
 
-Fixes: 4e01847c38f7 ("drm/amdgpu: optimize amdgpu device attribute code")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2: style change
+Horatiu Vultur (3):
+  bridge: mrp: Add br_mrp_unique_ifindex function
+  switchdev: mrp: Remove the variable mrp_ring_state
+  bridge: mrp: Restore port state when deleting MRP instance
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c           | 3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ include/net/switchdev.h |  1 -
+ net/bridge/br_mrp.c     | 44 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 40 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-index b75362bf0742..e809534fabd4 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
-@@ -1942,9 +1942,8 @@ static int amdgpu_device_attr_create_groups(struct amdgpu_device *adev,
- 	return 0;
- 
- failed:
--	for (; i > 0; i--) {
-+	while (i--)
- 		amdgpu_device_attr_remove(adev, &attrs[i]);
--	}
- 
- 	return ret;
- }
+-- 
+2.26.2
+
