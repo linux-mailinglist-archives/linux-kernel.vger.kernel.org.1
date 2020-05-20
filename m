@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D40B1DA870
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3906F1DA877
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 05:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgETDFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 23:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgETDFS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 23:05:18 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F7DC061A0E;
-        Tue, 19 May 2020 20:05:17 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id l15so1553729lje.9;
-        Tue, 19 May 2020 20:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HoeSq/8pPr91BzAJhNOgffpepxPbgET+ZXok/fBudck=;
-        b=gXWaUVl9AECOIaCl0Fcc+xIuo4vo2rEIF5DT5q2sv+aXAEEHz28fli9wQX7i4ZL0vd
-         OTMHmhNz8TAFAW+eEa4bcvhbiIu5W4TKrw/tR8wq4t6xZR6Ed2hk+0PNmkujpnyDWgvc
-         s7tPAX538te6tQJPButCPQupE1SOrMPA/IVar+zT+v5TIELfDPahdw4HGt8fdOeVrY0J
-         i2LbrOe9t80DtGsd00VNOZshUUf2oNbffcVgAzIrNwv2ZnsFdYSy5fOnGSuVECXxNRbs
-         10VLvYUYyRv5pXPhGbClPwhJc8VvC7G2u30dXXZh2SByvRn1fWehU7xco2tsGt7/dpXo
-         sAIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HoeSq/8pPr91BzAJhNOgffpepxPbgET+ZXok/fBudck=;
-        b=tqiDpz9UkzHmRIq7vmRyW7yWgfL0uJZYIZHsrj/wZAHWu3w9ofw4+KzCrGk24YycZG
-         RKFvyQPKdZaSwCtFoQwqPKs6DXuiK9r4EF+dUUWkaDDkeFX5q/qq0ZNW8GIW9aULKHAa
-         XDbRps0sWud55hF4HMUzZEO5yUPEMDkTf0sEeIYxugub6gUdBEpiXhuMbeKTqlCuSekJ
-         C3aXUUPWFImiXwNxHi82vD6b7Ida3f6FXXl53sZSaFJmdhJNsgdBqw58dViut3ogjyfr
-         YzRT18/HbXlDYAJIGMrI48nrRRw0HeRW+4XfsRViQolzq0SJ6JaGPBV/Bk4vKMNC+adh
-         wvyg==
-X-Gm-Message-State: AOAM533Mh8Q//t+MEYma4JRhzcL0Qnk5kDPmNUYydI61QNRo0S3js6Jf
-        YRoq9hfNwX2J4HRZChwpGr+GUCowPXfbx1HgbkM=
-X-Google-Smtp-Source: ABdhPJxUgi5dbYAyeOHZlGuF5KVl0KkfJn5CPaaSvjLesR7QA9yJpSBV50lArSyjN0Eg4earSj4hHAa4IsUApfKwREg=
-X-Received: by 2002:a2e:920e:: with SMTP id k14mr1474641ljg.288.1589943916318;
- Tue, 19 May 2020 20:05:16 -0700 (PDT)
+        id S1728649AbgETDGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 23:06:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55408 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726379AbgETDGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 23:06:48 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 94CA74A8013FC1636D76;
+        Wed, 20 May 2020 11:06:45 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.101) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 20 May 2020
+ 11:06:40 +0800
+Subject: Re: [PATCH] firmware: arm_sdei: remove unused interfaces
+To:     James Morse <james.morse@arm.com>, Christoph Hellwig <hch@lst.de>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200504164224.2842960-1-hch@lst.de>
+ <7c127e49-b1c6-c7ac-69bf-9fc0a6dba4c4@arm.com>
+ <6d0adc02-bcd8-2217-c145-d609528fbe77@huawei.com>
+ <0ac1444b-bbdf-1efb-54e6-db90fe6ac707@arm.com>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <f3944635-39d3-f68c-9adb-9471e51ee3be@huawei.com>
+Date:   Wed, 20 May 2020 11:06:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <1589940278-3680-1-git-send-email-peng.fan@nxp.com>
- <1589940278-3680-4-git-send-email-peng.fan@nxp.com> <CAOMZO5BPPRy_XGHHyZfE3eOrmCwW_VytueY-An8qqke6HU06TQ@mail.gmail.com>
- <DB6PR0402MB27602682E90E4CED55244BCC88B60@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0402MB27602682E90E4CED55244BCC88B60@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 20 May 2020 00:06:36 -0300
-Message-ID: <CAOMZO5DmiQbfJjTLKPiv6uUNaQ8ae-0h7uOpPf2J9ZMwDoE+Eg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: imx8mp: add mu node
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0ac1444b-bbdf-1efb-54e6-db90fe6ac707@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.101]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+Hi James,
 
-On Wed, May 20, 2020 at 12:01 AM Peng Fan <peng.fan@nxp.com> wrote:
+On 2020/5/19 23:47, James Morse wrote:
+> Hi Xiongfeng,
+> 
+> On 05/05/2020 03:08, Xiongfeng Wang wrote:
+>> On 2020/5/5 1:14, James Morse wrote:
+>>> Hi Christoph,
+>>>
+>>> (CC: +Xiongfeng)
+>>>
+>>> Thanks for the reminder - I was just searching for who was using this.
+>>
+>> Thanks for CC me. We do have a driver that are using it.
+> 
+>>> On 04/05/2020 17:42, Christoph Hellwig wrote:
+>>>> The export symbols to register/unregister and enable/disable events
+>>>> aren't ever used outside of arm_sdei.c, so mark them static.
+>>>
+>>> Xiongfeng, you have drivers using this, could they be posted upstream. Or can we stop
+>>> exporting these?
+>>
+>> It's the SDEI Wathchdog which is used for hardlockup detection. But I wasn't
+>> able to push it upstream because we have Pseudo-NMI in mainline.
+> 
+> Hmm, that shouldn't be directly relevant, unless your SDEI watchdog is using the
+> bindable-irq thing?
 
-> Nothing specific in i.MX8MP for the mu part, so do we really need
-> add "fsl,imx8mp-mu"?
+Yes, we are using the bindable-irq thing. It's easier for the UEFI team.
+Firmware doesn't need to too much modification.
 
-It is good practice to add a more specific option.
+> 
+> 
+> If your firmware offers an event-id for the watchdog, please upstream the driver. Half of
+> the event-id space is reserved for vendor stuff like this.
 
-Let's say in future a bug is found that affects imx8mp MU, then you
-could fix the MU driver and keep the dtb compatibility.
+My origin thought is using a new event-id. But the firmware guys are new to SDEI
+and don't know how to add a new event-id.
+
+> 
+> If firmware needs to be told to re-configure the watchdog irq to make this work, then pNMI
+> is a much better fit. Having firmware and linux modifying the irqchip hardware is a
+> nightmare best avoided.
+> 
+
+Yes, we are using the secure timer irq as the watchdog irq. So the firmware
+needs to disable and enable the irq when we disable and enable the event. But
+linux don't need to modify the irqchip hardware about the secure timer irq.
+
+All works well except the kdump situation. Because in sdei_handler the secure
+timer irq, which is routed to EL3, remains active. We clear the EOI when we
+complete the event. So when we panic and start kdump in sdei_handler, the EL2
+interrupt of the second kernel can not be taken. We add a hack to clear the EOI
+before start kdump.
+
+Yes, the pNMI is a much better fit. We don't need such a hack. But the product
+department seems to have get used to the SDEI watchdog method. It works well and
+they don't want much change.
+
+Thanks,
+Xiongfeng
+
+> 
+>>> (they were originally added for the GHES RAS thing, but by the time it was all merged
+>>> upstream, it wasn't possible to build it as a module)
+>>
+>> The SDEI Watchdog driver also can't be built as a module. We still need to
+>> modify the origin kernel. So I think this patch doesn't affect me. Thanks for CC me.
+> 
+> Okay, I'll pick this up to drop the module exports.
+> 
+> I'd prefer not to make all this static as these register/unregister calls are the
+> interface that is supposed to be used. If we are going to gut it, we should do it completely.
+> 
+> 
+> Thanks,
+> 
+> James
+> 
+> .
+> 
+
