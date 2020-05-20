@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7ED71DA624
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C291DA620
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 02:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgETAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 20:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
+        id S1728402AbgETAHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 20:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728361AbgETAHw (ORCPT
+        with ESMTP id S1728375AbgETAHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 20:07:52 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271A6C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:07:52 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id l73so1692128pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:07:52 -0700 (PDT)
+        Tue, 19 May 2020 20:07:53 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A7FC061A0E
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:07:53 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z1so705128pfn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 May 2020 17:07:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=v4Zua8syvVDyjlKtRUfz1/JaYZeWqEjXOGIn23EyWyY=;
-        b=K+j+o19Q2tjCH8aojaNFPWFNI5EAyV3RM0XCJbordzLCrPzzRJzsvDX6PBJYj6/mXs
-         y9/kW8FQem+xVoDvQ4JOnEg+Exqf5VUe6UU8eb4qdNibziBOVvkn/0A3SgEOvIZqNTeg
-         LbsfdqYe3c6woAkL9qYV11X4NkGYe2+StiJB7exTsj/X2H9OKtpocEz11GQL7skYh8hj
-         rIKgmaTIgrO1ntQxvY5xdDhlyNhIrXYOzIlTF+tiQxpSuHNW/fJoRrmhiyZzT9tSbyj9
-         tPlAitPiGpgSxszcZBgqCbeSr/wCrYfBEJUzFDMdMCz8yTYFomT3tOySyHoR+iLVsQvC
-         cZ9g==
+        bh=nLMfwQbrlF1iv4LcSoROIabrcfKs0/jUzCRJPsjpM/g=;
+        b=Gqo34c3m0MlNoFL+YXBmISvMCjL1uAr1dCIk+C2xcHpi/NSgJAkMkbIB54SVo3iPr2
+         HaZgzNyTF1lmEeD7MvMTZmyASk+yYU+KRNjjuLz/gkNyajNTTMpy+westprggwgYHgeu
+         H18O/XFDeMrrZ83+TekriuOSfUOKTYo0bQjBP5XEEJhAzPLW0eDyNm1lAycXCLgPH4my
+         5OkzNS9XRiDor39MYDWxeHHIJeNebLJIzM8O/UVe8sZHS6hWPl2jBe+/MjLVYqVeFwWD
+         C1Qm8oJgZQMAeE32cJMZ0614HbLkp4WCrD4CJKa70EWir5uchhrv0+WONADhNEGNEUXk
+         QOog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=v4Zua8syvVDyjlKtRUfz1/JaYZeWqEjXOGIn23EyWyY=;
-        b=golRMww4lBvsQG6V+tHVdgCYMnBVJAn3SofrO6i4n4ROvZuiqTJ//dMp4Ic/E8bIvE
-         PFbn7CaxI6nRlsULYGmj0HFpsC5dVDiPZ8wp/KpAMKf0KvkUlqn6XgCm9AVNFXmI4ySF
-         TxyikPnpmIjWu9/NiYiKTv80zVDdX38idh+iRq9UOHA4CvEqITOHb8HeLdoWFSLQxgpw
-         IZliqT7z9zI+8pRkm0FYZXxm0v44iN2+ODg8jIY7kFhKlNeCiaPIfNt2ki2yqYKoxeUB
-         dr2fGuM1awDJVIGvhksZZ0byMNdhIvrJPjgqCEPrWTiREbul0lGSggzr5SDgexZGj5t2
-         6otA==
-X-Gm-Message-State: AOAM532r+C4Dxn3PDxy/81lLJu6mw6uLLLMzWms3E/mA/9EoHRecUONw
-        Ne3e/2ELjYgIIeI7vJNktqPtFmAEeGs2ag==
-X-Google-Smtp-Source: ABdhPJzrZMtPAglu8Lp6rv2NhYAg8uMIsQJ02jmlsVDWUhGgpM4226LIixXFfHuO8Pd9+30COJ9tFw==
-X-Received: by 2002:a17:902:b18b:: with SMTP id s11mr1886573plr.160.1589933271579;
-        Tue, 19 May 2020 17:07:51 -0700 (PDT)
+        bh=nLMfwQbrlF1iv4LcSoROIabrcfKs0/jUzCRJPsjpM/g=;
+        b=NyJFCWnqLhJldjvyr6HdrhtL+8pKX66cH547IVYfR+1XiBB8Vd7pbSmMdQGWErKYyK
+         38V051OD4mfSbJDO4jC6nm9JjPRu6umFhdQtHO/nIdRVJMvlkLb2sJQbYyGpOO4vuYb7
+         +KCh69ZCPG0cEKp2CvolUyZkMLRoINaI44Nt//cS81jJj95zrOVHebIUrB8GN0QOirFu
+         CcsWo2Yy3P998nqcWkNPhiCSK3QpZPQxaCURMlJeBt2IVS6WHYO+4aesR9n9D9i8E7tg
+         xLnM0ITnXiACLWLmyryMvlDcgFkx0bZvh8rb3Uniisrn6o615Xg4G97MeF1CjKnE5K9m
+         8jhQ==
+X-Gm-Message-State: AOAM53030Zw+XO6lJ9Fq661VtM7SDhj8GhJSklF5u4jQ0iNtBkty/Nz5
+        o6XWoBrn/aGxb1S85/w3qLpcEmP//x2Qzw==
+X-Google-Smtp-Source: ABdhPJzsFZRQ9C+8oILR+S4MtBFIKYd2qCmva0PiBVlgTEiaWCLW5r8plQBhSkfJpMmL9SFle7gCyA==
+X-Received: by 2002:a63:7519:: with SMTP id q25mr1555590pgc.224.1589933272730;
+        Tue, 19 May 2020 17:07:52 -0700 (PDT)
 Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id w186sm505288pff.83.2020.05.19.17.07.50
+        by smtp.gmail.com with ESMTPSA id go14sm504705pjb.42.2020.05.19.17.07.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2020 17:07:51 -0700 (PDT)
+        Tue, 19 May 2020 17:07:52 -0700 (PDT)
 From:   Kevin Hilman <khilman@baylibre.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 0/7] arm64: dts: meson: add internal audio DAC support
-Date:   Tue, 19 May 2020 17:07:45 -0700
-Message-Id: <158993320300.34448.14791273150623120523.b4-ty@baylibre.com>
+To:     linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     andrew@lunn.ch, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/2] ARM: dts: meson8b/m2: RGMII improvements
+Date:   Tue, 19 May 2020 17:07:46 -0700
+Message-Id: <158993320300.34448.6005768486014716103.b4-ty@baylibre.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200506221656.477379-1-jbrunet@baylibre.com>
-References: <20200506221656.477379-1-jbrunet@baylibre.com>
+In-Reply-To: <20200512215148.540322-1-martin.blumenstingl@googlemail.com>
+References: <20200512215148.540322-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,34 +66,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 May 2020 00:16:49 +0200, Jerome Brunet wrote:
-> This patchset adds support for the internal audio DAC found on the gxl,
-> g12 and sm1 SoC family.
+On Tue, 12 May 2020 23:51:46 +0200, Martin Blumenstingl wrote:
+> the fist patch in this series connects FCLK_DIV2 to the PRG_ETH
+> "additional" registers for the dwmac Ethernet controller.
+> Now that we know how RGMII and FCLK_DIV2 are connected we can
+> add this dependency to get rid of CLK_IS_CRITICAL for FCLK_DIV2
+> at some point.
 > 
-> It was mainly tested on the gxl libretech-cc and g12a u200.
-> 
-> /!\
-> This series (patches 1 in particular) depends on this reset binding [0].
-> Philipp has provided an immutable with it here [1]
+> The second patch fixes the RX and TX delay. The 4ns TX delay which
+> we have used so far is incorrect and only worked because we were
+> using an unsupported clock divider in the PRG_ETH registers. That
+> divider has been fixed with commit bd6f48546b9c ("net: stmmac:
+> dwmac-meson8b: Fix the RGMII TX delay on Meson8b/8m2 SoCs").
+> Instead of "just" fixing the TX delay we can even do better and
+> switch to phy-mode = "rgmii-id" to let the PHY generate the RX
+> and TX delay. However, previously we didn't know that there was
+> an RX delay applied by the MAC on these boards. Only the additional
+> information from Jianxin in the other series [0] made us aware
+> of this. Without the other series there will be a 4ns RX delay
+> (2ns from the MAC and additional 2ns from the PHY). Due to this
+> dependency I did not add a Fixes tag, because backporting these
+> .dts patches without their runtime dependency will break stable
+> kernels.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/7] arm64: dts: meson: gxl: add acodec support
-      commit: a66d4ae3144a18476626dd8de8b8dff5f523daee
-[2/7] arm64: dts: meson: p230-q200: add internal DAC support
-      commit: f3c35382259f67c2ae878de2142fb58b94df0525
-[3/7] arm64: dts: meson: libretech-cc: add internal DAC support
-      commit: 249ce3777c25b383702e91a6547ffc676dc004a5
-[4/7] arm64: dts: meson: libretech-ac: add internal DAC support
-      commit: 451323f8bc9e9b701b87b4598ec1cac8eff82d15
-[5/7] arm64: dts: meson: libretech-pc: add internal DAC support
-      commit: 2989a2d6c7f36da2bddffdb293bdf123e735d5f7
-[6/7] arm64: dts: meson: g12: add internal DAC
-      commit: 457fa78771a23ecedf3bcd9ce9946a5183472ff6
-[7/7] arm64: dts: meson: g12: add internal DAC glue
-      commit: dbffd7f9bdb463437d3c3f7c3e1bd4379a785fe4
+[1/2] ARM: dts: meson: Add the Ethernet "timing-adjustment" clock
+      commit: b632506c5af22a9a7c63674fc605d24cf94d585b
+[2/2] ARM: dts: meson: Switch existing boards with RGMII PHY to "rgmii-id"
+      commit: 005231128e9e97461e81fa32421957a7664317ca
 
 Best regards,
 -- 
