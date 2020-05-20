@@ -2,200 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266871DA90B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B691DA93A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 06:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgETEVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 00:21:30 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:49303 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgETEV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 00:21:28 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200520042125euoutp029a56dfb4c64f3913adbdb5298d78f2bf~QoblQF2-k0515305153euoutp02g
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 04:21:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200520042125euoutp029a56dfb4c64f3913adbdb5298d78f2bf~QoblQF2-k0515305153euoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1589948485;
-        bh=xiWXMWfNTMDhpyYN6ynqaEoNJ+Fc3bIMAx5GVLMVvWo=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=bxVvSUqCDndl8Du69qqiRAAfgUbulItHjsf613JVgWJGI/P1MxvZLTlIisZd63tV0
-         HBpni8DG4f61uPBNqNloGRoIWaf1H/CRdyjFeNLMjYA69y+XRXRUr3BPjio1JTQAXi
-         AXc2YPY2TFwrJoyacya6G+6CHJPEZcgluPc7vcfI=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200520042125eucas1p261681d480f781be6db7485d6b3f328ba~QobktHNkQ2740227402eucas1p2a;
-        Wed, 20 May 2020 04:21:25 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 69.70.60698.540B4CE5; Wed, 20
-        May 2020 05:21:25 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200520042124eucas1p1a848a7353c8cc5183688f9acd189b360~QobkVS_eG2110621106eucas1p1F;
-        Wed, 20 May 2020 04:21:24 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200520042124eusmtrp2cdbe049b0513fdc44ac09ed185f1f0e9~QobkUnVw20913609136eusmtrp2x;
-        Wed, 20 May 2020 04:21:24 +0000 (GMT)
-X-AuditID: cbfec7f5-a0fff7000001ed1a-2a-5ec4b0452ffa
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 75.57.07950.440B4CE5; Wed, 20
-        May 2020 05:21:24 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200520042124eusmtip1e56f8e692b6a8f3e6890b7fb4fcc62e9~QobjrEmBf2685426854eusmtip10;
-        Wed, 20 May 2020 04:21:24 +0000 (GMT)
-Subject: Re: [PATCH v1 4/4] of: platform: Batch fwnode parsing when adding
- all top level devices
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Ji Luo <ji.luo@nxp.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <f53cee8b-c4e9-fc1c-a340-e8cda7b10311@samsung.com>
-Date:   Wed, 20 May 2020 06:21:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAGETcx_VtJXCqih4ZadZ0dFVJwKOBEQnnrr9JxxmGNh7HX_vNQ@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDKsWRmVeSWpSXmKPExsWy7djPc7quG47EGUxq47CYf+Qcq8XMN//Z
-        LJoXr2ezmHHnCLvFju0iFjsfvmWzWL6vn9Hi8q45QPHz+5gs5n6ZymzRuheoouvQXzYHHo9t
-        u7exeuycdZfdY8GmUo9NqzrZPPbPXcPusfHdDiaPz5vkAtijuGxSUnMyy1KL9O0SuDJ2bnrA
-        XtAnU9Hf/5mpgbFXvIuRk0NCwERi28V+1i5GLg4hgRWMEpsWz2SDcL4wSvx/3cUCUiUk8JlR
-        YtEZN5iOl0dXQ3UsZ5Q4/P4uE4TznlFi6qV1QO0cHMICSRLfp/CBNIgIaElsuvaYBaSGWaCF
-        ReL2zHlsIAk2AUOJrrddYDavgJ3EhxXrwLaxCKhK/GraxQ5iiwrESpxevJkRokZQ4uTMJ2A1
-        nAKBEmfbTzOD2MwC8hLb386BssUlbj2ZD3aQhMA9domrx2czQpztIjF52z8WCFtY4tXxLewQ
-        tozE/50wDc2MEg/PrWWHcHoYJS43zYDqtpa4c+4X2GvMApoS63fpQ4QdJTY3TmYBCUsI8Enc
-        eCsIcQSfxKRt05khwrwSHW1CENVqErOOr4Nbe/DCJeYJjEqzkLw2C8k7s5C8Mwth7wJGllWM
-        4qmlxbnpqcXGeanlesWJucWleel6yfm5mxiBaez0v+NfdzDu+5N0iFGAg1GJh/fGzsNxQqyJ
-        ZcWVuYcYJTiYlUR4J7w4FCfEm5JYWZValB9fVJqTWnyIUZqDRUmc13jRy1ghgfTEktTs1NSC
-        1CKYLBMHp1QD40Upz19XlIXzlEW5F620Xes6ge+DSVCErXE395wHpuwqR95L2OfF2DreWHT6
-        xflig2ar22f+WwoKnvicqbZB4VN46G9J2bfb2hMX6GaxLeNN2Wj0QfrQtJCvH675qItuY3NP
-        uKlw3+xXzNubZsdXpqgV3Q825sqf8FpgoUzhy/hDn9d/2ct2V4mlOCPRUIu5qDgRACuhKx9f
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPIsWRmVeSWpSXmKPExsVy+t/xu7ouG47EGVw/qmMx/8g5VouZb/6z
-        WTQvXs9mMePOEXaLHdtFLHY+fMtmsXxfP6PF5V1zgOLn9zFZzP0yldmidS9QRdehv2wOPB7b
-        dm9j9dg56y67x4JNpR6bVnWyeeyfu4bdY+O7HUwenzfJBbBH6dkU5ZeWpCpk5BeX2CpFG1oY
-        6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GXs3PSAvaBPpqK//zNTA2OveBcjJ4eE
-        gInEy6OrWbsYuTiEBJYySrzomsMOkZCRODmtgRXCFpb4c62LDaLoLaPElittQAkODmGBJIkH
-        8yxBakQEtCQ2XXvMAlLDLNDGInFo/nGohjfMEmu2/AabxCZgKNH1FmQSJwevgJ3EhxXrWEBs
-        FgFViV9Nu8A2iwrESqy+1soIUSMocXLmE7AaToFAibPtp5lBbGYBM4l5mx9C2fIS29/OgbLF
-        JW49mc80gVFoFpL2WUhaZiFpmYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzAyN12
-        7OeWHYxd74IPMQpwMCrx8BrsORwnxJpYVlyZe4hRgoNZSYR3wotDcUK8KYmVValF+fFFpTmp
-        xYcYTYGem8gsJZqcD0wqeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4
-        OKUaGJOMGUs4p2h02divUvjp6ua6aoPCwo03FGQrRaPmXnX2+d3z9ml0YP5kS4nJievW8wtH
-        /EhYVeBtfceOReU7X+17wzlbP6Q+07YX0z3I2XVzw/GWR4sW9IXUeDvLlrM5aDvteJ3dEi/l
-        eTXwzUdp4eeXHn87JNJyRlv8eHcQa8f0S0nvanjXKLEUZyQaajEXFScCAIIPUZLyAgAA
-X-CMS-MailID: 20200520042124eucas1p1a848a7353c8cc5183688f9acd189b360
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200519062510eucas1p27bc59da66e1b77534855103a27f87452
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200519062510eucas1p27bc59da66e1b77534855103a27f87452
-References: <20200515053500.215929-1-saravanak@google.com>
-        <CGME20200519062510eucas1p27bc59da66e1b77534855103a27f87452@eucas1p2.samsung.com>
-        <20200515053500.215929-5-saravanak@google.com>
-        <e0f9211d-9cf6-a12d-eb63-df06910920ed@samsung.com>
-        <CAGETcx_FOGgHdaNY8Dd-4rgT28U7_OHYeLsazbUE-1hyuatRSg@mail.gmail.com>
-        <18332705-dd61-9a0e-d931-ae610c8fb600@samsung.com>
-        <8dd9ecc2-0c61-49b7-d485-b169eb721712@samsung.com>
-        <CAGETcx_VtJXCqih4ZadZ0dFVJwKOBEQnnrr9JxxmGNh7HX_vNQ@mail.gmail.com>
+        id S1726619AbgETE3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 00:29:42 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54957 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgETE3m (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 00:29:42 -0400
+IronPort-SDR: 8clVySg12lH1KDgQrXuxuhvRRpmVoxGdqh8nCVH+z55NAVPxt5WzoHIWnwKxO/Te+OK6XRULYn
+ 99XoBb1ENwSw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2020 21:29:41 -0700
+IronPort-SDR: W+kMUcQes0TR/lgkk254tlp1t6f53rsjy2YvoMBGNm4jVX33Q6pJZl0n1tG/n7ozex6tA7uO1m
+ oqD7urS0UYMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,412,1583222400"; 
+   d="scan'208";a="289217283"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 19 May 2020 21:29:38 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v6 0/5] perf stat: Support overall statistics for interval mode
+Date:   Wed, 20 May 2020 12:27:32 +0800
+Message-Id: <20200520042737.24160-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Currently perf-stat supports to print counts at regular interval (-I),
+but it's not very easy for user to get the overall statistics.
 
-On 19.05.2020 20:02, Saravana Kannan wrote:
-> On Tue, May 19, 2020 at 3:32 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
->> On 19.05.2020 09:11, Marek Szyprowski wrote:
->>> On 19.05.2020 08:48, Saravana Kannan wrote:
->>>> On Mon, May 18, 2020 at 11:25 PM Marek Szyprowski
->>>> <m.szyprowski@samsung.com> wrote:
->>>>> On 15.05.2020 07:35, Saravana Kannan wrote:
->>>>>> The fw_devlink_pause() and fw_devlink_resume() APIs allow batching the
->>>>>> parsing of the device tree nodes when a lot of devices are added. This
->>>>>> will significantly cut down parsing time (as much a 1 second on some
->>>>>> systems). So, use them when adding devices for all the top level
->>>>>> device
->>>>>> tree nodes in a system.
->>>>>>
->>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
->>>>> This patch recently landed in linux-next 20200518. Sadly, it causes
->>>>> regression on Samsung Exynos5433-based TM2e board:
->>>>>
->>>>> ...
->>>>>
->>>>> Both issues, the lack of DMA for SPI device and Synchronous abort in
->>>>> I2S
->>>>> probe are new after applying this patch. I'm trying to investigate
->>>>> which
->>>>> resources are missing and why. The latter issue means typically that
->>>>> the
->>>>> registers for the given device has been accessed without enabling the
->>>>> needed clocks or power domains.
->>>> Did you try this copy-pasta fix that I sent later?
->>>> https://lore.kernel.org/lkml/20200517173453.157703-1-saravanak@google.com/
->>>>
->>>>
->>>> Not every system would need it (my test setup didn't), but it helps
->>>> some cases.
->>>>
->>>> If that fix doesn't help, then some tips for debugging the failing
->>>> drivers.
->>>> What this pause/resume patch effectively (not explicitly) does is:
->>>> 1. Doesn't immediately probe the devices as they are added in
->>>> of_platform_default_populate_init()
->>>> 2. Adds them in order to the deferred probe list.
->>>> 3. Then kicks off deferred probe on them in the order they were added.
->>>>
->>>> These drivers are just not handling -EPROBE_DEFER correctly or
->>>> assuming probe order and that's causing these issues.
->>>>
->>>> So, we can either fix that or you can try adding some code to flush
->>>> the deferred probe workqueue at the end of fw_devlink_resume().
->>>>
->>>> Let me know how it goes.
->>> So far it looks that your patch revealed a hidden issue in exynos5433
->>> clocks configuration, because adding clk_ignore_unused parameter to
->>> kernel command line fixes the boot. I'm still investigating it, so
->>> probable you can ignore my regression report. I will let you know asap
->>> I finish checking it.
->>>
->> Okay, I confirm that the issue is in the Exynos I2S driver and
->> Exynos5433 clock provider. I've posted a quick workaround. I'm sorry for
->> the noise, your patch is fine.
-> Thanks for debugging and finding the real issue. I tried finding your
-> patches, but couldn't. Can you point me to a lore.kernel.org link? I'm
-> just curious to see what the issue was.
+With this patchset, it supports to report the summary at the end of
+interval output.
 
-https://lore.kernel.org/linux-samsung-soc/f67db8c1-453b-4c70-67b9-59762ac34f64@kernel.org/T/#t
+For example,
 
-It looks that one more clock has to be enabled to properly read init 
-configuration. So far it worked, because that device was probed much 
-earlier, before the unused clocks are turned off. Your patch changed the 
-probe order, so that device is probed later.
+ root@kbl-ppc:~# perf stat -e cycles -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000412064          2,281,114      cycles
+      2.001383658          2,547,880      cycles
 
-> I'm guessing you didn't need to pick up this one?
-> https://lore.kernel.org/lkml/20200517173453.157703-1-saravanak@google.com/
+  Performance counter stats for 'system wide':
 
-Best regards
+          4,828,994      cycles
+
+        2.002860349 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000389902          1,536,093      cycles
+      1.000389902            420,226      instructions              #    0.27  insn per cycle
+      2.001433453          2,213,952      cycles
+      2.001433453            735,465      instructions              #    0.33  insn per cycle
+
+  Performance counter stats for 'system wide':
+
+          3,750,045      cycles
+          1,155,691      instructions              #    0.31  insn per cycle
+
+        2.003023361 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -M CPI,IPC -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000435121            905,303      inst_retired.any          #      2.9 CPI
+      1.000435121          2,663,333      cycles
+      1.000435121            914,702      inst_retired.any          #      0.3 IPC
+      1.000435121          2,676,559      cpu_clk_unhalted.thread
+      2.001615941          1,951,092      inst_retired.any          #      1.8 CPI
+      2.001615941          3,551,357      cycles
+      2.001615941          1,950,837      inst_retired.any          #      0.5 IPC
+      2.001615941          3,551,044      cpu_clk_unhalted.thread
+
+  Performance counter stats for 'system wide':
+
+          2,856,395      inst_retired.any          #      2.2 CPI
+          6,214,690      cycles
+          2,865,539      inst_retired.any          #      0.5 IPC
+          6,227,603      cpu_clk_unhalted.thread
+
+        2.003403078 seconds time elapsed
+
+ v6:
+ ---
+ 1. Add comments in perf_evlist__save_aggr_prev_raw_counts.
+ 2. Move init_stats(&walltime_nsecs_stats) under interval condition check.
+
+ Following patches are changed in v6.
+    perf stat: Save aggr value to first member of prev_raw_counts
+    perf stat: Report summary for interval mode
+
+ v5:
+ ---
+ 1. Create new patch "perf stat: Save aggr value to first member
+    of prev_raw_counts".
+
+ 2. Call perf_evlist__save_aggr_prev_raw_counts to save aggr value
+    to first member of prev_raw_counts for AGGR_GLOBAL. Then next,
+    perf_stat_process_counter can create aggr values from per cpu
+    values.
+
+ Following patches are impacted in v5:
+    perf stat: Copy counts from prev_raw_counts to evsel->counts
+    perf stat: Save aggr value to first member of prev_raw_counts
+    perf stat: Report summary for interval mode
+
+ v4:
+ ---
+ 1. Create runtime_stat_reset.
+
+ 2. Zero the aggr in perf_counts__reset and use it to reset
+    prev_raw_counts.
+
+ 3. Move affinity setup and read_counter_cpu to a new function
+    read_affinity_counters. It's only called when stat_config.summary
+    is not set.
+
+ v3:
+ ---
+ 1. 'perf stat: Fix wrong per-thread runtime stat for interval mode'
+    is a new patch which fixes an existing issue found in test.
+
+ 2. We use the prev_raw_counts for summary counts. Drop the summary_counts in v2.
+
+ 3. Fix some issues.
+
+ v2:
+ ---
+ Rebase to perf/core branch
+
+Jin Yao (5):
+  perf stat: Fix wrong per-thread runtime stat for interval mode
+  perf counts: Reset prev_raw_counts counts
+  perf stat: Copy counts from prev_raw_counts to evsel->counts
+  perf stat: Save aggr value to first member of prev_raw_counts
+  perf stat: Report summary for interval mode
+
+ tools/perf/builtin-stat.c | 101 +++++++++++++++++++++++++-------------
+ tools/perf/util/counts.c  |   4 +-
+ tools/perf/util/counts.h  |   1 +
+ tools/perf/util/stat.c    |  53 +++++++++++++++++---
+ tools/perf/util/stat.h    |   3 ++
+ 5 files changed, 122 insertions(+), 40 deletions(-)
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.17.1
 
