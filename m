@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6ED1DADF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FB51DADFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 10:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgETIt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 04:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgETIt5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 04:49:57 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E63C061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 01:49:56 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id n18so2000923wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 01:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=NWaEHiofUdf6wDwIAUa4y4wi7tw1BiA51/qEMLgs6AU=;
-        b=GuF8N+/dbPRSqOaevF9sTk9YryCPv4r7ZqF95iG8M/GZV046sf+1OpVYRUmJ752O9n
-         tLXAERYZqA7k029FQshrGhBiG7tb2rtPY4ogy4K9IyTelhqOq+SVqMCmU49UIRwHlDxZ
-         XJbwXHFhkhNqLBWhbTi4FFgUgCKGRUClXdUGodLuhTUp2TyZe4KEMoou11NlGQUA/wCq
-         6IL8M5cqfbhyfM7K3u2w/YSXQG7ruenssF6HkITumCnwrTls78z0FPxhBCagma1UNfBB
-         DNC8eumC5kfd7gwArsj/TdT7Kd0tYyKMNN79bt9sHM1SUcbk+xmLbHj+qCq/ltslGHEq
-         D8zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NWaEHiofUdf6wDwIAUa4y4wi7tw1BiA51/qEMLgs6AU=;
-        b=tuNuxLzmJQ4oG7oYDi9xq4iiMh56LABO6Nz7TuZacBJyz5++Dn5F5vnp5VXG8f/nId
-         AgBbR1ME+zFzSSG61guk6cHlssLCQ0xP/jwv+U4JnTxsUTP9nR6lgMrdDFU59Or/q7/R
-         C+JiyPFIYmOQK5MrUHT7MxOZhLsv6EjeOgRrCD2P7X8itS/d4FX8IdfsUl5ZsVlInluA
-         A5M98MXid4+wudS5uN/dFS+00IHNoe/gxjRDT5PtPOOzux5Quq/SHASvHBo9YE90d9R+
-         iXm9TIdC+etO/hH39LlBJSMbLnIaJaecDhd62h6FpymPJpZ1HBpySCSVkuwqaBSXmm2N
-         Ayqw==
-X-Gm-Message-State: AOAM532swYHHEkmNTbBVmofDdzfdGkeeC0JYUKZobC5We4/7I5CrNDYL
-        xkUo72emSv2jeaiLC6wkttzw2Q==
-X-Google-Smtp-Source: ABdhPJyep+rJQfzqk9gMxRBnRY9lMOYkgMnXKzNjAD/1SMDl4Fj2JnyisEDn3M3lozBwoT6aLNE+pg==
-X-Received: by 2002:a7b:c4d2:: with SMTP id g18mr3413772wmk.99.1589964595466;
-        Wed, 20 May 2020 01:49:55 -0700 (PDT)
-Received: from dell ([95.149.164.102])
-        by smtp.gmail.com with ESMTPSA id s8sm2168440wrg.34.2020.05.20.01.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 01:49:54 -0700 (PDT)
-Date:   Wed, 20 May 2020 09:49:53 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, vkoul@kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: stm32-timers: Use dma_request_chan() instead
- dma_request_slave_channel()
-Message-ID: <20200520084953.GC271301@dell>
-References: <20200107105959.18920-1-peter.ujfalusi@ti.com>
+        id S1726914AbgETIvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 04:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgETIvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 04:51:14 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA4F12075F;
+        Wed, 20 May 2020 08:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589964674;
+        bh=m6WgH2wUiMinCLHsEKpQVucidQ/rylUlA4pvF2bZGos=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P7xVjdL8CCiApRsAPSCtyHftfAAn0KoMaM5H87JBl8Hh25cR1AMeqcHB3jWNhEt1+
+         9cBd32i35AffKFXJPlWLtfemMEHmllZUZiWL2p9/eowHeWldoOu8hIRlwIUeTPFAo2
+         kVdlgVKXyUJmjFkUCyC1x6BdNOTAg52syJil9sL8=
+Date:   Wed, 20 May 2020 10:51:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     gengcixi@gmail.com
+Cc:     oberpar@linux.ibm.com, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jslaby@suse.com, orsonzhai@gmail.com,
+        zhang.lyra@gmail.com, Cixi Geng <cixi.geng1@unisoc.com>
+Subject: Re: [RFC][PATCH V2] GCOV: profile by modules
+Message-ID: <20200520085111.GE2837844@kroah.com>
+References: <20200520083821.9602-1-gengcixi@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200107105959.18920-1-peter.ujfalusi@ti.com>
+In-Reply-To: <20200520083821.9602-1-gengcixi@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Jan 2020, Peter Ujfalusi wrote:
-
-> dma_request_slave_channel() is a wrapper on top of dma_request_chan()
-> eating up the error code.
+On Wed, May 20, 2020 at 04:38:21PM +0800, gengcixi@gmail.com wrote:
+> From: Cixi Geng <cixi.geng1@unisoc.com>
 > 
-> By using dma_request_chan() directly the driver can support deferred
-> probing against DMA.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > ---
-> Hi,
+> Replace symbol GCOV_PROFILE_MODULES with GCOV_PROFILE_PREREQS
+> ---
+> The CONFIG_GCOV_PROFILE_ALL will compile kernel by profiling entire
+> kernel which will lead to kernel run slower.Use GCOV_PROFILE_PREREQS
+> to control part of the kernel modules to open gcov.
 > 
-> Changes since v1:
-> - Fall back to PIO mode only in case of ENODEV and report all other errors
+> Only add SERIAL_GCOV for an example.
 > 
-> Regards,
-> Peter
+> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+> ---
+>  drivers/tty/serial/Kconfig  |  6 ++++++
+>  drivers/tty/serial/Makefile |  1 +
+>  kernel/gcov/Kconfig         | 14 ++++++++++++++
+>  3 files changed, 21 insertions(+)
 > 
->  drivers/mfd/stm32-timers.c | 32 +++++++++++++++++++++++---------
->  1 file changed, 23 insertions(+), 9 deletions(-)
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index adf9e80e7dc9..964df1a2989c 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1566,3 +1566,9 @@ endmenu
+>  
+>  config SERIAL_MCTRL_GPIO
+>  	tristate
+> +
+> +config SERIAL_GCOV
+> +       bool "open gcov for serial"
 
-Applied, thanks.
+What do you mean by "open"?  And Kconfig entries are usually Upper Case" :)
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> +       depends on GCOV_PROFILE_PREREQS
+> +       help
+> +         Say Y here to enable gcov in serial.
+
+I think we need more text here.
+
+
+> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+> index d056ee6cca33..7be1202286d2 100644
+> --- a/drivers/tty/serial/Makefile
+> +++ b/drivers/tty/serial/Makefile
+> @@ -2,6 +2,7 @@
+>  #
+>  # Makefile for the kernel serial device drivers.
+>  #
+> +GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
+>  
+>  obj-$(CONFIG_SERIAL_CORE) += serial_core.o
+>  
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index 3941a9c48f83..91cc8f3c7c43 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -51,6 +51,20 @@ config GCOV_PROFILE_ALL
+>  	larger and run slower. Also be sure to exclude files from profiling
+>  	which are not linked to the kernel image to prevent linker errors.
+>  
+> +config GCOV_PROFILE_PREREQS
+> +	bool "Profile Kernel subsytem"
+> +	depends on !COMPILE_TEST
+> +	depends on GCOV_KERNEL
+> +	default n
+
+default is always 'n', no need to list that
+
+> +	help
+> +	This options activates profiling for the specified kernel modules.
+> +
+> +	If unsure, say N.
+> +
+> +	When some modules need Gcov data, enable this config, then configure
+> +	with gcov on the corresponding modules configs.The directories or files
+
+'. '?
+
+> +	of these modules will be added profiling flags after kernel compile.
+
+The lines under "help" need to be indented more, right?
+
+thanks,
+
+greg k-h
