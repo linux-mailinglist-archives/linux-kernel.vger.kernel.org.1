@@ -2,172 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2031DAC15
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 09:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8D11DAC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 09:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgETH2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 03:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S1726697AbgETH3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 03:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgETH2e (ORCPT
+        with ESMTP id S1726403AbgETH33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 03:28:34 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BA1C05BD43
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 00:28:34 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id v17so1747876ote.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 00:28:34 -0700 (PDT)
+        Wed, 20 May 2020 03:29:29 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27EAC061A0E;
+        Wed, 20 May 2020 00:29:28 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id i14so2578676qka.10;
+        Wed, 20 May 2020 00:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xkPHVoXP68BKS5mey7jq2q721wyLayczstvvUEvUVF8=;
-        b=pEvWD2PbPHRjXPov0v2cPi6kSsk2SgidZEVQWiKP8t8HL+JLZFvt4KZ8EYY2Bn7cVG
-         39AeQe/ptN2kBoSaOBbJZcZ0MCK15MyXClTAU80ZaaYuoZFF5NJOPJfvTkfVGb8EUK28
-         sJm9O6LWJU6p71VM3KDh7lW/fPq5/0zl0yrJ8dIFdIWWvnP4mWqLrg4fbTrF4H+5py6M
-         IiWfLYKiYvAjt01S8sK6rz97dGBIcMLqKK0tHyxQ4lEtn0oDaN1Dkoq/sDvToyrE7khA
-         04CSFCH7qXynRt3Q6XBMhs9xLs0viiLWy5ltq41le9hewUyJ9SwLeU058foskccxKkbW
-         MyVQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HTou0WUXzDf0o0mQsx/duwk3hrNBz9rboYojoyLD5HQ=;
+        b=tZ2dpYJB4FNN/ruIH8/R+pf4rYd+0NckDU5SgH2l7b7nWMd+tV1DftkaYewtxWFKk9
+         kzSQXi3WUnrcDhIUb8BfU0C9cUi5arGmzK+72smcK69MaXPKLYdE7k3i2v/GBpy8mJyv
+         HLjKCXJH3Pj2sPK6hQOXO+yN1tN/RK3TqvDrEHMxZADeJx0u82Tx7aCDUSqsZYltcfJa
+         Dw9eRuJizPtErqOnV+EABghVnkK0fo0SgFrgsTVTVfC3ql3GK8MCd+atJZJiAuScL6RF
+         Ch53P1isQbeYqq40GhEoj4TjbEc+tVyqUNYxVmfE8z2yIKt9o37CusVqoZRrnvcjAK/v
+         q81Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xkPHVoXP68BKS5mey7jq2q721wyLayczstvvUEvUVF8=;
-        b=ShpQQs67SXwReGA6cDffCJd6ikULoD1di2G16M/HdOX/n9a4PKr2BwnTRjmv/AY07E
-         cvZ7iUGDZoJ3QoN5xQsQdutlPbT6ovPLPwyR2NRqNG0L13K0M5XwnYDjevQfA4BigXLx
-         PzIRivFQ+z7q4wH2tC5YxYnI8Ea62vwzXy5v0GaCAevfa7+Bt3a9cHuarCEU0eNlWeLj
-         1vX8IZhof4pGzxySdxLPODl8bBS4sl9M0Nx0GkU+O2Jf0SIfwjRJ3TxftIlAbWtmOyuk
-         YEPssky10Py2K+o2DlZmKIPEghJ1+AoVmJTQ46ZhYQhouEdz6AFszQwMyVOSHdL9GX/l
-         RTsw==
-X-Gm-Message-State: AOAM531vyjFRNYgZW054BEZIV2oaj/gB0W+MuKDOs8SsufUlbki5YCaq
-        RK7c93Oio1sDubxIlS7+W6d6mZawQ0jRNzB7kDz3gtZsNzQ=
-X-Google-Smtp-Source: ABdhPJxHTL1f25cq3vSGAreLPX7msUeW/P6u8CQM4XOy/t7vEjOii5sMZ0nbDVN30Ck6Irnxw5Hx2MPMVu6XbglWi94=
-X-Received: by 2002:a05:6830:18ce:: with SMTP id v14mr2045756ote.251.1589959713491;
- Wed, 20 May 2020 00:28:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HTou0WUXzDf0o0mQsx/duwk3hrNBz9rboYojoyLD5HQ=;
+        b=hd+pRQpSJw0BAsda3XsFO7HqelwXO9pzDH3forsHROmKmseZBYhMXlNJGU8KYJJwNG
+         iW8gUxQQD8C0HcOz52MD31WQlWhZ1XEyZPFzvefyeF1qjty6rMvfIXZIHrlDZxh8xPqD
+         voFk/z4DJ3T0cYM+0972EeJqKvDtBq4GFYCmdGESkp+Qy+0vX5XMzxns4Th9XoDQAcdY
+         XtEzaxH/9hp6M6buZNruWSkhw8dTRHjsmqzuMPLsuqas5dGQRSptohnbhAiyxBnob4V/
+         htFftuQ5XFzIDoZIu/ZT+6WkWAJgjSogozzqMhBAuEJgY+N37ELMJtRgv9Q2oYSe5t7w
+         /yCQ==
+X-Gm-Message-State: AOAM532Hdjwb0tHZpKW899AHLDbfWri5osC2NMWOKo1v0kf7RNZYa7p8
+        BpxPidl7NodO+wIyIIf9w5s=
+X-Google-Smtp-Source: ABdhPJxSr2e4My6HF39ER0wjT+rTL2Jx/3tBpkFRC1TW2tLEbOFEbU7rgeg3puCqKKnn2RGsFxr8fw==
+X-Received: by 2002:a37:8d85:: with SMTP id p127mr3040499qkd.35.1589959767869;
+        Wed, 20 May 2020 00:29:27 -0700 (PDT)
+Received: from ict14-OptiPlex-980 ([178.23.248.46])
+        by smtp.gmail.com with ESMTPSA id c26sm1551092qkm.98.2020.05.20.00.29.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 May 2020 00:29:27 -0700 (PDT)
+Date:   Wed, 20 May 2020 09:29:22 +0200
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: iio: imu: bmi160: convert txt format
+ to yaml
+Message-ID: <20200520072922.GG3361@ict14-OptiPlex-980>
+References: <20200519075111.6356-1-jonathan.albrieux@gmail.com>
+ <20200519075111.6356-2-jonathan.albrieux@gmail.com>
+ <20200519182028.GB342367@bogus>
 MIME-Version: 1.0
-References: <87y2pn60ob.fsf@nanos.tec.linutronix.de> <360AFD09-27EC-4133-A5E3-149B8C0C4232@lca.pw>
- <20200520024736.GA854786@ubuntu-s3-xlarge-x86> <CAG=TAF4M5s1kQ98ys_YCgRS9WqjV_9KEbPCFiS71MA_QK8epdA@mail.gmail.com>
- <20200520034426.GA1027673@ubuntu-s3-xlarge-x86>
-In-Reply-To: <20200520034426.GA1027673@ubuntu-s3-xlarge-x86>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 20 May 2020 09:28:20 +0200
-Message-ID: <CANpmjNMiiDN0AueijLbkbhEX0vLc3xfPyA7kec5_T3Qku7wkMw@mail.gmail.com>
-Subject: Re: [PATCH] READ_ONCE, WRITE_ONCE, kcsan: Perform checks in __*_ONCE variants
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Qian Cai <cai@lca.pw>, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519182028.GB342367@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 May 2020 at 05:44, Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Tue, May 19, 2020 at 12:20:28PM -0600, Rob Herring wrote:
+> On Tue, May 19, 2020 at 09:50:57AM +0200, Jonathan Albrieux wrote:
+> > Converts documentation from txt format to yaml 
+> > 
+> > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > ---
+> >  .../devicetree/bindings/iio/imu/bmi160.txt    | 37 --------
+> >  .../devicetree/bindings/iio/imu/bmi160.yaml   | 84 +++++++++++++++++++
+> >  2 files changed, 84 insertions(+), 37 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/iio/imu/bmi160.txt
+> >  create mode 100644 Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> 
+> Use compatible string for filename: bosch,bmi160.yaml
 >
-> On Tue, May 19, 2020 at 11:16:24PM -0400, Qian Cai wrote:
-> > On Tue, May 19, 2020 at 10:47 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > On Tue, May 19, 2020 at 10:28:41PM -0400, Qian Cai wrote:
-> > > >
-> > > >
-> > > > > On May 19, 2020, at 6:05 PM, Thomas Gleixner <tglx@linutronix.de>=
- wrote:
-> > > > >
-> > > > > Yes, it's unfortunate, but we have to stop making major concessio=
-ns just
-> > > > > because tools are not up to the task.
-> > > > >
-> > > > > We've done that way too much in the past and this particular prob=
-lem
-> > > > > clearly demonstrates that there are limits.
-> > > > >
-> > > > > Making brand new technology depend on sane tools is not asked too
-> > > > > much. And yes, it's inconvenient, but all of us have to build too=
-ls
-> > > > > every now and then to get our job done. It's not the end of the w=
-orld.
-> > > > >
-> > > > > Building clang is trivial enough and pointing the make to the rig=
-ht
-> > > > > compiler is not rocket science either.
-> > > >
-> > > > Yes, it all make sense from that angle. On the other hand, I want t=
-o be focus on kernel rather than compilers by using a stable and rocket-sol=
-id version. Not mentioned the time lost by compiling and properly manage my=
- own toolchain in an automated environment, using such new version of compi=
-lers means that I have to inevitably deal with compiler bugs occasionally. =
-Anyway, it is just some other more bugs I have to deal with, and I don=E2=
-=80=99t have a better solution to offer right now.
-> > >
-> > > Hi Qian,
-> > >
-> > > Shameless plug but I have made a Python script to efficiently configu=
-re
-> > > then build clang specifically for building the kernel (turn off a lot=
- of
-> > > different things that the kernel does not need).
-> > >
-> > > https://github.com/ClangBuiltLinux/tc-build
-> > >
-> > > I added an option '--use-good-revision', which uses an older master
-> > > version (basically somewhere between clang-10 and current master) tha=
-t
-> > > has been qualified against the kernel. I currently update it every
-> > > Linux release but I am probably going to start doing it every month a=
-s
-> > > I have written a pretty decent framework to ensure that nothing is
-> > > breaking on either the LLVM or kernel side.
-> > >
-> > > $ ./build-llvm.py --use-good-revision
-> > >
-> > > should be all you need to get off the ground and running if you wante=
-d
-> > > to give it a shot. The script is completely self contained by default=
- so
-> > > it won't mess with the rest of your system. Additionally, leaving off
-> > > '--use-good-revision' will just use the master branch, which can
-> > > definitely be broken but not as often as you would think (although I
-> > > totally understand wanting to focus on kernel regressions only).
-> >
-> > Great, thanks. I'll try it in a bit.
->
-> Please let me know if there are any issues!
->
-> Do note that in order to get support for Marco's series, you will need
-> to have a version of LLVM that includes [1], which the current
-> --use-good-revision does not. You can checkout that revision exactly
-> through the '-b' ('--branch') parameter:
->
-> $ ./build-llvm.py -b 5a2c31116f412c3b6888be361137efd705e05814
->
-> I also see another patch in LLVM that concerns KCSAN [2] but that does
-> not appear used in Marco's series. Still might be worth having available
-> in your version of clang.
->
-> I'll try to bump the hash that '--use-good-revision' uses soon. I might
-> wait until 5.7 final so that I can do both at the same time like I
-> usually do but we'll see how much time I have.
->
-> [1]: https://github.com/llvm/llvm-project/commit/5a2c31116f412c3b6888be36=
-1137efd705e05814
-> [2]: https://github.com/llvm/llvm-project/commit/151ed6aa38a3ec6c01973b35=
-f684586b6e1c0f7e
 
-Thanks for sharing the script, this is very useful!
+Ok thank you, will change filename.
+ 
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/imu/bmi160.txt b/Documentation/devicetree/bindings/iio/imu/bmi160.txt
+> > deleted file mode 100644
+> > index 900c169de00f..000000000000
+> > --- a/Documentation/devicetree/bindings/iio/imu/bmi160.txt
+> > +++ /dev/null
+> > @@ -1,37 +0,0 @@
+> > -Bosch BMI160 - Inertial Measurement Unit with Accelerometer, Gyroscope
+> > -and externally connectable Magnetometer
+> > -
+> > -https://www.bosch-sensortec.com/bst/products/all_products/bmi160
+> > -
+> > -Required properties:
+> > - - compatible : should be "bosch,bmi160"
+> > - - reg : the I2C address or SPI chip select number of the sensor
+> > - - spi-max-frequency : set maximum clock frequency (only for SPI)
+> > -
+> > -Optional properties:
+> > - - interrupts : interrupt mapping for IRQ
+> > - - interrupt-names : set to "INT1" if INT1 pin should be used as interrupt
+> > -   input, set to "INT2" if INT2 pin should be used instead
+> > - - drive-open-drain : set if the specified interrupt pin should be configured as
+> > -   open drain. If not set, defaults to push-pull.
+> > -
+> > -Examples:
+> > -
+> > -bmi160@68 {
+> > -	compatible = "bosch,bmi160";
+> > -	reg = <0x68>;
+> > -
+> > -	interrupt-parent = <&gpio4>;
+> > -	interrupts = <12 IRQ_TYPE_EDGE_RISING>;
+> > -	interrupt-names = "INT1";
+> > -};
+> > -
+> > -bmi160@0 {
+> > -	compatible = "bosch,bmi160";
+> > -	reg = <0>;
+> > -	spi-max-frequency = <10000000>;
+> > -
+> > -	interrupt-parent = <&gpio2>;
+> > -	interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
+> > -	interrupt-names = "INT2";
+> > -};
+> > diff --git a/Documentation/devicetree/bindings/iio/imu/bmi160.yaml b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> > new file mode 100644
+> > index 000000000000..6b464ce5ed0b
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/imu/bmi160.yaml
+> > @@ -0,0 +1,84 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/imu/bmi160.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Bosch BMI160
+> > +
+> > +maintainers:
+> > +  - can't find a mantainer, author is Daniel Baluta <daniel.baluta@intel.com>
+> 
+> Would help to Cc him perhaps.
+> 
 
-Note that [2] above is used, but optional:
-https://lore.kernel.org/lkml/20200515150338.190344-5-elver@google.com/
-It's not required for KCSAN to function correctly, but if it's
-available it'll help find more data races with the default config.
+Thank you, I will add him too on the next version.
 
-Thanks,
--- Marco
+> > +
+> > +description: |
+> > +  Inertial Measurement Unit with Accelerometer, Gyroscope and externally
+> > +  connectable Magnetometer
+> > +  https://www.bosch-sensortec.com/bst/products/all_products/bmi160
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: bosch,bmi160
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: the I2C address or SPI chip select number of the sensor
+> > +
+> > +  spi-max-frequency:
+> > +    maxItems: 1
+> > +    description: set maximum clock frequency (required only for SPI)
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +    description: interrupt mapping for IRQ
+> 
+> No need for description if not adding anything unique for this device.
+> 
+
+Will remove it then.
+
+> > +
+> > +  interrupt-names:
+> > +    minItems: 1
+> > +    maxItems: 1
+> > +    items:
+> > +      enum:
+> > +        - INT1
+> > +        - INT2
+> 
+> Just the enum is enough.
+> 
+
+Ok, will clean this.
+
+> > +    description: |
+> > +      set to "INT1" if INT1 pin should be used as interrupt input, set
+> > +      to "INT2" if INT2 pin should be used instead
+> > +
+> > +  drive-open-drain:
+> > +    description: |
+> > +      set if the specified interrupt pin should be configured as
+> > +      open drain. If not set, defaults to push-pull.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +examples:
+> > +  - |
+> > +    // Example for I2C
+> > +    i2c@78b7000 {
+> > +        reg = <0x78b6000 0x600>;
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        bmi160@68 {
+> > +                compatible = "bosch,bmi160";
+> > +                reg = <0x68>;
+> > +                interrupt-parent = <&gpio4>;
+> > +                interrupts = <12 1>;
+> > +                interrupt-names = "INT1";
+> > +        };
+> > +  - |
+> > +    // Example for SPI
+> > +    spi@78b7000 {
+> > +        reg = <0x78b7000 0x600>,
+> > +              <0x7884000 0x23000>;
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        bmi160@0 {
+> > +                compatible = "bosch,bmi160";
+> > +                reg = <0>;
+> > +                spi-max-frequency = <10000000>;
+> > +                interrupt-parent = <&gpio2>;
+> > +                interrupts = <12 1>;
+> > +                interrupt-names = "INT2";
+> > +        };
+> > +    };
+> > -- 
+> > 2.17.1
+> > 
+
+Thank you for your help,
+
+Best regards,
+Jonathan Albrieux
