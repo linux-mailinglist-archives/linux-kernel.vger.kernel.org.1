@@ -2,193 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF91DB010
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFA51DB027
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 12:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbgETKXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 06:23:49 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:14698 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgETKXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 06:23:48 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49RpkS2nC5z9tyrh;
-        Wed, 20 May 2020 12:23:44 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id o0EE-i3VuAXH; Wed, 20 May 2020 12:23:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49RpkS232pz9tyrd;
-        Wed, 20 May 2020 12:23:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E73658B7BC;
-        Wed, 20 May 2020 12:23:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3pGrT1tspxue; Wed, 20 May 2020 12:23:45 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96EB28B7BB;
-        Wed, 20 May 2020 12:23:45 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 56DD165A4A; Wed, 20 May 2020 10:23:45 +0000 (UTC)
-Message-Id: <b34706f8de87f84d135abb5f3ede6b6f16fb1f41.1589969799.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] Revert "powerpc/32s: reorder Linux PTE bits to better match
- Hash PTE bits."
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rui Salvaterra <rsalvaterra@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 20 May 2020 10:23:45 +0000 (UTC)
+        id S1726691AbgETK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 06:29:04 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:52856 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgETK3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 06:29:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pcnkdhzo7iybmY/3WHM6a4StwuJiDWWOYzMSkFwQnZk=; b=faG8a+VJtLLWswqGM9/4fhymDn
+        ufqqw9OgQjgXYtTDE7nAqGEUdCbbE2Mt/fpp63fk46qu6qX+ljtb8wZ7wboqp/1JE6Q1rPogvGY7E
+        aH+OHEZuBDWr0kx9FKcShW4Vdal8XB6MiwHbYBbwZSSOkSED9YHFeU/e8ovIYSim6E5QyJ6n1ICMI
+        p52jeQShZ7j88YNZ4qqNCH0opOnYjNi5QkG/GSkh8Tupe7O2bax+HUl83cRkhQyjEGQvKlwawZFwR
+        LZ6V1P4+spyRr73FS1hNVmp+QPPDGfrmUQOOTKLfjuTtJpy2VWT6Evp/B1+rON9sujijy0f9drG/r
+        dI/lIRoQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbLtW-0005Q2-Jj; Wed, 20 May 2020 10:24:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4543300478;
+        Wed, 20 May 2020 12:24:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 06F5325D60CB3; Wed, 20 May 2020 12:24:08 +0200 (CEST)
+Date:   Wed, 20 May 2020 12:24:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH 3/8] srcu: Use local_lock() for per-CPU struct srcu_data
+ access
+Message-ID: <20200520102407.GF317569@hirez.programming.kicks-ass.net>
+References: <20200519201912.1564477-1-bigeasy@linutronix.de>
+ <20200519201912.1564477-4-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519201912.1564477-4-bigeasy@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 697ece78f8f749aeea40f2711389901f0974017a.
+On Tue, May 19, 2020 at 10:19:07PM +0200, Sebastian Andrzej Siewior wrote:
 
-The implementation of SWAP on powerpc requires page protection
-bits to not be one of the least significant PTE bits.
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 0c71505f0e19c..8d2b5f75145d7 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/module.h>
+>  #include <linux/srcu.h>
+> +#include <linux/locallock.h>
+>  
+>  #include "rcu.h"
+>  #include "rcu_segcblist.h"
+> @@ -735,6 +736,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+>  	smp_mb(); /* D */  /* Pairs with C. */
+>  }
+>  
+> +static DEFINE_LOCAL_LOCK(sda_lock);
+>  /*
+>   * If SRCU is likely idle, return true, otherwise return false.
+>   *
+> @@ -765,13 +767,13 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+>  	unsigned long tlast;
+>  
+>  	/* If the local srcu_data structure has callbacks, not idle.  */
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(sda_lock, flags);
+>  	sdp = this_cpu_ptr(ssp->sda);
+>  	if (rcu_segcblist_pend_cbs(&sdp->srcu_cblist)) {
+> -		local_irq_restore(flags);
+> +		local_unlock_irqrestore(sda_lock, flags);
+>  		return false; /* Callbacks already present, so not idle. */
+>  	}
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(sda_lock, flags);
 
-Until the SWAP implementation is changed and this requirement voids,
-we have to keep at least _PAGE_RW outside of the 3 last bits.
-
-For now, revert to previous PTE bits order. A further rework
-may come later.
-
-Reported-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Fixes: 697ece78f8f7 ("powerpc/32s: reorder Linux PTE bits to better match Hash PTE bits.")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/book3s/32/hash.h |  8 ++++----
- arch/powerpc/kernel/head_32.S             |  9 ++++++---
- arch/powerpc/mm/book3s32/hash_low.S       | 14 ++++++++------
- 3 files changed, 18 insertions(+), 13 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/book3s/32/hash.h b/arch/powerpc/include/asm/book3s/32/hash.h
-index 34a7215ae81e..2a0a467d2985 100644
---- a/arch/powerpc/include/asm/book3s/32/hash.h
-+++ b/arch/powerpc/include/asm/book3s/32/hash.h
-@@ -17,9 +17,9 @@
-  * updating the accessed and modified bits in the page table tree.
-  */
- 
--#define _PAGE_USER	0x001	/* usermode access allowed */
--#define _PAGE_RW	0x002	/* software: user write access allowed */
--#define _PAGE_PRESENT	0x004	/* software: pte contains a translation */
-+#define _PAGE_PRESENT	0x001	/* software: pte contains a translation */
-+#define _PAGE_HASHPTE	0x002	/* hash_page has made an HPTE for this pte */
-+#define _PAGE_USER	0x004	/* usermode access allowed */
- #define _PAGE_GUARDED	0x008	/* G: prohibit speculative access */
- #define _PAGE_COHERENT	0x010	/* M: enforce memory coherence (SMP systems) */
- #define _PAGE_NO_CACHE	0x020	/* I: cache inhibit */
-@@ -27,7 +27,7 @@
- #define _PAGE_DIRTY	0x080	/* C: page changed */
- #define _PAGE_ACCESSED	0x100	/* R: page referenced */
- #define _PAGE_EXEC	0x200	/* software: exec allowed */
--#define _PAGE_HASHPTE	0x400	/* hash_page has made an HPTE for this pte */
-+#define _PAGE_RW	0x400	/* software: user write access allowed */
- #define _PAGE_SPECIAL	0x800	/* software: Special page */
- 
- #ifdef CONFIG_PTE_64BIT
-diff --git a/arch/powerpc/kernel/head_32.S b/arch/powerpc/kernel/head_32.S
-index daaa153950c2..97c887950c3c 100644
---- a/arch/powerpc/kernel/head_32.S
-+++ b/arch/powerpc/kernel/head_32.S
-@@ -348,7 +348,7 @@ BEGIN_MMU_FTR_SECTION
- 	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
- #endif
- 	bne	handle_page_fault_tramp_2	/* if not, try to put a PTE */
--	rlwinm	r3, r5, 32 - 24, 30, 30		/* DSISR_STORE -> _PAGE_RW */
-+	rlwinm	r3, r5, 32 - 15, 21, 21		/* DSISR_STORE -> _PAGE_RW */
- 	bl	hash_page
- 	b	handle_page_fault_tramp_1
- FTR_SECTION_ELSE
-@@ -497,6 +497,7 @@ InstructionTLBMiss:
- 	andc.	r1,r1,r0		/* check access & ~permission */
- 	bne-	InstructionAddressInvalid /* return if access not permitted */
- 	/* Convert linux-style PTE to low word of PPC-style PTE */
-+	rlwimi	r0,r0,32-2,31,31	/* _PAGE_USER -> PP lsb */
- 	ori	r1, r1, 0xe06		/* clear out reserved bits */
- 	andc	r1, r0, r1		/* PP = user? 1 : 0 */
- BEGIN_FTR_SECTION
-@@ -564,8 +565,9 @@ DataLoadTLBMiss:
- 	 * we would need to update the pte atomically with lwarx/stwcx.
- 	 */
- 	/* Convert linux-style PTE to low word of PPC-style PTE */
--	rlwinm	r1,r0,0,30,30		/* _PAGE_RW -> PP msb */
--	rlwimi	r0,r0,1,30,30		/* _PAGE_USER -> PP msb */
-+	rlwinm	r1,r0,32-9,30,30	/* _PAGE_RW -> PP msb */
-+	rlwimi	r0,r0,32-1,30,30	/* _PAGE_USER -> PP msb */
-+	rlwimi	r0,r0,32-1,31,31	/* _PAGE_USER -> PP lsb */
- 	ori	r1,r1,0xe04		/* clear out reserved bits */
- 	andc	r1,r0,r1		/* PP = user? rw? 1: 3: 0 */
- BEGIN_FTR_SECTION
-@@ -643,6 +645,7 @@ DataStoreTLBMiss:
- 	 * we would need to update the pte atomically with lwarx/stwcx.
- 	 */
- 	/* Convert linux-style PTE to low word of PPC-style PTE */
-+	rlwimi	r0,r0,32-2,31,31	/* _PAGE_USER -> PP lsb */
- 	li	r1,0xe06		/* clear out reserved bits & PP msb */
- 	andc	r1,r0,r1		/* PP = user? 1: 0 */
- BEGIN_FTR_SECTION
-diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
-index 6d236080cb1a..877d880890fe 100644
---- a/arch/powerpc/mm/book3s32/hash_low.S
-+++ b/arch/powerpc/mm/book3s32/hash_low.S
-@@ -35,7 +35,7 @@ mmu_hash_lock:
- /*
-  * Load a PTE into the hash table, if possible.
-  * The address is in r4, and r3 contains an access flag:
-- * _PAGE_RW (0x002) if a write.
-+ * _PAGE_RW (0x400) if a write.
-  * r9 contains the SRR1 value, from which we use the MSR_PR bit.
-  * SPRG_THREAD contains the physical address of the current task's thread.
-  *
-@@ -69,7 +69,7 @@ _GLOBAL(hash_page)
- 	blt+	112f			/* assume user more likely */
- 	lis	r5, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
- 	addi	r5 ,r5 ,(swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
--	rlwimi	r3,r9,32-14,31,31	/* MSR_PR -> _PAGE_USER */
-+	rlwimi	r3,r9,32-12,29,29	/* MSR_PR -> _PAGE_USER */
- 112:
- #ifndef CONFIG_PTE_64BIT
- 	rlwimi	r5,r4,12,20,29		/* insert top 10 bits of address */
-@@ -94,7 +94,7 @@ _GLOBAL(hash_page)
- #else
- 	rlwimi	r8,r4,23,20,28		/* compute pte address */
- #endif
--	rlwinm	r0,r3,6,24,24		/* _PAGE_RW access -> _PAGE_DIRTY */
-+	rlwinm	r0,r3,32-3,24,24	/* _PAGE_RW access -> _PAGE_DIRTY */
- 	ori	r0,r0,_PAGE_ACCESSED|_PAGE_HASHPTE
- 
- 	/*
-@@ -310,9 +310,11 @@ Hash_msk = (((1 << Hash_bits) - 1) * 64)
- 
- _GLOBAL(create_hpte)
- 	/* Convert linux-style PTE (r5) to low word of PPC-style PTE (r8) */
-+	rlwinm	r8,r5,32-9,30,30	/* _PAGE_RW -> PP msb */
- 	rlwinm	r0,r5,32-6,30,30	/* _PAGE_DIRTY -> PP msb */
--	and	r8,r5,r0		/* writable if _RW & _DIRTY */
--	rlwimi	r5,r5,1,30,30		/* _PAGE_USER -> PP msb */
-+	and	r8,r8,r0		/* writable if _RW & _DIRTY */
-+	rlwimi	r5,r5,32-1,30,30	/* _PAGE_USER -> PP msb */
-+	rlwimi	r5,r5,32-2,31,31	/* _PAGE_USER -> PP lsb */
- 	ori	r8,r8,0xe04		/* clear out reserved bits */
- 	andc	r8,r5,r8		/* PP = user? (rw&dirty? 1: 3): 0 */
- BEGIN_FTR_SECTION
-@@ -564,7 +566,7 @@ _GLOBAL(flush_hash_pages)
- 33:	lwarx	r8,0,r5			/* fetch the pte flags word */
- 	andi.	r0,r8,_PAGE_HASHPTE
- 	beq	8f			/* done if HASHPTE is already clear */
--	rlwinm	r8,r8,0,~_PAGE_HASHPTE	/* clear HASHPTE bit */
-+	rlwinm	r8,r8,0,31,29		/* clear HASHPTE bit */
- 	stwcx.	r8,0,r5			/* update the pte */
- 	bne-	33b
- 
--- 
-2.25.0
-
+Would it perhaps make sense to stick the local_lock in struct srcu_data ?
