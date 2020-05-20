@@ -2,146 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9130E1DA85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7668F1DA84A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 04:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgETC7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 19 May 2020 22:59:37 -0400
-Received: from mail-am6eur05on2074.outbound.protection.outlook.com ([40.107.22.74]:11521
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728702AbgETC7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 19 May 2020 22:59:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LgWayIxBwWXTxh77VoNlBJ0N4wnGAfQ0CKAHq4ZvmQGfRtPpjB3LMWY5Xf4tz2YAtcbY9PTlUqcKa9wFRHmXGECxew22/3YZ5idCHM2MVP2o6isflP56kDwNbe4NVweTaava+NPCgsfYAMTWAVnAFP0Fp408jG6UaE2npA5lRIFk7Gzjiujo5+plnw3rqiu603VwHkdjhvOq7EQ+YLqP5p++oBJ/OunIq+ovZu1yKzXuXNKQH7GAyH5NKAhqgNphrtjyR9cQz32oEcSXot+Fz40BHA3O30EOPSkwgbgBDz1TER3hgIqc4kD0SwEC1nkwjMg38dkbj2nbOe7uNIwuAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T5zCrxqrYdDhwlKvQaiCmennCqm9k07OLzQSm95LsW4=;
- b=f0UOPf5pva13C9RTo8Rn3Q5rnuch3aPLppNaxWabWTuBAOq7aUUk9/ctj+wr1YJVgj4qzGVEfaEeOjKZrc8WDSk9wIGNhyqGjizI9/pN6+BqrS6ysYZCf7CG2Hz/A6GEZAq0ATp8mi6zKmggS7sAYxGNfoq4+yo2HM5OC2XjwXp9WZz5yW3JOE+hsR76vX7W8Psl+qxmET7h3Erq6+okN8X8yDLs/BG6zpp2Ao8WvhOYdnbR1Cv49xpbNkMwxsLdDisC/vdc3dWI51cfDT6XuUpX/mTkFModqq1cZhnNESh8Q2VkA9yUI0K0pNhphwMsLNIDOvLZHOCIrJaxmiAFaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T5zCrxqrYdDhwlKvQaiCmennCqm9k07OLzQSm95LsW4=;
- b=L/VWIYrH1iM4xPe0R7PU677ZkR1tyXacxr5rG1CT9MZMaQ3YqvE5nnViju3SYPuFtFzEU22UkNDEArga189jG06GjTX4A+XLuYUud3Z9lXUVOdzGd0tJyeDToz+yydU1E/o/14v7rtb0todXinhmUwiqQlGT2H2epB9w7ENnJKI=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB6634.eurprd04.prod.outlook.com (2603:10a6:10:10e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.27; Wed, 20 May
- 2020 02:59:31 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::2924:94ba:2206:216e]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::2924:94ba:2206:216e%7]) with mapi id 15.20.3000.034; Wed, 20 May 2020
- 02:59:31 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     john.garry@huawei.com, will@kernel.org, mark.rutland@arm.com,
-        robh+dt@kernel.org, shawnguo@kernel.org
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 3/3] arm64: dts: imx8/8mm/8mn/8mq: add identifier for DDR perf
-Date:   Wed, 20 May 2020 10:56:19 +0800
-Message-Id: <20200520025619.687-4-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200520025619.687-1-qiangqing.zhang@nxp.com>
-References: <20200520025619.687-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0142.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::22) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0142.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Wed, 20 May 2020 02:59:28 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b0d37a41-12dd-4457-ba5e-08d7fc69d15b
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6634:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB6634564660549414F9252D87E6B60@DB8PR04MB6634.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-Forefront-PRVS: 04097B7F7F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V6tnQ/Y0TIULIZwzear2fnHPLLQAMiPw4m95v8ZM1YPVY0jqpu/ID5SwN+NApStu9c/jtynpq0UEfZyOl12Vjh56pmg1ZWAfodl3PiivEvZVYxG8fZnOmXVzDqty+QF5IOqMkr3lr3YZVREN1cyv6L3EdjnMp2j7plu+8DDddPMFfYKvwvDwvDgvfpnglE7bC87cE0rmpMoeOFFqoBmZXuUlc80j7MzIfFZKVe+bdQ4jNDjlOjBP0+eRF2hhSGQnVHzReERMF8LvNneE90jN3KupaMoLjpvQw69QUwb+h6OSKxEQ9LTbXzmqlCOOPcz4zWh/SPUQPVnHG1Tz2696Z83wGzXGFNUL8bksI06XYW36yX0a0oWO5HYwr6XK7JfGS2ASHfUpDOrARB8YsaE+9ZwrrcCLMuRIUkqhCiCXmHjAuM5rJ1/gGuuwczMzVPZaQXMC+vPaUdLKcZ4B7OXD64g7BIM4EF7XYFzDst4CkwdP4yUrRJpzAchmcC2qELLt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(366004)(8676002)(478600001)(2906002)(6486002)(956004)(8936002)(6666004)(2616005)(36756003)(6506007)(16526019)(5660300002)(66556008)(66476007)(4326008)(26005)(66946007)(1076003)(6512007)(316002)(86362001)(69590400007)(186003)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: CHe32/Bhg5qY8LRRCSeNJe9LnmA4dRWIa9VTyW1v4akUEupOO889gRgnyBUg7U1285l/AMlqJ83NByff5LQ3Jc7GtjWyxnz8gwfSIxBr8rIDQH3zSMGOoPkF2qvEK9ZGlprH27KFg/JLr4+5iZMrE1xjL0S0HeY4211mhQDCQAqEzS0yC7qhuZmtR0AZntl828tSy582J5ri8irOFy9wdgAheBIvhTIui0PKEaUgSZs/3QSfMlPTJTMSdJu5ZQMH2Gm+GpSKohxjXUutxjgxMuOEM3ZEe3cr5W2u6WyvZps5viM+gEf0c5m8eLy33gS0UZtyrbUtgH1wUi0GjJIhebH4GpWA5mtN6Kt8hfOn4UUoKTqzlz0QhemvWj21ET8bmerbYMrDzXueSd1kLTJ40/FYAJ2F7TppH9W8JHvmouNSkPeGXIz47J+3f0eBOV8CChNJ9AJxpdHXVSeB6w9iViCdCB9C+J0iTk+uMCkNdFk=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0d37a41-12dd-4457-ba5e-08d7fc69d15b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2020 02:59:31.2650
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MZS6VTlagS7bwuMKBofRKpPGqxM+J6c8+gz4gqawg/xhQrMXjq2VZq6xmda6A/xZbgQm+iUXvLrvpsLnaeqVmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6634
+        id S1728638AbgETC5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 19 May 2020 22:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgETC5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 19 May 2020 22:57:24 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32449C061A0E;
+        Tue, 19 May 2020 19:57:24 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4069512942617;
+        Tue, 19 May 2020 19:57:23 -0700 (PDT)
+Date:   Tue, 19 May 2020 19:57:22 -0700 (PDT)
+Message-Id: <20200519.195722.1091264300612213554.davem@davemloft.net>
+To:     tglx@linutronix.de
+Cc:     stephen@networkplumber.org, a.darwish@linutronix.de,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        paulmck@kernel.org, bigeasy@linutronix.de, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v1 01/25] net: core: device_rename: Use rwsem instead
+ of a seqcount
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <87lfln5w61.fsf@nanos.tec.linutronix.de>
+References: <87v9kr5zt7.fsf@nanos.tec.linutronix.de>
+        <20200519161141.5fbab730@hermes.lan>
+        <87lfln5w61.fsf@nanos.tec.linutronix.de>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 19 May 2020 19:57:23 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add identifier property for DDR perf.
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Wed, 20 May 2020 01:42:30 +0200
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mm.dtsi  | 1 +
- arch/arm64/boot/dts/freescale/imx8mn.dtsi  | 1 +
- arch/arm64/boot/dts/freescale/imx8mq.dtsi  | 1 +
- arch/arm64/boot/dts/freescale/imx8qxp.dtsi | 1 +
- 4 files changed, 4 insertions(+)
+> Stephen Hemminger <stephen@networkplumber.org> writes:
+>> On Wed, 20 May 2020 00:23:48 +0200
+>> Thomas Gleixner <tglx@linutronix.de> wrote:
+>>> No. We did not. -ENOTESTCASE
+>>
+>> Please try, it isn't that hard..
+>>
+>> # time for ((i=0;i<1000;i++)); do ip li add dev dummy$i type dummy; done
+>>
+>> real	0m17.002s
+>> user	0m1.064s
+>> sys	0m0.375s
+> 
+> And that solves the incorrectness of the current code in which way?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 1e5e11592f7b..ee14a6ecdb93 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -898,6 +898,7 @@
- 			reg = <0x3d800000 0x400000>;
- 			interrupt-parent = <&gic>;
- 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-+			identifier = "i.mx8mm";
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index a44b5438e842..b93e56ebf9a7 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -796,6 +796,7 @@
- 			compatible = "fsl,imx8mn-ddr-pmu", "fsl,imx8m-ddr-pmu";
- 			reg = <0x3d800000 0x400000>;
- 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-+			identifier = "i.mx8mn";
- 		};
- 	};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 6a1e83922c71..38cc93af35ac 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1217,6 +1217,7 @@
- 			reg = <0x3d800000 0x400000>;
- 			interrupt-parent = <&gic>;
- 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-+			identifier = "i.mx8mq";
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-index fb5f752b15fe..0c294b549806 100644
---- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-@@ -436,6 +436,7 @@
- 			compatible = "fsl,imx8-ddr-pmu";
- 			reg = <0x5c020000 0x10000>;
- 			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-+			identifier = "i.mx8";
- 		};
- 	};
- 
--- 
-2.17.1
+You mentioned that there wasn't a test case, he gave you one to try.
 
