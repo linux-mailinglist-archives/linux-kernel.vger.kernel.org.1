@@ -2,177 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3C61DC0EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804E61DC0F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 May 2020 23:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgETVIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 17:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbgETVIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 17:08:17 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728354AbgETVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 17:08:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27242 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727018AbgETVIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 20 May 2020 17:08:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590008928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NDXFwaANeSRgHjjtGuv6a9pUflLvS5TDaJmPMi98Sp4=;
+        b=Qvwd4GnDGvaxJJJZFXuUIR2iaYZpaH4RQa/tImfcOntwSrPCeimbODQhuuWsRwbehS04rQ
+        EoTt7KnHd0/AWkD10ZX1HxSFB/ghj1NBGwX7PjqHdJ+6SdCkX7fqCE5/aEHijGxwwGJ2ha
+        8mXCEK6nxF2UTpV/14GeRe6dU421frU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-B7Katbi6Pr26cOX6xyfFdA-1; Wed, 20 May 2020 17:08:46 -0400
+X-MC-Unique: B7Katbi6Pr26cOX6xyfFdA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 835FC207E8;
-        Wed, 20 May 2020 21:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590008896;
-        bh=c0V7GL4Nb2G+qi++78RB/y2wHCzv87xFGlB6Wz+fgi4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tWvh2OYjJ8q4o1t8obrsRMY94HKGKV8cmHxBBxtVQee24+dPxXoP/SShe7Zvq6isG
-         6rAsKIlc6nC2z6lk9ifH//A7oAxdgvKYPcEhPxRAkw5CdCjUxlJmCOt1dXlY0u7iMc
-         IQnWZVIf7YA5z4AkFfNWujMNARHFKrf3pY//W8fQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B5DB440AFD; Wed, 20 May 2020 18:08:14 -0300 (-03)
-Date:   Wed, 20 May 2020 18:08:14 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/19] perf ftrace: add option '-b/--buffer-size' to set
- per-cpu buffer size
-Message-ID: <20200520210814.GB32678@kernel.org>
-References: <20200510150628.16610-1-changbin.du@gmail.com>
- <20200510150628.16610-14-changbin.du@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89688461;
+        Wed, 20 May 2020 21:08:45 +0000 (UTC)
+Received: from starship (unknown [10.35.206.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 13015106F755;
+        Wed, 20 May 2020 21:08:43 +0000 (UTC)
+Message-ID: <2401913621cc7686d71f491ef55f30f78ebbb2eb.camel@redhat.com>
+Subject: Re: [PATCH 00/24] KVM: nSVM: event fixes and migration support
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, Joerg Roedel <jroedel@suse.de>
+Date:   Thu, 21 May 2020 00:08:42 +0300
+In-Reply-To: <cecf6c64-6828-5a3f-642a-11aac4cefa75@redhat.com>
+References: <20200520172145.23284-1-pbonzini@redhat.com>
+         <6b8674fa647d3b80125477dc344581ba7adfb931.camel@redhat.com>
+         <cecf6c64-6828-5a3f-642a-11aac4cefa75@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200510150628.16610-14-changbin.du@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, May 10, 2020 at 11:06:22PM +0800, Changbin Du escreveu:
-> This adds an option '-b/--buffer-size' to allow us set the size of per-cpu
-> tracing buffer.
-
--m
- 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  tools/perf/builtin-ftrace.c | 45 ++++++++++++++++++++++++++++---------
->  1 file changed, 35 insertions(+), 10 deletions(-)
+On Wed, 2020-05-20 at 22:42 +0200, Paolo Bonzini wrote:
+> On 20/05/20 21:24, Maxim Levitsky wrote:
+> > Patch 24 doesn't apply cleanly on top of kvm/queue, I appplied it manually,
+> > due to missing KVM_STATE_NESTED_MTF_PENDING bit
+> > 
+> > Also patch 22 needes ALIGN_UP which is not on mainline.
+> > Probably in linux-next?
 > 
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 8fd95c109fe8..a93fbdac6aa4 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -47,6 +47,7 @@ struct perf_ftrace {
->  	bool			long_info;
->  	unsigned		tracing_thresh;
->  	bool			trace_children;
-> +	unsigned		buffer_size_kb;
->  };
->  
->  struct filter_entry {
-> @@ -187,6 +188,17 @@ static int read_tracing_file_to_stdout(const char *name)
->  	return ret;
->  }
->  
-> +static int write_tracing_file_int(const char *name, int value)
-> +{
-> +	char buf[16];
-> +
-> +	snprintf(buf, sizeof(buf), "%d", value);
-> +	if (write_tracing_file(name, buf) < 0)
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
->  static int reset_tracing_cpu(void);
->  static void reset_tracing_filters(void);
->  
-> @@ -360,8 +372,6 @@ static void reset_tracing_filters(void)
->  
->  static int set_tracing_depth(struct perf_ftrace *ftrace)
->  {
-> -	char buf[16];
-> -
->  	if (ftrace->graph_depth == 0)
->  		return 0;
->  
-> @@ -370,9 +380,7 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
->  		return -1;
->  	}
->  
-> -	snprintf(buf, sizeof(buf), "%d", ftrace->graph_depth);
-> -
-> -	if (write_tracing_file("max_graph_depth", buf) < 0)
-> +	if (write_tracing_file_int("max_graph_depth", ftrace->graph_depth) < 0)
->  		return -1;
->  
->  	return 0;
-> @@ -419,14 +427,10 @@ static int set_tracing_long_info(struct perf_ftrace *ftrace)
->  
->  static int set_tracing_thresh(struct perf_ftrace *ftrace)
->  {
-> -	char buf[16];
-> -
->  	if (ftrace->tracing_thresh == 0)
->  		return 0;
->  
-> -	snprintf(buf, sizeof(buf), "%d", ftrace->tracing_thresh);
-> -
-> -	if (write_tracing_file("tracing_thresh", buf) < 0)
-> +	if (write_tracing_file_int("tracing_thresh", ftrace->tracing_thresh) < 0)
->  		return -1;
->  
->  	return 0;
-> @@ -454,6 +458,20 @@ static int set_tracing_trace_children(struct perf_ftrace *ftrace)
->  	return 0;
->  }
->  
-> +static int set_tracing_buffer_size_kb(struct perf_ftrace *ftrace)
-> +{
-> +	int ret;
-> +
-> +	if (ftrace->buffer_size_kb == 0)
-> +		return 0;
-> +
-> +	ret = write_tracing_file_int("buffer_size_kb", ftrace->buffer_size_kb);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
->  static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  {
->  	char *trace_file;
-> @@ -557,6 +575,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  		goto out_reset;
->  	}
->  
-> +	if (set_tracing_buffer_size_kb(ftrace) < 0) {
-> +		pr_err("failed to set tracing per-cpu buffer size\n");
-> +		goto out_reset;
-> +	}
-> +
->  	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
->  		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
->  		goto out_reset;
-> @@ -706,6 +729,8 @@ int cmd_ftrace(int argc, const char **argv)
->  		     "Only show functions of which the duration is greater than <n>µs"),
->  	OPT_BOOLEAN(0, "trace-children", &ftrace.trace_children,
->  		    "Trace children processes"),
-> +	OPT_UINTEGER('b', "buffer-size", &ftrace.buffer_size_kb,
-> +		     "size of per cpu buffer in kb"),
->  	OPT_END()
->  	};
->  
-> -- 
-> 2.25.1
+> Just replace it with ALIGN.  (I tested it with memzero_user in
+> arch/x86/kvm/ for convenience, and the lib/ patch ended up out of sync
+> with the actual code).
+That is exactly what I did.
+
+> 
+> > With these fixes, I don't see #DE exceptions on a nested guest I try to run
+> > however it still hangs, right around the time it tries to access PS/2 keyboard/mouse.
+> 
+> IIRC you said that the bug appeared with the vintr rework, and then went
+> from hang to #DE and now back to hang?  And the hang is reported by L2,
+> not L1?
+Yes, and now the hang appears to be deterministic. The initial hang could happen
+randomally. I remember that once the nested guest got to getty prompt even and hanged
+on shutdown. Now hang is deterministic when kernel prints something about PS/2.
+I will re-check this tomorrow.
+
+> 
+> In order to debug the hang, a good start would be to understand if it
+> also happens with vgif=0.  This is because with vgif=1 we use VINTR
+> intercepts even while GIF=0, so the whole thing is a bit more complicated.
+I will check this tomorrow as well.
+
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> Paolo
 > 
 
--- 
 
-- Arnaldo
