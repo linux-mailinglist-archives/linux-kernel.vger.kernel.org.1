@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C1A1DD853
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DE71DD85A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgEUUcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        id S1730329AbgEUUc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730075AbgEUUcP (ORCPT
+        with ESMTP id S1730135AbgEUUcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:32:15 -0400
+        Thu, 21 May 2020 16:32:18 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4787EC08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEFAC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:18 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jbrqq-0000Y8-EU; Thu, 21 May 2020 22:31:36 +0200
+        id 1jbrqr-0000ZL-LB; Thu, 21 May 2020 22:31:37 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id C3D2B100606;
-        Thu, 21 May 2020 22:31:35 +0200 (CEST)
-Message-Id: <20200521202118.516757524@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 0A3E6100606;
+        Thu, 21 May 2020 22:31:37 +0200 (CEST)
+Message-Id: <20200521202118.611906966@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 21 May 2020 22:05:31 +0200
+Date:   Thu, 21 May 2020 22:05:32 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -52,7 +52,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V9 18/39] x86/entry/64: Remove error_exit
+Subject: [patch V9 19/39] x86/entry/32: Remove common_exception
 References: <20200521200513.656533920@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,25 +72,37 @@ No more users.
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/entry/entry_64.S |    9 ---------
- 1 file changed, 9 deletions(-)
+ arch/x86/entry/entry_32.S |   21 ---------------------
+ 1 file changed, 21 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1356,15 +1356,6 @@ SYM_CODE_START_LOCAL(error_entry)
- 	jmp	.Lerror_entry_from_usermode_after_swapgs
- SYM_CODE_END(error_entry)
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -1394,27 +1394,6 @@ BUILD_INTERRUPT3(hv_stimer0_callback_vec
  
--SYM_CODE_START_LOCAL(error_exit)
--	UNWIND_HINT_REGS
--	DISABLE_INTERRUPTS(CLBR_ANY)
--	TRACE_IRQS_OFF
--	testb	$3, CS(%rsp)
--	jz	retint_kernel
--	jmp	.Lretint_user
--SYM_CODE_END(error_exit)
+ #endif /* CONFIG_HYPERV */
+ 
+-SYM_CODE_START_LOCAL_NOALIGN(common_exception)
+-	/* the function address is in %gs's slot on the stack */
+-	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
+-	ENCODE_FRAME_POINTER
 -
- SYM_CODE_START_LOCAL(error_return)
- 	UNWIND_HINT_REGS
- 	DEBUG_ENTRY_ASSERT_IRQS_OFF
+-	/* fixup %gs */
+-	GS_TO_REG %ecx
+-	movl	PT_GS(%esp), %edi		# get the function address
+-	REG_TO_PTGS %ecx
+-	SET_KERNEL_GS %ecx
+-
+-	/* fixup orig %eax */
+-	movl	PT_ORIG_EAX(%esp), %edx		# get the error code
+-	movl	$-1, PT_ORIG_EAX(%esp)		# no syscall to restart
+-
+-	TRACE_IRQS_OFF
+-	movl	%esp, %eax			# pt_regs pointer
+-	CALL_NOSPEC edi
+-	jmp	ret_from_exception
+-SYM_CODE_END(common_exception)
+-
+ SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
+ 	/* the function address is in %gs's slot on the stack */
+ 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
 
