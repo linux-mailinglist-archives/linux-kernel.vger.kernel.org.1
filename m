@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47AF1DD379
+	by mail.lfdr.de (Postfix) with ESMTP id 49F191DD378
 	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 18:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgEUQ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 12:56:22 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:36406 "EHLO pegase1.c-s.fr"
+        id S1730057AbgEUQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 12:56:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:37073 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728742AbgEUQ4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728710AbgEUQ4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 21 May 2020 12:56:03 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49SbNZ4rTWz9v0pl;
-        Thu, 21 May 2020 18:55:58 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 49SbNb4zPbz9v0pp;
+        Thu, 21 May 2020 18:55:59 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Ikr7BF9VLiRi; Thu, 21 May 2020 18:55:58 +0200 (CEST)
+        with ESMTP id 4a-eINenWKxZ; Thu, 21 May 2020 18:55:59 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49SbNZ3ztrz9v0pY;
-        Thu, 21 May 2020 18:55:58 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49SbNb4CYzz9v0pY;
+        Thu, 21 May 2020 18:55:59 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D9B098B7DB;
-        Thu, 21 May 2020 18:56:00 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E41898B7DB;
+        Thu, 21 May 2020 18:56:01 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id UWFXngziVbXJ; Thu, 21 May 2020 18:56:00 +0200 (CEST)
+        with ESMTP id ntCWtIallwDe; Thu, 21 May 2020 18:56:01 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A04C38B778;
-        Thu, 21 May 2020 18:56:00 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A87D48B778;
+        Thu, 21 May 2020 18:56:01 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 6FBB165A53; Thu, 21 May 2020 16:56:00 +0000 (UTC)
-Message-Id: <906c6a6df710f2826e332b8a0cd5d2859a913a1c.1590079969.git.christophe.leroy@csgroup.eu>
+        id 77B5465A53; Thu, 21 May 2020 16:56:01 +0000 (UTC)
+Message-Id: <1b6c9916514ef3e084bba57925ad9eb444627566.1590079969.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1590079968.git.christophe.leroy@csgroup.eu>
 References: <cover.1590079968.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v5 09/13] powerpc/40x: Remove support for IBM 405GP
+Subject: [PATCH v5 10/13] powerpc/40x: Remove IBM405 Erratum #51
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, michal.simek@xilinx.com,
         arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 21 May 2020 16:56:00 +0000 (UTC)
+Date:   Thu, 21 May 2020 16:56:01 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -51,58 +51,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-All platforms selecting the obsolete processor are gone now.
+This erratum was for IBM 403GCX, 405EP and STB03xxx which are
+now gone.
 
-Remove support for it.
+Remove this erratum.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/cputable.c     | 13 -------------
- arch/powerpc/platforms/40x/Kconfig |  6 ------
- 2 files changed, 19 deletions(-)
+ arch/powerpc/kernel/head_40x.S     | 6 ------
+ arch/powerpc/platforms/40x/Kconfig | 4 ----
+ 2 files changed, 10 deletions(-)
 
-diff --git a/arch/powerpc/kernel/cputable.c b/arch/powerpc/kernel/cputable.c
-index bdc4eab0daaf..8ed553734919 100644
---- a/arch/powerpc/kernel/cputable.c
-+++ b/arch/powerpc/kernel/cputable.c
-@@ -1232,19 +1232,6 @@ static struct cpu_spec __initdata cpu_specs[] = {
- 	},
- #endif /* CONFIG_PPC_8xx */
- #ifdef CONFIG_40x
--	{	/* 405GP */
--		.pvr_mask		= 0xffff0000,
--		.pvr_value		= 0x40110000,
--		.cpu_name		= "405GP",
--		.cpu_features		= CPU_FTRS_40X,
--		.cpu_user_features	= PPC_FEATURE_32 |
--			PPC_FEATURE_HAS_MMU | PPC_FEATURE_HAS_4xxMAC,
--		.mmu_features		= MMU_FTR_TYPE_40x,
--		.icache_bsize		= 32,
--		.dcache_bsize		= 32,
--		.machine_check		= machine_check_4xx,
--		.platform		= "ppc405",
--	},
- 	{	/* STB 04xxx */
- 		.pvr_mask		= 0xffff0000,
- 		.pvr_value		= 0x41810000,
+diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+index 5fe4b7ad864b..a78cacea0be0 100644
+--- a/arch/powerpc/kernel/head_40x.S
++++ b/arch/powerpc/kernel/head_40x.S
+@@ -426,13 +426,7 @@ _ENTRY(saved_ksp_limit)
+ 	EXCEPTION(0x1400, Trap_14, unknown_exception, EXC_XFER_STD)
+ 	EXCEPTION(0x1500, Trap_15, unknown_exception, EXC_XFER_STD)
+ 	EXCEPTION(0x1600, Trap_16, unknown_exception, EXC_XFER_STD)
+-#ifdef CONFIG_IBM405_ERR51
+-	/* 405GP errata 51 */
+-	START_EXCEPTION(0x1700, Trap_17)
+-	b DTLBMiss
+-#else
+ 	EXCEPTION(0x1700, Trap_17, unknown_exception, EXC_XFER_STD)
+-#endif
+ 	EXCEPTION(0x1800, Trap_18, unknown_exception, EXC_XFER_STD)
+ 	EXCEPTION(0x1900, Trap_19, unknown_exception, EXC_XFER_STD)
+ 	EXCEPTION(0x1A00, Trap_1A, unknown_exception, EXC_XFER_STD)
 diff --git a/arch/powerpc/platforms/40x/Kconfig b/arch/powerpc/platforms/40x/Kconfig
-index 5d9d96e7223a..253c047fe6fe 100644
+index 253c047fe6fe..ebe283476461 100644
 --- a/arch/powerpc/platforms/40x/Kconfig
 +++ b/arch/powerpc/platforms/40x/Kconfig
-@@ -51,12 +51,6 @@ config PPC40x_SIMPLE
- 	help
- 	  This option enables the simple PowerPC 40x platform support.
- 
--config 405GP
--	bool
--	select IBM405_ERR77
--	select IBM405_ERR51
--	select IBM_EMAC_ZMII if IBM_EMAC
--
- config 405EX
+@@ -75,10 +75,6 @@ config PPC4xx_GPIO
+ config IBM405_ERR77
  	bool
- 	select IBM_EMAC_EMAC4 if IBM_EMAC
+ 
+-# All 40x-based cores, up until the 405GPR and 405EP have this errata.
+-config IBM405_ERR51
+-	bool
+-
+ config APM8018X
+ 	bool "APM8018X"
+ 	depends on 40x
 -- 
 2.25.0
 
