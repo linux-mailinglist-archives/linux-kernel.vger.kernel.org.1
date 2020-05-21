@@ -2,207 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A67B1DD227
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6606B1DD233
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgEUPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgEUPlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:41:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60FFC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:41:40 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h17so7075263wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t7kKQGIL/+XUIy8BYKyhP6eLPzYXGhlw9lo6TwqgMyA=;
-        b=l1/Sb2B5nvypUAkBTKIFKxmseFrBYGzJgZAiEZH08EkPJG07KLikxvLrN1lrztGzEl
-         2CcYvw/8C9cwD+l5f/vdnpyqsTdvzpWbpFgNjLsYwRy6Kt0M/9oy/rmy9Dmeu5Pse+3O
-         IqPyAr9YObZJhacol6137kvWDN0EtPUfiVwFo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t7kKQGIL/+XUIy8BYKyhP6eLPzYXGhlw9lo6TwqgMyA=;
-        b=dk/93uZ4+jFTuSWZkU/Yy+sWeuWMSGaojaqAJZoqvThOQIiFAZF+7q1kK06WO5WW4+
-         KJn28X4foFtgCxYVtcrKRrZcgUOxfpnalVmpTNH7+7LqCHIRIwzSpCCcJaCRE+iEwn4r
-         8L+7636QIK3V0trYNCvHTY0nHAf9NxuYA+ctUW8bRI1lC4Ycw5Q6/VQrDFhvw+dy9J8U
-         N5wOmF0tdllsuPPz6SvYOrKvvNZGyzFd58IiOFxeNvFuEly48d71iZPB6ZxBgkvY0tVX
-         S90wt5G6yfiLddcNFKDTI6OOKZaMQAjerKGq30/AbFnPRZf+2cp4kFYRkkJ2rvXWbuPH
-         fGvA==
-X-Gm-Message-State: AOAM532K3Jw+Yk9GBjPHZouODV1kLJ6XFngotUS/Yuq90/99FB+1BtdS
-        pZgISH1Bk3Yi4oUYT0wUaKBlxg==
-X-Google-Smtp-Source: ABdhPJy6oE1juN6diFyNCGUfm0SoL9QOIbTs8hFQ0ct0TZDPOLo0YnuQnJY1G0k6GJgxa5xJTervjw==
-X-Received: by 2002:adf:e682:: with SMTP id r2mr8576889wrm.378.1590075699420;
-        Thu, 21 May 2020 08:41:39 -0700 (PDT)
-Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
-        by smtp.gmail.com with ESMTPSA id x1sm6508480wrt.86.2020.05.21.08.41.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 08:41:38 -0700 (PDT)
-Date:   Thu, 21 May 2020 15:41:37 +0000
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Xia Jiang <xia.jiang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        srv_heupstream@mediatek.com, senozhatsky@chromium.org,
-        mojahsu@chromium.org, drinkcat@chromium.org,
-        maoguang.meng@mediatek.com, sj.huang@mediatek.com
-Subject: Re: [PATCH v8 07/14] media: platform: Use kernel native functions
- for improving code quality
-Message-ID: <20200521154137.GG209565@chromium.org>
-References: <20200403094033.8288-1-xia.jiang@mediatek.com>
- <20200403094033.8288-8-xia.jiang@mediatek.com>
+        id S1728298AbgEUPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:44:30 -0400
+Received: from sandeen.net ([63.231.237.45]:51480 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgEUPoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 11:44:30 -0400
+Received: from [10.0.0.4] (liberator [10.0.0.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id 26B55323C1A;
+        Thu, 21 May 2020 10:44:00 -0500 (CDT)
+Subject: Re: [PATCH v2] exfat: add the dummy mount options to be backward
+ compatible with staging/exfat
+To:     Namjae Jeon <linkinjeon@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
+References: <20200521140502.2409-1-linkinjeon@kernel.org>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Autocrypt: addr=sandeen@sandeen.net; prefer-encrypt=mutual; keydata=
+ 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 pA==
+Message-ID: <eb8858fb-c3bc-3f8d-96c1-3b4082c14373@sandeen.net>
+Date:   Thu, 21 May 2020 10:44:28 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403094033.8288-8-xia.jiang@mediatek.com>
+In-Reply-To: <20200521140502.2409-1-linkinjeon@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xia,
-
-On Fri, Apr 03, 2020 at 05:40:26PM +0800, Xia Jiang wrote:
-
-Thank you for the patch. Please see my comments inline.
-
-nit: I'd remove "for improving code quality" from the subject, as it's
-obvious that we don't intend to make the code quality worse. ;)
-On the contrary, I'd make it more specific, e.g.
-
-media: mtk-jpeg: Use generic rounding helpers
-
-WDYT?
-
-> Use clamp() to replace mtk_jpeg_bound_align_image() and round() to
-> replace mtk_jpeg_align().
+On 5/21/20 9:05 AM, Namjae Jeon wrote:
+> As Ubuntu and Fedora release new version used kernel version equal to or
+> higher than v5.4, They started to support kernel exfat filesystem.
 > 
-> Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
-> ---
-> v8: no changes
-> ---
->  .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 41 +++++--------------
->  .../media/platform/mtk-jpeg/mtk_jpeg_core.h   |  8 ++--
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_hw.c |  8 ++--
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_hw.h |  5 ---
->  4 files changed, 19 insertions(+), 43 deletions(-)
+> Linus Torvalds reported mount error with new version of exfat on Fedora.
 > 
-> diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> index 2fa3711fdc9b..4e64046a6854 100644
-> --- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> +++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
-> @@ -157,25 +157,6 @@ static struct mtk_jpeg_fmt *mtk_jpeg_find_format(struct mtk_jpeg_ctx *ctx,
->  	return NULL;
->  }
+> 	exfat: Unknown parameter 'namecase'
+> 
+> This is because there is a difference in mount option between old
+> staging/exfat and new exfat.
+> And utf8, debug, and codepage options as well as namecase have been
+> removed from new exfat.
+> 
+> This patch add the dummy mount options as deprecated option to be backward
+> compatible with old one.
+
+Wow, it seems wild that we'd need to maintain compatibility with options
+which only ever existed in a different codebase in a staging driver
+(what's the point of staging if every interface that makes it that far has
+to be maintained in perpetuity?)
+
+Often, when things are deprecated, they are eventually removed.  Perhaps a
+future removal date stated in this commit, or in Documentation/..../exfat.txt
+would be good as a reminder to eventually remove this?
+
+-Eric
+
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+> ---
+> v2:
+>  - fix checkpatch.pl warning(Missing Signed-off-by).
+> 
+>  fs/exfat/super.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+> index 0565d5539d57..26b0db5b20de 100644
+> --- a/fs/exfat/super.c
+> +++ b/fs/exfat/super.c
+> @@ -203,6 +203,12 @@ enum {
+>  	Opt_errors,
+>  	Opt_discard,
+>  	Opt_time_offset,
+> +
+> +	/* Deprecated options */
+> +	Opt_utf8,
+> +	Opt_debug,
+> +	Opt_namecase,
+> +	Opt_codepage,
+>  };
 >  
-> -static void mtk_jpeg_bound_align_image(u32 *w, unsigned int wmin,
-> -				       unsigned int wmax, unsigned int walign,
-> -				       u32 *h, unsigned int hmin,
-> -				       unsigned int hmax, unsigned int halign)
-> -{
-> -	int width, height, w_step, h_step;
-> -
-> -	width = *w;
-> -	height = *h;
-> -	w_step = 1 << walign;
-> -	h_step = 1 << halign;
-> -
-> -	v4l_bound_align_image(w, wmin, wmax, walign, h, hmin, hmax, halign, 0);
-> -	if (*w < width && (*w + w_step) <= wmax)
-> -		*w += w_step;
-> -	if (*h < height && (*h + h_step) <= hmax)
-> -		*h += h_step;
-> -}
-> -
->  static void mtk_jpeg_adjust_fmt_mplane(struct mtk_jpeg_ctx *ctx,
->  				       struct v4l2_format *f)
->  {
-> @@ -218,25 +199,25 @@ static int mtk_jpeg_try_fmt_mplane(struct v4l2_format *f,
->  	if (q_type == MTK_JPEG_FMT_TYPE_OUTPUT) {
->  		struct v4l2_plane_pix_format *pfmt = &pix_mp->plane_fmt[0];
+>  static const struct constant_table exfat_param_enums[] = {
+> @@ -223,6 +229,10 @@ static const struct fs_parameter_spec exfat_parameters[] = {
+>  	fsparam_enum("errors",			Opt_errors, exfat_param_enums),
+>  	fsparam_flag("discard",			Opt_discard),
+>  	fsparam_s32("time_offset",		Opt_time_offset),
+> +	fsparam_flag("utf8",			Opt_utf8),
+> +	fsparam_flag("debug",			Opt_debug),
+> +	fsparam_u32("namecase",			Opt_namecase),
+> +	fsparam_u32("codepage",			Opt_codepage),
+>  	{}
+>  };
 >  
-> -		mtk_jpeg_bound_align_image(&pix_mp->width, MTK_JPEG_MIN_WIDTH,
-> -					   MTK_JPEG_MAX_WIDTH, 0,
-> -					   &pix_mp->height, MTK_JPEG_MIN_HEIGHT,
-> -					   MTK_JPEG_MAX_HEIGHT, 0);
-> +		pix_mp->height = clamp(pix_mp->height, MTK_JPEG_MIN_HEIGHT,
-> +				       MTK_JPEG_MAX_HEIGHT);
-> +		pix_mp->width = clamp(pix_mp->width, MTK_JPEG_MIN_WIDTH,
-> +				      MTK_JPEG_MAX_WIDTH);
->  
->  		memset(pfmt->reserved, 0, sizeof(pfmt->reserved));
->  		pfmt->bytesperline = 0;
->  		/* Source size must be aligned to 128 */
-> -		pfmt->sizeimage = mtk_jpeg_align(pfmt->sizeimage, 128);
-> +		pfmt->sizeimage = round_up(pfmt->sizeimage, 128);
->  		if (pfmt->sizeimage == 0)
->  			pfmt->sizeimage = MTK_JPEG_DEFAULT_SIZEIMAGE;
->  		goto end;
+> @@ -278,6 +288,18 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  			return -EINVAL;
+>  		opts->time_offset = result.int_32;
+>  		break;
+> +	case Opt_utf8:
+> +		pr_warn("exFAT-fs: 'utf8' mount option is deprecated and has no effect\n");
+> +		break;
+> +	case Opt_debug:
+> +		pr_warn("exFAT-fs: 'debug' mount option is deprecated and has no effect\n");
+> +		break;
+> +	case Opt_namecase:
+> +		pr_warn("exFAT-fs: 'namecase' mount option is deprecated and has no effect\n");
+> +		break;
+> +	case Opt_codepage:
+> +		pr_warn("exFAT-fs: 'codepage' mount option is deprecated and has no effect\n");
+> +		break;
+>  	default:
+>  		return -EINVAL;
 >  	}
->  
->  	/* type is MTK_JPEG_FMT_TYPE_CAPTURE */
-> -	mtk_jpeg_bound_align_image(&pix_mp->width, MTK_JPEG_MIN_WIDTH,
-> -				   MTK_JPEG_MAX_WIDTH, fmt->h_align,
-> -				   &pix_mp->height, MTK_JPEG_MIN_HEIGHT,
-> -				   MTK_JPEG_MAX_HEIGHT, fmt->v_align);
-> +	pix_mp->height = clamp(round_up(pix_mp->height, fmt->v_align),
-> +			       MTK_JPEG_MIN_HEIGHT, MTK_JPEG_MAX_HEIGHT);
-> +	pix_mp->width = clamp(round_up(pix_mp->width, fmt->h_align),
-> +			      MTK_JPEG_MIN_WIDTH, MTK_JPEG_MAX_WIDTH);
->  
->  	for (i = 0; i < fmt->colplanes; i++) {
->  		struct v4l2_plane_pix_format *pfmt = &pix_mp->plane_fmt[i];
-> @@ -751,8 +732,8 @@ static void mtk_jpeg_set_dec_src(struct mtk_jpeg_ctx *ctx,
->  {
->  	bs->str_addr = vb2_dma_contig_plane_dma_addr(src_buf, 0);
->  	bs->end_addr = bs->str_addr +
-> -			 mtk_jpeg_align(vb2_get_plane_payload(src_buf, 0), 16);
-> -	bs->size = mtk_jpeg_align(vb2_plane_size(src_buf, 0), 128);
-> +		       round_up(vb2_get_plane_payload(src_buf, 0), 16);
-> +	bs->size = round_up(vb2_plane_size(src_buf, 0), 128);
->  }
->  
->  static int mtk_jpeg_set_dec_dst(struct mtk_jpeg_ctx *ctx,
-> diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h
-> index 999bd1427809..28e9b30ad5c3 100644
-> --- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h
-> +++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h
-> @@ -21,10 +21,10 @@
->  #define MTK_JPEG_FMT_TYPE_OUTPUT	1
->  #define MTK_JPEG_FMT_TYPE_CAPTURE	2
->  
-> -#define MTK_JPEG_MIN_WIDTH	32
-> -#define MTK_JPEG_MIN_HEIGHT	32
-> -#define MTK_JPEG_MAX_WIDTH	8192
-> -#define MTK_JPEG_MAX_HEIGHT	8192
-> +#define MTK_JPEG_MIN_WIDTH	32U
-> +#define MTK_JPEG_MIN_HEIGHT	32U
-> +#define MTK_JPEG_MAX_WIDTH	8192U
-> +#define MTK_JPEG_MAX_HEIGHT	8192U
-
-This change is not mentioned in the commit message. It should go to a
-separate patch, possibly merged with other really minor stylistic changes
-like this, e.g. patch 08/14.
-
-Otherwise the patch looks good, so after addressing the above minor changes
-please feel free to add
-
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-
-Best regards,
-Tomasz
-
+> 
