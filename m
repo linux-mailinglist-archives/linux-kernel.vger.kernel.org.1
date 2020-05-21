@@ -2,163 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7371DCDE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D1B1DCDEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgEUN1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
+        id S1729447AbgEUN2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgEUN1D (ORCPT
+        with ESMTP id S1729296AbgEUN2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:27:03 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6C1C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:27:03 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id v17so5523240ote.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:27:03 -0700 (PDT)
+        Thu, 21 May 2020 09:28:36 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF35C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:28:36 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id x1so8794434ejd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Moc8xalnKllIyEU4EMIrwAPrYnUw5Fl91QeBkTIQAoU=;
-        b=GXlGtQiQaxvoKjPhENuW0Yo48zaUNh8OYTsBNf5sIYxfYJMM7j5rAKAGmJxEYsu5o/
-         XKwVa8BGYWdWTkZpRNcHr1kt6CoaDsL41XAhLXyRuuxC2zaRkTkiTRHgezKsr6xh7i3U
-         Jeizwmzq/m3u/7DKGSwYzWVlCQNURvQAG6PFIrrWLi+lBS14IiAVGLr+uTxrwDn7j8P6
-         ZXewMF/LMvF5NCAsDXCW3Fo08pBQynl+f5jzwblurJnUCjgKiA1u9BnaANrcfrQs1klZ
-         SXqK5fpmbfRGbbmodC6eJgbYX2VccAEwqxwj4C0HB+eU2co6lDDf8RdlAU2733umcqo8
-         +SBg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=PMQK+3WLgMeeHuMYX4OY8IdBlPdvrGSBUdMUAg90qrw=;
+        b=VSI/i/VYlS6Qf6xzt4vUaC31mRMvFHSyaRUaZpNboeEQ5TSV0dwz+nG5FjSGw9R/Br
+         jxsaXjESXxQnZemdZN8eo66EcwUpztft4LwGo6k4wSWGlOd2BiHODKWruug/89Twui0K
+         7QtNaN2r9XZ8RNz3y8w8KDTU7LjZo5RpOChqm27kTtgYcSQuvQEiqeCSz+NP8tM7VNtN
+         DcOZzw+f6adniFONs3u8Wk6GPKXuE5fqMAembdV0HfTRbxeF84JeA3ECA8k9+9CjEfDV
+         LyK/3C3G/aBumi86SV3WndfirKrY60Y8xwhC13nS61Ym2HvUFnPaKw4BR380e/KwfiNz
+         OoRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Moc8xalnKllIyEU4EMIrwAPrYnUw5Fl91QeBkTIQAoU=;
-        b=HTZF6fZfEKrCk+pRzAJpXNthfY5EFqJcOz3R3Yjyf/zPwPY2qTOeZV3gxTgoNdxNqY
-         MMTHUJ+CcOJYJ27Wx9FT/EWHZlE1ON7+LTUZMVolBpSvCEsm4YAdAE/7u/FoAKvD6kAd
-         g4HmSoRx76a2iMeYLobFe10s1T4kHW/4+nq2YRVL4Kl8AEPSTtJdYmrjDAsyMa4cFwHU
-         he4kGD/CwU5gBaw5c7vEka2lDidlFbjEcX0SuEDDVJxvEQdBBE/0/9z34qigGpO0EXui
-         BgnboWo2P25XP//gITAFtoh8MCG/bdonuuHmz2mYenCIJhUEKM89NCgk0gn+qk1i1PNh
-         hZig==
-X-Gm-Message-State: AOAM531jfQD1K4pHZ9lb+ojTtgUIDBHSHKVlVREr2Kz/Om1ndc9LzK6k
-        eYj7+yMD2H34vqdjA39OcgHXXpua8QDTCNV+9JW1Ew==
-X-Google-Smtp-Source: ABdhPJyT8hKiTawRva7d5TY4mEqbpwDUXMt/leaQKn5E2alKa6Dw6mOZkg+aznYEIRJPaFPvaPLmc2qlGHhrUXd/DPg=
-X-Received: by 2002:a05:6830:18ce:: with SMTP id v14mr6550417ote.251.1590067622152;
- Thu, 21 May 2020 06:27:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200521110854.114437-1-elver@google.com> <20200521110854.114437-4-elver@google.com>
- <20200521131803.GA6608@willie-the-truck>
-In-Reply-To: <20200521131803.GA6608@willie-the-truck>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 21 May 2020 15:26:48 +0200
-Message-ID: <CANpmjNNDRb+wokzagQtLRVvZrj-8eH87gOX1JwG9hWf+eicRNg@mail.gmail.com>
-Subject: Re: [PATCH -tip v2 03/11] kcsan: Support distinguishing volatile accesses
-To:     Will Deacon <will@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PMQK+3WLgMeeHuMYX4OY8IdBlPdvrGSBUdMUAg90qrw=;
+        b=TXmMiWOkA4JLaqsQ2MVZ2Z+ziQ+B7d7bbSSJtDpt1kv60EXVUFlxJpUqDpH496jLMQ
+         oiCu9iz1PHloG4PntN8gPNQW1f1MMQyv+2RUuyzQU/PikosAqIYMk5b6rD7cMciMUMWe
+         UVOUFvDSC3UzZH8mG9Nxr1c8bvUNI8vbmzPEHeMKfZxvytmUCb4D8s0jDAt/U1imRFTd
+         aMC3p/KNLdLe1HNpm2JxVLAPU6OD5iSYm1PvXznVNtafKcjqIGbx7bNa4yW41oA5XMTC
+         OmW59V1CKHx4iQtF4PhV7TSITPYBLBEsikTByX2ntHjxmYD2JTvyLonEIOBi4RKU1J4W
+         EggA==
+X-Gm-Message-State: AOAM530tbYrZeoSj2KKB7M6H5EBgG/hfNSPHHdbTImRCE2nU9WQ7Xt9m
+        kWadnWb51I3U+32Aiw4L4mxdGA==
+X-Google-Smtp-Source: ABdhPJySHieCQClv3MvdhiiKAz09ylapZ6SdvZ6J9R6+DeNuh6EVoBtx2AVE4C+ly7UrOiLTCEKSPA==
+X-Received: by 2002:a17:906:84cf:: with SMTP id f15mr3472941ejy.185.1590067714453;
+        Thu, 21 May 2020 06:28:34 -0700 (PDT)
+Received: from localhost.localdomain (212-5-158-12.ip.btc-net.bg. [212.5.158.12])
+        by smtp.gmail.com with ESMTPSA id lr21sm4980580ejb.117.2020.05.21.06.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 06:28:33 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 0/3] Venus dynamic debug
+Date:   Thu, 21 May 2020 16:28:13 +0300
+Message-Id: <20200521132816.31111-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020 at 15:18, Will Deacon <will@kernel.org> wrote:
->
-> On Thu, May 21, 2020 at 01:08:46PM +0200, Marco Elver wrote:
-> > In the kernel, volatile is used in various concurrent context, whether
-> > in low-level synchronization primitives or for legacy reasons. If
-> > supported by the compiler, we will assume that aligned volatile accesses
-> > up to sizeof(long long) (matching compiletime_assert_rwonce_type()) are
-> > atomic.
-> >
-> > Recent versions Clang [1] (GCC tentative [2]) can instrument volatile
-> > accesses differently. Add the option (required) to enable the
-> > instrumentation, and provide the necessary runtime functions. None of
-> > the updated compilers are widely available yet (Clang 11 will be the
-> > first release to support the feature).
-> >
-> > [1] https://github.com/llvm/llvm-project/commit/5a2c31116f412c3b6888be361137efd705e05814
-> > [2] https://gcc.gnu.org/pipermail/gcc-patches/2020-April/544452.html
-> >
-> > This patch allows removing any explicit checks in primitives such as
-> > READ_ONCE() and WRITE_ONCE().
-> >
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> > v2:
-> > * Reword Makefile comment.
-> > ---
-> >  kernel/kcsan/core.c    | 43 ++++++++++++++++++++++++++++++++++++++++++
-> >  scripts/Makefile.kcsan |  5 ++++-
-> >  2 files changed, 47 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-> > index a73a66cf79df..15f67949d11e 100644
-> > --- a/kernel/kcsan/core.c
-> > +++ b/kernel/kcsan/core.c
-> > @@ -789,6 +789,49 @@ void __tsan_write_range(void *ptr, size_t size)
-> >  }
-> >  EXPORT_SYMBOL(__tsan_write_range);
-> >
-> > +/*
-> > + * Use of explicit volatile is generally disallowed [1], however, volatile is
-> > + * still used in various concurrent context, whether in low-level
-> > + * synchronization primitives or for legacy reasons.
-> > + * [1] https://lwn.net/Articles/233479/
-> > + *
-> > + * We only consider volatile accesses atomic if they are aligned and would pass
-> > + * the size-check of compiletime_assert_rwonce_type().
-> > + */
-> > +#define DEFINE_TSAN_VOLATILE_READ_WRITE(size)                                  \
-> > +     void __tsan_volatile_read##size(void *ptr)                             \
-> > +     {                                                                      \
-> > +             const bool is_atomic = size <= sizeof(long long) &&            \
-> > +                                    IS_ALIGNED((unsigned long)ptr, size);   \
-> > +             if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS) && is_atomic)      \
-> > +                     return;                                                \
-> > +             check_access(ptr, size, is_atomic ? KCSAN_ACCESS_ATOMIC : 0);  \
-> > +     }                                                                      \
-> > +     EXPORT_SYMBOL(__tsan_volatile_read##size);                             \
-> > +     void __tsan_unaligned_volatile_read##size(void *ptr)                   \
-> > +             __alias(__tsan_volatile_read##size);                           \
-> > +     EXPORT_SYMBOL(__tsan_unaligned_volatile_read##size);                   \
-> > +     void __tsan_volatile_write##size(void *ptr)                            \
-> > +     {                                                                      \
-> > +             const bool is_atomic = size <= sizeof(long long) &&            \
-> > +                                    IS_ALIGNED((unsigned long)ptr, size);   \
-> > +             if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS) && is_atomic)      \
-> > +                     return;                                                \
-> > +             check_access(ptr, size,                                        \
-> > +                          KCSAN_ACCESS_WRITE |                              \
-> > +                                  (is_atomic ? KCSAN_ACCESS_ATOMIC : 0));   \
-> > +     }                                                                      \
-> > +     EXPORT_SYMBOL(__tsan_volatile_write##size);                            \
-> > +     void __tsan_unaligned_volatile_write##size(void *ptr)                  \
-> > +             __alias(__tsan_volatile_write##size);                          \
-> > +     EXPORT_SYMBOL(__tsan_unaligned_volatile_write##size)
-> > +
-> > +DEFINE_TSAN_VOLATILE_READ_WRITE(1);
-> > +DEFINE_TSAN_VOLATILE_READ_WRITE(2);
-> > +DEFINE_TSAN_VOLATILE_READ_WRITE(4);
-> > +DEFINE_TSAN_VOLATILE_READ_WRITE(8);
-> > +DEFINE_TSAN_VOLATILE_READ_WRITE(16);
->
-> Having a 16-byte case seems a bit weird to me, but I guess clang needs this
-> for some reason?
+Hello,
 
-Yes, the emitted fixed-size instrumentation is up to 16 bytes, so
-we'll need it (for both volatile and non-volatile -- otherwise we'll
-get linker errors). It doesn't mean we'll consider 16 byte volatile
-accesses as atomic, because of the size check to compute is_atomic
-above.
+Here is second version of the dynamic debug series.
 
-Thanks,
--- Marco
+Few things are changed since v1:
+
+ * Rebased on current media-tree master
+ * Added one more patch for SSR trigger debug file
+
+regards,
+Stan
+
+Stanimir Varbanov (3):
+  venus: Add debugfs interface to set firmware log level
+  venus: Make debug infrastructure more flexible
+  venus: Add a debugfs file for SSR trigger
+
+ drivers/media/platform/qcom/venus/Makefile    |  2 +-
+ drivers/media/platform/qcom/venus/core.c      |  5 ++
+ drivers/media/platform/qcom/venus/core.h      |  8 +++
+ drivers/media/platform/qcom/venus/dbgfs.c     | 57 +++++++++++++++++
+ drivers/media/platform/qcom/venus/dbgfs.h     | 12 ++++
+ drivers/media/platform/qcom/venus/helpers.c   |  2 +-
+ drivers/media/platform/qcom/venus/hfi_msgs.c  | 30 ++++-----
+ drivers/media/platform/qcom/venus/hfi_venus.c | 27 ++++++--
+ .../media/platform/qcom/venus/pm_helpers.c    |  3 +-
+ drivers/media/platform/qcom/venus/vdec.c      | 63 +++++++++++++++++--
+ drivers/media/platform/qcom/venus/venc.c      |  4 ++
+ 11 files changed, 180 insertions(+), 33 deletions(-)
+ create mode 100644 drivers/media/platform/qcom/venus/dbgfs.c
+ create mode 100644 drivers/media/platform/qcom/venus/dbgfs.h
+
+-- 
+2.17.1
+
