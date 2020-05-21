@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67D91DC8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDD91DC902
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgEUIqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 04:46:55 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8370 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728561AbgEUIqx (ORCPT
+        id S1728727AbgEUIrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 04:47:47 -0400
+Received: from mailomta2-re.btinternet.com ([213.120.69.95]:43339 "EHLO
+        re-prd-fep-044.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728623AbgEUIrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 04:46:53 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec63f6c0001>; Thu, 21 May 2020 01:44:28 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 21 May 2020 01:46:52 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 21 May 2020 01:46:52 -0700
-Received: from [10.26.75.55] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 May
- 2020 08:46:50 +0000
-Subject: Re: [PATCH] spi: tegra20-slink: Fix runtime PM imbalance on error
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>
-CC:     Kangjie Lu <kjlu@umn.edu>, Laxman Dewangan <ldewangan@nvidia.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-References: <20200521074946.21799-1-dinghao.liu@zju.edu.cn>
- <CAHp75VfOeUaqRW2vRwyWaz3JJw41hX5jTgE+kZ8pB8E_HtHwqw@mail.gmail.com>
- <af91d97e-6367-996b-a925-a5c81f6fb182@nvidia.com>
-Message-ID: <046fe754-96d7-4530-2b70-e1991470ac0f@nvidia.com>
-Date:   Thu, 21 May 2020 09:46:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <af91d97e-6367-996b-a925-a5c81f6fb182@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590050668; bh=wqcKSIH4pp4cK2tXITvJHzUw6hoJbcNsCjS4/KGudkE=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=EK/aTQ7rz3fHlcaD5IK88IPRC9F2WKPnEk8U1kjY3eUJ4aVxQTGjZo8exZK1UGoDT
-         VSL+iaoWOySo0FaGcLWp86UMMte8DBPPK90bzFD/NMty64vc2bhrqjXh5Y7qSoXIdD
-         41k9xImeVn4R27lKhd48Egf3OAYlUJHWwZMaCn43XRITX4cqt5MjJ/vTxmqFDfe2jr
-         /RwzeaVbMUcf8Igx8//gLJKvYWjb8bzkozqazOjq14y1KIFUxHb4HXSN8eElcOxesq
-         IYBSKjlRqZnSYPxtrDH+DHZAa+eriiHszqof61od+tMtBkm4/Of5zi4P2LezBBAGEv
-         vrXwXg/pZ6PvA==
+        Thu, 21 May 2020 04:47:47 -0400
+Received: from re-prd-rgout-001.btmx-prd.synchronoss.net ([10.2.54.4])
+          by re-prd-fep-044.btinternet.com with ESMTP
+          id <20200521084744.KRVR4009.re-prd-fep-044.btinternet.com@re-prd-rgout-001.btmx-prd.synchronoss.net>;
+          Thu, 21 May 2020 09:47:44 +0100
+Authentication-Results: btinternet.com;
+    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
+X-Originating-IP: [31.53.141.224]
+X-OWM-Source-IP: 31.53.141.224 (GB)
+X-OWM-Env-Sender: j.oldman998@btinternet.com
+X-VadeSecure-score: verdict=clean score=0/300, class=clean
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrudduuddgtdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuueftkffvkffujffvgffngfevqffopdfqfgfvnecuuegrihhlohhuthemuceftddunecunecujfgurhephffvufffkffosedttdertdertddtnecuhfhrohhmpeflohhhnhcuqfhlughmrghnuceojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqeenucggtffrrghtthgvrhhnpeegfedthfefueeihffgkeefteehuddttdefudetveelveefvdefhfejieejhffggfenucfkphepfedurdehfedrudeguddrvddvgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehhvghnrhihrdhhohhmvgdpihhnvghtpeefuddrheefrddugedurddvvdegpdhmrghilhhfrhhomhepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoeguvghvvghlsegurhhivhgvrhguvghvrdhoshhuohhslhdrohhrgheqpdhrtghpthhtohepoehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrgheqpdhrtghpthhtohepoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqpdhrtghpthhtohepoehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgheq
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from henry.home (31.53.141.224) by re-prd-rgout-001.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
+        id 5E3A147D11B190C7; Thu, 21 May 2020 09:47:44 +0100
+From:   John Oldman <john.oldman@polehill.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        John Oldman <john.oldman@polehill.co.uk>
+Subject: [PATCH] staging: rtl8192e: Using comparison to true is error prone
+Date:   Thu, 21 May 2020 09:47:32 +0100
+Message-Id: <20200521084732.12576-1-john.oldman@polehill.co.uk>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+clear below issues reported by checkpatch.pl:
 
-On 21/05/2020 09:38, Jon Hunter wrote:
-> 
-> On 21/05/2020 09:04, Andy Shevchenko wrote:
->> On Thu, May 21, 2020 at 10:50 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
->>>
->>> pm_runtime_get_sync() increments the runtime PM usage counter even
->>> when it returns an error code. Thus a pairing decrement is needed on
->>> the error handling path to keep the counter balanced.
->>
->> ...
->>
->>>         ret = pm_runtime_get_sync(&pdev->dev);
->>>         if (ret < 0) {
->>>                 dev_err(&pdev->dev, "pm runtime get failed, e = %d\n", ret);
->>
->>> +               pm_runtime_put(&pdev->dev);
->>
->> For all your patches, please, double check what you are proposing.
->>
->> Here, I believe, the correct one will be _put_noidle().
->>
->> AFAIU you are not supposed to actually suspend the device in case of error.
->> But I might be mistaken, thus see above.
->>
->>>                 goto exit_pm_disable;
->>>         }
-> 
-> 
-> Is there any reason why this is not handled in pm_runtime_get itself?
+CHECK: Using comparison to true is error prone
+CHECK: Using comparison to false is error prone
 
-Ah I see a response from Rafael here:
-https://lkml.org/lkml/2020/5/20/1100
+Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-OK so this is intentional and needs to be fixed.
-
-Jon
-
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+index 43494a2b6f05..462835684e8b 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+@@ -456,7 +456,7 @@ static void _rtl92e_dm_bandwidth_autoswitch(struct net_device *dev)
+ 	if (priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20 ||
+ 	   !priv->rtllib->bandwidth_auto_switch.bautoswitch_enable)
+ 		return;
+-	if (priv->rtllib->bandwidth_auto_switch.bforced_tx20Mhz == false) {
++	if (!priv->rtllib->bandwidth_auto_switch.bforced_tx20Mhz) {
+ 		if (priv->undecorated_smoothed_pwdb <=
+ 		    priv->rtllib->bandwidth_auto_switch.threshold_40Mhzto20Mhz)
+ 			priv->rtllib->bandwidth_auto_switch.bforced_tx20Mhz = true;
+@@ -1297,7 +1297,7 @@ static void _rtl92e_dm_dig_init(struct net_device *dev)
+ static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
+ {
+ 
+-	if (dm_digtable.dig_enable_flag == false)
++	if (!dm_digtable.dig_enable_flag)
+ 		return;
+ 
+ 	if (dm_digtable.dig_algorithm == DIG_ALGO_BY_FALSE_ALARM)
+@@ -1332,7 +1332,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev)
+ 	u8 i;
+ 	static u8	fw_dig;
+ 
+-	if (dm_digtable.dig_enable_flag == false)
++	if (!dm_digtable.dig_enable_flag)
+ 		return;
+ 
+ 	if (dm_digtable.dig_algorithm_switch)
+@@ -1366,7 +1366,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_false_alarm(struct net_device *dev)
+ 	static u32 reset_cnt;
+ 	u8 i;
+ 
+-	if (dm_digtable.dig_enable_flag == false)
++	if (!dm_digtable.dig_enable_flag)
+ 		return;
+ 
+ 	if (dm_digtable.dig_algorithm_switch) {
+@@ -1501,7 +1501,7 @@ static void _rtl92e_dm_initial_gain(struct net_device *dev)
+ 		reset_cnt = 0;
+ 	}
+ 
+-	if (rtllib_act_scanning(priv->rtllib, true) == true) {
++	if (rtllib_act_scanning(priv->rtllib, true)) {
+ 		force_write = 1;
+ 		return;
+ 	}
 -- 
-nvpublic
+2.17.1
+
