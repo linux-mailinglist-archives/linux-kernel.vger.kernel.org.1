@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E91D1DD7CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71181DD7D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbgEUUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:00:06 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:33957 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728635AbgEUUAG (ORCPT
+        id S1730351AbgEUUA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729780AbgEUUA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:00:06 -0400
-Received: by mail-io1-f68.google.com with SMTP id f3so8970040ioj.1;
-        Thu, 21 May 2020 13:00:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/OBbI+6GWlC3oOe3NnwlkfXbsrp49bIWsk0Mjef2X1w=;
-        b=mZyB99yA0rfZzYjPKDAlHXwWXzdf71m9ShKRy2RoxBvKBSLTWahDvrxP5dsAxRiFGc
-         Vz8ZQBDHtLr4H8ELbKtzzu1mE7SiEGpJWMCFomZ0jUUDznB9S7bBqHmke160+A7OJ1ST
-         pJ5yWkCKu//H1bDJFpJTESrv364dxI8h8JrhtBPYjfJKcunzgaO6PtHaVeQG8EU2XLv2
-         FXSH/U58mTTOkxg3yUJBn/KA49aLYe7WGTKvu7Sn62lMuP0KrJ6lKQxWHeIu6JcDFtOO
-         aeKnp6rRH5v7HzTt7mivNE+yKEkzGuK97bgodToXpx+8xr/t5y4Ah0CQxUxAP+dsglcA
-         dWYw==
-X-Gm-Message-State: AOAM530vu6Lv3JhHPskPRdSGjyyceln7QtGuHAnpzQ6WLXH69R1jvt8A
-        lgiVYtF5Lq3uC4nSO8arEw==
-X-Google-Smtp-Source: ABdhPJwzyw5pKWXUrC5O7c3oRIN0AOpnS71xcVe2dTARhkJ5T/JDIfApn3beqjgjWsFowWuLOQ4ZLQ==
-X-Received: by 2002:a6b:1cc:: with SMTP id 195mr225126iob.177.1590091205067;
-        Thu, 21 May 2020 13:00:05 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id j17sm3239598ilq.79.2020.05.21.13.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 13:00:03 -0700 (PDT)
-Received: (nullmailer pid 2801685 invoked by uid 1000);
-        Thu, 21 May 2020 20:00:02 -0000
-Date:   Thu, 21 May 2020 14:00:02 -0600
-From:   robh@kernel.org
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/5] dt-bindings: arm: fsl: add different Protonic
- boards
-Message-ID: <20200521200002.GA2800876@bogus>
-References: <20200520154116.12909-1-o.rempel@pengutronix.de>
- <20200520154116.12909-6-o.rempel@pengutronix.de>
+        Thu, 21 May 2020 16:00:57 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9A1C061A0E;
+        Thu, 21 May 2020 13:00:56 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbrMP-0008Jj-44; Thu, 21 May 2020 22:00:09 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 57046100C2D; Thu, 21 May 2020 22:00:08 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set data->ctx and data->hctx in blk_mq_alloc_request_hctx
+In-Reply-To: <15f9f975-1baf-dc90-5730-00df08829523@kernel.dk>
+References: <20200520011823.GA415158@T590> <20200520030424.GI416136@T590> <20200520080357.GA4197@lst.de> <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk> <448d3660-0d83-889b-001f-a09ea53fa117@kernel.dk> <87tv0av1gu.fsf@nanos.tec.linutronix.de> <2a12a7aa-c339-1e51-de0d-9bc6ced14c64@kernel.dk> <87eereuudh.fsf@nanos.tec.linutronix.de> <20200521022746.GA730422@T590> <87367tvh6g.fsf@nanos.tec.linutronix.de> <20200521092340.GA751297@T590> <87pnaxt9nv.fsf@nanos.tec.linutronix.de> <15f9f975-1baf-dc90-5730-00df08829523@kernel.dk>
+Date:   Thu, 21 May 2020 22:00:08 +0200
+Message-ID: <87k115t5x3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520154116.12909-6-o.rempel@pengutronix.de>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 May 2020 17:41:16 +0200, Oleksij Rempel wrote:
-> Add Protonic PRTI6Q, WD2, RVT, VT7 boards.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+Jens Axboe <axboe@kernel.dk> writes:
+> Again, this is mixing up io_uring and blk-mq. Maybe it's the fact that
+> both use 'ctx' that makes this confusing. On the blk-mq side, the 'ctx'
+> is the per-cpu queue context, for io_uring it's the io_uring instance.
 
+Yes, that got me horribly confused. :)
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+> io_sq_thread() doesn't care about any sort of percpu mappings, it's
+> happy as long as it'll keep running regardless of whether or not the
+> optional pinned CPU is selected and then offlined.
 
-If a tag was not added on purpose, please state why and what changed.
+Fair enough.
 
+So aside of the potential spin forever if the uring thread is lifted to
+an RT scheduling class, this looks all good.
+
+Though I assume that if that thread is pinned and an admin pushs it into
+RT scheduling the spinning live lock can happen independent of cpu
+hotplug.
+
+Thanks,
+
+        tglx
