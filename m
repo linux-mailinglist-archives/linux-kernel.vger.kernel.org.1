@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2EC1DC83F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85B01DC834
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbgEUIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 04:10:05 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:53910 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727011AbgEUIKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 04:10:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=eK8mUW3fF6LfxGwGD9YQ3A/OYObovV5a54tgN2SqYBY=; b=nwKIRUi1vyafg76NV78jcGDCFA
-        khx1OwBDchZUUlFGvdTu/PCztlgnrvzIBAO4tBR/q1eQ3Z/wYi5GX4y38lAQfzrwGTtD+4EsmzR5v
-        s80ZBeqel/JjmG+KlgZ2jEHrvhTMJZEVO4RZ3BH4eEoL9b5/2w+aCYk5Hzh7MLyqiGtY=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1jbgCT-0004HF-5A; Thu, 21 May 2020 08:05:09 +0000
-Received: from 54-240-197-225.amazon.com ([54.240.197.225] helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <julien@xen.org>)
-        id 1jbgCS-0006Wj-V5; Thu, 21 May 2020 08:05:09 +0000
-Subject: Re: [PATCH 02/10] swiotlb-xen: remove start_dma_addr
-To:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
- <20200520234520.22563-2-sstabellini@kernel.org>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <6241b8f6-5c51-0486-55ae-d571b117a184@xen.org>
-Date:   Thu, 21 May 2020 09:05:07 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200520234520.22563-2-sstabellini@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1728502AbgEUIFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 04:05:55 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:47522 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726208AbgEUIFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 04:05:55 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app3 (Coremail) with SMTP id cC_KCgC3WQRWNsZeXibnAA--.12357S4;
+        Thu, 21 May 2020 16:05:46 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: tegra210-adma: Fix runtime PM imbalance on error
+Date:   Thu, 21 May 2020 16:05:41 +0800
+Message-Id: <20200521080541.25229-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgC3WQRWNsZeXibnAA--.12357S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFW3Gr18JF1xWF4UArb_yoWDCwb_Cr
+        18Zr97ursIkr4qvr13Gr13Zr92qF4qqFWvgr1Iv34Sg347Zwn8ArW5ZFn5Cr43Ww4UCF1q
+        yrZFgFy7ArsxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+        AwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
+        14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
+        4UJbIYCTnIWIevJa73UjIFyTuYvjfU0yxRDUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEHBlZdtOPItAAVs3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-On 21/05/2020 00:45, Stefano Stabellini wrote:
-> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> 
-> It is not strictly needed. Call virt_to_phys on xen_io_tlb_start
-> instead. It will be useful not to have a start_dma_addr around with the
-> next patches.
-> 
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> ---
->   drivers/xen/swiotlb-xen.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-> index a42129cba36e..b5e0492b07b9 100644
-> --- a/drivers/xen/swiotlb-xen.c
-> +++ b/drivers/xen/swiotlb-xen.c
-> @@ -52,8 +52,6 @@ static unsigned long xen_io_tlb_nslabs;
->    * Quick lookup value of the bus address of the IOTLB.
->    */
->   
-> -static u64 start_dma_addr;
-> -
->   /*
->    * Both of these functions should avoid XEN_PFN_PHYS because phys_addr_t
->    * can be 32bit when dma_addr_t is 64bit leading to a loss in
-> @@ -241,7 +239,6 @@ int __ref xen_swiotlb_init(int verbose, bool early)
->   		m_ret = XEN_SWIOTLB_EFIXUP;
->   		goto error;
->   	}
-> -	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
->   	if (early) {
->   		if (swiotlb_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs,
->   			 verbose))
-> @@ -389,7 +386,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
->   	 */
->   	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
->   
-> -	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys,
-> +	map = swiotlb_tbl_map_single(dev, virt_to_phys(xen_io_tlb_start), phys,
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/dma/tegra210-adma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-xen_virt_to_bus() is implemented as xen_phys_to_bus(virt_to_phys()). Can 
-you explain how the two are equivalent?
-
-Cheers,
-
+diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
+index c4ce5dfb149b..8f5e4949d720 100644
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -870,7 +870,7 @@ static int tegra_adma_probe(struct platform_device *pdev)
+ 
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (ret < 0)
+-		goto rpm_disable;
++		goto rpm_put;
+ 
+ 	ret = tegra_adma_init(tdma);
+ 	if (ret)
+@@ -921,7 +921,6 @@ static int tegra_adma_probe(struct platform_device *pdev)
+ 	dma_async_device_unregister(&tdma->dma_dev);
+ rpm_put:
+ 	pm_runtime_put_sync(&pdev->dev);
+-rpm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ irq_dispose:
+ 	while (--i >= 0)
 -- 
-Julien Grall
+2.17.1
+
