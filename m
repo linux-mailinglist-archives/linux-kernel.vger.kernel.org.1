@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F051DD286
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21431DD28E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729749AbgEUP6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:58:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39322 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727968AbgEUP6J (ORCPT
+        id S1728327AbgEUP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726808AbgEUP7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:58:09 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 411AD803087B;
-        Thu, 21 May 2020 15:58:06 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qtAkUXH4Z9NM; Thu, 21 May 2020 18:58:05 +0300 (MSK)
-Date:   Thu, 21 May 2020 18:58:04 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Clement Leger <cleger@kalray.eu>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 03/16] spi: dw: Discard static DW DMA slave structures
-Message-ID: <20200521155804.qgaaqc23h2nll7r3@mobilestation>
-References: <20200521012206.14472-1-Sergey.Semin@baikalelectronics.ru>
- <20200521012206.14472-4-Sergey.Semin@baikalelectronics.ru>
- <CAHp75VcOX-hZSxHqro_W2X=KzSShg1V=jAsxdz8L5TZpW0kBYA@mail.gmail.com>
- <20200521121228.aqplh6eftylnys3p@mobilestation>
- <20200521155143.GE4770@sirena.org.uk>
+        Thu, 21 May 2020 11:59:20 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3CDC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:59:20 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t16so2993620plo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V4UY/iO1dtV0DGmUtTr7wgmLRF9ZbtUeAeGkEQgW2fg=;
+        b=DQH3a0FVeAxUii5Q3eYrIfWEp1bUHCfXNugFzqJ/GUHWCxzXXFTMo0sMT9dy2YP6mZ
+         YmhHn9uRHC3ItJPcSz58ic3G6tvqkS0kQLRBm5jqfgcZfLsC4EYbXAZEUZnjXRD2d0vL
+         c1kWNFWTl7h5yBBWE5xFrlZkZaWThPSte1CGJLA6Av/fli5/lcw0WRNN7hoM9SRIFqSl
+         6Cxs2kPfhEDQ1107nQysWkXJLlyspHC+NWQQjH2kokwcGUxUbsMFkizUlInrnEyG+/tr
+         JOMq4cJ9zRfhBPU9jqjIPl2orHY9tUXCkPehARudbM+1daUlkopRJnMkR7u/piU19x+z
+         LQGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V4UY/iO1dtV0DGmUtTr7wgmLRF9ZbtUeAeGkEQgW2fg=;
+        b=DC9qT4TuqI8u3Q31Fg41vFHG7f/hmpeDXjPpwPbkyRrcvpisVUx04rCfrhp1IYwp1w
+         tf5N0Y5XZGOWfPaHbUWwEI//wcDrGx7VFsa2zdJd6lIvnkk/gJ0/UYmoo9G02svJw2s6
+         gHZScIe7u2QPonAJi5+wRr0ANawN3X0+UA0j0uU2+A/jL25UluFP7LhPLLRqvgfXD5qV
+         7j3RDtvtsqJBzecBTzzWkwMA86poHk7OLpZtGQ/S8x/M3/sLCsKJnNFLeCnxIVIvKbVW
+         eAo6qPJ3HoXS2Jx7G1exz1RLCjQLBQTCyue/cyd2ddnHsB9WJAKEQrZf0AD4of+lS97p
+         ddSw==
+X-Gm-Message-State: AOAM531RkkA4YXJWZLnHqsgg8boo9/02FXwcPp4e6mQdyw7x1ismn7uI
+        teIhCFeBi0PCaQW4+qKPsO0FXskLf71pqAvk0F4GBTnJbOQ=
+X-Google-Smtp-Source: ABdhPJzeahkzD0iIJ3NFgMjoUyG+a8GFkuxsdI6o6RB6HB7bhYm1f1p7qWMDlAv1w9DcLt3Ypxp7TJ4j6Khk9ZqObWs=
+X-Received: by 2002:a17:902:6ac2:: with SMTP id i2mr10547431plt.18.1590076760169;
+ Thu, 21 May 2020 08:59:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200521155143.GE4770@sirena.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20161202195416.58953-1-andriy.shevchenko@linux.intel.com>
+ <20200120121645.GI32742@smile.fi.intel.com> <20200521155304.GA1921871@smile.fi.intel.com>
+In-Reply-To: <20200521155304.GA1921871@smile.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 21 May 2020 18:59:08 +0300
+Message-ID: <CAHp75VfY84FQaw5HF2hLV3gfY3DFgUa2vqtgEER1qXgKkhPdow@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed kernel
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:51:43PM +0100, Mark Brown wrote:
-> On Thu, May 21, 2020 at 03:12:28PM +0300, Serge Semin wrote:
-> 
-> > Well, for me both solutions are equal except mine consumes less stack memory.
-> > The only reason why your solution might be better is that if DW DMA driver or
-> > the DMA engine subsystem changed the dw_dma_slave structure instance passed to
-> > the dma_request_channel() method, which non of them do. So I'll leave this for
-> > Mark to decide. Mark, could you give us your final word about this?
-> 
-> Honestly I'm struggling to care either way.  I guess saving a bit of
-> stack is potentially useful.
+On Thu, May 21, 2020 at 6:55 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Mon, Jan 20, 2020 at 02:16:45PM +0200, Andy Shevchenko wrote:
+> > On Fri, Dec 02, 2016 at 09:54:14PM +0200, Andy Shevchenko wrote:
+> > > Until now DMI information is lost when kexec'ing. Fix this in the same way as
+> > > it has been done for ACPI RSDP.
+> > >
+> > > Series has been tested on Galileo Gen2 where DMI is used by drivers, in
+> > > particular the default I2C host speed is choosen based on DMI system
+> > > information and now gets it correct.
+> >
+> > Guys, it was quite a long no hear from you.
+> > Today I found that Microsoft Surface 3 also affected by this.
+> >
+> > Can we apply these patches for now until you will find better solution?
+> >
+> > P.S. I may resend them rebased on recent vanilla.
+>
+> Okay, since there is no reply I take it as confirmation that the problem exists
+> and needs to be addressed.  So, I'll send a new version of the series with
+> updated commit messages (to mention Surface 3 issue).
 
-Settled then. Let's leave the patch as is. I suppose we've finally finished a
-review except a question Feng asked to the patch:
-[PATCH v3 01/16] spi: dw: Add Tx/Rx finish wait methods to the MID DMA
+Ah, I found reply from Eric from Jan 21, this year. Somehow it's
+slipped thru my eyes.
+I'll read it carefully and react accordingly.
 
-If you are ok with my responses, then the patchset is ready for you further
-actions.
-
--Sergey
+-- 
+With Best Regards,
+Andy Shevchenko
