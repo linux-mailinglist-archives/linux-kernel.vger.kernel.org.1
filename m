@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED291DCC74
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D11DCC8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729202AbgEUL4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 07:56:21 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51101 "EHLO ozlabs.org"
+        id S1729177AbgEUMDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 08:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729002AbgEUL4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 07:56:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729100AbgEUMDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 08:03:25 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49SSkn5rrqz9sSJ;
-        Thu, 21 May 2020 21:56:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590062179;
-        bh=kwF6cPnS97gtdHYMgI/TZKraaabw4ylDI13DsO3XuGU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fSz2gq4z4lamWPoXUPF+xkHl2NIJZl6zoKzFseNG1yCNUqzSJDRRo6CBn4Y5f/pMA
-         fR9SmXtDyqE7SPsYb/4FqurcXckTe9cpI1ymkbHvcjCXXcYZjathb2t4TxlmrPzNSe
-         p8tJ/iuGc6FhuQUZoFeqNWTYXOpFhJ9OLvlm5vbUQzEC7TK4JRwPvXb7WQAPFAwmrB
-         05cZ+oLXA9bmMpvlhSx4jEmJLg6Wj4JiSHniQO3E8Bx8los0nNXw4RHvNSlzCzKF8B
-         IJW0GIHKFqmuCAeOe7VDHjJg+EVtSuQrZBq//RPEQnIQUUONzByTVZ96rt2YJKlBdE
-         3MUdvt1TUJdQQ==
-Date:   Thu, 21 May 2020 21:56:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20200521215614.63e4473a@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 63AB32078B;
+        Thu, 21 May 2020 12:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590062604;
+        bh=LpB02I5eBFUMwM9seaNk4TqXui3r3ylDezMHPo1rCfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qNnEc0kho/7Iw6ReNSlHYUFIrUWSNjmPHvo/jqD7RFQ6lBXsowh1kPCgr7APuHFe5
+         XdU+OQS63BCUUqy2HbkvO2mp+8ZWUr5FyWbLKRGjAAS98VRfiiKbvOMVIZxcqm2AuT
+         8vYO5fwEUmjVxVfCCcePw9q0bt5V4Z4RAmJdnLcQ=
+Date:   Thu, 21 May 2020 14:03:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavan Kondeti <pkondeti@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Liang Chen <cl@rock-chips.com>
+Subject: Re: [PATCH] kthread: Use TASK_IDLE state for newly created kernel
+ threads
+Message-ID: <20200521120322.GA3126694@kroah.com>
+References: <1589975710-9283-1-git-send-email-pkondeti@codeaurora.org>
+ <20200520181858.GA343493@kroah.com>
+ <20200521013544.GC31725@codeaurora.org>
+ <20200521055639.GA2337399@kroah.com>
+ <20200521095125.GD31725@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sWOO1vVeJ0E+_2_iXTGlbic";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521095125.GD31725@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sWOO1vVeJ0E+_2_iXTGlbic
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 21, 2020 at 03:21:25PM +0530, Pavan Kondeti wrote:
+> On Thu, May 21, 2020 at 07:56:39AM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, May 21, 2020 at 07:05:44AM +0530, Pavan Kondeti wrote:
+> > > On Wed, May 20, 2020 at 08:18:58PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, May 20, 2020 at 05:25:09PM +0530, Pavankumar Kondeti wrote:
+> > > > > When kernel threads are created for later use, they will be in
+> > > > > TASK_UNINTERRUPTIBLE state until they are woken up. This results
+> > > > > in increased loadavg and false hung task reports. To fix this,
+> > > > > use TASK_IDLE state instead of TASK_UNINTERRUPTIBLE when
+> > > > > a kernel thread schedules out for the first time.
+> > > > > 
+> > > > > Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
+> > > > > ---
+> > > > >  kernel/kthread.c | 6 +++---
+> > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > > > > index bfbfa48..b74ed8e 100644
+> > > > > --- a/kernel/kthread.c
+> > > > > +++ b/kernel/kthread.c
+> > > > > @@ -250,7 +250,7 @@ static int kthread(void *_create)
+> > > > >  	current->vfork_done = &self->exited;
+> > > > >  
+> > > > >  	/* OK, tell user we're spawned, wait for stop or wakeup */
+> > > > > -	__set_current_state(TASK_UNINTERRUPTIBLE);
+> > > > > +	__set_current_state(TASK_IDLE);
+> > > > >  	create->result = current;
+> > > > >  	/*
+> > > > >  	 * Thread is going to call schedule(), do not preempt it,
+> > > > > @@ -428,7 +428,7 @@ static void __kthread_bind(struct task_struct *p, unsigned int cpu, long state)
+> > > > >  
+> > > > >  void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
+> > > > >  {
+> > > > > -	__kthread_bind_mask(p, mask, TASK_UNINTERRUPTIBLE);
+> > > > > +	__kthread_bind_mask(p, mask, TASK_IDLE);
+> > > > >  }
+> > > > >  
+> > > > >  /**
+> > > > > @@ -442,7 +442,7 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
+> > > > >   */
+> > > > >  void kthread_bind(struct task_struct *p, unsigned int cpu)
+> > > > >  {
+> > > > > -	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
+> > > > > +	__kthread_bind(p, cpu, TASK_IDLE);
+> > > > >  }
+> > > > >  EXPORT_SYMBOL(kthread_bind);
+> > > > 
+> > > > It's as if people never read mailing lists:
+> > > > 	https://lore.kernel.org/r/DM6PR11MB3531D3B164357B2DC476102DDFC90@DM6PR11MB3531.namprd11.prod.outlook.com
+> > > > 
+> > > > Given that this is an identical resend of the previous patch, why are
+> > > > you doing so, and what has changed since that original rejection?
+> > > > 
+> > > I did not know that it is attempted before. Thanks for pointing to the
+> > > previous discussion. 
+> > > 
+> > > We have seen hung task reports from customers and it is due to a downstream
+> > > change which create bunch of kernel threads for later use.
+> > 
+> > Do you have a pointer to that specific change?
+> > 
+> Here it is
+> https://source.codeaurora.org/quic/la/kernel/msm-4.19/commit/drivers/staging/android/ion/ion_system_heap.c?h=LA.UM.8.12.r1-11300-sm8250.0&id=0734b477f1e77cb9f91f5e5c0d7742d3113f2cd3
 
-Hi all,
+Ick, ion system heaps :(
 
-After merging the tip tree, today's linux-next build (x86_64 allnoconfig)
-produced this warning:
+Anyway, why not just use a workqueue for this, why a full kernel thread?
+What does that help with?  It also might fix those crazy hacks you have
+in there for "cpu affinity" as all of that would be taken care of for
+you automatically with a workqueue, right?
 
-arch/x86/kernel/traps.c: In function 'exc_double_fault':
-arch/x86/kernel/traps.c:332:16: warning: unused variable 'address' [-Wunuse=
-d-variable]
-  332 |  unsigned long address =3D read_cr2();
-      |                ^~~~~~~
+good luck!
 
-Introduced by commit
-
-  095b7a3e7745 ("x86/entry: Convert double fault exception to IDTENTRY_DF")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sWOO1vVeJ0E+_2_iXTGlbic
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7GbF4ACgkQAVBC80lX
-0GwNrggAoUAxs2WMhydYKdkTiKnIdbEmBrLYPoHFKUeeKRhNs2WtmlTiHWlqjnZH
-TWdFwzItQny2tCOXF2SahYOwDzjKtRkwSEsgLXRrH9/tdGYECRbkjQmz9mDMMFXv
-ewN2P5HbIGOQnPJfOilgXoQ1eMGXen0XMDqHQNPml25UXqLAe0vxpz9vx0V5g/2T
-CIh/QRoTOQFIK0mQM6BPldXIES4uRNZNjbo+j0tF7ots5LXutOtYPNne7/stNY5d
-OMHiux+dYigBPPxg2Vx/e+Ur84JIZi/tuvbjhEyCOSVLWJENldB4F+zM+CjFlnap
-NxLPw5kF3B6ghkbE2JkRAm7GNA2o5Q==
-=BMkc
------END PGP SIGNATURE-----
-
---Sig_/sWOO1vVeJ0E+_2_iXTGlbic--
+greg k-h
