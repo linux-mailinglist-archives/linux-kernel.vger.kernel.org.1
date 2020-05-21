@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9DC1DCBE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED771DCBBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgEULKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 07:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
+        id S1729092AbgEULKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 07:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbgEULJ5 (ORCPT
+        with ESMTP id S1729084AbgEULJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 07:09:57 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBBDC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:09:55 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id y64so6967018qkc.19
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:09:55 -0700 (PDT)
+        Thu, 21 May 2020 07:09:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA10C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:09:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id s8so4857925ybj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=COp0SyeTFByf68VoAMfHccz/8jBHCco/jZeKm/gYFRA=;
-        b=aQ5u9oAYI6gfKMpWzxJs3wceUj/S99J299ERHsuEXPNRKarnAdABxjyLU71gf3H1xw
-         ZoC3iz7MAXNgMX9bNCU+5ypV7q75vsesrLnA7Sl6z0tNIb61lWZrS/OEZhi6n2SFdLVc
-         3bgc0tbs1BCpIl6T3MtxzIYw9GSIzL7RTw5GFbOBNeHfnNng6TKunnNGnWg5O2PD/hPo
-         YHXevu4xMyJygAf7f6X/OAMgNaiswb6B9RL0ICQpXy0ISaDK6ZG/AIXzPd7wxfqLAiiE
-         txiZZb9Op2bWpvR1tYtaoTtIg6Gcs9b6Fe5jFWflb6wfFYebqVN9fUgntbNEMohG/6Bd
-         G0Dw==
+        bh=E0UepZUl50HW0uHDfJhRs9oZIgYHrAECVMB9g20DGiQ=;
+        b=oY/uD0lypzzY7RbHryAv7AQdD01jnrfv9h6MiH9bK4YOkm0hW3lIgen04LKNdDC72x
+         w7LJtgm8qT6UVw+SLVLkOuF0uyIZif16xVJpCyDCaIaObTJXq2K9UI2wr5zZgFjRkLRq
+         k2oIhn/yqo2/4rrLHtcctItkVZVnNB8ZaAl1k2ep3pQydvkgv7tUJW+QNSJsAaYI1UpX
+         RQy9F63SQwVrR5NpnRLaW6Dlxvxo+yyBrHOqdYm4sh/qg386CBdA4ivmRa1CN+L4YJCo
+         H19L9w/WkrH1tZ1nw2hfX9aFdckc32XIzZRL5gcsno8L//4drV8V5p7Tc+q78ShV1g7M
+         Dfjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=COp0SyeTFByf68VoAMfHccz/8jBHCco/jZeKm/gYFRA=;
-        b=ZEUOo+RMRW75SwW2rftgw/O5WuH17WeDQvXAB3BwLQer6Q2I1qxMg4cgh1gg4VqkHz
-         a/hvTITN+AHgDsBFeHscXesCZoDpALU8fBrkHiHfdNPRXM0P+pqRpb/BWw+Kb78irNFE
-         W3PT5pwkSUHei63o78zsEYPzlcPP6Bn9mbtYBLF94VFZO7fvkgOoB9QfYafSixmlHRQk
-         90fE51mYoiQbExPZs0OLQOTxOj9yi4+FahxODThSxqO181JXqb3JQ7TobzhLnSCpqgT3
-         JauRVaDADp95I/KTA9Z2V+SHJOP6IFqNfEPhD9awTfsv+Y18atfvf3ZzV0pRiMous7xf
-         Wiyg==
-X-Gm-Message-State: AOAM5331ZMRF+5kOTKLxHN6uvIKJYDHIOJQdwvuzVoKwllOKIEEVW+A2
-        btETjhlNE8Lt0okR5UFZwikwjo6d2w==
-X-Google-Smtp-Source: ABdhPJwEW5cdhdqp56l7R0q8gopUm72VDGJ5VcGYLFn06OR+m5M2z+9wqaplK3JNSnAFI/omgcTejiPnYg==
-X-Received: by 2002:a05:6214:1594:: with SMTP id m20mr693518qvw.110.1590059394941;
- Thu, 21 May 2020 04:09:54 -0700 (PDT)
-Date:   Thu, 21 May 2020 13:08:45 +0200
+        bh=E0UepZUl50HW0uHDfJhRs9oZIgYHrAECVMB9g20DGiQ=;
+        b=UrBOj6AaOrE7d5jK3eSiKc3bvowJ0fwUptwt0DoZdDo9rXSebjxnHpB49CuTt/sYha
+         JN30mMMmyd9IsiPoco/jPh5hlvqEzl+tXGnGS71Vi/HwJdVRwIpgVl9w3kbxOSfFS+fQ
+         qZhwD4RtRZ8crzNbB2SOgDqxMOIaacW4Wb+LBzEEhQzHLFCJm8GtluEfKnrxKAZCjFe/
+         sQ3+ErAWqSM1MQAz2iNwsvcgqTkA4xKVQQCQMZ1kDQBM8kBX8hN9VjP9f948zZhI1kbn
+         qNX2mg7JhkhLymq4A+4aqgcAgwVmg1UoV+JPzzXhndDLtO6pLD3IEyakU0LkRepbE7qh
+         SlfQ==
+X-Gm-Message-State: AOAM530R26EM94A8SEJUCW2WWMZyaYxs0gCIqwVQKpN4mZGg/oSzfPpT
+        lYyciVQ7tF8ApQOeauFLQQye/OIAUA==
+X-Google-Smtp-Source: ABdhPJz6luzhv8RtemG02q/50WcPIBaJ1dHDCBbqgqWhKrmRiYdj/f9zBMjzPI0axa78KQpXYK8ioWqULA==
+X-Received: by 2002:a25:41c3:: with SMTP id o186mr14043993yba.48.1590059397203;
+ Thu, 21 May 2020 04:09:57 -0700 (PDT)
+Date:   Thu, 21 May 2020 13:08:46 +0200
 In-Reply-To: <20200521110854.114437-1-elver@google.com>
-Message-Id: <20200521110854.114437-3-elver@google.com>
+Message-Id: <20200521110854.114437-4-elver@google.com>
 Mime-Version: 1.0
 References: <20200521110854.114437-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip v2 02/11] kcsan: Avoid inserting __tsan_func_entry/exit
- if possible
+Subject: [PATCH -tip v2 03/11] kcsan: Support distinguishing volatile accesses
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -65,44 +64,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid inserting  __tsan_func_{entry,exit}, add option if supported by
-compiler. Currently only Clang can be told to not emit calls to these
-functions. It is safe to not emit these, since KCSAN does not rely on
-them.
+In the kernel, volatile is used in various concurrent context, whether
+in low-level synchronization primitives or for legacy reasons. If
+supported by the compiler, we will assume that aligned volatile accesses
+up to sizeof(long long) (matching compiletime_assert_rwonce_type()) are
+atomic.
 
-Note that, if we disable __tsan_func_{entry,exit}(), we need to disable
-tail-call optimization in sanitized compilation units, as otherwise we
-may skip frames in the stack trace; in particular when the tail called
-function is one of the KCSAN's runtime functions, and a report is
-generated, might we miss the function where the actual access occurred.
-Since __tsan_func_{entry,exit}() insertion effectively disabled
-tail-call optimization, there should be no observable change. [This was
-caught and confirmed with kcsan-test & UNWINDER_ORC.]
+Recent versions Clang [1] (GCC tentative [2]) can instrument volatile
+accesses differently. Add the option (required) to enable the
+instrumentation, and provide the necessary runtime functions. None of
+the updated compilers are widely available yet (Clang 11 will be the
+first release to support the feature).
+
+[1] https://github.com/llvm/llvm-project/commit/5a2c31116f412c3b6888be361137efd705e05814
+[2] https://gcc.gnu.org/pipermail/gcc-patches/2020-April/544452.html
+
+This patch allows removing any explicit checks in primitives such as
+READ_ONCE() and WRITE_ONCE().
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- scripts/Makefile.kcsan | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+v2:
+* Reword Makefile comment.
+---
+ kernel/kcsan/core.c    | 43 ++++++++++++++++++++++++++++++++++++++++++
+ scripts/Makefile.kcsan |  5 ++++-
+ 2 files changed, 47 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index a73a66cf79df..15f67949d11e 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -789,6 +789,49 @@ void __tsan_write_range(void *ptr, size_t size)
+ }
+ EXPORT_SYMBOL(__tsan_write_range);
+ 
++/*
++ * Use of explicit volatile is generally disallowed [1], however, volatile is
++ * still used in various concurrent context, whether in low-level
++ * synchronization primitives or for legacy reasons.
++ * [1] https://lwn.net/Articles/233479/
++ *
++ * We only consider volatile accesses atomic if they are aligned and would pass
++ * the size-check of compiletime_assert_rwonce_type().
++ */
++#define DEFINE_TSAN_VOLATILE_READ_WRITE(size)                                  \
++	void __tsan_volatile_read##size(void *ptr)                             \
++	{                                                                      \
++		const bool is_atomic = size <= sizeof(long long) &&            \
++				       IS_ALIGNED((unsigned long)ptr, size);   \
++		if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS) && is_atomic)      \
++			return;                                                \
++		check_access(ptr, size, is_atomic ? KCSAN_ACCESS_ATOMIC : 0);  \
++	}                                                                      \
++	EXPORT_SYMBOL(__tsan_volatile_read##size);                             \
++	void __tsan_unaligned_volatile_read##size(void *ptr)                   \
++		__alias(__tsan_volatile_read##size);                           \
++	EXPORT_SYMBOL(__tsan_unaligned_volatile_read##size);                   \
++	void __tsan_volatile_write##size(void *ptr)                            \
++	{                                                                      \
++		const bool is_atomic = size <= sizeof(long long) &&            \
++				       IS_ALIGNED((unsigned long)ptr, size);   \
++		if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS) && is_atomic)      \
++			return;                                                \
++		check_access(ptr, size,                                        \
++			     KCSAN_ACCESS_WRITE |                              \
++				     (is_atomic ? KCSAN_ACCESS_ATOMIC : 0));   \
++	}                                                                      \
++	EXPORT_SYMBOL(__tsan_volatile_write##size);                            \
++	void __tsan_unaligned_volatile_write##size(void *ptr)                  \
++		__alias(__tsan_volatile_write##size);                          \
++	EXPORT_SYMBOL(__tsan_unaligned_volatile_write##size)
++
++DEFINE_TSAN_VOLATILE_READ_WRITE(1);
++DEFINE_TSAN_VOLATILE_READ_WRITE(2);
++DEFINE_TSAN_VOLATILE_READ_WRITE(4);
++DEFINE_TSAN_VOLATILE_READ_WRITE(8);
++DEFINE_TSAN_VOLATILE_READ_WRITE(16);
++
+ /*
+  * The below are not required by KCSAN, but can still be emitted by the
+  * compiler.
 diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
-index caf1111a28ae..20337a7ecf54 100644
+index 20337a7ecf54..75d2942b9437 100644
 --- a/scripts/Makefile.kcsan
 +++ b/scripts/Makefile.kcsan
-@@ -1,6 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0
- ifdef CONFIG_KCSAN
+@@ -9,7 +9,10 @@ else
+ cc-param = --param -$(1)
+ endif
  
--CFLAGS_KCSAN := -fsanitize=thread
-+# GCC and Clang accept backend options differently. Do not wrap in cc-option,
-+# because Clang accepts "--param" even if it is unused.
-+ifdef CONFIG_CC_IS_CLANG
-+cc-param = -mllvm -$(1)
-+else
-+cc-param = --param -$(1)
-+endif
-+
-+CFLAGS_KCSAN := -fsanitize=thread \
-+	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls)
++# Keep most options here optional, to allow enabling more compilers if absence
++# of some options does not break KCSAN nor causes false positive reports.
+ CFLAGS_KCSAN := -fsanitize=thread \
+-	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls)
++	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls) \
++	$(call cc-param,tsan-distinguish-volatile=1)
  
  endif # CONFIG_KCSAN
 -- 
