@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C0B1DC60C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBD71DC642
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgEUEKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 00:10:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:39934 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725945AbgEUEKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 00:10:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20E7C30E;
-        Wed, 20 May 2020 21:10:46 -0700 (PDT)
-Received: from [10.163.75.69] (unknown [10.163.75.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7D623F68F;
-        Wed, 20 May 2020 21:10:43 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [RFC V2] mm/vmstat: Add events for PMD based THP migration
- without split
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1589784156-28831-1-git-send-email-anshuman.khandual@arm.com>
- <20200520071521.GA29616@hori.linux.bs1.fc.nec.co.jp>
-Message-ID: <d20494ac-5039-6956-c70b-f78e51b4f6eb@arm.com>
-Date:   Thu, 21 May 2020 09:40:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20200520071521.GA29616@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726960AbgEUEaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 00:30:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58188 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbgEUEaP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 00:30:15 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jbcqR-0000a7-Vm; Thu, 21 May 2020 04:30:12 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     axboe@kernel.dk
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
+        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] libata: Use per port sync for detach
+Date:   Thu, 21 May 2020 12:30:06 +0800
+Message-Id: <20200521043007.23215-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 130f4caf145c ("libata: Ensure ata_port probe has completed before
+detach") may cause system freeze during suspend.
 
+Using async_synchronize_full() in PM callbacks is wrong, since async
+callbacks that are already scheduled may wait for not-yet-scheduled
+callbacks, causes a circular dependency.
 
-On 05/20/2020 12:45 PM, HORIGUCHI NAOYA(堀口　直也) wrote:
-> On Mon, May 18, 2020 at 12:12:36PM +0530, Anshuman Khandual wrote:
->> This adds the following two new VM events which will help in validating PMD
->> based THP migration without split. Statistics reported through these events
->> will help in performance debugging.
->>
->> 1. THP_PMD_MIGRATION_SUCCESS
->> 2. THP_PMD_MIGRATION_FAILURE
->>
->> Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
->> Cc: Zi Yan <ziy@nvidia.com>
->> Cc: John Hubbard <jhubbard@nvidia.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> Hi Anshuman,
+Instead of using big hammer like async_synchronize_full(), use async
+cookie to make sure port probe are synced, without affecting other
+scheduled PM callbacks.
 
-Hi Naoya,
+Fixes: 130f4caf145c ("libata: Ensure ata_port probe has completed before detach")
+BugLink: https://bugs.launchpad.net/bugs/1867983
+Suggested-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Sync up to cookie + 1.
+ - Squash the synchronization into the same loop.
 
-> 
-> I'm neutral for additinal lines in /proc/vmstat. It's a classic (so widely
-> used) but inflexible interface. Users disabling thp are not happy with many
-> thp-related lines, but judging from the fact that we already have many
+ drivers/ata/libata-core.c | 9 ++++-----
+ include/linux/libata.h    | 3 +++
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-Right, for similar reason, I am not too keen on enabling these counters
-without migration being enabled with ARCH_ENABLE_THP_MIGRATION.
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index beca5f91bb4c..b6be84f2cecb 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -42,7 +42,6 @@
+ #include <linux/workqueue.h>
+ #include <linux/scatterlist.h>
+ #include <linux/io.h>
+-#include <linux/async.h>
+ #include <linux/log2.h>
+ #include <linux/slab.h>
+ #include <linux/glob.h>
+@@ -5778,7 +5777,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
+ 	/* perform each probe asynchronously */
+ 	for (i = 0; i < host->n_ports; i++) {
+ 		struct ata_port *ap = host->ports[i];
+-		async_schedule(async_port_probe, ap);
++		ap->cookie = async_schedule(async_port_probe, ap);
+ 	}
+ 
+ 	return 0;
+@@ -5921,10 +5920,10 @@ void ata_host_detach(struct ata_host *host)
+ 	int i;
+ 
+ 	/* Ensure ata_port probe has completed */
+-	async_synchronize_full();
+-
+-	for (i = 0; i < host->n_ports; i++)
++	for (i = 0; i < host->n_ports; i++) {
++		async_synchronize_cookie(host->ports[i]->cookie + 1);
+ 		ata_port_detach(host->ports[i]);
++	}
+ 
+ 	/* the host is dead now, dissociate ACPI */
+ 	ata_acpi_dissociate(host);
+diff --git a/include/linux/libata.h b/include/linux/libata.h
+index cffa4714bfa8..ae6dfc107ea8 100644
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -22,6 +22,7 @@
+ #include <linux/acpi.h>
+ #include <linux/cdrom.h>
+ #include <linux/sched.h>
++#include <linux/async.h>
+ 
+ /*
+  * Define if arch has non-standard setup.  This is a _PCI_ standard
+@@ -872,6 +873,8 @@ struct ata_port {
+ 	struct timer_list	fastdrain_timer;
+ 	unsigned long		fastdrain_cnt;
+ 
++	async_cookie_t		cookie;
++
+ 	int			em_message_type;
+ 	void			*private_data;
+ 
+-- 
+2.17.1
 
-> thp-related lines some users really need them. So I feel hard to decide to
-> agree or disagree with additional lines.
-
-Currently these are conditional on ARCH_ENABLE_THP_MIGRATION. So we are
-not adding these new lines unless it migration is available and enabled.
-
-> 
-> I think that tracepoints are the more flexible interfaces for monitoring,
-> so I'm interested more in whether thp migration could be monitorable via
-> tracepoint. Do you have any idea/plan on it?
-
-Sure, we can add some trace points as well which can give more granular
-details regarding THP migration mechanism itself e.g setting and removing
-PMD migration entries etc probably with (vaddr, pmdp, pmd) details.
-
-But we will still need /proc/vmstat entries that will be available right
-away without requiring additional steps. This simplicity is essential for
-folks to consider using these events more often.
-
-Sure, will look into what trace points can be added for THP migration but
-in a subsequent patch.
-
-- Anshuman
