@@ -2,166 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E92C1DD702
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866CA1DD71D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730482AbgEUTST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        id S1729839AbgEUTXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730442AbgEUTSS (ORCPT
+        with ESMTP id S1729475AbgEUTXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:18:18 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474BDC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:18:18 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y8so6515336ybn.20
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:18:18 -0700 (PDT)
+        Thu, 21 May 2020 15:23:05 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C73C061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:23:05 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t11so3690108pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=8AoDHRtqjpHM7RXqHjckQScwqkfTWJXIb0Sz86kUaw8=;
-        b=ngssxZJLnJraOpT5Lw/LZ3zvG2x3kyYvYQHi4mRBdBaWQHr+m+VLF3JEHsPFRqrl+A
-         /JjViJI0RMayw6SO8seyst71AqmaibRn1lPRjlVG5eCcoIdS+cL9xY76E5rvzLYDvTX1
-         yHwJgpd2Bck/6k7YaTXttOl9hoCy42MlfIYv2hTKbelXVzLg4A/hsQ1cJ5n4uOH0NEWd
-         oGp6HYojOoyUm883RsA+VMbJhwxBGuD1169hdWFtgCsAsagsiVsp61jKWlWIi45NUwWo
-         ZDZgv9drgiK1J36yZBRxnqsF88Wa6G6kW2ie0zvPi4IJXrVY5rFflT62E9QF9OZW2Yan
-         TtOg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y63aS+NaGtpwqRet4e2k+offwk7YhLSwL57svUyiQxU=;
+        b=WMQxmoMkXiaxv0IrSbei9pAXdBwNmZcH/MmXSAHk0JQ+WNZrIH7HEba2ekgrpCCNnV
+         8G3X4p37vonBB3EjlGHPRR1rRLrqgq67toMztCXcGaThOLwaKDYZF8+T4+R47eCxXfbb
+         eDB8FIjJSw+ufhgTj5wvOWtqxyYv1gwgjN7ro+v86hkhNsDQUN4nHQ/rX5qWwlwXgBfb
+         cR2Yy2xsInkhcgL5wSXNmSSvdKTqi6F8NLyrsED6Kb/owzBsMrzxnJmP5P12YaTL3RAL
+         VVNmVk90RZ2svNNtUqrks2k9+f2I4DU0q1KXL+zdLQlrJAfRem72f2ZaGT/M7KVwEc8N
+         DHog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=8AoDHRtqjpHM7RXqHjckQScwqkfTWJXIb0Sz86kUaw8=;
-        b=D0oDuaD4+5RzPziedznU9TgfTNsqfutuKlF2cItzLh8W30CyaPlc0tJLFZrtChhd6N
-         AlZe5F2np3/fNAmSZ4aQofFF3VmketRObt4M2npJhzjJvF/bxoH/E90lBjap1Xk7StXN
-         yr3e+R/jp1hytGbgugqCaMLb5sp2L8P+HOGjm87Zg1a6ZzfABlYCX31APextxcuLeV/i
-         NbSa0xU3tCwB2s3kHtaiFR+o++ECmYgJYum/dBaRwwqlC2Nq5Q2hBiIv4MzeCDR0bkeW
-         noRfSTtYDAoIDrls/pNYhNx1fBVIIE6DNWwuQqZO586Pv/1848X76+emG8QB4syoKnLb
-         ad3Q==
-X-Gm-Message-State: AOAM532vftRJrMCVZhEwgITE/MYPVgSj7Rx3agr2Il27vJu/FmDKIIRu
-        7+SURklFGfHwSLgvgyZoiHoHTQe+1i8dcSs=
-X-Google-Smtp-Source: ABdhPJz2D7dwdjIfQNhYasaFiNubC34GbKXbp81rOQcG11mQkye1YK5IQftHeaSU8MVkrRFLWqpizIMlfsyCAYs=
-X-Received: by 2002:a25:14d6:: with SMTP id 205mr18129325ybu.113.1590088697511;
- Thu, 21 May 2020 12:18:17 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:18:00 -0700
-In-Reply-To: <20200521191800.136035-1-saravanak@google.com>
-Message-Id: <20200521191800.136035-4-saravanak@google.com>
-Mime-Version: 1.0
-References: <20200521191800.136035-1-saravanak@google.com>
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
-Subject: [PATCH v3 3/3] driver core: Add waiting_for_supplier sysfs file for devices
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y63aS+NaGtpwqRet4e2k+offwk7YhLSwL57svUyiQxU=;
+        b=XseLHYkGLOuTXBTDiBIb3QFMoN7hLg4C1T7Oqlu27eo/ozipGBm3bpjH0v+lggt/B4
+         ot7Zdy9XzIbpMJMYUo9pXtHbWWescuLLVMt90+mdrV6cB4/uiBx0Gwf69zdqKZCRcCnB
+         WfdHzg09pjL4OL8Lw5Nwq4SC0dDBcVZeyCfQtxcBhiq81eI8S2HzmXnCC49AdGBWbs2n
+         unJMkmME2+F5P4o6mGJLuaNvgNnop2Pt3GQpKW6yybhDr8y1kOgpmCSyE3bgoxVUll33
+         rrfEq9fRwB0BWWAzEpbQM71BrXxBGCk6k6z/0d9+3+yi54rxPGv9oEKCzQintWE5aPa8
+         orJA==
+X-Gm-Message-State: AOAM530+um56qCCHJae3gRLcGHEdKqT9Yf79BcDsXxPyCbZ8GF62I0om
+        Prb34bja29IyybU3DhAkVH/WiQ==
+X-Google-Smtp-Source: ABdhPJzU9w9G5TLd0sTBUx6ZZiZCtV51V0ECeg4y2odgj10sq90602L1zxAVvLWHKXJp6BCaPA09ng==
+X-Received: by 2002:a05:6a00:1342:: with SMTP id k2mr272459pfu.32.1590088985204;
+        Thu, 21 May 2020 12:23:05 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id m14sm4648350pgt.6.2020.05.21.12.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 12:23:04 -0700 (PDT)
+Date:   Thu, 21 May 2020 12:21:46 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Clement Leger <cleger@kalray.eu>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] remoteproc: introduce version element into resource
+ type field
+Message-ID: <20200521192146.GO408178@builder.lan>
+References: <20200325204701.16862-1-s-anna@ti.com>
+ <20200325204701.16862-3-s-anna@ti.com>
+ <20200521175421.GI408178@builder.lan>
+ <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This would be useful to check if a device is not probing because it's
-waiting for a supplier to be added and then linked to before it can
-probe.
+On Thu 21 May 12:06 PDT 2020, Suman Anna wrote:
 
-To reduce sysfs clutter, this file is added only if it can ever be 1.
-So, if fw_devlink is disabled or set to permissive, this file is not
-added. Also, this file is removed once the device probes as it's no
-longer relevant.
+> Hi Bjorn,
+> 
+> On 5/21/20 12:54 PM, Bjorn Andersson wrote:
+> > On Wed 25 Mar 13:46 PDT 2020, Suman Anna wrote:
+> > 
+> > > The current remoteproc core has supported only 32-bit remote
+> > > processors and as such some of the current resource structures
+> > > may not scale well for 64-bit remote processors, and would
+> > > require new versions of resource types. Each resource is currently
+> > > identified by a 32-bit type field. Introduce the concept of version
+> > > for these resource types by overloading this 32-bit type field
+> > > into two 16-bit version and type fields with the existing resources
+> > > behaving as version 0 thereby providing backward compatibility.
+> > > 
+> > > The version field is passed as an additional argument to each of
+> > > the handler functions, and all the existing handlers are updated
+> > > accordingly. Each specific handler will be updated on a need basis
+> > > when a new version of the resource type is added.
+> > > 
+> > 
+> > I really would prefer that we add additional types for the new
+> > structures, neither side will be compatible with new versions without
+> > enhancements to their respective implementations anyways.
+> 
+> OK.
+> 
+> > 
+> > > An alternate way would be to introduce the new types as completely
+> > > new resource types which would require additional customization of
+> > > the resource handlers based on the 32-bit or 64-bit mode of a remote
+> > > processor, and introduction of an additional mode flag to the rproc
+> > > structure.
+> > > 
+> > 
+> > What would this "mode" indicate? If it's version 0 or 1?
+> 
+> No, for indicating if the remoteproc is 32-bit or 64-bit and adjust the
+> loading handlers if the resource types need to be segregated accordingly.
+> 
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- .../sysfs-devices-waiting_for_supplier        | 17 ++++++++++++
- drivers/base/core.c                           | 26 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-waiting_for_supplier
+Sorry, I think I'm misunderstanding something. Wouldn't your 64-bit
+remote processor need different firmware from your 32-bit processor
+anyways, if you want to support the wider resource? And you would pack
+your firmware with the appropriate resource types?
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-waiting_for_supplier b/Documentation/ABI/testing/sysfs-devices-waiting_for_supplier
-new file mode 100644
-index 000000000000..59d073d20db6
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-waiting_for_supplier
-@@ -0,0 +1,17 @@
-+What:		/sys/devices/.../waiting_for_supplier
-+Date:		May 2020
-+Contact:	Saravana Kannan <saravanak@google.com>
-+Description:
-+		The /sys/devices/.../waiting_for_supplier attribute is only
-+		present when fw_devlink kernel command line option is enabled
-+		and is set to something stricter than "permissive".  It is
-+		removed once a device probes successfully (because the
-+		information is no longer relevant). The number read from it (0
-+		or 1) reflects whether the device is waiting for one or more
-+		suppliers to be added and then linked to using device links
-+		before the device can probe.
-+
-+		A value of 0 means the device is not waiting for any suppliers
-+		to be added before it can probe.  A value of 1 means the device
-+		is waiting for one or more suppliers to be added before it can
-+		probe.
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 81c8ef088d3a..dfd4e94ef790 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1033,6 +1033,22 @@ static void device_link_drop_managed(struct device_link *link)
- 	kref_put(&link->kref, __device_link_del);
- }
- 
-+static ssize_t waiting_for_supplier_show(struct device *dev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	bool val;
-+
-+	device_lock(dev);
-+	mutex_lock(&wfs_lock);
-+	val = !list_empty(&dev->links.needs_suppliers)
-+	      && dev->links.need_for_probe;
-+	mutex_unlock(&wfs_lock);
-+	device_unlock(dev);
-+	return sprintf(buf, "%u\n", val);
-+}
-+static DEVICE_ATTR_RO(waiting_for_supplier);
-+
- /**
-  * device_links_driver_bound - Update device links after probing its driver.
-  * @dev: Device to update the links for.
-@@ -1057,6 +1073,7 @@ void device_links_driver_bound(struct device *dev)
- 	mutex_lock(&wfs_lock);
- 	list_del_init(&dev->links.needs_suppliers);
- 	mutex_unlock(&wfs_lock);
-+	device_remove_file(dev, &dev_attr_waiting_for_supplier);
- 
- 	device_links_write_lock();
- 
-@@ -2126,8 +2143,16 @@ static int device_add_attrs(struct device *dev)
- 			goto err_remove_dev_groups;
- 	}
- 
-+	if (fw_devlink_flags && !fw_devlink_is_permissive()) {
-+		error = device_create_file(dev, &dev_attr_waiting_for_supplier);
-+		if (error)
-+			goto err_remove_dev_online;
-+	}
-+
- 	return 0;
- 
-+ err_remove_dev_online:
-+	device_remove_file(dev, &dev_attr_online);
-  err_remove_dev_groups:
- 	device_remove_groups(dev, dev->groups);
-  err_remove_type_groups:
-@@ -2145,6 +2170,7 @@ static void device_remove_attrs(struct device *dev)
- 	struct class *class = dev->class;
- 	const struct device_type *type = dev->type;
- 
-+	device_remove_file(dev, &dev_attr_waiting_for_supplier);
- 	device_remove_file(dev, &dev_attr_online);
- 	device_remove_groups(dev, dev->groups);
- 
--- 
-2.27.0.rc0.183.gde8f92d652-goog
 
+Afaict the bit width of your remote processor, busses or memory is
+unrelated to the choice of number of bits used to express things in the
+resource table.
+
+Regards,
+Bjorn
