@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D321DC716
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE751DC722
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgEUGiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:38:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:49847 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726506AbgEUGiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:38:07 -0400
-IronPort-SDR: tYzyi1S8JT97WUgWKih/aF1tqw0DZzTEWfE3ECHa/zyVHkjELCf6O3MqsuZRcXlmCJfyCPXhaI
- RtHLwVtmVNfw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 23:38:07 -0700
-IronPort-SDR: ibIuoUEK0Ft4Cirp2ID2FA8i4K1a/KActYX0MBgGfbZIiFH92bQcHDHpMn7/z4jR5QHrJHvdQe
- UHSj3dpSrVlQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,416,1583222400"; 
-   d="scan'208";a="253890784"
-Received: from unknown (HELO linuxpc.iind.intel.com) ([10.223.107.108])
-  by fmsmga007.fm.intel.com with ESMTP; 20 May 2020 23:38:05 -0700
-From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-To:     rui.zhang@intel.com, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     andriy.shevchenko@intel.com, srinivas.pandruvada@linux.intel.com,
-        sumeet.r.pawnikar@intel.com
-Subject: [PATCH] powercap: remove unused local MSR define
-Date:   Thu, 21 May 2020 12:14:26 +0530
-Message-Id: <1590043466-11325-1-git-send-email-sumeet.r.pawnikar@intel.com>
-X-Mailer: git-send-email 1.7.9.5
+        id S1727898AbgEUGrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbgEUGrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 02:47:51 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8481CC061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:51 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k5so6900312lji.11
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/V4uURW0jRfKsNYalJYuMTZMvO7QgRZlAwqGceY/IXQ=;
+        b=p3kRQ9466W7CRtzT5rKWiDR0bYSrvXpkrurxn66c/TW2Y6hBhQKg6cSzWj3FX/O5wI
+         r7z7N/j3TSpcAf+XKXafQ+O0ZlWILWxzt5F1LhWdhVFPLNXWWUTkASHdLLDxI34PDcXN
+         N8uvVM8i9ShVpf5iCd8hLFnNw17mZ5diPVi8jdxZNl1AXYkY65WReT806uGaQFHaSOT2
+         mM4esed/wcGVQ8RwVuP4SupRJnIrJgQ+mliGLwNY8f4KuKQcp//5jSSUerbaaBA7vJV3
+         xw4XRv/inC34LfhEVN1v3Ie/u56RWkw3I+7V1QXmvX7mGhs4UqVlB1Q1Wz8WK73wzaOg
+         Dx6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/V4uURW0jRfKsNYalJYuMTZMvO7QgRZlAwqGceY/IXQ=;
+        b=hykd4ap6t4f6471fasrOHl7xfvgahwrzNYDnoY+tV/B3RYP0z7YBVjzNvgr1dTrdYO
+         DdA1S5tUIfqYd4PsQH7sIGEGw5b6a1bjparcM+oyPVBbIX1conFgXwRgZ2u2ekyAqskW
+         4OYRsonMdnM6bbL2UXqVJrB04rbvh98DTo1c3TVAPBT2ONG1wZak2wRVFpQ/CNbIwnH/
+         cgBTBKCfRn4bvIvueCD0nldW8nr891IJT4yWq4IzEuvzE6hr9D/AzYqy3eRtX9z6n2zG
+         zgtAVON8JqBhPhkmT36WWKjKZNAgyqsst0oP327GsGlsEWY57H84JL2uqdy1scyTv3ep
+         5bBA==
+X-Gm-Message-State: AOAM5332FPad/Fc5Wv8oJXXwDy50NRMqMq8ZicZjcy/GMmh5GDjweC3F
+        kKDxvgh4QwyW4pTxD/d+ungrE8yy+zg=
+X-Google-Smtp-Source: ABdhPJzXP8sZI9ePaKgxk/a4v5VzxugkjKQVLdzSYb1AU9K7dMCNh6rLNHnLjpFiiuPEPZ8Jb969KA==
+X-Received: by 2002:a2e:980d:: with SMTP id a13mr4515140ljj.277.1590043669208;
+        Wed, 20 May 2020 23:47:49 -0700 (PDT)
+Received: from localhost.localdomain ([176.59.41.83])
+        by smtp.gmail.com with ESMTPSA id z16sm1807465lfq.18.2020.05.20.23.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 23:47:48 -0700 (PDT)
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
+Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
+        linux-integrity@vger.kernel.org, arnd@linaro.org,
+        sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
+Subject: [PATCHv2 0/2] optee: register drivers on optee bus
+Date:   Thu, 21 May 2020 09:47:40 +0300
+Message-Id: <20200521064743.4769-1-maxim.uvarov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused PLATFORM_POWER_LIMIT MSR local definition from file
-intel_rapl_common.c. This was missed while splitting old RAPL code
-intel_rapl.c file into two new files intel_rapl_msr.c and
-intel_rapl_common.c as per the commit 3382388d7148
-("intel_rapl: abstract RAPL common code"). Currently, this #define
-entry is being used only in intel_rapl_msr.c file and local definition
-present in this file.
+v2: - write TEE with capital letters.
+    - declare __optee_enumerate_device() as static.
 
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
----
- drivers/powercap/intel_rapl_common.c |    3 ---
- 1 file changed, 3 deletions(-)
+Hello,
 
-diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
-index eb328655bc01..5527a7c76309 100644
---- a/drivers/powercap/intel_rapl_common.c
-+++ b/drivers/powercap/intel_rapl_common.c
-@@ -26,9 +26,6 @@
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- 
--/* Local defines */
--#define MSR_PLATFORM_POWER_LIMIT	0x0000065C
--
- /* bitmasks for RAPL MSRs, used by primitive access functions */
- #define ENERGY_STATUS_MASK      0xffffffff
- 
+This patchset fixes issues with probing() tee, optee and optee driver
+if they were compiled into kernel, built as modules or any mixed
+combination.
+These changes require optee-os changes which already were merged.
+Main corresponding commits are:
+https://github.com/OP-TEE/optee_os/commit/9389d8030ef198c9d7b8ab7ea8e877e0ace3369d
+https://github.com/OP-TEE/optee_os/commit/bc5921cdab538c8ae48422f5ffd600f1cbdd95b2
+
+optee_enumerate_devices() which discovers Trusted Applications on tee
+bus is split up on 2 changes. Do probe of drivers which do not require
+userspace support of tee-supplicant and stage two to run drivers with
+support of tee-supplicant only after tee supplicant run. 
+
+Best regards,
+Maxim.
+
+Maxim Uvarov (2):
+  optee: do drivers initialization before and after tee-supplicant run
+  tpm_ftpm_tee: register driver on TEE bus
+
+ drivers/char/tpm/tpm_ftpm_tee.c   | 69 ++++++++++++++++++++++++++-----
+ drivers/tee/optee/core.c          | 25 +++++++++--
+ drivers/tee/optee/device.c        | 17 +++++---
+ drivers/tee/optee/optee_private.h |  8 +++-
+ 4 files changed, 99 insertions(+), 20 deletions(-)
+
 -- 
-1.7.9.5
+2.17.1
 
