@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B401DD262
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21F91DD264
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgEUPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        id S1728959AbgEUPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgEUPyA (ORCPT
+        with ESMTP id S1728280AbgEUPyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:54:00 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F95C061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:53:59 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id p4so3263771qvr.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:53:59 -0700 (PDT)
+        Thu, 21 May 2020 11:54:05 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C804C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:54:05 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id 17so7573125ilj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QmEALzhwk7Eo5Ax0b5kpGfmrNonq7wH4jHxYDbMzde8=;
-        b=R+635lHhwNb7hME38+md3gHM+CMhfadHVoL2cPwqZk2EVBed1yM+9HNCUK5dpJ+5N1
-         WTLhIYe1Vjf3Pa+G29u6AsHFK498lLnjDzv3j4N5p5NmgCdJ9GVpLRVL4NUu9ntugvjH
-         bcSoYqNLcRQwKijL/29amOQzu/HHNoqLyFs+4=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BfWoobLVAKfzMCiMZcNvEFreCxWJpDiylD9YHTs2DM8=;
+        b=hkPi3G6+ffqyy54W13omYGNYelo1z8fPDbEUIslyzE6p6/MRNAcoFKAll6dV0rPZz/
+         PLNHi8p7h/L1GdxnH8/vwJ7NSNrlNRk7ApAZoyU/lC1q6V+dfUtYlfBOp933NFKHP+Fb
+         0atY4zRCNh71xBRkXSsNFrl6eb2bihQL9IuAT2tgeLH6NTGE4gsYD/e5f82DT3SCKUM3
+         F574RYdrLYgihpu0nk9vJ1yksIcajeqrWo4Tev1/KKpd9LEIXu+ZVbTukPwYHjYqIoCV
+         j2TWKcnqMoSgTNTpRO/+kxvWzZI4fsioPJ2IjGzsk96RppbCTPeLa07Og0UZY2vZcj78
+         f2Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QmEALzhwk7Eo5Ax0b5kpGfmrNonq7wH4jHxYDbMzde8=;
-        b=VVMScPkS6jV4UOnQbqABH6n+YyWHlztcTnYCNDXZi9pEQrPsI8DUHMIt1sn6Dsg9q6
-         ZsEHQEsFdbAh9hnV//56MlOQUatQOEmic6Pmcst4/CbyWRTckOzRdZhsuww2/C/fNv8I
-         rzpwMRwrjC2D+jOINqsGIQNMVyRd3fI6K3XtebILBFIrDdWVJxOLBl+i7xjdFrFrhF3/
-         s7XpLcoDb/OeELvNVi//7oCLqnrujEwJ4AOBn7AAJhV4JcQ5PRATYrS3HdK3bClbPMwW
-         4QC8XMvrWARIF9rD6LL1YozPRQHOHHOdkSuXPe3TgWOTejX5iP/9RVxHovti1BFnLaur
-         kq+g==
-X-Gm-Message-State: AOAM533dgJqWbbOTlQ6m/AzPrx3a64WsHkLCjWmsP2nqzQoQevZmisVT
-        GTEjd7H0aMhDghZ/iRCmqaMd53S1Smo=
-X-Google-Smtp-Source: ABdhPJyEWi0GkkYhZZQ2Agt0JEoZv4HIT8vhQHuH7WRbGRrGfL5Wk8l2o369RucwAKJcILEpOQVHQg==
-X-Received: by 2002:a0c:fe03:: with SMTP id x3mr10273553qvr.18.1590076438134;
-        Thu, 21 May 2020 08:53:58 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id z185sm5365661qka.79.2020.05.21.08.53.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 08:53:57 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        matthewb@google.com, jsbarnes@google.com, vapier@google.com,
-        christian@brauner.io, vpillai@digitalocean.com,
-        vineethrp@gmail.com, peterz@infradead.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: [PATCH RFC] sched/headers: Fix sched_setattr userspace compilation issues
-Date:   Thu, 21 May 2020 11:53:46 -0400
-Message-Id: <20200521155346.168413-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BfWoobLVAKfzMCiMZcNvEFreCxWJpDiylD9YHTs2DM8=;
+        b=gDIhAGRmGadV3oHh+oW/P4JN9iHpP/bjAlVF5vh+Te6p6Sj4GdZbyuNfKvK4u6vNFy
+         c0ouTmgbqUFyxlrC95gnq/MUasSh57H8YPuq4+khKUFTRb9jNaUrDbNhMnMTkHz3EaOp
+         LXZkxshYOIRXSTv093NILsdDY0xyBDgRTWaYFIuQDBcxjr2pC5AH8IecOHrnPUJFCNnI
+         nJ7iPtwiYYh7owCS+Z+RbEyUeWihSbeGylLg/bu7LIxBXd1nECfsN7HC/1V+UfWTuyXH
+         0gxwmSZAeaWXCyDKnuj5jKD4hN5UfLSiR4ZI7CFm8Tkk4XZuoPgVwEkS2SUh5AXYkSsO
+         U2bQ==
+X-Gm-Message-State: AOAM530X9yzdlRrAj07fD6nETEb6ROechhK8PnavRKuHTqElT5lX5T1x
+        5Hcw0rYQM/ALO8pjZX2nyQeld+rKolLlUGgBYPXnYQ==
+X-Google-Smtp-Source: ABdhPJxSeqc9p+cZk7hCXVAfU51UL+rEUcfznzd6rZk0t9zdDUQgpdG5YvcK8wwCvzBe2YCoqfVICx4SnejEqjj53MI=
+X-Received: by 2002:a92:89cf:: with SMTP id w76mr8990688ilk.57.1590076444041;
+ Thu, 21 May 2020 08:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1589558615.git.saiprakash.ranjan@codeaurora.org> <7b69c9752713ce22f04688e83ec78f8aa67c63dc.1589558615.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <7b69c9752713ce22f04688e83ec78f8aa67c63dc.1589558615.git.saiprakash.ranjan@codeaurora.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 21 May 2020 09:53:53 -0600
+Message-ID: <CANLsYkx9FsCXPYPzXhR5C6rFKEvBrYr5A6Reu=zAnLG_HVk7AQ@mail.gmail.com>
+Subject: Re: [PATCHv3 2/2] dt-bindings: arm: coresight: Add support to skip
+ trace unit power up
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Coresight ML <coresight@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a modern Linux distro, compiling the following program fails:
- #include<stdlib.h>
- #include<stdint.h>
- #include<pthread.h>
- #include<linux/sched/types.h>
+On Fri, 15 May 2020 at 10:23, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> From: Tingwei Zhang <tingwei@codeaurora.org>
+>
+> Add "qcom,skip-power-up" property to identify systems which can
+> skip powering up of trace unit since they share the same power
+> domain as their CPU core. This is required to identify such
+> systems with hardware errata which stops the CPU watchdog counter
+> when the power up bit is set (TRCPDCR.PU).
+>
+> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> Co-developed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/arm/coresight.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
+> index 846f6daae71b..e4b2eda0b53b 100644
+> --- a/Documentation/devicetree/bindings/arm/coresight.txt
+> +++ b/Documentation/devicetree/bindings/arm/coresight.txt
+> @@ -108,6 +108,13 @@ its hardware characteristcs.
+>         * arm,cp14: must be present if the system accesses ETM/PTM management
+>           registers via co-processor 14.
+>
+> +       * qcom,skip-power-up: boolean. Indicates that an implementation can
+> +         skip powering up the trace unit. TRCPDCR.PU does not have to be set
+> +         on Qualcomm Technologies Inc. systems since ETMs are in the same power
+> +         domain as their CPU cores. This property is required to identify such
+> +         systems with hardware errata where the CPU watchdog counter is stopped
+> +         when TRCPDCR.PU is set.
+> +
+>  * Optional property for TMC:
 
- void main() {
-         struct sched_attr sa;
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-         return;
- }
-
-with:
-/usr/include/linux/sched/types.h:8:8: \
-			error: redefinition of ‘struct sched_param’
-    8 | struct sched_param {
-      |        ^~~~~~~~~~~
-In file included from /usr/include/x86_64-linux-gnu/bits/sched.h:74,
-                 from /usr/include/sched.h:43,
-                 from /usr/include/pthread.h:23,
-                 from /tmp/s.c:4:
-/usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:23:8:
-note: originally defined here
-   23 | struct sched_param
-      |        ^~~~~~~~~~~
-
-This is also causing a problem on using sched_attr Chrome. The issue is
-sched_param is already provided by glibc.
-
-Guard the kernel's UAPI definition of sched_param with __KERNEL__ so
-that userspace can compile.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- include/uapi/linux/sched/types.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/types.h
-index c852153ddb0d3..1f10d935a63fe 100644
---- a/include/uapi/linux/sched/types.h
-+++ b/include/uapi/linux/sched/types.h
-@@ -4,9 +4,11 @@
- 
- #include <linux/types.h>
- 
-+#if defined(__KERNEL__)
- struct sched_param {
- 	int sched_priority;
- };
-+#endif
- 
- #define SCHED_ATTR_SIZE_VER0	48	/* sizeof first published struct */
- #define SCHED_ATTR_SIZE_VER1	56	/* add: util_{min,max} */
--- 
-2.26.2.761.g0e0b3e54be-goog
-
+>
+>         * arm,buffer-size: size of contiguous buffer space for TMC ETR
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
