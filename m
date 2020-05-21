@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EBE1DC940
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311571DC94A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgEUJG0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 May 2020 05:06:26 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:38332 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728558AbgEUJGZ (ORCPT
+        id S1728798AbgEUJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:06:41 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:11823 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728758AbgEUJGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:06:25 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-2-5zY-0iRdNzGaTxwUZDYv5A-1; Thu, 21 May 2020 10:06:20 +0100
-X-MC-Unique: 5zY-0iRdNzGaTxwUZDYv5A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 21 May 2020 10:06:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 21 May 2020 10:06:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@lst.de>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "vyasevich@gmail.com" <vyasevich@gmail.com>,
-        "nhorman@tuxdriver.com" <nhorman@tuxdriver.com>,
-        "jmaloy@redhat.com" <jmaloy@redhat.com>,
-        "ying.xue@windriver.com" <ying.xue@windriver.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: RE: [PATCH 31/33] sctp: add sctp_sock_set_nodelay
-Thread-Topic: [PATCH 31/33] sctp: add sctp_sock_set_nodelay
-Thread-Index: AQHWL0qynFLZF0CI80WcvwAESh6D26iyPrKg
-Date:   Thu, 21 May 2020 09:06:19 +0000
-Message-ID: <0a6839ab0ba04fcf9b9c92784c9564aa@AcuMS.aculab.com>
-References: <20200520195509.2215098-1-hch@lst.de>
- <20200520195509.2215098-32-hch@lst.de>
- <20200520231001.GU2491@localhost.localdomain>
- <20200520.162355.2212209708127373208.davem@davemloft.net>
- <20200520233913.GV2491@localhost.localdomain> <20200521083442.GA7771@lst.de>
-In-Reply-To: <20200521083442.GA7771@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 21 May 2020 05:06:37 -0400
+X-UUID: a9358ea6306d4c398ad3eb8f190fe0c1-20200521
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=3x5Iw82ou/x1N5CV0omJ9HHBcPff4hQyQEtB2GzJ3Fw=;
+        b=tVtk+X1E/6vyZtdGiN4zS1sKpnzNH282hFJEZU/JYov7IXtcsOzZkhKzSKrhdfQv9BJJpM+Pc2ZbV5SKTy909slONpPcsZSh4aG4uVSH91sHOUNNiknbSGpi6PRpYQ5Wz9crX8t2VZC3GlZTjcl7FtHE/0KgvdkLvj8IJa3sWfs=;
+X-UUID: a9358ea6306d4c398ad3eb8f190fe0c1-20200521
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1939490110; Thu, 21 May 2020 17:06:33 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 21 May 2020 17:06:30 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 21 May 2020 17:06:29 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>
+CC:     James Liao <jamesjj.liao@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: [PATCH v15 07/11] soc: mediatek: Add extra sram control
+Date:   Thu, 21 May 2020 17:06:20 +0800
+Message-ID: <1590051985-29149-8-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1590051985-29149-1-git-send-email-weiyi.lu@mediatek.com>
+References: <1590051985-29149-1-git-send-email-weiyi.lu@mediatek.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 8A68BC54DB990D2FB9B11722A56D7492BA8022A5A3032961A936EEEE1C81B39A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 21 May 2020 09:35
-> On Wed, May 20, 2020 at 08:39:13PM -0300, Marcelo Ricardo Leitner wrote:
-> > On Wed, May 20, 2020 at 04:23:55PM -0700, David Miller wrote:
-> > > From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-> > > Date: Wed, 20 May 2020 20:10:01 -0300
-> > >
-> > > > The duplication with sctp_setsockopt_nodelay() is quite silly/bad.
-> > > > Also, why have the 'true' hardcoded? It's what dlm uses, yes, but the
-> > > > API could be a bit more complete than that.
-> > >
-> > > The APIs are being designed based upon what in-tree users actually
-> > > make use of.  We can expand things later if necessary.
-> >
-> > Sometimes expanding things later can be though, thus why the worry.
-> > But ok, I get it. Thanks.
-> >
-> > The comment still applies, though. (re the duplication)
-> 
-> Where do you see duplication?
-
-The whole thing just doesn't scale.
-
-As soon as you get to the slightly more complex requests
-like SCTP_INITMSG (which should probably be called to
-set the required number of data streams) you've either
-got replicated code or nested wrappers.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Rm9yIHNvbWUgcG93ZXIgZG9tYWlucyBsaWtlIHZwdV9jb3JlIG9uIE1UODE4MyB3aG9zZSBzcmFt
+IG5lZWQgdG8NCmRvIGNsb2NrIGFuZCBpbnRlcm5hbCBpc29sYXRpb24gd2hpbGUgcG93ZXIgb24v
+b2ZmIHNyYW0uDQpXZSBhZGQgYSBjYXAgIk1US19TQ1BEX1NSQU1fSVNPIiB0byBqdWRnZSBpZiB3
+ZSBuZWVkIHRvIGRvDQp0aGUgZXh0cmEgc3JhbSBpc29sYXRpb24gY29udHJvbCBvciBub3QuDQoN
+ClNpZ25lZC1vZmYtYnk6IFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+DQpSZXZpZXdl
+ZC1ieTogTmljb2xhcyBCb2ljaGF0IDxkcmlua2NhdEBjaHJvbWl1bS5vcmc+DQotLS0NCiBkcml2
+ZXJzL3NvYy9tZWRpYXRlay9tdGstc2Nwc3lzLmMgfCAyMiArKysrKysrKysrKysrKysrKysrKy0t
+DQogMSBmaWxlIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQoNCmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc2Nwc3lzLmMgYi9kcml2ZXJzL3Nv
+Yy9tZWRpYXRlay9tdGstc2Nwc3lzLmMNCmluZGV4IGVmMmM2NjguLmVmNDZlMzEgMTAwNjQ0DQot
+LS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc2Nwc3lzLmMNCisrKyBiL2RyaXZlcnMvc29j
+L21lZGlhdGVrL210ay1zY3BzeXMuYw0KQEAgLTI1LDYgKzI1LDcgQEANCiANCiAjZGVmaW5lIE1U
+S19TQ1BEX0FDVElWRV9XQUtFVVAJCUJJVCgwKQ0KICNkZWZpbmUgTVRLX1NDUERfRldBSVRfU1JB
+TQkJQklUKDEpDQorI2RlZmluZSBNVEtfU0NQRF9TUkFNX0lTTwkJQklUKDIpDQogI2RlZmluZSBN
+VEtfU0NQRF9DQVBTKF9zY3BkLCBfeCkJKChfc2NwZCktPmRhdGEtPmNhcHMgJiAoX3gpKQ0KIA0K
+ICNkZWZpbmUgU1BNX1ZERV9QV1JfQ09OCQkJMHgwMjEwDQpAQCAtNTYsNiArNTcsOCBAQA0KICNk
+ZWZpbmUgUFdSX09OX0JJVAkJCUJJVCgyKQ0KICNkZWZpbmUgUFdSX09OXzJORF9CSVQJCQlCSVQo
+MykNCiAjZGVmaW5lIFBXUl9DTEtfRElTX0JJVAkJCUJJVCg0KQ0KKyNkZWZpbmUgUFdSX1NSQU1f
+Q0xLSVNPX0JJVAkJQklUKDUpDQorI2RlZmluZSBQV1JfU1JBTV9JU09JTlRfQl9CSVQJCUJJVCg2
+KQ0KIA0KICNkZWZpbmUgUFdSX1NUQVRVU19DT05OCQkJQklUKDEpDQogI2RlZmluZSBQV1JfU1RB
+VFVTX0RJU1AJCQlCSVQoMykNCkBAIC0yOTAsNiArMjkzLDE0IEBAIHN0YXRpYyBpbnQgc2Nwc3lz
+X3NyYW1fZW5hYmxlKHN0cnVjdCBzY3BfZG9tYWluICpzY3BkLCB2b2lkIF9faW9tZW0gKmN0bF9h
+ZGRyKQ0KIAkJCXJldHVybiByZXQ7DQogCX0NCiANCisJaWYgKE1US19TQ1BEX0NBUFMoc2NwZCwg
+TVRLX1NDUERfU1JBTV9JU08pKQl7DQorCQl2YWwgPSByZWFkbChjdGxfYWRkcikgfCBQV1JfU1JB
+TV9JU09JTlRfQl9CSVQ7DQorCQl3cml0ZWwodmFsLCBjdGxfYWRkcik7DQorCQl1ZGVsYXkoMSk7
+DQorCQl2YWwgJj0gflBXUl9TUkFNX0NMS0lTT19CSVQ7DQorCQl3cml0ZWwodmFsLCBjdGxfYWRk
+cik7DQorCX0NCisNCiAJcmV0dXJuIDA7DQogfQ0KIA0KQEAgLTI5OSw4ICszMTAsMTUgQEAgc3Rh
+dGljIGludCBzY3BzeXNfc3JhbV9kaXNhYmxlKHN0cnVjdCBzY3BfZG9tYWluICpzY3BkLCB2b2lk
+IF9faW9tZW0gKmN0bF9hZGRyKQ0KIAl1MzIgcGRuX2FjayA9IHNjcGQtPmRhdGEtPnNyYW1fcGRu
+X2Fja19iaXRzOw0KIAlpbnQgdG1wOw0KIA0KLQl2YWwgPSByZWFkbChjdGxfYWRkcik7DQotCXZh
+bCB8PSBzY3BkLT5kYXRhLT5zcmFtX3Bkbl9iaXRzOw0KKwlpZiAoTVRLX1NDUERfQ0FQUyhzY3Bk
+LCBNVEtfU0NQRF9TUkFNX0lTTykpCXsNCisJCXZhbCA9IHJlYWRsKGN0bF9hZGRyKSB8IFBXUl9T
+UkFNX0NMS0lTT19CSVQ7DQorCQl3cml0ZWwodmFsLCBjdGxfYWRkcik7DQorCQl2YWwgJj0gflBX
+Ul9TUkFNX0lTT0lOVF9CX0JJVDsNCisJCXdyaXRlbCh2YWwsIGN0bF9hZGRyKTsNCisJCXVkZWxh
+eSgxKTsNCisJfQ0KKw0KKwl2YWwgPSByZWFkbChjdGxfYWRkcikgfCBzY3BkLT5kYXRhLT5zcmFt
+X3Bkbl9iaXRzOw0KIAl3cml0ZWwodmFsLCBjdGxfYWRkcik7DQogDQogCS8qIEVpdGhlciB3YWl0
+IHVudGlsIFNSQU1fUEROX0FDSyBhbGwgMSBvciAwICovDQotLSANCjEuOC4xLjEuZGlydHkNCg==
 
