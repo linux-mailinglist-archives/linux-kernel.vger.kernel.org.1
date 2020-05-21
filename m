@@ -2,202 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F416B1DCE44
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041D11DCE48
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729492AbgEUNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:37:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33708 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729465AbgEUNhE (ORCPT
+        id S1729497AbgEUNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:38:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4770 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728060AbgEUNik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:37:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590068222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k9apolne3MOvgFYAOik7xpjgAh+OTAjNzLgbnviUZnk=;
-        b=AXRwkhmqPkT64SYv0SbnJGSyYtwBJXtewTxpidcxm7k0j0DpL3fJqibsvALgwJ6YNw+ed7
-        74ByJAX5PrdnM41W9hEK+PuXZXQb2cecVexhpFcjWTVMW27weP/VHUwMSSZYLE0MmdA365
-        fpBfl7X3WaclJHav2Uf/yk6ptbxMjAA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-FJjzo88eN2W6x-WCltxcdw-1; Thu, 21 May 2020 09:36:58 -0400
-X-MC-Unique: FJjzo88eN2W6x-WCltxcdw-1
-Received: by mail-wm1-f69.google.com with SMTP id o8so1009402wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:36:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k9apolne3MOvgFYAOik7xpjgAh+OTAjNzLgbnviUZnk=;
-        b=Gd1TigpIQ4Jtozcrl23WlwRhwQXupEKFSzBQSnZQLZR/5hLZnXtUgFmXW0lzaAeo+t
-         xWeeG/AAQnBYDt9vQvDf1GCHkr3nGUAo4XnFDNsZtooNxOcD2S4fJPJ+dpNqeXwwmjmB
-         g6b8DqcCPYKHxwjAJEaSpntiYM5LozYkF2YfKmrBqzds/TpIHcrL7MTMpHoo5xqAJQRB
-         sg9T3+J9HU1/1Vgg0mmRHNjy93x+WGV6wO8g0zh1EEOHRdFXbOhF3fk1/K/chq8AhOxP
-         xPIU0of4xfFkPRthMusv3LBz42w2MJY0AL4oC55lMkG4PLVwL9s+tlMkKaY9BqKIkvFQ
-         9S7Q==
-X-Gm-Message-State: AOAM533qhQGsgP+lLzHglheA8uwsXXaUMSfS6yjGFna8lak7s7QcDtQq
-        qrVM+rysO9xzAcX1QTM616w4bVQc6bQpP4JZDk84yoxzL8Az0aGF8wfw81CVS5Rr0iLWGDr/nnm
-        pBB+03Uyg/fcpEsBzwZ7MbWV0
-X-Received: by 2002:a1c:3bc5:: with SMTP id i188mr8856755wma.90.1590068217485;
-        Thu, 21 May 2020 06:36:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0Qvv+LB4xFaLKN/vr1LCs4+uEau6Ef45+r3Usb72/IQMTIglg+pNLXlzEd0xvftHufcmXZQ==
-X-Received: by 2002:a1c:3bc5:: with SMTP id i188mr8856739wma.90.1590068217245;
-        Thu, 21 May 2020 06:36:57 -0700 (PDT)
-Received: from [192.168.178.58] ([151.30.94.134])
-        by smtp.gmail.com with ESMTPSA id r9sm7484013wra.52.2020.05.21.06.36.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 06:36:56 -0700 (PDT)
-Subject: Re: [PATCH v3] kvm/x86 : Remove redundant function implement
-To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <HKAPR02MB4291D5926EA10B8BFE9EA0D3E0B70@HKAPR02MB4291.apcprd02.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5f2a3d25-adbf-26c2-4c2e-43d1a7abab97@redhat.com>
-Date:   Thu, 21 May 2020 15:36:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 21 May 2020 09:38:40 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04LDWlmR099950;
+        Thu, 21 May 2020 09:38:31 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312wsm59j3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 May 2020 09:38:30 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04LDX603100838;
+        Thu, 21 May 2020 09:38:28 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 312wsm59h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 May 2020 09:38:28 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04LDZN60003308;
+        Thu, 21 May 2020 13:38:27 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 313xcd2bt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 21 May 2020 13:38:26 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04LDcOjm62062690
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 May 2020 13:38:24 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5A8452050;
+        Thu, 21 May 2020 13:38:24 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.204.51])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id E1E525204F;
+        Thu, 21 May 2020 13:38:23 +0000 (GMT)
+Date:   Thu, 21 May 2020 16:38:21 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, cai@lca.pw,
+        mhocko@kernel.org
+Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
+ fast_isolate_freepages()
+Message-ID: <20200521133821.GR1059226@linux.ibm.com>
+References: <20200521014407.29690-1-bhe@redhat.com>
+ <20200521093606.GA7110@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <HKAPR02MB4291D5926EA10B8BFE9EA0D3E0B70@HKAPR02MB4291.apcprd02.prod.outlook.com>
-Content-Type: text/plain; charset=gbk
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521093606.GA7110@suse.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-21_07:2020-05-21,2020-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ lowpriorityscore=0 cotscore=-2147483648 suspectscore=84 clxscore=1015
+ priorityscore=1501 spamscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005210101
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/20 07:57, 彭浩(Richard) wrote:
-> pic_in_kernel(),ioapic_in_kernel() and irqchip_kernel() have the
-> same implementation.
+On Thu, May 21, 2020 at 10:36:06AM +0100, Mel Gorman wrote:
+> On Thu, May 21, 2020 at 09:44:07AM +0800, Baoquan He wrote:
+> > After investigation, it turns out that this is introduced by commit of
+> > linux-next: commit f6edbdb71877 ("mm: memmap_init: iterate over memblock
+> > regions rather that check each PFN").
+> > 
+> > After investigation, it turns out that this is introduced by commit of
+> > linux-next, the patch subject is:
+> >   "mm: memmap_init: iterate over memblock regions rather that check each PFN".
+> > 
 > 
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
-> ---
->  arch/x86/kvm/ioapic.h  |  8 ++------
->  arch/x86/kvm/irq.h     | 14 ++++----------
->  arch/x86/kvm/lapic.c   |  1 +
->  arch/x86/kvm/mmu/mmu.c |  1 +
->  arch/x86/kvm/x86.c     |  1 +
->  5 files changed, 9 insertions(+), 16 deletions(-)
+> Some repetition here. I assume it's because the commit ID is not stable
+> because it's in linux-next.
 > 
-> diff --git a/arch/x86/kvm/ioapic.h b/arch/x86/kvm/ioapic.h
-> index 2fb2e3c..7a3c53b 100644
-> --- a/arch/x86/kvm/ioapic.h
-> +++ b/arch/x86/kvm/ioapic.h
-> @@ -5,7 +5,7 @@
->  #include <linux/kvm_host.h>
+> > Qian added debugging code. The debugging log shows that the fault page is
+> > 0x2a800000. From the system e820 map which is pasted at bottom, the page
+> > is in e820 reserved range:
+> > 	BIOS-e820: [mem 0x0000000029ffe000-0x000000002a80afff] reserved
+> > And it's in section [0x28000000, 0x2fffffff]. In that secion, there are
+> > several usable ranges and some e820 reserved ranges.
+> > 
+> > For this kind of e820 reserved range, it won't be added to memblock allocator.
+> > However, init_unavailable_mem() will initialize to add them into node 0,
+> > zone 0.
 > 
->  #include <kvm/iodev.h>
-> -
-> +#include "irq.h"
->  struct kvm;
->  struct kvm_vcpu;
+> Why is it appropriate for init_unavailable_mem to add a e820 reserved
+> range to the zone at all? The bug being triggered indicates there is a
+> mismatch between the zone of a struct page and the PFN passed in.
 > 
-> @@ -108,11 +108,7 @@ do {\
+> > Before that commit, later, memmap_init() will add e820 reserved
+> > ranges into the zone where they are contained, because it can pass
+> > the checking of early_pfn_valid() and early_pfn_in_nid(). In this case,
+> > the e820 reserved range where fault page 0x2a800000 is located is added
+> > into DMA32 zone. After that commit, the e820 reserved rgions are kept
+> > in node 0, zone 0, since we iterate over memblock regions to iniatialize
+> > in memmap_init() instead, their node and zone won't be changed.
+> > 
 > 
->  static inline int ioapic_in_kernel(struct kvm *kvm)
->  {
-> -int mode = kvm->arch.irqchip_mode;
-> -
-> -/* Matches smp_wmb() when setting irqchip_mode */
-> -smp_rmb();
-> -return mode == KVM_IRQCHIP_KERNEL;
-> +return irqchip_kernel(kvm);
->  }
-> 
->  void kvm_rtc_eoi_tracking_restore_one(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
-> index f173ab6..e133c1a 100644
-> --- a/arch/x86/kvm/irq.h
-> +++ b/arch/x86/kvm/irq.h
-> @@ -16,7 +16,6 @@
->  #include <linux/spinlock.h>
-> 
->  #include <kvm/iodev.h>
-> -#include "ioapic.h"
->  #include "lapic.h"
-> 
->  #define PIC_NUM_PINS 16
-> @@ -66,15 +65,6 @@ void kvm_pic_destroy(struct kvm *kvm);
->  int kvm_pic_read_irq(struct kvm *kvm);
->  void kvm_pic_update_irq(struct kvm_pic *s);
-> 
-> -static inline int pic_in_kernel(struct kvm *kvm)
-> -{
-> -int mode = kvm->arch.irqchip_mode;
-> -
-> -/* Matches smp_wmb() when setting irqchip_mode */
-> -smp_rmb();
-> -return mode == KVM_IRQCHIP_KERNEL;
-> -}
-> -
->  static inline int irqchip_split(struct kvm *kvm)
->  {
->  int mode = kvm->arch.irqchip_mode;
-> @@ -93,6 +83,10 @@ static inline int irqchip_kernel(struct kvm *kvm)
->  return mode == KVM_IRQCHIP_KERNEL;
->  }
-> 
-> +static inline int pic_in_kernel(struct kvm *kvm)
-> +{
-> +return irqchip_kernel(kvm);
-> +}
->  static inline int irqchip_in_kernel(struct kvm *kvm)
->  {
->  int mode = kvm->arch.irqchip_mode;
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 9af25c9..de4d046 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -36,6 +36,7 @@
->  #include <linux/jump_label.h>
->  #include "kvm_cache_regs.h"
->  #include "irq.h"
-> +#include "ioapic.h"
->  #include "trace.h"
->  #include "x86.h"
->  #include "cpuid.h"
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 8071952..6133f69 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -16,6 +16,7 @@
->   */
-> 
->  #include "irq.h"
-> +#include "ioapic.h"
->  #include "mmu.h"
->  #include "x86.h"
->  #include "kvm_cache_regs.h"
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d786c7d..c8b62ac 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -18,6 +18,7 @@
-> 
->  #include <linux/kvm_host.h>
->  #include "irq.h"
-> +#include "ioapic.h"
->  #include "mmu.h"
->  #include "i8254.h"
->  #include "tss.h"
-> --
-> 2.7.4
-> 
-> ________________________________
-> OPPO
-> 
-> 本电子邮件及其附件含有OPPO公司的保密信息，仅限于邮件指明的收件人使用（包含个人及群组）。禁止任何人在未经授权的情况下以任何形式使用。如果您错收了本邮件，请立即以电子邮件通知发件人并删除本邮件及其附件。
-> 
-> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender by phone or email immediately and delete it!
-> 
+> This implies that we have struct pages that should never be used (e820
+> reserved) but exist somehow in a zone range but with broken linkages to
+> their node and zone.
 
-Queued, thanks.
+Unless I misread Baoquan's explanation we do have struct pages for e820
+resrved memory, but they are properly linked to their node and zone and
+marked as reserved.
 
-Paolo
+Before the commit memmap_init_zone() looped over all pfns in node in
+zone and the reserved pages were passed to __init_single_page with node
+and zone where their pfn belongs.
 
+Afterwards, free_low_memory_core_early() reserved them because they were
+present in memblock.reserved and form here on nothing would touch them.
+
+After the commit, we skip over the holes in memblock.memory during
+memmap_init_zone() which leaves the zone and node link zeroed for e820
+reserved pages and that evetually triggers
+VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn)).
+
+> > Reported-by: Qian Cai <cai@lca.pw>
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > ---
+> >  mm/compaction.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/compaction.c b/mm/compaction.c
+> > index 67fd317f78db..9ce4cff4d407 100644
+> > --- a/mm/compaction.c
+> > +++ b/mm/compaction.c
+> > @@ -1418,7 +1418,9 @@ fast_isolate_freepages(struct compact_control *cc)
+> >  				cc->free_pfn = highest;
+> >  			} else {
+> >  				if (cc->direct_compaction && pfn_valid(min_pfn)) {
+> > -					page = pfn_to_page(min_pfn);
+> > +					page = pageblock_pfn_to_page(min_pfn,
+> > +						pageblock_end_pfn(min_pfn),
+> > +						cc->zone);
+> >  					cc->free_pfn = min_pfn;
+> >  				}
+> >  			}
+> 
+> Why is the correct fix not to avoid creating struct pages for e820
+> ranges and make sure that struct pages that are reachable have proper
+> node and zone linkages?
+
+I think that simpler fix would be to have e820 reserved ranges
+reigstered as memory in memblock and not only as reserved. If we will
+have these regions in both memblock.memory and memblock.reserved the
+struct pages for them will be properly initialized as reserved. 
+
+> -- 
+> Mel Gorman
+> SUSE Labs
+
+-- 
+Sincerely yours,
+Mike.
