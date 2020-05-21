@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334F91DD965
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A48F1DDAE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730689AbgEUVVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 17:21:45 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:23104 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgEUVVn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 17:21:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590096102; x=1621632102;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=47pxhHidMagDsJh1CuDJK9uMkQt6nuknQvYrfb2Oqjw=;
-  b=EYBHVED3+TR7fMwzkl3pcfhrLTOGgAf5DGzOsAyVGTb/K31R4UUFgQEr
-   dqh4ot3vH4WeXAKpgXmnNRwDkgpdTCGlEgAK8xC8+vPSwjrSZV2grIZG0
-   R9m7hMytvUh4Ant+P1CeFL65AwFGFDH6Rz8arObaUCegWaWFpJEkJsNK8
-   UvtyUp0nSbcvaGh+2asVB8/t2mZu03IfS/2aM4Ckx1wA0BnEvc9NBtATG
-   +uLhQuqHvsgxoohv74qHy2MuTnLSasRKqMFZPRAK8AXfCnx+eCmpbJ5ZZ
-   /7pJLaZKm+JpZ5Z6AvU7e0fDJaB2oRoAYJNvo0OScp7BXFZWZWbinAR7T
-   w==;
-IronPort-SDR: iCMQPDyRebV5U/K3oKjjLG89gIKihHN5BWkP86pjR+C6a2KYK395LyIjP1NeKX2YoUoCI8XGcN
- IJmPMCE7C9vEU+5/DUh/3bWdQOCXCjC/iTg8sdob69YGJ87ZgcnPVRaULalsoEDWpFosUl5SNU
- /YnqmK02ZEVSz5oU+qJlo+d4Tf4B0txehGAuMH5mLuQ1XMHDOFUFPuANlhbJbxgKAb9z2XsBJJ
- CpGyCRWzWg++7iYOu+Be1dW77qEMUnJve5HHxPeWiI54fDb1srbDeKsy9tA6nZ7BAO64P+G7x9
- P4E=
-X-IronPort-AV: E=Sophos;i="5.73,419,1583218800"; 
-   d="scan'208";a="80597512"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 May 2020 14:21:38 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 21 May 2020 14:21:38 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Thu, 21 May 2020 14:21:36 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <roopa@cumulusnetworks.com>,
-        <nikolay@cumulusnetworks.com>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v2 3/3] bridge: mrp: Restore port state when deleting MRP instance
-Date:   Thu, 21 May 2020 23:19:07 +0000
-Message-ID: <20200521231907.3564679-4-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200521231907.3564679-1-horatiu.vultur@microchip.com>
-References: <20200521231907.3564679-1-horatiu.vultur@microchip.com>
+        id S1730757AbgEUXXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:23:34 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46080 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730041AbgEUXXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 19:23:34 -0400
+IronPort-SDR: HspgGQWKro/x2cFNCWGHgMS6yhil0cXGbJ6gHWUWzvdUEtgdX1axpOH1lOHzM0loL9r9l5Spl1
+ S/D1VlXqIiLw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 16:23:33 -0700
+IronPort-SDR: f4xi4/kB2AQgpcl64BLOZNV2i3wAVKQNYyyXsv/GfDPb8zyi5+VDOCCE4+3cT6nHjdDQEFajo1
+ 0gU9OmIiO4Og==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,419,1583222400"; 
+   d="scan'208";a="268818207"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga006.jf.intel.com with ESMTP; 21 May 2020 16:23:32 -0700
+Message-ID: <a8f55ca9d7ca81b4acb7afecd8144aa396975cfb.camel@intel.com>
+Subject: Re: [RFC PATCH 5/5] selftest/x86: Add CET quick test
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Date:   Thu, 21 May 2020 16:23:38 -0700
+In-Reply-To: <202005211550.AF0E83BB@keescook>
+References: <20200521211720.20236-1-yu-cheng.yu@intel.com>
+         <20200521211720.20236-6-yu-cheng.yu@intel.com>
+         <202005211550.AF0E83BB@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a MRP instance is deleted, then restore the port according to the
-bridge state. If the bridge is up then the ports will be in forwarding
-state otherwise will be in disabled state.
+On Thu, 2020-05-21 at 16:02 -0700, Kees Cook wrote:
+> On Thu, May 21, 2020 at 02:17:20PM -0700, Yu-cheng Yu wrote:
+> > Introduce a quick test to verify shadow stack and IBT are working.
+> 
+> Cool! :)
+> 
+> I'd love to see either more of a commit log or more comments in the test
+> code itself. I had to spend a bit of time trying to understand how the
+> test was working. (i.e. using ucontext to "reset", using segv handler to
+> catch some of them, etc.) I have not yet figured out why you need to
+> send USR1/USR2 for two of them instead of direct calls?
 
-Fixes: 9a9f26e8f7ea ("bridge: mrp: Connect MRP API with the switchdev API")
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_mrp.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Yes, I will work on it.
 
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index 854e31bf0151e..528d767eb026f 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -223,6 +223,7 @@ static void br_mrp_test_work_expired(struct work_struct *work)
- static void br_mrp_del_impl(struct net_bridge *br, struct br_mrp *mrp)
- {
- 	struct net_bridge_port *p;
-+	u8 state;
- 
- 	/* Stop sending MRP_Test frames */
- 	cancel_delayed_work_sync(&mrp->test_work);
-@@ -234,20 +235,24 @@ static void br_mrp_del_impl(struct net_bridge *br, struct br_mrp *mrp)
- 	p = rtnl_dereference(mrp->p_port);
- 	if (p) {
- 		spin_lock_bh(&br->lock);
--		p->state = BR_STATE_FORWARDING;
-+		state = netif_running(br->dev) ?
-+				BR_STATE_FORWARDING : BR_STATE_DISABLED;
-+		p->state = state;
- 		p->flags &= ~BR_MRP_AWARE;
- 		spin_unlock_bh(&br->lock);
--		br_mrp_port_switchdev_set_state(p, BR_STATE_FORWARDING);
-+		br_mrp_port_switchdev_set_state(p, state);
- 		rcu_assign_pointer(mrp->p_port, NULL);
- 	}
- 
- 	p = rtnl_dereference(mrp->s_port);
- 	if (p) {
- 		spin_lock_bh(&br->lock);
--		p->state = BR_STATE_FORWARDING;
-+		state = netif_running(br->dev) ?
-+				BR_STATE_FORWARDING : BR_STATE_DISABLED;
-+		p->state = state;
- 		p->flags &= ~BR_MRP_AWARE;
- 		spin_unlock_bh(&br->lock);
--		br_mrp_port_switchdev_set_state(p, BR_STATE_FORWARDING);
-+		br_mrp_port_switchdev_set_state(p, state);
- 		rcu_assign_pointer(mrp->s_port, NULL);
- 	}
- 
--- 
-2.26.2
+[...]
+
+> > +
+> > +#pragma GCC push_options
+> > +#pragma GCC optimize ("O0")
+> 
+> Can you avoid compiler-specific pragmas? (Or verify that Clang also
+> behaves correctly here?) Maybe it's better to just build the entire file
+> with -O0 in the Makefile?
+
+This file is compiled using -O2 in the makefile.  I will see if other ways are
+possible.
+
+[...]
+
+> > +
+> > +void segv_handler(int signum, siginfo_t *si, void *uc)
+> > +{
+> 
+> Does anything in siginfo_t indicate which kind of failure you're
+> detecting? It'd be nice to verify test_id matches the failure mode being
+> tested.
+
+Yes, there is an si_code for control-protection fault.
+I will fix this.
+
+Agree with your other comments.
+
+Thanks,
+Yu-cheng
 
