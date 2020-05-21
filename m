@@ -2,154 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FA81DD77E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4CA1DD774
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbgEUTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728635AbgEUTmg (ORCPT
+        id S1729938AbgEUTmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:42:00 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:41448 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728635AbgEUTmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:42:36 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9414AC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:42:35 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x18so2193838pll.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BXYPauGkNWtPwKYwGGvUTVu/KGcI14RapTxg+fHwXY4=;
-        b=se3vu6erp2PBFC3GeiZK3pujHsPbv1+Tub7hi+r+f1Cu3Y6qod1+7C7rJZAl2ylOrO
-         xe7x3AdAvBRwQZ+ViBf3KRKqKxm5/pfNZdBUCB+/cZixrse5Nrq3v5eAScYCzQNG0wzd
-         bXws+6xkLfsjR+OPSM1Tezns0jGTj/TOo5PXDTpWjhjk72I2AHEzDy4zLLAQRg0+QW+d
-         mWWYanxQ9LMvTj1CgdOsvNvsfhKpKSWJR4cuW1nWvYDuqsA5AQAaaRqI3ucSL53IB6V+
-         x3ZOhZYpuxq0n4GGBJrYgVWsiorHx0X17eXWKyYOZtnXT4u7BGIxnD5cbxsAHeNBchtF
-         OXqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BXYPauGkNWtPwKYwGGvUTVu/KGcI14RapTxg+fHwXY4=;
-        b=BCyQfsA96Uu3tacMkO/MV6wkjQxetk6f8x5KXkAcw1MYFOX7JFE3TvkHrlexo2dcdk
-         VqCpb6juYprUWZUGxr22sYLCxFUvRNyUi7miM7zDnu5cYn6noXJyMTk2G2e5GrQqs5v7
-         GcGHUS8hprBoJ7BjmwOWNYGL0+LdS5wYjoTL4l1KZNale2xhN+K2LTudvExJ3bATF4xO
-         vXk5ZrGSUaXyPkRGBl3QqOPqL8tY1NMnE+d+yWYjBXhgMr2yW82o9BeLnmvc9LxPI0uj
-         iNqWLVv/x3oWllwPfpoCleDaTjTsIYwJE4knMv7ooXTEicEv0FFDIZajlcykZkpdjFEk
-         TMEA==
-X-Gm-Message-State: AOAM531eDUvvaStOY+p2XHrxr9xHChSTMNcm7K0dNnqvJm6XhvZjBnhr
-        zVIGXereCTdWKB+BFV2zzXc/TA==
-X-Google-Smtp-Source: ABdhPJxk6/AaRmSF7oCKZdzRq5JtighkgWW5LdhwQ4PD4zRb+L/JtxeyuIelMKGLsyYWPBn0ErhdvA==
-X-Received: by 2002:a17:90a:248a:: with SMTP id i10mr157777pje.174.1590090155010;
-        Thu, 21 May 2020 12:42:35 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id n21sm5065359pjo.25.2020.05.21.12.42.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 12:42:34 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:41:16 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Clement Leger <cleger@kalray.eu>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] remoteproc: introduce version element into resource
- type field
-Message-ID: <20200521194116.GP408178@builder.lan>
-References: <20200325204701.16862-1-s-anna@ti.com>
- <20200325204701.16862-3-s-anna@ti.com>
- <20200521175421.GI408178@builder.lan>
- <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
- <20200521192146.GO408178@builder.lan>
- <57ae5678-fd0a-07a8-6165-a2cf7ccdef88@ti.com>
+        Thu, 21 May 2020 15:42:00 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04LJfXvW046430;
+        Thu, 21 May 2020 14:41:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590090093;
+        bh=PNXaUPHJ9MT7IaWjYaNMQgErZ+4WK83l/f5BSRG5/Zg=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=LaEMkyjkNTDCDEWDDp31lORujmHiVKA/2vJtN2mJjXFkjy1sOkxZsAm82Xw7wGuui
+         69EZD96vjmoNJRVE95cZQrm9dtQPYwjpoRz7B3rw8KKyjIe3gt1un5O6xP4Cb2A8mB
+         3R79KcPi8SHUP7bB+deqAqZihVbBjFg13aghM+2o=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04LJfXPa013452
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 14:41:33 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
+ May 2020 14:41:32 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 21 May 2020 14:41:32 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04LJfWZ9096717;
+        Thu, 21 May 2020 14:41:32 -0500
+Date:   Fri, 22 May 2020 01:11:31 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, Sekhar Nori <nsekhar@ti.com>,
+        Mason Yang <masonccyang@mxic.com.tw>
+Subject: Re: [PATCH v6 04/19] spi: spi-mem: allow specifying a command's
+ extension
+Message-ID: <20200521194129.3lqdormmcs4zadh2@ti.com>
+References: <20200520163053.24357-1-p.yadav@ti.com>
+ <20200520163053.24357-5-p.yadav@ti.com>
+ <20200521202256.5816eb32@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <57ae5678-fd0a-07a8-6165-a2cf7ccdef88@ti.com>
+In-Reply-To: <20200521202256.5816eb32@collabora.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 May 12:29 PDT 2020, Suman Anna wrote:
-
-> On 5/21/20 2:21 PM, Bjorn Andersson wrote:
-> > On Thu 21 May 12:06 PDT 2020, Suman Anna wrote:
+On 21/05/20 08:22PM, Boris Brezillon wrote:
+> On Wed, 20 May 2020 22:00:38 +0530
+> Pratyush Yadav <p.yadav@ti.com> wrote:
+> 
+> > In xSPI mode, flashes expect 2-byte opcodes. The second byte is called
+> > the "command extension". There can be 3 types of extensions in xSPI:
+> > repeat, invert, and hex. When the extension type is "repeat", the same
+> > opcode is sent twice. When it is "invert", the second byte is the
+> > inverse of the opcode. When it is "hex" an additional opcode byte based
+> > is sent with the command whose value can be anything.
 > > 
-> > > Hi Bjorn,
-> > > 
-> > > On 5/21/20 12:54 PM, Bjorn Andersson wrote:
-> > > > On Wed 25 Mar 13:46 PDT 2020, Suman Anna wrote:
-> > > > 
-> > > > > The current remoteproc core has supported only 32-bit remote
-> > > > > processors and as such some of the current resource structures
-> > > > > may not scale well for 64-bit remote processors, and would
-> > > > > require new versions of resource types. Each resource is currently
-> > > > > identified by a 32-bit type field. Introduce the concept of version
-> > > > > for these resource types by overloading this 32-bit type field
-> > > > > into two 16-bit version and type fields with the existing resources
-> > > > > behaving as version 0 thereby providing backward compatibility.
-> > > > > 
-> > > > > The version field is passed as an additional argument to each of
-> > > > > the handler functions, and all the existing handlers are updated
-> > > > > accordingly. Each specific handler will be updated on a need basis
-> > > > > when a new version of the resource type is added.
-> > > > > 
-> > > > 
-> > > > I really would prefer that we add additional types for the new
-> > > > structures, neither side will be compatible with new versions without
-> > > > enhancements to their respective implementations anyways.
-> > > 
-> > > OK.
-> > > 
-> > > > 
-> > > > > An alternate way would be to introduce the new types as completely
-> > > > > new resource types which would require additional customization of
-> > > > > the resource handlers based on the 32-bit or 64-bit mode of a remote
-> > > > > processor, and introduction of an additional mode flag to the rproc
-> > > > > structure.
-> > > > > 
-> > > > 
-> > > > What would this "mode" indicate? If it's version 0 or 1?
-> > > 
-> > > No, for indicating if the remoteproc is 32-bit or 64-bit and adjust the
-> > > loading handlers if the resource types need to be segregated accordingly.
-> > > 
+> > So, make opcode a 16-bit value and add a 'nbytes', similar to how
+> > multiple address widths are handled.
 > > 
-> > Sorry, I think I'm misunderstanding something. Wouldn't your 64-bit
-> > remote processor need different firmware from your 32-bit processor
-> > anyways, if you want to support the wider resource? And you would pack
-> > your firmware with the appropriate resource types?
-> 
-> Yes, that's correct.
-> 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  include/linux/spi/spi-mem.h | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
 > > 
-> > Afaict the bit width of your remote processor, busses or memory is
-> > unrelated to the choice of number of bits used to express things in the
-> > resource table.
+> > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> > index e3dcb956bf61..731bb64c6ba6 100644
+> > --- a/include/linux/spi/spi-mem.h
+> > +++ b/include/linux/spi/spi-mem.h
+> > @@ -69,6 +69,8 @@ enum spi_mem_data_dir {
+> >  
+> >  /**
+> >   * struct spi_mem_op - describes a SPI memory operation
+> > + * @cmd.nbytes: number of opcode bytes (only 1 or 2 are valid). The opcode is
+> > + *		sent MSB-first.
+> >   * @cmd.buswidth: number of IO lines used to transmit the command
+> >   * @cmd.opcode: operation opcode
+> >   * @cmd.dtr: whether the command opcode should be sent in DTR mode or not
+> > @@ -94,9 +96,10 @@ enum spi_mem_data_dir {
+> >   */
+> >  struct spi_mem_op {
+> >  	struct {
+> > +		u8 nbytes;
+> >  		u8 buswidth;
+> >  		u8 dtr : 1;
+> > -		u8 opcode;
+> > +		u16 opcode;
+> >  	} cmd;
+> >  
+> >  	struct {
 > 
-> I would have to add the new resource type to the loading_handlers right, so
-> it is a question of whether we want to impose any restrictions in remoteproc
-> core or not from supporting a certain resource type (eg: I don't expect
-> RSC_TRACE entries on 64-bit processors).
-> 
+> As mentioned in one of my previous review, you should patch the mxic
+> driver before extending the opcode field:
 
-Right, but either you add support for new resource types to the
-loading_handlers, or you add the version checks within each handler,
-either way you will have to do some work to be compatible with new
-versions.
+IIUC, this patchset doesn't break original functionality of the driver. 
+It will work like before with 1-byte opcodes. So I don't think it is the 
+responsibility of this patchset to enhance the driver. It didn't work 
+before with 2-byte opcodes, it won't work now. IMO this should be a 
+separate, independent change.
+ 
+> --->8---
+> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+> index 69491f3a515d..c3f4136a7c1d 100644
+> --- a/drivers/spi/spi-mxic.c
+> +++ b/drivers/spi/spi-mxic.c
+> @@ -356,6 +356,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+>         int nio = 1, i, ret;
+>         u32 ss_ctrl;
+>         u8 addr[8];
+> +       u8 cmd[2];
+>  
+>         ret = mxic_spi_set_freq(mxic, mem->spi->max_speed_hz);
+>         if (ret)
+> @@ -393,7 +394,10 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+>         writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
+>                mxic->regs + HC_CFG);
+>  
+> -       ret = mxic_spi_data_xfer(mxic, &op->cmd.opcode, NULL, 1);
+> +       for (i = 0; i < op->cmd.nbytes; i++)
+> +               cmd[i] = op->cmd.opcode >> (8 * (op->cmd.nbytes - i - 1));
+> +
+> +       ret = mxic_spi_data_xfer(mxic, cmd, NULL, op->cmd.nbytes);
+>         if (ret)
+>                 goto out;
+>  
 
-Regarding what resources would be fit for a 64-bit processor probably
-relates to many things, in particular the question of what we actually
-mean when we say that a coprocessor is 64-bit. So I don't really see a
-need for the remoteproc core to prevent someone to design their
-system/firmware to have a 64-bit CPU being passed 32-bit addresses.
-
+-- 
 Regards,
-Bjorn
+Pratyush Yadav
+Texas Instruments India
