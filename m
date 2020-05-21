@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710B51DC72A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063CC1DC719
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgEUGs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39676 "EHLO
+        id S1728166AbgEUGmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgEUGs2 (ORCPT
+        with ESMTP id S1726892AbgEUGmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:48:28 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E72AC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:48:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49SKvV6hDcz9sT9;
-        Thu, 21 May 2020 16:48:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1590043704;
-        bh=mylN82RMn5av9mlUtP03Bq7JN7H0txBfw8gjg+ZMQ7s=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=TD2fDeKCARBDrWHY+VsGAe2iNnjSqQg60E3P1g7BHV/e9JoUek2xU6OXtkwdaFBlG
-         aGsN7rfCMbH628gOSdZXEoRypdxmeNdDtrpbG4z8i41l8g31J3EgJqZna48GJKwC2D
-         5bRYia+7Z03muiVkvkWqj3ePOGlgXK0kW3acfngvbgMdQClEMJRRQ5Z8x3nV+qRPyX
-         EraBdtFn9TliOy7sS163c8RGPhBZnu6NStAC3CIu4NHNsMKW+KtIsGQQxbHCcvH6dx
-         4yVgcFUs0HZ2rGH7IcJSH/rK0vExeIUOkgCbyQhjDX2DlL14cZeT9FW4/IsS3D9Hip
-         vvOPM4L7nSzmA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RESEND PATCH v7 4/5] ndctl/papr_scm,uapi: Add support for PAPR nvdimm specific methods
-In-Reply-To: <20200520153209.GC3660833@iweiny-DESK2.sc.intel.com>
-References: <20200519190058.257981-1-vaibhav@linux.ibm.com> <20200519190058.257981-5-vaibhav@linux.ibm.com> <20200520153209.GC3660833@iweiny-DESK2.sc.intel.com>
-Date:   Thu, 21 May 2020 16:48:40 +1000
-Message-ID: <87367t941j.fsf@mpe.ellerman.id.au>
+        Thu, 21 May 2020 02:42:21 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B1EC061A0E;
+        Wed, 20 May 2020 23:42:21 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id h4so4585277wmb.4;
+        Wed, 20 May 2020 23:42:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NzFpZ3MItvgYsgF9a126mp7iJYDnJB2I+YxGM0NZkm4=;
+        b=trYT/Mf24jEPR5E77DCFjYNLpu83ULeRpVgWfE5yUkdmt9117v2XPYb/lytahKKm2C
+         O3p4OQiGreCX2sy+lIEhATqkTarYPLIp1lIxRJGzGTgUgnFqZ37QfhLqYDQdat84t/tw
+         glWzCFhdlFrMSL4Suc/pBoGfVFUSi3RdLAqg/CjRjaEl6aVVVRWt2FjQou6hbokKq0Gk
+         vi2SAgzCFHjTIbHj4p1n9ZOUGs9nVsuSdBR0YylCWk60F62kBd/8IUqXOhfMAheqepqS
+         9IkYGXkBcOAQviWpQMlI43J5SoGLPkqDwTnULIXBY1beNKuqZ9fH9BnpNPTcFt4Jjpur
+         YnNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NzFpZ3MItvgYsgF9a126mp7iJYDnJB2I+YxGM0NZkm4=;
+        b=CY+K3cGZ9lE2byy1tLh6PfGqbt3cXOfsjWACF2oarARaULoxuR2uOGM3xxQygopVlj
+         VGz1JC0e/57/Lt7+SNRzAD9AgfgVfCcnBjH8YujF6xjACei4XuXy7S8h99hPg3VxJhPy
+         K6/QijhQ6C8BVl8iRimbxFoPzkVFzUh18nMoXXLvDHNUgS1fdbxmklSBR4Gcp8QDJAZB
+         BATI41OF2P1/AIVtDfvTSWbYCf7YAYAYpmo8FGbnVLvAICPl+GTt78kHf+UcskGJbqF8
+         CXMukmGZDZ1cG9q48o2KnTILjLnsuzUQ6vcx++t+vzoavf5q2iDpgcN9aHG+87E4zYgA
+         dnPA==
+X-Gm-Message-State: AOAM5313D4Ia8waHxxV96Rz92SzTKvjpvh+nVIBpN1dJAqN2UyF3HdWq
+        5vPwnACvEVlc2xKWRNHwcrBS3/U0G5QPKQoHo1Q=
+X-Google-Smtp-Source: ABdhPJxtzTdgxU8/9t7bwpB933KpcT/860YozhbhGegVS6WtPm3ugF5ST7Y9a1cWMOecH/0xQbrOg7Wc/bbZmYz9YS0=
+X-Received: by 2002:a05:600c:2258:: with SMTP id a24mr7388430wmm.111.1590043339828;
+ Wed, 20 May 2020 23:42:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200421143149.45108-1-yuehaibing@huawei.com> <20200422125346.27756-1-yuehaibing@huawei.com>
+ <0015ec4c-0e9c-a9d2-eb03-4d51c5fbbe86@huawei.com> <20200519085353.GE13121@gauss3.secunet.de>
+In-Reply-To: <20200519085353.GE13121@gauss3.secunet.de>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Thu, 21 May 2020 14:49:07 +0800
+Message-ID: <CADvbK_eXW24SkuLUOKkcg4JPa8XLcWpp6RNCrQT+=okaWe+GDA@mail.gmail.com>
+Subject: Re: [PATCH v2] xfrm: policy: Fix xfrm policy match
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Yuehaibing <yuehaibing@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira Weiny <ira.weiny@intel.com> writes:
-> On Wed, May 20, 2020 at 12:30:57AM +0530, Vaibhav Jain wrote:
->> Introduce support for Papr nvDimm Specific Methods (PDSM) in papr_scm
->> modules and add the command family to the white list of NVDIMM command
->> sets. Also advertise support for ND_CMD_CALL for the dimm
->> command mask and implement necessary scaffolding in the module to
->> handle ND_CMD_CALL ioctl and PDSM requests that we receive.
-...
->> + *
->> + * Payload Version:
->> + *
->> + * A 'payload_version' field is present in PDSM header that indicates a specific
->> + * version of the structure present in PDSM Payload for a given PDSM command.
->> + * This provides backward compatibility in case the PDSM Payload structure
->> + * evolves and different structures are supported by 'papr_scm' and 'libndctl'.
->> + *
->> + * When sending a PDSM Payload to 'papr_scm', 'libndctl' should send the version
->> + * of the payload struct it supports via 'payload_version' field. The 'papr_scm'
->> + * module when servicing the PDSM envelope checks the 'payload_version' and then
->> + * uses 'payload struct version' == MIN('payload_version field',
->> + * 'max payload-struct-version supported by papr_scm') to service the PDSM.
->> + * After servicing the PDSM, 'papr_scm' put the negotiated version of payload
->> + * struct in returned 'payload_version' field.
+On Tue, May 19, 2020 at 4:53 PM Steffen Klassert
+<steffen.klassert@secunet.com> wrote:
 >
-> FWIW many people believe using a size rather than version is more sustainable.
-> It is expected that new payload structures are larger (more features) than the
-> previous payload structure.
+> On Fri, May 15, 2020 at 04:39:57PM +0800, Yuehaibing wrote:
+> >
+> > Friendly ping...
+> >
+> > Any plan for this issue?
 >
-> I can't find references at the moment through.
+> There was still no consensus between you and Xin on how
+> to fix this issue. Once this happens, I consider applying
+> a fix.
+>
+Sorry, Yuehaibing, I can't really accept to do: (A->mark.m & A->mark.v)
+I'm thinking to change to:
 
-I think clone_args is a good modern example:
+ static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+                                   struct xfrm_policy *pol)
+ {
+-       u32 mark = policy->mark.v & policy->mark.m;
+-
+-       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+-               return true;
+-
+-       if ((mark & pol->mark.m) == pol->mark.v &&
+-           policy->priority == pol->priority)
++       if (policy->mark.v == pol->mark.v &&
++           (policy->mark.m == pol->mark.m ||
++            policy->priority == pol->priority))
+                return true;
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/sched.h#n88
+        return false;
 
-cheers
+which means we consider (the same value and mask) or
+(the same value and priority) as the same one. This will
+cover both problems.
