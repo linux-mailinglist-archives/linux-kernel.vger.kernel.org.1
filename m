@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABCB1DD496
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6E71DD49F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgEURjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 13:39:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52544 "EHLO mail.kernel.org"
+        id S1728706AbgEURmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 13:42:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:50902 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728019AbgEURjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 13:39:49 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7A27207F7;
-        Thu, 21 May 2020 17:39:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590082788;
-        bh=rZ7OTMNu5T3UCgib1e3eEgYYpyAWOaCd5OohlJnEMDo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oEgGuQeONzen71ym3SmfwHbStp6Iv/qiCn0Zlhowk7y9UaPuWTV7/MDErl+ZfoI92
-         hKW2W7RzfGMoHlfcHHFFWSidXGbZ61miQMpUe5ThBpYwJXb506hwMe4IX82saoP6tl
-         9OQNYX8y1p83Kx0VoFMpCjUZprB7ll8BGFkU8EQw=
-Date:   Thu, 21 May 2020 18:39:44 +0100
-From:   Will Deacon <will@kernel.org>
-To:     joro@8bytes.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, kernel-team@android.com
-Subject: [GIT PULL] iommu/arm-smmu: Updates for 5.8
-Message-ID: <20200521173944.GM6608@willie-the-truck>
+        id S1727966AbgEURmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 13:42:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F0CE30E;
+        Thu, 21 May 2020 10:42:14 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE2803F68F;
+        Thu, 21 May 2020 10:42:12 -0700 (PDT)
+Date:   Thu, 21 May 2020 18:42:10 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Hu <weh@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v3 0/2] Fix PCI HyperV device error handling
+Message-ID: <20200521174210.GB29590@e121166-lin.cambridge.arm.com>
+References: <20200507050126.10871-1-weh@microsoft.com>
+ <20200511112147.GD24954@e121166-lin.cambridge.arm.com>
+ <MW2PR2101MB1052A57E7BE9634821E29E4FD7B70@MW2PR2101MB1052.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <MW2PR2101MB1052A57E7BE9634821E29E4FD7B70@MW2PR2101MB1052.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+On Thu, May 21, 2020 at 02:39:58AM +0000, Michael Kelley wrote:
+> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> Sent: Monday, May 11, 2020 4:22 AM
+> > 
+> > On Thu, May 07, 2020 at 01:01:26PM +0800, Wei Hu wrote:
+> > > This series better handles some PCI HyperV error cases in general
+> > > and for kdump case. Some of review comments from previous individual
+> > > patch reviews, including splitting into separate patches, have already
+> > > been incorporated. Thanks Lorenzo Pieralisi for the review and
+> > > suggestions, as well as Michael Kelley's contribution to the commit
+> > > log.
+> > >
+> > > Thanks,
+> > > Wei
+> > >
+> > >
+> > > Wei Hu (2):
+> > >   PCI: hv: Fix the PCI HyperV probe failure path to release resource
+> > >     properly
+> > >   PCI: hv: Retry PCI bus D0 entry when the first attempt failed with
+> > >     invalid device state
+> > >
+> > >  drivers/pci/controller/pci-hyperv.c | 60 ++++++++++++++++++++++++++---
+> > >  1 file changed, 54 insertions(+), 6 deletions(-)
+> > 
+> > Applied to pci/hv, thanks.
+> > 
+> 
+> Lorenzo -- 
+> 
+> Will you be bringing these fixes into 5.7?  The main fix is the 2nd patch, but
+> there wasn't a clear "Fixes:" tag to add because the problem is due more to
+> how Hyper-V operates than a bug in a previous Linux commit.  We have a
+> customer experiencing the problem, so getting the fix into the main tree
+> sooner rather than later is helpful.
 
-Please pull these Arm SMMU updates for 5.8. The branch is based on your
-'core' branch from a little while ago.
+We usually send fixes at -rc* if the bug was introduced in the previous
+release, at the moment this is v5.8 material not planned for such a late
+-rc* (ie -rc7). We can send patches to stable and/or apply a Fixes: tag
+if that can help when the commits hit mainline.
 
-Summary in the tag.
-
-Cheers,
-
-Will
-
---->8
-
-The following changes since commit 1b032ec1ecbce6047af7d11c9db432e237cb17d8:
-
-  iommu: Unexport iommu_group_get_for_dev() (2020-05-05 14:36:14 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
-
-for you to fetch changes up to 0299a1a81ca056e79c1a7fb751f936ec0d5c7afe:
-
-  iommu/arm-smmu-v3: Manage ASIDs with xarray (2020-05-21 14:54:06 +0100)
-
-----------------------------------------------------------------
-Arm SMMU updates for 5.8
-
-- Avoid mapping reserved MMIO space on SMMUv3, so that it can be claimed
-  by the PMU driver
-
-- Use xarray to manage ASIDs on SMMUv3
-
-- Reword confusing shutdown message
-
-- DT compatible string updates
-
-- Allow implementations to override the default domain type
-
-----------------------------------------------------------------
-Andre Przywara (1):
-      dt-bindings: arm-smmu: Allow mmu-400, smmu-v1 compatible
-
-Chen Zhou (1):
-      iommu/arm-smmu-v3: remove set but not used variable 'smmu'
-
-Jean-Philippe Brucker (2):
-      iommu/arm-smmu-v3: Don't reserve implementation defined register space
-      iommu/arm-smmu-v3: Manage ASIDs with xarray
-
-Jordan Crouse (1):
-      iommu/arm-smmu: Allow client devices to select direct mapping
-
-Sai Prakash Ranjan (3):
-      iommu/arm-smmu: Make remove callback message more informative
-      iommu: arm-smmu-impl: Convert to a generic reset implementation
-      iommu/arm-smmu: Implement iommu_ops->def_domain_type call-back
-
-Sibi Sankar (3):
-      dt-bindings: remoteproc: qcom: Add iommus property
-      arm64: dts: qcom: sdm845-cheza: Add iommus property
-      iommu/arm-smmu-qcom: Request direct mapping for modem device
-
- .../devicetree/bindings/iommu/arm,smmu.yaml        |  4 +-
- .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |  3 +
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi         |  5 ++
- drivers/iommu/arm-smmu-impl.c                      |  8 ++-
- drivers/iommu/arm-smmu-qcom.c                      | 37 ++++++++++++-
- drivers/iommu/arm-smmu-v3.c                        | 64 +++++++++++++++++-----
- drivers/iommu/arm-smmu.c                           | 14 ++++-
- drivers/iommu/arm-smmu.h                           |  1 +
- 8 files changed, 113 insertions(+), 23 deletions(-)
+Lorenzo
