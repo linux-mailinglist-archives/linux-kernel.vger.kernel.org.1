@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004BA1DCF29
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3975B1DCF04
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729959AbgEUOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:09:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38652 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729919AbgEUOJG (ORCPT
+        id S1729822AbgEUOI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:08:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49030 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729694AbgEUOIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:09:06 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9D76880005EE;
-        Thu, 21 May 2020 14:09:02 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id M1UySfoXILvC; Thu, 21 May 2020 17:09:02 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 13/13] mips: cevt-r4k: Update the r4k-clockevent frequency in sync with CPU
-Date:   Thu, 21 May 2020 17:07:24 +0300
-Message-ID: <20200521140725.29571-14-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru>
+        Thu, 21 May 2020 10:08:25 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LE7jmJ033874;
+        Thu, 21 May 2020 14:08:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=VtH50d3j8PGL5fadgDPMpo+HStraNOmQY5K9l3SYH/Q=;
+ b=cQK/u6IjxwwVLLC8pb1aAgmXTz3H7PM+14OySJ+Q+U9tTUVXD93HaHbcmmu7QTATP1kF
+ AI15s21aN/QSHDEfTHep6UG5rA6yVmNE925zWrvYC9Rou652Czt7fz/unTGETkPCzuOi
+ 2utO3KjH+DGPhIBR4mqkwV98RmIyIiYFZyapOSM0OCGCgYzDbalsEfXNQzJd4PDphPYc
+ RbH/mFKhqog5utSj40D3ddZ81RSrYB6V8pFLZ9ucxDlKgDT+jjvAhY/zrr6hdwomVuMD
+ iLkDxlOUG1u9T+q2gyMhZP1kquuO2Mvke3AE6NR8dp9GSUwd/+SSP6zsmRlAseB5yRj3 Qg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31501rf7bp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 14:08:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LDqVLg161832;
+        Thu, 21 May 2020 14:08:16 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 314gm982t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 May 2020 14:08:15 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04LE8DDm001199;
+        Thu, 21 May 2020 14:08:13 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 21 May 2020 07:08:13 -0700
+Date:   Thu, 21 May 2020 17:08:03 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     syzbot <syzbot+9c6f0f1f8e32223df9a4@syzkaller.appspotmail.com>
+Cc:     bridge@lists.linux-foundation.org, davem@davemloft.net,
+        horatiu.vultur@microchip.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: slab-out-of-bounds Read in br_mrp_parse
+Message-ID: <20200521140803.GI30374@kadam>
+References: <0000000000007b211005a6187dc9@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000007b211005a6187dc9@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=803
+ adultscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005210104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=829 clxscore=1011 priorityscore=1501 cotscore=-2147483648
+ impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005210106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to being embedded into the CPU cores MIPS count/compare timer
-frequency is changed together with the CPU clocks alteration.
-In case if frequency really changes the kernel clockevent framework
-must be notified, otherwise the kernel timers won't work correctly.
-Fix this by calling clockevents_update_freq() for each r4k clockevent
-handlers registered per available CPUs.
+On Wed, May 20, 2020 at 11:23:18AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    dda18a5c selftests/bpf: Convert bpf_iter_test_kern{3, 4}.c..
+> git tree:       bpf-next
+                  ^^^^^^^^
 
-Traditionally MIPS r4k-clock are clocked with CPU frequency divided by 2.
-But this isn't true for some of the platforms. Due to this we have to save
-the basic CPU frequency, so then use it to scale the initial timer
-frequency (mips_hpt_frequency) and pass the updated value further to the
-clockevent framework.
+I can figure out what this is from reading Next/Trees but it would be
+more useful if it were easier to script.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
----
- arch/mips/kernel/cevt-r4k.c | 44 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10c4e63c100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=668983fd3dd1087e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9c6f0f1f8e32223df9a4
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17eaba3c100000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128598f6100000
+> 
 
-diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
-index 17a9cbb8b3df..995ad9e69ded 100644
---- a/arch/mips/kernel/cevt-r4k.c
-+++ b/arch/mips/kernel/cevt-r4k.c
-@@ -8,6 +8,7 @@
-  */
- #include <linux/clockchips.h>
- #include <linux/interrupt.h>
-+#include <linux/cpufreq.h>
- #include <linux/percpu.h>
- #include <linux/smp.h>
- #include <linux/irq.h>
-@@ -250,6 +251,49 @@ unsigned int __weak get_c0_compare_int(void)
- 	return MIPS_CPU_IRQ_BASE + cp0_compare_irq;
- }
- 
-+#ifdef CONFIG_CPU_FREQ
-+
-+static unsigned long mips_ref_freq;
-+
-+static int r4k_cpufreq_callback(struct notifier_block *nb,
-+				unsigned long val, void *data)
-+{
-+	struct cpufreq_freqs *freq = data;
-+	struct clock_event_device *cd;
-+	unsigned long rate;
-+	int cpu;
-+
-+	if (!mips_ref_freq)
-+		mips_ref_freq = freq->old;
-+
-+	if (val == CPUFREQ_POSTCHANGE) {
-+		rate = cpufreq_scale(mips_hpt_frequency, mips_ref_freq,
-+				     freq->new);
-+
-+		for_each_cpu(cpu, freq->policy->cpus) {
-+			cd = &per_cpu(mips_clockevent_device, cpu);
-+
-+			clockevents_update_freq(cd, rate);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static struct notifier_block r4k_cpufreq_notifier = {
-+	.notifier_call  = r4k_cpufreq_callback,
-+};
-+
-+static int __init r4k_register_cpufreq_notifier(void)
-+{
-+	return cpufreq_register_notifier(&r4k_cpufreq_notifier,
-+					 CPUFREQ_TRANSITION_NOTIFIER);
-+
-+}
-+core_initcall(r4k_register_cpufreq_notifier);
-+
-+#endif /* !CONFIG_CPU_FREQ */
-+
- int r4k_clockevent_init(void)
- {
- 	unsigned long flags = IRQF_PERCPU | IRQF_TIMER | IRQF_SHARED;
--- 
-2.25.1
+regards,
+dan carpenter
+
 
