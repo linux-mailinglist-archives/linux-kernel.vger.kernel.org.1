@@ -2,110 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9249E1DD89F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B0B1DD8A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgEUUqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728547AbgEUUqB (ORCPT
+        id S1729826AbgEUUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:48:51 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:40366 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgEUUsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:46:01 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7078C061A0E;
-        Thu, 21 May 2020 13:45:59 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q2so9941784ljm.10;
-        Thu, 21 May 2020 13:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uTez8kuMY3TP5XsYIYA67o+sB7pgMVGNezpgMi033kI=;
-        b=H+JXV4Ixd6t9+mkrG0yCupqx+KR1gWYSFhjUFNvuKf/wkH+6khAb6xrNdNuhnj5QXk
-         X9Zm/XBFtHdUmbOmELCzPYWUI20raJQz8yo3cgVLs+6gTwPtuh8rC1gYYGkCbnqSNjvq
-         FKGXIEO5+WlXbr7mDxvQKahVXYOykev04GbpMcOK1//pegIotbHdVOPnPDPIJ+Q43i6K
-         3+NZEH8E0T8oCXk2yB8v8jPjAMrOmL2FB26EvDJqRacwpz+Z7L0QhWMjWRU49U1stx1e
-         bMHNCva0IhTKMKVUOvjV7rocF8mJaazH7yMc0h8TI32bZRcJb4uVXDKLZ1SioqjCAY/x
-         pe+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uTez8kuMY3TP5XsYIYA67o+sB7pgMVGNezpgMi033kI=;
-        b=q5b5NxsYtmGyRd0kqj3OZUEALbMXCSe7giNFtaxg1W6BkdSWsdqLyxdNcS/114KPSa
-         Ocye0ATlWUIltd2zd/Eim2kiMrTRJCFGDA9zIH36OYwlK4t1mWu8mRLg3gOH2q3826vy
-         L4B39Iqe3IIcI0oIOUCv+n8tW6ZwRQiRz/yCf0+4k32SyfHAPCYHor+iiGd0bP32nrHG
-         5zq7nRe1SglagBZVxA9+TrLx3goWy79kIn0cPhL/XMnImaZOdbGoHIypP3m8rqa15Ne8
-         O3tZtm4QuuxI3wpyaQ+LnOj/wQIjDFsl3caWSIarRgyH1ctQR3NQON4sydqFVUUcEvGY
-         AqeQ==
-X-Gm-Message-State: AOAM531ABBpUQS14beMzpcC0LOdciesaGzO7foxjzoncs55vec9WSFOM
-        QRf2agTfAlxhU+Vrnnk0qKo65/KgpNez5zSvGEU=
-X-Google-Smtp-Source: ABdhPJxzQSWFIUeHpddcteib1fh2PMeMjFE+FkunevVip9n2ACN30aLCRo7QK85YpmYxoO6chpiGZFOVh0YMQSAjPsg=
-X-Received: by 2002:a05:651c:87:: with SMTP id 7mr5990758ljq.2.1590093958157;
- Thu, 21 May 2020 13:45:58 -0700 (PDT)
+        Thu, 21 May 2020 16:48:51 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D9C188030776;
+        Thu, 21 May 2020 20:48:46 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DGrwowxHrJn9; Thu, 21 May 2020 23:48:44 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/8] clocksource: Fix MIPS GIC and DW APB Timer for Baikal-T1 SoC support
+Date:   Thu, 21 May 2020 23:48:09 +0300
+Message-ID: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200521110910.45518-1-tali.perry1@gmail.com> <20200521110910.45518-3-tali.perry1@gmail.com>
- <20200521142340.GM1634618@smile.fi.intel.com> <20200521143100.GA16812@ninjato>
- <CAHb3i=vcVLWHjdiJoNZQrwJCqzszpOL7e9SAjqObsZCRH4ifwg@mail.gmail.com>
- <20200521145347.GO1634618@smile.fi.intel.com> <20200521203758.GA20150@ninjato>
-In-Reply-To: <20200521203758.GA20150@ninjato>
-From:   Tali Perry <tali.perry1@gmail.com>
-Date:   Thu, 21 May 2020 23:47:18 +0300
-Message-ID: <CAHb3i=tF2YF3LbbWRK9buObU-LjWGhxKCwvj2Jtn=VH1p+zDJg@mail.gmail.com>
-Subject: Re: [PATCH v12 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ofer Yehielli <ofery@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        avifishman70@gmail.com, Tomer Maimon <tmaimon77@gmail.com>,
-        kfting@nuvoton.com, Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 11:37 PM Wolfram Sang <wsa@the-dreams.de> wrote:
->
->
-> > > > I wondered also about DEBUG_FS entries. I can see their value when
-> > > > developing the driver. But since this is done now, do they really h=
-elp a
-> > > > user to debug a difficult case? I am not sure, and then I wonder if=
- we
-> > > > should have that code in upstream. I am open for discussion, though=
-.
-> > >
-> > > The user wanted to have health monitor implemented on top of the driv=
-er.
-> > > The user has 16 channels connected the multiple devices. All are oper=
-ated
-> > > using various daemons in the system. Sometimes the slave devices are =
-power down.
-> > > Therefor the user wanted to track the health status of the devices.
-> >
-> > Ah, then there are these options I have in mind (Wolfram, FYI as well!)=
-:
-> > 1) push with debugfs as a temporary solution and convert to devlink hea=
-lth protocol [1];
-> > 2) drop it and develop devlink_health solution;
-> > 3) push debugfs and wait if I=C2=B2C will gain devlink health support
->
-> No need for 2). We can push it now and convert it later. That being
-> said, I wonder if [1] is suitable for this driver? Things like NACKs and
-> timeouts happen regularly on an I2C bus and are not a state of bad
-> health.
->
+As for all Baikal-T1 SoC related patchsets, which need this, we replaced
+the DW APB Timer legacy plain text-based dt-binding file with DT schema.
+Similarly the MIPS GIC bindings file is also converted to DT schema seeing
+it also defines the MIPS GIC Timer binding.
 
-Agree, having a timeout every now and then is not an issue. The user
-is interested
-in cases when the number of timeouts\BER\nack\recovery are high.
+Aside from MIPS-specific r4k timer Baikal-T1 chip also provides a
+functionality of two another timers: embedded into the MIPS GIC timer and
+three external DW timers available over APB bus. But we can't use them
+before the corresponding drivers are properly fixed. First of all DW APB
+Timer shouldn't be bound to a single CPU, since as being accessible over
+APB they are external with respect to all possible CPUs. Secondly there
+might be more than just two DW APB Timers in the system (Baikal-T1 has
+three of them), so permit the driver to use one of them as a clocksource
+and the rest - for clockevents. Thirdly it's possible to use MIPS GIC
+timer as a clocksource so register it in the corresponding subsystem
+(the patch has been found in the Paul Burton MIPS repo so I left the
+original Signed-off-by attribute). Finally in the same way as r4k timer
+the MIPS GIC timer should be used with care when CPUFREQ config is enabled
+since in case of CM2 the timer counting depends on the CPU reference clock
+frequency while the clocksource subsystem currently doesn't support the
+timers with non-stable clock.
+
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
+
+Changelog v2:
+- Fix the SoB tags.
+- Our corporate email server doesn't change Message-Id anymore, so the
+  patchset is resubmitted being in the cover-letter-threaded format.
+- Convert the "snps,dw-apb-timer" binding to DT schema in a dedicated
+  patch.
+- Convert the "mti,gic" binding to DT schema in a dedicated patch.
+
+Link: https://lore.kernel.org/linux-rtc/20200324174325.14213-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Make the MIPS GIC timer sub-node name not having a unit-address number.
+- Discard allOf: [ $ref: /schemas/interrupt-controller.yaml# ] from MIPS
+  GIC bindings.
+- Add patch moving the "snps,dw-apb-timer" binding file to the directory
+  with timers binding files.
+
+Link: https://lore.kernel.org/linux-rtc/20200506214107.25956-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Mark clocksource as unstable instead of lowering its rating.
+- Move conditional sched clocks registration to the Paul' patch.
+- Add Thomas Gleixner to the patchset To-list to draw his attention to the
+  patch "dt-bindings: interrupt-controller: Convert mti,gic to DT schema".
+
+Link: https://lore.kernel.org/linux-rtc/20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v5:
+- Fix mistakenly added "git_" prefix. Obviously it was supposed to be gic_.
+- Add new patch "clocksource: dw_apb_timer: Affiliate of-based timer with
+  any CPU"
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-rtc@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Paul Burton (1):
+  clocksource: mips-gic-timer: Register as sched_clock
+
+Serge Semin (7):
+  dt-bindings: rtc: Convert snps,dw-apb-timer to DT schema
+  dt-bindings: timer: Move snps,dw-apb-timer DT schema from rtc
+  dt-bindings: interrupt-controller: Convert mti,gic to DT schema
+  clocksource: dw_apb_timer: Make CPU-affiliation being optional
+  clocksource: dw_apb_timer: Affiliate of-based timer with any CPU
+  clocksource: dw_apb_timer_of: Fix missing clockevent timers
+  clocksource: mips-gic-timer: Mark GIC timer as unstable if ref clock
+    changes
+
+ .../interrupt-controller/mips-gic.txt         |  67 --------
+ .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
+ .../devicetree/bindings/rtc/dw-apb.txt        |  32 ----
+ .../bindings/timer/snps,dw-apb-timer.yaml     |  88 +++++++++++
+ drivers/clocksource/Kconfig                   |   1 +
+ drivers/clocksource/dw_apb_timer.c            |   5 +-
+ drivers/clocksource/dw_apb_timer_of.c         |   8 +-
+ drivers/clocksource/mips-gic-timer.c          |  50 +++++-
+ 8 files changed, 288 insertions(+), 111 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+ delete mode 100644 Documentation/devicetree/bindings/rtc/dw-apb.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
+
+-- 
+2.25.1
+
