@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D02E1DC6ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49551DCF78
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgEUGRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:17:46 -0400
-Received: from mail-eopbgr60075.outbound.protection.outlook.com ([40.107.6.75]:62466
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726938AbgEUGRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:17:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AgL8Wm0Ms1BdffvtOMD+NdMSrCDWUesaKpLEWAIHUvN3c0y1LzrF7txSLQhnHiafuMS7BVJQR5f8f5eLI5iiI8v0zxWLD5UoMpAp3Qznfph9RLDx89vSALwQoIC7UC6Z9q1cO4DMV4vC0L+8cNqk9bkLDa32kDBTUTBNFUm9jkcN3NF/E21AcQEPDt8iQjASWk88tJ07qZqM7b4Dzc2BMhf8DMYa0LV5/wYjbqPXeHMZJNrGaSl5F/IpQfu3haS+Z33f92m9HjrPOUcEX+FtrxMfEpHJDLVUX70/sD6rBFX9vky1Aq3oEDYkVgPd2IEqPq5D4+Z49IXmZLgGptI7Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jl91O/enUIS5CewE0lxQjFELsh1ZAJYlP7AtKwtSs/c=;
- b=Tve/qtgesv0UU6AGmNjUz70J3PdEJVoKABmazIGLOkmitn0XWuqtRY9GSB1RkdvPvee6+Q3tnbbRyJZqumcpuQ0LRwLQgTezUAVNJ8Z055fIm0JHGgnc/T6LMY3rMF04UQySdbgV+tx9knjOUI6Bz+48nkLtQPmmnRjDqFRUIcFjRJkcNUAgulqr114Kj9skZYHGGBNpf0/zliWr+eyJNWBlCFacWCKVlrMr1V1epS5/DCmTTPSQcndqpqJ3NX0yOs371QG3FF0GHyvv73XQJUvLH636F4hYDbtI+Ye7HRvOq3wJQl/x2Las7B0CUrBj7SqTjOBe3wtQQFfGG6fLZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jl91O/enUIS5CewE0lxQjFELsh1ZAJYlP7AtKwtSs/c=;
- b=icPfX6Hz+lV0WO4Ek+sxTlQgSehUQb7PQ62W+ubuFL3xJDAJKI0sQF+gJCtnJsxoGNdXSsP49Rul9PtSLQjtfBuLroyoCBahH/SRUzFUIMdDFbfDXlBtbl34pA2QXQCbsk0qGPfOK66bKgU10i3BbeW+ctSYwiXSLR30gWtYjxA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VE1PR04MB6720.eurprd04.prod.outlook.com (2603:10a6:803:123::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Thu, 21 May
- 2020 06:17:38 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3021.020; Thu, 21 May 2020
- 06:17:38 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, anson.huang@nxp.com, peng.fan@nxp.com
-Cc:     kernel@pengutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: [PATCH v2 2/2] arm64: dts: imx8mn-ddr4-evk: correct ldo1/ldo2 voltage range
-Date:   Thu, 21 May 2020 22:17:54 +0800
-Message-Id: <1590070674-23027-2-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590070674-23027-1-git-send-email-yibin.gong@nxp.com>
-References: <1590070674-23027-1-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22)
- To VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.23 via Frontend Transport; Thu, 21 May 2020 06:17:35 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9ca4a6dc-314f-48e8-79fe-08d7fd4ea941
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6720:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB67201B781AF6B9031F3F8F2A89B70@VE1PR04MB6720.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 041032FF37
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6+5C3mz28XLB11gmjp3eK4CnLZF8MzTfA72GyXfq27Z4ved9EogSCBOjldUbKNzN2Bmc/3ThSE9GUVAlkSblZ4MA7/oQNSOYw1H7NI8PFG5V0PIzK/ZRX5IH4UbXwhjuMhzX2AMcUFFAsHZWyEuK2CPtE76UB4eqYQNJhIAbSpOHExVrA4i3LS29vAt53JsScooP5fWp4M3Zvx52Eg/0yL8OtMlBpie2bC5zksTkAzMYGzGP1V5h1T2tyx6qxXnucZbUhpXYrGe7GKwIgsAaSLk5QwI98naulAYOzWFClajXvQ1j5YEkjKS9ysOf3CDyH9fVZt8hrrm4dxOe2MkR7Ga/egUqet4/tWFkoUeF68/dHdeUL3mK0Ni3fEkp2hsQ5+H9It7n7svQxlYnAXq9Yon6Lf5gdPokT6RewzOyCMAyKczR2+Sz1Jlj+dP4LOMUCXr2BsjhI7ziSP9eeR30CZDn6KTyql9ov6XVH8cshC4OzcMaMw86ebbQh9qbRwNP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(6506007)(36756003)(6636002)(2616005)(86362001)(6486002)(956004)(52116002)(4326008)(5660300002)(26005)(8676002)(186003)(16526019)(66476007)(66556008)(8936002)(316002)(6666004)(66946007)(2906002)(478600001)(6512007)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 3UJrDjQex/c8fhm3Qcbv/jLWle7Y2wKtapGT2yW39+lIfYkl6Wip4kGQ8YzD3rCOpZhQ9F5siiRl25epc3VH5yYlzBftioICDP9JpuAtBtfClPpuiqGmmYC5CWbozEpJplXpZyvgZnCZu7Sheu7xIAlNXUOwrrk3yEXRl46j6ibIKsLvhSrecGHs1d6lMTwlBt00IUCecf6Gv9PtVoHk/JmECMI2wPrLoEJBr4KjlSn9mTmmt7jM9Qoguoufa9QRT/QXl2g68MH2f/Zd5i0mzf5pYqX+FnjuDl9VfbLwUB3HPF1Wup1YCc5aP6hR0XNYy43KutQjOTFHgG17J4Ck/VmoYVyoaU3jhg7Qmu6mH4TYIqVrllGnuz2ccJKY933wEnv/BaUyQuke73gn246rYUG4ZzGMGHV02e/pJBHbQsyvjPOVzBoqvEuIro42QGVSbjNfuR1a8ODPQNtw0OqAvR8FwBy37g32UuEfe9tEZZqWShHVVOVcdfrWizu7nB+w
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ca4a6dc-314f-48e8-79fe-08d7fd4ea941
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2020 06:17:38.8129
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j6O2/BdXOc7iEbhwuanQz+dDUbipzuNvvN0ZqqnbKuhRNxhBO6T+WWxzqZnLFkfL2GOg9Dgg6A3JfjP2qEwCxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6720
+        id S1728264AbgEUOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726965AbgEUOWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 10:22:22 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A323C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id s8so5409529ybj.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=oGh0kqYNNAZM+Pjnllixvw53KGUxiJ/hODIqL9XqSI8=;
+        b=N53ce3W4F1IpXl4ChkhdD3LWxnFiRQVJTDL/wOUQii97P48NWSVAOdhXhgVaK48dk2
+         Nt+pmmEb6P2ovsbhfKsEFFJSCEh04b4IQXvk5tWHWPZB0OwsKf9HGGkpT9xSP+2cE+Jw
+         feBQA60lAHIvLnpOGDdkBImyHOP2cSc8S44i3uHeB7sydq7ipF07dXaD07zKMLwfaHB0
+         7UuBbFsW5XcbfHbbdvwMg36zr8EGAu1uAJCzt4XR1ghuFjJ1MU9KRNUzD0y2mPkd12zn
+         6LSIa0TMbDakv/vL8ba+Kzlfali/1fW2BgEIqAUE59I9Fk9i+6XG8BPCy0dWyRthf+rR
+         B46g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=oGh0kqYNNAZM+Pjnllixvw53KGUxiJ/hODIqL9XqSI8=;
+        b=bcYVt2gAOOcPRLd35ZpuBqWRStySLG8oDOvpvwoyVRxoV55a4tnDduDxW2Sk6WQtC8
+         qTRkX1DhWodJ6dhoH0H+bC8RUgamY7ZlZTWcima7ZEUiGDdwksNWjz/gTXnr9xXpFi+d
+         Fd6+1Pf51yh5faKZdamVwTPl/4sTSWeL0bQCCdalY2p0OsmwiHlgl3B0+GsONJ1Yh2dI
+         NnS3w9lvMufW2WGGUq1GVbgivP0Z1SrO2t1hn8/7u8mQREzJlAvtuPOgLWDe9xZ5/qH1
+         vLI4U5/Je62yu0bq84JrSjgg1sGNvixk2mhVMDpiGIRKFRqC6DDzy6DPUqnFIZfwCZup
+         5QaQ==
+X-Gm-Message-State: AOAM531fWbGALVNsOaf2vwN4pw8UHRmdVr+keHbu4hcZCUycvkYkude/
+        nYfIwBLTaebpDuEEPWS9gH8DOWATJw==
+X-Google-Smtp-Source: ABdhPJwmv+6MclTJ+EllMyykRGDynVdX1CSwgVjgvmo8lvm1yGwryMBM851g6lmcfGhz8fsMcz0wMyHVXQ==
+X-Received: by 2002:a25:e86:: with SMTP id 128mr16977291ybo.344.1590070940186;
+ Thu, 21 May 2020 07:22:20 -0700 (PDT)
+Date:   Thu, 21 May 2020 16:20:36 +0200
+Message-Id: <20200521142047.169334-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
+Subject: [PATCH -tip v3 00/11] Fix KCSAN for new ONCE (require Clang 11)
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
+        andreyknvl@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        peterz@infradead.org, will@kernel.org,
+        clang-built-linux@googlegroups.com, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct ldo1 voltage range from wrong high group(3.0v~3.3v) to low group
-(1.6v~1.9v) because the ldo1 should be 1.8v. Actually, two voltage groups
-have been supported at bd718x7-regulator driver, hence, just corrrect the
-voltage range to 1.6v~3.3v. For ldo2@0.8v, correct voltage range too.
-Otherwise, ldo1 would be kept @3.0v and ldo2@0.9v which violate i.mx8mn
-datasheet as the below warning log in kernel:
+This patch series is the conclusion to [1], where we determined that due
+to various interactions with no_sanitize attributes and the new
+{READ,WRITE}_ONCE(), KCSAN will require Clang 11 or later. Other
+sanitizers are largely untouched, and only KCSAN now has a hard
+dependency on Clang 11. To test, a recent Clang development version will
+suffice [2]. While a little inconvenient for now, it is hoped that in
+future we may be able to fix GCC and re-enable GCC support.
 
-[    0.995524] LDO1: Bringing 1800000uV into 3000000-3000000uV
-[    0.999196] LDO2: Bringing 800000uV into 900000-900000uV
+The patch "kcsan: Restrict supported compilers" contains a detailed list
+of requirements that led to this decision.
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Most of the patches are related to KCSAN, however, the first patch also
+includes an UBSAN related fix and is a dependency for the remaining
+ones. The last 2 patches clean up the attributes by moving them to the
+right place, and fix KASAN's way of defining __no_kasan_or_inline,
+making it consistent with KCSAN.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-index d07e0e6..a1e5483 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
-@@ -113,7 +113,7 @@
- 
- 			ldo1_reg: LDO1 {
- 				regulator-name = "LDO1";
--				regulator-min-microvolt = <3000000>;
-+				regulator-min-microvolt = <1600000>;
- 				regulator-max-microvolt = <3300000>;
- 				regulator-boot-on;
- 				regulator-always-on;
-@@ -121,7 +121,7 @@
- 
- 			ldo2_reg: LDO2 {
- 				regulator-name = "LDO2";
--				regulator-min-microvolt = <900000>;
-+				regulator-min-microvolt = <800000>;
- 				regulator-max-microvolt = <900000>;
- 				regulator-boot-on;
- 				regulator-always-on;
+The series has been tested by running kcsan-test several times and
+completed successfully.
+
+[1] https://lkml.kernel.org/r/CANpmjNOGFqhtDa9wWpXs2kztQsSozbwsuMO5BqqW0c0g0zGfSA@mail.gmail.com
+[2] https://github.com/llvm/llvm-project
+
+v3:
+* data_race() fix for 'const' non-scalar expressions.
+* Add a missing commit message.
+* Add Will's Acked-by.
+
+v2: https://lkml.kernel.org/r/20200521110854.114437-1-elver@google.com
+* Remove unnecessary kcsan_check_atomic in ONCE.
+* Simplify __READ_ONCE_SCALAR and remove __WRITE_ONCE_SCALAR. This
+  effectively restores Will Deacon's pre-KCSAN version:
+  https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/tree/include/linux/compiler.h?h=rwonce/cleanup#n202
+* Introduce patch making data_race() a single statement expression in
+  response to apparent issues that compilers are having with nested
+  statement expressions.
+
+Arnd Bergmann (1):
+  ubsan, kcsan: don't combine sanitizer with kcov on clang
+
+Marco Elver (10):
+  kcsan: Avoid inserting __tsan_func_entry/exit if possible
+  kcsan: Support distinguishing volatile accesses
+  kcsan: Pass option tsan-instrument-read-before-write to Clang
+  kcsan: Remove 'noinline' from __no_kcsan_or_inline
+  kcsan: Restrict supported compilers
+  kcsan: Update Documentation to change supported compilers
+  READ_ONCE, WRITE_ONCE: Remove data_race() and unnecessary checks
+  data_race: Avoid nested statement expression
+  compiler.h: Move function attributes to compiler_types.h
+  compiler_types.h, kasan: Use __SANITIZE_ADDRESS__ instead of
+    CONFIG_KASAN to decide inlining
+
+ Documentation/dev-tools/kcsan.rst |  9 +-----
+ include/linux/compiler.h          | 54 ++++---------------------------
+ include/linux/compiler_types.h    | 32 ++++++++++++++++++
+ kernel/kcsan/core.c               | 43 ++++++++++++++++++++++++
+ lib/Kconfig.kcsan                 | 20 +++++++++++-
+ lib/Kconfig.ubsan                 | 11 +++++++
+ scripts/Makefile.kcsan            | 15 ++++++++-
+ 7 files changed, 127 insertions(+), 57 deletions(-)
+
 -- 
-2.7.4
+2.26.2.761.g0e0b3e54be-goog
 
