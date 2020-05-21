@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E464B1DD69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3479D1DD68A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgEUTH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        id S1730104AbgEUTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729548AbgEUTH4 (ORCPT
+        with ESMTP id S1729548AbgEUTDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:07:56 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A85C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:55 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id n24so10188344ejd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:55 -0700 (PDT)
+        Thu, 21 May 2020 15:03:00 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D099C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:03:00 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t7so3245474plr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OsSPUhpJYq73nfHib5c1j0os+u2XY4uTeNRmqrqb5mQ=;
-        b=CmUCxNDgIi9qt6Q51kYVv8cFYZP4VEdLcAfjYqxn2qIZvUtue5c2fyvygZREGpwI/I
-         tJb6hl3rKHFKaoBTMP89eAd5lK/gvCB5918Ju881W2CrP4VbdppU15ZViA7z5qhRr6EA
-         1NvHnsGrU68uXBlLj/C1Oi49N91W+p2BZiJQU=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/Oo08/XEB/t5MK/WPQHIyt+1GD6u4ViIKAYuaTKsYvw=;
+        b=XkJmPVs3VBunWUwFGskv2JiizITJ/0FqmwEuyWiL8NuZIUNYppwgRbu7Rb+Hm2E4gs
+         zosM3pBZbXzLCKpPzbmtSikxf2DTarJCOmR/EEzPuNWeZ04nIMbSHznUGFdJFnENEFlf
+         UOsilid7Q6ES9KHq1GOGhq3MvG4hP4NSyBVQIWg3OLDQKQSgT+4YZYyNC3ZovBBupdqg
+         CZYux9oUnfoQj1hAK7jqeNM3agFwh72faQDUMnI1ZXd/OFahAbeq+eI2YelRmPKlJbAd
+         k0yE9a6XjMQVbrMoh8ahDd06I3eQ1jAv61dsNJECpeQH0yc1PxIUq2Lef+yZ8xG381Fj
+         mqXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OsSPUhpJYq73nfHib5c1j0os+u2XY4uTeNRmqrqb5mQ=;
-        b=HyeRgBsLCIY+JK4c3iTcWvhXli93IviVb+baSdtqmr6t8ivIWaFiM9ThgxW5OzvAsQ
-         peRBkLTMWxCXMLN5bJwZvVamU4Tnk/AwQfIWTbjI8qEq7kJWiXa2pDciu/tGIyui4zKk
-         nTAR/+aLdAVz/VACI9PqycGQ1RLIXmf4I+aCByhjRRmpng2J32CyYmUQjpLxm+SSZSsV
-         CvMOMQuz2YYtSfEXzLLHR/OSoH6YZpRauIym6j6mK45AxdzRbs4iiDFdnW6IxKxwV+lQ
-         9ApNsmrk8DVP1UBFRuqYKmuUhhu7CdHaK8uET6rpv509X+DylYuOFQM+MdFnjJqC+sUb
-         vINw==
-X-Gm-Message-State: AOAM530H3xbQc/qsSeMVY13Ga5ZGGiIFoRZzNU19dZbptMDNVswoSF/E
-        2CGo4HP8HIBo5HqOHoI/X9EecdvDUsw=
-X-Google-Smtp-Source: ABdhPJxzs4N7Mrt/IAyg0t3HKIyY+BUtkZsQB0dO4GPmRQkRKcojEVjx/38Zc6tomQNIYOp9rlrmag==
-X-Received: by 2002:a17:906:7684:: with SMTP id o4mr5187738ejm.449.1590088073725;
-        Thu, 21 May 2020 12:07:53 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id g20sm5726252ejx.85.2020.05.21.12.07.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 12:07:53 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id yc10so10104776ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:53 -0700 (PDT)
-X-Received: by 2002:a2e:9896:: with SMTP id b22mr5475234ljj.276.1590087687179;
- Thu, 21 May 2020 12:01:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/Oo08/XEB/t5MK/WPQHIyt+1GD6u4ViIKAYuaTKsYvw=;
+        b=BwETY3pqUOaXmrDnFARxoLXNg9Nvq6/O9ZNvGgjiYpXDBfid9nEk6GwGfUT1zWAMlG
+         lvLTjPmY/G717LaTNIUhtETe2ZOnE19punfAr8gjhM8gHDBEdp0o3YD3YqiH+KLulkWg
+         +YS3SKQ/738ySlQNLOo0YErngyKmgFVlpyd/oxqqOh5Tv+7zb/nCyHxnEJKdys5q+A2o
+         pzVCrLNlel26jxHd1PfmeXX+Q8ltjAIouPoQOAB3QCmdxL7DzMglWC5iItfKUVWbrOcY
+         koZxjhUpbedkzN+czJEjG2dwHf705Hhty3bIzxux04uc8a3y9aDT5j4ZWhUXxvjNRyZY
+         c3+Q==
+X-Gm-Message-State: AOAM531iU7t/xj6CRxk1frOpSawkcq/R43zXivgV9FT3yd8kzDp9kHhg
+        BVyuoTI2PC0U4pjUH+EAzh8irA==
+X-Google-Smtp-Source: ABdhPJyja0nFdONVA3qDYEMHATkp/ASlOhFKtHy2PMgx+Quj41sLMb+HVStRwpG6rKRlL3mto4oqhw==
+X-Received: by 2002:a17:90a:a590:: with SMTP id b16mr13125461pjq.177.1590087780086;
+        Thu, 21 May 2020 12:03:00 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id q9sm4981223pff.62.2020.05.21.12.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 12:02:59 -0700 (PDT)
+Date:   Thu, 21 May 2020 12:01:41 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] TI K3 DSP remoteproc driver for C66x DSPs
+Message-ID: <20200521190141.GN408178@builder.lan>
+References: <20200521001006.2725-1-s-anna@ti.com>
+ <5f84465e-8f63-51b4-4758-59c85d3ad597@ti.com>
 MIME-Version: 1.0
-References: <20200515212846.1347-1-mcgrof@kernel.org> <20200515212846.1347-13-mcgrof@kernel.org>
- <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
- <7306323c35e6f44d7c569e689b48f380f80da5e5.camel@sipsolutions.net>
- <CA+ASDXOg9oKeMJP1Mf42oCMMM3sVe0jniaWowbXVuaYZ=ZpDjQ@mail.gmail.com>
- <20200519140212.GT11244@42.do-not-panic.com> <CA+ASDXMUHOcvJ_7UWgyANMxSz15Ji7TcLDXVCtSPa+fOr=+FGA@mail.gmail.com>
- <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
-In-Reply-To: <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Thu, 21 May 2020 12:01:14 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
-Message-ID: <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-To:     Emmanuel Grumbach <egrumbach@gmail.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        aquini@redhat.com, peterz@infradead.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com,
-        ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>,
-        mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, gpiccoli@canonical.com,
-        Steven Rostedt <rostedt@goodmis.org>, cai@lca.pw,
-        tglx@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        schlad@suse.de, Linux Kernel <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f84465e-8f63-51b4-4758-59c85d3ad597@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 10:37 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
-> So I believe we already have this uevent, it is the devcoredump. All
-> we need is to add the unique id.
+On Thu 21 May 11:59 PDT 2020, Suman Anna wrote:
 
-I think there are a few reasons that devcoredump doesn't satisfy what
-either Luis or I want.
+> Hi Bjorn,
+> 
+> On 5/20/20 7:10 PM, Suman Anna wrote:
+> > Hi All,
+> > 
+> > The following is v2 of the K3 DSP remoteproc driver supporting the C66x DSPs
+> > on the TI K3 J721E SoCs. The patches are based on the latest commit on the
+> > rproc-next branch, 7dcef3988eed ("remoteproc: Fix an error code in
+> > devm_rproc_alloc()").
+> 
+> I realized I also had the R5F patches on my branch, so the third patch won't
+> apply cleanly (conflict on Makefile). Let me know if you want a new revision
+> posted for you to pick up the series.
+> 
 
-1) it can be disabled entirely [1], for good reasons (e.g., think of
-non-${CHIP_VENDOR} folks, who can't (and don't want to) do anything
-with the opaque dumps provided by closed-source firmware)
-2) not all drivers necessarily have a useful dump to provide when
-there's a crash; look at the rest of Luis's series to see the kinds of
-drivers-with-firmware that are crashing, some of which aren't dumping
-anything
-3) for those that do support devcoredump, it may be used for purposes
-that are not "crashes" -- e.g., some provide debugfs or other knobs to
-initiate dumps, for diagnostic or debugging purposes
+That should be fine, thanks for the heads up!
 
-Brian
+Will give Mathieu a day or two to take a look as well.
 
-[1] devcd_disabled
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/devcoredump.c?h=v5.6#n22
+Regards,
+Bjorn
+
+> regards
+> Suman
+> 
+> > 
+> > v2 includes a new remoteproc core patch (patch 1) that adds an OF helper
+> > for parsing the firmware-name property. This is refactored out to avoid
+> > replicating the code in various remoteproc drivers. Please see the
+> > individual patches for detailed changes.
+> > 
+> > The main dependent patches from the previous series are now staged in
+> > rproc-next branch. The only dependency for this series is the common
+> > ti-sci-proc helper between R5 and DSP drivers [1]. Please see the initial
+> > cover-letter [2] for v1 details.
+> > 
+> > regards
+> > Suman
+> > 
+> > [1] https://patchwork.kernel.org/patch/11456379/
+> > [2] https://patchwork.kernel.org/cover/11458573/
+> > 
+> > Suman Anna (4):
+> >    remoteproc: Introduce rproc_of_parse_firmware() helper
+> >    dt-bindings: remoteproc: Add bindings for C66x DSPs on TI K3 SoCs
+> >    remoteproc/k3-dsp: Add a remoteproc driver of K3 C66x DSPs
+> >    remoteproc/k3-dsp: Add support for L2RAM loading on C66x DSPs
+> > 
+> >   .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 190 +++++
+> >   drivers/remoteproc/Kconfig                    |  13 +
+> >   drivers/remoteproc/Makefile                   |   1 +
+> >   drivers/remoteproc/remoteproc_core.c          |  23 +
+> >   drivers/remoteproc/remoteproc_internal.h      |   2 +
+> >   drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 773 ++++++++++++++++++
+> >   6 files changed, 1002 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> >   create mode 100644 drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> > 
+> 
