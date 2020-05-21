@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B111DCC92
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B601DCC9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgEUMFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 08:05:01 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:41730 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgEUMFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 08:05:00 -0400
-Received: by mail-ed1-f68.google.com with SMTP id g9so6481243edr.8;
-        Thu, 21 May 2020 05:04:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SwZpALLAQeyKdCeabWUvdFsJgTC5XhIBMoJbc1saxP8=;
-        b=gPInm6fHMz9LqHYXBXkaBSM3grWGP2GnpJHlVBK3CnXkn00vELC9wWvY6XavdRcmC4
-         gwRIYSEbb+jH81Yb8MNUQDEienLBEnRmfqXQH3K4xuj2vznEcr8fMQSqPvzpWR9h+3dw
-         FX29hcjGNRlNbzQT8LY5mpAowXjwkyKKxq5YTzwaOj47RiGS8KVpSYNwLWB9HR3hWQsj
-         26hV7gQAFlArdZOE1nzladOI/1LGgdlR124N3ORPwTgyXig5Q0mcOQMtP2UpUgo07SFw
-         7XtcBMLwHeEuKzmWUJqS7VsTKhVBXObD1IWn4pLM7UKhOqVSmNskLNFI8IM/YgIMywix
-         6eag==
-X-Gm-Message-State: AOAM531TX0SMZQ1Y9FBxTpTLvAMH6yGAfIdttGq12/bzU6MYRzwZZBxL
-        fu2ksIvnsOsXhmKZLlVhcq4=
-X-Google-Smtp-Source: ABdhPJxcJU3YYlU6FupEZNcOtfXj4LB04jwem+8NjPjBlLO3RJdPWnW3l+WShSuHCKKHdCiixcsfrg==
-X-Received: by 2002:a50:f40d:: with SMTP id r13mr7180291edm.93.1590062697963;
-        Thu, 21 May 2020 05:04:57 -0700 (PDT)
-Received: from localhost (ip-37-188-180-112.eurotel.cz. [37.188.180.112])
-        by smtp.gmail.com with ESMTPSA id o21sm4645166ejb.31.2020.05.21.05.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 05:04:56 -0700 (PDT)
-Date:   Thu, 21 May 2020 14:04:55 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200521120455.GM6462@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <20200520160756.GE6462@dhcp22.suse.cz>
- <20200520202650.GB558281@chrisdown.name>
- <20200521071929.GH6462@dhcp22.suse.cz>
- <20200521112711.GA990580@chrisdown.name>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521112711.GA990580@chrisdown.name>
+        id S1729163AbgEUMGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 08:06:41 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:12008 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727905AbgEUMGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 08:06:41 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXlTC9bsZeH1KdAQ--.33787S4;
+        Thu, 21 May 2020 20:06:25 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: camss: ispif: Fix runtime PM imbalance on error
+Date:   Thu, 21 May 2020 20:06:21 +0800
+Message-Id: <20200521120621.2658-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXlTC9bsZeH1KdAQ--.33787S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFW3Gr18JF1xWF4UArb_yoWftFb_ur
+        s5XrWfXF4Ygr1vvr4Utw43urWIqaykZw18u3WftFWay3yjyFykGrykZr98ZrnxZw1jyF17
+        GFZ8ZFyfCr97ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+        uYvjfUeWlkDUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0HBlZdtOPdcwAEs4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-05-20 12:27:11, Chris Down wrote:
-> Michal Hocko writes:
-> > On Wed 20-05-20 21:26:50, Chris Down wrote:
-> > > Michal Hocko writes:
-> > > > Let me try to understand the actual problem. The high memory reclaim has
-> > > > a target which is proportional to the amount of charged memory. For most
-> > > > requests that would be SWAP_CLUSTER_MAX though (resp. N times that where
-> > > > N is the number of memcgs in excess up the hierarchy). I can see to be
-> > > > insufficient if the memcg is already in a large excess but if the
-> > > > reclaim can make a forward progress this should just work fine because
-> > > > each charging context should reclaim at least the contributed amount.
-> > > >
-> > > > Do you have any insight on why this doesn't work in your situation?
-> > > > Especially with such a large inactive file list I would be really
-> > > > surprised if the reclaim was not able to make a forward progress.
-> > > 
-> > > Reclaim can fail for any number of reasons, which is why we have retries
-> > > sprinkled all over for it already. It doesn't seem hard to believe that it
-> > > might just fail for transient reasons and drive us deeper into the hole as a
-> > > result.
-> > 
-> > Reclaim can certainly fail. It is however surprising to see it fail with
-> > such a large inactive lru list and reasonably small reclaim target.
-> 
-> Why do you think the reclaim target is small? In the case of generating tons
-> of dirty pages, current->memcg_nr_pages_over_high can grow to be huge (on
-> the order of several tens of megabytes or more).
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Because from my experience there are not tons of charges inside one
-syscall usually. Yeah, some syscalls can generate a lot of them but that
-shouldn't be a majority.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/media/platform/qcom/camss/camss-ispif.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > Having the full LRU of dirty pages sounds a bit unusual, IO throttling
-> > for v2 and explicit throttling during the reclaim for v1 should prevent
-> > from that. If the reclaim gives up too easily then this should be
-> > addressed at the reclaim level.
-> 
-> I'm not sure I agree. Reclaim knows what you asked it to do: reclaim N
-> pages, but what to do about the situation when it fails to satisfy that is a
-> job for the caller. In this case, we are willing to even tolerate a little
-> bit of overage up to the 10ms throttle threshold. In other cases, we want to
-> do other checks first before retrying, because the tradeoffs are different.
-> Putting all of this inside the reclaim logic seems unwieldy.
-
-That is not what I meant. We do have some throttling inside the reclaim
-because failing reclaim too quickly can easily lead to pre mature OOMs.
-If that doesn't work then we should have a look why. E.g. it is quite
-unexpected to have large LRU full of dirty pages because this suggests
-that dirty throttling doesn't work properly.
-
-> > The main problem I see with that approach is that the loop could easily
-> > lead to reclaim unfairness when a heavy producer which doesn't leave the
-> > kernel (e.g. a large read/write call) can keep a different task doing
-> > all the reclaim work. The loop is effectivelly unbound when there is a
-> > reclaim progress and so the return to the userspace is by no means
-> > proportional to the requested memory/charge.
-> 
-> It's not unbound when there is reclaim progress, it stops when we are within
-> the memory.high throttling grace period. Right after reclaim, we check if
-> penalty_jiffies is less than 10ms, and abort and further reclaim or
-> allocator throttling:
-
-Just imagine that you have parallel producers increasing the high limit
-excess while somebody reclaims those. Sure in practice the loop will be
-bounded but the reclaimer might perform much more work on behalf of
-other tasks.
+diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
+index 1f33b4eb198c..5722e971b184 100644
+--- a/drivers/media/platform/qcom/camss/camss-ispif.c
++++ b/drivers/media/platform/qcom/camss/camss-ispif.c
+@@ -344,8 +344,10 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
+ 		}
+ 
+ 		ret = pm_runtime_get_sync(dev);
+-		if (ret < 0)
++		if (ret < 0) {
++			pm_runtime_put_sync(dev);
+ 			goto exit;
++		}
+ 
+ 		ret = camss_enable_clocks(ispif->nclocks, ispif->clock, dev);
+ 		if (ret < 0) {
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
