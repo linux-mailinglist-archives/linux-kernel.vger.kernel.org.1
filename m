@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B51DCEDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1644A1DCEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgEUODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:03:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:47448 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728630AbgEUODx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:03:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BDD0D6E;
-        Thu, 21 May 2020 07:03:52 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 48DC43F305;
-        Thu, 21 May 2020 07:03:51 -0700 (PDT)
-References: <20200519161755.209565-1-maz@kernel.org> <20200519161755.209565-5-maz@kernel.org> <20200519222447.GJ1551@shell.armlinux.org.uk>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com
-Subject: Re: [PATCH 04/11] ARM: Allow IPIs to be handled as normal interrupts
-In-reply-to: <20200519222447.GJ1551@shell.armlinux.org.uk>
-Date:   Thu, 21 May 2020 15:03:49 +0100
-Message-ID: <jhjk115xu4a.mognet@arm.com>
+        id S1729669AbgEUOD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728630AbgEUOD4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 10:03:56 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01F3C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:03:54 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id z18so8353915lji.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=jqBAKe3IKqJoXojNQAUhi3bpTMlqYTYY7No7Kwfhcfw=;
+        b=uGsJaa4QdZGazrl0yiGrqwYdyQzKFHZCulp0yOijNuM9ddDPh7KBkJ/wgGBVTmb3gc
+         9Qy6RQ1KP/fRODOb3UUvq2ACmoskL2tzgHE0f84c3Wsv7zPsd+UE1TiUnPJTlcFSixrK
+         Atlxvzezh9FqHIpRJZVH88Z3FdtvwPBZNbTQX7T9iz5GOWv4Snae2bmDNpKE6BktcaMT
+         GQ4wp8yKvaOvnawRhPgIPhIdg6efBBNH/dZIhzlUr/RuoldlXFIC2LL0HPXQB4KTdKPL
+         M1A0IwzRp4xC2r87hDJuai70DaTi5kRNg1B2A7s9Pz3rIdbRkg/Wduv2vBNVUGltA+Tk
+         RJug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=jqBAKe3IKqJoXojNQAUhi3bpTMlqYTYY7No7Kwfhcfw=;
+        b=rYIGQblYzuuSu8LLhiLLRp4phUOlKXNVi/5lEZjba1KGb2zLT85XMrXSkkBYnGFw0C
+         Go1F+fG7SPjDLYzPT8/zLj37qBl0kFKfynx/zHPwIPXjU3u/B3XV1kNcQJV+Ibo4k1Jd
+         ZY6G7r4fUHbLlRQJIGSfPPGw1Aril/VjdxDPu4l5azjquf5n9VFx7X2uOcpFRiAMqaVq
+         k19PoOVSAaMfHh6tWu7x2zkgV4kn1NOZzGJ6X+dbX8P7nOlv6ahHKvugjtQYesFYu9lj
+         yNz/mAyQAVeHbLR+8IkJUzoGsMdZJZDtiVRzBo/aKxdag4CW8R9nFBKynnT81aDg30YK
+         317g==
+X-Gm-Message-State: AOAM532SdVNesLgSa4ZVA7W13eLZQYE7cffGywP1jNgBTmMZsHUPE9w3
+        DIi11BgwnLsCYrGjsvA2i8lkd0Z/feR0lhE0P+8=
+X-Google-Smtp-Source: ABdhPJzWRH4E5ZFyBSDe8gytFewOHiQIT/l687KNAAPS84vXb5/ZVTF5WDvZrnZvkCYr4VrugmFGvVUHPop3dT1QO/k=
+X-Received: by 2002:a2e:a48d:: with SMTP id h13mr5087411lji.120.1590069833401;
+ Thu, 21 May 2020 07:03:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:ac2:51db:0:0:0:0:0 with HTTP; Thu, 21 May 2020 07:03:52
+ -0700 (PDT)
+From:   Rose Ouedrago <roseouedrago13@gmail.com>
+Date:   Thu, 21 May 2020 15:03:52 +0100
+X-Google-Sender-Auth: jEym-2G6PluAaTwlsA1o2VCA5EU
+Message-ID: <CAEwdCdTyvo-NpRgGzaHxNaLTTr0OxZ-1SHsR9yZ5iZzNa8SOPA@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+How are you doing? I am Rose . It's a pleasure with due respect to
+cultivate a healthy friendship with you .I receive your email contact
+through my search and I would like you to contact me ,I will give you
+a full explanation about myself also send you my pictures.I will give
+you my =C2=A0reasons and purposes that contacted you.
 
-On 19/05/20 23:24, Russell King - ARM Linux admin wrote:
-> On Tue, May 19, 2020 at 05:17:48PM +0100, Marc Zyngier wrote:
->> In order to deal with IPIs as normal interrupts, let's add
->> a new way to register them with the architecture code.
->>
->> set_smp_ipi_range() takes a range of interrupts, and allows
->> the arch code to request them as if the were normal interrupts.
->> A standard handler is then called by the core IRQ code to deal
->> with the IPI.
->>
->> This means that we don't need to call irq_enter/irq_exit, and
->> that we don't need to deal with set_irq_regs either. So let's
->> move the dispatcher into its own function, and leave handle_IPI()
->> as a compatibility function.
->>
->> On the sending side, let's make use of ipi_send_mask, which
->> already exists for this purpose.
->
-> You say nothing about the nesting of irq_enter() and irq_exit()
-> for scheduler_ipi().
->
-> Given that lockdep introduced the requirement that hard IRQs can't
-> be nested, are we sure that calling irq_exit() twice is safe?
->
-> Looking at irqtime_account_irq(), it seems that will cause double-
-> accounting of in-interrupt time, since we will increment
-> irq_start_time by just over twice the the period spent handling
-> the IPI.
->
-> I think the rest of irq_exit() should be safe, but still, this
-> behaviour should be documented at the very least, if not avoided.
->
-
-x86 does the same (though IIUC only when tracing reschedule IPI's), and
-MIPS has the same issue as it also uses generic IRQ IPI's - so although
-it's not ideal, I think we can live with it.
+Yours Rose
