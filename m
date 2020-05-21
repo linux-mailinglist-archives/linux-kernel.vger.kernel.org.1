@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183511DCBC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF171DCBCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgEULKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 07:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S1729131AbgEULKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 07:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729084AbgEULKB (ORCPT
+        with ESMTP id S1729097AbgEULKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 07:10:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B1C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:10:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d7so4890751ybp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:10:00 -0700 (PDT)
+        Thu, 21 May 2020 07:10:02 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7858EC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:10:02 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id w6so6806702qvj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=maeQQXffB2UguUhgEnnewdiQJy0yPCx7FVOuZ5TWJ5k=;
-        b=YM6yTs41M64rlxp3Icmd/f607+aA3s2rrYqipArr3qXRMeEgF5VKYwm89HTr68H+0a
-         7sPYBdkTfTsb679x/SQszIG0GNyr4q3mBcY3wQ2qVjJJDqbJ8gpPElSxIQfbdIL+vNSy
-         zrey6KtFkx/+78+5Arf83emIm//qJC6jwZyWSFUokHYh5nh6IeDb8t5VKKYOD4N/GaYI
-         fLQ3hRpEZyZutK5v/cH9Q06xRWPDfAQguVQNJj1ghAfdOj4Z4UG3wSg1h73RXPb674Q3
-         nqZGDmzLOcrh75aBNsT3jAfSbtZd6ay7zotwBtis9oVmjXijl6Vs3kO3Qcxy1ZeR8+t8
-         R3bg==
+        bh=O66Rrrp+JcFi/5yju5R8rYLztnbdicYxc/HcFiSiC0Y=;
+        b=VtJ/UrbfaM6BolP1bI6UHyVm0WMy0DeZW5vu94Pik/zWsLIQyXc7r6cA3itlo7S9BD
+         nPSwqGFrKd/Wa0Dyp5cVGGm8HhJ3WKm5bRpXU75s2QTlPZPK2Mr0B6Z4VTkziedrzquj
+         /x/CBFPyaPINxcDV0Oh5eqasLdlf3KpYGzUz/WyBkTsGQAQIjTidPM2Jv0E/PLf4Zj1L
+         p9DbxJdjH4oM76bRlgYijSfmZCFzQ6fvEM1FKnCNKy/k48teiPHk7UFT+0hPBqW/KxB3
+         1RzFFdvw6BRXReIT+Z+Za/wGDfy3xyEFMXaAxTH37skANmThgr8Lqbde6K646msGZL5P
+         yH7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=maeQQXffB2UguUhgEnnewdiQJy0yPCx7FVOuZ5TWJ5k=;
-        b=RS/vWaOH1aqF6ZWejs1jTgDHAK3t/PpfLZUTRAWAOcM4zx6QSU+Pe4Erld9UIvdd96
-         iaD0t+iPWJfp0dLzGvo42AfZZx30t8WCuiLjO9iVaqUhO8O6uccoi+CyDXqSPBARYZyy
-         eTJ1swalMKrlbplCXK631WHHyLw9M2/lz2HRdz+i0ZqWMQ+PYpY3C3tBR5lLxwmORFJI
-         ex+fTZZb+0ssynZEYXgtEpzQjMJun8JSE7axl3LdAtQsOn/IPEDPtLQQFtC7OYMTRI3q
-         R8aduJzllbBLSEwq+12ptIlGBi8DoxKR6uSBJPGwgCndxOoIsTmCb63hFTg8/JykoZbM
-         Hsxw==
-X-Gm-Message-State: AOAM530ZiG/yoItUYhNLa5Z0RTq/l3Tm9rpfPC4uqJ3rQdTVtt/LmBcr
-        ApMQsnlIRHEnAR1cRyt5PcNiAuboSA==
-X-Google-Smtp-Source: ABdhPJw7I/jqWVrYgyoHZn+Dhh5CftKhAGfvG9IOI7lBomWxfH3oBEGL2BowsjtJYGUVXdfuKPVnLMGjNg==
-X-Received: by 2002:a25:9010:: with SMTP id s16mr1833681ybl.2.1590059399495;
- Thu, 21 May 2020 04:09:59 -0700 (PDT)
-Date:   Thu, 21 May 2020 13:08:47 +0200
+        bh=O66Rrrp+JcFi/5yju5R8rYLztnbdicYxc/HcFiSiC0Y=;
+        b=WgVSUzQg1SCsLGRlbCFCtzajq2yND0kdWmjR365jYpyIc76NRLh4L3kZofh/TXxmXy
+         zUZ192PCN0MCQt++O04UeHB1Ra8cp5JwQjn5k2sJDZBl7DoGB6sBseTxm8ZwkXv8GKQc
+         p6SuTKaFx2szdXJM/s1Y646wRH+aoW9FIVrpCO40FXIgPkfBnsVsVhV7Cnl7O7zHM1sp
+         A40XeREj27R4uqhddkFDyrzwI8jKhQzH5ZUC2dQWXpkCxBh5iW+ffRfxFU2yxlOsd+Cb
+         7NyyefTHT3E9IUt8X0yA0b0+DBs4XUo0ulCLe3oZ3WGW+Ssx+dy+SB0aJXaRlmdAwXKK
+         BKLQ==
+X-Gm-Message-State: AOAM531W5SVSSyUoIxzJZ6kcs1UQpuXuPsOY7rzoXB3QDw7AMT9Azzat
+        BEMS5z8May2L9EDF5tnGdbm8EoLjXQ==
+X-Google-Smtp-Source: ABdhPJzHNOZEYn/z1ZMnfkvXrB3RPs4pAA3s5uWP2uklE7iH3A2rCUyzb3cnQ9egSlcx88JUt/1xhyTMKw==
+X-Received: by 2002:a0c:90e7:: with SMTP id p94mr9692288qvp.219.1590059401676;
+ Thu, 21 May 2020 04:10:01 -0700 (PDT)
+Date:   Thu, 21 May 2020 13:08:48 +0200
 In-Reply-To: <20200521110854.114437-1-elver@google.com>
-Message-Id: <20200521110854.114437-5-elver@google.com>
+Message-Id: <20200521110854.114437-6-elver@google.com>
 Mime-Version: 1.0
 References: <20200521110854.114437-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip v2 04/11] kcsan: Pass option tsan-instrument-read-before-write
- to Clang
+Subject: [PATCH -tip v2 05/11] kcsan: Remove 'noinline' from __no_kcsan_or_inline
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -65,35 +64,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang (unlike GCC) removes reads before writes with matching addresses
-in the same basic block. This is an optimization for TSAN, since writes
-will always cause conflict if the preceding read would have.
+Some compilers incorrectly inline small __no_kcsan functions, which then
+results in instrumenting the accesses. For this reason, the 'noinline'
+attribute was added to __no_kcsan_or_inline. All known versions of GCC
+are affected by this. Supported version of Clang are unaffected, and
+never inlines a no_sanitize function.
 
-However, for KCSAN we cannot rely on this option, because we apply
-several special rules to writes, in particular when the
-KCSAN_ASSUME_PLAIN_WRITES_ATOMIC option is selected. To avoid missing
-potential data races, pass the -tsan-instrument-read-before-write option
-to Clang if it is available [1].
+However, the attribute 'noinline' in __no_kcsan_or_inline causes
+unexpected code generation in functions that are __no_kcsan and call a
+__no_kcsan_or_inline function.
 
-[1] https://github.com/llvm/llvm-project/commit/151ed6aa38a3ec6c01973b35f684586b6e1c0f7e
+In certain situations it is expected that the __no_kcsan_or_inline
+function is actually inlined by the __no_kcsan function, and *no* calls
+are emitted. By removing the 'noinline' attribute we give the compiler
+the ability to inline and generate the expected code in __no_kcsan
+functions.
 
+Link: https://lkml.kernel.org/r/CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- scripts/Makefile.kcsan | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/compiler.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
-index 75d2942b9437..bd4da1af5953 100644
---- a/scripts/Makefile.kcsan
-+++ b/scripts/Makefile.kcsan
-@@ -13,6 +13,7 @@ endif
- # of some options does not break KCSAN nor causes false positive reports.
- CFLAGS_KCSAN := -fsanitize=thread \
- 	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls) \
-+	$(call cc-option,$(call cc-param,tsan-instrument-read-before-write=1)) \
- 	$(call cc-param,tsan-distinguish-volatile=1)
- 
- endif # CONFIG_KCSAN
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index e24cc3a2bc3e..17c98b215572 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -276,11 +276,9 @@ do {									\
+ #ifdef __SANITIZE_THREAD__
+ /*
+  * Rely on __SANITIZE_THREAD__ instead of CONFIG_KCSAN, to avoid not inlining in
+- * compilation units where instrumentation is disabled. The attribute 'noinline'
+- * is required for older compilers, where implicit inlining of very small
+- * functions renders __no_sanitize_thread ineffective.
++ * compilation units where instrumentation is disabled.
+  */
+-# define __no_kcsan_or_inline __no_kcsan noinline notrace __maybe_unused
++# define __no_kcsan_or_inline __no_kcsan notrace __maybe_unused
+ # define __no_sanitize_or_inline __no_kcsan_or_inline
+ #else
+ # define __no_kcsan_or_inline __always_inline
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
