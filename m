@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2961DCD04
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EF81DCD0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgEUMfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 08:35:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:45608 "EHLO foss.arm.com"
+        id S1729301AbgEUMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 08:37:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728133AbgEUMfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 08:35:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 929EF30E;
-        Thu, 21 May 2020 05:35:36 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3591B3F305;
-        Thu, 21 May 2020 05:35:34 -0700 (PDT)
-Subject: Re: [PATCH 0/3] arm64: perf: Add support for Perf NMI interrupts
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lecopzer Chen <lecopzer@gmail.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        Jian-Lin Chen <lecopzer.chen@mediatek.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "yj.chiang@mediatek.com" <yj.chiang@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <20200516124857.75004-1-lecopzer@gmail.com>
- <CAFA6WYNwp+_ENiS8QDao5+RXyt5ofJZyq6c5CKG_d0CNEmBNYg@mail.gmail.com>
- <CANr2M19unLW8n0P2DiOYEZ=GZcaD-L2ygPht_5HNtNZ6e4h6xQ@mail.gmail.com>
- <20200518104524.GA1224@C02TD0UTHF1T.local>
- <a9002b5e-aec5-b6e0-7174-87b93351d60c@arm.com>
- <8a1022c0-da2b-c83d-81cd-44b11149496b@arm.com>
- <B926444035E5E2439431908E3842AFD24B2728@DGGEMI525-MBS.china.huawei.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <1d615c32-89f0-d9ba-43db-3d90c7d53e15@arm.com>
-Date:   Thu, 21 May 2020 13:36:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728186AbgEUMhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 08:37:38 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 547DD2070A;
+        Thu, 21 May 2020 12:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590064657;
+        bh=XzY9Vu3vZDIMRqhC2Uec8ljVnAJkU8kHTGL8ax+6XUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1Hh7R91MXepY8cJaTBq4r9BBHcCknRHA4kdtVwWZGAoahyEhDYtZUpVhR2+huC2ip
+         hR/cvCRBcGfdmuFUvqWfmOB6yYDafJQcIKkuSdnmwxQEdI7Lc6ZJ8WOZVPHkTiFu+6
+         zXB74atNrHZCB3MQ5YyiYn7J01c7AwODVBRHTw8M=
+Date:   Thu, 21 May 2020 13:37:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     robh@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, vigneshr@ti.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: spi: Add schema for Cadence QSPI
+ Controller driver
+Message-ID: <20200521123735.GC4770@sirena.org.uk>
+References: <20200520123612.11797-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200520124329.GF4823@sirena.org.uk>
+ <fd086da7-7e18-83bc-d423-56095b0cff96@linux.intel.com>
+ <20200521105646.GA4770@sirena.org.uk>
+ <24b0297c-5c33-f690-9514-68b76fc2c9ea@linux.intel.com>
+ <20200521122035.GB4770@sirena.org.uk>
+ <463b24a4-0a6a-9fcf-7eb9-8fde602c0c13@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <B926444035E5E2439431908E3842AFD24B2728@DGGEMI525-MBS.china.huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Bu8it7iiRSEf40bY"
+Content-Disposition: inline
+In-Reply-To: <463b24a4-0a6a-9fcf-7eb9-8fde602c0c13@linux.intel.com>
+X-Cookie: Keep your laws off my body!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 5/21/20 4:00 AM, Song Bao Hua (Barry Song) wrote:
+--Bu8it7iiRSEf40bY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->> -----Original Message-----
->> From: linux-arm-kernel [mailto:linux-arm-kernel-bounces@lists.infradead.org]
->> On Behalf Of Alexandru Elisei
->> Sent: Wednesday, May 20, 2020 10:31 PM> 
->> Hi,
->>
->> On 5/18/20 12:17 PM, Alexandru Elisei wrote:
->>> Hi,
->>>
->>> On 5/18/20 11:45 AM, Mark Rutland wrote:
->>>> Hi all,
->>>>
->>>> On Mon, May 18, 2020 at 02:26:00PM +0800, Lecopzer Chen wrote:
->>>>> HI Sumit,
->>>>>
->>>>> Thanks for your information.
->>>>>
->>>>> I've already implemented IPI (same as you did [1], little difference
->>>>> in detail), hardlockup detector and perf in last year(2019) for
->>>>> debuggability.
->>>>> And now we tend to upstream to reduce kernel maintaining effort.
->>>>> I'm glad if someone in ARM can do this work :)
->>>>>
->>>>> Hi Julien,
->>>>>
->>>>> Does any Arm maintainers can proceed this action?
->>>> Alexandru (Cc'd) has been rebasing and reworking Julien's patches,
->>>> which is my preferred approach.
->>>>
->>>> I understand that's not quite ready for posting since he's
->>>> investigating some of the nastier subtleties (e.g. mutual exclusion
->>>> with the NMI), but maybe we can put the work-in-progress patches
->>>> somewhere in the mean time.
->>>>
->>>> Alexandru, do you have an idea of what needs to be done, and/or when
->>>> you expect you could post that?
->>> I'm currently working on rebasing the patches on top of 5.7-rc5, when
->>> I have something usable I'll post a link (should be a couple of days).
->>> After that I will address the review comments, and I plan to do a
->>> thorough testing because I'm not 100% confident that some of the
->>> assumptions around the locks that were removed are correct. My guess is
->> this will take a few weeks.
->>
->> Pushed a WIP branch on linux-arm.org [1]:
->>
->> git clone -b WIP-pmu-nmi git://linux-arm.org/linux-ae
->>
->> Practically untested, I only did perf record on a defconfig kernel running on the
->> model.
->>
->> [1]
->> http://www.linux-arm.org/git?p=linux-ae.git;a=shortlog;h=refs/heads/WIP-pm
->> u-nmi
-> Fortunately, it does work. I used this tree to perf annotate arm_smmu_cmdq_issue_cmdlist() which
-> is completely disabling IRQ. Luckily, it reports correct data. Before that, it reported all time was spent by
-> the code which enabled IRQ .
+On Thu, May 21, 2020 at 08:34:43PM +0800, Ramuthevar, Vadivel MuruganX wrote:
+> On 21/5/2020 8:20 pm, Mark Brown wrote:
 
-That's good news that it works for you, thanks for letting me know.
+> > I mean that any changes to the bindings ought to be split out into
+> > separate patches, if there's multiple changes it may make sense for
+> > there to be multiple patches.
 
-Alex
+> Got it, we do not have multiple changes since it is new YAML file.
+> in case if we feel anything to be added , we add as separate patches.
 
+If this is just a conversion to YAML then your changelog is wildly
+inaccurate and needs to be improved, your changelog says you are adding
+new things.
+
+--Bu8it7iiRSEf40bY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7Gdg4ACgkQJNaLcl1U
+h9CEowf/QMYDfB1WRpIHtE540R46+Mt+m6ieiujeMi72a0tdEVaExwPeBNHvHAfr
+JeVWeL+H6//8H2NcR5NwR6kVDFYNlx7h1JSNKhOpMedxsT72sJxj62hadMgF18Nm
+laUg+q/bz+kPN6qOpAb6iY9ocf6vo9qWcYcKK00DDrrEfkLVF2KbLdft9dGzs75O
+VApz+3bfiMY4ROV3Kc08V7xEGyJbXRWnAtiA21+9XrWjiuqYtfuLue+2qeFiE9Hu
+3eacgVdd0pGiBjrEi/WbwRUoAnbQBFpRisqkNz/OGtt3d/8mvjF2prNW9QwsPH+g
+zugQEeTYSCDR4Nm36ZHyuqzau9hAvA==
+=zxZ7
+-----END PGP SIGNATURE-----
+
+--Bu8it7iiRSEf40bY--
