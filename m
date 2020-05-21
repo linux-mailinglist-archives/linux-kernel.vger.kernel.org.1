@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196E21DCF8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4691DCFA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729603AbgEUOWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:22:34 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38780 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728207AbgEUOW1 (ORCPT
+        id S1729782AbgEUOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729542AbgEUOW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:22:27 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 376CF8030776;
-        Thu, 21 May 2020 14:22:22 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8PSENPxDhIuf; Thu, 21 May 2020 17:22:21 +0300 (MSK)
-Date:   Thu, 21 May 2020 17:22:19 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Maarten ter Huurne <maarten@treewalker.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 7/7] clocksource: mips-gic-timer: Mark GIC timer as
- unstable if ref clock changes
-Message-ID: <20200521142219.ejsl4y5eaqqfsp5k@mobilestation>
-References: <20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru>
- <20200521005321.12129-8-Sergey.Semin@baikalelectronics.ru>
- <CAMuHMdW5TqfDTZZCscXCK-Fkd7Gq1Ciyu1_sDzzR0B+_W-2hfg@mail.gmail.com>
+        Thu, 21 May 2020 10:22:29 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52B5C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:28 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i16so6775814edv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HXVdafa9z18urmVF3KS9w5IeKlLTrJcs4nowtAYCuh4=;
+        b=WUx7EMZXoTwxert//L8QB2qHfWrZiacoi76OCdMTNyuay8JGMq6fWNmQj0SQnbRFEh
+         WRh1UcI6g53+15lQHxMx26j8V4Gxuc5gDqobeFXzjZDMWfdl3fkdcoRgn0v8vArqtsrt
+         1Vv1WER8yCs5NkdKv+KCn0M/GlQDXzUtCKOAE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HXVdafa9z18urmVF3KS9w5IeKlLTrJcs4nowtAYCuh4=;
+        b=G/0FHrvnq9uiFWs/g/dF04OhTrZjRKqHFdifv19+Ql6xuQTyvr0ZsErAPGkn+/fLzw
+         8CcYI+DZptNPGg/Jv7c6m5W2Q2xb7q9l0/PrrpTWGqaXrJQDTTtosaDRcyutNOANHXTo
+         eFG36AcXTqScDrfGG2Fi2SqKZ4ijJV9t91SFKCfhbgmouKjSY8O/k4HQSYx/GMY2jV0o
+         0BmzjGM37/KiQ9l+I03ZHdRLiteRSuWNWh6POpo/faNlGOb/Q8mJN5Ez0K7J6f7gMRbQ
+         bTZvvVjBcukRfb27rQM8q7QD1UfJfDJTtHgPJWrnETPnnj7g4cr5+ZI1k+TmEf4DIh5d
+         Lxew==
+X-Gm-Message-State: AOAM533O9LeOcdkOSS5/RF9eMpI5kar8G0hlNOVasT0LdQ3L5jfewcwU
+        gCOwVdwyhC2ePyKXQ76LG/mGVQ==
+X-Google-Smtp-Source: ABdhPJy8mfT4IP25yMwlh6TstUIzlUkg7uNP8ZDxoGoGuZc54HVQpdqG/mu217uXfwgIu/hzemCzXA==
+X-Received: by 2002:a05:6402:1c0e:: with SMTP id ck14mr8165813edb.356.1590070947093;
+        Thu, 21 May 2020 07:22:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:4262])
+        by smtp.gmail.com with ESMTPSA id i2sm4588656edy.30.2020.05.21.07.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 07:22:26 -0700 (PDT)
+Date:   Thu, 21 May 2020 15:22:23 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200521142223.GG990580@chrisdown.name>
+References: <20200520202650.GB558281@chrisdown.name>
+ <20200521071929.GH6462@dhcp22.suse.cz>
+ <20200521112711.GA990580@chrisdown.name>
+ <20200521120455.GM6462@dhcp22.suse.cz>
+ <20200521122327.GB990580@chrisdown.name>
+ <20200521123742.GO6462@dhcp22.suse.cz>
+ <20200521125759.GD990580@chrisdown.name>
+ <20200521132120.GR6462@dhcp22.suse.cz>
+ <20200521133324.GF990580@chrisdown.name>
+ <20200521135838.GT6462@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW5TqfDTZZCscXCK-Fkd7Gq1Ciyu1_sDzzR0B+_W-2hfg@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200521135838.GT6462@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 11:09:50AM +0200, Geert Uytterhoeven wrote:
-> Hi Serge,
-> 
-> On Thu, May 21, 2020 at 2:54 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> > Currently clocksource framework doesn't support the clocks with variable
-> > frequency. Since MIPS GIC timer ticks rate might be unstable on some
-> > platforms, we must make sure that it justifies the clocksource
-> > requirements. MIPS GIC timer is incremented with the CPU cluster reference
-> > clocks rate. So in case if CPU frequency changes, the MIPS GIC tick rate
-> > changes synchronously. Due to this the clocksource subsystem can't rely on
-> > the timer to measure system clocks anymore. This commit marks the MIPS GIC
-> > based clocksource as unstable if reference clock (normally it's a CPU
-> > reference clocks) rate changes. The clocksource will execute a watchdog
-> > thread, which lowers the MIPS GIC timer rating to zero and fallbacks to a
-> > new stable one.
-> >
-> > Note we don't need to set the CLOCK_SOURCE_MUST_VERIFY flag to the MIPS
-> > GIC clocksource since normally the timer is stable. The only reason why
-> > it gets unstable is due to the ref clock rate change, which event we
-> > detect here in the driver by means of the clocks event notifier.
-> >
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> 
-> Thanks for your patch!
-> 
-> > --- a/drivers/clocksource/mips-gic-timer.c
-> > +++ b/drivers/clocksource/mips-gic-timer.c
-> > @@ -24,6 +24,9 @@
-> >  static DEFINE_PER_CPU(struct clock_event_device, gic_clockevent_device);
-> >  static int gic_timer_irq;
-> >  static unsigned int gic_frequency;
-> > +static bool __read_mostly gic_clock_unstable;
-> > +
-> > +static void git_clocksource_unstable(char *reason);
-> 
-> gic_clocksource_unstable? (everywhere)
+Michal Hocko writes:
+>On Thu 21-05-20 14:41:47, Chris Down wrote:
+>> Michal Hocko writes:
+>> > On Thu 21-05-20 13:57:59, Chris Down wrote:
+>[...]
+>> > > If you're talking about reclaim, trying to reason about whether the overage
+>> > > is the result of some other task in this cgroup or the task that's
+>> > > allocating right now is something that we already know doesn't work well
+>> > > (eg. global OOM).
+>> >
+>> > I am not sure I follow you here.
+>>
+>> Let me rephrase: your statement is that it's not desirable "that some task
+>> would be throttled unexpectedly too long because of [the activity of another
+>> task also within that cgroup]" (let me know if that's not what you meant).
+>> But trying to avoid that requires knowing which activity abstractly
+>> instigates this entire mess in the first place, which we have nowhere near
+>> enough context to determine.
+>
+>Yeah, if we want to be really precise then you are right, nothing like
+>that is really feasible for the reclaim. Reclaiming 1 page might be much
+>more expensive than 100 pages because LRU order doesn't reflect the
+>cost of the reclaim at all. What, I believe, we want is a best effort,
+>really. If the reclaim target is somehow bound to the requested amount
+>of memory then we can at least say that more memory hungry consumers are
+>reclaiming more. Which is something people can wrap their head around
+>much easier than a free competition on the reclaim with some hard to
+>predict losers who do all the work and some lucky ones which just happen
+>to avoid throttling by a better timing. Really think of the direct
+>reclaim and how the unfairness suck there.
 
-This is the most used word lately. So my hands write git everywhere by itself.)
-Thanks for noticing this.
+I really don't follow this logic. You're talking about reclaim-induced latency, 
+but the alternative isn't freedom from latency, it's scheduler-induced latency 
+from allocator throttling (and probably of a significantly higher magnitude). 
+And again, that's totally justified if you are part of a cgroup which is 
+significantly above its memory.high -- that's the kind of grouping you sign up 
+for when you put multiple tasks in the same cgroup.
 
--Sergey
+The premise of being over memory.high is that everyone in the affected cgroup 
+must do their utmost to reclaim where possible, and if they fail to get below 
+it again, we're going to deschedule them. *That's* what's best-effort about it.
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+The losers aren't hard to predict. It's *all* the tasks in this cgroup if they 
+don't each make their utmost attempt to get the cgroup's memory back under 
+control. Doing more reclaim isn't even in the same magnitude of sucking as 
+getting allocator throttled.
