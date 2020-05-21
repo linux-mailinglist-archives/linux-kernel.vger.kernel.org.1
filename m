@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892111DC840
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629321DC823
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgEUIKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 04:10:06 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:53912 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728546AbgEUIKF (ORCPT
+        id S1728431AbgEUIBh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 May 2020 04:01:37 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:51209 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727899AbgEUIBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 04:10:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LzQcau/CTPhcsq7cGzAcVt098Z2d/I8LKnftpNJpgSo=; b=M5yzdliQtL6ecGvEyiMqU8gcmm
-        VZCqgzHHR+lWgFbOO+SHL+yg3mG+eAAvKtIgwwZ4Sp5OsroQvTtvRs3AoSF4Rh9rom3+W0BAxUp4z
-        uod9wfTjCWD0T8VM8sHHqldWI8WUDt/bDkzv1Iqct/fHvpGlM6u9pAfLNEoF7eTsDxYw=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1jbg8z-0004CT-E1; Thu, 21 May 2020 08:01:33 +0000
-Received: from 54-240-197-225.amazon.com ([54.240.197.225] helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <julien@xen.org>)
-        id 1jbg8z-0006PQ-6i; Thu, 21 May 2020 08:01:33 +0000
-Subject: Re: [PATCH 01/10] swiotlb-xen: use vmalloc_to_page on vmalloc virt
- addresses
-To:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>
-References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
- <20200520234520.22563-1-sstabellini@kernel.org>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <23e5b6d8-c5d9-b43f-41cd-9d02d8ec0a7f@xen.org>
-Date:   Thu, 21 May 2020 09:01:31 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        Thu, 21 May 2020 04:01:37 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-186-4FoxtkRnOIu_oKGM1EEfFg-1; Thu, 21 May 2020 09:01:34 +0100
+X-MC-Unique: 4FoxtkRnOIu_oKGM1EEfFg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 21 May 2020 09:01:33 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 21 May 2020 09:01:33 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "Vlad Yasevich" <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "Marcelo Ricardo Leitner" <marcelo.leitner@gmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
+Subject: RE: remove kernel_setsockopt and kernel_getsockopt v2
+Thread-Topic: remove kernel_setsockopt and kernel_getsockopt v2
+Thread-Index: AQHWL0EWFDRlmpM/90uRt9jvD36P/KiyKtMA
+Date:   Thu, 21 May 2020 08:01:33 +0000
+Message-ID: <138a17dfff244c089b95f129e4ea2f66@AcuMS.aculab.com>
+References: <20200520195509.2215098-1-hch@lst.de>
+In-Reply-To: <20200520195509.2215098-1-hch@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200520234520.22563-1-sstabellini@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 21/05/2020 00:45, Stefano Stabellini wrote:
-> From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+From: Christoph Hellwig
+> Sent: 20 May 2020 20:55
 > 
-> Don't just assume that virt_to_page works on all virtual addresses.
-> Instead add a is_vmalloc_addr check and use vmalloc_to_page on vmalloc
-> virt addresses.
-
-Can you provide an example where swiotlb is used with vmalloc()?
-
-> Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> ---
->   drivers/xen/swiotlb-xen.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+> this series removes the kernel_setsockopt and kernel_getsockopt
+> functions, and instead switches their users to small functions that
+> implement setting (or in one case getting) a sockopt directly using
+> a normal kernel function call with type safety and all the other
+> benefits of not having a function call.
 > 
-> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-> index b6d27762c6f8..a42129cba36e 100644
-> --- a/drivers/xen/swiotlb-xen.c
-> +++ b/drivers/xen/swiotlb-xen.c
-> @@ -335,6 +335,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
->   	int order = get_order(size);
->   	phys_addr_t phys;
->   	u64 dma_mask = DMA_BIT_MASK(32);
-> +	struct page *pg;
->   
->   	if (hwdev && hwdev->coherent_dma_mask)
->   		dma_mask = hwdev->coherent_dma_mask;
-> @@ -346,9 +347,11 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
->   	/* Convert the size to actually allocated. */
->   	size = 1UL << (order + XEN_PAGE_SHIFT);
->   
-> +	pg = is_vmalloc_addr(vaddr) ? vmalloc_to_page(vaddr) :
-> +				      virt_to_page(vaddr);
+> In some cases these functions seem pretty heavy handed as they do
+> a lock_sock even for just setting a single variable, but this mirrors
+> the real setsockopt implementation unlike a few drivers that just set
+> set the fields directly.
 
-Common DMA code seems to protect this check with CONFIG_DMA_REMAP. Is it 
-something we want to do it here as well? Or is there any other condition 
-where vmalloc can happen?
+How much does this increase the kernel code by?
 
->   	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
->   		     range_straddles_page_boundary(phys, size)) &&
-> -	    TestClearPageXenRemapped(virt_to_page(vaddr)))
-> +	    TestClearPageXenRemapped(pg))
->   		xen_destroy_contiguous_region(phys, order);
->   
->   	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
-> 
+You are also replicating a lot of code making it more
+difficult to maintain.
 
-Cheers,
+I don't think the performance of an socket option code
+really matters - it is usually done once when a socket
+is initialised and the other costs of establishing a
+connection will dominate.
 
--- 
-Julien Grall
+Pulling the user copies outside the [gs]etsocksopt switch
+statement not only reduces the code size (source and object)
+and trivially allows kernel_[sg]sockopt() to me added to
+the list of socket calls.
+
+It probably isn't possible to pull the usercopies right
+out into the syscall wrapper because of some broken
+requests.
+
+I worried about whether getsockopt() should read the entire
+user buffer first. SCTP needs the some of it often (including a
+sockaddr_storage in one case), TCP needs it once.
+However the cost of reading a few words is small, and a big
+buffer probably needs setting to avoid leaking kernel
+memory if the structure has holes or fields that don't get set.
+Reading from userspace solves both issues.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
