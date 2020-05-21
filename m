@@ -2,154 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945D51DC9A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C931DC9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgEUJOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 05:14:19 -0400
-Received: from v6.sk ([167.172.42.174]:34802 "EHLO v6.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728870AbgEUJOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:14:17 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id BECA161307;
-        Thu, 21 May 2020 09:14:15 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v2 9/9] dt-bindings: usb: Convert ehci-mv to json-schema
-Date:   Thu, 21 May 2020 11:13:56 +0200
-Message-Id: <20200521091356.2211020-10-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200521091356.2211020-1-lkundrak@v3.sk>
-References: <20200521091356.2211020-1-lkundrak@v3.sk>
+        id S1728987AbgEUJPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:15:03 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:53910 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728748AbgEUJPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 05:15:02 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04L9EdMR013665;
+        Thu, 21 May 2020 04:14:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590052479;
+        bh=6TWapEuxg8nAckEhBpE445YKmDj0TJ/xlqg6Fj94UN0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=MaaiESZ6aMqcrpmJHO1mfIi6xcBPy89FLOWsTC7LaSKeRbpKblQVGffGtUkHPmsGz
+         KtTJ6G2zE9wgGcvBYU37tyagCvHpizRCMMgOcroPyoWwWwrT8AucyU/I2e2Pw/IwO9
+         c3yoOkpPkfW2mWbh18+Ej1+oCaJOw0jBQh2uczPA=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04L9EdvO010693
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 04:14:39 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
+ May 2020 04:14:39 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 21 May 2020 04:14:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04L9EcT0062434;
+        Thu, 21 May 2020 04:14:39 -0500
+Date:   Thu, 21 May 2020 14:44:36 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <masonccyang@mxic.com.tw>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Mark Brown <broonie@kernel.org>, <juliensu@mxic.com.tw>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v5 09/19] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+Message-ID: <20200521091434.rigqlyuwszyyikj4@ti.com>
+References: <20200519142642.24131-1-p.yadav@ti.com>
+ <20200519142642.24131-10-p.yadav@ti.com>
+ <OF83616464.480FA751-ON4825856E.002A4483-4825856E.002BE6AF@mxic.com.tw>
+ <20200520085534.yra4f5ww5xs23c4j@ti.com>
+ <OF98344913.4BF4C313-ON4825856E.0032A810-4825856E.00352141@mxic.com.tw>
+ <20200520103728.jtbslowdfrv3o5yz@ti.com>
+ <OFF5A6BA99.395182B5-ON4825856F.002B2F98-4825856F.002CD973@mxic.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <OFF5A6BA99.395182B5-ON4825856F.002B2F98-4825856F.002CD973@mxic.com.tw>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A straightforward conversion of the ehci-mv binding to DT schema format
-using json-schema.
+On 21/05/20 04:09PM, masonccyang@mxic.com.tw wrote:
+> 
+> Hi Pratyush, 
+> 
+> > > > > > +   /* Get 8D-8D-8D fast read opcode and dummy cycles. */
+> > > > > > +   opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, table[0]);
+> > > > > > +
+> > > > > > +   /*
+> > > > > > +    * Update the fast read settings. We set the default dummy 
+> > > cycles to 
+> > > > > 20
+> > > > > > +    * here. Flashes can change this value if they need to when 
+> > > enabling
+> > > > > > +    * octal mode.
+> > > > > > +    */
+> > > > > > + 
+> spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
+> > > > > > +              0, 20, opcode,
+> > > > > > +              SNOR_PROTO_8_8_8_DTR);
+> > > > > > +
+> > > > > 
+> > > > > 
+> > > > > I thought we have a agreement that only do parse here, no other 
+> read 
+> > > > > parameters setting.
+> > > > 
+> > > > Yes, and I considered it. But it didn't make much sense to me to 
+> > > > introduce an extra member in struct spi_nor just to make this call 
+> in 
+> > > > some other function later.
+> > > > 
+> > > > Why exactly do you think doing this here is bad? The way I see it, 
+> we 
+> > > > avoid carrying around an extra member in spi_nor and this also 
+> allows 
+> > > > flashes to change the read settings easily in a post-sfdp hook. The 
+> > > > 4bait parsing function does something similar.
+> > > 
+> > > I think it's not a question for good or bad. 
+> > > 
+> > > 4bait parsing function parse the 4-Byte Address Instruction Table
+> > > and set up read/pp parameters there for sure.
+> > > 
+> > > Here we give the function name spi_nor_parse_profile1() but also 
+> > 
+> > But the function that parses 4bait table is also called 
+> > spi_nor_parse_4bait(). 
+> > 
+> > > do others setting that has nothing to do with it, 
+> > 
+> > Why has setting read opcode and dummy cycles got nothing to do with it? 
+> > The purpose of the Profile 1.0 table is to tell us the Read Fast 
+> > command and dummy cycles, among other things. I think it _does_ have 
+> > something to do with it.
+> 
+> As you know I mean this function just do parse parameter of profile 1 
+> table
+> and keep these value data for later usage.
+> 
+> A device supports xSPI profile table could work in either 8S-8S-8S or 
+> 8D-8D-8D mode.
+> It seems to setup these parameters somewhere out here is betters.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+As far as I know, the Profile 1.0 table only describes 8D-8D-8D mode. I 
+see no mention of 8S-8S-8S in JESD251 or JESD216D.01. No field in the 
+table describes anything related to 8S. In fact, searching for "8S" in 
+the JESD251 spec yields 0 results. 
 
----
-Changes since v1:
-- s/GPL-2.0-or-later/GPL-2.0-only/
+Anyway, you should set up 8S parameters in SNOR_CMD_READ_8_8_8, not 
+SNOR_CMD_READ_8_8_8_DTR. 8D configuration is independent of 8S 
+configuration.
 
- .../devicetree/bindings/usb/ehci-mv.txt       | 23 -------
- .../bindings/usb/marvell,pxau2o-ehci.yaml     | 60 +++++++++++++++++++
- 2 files changed, 60 insertions(+), 23 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/ehci-mv.txt
- create mode 100644 Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.yaml
+PS: If you have any more comments, please send them now. The merge 
+window is getting close, and I'd like to see this make it in.
 
-diff --git a/Documentation/devicetree/bindings/usb/ehci-mv.txt b/Documentation/devicetree/bindings/usb/ehci-mv.txt
-deleted file mode 100644
-index 335589895763..000000000000
---- a/Documentation/devicetree/bindings/usb/ehci-mv.txt
-+++ /dev/null
-@@ -1,23 +0,0 @@
--* Marvell PXA/MMP EHCI controller.
--
--Required properties:
--
--- compatible: must be "marvell,pxau2o-ehci"
--- reg: physical base addresses of the controller and length of memory mapped region
--- interrupts: one EHCI controller interrupt should be described here
--- clocks: phandle list of usb clocks
--- clock-names: should be "USBCLK"
--- phys: phandle for the PHY device
--- phy-names: should be "usb"
--
--Example:
--
--	ehci0: usb-ehci@d4208000 {
--		compatible = "marvell,pxau2o-ehci";
--		reg = <0xd4208000 0x200>;
--		interrupts = <44>;
--		clocks = <&soc_clocks MMP2_CLK_USB>;
--		clock-names = "USBCLK";
--		phys = <&usb_otg_phy>;
--		phy-names = "usb";
--	};
-diff --git a/Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.yaml b/Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.yaml
-new file mode 100644
-index 000000000000..eccd8cb45f77
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2019,2020 Lubomir Rintel <lkundrak@v3.sk>
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/marvell,pxau2o-ehci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell PXA/MMP EHCI bindings
-+
-+maintainers:
-+  - Lubomir Rintel <lkundrak@v3.sk>
-+
-+allOf:
-+  - $ref: usb-hcd.yaml#
-+
-+properties:
-+  compatible:
-+    const: marvell,pxau2o-ehci
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: USBCLK
-+
-+  phys:
-+    maxItems: 1
-+
-+  phy-names:
-+    const: usb
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - phys
-+  - phy-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/marvell,mmp2.h>
-+    usb@d4208000 {
-+        compatible = "marvell,pxau2o-ehci";
-+        reg = <0xd4208000 0x200>;
-+        interrupts = <44>;
-+        clocks = <&soc_clocks MMP2_CLK_USB>;
-+        clock-names = "USBCLK";
-+        phys = <&usb_otg_phy>;
-+        phy-names = "usb";
-+    };
-+
-+...
 -- 
-2.26.2
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
