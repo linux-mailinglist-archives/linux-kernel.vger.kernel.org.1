@@ -2,150 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133A61DD1AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABB61DD1B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbgEUPZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:25:32 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:35001 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729977AbgEUPZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:25:29 -0400
-Received: by mail-oi1-f196.google.com with SMTP id z9so1668421oid.2;
-        Thu, 21 May 2020 08:25:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D0uWGFCD5V34lH8VbU4HglTn4XGZ0Xtya8FxjiL3tQs=;
-        b=iuvaiZEVuNWpi7op0mAKu2ftRLLYgUXDtg6JN+452XA1lMwry4Jm+RLgFd3tQXqXYF
-         nYGgnjqZ6vgWkIQTHIcES9xz0Az/aSFshHUrRHY0xZ5WQhdgmvYVobl8ymEOCzaTdI7i
-         Tx7BCY8kJHZebXSkQcWrfzKNgHW+fQ47vdMpbd3uuBIeqKcBgfFuLwUisXlMhdfSCdRd
-         8V89Odll0vMNuI1YyTtAk7QBCiJyF3Qlo9OrSotVlawHEPtCvubEwa3GJe37+6U5SnR+
-         FrpjFRcctrGW4HEHVnfFlXZ8JK8WTOXHnK2TDnVTGQ1GiUgGMvwfa8hzfd3k8zt5CPKA
-         U9Yw==
-X-Gm-Message-State: AOAM532bfjpjACXuf7JvYfC37LGA+A9uba9JiBl1RyxSDxoyivCJ7CWP
-        tIFRkuSupf6pr8gb4GPRXShle45NtTzkTZyvGPw=
-X-Google-Smtp-Source: ABdhPJzx65YPgki0LhoHsio0Vu+PQ4w0tRMbmKkwz5UC1wTNSZn2a2KZQZdxQKh4XLArhWOniQwE0ntdBIMKQ3qvU94=
-X-Received: by 2002:aca:4254:: with SMTP id p81mr6799233oia.68.1590074728219;
- Thu, 21 May 2020 08:25:28 -0700 (PDT)
+        id S1727988AbgEUP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730047AbgEUPZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 11:25:58 -0400
+Received: from localhost.localdomain (unknown [157.51.235.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C8EA204EA;
+        Thu, 21 May 2020 15:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590074757;
+        bh=qRG8lbmluipgAY768NW15223dzdqeUdbfiaiiG1Jky4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eEX+c8ULA4bklVxe9vhjkTy5tOkb54z2mq6pGaSGbzm0CPyi7J5Xm5msCsQVevR3I
+         EFu4VN+F2Ueurx/NoMfscmXa/vcmpQcwtfvVReafAQJaoMtA9FPECsnHEsaZ8kal0E
+         35keX7e1F6FQ38oJahsO3HVWUvI3L4GT9F5d8FOs=
+From:   mani@kernel.org
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, jhugo@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 00/14] MHI patches for v5.8
+Date:   Thu, 21 May 2020 20:55:26 +0530
+Message-Id: <20200521152540.17335-1-mani@kernel.org>
+X-Mailer: git-send-email 2.26.GIT
 MIME-Version: 1.0
-References: <20200521031355.7022-1-dinghao.liu@zju.edu.cn> <20200521151620.GA1135365@bjorn-Precision-5520>
-In-Reply-To: <20200521151620.GA1135365@bjorn-Precision-5520>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 21 May 2020 17:25:14 +0200
-Message-ID: <CAJZ5v0g1-WrBskdBHQ0vpWEk2E-dSaZcQsZngn84rcjcemoAAA@mail.gmail.com>
-Subject: Re: [PATCH] [v2] PCI: tegra194: Fix runtime PM imbalance on error
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 5:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Rafael, linux-pm]
->
-> On Thu, May 21, 2020 at 11:13:49AM +0800, Dinghao Liu wrote:
-> > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > when it returns an error code. Thus a pairing decrement is needed on
-> > the error handling path to keep the counter balanced.
->
-> I didn't realize there were so many drivers with the exact same issue.
-> Can we just squash these all into a single patch so we can see them
-> all together?
->
-> Hmm.  There are over 1300 callers of pm_runtime_get_sync(), and it
-> looks like many of them have similar issues, i.e., they have a pattern
-> like this
->
->   ret = pm_runtime_get_sync(dev);
->   if (ret < 0)
->     return;
->
->   pm_runtime_put(dev);
->
-> where there is not a pm_runtime_put() to match every
-> pm_runtime_get_sync().  Random sample:
->
->   nds32_pmu_reserve_hardware
->   sata_rcar_probe
->   exynos_trng_probe
->   ks_sa_rng_probe
->   omap_aes_probe
->   sun8i_ss_probe
->   omap_aes_probe
->   zynq_gpio_probe
->   amdgpu_hwmon_show_power_avg
->   mtk_crtc_ddp_hw_init
->   ...
->
-> Surely I'm missing something and these aren't all broken, right?
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-If they do what you've said, they are all broken I'm afraid.
+Hi Greg,
 
-They should all be doing something like
+Here is the set of MHI patches for v5.8. Most of the patches are cleanup and
+refactoring ones. All of them are reviewed by myself and Jeff and also
+verified on x86 and ARM64 architectures for functionality.
 
-    ret = pm_runtime_get_sync(dev);
-    if (ret < 0)
-        goto out;
+Here is the short summary:
+-------------------------------------------------------------
 
-    ...
+- The firmware download was handled by a worker thread which gets scheduled
+when the device powers up. But this thread waits until the device gets into
+PBL state (notified using PM state worker). Sometimes, there might be delay for
+the device to enter PBL state and due to that the firmware worker thread will
+timeout. So in order to handle this situation effectively, the firmware load
+is now directly called by PM state worker instead of scheduling the thread.
 
-out:
-    pm_runtime_put(dev);
+- Return proper error codes incase of error while loading the AMSS firmware
+through BHIE protocol
 
-> Maybe we could put together a coccinelle script to scan the tree for
-> this issue?
->
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-tegra194.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > index ae30a2fd3716..2c0d2ce16b47 100644
-> > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > @@ -1623,7 +1623,7 @@ static int tegra_pcie_config_rp(struct tegra_pcie_dw *pcie)
-> >       ret = pinctrl_pm_select_default_state(dev);
-> >       if (ret < 0) {
-> >               dev_err(dev, "Failed to configure sideband pins: %d\n", ret);
-> > -             goto fail_pinctrl;
-> > +             goto fail_pm_get_sync;
-> >       }
-> >
-> >       tegra_pcie_init_controller(pcie);
-> > @@ -1650,9 +1650,8 @@ static int tegra_pcie_config_rp(struct tegra_pcie_dw *pcie)
-> >
-> >  fail_host_init:
-> >       tegra_pcie_deinit_controller(pcie);
-> > -fail_pinctrl:
-> > -     pm_runtime_put_sync(dev);
-> >  fail_pm_get_sync:
-> > +     pm_runtime_put_sync(dev);
+- The MHI register space of the device accepts only non-zero values for the
+sequence identifier. But there is a possibility that the host might write zero
+(due to the use of prandom_u32() API). Hence, a macro is introduced which
+provides non-zero sequence identifiers and used them in all places.
 
-Why not pm_runtime_put()?
+- Moved all common TRE generation code to mhi_gen_tre() function
 
-> >       pm_runtime_disable(dev);
-> >       return ret;
-> >  }
-> > --
-> > 2.17.1
-> >
+- The MHI host reads channel ID from the event ring element of the client
+device. This ID can be of any value between 0 to 255 but the host may not
+support all those IDs. So reject the event ring elements whose channel IDs
+are not within the limits of the controller.
+
+- Limit the transfer length read from the client device. This value should
+be within the size of the MHI host buffer but there are chances this can
+be larger.
+
+- Remove the system worker thread for processing the SYS_ERR condition and
+instead call the function directly from EE worker. This is done to avoid
+any possible race while MHI shutting down.
+
+- Handle MHI power off in the state worker thread as like MISSION_MODE. This
+helps in preventing a possible race condition where a power off is issued by
+the controller while processing mission mode.
+
+- Skip the handling of BHI interrupt when the register access is not allowed
+due to the device in wrong PM state.
+
+- The write_lock of 'mhi_chan->lock' should only protect 'db_mode'. Hence, use
+it properly in places where it is protecting other unwanted regions.
+
+- Reset the client device if it is in SYS_ERR state during power up.
+
+-------------------------------------------------------------
+
+Please consider merging!
+
+Thanks,
+Mani
+
+Bhaumik Bhatt (4):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values are used
+
+Hemant Kumar (9):
+  bus: mhi: core: Refactor mhi queue APIs
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
+  bus: mhi: core: Remove the system error worker thread
+  bus: mhi: core: Handle disable transitions in state worker
+  bus: mhi: core: Skip handling BHI irq if MHI reg access is not allowed
+  bus: mhi: core: Do not process SYS_ERROR if RDDM is supported
+  bus: mhi: core: Handle write lock properly in mhi_pm_m0_transition
+
+Jeffrey Hugo (1):
+  bus: mhi: core: Handle syserr during power_up
+
+ drivers/bus/mhi/core/boot.c     |  75 ++++++------
+ drivers/bus/mhi/core/init.c     |   8 +-
+ drivers/bus/mhi/core/internal.h |   9 +-
+ drivers/bus/mhi/core/main.c     | 194 ++++++++++++++++++--------------
+ drivers/bus/mhi/core/pm.c       |  86 +++++++++-----
+ include/linux/mhi.h             |   4 -
+ 6 files changed, 217 insertions(+), 159 deletions(-)
+
+-- 
+2.26.GIT
+
