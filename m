@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673731DC357
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 02:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E5A1DC35B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 02:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgEUAKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 20 May 2020 20:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgEUAKS (ORCPT
+        id S1726856AbgEUAK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 20 May 2020 20:10:26 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54944 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgEUAKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 20 May 2020 20:10:18 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD09C061A0E;
-        Wed, 20 May 2020 17:10:18 -0700 (PDT)
-Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <a.darwish@linutronix.de>)
-        id 1jbYmC-0006mO-Af; Thu, 21 May 2020 02:09:32 +0200
-Date:   Thu, 21 May 2020 02:09:30 +0200
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        amd-gfx@lists.freedesktop.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v1 13/25] dma-buf: Use sequence counter with associated
- wound/wait mutex
-Message-ID: <20200521000930.GA359643@debian-buster-darwi.lab.linutronix.de>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200519214547.352050-14-a.darwish@linutronix.de>
- <e28c251e-5771-598c-37dd-c6be2de4b9e1@gmail.com>
+        Wed, 20 May 2020 20:10:23 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04L0ABHw119697;
+        Wed, 20 May 2020 19:10:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590019811;
+        bh=bxxyF39bG20vkcm18FoVVnaFF3ZtcaFk7MRVd2l1kI0=;
+        h=From:To:CC:Subject:Date;
+        b=VSZRfu/3WcDFrXomQ64o4chhGx9XGnBogVSR5I1sND692cEzFxyHbIQyKZYzZQ7y6
+         8It4fxYlyjUiJ6QPsJKU3D5zSBhmtjCRIWToU583rDfVrErApmzQq1D/ZoBo84H+xp
+         7Z2Z4CI+CWx1613nQlcCAVVbPS8lBOq4n6+DgHPo=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04L0ABjx023423
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 20 May 2020 19:10:11 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 20
+ May 2020 19:10:11 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 20 May 2020 19:10:11 -0500
+Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04L0ABum003652;
+        Wed, 20 May 2020 19:10:11 -0500
+Received: from localhost ([10.250.48.148])
+        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 04L0ABdd084874;
+        Wed, 20 May 2020 19:10:11 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH v2 0/4] TI K3 DSP remoteproc driver for C66x DSPs
+Date:   Wed, 20 May 2020 19:10:02 -0500
+Message-ID: <20200521001006.2725-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e28c251e-5771-598c-37dd-c6be2de4b9e1@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020, Christian König wrote:
-> Am 19.05.20 um 23:45 schrieb Ahmed S. Darwish:
-> > A sequence counter write side critical section must be protected by some
-> > form of locking to serialize writers. If the serialization primitive is
-> > not disabling preemption implicitly, preemption has to be explicitly
-> > disabled before entering the sequence counter write side critical
-> > section.
-> >
-> > The dma-buf reservation subsystem uses plain sequence counters to manage
-> > updates to reservations. Writer serialization is accomplished through a
-> > wound/wait mutex.
-> >
-> > Acquiring a wound/wait mutex does not disable preemption, so this needs
-> > to be done manually before and after the write side critical section.
-> >
-> > Use the newly-added seqcount_ww_mutex_t instead:
-> >
-> >    - It associates the ww_mutex with the sequence count, which enables
-> >      lockdep to validate that the write side critical section is properly
-> >      serialized.
-> >
-> >    - It removes the need to explicitly add preempt_disable/enable()
-> >      around the write side critical section because the write_begin/end()
-> >      functions for this new data type automatically do this.
-> >
-> > If lockdep is disabled this ww_mutex lock association is compiled out
-> > and has neither storage size nor runtime overhead.
->
-> Mhm, is the dma_resv object the only user of this new seqcount_ww_mutex
-> variant ?
->
-> If yes we are trying to get rid of this sequence counter for quite some
-> time, so I would rather invest the additional time to finish this.
->
+Hi All,
 
-In this patch series, each extra "seqcount with associated lock" data
-type costs us, exactly:
+The following is v2 of the K3 DSP remoteproc driver supporting the C66x DSPs
+on the TI K3 J721E SoCs. The patches are based on the latest commit on the
+rproc-next branch, 7dcef3988eed ("remoteproc: Fix an error code in
+devm_rproc_alloc()").
 
-  - 1 typedef definition, seqcount_ww_mutex_t
-  - 1 static initializer, SEQCNT_WW_MUTEX_ZERO()
-  - 1 runtime initializer, seqcount_ww_mutex_init()
+v2 includes a new remoteproc core patch (patch 1) that adds an OF helper
+for parsing the firmware-name property. This is refactored out to avoid
+replicating the code in various remoteproc drivers. Please see the
+individual patches for detailed changes. 
 
-Definitions for the typedef and the 2 initializers above are
-template-code one liners.
+The main dependent patches from the previous series are now staged in
+rproc-next branch. The only dependency for this series is the common
+ti-sci-proc helper between R5 and DSP drivers [1]. Please see the initial
+cover-letter [2] for v1 details.
 
-The logic which automatically disables preemption upon entering a
-seqcount_ww_mutex_t write side critical section is also already shared
-with seqcount_mutex_t and any future, preemptible, associated lock.
+regards
+Suman
 
-So, yes, dma-resv is the only user of seqcount_ww_mutex.
+[1] https://patchwork.kernel.org/patch/11456379/
+[2] https://patchwork.kernel.org/cover/11458573/
 
-But even in that case, given the one liner template code nature of
-seqcount_ww_mutex_t logic, it does not make sense to block the dma_resv
-and amdgpu change until at some point in the future the sequence counter
-is completely removed.
+Suman Anna (4):
+  remoteproc: Introduce rproc_of_parse_firmware() helper
+  dt-bindings: remoteproc: Add bindings for C66x DSPs on TI K3 SoCs
+  remoteproc/k3-dsp: Add a remoteproc driver of K3 C66x DSPs
+  remoteproc/k3-dsp: Add support for L2RAM loading on C66x DSPs
 
-**If and when** the sequence counter gets removed, please just remove
-the seqcount_ww_mutex_t data type with it. It will be extremely simple.
+ .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 190 +++++
+ drivers/remoteproc/Kconfig                    |  13 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/remoteproc_core.c          |  23 +
+ drivers/remoteproc/remoteproc_internal.h      |   2 +
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 773 ++++++++++++++++++
+ 6 files changed, 1002 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+ create mode 100644 drivers/remoteproc/ti_k3_dsp_remoteproc.c
 
-> Regards,
-> Christian.
->
+-- 
+2.26.0
 
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
