@@ -2,113 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96DD1DC7D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F351DC7DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgEUHkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 03:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728245AbgEUHko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 03:40:44 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602AEC061A0E;
-        Thu, 21 May 2020 00:40:44 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t11so2804272pgg.2;
-        Thu, 21 May 2020 00:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KlHZFZ8kd58yZu2njFvfVeXNhSGIaKK86J1dDLSLs4g=;
-        b=npemC53QVGxNY55U1FzZZbDbiEMla0VD1kC4PgRYx3HjTuJozHhenKvZt2Pu63tJNl
-         0Jwmd30YF2qRYYS6lqPODbcB75ZMunRplEnzpdrvZYcyym/z9anCq+G0OD07sk8VfuDL
-         aKmfdNprqqF0Wg/H9UTfHCl9kWCDtF++cvQun5h+GnvvatunVqK+62FZGejdiUXgipVB
-         eLxUPv+rDpCcoSyVtw3MLKiIqre8v8aCmV+OzOlShybCfH0m8LW2GfBdEXAA/t2i0qAX
-         M9dn4wLY2uGN9TEaUDFQyNuqe/wH4Q9d+txO1NarP8pNlCrBtrVn1lrL7ajTHsPpWfPE
-         p+lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=KlHZFZ8kd58yZu2njFvfVeXNhSGIaKK86J1dDLSLs4g=;
-        b=XSs6xuB7SmBG7h7+7D7pe7pLZA3sNu6Xwx8T6kj0WVAGamoTk6gmR4N4WXfFw9Ui9E
-         JMlVISdsZGdKAAq/hFTgk/Q9ZqqgS3XW4gCc7tvBqIJX/GyutP6gmAiErpNrWWVT96ma
-         K4DeCR+B2SfS+PYot3RkAwPc+dMdiBl/mV+jQ9GwnihMCrat6YY+tRGfoHJYkUVyo7Fp
-         q/qMyIXbRd07lqx9tcD3ZkQgKfEWr9yRN6ZGORnvGP/gpTJdPf+d4B32+wMT+hQ0VpM5
-         KRwrVUDL/Dtjmwvr8IqKGJ7mANuy6GUCknQ0zSKByTgLQzVXjbuUmOwWuvLP/tf0UtbI
-         NzJg==
-X-Gm-Message-State: AOAM531p/FpcNbOI5mLT9bFwyJRR+X9HZQ0gCeRV8s+NIRkozmtZJfPl
-        H9a+w86fLfb5PP//G7/ARoXqyPCJ
-X-Google-Smtp-Source: ABdhPJyyNpUQHouG1A0mRkaIjPOHNKANR21xZFyULunSZEtIF7faRhjHQ6qVcTDv4lxjU9lfn4ctOw==
-X-Received: by 2002:a63:7a12:: with SMTP id v18mr7935261pgc.131.1590046843978;
-        Thu, 21 May 2020 00:40:43 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x2sm3710071pfc.106.2020.05.21.00.40.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 00:40:43 -0700 (PDT)
-Subject: Re: [PATCH 3.16 00/99] 3.16.84-rc1 review
-To:     Chen-Yu Tsai <wens@kernel.org>, Ben Hutchings <ben@decadent.org.uk>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>, torvalds@linux-foundation.org,
+        id S1728511AbgEUHmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 03:42:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35472 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728245AbgEUHmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 03:42:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id DF51FAD78;
+        Thu, 21 May 2020 07:42:06 +0000 (UTC)
+Subject: Re: [PATCH v6 12/12] mmap locking API: convert mmap_sem comments
+To:     Michel Lespinasse <walken@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Denis Kirjanov <kda@linux-powerpc.org>
-References: <lsq.1589984008.673931885@decadent.org.uk>
- <68f801f8-ceb2-13cf-ad29-b6404e2f1142@roeck-us.net>
- <CAGb2v65AGb+4=+vRn2OdBx=fYXmZLFqASsyh-xh=ruCgbg92ng@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <96227771-f6bd-9508-5a68-ab35df370dc1@roeck-us.net>
-Date:   Thu, 21 May 2020 00:40:41 -0700
+        linux-mm <linux-mm@kvack.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liam Howlett <Liam.Howlett@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        David Rientjes <rientjes@google.com>,
+        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20200520052908.204642-1-walken@google.com>
+ <20200520052908.204642-13-walken@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e01060e9-6f00-7fa8-5da0-c9250c951d10@suse.cz>
+Date:   Thu, 21 May 2020 09:41:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAGb2v65AGb+4=+vRn2OdBx=fYXmZLFqASsyh-xh=ruCgbg92ng@mail.gmail.com>
+In-Reply-To: <20200520052908.204642-13-walken@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -117,42 +48,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/20 7:47 PM, Chen-Yu Tsai wrote:
-> On Thu, May 21, 2020 at 5:23 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On 5/20/20 7:13 AM, Ben Hutchings wrote:
->>> This is the start of the stable review cycle for the 3.16.84 release.
->>> There are 99 patches in this series, which will be posted as responses
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Fri May 22 20:00:00 UTC 2020.
->>> Anything received after that time might be too late.
->>>
->> Build results:
->>         total: 135 pass: 135 fail: 0
->> Qemu test results:
->>         total: 230 pass: 227 fail: 3
->> Failed tests:
->>         arm:cubieboard:multi_v7_defconfig:mem512:sun4i-a10-cubieboard:initrd
->>         arm:cubieboard:multi_v7_defconfig:usb:mem512:sun4i-a10-cubieboard:rootfs
->>         arm:cubieboard:multi_v7_defconfig:sata:mem512:sun4i-a10-cubieboard:rootfs
->>
->> The arm tests fail due to a compile error.
->>
->> drivers/clk/tegra/clk-tegra-periph.c:524:65: error: 'CLK_IS_CRITICAL' undeclared here (not in a function); did you mean 'CLK_IS_BASIC'?
+On 5/20/20 7:29 AM, Michel Lespinasse wrote:
+> Convert comments that reference mmap_sem to reference mmap_lock instead.
 > 
-> This looks like a result of having
-> 
->       clk: tegra: Mark fuse clock as critical
->          [bf83b96f87ae2abb1e535306ea53608e8de5dfbb]
-> 
-> In which case you probably need to add
-> 
->     32b9b1096186 clk: Allow clocks to be marked as CRITICAL
-> 
+> Signed-off-by: Michel Lespinasse <walken@google.com>
 
-Then you might also need commit ef56b79b66f ("clk: fix critical
-clock locking") which fixes it.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Guenter
+But:
+
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index a1247d3553da..1bf46e2e0cec 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -224,7 +224,7 @@ static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
+>   * handle an empty nodemask with MPOL_PREFERRED here.
+>   *
+>   * Must be called holding task's alloc_lock to protect task's mems_allowed
+> - * and mempolicy.  May also be called holding the mmap_semaphore for write.
+> + * and mempolicy.  May also be called holding the mmap_lockaphore for write.
+>   */
+>  static int mpol_set_nodemask(struct mempolicy *pol,
+>  		     const nodemask_t *nodes, struct nodemask_scratch *nsc)
+
+:)
