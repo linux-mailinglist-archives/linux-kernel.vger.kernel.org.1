@@ -2,216 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E091DD421
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C3C1DD431
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728943AbgEURSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 13:18:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44600 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728456AbgEURSy (ORCPT
+        id S1728896AbgEURWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 13:22:16 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40080 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728806AbgEURWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 13:18:54 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04LH1VeC154653;
-        Thu, 21 May 2020 13:18:46 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 315spm87gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 May 2020 13:18:45 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04LHBcnk022745;
-        Thu, 21 May 2020 13:18:45 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 315spm87ea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 May 2020 13:18:45 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04LHHVGi023253;
-        Thu, 21 May 2020 17:18:42 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 313wne2h9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 May 2020 17:18:42 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04LHIeMm47251688
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 May 2020 17:18:40 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8520452050;
-        Thu, 21 May 2020 17:18:40 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.204.51])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 33A095204E;
-        Thu, 21 May 2020 17:18:39 +0000 (GMT)
-Date:   Thu, 21 May 2020 20:18:36 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, cai@lca.pw, mgorman@suse.de,
-        mhocko@kernel.org
-Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
- fast_isolate_freepages()
-Message-ID: <20200521171836.GU1059226@linux.ibm.com>
-References: <20200521014407.29690-1-bhe@redhat.com>
- <20200521092612.GP1059226@linux.ibm.com>
- <20200521155225.GA20045@MiWiFi-R3L-srv>
+        Thu, 21 May 2020 13:22:16 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LHLv7O166772;
+        Thu, 21 May 2020 17:22:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=hpmMnei2rM/L7Pi5nGnRDXvCuZpucliPxYWYs7TRDM8=;
+ b=tZKSSkDuYeu27zDjK1lcJ6IfjCMQ8V1HkApiYMG296CARX++Sl+qibbMpSUIF4hXyH2v
+ nkgUwhxPEykrb0QUzGtuNBxuAyJpZdM2Y4gxUgPklDOwMgxVcO/EMECmPJVI0AplgSs/
+ CC3X6HcHtohvzo3gSm43fKbipOquGqfVYIVjn4kMBIkPX5SQMXGkRq7qWOLE1PuKuC8H
+ 3kmyYemwoQpPmnouUrrZOXDOFvL8dD66i3eWlHn1CRhnOHdyEFS5D53zAOZj7QIkOd0k
+ Hh3mmeDMJEndG3IOq6/q4MIEC4i3i6fJisYyJiEEVQPLXXwGumQVv0M6TedzSrXsF/RL lA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 31284m9rtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 17:22:07 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LHJD2D116734;
+        Thu, 21 May 2020 17:22:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 312t3bthpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 May 2020 17:22:07 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04LHM5nV003894;
+        Thu, 21 May 2020 17:22:06 GMT
+Received: from [10.39.200.114] (/10.39.200.114)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 21 May 2020 10:22:05 -0700
+Subject: Re: [PATCH] xen/events: avoid NULL pointer dereference in
+ evtchn_from_irq()
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>, stable@vger.kernel.org
+References: <20200319071428.12115-1-jgross@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Autocrypt: addr=boris.ostrovsky@oracle.com; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <30719c35-6de7-d400-7bb8-cff4570f8971@oracle.com>
+Date:   Thu, 21 May 2020 13:22:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521155225.GA20045@MiWiFi-R3L-srv>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-21_10:2020-05-21,2020-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- cotscore=-2147483648 lowpriorityscore=0 suspectscore=84 priorityscore=1501
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005210118
+In-Reply-To: <20200319071428.12115-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=2 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005210124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0
+ cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005210125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 11:52:25PM +0800, Baoquan He wrote:
-> On 05/21/20 at 12:26pm, Mike Rapoport wrote:
-> > > For this kind of e820 reserved range, it won't be added to memblock allocator.
-> > > However, init_unavailable_mem() will initialize to add them into node 0,
-> > > zone 0. Before that commit, later, memmap_init() will add e820 reserved
-> > > ranges into the zone where they are contained, because it can pass
-> > > the checking of early_pfn_valid() and early_pfn_in_nid(). In this case,
-> > > the e820 reserved range where fault page 0x2a800000 is located is added
-> > > into DMA32 zone. After that commit, the e820 reserved rgions are kept
-> > > in node 0, zone 0, since we iterate over memblock regions to iniatialize
-> > > in memmap_init() instead, their node and zone won't be changed.
-> > 
-> > I wonder why woudn't we add the reserved memory to memblock from the
-> > very beginning...
-> > I've tried to undestand why this was not done, but I couldn't find the
-> > reasoning behind that.
-> 
-> I have added some explanation when reply to Mel. Please check that in
-> that thread.
+On 3/19/20 3:14 AM, Juergen Gross wrote:
+> There have been reports of races in evtchn_from_irq() where the info
+> pointer has been NULL.
+>
+> Avoid that case by testing info before dereferencing it.
+>
+> In order to avoid accessing a just freed info structure do the kfree()
+> via kfree_rcu().
 
-What I meant was that I've tried to find an explanation in the kernel logs
-for why the reserved areas are not added to memblock.memory on x86. I
-didn't mean that the your patch description lacks this explanation :)
 
-> As I said, the unavailable range includes firmware reserved ranges, and
-> holes inside one boot memory section, if that boot memory section haves
-> useable memory range, and firmware reserved ranges, and holes. Adding
-> them all into memblock seems a little unreasonable, since they are never
-> used by system in memblock, buddy or high level memory allocator. But I
-> can see that adding them into memblock may have the same effect as the
-> old code which is beofre your your patchset applied. Let's see if Mel or
-> other people have some saying. I pesonally would not suggest doing it
-> like this though.
+Looks like noone ever responded to this.
 
-Adding reserved regions to memblock.memory will not have the same effect
-as the old code. We anyway have to initialize struct page for these
-areas, but unlike the old code we don't need to run them by the
-early_pfn_in_nid() checks and we still get rid the
-CONFIG_NODES_SPAN_OTHER_NODES option.
 
-Besides, we'll have more consistency among NUMA-enabled architectures
-this way.
+This change looks fine but is there a background on the problem? I
+looked in the archives and didn't find the relevant discussion.
 
-> > 
-> > Can you please try the below patch and see if it helps or, on the
-> > contrary, breaks anything else :)
-> > 
-> > diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> > index c5399e80c59c..b0940c618ed9 100644
-> > --- a/arch/x86/kernel/e820.c
-> > +++ b/arch/x86/kernel/e820.c
-> > @@ -1301,8 +1301,11 @@ void __init e820__memblock_setup(void)
-> >  		if (end != (resource_size_t)end)
-> >  			continue;
-> >  
-> > -		if (entry->type == E820_TYPE_SOFT_RESERVED)
-> > +		if (entry->type == E820_TYPE_SOFT_RESERVED ||
-> > +		    entry->type == E820_TYPE_RESERVED) {
-> > +			memblock_add(entry->addr, entry->size);
-> >  			memblock_reserve(entry->addr, entry->size);
-> > +		}
-> >  
-> >  		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
-> >  			continue;
-> > 
-> > > Now, fast_isolate_freepages() will use min mark directly as the migration
-> > > target if no page is found from buddy. However, the min mark is not checked
-> > > carefully, it could be in e820 reserved range, and trigger the
-> > > VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn)) when try to mark it
-> > > as skip.
-> > > 
-> > > Here, let's call pageblock_pfn_to_page() to get page of min_pfn, since it
-> > > will do careful checks and return NULL if the pfn is not qualified.
-> > > 
-> > > [    0.000000] BIOS-provided physical RAM map:
-> > > [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000008bfff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x000000000008c000-0x000000000009ffff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x00000000000e0000-0x00000000000fffff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000000100000-0x0000000028328fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000028329000-0x0000000028568fff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000028569000-0x0000000028d85fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000028d86000-0x0000000028ee5fff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000028ee6000-0x0000000029a04fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029a05000-0x0000000029a08fff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029a09000-0x0000000029ee4fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029ee5000-0x0000000029ef2fff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029ef3000-0x0000000029f22fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f23000-0x0000000029f23fff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f24000-0x0000000029f24fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f25000-0x0000000029f28fff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f29000-0x0000000029f29fff] ACPI NVS
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f2a000-0x0000000029f2bfff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f2c000-0x0000000029f2cfff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f2d000-0x0000000029f2ffff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029f30000-0x0000000029ffdfff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000029ffe000-0x000000002a80afff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x000000002a80b000-0x000000002a80efff] ACPI NVS
-> > > [    0.000000] BIOS-e820: [mem 0x000000002a80f000-0x000000002a81ffff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x000000002a820000-0x000000002a822fff] ACPI NVS
-> > > [    0.000000] BIOS-e820: [mem 0x000000002a823000-0x0000000033a22fff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000033a23000-0x0000000033a32fff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000033a33000-0x0000000033a42fff] ACPI NVS
-> > > [    0.000000] BIOS-e820: [mem 0x0000000033a43000-0x0000000033a52fff] ACPI data
-> > > [    0.000000] BIOS-e820: [mem 0x0000000033a53000-0x0000000077ffffff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x0000000078000000-0x000000008fffffff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x00000000fed80000-0x00000000fed80fff] reserved
-> > > [    0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000087effffff] usable
-> > > [    0.000000] BIOS-e820: [mem 0x000000087f000000-0x000000087fffffff] reserved
-> > > 
-> > > Reported-by: Qian Cai <cai@lca.pw>
-> > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > > ---
-> > >  mm/compaction.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/mm/compaction.c b/mm/compaction.c
-> > > index 67fd317f78db..9ce4cff4d407 100644
-> > > --- a/mm/compaction.c
-> > > +++ b/mm/compaction.c
-> > > @@ -1418,7 +1418,9 @@ fast_isolate_freepages(struct compact_control *cc)
-> > >  				cc->free_pfn = highest;
-> > >  			} else {
-> > >  				if (cc->direct_compaction && pfn_valid(min_pfn)) {
-> > > -					page = pfn_to_page(min_pfn);
-> > > +					page = pageblock_pfn_to_page(min_pfn,
-> > > +						pageblock_end_pfn(min_pfn),
-> > > +						cc->zone);
-> > >  					cc->free_pfn = min_pfn;
-> > >  				}
-> > >  			}
-> > > -- 
-> > > 2.17.2
-> > > 
-> > 
-> > -- 
-> > Sincerely yours,
-> > Mike.
-> > 
-> 
 
--- 
-Sincerely yours,
-Mike.
+-boris
+
+
+>
+> Cc: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingslab.com>
+> Cc: stable@vger.kernel.org
+> Reported-by: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingsl=
+ab.com>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  drivers/xen/events/events_base.c     | 10 ++++++++--
+>  drivers/xen/events/events_internal.h |  3 +++
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/even=
+ts_base.c
+> index 499eff7d3f65..838762fe3d6e 100644
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -247,10 +247,16 @@ static void xen_irq_info_cleanup(struct irq_info =
+*info)
+>   */
+>  unsigned int evtchn_from_irq(unsigned irq)
+>  {
+> +	struct irq_info *info;
+> +
+>  	if (WARN(irq >=3D nr_irqs, "Invalid irq %d!\n", irq))
+>  		return 0;
+> =20
+> -	return info_for_irq(irq)->evtchn;
+> +	info =3D info_for_irq(irq);
+> +	if (info =3D=3D NULL)
+> +		return 0;
+> +
+> +	return info->evtchn;
+>  }
+> =20
+>  unsigned irq_from_evtchn(unsigned int evtchn)
+> @@ -436,7 +442,7 @@ static void xen_free_irq(unsigned irq)
+> =20
+>  	WARN_ON(info->refcnt > 0);
+> =20
+> -	kfree(info);
+> +	kfree_rcu(info, rcu);
+> =20
+>  	/* Legacy IRQ descriptors are managed by the arch. */
+>  	if (irq < nr_legacy_irqs())
+> diff --git a/drivers/xen/events/events_internal.h b/drivers/xen/events/=
+events_internal.h
+> index 82938cff6c7a..c421055843c8 100644
+> --- a/drivers/xen/events/events_internal.h
+> +++ b/drivers/xen/events/events_internal.h
+> @@ -7,6 +7,8 @@
+>  #ifndef __EVENTS_INTERNAL_H__
+>  #define __EVENTS_INTERNAL_H__
+> =20
+> +#include <linux/rcupdate.h>
+> +
+>  /* Interrupt types. */
+>  enum xen_irq_type {
+>  	IRQT_UNBOUND =3D 0,
+> @@ -30,6 +32,7 @@ enum xen_irq_type {
+>   */
+>  struct irq_info {
+>  	struct list_head list;
+> +	struct rcu_head rcu;
+>  	int refcnt;
+>  	enum xen_irq_type type;	/* type */
+>  	unsigned irq;
+
+
+
