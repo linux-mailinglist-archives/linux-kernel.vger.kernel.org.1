@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ACA1DCF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1851DCF9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729677AbgEUOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        id S1729747AbgEUOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729642AbgEUOWj (ORCPT
+        with ESMTP id S1729652AbgEUOWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:22:39 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A38C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:39 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id d11so7271790qvv.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:39 -0700 (PDT)
+        Thu, 21 May 2020 10:22:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904ABC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:41 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id d7so5448853ybp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=dz729bx1Pa1pF4PgJy0kCf9Utra9WlCLoUyt1P9z0sg=;
-        b=L/OPRcbazaq2P9GdeWFRmzgC6CARW2S10o2GP4Xoc0hpLGF/m1w2gH3BdB1duH0rSk
-         sHAwprxdsCCmFioPdDgpxk0E5/yt0J/C6W/7iV5w5rc4ZUJWWSeeK6oLUlwRSoAllKx5
-         nxfbcZ60Fiwd0HdsUSl7BnwCdZARDaF1kZH9fYF6gCzZj3ApA9kTCiKVIEZwjv1yz+Hi
-         1TRjvV3CbThMI3qbE+RIJGtER4bV9kKcmEXMH3X6+Rz/EtH9HnQyr2qIjpcuHfMHerTq
-         a6mjBK8NbmzylHaCc+BzFKu+j2DUGfMv0jz2u/fGfX+spoo79HqF//GT2hFMBQ8M1w6u
-         lZnA==
+        bh=2MIiys78gGheOmgr5sadClIeI2A+sMpKPCOuDS/ESKE=;
+        b=joJLl5J1SFsKoRJrjXUDcmh8qcs04F+6FwFKkVywrcnW7KuMYcookU54rJf5+8CxBU
+         jMcwH8Dy8k4JHN8jzYmaf1sIN4mhdK44x4cJjc+ebvK/VWsZMrLdnOkL+UlLCNUs4aV9
+         yYWlqI+RJLHZo4EII9VFD4DUAl81+0P1sqOZm+Wi3L0huYztYhhXDHbuVkwZczt+kfnq
+         vBVLUvjKXpIqm7YD2QSP9AK4y1TfGq/Ttorfoye6zY2EMVBPSTpwTP0GJanKX9ohyS6w
+         i5K6Dv6qkWVLyxDiXjhgghb1/ESB2AGq9buw/mw/W8ncpqrXs6kvtzNB2PcZ45+M4nex
+         Safw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=dz729bx1Pa1pF4PgJy0kCf9Utra9WlCLoUyt1P9z0sg=;
-        b=VJ0KdBvGjAl06iMLnwxQReGe9UfbMnT77f/oPy4I6/se1oFyPLfLySEnHb9hHy+ueE
-         BUtixSCCEVJasi1rd71TxPCAqRjDPjq8p/YY8sC7nosUv1dIo/5PQ1PWtnY0l8vTmL/l
-         zT8DIlvvomcUV8q1qK8UPrq/vBPPGR/z7PRXpvZt9+iCw2Ds+/abknsv8nA1hxYsO/yY
-         +0SzR2hS3Ya58Z1Kpl9fWf8OfCJR4FLYSCA75hpJX24ShUO7I+hwJ77hpvAnxejz1Jb/
-         GWMDoN0hlNBU5HUfyusCakVNS0UlMlTDJSOR82EJFYo9yAPe2EhLg1iTF3/7WiDH7j2n
-         AxHA==
-X-Gm-Message-State: AOAM533KynB0e1O1vFcDDFD3HLMCaZuoETyF1PJWBBgF+ITSS9vEZQjt
-        aa3HYyXyLj8xo3sKpDXHrcH8BdKYhg==
-X-Google-Smtp-Source: ABdhPJwA6KstpYMq2Y70Qwk2d3mwXfEyfhyxA40V03sD+gaGWmNjEwXC9DB9mIBY5YVcXWzq4c4LpXZ7ww==
-X-Received: by 2002:a0c:c991:: with SMTP id b17mr9979723qvk.16.1590070958659;
- Thu, 21 May 2020 07:22:38 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:20:44 +0200
+        bh=2MIiys78gGheOmgr5sadClIeI2A+sMpKPCOuDS/ESKE=;
+        b=RikgyHUjoOQqPwcrgdci67BjWvLwslIFlwjO86SAoO3nlIV39e+ngyHIDbfiv1PZUF
+         ER766Ah3c/RW+ddknmXpmCGE2y8S9jyweu5FZcR8SidnURzuoT4uvAfgZHaf3vB5hoAd
+         zrHJjv+KuibibdZDJufIIIXzV0Cv61fmDGjMoGR5A8kLoDKcxIi5sSDRePo/JtrU06b6
+         hO5xgmuPZkyzokQr+JU+e9cvVOTWrGR4wXVyK7ZfwII0mr0w4aa09hp+dSdwcheaXBDc
+         Cc1rrDE6kv4pEKfZiXf5RiMvUfuHt9Ww0uQ7g1G8KRhwEPcJm0qiTKvfDInvG7fQZTOp
+         Vg0A==
+X-Gm-Message-State: AOAM530tKtcD913BN/CF0bmHdHGeYWScckTKcsCwwPXYdrs26gOHPvKz
+        5ZBjmBDEsLf8gd2JMdsGerEv6LonBQ==
+X-Google-Smtp-Source: ABdhPJxBdd/PJ/l0pmbr2bj8AZZmXbcBbSQ4T1JSFjAYQMfu6rBVOZq6XAPfzUPajdaBTfa4OC2pTwynow==
+X-Received: by 2002:a25:3608:: with SMTP id d8mr16539361yba.11.1590070960816;
+ Thu, 21 May 2020 07:22:40 -0700 (PDT)
+Date:   Thu, 21 May 2020 16:20:45 +0200
 In-Reply-To: <20200521142047.169334-1-elver@google.com>
-Message-Id: <20200521142047.169334-9-elver@google.com>
+Message-Id: <20200521142047.169334-10-elver@google.com>
 Mime-Version: 1.0
 References: <20200521142047.169334-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip v3 08/11] READ_ONCE, WRITE_ONCE: Remove data_race() and
- unnecessary checks
+Subject: [PATCH -tip v3 09/11] data_race: Avoid nested statement expression
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -65,59 +64,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The volatile accesses no longer need to be wrapped in data_race(),
-because we require compilers that emit instrumentation distinguishing
-volatile accesses. Consequently, we also no longer require the explicit
-kcsan_check_atomic*(), since the compiler emits instrumentation
-distinguishing the volatile accesses. Finally, simplify
-__READ_ONCE_SCALAR and remove __WRITE_ONCE_SCALAR.
+It appears that compilers have trouble with nested statement
+expressions. Therefore remove one level of statement expression nesting
+from the data_race() macro. This will help us avoid potential problems
+in future as its usage increases.
 
+Link: https://lkml.kernel.org/r/20200520221712.GA21166@zn.tnic
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 ---
+v3:
+* Fix for 'const' non-scalar expressions.
 v2:
-* Remove unnecessary kcsan_check_atomic*() in *_ONCE.
-* Simplify __READ_ONCE_SCALAR and remove __WRITE_ONCE_SCALAR. This
-  effectively restores Will Deacon's pre-KCSAN version:
-  https://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git/tree/include/linux/compiler.h?h=rwonce/cleanup#n202
+* Add patch to series in response to above linked discussion.
 ---
- include/linux/compiler.h | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ include/linux/compiler.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 17c98b215572..7444f026eead 100644
+index 7444f026eead..379a5077e9c6 100644
 --- a/include/linux/compiler.h
 +++ b/include/linux/compiler.h
-@@ -228,9 +228,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 
- #define __READ_ONCE_SCALAR(x)						\
+@@ -211,12 +211,12 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+  */
+ #define data_race(expr)							\
  ({									\
--	typeof(x) *__xp = &(x);						\
--	__unqual_scalar_typeof(x) __x = data_race(__READ_ONCE(*__xp));	\
--	kcsan_check_atomic_read(__xp, sizeof(*__xp));			\
-+	__unqual_scalar_typeof(x) __x = __READ_ONCE(x);			\
- 	smp_read_barrier_depends();					\
- 	(typeof(x))__x;							\
+-	__kcsan_disable_current();					\
+-	({								\
+-		__unqual_scalar_typeof(({ expr; })) __v = ({ expr; });	\
+-		__kcsan_enable_current();				\
+-		__v;							\
++	__unqual_scalar_typeof(({ expr; })) __v = ({			\
++		__kcsan_disable_current();				\
++		expr;							\
+ 	});								\
++	__kcsan_enable_current();					\
++	__v;								\
  })
-@@ -246,17 +244,10 @@ do {									\
- 	*(volatile typeof(x) *)&(x) = (val);				\
- } while (0)
  
--#define __WRITE_ONCE_SCALAR(x, val)					\
--do {									\
--	typeof(x) *__xp = &(x);						\
--	kcsan_check_atomic_write(__xp, sizeof(*__xp));			\
--	data_race(({ __WRITE_ONCE(*__xp, val); 0; }));			\
--} while (0)
--
- #define WRITE_ONCE(x, val)						\
- do {									\
- 	compiletime_assert_rwonce_type(x);				\
--	__WRITE_ONCE_SCALAR(x, val);					\
-+	__WRITE_ONCE(x, val);						\
- } while (0)
- 
- #ifdef CONFIG_KASAN
+ /*
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
