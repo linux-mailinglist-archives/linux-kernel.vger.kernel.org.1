@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C831DCE86
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A191E1DCE8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgEUNsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:48:19 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38094 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgEUNsT (ORCPT
+        id S1729517AbgEUNtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729197AbgEUNtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:48:19 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 207FF8030776;
-        Thu, 21 May 2020 13:48:16 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WrSPaWNiovgJ; Thu, 21 May 2020 16:48:15 +0300 (MSK)
-Date:   Thu, 21 May 2020 16:48:13 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Paul Burton <paul.burton@imgtec.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Olof Johansson <olof@lixom.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/14] mips: Prepare MIPS-arch code for Baikal-T1 SoC
- support
-Message-ID: <20200521134813.tv2aqikvh45gryc4@mobilestation>
-References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
- <20200521004217.6gdcpboxaqizreky@mobilestation>
- <20200521071457.GC7309@alpha.franken.de>
- <CAK8P3a2OYtd9Fa44ufbnpFoW3=G+NUtuueAoAV9CGVRBgOhSGw@mail.gmail.com>
+        Thu, 21 May 2020 09:49:15 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9451C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:49:14 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id r3so3095135qve.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=J+C1gfkSjYLne9keDCP2UNyXwOjB62jHfW7cgQObU8s=;
+        b=b9jsebrfPmlbjKXFmG0YOx9tS7DFt1dWq3yu9lj9Zy2a794TG5RNkoOBzQQgfxnVJ+
+         R0+KYEXfPbFsFQeeOXsFN8KHLDqnxdnR/HCKIwNly9lM5VPwY5HvIBZvLQ0xN1fNwlYz
+         jTIRWtXS5UjPp4yUzk/ZSEln0UaTVdNfrxpQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=J+C1gfkSjYLne9keDCP2UNyXwOjB62jHfW7cgQObU8s=;
+        b=F9P9zNm9B00d7Fns+3LoDQikR/fZZNf5Ojx2HqCTaN1orfJ/pDsgnVi8wIIsbQ9cr5
+         LpGVGEVsUzy45lIXG3gwBp1SdQsUjnCB9wT6sgAlqxIeeAbAwI9NPb2Zf1IiReeRCx+h
+         8NOUa4qITjI1Ih6UvYEKGNjidEtb6gzTdCtuYcHVWJZPF8YQMsA7nvLaGJo2/IxJyOQs
+         t3sflL3WdTHTMsAVsVTv3r9y4nN1nmFf/Thal/9LvDofU5v2ftD7ONMgJYv0IW1fLNLQ
+         ltL6Qwko4p1bIZn9k21cT7Nz7fYh0ACz8eTnsKTqYtOgcONAvPsV2xT9l7EEoFqnpvjt
+         VGqw==
+X-Gm-Message-State: AOAM533oPtvAgrCyh7AZXwSG83D2ZSw/VNhM2YKwnN4C0NDVoHZvQop6
+        bY4wl8nnUnMt3rDm2bodsZTd8g==
+X-Google-Smtp-Source: ABdhPJy/BZJ+Um73LfAOvwd50rtJIWV9Gq956NWaJ0Sn3QXJpPu3N2TuR1EbzOsmXc23Jv8+Wzq0aQ==
+X-Received: by 2002:ad4:57cb:: with SMTP id y11mr9944990qvx.26.1590068954041;
+        Thu, 21 May 2020 06:49:14 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id d140sm4287727qkc.22.2020.05.21.06.49.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 06:49:13 -0700 (PDT)
+Date:   Thu, 21 May 2020 09:49:13 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pjt@google.com" <pjt@google.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        vpillai <vpillai@digitalocean.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "kerrnel@google.com" <kerrnel@google.com>,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling
+ interface(Internet mail)
+Message-ID: <20200521134913.GB140701@google.com>
+References: <cover.1583332764.git.vpillai@digitalocean.com>
+ <20200520222642.70679-1-joel@joelfernandes.org>
+ <71B72E96-CD6E-43C3-B22B-ADE0EC78C550@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2OYtd9Fa44ufbnpFoW3=G+NUtuueAoAV9CGVRBgOhSGw@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <71B72E96-CD6E-43C3-B22B-ADE0EC78C550@tencent.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd.
-
-On Thu, May 21, 2020 at 09:30:08AM +0200, Arnd Bergmann wrote:
-> On Thu, May 21, 2020 at 9:18 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> > On Thu, May 21, 2020 at 03:42:17AM +0300, Serge Semin wrote:
-> > > On Thu, May 21, 2020 at 03:34:29AM +0300, Serge Semin wrote:
-> > > >
-> > > > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
-> > > > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
-> > > > tag: v5.7-rc4
-> > >
-> > > Thomas,
-> > > Please note that this patchset is based on the Linux 5.7-rc4 tree (it most likely
-> > > will get cleanly applied on rc6 as well), while mips-next is still at rc1. Due
-> > > to that the patchset fails to be applied on mips-next. I think it would be
-> > > better first to merge the last Linux tree into the mips-next, then try to merge
-> > > this patchset in. Should you have any problem after that, please let me know.
-> > > I'll resend the patchset being rebased on top of the new mips-next tree.
-> >
-> > no, that's not how it works. Please rebase your patches on top of
-> > mips-next. Thank you.
+On Thu, May 21, 2020 at 04:09:50AM +0000, benbjiang(蒋彪) wrote:
 > 
-> Right, backmerges should generally be avoided. However if something
-> between rc1 and rc4 is required to make Baikal-T1 work, rebasing it to
-> rc1 would make it non-bisectable, which is also bad.
 > 
-> Serge, are you aware of something in -rc4 that is needed as a dependency?
+> > On May 21, 2020, at 6:26 AM, Joel Fernandes (Google) <joel@joelfernandes.org> wrote:
+> > 
+> > Add a per-thread core scheduling interface which allows a thread to tag
+> > itself and enable core scheduling. Based on discussion at OSPM with
+> > maintainers, we propose a prctl(2) interface accepting values of 0 or 1.
+> > 1 - enable core scheduling for the task.
+> > 0 - disable core scheduling for the task.
+> > 
+> > Special cases:
+> > (1)
+> > The core-scheduling patchset contains a CGroup interface as well. In
+> > order for us to respect users of that interface, we avoid overriding the
+> > tag if a task was CGroup-tagged because the task becomes inconsistent
+> > with the CGroup tag. Instead return -EBUSY.
+> > 
+> > (2)
+> > If a task is prctl-tagged, allow the CGroup interface to override
+> > the task's tag.
+> > 
+> > ChromeOS will use core-scheduling to securely enable hyperthreading.
+> > This cuts down the keypress latency in Google docs from 150ms to 50ms
+> > while improving the camera streaming frame rate by ~3%.
+> Hi,
+> Are the performance improvements compared to the hyperthreading disabled scenario or not?
+> Could you help to explain how the keypress latency improvement comes with core-scheduling?
 
-Not I am aware of. Regarding my suggestion. It's not like I was going to
-delegate a work or something. It's that a merge conflict is connected with
-MODULE_PROC_FAMILY macro being moved to a dedicated file vermagic.h file:
-62d0fd591db1 ("arch: split MODULE_ARCH_VERMAGIC definitions out to <asm/vermagic.h>").
-Since I've already fixed it, Thomas wouldn't need to worry about the problem
-anymore if he first merged the kernel master branch in first, which he would
-have done anyway eventually. Since it's not an option and as you said backmerges
-should be avoided, then I'll rebase the patchset onto the mips-next, and then
-resend.
+Hi Jiang,
 
--Sergey
+The keypress end-to-end latency metric we have is calculated from when the
+keypress is registered in hardware to when a character is drawn on the
+scereen. This involves several parties including the GPU and browser
+processes which are all running in the same trust domain and benefit from
+parallelism through hyperthreading.
 
-> 
->        Arnd
+thanks,
+
+ - Joel
+
