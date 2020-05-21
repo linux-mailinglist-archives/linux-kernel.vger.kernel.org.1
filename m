@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD421DD28C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735781DD281
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgEUP6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:58:11 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:38174 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbgEUP6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:58:08 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04LFvp5x127948;
-        Thu, 21 May 2020 10:57:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590076671;
-        bh=TPMHFbS+iORHTIuCD7Fo5FkOZZ8OumFZy0+SDb9dspA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QW/2/CybTE8Jjh8qBZxRMOCIbCzWYP40rJxi/exOWqqcReAPK0urITescZqq/GBch
-         c65r4o0O3Jf4kHwdyLR3Cv026+5/UmPxoe0xDjJKs+h0Y4uJzXU76+8AT3ABPXXz6U
-         +tflutwSbx14lwT8ar4X6FZAuAbOP3vc3lAmrCDY=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04LFvp2R090125
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 May 2020 10:57:51 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
- May 2020 10:57:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 21 May 2020 10:57:50 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04LFvoli090798;
-        Thu, 21 May 2020 10:57:50 -0500
-Subject: Re: [PATCH 0/4] Update K3 DSP remoteproc driver for C71x DSPs
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Clement Leger <cleger@kalray.eu>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200325204701.16862-1-s-anna@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <4691995a-b305-68a2-6637-7a3d9db3f194@ti.com>
-Date:   Thu, 21 May 2020 10:57:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728522AbgEUP5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:57:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:6270 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727968AbgEUP5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 11:57:52 -0400
+IronPort-SDR: 0eEVmwzumtnz92CFANKpl7Uw5kFjC06+hfkC6qs7OgBN4I1TYxm/ltuGrUXLFWwvCZ/31vgtF8
+ 9s/1VzYrCfHQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 08:57:51 -0700
+IronPort-SDR: KU0u7F/zAaSUkGmX6X4pMq8vLPzvIdvXNk9DZoNS/uZkOqFyB2C3kJui/HVPQAVxZhcb2vff4Z
+ WGPr1cyxmXpA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,418,1583222400"; 
+   d="scan'208";a="255344664"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga008.fm.intel.com with ESMTP; 21 May 2020 08:57:51 -0700
+Message-ID: <a1e7c71c72de517a288e6273ba0c18dac2e937bc.camel@intel.com>
+Subject: Re: [PATCH v10 00/26] Control-flow Enforcement: Shadow Stack
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Date:   Thu, 21 May 2020 08:57:57 -0700
+In-Reply-To: <20200521151556.pojijpmuc2rdd7ko@treble>
+References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
+         <20200521151556.pojijpmuc2rdd7ko@treble>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20200325204701.16862-1-s-anna@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/20 3:46 PM, Suman Anna wrote:
-> Hi All,
+On Thu, 2020-05-21 at 10:15 -0500, Josh Poimboeuf wrote:
+> On Wed, Apr 29, 2020 at 03:07:06PM -0700, Yu-cheng Yu wrote:
+> > Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+> > return/jump-oriented programming attacks.  Details can be found in "Intel
+> > 64 and IA-32 Architectures Software Developer's Manual" [1].
+> > 
+> > This series depends on the XSAVES supervisor state series that was split
+> > out and submitted earlier [2].
+> > 
+> > I have gone through previous comments, and hope all concerns have been
+> > resolved now.  Please inform me if anything is overlooked.
+> > 
+> > Changes in v10:
 > 
-> This series adds support for a new next generation 64-bit TI DSP based on
-> the TMS320C71x CorePac processor subsystem called the C71x. The support is
-> enabled through couple of enhancements to the remoteproc core (primarily to
-> support a 64-bit trace resource entry), and does depend on the K3 DSP
-> remoteproc driver posted earlier today [1].
+> Hi Yu-cheng,
 > 
-> The loading support leveraged the 64-bit ELF loader support code added by
-> Clement and already staged on the rproc-next branch. I am posting this
-> series separate from the C66x series because of the new 64-bit resource
-> type enhancement needs (patches 2 and 3). I have leveraged the existing
-> resource types as is by introducing a new version element, and am open to
-> ideas if it is desired to just define it as a separate resource type.
-> 
-> The C71x DSP boots using firmware segments loaded into the DDR with a 2 MB
-> aligned address requirement on the boot vectors. There is no support for
-> internal memory loading, and all internal memories shall be used as fast
-> RAMs/scatchpads by the firmware executing on the DSPs. IPC is through the
-> virtio-rpmsg transport. There is no support for Error Recovery, Power
-> Management or loading into on-chip SRAMs at present.
-> 
-> Following is the patch summary:
->   - Patch 1 updates the K3 DSP bindings for C71x cores
->   - Patch 2 introduces a concept of version element into existing resource types
->   - Patch 3 adds support for a new 64-bit trace resource entry
->   - Patch 4 enhances the K3 DSP remoteproc driver for C71x
+> Do you have a git branch with the latest Shadow Stack and IBT branches
+> applied?  I tried to apply IBT v9 on top of this, but I guess the SS
+> code has changed since then and it didn't apply cleanly.
 
-I have separated out the C71 platform driver pieces (patches 1 & 4) and 
-posted a v2 for those.
+It is here:
 
-Appreciate any feedback on the core patches (patches 2 & 3) that add the 
-minimal 64-bit trace support, as this also sets the direction for 
-resource extensions. I can post the next version for those based on 
-feedback.
+https://github.com/yyu168/linux_cet/commits/cet
 
-regards
-Suman
-
-> 
-> regards
-> Suman
-> 
-> [1] https://patchwork.kernel.org/cover/11458573/
-> 
-> Suman Anna (4):
->    dt-bindings: remoteproc: k3-dsp: Update bindings for C71x DSPs
->    remoteproc: introduce version element into resource type field
->    remoteproc: add support for a new 64-bit trace version
->    remoteproc/k3-dsp: Add support for C71x DSPs
-> 
->   .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 78 ++++++++++++++++---
->   drivers/remoteproc/remoteproc_core.c          | 65 +++++++++++-----
->   drivers/remoteproc/remoteproc_debugfs.c       | 50 ++++++++----
->   drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 17 ++++
->   include/linux/remoteproc.h                    | 34 +++++++-
->   5 files changed, 203 insertions(+), 41 deletions(-)
-> 
+Yu-cheng
 
