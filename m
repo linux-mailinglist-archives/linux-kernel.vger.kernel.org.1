@@ -2,284 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE84F1DDAAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266FE1DDAD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730761AbgEUXCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730729AbgEUXCx (ORCPT
+        id S1730780AbgEUXPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:15:10 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:39462 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730734AbgEUXPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:02:53 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06A9C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 16:02:53 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n18so4246975pfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 16:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8nwjEFXdL/qUT1MJlEJzZkoOSwVlfdmOoeCx+p6vxrE=;
-        b=RgU4WO+iyUMpoS5Z7G1UNPucVaogpfMoCFArK4kvdZ8ETrqoN6g1IZhOT4XI8XYda2
-         vxCk9HIYJbL0RbCUUEYZbH2OS7nN/P9wvYFbXpogvFKXCyBtqf2Mm/xghKi7KpRNaPXO
-         evXz+sLd+jp/Adz7MOToQ4EBb0yBVjkCoYDio=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8nwjEFXdL/qUT1MJlEJzZkoOSwVlfdmOoeCx+p6vxrE=;
-        b=TY8PWVA7ewb9a4yGkfFXNhC7I3eEPBWAw4xImhXAfdz74pFt9Xg31GscKrXpZUV+y3
-         B/TRLc6lJOIR/wNi3P/FEScP/rn1MaGcZSoyu16iBzGb7H61HsUXYNyR/w5kr/+yAS4G
-         6KgF206V9Js0MN6Sm2UIB6SrhYT1wveDkPf+wDnwCIz0JOUeC1+NN1kz0kbxshp0Lolg
-         gkxgCJWkDrey3cUZRTxD6Gix4k59n8cWS2ulaCKGEJPJ9uS82PGbYc9TA+5dLvfPTScF
-         wksdS7Del+QFnCvPVErxMXo31AjhAziCAIUOF9woQarqrsCFZlJG8V2CwstSK9VNGo5L
-         q44A==
-X-Gm-Message-State: AOAM531M1oQ85bd+o6kGFH+orenZ1dOZvRbetUnON32QRShihC1luKaq
-        3Eg5k8uJjX2EEGqf4xAOOK1lwQ==
-X-Google-Smtp-Source: ABdhPJxoV6c5OWcfIIC3DzUQxrFj4PClfBbCCV1XGCZnTmTBfeU4oyT29bAmI6AQQZD/aNP0zoxYYA==
-X-Received: by 2002:aa7:9251:: with SMTP id 17mr919104pfp.315.1590102173085;
-        Thu, 21 May 2020 16:02:53 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i98sm5471997pje.37.2020.05.21.16.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 16:02:52 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:02:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Subject: Re: [RFC PATCH 5/5] selftest/x86: Add CET quick test
-Message-ID: <202005211550.AF0E83BB@keescook>
-References: <20200521211720.20236-1-yu-cheng.yu@intel.com>
- <20200521211720.20236-6-yu-cheng.yu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521211720.20236-6-yu-cheng.yu@intel.com>
+        Thu, 21 May 2020 19:15:09 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200521231506epoutp018330a28f5898eddc787344f3e0fb7a02~RLitCCJO_2395523955epoutp01h
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:15:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200521231506epoutp018330a28f5898eddc787344f3e0fb7a02~RLitCCJO_2395523955epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590102906;
+        bh=rJZqCQOnSFMJc+1/SWJ3uMKcjR5d2Ru5UKpf6u7uQGs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=g8Kzqe/nfK8IK8YSAGUuXo37RNc9edPuUI+oh+2ntexjiHK/OJbwmIMkAjkogKobR
+         94R1PrFviuaZ+s93kLMojB1ZGS1aO0tMpHdBCmRPY5Hx1jID0JGAMYrxAbf6Wzdv07
+         HSWh7qNhOvTeb6HHX+TGhhb2fOHyVXAifIG502MQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200521231506epcas1p16b7b6728aa98d1bd42ceb0d611f43ee5~RLisnxGrw1786117861epcas1p1U;
+        Thu, 21 May 2020 23:15:06 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 49Slp12cr3zMqYkV; Thu, 21 May
+        2020 23:15:05 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0C.6A.04744.97B07CE5; Fri, 22 May 2020 08:15:05 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200521231505epcas1p28521830bf5732f71adc0510502930d41~RLirelFTG1191311913epcas1p2V;
+        Thu, 21 May 2020 23:15:05 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200521231505epsmtrp14049c6fd943227b0a6bed37ff102d90c~RLirdwkyd1048410484epsmtrp1B;
+        Thu, 21 May 2020 23:15:05 +0000 (GMT)
+X-AuditID: b6c32a38-253ff70000001288-fa-5ec70b79039a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.17.18461.87B07CE5; Fri, 22 May 2020 08:15:04 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.88.103.87]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200521231504epsmtip2b1e0acd1b2274109409e94e0baddfe50~RLirQvtiq0371603716epsmtip2M;
+        Thu, 21 May 2020 23:15:04 +0000 (GMT)
+From:   Namjae Jeon <namjae.jeon@samsung.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        sandeen@sandeen.net, viro@zeniv.linux.org.uk, willy@infradead.org,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH v3] exfat: add the dummy mount options to be backward
+ compatible with staging/exfat
+Date:   Fri, 22 May 2020 08:10:10 +0900
+Message-Id: <20200521231010.4181-1-namjae.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHKsWRmVeSWpSXmKPExsWy7bCmgW4l9/E4g2PzRC327D3JYnF51xw2
+        ix/T6y1ar2hZPOp7y25x/u9xVovfP+awObB7bF6h5XFixm8Wj74tqxg9tix+yOTxeZOcx6Yn
+        b5kC2KJybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOA
+        DlFSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBgaFOgVJ+YWl+al6yXn51oZGhgY
+        mQJVJuRkHN45lbHgnGDFmVPrWRoYN/F1MXJySAiYSBw81MraxcjFISSwg1Hi3v/pzBDOJ0aJ
+        TVOWs0A43xgl5vfMYoRpWbF8L1RiL6NE09FDLHAtN28cBari4GAT0Jb4s0UUxBQRUJS4/N4J
+        pIRZYC2jxMHrr1hABgkLpEqs2z2HHcRmEVCV2He8lQ3E5hWwlph28hgTxDJ5idUbDoCdJCGw
+        jV3i7sFFUAkXiddH7kBdJCzx6vgWdghbSuJlfxs7yGIJgWqJj/uZIcIdjBIvvttC2MYSN9dv
+        YAUpYRbQlFi/Sx8irCix8/dcsInMAnwS7772sEJM4ZXoaBOCKFGV6Lt0GOoAaYmu9g9QSz0k
+        Vqx/CXa9kECsxIaHN5kmMMrOQliwgJFxFaNYakFxbnpqsWGBCXIcbWIEpy0tix2Me875HGIU
+        4GBU4uG1SDsWJ8SaWFZcmXuIUYKDWUmEdyH/0Tgh3pTEyqrUovz4otKc1OJDjKbAsJvILCWa
+        nA9MqXkl8YamRsbGxhYmZuZmpsZK4rxTr+fECQmkJ5akZqemFqQWwfQxcXBKNTDuXP4opHPJ
+        /fpfrZxvf3FNcLHbZfMz7srJ1I6NvLt+asu9NK9Y9rH6yir/BxN4VV3kzwmvqP79TfOt7I7q
+        u/sUS2Kf7A7vqdrqFiCjrPvmZEqbMkecptVj17rwTJGm29uOxW4KY7bwnT7HV+kz2+Qf07Vv
+        6K26LfzbZobk792Bm38W8LZWJBYrsRRnJBpqMRcVJwIAD5ZOIXEDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPJMWRmVeSWpSXmKPExsWy7bCSvG4F9/E4g2PfrCz27D3JYnF51xw2
+        ix/T6y1ar2hZPOp7y25x/u9xVovfP+awObB7bF6h5XFixm8Wj74tqxg9tix+yOTxeZOcx6Yn
+        b5kC2KK4bFJSczLLUov07RK4Mg7vnMpYcE6w4syp9SwNjJv4uhg5OSQETCRWLN/L0sXIxSEk
+        sJtRom/XNjaIhLTEsRNnmLsYOYBsYYnDh4shaj4wSjQvecgGEmcT0Jb4s0UUxBQRUJS4/N4J
+        pIRZYDOjxLKjU8HGCAskS7w+vokRxGYRUJXYd7wVLM4rYC0x7eQxJohV8hKrNxxgnsDIs4CR
+        YRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnAYaWnuYNy+6oPeIUYmDsZDjBIczEoi
+        vAv5j8YJ8aYkVlalFuXHF5XmpBYfYpTmYFES571RuDBOSCA9sSQ1OzW1ILUIJsvEwSnVwLRY
+        9OvH93sMZ35qkuhWzpJ4uvIA07yz5kmpn+qmf9ulJr7t+1SW08vTvpo8Con5YeeQ+8Ev6mdn
+        q+D7WXXLOI2s1yslbc43uexctEdVmO+dwUaH64r3ZfmY2De8ZRFn3n8wbtvPt9WzL5vLBt6U
+        CLhx3uLjTaVbWRPjtf/HZb0ItchrVTEy8MkOXLnvWodxwtuVYaVHAjvDv0+T+nnuiq3kvsnT
+        37tfbNq5z3xFXPoR+9iiTWFW6Td+nnghzVt+TPWuRNr+zsvxlvuCf57nvn2ely20WutJklJY
+        +uxl27qdbRtd96etXrtOeOemTVYfvxZdlWuKffg09ZBZ03Td1vAzejOU9Hd78ghcfXXkr68S
+        S3FGoqEWc1FxIgDUCSiTkgIAAA==
+X-CMS-MailID: 20200521231505epcas1p28521830bf5732f71adc0510502930d41
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200521231505epcas1p28521830bf5732f71adc0510502930d41
+References: <CGME20200521231505epcas1p28521830bf5732f71adc0510502930d41@epcas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 02:17:20PM -0700, Yu-cheng Yu wrote:
-> Introduce a quick test to verify shadow stack and IBT are working.
+As Ubuntu and Fedora release new version used kernel version equal to or
+higher than v5.4, They started to support kernel exfat filesystem.
 
-Cool! :)
+Linus Torvalds reported mount error with new version of exfat on Fedora.
 
-I'd love to see either more of a commit log or more comments in the test
-code itself. I had to spend a bit of time trying to understand how the
-test was working. (i.e. using ucontext to "reset", using segv handler to
-catch some of them, etc.) I have not yet figured out why you need to
-send USR1/USR2 for two of them instead of direct calls?
+        exfat: Unknown parameter 'namecase'
 
-More notes below...
+This is because there is a difference in mount option between old
+staging/exfat and new exfat.
+And utf8, debug, and codepage options as well as namecase have been
+removed from new exfat.
 
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
->  tools/testing/selftests/x86/Makefile         |   2 +-
->  tools/testing/selftests/x86/cet_quick_test.c | 128 +++++++++++++++++++
->  2 files changed, 129 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/x86/cet_quick_test.c
-> 
-> diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-> index f1bf5ab87160..26e68272117a 100644
-> --- a/tools/testing/selftests/x86/Makefile
-> +++ b/tools/testing/selftests/x86/Makefile
-> @@ -14,7 +14,7 @@ CAN_BUILD_CET := $(shell ./check_cc.sh $(CC) trivial_program.c -fcf-protection)
->  TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
->  			check_initial_reg_state sigreturn iopl ioperm \
->  			protection_keys test_vdso test_vsyscall mov_ss_trap \
-> -			syscall_arg_fault
-> +			syscall_arg_fault cet_quick_test
->  TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
->  			test_FCMOV test_FCOMI test_FISTTP \
->  			vdso_restorer
-> diff --git a/tools/testing/selftests/x86/cet_quick_test.c b/tools/testing/selftests/x86/cet_quick_test.c
-> new file mode 100644
-> index 000000000000..e84bbbcfd26f
-> --- /dev/null
-> +++ b/tools/testing/selftests/x86/cet_quick_test.c
-> @@ -0,0 +1,128 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Quick tests to verify Shadow Stack and IBT are working */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <signal.h>
-> +#include <string.h>
-> +#include <ucontext.h>
-> +
-> +ucontext_t ucp;
-> +int result[4] = {-1, -1, -1, -1};
+This patch add the dummy mount options as deprecated option to be backward
+compatible with old one.
 
-I think you likely want three states: no signal, failed, and okay.
-Perhaps -1 for "no signal" like you have above, zero for failed, and 1
-for okay.
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+---
+ v2:
+  - fix checkpatch.pl warning(Missing Signed-off-by).
+ v3:
+  - use fs_param_deprecated instead of printing deprecated warning(Matthew Wilcox).
 
-> +int test_id;
-> +
-> +void stack_hacked(unsigned long x)
-> +{
-> +	result[test_id] = -1;
+ fs/exfat/super.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-So this is set to 0: "I absolutely bypassed the protection".
-
-> +	test_id++;
-> +	setcontext(&ucp);
-> +}
-> +
-> +#pragma GCC push_options
-> +#pragma GCC optimize ("O0")
-
-Can you avoid compiler-specific pragmas? (Or verify that Clang also
-behaves correctly here?) Maybe it's better to just build the entire file
-with -O0 in the Makefile?
-
-> +void ibt_violation(void)
-> +{
-> +#ifdef __i386__
-> +	asm volatile("lea 1f, %eax");
-> +	asm volatile("jmp *%eax");
-> +#else
-> +	asm volatile("lea 1f, %rax");
-> +	asm volatile("jmp *%rax");
-> +#endif
-> +	asm volatile("1:");
-> +	result[test_id] = -1;
-
-Set to 0, and if the segv doesn't see it, we know for sure it failed.
-
-> +	test_id++;
-> +	setcontext(&ucp);
-> +}
-> +
-> +void shstk_violation(void)
-> +{
-> +#ifdef __i386__
-> +	unsigned long x = 0;
-> +
-> +	((unsigned long *)&x)[2] = (unsigned long)stack_hacked;
-> +#else
-> +	unsigned long long x = 0;
-> +
-> +	((unsigned long long *)&x)[2] = (unsigned long)stack_hacked;
-> +#endif
-> +}
-> +#pragma GCC pop_options
-> +
-> +void segv_handler(int signum, siginfo_t *si, void *uc)
-> +{
-
-Does anything in siginfo_t indicate which kind of failure you're
-detecting? It'd be nice to verify test_id matches the failure mode being
-tested.
-
-> +	result[test_id] = 0;
-> +	test_id++;
-> +	setcontext(&ucp);
-> +}
-> +
-> +void user1_handler(int signum, siginfo_t *si, void *uc)
-> +{
-> +	shstk_violation();
-> +}
-> +
-> +void user2_handler(int signum, siginfo_t *si, void *uc)
-> +{
-> +	ibt_violation();
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	struct sigaction sa;
-> +	int r;
-> +
-> +	r = sigemptyset(&sa.sa_mask);
-> +	if (r)
-> +		return -1;
-> +
-> +	sa.sa_flags = SA_SIGINFO;
-> +
-> +	/*
-> +	 * Control protection fault handler
-> +	 */
-> +	sa.sa_sigaction = segv_handler;
-> +	r = sigaction(SIGSEGV, &sa, NULL);
-> +	if (r)
-> +		return -1;
-> +
-> +	/*
-> +	 * Handler to test Shadow stack
-> +	 */
-> +	sa.sa_sigaction = user1_handler;
-> +	r = sigaction(SIGUSR1, &sa, NULL);
-> +	if (r)
-> +		return -1;
-> +
-> +	/*
-> +	 * Handler to test IBT
-> +	 */
-> +	sa.sa_sigaction = user2_handler;
-> +	r = sigaction(SIGUSR2, &sa, NULL);
-> +	if (r)
-> +		return -1;
-> +
-> +	test_id = 0;
-> +	r = getcontext(&ucp);
-> +	if (r)
-> +		return -1;
-> +
-> +	if (test_id == 0)
-> +		shstk_violation();
-> +	else if (test_id == 1)
-> +		ibt_violation();
-> +	else if (test_id == 2)
-> +		raise(SIGUSR1);
-> +	else if (test_id == 3)
-> +		raise(SIGUSR2);
-> +
-> +	r = 0;
-> +	printf("[%s]\tShadow stack\n", result[0] ? "FAIL":"OK");
-
-Then these are result[0] == -1 ? "untested" : (result[0] ? "OK" : "FAIL"))
-
-> +	r += result[0];
-> +	printf("[%s]\tIBT\n", result[1] ? "FAIL":"OK");
-> +	r += result[1];
-> +	printf("[%s]\tShadow stack in signal\n", result[2] ? "FAIL":"OK");
-> +	r += result[2];
-> +	printf("[%s]\tIBT in signal\n", result[3] ? "FAIL":"OK");
-> +	r += result[3];
-> +	return r;
-> +}
-> -- 
-> 2.21.0
-> 
-
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 0565d5539d57..a846ff555656 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -203,6 +203,12 @@ enum {
+ 	Opt_errors,
+ 	Opt_discard,
+ 	Opt_time_offset,
++
++	/* Deprecated options */
++	Opt_utf8,
++	Opt_debug,
++	Opt_namecase,
++	Opt_codepage,
+ };
+ 
+ static const struct constant_table exfat_param_enums[] = {
+@@ -223,6 +229,14 @@ static const struct fs_parameter_spec exfat_parameters[] = {
+ 	fsparam_enum("errors",			Opt_errors, exfat_param_enums),
+ 	fsparam_flag("discard",			Opt_discard),
+ 	fsparam_s32("time_offset",		Opt_time_offset),
++	__fsparam(NULL, "utf8",			Opt_utf8, fs_param_deprecated,
++		  NULL),
++	__fsparam(NULL, "debug",		Opt_debug, fs_param_deprecated,
++		  NULL),
++	__fsparam(fs_param_is_u32, "namecase",	Opt_namecase,
++		  fs_param_deprecated, NULL),
++	__fsparam(fs_param_is_u32, "codepage",	Opt_codepage,
++		  fs_param_deprecated, NULL),
+ 	{}
+ };
+ 
+@@ -278,6 +292,11 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 			return -EINVAL;
+ 		opts->time_offset = result.int_32;
+ 		break;
++	case Opt_utf8:
++	case Opt_debug:
++	case Opt_namecase:
++	case Opt_codepage:
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
 -- 
-Kees Cook
+2.17.1
+
