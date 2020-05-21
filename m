@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002921DC727
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADF21DC729
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbgEUGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S1728291AbgEUGsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728101AbgEUGry (ORCPT
+        with ESMTP id S1728269AbgEUGr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:47:54 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417BFC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:54 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id m12so4529863ljc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:54 -0700 (PDT)
+        Thu, 21 May 2020 02:47:56 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011F6C061A0F
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:56 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id v16so6937031ljc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 23:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=d0aUlMq/63glpNB0bkXwx31ZfwXJhcL6Z/BXqIB9cFM=;
-        b=G1pyU+CRNBOLJfXsduHj4Pu+5ng80gQz/l4uHoITgKsD3LoCGELrne8d6nysQV4e6S
-         RsTSM9gLf8Ss3G9upeaClk74eXYU/qqsDFkKopUuXsY2Atfg+oBvupt0cjB4MOgNF+iS
-         1oSjhRoLkqyitC3cNR+XYMjOYHgKM3khsiiUbTloIAxPHzqUr05byYRsCNzEt9C6VYj5
-         6CxJvKQdNL+Tcilw+n7M5Bo9LWQCZVGP2uxvpWKGwz1fU3YCVPjtg+2pQrfnnwkd7GXc
-         9cG4Cgn5Hi8blOSKVedWxxmNPULKPptTQj73kLZV2BS5QkI+It9bzh8Iu5yVpt3G10DD
-         SoaQ==
+        bh=WyySsXsCG9MIZJ/jWPxqgRjjVutKdSUUpR6QxpSgcX4=;
+        b=V0TloVpYXP1bD/hsGAN4FygY70Z10WXF8RyXqXiDRncUdBTwJx59ccQQiokBtmpdeu
+         jZGSHMEyjjN+DskrvebXPqYGTD8x3xcgy9dlwuo6j5rcTF3tcUkuN111RTcWv9e5r7pK
+         DSer1RFGvh/sEBNScC2KQH8TMrlGaNnHUzMfeMTpzOisNUyP5bwMLpxZJJs5+DsGbKv3
+         nPvcjLsTjnk/Ofkd+DWgyyCyClD1Pj0A7vJIJeNs5DaZg5kKc8mVL7Vvmvo5iiQtmIFh
+         MVWQ7sVFRtiENruXVqQ6oywYRPBGR0dTAepNLvpFmWbNO3CLd2xbfjTA919ggJbNJIHe
+         xa+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=d0aUlMq/63glpNB0bkXwx31ZfwXJhcL6Z/BXqIB9cFM=;
-        b=lKkhLNeCu1/Lycp14hGhe7wLN/GtpATmrIxc1mVD2L4lR3L+Vh5L1/sT9ocPTTmJNY
-         8jo787e7t4aER64nwpsAg4OOx7KvoW1pKLRnMRkGHJp71+WCgBnE2oDu+PyyVAsNQ8qt
-         9NjGig67p6WOx7R5orbBAMjpWc14iqpY8+xHAtWBoGSkd05beWyUYY5eowYGIE6AjOf2
-         BEqP/nQZLxfxgzfzxQd4QMRfeH5CfsMRLsYlwrhgXNKQEKSRhPfwTTQfcbT524bb5L3a
-         qHDvV7+xB9X4ZHdODpcn93N8QjzxEqgcqHxdqIYw7l0ZuhufPJEZTxtEel7eYtbEcjp7
-         X4QQ==
-X-Gm-Message-State: AOAM533mD/eYLX8shzL38sZRW0neFXgzD2Ukn0Y1ohUVf0nuGTRWKO3R
-        vI54Npn/rTyGrYrLz9+6s4vtwAREw5U=
-X-Google-Smtp-Source: ABdhPJwtGiO8F6wmOrX7d82BHZk8h+sIG7Yr8WAP9VQ255vnF0mu1gfMBixN8vVbIG95C+b6y0eIqQ==
-X-Received: by 2002:a2e:b3cd:: with SMTP id j13mr4424226lje.237.1590043672417;
-        Wed, 20 May 2020 23:47:52 -0700 (PDT)
+        bh=WyySsXsCG9MIZJ/jWPxqgRjjVutKdSUUpR6QxpSgcX4=;
+        b=cAID2JhTulWSWsuZrqNevgKZy4B763TeINUuzXVlLwZHNuaTdvYRHYa5QnPG1296yX
+         fGDdeccx01ggmot3m9FHzbs/Zb35XXZOGloeBeBmZEJX3ohhehsrAEj0LI8mx/tKhHoO
+         7aFaEUxoskEvcHzcVi3PNC7tHGgJCf2r2PeuxL2dvYztrybMXgH+eKzw7PQEp653qhuT
+         gbXqNwcA1Zbnv7mXsjG3cbAYeR2KxVIo+h8XyboX3NyBubXxlKv/wpt+fchmVcwrbcIN
+         t4/nC5JlVKb54NEe506NK9jzQfjDHLj+ztzbMBtQA+Tk48vKIjMofwv8TSeVCCFSfz36
+         o4dg==
+X-Gm-Message-State: AOAM533jvqlIKP81sZ1v57H3AzLUiioLkpsqyf05wneJwRgfi7MjJsLb
+        dbT+H3XbvWV+4K3drpXHxHXuojW/8b4=
+X-Google-Smtp-Source: ABdhPJw9fk0dkqjBiw67XDw5+R1u6y1FF6vogoFFNQ59RVVueMV4QBR6Z2+seXfp0A+gjlvb5Uw/cA==
+X-Received: by 2002:a2e:b5d1:: with SMTP id g17mr4268376ljn.59.1590043673998;
+        Wed, 20 May 2020 23:47:53 -0700 (PDT)
 Received: from localhost.localdomain ([176.59.41.83])
-        by smtp.gmail.com with ESMTPSA id z16sm1807465lfq.18.2020.05.20.23.47.51
+        by smtp.gmail.com with ESMTPSA id z16sm1807465lfq.18.2020.05.20.23.47.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 23:47:51 -0700 (PDT)
+        Wed, 20 May 2020 23:47:53 -0700 (PDT)
 From:   Maxim Uvarov <maxim.uvarov@linaro.org>
 To:     linux-kernel@vger.kernel.org, tee-dev@lists.linaro.org
 Cc:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
         gregkh@linuxfoundation.org, jens.wiklander@linaro.org,
         linux-integrity@vger.kernel.org, arnd@linaro.org,
         sumit.garg@linaro.org, Maxim Uvarov <maxim.uvarov@linaro.org>
-Subject: [PATCH 2/2] tpm_ftpm_tee: register driver on tee bus
-Date:   Thu, 21 May 2020 09:47:42 +0300
-Message-Id: <20200521064743.4769-3-maxim.uvarov@linaro.org>
+Subject: [PATCHv2 2/2] tpm_ftpm_tee: register driver on TEE bus
+Date:   Thu, 21 May 2020 09:47:43 +0300
+Message-Id: <20200521064743.4769-4-maxim.uvarov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200521064743.4769-1-maxim.uvarov@linaro.org>
 References: <20200521064743.4769-1-maxim.uvarov@linaro.org>
@@ -64,13 +64,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register driver on tee bus. module tee registers bus,
+Register driver on TEE bus. module tee registers bus,
 and module optee calls optee_enumerate_devices() to scan
-all devices on the bus. This TA can be Early TA's ( can be
-compiled into optee-os). In that case it will be on optee
-bus before linux booting. Also optee-suplicant application
-is needed to be loaded between optee module and ftpm module to
-to maintain functionality for ftpm driver.
+all devices on the bus. Trusted Application for this driver
+can be Early TA's (can be compiled into optee-os). In that
+case it will be on OPTEE bus before linux booting. Also
+optee-suplicant application is needed to be loaded between
+OPTEE module and ftpm module to maintain functionality
+for fTPM driver.
 
 Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
 Suggested-by: Sumit Garg <sumit.garg@linaro.org>
