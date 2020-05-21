@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E1C1DD784
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7281F1DD769
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbgEUToi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:44:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33794 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728635AbgEUToi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:44:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jbr7I-00085v-KW; Thu, 21 May 2020 19:44:32 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: atomisp: fix a handful of spelling mistakes
-Date:   Thu, 21 May 2020 20:44:32 +0100
-Message-Id: <20200521194432.357572-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729837AbgEUTj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728692AbgEUTj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:39:57 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6F6620823;
+        Thu, 21 May 2020 19:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590089997;
+        bh=A87nXZPrP2o3hNWLnYeOPP8qGoiYrt+huTJ4ATJileo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d5SVOXBeT2BGCoQYD3IJl9dmDgwbMNEfOgy97H6TqrAwtodElOwVPr5fe7r7XYiYh
+         aQzXyU6MDrfDLgSQyO59ioJu/2Aq/U2PXh/ytbMPJwNmhOAtIMprk5pQOQNlCqEtw0
+         XnAXfnblbb7KwKjbWlqZjmaPTo3gGh+AB5QMUf1M=
+Date:   Thu, 21 May 2020 14:44:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sam Creasey <sammy@sammy.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ethernet: i825xx: sun3_82586: Replace zero-length array
+ with flexible-array
+Message-ID: <20200521194445.GC29907@embeddedor>
+References: <20200507192456.GA16458@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507192456.GA16458@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Andrew,
 
-There are several spelling mistakes in various messages and literal
-strings. Fix these.
+I wonder if you could take this in your tree.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- .../staging/media/atomisp/pci/base/refcount/src/refcount.c  | 2 +-
- .../media/atomisp/pci/css_2401_system/host/csi_rx_private.h | 4 ++--
- .../atomisp/pci/css_2401_system/host/pixelgen_private.h     | 4 ++--
- drivers/staging/media/atomisp/pci/sh_css.c                  | 6 +++---
- 4 files changed, 8 insertions(+), 8 deletions(-)
+Apparently, Sam hasn't been active since 2007.
 
-diff --git a/drivers/staging/media/atomisp/pci/base/refcount/src/refcount.c b/drivers/staging/media/atomisp/pci/base/refcount/src/refcount.c
-index e39cc2132953..8f0c94449ec9 100644
---- a/drivers/staging/media/atomisp/pci/base/refcount/src/refcount.c
-+++ b/drivers/staging/media/atomisp/pci/base/refcount/src/refcount.c
-@@ -46,7 +46,7 @@ static struct ia_css_refcount_entry *refcount_find_entry(hrt_vaddress ptr,
- 		return NULL;
- 	if (!myrefcount.items) {
- 		ia_css_debug_dtrace(IA_CSS_DEBUG_ERROR,
--				    "refcount_find_entry(): Ref count not initiliazed!\n");
-+				    "refcount_find_entry(): Ref count not initialized!\n");
- 		return NULL;
- 	}
- 
-diff --git a/drivers/staging/media/atomisp/pci/css_2401_system/host/csi_rx_private.h b/drivers/staging/media/atomisp/pci/css_2401_system/host/csi_rx_private.h
-index 3fa3c3a487ab..97ad67e438f0 100644
---- a/drivers/staging/media/atomisp/pci/css_2401_system/host/csi_rx_private.h
-+++ b/drivers/staging/media/atomisp/pci/css_2401_system/host/csi_rx_private.h
-@@ -289,12 +289,12 @@ static inline void csi_rx_be_ctrl_dump_state(
- 	 * lut.
- 	 */
- 	for (i = 0; i < N_SHORT_PACKET_LUT_ENTRIES[ID]; i++) {
--		ia_css_print("CSI RX BE STATE Controller ID %d Short packat entry %d shart packet lut id 0x%x\n",
-+		ia_css_print("CSI RX BE STATE Controller ID %d Short packet entry %d short packet lut id 0x%x\n",
- 			     ID, i,
- 			     state->short_packet_lut_entry[i]);
- 	}
- 	for (i = 0; i < N_LONG_PACKET_LUT_ENTRIES[ID]; i++) {
--		ia_css_print("CSI RX BE STATE Controller ID %d Long packat entry %d Long packet lut id 0x%x\n",
-+		ia_css_print("CSI RX BE STATE Controller ID %d Long packet entry %d long packet lut id 0x%x\n",
- 			     ID, i,
- 			     state->long_packet_lut_entry[i]);
- 	}
-diff --git a/drivers/staging/media/atomisp/pci/css_2401_system/host/pixelgen_private.h b/drivers/staging/media/atomisp/pci/css_2401_system/host/pixelgen_private.h
-index 65ea23604479..5d4ffe03d13b 100644
---- a/drivers/staging/media/atomisp/pci/css_2401_system/host/pixelgen_private.h
-+++ b/drivers/staging/media/atomisp/pci/css_2401_system/host/pixelgen_private.h
-@@ -97,9 +97,9 @@ STORAGE_CLASS_PIXELGEN_C void pixelgen_ctrl_dump_state(
-     pixelgen_ctrl_state_t *state)
- {
- 	ia_css_print("Pixel Generator ID %d Enable  0x%x\n", ID, state->com_enable);
--	ia_css_print("Pixel Generator ID %d PRBS reset vlue 0 0x%x\n", ID,
-+	ia_css_print("Pixel Generator ID %d PRBS reset value 0 0x%x\n", ID,
- 		     state->prbs_rstval0);
--	ia_css_print("Pixel Generator ID %d PRBS reset vlue 1 0x%x\n", ID,
-+	ia_css_print("Pixel Generator ID %d PRBS reset value 1 0x%x\n", ID,
- 		     state->prbs_rstval1);
- 	ia_css_print("Pixel Generator ID %d SYNC SID 0x%x\n", ID, state->syng_sid);
- 	ia_css_print("Pixel Generator ID %d syng free run 0x%x\n", ID,
-diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-index d77432254a2c..fee91b542c65 100644
---- a/drivers/staging/media/atomisp/pci/sh_css.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css.c
-@@ -1324,7 +1324,7 @@ static void print_pc_histogram(void)
- 		sh_css_print(" pc_histogram for binary %d\n", metrics->id);
- 		print_pc_histo("  ISP", &metrics->isp_histogram);
- 		print_pc_histo("  SP",   &metrics->sp_histogram);
--		sh_css_print("print_pc_histogram() done for binay->id = %d, done.\n",
-+		sh_css_print("print_pc_histogram() done for binary->id = %d, done.\n",
- 			     metrics->id);
- 	}
- 
-@@ -5335,7 +5335,7 @@ static enum ia_css_err sh_css_pipe_configure_output(
- {
- 	enum ia_css_err err = IA_CSS_SUCCESS;
- 
--	IA_CSS_ENTER_PRIVATE("pipe = %p, width = %d, height = %d, paddaed width = %d, format = %d, idx = %d",
-+	IA_CSS_ENTER_PRIVATE("pipe = %p, width = %d, height = %d, padded width = %d, format = %d, idx = %d",
- 			     pipe, width, height, padded_width, format, idx);
- 	if (!pipe) {
- 		IA_CSS_LEAVE_ERR_PRIVATE(IA_CSS_ERR_INVALID_ARGUMENTS);
-@@ -10705,7 +10705,7 @@ ia_css_unlock_raw_frame(struct ia_css_stream *stream, uint32_t exp_id) {
- 	if (exp_id > IA_CSS_ISYS_MAX_EXPOSURE_ID ||
- 	    exp_id < IA_CSS_ISYS_MIN_EXPOSURE_ID)
- 	{
--		IA_CSS_ERROR("invalid expsure ID: %d\n", exp_id);
-+		IA_CSS_ERROR("invalid exposure ID: %d\n", exp_id);
- 		return IA_CSS_ERR_INVALID_ARGUMENTS;
- 	}
- 
--- 
-2.25.1
+Thanks
+--
+Gustavo
 
+On Thu, May 07, 2020 at 02:24:56PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/ethernet/i825xx/sun3_82586.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/i825xx/sun3_82586.h b/drivers/net/ethernet/i825xx/sun3_82586.h
+> index 79aef681ac85..451cb3d26cb5 100644
+> --- a/drivers/net/ethernet/i825xx/sun3_82586.h
+> +++ b/drivers/net/ethernet/i825xx/sun3_82586.h
+> @@ -250,7 +250,7 @@ struct mcsetup_cmd_struct
+>    unsigned short cmd_cmd;
+>    unsigned short cmd_link;
+>    unsigned short mc_cnt;		/* number of bytes in the MC-List */
+> -  unsigned char  mc_list[0][6];  	/* pointer to 6 bytes entries */
+> +  unsigned char  mc_list[][6];  	/* pointer to 6 bytes entries */
+>  };
+>  
+>  /*
+> 
