@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3AE1DD6A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980A51DD6C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgEUTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:08:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729988AbgEUTIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:08:44 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7E0E20814;
-        Thu, 21 May 2020 19:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590088124;
-        bh=38ZxvCyni0IynWfLRxWlOV469xNPk/DOr/nCoCNx9Zw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aeZlVH+AhFDetfD9NqlUROeK9xxXibQIhbI3iwRwc1OhLgVgQByrGI+wUry8QFla1
-         2h2veWD7JLxXV3wpAO0FhxRUCRFWF1otmCjXTsWUqQxE//E45+KtKQku73ZBSzVrbi
-         65SxNcUGWTeMDmVX4Gv8uRX9qHuwBYbpEnhMXOw4=
-Date:   Thu, 21 May 2020 12:08:43 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Jan Beulich <jbeulich@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/2] Fix W+X debug feature on x86
-Message-Id: <20200521120843.427b7ff33f8ed7f824eb07f9@linux-foundation.org>
-In-Reply-To: <20200521152308.33096-1-steven.price@arm.com>
-References: <20200521152308.33096-1-steven.price@arm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730448AbgEUTKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730425AbgEUTJ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:09:58 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6657C061A0E;
+        Thu, 21 May 2020 12:09:56 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id ee19so3574053qvb.11;
+        Thu, 21 May 2020 12:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4V3QDFKFZsXUI/pfICicsfUOUS9805zC9jDFYXssMow=;
+        b=eSYhanAzQhGZEiY+3dCu1QiaG4ITdyGX6ae1gmfSbsm3f2/HIxaUV0umpnjYORaAAn
+         v2HLmOP2W0saotJcQtTcVtzDo23F/xke6NCmpDfy0+GIffzPzYKR1MBCu4gif1hILRWd
+         sjEh5JgoWf1gCSkR/HhmENEoq1lOzxxv91FPqEsUbVyQXKe7nCRgZi5GLQ1ogb5fZSk/
+         gVgTEiwDjz2u4GbscR/g9oL7upJChTq/RMkKvNV/ohYHCYOtdGIsPfY8u62LUcvjp0W/
+         o3DPzqmiGuaXh+aLthcAnVUp1sHwIY4zMXCzQR6ECGIgzZhqECwt4hXl1LaAaqDc1wK0
+         0BJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4V3QDFKFZsXUI/pfICicsfUOUS9805zC9jDFYXssMow=;
+        b=IC2V62o55hkf2sXrnBcwyhwfSAa4g17ZS+kVJ3yfTg7BrYnjUmcsPUNZgoYMBfWNoN
+         dznX+CXl29/3V84d/s6jwKR5UbOO4qMUXXVcNFqOldSXT3cO7qHtqYtTd2sZ7Fjw3jRG
+         UGfJQsGIsSkhZvPjhE9Eq3I7U6DBW/dSI8RLXyy7nLr5bYo4XLK+sgRknkHiBzYbIw6S
+         0qfU3bpGgRLEaf4RnIqxPfPNLR4jLOfggqJLsFNLfAgfY7jiD5102iMbNCMdjb5NWIJg
+         eFra1cVkDD5bE4BhaR0kyqD8s4tYzTvqdqvSpAuqWR59kEhZSbrUQsx2E9aCjP3oN4f4
+         /sjA==
+X-Gm-Message-State: AOAM530vIA1wi8USXeU1QiYxyCqDQKsHDZUIr4knNjPGPL5UTZH5Kkgl
+        8ia6PZpC2FptFotsjoaYqUpbjEZ2izvtISqxwRg=
+X-Google-Smtp-Source: ABdhPJxwY7wkwdwPPUpUKbQ9KmcRGuP5kLAjHm6RSFl1KIuQK/XEoCOpe7Q4V3p1Q5WeVohxLyfeX3oo1PNWJqCLoaE=
+X-Received: by 2002:a0c:e4d4:: with SMTP id g20mr205248qvm.228.1590088195968;
+ Thu, 21 May 2020 12:09:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200521125247.30178-1-fejes@inf.elte.hu>
+In-Reply-To: <20200521125247.30178-1-fejes@inf.elte.hu>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 May 2020 12:09:45 -0700
+Message-ID: <CAEf4BzYO-1UsmO6r3x2C95xLj+Lxg73c0hKF8-ZEnA8Bqy=pvg@mail.gmail.com>
+Subject: Re: [PATCH net-next] Extending bpf_setsockopt with SO_BINDTODEVICE sockopt
+To:     Ferenc Fejes <fejes@inf.elte.hu>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020 16:23:06 +0100 Steven Price <steven.price@arm.com> wrote:
+On Thu, May 21, 2020 at 5:54 AM Ferenc Fejes <fejes@inf.elte.hu> wrote:
+>
+> This option makes possible to programatically bind sockets to netdevices.
+> With the help of this option sockets of VRF unaware applications
+> could be distributed between multiple VRFs with eBPF sock_ops program.
+> This let the applications benefit from the multiple possible routes.
+>
+> Signed-off-by: Ferenc Fejes <fejes@inf.elte.hu>
+> ---
+>  net/core/filter.c | 39 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 38 insertions(+), 1 deletion(-)
+>
 
-> Jan alert me[1] that the W+X detection debug feature was broken in x86
-> by my change[2] to switch x86 to use the generic ptdump infrastructure.
-> 
-> Fundamentally the approach of trying to move the calculation of
-> effective permissions into note_page() was broken because note_page() is
-> only called for 'leaf' entries and the effective permissions are passed
-> down via the internal nodes of the page tree. The solution I've taken
-> here is to create a new (optional) callback which is called for all
-> nodes of the page tree and therefore can calculate the effective
-> permissions.
-> 
-> Secondly on some configurations (32 bit with PAE) "unsigned long" is not
-> large enough to store the table entries. The fix here is simple - let's
-> just use a u64.
+I'll let more networking-familiar folks to comment on functionality,
+but features like this needs tests in selftest/bpf.
 
-I assumed that a cc:stable was appropriate on both of these(?).
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 822d662f97ef..25dac75bfc5d 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
 
-> I'd welcome testing (and other comments), especially if you have a
-> configuration which previously triggered W+X warnings as I don't have
-> such a setup.
-
-I'll wait a while for such testing.  If nothing happens then I guess we
-merge it up and see what then happens.
-
+[...]
