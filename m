@@ -2,131 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775071DCDDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3DB1DCDE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgEUNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbgEUNXZ (ORCPT
+        id S1729379AbgEUN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:26:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52436 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729289AbgEUN0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:23:25 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A36AC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:23:25 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t7so2825777plr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZgiiCf7yV4gJL0wD1WfzajtZUs2YRbHU0t+q3osVJy8=;
-        b=vaoWV6h9teezEjE8jpwOZzf737B2YusTXEr+g5naQ5F87EBzTy7uBhoHJKRwu6Nq4x
-         5ux/fJ0DKBM0h84GWOxHMk9pfzkcqmI1WSNvdNwKYsL1K9RGyLs9jRR0r4UjzudwQOA6
-         xH+MblwTsZZ5PbXmI2gOU4ijseeRPku0L01zskhMufuc/eJVAXnlhS9zjlN1fc50HHJq
-         CRT3EjpO8oRlzgCdj3hA2Nuk0Yd43DI1ARm5EaJLGkv4GDQ7jiGByJEE6NG9VH0NRmVr
-         QdHn5sFAv1iJZJc3cTEYmxLLT/rGfWXsO6pICQ59KxbEQJ3DlSwf6/c3Ikye1Gdu3th8
-         xVvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZgiiCf7yV4gJL0wD1WfzajtZUs2YRbHU0t+q3osVJy8=;
-        b=oR3V/HSD4NjNz1k47ZiqEIjDbwxsmOibr/PViSuM6Zt/i1NaS6E+K2PA6/Ry6vl979
-         QkUNhqluROp4V3FMtJk8EowFWfz2sMy8amT+Oue8jHbIiOgBWR9KyKLGaL67QrpUEjJe
-         Wk/96Td606I9yDHgZY3VsESxj4P+o1bxV8lkmW+YAx8JbY4CaDPfA6Un0u+hfbMJLAx1
-         cxXr3Z/34A6qa/PV3Q3BPnM8UCSu6LBsGGIKDDLGxq9HM6SNdKog9gEInWxrnonm6lnF
-         cxAoJ/7C0WJYyUm6L+0kPDwvQCduoMMIhRZHMSvfcN2qtOCdCS8dq5rjLRuWnotNjFzi
-         65EQ==
-X-Gm-Message-State: AOAM53246HN+mgTfLhD8jzJ7xzZYmX9TyrII3OwNcGnAdrGF0u8fNGi4
-        4S7R+BEPaOK66GfPktfQ1Tb/
-X-Google-Smtp-Source: ABdhPJzZknrCmqHksqP0ZNN+k3e4gCQYdBl1AO8/5OuOf+emaewf1h+5P102mD65RpzDvZoUCrsD7A==
-X-Received: by 2002:a17:90a:e30e:: with SMTP id x14mr11666354pjy.141.1590067404391;
-        Thu, 21 May 2020 06:23:24 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:69f:45f2:3d8d:3719:f568:7ee9])
-        by smtp.gmail.com with ESMTPSA id q17sm3973037pfq.117.2020.05.21.06.23.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 May 2020 06:23:22 -0700 (PDT)
-Date:   Thu, 21 May 2020 18:53:18 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] Introduce features and debugfs/sysfs entries for
- MHI
-Message-ID: <20200521132318.GA3797@Mani-XPS-13-9360>
-References: <1589832241-13867-1-git-send-email-bbhatt@codeaurora.org>
+        Thu, 21 May 2020 09:26:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590067581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X9nJJxhm6AhP9YB0H6QD9cJhNAGEF9IdB2qwK5+C+IM=;
+        b=YEABLgi9ieZH4occIn1htDqy0ha09n5ij5tY9fCf5c4ejz8RUyA9k2wY7dvIwZsdMOx9Fj
+        0GZcnv/jEB74lKOOF9ib9haWCSvLUHyMFdiRq7ChPUW8reQ5egoxA0WVDZjVGhF0MRF1HL
+        PzPCF4fHfZcS4i6EjtXeiRC8hpT8dFY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-BhqEgp7JMjOBXpwha5nBWg-1; Thu, 21 May 2020 09:26:19 -0400
+X-MC-Unique: BhqEgp7JMjOBXpwha5nBWg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DBA3107ACCD;
+        Thu, 21 May 2020 13:26:18 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.209])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CE02D60C84;
+        Thu, 21 May 2020 13:26:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 21 May 2020 15:26:17 +0200 (CEST)
+Date:   Thu, 21 May 2020 15:26:11 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Fox <afox@redhat.com>,
+        Stephen Johnston <sjohnsto@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Stanislaw Gruszka <sgruszka@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2] sched/cputime: make scale_stime() more precise
+Message-ID: <20200521132610.GA8813@redhat.com>
+References: <20190718131834.GA22211@redhat.com>
+ <20200127122817.GA10957@redhat.com>
+ <20200519172506.GA317395@hirez.programming.kicks-ass.net>
+ <20200520152439.GC26470@redhat.com>
+ <20200520153603.GP317569@hirez.programming.kicks-ass.net>
+ <20200520201033.GA325303@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589832241-13867-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200520201033.GA325303@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 05/20, Peter Zijlstra wrote:
+>
+> I had a another go; I ended up with this...
 
-On Mon, May 18, 2020 at 01:03:54PM -0700, Bhaumik Bhatt wrote:
-> Introduce independent bus and device voting mechanism for clients and save
-> hardware information from BHI.
-> Allow reading and modifying some MHI variables for debug, test, and
-> informational purposes using debugfs.
-> Read values for device specific hardware information to be used by OEMs in
-> factory testing such as serial number and PK hash using sysfs.
-> 
+Oh, thanks Peter!
 
-I think this series is not yet ready. So will not merge any patches in this
-series for 5.8.
+Oleg.
 
-Or let me know if there are any independent patches which should get merged.
-I'm planning to send the final 5.8 series to Greg by Friday.
-
-Thanks,
-Mani
-
-> This set of patches was tested on arm64 and x86.
-> 
-> v3:
-> -Add patch to check for pending packets in suspend as a dependency for the
-> independent voting mechanism introduction
-> -Include register dump entry for debugfs to dump MHI, BHI, and BHIe registers
-> -Update commit message for the debugfs patch
-> -Updated Documentation/ABI with the required info for sysfs
-> -Updated debugfs patch to include a new KConfig entry and dependencies
-> -Updated reviewed-by for some patches
-> 
-> v2:
-> -Added a new debugfs.c file for specific debugfs entries and code
-> -Updated commit text and addressed some comments for voting change
-> -Made sure sysfs is only used for serial number and OEM PK hash usage
-> 
-> Bhaumik Bhatt (7):
->   bus: mhi: core: Abort suspends due to outgoing pending packets
->   bus: mhi: core: Introduce independent voting mechanism
->   bus: mhi: core: Use generic name field for an MHI device
->   bus: mhi: core: Introduce helper function to check device state
->   bus: mhi: core: Introduce debugfs entries and counters for MHI
->   bus: mhi: core: Read and save device hardware information from BHI
->   bus: mhi: core: Introduce sysfs entries for MHI
-> 
->  Documentation/ABI/stable/sysfs-bus-mhi |  25 ++
->  MAINTAINERS                            |   1 +
->  drivers/bus/mhi/Kconfig                |   8 +
->  drivers/bus/mhi/core/Makefile          |   5 +-
->  drivers/bus/mhi/core/boot.c            |  17 +-
->  drivers/bus/mhi/core/debugfs.c         | 501 +++++++++++++++++++++++++++++++++
->  drivers/bus/mhi/core/init.c            |  80 +++++-
->  drivers/bus/mhi/core/internal.h        |  29 ++
->  drivers/bus/mhi/core/main.c            |   6 +-
->  drivers/bus/mhi/core/pm.c              |  79 ++++--
->  include/linux/mhi.h                    |  39 ++-
->  11 files changed, 745 insertions(+), 45 deletions(-)
->  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
->  create mode 100644 drivers/bus/mhi/core/debugfs.c
-> 
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
