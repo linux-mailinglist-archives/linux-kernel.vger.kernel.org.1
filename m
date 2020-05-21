@@ -2,123 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEAC1DCFBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE511DCFC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727985AbgEUObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:31:05 -0400
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:53558 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727840AbgEUObE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:31:04 -0400
-Received: from [192.168.42.210] ([93.22.132.254])
-        by mwinf5d47 with ME
-        id hSX12200Q5VUqNM03SX1Ps; Thu, 21 May 2020 16:31:02 +0200
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 21 May 2020 16:31:02 +0200
-X-ME-IP: 93.22.132.254
-Subject: Re: [PATCH 3.16 35/99] pxa168fb: Fix the function used to release
- some memory in an error handling path
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     akpm@linux-foundation.org, Denis Kirjanov <kda@linux-powerpc.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lubomir Rintel <lkundrak@v3.sk>
-References: <lsq.1589984008.562400019@decadent.org.uk>
- <95e4cf2d-5f50-e7bd-6e1e-a1d172eb24b6@wanadoo.fr>
-Message-ID: <104d4c9f-48d8-19b1-d529-a34fcc1e5606@wanadoo.fr>
-Date:   Thu, 21 May 2020 16:31:02 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729623AbgEUObi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727016AbgEUObi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 10:31:38 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C37A32072C;
+        Thu, 21 May 2020 14:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590071497;
+        bh=sEMqdnK7cQntt7n99N96ofQDUkahXjZaaEEQmq4bc1I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Pr4qcLTCzWqvc52YlTUJJ0Uq1Bf2WsiVeUkxA5VstT1/NyRLnC4pswL1Av3Y3GEXL
+         fXE+dD6ihdfYaBOvyWb10sxpORyNGgyOElIO/MvFPV9I1+2i7VPie5iIge2kZPkWx+
+         rW1tXkCDioQFf8E7eU5RvURlt7N90D+tlcIykJQI=
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] bitops: Move test_bit() into bitops/atomic.h
+Date:   Thu, 21 May 2020 15:31:29 +0100
+Message-Id: <20200521143129.7526-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <95e4cf2d-5f50-e7bd-6e1e-a1d172eb24b6@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+test_bit() is an atomic operation as documented by atomic_bitops.txt.
+Move the function from bitops/non-atomic.h to bitops/atomic.h and adjust
+its implementation to align with the other atomic bitops.
 
-sorry for the noise, I have messed up my 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/ usage.
-I thought I was looking at the 3.16.83 branch, but I was not.
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ include/asm-generic/bitops/atomic.h     |  6 ++++++
+ include/asm-generic/bitops/non-atomic.h | 10 ----------
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
-The patch looks good to me.
+Just found this kicking around on a branch from last year!
 
-CJ
+diff --git a/include/asm-generic/bitops/atomic.h b/include/asm-generic/bitops/atomic.h
+index dd90c9792909..5fc4399d8fb4 100644
+--- a/include/asm-generic/bitops/atomic.h
++++ b/include/asm-generic/bitops/atomic.h
+@@ -17,6 +17,12 @@ static inline void set_bit(unsigned int nr, volatile unsigned long *p)
+ 	atomic_long_or(BIT_MASK(nr), (atomic_long_t *)p);
+ }
+ 
++static inline int test_bit(unsigned int nr, const volatile unsigned long *p)
++{
++	p += BIT_WORD(nr);
++	return !!(READ_ONCE(*p) & BIT_MASK(nr));
++}
++
+ static inline void clear_bit(unsigned int nr, volatile unsigned long *p)
+ {
+ 	p += BIT_WORD(nr);
+diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generic/bitops/non-atomic.h
+index 7e10c4b50c5d..8b44da59a9d0 100644
+--- a/include/asm-generic/bitops/non-atomic.h
++++ b/include/asm-generic/bitops/non-atomic.h
+@@ -96,14 +96,4 @@ static inline int __test_and_change_bit(int nr,
+ 	return (old & mask) != 0;
+ }
+ 
+-/**
+- * test_bit - Determine whether a bit is set
+- * @nr: bit number to test
+- * @addr: Address to start counting from
+- */
+-static inline int test_bit(int nr, const volatile unsigned long *addr)
+-{
+-	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+-}
+-
+ #endif /* _ASM_GENERIC_BITOPS_NON_ATOMIC_H_ */
+-- 
+2.26.2.761.g0e0b3e54be-goog
 
-Le 21/05/2020 à 16:09, Marion & Christophe JAILLET a écrit :
-> Hi,
->
-> I don't think that this one is applicable to 3.16.x
->
-> The remove function and the error handling path of the probe function 
-> both use 'dma_free_wc'.
-> I've not look in details, but it looks consistent and the patch would 
-> not apply as-is anyway.
->
-> just my 2c.
->
-> CJ
->
-> Le 20/05/2020 à 16:14, Ben Hutchings a écrit :
->> 3.16.84-rc1 review patch.  If anyone has any objections, please let 
->> me know.
->>
->> ------------------
->>
->> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>
->> commit 3c911fe799d1c338d94b78e7182ad452c37af897 upstream.
->>
->> In the probe function, some resources are allocated using 
->> 'dma_alloc_wc()',
->> they should be released with 'dma_free_wc()', not 'dma_free_coherent()'.
->>
->> We already use 'dma_free_wc()' in the remove function, but not in the
->> error handling path of the probe function.
->>
->> Also, remove a useless 'PAGE_ALIGN()'. 'info->fix.smem_len' is already
->> PAGE_ALIGNed.
->>
->> Fixes: 638772c7553f ("fb: add support of LCD display controller on 
->> pxa168/910 (base layer)")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
->> CC: YueHaibing <yuehaibing@huawei.com>
->> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
->> Link: 
->> https://patchwork.freedesktop.org/patch/msgid/20190831100024.3248-1-christophe.jaillet@wanadoo.fr
->> [bwh: Backported to 3.16: Use dma_free_writecombine().]
->> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
->> ---
->>   drivers/video/fbdev/pxa168fb.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> --- a/drivers/video/fbdev/pxa168fb.c
->> +++ b/drivers/video/fbdev/pxa168fb.c
->> @@ -772,8 +772,8 @@ failed_free_cmap:
->>   failed_free_clk:
->>       clk_disable(fbi->clk);
->>   failed_free_fbmem:
->> -    dma_free_coherent(fbi->dev, info->fix.smem_len,
->> -            info->screen_base, fbi->fb_start_dma);
->> +    dma_free_writecombine(fbi->dev, info->fix.smem_len,
->> +                  info->screen_base, fbi->fb_start_dma);
->>   failed_free_info:
->>       kfree(info);
->>   failed_put_clk:
->> @@ -809,7 +809,7 @@ static int pxa168fb_remove(struct platfo
->>         irq = platform_get_irq(pdev, 0);
->>   -    dma_free_writecombine(fbi->dev, PAGE_ALIGN(info->fix.smem_len),
->> +    dma_free_writecombine(fbi->dev, info->fix.smem_len,
->>                   info->screen_base, info->fix.smem_start);
->>         clk_disable(fbi->clk);
->>
