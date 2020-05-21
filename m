@@ -2,87 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56BF1DC6D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9316A1DC6E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgEUGJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbgEUGJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:09:04 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B21BD207D8;
-        Thu, 21 May 2020 06:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590041344;
-        bh=rw8NuWYZLi77ecJ1DgyaQ2mq0QiBdMOyeKV1HeV4SAQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VTA3OCDGpcvS0FGCSfPz+MzoTxdfXeLYwM8IciNVS1doVk0Ygn7aKItiIOhUFGZ8Q
-         EcDPrulCP2iukWdV6/0bmf03Xtap3fX2cm3BoNNWPaf6/oHnCV2rcHtNKmvE7TFtX7
-         /aM9ZVgIZzPmd3fn+h6RdBqCDvzdFbc4diNXtjh8=
-Date:   Thu, 21 May 2020 08:09:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Cooper <alcooperx@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v10 1/5] usb: xhci: Change the XHCI link order in the
- Makefile
-Message-ID: <20200521060902.GA2352222@kroah.com>
-References: <20200512150019.25903-2-alcooperx@gmail.com>
- <20200513122613.GA1023594@kroah.com>
- <7acc2a4c-caab-11e7-7b3f-4176f19c58cf@gmail.com>
- <20200513162723.GF1362525@kroah.com>
- <38ff034d-a84c-2309-a8d5-f344930d9a31@gmail.com>
- <20200513170505.GB1369204@kroah.com>
- <20200513173920.GA2862@rowland.harvard.edu>
- <c0642cf4-1436-aec4-96fd-355a897f6418@gmail.com>
- <CAOGqxeU=LjAmAYR9wGeKZo_eLj+ehkrANTM+04E7xWNAp82EJA@mail.gmail.com>
- <CAOGqxeV_9LpFudC3VuFPAOmYVYBQGJ+s01HCK2nP6XxpprK2Qw@mail.gmail.com>
+        id S1728198AbgEUGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgEUGLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 02:11:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E24C061A0E;
+        Wed, 20 May 2020 23:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=YCf31mHTKJUJ2rSc/ZizMDYsKG3sbmur+UHa6QauDLI=; b=QLyZNTE5PxTd11WCRmaFk54LrB
+        RzY1mNlVeKOym0TeUpg0HGD9x76M46fqKYA6ALsJH1Q3BPoalikEQhyA6jEaymUrCMp2OlYt+4nuK
+        hzd6baas9b47MCANI1eNhSMSAS/DqT9d8+3f0fdCCxaYBo86m+BycfJe6irWAO+P21i9KTIKQB5zf
+        Pr7RaKlx8OqAm2F6pjHgKspyV1jhnRHvJF+gcMfE0zoqCEJZ3S47OKucgpS5IJTqTa9jiJA3/tiZN
+        LcTfrMKEB6m1BOXNCjdmTlrLnRsacRgWL2geqA8er0d8H5K6gXijIuYjw/H07bnCZgvND62lB9pDb
+        Ks2iaLww==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jbeQ2-0004hA-PA; Thu, 21 May 2020 06:11:02 +0000
+Subject: Re: [PATCH v3/RESEND 0/3] Even moar rpmh cleanups
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+References: <20200521060425.24285-1-swboyd@chromium.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ad95dcb2-28da-ee31-e635-3c115608f75f@infradead.org>
+Date:   Wed, 20 May 2020 23:11:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOGqxeV_9LpFudC3VuFPAOmYVYBQGJ+s01HCK2nP6XxpprK2Qw@mail.gmail.com>
+In-Reply-To: <20200521060425.24285-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
-
-A: No.
-Q: Should I include quotations after my reply?
-
-http://daringfireball.net/2007/07/on_top
-
-On Wed, May 20, 2020 at 01:29:45PM -0400, Alan Cooper wrote:
-> Greg, Alan,
+On 5/20/20 11:04 PM, Stephen Boyd wrote:
+> (Resent with more Ccs and To lines)
 > 
-> The other 4 related patches were accepted into usb-next and I just
-> realized that this one didn't make it. This patch will not fix the
-> "insmod out of order" issue, but will help our controllers work with
-> some poorly behaved USB devices when the drivers are builtin.
+> We remove the tcs_is_free() API and then do super micro optimizations on
+> the irq handler. I haven't tested anything here so most likely there's a
+> bug (again again)!
+> 
 
-As it doesn't solve the real issue, I did not accept this so that you
-all can continue to work on creating a real solution that works for both
-situations (built in and as modules.)
 
-I thought I said that already...
+Subject: s/moar/more/
 
-thanks,
 
-greg k-h
+-- 
+~Randy
+
