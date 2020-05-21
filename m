@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DD81DD916
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468331DD91C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730556AbgEUVI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 17:08:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729803AbgEUVI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 17:08:57 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1730583AbgEUVJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 17:09:29 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:52236 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729803AbgEUVJ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 17:09:29 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4916207F9;
-        Thu, 21 May 2020 21:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590095336;
-        bh=bq3nfY2FHxD6+erwGvYnFzlknI2N+zMNIxoeBzsuMVg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zY2En2y5UEXbWZpyjwa/I5GUbCpu4P22OtT46zIHNHDX/CBgwccWGg4nD1jP2mxof
-         /Cojfv4QevmZ4xUrz8YrbkbJX/6UP3hWbpaPNI51JR/a78J2Ja1jo6RR6lkL87PdMQ
-         aU3wTCXPYltvhNTZXHGPTaCXFoZPxDYPCpZHUwMg=
-Date:   Thu, 21 May 2020 22:08:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Timo =?iso-8859-1?B?U2NobPzfbGVy?= <schluessler@krause.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-spi@vger.kernel.org, Jan Glauber <jglauber@marvell.com>,
-        Robert Richter <rrichter@marvell.com>
-Subject: Re: [PATCH] can: mcp251x: convert to half-duplex SPI
-Message-ID: <20200521210853.GK4770@sirena.org.uk>
-References: <1582655734-20890-1-git-send-email-tharvey@gateworks.com>
- <0ac77abd-0df5-e437-ea46-f6c77f59b81c@pengutronix.de>
- <CAJ+vNU3vk92_1UnrYH72QgD3-q9Oy9As=jCiup42jzx_2LG9FA@mail.gmail.com>
- <0b351fe3-8fe9-572f-fd85-e2aed22873e3@pengutronix.de>
- <7b85e098-b9a9-dd14-203f-100cdf2e703e@pengutronix.de>
- <CAJ+vNU06DHVS25OQR1Kqyzy2ZxLVq-HdwenGv-jN5Rb3r8F86Q@mail.gmail.com>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id A1330804A3;
+        Thu, 21 May 2020 23:09:25 +0200 (CEST)
+Date:   Thu, 21 May 2020 23:09:24 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
+Message-ID: <20200521210924.GA1056842@ravnborg.org>
+References: <20200521204647.2578479-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="apbmkPN6Hu/1dI3g"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJ+vNU06DHVS25OQR1Kqyzy2ZxLVq-HdwenGv-jN5Rb3r8F86Q@mail.gmail.com>
-X-Cookie: Keep your laws off my body!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200521204647.2578479-1-lyude@redhat.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=20KFwNOVAAAA:8 a=e5mUnYsNAAAA:8
+        a=pm5h8qfB858e3dYQ7kEA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 21, 2020 at 04:46:47PM -0400, Lyude Paul wrote:
+> On some architectures like ppc64le and aarch64, compiling with
+> -Wformat=1 will throw the following warnings:
+> 
+>   In file included from drivers/gpu/drm/drm_vblank.c:33:
+>   drivers/gpu/drm/drm_vblank.c: In function 'drm_update_vblank_count':
+>   drivers/gpu/drm/drm_vblank.c:273:16: warning: format '%llu' expects
+>   argument of type 'long long unsigned int', but argument 4 has type
+>   'long int' [-Wformat=]
+>     DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+>                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   ./include/drm/drm_print.h:407:22: note: in definition of macro
+>   'DRM_DEBUG_VBL'
+>     drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
+>                         ^~~
+>   drivers/gpu/drm/drm_vblank.c:274:22: note: format string is defined here
+>            " current=%llu, diff=%u, hw=%u hw_last=%u\n",
+>                      ~~~^
+>                      %lu
+> 
+> So, fix that with a typecast.
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Co-developed-by: Dave Airlie <airlied@redhat.com>
+> ---
+>  drivers/gpu/drm/drm_vblank.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
+> index acb3c3f65b579..1a96db2dd16fa 100644
+> --- a/drivers/gpu/drm/drm_vblank.c
+> +++ b/drivers/gpu/drm/drm_vblank.c
+> @@ -342,7 +342,7 @@ static void drm_update_vblank_count(struct drm_device *dev, unsigned int pipe,
+>  
+>  	DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+>  		      " current=%llu, diff=%u, hw=%u hw_last=%u\n",
+> -		      pipe, atomic64_read(&vblank->count), diff,
+> +		      pipe, (unsigned long long)atomic64_read(&vblank->count), diff,
+>  		      cur_vblank, vblank->last);
 
---apbmkPN6Hu/1dI3g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+While touching this you could consider introducing drm_dbg_vbl().
+An maybe as a follow-up patch replace all logging in this file with the drm_* variants.
 
-On Thu, May 21, 2020 at 01:19:16PM -0700, Tim Harvey wrote:
+	Sam
 
-> Should I be submitting this patch with logic that only does
-> half-duplex if the spi controller doesn't support it (if
-> (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX)) or is it
-> acceptable to simply make the driver half-duplex like this for all
-> cases?
-
-It seems likely that making the transfers explicitly half duplex will
-perform better, especially for PIO controllers since there's less FIFO
-stuffing to do but also just generally on longer messages.  You will
-get some overhead setting up two transfers on write then read messages
-which might offset that but my best guess would be that it'll be
-negligable on most controllers.  It's also just a more accurate
-representation of what the transfers are actually doing which seems
-nicer.
-
-If there *is* a performance win for doing full duplex messages on some
-controllers we should probably look at optimizing this in the SPI core
-since it'll affect a wide range of hardware and we already have some
-code for forcing full duplex anyway.
-
---apbmkPN6Hu/1dI3g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7G7eUACgkQJNaLcl1U
-h9AOJQf+MicpOYZXR/CuHGZ9nB2XYZVgilr2bOVHAgmW9Ptv934QL7ohdwoxOi6/
-envwoCqrTmi8Ii1y2aVCj4/fnoFzYhYOEIAifJyecrnU8HJVouLN55z7OtMcd1W2
-hT/hVhXtPkT16rWo2/hMxJvljs7xRG3ezBy7kfsOgrvkN8T7P7pGo9IZrStLWM22
-FLUt6FH54mF1A8eqCHevlaIIzP6deQ4WaWyi+tpwc8zoJXSDWAVlYqOugiVSYRvC
-5UFPKCQXLVaymi0BcHpXkZv9ctDmpQHH3ZKsi/uuePlqMmyHxe+IAv3kZBJY6R1F
-xLQSJezpEy6QAujKHOtwiM9zTPEsCw==
-=Mz9E
------END PGP SIGNATURE-----
-
---apbmkPN6Hu/1dI3g--
+>  
+>  	if (diff == 0) {
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
