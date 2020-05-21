@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04A91DC77C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066F81DC78D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgEUHVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 03:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
+        id S1728310AbgEUH0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 03:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgEUHVf (ORCPT
+        with ESMTP id S1727003AbgEUH0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 03:21:35 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0348C061A0E;
-        Thu, 21 May 2020 00:21:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 21 May 2020 03:26:07 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8DAC061A0E;
+        Thu, 21 May 2020 00:26:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c82002db258470e3f635c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8200:2db2:5847:e3f:635c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49SLdm1F00z9sTK;
-        Thu, 21 May 2020 17:21:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590045693;
-        bh=q1vx8A9kbDCtXgqiGX1gPAlTnB8R5RmVzfh8wbU2lZA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JRCcNUj8EUVtqXKEQWALdDBQmELP1qMzGTU0dY4bQpg+hBbuXiah+1F/LOI60BzLw
-         2bJIQ5YkxRHz5Xb6zib26TQqpUho+IKN/f/05ZucajHCosAO0U0J5b4m8ocT39M8EW
-         toVO6YsgNYuDSxeCtmK4NpUnu5dYZs/buJG6ZQKMbXSB9Q+mepwPGR7+YLkJuyRMYN
-         L+dK+sI2LG+GBWTzN9YEEIZnMK4Fl7DCzKqww1cZPMED8N2NUqvWcaKcfm5wUuj1/b
-         rgjTRSRefL5iKQjuBbd2e1EhQNs9BdVAawcGbW5bFn2WB1oW75PPMS+jZHN/qquA12
-         qudfijkJBvWWg==
-Date:   Thu, 21 May 2020 17:21:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Felipe Balbi <balbi@kernel.org>, Greg KH <greg@kroah.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jason Yan <yanaijie@huawei.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: linux-next: manual merge of the usb-gadget tree with the usb tree
-Message-ID: <20200521172130.52aaa1d6@canb.auug.org.au>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A7B311EC02B1;
+        Thu, 21 May 2020 09:26:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590045964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Jljlzrbe6Cwi8pmzDsl0C5++jb9+/KEj29n629dTZKI=;
+        b=VSxbzCRmWCEe1ed3hI2g/V77fa5/yViTapiMajoyKHz39l8IWQw56zWCkidnqoTcGYjdrP
+        Mz0jukKM9Glxyvn2aQwfdliWFDnCd6MOm13YoIuqo2P00V35xyKDMVh/Ocdadm7RTtUz+f
+        wokIuL8M8j7JPVoNK+6KBkgDxRjRICw=
+Date:   Thu, 21 May 2020 09:25:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Subject: Re: [tip: locking/kcsan] READ_ONCE: Use data_race() to avoid KCSAN
+ instrumentation
+Message-ID: <20200521072557.GA10099@zn.tnic>
+References: <20200511204150.27858-18-will@kernel.org>
+ <158929421358.390.2138794300247844367.tip-bot2@tip-bot2>
+ <20200520221712.GA21166@zn.tnic>
+ <CANpmjNPsEMF8qq4qHoJEDb8mi211QzXODvnakh2fj3BOw+56MQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/APdJPlwHsfhfWz=HCHfmtMc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPsEMF8qq4qHoJEDb8mi211QzXODvnakh2fj3BOw+56MQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/APdJPlwHsfhfWz=HCHfmtMc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 21, 2020 at 12:30:39AM +0200, Marco Elver wrote:
+> This should be fixed when the series that includes this commit is applied:
+> https://lore.kernel.org/lkml/20200515150338.190344-9-elver@google.com/
 
-Hi all,
+Yap, that fixes it.
 
-Today's linux-next merge of the usb-gadget tree got a conflict in:
+Thx.
 
-  drivers/usb/cdns3/gadget.c
+-- 
+Regards/Gruss,
+    Boris.
 
-between commit:
-
-  e9010320f2d9 ("usb: cdns3: gadget: make a bunch of functions static")
-
-from the usb tree and commit:
-
-  e2e77a94078b ("usb: cdns3: mark local functions static")
-
-from the usb-gadget tree.
-
-I fixed it up (the difference was the indentation of contiuation lines -
-I juts used the latter) and can carry the fix as necessary. This is now
-fixed as far as linux-next is concerned, but any non trivial conflicts
-should be mentioned to your upstream maintainer when your tree is
-submitted for merging.  You may also want to consider cooperating with
-the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/APdJPlwHsfhfWz=HCHfmtMc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7GK/oACgkQAVBC80lX
-0GzGOgf9Fmbg59Ul1SWI1nAfe2gnjjOPB9NuPrI4Ra82K+75hnEVyZaD8T/x/UZh
-MSo/BMciiXpybshpJCX9ASP7a7FfJniAGh/9GH68gNHrxkXRVMmH3m89eVZ3Q6dW
-+XNkU/PeF/XC+nndsF3rwt0vgYSN77XvGQoKxvccfip7XvOrjCAKfQ2evVBCCLqS
-0Dq0toe8h9NdlaiCH8pP0eMzBsmpi5WHLV9QOnjrNh9xPMV7Pp0bYW2Jl3UzG8q1
-CdQ/hq9bCVuDLkjGzDEbTtA92FPnoxw9Bc+8TaJNhcYg9M/FEKjWZbFMEkVUm72Y
-2y0L0SV2Y/A/tDIYSctgnlkDY8wXEA==
-=roe2
------END PGP SIGNATURE-----
-
---Sig_/APdJPlwHsfhfWz=HCHfmtMc--
+https://people.kernel.org/tglx/notes-about-netiquette
