@@ -2,72 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFA21DD764
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D721DD76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgEUTiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:38:05 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:54079 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728955AbgEUTiE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:38:04 -0400
-Received: by mail-il1-f197.google.com with SMTP id m17so6536386ilq.20
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:38:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=NkM41cRyykyrTcXhuRq+Uqt1euBLz5q82M1iSb3aSkc=;
-        b=Vyq4FjcfL0G4ry/noXxTse6IGLn7PbvdlsKNgB76LjmqsY+8C33TaCHl+euugT/B7L
-         tb7mvd+7GgSuKw6ZyPIL/f9SvWX36GNRKbrVn/gL9ssod/Mu6OomNm1GfCc0A/s4ZUTG
-         t7eIlP96rbPpN5qTL8rA1/UdjBc3pt6JyR2LeS0IZaZt7y9Rc8ZnrxJ9V76CLqVp8x8B
-         9CLMphxAA/c0QzJoQrv4bfjUWhm7UVT1Ob+7CwAs6Zz6ViaaHQvs5uTr1racdWymcwar
-         eEqJTjN3mbvH31/D1f9cUKJWIzq+Ukk8EQpErmyMCRte+xEKjnVokQ4Sz9DaN4fkA2vu
-         tOQA==
-X-Gm-Message-State: AOAM532pveHq35ZUXs2qoE9TycTy4O/2/mhjhQbrOpBzPT/NITTNEypn
-        uOyEJBh12rfOFc10GE/i+5yHTMOz2wQGktmJqUIv6x3TRO0Z
-X-Google-Smtp-Source: ABdhPJz1FMid2HBzS6OeC8X8s51lXhWDo/4NiVC0UQXz/KcfgeapJlPG+XCp1SR4JS6Dx+SAezbEtWn4NTX3HiGc7Kjpjzv7X1zA
+        id S1729475AbgEUTlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728635AbgEUTlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:41:18 -0400
+Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74A8A2065F;
+        Thu, 21 May 2020 19:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590090077;
+        bh=V7Rxedh2MenOwI8XK4KoWriB9ieXIxOg9p/fYNUmu6o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DGrKWPYF4T61W/bPMJjljuNf8dXTHk0f6MkZK2ldwJgILEIsVJksvKR9Ef0tXf/Mm
+         /v1VApdxpv0cJTjhytbqfnysZVkWTwx8Gte2VacSGA8MWFcyB34b+jg8pX6rCQInJz
+         56CdXIhZgakIXA9UioojzKLvEfweY5Zp+71czsoo=
+Date:   Thu, 21 May 2020 14:41:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     linux-pci@vger.kernel.org,
+        Xen Development List <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, x86@kernel.org,
+        sstabellini@kernel.org, Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] x86/xen: drop an unused parameter gsi_override
+Message-ID: <20200521194115.GA1169412@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-Received: by 2002:a92:40ca:: with SMTP id d71mr10291945ill.200.1590089883386;
- Thu, 21 May 2020 12:38:03 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:38:03 -0700
-In-Reply-To: <0000000000004a72f505a5a16525@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a9080105a62da6e4@google.com>
-Subject: Re: WARNING in media_create_pad_link
-From:   syzbot <syzbot+dd320d114deb3f5bb79b@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, balbi@kernel.org,
-        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428153640.76476-1-wei.liu@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
+On Tue, Apr 28, 2020 at 03:36:40PM +0000, Wei Liu wrote:
+> All callers within the same file pass in -1 (no override).
+> 
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
 
-commit f2c2e717642c66f7fe7e5dd69b2e8ff5849f4d10
-Author: Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon Feb 24 16:13:03 2020 +0000
+Applied to pci/virtualization for v5.8, thanks!
 
-    usb: gadget: add raw-gadget interface
+I don't see anything else in linux-next that touches this file, but if
+somebody wants to merge this via another tree, just let me know.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126d2b81100000
-start commit:   b85051e7 Merge tag 'fixes-for-5.7-rc6' of git://git.kernel..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=116d2b81100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=166d2b81100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c33c7f7c5471fd39
-dashboard link: https://syzkaller.appspot.com/bug?extid=dd320d114deb3f5bb79b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16accd06100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1680ce5e100000
-
-Reported-by: syzbot+dd320d114deb3f5bb79b@syzkaller.appspotmail.com
-Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> ---
+>  arch/x86/pci/xen.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
+> index 91220cc25854..e3f1ca316068 100644
+> --- a/arch/x86/pci/xen.c
+> +++ b/arch/x86/pci/xen.c
+> @@ -60,8 +60,7 @@ static int xen_pcifront_enable_irq(struct pci_dev *dev)
+>  }
+>  
+>  #ifdef CONFIG_ACPI
+> -static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
+> -			     bool set_pirq)
+> +static int xen_register_pirq(u32 gsi, int triggering, bool set_pirq)
+>  {
+>  	int rc, pirq = -1, irq = -1;
+>  	struct physdev_map_pirq map_irq;
+> @@ -94,9 +93,6 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
+>  		name = "ioapic-level";
+>  	}
+>  
+> -	if (gsi_override >= 0)
+> -		gsi = gsi_override;
+> -
+>  	irq = xen_bind_pirq_gsi_to_irq(gsi, map_irq.pirq, shareable, name);
+>  	if (irq < 0)
+>  		goto out;
+> @@ -112,12 +108,12 @@ static int acpi_register_gsi_xen_hvm(struct device *dev, u32 gsi,
+>  	if (!xen_hvm_domain())
+>  		return -1;
+>  
+> -	return xen_register_pirq(gsi, -1 /* no GSI override */, trigger,
+> +	return xen_register_pirq(gsi, trigger,
+>  				 false /* no mapping of GSI to PIRQ */);
+>  }
+>  
+>  #ifdef CONFIG_XEN_DOM0
+> -static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polarity)
+> +static int xen_register_gsi(u32 gsi, int triggering, int polarity)
+>  {
+>  	int rc, irq;
+>  	struct physdev_setup_gsi setup_gsi;
+> @@ -128,7 +124,7 @@ static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polar
+>  	printk(KERN_DEBUG "xen: registering gsi %u triggering %d polarity %d\n",
+>  			gsi, triggering, polarity);
+>  
+> -	irq = xen_register_pirq(gsi, gsi_override, triggering, true);
+> +	irq = xen_register_pirq(gsi, triggering, true);
+>  
+>  	setup_gsi.gsi = gsi;
+>  	setup_gsi.triggering = (triggering == ACPI_EDGE_SENSITIVE ? 0 : 1);
+> @@ -148,7 +144,7 @@ static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polar
+>  static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
+>  				 int trigger, int polarity)
+>  {
+> -	return xen_register_gsi(gsi, -1 /* no GSI override */, trigger, polarity);
+> +	return xen_register_gsi(gsi, trigger, polarity);
+>  }
+>  #endif
+>  #endif
+> @@ -491,7 +487,7 @@ int __init pci_xen_initial_domain(void)
+>  		if (acpi_get_override_irq(irq, &trigger, &polarity) == -1)
+>  			continue;
+>  
+> -		xen_register_pirq(irq, -1 /* no GSI override */,
+> +		xen_register_pirq(irq,
+>  			trigger ? ACPI_LEVEL_SENSITIVE : ACPI_EDGE_SENSITIVE,
+>  			true /* Map GSI to PIRQ */);
+>  	}
+> -- 
+> 2.20.1
+> 
