@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C861DD893
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511601DD8A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbgEUUkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728547AbgEUUkr (ORCPT
+        id S1729677AbgEUUrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:47:06 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52517 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726858AbgEUUrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:40:47 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4211AC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:40:46 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 190so8719835qki.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nS/3XCQOUwQxkN/+ybpYVJRq8cwnaFFhp9azEcrkODs=;
-        b=oHMIim3byaor6v3ZOguZWXdnh+aajwbaJCFu5DLMfxfl5MOL4MlgN0f0n+0gXLAtRo
-         dL9XoP25uUv0vns46WvKuc01jyYub3cCtN3cFHe51Hno/DngdoK49tRXOuwW1DUqwYvc
-         4wMrbqxAb7/9U7fOiM68zzQ7JxvSl0BM3pZ4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nS/3XCQOUwQxkN/+ybpYVJRq8cwnaFFhp9azEcrkODs=;
-        b=sfrt9kV14vcHOAqPRZHy0MZgXlkXx4bmMKjLTq/mnFt2Xkri8l8kOSmIuCH0PSf7qk
-         baX8V/flumziG4Q43LLHXzO02E+UsxIwB+U6oL+ddHc/bZE7tHtGQbWPoF7oljtGiQLn
-         CIgWsNe3s7rx4dOicDFqI+avcEHfraeQqL+fKWDOlOG6mQ7tT0yVMR0M9R4YT7qO+i8g
-         qy4Fu3VR8HTX8A37FCc6pQhdQCSMLDjHWgc/XjuGMgIZCQw41Kpswji52oR/WzQL/9Ew
-         itS3xi6MZWeVoy4cfyT2FyHb7kpSK2l1nc/dus3eaB7TZfQwtch0LVAdaWKIAhnvQQOv
-         uzpw==
-X-Gm-Message-State: AOAM530bNFXbfQY067A4SzERzejm6tNbkH4GUvNBRlN5x7QQNiuttdQ7
-        bMUgmgysBBOmTllVa8qTOHOC3Q==
-X-Google-Smtp-Source: ABdhPJwjzzw5Do5lIeNozUjhmvb/VRgfWAX80KXERbyevUvc+ufUCRzhw7QDXx0FyMxAVzVNxqUQjg==
-X-Received: by 2002:a05:620a:1472:: with SMTP id j18mr10680271qkl.363.1590093645264;
-        Thu, 21 May 2020 13:40:45 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id y21sm5777319qkb.95.2020.05.21.13.40.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 13:40:44 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:40:44 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        vpillai <vpillai@digitalocean.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling interface
-Message-ID: <20200521204044.GD140701@google.com>
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <20200520222642.70679-1-joel@joelfernandes.org>
- <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
+        Thu, 21 May 2020 16:47:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590094024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZCbHVU++ADvqtlwI3liORSZGCKRYFsaHclPVH+arJhU=;
+        b=a6ieZxkDXHsjGi0QQxdCHtjtestv2d/lYYQvqDwTPiZQxEgaG6rd6LB6+neVAczHZ4DCc+
+        3c03EWPgNanoOHgFEkFSNAkc4rfMrNSK9rHDv03fjvgElLFeFVo3h/cNzXgHvza5fq3r8q
+        OzDSvr1KF64IVYbMWvY+A4KwP/DfI8Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-gzgkwDQFMVKsC_RoQwr3Ew-1; Thu, 21 May 2020 16:47:00 -0400
+X-MC-Unique: gzgkwDQFMVKsC_RoQwr3Ew-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7559918FE860;
+        Thu, 21 May 2020 20:46:58 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-116-188.rdu2.redhat.com [10.10.116.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C97B56ED80;
+        Thu, 21 May 2020 20:46:56 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
+Date:   Thu, 21 May 2020 16:46:47 -0400
+Message-Id: <20200521204647.2578479-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On some architectures like ppc64le and aarch64, compiling with
+-Wformat=1 will throw the following warnings:
 
-On Thu, May 21, 2020 at 11:31:38AM -0700, Linus Torvalds wrote:
-> On Wed, May 20, 2020 at 3:26 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > ChromeOS will use core-scheduling to securely enable hyperthreading.
-> > This cuts down the keypress latency in Google docs from 150ms to 50ms
-> > while improving the camera streaming frame rate by ~3%.
-> 
-> I'm assuming this is "compared to SMT disabled"?
+  In file included from drivers/gpu/drm/drm_vblank.c:33:
+  drivers/gpu/drm/drm_vblank.c: In function 'drm_update_vblank_count':
+  drivers/gpu/drm/drm_vblank.c:273:16: warning: format '%llu' expects
+  argument of type 'long long unsigned int', but argument 4 has type
+  'long int' [-Wformat=]
+    DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ./include/drm/drm_print.h:407:22: note: in definition of macro
+  'DRM_DEBUG_VBL'
+    drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
+                        ^~~
+  drivers/gpu/drm/drm_vblank.c:274:22: note: format string is defined here
+           " current=%llu, diff=%u, hw=%u hw_last=%u\n",
+                     ~~~^
+                     %lu
 
-Yes this is compared to SMT disabled, I'll improve the commit message.
+So, fix that with a typecast.
 
-> What is the cost compared to "SMT enabled but no core scheduling"?
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Co-developed-by: Dave Airlie <airlied@redhat.com>
+---
+ drivers/gpu/drm/drm_vblank.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-With SMT enabled and no core scheduling, it is around 40ms in the higher
-percentiles. Also one more thing I wanted to mention, this is the 90th
-percentile.
-
-> But the real reason I'm piping up is that your  latency benchmark
-> sounds very cool.
-> 
-> Generally throughput benchmarks are much easier to do, how do you do
-> this latency benchmark, and is it perhaps something that could be run
-> more widely (ie I'm thinking that if it's generic enough and stable
-> enough to be run by some of the performance regression checking
-> robots, it would be a much more interesting test-case than some of the
-> ones they run right now...)
-
-Glad you like it! The metric is calculated with a timestamp of when the
-driver says the key was pressed, up until when the GPU says we've drawn
-pixels in response.
-
-The test requires a mostly only requires Chrome browser. It opens some
-pre-existing test URLs (a google doc, a window that opens a camera stream and
-another window that decodes video). This metric is already calculated in
-Chrome, we just scrape it from
-chrome://histograms/Event.Latency.EndToEnd.KeyPress.  If you install Chrome,
-you can goto this link and see the histogram.  We open a Google docs window
-and synthetically input keys into it with a camera stream and video decoding
-running in other windows which gives the CPUs a good beating. Then we collect
-roughly the 90th percentile keypress latency from the above histogram and the
-camera and decoded video's FPS, among other things. There is a test in the
-works that my colleagues are writing to run the full Google hangout video
-chatting stack to stress the system more (versus just the camera stream).  I
-guess if the robots can somehow input keys into the Google docs and open the
-right windows, then it is just a matter of scraping the histogram.
-
-> I'm looking at that "threaded phoronix gzip performance regression"
-> thread due to a totally unrelated scheduling change ("sched/fair:
-> Rework load_balance()"), and then I see this thread and my reaction is
-> "the keypress latency thing sounds like a much more interesting
-> performance test than threaded gzip from clear linux".
-> 
-> But the threaded gzip test is presumably trivial to script, while your
-> latency test is perhaps very specific to one particular platform and
-> setuip?
-
-Yes it is specifically a ChromeOS running on a pixel book running a 7th Gen
-Intel Core i7 with 4 hardware threads.
-https://store.google.com/us/product/google_pixelbook
-
-I could try to make it a synthetic test but it might be difficult for a robot
-to run it if it does not have graphics support and a camera connected to it.
-It would then need a fake/emulated camera connected to it. These robots run
-Linux in a non-GUI environment in qemu instances right?
-
-thanks,
-
- - Joel
+diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
+index acb3c3f65b579..1a96db2dd16fa 100644
+--- a/drivers/gpu/drm/drm_vblank.c
++++ b/drivers/gpu/drm/drm_vblank.c
+@@ -342,7 +342,7 @@ static void drm_update_vblank_count(struct drm_device *dev, unsigned int pipe,
+ 
+ 	DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+ 		      " current=%llu, diff=%u, hw=%u hw_last=%u\n",
+-		      pipe, atomic64_read(&vblank->count), diff,
++		      pipe, (unsigned long long)atomic64_read(&vblank->count), diff,
+ 		      cur_vblank, vblank->last);
+ 
+ 	if (diff == 0) {
+-- 
+2.26.2
 
