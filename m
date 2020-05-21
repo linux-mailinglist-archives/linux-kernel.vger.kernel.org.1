@@ -2,65 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9381DD2D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 18:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ADB1DD2D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 18:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgEUQJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 12:09:45 -0400
-Received: from smtprelay0012.hostedemail.com ([216.40.44.12]:56624 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728517AbgEUQJo (ORCPT
+        id S1729622AbgEUQLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 12:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728339AbgEUQLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 12:09:44 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C19DC180143E1;
-        Thu, 21 May 2020 16:09:43 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3873:4321:5007:6120:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21324:21627:21939:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: form95_5f0de8926d1f
-X-Filterd-Recvd-Size: 1701
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 21 May 2020 16:09:42 +0000 (UTC)
-Message-ID: <e0d86bc30a0415674859b81f66db661fb443aaf9.camel@perches.com>
-Subject: Re: [RFC PATCH 2/2] init: Allow multi-line output of kernel command
- line
-From:   Joe Perches <joe@perches.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chenggang Wang <wangchenggang@vivo.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Thu, 21 May 2020 09:09:38 -0700
-In-Reply-To: <20200521155931.GA568639@rani.riverdale.lan>
-References: <cover.1589916689.git.joe@perches.com>
-         <2b3832fed9370f0f8dfd1ea33dddb1d05a36e265.1589916689.git.joe@perches.com>
-         <20200521155931.GA568639@rani.riverdale.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Thu, 21 May 2020 12:11:07 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463F6C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 09:11:07 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id r128so3084711ybc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 09:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+gc76dvAmcnKyafrzIlIXk+cdWsPwaRbHG7m3tGh9Qc=;
+        b=mQCnSMEQGZ6tabeU1j68y7o6DGhmRJOY0Kn6mMfHvBIUAWq2O/ODgrivjbSM0aX8db
+         daxjooLBGVHOTfaY+n4/A/E6kHQJ0IjceexQRI0mH/rzdstUMjHvV2v/MXoOeAKEDs7T
+         LeLmAYybUL6z77zumQPOWHGFq1XQI4Fu5zDfM2OC3mCZ1QKwpw50b00ZP4gL+e3nDj1W
+         dDVH+lgDApbAY1eEVNqw+B7RXkv89SBH34rPo4oYv+CEzKw3Z6et9yuy2VKyP1AFAx0F
+         FCy6TqqqM3phM9gDvlPQlnbAk46Snr1wMkAqwaImFhoDHzXU8oSLQBBwzN80CrwFYFzL
+         xJLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+gc76dvAmcnKyafrzIlIXk+cdWsPwaRbHG7m3tGh9Qc=;
+        b=sTmQYIX3pFKopsVQYb3p8BnnJy4oh8SD7qbg5k2hZvVsly/XWzgmPcy6P0Ko1hepM6
+         7Akunvo4YrLOdstfQzC4MRZsB+MKX5DADkYcP/zJEaw4ZIMZbUBZCGdg10N+SsdEe9Gz
+         0vYRlrYfKewb1qpnktIS7TaajYPwXLChiCWbgB/GjMPQMO/8aEcAKfpk/FvMP203sZMH
+         taV4t5lJOSuyRz6uKpn/4fedUJ0zBGhTdooH4bW/rgc9xi+Q4EPdfQCLnJADz8HHOFu8
+         NEIL6zGYeeaJbP6ZCn8sbLXdD0HI6c0HKQfAN+G1FkMUbiIPqKbyTvCOR1uW1ucggf7J
+         IXYg==
+X-Gm-Message-State: AOAM532mQPqPhBufBOp5tJH1cpK/M3GCrAkLswo2LAqc5Uc7jza3c1la
+        5LTOhiFC67JGtIjP02ObjbK4n1dVROI7yLPPZU0V/g==
+X-Google-Smtp-Source: ABdhPJz7NOo5MfhpZzS4whBV+pg+WOr/GFx5Rc+Hob9mF79VGeHZavlboXvTIHHwqbLizUM0gSkymOrENrGwwdBDeV0=
+X-Received: by 2002:a25:d450:: with SMTP id m77mr16088061ybf.177.1590077466196;
+ Thu, 21 May 2020 09:11:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200521133218.30150-1-liwei391@huawei.com> <20200521133218.30150-2-liwei391@huawei.com>
+ <20200521155400.GA14034@kernel.org>
+In-Reply-To: <20200521155400.GA14034@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 21 May 2020 09:10:55 -0700
+Message-ID: <CAP-5=fWe-74NG1YBS2g2okgNMvScPD6qFh-n8jr_YbzdTug44Q@mail.gmail.com>
+Subject: Re: [PATCH 1/4] perf metrictroup: Fix memory leak of metric_events
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Wei Li <liwei391@huawei.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Li Bin <huawei.libin@huawei.com>,
+        Xie XiuQi <xiexiuqi@huawei.com>,
+        Hongbo Yao <yaohongbo@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-21 at 11:59 -0400, Arvind Sankar wrote:
-> On Tue, May 19, 2020 at 12:42:35PM -0700, Joe Perches wrote:
-> > ARM may have its longest possible command line larger than the longest
-> > possible printk.
-[]
-> I might be missing something, but this seems broken:
+On Thu, May 21, 2020 at 8:54 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, May 21, 2020 at 09:32:15PM +0800, Wei Li escreveu:
+> > From: Hongbo Yao <yaohongbo@huawei.com>
+> >
+> > Fix memory leak of metric_events in function metricgroup__setup_events()
+>
+> The leak is there but this code has changed a lot recently, please take
+> a look at my perf/core branch and keep Ian Rogers in the loop,
+>
+> - Arnaldo
 
-probably, note the "untested" bit.
+Thanks, I'd posted the same change here:
+https://lore.kernel.org/lkml/20200508053629.210324-10-irogers@google.com/
+but it looks like it was mislaid. Arnaldo, I can re-post that patch or
+Acked-by this patch. I'm easy either way.
 
-> (1) If there is a ' ', the memchr will set pos to the ' ' the first time
-> through the inner loop, and then go into an infinite loop? You want
-> memrchr here but the kernel doesn't seem to have one.
+Thanks,
+Ian
 
-Right.  I did look and didn't find one and didn't
-want to add it just for this use.
-
-
+> > Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
+> > ---
+> >  tools/perf/util/metricgroup.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index 926449a7cdbf..69bf0f4d646e 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -184,6 +184,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+> >               if (!evsel) {
+> >                       pr_debug("Cannot resolve %s: %s\n",
+> >                                       eg->metric_name, eg->metric_expr);
+> > +                     free(metric_events);
+> >                       continue;
+> >               }
+> >               for (i = 0; i < eg->idnum; i++)
+> > @@ -191,11 +192,13 @@ static int metricgroup__setup_events(struct list_head *groups,
+> >               me = metricgroup__lookup(metric_events_list, evsel, true);
+> >               if (!me) {
+> >                       ret = -ENOMEM;
+> > +                     free(metric_events);
+> >                       break;
+> >               }
+> >               expr = malloc(sizeof(struct metric_expr));
+> >               if (!expr) {
+> >                       ret = -ENOMEM;
+> > +                     free(metric_events);
+> >                       break;
+> >               }
+> >               expr->metric_expr = eg->metric_expr;
+> > --
+> > 2.17.1
+> >
+>
+> --
+>
+> - Arnaldo
