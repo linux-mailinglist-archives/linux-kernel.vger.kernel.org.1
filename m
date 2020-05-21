@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D54F1DC82F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2EC1DC83F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 10:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgEUIFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 04:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgEUIE7 (ORCPT
+        id S1728564AbgEUIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 04:10:05 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:53910 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727011AbgEUIKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 04:04:59 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C67C061A0E;
-        Thu, 21 May 2020 01:04:59 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k7so2734312pjs.5;
-        Thu, 21 May 2020 01:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TO1wq6j7PKKwzMDcL3TCdcuBHoeFZLasBqHQKFsvCUg=;
-        b=VzPWx1/v1MYVNfoEQlNcXSyqs/Lelfc0CxX9+hf8vW8JSc3ilWR4neMFzvXQV+UIqz
-         /qNg9t9F/qjCWDxP+QGC8XLBVdSr+QtvLTQLPdaV4nzAVLYqVssUH9Gf094Hdn2P2k+X
-         i8aRAZz/RFAStlkXvQjPJCOp5xwHQi1HNPUkZV9w5vnN1aqN/m4oodMF9aQNkxmYNdSr
-         QAJhJ+7QX1EOw8Tq7pVc+7/B+onMO7sG1UYeFdOAoe/PuTZjESj8k2cbLquLBkESbsnn
-         rEHOCMA9N+2Jq+GXfqbdCQstVRfmovsiXoGpZpt5qHYOit4p9LwHP4xLJ/DkJXSp9YGX
-         OecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TO1wq6j7PKKwzMDcL3TCdcuBHoeFZLasBqHQKFsvCUg=;
-        b=VbEfEVeMlzzZUFexfl4KVUaCB4J1p2TVQysI0OjofSnTG/b6dW1xz/b/1+GBZOw0Si
-         blvqJ6/VC9c0ppMn0P1k68Azyg2nYUlMNGtTYp+GN2Kg8UbVsa19kvOyxBkG/Llbup9q
-         1zD+UEJxDqsEL5zoq9vQ70/8/z5y5tiCtQw768hW/IH549S+KTEabfeptrndmcVZzmD8
-         jKvZFE8vTvsK2Pa+xv7VBJyYwOvhfJj9ctui7mV+wqAWG7InWPosn5s2zLKNq/gUA+/Y
-         FQ/ntQlcNc4f54N+ixK9Sd1xNNcsjzuI6PHWEL5QwdsxS/rcJXqZxwHuQKmmlsKsHIm0
-         eE1g==
-X-Gm-Message-State: AOAM532okYm172Jmajp/fI9aT5ZidA04SBR4R3Sq7YM7VZVUSOQr3cLM
-        btyrueT/j/d9ZYYb3yb5GKoA+UFt6aUqvjf+n7mrwQb+VDQ=
-X-Google-Smtp-Source: ABdhPJyRqXe3U4NrMcm7j3iaLIce3pW8UMfo66n2vw8qBIEf9n1jtPujxxLiYe+X0XVZj5e4Iz8c0CCB6sGM/zjMufE=
-X-Received: by 2002:a17:90a:1704:: with SMTP id z4mr9697130pjd.181.1590048299087;
- Thu, 21 May 2020 01:04:59 -0700 (PDT)
+        Thu, 21 May 2020 04:10:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=eK8mUW3fF6LfxGwGD9YQ3A/OYObovV5a54tgN2SqYBY=; b=nwKIRUi1vyafg76NV78jcGDCFA
+        khx1OwBDchZUUlFGvdTu/PCztlgnrvzIBAO4tBR/q1eQ3Z/wYi5GX4y38lAQfzrwGTtD+4EsmzR5v
+        s80ZBeqel/JjmG+KlgZ2jEHrvhTMJZEVO4RZ3BH4eEoL9b5/2w+aCYk5Hzh7MLyqiGtY=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1jbgCT-0004HF-5A; Thu, 21 May 2020 08:05:09 +0000
+Received: from 54-240-197-225.amazon.com ([54.240.197.225] helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <julien@xen.org>)
+        id 1jbgCS-0006Wj-V5; Thu, 21 May 2020 08:05:09 +0000
+Subject: Re: [PATCH 02/10] swiotlb-xen: remove start_dma_addr
+To:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
+ <20200520234520.22563-2-sstabellini@kernel.org>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <6241b8f6-5c51-0486-55ae-d571b117a184@xen.org>
+Date:   Thu, 21 May 2020 09:05:07 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200521074946.21799-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200521074946.21799-1-dinghao.liu@zju.edu.cn>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 21 May 2020 11:04:41 +0300
-Message-ID: <CAHp75VfOeUaqRW2vRwyWaz3JJw41hX5jTgE+kZ8pB8E_HtHwqw@mail.gmail.com>
-Subject: Re: [PATCH] spi: tegra20-slink: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Kangjie Lu <kjlu@umn.edu>, Laxman Dewangan <ldewangan@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200520234520.22563-2-sstabellini@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 10:50 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
->
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
+Hi,
 
-...
+On 21/05/2020 00:45, Stefano Stabellini wrote:
+> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> 
+> It is not strictly needed. Call virt_to_phys on xen_io_tlb_start
+> instead. It will be useful not to have a start_dma_addr around with the
+> next patches.
+> 
+> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> ---
+>   drivers/xen/swiotlb-xen.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+> index a42129cba36e..b5e0492b07b9 100644
+> --- a/drivers/xen/swiotlb-xen.c
+> +++ b/drivers/xen/swiotlb-xen.c
+> @@ -52,8 +52,6 @@ static unsigned long xen_io_tlb_nslabs;
+>    * Quick lookup value of the bus address of the IOTLB.
+>    */
+>   
+> -static u64 start_dma_addr;
+> -
+>   /*
+>    * Both of these functions should avoid XEN_PFN_PHYS because phys_addr_t
+>    * can be 32bit when dma_addr_t is 64bit leading to a loss in
+> @@ -241,7 +239,6 @@ int __ref xen_swiotlb_init(int verbose, bool early)
+>   		m_ret = XEN_SWIOTLB_EFIXUP;
+>   		goto error;
+>   	}
+> -	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
+>   	if (early) {
+>   		if (swiotlb_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs,
+>   			 verbose))
+> @@ -389,7 +386,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
+>   	 */
+>   	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
+>   
+> -	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys,
+> +	map = swiotlb_tbl_map_single(dev, virt_to_phys(xen_io_tlb_start), phys,
 
->         ret = pm_runtime_get_sync(&pdev->dev);
->         if (ret < 0) {
->                 dev_err(&pdev->dev, "pm runtime get failed, e = %d\n", ret);
+xen_virt_to_bus() is implemented as xen_phys_to_bus(virt_to_phys()). Can 
+you explain how the two are equivalent?
 
-> +               pm_runtime_put(&pdev->dev);
-
-For all your patches, please, double check what you are proposing.
-
-Here, I believe, the correct one will be _put_noidle().
-
-AFAIU you are not supposed to actually suspend the device in case of error.
-But I might be mistaken, thus see above.
-
->                 goto exit_pm_disable;
->         }
+Cheers,
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Julien Grall
