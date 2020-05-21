@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8FD1DD263
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA481DD26C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgEUPyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728295AbgEUPyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:54:04 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61828206F6;
-        Thu, 21 May 2020 15:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590076443;
-        bh=TKWRFarh/DR/G+dyqD24vZ5+B4+IDBEfETfLPpR5GC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I0jYgn73mDBEa820iMQpAo4MjQC+FGRPpOjEOaFRwbXq0f1dN+WI8MsKLaYbgF7cQ
-         NcrhhAAU+P+iI4xcIanYFO1r4Vg3S0ZfJgeWveLLzdoATSJRKrhCsgU34Qtyy2EH+t
-         7UyxvJRHd9oWXFnF2HA50KDgcUcbnvCqrdMbYb9w=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7197D40AFD; Thu, 21 May 2020 12:54:00 -0300 (-03)
-Date:   Thu, 21 May 2020 12:54:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Wei Li <liwei391@huawei.com>, Ian Rogers <irogers@google.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Li Bin <huawei.libin@huawei.com>,
-        Xie XiuQi <xiexiuqi@huawei.com>,
-        Hongbo Yao <yaohongbo@huawei.com>
-Subject: Re: [PATCH 1/4] perf metrictroup: Fix memory leak of metric_events
-Message-ID: <20200521155400.GA14034@kernel.org>
-References: <20200521133218.30150-1-liwei391@huawei.com>
- <20200521133218.30150-2-liwei391@huawei.com>
+        id S1728536AbgEUPzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728342AbgEUPzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 11:55:33 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AD6C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:55:33 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id y17so5352444ilg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PYhboJAJ7RUBKUATlYhVk5ySk5gU8YKi+aCx6DRehKg=;
+        b=dATQhHHQvJut0ZdygKw6g8AVHjd45Sqhq824JTQz3o6b/bur/kKqQ/50Asso5pexJn
+         LZMlI99ySYlyVBwxVeWOx7L88HOPdVuLsE/R4OTPgjl8K4DkM9irR8FiBPwd2ysSZgiv
+         xdtRA3KgWuxo2+dCzkmMg6FNqCbRUHSzVgMO8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PYhboJAJ7RUBKUATlYhVk5ySk5gU8YKi+aCx6DRehKg=;
+        b=De+HsWBqrVRx957V2JMn7REpZooOTz2VhhQyl+3WFM3mgiIATkSJ9bMiULpYpAAfLv
+         GMmQ06S7BZhzipfQrlCOc2B2sa7d/qa41t0HqOY+nF2dy4pYOnXRuBluR3Tg5xcuwKtW
+         1EzlxuMj0FYKTa8s19OmODGWCwm5taYhGWsNXuY8syyY8YVdbqiOP0GmquKZdMK+pDMp
+         0mDd4TZtcR4gU6blFQ7j1kpNEQ4AHUgh9/JRX5JMFw5DNSdoNxRHiI5dcxO4GwvIg9q6
+         oIkxwYVpeQWe0tCBZ8dJjPYEOS/RjuzE4nwoO+P3XMNvcqNsEcRFZTnnT11n5r11jCzK
+         aaTg==
+X-Gm-Message-State: AOAM530KBEpOmoXwNTSpvURJ+ha55FsAzuhpsE+v3cDSRwDg5o8svTRi
+        irJjlu2rrQXSPSgJF2p13TKzE4S+HEdMJI+KMFYUrRTV
+X-Google-Smtp-Source: ABdhPJyoa5zm89sVnN9Gx9+B/moZwqm85Wya5bEMLTeH4USwyojqOZgpl+YvxIKAJrXIhkq0vx/jG8rH9qgUkNBRQ1c=
+X-Received: by 2002:a05:6e02:ec2:: with SMTP id i2mr9391335ilk.262.1590076532103;
+ Thu, 21 May 2020 08:55:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521133218.30150-2-liwei391@huawei.com>
-X-Url:  http://acmel.wordpress.com
+References: <20200521155346.168413-1-joel@joelfernandes.org>
+In-Reply-To: <20200521155346.168413-1-joel@joelfernandes.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 21 May 2020 11:55:21 -0400
+Message-ID: <CAEXW_YTj83gO0STovrOuL9zgDwEYWRJusUZ3ebVw_jOG6yJxTg@mail.gmail.com>
+Subject: Re: [PATCH RFC] sched/headers: Fix sched_setattr userspace
+ compilation issues
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Matthew Blecker <matthewb@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Mike Frysinger <vapier@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        vineethrp@gmail.com, Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 21, 2020 at 09:32:15PM +0800, Wei Li escreveu:
-> From: Hongbo Yao <yaohongbo@huawei.com>
-> 
-> Fix memory leak of metric_events in function metricgroup__setup_events()
+On Thu, May 21, 2020 at 11:53 AM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> On a modern Linux distro, compiling the following program fails:
+>  #include<stdlib.h>
+>  #include<stdint.h>
+>  #include<pthread.h>
+>  #include<linux/sched/types.h>
+>
+>  void main() {
+>          struct sched_attr sa;
+>
+>          return;
+>  }
+>
+> with:
+> /usr/include/linux/sched/types.h:8:8: \
+>                         error: redefinition of =E2=80=98struct sched_para=
+m=E2=80=99
+>     8 | struct sched_param {
+>       |        ^~~~~~~~~~~
+> In file included from /usr/include/x86_64-linux-gnu/bits/sched.h:74,
+>                  from /usr/include/sched.h:43,
+>                  from /usr/include/pthread.h:23,
+>                  from /tmp/s.c:4:
+> /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:23:8:
+> note: originally defined here
+>    23 | struct sched_param
+>       |        ^~~~~~~~~~~
+>
+> This is also causing a problem on using sched_attr Chrome. The issue is
+> sched_param is already provided by glibc.
+>
+> Guard the kernel's UAPI definition of sched_param with __KERNEL__ so
+> that userspace can compile.
+>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-The leak is there but this code has changed a lot recently, please take
-a look at my perf/core branch and keep Ian Rogers in the loop,
+If it is more preferable, another option is to move sched_param to
+include/linux/sched/types.h
 
-- Arnaldo
- 
-> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
+ - Joel
+
+
 > ---
->  tools/perf/util/metricgroup.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 926449a7cdbf..69bf0f4d646e 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -184,6 +184,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->  		if (!evsel) {
->  			pr_debug("Cannot resolve %s: %s\n",
->  					eg->metric_name, eg->metric_expr);
-> +			free(metric_events);
->  			continue;
->  		}
->  		for (i = 0; i < eg->idnum; i++)
-> @@ -191,11 +192,13 @@ static int metricgroup__setup_events(struct list_head *groups,
->  		me = metricgroup__lookup(metric_events_list, evsel, true);
->  		if (!me) {
->  			ret = -ENOMEM;
-> +			free(metric_events);
->  			break;
->  		}
->  		expr = malloc(sizeof(struct metric_expr));
->  		if (!expr) {
->  			ret = -ENOMEM;
-> +			free(metric_events);
->  			break;
->  		}
->  		expr->metric_expr = eg->metric_expr;
-> -- 
-> 2.17.1
-> 
-
--- 
-
-- Arnaldo
+>  include/uapi/linux/sched/types.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/=
+types.h
+> index c852153ddb0d3..1f10d935a63fe 100644
+> --- a/include/uapi/linux/sched/types.h
+> +++ b/include/uapi/linux/sched/types.h
+> @@ -4,9 +4,11 @@
+>
+>  #include <linux/types.h>
+>
+> +#if defined(__KERNEL__)
+>  struct sched_param {
+>         int sched_priority;
+>  };
+> +#endif
+>
+>  #define SCHED_ATTR_SIZE_VER0   48      /* sizeof first published struct =
+*/
+>  #define SCHED_ATTR_SIZE_VER1   56      /* add: util_{min,max} */
+> --
+> 2.26.2.761.g0e0b3e54be-goog
+>
