@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307041DCBBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9AF1DCBEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 13:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbgEULJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 07:09:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729017AbgEULJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 07:09:54 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75F7120721;
-        Thu, 21 May 2020 11:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590059393;
-        bh=CYq5LvpdIkzN5Q2ml6NSFNeLsYGmkIUAGsU26W6nIUE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=sSAB0ijeU/zJF/ltw7k79k69ZikOCsnrNtoPtdEHHISk+BhL7kaXFLaQnxh43Jn/I
-         tazH3muCMsoFMJFPkE9Q5fCGKRGV+jrFzHJrghjznDxlFd2aEIMENW8sFFQu38VCUh
-         p4hJhm+i8jSZMA8ZrNQ4SXXOjUFTkDI/whSvkEzU=
-Message-ID: <cad949df361b68a1c929f9053bce34d1892c8291.camel@kernel.org>
-Subject: Re: [PATCH] ceph: show max caps in debugfs caps file
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Yanhu Cao <gmayyyha@gmail.com>
-Cc:     idryomov@gmail.com, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 21 May 2020 07:09:52 -0400
-In-Reply-To: <20200521093845.15101-1-gmayyyha@gmail.com>
-References: <20200521093845.15101-1-gmayyyha@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
+        id S1729049AbgEULME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 07:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728442AbgEULMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 07:12:03 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD1AC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:12:03 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id g25so5149558otp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 04:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/oL7dAuaA62cBm7hAceUJOjBRK5rQp19BMPlUMceggo=;
+        b=SToWnglhZFHvnkT5/QNB9fD0tbAajvPdZlwXz6KPsdo/KGF1m3FaV81CqJ7COejDH5
+         SgQz+SsmWca/W8+dH6L4/gJ4Nn7g3CwY4ryAG34oCjXK6LyQ+e0lQCguuqlEXqgZ5TCg
+         5uGe5G/TO0/HcaHwthRzAs/fGY4s0fGofRlnp/LsPk4m4E7XPe/Ui+zzzsl2Lecr4s7+
+         iTASy+6lSY3Fe2pCtEzVkFWVeJKdhMf6syN776cTBZs6fVTnJBvXbMYd9mzNSJFLkCpO
+         VNq0LY+Vl8P/Yl73hrtKEckDQLqSJO7bqMhXj+KFMeFIh1wzrY9Yc+qmYJ1VzyXdclFS
+         c1xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/oL7dAuaA62cBm7hAceUJOjBRK5rQp19BMPlUMceggo=;
+        b=tOv0gFZuLMte/XxBz92hSlnV1UaAMjdwHAyb7+2MrmaMSbrmmaURzY6TiPCISfH7Km
+         Bv1537qTgNrKWq9MT9ucgoAkkMdby1KLpxyjT1Bup0Wn1+QX6rKV7t5l3YO95r9XgDhO
+         72VDxlw/BJ0nWz4+ZBJfnUUoSMFTY9ri+dk1y9acAUC1QyXYHyNt3hV9ITnOgi5P6TVd
+         WZL6BpfDnFCvvinHU8VoGglX7OBGdZpw1YtnQa5uVjgwzdZFL2pLwCPsKuJOBKlEUMSc
+         K8ooDEJw65LX3ebPnFJ/RFjp6u7Nr38MaS1GsW7R7CwG73pJvfOwckKRppxPDt89aer4
+         t7lA==
+X-Gm-Message-State: AOAM53003Gs106Ttq0Gp3q0L+3HKA90xoSJrxchmZQdanbz60J1qmeJP
+        e5Yhx43Utlmxz5eDpqEqHYwvk7VTPSMNklK1v+mIhw==
+X-Google-Smtp-Source: ABdhPJw17uyBMC0m3w1yjaRSVBfBWWlyDtoOJjc5+l8DV6nFfRiiRN1W5A8VLsLHUTfZAiwI9X8jJpRHAyXlXGyaTA4=
+X-Received: by 2002:a9d:27a3:: with SMTP id c32mr7112271otb.233.1590059522704;
+ Thu, 21 May 2020 04:12:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200515150338.190344-1-elver@google.com>
+In-Reply-To: <20200515150338.190344-1-elver@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 21 May 2020 13:11:50 +0200
+Message-ID: <CANpmjNP2GsUuHAfvBa6qhnAe1W=1Zo=0i2eB09V7GAdtRSjVfg@mail.gmail.com>
+Subject: Re: [PATCH -tip 00/10] Fix KCSAN for new ONCE (require Clang 11)
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-05-21 at 17:38 +0800, Yanhu Cao wrote:
->         before
->         ------
->         total           1026
->         avail           1024
->         used            2
->         reserved        0
->         min             1024
-> 
->         after
->         ------
->         total           1026
->         avail           1024
->         used            2
->         max             2048
->         reserved        0
->         min             1024
-> 
-> Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
-> ---
->  fs/ceph/caps.c    | 6 ++++--
->  fs/ceph/debugfs.c | 7 ++++---
->  fs/ceph/super.h   | 2 +-
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> index 5f3aa4d607de..e2c759a2ef35 100644
-> --- a/fs/ceph/caps.c
-> +++ b/fs/ceph/caps.c
-> @@ -404,8 +404,8 @@ void ceph_put_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap)
->  }
->  
->  void ceph_reservation_status(struct ceph_fs_client *fsc,
-> -			     int *total, int *avail, int *used, int *reserved,
-> -			     int *min)
-> +			     int *total, int *avail, int *used, int *max,
-> +			     int *reserved, int *min)
->  {
->  	struct ceph_mds_client *mdsc = fsc->mdsc;
->  
-> @@ -417,6 +417,8 @@ void ceph_reservation_status(struct ceph_fs_client *fsc,
->  		*avail = mdsc->caps_avail_count;
->  	if (used)
->  		*used = mdsc->caps_use_count;
-> +	if (max)
-> +		*max = mdsc->caps_use_max;
+On Fri, 15 May 2020 at 17:03, Marco Elver <elver@google.com> wrote:
+>
+> This patch series is the conclusion to [1], where we determined that due
+> to various interactions with no_sanitize attributes and the new
+> {READ,WRITE}_ONCE(), KCSAN will require Clang 11 or later. Other
+> sanitizers are largely untouched, and only KCSAN now has a hard
+> dependency on Clang 11. To test, a recent Clang development version will
+> suffice [2]. While a little inconvenient for now, it is hoped that in
+> future we may be able to fix GCC and re-enable GCC support.
+>
+> The patch "kcsan: Restrict supported compilers" contains a detailed list
+> of requirements that led to this decision.
+>
+> Most of the patches are related to KCSAN, however, the first patch also
+> includes an UBSAN related fix and is a dependency for the remaining
+> ones. The last 2 patches clean up the attributes by moving them to the
+> right place, and fix KASAN's way of defining __no_kasan_or_inline,
+> making it consistent with KCSAN.
+>
+> The series has been tested by running kcsan-test several times and
+> completed successfully.
+>
+> [1] https://lkml.kernel.org/r/CANpmjNOGFqhtDa9wWpXs2kztQsSozbwsuMO5BqqW0c0g0zGfSA@mail.gmail.com
+> [2] https://github.com/llvm/llvm-project
+>
 
-Can you lay out what value this will provide? I'm not convinced that
-this information is really that helpful:
 
-mdsc->caps_use_max is just set to the value of the "caps_max" mount
-option, and that information is displayed in /proc/mounts if it's not
-set to the default.
-
-What might be more interesting is to track the most recent "max_caps"
-value sent by the MDS (see the CEPH_SESSION_RECALL_STATE message
-handling). Tracking that would give us a more dynamic view of the
-current maximum requested by the MDS, which is often going to be less
-than what "caps_max" was set to at mount time.
-
->  	if (reserved)
->  		*reserved = mdsc->caps_reserve_count;
->  	if (min)
-> diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> index 481ac97b4d25..942004376588 100644
-> --- a/fs/ceph/debugfs.c
-> +++ b/fs/ceph/debugfs.c
-> @@ -138,16 +138,17 @@ static int caps_show(struct seq_file *s, void *p)
->  {
->  	struct ceph_fs_client *fsc = s->private;
->  	struct ceph_mds_client *mdsc = fsc->mdsc;
-> -	int total, avail, used, reserved, min, i;
-> +	int total, avail, used, max, reserved, min, i;
->  	struct cap_wait	*cw;
->  
-> -	ceph_reservation_status(fsc, &total, &avail, &used, &reserved, &min);
-> +	ceph_reservation_status(fsc, &total, &avail, &used, &max,
-> +				&reserved, &min);
->  	seq_printf(s, "total\t\t%d\n"
->  		   "avail\t\t%d\n"
->  		   "used\t\t%d\n"
->  		   "reserved\t%d\n"
->  		   "min\t\t%d\n\n",
-> -		   total, avail, used, reserved, min);
-> +		   total, avail, used, max, reserved, min);
->  	seq_printf(s, "ino                issued           implemented\n");
->  	seq_printf(s, "-----------------------------------------------\n");
->  
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index 60aac3aee055..79aa42d9336c 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -700,7 +700,7 @@ extern void ceph_unreserve_caps(struct ceph_mds_client *mdsc,
->  			       struct ceph_cap_reservation *ctx);
->  extern void ceph_reservation_status(struct ceph_fs_client *client,
->  				    int *total, int *avail, int *used,
-> -				    int *reserved, int *min);
-> +				    int *max, int *reserved, int *min);
->  
->  
->  
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Superseded by v2:
+https://lkml.kernel.org/r/20200521110854.114437-1-elver@google.com
