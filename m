@@ -2,95 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD671DC6FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B3F1DC701
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgEUGWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:22:10 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:32566 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726506AbgEUGWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:22:10 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 21 May 2020 14:21:03
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.77.158]
-Date:   Thu, 21 May 2020 14:21:03 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Sverdlin, Alexander (Nokia - DE/Ulm)" <alexander.sverdlin@nokia.com>
-Cc:     "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "kjlu@umn.edu" <kjlu@umn.edu>, "mpm@selenic.com" <mpm@selenic.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "allison@lohutok.net" <allison@lohutok.net>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "rfontana@redhat.com" <rfontana@redhat.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: Re: Re: [PATCH] hwrng: ks-sa - fix runtime pm imbalance on error
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <ab400cba7523e69b15360b0928cb8fa8b9432d86.camel@nokia.com>
-References: <20200520132957.18776-1-dinghao.liu@zju.edu.cn>
- <ab400cba7523e69b15360b0928cb8fa8b9432d86.camel@nokia.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-MIME-Version: 1.0
-Message-ID: <945e695.ba3c9.17235e473d9.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgCnjwrPHcZeJgjoAQ--.39295W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQHBlZdtOPFNQABsq
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbt0S07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
-        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
-        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
-        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
-        JwCS07vEFIxGxcIEc7CjxVA2Y2ka0xkIwI1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r
-        47MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS
-        07vE4x8a6x804xWlV2xY6xC20s026xCaFVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14
-        v26r1j6r18MIAIbVC20s026x8GjcxK67AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWU
-        tVW8ZwCS07vEIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIAIbVCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU=
+        id S1728205AbgEUGYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:24:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5775 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgEUGYr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 02:24:47 -0400
+IronPort-SDR: TXPPf7V+NRSF6G1qSGL9X3hvPTdTfSKTxUHXC2Q7SSHQPqaOcbLu8+dRV0xlqcDFm+3wmG3Gyi
+ 4Q+SZyKcqxNA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 23:24:46 -0700
+IronPort-SDR: KvlqI8GHyYwQ1/7xiGOuhZBmfygZBkrj6hSEIeJpzic2RwyiMdGZ4CjO/cTYhy5MA2oRizn7ja
+ HGLZe/82OQ2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,416,1583222400"; 
+   d="scan'208";a="374316881"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga001.fm.intel.com with ESMTP; 20 May 2020 23:24:44 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf evlist: Ensure grouped events with same cpu map
+Date:   Thu, 21 May 2020 14:22:40 +0800
+Message-Id: <20200521062240.18865-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxleGFuZGVyLAoKVGhlcmUgYXJlIGxhcmdlIGFtb3VudHMgb2YgY2FzZXMgdGhhdCBhc3N1
-bWUgcG1fcnVudGltZV9nZXRfc3luYygpCndpbGwgbW9kaWZ5IHJ1bnRpbWUgUE0gdXNhZ2UgY291
-bnRlciBvbiBlcnJvci4gRml4aW5nIHRoaXMgaW4gUE0gCnN1YnN5c3RlbSB3aWxsIGluZmx1ZW5j
-ZSBhbGwgY2FsbGVycyBvZiBwbV9ydW50aW1lX2dldF9zeW5jKCkgYW5kCmludHJvZHVjZSBuZXcg
-YnVncy4gVGhlcmVmb3JlIEkgdGhpbmsgdGhlIGJldHRlciBzb2x1dGlvbiBpcyB0byBmaXgKbWlz
-dXNlZCBjYXNlcyBpbmRpdmlkdWFsbHkuCgpEaW5naGFvCgo+IEhlbGxvIERpbmdoYW8sCj4gCj4g
-T24gV2VkLCAyMDIwLTA1LTIwIGF0IDIxOjI5ICswODAwLCBEaW5naGFvIExpdSB3cm90ZToKPiA+
-IHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSBpbmNyZW1lbnRzIHRoZSBydW50aW1lIFBNIHVzYWdlIGNv
-dW50ZXIgZXZlbgo+ID4gdGhlIGNhbGwgcmV0dXJucyBhbiBlcnJvciBjb2RlLiBUaHVzIGEgcGFp
-cmluZyBkZWNyZW1lbnQgaXMgbmVlZGVkCj4gPiBvbiB0aGUgZXJyb3IgaGFuZGxpbmcgcGF0aCB0
-byBrZWVwIHRoZSBjb3VudGVyIGJhbGFuY2VkLgo+IAo+IEkgYmVsaWV2ZSwgdGhpcyBpcyB0aGUg
-d3JvbmcgcGxhY2UgZm9yIHN1Y2gga2luZCBvZiBmaXguCj4gcG1fcnVudGltZV9nZXRfc3luYygp
-IGhhcyBvYnZpb3VzbHkgYSBicm9rZW4gc2VtYW50aWNzIHdpdGggcmVnYXJkcyB0bwo+IHlvdXIg
-b2JzZXJ2YXRpb24gYnV0IG5vIG90aGVyIGRyaXZlciBkb2VzIHdoYXQgeW91IHByb3Bvc2UuCj4g
-SSB0aGluayB0aGUgcHJvcGVyIGZpeCBiZWxvbmcgaW50byBQTSBzdWJzeXN0ZW0sIHBsZWFzZSB0
-YWtlIGEgbG9vawo+IG9udG8gY29tbWl0IDE1YmNiOTFkN2U2MCAiUE0gLyBSdW50aW1lOiBJbXBs
-ZW1lbnQgYXV0b3N1c3BlbmQgc3VwcG9ydCIuCj4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5naGFv
-IExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvY2hhci9o
-d19yYW5kb20va3Mtc2Etcm5nLmMgfCAxICsKPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKykKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci9od19yYW5kb20va3Mtc2Et
-cm5nLmMgYi9kcml2ZXJzL2NoYXIvaHdfcmFuZG9tL2tzLXNhLXJuZy5jCj4gPiBpbmRleCBlMjMz
-MGU3NTdmMWYuLjg1YzgxZGE0YThhZiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvY2hhci9od19y
-YW5kb20va3Mtc2Etcm5nLmMKPiA+ICsrKyBiL2RyaXZlcnMvY2hhci9od19yYW5kb20va3Mtc2Et
-cm5nLmMKPiA+IEBAIC0yNDQsNiArMjQ0LDcgQEAgc3RhdGljIGludCBrc19zYV9ybmdfcHJvYmUo
-c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiA+ICAJcmV0ID0gcG1fcnVudGltZV9nZXRf
-c3luYyhkZXYpOwo+ID4gIAlpZiAocmV0IDwgMCkgewo+ID4gIAkJZGV2X2VycihkZXYsICJGYWls
-ZWQgdG8gZW5hYmxlIFNBIHBvd2VyLWRvbWFpblxuIik7Cj4gPiArCQlwbV9ydW50aW1lX3B1dF9z
-eW5jKGRldik7Cj4gPiAgCQlwbV9ydW50aW1lX2Rpc2FibGUoZGV2KTsKPiA+ICAJCXJldHVybiBy
-ZXQ7Cj4gPiAgCX0KPiAtLSAKPiBBbGV4YW5kZXIgU3ZlcmRsaW4uCj4gCg==
+A metric may consist of core event and uncore event (or other
+per-socket event)
+
+For example, the metric "C2_Pkg_Residency" consists of
+"cstate_pkg/c2-residency" and "msr/tsc". The former is per-socket
+event and the latter is per-cpu event.
+
+"C2_Pkg_Residency" hits assertion failure on cascadelakex.
+
+ # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+ perf: util/evsel.c:1464: get_group_fd: Assertion `!(fd == -1)' failed.
+ Aborted
+
+The root cause is one issue in get_group_fd(), access violation!
+
+For a group mixed with per-socket event and per-cpu event and the
+group leader is per-socket event, access violation will happen.
+
+perf_evsel__alloc_fd allocates one FD member for per-socket event.
+Only FD(evsel, 0, 0) is valid (suppose one-socket system).
+
+But for per-cpu event, perf_evsel__alloc_fd allocates N FD members
+(N = ncpus). For example, if ncpus is 8, FD(evsel, 0, 0) to
+FD(evsel, 7, 0) are valid.
+
+get_group_fd(struct evsel *evsel, int cpu, int thread)
+{
+       struct evsel *leader = evsel->leader;
+
+       fd = FD(leader, cpu, thread);    /* access violation */
+}
+
+If leader is per-socket event, only FD(leader, 0, 0) is valid.
+So when get_group_fd tries to access FD(leader, 1, 0), access
+violation will happen.
+
+This patch ensures that the grouped events with same cpu maps
+before we go to get_group_fd.
+
+If the cpu maps are not matched, we force to disable the group.
+
+Fixes: 6a4bb04caacc8 ("perf tools: Enable grouping logic for parsed events")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/builtin-stat.c |  3 +++
+ tools/perf/util/evlist.c  | 32 ++++++++++++++++++++++++++++++++
+ tools/perf/util/evlist.h  |  5 +++++
+ 3 files changed, 40 insertions(+)
+
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 377e575f9645..0e4fc6b3323c 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -584,6 +584,9 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	if (affinity__setup(&affinity) < 0)
+ 		return -1;
+ 
++	if (!evlist__cpus_matched(evsel_list))
++		evlist__force_disable_group(evsel_list);
++
+ 	evlist__for_each_cpu (evsel_list, i, cpu) {
+ 		affinity__set(&affinity, cpu);
+ 
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 2a9de6491700..fc6e410ca63b 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1704,3 +1704,35 @@ struct evsel *perf_evlist__reset_weak_group(struct evlist *evsel_list,
+ 	}
+ 	return leader;
+ }
++
++bool evlist__cpus_matched(struct evlist *evlist)
++{
++	struct evsel *prev = evlist__first(evlist), *evsel = prev;
++
++	if (prev->core.nr_members <= 1)
++		return true;
++
++	evlist__for_each_entry_continue(evlist, evsel) {
++		if (evsel->core.cpus->nr != prev->core.cpus->nr)
++			return false;
++
++		for (int i = 0; i < evsel->core.cpus->nr; i++) {
++			if (evsel->core.cpus->map[i] != prev->core.cpus->map[i])
++				return false;
++		}
++
++		prev = evsel;
++	}
++
++	return true;
++}
++
++void evlist__force_disable_group(struct evlist *evlist)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		evsel->leader = evsel;
++		evsel->core.nr_members = 0;
++	}
++}
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index b6f325dfb4d2..ea7a53166cbd 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -355,4 +355,9 @@ void perf_evlist__force_leader(struct evlist *evlist);
+ struct evsel *perf_evlist__reset_weak_group(struct evlist *evlist,
+ 						 struct evsel *evsel,
+ 						bool close);
++
++bool evlist__cpus_matched(struct evlist *evlist);
++
++void evlist__force_disable_group(struct evlist *evlist);
++
+ #endif /* __PERF_EVLIST_H */
+-- 
+2.17.1
+
