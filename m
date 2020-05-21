@@ -2,121 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183491DCD0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866CC1DCD15
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbgEUMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 08:37:47 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:44425 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgEUMhq (ORCPT
+        id S1729380AbgEUMi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 08:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729185AbgEUMi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 08:37:46 -0400
-Received: by mail-ej1-f66.google.com with SMTP id x20so8566421ejb.11;
-        Thu, 21 May 2020 05:37:45 -0700 (PDT)
+        Thu, 21 May 2020 08:38:58 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0842C061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 05:38:58 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p21so3085856pgm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 05:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qrPX9G3+4aBI10o4oEHyWzWzharRDL5aHtWT6C1hV1M=;
+        b=eyKMrOdNlKxE4hK1V2DTniBs10Fv951OeqXz10XdX18R8Rfd3190Or/83oF/SH95bY
+         uvnoW91oDo+l1trvF6bBOB35j8/L8HZZmvjmG1NlbB7/RfHjC6Qww+CTnf65DOzg3gBM
+         HvL2UmtJKcRKuvQQcowlTcflRqqMNLvyknjmz06+5/TuFOyzPVS+J2J4s/NUfI7GyClY
+         2tuimsIj3m0Gka/Vcc7ZhL+KpuB/95rD27Z9FDuCuP0i01ZBVcDWacPM1vImhji8nu+B
+         21Ydvn693kQ1m8d0AN4yRG+H/hJ1YTf7jl1qRgSnMAdAn/XNUWoU3hjjPFQjz00HF60A
+         S11w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2vhA5VZC0nBvo7ys++OSqz3+TT1aqRd8PraCHE7WA7k=;
-        b=U6/k5ElFSdZME2o5n7me/vMJMF0YoXJvrpKyg3z2aPljSwtldN699JLNHL1FZVpg+R
-         UsOZlQu1c0lL24UDvOEesP184yfPNmSlqhrM2kvewi3cHVWYmh+ky5de4pUus9ZwV1Mu
-         bQN3pvfxfERnfuGfwGJIOGG725jSLCys8EGm8Y1iYlkCWLzeh8uDjji0JRfCRQLQIf8m
-         yG+i3eINvP1f9fsu1rUvOLheEt0ZLz5K58a6VuoMWh6LqHqTOrCr2HxVpBUptOSJj2os
-         jDEexTAcCjK9HuCrJMJVsJGDwG1ayPCh9DrfcWeIkAFkVj3zlqpNRoOtbuB6/ADK4eQI
-         eQZg==
-X-Gm-Message-State: AOAM531TI9xQkKUzwuRTulJpjUMduKjNRYI7kbULCKfATVe8k+wqub/t
-        vUJeFl/J+JWGw0S5gphV174=
-X-Google-Smtp-Source: ABdhPJz3IWgvzhsJwT+nI7vhlMqWbOUJ8KKpNxjwtDjBUDZk1awt/EAZFDeW9+LNiq9SeMvb8vZp2g==
-X-Received: by 2002:a17:906:9518:: with SMTP id u24mr3393542ejx.137.1590064664511;
-        Thu, 21 May 2020 05:37:44 -0700 (PDT)
-Received: from localhost (ip-37-188-180-112.eurotel.cz. [37.188.180.112])
-        by smtp.gmail.com with ESMTPSA id lx8sm4721542ejb.75.2020.05.21.05.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 05:37:43 -0700 (PDT)
-Date:   Thu, 21 May 2020 14:37:42 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200521123742.GO6462@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <20200520160756.GE6462@dhcp22.suse.cz>
- <20200520202650.GB558281@chrisdown.name>
- <20200521071929.GH6462@dhcp22.suse.cz>
- <20200521112711.GA990580@chrisdown.name>
- <20200521120455.GM6462@dhcp22.suse.cz>
- <20200521122327.GB990580@chrisdown.name>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qrPX9G3+4aBI10o4oEHyWzWzharRDL5aHtWT6C1hV1M=;
+        b=VpUi4tt8bC9x+R9LmBryKvx4RpVPPdjVbVziebEQ04Lgb58Sbc4zbRD6mg/siBHKEk
+         qg4dVwXinJac70WITNv+HWbUu1sf2OQCnZYWrkhSerzjL2N9NksRbAy1+pSLSv3dfZ/1
+         W8CIg5iVpkXaEX8ycwDtlxTCAg/I6Q/HLzLfZ0VGNSwkcNyE4NCD49DwKCnIW/816Uyt
+         pPb2ofk16K1bNqHYyshZXZvm+R2RUPOcHfgZc1viqDFhJlgtSCj4qRMgwalKM7Hp4gLC
+         5QrmijmpakrtiG2ZNxxnsRvVvxg+RHZklv9n38c1AZrFlzCFJ353ElgKODVIl3gTdNcT
+         0XEA==
+X-Gm-Message-State: AOAM530U08d16/av037W120yVTfZx3HpjODwchoCGMA0anbPKyWXntYd
+        9mpqqs2lAtg593A54ljfj4DY8g==
+X-Google-Smtp-Source: ABdhPJy9gosZTjDkb+FQ3lX5TtFuOdxNa9fPv/j1JyHKILIqEs4RR3/DsnPRh7l5AqHBoL4DlK9LOQ==
+X-Received: by 2002:a62:8241:: with SMTP id w62mr9613358pfd.187.1590064737961;
+        Thu, 21 May 2020 05:38:57 -0700 (PDT)
+Received: from Smcdef-MBP.lan ([103.136.220.73])
+        by smtp.gmail.com with ESMTPSA id w14sm4152316pgi.12.2020.05.21.05.38.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 May 2020 05:38:57 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     adobriyan@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org
+Cc:     ebiederm@xmission.com, bernd.edlinger@hotmail.de,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] files: Use rcu lock to get the file structures for better performance
+Date:   Thu, 21 May 2020 20:38:35 +0800
+Message-Id: <20200521123835.70069-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521122327.GB990580@chrisdown.name>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-05-20 13:23:27, Chris Down wrote:
-> (I'll leave the dirty throttling discussion to Johannes, because I'm not so
-> familiar with that code or its history.)
-> 
-> Michal Hocko writes:
-> > > > The main problem I see with that approach is that the loop could easily
-> > > > lead to reclaim unfairness when a heavy producer which doesn't leave the
-> > > > kernel (e.g. a large read/write call) can keep a different task doing
-> > > > all the reclaim work. The loop is effectivelly unbound when there is a
-> > > > reclaim progress and so the return to the userspace is by no means
-> > > > proportional to the requested memory/charge.
-> > > 
-> > > It's not unbound when there is reclaim progress, it stops when we are within
-> > > the memory.high throttling grace period. Right after reclaim, we check if
-> > > penalty_jiffies is less than 10ms, and abort and further reclaim or
-> > > allocator throttling:
-> > 
-> > Just imagine that you have parallel producers increasing the high limit
-> > excess while somebody reclaims those. Sure in practice the loop will be
-> > bounded but the reclaimer might perform much more work on behalf of
-> > other tasks.
-> 
-> A cgroup is a unit and breaking it down into "reclaim fairness" for
-> individual tasks like this seems suspect to me. For example, if one task in
-> a cgroup is leaking unreclaimable memory like crazy, everyone in that cgroup
-> is going to be penalised by allocator throttling as a result, even if they
-> aren't "responsible" for that reclaim.
+There is another safe way to get the file structure without
+holding the files->file_lock. That is rcu lock, and this way
+has better performance. So use the rcu lock instead of the
+files->file_lock.
 
-You are right, but that doesn't mean that it is desirable that some
-tasks would be throttled unexpectedly too long because of the other's activity.
-We already have that behavior for the direct reclaim and I have to say I
-really hate it and had to spend a lot of time debugging latency issues.
-Our excuse has been that the system is struggling at that time so any
-quality of service is simply out of picture. I do not think the same
-argument can be applied to memory.high which doesn't really represent a
-mark when the memcg is struggling so hard to drop any signs of fairness
-on the floor.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ fs/proc/fd.c         | 31 ++++++++++++++++++++++++-------
+ kernel/bpf/syscall.c | 17 +++++++++++------
+ kernel/kcmp.c        | 15 ++++++++++-----
+ 3 files changed, 45 insertions(+), 18 deletions(-)
 
-> So the options here are as follows when a cgroup is over memory.high and a
-> single reclaim isn't enough:
-> 
-> 1. Decline further reclaim. Instead, throttle for up to 2 seconds.
-> 2. Keep on reclaiming. Only throttle if we can't get back under memory.high.
-> 
-> The outcome of your suggestion to decline further reclaim is case #1, which
-> is significantly more practically "unfair" to that task. Throttling is
-> extremely disruptive to tasks and should be a last resort when we've
-> exhausted all other practical options. It shouldn't be something you get
-> just because you didn't try to reclaim hard enough.
-
-I believe I have asked in other email in this thread. Could you explain
-why enforcint the requested target (memcg_nr_pages_over_high) is
-insufficient for the problem you are dealing with? Because that would
-make sense for large targets to me while it would keep relatively
-reasonable semantic of the throttling - aka proportional to the memory
-demand rather than the excess.
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index 81882a13212d3..5d5b0f091d32a 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -34,19 +34,27 @@ static int seq_show(struct seq_file *m, void *v)
+ 	if (files) {
+ 		unsigned int fd = proc_fd(m->private);
+ 
+-		spin_lock(&files->file_lock);
++		rcu_read_lock();
++again:
+ 		file = fcheck_files(files, fd);
+ 		if (file) {
+-			struct fdtable *fdt = files_fdtable(files);
++			struct fdtable *fdt;
++
++			if (!get_file_rcu(file)) {
++				/*
++				 * we loop to catch the new file (or NULL
++				 * pointer).
++				 */
++				goto again;
++			}
+ 
++			fdt = files_fdtable(files);
+ 			f_flags = file->f_flags;
+ 			if (close_on_exec(fd, fdt))
+ 				f_flags |= O_CLOEXEC;
+-
+-			get_file(file);
+ 			ret = 0;
+ 		}
+-		spin_unlock(&files->file_lock);
++		rcu_read_unlock();
+ 		put_files_struct(files);
+ 	}
+ 
+@@ -160,14 +168,23 @@ static int proc_fd_link(struct dentry *dentry, struct path *path)
+ 		unsigned int fd = proc_fd(d_inode(dentry));
+ 		struct file *fd_file;
+ 
+-		spin_lock(&files->file_lock);
++		rcu_read_lock();
++again:
+ 		fd_file = fcheck_files(files, fd);
+ 		if (fd_file) {
++			if (!get_file_rcu(fd_file)) {
++				/*
++				 * we loop to catch the new file
++				 * (or NULL pointer).
++				 */
++				goto again;
++			}
+ 			*path = fd_file->f_path;
+ 			path_get(&fd_file->f_path);
++			fput(fd_file);
+ 			ret = 0;
+ 		}
+-		spin_unlock(&files->file_lock);
++		rcu_read_unlock();
+ 		put_files_struct(files);
+ 	}
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 8608d6e1b0e0e..441c91378a1fc 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3451,14 +3451,19 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ 	if (!files)
+ 		return -ENOENT;
+ 
+-	err = 0;
+-	spin_lock(&files->file_lock);
++	rcu_read_lock();
++again:
+ 	file = fcheck_files(files, fd);
+-	if (!file)
++	if (file) {
++		if (!get_file_rcu(file)) {
++			/* we loop to catch the new file (or NULL pointer) */
++			goto again;
++		}
++		err = 0;
++	} else {
+ 		err = -EBADF;
+-	else
+-		get_file(file);
+-	spin_unlock(&files->file_lock);
++	}
++	rcu_read_unlock();
+ 	put_files_struct(files);
+ 
+ 	if (err)
+diff --git a/kernel/kcmp.c b/kernel/kcmp.c
+index b3ff9288c6cc9..3b4f2a54186f2 100644
+--- a/kernel/kcmp.c
++++ b/kernel/kcmp.c
+@@ -120,13 +120,18 @@ static int kcmp_epoll_target(struct task_struct *task1,
+ 	if (!files)
+ 		return -EBADF;
+ 
+-	spin_lock(&files->file_lock);
++	rcu_read_lock();
++again:
+ 	filp_epoll = fcheck_files(files, slot.efd);
+-	if (filp_epoll)
+-		get_file(filp_epoll);
+-	else
++	if (filp_epoll) {
++		if (!get_file_rcu(filp_epoll)) {
++			/* we loop to catch the new file (or NULL pointer) */
++			goto again;
++		}
++	} else {
+ 		filp_tgt = ERR_PTR(-EBADF);
+-	spin_unlock(&files->file_lock);
++	}
++	rcu_read_unlock();
+ 	put_files_struct(files);
+ 
+ 	if (filp_epoll) {
 -- 
-Michal Hocko
-SUSE Labs
+2.11.0
+
