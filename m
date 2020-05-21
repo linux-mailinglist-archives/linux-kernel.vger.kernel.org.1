@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E351DD652
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367EE1DD667
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgEUSwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 14:52:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgEUSwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 14:52:18 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1258720823;
-        Thu, 21 May 2020 18:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590087138;
-        bh=22eFmN3PxHoXvV1xmhf23Ujh/olYK+FBaQOc/JWyKF4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cyli121Xo8MCtetN7HlPeb5FuYJUdX9EgmVlj63DR/O2C7orp8cXW6DLqRFjve53v
-         W+W2DB0x35sVsAD9+RkWhZItZKXVP56Pl03+NsfVPRAUiH6yxNMoxJCO8RzHG6SO5u
-         4zKoz/fekoxxLqds3tkaBugo+C9/smGpWiVN5+1U=
-Date:   Thu, 21 May 2020 13:57:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] m68k: tools: Replace zero-length array with flexible-array
- member
-Message-ID: <20200521185707.GA3661@embeddedor>
+        id S1729920AbgEUS5v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 May 2020 14:57:51 -0400
+Received: from mail.fireflyinternet.com ([109.228.58.192]:49462 "EHLO
+        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729092AbgEUS5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 14:57:51 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21252267-1500050 
+        for multiple; Thu, 21 May 2020 19:57:36 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200519002124.2025955-1-jhubbard@nvidia.com>
+References: <20200519002124.2025955-1-jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        John Hubbard <jhubbard@nvidia.com>
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH 0/4] mm/gup, drm/i915: refactor gup_fast, convert to pin_user_pages()
+Message-ID: <159008745422.32320.5724805750977048669@build.alporthouse.com>
+User-Agent: alot/0.8.1
+Date:   Thu, 21 May 2020 19:57:34 +0100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Quoting John Hubbard (2020-05-19 01:21:20)
+> This needs to go through Andrew's -mm tree, due to adding a new gup.c
+> routine. However, I would really love to have some testing from the
+> drm/i915 folks, because I haven't been able to run-time test that part
+> of it.
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+CI hit
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+<4> [185.667750] WARNING: CPU: 0 PID: 1387 at mm/gup.c:2699 internal_get_user_pages_fast+0x63a/0xac0
+<4> [185.667752] Modules linked in: vgem snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic i915 mei_hdcp x86_pkg_temp_thermal coretemp snd_hda_intel snd_intel_dspcfg crct10dif_pclmul snd_hda_codec crc32_pclmul snd_hwdep snd_hda_core ghash_clmulni_intel cdc_ether usbnet mii snd_pcm e1000e mei_me ptp pps_core mei intel_lpss_pci prime_numbers
+<4> [185.667774] CPU: 0 PID: 1387 Comm: gem_userptr_bli Tainted: G     U            5.7.0-rc5-CI-Patchwork_17704+ #1
+<4> [185.667777] Hardware name: Intel Corporation Ice Lake Client Platform/IceLake U DDR4 SODIMM PD RVP, BIOS ICLSFWR1.R00.3234.A01.1906141750 06/14/2019
+<4> [185.667782] RIP: 0010:internal_get_user_pages_fast+0x63a/0xac0
+<4> [185.667785] Code: 24 40 08 48 39 5c 24 38 49 89 df 0f 85 74 fc ff ff 48 83 44 24 50 08 48 39 5c 24 58 49 89 dc 0f 85 e0 fb ff ff e9 14 fe ff ff <0f> 0b b8 ea ff ff ff e9 36 fb ff ff 4c 89 e8 48 21 e8 48 39 e8 0f
+<4> [185.667789] RSP: 0018:ffffc90001133c38 EFLAGS: 00010206
+<4> [185.667792] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8884999ee800
+<4> [185.667795] RDX: 00000000000c0001 RSI: 0000000000000100 RDI: 00007f419e774000
+<4> [185.667798] RBP: ffff888453dbf040 R08: 0000000000000000 R09: 0000000000000001
+<4> [185.667800] R10: 0000000000000000 R11: 0000000000000000 R12: ffff888453dbf380
+<4> [185.667803] R13: ffff8884999ee800 R14: ffff888453dbf3e8 R15: 0000000000000040
+<4> [185.667806] FS:  00007f419e875e40(0000) GS:ffff88849fe00000(0000) knlGS:0000000000000000
+<4> [185.667808] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4> [185.667811] CR2: 00007f419e873000 CR3: 0000000458bd2004 CR4: 0000000000760ef0
+<4> [185.667814] PKRU: 55555554
+<4> [185.667816] Call Trace:
+<4> [185.667912]  ? i915_gem_userptr_get_pages+0x1c6/0x290 [i915]
+<4> [185.667918]  ? mark_held_locks+0x49/0x70
+<4> [185.667998]  ? i915_gem_userptr_get_pages+0x1c6/0x290 [i915]
+<4> [185.668073]  ? i915_gem_userptr_get_pages+0x1c6/0x290 [i915]
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- arch/m68k/tools/amiga/dmesg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/tools/amiga/dmesg.c b/arch/m68k/tools/amiga/dmesg.c
-index 7340f5b6cf6d..f8005a7efb0b 100644
---- a/arch/m68k/tools/amiga/dmesg.c
-+++ b/arch/m68k/tools/amiga/dmesg.c
-@@ -34,7 +34,7 @@ struct savekmsg {
-     u_long magic2;	/* SAVEKMSG_MAGIC2 */
-     u_long magicptr;	/* address of magic1 */
-     u_long size;
--    char data[0];
-+    char data[];
- };
- 
- 
--- 
-2.26.2
-
+and then panicked, across a range of systems.
+-Chris
