@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81741DC643
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA231DC648
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgEUEcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 00:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgEUEcO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 00:32:14 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6283EC061A0E
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 21:32:13 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f4so2514822pgi.10
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 21:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=giyDZYsddXSLGh0PmNhF6czurjr/9oMLKVT7TwPE9rk=;
-        b=hifECBLBaMj3032ovwzd6ETRWcP8zXJ9m0vOgUPqo7KH+SQdyNKYCH3Rdav8W+/HeQ
-         i0DDwnSnacUgylo0zWlnEC3Uo5FwtTCK2yqEwuvma8/S0bxLIjpji/3Iat2EN7usThHY
-         KGLXpPpYFd3WVkKwwTo4x+X0McNteYH2NKywKHBMyr/PD7t/NUtVDNNComrUwusYNnC6
-         QeME+duaPCiYbsqp8+65DY2ufAS9eiB7xvH5IgJrmv7LvNqQjmGkLpm0N4/DVbeSqxHN
-         8pnjZ4F8+vDo8picSFa5Knd8n2LNq4Ro+nC15xXeYNmM9HPE1NylAECyDgu4CzhM1Cjn
-         6tVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=giyDZYsddXSLGh0PmNhF6czurjr/9oMLKVT7TwPE9rk=;
-        b=Jd5aSQGqWyK+J34/44b+FvZ1jVKu4f+qKcMa7WTZCCLHeAkgpPQ8wD1yy4ZrsGHHtJ
-         t720TRs9Rhnq7Cp6dWPofOqpKeXRRW2yX5Dw1er9HJ3Tc9J+4syA58JecSMAamKIOE/3
-         8iSCGWYT0i3Ak0iXtOdEa7Q7EztRagMQUwEplVVan85Ergidt0xB8QguksojzCzgkEJ0
-         /eHlDVps1hZ9g2dl3IoBacDiXpE3H9M7sRIwhYWGVCKLzOFXRhJs8T+oV0bffs/y0jn7
-         9AZgOe1ttrXjAwCtbZFgcdZFxjZWc1ci+yycHVZCRDqv7h5Of+GY87oaTJgWb8lD2oCh
-         cB6g==
-X-Gm-Message-State: AOAM532MF1AbW/L3KgrVe5mnCfewfU6pMqBhi+WK1xHXQyCnj+Q/D+WY
-        0gu4MUaYJOvYrCBKQx8bgZdGGKfQ
-X-Google-Smtp-Source: ABdhPJywTihiyhaiAJZn6B8Ew+N0DDUzTBCwcHtuOisVx+xI6xMuINEbM18E3jA8pIrHtdUkiZSsiQ==
-X-Received: by 2002:a63:b64e:: with SMTP id v14mr7344574pgt.164.1590035532794;
-        Wed, 20 May 2020 21:32:12 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id h17sm3374947pfr.25.2020.05.20.21.32.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2020 21:32:12 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Thu, 21 May 2020 13:32:09 +0900
-To:     Joe Perches <joe@perches.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chenggang Wang <wangchenggang@vivo.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH 2/2] init: Allow multi-line output of kernel command
- line
-Message-ID: <20200521043209.GA755@jagdpanzerIV.localdomain>
-References: <cover.1589916689.git.joe@perches.com>
- <2b3832fed9370f0f8dfd1ea33dddb1d05a36e265.1589916689.git.joe@perches.com>
- <20200520044127.GB938@jagdpanzerIV.localdomain>
- <ae3aff79301c130aa15b3fe0ff801804bb019384.camel@perches.com>
- <20200520121000.GF520@jagdpanzerIV.localdomain>
- <19a8c717f8d9dc76f2b09e6dd19f3fbb71bf29c5.camel@perches.com>
+        id S1727998AbgEUEdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 00:33:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50461 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726887AbgEUEdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 00:33:33 -0400
+IronPort-SDR: fA+nWxifwI6RKjL7alkgoIhH/qX/51BsSmbK8r9NEQwVQZKx2PYOS7y0+Gn/uP3xKldsws8MnS
+ eq+2ryjpd1oA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 21:33:32 -0700
+IronPort-SDR: CT43a8HatG1xkf9qNaC/adIJD2PMhXHnATR8T0/7G9SttpLbTkKgBVtgNqgQ76EDaFCGpUwbrv
+ 0vSwoiNt6+Eg==
+X-IronPort-AV: E=Sophos;i="5.73,416,1583222400"; 
+   d="scan'208";a="440300490"
+Received: from unknown (HELO [10.239.13.122]) ([10.239.13.122])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 21:33:31 -0700
+Subject: Re: [PATCH 2/2] kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL
+ unconditionally
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Tao Xu <tao3.xu@intel.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200520160740.6144-1-mlevitsk@redhat.com>
+ <20200520160740.6144-3-mlevitsk@redhat.com>
+ <b8ca9ea1-2958-3ab4-2e86-2edbee1ca9d9@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <81228a0e-7797-4f34-3d6d-5b0550c10a8f@intel.com>
+Date:   Thu, 21 May 2020 12:33:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19a8c717f8d9dc76f2b09e6dd19f3fbb71bf29c5.camel@perches.com>
+In-Reply-To: <b8ca9ea1-2958-3ab4-2e86-2edbee1ca9d9@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/05/20 13:36), Joe Perches wrote:
-> > We can split command line in a loop - memchr(pos, ' ') - and
-> > pr_cont() parts of the command line. pr_cont() has overflow
-> > control and it flushes cont buffer before it overflows, so
-> > we should not lose anything.
+On 5/21/2020 5:05 AM, Paolo Bonzini wrote:
+> On 20/05/20 18:07, Maxim Levitsky wrote:
+>> This msr is only available when the host supports WAITPKG feature.
+>>
+>> This breaks a nested guest, if the L1 hypervisor is set to ignore
+>> unknown msrs, because the only other safety check that the
+>> kernel does is that it attempts to read the msr and
+>> rejects it if it gets an exception.
+>>
+>> Fixes: 6e3ba4abce KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL
+>>
+>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index fe3a24fd6b263..9c507b32b1b77 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -5314,6 +5314,10 @@ static void kvm_init_msr_list(void)
+>>   			if (msrs_to_save_all[i] - MSR_ARCH_PERFMON_EVENTSEL0 >=
+>>   			    min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
+>>   				continue;
+>> +			break;
+>> +		case MSR_IA32_UMWAIT_CONTROL:
+>> +			if (!kvm_cpu_cap_has(X86_FEATURE_WAITPKG))
+>> +				continue;
+>>   		default:
+>>   			break;
+>>   		}
 > 
-> It doesn't matter much here, but I believe
-> there's an 8k max buffer for pr_cont output.
+> The patch is correct, and matches what is done for the other entries of
+> msrs_to_save_all.  However, while looking at it I noticed that
+> X86_FEATURE_WAITPKG is actually never added, and that is because it was
+> also not added to the supported CPUID in commit e69e72faa3a0 ("KVM: x86:
+> Add support for user wait instructions", 2019-09-24), which was before
+> the kvm_cpu_cap mechanism was added.
 > 
-> include/linux/printk.h:#define CONSOLE_EXT_LOG_MAX      8192
+> So while at it you should also fix that.  The right way to do that is to
+> add a
+> 
+>          if (vmx_waitpkg_supported())
+>                  kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
 
-This is for extended payload - the key:value dictionaries
-which device core appends to normal printk() messages. We
-don't have that many consoles that handle extended output
-(netcon and, maybe, a few more).
++ Tao
 
-	-ss
+I remember there is certainly some reason why we don't expose WAITPKG to 
+guest by default.
+
+Tao, please help clarify it.
+
+Thanks,
+-Xiaoyao
+
+> 
+> in vmx_set_cpu_caps.
+> 
+> Thanks,
+> 
+> Paolo
+> 
+
