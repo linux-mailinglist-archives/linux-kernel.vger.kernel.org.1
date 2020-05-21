@@ -2,162 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6509E1DD682
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E464B1DD69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730090AbgEUTA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:00:58 -0400
-Received: from mail-eopbgr700074.outbound.protection.outlook.com ([40.107.70.74]:42377
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729555AbgEUTA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:00:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YhusIt3Qa0aKzLBzpchVOpDdr1DCjHRpI9BqgdUfgSQJ8uLXNfJDAZKWh4ugP/nj+E/hldk10hm0cz4EoQU89UU2glc9T+mL9bF69+h6mTkwVa2sOOhT3N6xYn+UPx26LbP1QPetoPbb2CGNhvtzcD37cUrvreIoH/68sxZlIxFNMzWJoDXyK4MilpaTs1yAcOrcdREWrBCPS6opjiP4LXHaAGkztOalTlEkfr+CweoZ8ThqD+MCyJMhJ4raTKUljdjGMQBuzBdSneE4ou6f+RokpkSgwr6E81A/Z68SQ5hq8RvqhYlCJ8MmfXmCnj+Iwva+M3IZPVrlQNzfCW1+TQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MRLtwmin+uBFv2bxyaJfMP+kahYQbfoQh/G8D985aiM=;
- b=msdTjbeRgx35YHsNbUSW3QzUM4fIhLk3CL68ubhbY9iPq6GPrtsV6c6WC/X6FiW1U3gRPCGyApGQrx2y3WfqYXbMBVxjDu/cap9LKuATQ2AT3ZnXpTUYaBoz1zfwBAlETIz7HaNlQ76Qb/od6SaHOkztQYyFBtiNzw28kIQhU6kb81hdTnsJmUmun6uF3MqlEEeL8peB9hPwEDCYe7Wj0tF6fsJJffh6TeZTZeZw8SN3QBrddP1XIRHtc9x/Gx2FP42RIhl+MYKaLNQthdJsUV6GCHy0oTfdXsfVvIV4DQg8dioCrYhZ8Ho62h40G2V5N00kcU78uWr9b3biu2vG/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MRLtwmin+uBFv2bxyaJfMP+kahYQbfoQh/G8D985aiM=;
- b=E9Wm+QxbaJNk280aR/JVHpSL6+IkwyVv72igG7hvfJR3lr/T5K4Tqv2rykc//4MKsqw5HkDPDaBGEFC4C7CFoDXAXq0D/1WvkGJPebgv0PrE0OIuUsUIcBu/I3vPS3xbzPoxyGpDo3r1LhYSftCnkvFhY0leHcpPbshuCx09DI4=
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
- by BYAPR05MB4359.namprd05.prod.outlook.com (2603:10b6:a02:f8::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.8; Thu, 21 May
- 2020 19:00:55 +0000
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::a959:4324:5f38:eae4]) by BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::a959:4324:5f38:eae4%7]) with mapi id 15.20.3021.019; Thu, 21 May 2020
- 19:00:55 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Wojciech Kudla <wk.kernel@gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] smp: generic ipi_raise tracepoint
-Thread-Topic: [PATCH] smp: generic ipi_raise tracepoint
-Thread-Index: AQHWLqkBg6gS/Xqm0EWDcGi7mvQlq6iy5vwA
-Date:   Thu, 21 May 2020 19:00:54 +0000
-Message-ID: <40AA62E7-3AFB-44DC-B4A6-F89E5C914620@vmware.com>
-References: <02b57f31-fc0c-df35-57bf-e0a297a7e6c4@gmail.com>
-In-Reply-To: <02b57f31-fc0c-df35-57bf-e0a297a7e6c4@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [2601:647:4700:9b2:514a:23f:4185:cd44]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9c3fda8a-d5b7-4056-f873-08d7fdb94a18
-x-ms-traffictypediagnostic: BYAPR05MB4359:
-x-microsoft-antispam-prvs: <BYAPR05MB43594924B99BF1ED01754014D0B70@BYAPR05MB4359.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 041032FF37
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dHfbq8IdbPLHphM2Vb1Vxt/i/uPGQto5S4SHkG8K3FXiMG+igA5JDIpyxzGGLsrivPR3tcyfP6RdQ+KaDF8mY8YCFW6LS+aqZFfDNNiWU+xzc/LKe3Ot0TLrAq4XfoVx3x9MygHvtiaMDUtwcbBfEWrnnD8vNBW9YTAOZRF/9EwwMJ0aJSuFyfHRqoyaQIXsv4eHweKOVc16/Oe84rc3NWRBv7wbKdUAqBvhSmvtOMHzQqZSvNzirV3oYEpghYyv9EK2KH0qNLxw4Fet3kIeajUUFm+UirO9W5AvuG/ENLIahu1VqSvcVH9ps3XmysYVYegtQJnoG5gmXdu71hOLijI/A7Oy3bVOWASgONW3VmwcuqlEnTGiEXRWcYZgrcQhTR1pqRwn6lvznEssFPOVK4WnlZzSLtiqMp6TCv86+MrmFZ8yhNkD/OmuRrStVhWyoS1eMcjCWwBvIis0fl7vCQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(396003)(346002)(376002)(6506007)(45080400002)(53546011)(186003)(71200400001)(478600001)(966005)(54906003)(316002)(36756003)(5660300002)(86362001)(6486002)(2616005)(8676002)(8936002)(66446008)(6512007)(33656002)(6916009)(2906002)(66946007)(64756008)(66556008)(76116006)(66476007)(4326008)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: AuP6/Jq1j+TMGfncWK9L9Vm02dJWiVa1x1QVN1+PK6xZiUlxg5rASwmt7GoArUcFY88LmvAi0sULCi2dIKIBbx6AnoZfeT6zgf2kH9ug7c1Qu/NDQdHP3P6vJjeVdcxdnu1AEKq7hsTCt5Rw6Lzh1FqJujTfrNoIc9rS4tlfclCZfQMnxno5k9uibAzBMGj3pAWtc1vch5Lg122dQRc7HkbPHYWZvwiuhs4eh9PHPsQadVcIjpORID6RNXjXFycp2vkZTwu/GXPxLSSqe6GjEWedxiboNZ/wjt4R+t5ywKc3LpOPmiinBkHKJfYOLGB5ZJnwxa8S17VBhK+b6HaqMPJuE8l8G2wreoKOIleJm+F96Xa6IXpOr079kQqoo0YyO5QRPijHombdcO2EUMDuhTrp8UJuRcentE5V7bsWL2kiXIitraTqy94SzI+cm1hD1Ff3+4LDECgU9Z0WPdOr0F7mMdVv05UdJFiRNVlQVwotEj9aCCI/W1Ufmml5MTP6M98JJiv4pEB+NhdvTHG+X8j4T7pjtzWFPLb9igTxQxE=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <13294C349E627240ADE15EA93B85823F@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1730130AbgEUTH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729548AbgEUTH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:07:56 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A85C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:55 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id n24so10188344ejd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OsSPUhpJYq73nfHib5c1j0os+u2XY4uTeNRmqrqb5mQ=;
+        b=CmUCxNDgIi9qt6Q51kYVv8cFYZP4VEdLcAfjYqxn2qIZvUtue5c2fyvygZREGpwI/I
+         tJb6hl3rKHFKaoBTMP89eAd5lK/gvCB5918Ju881W2CrP4VbdppU15ZViA7z5qhRr6EA
+         1NvHnsGrU68uXBlLj/C1Oi49N91W+p2BZiJQU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OsSPUhpJYq73nfHib5c1j0os+u2XY4uTeNRmqrqb5mQ=;
+        b=HyeRgBsLCIY+JK4c3iTcWvhXli93IviVb+baSdtqmr6t8ivIWaFiM9ThgxW5OzvAsQ
+         peRBkLTMWxCXMLN5bJwZvVamU4Tnk/AwQfIWTbjI8qEq7kJWiXa2pDciu/tGIyui4zKk
+         nTAR/+aLdAVz/VACI9PqycGQ1RLIXmf4I+aCByhjRRmpng2J32CyYmUQjpLxm+SSZSsV
+         CvMOMQuz2YYtSfEXzLLHR/OSoH6YZpRauIym6j6mK45AxdzRbs4iiDFdnW6IxKxwV+lQ
+         9ApNsmrk8DVP1UBFRuqYKmuUhhu7CdHaK8uET6rpv509X+DylYuOFQM+MdFnjJqC+sUb
+         vINw==
+X-Gm-Message-State: AOAM530H3xbQc/qsSeMVY13Ga5ZGGiIFoRZzNU19dZbptMDNVswoSF/E
+        2CGo4HP8HIBo5HqOHoI/X9EecdvDUsw=
+X-Google-Smtp-Source: ABdhPJxzs4N7Mrt/IAyg0t3HKIyY+BUtkZsQB0dO4GPmRQkRKcojEVjx/38Zc6tomQNIYOp9rlrmag==
+X-Received: by 2002:a17:906:7684:: with SMTP id o4mr5187738ejm.449.1590088073725;
+        Thu, 21 May 2020 12:07:53 -0700 (PDT)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id g20sm5726252ejx.85.2020.05.21.12.07.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 12:07:53 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id yc10so10104776ejb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:07:53 -0700 (PDT)
+X-Received: by 2002:a2e:9896:: with SMTP id b22mr5475234ljj.276.1590087687179;
+ Thu, 21 May 2020 12:01:27 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c3fda8a-d5b7-4056-f873-08d7fdb94a18
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2020 19:00:54.8832
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CRwRsBE5QSMaNIxvY5ivCpv2FuW7hJY3F6SNYsuTU/1RUTMlAl6Um7RcN7Dz6SK2Q/IO2h4oUC8o6JzErMWT3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4359
+References: <20200515212846.1347-1-mcgrof@kernel.org> <20200515212846.1347-13-mcgrof@kernel.org>
+ <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
+ <7306323c35e6f44d7c569e689b48f380f80da5e5.camel@sipsolutions.net>
+ <CA+ASDXOg9oKeMJP1Mf42oCMMM3sVe0jniaWowbXVuaYZ=ZpDjQ@mail.gmail.com>
+ <20200519140212.GT11244@42.do-not-panic.com> <CA+ASDXMUHOcvJ_7UWgyANMxSz15Ji7TcLDXVCtSPa+fOr=+FGA@mail.gmail.com>
+ <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
+In-Reply-To: <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Thu, 21 May 2020 12:01:14 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
+Message-ID: <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
+Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
+To:     Emmanuel Grumbach <egrumbach@gmail.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        aquini@redhat.com, peterz@infradead.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com,
+        ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>,
+        mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, gpiccoli@canonical.com,
+        Steven Rostedt <rostedt@goodmis.org>, cai@lca.pw,
+        tglx@linutronix.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        schlad@suse.de, Linux Kernel <linux-kernel@vger.kernel.org>,
+        jeyu@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On May 20, 2020, at 6:17 AM, Wojciech Kudla <wk.kernel@gmail.com> wrote:
->=20
-> Preliminary discussion: https://nam04.safelinks.protection.outlook.com/?u=
-rl=3Dhttps%3A%2F%2Flkml.org%2Flkml%2F2020%2F5%2F13%2F1327&amp;data=3D02%7C0=
-1%7Cnamit%40vmware.com%7Ceb1fce63ca4644ab29ad08d7fcc022df%7Cb39138ca3cee4b4=
-aa4d6cd83d9dd62f0%7C0%7C0%7C637255774462316114&amp;sdata=3DeKrYH1vLDaEk4QyN=
-4ZLQQRCk%2BtVdGLq7K6xYn1s%2BjJo%3D&amp;reserved=3D0
-> This patch avoids introducing arch-specific trace points by leveraging
-> existing definition for ipi_raise.
->=20
-> Issues to address in potential future work:
-> - make ipi reason available on generic smp code level (possible?)
-> - addition of ipi_entry/ipi_exit tracepoints in generic smp code
->=20
-> Signed-off-by: Wojciech Kudla <wk.kernel@gmail.com>
-> ---
-> kernel/smp.c | 14 +++++++++++++-
-> 1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 7dbcb402c2fc..df6982a1d3f2 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -23,6 +23,11 @@
->=20
-> #include "smpboot.h"
->=20
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/ipi.h>
-> +
-> +static const char *ipi_reason_missing __tracepoint_string =3D "";
-> +
-> enum {
-> 	CSD_FLAG_LOCK		=3D 0x01,
-> 	CSD_FLAG_SYNCHRONOUS	=3D 0x02,
-> @@ -34,6 +39,7 @@ struct call_function_data {
-> 	cpumask_var_t		cpumask_ipi;
-> };
->=20
-> +
+On Tue, May 19, 2020 at 10:37 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
+> So I believe we already have this uevent, it is the devcoredump. All
+> we need is to add the unique id.
 
-Unneeded redundant new line.
+I think there are a few reasons that devcoredump doesn't satisfy what
+either Luis or I want.
 
-> static DEFINE_PER_CPU_ALIGNED(struct call_function_data, cfd_data);
->=20
-> static DEFINE_PER_CPU_SHARED_ALIGNED(struct llist_head, call_single_queue=
-);
-> @@ -176,8 +182,12 @@ static int generic_exec_single(int cpu, call_single_=
-data_t *csd,
-> 	 * locking and barrier primitives. Generic code isn't really
-> 	 * equipped to do the right thing...
-> 	 */
-> -	if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
-> +	if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu))) {
-> +		if (trace_ipi_raise_enabled())
+1) it can be disabled entirely [1], for good reasons (e.g., think of
+non-${CHIP_VENDOR} folks, who can't (and don't want to) do anything
+with the opaque dumps provided by closed-source firmware)
+2) not all drivers necessarily have a useful dump to provide when
+there's a crash; look at the rest of Luis's series to see the kinds of
+drivers-with-firmware that are crashing, some of which aren't dumping
+anything
+3) for those that do support devcoredump, it may be used for purposes
+that are not "crashes" -- e.g., some provide debugfs or other knobs to
+initiate dumps, for diagnostic or debugging purposes
 
-Why do you need this check? trace_ipi_raise() will do the same check before
-actual tracing:
+Brian
 
-	if (static_key_false(&__tracepoint_##name.key)
-
-I guess you do it in order to avoid evaluation of cpumask_of() if tracing i=
-s
-disabled, but it seems to me that the macro would only evaluate/call
-cpumask_of() if tracing is indeed enabled.
-
-> +			trace_ipi_raise(cpumask_of(cpu), ipi_reason_missing);
-> +
-> 		arch_send_call_function_single_ipi(cpu);
-> +	}
-
-In general, I think there are too many trace-points. They look benign(i.e.,
-free), but can cause worse code to be generated as they behave as a memory
-clobber. Many times the same result can be achieved with a probe.
-
+[1] devcd_disabled
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/devcoredump.c?h=v5.6#n22
