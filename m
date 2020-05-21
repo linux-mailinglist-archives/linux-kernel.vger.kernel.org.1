@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAC61DD856
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D5B1DD7F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgEUUca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730075AbgEUUcX (ORCPT
+        id S1728959AbgEUUGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:06:14 -0400
+Received: from smtprelay0152.hostedemail.com ([216.40.44.152]:59316 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728368AbgEUUGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:32:23 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C655EC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:22 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbrrG-0000z2-SP; Thu, 21 May 2020 22:32:03 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id E2956100606;
-        Thu, 21 May 2020 22:32:01 +0200 (CEST)
-Message-Id: <20200521202120.523289762@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Thu, 21 May 2020 22:05:52 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V9 39/39] x86/entry: Remove the TRACE_IRQS cruft
-References: <20200521200513.656533920@linutronix.de>
+        Thu, 21 May 2020 16:06:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 08A8E837F24C;
+        Thu, 21 May 2020 20:06:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:146:355:379:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1719:1730:1747:1777:1792:1981:2194:2199:2282:2393:2525:2560:2563:2682:2685:2691:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7903:8784:8957:9025:10004:10400:10848:11026:11218:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14180:14181:14659:14721:21080:21451:21627:30012:30034:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:9,LUA_SUMMARY:none
+X-HE-Tag: steel94_4f05fa326d21
+X-Filterd-Recvd-Size: 2688
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 21 May 2020 20:06:11 +0000 (UTC)
+Message-ID: <5bb4b918aec3c77038122588ee642ae4aa2a09b0.camel@perches.com>
+Subject: [RFC] Make dynamic debug infrastructure more flexible
+From:   Joe Perches <joe@perches.com>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 21 May 2020 13:06:10 -0700
+In-Reply-To: <c4cad4f243988d214208a4903aa311a64f9b4531.camel@perches.com>
+References: <20200521132816.31111-1-stanimir.varbanov@linaro.org>
+         <20200521132816.31111-3-stanimir.varbanov@linaro.org>
+         <c4cad4f243988d214208a4903aa311a64f9b4531.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Thu, 2020-05-21 at 09:08 -0700, Joe Perches wrote:
+> On Thu, 2020-05-21 at 16:28 +0300, Stanimir Varbanov wrote:
+> > Here we introduce few debug macros with levels (low, medium and
+> > high) and debug macro for firmware. Enabling the particular level
+> > will be done by dynamic debug.
+> 
+> I'd rather make the logging level facility generic in
+> dynamic debug than prefix all formats with what could
+> be non-specific content.
+> 
+> From a long time ago:
+> 
+> https://groups.google.com/forum/#!msg/linux.kernel/VlWbno-ZAFw/k_fFadhNHXcJ
 
-No more users.
+Hey Jason.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Andy Lutomirski <luto@kernel.org>
+I believe there are 6 bits left in the unsigned int
+use for the line number and flags in struct _ddebug
+
+Assuming the use of a mechanism like
+
+	pr_debug_level(level, fmt, ...)
+
+would you be OK with something like this to enable a
+level or bitmask test of dynamic debug logging output?
+
+where the output is controlled by something like
+
+echo 'file <filename> level <n> +p' > <debugfs>/dynamic_debug/control
+
+to enable dynamic debug output only at level <n> or higher
+or maybe match a bitmap of <n>
+
+(modulo all the rest of the code necessary to use it?)
 ---
- arch/x86/entry/entry_64.S       |   13 -------------
- arch/x86/entry/thunk_64.S       |    9 +--------
- arch/x86/include/asm/irqflags.h |   10 ----------
- 3 files changed, 1 insertion(+), 31 deletions(-)
+ include/linux/dynamic_debug.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -53,19 +53,6 @@ SYM_CODE_START(native_usergs_sysret64)
- SYM_CODE_END(native_usergs_sysret64)
- #endif /* CONFIG_PARAVIRT */
- 
--.macro TRACE_IRQS_FLAGS flags:req
--#ifdef CONFIG_TRACE_IRQFLAGS
--	btl	$9, \flags		/* interrupts off? */
--	jnc	1f
--	TRACE_IRQS_ON
--1:
--#endif
--.endm
--
--.macro TRACE_IRQS_IRETQ
--	TRACE_IRQS_FLAGS EFLAGS(%rsp)
--.endm
--
- /*
-  * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
-  *
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -3,7 +3,6 @@
-  * Save registers before calling assembly functions. This avoids
-  * disturbance of register allocation in some inline assembly constructs.
-  * Copyright 2001,2002 by Andi Kleen, SuSE Labs.
-- * Added trace_hardirqs callers - Copyright 2007 Steven Rostedt, Red Hat, Inc.
-  */
- #include <linux/linkage.h>
- #include "calling.h"
-@@ -37,11 +36,6 @@ SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
- 
--#ifdef CONFIG_TRACE_IRQFLAGS
--	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
--	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
--#endif
--
- #ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
-@@ -49,8 +43,7 @@ SYM_FUNC_END(\name)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index abcd5fde30eb..616dbb2b5921 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -38,6 +38,8 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_DEFAULT 0
  #endif
- 
--#if defined(CONFIG_TRACE_IRQFLAGS) \
-- || defined(CONFIG_PREEMPTION)
-+#ifdef CONFIG_PREEMPTION
- SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %r11
- 	popq %r10
---- a/arch/x86/include/asm/irqflags.h
-+++ b/arch/x86/include/asm/irqflags.h
-@@ -172,14 +172,4 @@ static inline int arch_irqs_disabled(voi
- }
- #endif /* !__ASSEMBLY__ */
- 
--#ifdef __ASSEMBLY__
--#ifdef CONFIG_TRACE_IRQFLAGS
--#  define TRACE_IRQS_ON		call trace_hardirqs_on_thunk;
--#  define TRACE_IRQS_OFF	call trace_hardirqs_off_thunk;
--#else
--#  define TRACE_IRQS_ON
--#  define TRACE_IRQS_OFF
--#endif
--#endif /* __ASSEMBLY__ */
--
- #endif
+ 	unsigned int flags:8;
++	unsigned int level:5;
++	unsigned int level_is_bitmask:1;
+ #ifdef CONFIG_JUMP_LABEL
+ 	union {
+ 		struct static_key_true dd_key_true;
+
 
