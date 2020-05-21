@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72531DC69D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 07:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5AE1DC6A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 07:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgEUF2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 01:28:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:27798 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgEUF2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 01:28:55 -0400
-IronPort-SDR: i6Up0y8jEI16icOEqBge3Deu5VIa1nzZ513GaGGHNk4Mm7ocjLFMyhfQdow4i/QKNVqF92F2uS
- 3Q/nq3z+/3DQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2020 22:28:55 -0700
-IronPort-SDR: h8C0n6cbSf0wlioh0zuQL3yBNzoezeFPdQ3X4Lsp0dl42BCN7jmZfh8PSdphUTPTgWaeoJFy9m
- pNMmV20N7+hQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,416,1583222400"; 
-   d="scan'208";a="289602755"
-Received: from txu2-mobl.ccr.corp.intel.com (HELO [10.238.4.118]) ([10.238.4.118])
-  by fmsmga004.fm.intel.com with ESMTP; 20 May 2020 22:28:53 -0700
-Subject: Re: [PATCH 2/2] kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL
- unconditionally
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20200520160740.6144-1-mlevitsk@redhat.com>
- <20200520160740.6144-3-mlevitsk@redhat.com>
- <b8ca9ea1-2958-3ab4-2e86-2edbee1ca9d9@redhat.com>
- <81228a0e-7797-4f34-3d6d-5b0550c10a8f@intel.com>
-From:   Tao Xu <tao3.xu@intel.com>
-Message-ID: <c1cbcfe4-07a1-a166-afaf-251cc0319aad@intel.com>
-Date:   Thu, 21 May 2020 13:28:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727007AbgEUFbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 01:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgEUFbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 01:31:19 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C938C061A0E
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 22:31:19 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x15so2805555pfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 22:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JRDVqTKJQn9dGE105GZgiJ5dIsRRSP/IE0bUFoyPwmE=;
+        b=minxTFlfVaz+SQH5XAqsAX1gwrfQV0SdY3KPyk3AA1TjZ6nBs+FvNcAzctmxiE0EK2
+         06mrdQCQqsZPfkXdRQ8qP89raYNqyLpMT0vLB2iEXPJh6ny/my0yqBVLVh81LmVBw0lU
+         juUnhG5y0owA8r48hnlnnTt3ZqlD7q4bFS+lU3W3lFEgICPEjgj4cwO66HwP+xdXeVN2
+         X7WWLeYS2lqfnRSD4BAVnC3+PB/fJa1mqZc11hsv0yoI9HuTPFourSlVaB6IAE50tnlN
+         1XpVIz8wJIujOVOHASrdXjIr5/EjdPlE1EFau6jk6QodfuDmLTOmpilWzvcLH+J7375Z
+         Cu3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JRDVqTKJQn9dGE105GZgiJ5dIsRRSP/IE0bUFoyPwmE=;
+        b=mfWDtwOiBYBw33ojNxiz3993GMMaZb8dWC8XCUyhhHiXg7ieXSJAYIdwpKDufeIUVh
+         wYZePe8wDGPvPWA/xmaXj5ziulsaqt2i5gM7H7h11l97F2VYgB6gp3NepixvcdQWXup/
+         BtJNEBk1EUxewYdlHrGSjTbVRa7yfAU3ffSJt791lLuChE98YbI8PwVL/c/oJii2t2Wl
+         7Gjy3I7bUX4SDhbCyJK0Ro/yW1mxyHdqQsDXCNS6Sj2KGHf632kVTUqI0vm8j02W5ouQ
+         Hq3p67BUBgNFOW5BU0cRnpK3KH3DJ6MhwhDsVO3KGoGcUSINeHc98lsMVjglZGAuK13Z
+         DanA==
+X-Gm-Message-State: AOAM531DcypAew3ml0+Fw6iMD4vQ5WvxrNkwGYkKt4E6oNclpyIUVyAw
+        K1vWPd4Hxb66cHBCqX3y213RRA==
+X-Google-Smtp-Source: ABdhPJynp4GTJ87m3nlVCg3ltv9cM+qafeErszv1aY5MJp0I7TBIe7mHWz7XYuDvahHx8iXuUDBCYQ==
+X-Received: by 2002:a62:2544:: with SMTP id l65mr7776595pfl.288.1590039078602;
+        Wed, 20 May 2020 22:31:18 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id e16sm3007001pgg.8.2020.05.20.22.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2020 22:31:17 -0700 (PDT)
+Date:   Wed, 20 May 2020 22:31:15 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Deepak Katragadda <dkatraga@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: gcc: Fix parent for gpll0_out_even
+Message-ID: <20200521053115.GF11847@yoga>
+References: <20200521052728.2141377-1-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <81228a0e-7797-4f34-3d6d-5b0550c10a8f@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521052728.2141377-1-vkoul@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 20 May 22:27 PDT 2020, Vinod Koul wrote:
 
+> Documentation says that gpll0 is parent of gpll0_out_even, somehow
+> driver coded that as bi_tcxo, so fix it
+> 
+> Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driver for SM8150")
+> Reported-by: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-On 5/21/2020 12:33 PM, Xiaoyao Li wrote:
-> On 5/21/2020 5:05 AM, Paolo Bonzini wrote:
->> On 20/05/20 18:07, Maxim Levitsky wrote:
->>> This msr is only available when the host supports WAITPKG feature.
->>>
->>> This breaks a nested guest, if the L1 hypervisor is set to ignore
->>> unknown msrs, because the only other safety check that the
->>> kernel does is that it attempts to read the msr and
->>> rejects it if it gets an exception.
->>>
->>> Fixes: 6e3ba4abce KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL
->>>
->>> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
->>> ---
->>>   arch/x86/kvm/x86.c | 4 ++++
->>>   1 file changed, 4 insertions(+)
->>>
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index fe3a24fd6b263..9c507b32b1b77 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -5314,6 +5314,10 @@ static void kvm_init_msr_list(void)
->>>               if (msrs_to_save_all[i] - MSR_ARCH_PERFMON_EVENTSEL0 >=
->>>                   min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
->>>                   continue;
->>> +            break;
->>> +        case MSR_IA32_UMWAIT_CONTROL:
->>> +            if (!kvm_cpu_cap_has(X86_FEATURE_WAITPKG))
->>> +                continue;
->>>           default:
->>>               break;
->>>           }
->>
->> The patch is correct, and matches what is done for the other entries of
->> msrs_to_save_all.  However, while looking at it I noticed that
->> X86_FEATURE_WAITPKG is actually never added, and that is because it was
->> also not added to the supported CPUID in commit e69e72faa3a0 ("KVM: x86:
->> Add support for user wait instructions", 2019-09-24), which was before
->> the kvm_cpu_cap mechanism was added.
->>
->> So while at it you should also fix that.  The right way to do that is to
->> add a
->>
->>          if (vmx_waitpkg_supported())
->>                  kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
-> 
-> + Tao
-> 
-> I remember there is certainly some reason why we don't expose WAITPKG to 
-> guest by default.
-> 
-> Tao, please help clarify it.
-> 
-> Thanks,
-> -Xiaoyao
-> 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Because in VM, umwait and tpause can put a (psysical) CPU into a power 
-saving state. So from host view, this cpu will be 100% usage by VM. 
-Although umwait and tpause just cause short wait(maybe 100 
-microseconds), we still want to unconditionally expose WAITPKG in VM.
+Regards,
+Bjorn
+
+> ---
+>  drivers/clk/qcom/gcc-sm8150.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
+> index 2bc08e7125bf..72524cf11048 100644
+> --- a/drivers/clk/qcom/gcc-sm8150.c
+> +++ b/drivers/clk/qcom/gcc-sm8150.c
+> @@ -76,8 +76,7 @@ static struct clk_alpha_pll_postdiv gpll0_out_even = {
+>  	.clkr.hw.init = &(struct clk_init_data){
+>  		.name = "gpll0_out_even",
+>  		.parent_data = &(const struct clk_parent_data){
+> -			.fw_name = "bi_tcxo",
+> -			.name = "bi_tcxo",
+> +			.hw = &gpll0.clkr.hw,
+>  		},
+>  		.num_parents = 1,
+>  		.ops = &clk_trion_pll_postdiv_ops,
+> -- 
+> 2.25.4
+> 
