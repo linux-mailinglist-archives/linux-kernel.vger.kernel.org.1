@@ -2,183 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6391DCCB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCD81DCCBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgEUMTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 08:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S1729294AbgEUMUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 08:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgEUMTT (ORCPT
+        with ESMTP id S1729214AbgEUMUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 08:19:19 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE65C061A0E;
-        Thu, 21 May 2020 05:19:19 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id a14so6862920ilk.2;
-        Thu, 21 May 2020 05:19:19 -0700 (PDT)
+        Thu, 21 May 2020 08:20:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CDAC061A0E;
+        Thu, 21 May 2020 05:20:54 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a5so2987007pjh.2;
+        Thu, 21 May 2020 05:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/Rr5RVdjxzrGPFl/sDcimE370KmUwCtLyFyo9wrTbU=;
-        b=NnNaSH3/iMWlIU9cmWCbfaDtDO3ug/Gb5CJN5Pu7OwqJPHM45tAgw7uzPVPxlQrgvB
-         grMPGL5AHhrGbIzWAo8sOACnC7eoYVAntgyG6/3RR6g+ajeWv4jdZzLF/+xLPI+MkaTq
-         5PzWtF/KWbzgkYFqdBnco1Z2XBQNEw4LQJPNMLAbB0TvVigzisGGiWzG7Y0O+JkHD39f
-         lI8bsjM8eO19jdQ943Z30iDvzbYIyFHWxC9Xu4nFs/2Lwmu3cAB91NfiMCYPtgPF1MFJ
-         t8Rg3WHc/kBkd4aKaqlkbnx9UpVVGxrelM94QoT7Fv5DCxfRc33XkcH45dbj0/gmYEfz
-         9rZw==
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=stWt/FkAV3whglFbcJ+xccRha/qYgrl6lOTok0wajJI=;
+        b=CiG6I0E9MNcMSok6mI8B8l0WOE1Jhf4njbivNxYqT7m/509HAlg43f4SsWgLClFI3k
+         fPmF/ufGTX6mkSwQC/igr02SXod+141NPaGRZ7sLICSHsL56s0ik5TAAa8y30cKSOPRM
+         CMoxuY75TWChVAaVKQiZaRHVRuk+Y1YaOtjNLsSWyrie6gnUkakPWqR1Jqjq6Tq1y+D6
+         kghA+TLKRNzgzGEXpUfiVJE4Wuv032OxkssdEaGuAwD4q8UITu0Fizu9isEYlXfPd0zE
+         zWvAx5Zj2RCqSjoe6pczEQzxw4AGTaK7gn5LiQ3kJ3i2OrSwLfppVw88uzoC+63qzH7G
+         0w9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/Rr5RVdjxzrGPFl/sDcimE370KmUwCtLyFyo9wrTbU=;
-        b=Ms2siSHvC49mDeZZzrgdvsP7+GuQridHh2pH62+sqsH2F/yhutor+NZBHYHgH/B635
-         q27m3V8twG0eg3TN68C6glo4UMmhbEBoAIGF7/1ddNe1F0GhrDhw3EIioI2NSsv8hajz
-         adKh23OH1Oa5GEBjT36EylC/W8rAzrkG1cGexX9E7Qn11fxmIOghRxECtpt93pQ2Lres
-         EhnaE6ckCF4gVe62DujlMUWfRMxyz/W0yO0iR4dBXx7GBdCiz3iEMF9Dva/8NO3+ASzA
-         WTpJEs7Zkhwwz5B6v0usNzAI1YMbqoYh4fPPNPy2OkwTszR0KHxet8DBLMcZPXc/LSSx
-         DqDA==
-X-Gm-Message-State: AOAM533NMV9YnNfcUaPq3MnABK5nW2h7SIcXeSWa6Y2g5OBe9nT9GIgE
-        e8MPt3vk8uNWdTXu4VcMZYle0pnXdHFSsT+f2fWnVnQm
-X-Google-Smtp-Source: ABdhPJxqgYs3SQCMfjteEQflZWWHKNQ+WqwhyPpBL3128oJJluMXxp/LO4vAR/LJRQTsMSkCksxVP0VquZMd3FGD9n4=
-X-Received: by 2002:a92:7ec2:: with SMTP id q63mr8243739ill.20.1590063558318;
- Thu, 21 May 2020 05:19:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200521093845.15101-1-gmayyyha@gmail.com> <cad949df361b68a1c929f9053bce34d1892c8291.camel@kernel.org>
-In-Reply-To: <cad949df361b68a1c929f9053bce34d1892c8291.camel@kernel.org>
-From:   Yanhu Cao <gmayyyha@gmail.com>
-Date:   Thu, 21 May 2020 20:19:06 +0800
-Message-ID: <CAB9OAC0ry=tuYa-uWjGbnPGEpDCaQYhmN7bJFYvkZ1Uszo=Xpw@mail.gmail.com>
-Subject: Re: [PATCH] ceph: show max caps in debugfs caps file
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=stWt/FkAV3whglFbcJ+xccRha/qYgrl6lOTok0wajJI=;
+        b=alzrpHBfpS17gAdnoMtVlMiqRdGcnGT1VJUMRIIdkuQtIi4H9h2DuF5LX5Hjm0XjRa
+         OGrg+XE9zEcQUdYpScE5noHeaTfpf6+0glE/3L5hjaJ2nq+buv2rLj6ptxLPJoiQT3dD
+         Tj7pVKMNHfJ6xpYe1ilcEJW2U/6VZ+NfvQ3vRCfeUB1wYsiZhzVD/Hukn32vjdcaIpUS
+         UbbnustAyuZKK0eSZuoGptiZ37BhHnnGdALKWSWaVdRqYyifI5suXtGi6T10b6rqRxgb
+         Tl2xeXeuBWydz18CmW02nEGJX6ukQFqk3Jlp6znl/Sox8OCGt761uGdiAOwQVv6i9sDc
+         xDCg==
+X-Gm-Message-State: AOAM530slUdHSXjpqmus1N9ab1vCnVl1GzzyHvVU4Q/apW1GMl0svFNK
+        aYRCni2I6WNRQqCbBVNdafzSIdRp
+X-Google-Smtp-Source: ABdhPJyFihLfVSUUClYWBD16iRFax2GMCdIhiO8QpL/RTTsIlojruoS1SI49pxTjv8nLltLWKBHuMA==
+X-Received: by 2002:a17:902:6bcb:: with SMTP id m11mr9164799plt.264.1590063653750;
+        Thu, 21 May 2020 05:20:53 -0700 (PDT)
+Received: from localhost.localdomain ([221.146.116.86])
+        by smtp.gmail.com with ESMTPSA id m12sm4142169pgj.46.2020.05.21.05.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 05:20:53 -0700 (PDT)
+From:   Namjae Jeon <linkinjeon@kernel.org>
+X-Google-Original-From: Namjae Jeon <namjae.jeon@samsung.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH] exfat: add the dummy mount options to be backward compatible with staging/exfat
+Date:   Thu, 21 May 2020 21:20:34 +0900
+Message-Id: <20200521122034.2254-1-namjae.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 7:09 PM Jeff Layton <jlayton@kernel.org> wrote:
->
-> On Thu, 2020-05-21 at 17:38 +0800, Yanhu Cao wrote:
-> >         before
-> >         ------
-> >         total           1026
-> >         avail           1024
-> >         used            2
-> >         reserved        0
-> >         min             1024
-> >
-> >         after
-> >         ------
-> >         total           1026
-> >         avail           1024
-> >         used            2
-> >         max             2048
-> >         reserved        0
-> >         min             1024
-> >
-> > Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
-> > ---
-> >  fs/ceph/caps.c    | 6 ++++--
-> >  fs/ceph/debugfs.c | 7 ++++---
-> >  fs/ceph/super.h   | 2 +-
-> >  3 files changed, 9 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> > index 5f3aa4d607de..e2c759a2ef35 100644
-> > --- a/fs/ceph/caps.c
-> > +++ b/fs/ceph/caps.c
-> > @@ -404,8 +404,8 @@ void ceph_put_cap(struct ceph_mds_client *mdsc, struct ceph_cap *cap)
-> >  }
-> >
-> >  void ceph_reservation_status(struct ceph_fs_client *fsc,
-> > -                          int *total, int *avail, int *used, int *reserved,
-> > -                          int *min)
-> > +                          int *total, int *avail, int *used, int *max,
-> > +                          int *reserved, int *min)
-> >  {
-> >       struct ceph_mds_client *mdsc = fsc->mdsc;
-> >
-> > @@ -417,6 +417,8 @@ void ceph_reservation_status(struct ceph_fs_client *fsc,
-> >               *avail = mdsc->caps_avail_count;
-> >       if (used)
-> >               *used = mdsc->caps_use_count;
-> > +     if (max)
-> > +             *max = mdsc->caps_use_max;
->
-> Can you lay out what value this will provide? I'm not convinced that
-> this information is really that helpful:
->
-> mdsc->caps_use_max is just set to the value of the "caps_max" mount
-> option, and that information is displayed in /proc/mounts if it's not
-> set to the default.
->
-> What might be more interesting is to track the most recent "max_caps"
-> value sent by the MDS (see the CEPH_SESSION_RECALL_STATE message
-> handling). Tracking that would give us a more dynamic view of the
-> current maximum requested by the MDS, which is often going to be less
-> than what "caps_max" was set to at mount time.
+As Ubuntu and Fedora release new version used kernel version equal to or
+higher than v5.4, They started to support kernel exfat filesystem.
 
-Do you mean the 'mds_recall_max_caps'? which can be set by the MDS.
-Clients use this value every time to trim caps.
+Linus Torvalds reported mount error with new version of exfat on Fedora.
 
-There is an option mds_max_caps_per_client which is a soft limit,
-which is determined by the behavior of the client.
-and we recently encounter a warning '1 MDSs report oversized
-cache'(ceph-v12.2.12: mds_cache_memory_limit=64G, used=100G),
-Therefore, the effect is not good.
+	exfat: Unknown parameter 'namecase'
 
-So we want to know whether the caps held by the client exceed caps_max
-through the debugfs caps file (default or mount option).
+This is because there is a difference in mount option between old
+staging/exfat and new exfat.
+And utf8, debug, and codepage options as well as namecase have been
+removed from new exfat.
 
+This patch add the dummy mount options as deprecated option to be backward
+compatible with old one.
 
->
-> >       if (reserved)
-> >               *reserved = mdsc->caps_reserve_count;
-> >       if (min)
-> > diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> > index 481ac97b4d25..942004376588 100644
-> > --- a/fs/ceph/debugfs.c
-> > +++ b/fs/ceph/debugfs.c
-> > @@ -138,16 +138,17 @@ static int caps_show(struct seq_file *s, void *p)
-> >  {
-> >       struct ceph_fs_client *fsc = s->private;
-> >       struct ceph_mds_client *mdsc = fsc->mdsc;
-> > -     int total, avail, used, reserved, min, i;
-> > +     int total, avail, used, max, reserved, min, i;
-> >       struct cap_wait *cw;
-> >
-> > -     ceph_reservation_status(fsc, &total, &avail, &used, &reserved, &min);
-> > +     ceph_reservation_status(fsc, &total, &avail, &used, &max,
-> > +                             &reserved, &min);
-> >       seq_printf(s, "total\t\t%d\n"
-> >                  "avail\t\t%d\n"
-> >                  "used\t\t%d\n"
-> >                  "reserved\t%d\n"
-> >                  "min\t\t%d\n\n",
-> > -                total, avail, used, reserved, min);
-> > +                total, avail, used, max, reserved, min);
-> >       seq_printf(s, "ino                issued           implemented\n");
-> >       seq_printf(s, "-----------------------------------------------\n");
-> >
-> > diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> > index 60aac3aee055..79aa42d9336c 100644
-> > --- a/fs/ceph/super.h
-> > +++ b/fs/ceph/super.h
-> > @@ -700,7 +700,7 @@ extern void ceph_unreserve_caps(struct ceph_mds_client *mdsc,
-> >                              struct ceph_cap_reservation *ctx);
-> >  extern void ceph_reservation_status(struct ceph_fs_client *client,
-> >                                   int *total, int *avail, int *used,
-> > -                                 int *reserved, int *min);
-> > +                                 int *max, int *reserved, int *min);
-> >
-> >
-> >
->
-> --
-> Jeff Layton <jlayton@kernel.org>
->
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+---
+ fs/exfat/super.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 0565d5539d57..26b0db5b20de 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -203,6 +203,12 @@ enum {
+ 	Opt_errors,
+ 	Opt_discard,
+ 	Opt_time_offset,
++
++	/* Deprecated options */
++	Opt_utf8,
++	Opt_debug,
++	Opt_namecase,
++	Opt_codepage,
+ };
+ 
+ static const struct constant_table exfat_param_enums[] = {
+@@ -223,6 +229,10 @@ static const struct fs_parameter_spec exfat_parameters[] = {
+ 	fsparam_enum("errors",			Opt_errors, exfat_param_enums),
+ 	fsparam_flag("discard",			Opt_discard),
+ 	fsparam_s32("time_offset",		Opt_time_offset),
++	fsparam_flag("utf8",			Opt_utf8),
++	fsparam_flag("debug",			Opt_debug),
++	fsparam_u32("namecase",			Opt_namecase),
++	fsparam_u32("codepage",			Opt_codepage),
+ 	{}
+ };
+ 
+@@ -278,6 +288,18 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 			return -EINVAL;
+ 		opts->time_offset = result.int_32;
+ 		break;
++	case Opt_utf8:
++		pr_warn("exFAT-fs: 'utf8' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_debug:
++		pr_warn("exFAT-fs: 'debug' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_namecase:
++		pr_warn("exFAT-fs: 'namecase' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_codepage:
++		pr_warn("exFAT-fs: 'codepage' mount option is deprecated and has no effect\n");
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.25.1
+
