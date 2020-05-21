@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2668D1DD20D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523B01DD230
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgEUPi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:38:57 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:54240 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728266AbgEUPi4 (ORCPT
+        id S1728034AbgEUPoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:44:12 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49652 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbgEUPoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:38:56 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 May 2020 21:08:52 +0530
-Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 21 May 2020 21:08:31 +0530
-Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
-        id C2D712A34; Thu, 21 May 2020 21:08:29 +0530 (IST)
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: [PATCH v7 2/2] dt-bindings: usb: qcom,dwc3: Add compatible for SC7180
-Date:   Thu, 21 May 2020 21:08:19 +0530
-Message-Id: <1590075499-21350-3-git-send-email-sanm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590075499-21350-1-git-send-email-sanm@codeaurora.org>
-References: <1590075499-21350-1-git-send-email-sanm@codeaurora.org>
+        Thu, 21 May 2020 11:44:12 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LFboWf180375;
+        Thu, 21 May 2020 15:38:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=LSx/B3sGR/hh4OU9uCz2IK2POT77f4e5Szpgzj6+x/M=;
+ b=Jsf9gzeqs4kspLin9jJZjNouUf6tvKzwyd+1gTC7Bi3EItguk6JOYSCCyHF0w4n0j9Ss
+ yfP64t7t1l1q7H3HjyksBBp5Y35BB2dNPkw1Byo3UZCHp+IB2s+MZcdufwdUBxKInNZV
+ jGl8ZFc2rIFQpph/PrzU3tvDogrEFpKHXPfP+UDKmRoSpfapbOjftki6s8fISern3FP0
+ rnA6x2gcGMfAge1cpVcDIuf7u6H5/9IStnEC/C/lHJgFxXZj4ZCe4uTROSJqujywUloF
+ mqFFNHkLCQUYKN2a7rc1VSuq2EiWqhVr0ca7djiK+eXS8nkAvTTZjS0M1Qt/h03LaDRc BQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 31284m97cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 15:38:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LFNJHA056246;
+        Thu, 21 May 2020 15:38:41 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 312t3bgkrg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 May 2020 15:38:41 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04LFcegY014248;
+        Thu, 21 May 2020 15:38:40 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 21 May 2020 08:38:39 -0700
+Date:   Thu, 21 May 2020 11:39:03 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Robert Elliott <elliott@hpe.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Steven Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v2 5/7] mm: parallelize deferred_init_memmap()
+Message-ID: <20200521153903.ej4cudt3lmwlz436@ca-dmjordan1.us.oracle.com>
+References: <20200520182645.1658949-1-daniel.m.jordan@oracle.com>
+ <20200520182645.1658949-6-daniel.m.jordan@oracle.com>
+ <CAKgT0UfWOe-_rA+o5Uh-mTKSodsv9pFvApun=oYeAsOpMpP83Q@mail.gmail.com>
+ <CAKgT0UdRectcwcpMaHkot0Na7JZj8sAzr45Qh5pnR+joAQpKEg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UdRectcwcpMaHkot0Na7JZj8sAzr45Qh5pnR+joAQpKEg@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=2 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005210113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0
+ cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005210114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible for SC7180 in usb dwc3 bindings.
+On Thu, May 21, 2020 at 08:00:31AM -0700, Alexander Duyck wrote:
+> So I was thinking about my suggestion further and the loop at the end
+> isn't quite correct as I believe it could lead to gaps. The loop on
+> the end should probably be:
+>                 for_each_free_mem_pfn_range_in_zone_from(i, zone, spfn, epfn) {
+>                         if (epfn <= epfn_align)
+>                                 continue;
+>                         if (spfn < epfn_align)
+>                                 spfn = epfn_align;
+>                         break;
+>                 }
+> 
+> That would generate a new range where epfn_align has actually ended
+> and there is a range of new PFNs to process.
 
-Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 6be384c..052d85e 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -16,6 +16,7 @@ properties:
-       - enum:
-           - qcom,msm8996-dwc3
-           - qcom,msm8998-dwc3
-+          - qcom,sc7180-dwc3
-           - qcom,sdm845-dwc3
-       - const: qcom,dwc3
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Whoops, my email crossed with yours.  Agreed, but see the other message.
