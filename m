@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378041DC9AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F70D1DC9A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgEUJOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 05:14:14 -0400
+        id S1728921AbgEUJOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:14:15 -0400
 Received: from v6.sk ([167.172.42.174]:34802 "EHLO v6.sk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728866AbgEUJOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:14:12 -0400
+        id S1728870AbgEUJOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 05:14:14 -0400
 Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id B64C861304;
-        Thu, 21 May 2020 09:14:10 +0000 (UTC)
+        by v6.sk (Postfix) with ESMTP id 61ED461305;
+        Thu, 21 May 2020 09:14:12 +0000 (UTC)
 From:   Lubomir Rintel <lkundrak@v3.sk>
 To:     Rob Herring <robh+dt@kernel.org>
 Cc:     Alessandro Zummo <a.zummo@towertech.it>,
@@ -27,9 +27,9 @@ Cc:     Alessandro Zummo <a.zummo@towertech.it>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v2 6/9] dt-bindings: rtc: Convert sa1100-rtc to json-schema
-Date:   Thu, 21 May 2020 11:13:53 +0200
-Message-Id: <20200521091356.2211020-7-lkundrak@v3.sk>
+Subject: [PATCH v2 7/9] dt-bindings: spi: Convert spi-pxa2xx to json-schema
+Date:   Thu, 21 May 2020 11:13:54 +0200
+Message-Id: <20200521091356.2211020-8-lkundrak@v3.sk>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200521091356.2211020-1-lkundrak@v3.sk>
 References: <20200521091356.2211020-1-lkundrak@v3.sk>
@@ -40,74 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the sa1100-rtc binding to DT schema format using json-schema.
-While add that, add clocks and resets that are actually used.
+A straightforward conversion of the the spi-pxa2xx binding to DT schema
+format using json-schema.
 
 Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 
 ---
 Changes since v1:
-- Remove interrupts/maxItems
-- Mention clocks and resets in the patch description
-- Add default GPL-2.0-only license tag
-- Fill in maintainers from MAINTAINERS file
+- Drop #address-cells and #size-cells
+- s/GPL-2.0-or-later/GPL-2.0-only/
 
- .../devicetree/bindings/rtc/sa1100-rtc.txt    | 17 ------
- .../devicetree/bindings/rtc/sa1100-rtc.yaml   | 57 +++++++++++++++++++
- 2 files changed, 57 insertions(+), 17 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/sa1100-rtc.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
+ .../bindings/spi/marvell,mmp2-ssp.yaml        | 56 +++++++++++++++++++
+ .../devicetree/bindings/spi/spi-pxa2xx.txt    | 27 ---------
+ 2 files changed, 56 insertions(+), 27 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-pxa2xx.txt
 
-diff --git a/Documentation/devicetree/bindings/rtc/sa1100-rtc.txt b/Documentation/devicetree/bindings/rtc/sa1100-rtc.txt
-deleted file mode 100644
-index 968ac820254b..000000000000
---- a/Documentation/devicetree/bindings/rtc/sa1100-rtc.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--* Marvell Real Time Clock controller
--
--Required properties:
--- compatible: should be "mrvl,sa1100-rtc"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: Should be two. The first interrupt number is the rtc alarm
--  interrupt and the second interrupt number is the rtc hz interrupt.
--- interrupt-names: Assign name of irq resource.
--
--Example:
--	rtc: rtc@d4010000 {
--		compatible = "mrvl,mmp-rtc";
--		reg = <0xd4010000 0x1000>;
--		interrupts = <5>, <6>;
--		interrupt-names = "rtc 1Hz", "rtc alarm";
--	};
-diff --git a/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
+diff --git a/Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml b/Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml
 new file mode 100644
-index 000000000000..482e5af215b3
+index 000000000000..09bd831250a2
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0-only
++++ b/Documentation/devicetree/bindings/spi/marvell,mmp2-ssp.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright 2019,2020 Lubomir Rintel <lkundrak@v3.sk>
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/rtc/sa1100-rtc.yaml#
++$id: http://devicetree.org/schemas/spi/marvell,mmp2-ssp.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Marvell Real Time Clock controller bindings
-+
-+allOf:
-+  - $ref: rtc.yaml#
++title: PXA2xx SSP SPI Controller bindings
 +
 +maintainers:
-+  - Alessandro Zummo <a.zummo@towertech.it>
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+  - Rob Herring <robh+dt@kernel.org>
++  - Lubomir Rintel <lkundrak@v3.sk>
++
++allOf:
++  - $ref: spi-controller.yaml#
 +
 +properties:
 +  compatible:
-+    enum:
-+      - mrvl,sa1100-rtc
-+      - mrvl,mmp-rtc
++    const: marvell,mmp2-ssp
++
++  interrupts:
++    maxItems: 1
 +
 +  reg:
 +    maxItems: 1
@@ -115,35 +90,67 @@ index 000000000000..482e5af215b3
 +  clocks:
 +    maxItems: 1
 +
-+  resets:
++  ready-gpios:
++    description: |
++      GPIO used to signal a SPI master that the FIFO is filled and we're
++      ready to service a transfer. Only useful in slave mode.
 +    maxItems: 1
-+
-+  interrupts:
-+    minItems: 2
-+
-+  interrupt-names:
-+    items:
-+      - const: 'rtc 1Hz'
-+      - const: 'rtc alarm'
 +
 +required:
 +  - compatible
 +  - reg
 +  - interrupts
-+  - interrupt-names
++  - clocks
 +
-+additionalProperties: false
++dependencies:
++  ready-gpios: [ spi-slave ]
 +
 +examples:
 +  - |
-+    rtc: rtc@d4010000 {
-+        compatible = "mrvl,mmp-rtc";
-+        reg = <0xd4010000 0x1000>;
-+        interrupts = <5>, <6>;
-+        interrupt-names = "rtc 1Hz", "rtc alarm";
++    #include <dt-bindings/clock/marvell,mmp2.h>
++    spi@d4035000 {
++        compatible = "marvell,mmp2-ssp";
++        #address-cells = <1>;
++        #size-cells = <0>;
++        reg = <0xd4035000 0x1000>;
++        clocks = <&soc_clocks MMP2_CLK_SSP0>;
++        interrupts = <0>;
 +    };
 +
 +...
+diff --git a/Documentation/devicetree/bindings/spi/spi-pxa2xx.txt b/Documentation/devicetree/bindings/spi/spi-pxa2xx.txt
+deleted file mode 100644
+index e30e0c2a4bce..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-pxa2xx.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-PXA2xx SSP SPI Controller
+-
+-Required properties:
+-- compatible: Must be "marvell,mmp2-ssp".
+-- reg: Offset and length of the device's register set.
+-- interrupts: Should be the interrupt number.
+-- clocks: Should contain a single entry describing the clock input.
+-- #address-cells:  Number of cells required to define a chip select address.
+-- #size-cells: Should be zero.
+-
+-Optional properties:
+-- cs-gpios: list of GPIO chip selects. See the SPI bus bindings,
+-  Documentation/devicetree/bindings/spi/spi-bus.txt
+-- spi-slave: Empty property indicating the SPI controller is used in slave mode.
+-- ready-gpios: GPIO used to signal a SPI master that the FIFO is filled
+-  and we're ready to service a transfer. Only useful in slave mode.
+-
+-Child nodes represent devices on the SPI bus
+-  See ../spi/spi-bus.txt
+-
+-Example:
+-	ssp1: spi@d4035000 {
+-		compatible = "marvell,mmp2-ssp";
+-		reg = <0xd4035000 0x1000>;
+-		clocks = <&soc_clocks MMP2_CLK_SSP0>;
+-		interrupts = <0>;
+-	};
 -- 
 2.26.2
 
