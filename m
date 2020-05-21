@@ -2,111 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF151DDAD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C971DD95A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgEUXQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730716AbgEUXQd (ORCPT
+        id S1730559AbgEUVVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 17:21:32 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:64611 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726814AbgEUVVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:16:33 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED78DC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 16:16:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id x12so6925692qts.9
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 16:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hUoZcotUHvHkDynbBdg2kum8KhHAvdqpz3vVIU74srU=;
-        b=Fdu19Bux/T9zm5qDECsrqrKsavHJgzr0BrjJeEkoqgM9U/vqgFdBSQXH4noPwGen8f
-         Q+Gw98IBbkNh619BiVZpXHsN0/WHEPtpiRUPYGdWCFrYWRYz1HHOQwFaztsVqsb5rnaJ
-         wj227OUGoChm2DCYa8nBV+whh4EJaMHlCZ7VE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hUoZcotUHvHkDynbBdg2kum8KhHAvdqpz3vVIU74srU=;
-        b=XHytW3kCs4aCknjCF1R0zGJUTPIlLJ4Ceh6VPfBTaUbshAfGdaLba3JPYtS6VgUicg
-         eD1DSWen/Pq4yc+eFd6dRp7MGChML/1voaXoCfojYDKKuTtQlar2Ei1xr6XJRxRKiUoi
-         8YYBF7FR2fcCEtmxS9JqXQELF9LSqFvx7JpbnBV18lAld/1KxttBay1GR3lOzIzACkeF
-         KNHTRm2SfQ78r2KacJocAidYph09hNvc2ES/Bw2SeRbTU78nlcKh3qYucEGXjNc3KJYJ
-         y8Hugy9P+DBsSSf7y8/rldyrLtDbahtkdTF6ARjmEt5PL6+GCleDFso1ab2ZOzbiyQXU
-         3CgA==
-X-Gm-Message-State: AOAM531+GrJ+MYbJY3t2ge5/DjWDV6r+SpRRQ1gWpaUxLucXUbrksBo6
-        SE/xL22PXt9Yq1f95EQo8kB5nA==
-X-Google-Smtp-Source: ABdhPJzUSnir1qv6SQFJsgNt1l7Z5aj4xbIs+83yHT7ZC+9w1PCdkvgd/8GD23L46b9y4ABJK2rEWg==
-X-Received: by 2002:ac8:3032:: with SMTP id f47mr13381740qte.386.1590102992154;
-        Thu, 21 May 2020 16:16:32 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 88sm6436462qth.9.2020.05.21.16.16.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 16:16:31 -0700 (PDT)
-Date:   Thu, 21 May 2020 19:16:31 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     vpillai <vpillai@digitalocean.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>, mingo@kernel.org,
-        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>
-Subject: Re: [RFC PATCH 07/13] sched: Add core wide task selection and
- scheduling.
-Message-ID: <20200521231631.GB246288@google.com>
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <e942da7fd881977923463f19648085c1bfaa37f8.1583332765.git.vpillai@digitalocean.com>
- <20200521231426.GA246288@google.com>
+        Thu, 21 May 2020 17:21:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590096090; x=1621632090;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3YYTfA2G0R/lyoHmUaWO5sWwSP3/w89inO0e4lZ0ubk=;
+  b=JesRP476xfbe7MwOQxsPkI71u/1lw45wuLNr/5WHFO8z2gLSjQT0x5cW
+   EAdXSddpKHBaTv4WqFR8YLG7tf98AtA3tq55FNs3qVYiOafE3GYl2p9ry
+   vNmfuN/CEJp+deBhWDxxUyyuGibKs7TzCjTySnDkg90KeXeJKijhMJ3K/
+   +V9NNJNIrXfc5DTsIcgjFme9zGFRT29FgguRbxEdxyUa4qpK1IBDHENRL
+   ypFm0r/WCcR3Zmd2RXg9PJT7YlhJySKBIoYm6Yg/WIwH+4A6nHMUssLtE
+   TRZPnDednJz0/1w9dQNQOBWtdZkGttuIFKbZMxYF+Omz4m1yAGqtvj3AA
+   Q==;
+IronPort-SDR: CSSKbGS8Vh8u8ljYKS/8gGpe0qNuSxHPahN2RKcrWxNmqqWIdQRW7YwzCLWMC4K405dmsYL6vA
+ BRV+7t6lEoO62I8tEbHUKoTJ9rBKY8y/jy/aaUnbnkRvQqY2EG42WzolYC9PCAsokXRoqrHs8a
+ vpHFDDrXWrfbu+Iwce3z0FIoxM/b7L9x07OTJojgp+e3GfhR0GNZ+HWIV0eixWjJcfsgKZ8q5S
+ 0VqdWJrIL6YMNPo/Udmc0LXP1JuMEdgw3Qe9ic+mP7sugpjps8nW/HEJNZBAoDedySNtNOgxj2
+ WFs=
+X-IronPort-AV: E=Sophos;i="5.73,419,1583218800"; 
+   d="scan'208";a="77506680"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 May 2020 14:21:30 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 21 May 2020 14:21:30 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Thu, 21 May 2020 14:21:28 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <roopa@cumulusnetworks.com>,
+        <nikolay@cumulusnetworks.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v2 0/3] bridge: mrp: Add br_mrp_unique_ifindex function
+Date:   Thu, 21 May 2020 23:19:04 +0000
+Message-ID: <20200521231907.3564679-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521231426.GA246288@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 07:14:26PM -0400, Joel Fernandes wrote:
-> On Wed, Mar 04, 2020 at 04:59:57PM +0000, vpillai wrote:
-[snip]
-> > +	/*
-> > +	 * If class_pick is idle or matches cookie, return early.
-> > +	 */
-> > +	if (cookie_equals(class_pick, cookie))
-> > +		return class_pick;
-> > +
-> > +	cookie_pick = sched_core_find(rq, cookie);
-> > +
-> > +	/*
-> > +	 * If class > max && class > cookie, it is the highest priority task on
-> > +	 * the core (so far) and it must be selected, otherwise we must go with
-> > +	 * the cookie pick in order to satisfy the constraint.
-> > +	 */
-> > +	if (prio_less(cookie_pick, class_pick) &&
-> > +	    (!max || prio_less(max, class_pick)))
-> > +		return class_pick;
-> > +
-> > +	return cookie_pick;
-> > +}
-> 
-> I've been hating on this pick_task() routine for a while now :-). If we add
-> the task to the tag tree as Peter suggested at OSPM for that other issue
-> Vineeth found, it seems it could be simpler.
+This patch series adds small fixes to MRP implementation.
+The following are fixed in this patch series:
+- now is not allow to add the same port to multiple MRP rings
+- remove unused variable
+- restore the port state according to the bridge state when the MRP instance
+  is deleted
 
-Sorry, I meant adding of a 0-tagged (no cookie) task to the tag tree.
+v2:
+ - use rtnl_dereference instead of rcu_dereference in the first patch
 
-thanks,
+Horatiu Vultur (3):
+  bridge: mrp: Add br_mrp_unique_ifindex function
+  switchdev: mrp: Remove the variable mrp_ring_state
+  bridge: mrp: Restore port state when deleting MRP instance
 
- - Joel
+ include/net/switchdev.h |  1 -
+ net/bridge/br_mrp.c     | 38 ++++++++++++++++++++++++++++++++++----
+ 2 files changed, 34 insertions(+), 5 deletions(-)
+
+-- 
+2.26.2
 
