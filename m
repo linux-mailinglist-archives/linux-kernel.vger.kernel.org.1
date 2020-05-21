@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2839F1DCDDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66D11DCDE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgEUNVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:21:25 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:43450 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728159AbgEUNVZ (ORCPT
+        id S1729405AbgEUNYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729352AbgEUNYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:21:25 -0400
-Received: by mail-ej1-f65.google.com with SMTP id a2so8744214ejb.10;
-        Thu, 21 May 2020 06:21:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t4ZgBaxu8psJTH+wQpzS+5wxRN/OxLHl3Tsx7xVOSrI=;
-        b=JSKS0ikHNPRj8HCxcfMI9mbARZWEEgM0IoG8KLupWs/CoTTn6TRpzJVPK7spKk1DUZ
-         OQxXSv0solrkDGgNjJUBUmtTOLAr+UE86ewPg3bUoBKcP1TH+Hr3nw5Ry7p3tKHyOK+/
-         EqiCXN1MY7tapHdid0qhza2U6qkLn6yY/sQabRJ6lBbhG9/mX2y9dKtSCmo/XyTv5Qmq
-         iNOBhwC27PmoGFDmXW2Kx57FiB+HkeYJt31z23apeSyAJKHUGyf4ZlShAonJcgJYf9+g
-         8cPH3SsdEbtZbY9cU4TrKUHLa/lin6oiFQtE/Y7Vp+AxUw4CFL3uKoNSMGNcBNz70iUt
-         PsOA==
-X-Gm-Message-State: AOAM532lo9gfD/z+j6F9q8l4hUVVjw7mEXK+ys+9lcQPDyqlGooily8Y
-        BdpWGeFxHpv+mr0aN96OiyQ=
-X-Google-Smtp-Source: ABdhPJwA8k8xRmngoLH2EqAfwEHSAw4oSpuO2/gtbxK0HSC8+a+PLfIENR1tqH/RUQlfft+fASIXZA==
-X-Received: by 2002:a17:906:63c9:: with SMTP id u9mr3606605ejk.439.1590067283528;
-        Thu, 21 May 2020 06:21:23 -0700 (PDT)
-Received: from localhost (ip-37-188-180-112.eurotel.cz. [37.188.180.112])
-        by smtp.gmail.com with ESMTPSA id k9sm5065750edl.83.2020.05.21.06.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 06:21:22 -0700 (PDT)
-Date:   Thu, 21 May 2020 15:21:20 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200521132120.GR6462@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <20200520160756.GE6462@dhcp22.suse.cz>
- <20200520202650.GB558281@chrisdown.name>
- <20200521071929.GH6462@dhcp22.suse.cz>
- <20200521112711.GA990580@chrisdown.name>
- <20200521120455.GM6462@dhcp22.suse.cz>
- <20200521122327.GB990580@chrisdown.name>
- <20200521123742.GO6462@dhcp22.suse.cz>
- <20200521125759.GD990580@chrisdown.name>
+        Thu, 21 May 2020 09:24:02 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7325C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:24:01 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbl9o-0000mn-Ld; Thu, 21 May 2020 15:22:44 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id C5455100C2D; Thu, 21 May 2020 15:22:43 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Jason Chen CJ <jason.cj.chen@intel.com>,
+        Zhao Yakui <yakui.zhao@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Subject: Re: [patch V6 19/37] x86/irq: Convey vector as argument and not in ptregs
+In-Reply-To: <CALCETrWjT+A_AAuv=zZ52vJhR2ZADktB3XZnO8n_qu09S0P0vQ@mail.gmail.com>
+Date:   Thu, 21 May 2020 15:22:43 +0200
+Message-ID: <87sgfttobg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521125759.GD990580@chrisdown.name>
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-05-20 13:57:59, Chris Down wrote:
-> Michal Hocko writes:
-> > > A cgroup is a unit and breaking it down into "reclaim fairness" for
-> > > individual tasks like this seems suspect to me. For example, if one task in
-> > > a cgroup is leaking unreclaimable memory like crazy, everyone in that cgroup
-> > > is going to be penalised by allocator throttling as a result, even if they
-> > > aren't "responsible" for that reclaim.
-> > 
-> > You are right, but that doesn't mean that it is desirable that some
-> > tasks would be throttled unexpectedly too long because of the other's activity.
-> 
-> Are you really talking about throttling, or reclaim? If throttling, tasks
-> are already throttled proportionally to how much this allocation is
-> contributing to the overage in calculate_high_delay.
+Andy Lutomirski <luto@kernel.org> writes:
+> On Fri, May 15, 2020 at 5:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>  +       .align 8
+>> +SYM_CODE_START(irq_entries_start)
+>> +    vector=FIRST_EXTERNAL_VECTOR
+>> +    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+>> +       UNWIND_HINT_IRET_REGS
+>> +       .byte   0x6a, vector
+>> +       jmp     common_interrupt
+>> +       .align  8
+>> +    vector=vector+1
+>> +    .endr
+>> +SYM_CODE_END(irq_entries_start)
+>
+> Having battled code like this in the past (for early exceptions), I
+> prefer the variant like:
+>
+> pos = .;
+> .rept blah blah blah
+>   .byte whatever
+>   jmp whatever
+>   . = pos + 8;
+>  vector = vector + 1
+> .endr
+>
+> or maybe:
+>
+> .rept blah blah blah
+>   .byte whatever
+>   jmp whatever;
+>   . = irq_entries_start + 8 * vector;
+>   vector = vector + 1
+> .endr
+>
+> The reason is that these variants will fail to assemble if something
+> goes wrong and the code expands to more than 8 bytes, whereas using
+> .align will cause gas to happily emit 16 bytes and result in
+> hard-to-debug mayhem.
 
-Reclaim is a part of the throttling mechanism. It is a productive side
-of it actually.
- 
-> If you're talking about reclaim, trying to reason about whether the overage
-> is the result of some other task in this cgroup or the task that's
-> allocating right now is something that we already know doesn't work well
-> (eg. global OOM).
+Yes. They just make objtool very unhappy:
 
-I am not sure I follow you here.
--- 
-Michal Hocko
-SUSE Labs
+arch/x86/entry/entry_64.o: warning: objtool: .entry.text+0xfd0: special:
+can't find orig instruction
+
+Peter suggested to use:
+
+      .pos = .
+      .byte..
+      jmp
+      .nops (pos + 8) - .
+
+That works ...
