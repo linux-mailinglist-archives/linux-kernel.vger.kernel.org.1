@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BE71DCEE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEF81DCEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgEUOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:04:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:47504 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728630AbgEUOE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:04:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 218FAD6E;
-        Thu, 21 May 2020 07:04:58 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C67353F305;
-        Thu, 21 May 2020 07:04:56 -0700 (PDT)
-References: <20200519161755.209565-1-maz@kernel.org> <20200519161755.209565-7-maz@kernel.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com
-Subject: Re: [PATCH 06/11] irqchip/gic-v3: Configure SGIs as standard interrupts
-In-reply-to: <20200519161755.209565-7-maz@kernel.org>
-Date:   Thu, 21 May 2020 15:04:54 +0100
-Message-ID: <jhjimgpxu2h.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1729796AbgEUOH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:07:58 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:44588 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729784AbgEUOH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 10:07:58 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w19so2856607ply.11;
+        Thu, 21 May 2020 07:07:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JoNp2Y7zz0yJJeDFRUhzITUSQI74mvmrMIPrAd1z6ao=;
+        b=iXRMyycckLPFlAxzxaQ0vY442HBL7Y+U/PZd3hnAnFGWM6DXyawdSqL5rITEv9KlTv
+         naThp8QPSHtKKrR7L8oWdYdhiumrt4pfLpbbIAI2nItUY6tFQmAxxUmYIxfXdHM+Ky9U
+         brsJTlQITGNPpc0gKvhY1h5zJx9qF97L0DYshJ6VtYibAHo+3vGTtd+sjSeizKY80erE
+         uL1ythqRrlJRvsSxYVakSvmTUc9R4PO+wv9BarjqpmqA88axBnB31Yo/+FkGXkg0bK/i
+         WtJUb78E1NawfCaTy0NQG/USoD4J9tsZdAVI0iSx3HnuYr41jWaMFZMUGEjBhyhFeB8B
+         UQFQ==
+X-Gm-Message-State: AOAM531SRgW7+Bdmln86ESFhhM7hdfpkGd8g3VMH6ANs3FXwdwvaZBGS
+        BmBQ0vadMHxFti5H2kOWQ6NT5jWg
+X-Google-Smtp-Source: ABdhPJzDGF9DJTORsBVEnMP8Hw6YVRUo6pmf6G69G8j1zrKhS8KG1Y3mnbVONHFbMgBusKU35FP/sQ==
+X-Received: by 2002:a17:902:c403:: with SMTP id k3mr9919096plk.12.1590070077224;
+        Thu, 21 May 2020 07:07:57 -0700 (PDT)
+Received: from localhost.localdomain ([221.146.116.86])
+        by smtp.gmail.com with ESMTPSA id w14sm4287763pgi.12.2020.05.21.07.07.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 07:07:56 -0700 (PDT)
+From:   Namjae Jeon <linkinjeon@kernel.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Namjae Jeon <linkinjeon@kernel.org>
+Subject: [PATCH v2] exfat: add the dummy mount options to be backward compatible with staging/exfat
+Date:   Thu, 21 May 2020 23:05:02 +0900
+Message-Id: <20200521140502.2409-1-linkinjeon@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As Ubuntu and Fedora release new version used kernel version equal to or
+higher than v5.4, They started to support kernel exfat filesystem.
 
-On 19/05/20 17:17, Marc Zyngier wrote:
-> Change the way we deal with GICv3 SGIs by turning them into proper
-> IRQs, and calling into the arch code to register the interrupt range
-> instead of a callback.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/irqchip/irq-gic-v3.c | 91 +++++++++++++++++++++---------------
->  1 file changed, 53 insertions(+), 38 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 23d7c87da407..d57289057b75 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -1163,10 +1142,36 @@ static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
->
->  static void gic_smp_init(void)
->  {
-> -	set_smp_cross_call(gic_raise_softirq);
-> +	struct irq_fwspec sgi_fwspec = {
-> +		.fwnode		= gic_data.fwnode,
-> +	};
-> +	int base_sgi;
-> +
->       cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_GIC_STARTING,
->                                 "irqchip/arm/gicv3:starting",
->                                 gic_starting_cpu, NULL);
-> +
-> +	if (is_of_node(gic_data.fwnode)) {
-> +		/* DT */
-> +		sgi_fwspec.param_count = 3;
-> +		sgi_fwspec.param[0] = GIC_IRQ_TYPE_SGI;
-> +		sgi_fwspec.param[1] = 0;
-> +		sgi_fwspec.param[2] = IRQ_TYPE_EDGE_RISING;
-> +	} else {
-> +		/* ACPI */
-> +		sgi_fwspec.param_count = 2;
-> +		sgi_fwspec.param[0] = 0;
-> +		sgi_fwspec.param[1] = IRQ_TYPE_EDGE_RISING;
-> +	}
-> +
-> +	/* Register all 8 non-secure SGIs */
-> +	base_sgi = __irq_domain_alloc_irqs(gic_data.domain, -1, 8,
-> +					   NUMA_NO_NODE, &sgi_fwspec,
-> +					   false, NULL);
+Linus Torvalds reported mount error with new version of exfat on Fedora.
 
-So IIUC using irq_reserve_ipi() would require us to have a separate IPI
-domain, so instead here we can use a fwspec + the 'regular' GIC domain.
+	exfat: Unknown parameter 'namecase'
 
-One thing I see is that by not going through irq_reserve_ipi(), we don't set
-data->common->ipi_offset. I think this is all kzalloc'd, and we want an
-offset of 0 so it all works out, but this feels somewhat fragile.
+This is because there is a difference in mount option between old
+staging/exfat and new exfat.
+And utf8, debug, and codepage options as well as namecase have been
+removed from new exfat.
 
-> +	if (WARN_ON(base_sgi <= 0))
-> +		return;
-> +
-> +	set_smp_ipi_range(base_sgi, 8);
->  }
->
->  static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
-> @@ -1289,6 +1296,13 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
->
->       switch (__get_intid_range(hw)) {
->       case SGI_RANGE:
-> +		irq_set_percpu_devid(irq);
-> +		irq_domain_set_info(d, irq, hw, chip, d->host_data,
-> +				    handle_percpu_devid_fasteoi_ipi,
-> +				    NULL, NULL);
-> +		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+This patch add the dummy mount options as deprecated option to be backward
+compatible with old one.
 
-FWIW IRQ_NOAUTOEN is already set by irq_set_percpu_devid_flags(), so that's
-not required. I know we do that for (E)PPIs, I think I already have a small
-patch stashed somewhere regarding that.
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+---
+v2:
+ - fix checkpatch.pl warning(Missing Signed-off-by).
 
-> +		break;
-> +
->       case PPI_RANGE:
->       case EPPI_RANGE:
->               irq_set_percpu_devid(irq);
+ fs/exfat/super.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 0565d5539d57..26b0db5b20de 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -203,6 +203,12 @@ enum {
+ 	Opt_errors,
+ 	Opt_discard,
+ 	Opt_time_offset,
++
++	/* Deprecated options */
++	Opt_utf8,
++	Opt_debug,
++	Opt_namecase,
++	Opt_codepage,
+ };
+ 
+ static const struct constant_table exfat_param_enums[] = {
+@@ -223,6 +229,10 @@ static const struct fs_parameter_spec exfat_parameters[] = {
+ 	fsparam_enum("errors",			Opt_errors, exfat_param_enums),
+ 	fsparam_flag("discard",			Opt_discard),
+ 	fsparam_s32("time_offset",		Opt_time_offset),
++	fsparam_flag("utf8",			Opt_utf8),
++	fsparam_flag("debug",			Opt_debug),
++	fsparam_u32("namecase",			Opt_namecase),
++	fsparam_u32("codepage",			Opt_codepage),
+ 	{}
+ };
+ 
+@@ -278,6 +288,18 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 			return -EINVAL;
+ 		opts->time_offset = result.int_32;
+ 		break;
++	case Opt_utf8:
++		pr_warn("exFAT-fs: 'utf8' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_debug:
++		pr_warn("exFAT-fs: 'debug' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_namecase:
++		pr_warn("exFAT-fs: 'namecase' mount option is deprecated and has no effect\n");
++		break;
++	case Opt_codepage:
++		pr_warn("exFAT-fs: 'codepage' mount option is deprecated and has no effect\n");
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.25.1
+
