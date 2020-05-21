@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6DD1DD8F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E95F1DD8F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgEUUzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:55:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729626AbgEUUzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730490AbgEUUzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 21 May 2020 16:55:04 -0400
-Subject: Re: [GIT PULL] vhost/vdpa: minor fixes
+Received: from mail.kernel.org ([198.145.29.99]:35534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728778AbgEUUzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 16:55:03 -0400
+Subject: Re: [GIT PULL]: dmaengine fixes for v5.7-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1590094503;
-        bh=+/719HmcyCCId615mpvh5nFpL+AjayClp/EMvyvl+hY=;
+        bh=7iGNOrc13huB/bF3AMhbWuoQe34FHKR2s4DsvfhVVgA=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=adFr5lHvsH3c/p6knnuwnihJODjKWPY4IxfYpgEwjSzL+/T7Juid2L93wtgVUvZQn
-         OqwFRwhzpSa9YhuPpHK2e8d73gKjwz6z8MHtrSQABaIHd5mJAP43tiopR/uxpLN/Lk
-         iGu3a7aXCSiGfYveFFLNMzWKxC3zlYibxRuRs4Qw=
+        b=FxF0RSEVSzWcLDnC0mUonYVZ726tZQkyEyNXsA2n/LW0kghzbqpCe4IeMbp/8Zvsk
+         lsPlNN9gM2pkVbBB9dv/RJ1p1DI3s8f610PYmRyUbDG5CNNQxtYh8K/ZZqprahB4Rp
+         qsUUIxXtop96PtMRtlD8Ium+UA4JE6AaIQMCENJw=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200521140835-mutt-send-email-mst@kernel.org>
-References: <20200521140835-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200521143521.GC374218@vkoul-mobl.Dlink>
+References: <20200521143521.GC374218@vkoul-mobl.Dlink>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200521140835-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: 1b0be99f1a426d9f17ced95c4118c6641a2ff13d
+X-PR-Tracked-Message-Id: <20200521143521.GC374218@vkoul-mobl.Dlink>
+X-PR-Tracked-Remote: git://git.infradead.org/users/vkoul/slave-dma.git
+ tags/dmaengine-fix-5.7-rc7
+X-PR-Tracked-Commit-Id: 3a5fd0dbd87853f8bd2ea275a5b3b41d6686e761
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d2f8825ab78e4c18686f3e1a756a30255bb00bf3
-Message-Id: <159009450386.9071.3699018741484442265.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: cedd54f713368d32c902befc3714b91afdec1084
+Message-Id: <159009450355.9071.17759578303074194234.pr-tracker-bot@kernel.org>
 Date:   Thu, 21 May 2020 20:55:03 +0000
-To:     "Michael S. Tsirkin" <mst@redhat.com>
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jasowang@redhat.com, lkp@intel.com, mst@redhat.com,
-        yuehaibing@huawei.com
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 21 May 2020 14:08:35 -0400:
+The pull request you sent on Thu, 21 May 2020 20:05:21 +0530:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> git://git.infradead.org/users/vkoul/slave-dma.git tags/dmaengine-fix-5.7-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d2f8825ab78e4c18686f3e1a756a30255bb00bf3
+https://git.kernel.org/torvalds/c/cedd54f713368d32c902befc3714b91afdec1084
 
 Thank you!
 
