@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433F81DD2EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 18:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE611DD2F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 18:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729914AbgEUQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 12:17:00 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:57777 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726808AbgEUQQ7 (ORCPT
+        id S1729870AbgEUQTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 12:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgEUQTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 12:16:59 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6CADC580809;
-        Thu, 21 May 2020 12:16:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 21 May 2020 12:16:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=kNc6lgzUfio/s/PMCLaEvgBESQW
-        hHtxfEasiSLQp52M=; b=BayGMfRr4tcBubrBSX5ud/nARBgGwoVGmRfY+2JFyNo
-        j345DqzLPFupy0ELJvZ7SDoN28p8g21TNr4E4zC6m1/firVE7IE3UCwshbUSlghm
-        xuO/08Mk1mds0gS3DsddbvQ9aSPwGCXy0L2n4PdMnExYWuMfBV8+gWsE4wssadAH
-        pLTIaBRSHwq7NojOYG9rXe+0VShli16pvrn2II0gxw6WKblvUb5BlymtlL3zS5Ai
-        TNNmhvKYvD1oAGdQLf28HnzSpyw1OsvULIfZGoXiHEgkGgFZdDui3VjE3TrgNvTa
-        TWfm2KaEHo96gOfJETfHRq/9umOyXyv3W6i5nYL7WkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=kNc6lg
-        zUfio/s/PMCLaEvgBESQWhHtxfEasiSLQp52M=; b=dQDUlCOqDmxoaQL1giZ8UO
-        HbE2KIgb2i2GPLO7aAG7hSOfl9aVWNlFCO3NKDhzlLp/1ACBDSAIpvmXEoCE4quO
-        0Pg+otdaB9cawqmILYIZbqwZ1uG8jA3it2Io61O8VjHq2V1bwU4A+JxkfBY8KPMY
-        vHmgJ5rS+o29x4TPkA9c5+GRsPKJEi71zQO/hoI0FTUN+sne7oFmMPT4m0wQZ7YC
-        u3cPlz8chEOpkV6IDc4erqcWOVpM3dUpWmMsSS1cKN58b4GS1AS8x85JZSeHMFNr
-        ZZgUx485TXVWanuFVLuyCCM70lyYgwhBHRrw2qkSVjfMb97Im7s/Wm4c9oJM95ig
-        ==
-X-ME-Sender: <xms:eKnGXhrazoVLBpbWxVzHz6cew0eiI7KMxNYigdodfT_bRIIoHzPnwQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudduuddgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:eanGXjpV9LTqttp8lkgQj1t5Vnvx11LoqmLetOYBMi5R4BkKBIkUEw>
-    <xmx:eanGXuO9cmXcZFeDp41mvJPoS_ZO-wix437YKc1qWsi9PAR_ow02PA>
-    <xmx:eanGXs43nHRqJcD4QuxlJa6MUyVpmUEcVP0P4f3mAE6HaTbAoMd0jQ>
-    <xmx:eqnGXrJt1dt9wWec63Gdp-iFGm2TPTXWzqTngn9SHC3-Z_SqBSNR4w>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 903F33280068;
-        Thu, 21 May 2020 12:16:56 -0400 (EDT)
-Date:   Thu, 21 May 2020 18:16:23 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, adobriyan@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        ebiederm@xmission.com, bernd.edlinger@hotmail.de,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] files: Use rcu lock to get the file
- structures for better performance
-Message-ID: <20200521161623.GA3502608@kroah.com>
-References: <20200521123835.70069-1-songmuchun@bytedance.com>
- <20200521152117.GC28818@bombadil.infradead.org>
- <CAMZfGtVxPevhTy8LMpKUtkk1jX86doiPD0nOTRuKg25+8Vz=ag@mail.gmail.com>
+        Thu, 21 May 2020 12:19:41 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC61AC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 09:19:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z206so1143729lfc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 09:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZIZDqXyVoJ9gXghdJYiCEKQMjkIgQruodsIsQe4U9dY=;
+        b=BrekDs2JD+FzZFLruCXCuGD0Mu8sx1xv/IFDqsRUwkYc08YCvYiQjgly85qxl4NA0G
+         WHHro40yVkTqswRWpJkzs5MEqP4KFXZx2rEVgsu0xe3SmhztFADeO7Z94hysY6t4LD8A
+         AoUpMnF2V3N3NLAFUDiIthmFJc+18kTPTwZ48=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZIZDqXyVoJ9gXghdJYiCEKQMjkIgQruodsIsQe4U9dY=;
+        b=fYDTeonTGP7mmMFStGqyA2bLfX+LjcHl5OGjchtwE8qI84HGvXLtiriatX8JErgBbZ
+         ffr3O8i1pg2XfHGbtPypXn9KAGON9mUC0DHte0O4joX4SWHmEv01hutx9hAovpu5dg3P
+         ya0NbQyTn6jxrhLfsf7NaUnYkCX8hMbwm5ai+eYZz9b9oSwt8aAH54q2wr66oZHwbxDD
+         Deh8lc2+y4UQV+RJpQW9RztVqXzT5N0jZRPpmzZXu5xroc8Gn0ZXfcIdytrX/slmH968
+         Eeb86++BiPndIOO5yux4JGQG3t6MEQpcoxouxzCCHFbJTx1+Efk2krzlVeK38KAtEDYL
+         QPJw==
+X-Gm-Message-State: AOAM533aZOE848nCxJGjWNGuGntCBf2LMSe2Yt58MyU/uhXrShZyXf0i
+        NvftGOebTNf/tvnShGm/PbXHlvNFE0g=
+X-Google-Smtp-Source: ABdhPJyo7rC3W35oAyuscWmpvKPULU+Xcxjqm7lsZDpdH8e0y5x9O/7cPJAirAtGlzU8q/PNb0M+Kg==
+X-Received: by 2002:ac2:4c05:: with SMTP id t5mr3474712lfq.150.1590077979017;
+        Thu, 21 May 2020 09:19:39 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id c11sm1827715lji.17.2020.05.21.09.19.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 09:19:38 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id w15so4755409lfe.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 09:19:38 -0700 (PDT)
+X-Received: by 2002:ac2:4114:: with SMTP id b20mr510711lfi.34.1590077977634;
+ Thu, 21 May 2020 09:19:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVxPevhTy8LMpKUtkk1jX86doiPD0nOTRuKg25+8Vz=ag@mail.gmail.com>
+References: <20200521010337.229177-1-swboyd@chromium.org>
+In-Reply-To: <20200521010337.229177-1-swboyd@chromium.org>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Thu, 21 May 2020 09:19:00 -0700
+X-Gmail-Original-Message-ID: <CAE=gft7p8E+6JB4Ukrt2wDXeWeuoUik4ovmikYvHDhTP+s=HGg@mail.gmail.com>
+Message-ID: <CAE=gft7p8E+6JB4Ukrt2wDXeWeuoUik4ovmikYvHDhTP+s=HGg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Move mss node to the right place
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 12:06:46AM +0800, Muchun Song wrote:
-> On Thu, May 21, 2020 at 11:21 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, May 21, 2020 at 08:38:35PM +0800, Muchun Song wrote:
-> > > There is another safe way to get the file structure without
-> > > holding the files->file_lock. That is rcu lock, and this way
-> > > has better performance. So use the rcu lock instead of the
-> > > files->file_lock.
-> >
-> > What makes you think this is safe?  Are you actually seeing contention
-> > on this spinlock?
-> >
-> 
-> I have read the doc which is in the Documentation/filesystems/files.txt.
-> If my understanding is correct, I think it is safe to use rcu lock.
+On Wed, May 20, 2020 at 6:03 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> The modem node has an address of 4080000 and thus should come after tlmm
+> and before gpu. Move the node to the right place to maintainer proper
+> address sort order.
+>
+> Cc: Evan Green <evgreen@chromium.org>
+> Cc: Sibi Sankar <sibis@codeaurora.org>
+> Fixes: e14a15eba89a ("arm64: dts: qcom: sc7180: Add Q6V5 MSS node")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-Did you test this and prove that it is safe and "faster"?  If so, you
-always have to show that in your changelog.  Please fix it up and
-resend.
+Thanks for the cleanup.
 
-thanks,
-
-greg k-h
+Reviewed-by: Evan Green <evgreen@chromium.org>
