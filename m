@@ -2,101 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923C11DD273
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFDB1DD277
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgEUPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:55:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26077 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728342AbgEUPzn (ORCPT
+        id S1729543AbgEUP4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728266AbgEUP4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:55:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590076542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RP0V13tfcBHFjiQL2Hum0eIuWeC/sr9fMRiGZyHGqdo=;
-        b=ZbCe0UcFLFY4jMxEf/JnZqLOumwANtHGyBuh3T5DnWCNSpRPfmnBolFA0XJwTBp6GCNeci
-        oXeZKqiBwuwDBth2ycWUs8VOW4aVN/l9PuHCF2Rpo0yDLk4zbD2Nj02jvnJc5A97EvIRdp
-        H2wJHTqlGgCLrpjALVy3nbnkQ5xEujY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-xpwtyieaP4mfkdsladJA_w-1; Thu, 21 May 2020 11:55:38 -0400
-X-MC-Unique: xpwtyieaP4mfkdsladJA_w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04D52107ACCD;
-        Thu, 21 May 2020 15:55:37 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-233.rdu2.redhat.com [10.10.116.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D40A95C1B0;
-        Thu, 21 May 2020 15:55:36 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 4354822036E; Thu, 21 May 2020 11:55:36 -0400 (EDT)
-Date:   Thu, 21 May 2020 11:55:36 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-Message-ID: <20200521155536.GA38602@redhat.com>
-References: <87eeszjbe6.fsf@nanos.tec.linutronix.de>
- <B85606B0-71B5-4B7D-A892-293CB9C1B434@amacapital.net>
- <2776fced-54c2-40eb-7921-1c68236c7f70@redhat.com>
+        Thu, 21 May 2020 11:56:23 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8B7C05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:56:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c3so2910740wru.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uLCMRTyOXjE9erVUxBDc3PTKU9Yt55p8AR+4yWGIsbg=;
+        b=iR3pZfkKbiToIz1N7ufbr2Ugkp9DSrnwW2AOdbebzNhEOZ7YdsnlO9drTxWjtbxpfL
+         BuXCNhnKsSaB+XWrfXNOIWyGeT19lgVwoEqDobqhDWNIabOOj65L55nGxewmeylThkmR
+         lFBgxEJsbafCqXo1njqHmm7SsBEHYG30/1s7aPy1O+04VDrALmmv/vDzJxohtyxo8lqb
+         Vjrv71oCYP4DHJo+dJbZiV/lLn/QvPEMPda0hMvOE3IfPQgJMtBfvYHNYFKZDDCRPD4U
+         2eKE7djjuKS49cG4Db9rPchi+xDoEEtjuLW6PoN42cTLWcKlBWtiCi33inM1sQW7EhQn
+         0azQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uLCMRTyOXjE9erVUxBDc3PTKU9Yt55p8AR+4yWGIsbg=;
+        b=nsu8Njdhcvz50K1m18SuXd9Q/n6lh1ll8yHEFQSjhdh2IgbDo+YWv0ipD/LdxRZPrE
+         lPuZpfzAWA/9GsINGgjylbBMPGO4sBsAgdROTkzNF5DKqSg2irUviGR+OpeKv9Pn4w3L
+         FqydWtSbYyN3OEcNyj2XNv9v+FyLDrP1uyjNvM8VMzgoIxkE3sH3stGKPKtLO5xE0eGA
+         cJtAzHbgptkQpw4Z1vPY7GGvAroo+BxHYH+KWFSJbncGvzR7WLw5Z0HyFCdFHl/TWFls
+         JttcQi+hE8FBNqzPHKWqUdrKusF/eXwUNJQVo6AiXmNaiEMUYY+eDmFu7XU1k2K3piLq
+         N5+Q==
+X-Gm-Message-State: AOAM532Qz5ZB/l0N8Hh2DSsvIx/LVPjs/nBGvMFYtM9pzzhb/vXWlMve
+        zvLD0gGC44I7oMVxGRjgxiS98g==
+X-Google-Smtp-Source: ABdhPJxrMTmt7fxRkq9YsSfm7JKgRhRnDtp9kr90marbvWZjRQ6V/3vd0FugA1b6W6TJcs6AhSlm1g==
+X-Received: by 2002:a5d:4c49:: with SMTP id n9mr2020191wrt.266.1590076551258;
+        Thu, 21 May 2020 08:55:51 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id m3sm6778597wrn.96.2020.05.21.08.55.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 May 2020 08:55:50 -0700 (PDT)
+Subject: Re: [RFC v1 2/3] drivers: nvmem: Add driver for QTI qfprom-efuse
+ support
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        dhavalp@codeaurora.org, mturney@codeaurora.org,
+        sparate@codeaurora.org, c_rbokka@codeaurora.org,
+        mkurumel@codeaurora.org
+References: <1589307480-27508-1-git-send-email-rbokka@codeaurora.org>
+ <1589307480-27508-3-git-send-email-rbokka@codeaurora.org>
+ <ffaccce7-95c0-2f95-ad3b-55f1da42eaee@linaro.org>
+ <14e1fa51-066c-6e1b-01a4-2103612de9e9@codeaurora.org>
+ <d5902226-21b3-7941-6405-688d7a115142@linaro.org>
+ <b80aaca0-0594-e04b-5320-b5b3c4478161@codeaurora.org>
+ <d76e4eb2-fa6a-0b76-3912-83bce678bc96@linaro.org>
+ <CAD=FV=XW7GymV_pr_0SvUPWwL6WnPhqMq-crq-RbR_us3-ShNA@mail.gmail.com>
+ <9864496c-b066-3fe8-5608-bd9af69663f4@linaro.org>
+ <CAD=FV=UbZPQ74COXJbOikq9Wcx1UvtuMuMA+nqkx44uySoqggg@mail.gmail.com>
+ <99f07eaa-d072-f391-098e-e6f7a50a1960@linaro.org>
+ <CAD=FV=W+UES1f3reMhvPPUho5FbaZXdU-2jkRaPcbBEzDWT+WQ@mail.gmail.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <9ecb5790-47fe-583b-6fc3-8f4f3ce7860e@linaro.org>
+Date:   Thu, 21 May 2020 16:55:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2776fced-54c2-40eb-7921-1c68236c7f70@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAD=FV=W+UES1f3reMhvPPUho5FbaZXdU-2jkRaPcbBEzDWT+WQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 12:07:22AM +0200, Paolo Bonzini wrote:
-> On 07/04/20 23:41, Andy Lutomirski wrote:
-> > 2. Access to bad memory results in #MC.  Sure, #MC is a turd, but
-> > it’s an *architectural* turd. By all means, have a nice simple PV
-> > mechanism to tell the #MC code exactly what went wrong, but keep the
-> > overall flow the same as in the native case.
-> > 
-> > I think I like #2 much better. It has another nice effect: a good
-> > implementation will serve as a way to exercise the #MC code without
-> > needing to muck with EINJ or with whatever magic Tony uses. The
-> > average kernel developer does not have access to a box with testable
-> > memory failure reporting.
+
+
+On 21/05/2020 16:10, Doug Anderson wrote:
+>> On 20/05/2020 23:48, Doug Anderson wrote:
+>>>> Is this only applicable for corrected address space?
+>>> I guess I was proposing a two dts-node / two drive approach here.
+>>>
+>>> dts node #1:just covers the memory range for accessing the FEC-corrected data
+>>> driver #1: read-only and reads the FEC-corrected data
+>>>
+>>> dts node #2: covers the memory range that's_not_  the FEC-corrected
+>>> memory range.
+>>> driver #2: read-write.  reading reads uncorrected data
+>>>
+>>> Does that seem sane?
+>> I see your point but it does not make sense to have two node for same thing.
+> OK, so that sounds as if we want to go with the proposal where we
+> "deprecate the old driver and/or bindings and say that there really
+> should just be one node and one driver".
 > 
-> I prefer #VE, but I can see how #MC has some appeal. 
+> Would this be acceptable to you?
+> 
+> 1. Officially mark the old bindings as deprecated.
 
-I have spent some time looking at #MC and trying to figure out if we
-can use it. I have encountered couple of issues.
+Possibly Yes for some reasons below!
 
-- Uncorrected Action required machine checks are generated when poison
-  is consumed. So typically all kernel code and exception handling is
-  assuming MCE can be encoutered synchronously only on load and not
-  store. stores don't generate MCE (atleast not AR one, IIUC). If we were
-  to use #MC, we will need to generate it on store as well and then that
-  requires changing assumptions in kernel which assumes stores can't
-  generate #MC (Change all copy_to_user()/copy_from_user() and friends)
+> 
+> 2. Leave the old driver there to support the old deprecated bindings,
+> at least until everyone can be transferred over.  There seem to be
+> quite a few existing users of "qcom,qfprom" and we're supposed to make
+> an attempt at keeping the old device trees working, at least for a
+> little while.  Once everyone is transferred over we could decide to
+> delete the old driver.
+we could consider "qcom,qfrom" to be only passing corrected address 
+space. Till we transition users to new bindings!
 
-- Machine check is generated for poisoned memory. And in this it is not
-  exaclty poisoning. It feels like as if memory has gone missing. And
-  failure might be temporary that is if file is truncated again to extend,
-  then next load/store to same memory location will work just fine. My
-  understanding is that sending #MC will mark that page poisoned and
-  it will sort of become permanent failure. 
+> 
+Yes.
 
-I am less concerned about point 2, but not sure how to get past the
-first issue.
+> 3. We will have a totally new driver here.
+No, we should still be using the same driver. But the exiting driver 
+seems to incorrect and is need of fixing.
 
-Thanks
-Vivek
+Having a look at the memory map for old SoCs like msm8996 and msm8916 
+shows that memory map that was passed to qfprom driver is corrected 
+address space. Writes will not obviously work!
 
+This should also be true with sdm845 or sc7180
+
+That needs to be fixed first!
+
+> 
+> 4. A given device tree will_not_  be allowed to have both
+> "qcom,qfprom" specified and "qcom,SOC-qfprom" specified.  ...and by
+> "qcom,SOC-qfprom" I mean that SOC should be replaced by the SoC name,
+> so "qcom,sc7180-qfprom" or "qcom,sdm845-qfprom".  So once you switch
+> to the new node it replaces the old node.
+
+Secondly, this IP is clearly an integral part of Secure Control Block, 
+which clearly has versioning information.
+
+Versioning information should be part of compatible string in msm8996 it 
+should be "qcom,qfprom-5.1.0"
+for msm8916 it should be "qcom,qfprom-4.0.0" this translates to 
+"qcom,qfprom-<MAJOR-NUMBER>-<MINOR-NUMBER>-<STEP>"
+
+Thirdly we should be able to have common read for all these as they tend 
+to just read from corrected address space.
+
+Offsets to corrected address space seems to always constant across SoCs too.
+
+platform specific device tree nodes should also be able to specify 
+"read-only" property to not allow writes on to this raw area.
+
+Does this make sense ?
+
+Thanks,
+srini
+> 
+> 
+>> Isn't the raw address space reads used to for blowing and checking the
+>> fuses if they are blown correctly or not and software usage of these
+>> fuses should only be done from correct address space?
+>>
+>> the read interface to user should be always from corrected address space
+>> and write interface should be to raw address space.
+> Great.  That sounds right to me.  Presumably the driver could add some
+> sort of "debugfs" access to read the raw address space if needed.
