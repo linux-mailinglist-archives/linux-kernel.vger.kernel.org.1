@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D721DD76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FA81DD77E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729475AbgEUTlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728635AbgEUTlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:41:18 -0400
-Received: from localhost (mobile-166-175-190-200.mycingular.net [166.175.190.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74A8A2065F;
-        Thu, 21 May 2020 19:41:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590090077;
-        bh=V7Rxedh2MenOwI8XK4KoWriB9ieXIxOg9p/fYNUmu6o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DGrKWPYF4T61W/bPMJjljuNf8dXTHk0f6MkZK2ldwJgILEIsVJksvKR9Ef0tXf/Mm
-         /v1VApdxpv0cJTjhytbqfnysZVkWTwx8Gte2VacSGA8MWFcyB34b+jg8pX6rCQInJz
-         56CdXIhZgakIXA9UioojzKLvEfweY5Zp+71czsoo=
-Date:   Thu, 21 May 2020 14:41:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-pci@vger.kernel.org,
-        Xen Development List <xen-devel@lists.xenproject.org>,
-        linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, x86@kernel.org,
-        sstabellini@kernel.org, Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] x86/xen: drop an unused parameter gsi_override
-Message-ID: <20200521194115.GA1169412@bjorn-Precision-5520>
+        id S1730073AbgEUTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728635AbgEUTmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:42:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9414AC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:42:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x18so2193838pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BXYPauGkNWtPwKYwGGvUTVu/KGcI14RapTxg+fHwXY4=;
+        b=se3vu6erp2PBFC3GeiZK3pujHsPbv1+Tub7hi+r+f1Cu3Y6qod1+7C7rJZAl2ylOrO
+         xe7x3AdAvBRwQZ+ViBf3KRKqKxm5/pfNZdBUCB+/cZixrse5Nrq3v5eAScYCzQNG0wzd
+         bXws+6xkLfsjR+OPSM1Tezns0jGTj/TOo5PXDTpWjhjk72I2AHEzDy4zLLAQRg0+QW+d
+         mWWYanxQ9LMvTj1CgdOsvNvsfhKpKSWJR4cuW1nWvYDuqsA5AQAaaRqI3ucSL53IB6V+
+         x3ZOhZYpuxq0n4GGBJrYgVWsiorHx0X17eXWKyYOZtnXT4u7BGIxnD5cbxsAHeNBchtF
+         OXqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BXYPauGkNWtPwKYwGGvUTVu/KGcI14RapTxg+fHwXY4=;
+        b=BCyQfsA96Uu3tacMkO/MV6wkjQxetk6f8x5KXkAcw1MYFOX7JFE3TvkHrlexo2dcdk
+         VqCpb6juYprUWZUGxr22sYLCxFUvRNyUi7miM7zDnu5cYn6noXJyMTk2G2e5GrQqs5v7
+         GcGHUS8hprBoJ7BjmwOWNYGL0+LdS5wYjoTL4l1KZNale2xhN+K2LTudvExJ3bATF4xO
+         vXk5ZrGSUaXyPkRGBl3QqOPqL8tY1NMnE+d+yWYjBXhgMr2yW82o9BeLnmvc9LxPI0uj
+         iNqWLVv/x3oWllwPfpoCleDaTjTsIYwJE4knMv7ooXTEicEv0FFDIZajlcykZkpdjFEk
+         TMEA==
+X-Gm-Message-State: AOAM531eDUvvaStOY+p2XHrxr9xHChSTMNcm7K0dNnqvJm6XhvZjBnhr
+        zVIGXereCTdWKB+BFV2zzXc/TA==
+X-Google-Smtp-Source: ABdhPJxk6/AaRmSF7oCKZdzRq5JtighkgWW5LdhwQ4PD4zRb+L/JtxeyuIelMKGLsyYWPBn0ErhdvA==
+X-Received: by 2002:a17:90a:248a:: with SMTP id i10mr157777pje.174.1590090155010;
+        Thu, 21 May 2020 12:42:35 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id n21sm5065359pjo.25.2020.05.21.12.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 12:42:34 -0700 (PDT)
+Date:   Thu, 21 May 2020 12:41:16 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Clement Leger <cleger@kalray.eu>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] remoteproc: introduce version element into resource
+ type field
+Message-ID: <20200521194116.GP408178@builder.lan>
+References: <20200325204701.16862-1-s-anna@ti.com>
+ <20200325204701.16862-3-s-anna@ti.com>
+ <20200521175421.GI408178@builder.lan>
+ <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
+ <20200521192146.GO408178@builder.lan>
+ <57ae5678-fd0a-07a8-6165-a2cf7ccdef88@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428153640.76476-1-wei.liu@kernel.org>
+In-Reply-To: <57ae5678-fd0a-07a8-6165-a2cf7ccdef88@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 03:36:40PM +0000, Wei Liu wrote:
-> All callers within the same file pass in -1 (no override).
-> 
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+On Thu 21 May 12:29 PDT 2020, Suman Anna wrote:
 
-Applied to pci/virtualization for v5.8, thanks!
-
-I don't see anything else in linux-next that touches this file, but if
-somebody wants to merge this via another tree, just let me know.
-
-> ---
->  arch/x86/pci/xen.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
+> On 5/21/20 2:21 PM, Bjorn Andersson wrote:
+> > On Thu 21 May 12:06 PDT 2020, Suman Anna wrote:
+> > 
+> > > Hi Bjorn,
+> > > 
+> > > On 5/21/20 12:54 PM, Bjorn Andersson wrote:
+> > > > On Wed 25 Mar 13:46 PDT 2020, Suman Anna wrote:
+> > > > 
+> > > > > The current remoteproc core has supported only 32-bit remote
+> > > > > processors and as such some of the current resource structures
+> > > > > may not scale well for 64-bit remote processors, and would
+> > > > > require new versions of resource types. Each resource is currently
+> > > > > identified by a 32-bit type field. Introduce the concept of version
+> > > > > for these resource types by overloading this 32-bit type field
+> > > > > into two 16-bit version and type fields with the existing resources
+> > > > > behaving as version 0 thereby providing backward compatibility.
+> > > > > 
+> > > > > The version field is passed as an additional argument to each of
+> > > > > the handler functions, and all the existing handlers are updated
+> > > > > accordingly. Each specific handler will be updated on a need basis
+> > > > > when a new version of the resource type is added.
+> > > > > 
+> > > > 
+> > > > I really would prefer that we add additional types for the new
+> > > > structures, neither side will be compatible with new versions without
+> > > > enhancements to their respective implementations anyways.
+> > > 
+> > > OK.
+> > > 
+> > > > 
+> > > > > An alternate way would be to introduce the new types as completely
+> > > > > new resource types which would require additional customization of
+> > > > > the resource handlers based on the 32-bit or 64-bit mode of a remote
+> > > > > processor, and introduction of an additional mode flag to the rproc
+> > > > > structure.
+> > > > > 
+> > > > 
+> > > > What would this "mode" indicate? If it's version 0 or 1?
+> > > 
+> > > No, for indicating if the remoteproc is 32-bit or 64-bit and adjust the
+> > > loading handlers if the resource types need to be segregated accordingly.
+> > > 
+> > 
+> > Sorry, I think I'm misunderstanding something. Wouldn't your 64-bit
+> > remote processor need different firmware from your 32-bit processor
+> > anyways, if you want to support the wider resource? And you would pack
+> > your firmware with the appropriate resource types?
 > 
-> diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
-> index 91220cc25854..e3f1ca316068 100644
-> --- a/arch/x86/pci/xen.c
-> +++ b/arch/x86/pci/xen.c
-> @@ -60,8 +60,7 @@ static int xen_pcifront_enable_irq(struct pci_dev *dev)
->  }
->  
->  #ifdef CONFIG_ACPI
-> -static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
-> -			     bool set_pirq)
-> +static int xen_register_pirq(u32 gsi, int triggering, bool set_pirq)
->  {
->  	int rc, pirq = -1, irq = -1;
->  	struct physdev_map_pirq map_irq;
-> @@ -94,9 +93,6 @@ static int xen_register_pirq(u32 gsi, int gsi_override, int triggering,
->  		name = "ioapic-level";
->  	}
->  
-> -	if (gsi_override >= 0)
-> -		gsi = gsi_override;
-> -
->  	irq = xen_bind_pirq_gsi_to_irq(gsi, map_irq.pirq, shareable, name);
->  	if (irq < 0)
->  		goto out;
-> @@ -112,12 +108,12 @@ static int acpi_register_gsi_xen_hvm(struct device *dev, u32 gsi,
->  	if (!xen_hvm_domain())
->  		return -1;
->  
-> -	return xen_register_pirq(gsi, -1 /* no GSI override */, trigger,
-> +	return xen_register_pirq(gsi, trigger,
->  				 false /* no mapping of GSI to PIRQ */);
->  }
->  
->  #ifdef CONFIG_XEN_DOM0
-> -static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polarity)
-> +static int xen_register_gsi(u32 gsi, int triggering, int polarity)
->  {
->  	int rc, irq;
->  	struct physdev_setup_gsi setup_gsi;
-> @@ -128,7 +124,7 @@ static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polar
->  	printk(KERN_DEBUG "xen: registering gsi %u triggering %d polarity %d\n",
->  			gsi, triggering, polarity);
->  
-> -	irq = xen_register_pirq(gsi, gsi_override, triggering, true);
-> +	irq = xen_register_pirq(gsi, triggering, true);
->  
->  	setup_gsi.gsi = gsi;
->  	setup_gsi.triggering = (triggering == ACPI_EDGE_SENSITIVE ? 0 : 1);
-> @@ -148,7 +144,7 @@ static int xen_register_gsi(u32 gsi, int gsi_override, int triggering, int polar
->  static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
->  				 int trigger, int polarity)
->  {
-> -	return xen_register_gsi(gsi, -1 /* no GSI override */, trigger, polarity);
-> +	return xen_register_gsi(gsi, trigger, polarity);
->  }
->  #endif
->  #endif
-> @@ -491,7 +487,7 @@ int __init pci_xen_initial_domain(void)
->  		if (acpi_get_override_irq(irq, &trigger, &polarity) == -1)
->  			continue;
->  
-> -		xen_register_pirq(irq, -1 /* no GSI override */,
-> +		xen_register_pirq(irq,
->  			trigger ? ACPI_LEVEL_SENSITIVE : ACPI_EDGE_SENSITIVE,
->  			true /* Map GSI to PIRQ */);
->  	}
-> -- 
-> 2.20.1
+> Yes, that's correct.
 > 
+> > 
+> > Afaict the bit width of your remote processor, busses or memory is
+> > unrelated to the choice of number of bits used to express things in the
+> > resource table.
+> 
+> I would have to add the new resource type to the loading_handlers right, so
+> it is a question of whether we want to impose any restrictions in remoteproc
+> core or not from supporting a certain resource type (eg: I don't expect
+> RSC_TRACE entries on 64-bit processors).
+> 
+
+Right, but either you add support for new resource types to the
+loading_handlers, or you add the version checks within each handler,
+either way you will have to do some work to be compatible with new
+versions.
+
+Regarding what resources would be fit for a 64-bit processor probably
+relates to many things, in particular the question of what we actually
+mean when we say that a coprocessor is 64-bit. So I don't really see a
+need for the remoteproc core to prevent someone to design their
+system/firmware to have a 64-bit CPU being passed 32-bit addresses.
+
+Regards,
+Bjorn
