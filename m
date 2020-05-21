@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DC81DC7A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D902D1DC7B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgEUH2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 03:28:32 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:42542 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728265AbgEUH21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 03:28:27 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCXLkGKLcZesuTmAA--.10435S4;
-        Thu, 21 May 2020 15:28:15 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        id S1728387AbgEUHa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 03:30:28 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:34467 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728316AbgEUHa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 03:30:28 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MEmpp-1jqlgo3dFL-00GHJO; Thu, 21 May 2020 09:30:26 +0200
+Received: by mail-qt1-f176.google.com with SMTP id c24so4757765qtw.7;
+        Thu, 21 May 2020 00:30:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531XMZgv+q3ZN8K+wb5hpUxL54KCDewzxB5xuzM2b+Ys4b3tla6R
+        Us46VOP8APtHPTHr25tuLn0y1tBiRMxa9/Mb6hg=
+X-Google-Smtp-Source: ABdhPJxb5MQ8kuEO75fNExBq52zxkwucWqTuaAehdsr7lKk/Qfg8lylkr0b4j+C/p9or/isfYY2zvvtfKGWgdvJXJ4w=
+X-Received: by 2002:aed:2441:: with SMTP id s1mr9376585qtc.304.1590046224526;
+ Thu, 21 May 2020 00:30:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200521004217.6gdcpboxaqizreky@mobilestation> <20200521071457.GC7309@alpha.franken.de>
+In-Reply-To: <20200521071457.GC7309@alpha.franken.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 21 May 2020 09:30:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2OYtd9Fa44ufbnpFoW3=G+NUtuueAoAV9CGVRBgOhSGw@mail.gmail.com>
+Message-ID: <CAK8P3a2OYtd9Fa44ufbnpFoW3=G+NUtuueAoAV9CGVRBgOhSGw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] mips: Prepare MIPS-arch code for Baikal-T1 SoC support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Olof Johansson <olof@lixom.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xhci: Fix runtime PM imbalance on error
-Date:   Thu, 21 May 2020 15:28:09 +0800
-Message-Id: <20200521072809.17390-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCXLkGKLcZesuTmAA--.10435S4
-X-Coremail-Antispam: 1UD129KBjvdXoWruF4kArW7Jw1rCrWfGrW8Crg_yoWfZFg_Cr
-        y5ur1xWrnYgFZIv3yUC3y3ZrWqq3yUX3WkZF10yFnagry2y3Z5ZFyxurn8AF15ur4xJrZ0
-        kwnaqryxCFW8CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l
-        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
-        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
-        wI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x0JUffHUUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEHBlZdtOPItAAFsn
+        Jiri Slaby <jslaby@suse.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:BcLrKcPnWA60MbUrQ9m1/wEg+zlclLnUt4s6jdc55n5PTkhjbZL
+ JgQ+jIrAuUH53tQy6AJVWAapHq4JN24cYVd4zHakTRcWD2GUalJiJFHV0IQeSOoXJuykKVA
+ 4yuy5miOgwEYcUL+r5fAMgv7geU6XWtbNupIwZkFXsgKNfDTko3DxnUs1VpJ4EYSMbBxOlj
+ PCAXJ5y7tFUan4YQu+3Gg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0WZ1TGQ04lQ=:NuCiqnLBLVWV/H5RW2GeWA
+ 1ZrTFLJQOaNa5ZB0mqoCscEAJdsouplyCjNs621j8hdRt3+qXYKmFIIaWUmht2sPppbJpVwPA
+ D8LZG3lJdGpboNIW3etKekHbZH8q9FTljTCMP+tbJCJ4A/3vQVvA6Z8tmpdMcQhqKMK0xBXBb
+ YuE94Z5LmdeY7mAVavfDskJGVf2UELX42Q5ogBIXNNx5CHrAKstrWfCMoaVdPh4rzjYjrVe4N
+ 6gunuZFFlrsk45oDqhKP1RXgVTQUObgmG+Xnv7N82bEF1ee/46guE3fQfFe62IpWr8gWnakMA
+ 7y8tHyCD8eBJKGGk6Y8YPVqghhsqX7rMEhiz1PYdRVxEbeYeE5L5NoVRIrYtvcZuju6QmtBga
+ hpzst3ekEVJJubacjpkJHPkN1MeaQjVkinXdOQldPciD55vSZSX4j/XOhlnfkTJWbKtJHZjRp
+ vjmJz3NCGf5hcnBXONr6F9z4hqu3duHufBeGMdZ00IgJ8X823ml5ajiZ0JIfxXZqDlHetEZvc
+ VnzKEiWC+q90HME8tonwPYZR+g/2ASM1doSwHHXC0gs86XXDbdKZHSJWk157z5+9rWVbh5/pz
+ bVKX/02JaMoNMpza0JiKAtTTra7T3q/KAwwZfHAlQ19xrdycVrKm7Yw28Lk84PUdfHyObCt7m
+ /ZipSQ9zkScUf1OmSUc9XXEdUPq4MMcuflC+QGXakePevPu+Zr2FSTsqQxJviIE0TqrnUuQyu
+ oGImf5AEAuQmq/nP8jNpTCNVvWdCFaVGLR+oxZQZNijxPcy2TQaRSGyGnzC0ehiv7IXdCI4BY
+ GN+GGb2Nw8HOAWvPIiynoEnNJIqnh32f8+1JEht32H1WSSPMKs=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dma_set_mask_and_coherent() returns an error code,
-a pairing runtime PM usage counter decrement is needed
-to keep the counter balanced.
+On Thu, May 21, 2020 at 9:18 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> On Thu, May 21, 2020 at 03:42:17AM +0300, Serge Semin wrote:
+> > On Thu, May 21, 2020 at 03:34:29AM +0300, Serge Semin wrote:
+> > >
+> > > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> > > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+> > > tag: v5.7-rc4
+> >
+> > Thomas,
+> > Please note that this patchset is based on the Linux 5.7-rc4 tree (it most likely
+> > will get cleanly applied on rc6 as well), while mips-next is still at rc1. Due
+> > to that the patchset fails to be applied on mips-next. I think it would be
+> > better first to merge the last Linux tree into the mips-next, then try to merge
+> > this patchset in. Should you have any problem after that, please let me know.
+> > I'll resend the patchset being rebased on top of the new mips-next tree.
+>
+> no, that's not how it works. Please rebase your patches on top of
+> mips-next. Thank you.
 
-Also, call pm_runtime_disable() when dma_set_mask_and_coherent()
-returns an error code.
+Right, backmerges should generally be avoided. However if something
+between rc1 and rc4 is required to make Baikal-T1 work, rebasing it to
+rc1 would make it non-bisectable, which is also bad.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/usb/host/xhci-histb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Serge, are you aware of something in -rc4 that is needed as a dependency?
 
-diff --git a/drivers/usb/host/xhci-histb.c b/drivers/usb/host/xhci-histb.c
-index 5546e7e013a8..1d22a664477f 100644
---- a/drivers/usb/host/xhci-histb.c
-+++ b/drivers/usb/host/xhci-histb.c
-@@ -240,7 +240,7 @@ static int xhci_histb_probe(struct platform_device *pdev)
- 	/* Initialize dma_mask and coherent_dma_mask to 32-bits */
- 	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
- 	if (ret)
--		return ret;
-+		goto disable_pm
- 
- 	hcd = usb_create_hcd(driver, dev, dev_name(dev));
- 	if (!hcd) {
--- 
-2.17.1
-
+       Arnd
