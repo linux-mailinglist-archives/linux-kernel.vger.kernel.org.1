@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A191E1DCE8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1441DCE8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgEUNtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S1729580AbgEUNuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgEUNtP (ORCPT
+        with ESMTP id S1729197AbgEUNuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:49:15 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9451C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:49:14 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id r3so3095135qve.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:49:14 -0700 (PDT)
+        Thu, 21 May 2020 09:50:11 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CFDC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:50:11 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id y85so6205845oie.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=J+C1gfkSjYLne9keDCP2UNyXwOjB62jHfW7cgQObU8s=;
-        b=b9jsebrfPmlbjKXFmG0YOx9tS7DFt1dWq3yu9lj9Zy2a794TG5RNkoOBzQQgfxnVJ+
-         R0+KYEXfPbFsFQeeOXsFN8KHLDqnxdnR/HCKIwNly9lM5VPwY5HvIBZvLQ0xN1fNwlYz
-         jTIRWtXS5UjPp4yUzk/ZSEln0UaTVdNfrxpQs=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=+rx34frGAhxyFDztnsG4UwVe/jVB01cbcYcfehMFKm8=;
+        b=kRdZ04hIwcg5sBPK4ZhOUKQ/+STfLXkTdU84uMqlC08Tc2YPDWygXEH7X+YlXQLiJ1
+         9gvo9hHQo1liVi1sL/9l5aWnHUTFJo9laFK227tXIyQva+USV1GWzP5eDF0LeZ73cX1b
+         rxUshQh//HagrZkGxp/e7RIGnDHRl/jDvkMN1G3P3uhAKYLTT9e2QXK29XMFV8FrOhoD
+         4d/ULAkAXoPNkDKJCyr8489YH3miJ5sAOeQUs4iLLxQDWbA+ltkCQDTItEN0GaUSWzS5
+         gawh9LukYIKnqmGkntX3ShtKxhORzdJVDObLxpu/VffC2Z3L1gKBxmX+LS0erxSK5BaR
+         BX4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=J+C1gfkSjYLne9keDCP2UNyXwOjB62jHfW7cgQObU8s=;
-        b=F9P9zNm9B00d7Fns+3LoDQikR/fZZNf5Ojx2HqCTaN1orfJ/pDsgnVi8wIIsbQ9cr5
-         LpGVGEVsUzy45lIXG3gwBp1SdQsUjnCB9wT6sgAlqxIeeAbAwI9NPb2Zf1IiReeRCx+h
-         8NOUa4qITjI1Ih6UvYEKGNjidEtb6gzTdCtuYcHVWJZPF8YQMsA7nvLaGJo2/IxJyOQs
-         t3sflL3WdTHTMsAVsVTv3r9y4nN1nmFf/Thal/9LvDofU5v2ftD7ONMgJYv0IW1fLNLQ
-         ltL6Qwko4p1bIZn9k21cT7Nz7fYh0ACz8eTnsKTqYtOgcONAvPsV2xT9l7EEoFqnpvjt
-         VGqw==
-X-Gm-Message-State: AOAM533oPtvAgrCyh7AZXwSG83D2ZSw/VNhM2YKwnN4C0NDVoHZvQop6
-        bY4wl8nnUnMt3rDm2bodsZTd8g==
-X-Google-Smtp-Source: ABdhPJy/BZJ+Um73LfAOvwd50rtJIWV9Gq956NWaJ0Sn3QXJpPu3N2TuR1EbzOsmXc23Jv8+Wzq0aQ==
-X-Received: by 2002:ad4:57cb:: with SMTP id y11mr9944990qvx.26.1590068954041;
-        Thu, 21 May 2020 06:49:14 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id d140sm4287727qkc.22.2020.05.21.06.49.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 06:49:13 -0700 (PDT)
-Date:   Thu, 21 May 2020 09:49:13 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        vpillai <vpillai@digitalocean.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling
- interface(Internet mail)
-Message-ID: <20200521134913.GB140701@google.com>
-References: <cover.1583332764.git.vpillai@digitalocean.com>
- <20200520222642.70679-1-joel@joelfernandes.org>
- <71B72E96-CD6E-43C3-B22B-ADE0EC78C550@tencent.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=+rx34frGAhxyFDztnsG4UwVe/jVB01cbcYcfehMFKm8=;
+        b=iXWFFyKHoX/eepsFES/UK+KRXLwhyxhILEB9wb2bgSiQXj0Ur3kmAoKLYfJ78gWzOK
+         ohZZ2T8xEMYTsufQeFUIzSKFsI7HAftxf0Ae1aSy6B8WbU1i1wRMctG1MtxRTeA5UkNi
+         S9WLOKq7HMFRenSgvT4lRQfDb0gRz0aAR0QNptUGZe3jKezm3ndthN/a2mBdCWnM2N7y
+         h/2b7QilQAHELbx0ah+Bokj4CCxrJfgQUA7UoqMjGwUXyfXyuypaJG5E9F4uNct2cHU/
+         ADtVHbDVUWYlpw6zz/s8ID4orc8nIrNC7ew13EH7BGLkyF/RlxKDro0URYCVf9YeRaM/
+         nkjA==
+X-Gm-Message-State: AOAM531maAr8vx81NRUrZxqL1r/nslRHxl7jcqTjfijhH8yasj83wZ/2
+        q6ahNaiBFbxLOKZ6Pf4zUBooUA==
+X-Google-Smtp-Source: ABdhPJyhaSNhjeHFlsDhzLGECwTxxbYZQS3ikIOsP8AocLiNXEM3A1jjJtyElbPfeZXokR8Vgsc16w==
+X-Received: by 2002:a54:4512:: with SMTP id l18mr6970406oil.81.1590069010565;
+        Thu, 21 May 2020 06:50:10 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id q16sm1599162ota.3.2020.05.21.06.50.08
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 21 May 2020 06:50:09 -0700 (PDT)
+Date:   Thu, 21 May 2020 06:49:51 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH mmotm] mm/vmstat: Add events for PMD based THP migration
+ without split fix
+Message-ID: <alpine.LSU.2.11.2005210643340.482@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <71B72E96-CD6E-43C3-B22B-ADE0EC78C550@tencent.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:09:50AM +0000, benbjiang(蒋彪) wrote:
-> 
-> 
-> > On May 21, 2020, at 6:26 AM, Joel Fernandes (Google) <joel@joelfernandes.org> wrote:
-> > 
-> > Add a per-thread core scheduling interface which allows a thread to tag
-> > itself and enable core scheduling. Based on discussion at OSPM with
-> > maintainers, we propose a prctl(2) interface accepting values of 0 or 1.
-> > 1 - enable core scheduling for the task.
-> > 0 - disable core scheduling for the task.
-> > 
-> > Special cases:
-> > (1)
-> > The core-scheduling patchset contains a CGroup interface as well. In
-> > order for us to respect users of that interface, we avoid overriding the
-> > tag if a task was CGroup-tagged because the task becomes inconsistent
-> > with the CGroup tag. Instead return -EBUSY.
-> > 
-> > (2)
-> > If a task is prctl-tagged, allow the CGroup interface to override
-> > the task's tag.
-> > 
-> > ChromeOS will use core-scheduling to securely enable hyperthreading.
-> > This cuts down the keypress latency in Google docs from 150ms to 50ms
-> > while improving the camera streaming frame rate by ~3%.
-> Hi,
-> Are the performance improvements compared to the hyperthreading disabled scenario or not?
-> Could you help to explain how the keypress latency improvement comes with core-scheduling?
+Fix 5.7-rc6-mm1 page migration crash in unmap_and_move(): when the
+page to be migrated has been freed from under us, that is considered 
+a MIGRATEPAGE_SUCCESS, but no newpage has been allocated (and I don't
+think it would ever need to be counted as a successful THP migration).
 
-Hi Jiang,
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+Fix to mm-vmstat-add-events-for-pmd-based-thp-migration-without-split.patch
 
-The keypress end-to-end latency metric we have is calculated from when the
-keypress is registered in hardware to when a character is drawn on the
-scereen. This involves several parties including the GPU and browser
-processes which are all running in the same trust domain and benefit from
-parallelism through hyperthreading.
+ mm/migrate.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
-
- - Joel
-
+--- 5.7-rc6-mm1/mm/migrate.c	2020-05-20 12:21:56.117693827 -0700
++++ linux/mm/migrate.c	2020-05-20 15:08:12.319476978 -0700
+@@ -1248,7 +1248,7 @@ out:
+ 	 * we want to retry.
+ 	 */
+ 	if (rc == MIGRATEPAGE_SUCCESS) {
+-		if (PageTransHuge(newpage))
++		if (newpage && PageTransHuge(newpage))
+ 			thp_migration_success(true);
+ 		put_page(page);
+ 		if (reason == MR_MEMORY_FAILURE) {
