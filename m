@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7703F1DD61E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86531DD622
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgEUSij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 14:38:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40126 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728240AbgEUSij (ORCPT
+        id S1729620AbgEUSjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 14:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728240AbgEUSjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 14:38:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590086317;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6xn++Cf4HTyCSbGYh8HNPobkxrKx2sAl2lxN9hs9ouI=;
-        b=c7TJ36+NLFWSfBQjkAw6Oh77SIWV4iG2khbeCR5NCcQd/maU9A0ZAqNZcsTfjFPmg5YCtN
-        PfUTFmNma6FRnW/UN5yvosyUVwERmP2tvs2NtJIX2f1XcpEQshIzaG4o/prgRcQ1D01sb3
-        E/665ZhC8ve4SDo/x0tgYFHMivoEME8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-5bnbrclkMYKsSWfsdSTzWw-1; Thu, 21 May 2020 14:38:35 -0400
-X-MC-Unique: 5bnbrclkMYKsSWfsdSTzWw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF6E6EC1B2;
-        Thu, 21 May 2020 18:38:32 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-233.rdu2.redhat.com [10.10.116.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 96E7212A4D;
-        Thu, 21 May 2020 18:38:32 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 0D80322036E; Thu, 21 May 2020 14:38:32 -0400 (EDT)
-Date:   Thu, 21 May 2020 14:38:32 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-Message-ID: <20200521183832.GB46035@redhat.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
+        Thu, 21 May 2020 14:39:36 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDB0C061A0E;
+        Thu, 21 May 2020 11:39:36 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jbq6A-0006og-PX; Thu, 21 May 2020 20:39:19 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id E386A100C2D; Thu, 21 May 2020 20:39:16 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set data->ctx and data->hctx in blk_mq_alloc_request_hctx
+In-Reply-To: <20200521092340.GA751297@T590>
+References: <20200520011823.GA415158@T590> <20200520030424.GI416136@T590> <20200520080357.GA4197@lst.de> <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk> <448d3660-0d83-889b-001f-a09ea53fa117@kernel.dk> <87tv0av1gu.fsf@nanos.tec.linutronix.de> <2a12a7aa-c339-1e51-de0d-9bc6ced14c64@kernel.dk> <87eereuudh.fsf@nanos.tec.linutronix.de> <20200521022746.GA730422@T590> <87367tvh6g.fsf@nanos.tec.linutronix.de> <20200521092340.GA751297@T590>
+Date:   Thu, 21 May 2020 20:39:16 +0200
+Message-ID: <87pnaxt9nv.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200511164752.2158645-3-vkuznets@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 11, 2020 at 06:47:46PM +0200, Vitaly Kuznetsov wrote:
-> Currently, APF mechanism relies on the #PF abuse where the token is being
-> passed through CR2. If we switch to using interrupts to deliver page-ready
-> notifications we need a different way to pass the data. Extent the existing
-> 'struct kvm_vcpu_pv_apf_data' with token information for page-ready
-> notifications.
-> 
-> The newly introduced apf_put_user_ready() temporary puts both reason
-> and token information, this will be changed to put token only when we
-> switch to interrupt based notifications.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
->  arch/x86/kvm/x86.c                   | 17 +++++++++++++----
->  2 files changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 2a8e0b6b9805..e3602a1de136 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -113,7 +113,8 @@ struct kvm_mmu_op_release_pt {
->  
->  struct kvm_vcpu_pv_apf_data {
->  	__u32 reason;
+Ming,
 
-Hi Vitaly,
+Ming Lei <ming.lei@redhat.com> writes:
+> On Thu, May 21, 2020 at 10:13:59AM +0200, Thomas Gleixner wrote:
+>> Ming Lei <ming.lei@redhat.com> writes:
+>> > On Thu, May 21, 2020 at 12:14:18AM +0200, Thomas Gleixner wrote:
+>> > - otherwise, the kthread just retries and retries to allocate & release,
+>> > and sooner or later, its time slice is consumed, and migrated out, and the
+>> > cpu hotplug handler will get chance to run and move on, then the cpu is
+>> > shutdown.
+>> 
+>> 1) This is based on the assumption that the kthread is in the SCHED_OTHER
+>>    scheduling class. Is that really a valid assumption?
+>
+> Given it is unlikely path, we can add msleep() before retrying when INACTIVE bit
+> is observed by current thread, and this way can avoid spinning and should work
+> for other schedulers.
 
-Given we are redoing it, can we convert "reason" into a flag instead
-and use bit 0 for signalling "page not present" Then rest of the 31
-bits can be used for other purposes. I potentially want to use one bit to
-signal error (if it is known at the time of injecting #PF).
+That should work, but pretty is something else
 
-> -	__u8 pad[60];
-> +	__u32 pageready_token;
-> +	__u8 pad[56];
+>> 
+>> 2) What happens in the following scenario:
+>> 
+>>    unplug
+>> 
+>>      mq_offline
+>>        set_ctx_inactive()
+>>        drain_io()
+>>        
+>>    io_kthread()
+>>        try_queue()
+>>        wait_on_ctx()
+>> 
+>>    Can this happen and if so what will wake up that thread?
+>
+> drain_io() releases all tag of this hctx, then wait_on_ctx() will be waken up
+> after any tag is released.
 
-Given token is 32 bit, for returning error in "page ready" type messages,
-I will probably use padding bytes and create pagready_flag and use one
-of the bits to signal error.
+drain_io() is already done ...
 
-Thanks
-Vivek
+So looking at that thread function:
 
+static int io_sq_thread(void *data)
+{
+	struct io_ring_ctx *ctx = data;
+
+        while (...) {
+              ....
+	      to_submit = io_sqring_entries(ctx);
+
+--> preemption
+
+hotplug runs
+   mq_offline()
+      set_ctx_inactive();
+      drain_io();
+      finished();
+
+--> thread runs again
+
+      mutex_lock(&ctx->uring_lock);
+      ret = io_submit_sqes(ctx, to_submit, NULL, -1, true);
+      mutex_unlock(&ctx->uring_lock);
+
+      ....
+
+      if (!to_submit || ret == -EBUSY)
+          ...
+      	  wait_on_ctx();
+
+Can this happen or did drain_io() already take care of the 'to_submit'
+items and the call to io_submit_sqes() turns into a zero action ?
+
+If the above happens then nothing will wake it up because the context
+draining is done and finished.
+
+Thanks,
+
+        tglx
