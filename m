@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBD71DC642
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C181DC645
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 06:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgEUEaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 00:30:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58188 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgEUEaP (ORCPT
+        id S1727846AbgEUEcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 00:32:19 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:50204 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbgEUEcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 00:30:15 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jbcqR-0000a7-Vm; Thu, 21 May 2020 04:30:12 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     axboe@kernel.dk
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
-        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] libata: Use per port sync for detach
-Date:   Thu, 21 May 2020 12:30:06 +0800
-Message-Id: <20200521043007.23215-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 21 May 2020 00:32:16 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 04L4VLtS007830;
+        Thu, 21 May 2020 13:31:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 04L4VLtS007830
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590035482;
+        bh=XREDi7cQniQC6JrUn15gjq7aAsHa5WcXOyjUiUSR7A4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JY+7/RM4sCtjM07H0fmsksiUfo7OBpAdZLavpsAfodrMPX2Xf1wYJNAfxO56Dz1PL
+         0TpL0H7H1r41QviMcWm7l+ZMn/+fvdLTyIBdBXorQODItT0oCCyNkGnWSQMoCQ4+SS
+         K46ijVSmGVoMlRjYox1JdO77xiIwVPUx2yekOkxaC8DwVAuk9QDG8uEmmwMEAfvEd8
+         noPU1bKoyptvf/EZ+zbO/b/9LtN6zFRUTnSJ4yDCTKcyswil4jYbMMMheoFqD6sscQ
+         a7H75p+lkk9Y/1aKY/wJ6FGDgrdISLa4abNXzcNO6Nw6v8Ol2NietWu7NUlliXwhBS
+         2sFb3oK8UT7Rg==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: doc: remove documentation about copying Module.symvers around
+Date:   Thu, 21 May 2020 13:31:17 +0900
+Message-Id: <20200521043117.242585-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 130f4caf145c ("libata: Ensure ata_port probe has completed before
-detach") may cause system freeze during suspend.
+This is a left-over of commit 39808e451fdf ("kbuild: do not read
+$(KBUILD_EXTMOD)/Module.symvers").
 
-Using async_synchronize_full() in PM callbacks is wrong, since async
-callbacks that are already scheduled may wait for not-yet-scheduled
-callbacks, causes a circular dependency.
+Kbuild no longer supports this way.
 
-Instead of using big hammer like async_synchronize_full(), use async
-cookie to make sure port probe are synced, without affecting other
-scheduled PM callbacks.
-
-Fixes: 130f4caf145c ("libata: Ensure ata_port probe has completed before detach")
-BugLink: https://bugs.launchpad.net/bugs/1867983
-Suggested-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-v2:
- - Sync up to cookie + 1.
- - Squash the synchronization into the same loop.
 
- drivers/ata/libata-core.c | 9 ++++-----
- include/linux/libata.h    | 3 +++
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ Documentation/kbuild/modules.rst | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index beca5f91bb4c..b6be84f2cecb 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -42,7 +42,6 @@
- #include <linux/workqueue.h>
- #include <linux/scatterlist.h>
- #include <linux/io.h>
--#include <linux/async.h>
- #include <linux/log2.h>
- #include <linux/slab.h>
- #include <linux/glob.h>
-@@ -5778,7 +5777,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
- 	/* perform each probe asynchronously */
- 	for (i = 0; i < host->n_ports; i++) {
- 		struct ata_port *ap = host->ports[i];
--		async_schedule(async_port_probe, ap);
-+		ap->cookie = async_schedule(async_port_probe, ap);
- 	}
+diff --git a/Documentation/kbuild/modules.rst b/Documentation/kbuild/modules.rst
+index e0b45a257f21..a45cccff467d 100644
+--- a/Documentation/kbuild/modules.rst
++++ b/Documentation/kbuild/modules.rst
+@@ -528,18 +528,6 @@ build.
+ 		will then do the expected and compile both modules with
+ 		full knowledge of symbols from either module.
  
- 	return 0;
-@@ -5921,10 +5920,10 @@ void ata_host_detach(struct ata_host *host)
- 	int i;
- 
- 	/* Ensure ata_port probe has completed */
--	async_synchronize_full();
+-	Use an extra Module.symvers file
+-		When an external module is built, a Module.symvers file
+-		is generated containing all exported symbols which are
+-		not defined in the kernel. To get access to symbols
+-		from bar.ko, copy the Module.symvers file from the
+-		compilation of bar.ko to the directory where foo.ko is
+-		built. During the module build, kbuild will read the
+-		Module.symvers file in the directory of the external
+-		module, and when the build is finished, a new
+-		Module.symvers file is created containing the sum of
+-		all symbols defined and not part of the kernel.
 -
--	for (i = 0; i < host->n_ports; i++)
-+	for (i = 0; i < host->n_ports; i++) {
-+		async_synchronize_cookie(host->ports[i]->cookie + 1);
- 		ata_port_detach(host->ports[i]);
-+	}
- 
- 	/* the host is dead now, dissociate ACPI */
- 	ata_acpi_dissociate(host);
-diff --git a/include/linux/libata.h b/include/linux/libata.h
-index cffa4714bfa8..ae6dfc107ea8 100644
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -22,6 +22,7 @@
- #include <linux/acpi.h>
- #include <linux/cdrom.h>
- #include <linux/sched.h>
-+#include <linux/async.h>
- 
- /*
-  * Define if arch has non-standard setup.  This is a _PCI_ standard
-@@ -872,6 +873,8 @@ struct ata_port {
- 	struct timer_list	fastdrain_timer;
- 	unsigned long		fastdrain_cnt;
- 
-+	async_cookie_t		cookie;
-+
- 	int			em_message_type;
- 	void			*private_data;
- 
+ 	Use "make" variable KBUILD_EXTRA_SYMBOLS
+ 		If it is impractical to add a top-level kbuild file,
+ 		you can assign a space separated list
 -- 
-2.17.1
+2.25.1
 
