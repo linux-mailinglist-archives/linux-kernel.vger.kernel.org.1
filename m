@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40B51DCABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 12:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607661DCABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 12:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgEUKLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 06:11:02 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:34896 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728292AbgEUKLC (ORCPT
+        id S1728542AbgEUKLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 06:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbgEUKLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 06:11:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MXiJifaZtgfEcmcUxJdE198Idg9c7DGrSBxW7026Ud4=; b=nC1DRrF+mF+dnRH1p/ebtgPAQ6
-        gLxrv/pcapO3aCrkJVcaJVtPVaC+jAJjCMtnpSvBqpJBOc0X5jmeH0P7Dz+PJujoqZ0/n1EuPCmVE
-        UruNDUgUlUhRG4TMAks1Hl4B8xRZvg9oKJOxkBFEnXQwgVVusDkuu5yKb7Pc4+qSY7etSICVJUoV8
-        6d/jt2Fg82ppC/YN3CfLR7iV3Tj5Zh2J6CO6rDD+FiBcVIfP8RoHBZOAA/1/vJkdbvCxmm+W3fcGf
-        N+MX1SOGps9gOy91OLdUtAozqYX4lguWc1lDOxpfYXDe4DVL7sp4QbBgURjaCiNAdZAE5QeT2zJGx
-        vaaa5skw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jbiA6-0001kN-P5; Thu, 21 May 2020 10:10:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EEBE1304123;
-        Thu, 21 May 2020 12:10:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D7C732B7DA1F7; Thu, 21 May 2020 12:10:47 +0200 (CEST)
-Date:   Thu, 21 May 2020 12:10:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Qian Cai <cai@lca.pw>, "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: Endless soft-lockups for compiling workload since next-20200519
-Message-ID: <20200521101047.GH325280@hirez.programming.kicks-ass.net>
-References: <CAG=TAF6jUsQrW-fjbS3vpjkMfn8=MUDsuQxjk3NMfvQa250RHA@mail.gmail.com>
- <20200520125056.GC325280@hirez.programming.kicks-ass.net>
- <20200521004035.GA15455@lenoir>
+        Thu, 21 May 2020 06:11:33 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25287C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 03:11:33 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id se13so8074398ejb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 03:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=mh7g0iZuMX6lZKAWvoqYDXvei46X0eTpafm2nEeTrzY=;
+        b=BJlusG65mDz12AjULWhXVd8Sdgv+BIgKwBXLiEnef5DnifwMqBz5ricIhUnvJ/7HVI
+         myVmowJIA7XRRSYFTqciINZR6Z8swSSiSbdHythPkVawH7Y4cnJWBW0QtWA1u14MTDQp
+         kdSmBTG3W94iQvnPGLzg0JFSngUWZf2FH41cqrnFQkh5SbzPrUO5/9W8Gp3B+rcRnq9D
+         /oUaKVCTu3kEMJJwJdhUxnjBWeHJjHGvcoyhEq90owP/99eQB+7kKzVjNkDiKT1awnHN
+         pXfpca6N2oGkF3ziz+h7u7lRGh2aMQPaLhuZqI7DD04iaGWZeAkxzN1zrM9i+xUi3ASh
+         Zv7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=mh7g0iZuMX6lZKAWvoqYDXvei46X0eTpafm2nEeTrzY=;
+        b=Pk5tphQRWrJqW8mPCS6wNVFtjHW4+3H6Tu5WV2Qtl/89rFWtl07lZCnx/Or5YksAkp
+         RfCm2axHiYIdhvlDPp7SyRA8cqXkejs50oJnXBN0X8CPAp+bSh9S8RRB99ifxsTNb8xF
+         iiSs4eiI2M1H7ty2Par9aH6qp4FuzPI6YccuU9bdNELaQqvtXErczTTaiEHx+cy7O5Uo
+         uaBbhVIlBKbLLAkUlmT5Zdf/eAR+CwxugCdA6PAutaxdUYSXVwgpwIOvK43Gqo9BzQaL
+         KkxYFifYCb99DQFdjIMruuEuBsLmWzYti0KF/hgQpXGf3QMI71TNMqE/n5H+ZyNKA5k1
+         aoBw==
+X-Gm-Message-State: AOAM531uqiDaQPj/8C0QqDh1wSrIYaetvk6taGTAASL7OiQe9g9u2cK6
+        nynSLlU1enPE2PDzD/Eoac0MCv3i+QfKTMBz59s=
+X-Google-Smtp-Source: ABdhPJyEeRL7TBp/NgcFwPc7QexsI3B2GAJPq4N/xabOv+GhZYmo6sW0JyBgLNyMxYIJ80gSyg0pkyb6QiAJrRroIQg=
+X-Received: by 2002:a17:906:868f:: with SMTP id g15mr2708201ejx.208.1590055891899;
+ Thu, 21 May 2020 03:11:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521004035.GA15455@lenoir>
+Received: by 2002:a50:3f4c:0:0:0:0:0 with HTTP; Thu, 21 May 2020 03:11:31
+ -0700 (PDT)
+From:   adams A chika <francis.holt678@gmail.com>
+Date:   Thu, 21 May 2020 10:11:31 +0000
+Message-ID: <CAAgP+0zm6SAz4+k-pTGn+b4QKCWwj2Hk4XGdLdUDbxcATQ0aXw@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 02:40:36AM +0200, Frederic Weisbecker wrote:
+Querido amigo,
+Comun=C3=ADquese conmigo para obtener m=C3=A1s detalles sobre una transacci=
+=C3=B3n de
+($ 5.5 millones de d=C3=B3lares). Le dar=C3=A9 todos los detalles de la
+transacci=C3=B3n tan pronto como tenga noticias suyas. Cont=C3=A1ctame aqu=
+=C3=AD
+(chikaadamstg05@gmail.com)
+=C2=A0 Barr Chika Adams
 
->                                                        atomic_fetch_or(...., nohz_flags(0))
->     softirq() {                                        #VMEXIT or anything that could stop a CPU for a while
->         run_rebalance_domain() {
->             nohz_idle_balance() {
->                 atomic_andnot(NOHZ_KICK_MASK, nohz_flag(0))
-
-I'm an idiot and didn't have enough wake-up-juice; I missed that andnot
-clearing the flag again.
-
-Yes, fun fun fun..
+Dear Friend,
+Please contact me for more details on a transaction of  ($5.5 Million
+dollars). I will give you the full details of the transaction as soon
+as i hear from you.  Contact me here (chikaadamstg05@gmail.com)
+ Barr Chika Adams
