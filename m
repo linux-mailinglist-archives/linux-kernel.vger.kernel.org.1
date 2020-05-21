@@ -2,238 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F671DD6AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553D91DD6A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730280AbgEUTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730247AbgEUTI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:08:58 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DCCC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:08:58 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b190so3800142pfg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:08:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z9lfKcpsk04+MOjenH3XmZ96ZShPJypXmsAOWsF+hL8=;
-        b=flKVBAWuiWwOAA9S9JGU6N3N3DZ1k/BIhgDYq+IJS1Lh9cBYnnY/7UPOZRlCYVLpRg
-         rpH3swfpnnGOb/2ynI7ZJWJv1sAa0Rl7icksSX+XYvnyJIKfz1WpK2N15qchQgje3pON
-         gB/8dfYLAeu1puK6NUs3AuQOkUCCHaJUHkEW/ZwfSWm5XCR3B2eGleNyGLKrt7ujLMEv
-         Nq04dkI45QpGkqcXsUOaPGeo3vMiyqMl4BQV1GGZTDl7xEEGTThMvrVZOdz7PlKYuqv9
-         GVTGZBdxVohQXb6pnXI+zAcA1d1vjxRkgwLOkGtChAFBSdQIA5i0RdLYRPx1QDSit9Pq
-         rJgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z9lfKcpsk04+MOjenH3XmZ96ZShPJypXmsAOWsF+hL8=;
-        b=ag+u3CmnBfSoPQ0Yvw/rFEVWOXim4gvQJmQnNDlzI1EKtDxl4Bv4Buw7abqC+jam3c
-         6opgOkIfRuhiqqlbUezWiaCDStTyk1v9U0MePj/Ki04bWe28B9Jt6bWtsW4crPS3X4da
-         0ccFuRjbX5/SRd7/e0C4/S+e1Tp0KQokOw2TKdPJZPBoN1rtLzjKVDo+nr1dk3wP/CDE
-         94MApUrk4RIINVx+nsJ2OZvteU7as+5OIGsgpdxyVDz+h3RrwEnJeUAT/zXFmwbE+qQM
-         nhfmpMHVNfPAsLhJWmbjE5ypaMdiYIXK7m2MHkannCnS9Ku20XN50ytSj2wUsf1zVCgX
-         zohA==
-X-Gm-Message-State: AOAM532YbaRcPY8+x9ft8cf/WkJipXXIQ0dT0Qkv4S/ZLM5spPnm9OvG
-        JtN3plZCmzmFx6O7k2M8/cyAaw==
-X-Google-Smtp-Source: ABdhPJzvWYyJDO4JoirTkov2oI3WzQyVmBYO53edLU3D5fEctgmNUNunuP5QihACIwCQCB1eHJ1gpQ==
-X-Received: by 2002:a62:6186:: with SMTP id v128mr162480pfb.185.1590088137862;
-        Thu, 21 May 2020 12:08:57 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id x2sm4961819pfc.106.2020.05.21.12.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 12:08:57 -0700 (PDT)
-Date:   Thu, 21 May 2020 12:07:39 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, Asutosh Das <asutoshd@codeaurora.org>,
-        Vijay Viswanath <vviswana@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V2 2/3] mmc: sdhci-msm: Use internal voltage control
-Message-ID: <20200521190739.GC1331782@builder.lan>
-References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
- <1590074615-10787-1-git-send-email-vbadigan@codeaurora.org>
- <1590074615-10787-3-git-send-email-vbadigan@codeaurora.org>
+        id S1730170AbgEUTIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:08:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27314 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729548AbgEUTIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:08:17 -0400
+IronPort-SDR: AHRBXT38Z60Ha78+Q2f2u1ovALvPVfCg8IlS7FZC6MsKaHIPn3was6oXM4iuDmYL7hOhUGqyQP
+ h2YMGjUxdLZg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 12:08:17 -0700
+IronPort-SDR: 93Vu3B+93lKfydNCZfkzVcaYeq12dbBuZ6dMqUCQ0jI0DsnXZwUwDds9mS+hbrMENHwhh1NHBJ
+ qxJ/VtWAlqqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,418,1583222400"; 
+   d="scan'208";a="300414991"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga002.fm.intel.com with ESMTP; 21 May 2020 12:08:17 -0700
+Message-ID: <84d0e6ad65b77b69854c9b0a53de7dc17d80efff.camel@intel.com>
+Subject: Re: [PATCH v10 00/26] Control-flow Enforcement: Shadow Stack
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Date:   Thu, 21 May 2020 12:08:23 -0700
+In-Reply-To: <20200521185015.aopfkpwpfhzwd4hs@treble>
+References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
+         <20200521151556.pojijpmuc2rdd7ko@treble>
+         <a1e7c71c72de517a288e6273ba0c18dac2e937bc.camel@intel.com>
+         <20200521185015.aopfkpwpfhzwd4hs@treble>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590074615-10787-3-git-send-email-vbadigan@codeaurora.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 May 08:23 PDT 2020, Veerabhadrarao Badiganti wrote:
-
-> On qcom SD host controllers voltage switching be done after the HW
-> is ready for it. The HW informs its readiness through power irq.
-> The voltage switching should happen only then.
+On Thu, 2020-05-21 at 13:50 -0500, Josh Poimboeuf wrote:
+[...]
 > 
-> Use the internal voltage switching and then control the voltage
-> switching using power irq.
+> Thanks.  FYI, I got the following warning on an AMD system.
 > 
-> Set the regulator load as well so that regulator can be configured
-> in LPM mode when in is not being used.
+> [   18.936979] get of unsupported state
+> [   18.936989] WARNING: CPU: 251 PID: 1794 at arch/x86/kernel/fpu/xstate.c:919 get_xsave_addr+0x83/0x90
+> [   18.949676] Modules linked in:
+> [   18.952731] CPU: 251 PID: 1794 Comm: dracut-rootfs-g Not tainted 5.7.0-rc6+ #162
+> [   18.960121] Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RDY1005C 11/22/2019
+> [   18.968198] RIP: 0010:get_xsave_addr+0x83/0x90
+> [   18.972637] Code: 5b c3 48 83 c4 08 31 c0 5b c3 80 3d f9 c2 7a 01 00 75 bc 48 c7 c7 c4 cb 8f a9 89 74 24 04 c6 05 e5 c2 7a 01 01 e8 3f 49 0a 00 <0f> 0b 8b 74 24 04 eb 9d 31 c0 c3 66 90 0f 1f 44 00 00 48 89 fe 0f
+> [   18.991373] RSP: 0018:ffffb8db103cfcd8 EFLAGS: 00010286
+> [   18.996591] RAX: 0000000000000000 RBX: ffff947da1189440 RCX: 0000000000000000
+> [   19.003715] RDX: 0000000000000000 RSI: ffffffffaa6809d8 RDI: ffffffffaa67e58c
+> [   19.010839] RBP: ffff947da1188000 R08: 0000000468bb5e6c R09: 0000000000000018
+> [   19.017962] R10: 0000000000000002 R11: 00000000000000f0 R12: ffffb8db103cfd20
+> [   19.025087] R13: ffff947da1189400 R14: 0000000000000000 R15: 0000000000000007
+> [   19.032211] FS:  00007f0a81b15740(0000) GS:ffff947dcf8c0000(0000) knlGS:0000000000000000
+> [   19.040321] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   19.046057] CR2: 00007f0a81b156c0 CR3: 0000003fa125a000 CR4: 0000000000340ee0
+> [   19.053183] Call Trace:
+> [   19.055637]  cet_restore_signal+0x26/0xf0
+> [   19.059649]  __fpu__restore_sig+0x4cc/0x6e0
+> [   19.063832]  ? remove_wait_queue+0x20/0x60
+> [   19.067928]  ? reuse_swap_page+0x6e/0x340
+> [   19.071939]  restore_sigcontext+0x162/0x1b0
+> [   19.076128]  ? recalc_sigpending+0x17/0x50
+> [   19.080223]  ? __set_task_blocked+0x34/0xa0
+> [   19.084401]  __do_sys_rt_sigreturn+0x92/0xde
+> [   19.088675]  do_syscall_64+0x55/0x1b0
+> [   19.092342]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   19.097394] RIP: 0033:0x7f0a811389d1
+> [   19.100970] Code: 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 41 ba 08 00 00 00 b8 0e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 07 c3 66 0f 1f 44 00 00 48 8b 15 81 44 38 00
+> [   19.119709] RSP: 002b:00007ffd643d5dd8 EFLAGS: 00000246
+> [   19.124933] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f0a811389d1
+> [   19.132056] RDX: 0000000000000000 RSI: 00007ffd643d5e60 RDI: 0000000000000002
+> [   19.139182] RBP: 000055e140190e20 R08: 000055e14017a014 R09: 0000000000000001
+> [   19.146307] R10: 0000000000000008 R11: 0000000000000246 R12: 000055e13f47e4e0
+> [   19.153436] R13: 00007ffd643d5e60 R14: 0000000000000000 R15: 0000000000000000
 > 
-> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> Co-developed-by: Vijay Viswanath <vviswana@codeaurora.org>
-> Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
-> Co-developed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-Looks better, thanks.
+Thanks!  I will fix it.
 
-> ---
->  drivers/mmc/host/sdhci-msm.c | 207 +++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 198 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-[..]
->  static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
-> @@ -1298,6 +1302,71 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
->  		sdhci_msm_hs400(host, &mmc->ios);
->  }
->  
-> +static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
-> +{
-> +	int ret;
-> +
-> +	if (IS_ERR(mmc->supply.vmmc))
-> +		return 0;
-> +
-> +	ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
-> +	if (ret)
-> +		dev_err(mmc_dev(mmc), "%s: vmmc set ocr with vdd=%d failed: %d\n",
-> +			mmc_hostname(mmc), mmc->ios.vdd, ret);
+Yu-cheng
 
-Missed this one on v1, in the event that mmc_regulator_set_ocr() return
-a non-zero value it has already printed an error message. So please
-replace the tail with just:
-
-	return mmc_regulator_set_ocr(...);
-
-> +
-> +	return ret;
-> +}
-> +
-> +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
-> +			      struct mmc_host *mmc, bool level)
-> +{
-> +	int load, ret;
-> +	struct mmc_ios ios;
-> +
-> +	if (IS_ERR(mmc->supply.vqmmc)			 ||
-> +	    (mmc->ios.power_mode == MMC_POWER_UNDEFINED) ||
-> +	    (msm_host->vqmmc_enabled == level))
-> +		return 0;
-> +
-> +	if (msm_host->vqmmc_load) {
-> +		load = level ? msm_host->vqmmc_load : 0;
-> +		ret = regulator_set_load(mmc->supply.vqmmc, load);
-
-Sorry for the late reply on v1, but please see my explanation regarding
-load and always-on regulators there.
-
-> +		if (ret) {
-> +			dev_err(mmc_dev(mmc), "%s: vqmmc set load failed: %d\n",
-> +				mmc_hostname(mmc), ret);
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	if (level) {
-> +		/* Set the IO voltage regulator to default voltage level */
-> +		if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
-> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
-> +		else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
-> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
-> +
-> +		if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
-> +			ret = mmc_regulator_set_vqmmc(mmc, &ios);
-> +			if (ret < 0) {
-> +				dev_err(mmc_dev(mmc), "%s: vqmmc set volgate failed: %d\n",
-> +					mmc_hostname(mmc), ret);
-> +				goto out;
-> +			}
-> +		}
-> +		ret = regulator_enable(mmc->supply.vqmmc);
-> +	} else {
-> +		ret = regulator_disable(mmc->supply.vqmmc);
-> +	}
-> +
-> +	if (ret)
-> +		dev_err(mmc_dev(mmc), "%s: vqmm %sable failed: %d\n",
-> +			mmc_hostname(mmc), level ? "en":"dis", ret);
-> +	else
-> +		msm_host->vqmmc_enabled = level;
-> +out:
-> +	return ret;
-> +}
-[..]
-> +static int sdhci_msm_start_signal_voltage_switch(struct mmc_host *mmc,
-> +				      struct mmc_ios *ios)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +	u16 ctrl, status;
-> +
-> +	/*
-> +	 * Signal Voltage Switching is only applicable for Host Controllers
-> +	 * v3.00 and above.
-> +	 */
-> +	if (host->version < SDHCI_SPEC_300)
-> +		return 0;
-> +
-> +	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +
-> +	switch (ios->signal_voltage) {
-> +	case MMC_SIGNAL_VOLTAGE_330:
-> +		if (!(host->flags & SDHCI_SIGNALING_330))
-> +			return -EINVAL;
-> +
-> +		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
-> +		ctrl &= ~SDHCI_CTRL_VDD_180;
-> +		break;
-> +	case MMC_SIGNAL_VOLTAGE_180:
-> +		if (!(host->flags & SDHCI_SIGNALING_180))
-> +			return -EINVAL;
-> +
-> +		/*
-> +		 * Enable 1.8V Signal Enable in the Host Control2
-> +		 * register
-> +		 */
-> +		ctrl |= SDHCI_CTRL_VDD_180;
-> +		break;
-> +	case MMC_SIGNAL_VOLTAGE_120:
-> +		if (!(host->flags & SDHCI_SIGNALING_120))
-> +			return -EINVAL;
-> +		return 0;
-> +	default:
-> +		/* No signal voltage switch required */
-> +		return 0;
-> +	}
-> +
-> +	sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
-> +
-> +	/* Wait for 5ms */
-> +	usleep_range(5000, 5500);
-> +
-> +	/* regulator output should be stable within 5 ms */
-> +	status = !!(ctrl & SDHCI_CTRL_VDD_180);
-> +	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +	if (!!(ctrl &  SDHCI_CTRL_VDD_180) == status)
-
-You should be able to drop the !! both here and when assigning status.
-
-Overall this looks neater, thanks for reworking it.
-
-Regards,
-Bjorn
