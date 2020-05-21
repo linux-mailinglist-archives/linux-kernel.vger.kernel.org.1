@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BE81DCA35
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81BB1DCA40
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729006AbgEUJgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 05:36:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36876 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728720AbgEUJgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:36:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 08C3FABE4;
-        Thu, 21 May 2020 09:36:12 +0000 (UTC)
-Date:   Thu, 21 May 2020 10:36:06 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, cai@lca.pw, mhocko@kernel.org,
-        rppt@linux.ibm.com
-Subject: Re: [PATCH] mm/compaction: Fix the incorrect hole in
- fast_isolate_freepages()
-Message-ID: <20200521093606.GA7110@suse.de>
-References: <20200521014407.29690-1-bhe@redhat.com>
+        id S1728927AbgEUJiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728719AbgEUJiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 05:38:07 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEACCC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 02:38:07 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id p67so1312427ooa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 02:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XRRenhNm9RcrMGaLaFDRHCMDiaKFzvbNFCQExEVcZEI=;
+        b=HmNGNwT0/nTNwhk2QkQq2ieaY4fXPKzgGc6i93+BrNIwF1AtkKSu77TWtbfKwcwSc6
+         dT/v4sy6DWT5wDaNmoJdoIAMrvhkxh2HNpgz8Hc2Vmu48egXDLCOqlFeI1mXEjLC/rb+
+         APGPTYy2+DgT65Pc3waqCCRCvynp0Wbb3L5+UO+XfRz1RdirUXPJo9l8QPU4ylGmnxHp
+         fJnleaCszpokXvQmkjyQuIjofri9zb8Pv2tjn3gaesbANbJzORgc/3wOTDWewar+37kF
+         zlKDEVAHiOoKaaRAeVZZmW+ZKx7fqyCgVv6bS6xR9SGAr/PR/W8BIXM3MPItVGOW/6WM
+         f72Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XRRenhNm9RcrMGaLaFDRHCMDiaKFzvbNFCQExEVcZEI=;
+        b=U+wQ0bBD3F9MeaMYt9yx1zi7A0aXRD+GXv4wXvT+KT60Z0nnFkIg8T4Sn8fghIqfxD
+         AR/8Qi3ZvaUhtV6QTDenTiYPoqFPuQjEXmjcoJ1WFSQRS2ZjWLlgIAb2UnmyAts1285G
+         taSDHDm++VrxRAnEyhuiUMKsuw3mfh/e5OhF4uU8caRiTyxnRg694fHNbPaoUBPtjNN1
+         +zVTEp8r5e8iyshtne/Al2zAIM5obA1LG2iEk0Fka8VPOeAJIx+Vt34IsMnuxY2oxZ4d
+         9SSyTzc9+lAN667s7z5GllrTViEnTrVtYD0ZpyU6cwpEXWR/iJSUCFq0A5LP1hbHTm5H
+         69ww==
+X-Gm-Message-State: AOAM530voA3aRpqctUYOk8DY+dbO/bXk9NsbWqxL9r5P3H1fwz+Tp/5t
+        5v40YZ/8R9o9NSb7K2sXf+GWSGMIwycBSDIYnsfYog==
+X-Google-Smtp-Source: ABdhPJyw2BNtuFy9oINuCcU/aMPLnbDEf9QicF1fHmI3WsLhnZXh08jAfH1GiPiA2HkJL+Omfvf9ZHnVgwW65spkedY=
+X-Received: by 2002:a4a:e836:: with SMTP id d22mr6691371ood.54.1590053886935;
+ Thu, 21 May 2020 02:38:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20200521014407.29690-1-bhe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200511204150.27858-18-will@kernel.org> <158929421358.390.2138794300247844367.tip-bot2@tip-bot2>
+ <20200520221712.GA21166@zn.tnic> <CANpmjNPsEMF8qq4qHoJEDb8mi211QzXODvnakh2fj3BOw+56MQ@mail.gmail.com>
+ <20200521072557.GA10099@zn.tnic>
+In-Reply-To: <20200521072557.GA10099@zn.tnic>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 21 May 2020 11:37:54 +0200
+Message-ID: <CANpmjNOJYWjhK3Z=mbbum8V8WzWOyfTWqz--+C3Z08LPCWm2Rw@mail.gmail.com>
+Subject: Re: [tip: locking/kcsan] READ_ONCE: Use data_race() to avoid KCSAN instrumentation
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Will Deacon <will@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 09:44:07AM +0800, Baoquan He wrote:
-> After investigation, it turns out that this is introduced by commit of
-> linux-next: commit f6edbdb71877 ("mm: memmap_init: iterate over memblock
-> regions rather that check each PFN").
-> 
-> After investigation, it turns out that this is introduced by commit of
-> linux-next, the patch subject is:
->   "mm: memmap_init: iterate over memblock regions rather that check each PFN".
-> 
+On Thu, 21 May 2020 at 09:26, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, May 21, 2020 at 12:30:39AM +0200, Marco Elver wrote:
+> > This should be fixed when the series that includes this commit is applied:
+> > https://lore.kernel.org/lkml/20200515150338.190344-9-elver@google.com/
+>
+> Yap, that fixes it.
+>
+> Thx.
 
-Some repetition here. I assume it's because the commit ID is not stable
-because it's in linux-next.
+Thanks for confirming. I think Peter also mentioned that nested
+statement expressions caused issues.
 
-> Qian added debugging code. The debugging log shows that the fault page is
-> 0x2a800000. From the system e820 map which is pasted at bottom, the page
-> is in e820 reserved range:
-> 	BIOS-e820: [mem 0x0000000029ffe000-0x000000002a80afff] reserved
-> And it's in section [0x28000000, 0x2fffffff]. In that secion, there are
-> several usable ranges and some e820 reserved ranges.
-> 
-> For this kind of e820 reserved range, it won't be added to memblock allocator.
-> However, init_unavailable_mem() will initialize to add them into node 0,
-> zone 0.
+This probably also means we shouldn't have a nested "data_race()"
+macro, to avoid any kind of nested statement expressions where
+possible.
 
-Why is it appropriate for init_unavailable_mem to add a e820 reserved
-range to the zone at all? The bug being triggered indicates there is a
-mismatch between the zone of a struct page and the PFN passed in.
+I will send a v2 of the above series to add that patch.
 
-> Before that commit, later, memmap_init() will add e820 reserved
-> ranges into the zone where they are contained, because it can pass
-> the checking of early_pfn_valid() and early_pfn_in_nid(). In this case,
-> the e820 reserved range where fault page 0x2a800000 is located is added
-> into DMA32 zone. After that commit, the e820 reserved rgions are kept
-> in node 0, zone 0, since we iterate over memblock regions to iniatialize
-> in memmap_init() instead, their node and zone won't be changed.
-> 
-
-This implies that we have struct pages that should never be used (e820
-reserved) but exist somehow in a zone range but with broken linkages to
-their node and zone.
-
-> Reported-by: Qian Cai <cai@lca.pw>
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  mm/compaction.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 67fd317f78db..9ce4cff4d407 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1418,7 +1418,9 @@ fast_isolate_freepages(struct compact_control *cc)
->  				cc->free_pfn = highest;
->  			} else {
->  				if (cc->direct_compaction && pfn_valid(min_pfn)) {
-> -					page = pfn_to_page(min_pfn);
-> +					page = pageblock_pfn_to_page(min_pfn,
-> +						pageblock_end_pfn(min_pfn),
-> +						cc->zone);
->  					cc->free_pfn = min_pfn;
->  				}
->  			}
-
-Why is the correct fix not to avoid creating struct pages for e820
-ranges and make sure that struct pages that are reachable have proper
-node and zone linkages?
-
--- 
-Mel Gorman
-SUSE Labs
+Thanks,
+-- Marco
