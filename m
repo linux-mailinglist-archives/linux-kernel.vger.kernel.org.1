@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAD61DD620
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2645E1DD5F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729832AbgEUSiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 14:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729793AbgEUSit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 14:38:49 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B7DC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:49 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l5so7358993edn.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yrft6eXy+aY+C/nmbJKmKuZKyTimjGnAiz9JkgNsSbY=;
-        b=hSVTTmym1pgL9YcNpVDIJBWF6WU0hQ91UA8xDxq8K8H18M/aZmUq/ehn5QhJzi6OSO
-         jgDf9RIy4iDoFVM+3CP9qUB0XaV2kJzGcfpJMwvqCu3CWxmG2Sn3g20Dzb9Zjil0FiVX
-         xX6BwQrCtncslZ+6UNswXHyLa1VJK+8+P/OCE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yrft6eXy+aY+C/nmbJKmKuZKyTimjGnAiz9JkgNsSbY=;
-        b=LygSzrQ+UFoLP+x1h/Vn9DWnDV8KOlltyR0Xfoe6nx4nWhWrv8YVSuyHv9d0fZvyOL
-         iNCaatePWhZ/TCIo2zjv6RMWgaHrCDLMqOrbqxnGDnVr/8YQuYzvifh6QaSXYo/CMigx
-         ez3o4cZs5pu/WouElEKTsWMvgh25hLKlM7qTDiQsr7nfju6C1seKc47hpkOkkJzAoc8U
-         7Z+noKpgLAIrjesIs3yLXW60MSc7bUV6Zi8oj2y+dvanGFvgIiDWpm4M6KTJgkmS81Be
-         3gvZ7voKNxRdIDcQbMTp/bFZ1VgGe4Efxgmc1IyB+EEhP+Bjcsqolaf9tPc3TSrwq66Z
-         46vg==
-X-Gm-Message-State: AOAM532Lo1NP56Rp0OldKleEZ5j9/pHVmEf45lzyXOZ4ahMkWdAlX0MF
-        JJXj889bLEKT7xt430EPBCL8lIMXBFQ=
-X-Google-Smtp-Source: ABdhPJxo1UrSYSPC1odbzbpiFU4n4ovseZ6cS60HClSfEvJRJm756KKNx/+BwKMpwgHNlLdeLNGoTA==
-X-Received: by 2002:a50:88c6:: with SMTP id d64mr40612edd.324.1590086327585;
-        Thu, 21 May 2020 11:38:47 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id h19sm5494096ejb.66.2020.05.21.11.38.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 11:38:47 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id x1so10040746ejd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:47 -0700 (PDT)
-X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr3496127ljc.314.1590085914996;
- Thu, 21 May 2020 11:31:54 -0700 (PDT)
+        id S1729517AbgEUS1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 14:27:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728240AbgEUS1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 14:27:46 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCBD720814;
+        Thu, 21 May 2020 18:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590085666;
+        bh=/WDW8VQf6iHXjI83NrrhTGfMoMsExmF4WWAKY8AsnD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eqzbcY7HsMUAYzkWVdfcRaT91gC/TZyEUicnStmo+ommIAhbivnvn8bxVE+UpaB/C
+         IqB9zXAduOKiblcU/15eO8iaPW16NseBHN2F5rub4EE4m3fMeIYXTJqRfZB1DC0oFO
+         qg21wdU6b32Qb0G4zPbANPByPYNE36HWCp8nIqI0=
+Date:   Thu, 21 May 2020 13:32:35 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Peter Jones <pjones@redhat.com>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ibft: Replace zero-length array with flexible-array
+Message-ID: <20200521183235.GA29907@embeddedor>
+References: <20200507185544.GA14695@embeddedor>
 MIME-Version: 1.0
-References: <cover.1583332764.git.vpillai@digitalocean.com> <20200520222642.70679-1-joel@joelfernandes.org>
-In-Reply-To: <20200520222642.70679-1-joel@joelfernandes.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 May 2020 11:31:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
-Message-ID: <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
-Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling interface
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        vpillai <vpillai@digitalocean.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507185544.GA14695@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 3:26 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> ChromeOS will use core-scheduling to securely enable hyperthreading.
-> This cuts down the keypress latency in Google docs from 150ms to 50ms
-> while improving the camera streaming frame rate by ~3%.
+Hi all,
 
-I'm assuming this is "compared to SMT disabled"?
+Friendly ping: who can take this?
 
-What is the cost compared to "SMT enabled but no core scheduling"?
+Thanks
+--
+Gustavo
 
-But the real reason I'm piping up is that your  latency benchmark
-sounds very cool.
-
-Generally throughput benchmarks are much easier to do, how do you do
-this latency benchmark, and is it perhaps something that could be run
-more widely (ie I'm thinking that if it's generic enough and stable
-enough to be run by some of the performance regression checking
-robots, it would be a much more interesting test-case than some of the
-ones they run right now...)
-
-I'm looking at that "threaded phoronix gzip performance regression"
-thread due to a totally unrelated scheduling change ("sched/fair:
-Rework load_balance()"), and then I see this thread and my reaction is
-"the keypress latency thing sounds like a much more interesting
-performance test than threaded gzip from clear linux".
-
-But the threaded gzip test is presumably trivial to script, while your
-latency test is perhaps very specific to one particular platform and
-setuip?
-
-                   Linus
+On Thu, May 07, 2020 at 01:55:44PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> sizeof(flexible-array-member) triggers a warning because flexible array
+> members have incomplete type[1]. There are some instances of code in
+> which the sizeof operator is being incorrectly/erroneously applied to
+> zero-length arrays and the result is zero. Such instances may be hiding
+> some bugs. So, this work (flexible-array member conversions) will also
+> help to get completely rid of those sorts of issues.
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/firmware/iscsi_ibft.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
+> index 96758b71a8db..7127a04bca19 100644
+> --- a/drivers/firmware/iscsi_ibft.c
+> +++ b/drivers/firmware/iscsi_ibft.c
+> @@ -104,7 +104,7 @@ struct ibft_control {
+>  	u16 tgt0_off;
+>  	u16 nic1_off;
+>  	u16 tgt1_off;
+> -	u16 expansion[0];
+> +	u16 expansion[];
+>  } __attribute__((__packed__));
+>  
+>  struct ibft_initiator {
+> 
