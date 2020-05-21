@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815961DC77A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBA91DC77E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgEUHTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 03:19:34 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:46254 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgEUHTd (ORCPT
+        id S1728330AbgEUHVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 03:21:49 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:32783 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgEUHVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 03:19:33 -0400
-Received: by mail-ed1-f67.google.com with SMTP id f13so5318869edr.13;
-        Thu, 21 May 2020 00:19:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dn0yp+M8pDTS/BMQHfDmlIcD8nK1n9G9HT0uq2RMC+I=;
-        b=iXJqWoxPnsj2ZphK+y4Ls6m/A7NMEQYnNwl9512CuR/JrH8SesnKMk1DB1qpaVOFwe
-         z8vuND5NNtsuA8zZCsQ1RieSp4cnygCn2KuGAe3BFLCAbSBLR8tiMRU/QAxMS/Oot6Q4
-         kPtDr8VpEev2jwHldPa7Of4sLpeIFdJWVMeUHexJ24csK3/NIwBzlM+yYpw/WPWAd63E
-         ov0IShcGIWWWvLdLXmaX7Tw/oaSsX2HRPM2AconUiGo2CxHQMDmMfIy7xndzb0nv//b+
-         zSwgLiTom/mIPVXTO+iLCKMezCtumRRN+bMWnqi3gSGTpJA3oyCX18eOExKIp0OXBkjo
-         NX9Q==
-X-Gm-Message-State: AOAM533HYOurfSCqILGLNZtxnMPL8PcM4kHKL0qILF54XcyIdoVzGEyf
-        dImh3XbAt3QKrkvem1nkM78=
-X-Google-Smtp-Source: ABdhPJyWCoyi6jQRuJ/5H5jy56KynMgozJYzWwRIK2sM6SOw6/OHWD4BJMo9eRmUsz/NSr84X4T00g==
-X-Received: by 2002:a50:8b42:: with SMTP id l60mr6576276edl.55.1590045571294;
-        Thu, 21 May 2020 00:19:31 -0700 (PDT)
-Received: from localhost (ip-37-188-180-112.eurotel.cz. [37.188.180.112])
-        by smtp.gmail.com with ESMTPSA id w4sm3932025edx.66.2020.05.21.00.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 00:19:30 -0700 (PDT)
-Date:   Thu, 21 May 2020 09:19:29 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200521071929.GH6462@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <20200520160756.GE6462@dhcp22.suse.cz>
- <20200520202650.GB558281@chrisdown.name>
+        Thu, 21 May 2020 03:21:48 -0400
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 04L7LX95019601;
+        Thu, 21 May 2020 16:21:34 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 04L7LX95019601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590045694;
+        bh=g3f+D9tafdmbvpg7O9G/hP2TxGYOgCzFzWkyMyDjYrA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=I+1vGg9ZzZFhHI5QbI63huhQpyX9MeFb/M4zeXVjfPjwQQZCfA+y/YsUv496JqjmT
+         yMbNHCWL1W8zqKknaomuOtWJRcgdJyWnFPtwsJP+UC96+FwEalHYRdHQ1e9vSHQPZ8
+         tno7saK/CmyL0DIX3fH/s7kFx3BjFLeVTHJuTxe7Ske2jarpi8fPO8ukh69Ve39zE1
+         K+YEGGOZ8PfQTivenitJ4RYyMkMxf8lN7rtSMB1YBA78g2u6G+yUb6Xnu6htRMh4IQ
+         DynyryqANNwuxBKF19gH9bgoMrs2SNkam3EtrJurEmlrL4L27RFr/YQpxB4tg/Gc22
+         ater2z4rygorA==
+X-Nifty-SrcIP: [209.85.221.182]
+Received: by mail-vk1-f182.google.com with SMTP id j28so1466843vkn.8;
+        Thu, 21 May 2020 00:21:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532Fe+S9HVzoPCFCMAUD0IIQdgULKUmRSMOlxYieqk+IenPg3AsG
+        wHpAyLwj8NK01OshjjybKe4qquiH6lq2tUM8apw=
+X-Google-Smtp-Source: ABdhPJyjSMndqk4OZKdfbRuMSh6rkcEKgLQZKuyQ4RzRUFtqbg+PLCAzB7yLurCO6p/T3vahAlwvUc0+rSJDTOHMnzY=
+X-Received: by 2002:a1f:2e16:: with SMTP id u22mr6558972vku.12.1590045692980;
+ Thu, 21 May 2020 00:21:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520202650.GB558281@chrisdown.name>
+References: <20200514131234.380097-1-efremov@linux.com> <CAK7LNASRv9E-pfYCRmD-RstKhW+WgfHKrn+7bP_dAAkyKaoPGg@mail.gmail.com>
+ <e26a1565-e770-0e5e-c730-60cc6fa16a4f@linux.com>
+In-Reply-To: <e26a1565-e770-0e5e-c730-60cc6fa16a4f@linux.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 21 May 2020 16:20:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASqja+eKcTeBA29LoWcMXucWv-L7Jntvzx9a5cam=UcWQ@mail.gmail.com>
+Message-ID: <CAK7LNASqja+eKcTeBA29LoWcMXucWv-L7Jntvzx9a5cam=UcWQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] kbuild: add variables for compression tools
+To:     Denis Efremov <efremov@linux.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-05-20 21:26:50, Chris Down wrote:
-> Michal Hocko writes:
-> > Let me try to understand the actual problem. The high memory reclaim has
-> > a target which is proportional to the amount of charged memory. For most
-> > requests that would be SWAP_CLUSTER_MAX though (resp. N times that where
-> > N is the number of memcgs in excess up the hierarchy). I can see to be
-> > insufficient if the memcg is already in a large excess but if the
-> > reclaim can make a forward progress this should just work fine because
-> > each charging context should reclaim at least the contributed amount.
-> > 
-> > Do you have any insight on why this doesn't work in your situation?
-> > Especially with such a large inactive file list I would be really
-> > surprised if the reclaim was not able to make a forward progress.
-> 
-> Reclaim can fail for any number of reasons, which is why we have retries
-> sprinkled all over for it already. It doesn't seem hard to believe that it
-> might just fail for transient reasons and drive us deeper into the hole as a
-> result.
+On Fri, May 15, 2020 at 6:40 PM Denis Efremov <efremov@linux.com> wrote:
+>
+> It seems that I missed a couple of tar commands in the patch:
+> scripts/Makefile.package
+> scripts/package/buildtar
+>
+> On 5/15/20 5:20 AM, Masahiro Yamada wrote:
+> > On Thu, May 14, 2020 at 10:14 PM Denis Efremov <efremov@linux.com> wrote:
+> >>
+> >
+> > commit 5054e88a7934d5ff5ec14231c8b8676161bb45fa
+> > Author: Paul Eggert <eggert@cs.ucla.edu>
+> > Date:   Mon Mar 16 14:25:17 2015 -0700
+> >
+> >     gzip: make the GZIP env var obsolescent
+>
+> Other implementations can depend on this.
+> pigz still parses GZIP env var:
+> https://github.com/madler/pigz/blob/master/pigz.c#L4346
+>
+> >
+> > Some possible options I came up with:
+> >
+> >
+> > [1] Use KGZIP for now, but BZIP2, XZ, etc. for the others.
+> >
+> >     (Then, rename KGZIP to GZIP when the time comes)
+> >
+> >
+> > [2] Do not take this patch
+> >
+> >     The whole build process is parallelized
+> >     by 'make -j $(nproc)'.
+> >
+> >     If you are still eager to use pigz instead gzip,
+> >     use a symbolic link or a wrapper shell script.
+> >
+> >     $ ln -s /usr/bin/pigz  /$HOME/bin/gzip
+> >     $ PATH="$HOME/bin:$PATH"
+> >
+>
+> [3] GZIP at frontend, KGZIP or _GZIP internally? Something like:
+>
+> $ cat Makefile
+> GZIP=gzip
+> override KGZIP=$(GZIP) # optional overrdide. Used to force GZIP value
+>                        # in case: make KGZIP=test
+>
+> unexport GZIP
 
-Reclaim can certainly fail. It is however surprising to see it fail with
-such a large inactive lru list and reasonably small reclaim target.
-Having the full LRU of dirty pages sounds a bit unusual, IO throttling
-for v2 and explicit throttling during the reclaim for v1 should prevent
-from that. If the reclaim gives up too easily then this should be
-addressed at the reclaim level.
 
-> In this case, a.) the application is producing tons of dirty pages, and b.)
-> we have really heavy systemwide I/O contention on the affected machines.
-> This high load is one of the reasons that direct and kswapd reclaim cannot
-> keep up, and thus nr_pages can become a number of orders of magnitude larger
-> than SWAP_CLUSTER_MAX. This is trivially reproducible on these machines,
-> it's not an edge case.
+The command line option is really strong,
+so you cannot negate it by 'unexport GZIP'.
 
-Please elaborate some more. memcg_nr_pages_over_high shouldn't really
-depend on the system wide activity. It should scale with the requested
-charges. So yes it can get large for something like a large read/write
-which does a lot of allocations in a single syscall before returning to
-the userspace.
- 
-But ok, let's say that the reclaim target is large and then a single
-reclaim attempt might fail. Then I am wondering why your patch is not
-really targetting to reclaim memcg_nr_pages_over_high pages and instead
-push for reclaim down to the high limit.
+override GZIP :=
 
-The main problem I see with that approach is that the loop could easily
-lead to reclaim unfairness when a heavy producer which doesn't leave the
-kernel (e.g. a large read/write call) can keep a different task doing
-all the reclaim work. The loop is effectivelly unbound when there is a
-reclaim progress and so the return to the userspace is by no means
-proportional to the requested memory/charge.
+does not work either in sub-make.
+
+
+
+
+
+> export KGZIP
+>
+> default:
+>         @env | grep GZIP
+>
+> $ make GZIP=test
+> KGZIP=test
+>
+> Thanks,
+> Denis
+
+
+
 -- 
-Michal Hocko
-SUSE Labs
+Best Regards
+Masahiro Yamada
