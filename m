@@ -2,136 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DC01DC685
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 07:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E10D1DC697
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 07:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgEUFLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 01:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgEUFLv (ORCPT
+        id S1727016AbgEUF10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 01:27:26 -0400
+Received: from aliyun-cloud.icoremail.net ([47.90.88.95]:20499 "HELO
+        aliyun-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with SMTP id S1726790AbgEUF10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 01:11:51 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5524DC061A0F
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 22:11:51 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id b28so1287405vsa.5
-        for <linux-kernel@vger.kernel.org>; Wed, 20 May 2020 22:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AD8unmgm6oauUOHFj/P0iocD1WUvsir6u2NUntElyR0=;
-        b=UvUOZ2wnJ60BygQT1sHXXCrN2Tzvau1CgvUsJ7S7Zr6X7l7wgj+zG5uvyALUYk7B1w
-         HQfIDrgd+fRc779lt2xg0fEuyit4c/VliPIE0tqVrmAStjcAHlYwUhfnVSw71bXKFFTg
-         jkVOIgJG4BxuuOzdOJWjxoav6F3ddgx9Q50aog3PRXTt7dLq5VWDL50Ko4KS1o2G3VNq
-         hjFjUIwBP/JiO/+CN0eiAPETP6MkWHYkue378fKFkcKGq/RRG57ajLA8OWKMOID+VzAh
-         653VA97SNo5MISFjtUdnQsi5tFf2FHisn1O0A2sPHvVD3oJSyOOcB/YLNcQQIxxBILHE
-         iGyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AD8unmgm6oauUOHFj/P0iocD1WUvsir6u2NUntElyR0=;
-        b=pKWbJBTUQJVFvXw1JLKb2KUfns9YU3Ps3Ql6cCkCrn4wtnv/z8km3RP4okmHAc7ItM
-         optR2EFR8W3ea9/MzRbx0cAQ9cVea6ooX5XWwRXmyFcGkDLvq+IRkTJmHTLyHaePDnbV
-         tAA/xcK+cuj23vGzXFj85BpEbihS/KcX4pGNXzMJQRGc7PIr+hMsa/N85xip7gixgh8Q
-         VzrEFUUhGbN54Z+3/1TcDKeRmLTMUz1lkIvFRuv9P0qrZEJPkMr5fCoR321pDggGrT1Y
-         OFohZjnfBxEpmMERg9sGb7Ah7QCMOyeKlbSN0AxNOJXcus4TCjLIMg/2lvetk3WhhO8i
-         9bwA==
-X-Gm-Message-State: AOAM533yPNlP4KutdMPZ34acU9Z4RsZOShUyYVuEiccZM7VEADShjjvb
-        2KDXxPZ9CqJdJPH9DsIz5ay4IVkWriuZi6lma6QdekM4
-X-Google-Smtp-Source: ABdhPJwEolPuzTzn2SxjV+akxq1Zpi4fVI2XbgJG+xqPfsBq7KtXfbSJyzUcQrtxJCxj7c+hIGaAMMYcrGq1QNVIXgw=
-X-Received: by 2002:a67:407:: with SMTP id 7mr5683332vse.95.1590037909533;
- Wed, 20 May 2020 22:11:49 -0700 (PDT)
+        Thu, 21 May 2020 01:27:26 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 21 May 2020 13:19:01
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.77.158]
+Date:   Thu, 21 May 2020 13:19:01 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Kangjie Lu" <kjlu@umn.edu>,
+        "Richard Fontana" <rfontana@redhat.com>,
+        "Allison Randal" <allison@lohutok.net>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] Input: omap-keypad - fix runtime pm imbalance on
+ error
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <CAKdAkRTyVL0uV0dGxHoEgMyB9FP6b0m60CHy7C4QXeR5WTGAJw@mail.gmail.com>
+References: <20200520133432.19738-1-dinghao.liu@zju.edu.cn>
+ <CAKdAkRTyVL0uV0dGxHoEgMyB9FP6b0m60CHy7C4QXeR5WTGAJw@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20200504181616.175477-1-srinivas.pandruvada@linux.intel.com>
- <20200504181616.175477-4-srinivas.pandruvada@linux.intel.com>
- <a9af415d-9fd0-dcea-79ee-0fb90f45045e@linaro.org> <2cd6c73b890b3eab12420adf4ae29101672e6a0b.camel@linux.intel.com>
- <CAHLCerMfnHPuJnj6G4EvRPvODf1_Se4xM-OobA1o7eao5eetzg@mail.gmail.com> <703fcf3b2b6769f5e469f0b035846ee95193ef7d.camel@linux.intel.com>
-In-Reply-To: <703fcf3b2b6769f5e469f0b035846ee95193ef7d.camel@linux.intel.com>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Thu, 21 May 2020 10:41:04 +0530
-Message-ID: <CAHLCerOsZrrZYcRLH+iZFT9FPL8zfmy2Y-Py6f61YXUrMrkcbg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/5] thermal: Add support for setting notification thresholds
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <99e48fa.b9f12.17235aba7ac.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgCnjwpFD8ZefivnAQ--.39208W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUHBlZdtOOvVwAKso
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbXvS07vEb7Iv0x
+        C_Ar1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
+        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
+        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
+        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
+        6r4UMIAIbVCjxxvEw4WlV2xY6xkIecxEwVAFwVW8WwCS07vEc2IjII80xcxEwVAKI48JMI
+        AIbVCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAIbVCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwCS07vEx2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlV2xY6I8E67AF67kF1VAFwI0_Jw0_GFylV2xY6IIF0xvE2Ix0cI8IcVAF
+        wI0_Jr0_JF4lV2xY6IIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCS07vEIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIAIbVCI42IY6I8E87Iv67AKxVWUJVW8JwCS07vEIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
-
-On Wed, May 20, 2020 at 11:46 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Wed, 2020-05-20 at 09:58 +0530, Amit Kucheria wrote:
-> > On Tue, May 19, 2020 at 5:10 AM Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com> wrote:
-> > > On Mon, 2020-05-18 at 18:37 +0200, Daniel Lezcano wrote:
-> > > > On 04/05/2020 20:16, Srinivas Pandruvada wrote:
-> > > > > Add new attributes in thermal syfs when a thermal drivers
-> > > > > provides
-> > > > > callbacks for them and CONFIG_THERMAL_USER_EVENT_INTERFACE is
-> > > > > defined.
-> > > > >
-> > > > > These attribute allow user space to stop polling for
-> > > > > temperature.
-> > > > >
-> > > > > These attributes are:
-> > > > > - temp_thres_low: Specify a notification temperature for a low
-> > > > > temperature threshold event.
-> > > > > temp_thres_high: Specify a notification temperature for a high
-> > > > > temperature threshold event.
-> > > > > temp_thres_hyst: Specify a change in temperature to send
-> > > > > notification
-> > > > > again.
-> > > > >
-> > > > > This is implemented by adding additional sysfs attribute group.
-> > > > > The
-> > > > > changes in this patch are trivial to add new attributes in
-> > > > > thermal
-> > > > > sysfs as done for other attributes.
-> > > >
-> > > > Isn't it duplicate with the trip point?
-> > > A trip point is where an in-kernel governor takes some action. This
-> > > is
-> > > not same as a notification temperature. For example at trip point
-> > > configured by ACPI at 85C, the thermal governor may start
-> > > aggressive
-> > > throttling.
-> > > But a user space can set a notification threshold at 80C and start
-> > > some
-> > > active controls like activate some fan to reduce the impact of
-> > > passive
-> > > control on performance.
-> >
-> > Then what is the use of thermal trip type "ACTIVE" ?
-> This is an example.
-> The defaults are set by the OEMs via ACPI. User can't modify that if
-> they want to optimize for their usage on Linux. There are fan control
-> daemon's which user use on top.
-
--ENOPARSE. Are you saying users "can" modify these?
-
-In any case, how is what you described earlier not possible with an
-ACTIVE trip point directly wired to the fan as a cooling device or
-with a HOT trip point that causes the platform driver to send
-notification to userspace where a fan control daemon can do what it
-needs to?
-
-Basically, I think the issue of polling is orthogonal to the
-introduction of the new attributes introduced in this patch and I
-don't understand the reason for these attributes from your commit
-description.
-
-> > > We need a way to distinguish between temperature notification
-> > > threshold
-> > > and actual trip point. Changing a trip point means that user wants
-> > > kernel to throttle at temperature.
->
+Rml4aW5nIHRoaXMgaW4gdGhlIFBNIGNvcmUgd2lsbCBpbmZsdWVuY2UgYWxsIGNhbGxlcnMgb2Yg
+cG1fcnVudGltZV9nZXRfc3luYygpLgpUaGVyZWZvcmUgSSB0aGluayB0aGUgYmV0dGVyIHNvbHV0
+aW9uIGlzIHRvIGZpeCBpdHMgbWlzdXNlZCBjYWxsZXJzLgoKUmVnYXJkcywKRGluZ2hhbwoKJnF1
+b3Q7RG1pdHJ5IFRvcm9raG92JnF1b3Q7ICZsdDtkbWl0cnkudG9yb2tob3ZAZ21haWwuY29tJmd0
+O+WGmemBk++8mgo+IEhpIERpbmdoYW8sCj4gCj4gT24gV2VkLCBNYXkgMjAsIDIwMjAgYXQgNjoz
+NSBBTSBEaW5naGFvIExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4gd3JvdGU6Cj4gPgo+ID4g
+cG1fcnVudGltZV9nZXRfc3luYygpIGluY3JlbWVudHMgdGhlIHJ1bnRpbWUgUE0gdXNhZ2UgY291
+bnRlciBldmVuCj4gPiB0aGUgY2FsbCByZXR1cm5zIGFuIGVycm9yIGNvZGUuIFRodXMgYSBwYWly
+aW5nIGRlY3JlbWVudCBpcyBuZWVkZWQKPiA+IG9uIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoIHRv
+IGtlZXAgdGhlIGNvdW50ZXIgYmFsYW5jZWQuCj4gCj4gVGhpcyBpcyBhIHZlcnkgc3VycHJpc2lu
+ZyBiZWhhdmlvciBhbmQgSSB3b25kZXIgaWYgdGhpcyBzaG91bGQgYmUKPiBmaXhlZCBpbiB0aGUg
+UE0gY29yZSAob3IgdGhlIHJlcXVpcmVkIGNsZWFudXAgc3RlcHMgbmVlZCB0byBiZSBjYWxsZWQK
+PiBvdXQgaW4gdGhlIGZ1bmN0aW9uIGRlc2NyaXB0aW9uKS4gSSBhbHNvIHNlZSB0aGF0IGEgZmV3
+IGRyaXZlcnMgdGhhdAo+IGhhbmRsZSB0aGlzIHNpdHVhdGlvbiBjb3JyZWN0bHkgKD8pIGNhbGwg
+cG1fcnVudGltZV9wdXRfbm9pZGxlKCkKPiBpbnN0ZWFkIG9mIHBtX3J1bnRpbWVfcHV0X3N5bmMo
+KSBpbiB0aGUgZXJyb3IgcGF0aC4KPiAKPiBSYWZhZWwsIGRvIHlvdSBoYXZlIGFueSBndWlkYW5j
+ZSBoZXJlPwo+IAo+IFRoYW5rcy4KPiAKPiAtLSAKPiBEbWl0cnkK
