@@ -2,268 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8657F1DD209
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974F31DD217
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729562AbgEUPiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:38:23 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44862 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728314AbgEUPiW (ORCPT
+        id S1730018AbgEUPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:39:36 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:54256 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727030AbgEUPjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:38:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LFMc8i153674;
-        Thu, 21 May 2020 15:37:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=r4Spg8NbR5mwKyiThKHk+kYyowBB0R04t7axGsdKwjQ=;
- b=Ynhk/XlE/b2prhMoeo56S16uIAAZbgYxZHC7p/dWVBlBoL3pDDI4kc0uln5u0l6mWOUl
- L+C1pz248BVU8ZpUTuS3kyJwq5UxldM4nXZrwyIHoIbDf4PIOR9befq6JaMV1K1UiOpB
- 2iEoOBRbCOlH4d4StpU6lCJxv2vZfb0pHQFqGEdJ4jfJ4eqyRJrcV+0X1ipVslkVcIxz
- 7mTivThBS5vq1yQnJSoCq4+BbcdlEjYzdpl3sSjRfnRxOA4Lji63WhUORLvy4tcXbJDF
- wmh+0rJyAmhKG8XvfXq2vINeUcTMoS1uYH+wUyLiy2A3Ozu5FJVWQDv5b0dxglRkOXbL Kg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31284m974t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 May 2020 15:37:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LFNHAe056066;
-        Thu, 21 May 2020 15:37:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 312t3bggqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 May 2020 15:37:28 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04LFbKZr013731;
-        Thu, 21 May 2020 15:37:20 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 21 May 2020 08:37:20 -0700
-Date:   Thu, 21 May 2020 11:37:43 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Robert Elliott <elliott@hpe.com>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
-        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v2 5/7] mm: parallelize deferred_init_memmap()
-Message-ID: <20200521153743.ymrwhgceazzc6ccb@ca-dmjordan1.us.oracle.com>
-References: <20200520182645.1658949-1-daniel.m.jordan@oracle.com>
- <20200520182645.1658949-6-daniel.m.jordan@oracle.com>
- <CAKgT0UfWOe-_rA+o5Uh-mTKSodsv9pFvApun=oYeAsOpMpP83Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UfWOe-_rA+o5Uh-mTKSodsv9pFvApun=oYeAsOpMpP83Q@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 malwarescore=0 suspectscore=2 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005210113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0
- cotscore=-2147483648 impostorscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005210113
+        Thu, 21 May 2020 11:39:36 -0400
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 May 2020 21:08:52 +0530
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 21 May 2020 21:08:27 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id 1C2262A34; Thu, 21 May 2020 21:08:26 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v7 0/2] Add USB DWC3 support for SC7180
+Date:   Thu, 21 May 2020 21:08:17 +0530
+Message-Id: <1590075499-21350-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 06:29:32PM -0700, Alexander Duyck wrote:
-> On Wed, May 20, 2020 at 11:27 AM Daniel Jordan
-> > @@ -1814,16 +1815,44 @@ deferred_init_maxorder(u64 *i, struct zone *zone, unsigned long *start_pfn,
-> >         return nr_pages;
-> >  }
-> >
-> > +struct definit_args {
-> > +       struct zone *zone;
-> > +       atomic_long_t nr_pages;
-> > +};
-> > +
-> > +static void __init
-> > +deferred_init_memmap_chunk(unsigned long start_pfn, unsigned long end_pfn,
-> > +                          void *arg)
-> > +{
-> > +       unsigned long spfn, epfn, nr_pages = 0;
-> > +       struct definit_args *args = arg;
-> > +       struct zone *zone = args->zone;
-> > +       u64 i;
-> > +
-> > +       deferred_init_mem_pfn_range_in_zone(&i, zone, &spfn, &epfn, start_pfn);
-> > +
-> > +       /*
-> > +        * Initialize and free pages in MAX_ORDER sized increments so that we
-> > +        * can avoid introducing any issues with the buddy allocator.
-> > +        */
-> > +       while (spfn < end_pfn) {
-> > +               nr_pages += deferred_init_maxorder(&i, zone, &spfn, &epfn);
-> > +               cond_resched();
-> > +       }
-> > +
-> > +       atomic_long_add(nr_pages, &args->nr_pages);
-> > +}
-> > +
-> 
-> Personally I would get rid of nr_pages entirely. It isn't worth the
-> cache thrash to have this atomic variable bouncing around.
+Converting dt binding to yaml.
+Adding compatible for SC7180 in dt bindings.
 
-One of the things I tried to optimize was the managed_pages atomic adds in
-__free_pages_core, but performance stayed the same on the biggest machine I
-tested when it was done once at the end of page init instead of in every thread
-for every pageblock.
+Changes in v7:
+Solved the dt binding check error by adding soc field in example.
 
-I'm not sure this atomic would matter either, given it's less frequent.
+Changes in v6:
+Addressed the comments from Stephen on interrupts.
+Added ranges property and dropped maxItems field for assigned-clock-rates.
 
-> You could
-> probably just have this function return void since all nr_pages is
-> used for is a pr_info  statement at the end of the initialization
-> which will be completely useless now anyway since we really have the
-> threads running in parallel anyway.
+Changes in v5:
+Addressed the comments from Stephen in yaml file.
 
-The timestamp is still useful for observability, page init is a significant
-part of kernel boot on big machines, over 10% sometimes with these patches.
+Changes in v4:
+Addressed the comments from Doug in yaml file.
 
-It's mostly the time that matters though, I agree the number of pages is less
-important and is probably worth removing just to simplify the code.  I'll do it
-if no one sees a reason to keep it.
+Changes in v3:
+Dropped the patch for adding the compatible in dwc3 driver from the series.
+Addressed the comments from Doug in yaml file.
 
-> We only really need the nr_pages logic in deferred_grow_zone in order
-> to track if we have freed enough pages to allow us to go back to what
-> we were doing.
->
-> > @@ -1863,11 +1892,32 @@ static int __init deferred_init_memmap(void *data)
-> >                 goto zone_empty;
-> >
-> >         /*
-> > -        * Initialize and free pages in MAX_ORDER sized increments so
-> > -        * that we can avoid introducing any issues with the buddy
-> > -        * allocator.
-> > +        * More CPUs always led to greater speedups on tested systems, up to
-> > +        * all the nodes' CPUs.  Use all since the system is otherwise idle now.
-> >          */
-> > +       max_threads = max(cpumask_weight(cpumask), 1u);
-> > +
-> >         while (spfn < epfn) {
-> > +               epfn_align = ALIGN_DOWN(epfn, PAGES_PER_SECTION);
-> > +
-> > +               if (IS_ALIGNED(spfn, PAGES_PER_SECTION) &&
-> > +                   epfn_align - spfn >= PAGES_PER_SECTION) {
-> > +                       struct definit_args arg = { zone, ATOMIC_LONG_INIT(0) };
-> > +                       struct padata_mt_job job = {
-> > +                               .thread_fn   = deferred_init_memmap_chunk,
-> > +                               .fn_arg      = &arg,
-> > +                               .start       = spfn,
-> > +                               .size        = epfn_align - spfn,
-> > +                               .align       = PAGES_PER_SECTION,
-> > +                               .min_chunk   = PAGES_PER_SECTION,
-> > +                               .max_threads = max_threads,
-> > +                       };
-> > +
-> > +                       padata_do_multithreaded(&job);
-> > +                       nr_pages += atomic_long_read(&arg.nr_pages);
-> > +                       spfn = epfn_align;
-> > +               }
-> > +
-> >                 nr_pages += deferred_init_maxorder(&i, zone, &spfn, &epfn);
-> >                 cond_resched();
-> >         }
-> 
-> This doesn't look right. You are basically adding threads in addition
-> to calls to deferred_init_maxorder.
+Changes in v2:
+Sorted the compatible in dwc3 driver.
+Converted dt binding to yaml.
+Added compatible in yaml.
 
-The deferred_init_maxorder call is there to do the remaining, non-section
-aligned part of a range.  It doesn't have to be done this way.
+Sandeep Maheswaram (2):
+  dt-bindings: usb: qcom,dwc3: Convert USB DWC3 bindings
+  dt-bindings: usb: qcom,dwc3: Add compatible for SC7180
 
-> In addition you are spawning one
-> job per section instead of per range.
+ .../devicetree/bindings/usb/qcom,dwc3.txt          | 104 -------------
+ .../devicetree/bindings/usb/qcom,dwc3.yaml         | 168 +++++++++++++++++++++
+ 2 files changed, 168 insertions(+), 104 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/qcom,dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
 
-That's not what's happening, all the above is doing is aligning the end of the
-range down to a section.  Each thread is working on way more than a section at
-a time.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-> Really you should be going for
-> something more along the lines of:
-> 
->         while (spfn < epfn) {
->                 unsigned long epfn_align = ALIGN(epfn,
-> PAGE_PER_SECTION);
->                 struct definit_args arg = { zone, ATOMIC_LONG_INIT(0)
-> };
->                 struct padata_mt_job job = {
->                         .thread_fn   = deferred_init_memmap_chunk,
->                         .fn_arg      = &arg,
->                         .start       = spfn,
->                         .size        = epfn_align - spfn,
->                         .align       = PAGES_PER_SECTION,
->                         .min_chunk   = PAGES_PER_SECTION,
->                         .max_threads = max_threads,
->                 };
-> 
->                 padata_do_multithreaded(&job);
-> 
->                 for_each_free_mem_pfn_range_in_zone_from(i, zone,
-> spfn, epfn) {
->                         if (epfn_align <= spfn)
->                                 break;
->                 }
->         }
-
-I can see what you're getting at even though I think this can leave ranges
-uninitialized.  Starting with range [a,b), b is aligned up to d and the inner
-loop skips [c,e).
-
-a    b  c d        e
-|         |         |   section boundaries
-[    )  [          )
-
-We could use deferred_init_mem_pfn_range_in_zone() instead of the for_each
-loop.
-
-What I was trying to avoid by aligning down is creating a discontiguous pfn
-range that get passed to padata.  We already discussed how those are handled
-by the zone iterator in the thread function, but job->size can be exaggerated
-to include parts of the range that are never touched.  Thinking more about it
-though, it's a small fraction of the total work and shouldn't matter.
-
-> This should accomplish the same thing, but much more efficiently.
-
-Well, more cleanly.  I'll give it a try.
-
-> The
-> only thing you really lose is the tracking of nr_pages which really
-> doesn't add anything anyway since the value could shift around
-> depending on how many times deferred_grow_zone got called anyway.
-> 
-> Also the spfn should already be sectioned aligned, or at least be in a
-> new section unrelated to the one we just scheduled, so there is no
-> need for the extra checks you had.
-
-I was doing it to be robust to future changes.  Otherwise epfn_align - spfn
-could be huge when aligning down, but with aligning up it won't matter and can
-be removed.
