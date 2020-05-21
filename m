@@ -2,176 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266FE1DDAD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906701DDABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730780AbgEUXPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:15:10 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:39462 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730734AbgEUXPJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:15:09 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200521231506epoutp018330a28f5898eddc787344f3e0fb7a02~RLitCCJO_2395523955epoutp01h
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:15:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200521231506epoutp018330a28f5898eddc787344f3e0fb7a02~RLitCCJO_2395523955epoutp01h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590102906;
-        bh=rJZqCQOnSFMJc+1/SWJ3uMKcjR5d2Ru5UKpf6u7uQGs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=g8Kzqe/nfK8IK8YSAGUuXo37RNc9edPuUI+oh+2ntexjiHK/OJbwmIMkAjkogKobR
-         94R1PrFviuaZ+s93kLMojB1ZGS1aO0tMpHdBCmRPY5Hx1jID0JGAMYrxAbf6Wzdv07
-         HSWh7qNhOvTeb6HHX+TGhhb2fOHyVXAifIG502MQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200521231506epcas1p16b7b6728aa98d1bd42ceb0d611f43ee5~RLisnxGrw1786117861epcas1p1U;
-        Thu, 21 May 2020 23:15:06 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49Slp12cr3zMqYkV; Thu, 21 May
-        2020 23:15:05 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0C.6A.04744.97B07CE5; Fri, 22 May 2020 08:15:05 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200521231505epcas1p28521830bf5732f71adc0510502930d41~RLirelFTG1191311913epcas1p2V;
-        Thu, 21 May 2020 23:15:05 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200521231505epsmtrp14049c6fd943227b0a6bed37ff102d90c~RLirdwkyd1048410484epsmtrp1B;
-        Thu, 21 May 2020 23:15:05 +0000 (GMT)
-X-AuditID: b6c32a38-253ff70000001288-fa-5ec70b79039a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        69.17.18461.87B07CE5; Fri, 22 May 2020 08:15:04 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.88.103.87]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200521231504epsmtip2b1e0acd1b2274109409e94e0baddfe50~RLirQvtiq0371603716epsmtip2M;
-        Thu, 21 May 2020 23:15:04 +0000 (GMT)
-From:   Namjae Jeon <namjae.jeon@samsung.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        sandeen@sandeen.net, viro@zeniv.linux.org.uk, willy@infradead.org,
-        Namjae Jeon <namjae.jeon@samsung.com>
-Subject: [PATCH v3] exfat: add the dummy mount options to be backward
- compatible with staging/exfat
-Date:   Fri, 22 May 2020 08:10:10 +0900
-Message-Id: <20200521231010.4181-1-namjae.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHKsWRmVeSWpSXmKPExsWy7bCmgW4l9/E4g2PzRC327D3JYnF51xw2
-        ix/T6y1ar2hZPOp7y25x/u9xVovfP+awObB7bF6h5XFixm8Wj74tqxg9tix+yOTxeZOcx6Yn
-        b5kC2KJybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOA
-        DlFSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBgaFOgVJ+YWl+al6yXn51oZGhgY
-        mQJVJuRkHN45lbHgnGDFmVPrWRoYN/F1MXJySAiYSBw81MraxcjFISSwg1Hi3v/pzBDOJ0aJ
-        TVOWs0A43xgl5vfMYoRpWbF8L1RiL6NE09FDLHAtN28cBari4GAT0Jb4s0UUxBQRUJS4/N4J
-        pIRZYC2jxMHrr1hABgkLpEqs2z2HHcRmEVCV2He8lQ3E5hWwlph28hgTxDJ5idUbDoCdJCGw
-        jV3i7sFFUAkXiddH7kBdJCzx6vgWdghbSuJlfxs7yGIJgWqJj/uZIcIdjBIvvttC2MYSN9dv
-        YAUpYRbQlFi/Sx8irCix8/dcsInMAnwS7772sEJM4ZXoaBOCKFGV6Lt0GOoAaYmu9g9QSz0k
-        Vqx/CXa9kECsxIaHN5kmMMrOQliwgJFxFaNYakFxbnpqsWGBCXIcbWIEpy0tix2Me875HGIU
-        4GBU4uG1SDsWJ8SaWFZcmXuIUYKDWUmEdyH/0Tgh3pTEyqrUovz4otKc1OJDjKbAsJvILCWa
-        nA9MqXkl8YamRsbGxhYmZuZmpsZK4rxTr+fECQmkJ5akZqemFqQWwfQxcXBKNTDuXP4opHPJ
-        /fpfrZxvf3FNcLHbZfMz7srJ1I6NvLt+asu9NK9Y9rH6yir/BxN4VV3kzwmvqP79TfOt7I7q
-        u/sUS2Kf7A7vqdrqFiCjrPvmZEqbMkecptVj17rwTJGm29uOxW4KY7bwnT7HV+kz2+Qf07Vv
-        6K26LfzbZobk792Bm38W8LZWJBYrsRRnJBpqMRcVJwIAD5ZOIXEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPJMWRmVeSWpSXmKPExsWy7bCSvG4F9/E4g2PfrCz27D3JYnF51xw2
-        ix/T6y1ar2hZPOp7y25x/u9xVovfP+awObB7bF6h5XFixm8Wj74tqxg9tix+yOTxeZOcx6Yn
-        b5kC2KK4bFJSczLLUov07RK4Mg7vnMpYcE6w4syp9SwNjJv4uhg5OSQETCRWLN/L0sXIxSEk
-        sJtRom/XNjaIhLTEsRNnmLsYOYBsYYnDh4shaj4wSjQvecgGEmcT0Jb4s0UUxBQRUJS4/N4J
-        pIRZYDOjxLKjU8HGCAskS7w+vokRxGYRUJXYd7wVLM4rYC0x7eQxJohV8hKrNxxgnsDIs4CR
-        YRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnAYaWnuYNy+6oPeIUYmDsZDjBIczEoi
-        vAv5j8YJ8aYkVlalFuXHF5XmpBYfYpTmYFES571RuDBOSCA9sSQ1OzW1ILUIJsvEwSnVwLRY
-        9OvH93sMZ35qkuhWzpJ4uvIA07yz5kmpn+qmf9ulJr7t+1SW08vTvpo8Con5YeeQ+8Ev6mdn
-        q+D7WXXLOI2s1yslbc43uexctEdVmO+dwUaH64r3ZfmY2De8ZRFn3n8wbtvPt9WzL5vLBt6U
-        CLhx3uLjTaVbWRPjtf/HZb0ItchrVTEy8MkOXLnvWodxwtuVYaVHAjvDv0+T+nnuiq3kvsnT
-        37tfbNq5z3xFXPoR+9iiTWFW6Td+nnghzVt+TPWuRNr+zsvxlvuCf57nvn2ely20WutJklJY
-        +uxl27qdbRtd96etXrtOeOemTVYfvxZdlWuKffg09ZBZ03Td1vAzejOU9Hd78ghcfXXkr68S
-        S3FGoqEWc1FxIgDUCSiTkgIAAA==
-X-CMS-MailID: 20200521231505epcas1p28521830bf5732f71adc0510502930d41
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200521231505epcas1p28521830bf5732f71adc0510502930d41
-References: <CGME20200521231505epcas1p28521830bf5732f71adc0510502930d41@epcas1p2.samsung.com>
+        id S1730753AbgEUXGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730041AbgEUXGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 19:06:01 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAF88207F9;
+        Thu, 21 May 2020 23:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590102360;
+        bh=P1jeoOmkuQys8O/5KShp1h4j+v/r/jvzvMQiBaCGXUA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kjPULzZ9+vdGSNsCk+ICfxYRoVBIOI+MIGmNveAC203FdJXa8MM2KqRQwPrsB5WTP
+         Hd1WLCThXNMhcz0Aa7ps91f0RAECthDDyO7Q4bHQ9aOLc8gK8aYdifRf1Q3d939mHf
+         1VFgtiIQkJ85EL12T+jWB/tPAznRNsrvIn2eX2io=
+Date:   Thu, 21 May 2020 18:10:49 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] security: integrity: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200521231049.GA28765@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Ubuntu and Fedora release new version used kernel version equal to or
-higher than v5.4, They started to support kernel exfat filesystem.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Linus Torvalds reported mount error with new version of exfat on Fedora.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-        exfat: Unknown parameter 'namecase'
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-This is because there is a difference in mount option between old
-staging/exfat and new exfat.
-And utf8, debug, and codepage options as well as namecase have been
-removed from new exfat.
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-This patch add the dummy mount options as deprecated option to be backward
-compatible with old one.
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+sizeof(flexible-array-member) triggers a warning because flexible array
+members have incomplete type[1]. There are some instances of code in
+which the sizeof operator is being incorrectly/erroneously applied to
+zero-length arrays and the result is zero. Such instances may be hiding
+some bugs. So, this work (flexible-array member conversions) will also
+help to get completely rid of those sorts of issues.
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- v2:
-  - fix checkpatch.pl warning(Missing Signed-off-by).
- v3:
-  - use fs_param_deprecated instead of printing deprecated warning(Matthew Wilcox).
+ security/integrity/ima/ima.h   | 2 +-
+ security/integrity/integrity.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
- fs/exfat/super.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/fs/exfat/super.c b/fs/exfat/super.c
-index 0565d5539d57..a846ff555656 100644
---- a/fs/exfat/super.c
-+++ b/fs/exfat/super.c
-@@ -203,6 +203,12 @@ enum {
- 	Opt_errors,
- 	Opt_discard,
- 	Opt_time_offset,
-+
-+	/* Deprecated options */
-+	Opt_utf8,
-+	Opt_debug,
-+	Opt_namecase,
-+	Opt_codepage,
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 02796473238b6..3ec963ff3bc19 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -100,7 +100,7 @@ struct ima_template_entry {
+ 	struct tpm_digest *digests;
+ 	struct ima_template_desc *template_desc; /* template descriptor */
+ 	u32 template_data_len;
+-	struct ima_field_data template_data[0];	/* template related data */
++	struct ima_field_data template_data[];	/* template related data */
  };
  
- static const struct constant_table exfat_param_enums[] = {
-@@ -223,6 +229,14 @@ static const struct fs_parameter_spec exfat_parameters[] = {
- 	fsparam_enum("errors",			Opt_errors, exfat_param_enums),
- 	fsparam_flag("discard",			Opt_discard),
- 	fsparam_s32("time_offset",		Opt_time_offset),
-+	__fsparam(NULL, "utf8",			Opt_utf8, fs_param_deprecated,
-+		  NULL),
-+	__fsparam(NULL, "debug",		Opt_debug, fs_param_deprecated,
-+		  NULL),
-+	__fsparam(fs_param_is_u32, "namecase",	Opt_namecase,
-+		  fs_param_deprecated, NULL),
-+	__fsparam(fs_param_is_u32, "codepage",	Opt_codepage,
-+		  fs_param_deprecated, NULL),
- 	{}
- };
+ struct ima_queue_entry {
+diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
+index 298b73794d8b1..16c1894c29bb0 100644
+--- a/security/integrity/integrity.h
++++ b/security/integrity/integrity.h
+@@ -107,7 +107,7 @@ struct ima_digest_data {
+ 		} ng;
+ 		u8 data[2];
+ 	} xattr;
+-	u8 digest[0];
++	u8 digest[];
+ } __packed;
  
-@@ -278,6 +292,11 @@ static int exfat_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 			return -EINVAL;
- 		opts->time_offset = result.int_32;
- 		break;
-+	case Opt_utf8:
-+	case Opt_debug:
-+	case Opt_namecase:
-+	case Opt_codepage:
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
+ /*
+@@ -119,7 +119,7 @@ struct signature_v2_hdr {
+ 	uint8_t	hash_algo;	/* Digest algorithm [enum hash_algo] */
+ 	__be32 keyid;		/* IMA key identifier - not X509/PGP specific */
+ 	__be16 sig_size;	/* signature size */
+-	uint8_t sig[0];		/* signature payload */
++	uint8_t sig[];		/* signature payload */
+ } __packed;
+ 
+ /* integrity data associated with an inode */
 -- 
-2.17.1
+2.26.2
 
