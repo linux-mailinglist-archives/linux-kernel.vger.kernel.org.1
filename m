@@ -2,68 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71181DD7D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C6B1DD7CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730351AbgEUUA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        id S1730279AbgEUUAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729780AbgEUUA5 (ORCPT
+        with ESMTP id S1728635AbgEUUAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:00:57 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9A1C061A0E;
-        Thu, 21 May 2020 13:00:56 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jbrMP-0008Jj-44; Thu, 21 May 2020 22:00:09 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 57046100C2D; Thu, 21 May 2020 22:00:08 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Hannes Reinecke <hare@suse.com>, io-uring@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: io_uring vs CPU hotplug, was Re: [PATCH 5/9] blk-mq: don't set data->ctx and data->hctx in blk_mq_alloc_request_hctx
-In-Reply-To: <15f9f975-1baf-dc90-5730-00df08829523@kernel.dk>
-References: <20200520011823.GA415158@T590> <20200520030424.GI416136@T590> <20200520080357.GA4197@lst.de> <8f893bb8-66a9-d311-ebd8-d5ccd8302a0d@kernel.dk> <448d3660-0d83-889b-001f-a09ea53fa117@kernel.dk> <87tv0av1gu.fsf@nanos.tec.linutronix.de> <2a12a7aa-c339-1e51-de0d-9bc6ced14c64@kernel.dk> <87eereuudh.fsf@nanos.tec.linutronix.de> <20200521022746.GA730422@T590> <87367tvh6g.fsf@nanos.tec.linutronix.de> <20200521092340.GA751297@T590> <87pnaxt9nv.fsf@nanos.tec.linutronix.de> <15f9f975-1baf-dc90-5730-00df08829523@kernel.dk>
-Date:   Thu, 21 May 2020 22:00:08 +0200
-Message-ID: <87k115t5x3.fsf@nanos.tec.linutronix.de>
+        Thu, 21 May 2020 16:00:15 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D649C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:00:15 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id u22so3321492plq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ulvs3QovAejney8/yaIpAssOKiAEegTNo53VZEhb45g=;
+        b=arknal30qqyUt9Uultoin1W2eEnpjZOh2M50gfKNKsh2c05XoVw664fE7SmegYbFqL
+         1jYIOZFK3qvFTzSvZb1a/0TeRh7x1QwAIQ0yudjxW7Ohj3kbGc5wR0AnbDcmCs1eSjqo
+         W43A5+fzigzpmM6CKgu4thGrBpPlM6zXWyDTc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ulvs3QovAejney8/yaIpAssOKiAEegTNo53VZEhb45g=;
+        b=GRojIjkTP6iqM0i+Wd3zmbVUQdaYRi9x4xJUWCNaz+J/IDZscnkDEdh01B+bB6GuUv
+         lZh4+sxP3Utt/6CnOr2xyqHcgZCa52ibL3NUGtMd9WyAMiZ5NZwi9gUUa91XtAtS6CJQ
+         RQDcVj6FygUkbX7smJhj+6DDTRj0OmJQYceKbY+xgzOmo7piLquzVJLtNBRP843Kxsw6
+         yu5nhTMjvX8I1/Uc48fX+1yG6G4erx4G1vb7pvhBdrycOg+ReMiYV9WE0zQ6DLwi/blJ
+         R/+ILU5loQdX3PE3QS2iXoz3P6HPuom8toqj0z+rGOCTVn0kQqwq949pVliPg3iHeG9N
+         JOpw==
+X-Gm-Message-State: AOAM531CcUkSqVDWti7acs8dyQFtIZSmTUJvMEYRpjwSkv/7ey+F22uV
+        sKmVNVJkpOJLxJvwHBkBwPfTww==
+X-Google-Smtp-Source: ABdhPJygsq417Det10M2bkwgpyvuYKzPNse7VchUrWVJXxj4vjS2acqQQI4FoLCeiaO83wNsdfO0qw==
+X-Received: by 2002:a17:90a:4fc6:: with SMTP id q64mr241368pjh.34.1590091215159;
+        Thu, 21 May 2020 13:00:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 188sm5122610pfu.165.2020.05.21.13.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 13:00:14 -0700 (PDT)
+Date:   Thu, 21 May 2020 13:00:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, arjan@linux.intel.com,
+        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        rick.p.edgecombe@intel.com, Tony Luck <tony.luck@intel.com>,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] x86: Makefile: Add build and config option for
+ CONFIG_FG_KASLR
+Message-ID: <202005211255.33E27D05@keescook>
+References: <20200521165641.15940-1-kristen@linux.intel.com>
+ <20200521165641.15940-5-kristen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521165641.15940-5-kristen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
-> Again, this is mixing up io_uring and blk-mq. Maybe it's the fact that
-> both use 'ctx' that makes this confusing. On the blk-mq side, the 'ctx'
-> is the per-cpu queue context, for io_uring it's the io_uring instance.
+On Thu, May 21, 2020 at 09:56:35AM -0700, Kristen Carlson Accardi wrote:
+> Allow user to select CONFIG_FG_KASLR if dependencies are met. Change
+> the make file to build with -ffunction-sections if CONFIG_FG_KASLR
+> 
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  Makefile         |  4 ++++
+>  arch/x86/Kconfig | 13 +++++++++++++
+>  2 files changed, 17 insertions(+)
+> 
+> diff --git a/Makefile b/Makefile
+> index 04f5662ae61a..28e515baa824 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -862,6 +862,10 @@ ifdef CONFIG_LIVEPATCH
+>  KBUILD_CFLAGS += $(call cc-option, -flive-patching=inline-clone)
+>  endif
+>  
+> +ifdef CONFIG_FG_KASLR
+> +KBUILD_CFLAGS += -ffunction-sections
+> +endif
+> +
+>  # arch Makefile may override CC so keep this after arch Makefile is included
+>  NOSTDINC_FLAGS += -nostdinc -isystem $(shell $(CC) -print-file-name=include)
+>  
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 2d3f963fd6f1..50e83ea57d70 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2183,6 +2183,19 @@ config RANDOMIZE_BASE
+>  
+>  	  If unsure, say Y.
+>  
+> +config FG_KASLR
+> +	bool "Function Granular Kernel Address Space Layout Randomization"
+> +	depends on $(cc-option, -ffunction-sections)
+> +	depends on RANDOMIZE_BASE && X86_64
+> +	help
+> +	  This option improves the randomness of the kernel text
+> +	  over basic Kernel Address Space Layout Randomization (KASLR)
+> +	  by reordering the kernel text at boot time. This feature
+> +	  uses information generated at compile time to re-layout the
+> +	  kernel text section at boot time at function level granularity.
+> +
+> +	  If unsure, say N.
+> +
+>  # Relocation on x86 needs some additional build support
+>  config X86_NEED_RELOCS
+>  	def_bool y
 
-Yes, that got me horribly confused. :)
+Kconfig bikeshedding: how about putting FG_KASLR in arch/Kconfig, add
+a "depends on ARCH_HAS_FG_KASLR", and remove the arch-specific depends.
 
-> io_sq_thread() doesn't care about any sort of percpu mappings, it's
-> happy as long as it'll keep running regardless of whether or not the
-> optional pinned CPU is selected and then offlined.
+Then in arch/x86 have ARCH_HAS_FG_KASLR as a def_bool y with the
+RANDOMIZE_BASE && X86_64 depends.
 
-Fair enough.
+This will more cleanly split the build elements (compiler flags) from
+the arch elements (64-bit x86, arch-specific flags, etc).
 
-So aside of the potential spin forever if the uring thread is lifted to
-an RT scheduling class, this looks all good.
+With that split out:
 
-Though I assume that if that thread is pinned and an admin pushs it into
-RT scheduling the spinning live lock can happen independent of cpu
-hotplug.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks,
-
-        tglx
+-- 
+Kees Cook
