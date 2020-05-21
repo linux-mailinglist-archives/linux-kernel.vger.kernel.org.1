@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896441DCF8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87551DCF9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgEUOWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S1729649AbgEUOWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726965AbgEUOWc (ORCPT
+        with ESMTP id S1729610AbgEUOWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:22:32 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9306DC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:32 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id y8so5467869ybn.20
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:32 -0700 (PDT)
+        Thu, 21 May 2020 10:22:36 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0206DC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:35 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id o11so7782080qti.23
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=H2uRSUohXbn7nWhU1m6/8O/OIPFFeT1jA5i34XsZ7o0=;
-        b=axxi3Qx/8vKlKRkFvuD31M8fwf7LrlOkxHIrZdlDjzY38oPfn+O2cNDswnD+BhSupD
-         JlwQ51nDCg7UbeW4wdTiT/dp8lH9WhF+0iqP4AHedX+6ef9TtcCRnFfIlDuLbBk0qzKM
-         70ee6zQUY7I1EQ+xKnkJvn0nhAk3B3aw2SZZir69jsEY5hlKh8INutX42YZXmaGVTxMf
-         51YAOYXfi+yz3ZWZv91OaGVrLBgXT4wG/fwE6HXc8GKccSTt6UD5bALGltQ/1/UKN0SY
-         Jt3x1z8fGTWLhHGQxAqVOI+xfiSEBSaZqQ2q4ko7JORQ3LCAkNAc+G8NkxXyp/cXoAH5
-         wLlA==
+        bh=rIPGL9CFOAkyWr2JAZKyWj8DzpuO2OFpo2ndoPyjdsU=;
+        b=u3EpQ4+DaitcF6BfOJ8L8O5D8YznSLVYui3gWbo4ol1Bv19OlOKDU7YIk9m1I5uwwW
+         aB8VH88v3QKRSnwwkLsJ9o0SPi/gzHOAKKoxH7xJoZKLKB90G3rJnTaxOqhy3S+evbtq
+         WTEB5Hkk+oGlmadxXwSBA/Cu4NzApZeRJecmVPOcvaMENE3GfZ7LU3NZIzMsqp9En6SN
+         3FIjQNHQyudeI4ITrQTT3OcKAYSdb8TTrBcXxI8OqZfb1biNIoezpzI1yuX0HjipEJsU
+         VwPAEcgwvr1cUVyCR3rmkyUlj7dl9mW/FMH85th/AioFSAxZGKmKhJ9blkPbLpEnP9J7
+         ZR2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=H2uRSUohXbn7nWhU1m6/8O/OIPFFeT1jA5i34XsZ7o0=;
-        b=agJCYFgmsU2+0HDfmrDcIi4gzBrJvTRmS3NuNyfIzQ2r2aKT1eA/Zl8l+Qgtq8eJFe
-         j/VRycoUHLjHyQjmOE6L/e9zINW0/lfqSo3hSmEu34hZyIGehPNOPNSGBSbTUG++H/aF
-         CrdR4bc3BCP/cpcmfjCdOGuoMrBDSiNMVuYc9849Cr2ofX4JHObMT94Gy/UKVt5se+of
-         srNLXzcwr9WNjzJ2hYNOm/osYdCcZYC9H/hYGOLioF7XAqr9+/ZJtpFOKJfX/Dx3XDnJ
-         Od3M4QtG6SEfQbumIEXn3GlF4HKmdYrQuszQo3X3filcCIm3oUPGGF0yMxF9W5GoF/AE
-         i/ow==
-X-Gm-Message-State: AOAM533bnSKaN7RalubNlUJegaG5UyYfApipT/n7M/JOTvAiu9uLNFJX
-        Um/ZBO2L1IY3v5LQ/RyCDsEAc0uKHQ==
-X-Google-Smtp-Source: ABdhPJxNZLxnN2ElHcnIQLnQrEgbdR+8u1uOdrPm5b7Uw3WUmW5JKKQjrkM3CzIr9Vt38KnL7G2y4CyUDA==
-X-Received: by 2002:a25:3610:: with SMTP id d16mr15626055yba.222.1590070951790;
- Thu, 21 May 2020 07:22:31 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:20:41 +0200
+        bh=rIPGL9CFOAkyWr2JAZKyWj8DzpuO2OFpo2ndoPyjdsU=;
+        b=DE8Y9LJverfTxAM1fIBz65qGlXaiWu283TCVSXDS2HMN0Z550ZNDlg6U8p2ktxJ73R
+         dodfg1IW/vAGuyaDTTD+Tr7yqvzhqY6MnQcIESjT2IOIPlfj1siJ3l0Oc9Y7Z14wm+sd
+         uUaIPEoGg3ky055pqbwTZqn9BWGCKMWl5ZILyckdraQrpVWXMXfQAlJCqHzcFGfnpnA7
+         qpHjvV5T5qEJdNRv4+QnD0HtgFIbKuPR1pxTxRORN3R8uuLihYDlhWCOFlLM2SKt0HuQ
+         oEf1+5EOte20hIU9WwjLKlb4K4W3GgpyFaASfoisKkhBQHGGEa1ilW98AzuskPitwGck
+         ETsA==
+X-Gm-Message-State: AOAM533uDFOMRAfme86E8ev8xKTe4+xbRhvacmcT73zO/6B8LhA98/iU
+        LOHygILuPGDvnlrhFvhtAhLowqW2UQ==
+X-Google-Smtp-Source: ABdhPJyZmrVOqLiL3evUkiHtoGSXiJ19F4wBwnc3t3gYg+oCWeueOPjFXkWp6QQ+cxWdL0mSYqclJv/vJA==
+X-Received: by 2002:a0c:a184:: with SMTP id e4mr9612716qva.153.1590070954160;
+ Thu, 21 May 2020 07:22:34 -0700 (PDT)
+Date:   Thu, 21 May 2020 16:20:42 +0200
 In-Reply-To: <20200521142047.169334-1-elver@google.com>
-Message-Id: <20200521142047.169334-6-elver@google.com>
+Message-Id: <20200521142047.169334-7-elver@google.com>
 Mime-Version: 1.0
 References: <20200521142047.169334-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip v3 05/11] kcsan: Remove 'noinline' from __no_kcsan_or_inline
+Subject: [PATCH -tip v3 06/11] kcsan: Restrict supported compilers
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -64,47 +64,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some compilers incorrectly inline small __no_kcsan functions, which then
-results in instrumenting the accesses. For this reason, the 'noinline'
-attribute was added to __no_kcsan_or_inline. All known versions of GCC
-are affected by this. Supported version of Clang are unaffected, and
-never inlines a no_sanitize function.
+The first version of Clang that supports -tsan-distinguish-volatile will
+be able to support KCSAN. The first Clang release to do so, will be
+Clang 11. This is due to satisfying all the following requirements:
 
-However, the attribute 'noinline' in __no_kcsan_or_inline causes
-unexpected code generation in functions that are __no_kcsan and call a
-__no_kcsan_or_inline function.
+1. Never emit calls to __tsan_func_{entry,exit}.
 
-In certain situations it is expected that the __no_kcsan_or_inline
-function is actually inlined by the __no_kcsan function, and *no* calls
-are emitted. By removing the 'noinline' attribute we give the compiler
-the ability to inline and generate the expected code in __no_kcsan
-functions.
+2. __no_kcsan functions should not call anything, not even
+   kcsan_{enable,disable}_current(), when using __{READ,WRITE}_ONCE => Requires
+   leaving them plain!
 
-Link: https://lkml.kernel.org/r/CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com
+3. Support atomic_{read,set}*() with KCSAN, which rely on
+   arch_atomic_{read,set}*() using __{READ,WRITE}_ONCE() => Because of
+   #2, rely on Clang 11's -tsan-distinguish-volatile support. We will
+   double-instrument atomic_{read,set}*(), but that's reasonable given
+   it's still lower cost than the data_race() variant due to avoiding 2
+   extra calls (kcsan_{en,dis}able_current() calls).
+
+4. __always_inline functions inlined into __no_kcsan functions are never
+   instrumented.
+
+5. __always_inline functions inlined into instrumented functions are
+   instrumented.
+
+6. __no_kcsan_or_inline functions may be inlined into __no_kcsan functions =>
+   Implies leaving 'noinline' off of __no_kcsan_or_inline.
+
+7. Because of #6, __no_kcsan and __no_kcsan_or_inline functions should never be
+   spuriously inlined into instrumented functions, causing the accesses of the
+   __no_kcsan function to be instrumented.
+
+Older versions of Clang do not satisfy #3. The latest GCC currently doesn't
+support at least #1, #3, and #7.
+
+Link: https://lkml.kernel.org/r/CANpmjNMTsY_8241bS7=XAfqvZHFLrVEkv_uM4aDUWE_kh3Rvbw@mail.gmail.com
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- include/linux/compiler.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ lib/Kconfig.kcsan | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index e24cc3a2bc3e..17c98b215572 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -276,11 +276,9 @@ do {									\
- #ifdef __SANITIZE_THREAD__
- /*
-  * Rely on __SANITIZE_THREAD__ instead of CONFIG_KCSAN, to avoid not inlining in
-- * compilation units where instrumentation is disabled. The attribute 'noinline'
-- * is required for older compilers, where implicit inlining of very small
-- * functions renders __no_sanitize_thread ineffective.
-+ * compilation units where instrumentation is disabled.
-  */
--# define __no_kcsan_or_inline __no_kcsan noinline notrace __maybe_unused
-+# define __no_kcsan_or_inline __no_kcsan notrace __maybe_unused
- # define __no_sanitize_or_inline __no_kcsan_or_inline
- #else
- # define __no_kcsan_or_inline __always_inline
+diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+index a7276035ca0d..3f3b5bca7a8f 100644
+--- a/lib/Kconfig.kcsan
++++ b/lib/Kconfig.kcsan
+@@ -3,6 +3,12 @@
+ config HAVE_ARCH_KCSAN
+ 	bool
+ 
++config HAVE_KCSAN_COMPILER
++	def_bool CC_IS_CLANG && $(cc-option,-fsanitize=thread -mllvm -tsan-distinguish-volatile=1)
++	help
++	  For the list of compilers that support KCSAN, please see
++	  <file:Documentation/dev-tools/kcsan.rst>.
++
+ config KCSAN_KCOV_BROKEN
+ 	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
+ 	depends on CC_IS_CLANG
+@@ -15,7 +21,8 @@ config KCSAN_KCOV_BROKEN
+ 
+ menuconfig KCSAN
+ 	bool "KCSAN: dynamic data race detector"
+-	depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN
++	depends on HAVE_ARCH_KCSAN && HAVE_KCSAN_COMPILER
++	depends on DEBUG_KERNEL && !KASAN
+ 	depends on !KCSAN_KCOV_BROKEN
+ 	select STACKTRACE
+ 	help
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
