@@ -2,140 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106FF1DD698
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F671DD6AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730059AbgEUTGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:06:22 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:38346 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729548AbgEUTGV (ORCPT
+        id S1730280AbgEUTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730247AbgEUTI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:06:21 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04LJ6An4026452;
-        Thu, 21 May 2020 14:06:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590087970;
-        bh=TsE8Woh4zkRDEYdrJ4szky2f76HNP2vRTH83cKZFVYw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=G6bkOMjEAsuxKVKPsCnDAuLxmCjCWKUiG33hlFw2mv7smJKWSjhixJX/8O+k5Io+t
-         NOoBOzAiaD4X/jVU3vX4XnezShs1pabJEG28E+RI4iL2A/g9xEwp0D7oHgf12ciX1D
-         gTf5Yz0CIcBg43CoNVB+6rMZkj2yX5f8DTVl+3/o=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04LJ6AQf067299
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 May 2020 14:06:10 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
- May 2020 14:06:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 21 May 2020 14:06:09 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04LJ6994034395;
-        Thu, 21 May 2020 14:06:09 -0500
-Subject: Re: [PATCH 2/4] remoteproc: introduce version element into resource
- type field
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Clement Leger <cleger@kalray.eu>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200325204701.16862-1-s-anna@ti.com>
- <20200325204701.16862-3-s-anna@ti.com> <20200521175421.GI408178@builder.lan>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
-Date:   Thu, 21 May 2020 14:06:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 21 May 2020 15:08:58 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DCCC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:08:58 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b190so3800142pfg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 12:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z9lfKcpsk04+MOjenH3XmZ96ZShPJypXmsAOWsF+hL8=;
+        b=flKVBAWuiWwOAA9S9JGU6N3N3DZ1k/BIhgDYq+IJS1Lh9cBYnnY/7UPOZRlCYVLpRg
+         rpH3swfpnnGOb/2ynI7ZJWJv1sAa0Rl7icksSX+XYvnyJIKfz1WpK2N15qchQgje3pON
+         gB/8dfYLAeu1puK6NUs3AuQOkUCCHaJUHkEW/ZwfSWm5XCR3B2eGleNyGLKrt7ujLMEv
+         Nq04dkI45QpGkqcXsUOaPGeo3vMiyqMl4BQV1GGZTDl7xEEGTThMvrVZOdz7PlKYuqv9
+         GVTGZBdxVohQXb6pnXI+zAcA1d1vjxRkgwLOkGtChAFBSdQIA5i0RdLYRPx1QDSit9Pq
+         rJgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z9lfKcpsk04+MOjenH3XmZ96ZShPJypXmsAOWsF+hL8=;
+        b=ag+u3CmnBfSoPQ0Yvw/rFEVWOXim4gvQJmQnNDlzI1EKtDxl4Bv4Buw7abqC+jam3c
+         6opgOkIfRuhiqqlbUezWiaCDStTyk1v9U0MePj/Ki04bWe28B9Jt6bWtsW4crPS3X4da
+         0ccFuRjbX5/SRd7/e0C4/S+e1Tp0KQokOw2TKdPJZPBoN1rtLzjKVDo+nr1dk3wP/CDE
+         94MApUrk4RIINVx+nsJ2OZvteU7as+5OIGsgpdxyVDz+h3RrwEnJeUAT/zXFmwbE+qQM
+         nhfmpMHVNfPAsLhJWmbjE5ypaMdiYIXK7m2MHkannCnS9Ku20XN50ytSj2wUsf1zVCgX
+         zohA==
+X-Gm-Message-State: AOAM532YbaRcPY8+x9ft8cf/WkJipXXIQ0dT0Qkv4S/ZLM5spPnm9OvG
+        JtN3plZCmzmFx6O7k2M8/cyAaw==
+X-Google-Smtp-Source: ABdhPJzvWYyJDO4JoirTkov2oI3WzQyVmBYO53edLU3D5fEctgmNUNunuP5QihACIwCQCB1eHJ1gpQ==
+X-Received: by 2002:a62:6186:: with SMTP id v128mr162480pfb.185.1590088137862;
+        Thu, 21 May 2020 12:08:57 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id x2sm4961819pfc.106.2020.05.21.12.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 12:08:57 -0700 (PDT)
+Date:   Thu, 21 May 2020 12:07:39 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, Asutosh Das <asutoshd@codeaurora.org>,
+        Vijay Viswanath <vviswana@codeaurora.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V2 2/3] mmc: sdhci-msm: Use internal voltage control
+Message-ID: <20200521190739.GC1331782@builder.lan>
+References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
+ <1590074615-10787-1-git-send-email-vbadigan@codeaurora.org>
+ <1590074615-10787-3-git-send-email-vbadigan@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200521175421.GI408178@builder.lan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590074615-10787-3-git-send-email-vbadigan@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Thu 21 May 08:23 PDT 2020, Veerabhadrarao Badiganti wrote:
 
-On 5/21/20 12:54 PM, Bjorn Andersson wrote:
-> On Wed 25 Mar 13:46 PDT 2020, Suman Anna wrote:
+> On qcom SD host controllers voltage switching be done after the HW
+> is ready for it. The HW informs its readiness through power irq.
+> The voltage switching should happen only then.
 > 
->> The current remoteproc core has supported only 32-bit remote
->> processors and as such some of the current resource structures
->> may not scale well for 64-bit remote processors, and would
->> require new versions of resource types. Each resource is currently
->> identified by a 32-bit type field. Introduce the concept of version
->> for these resource types by overloading this 32-bit type field
->> into two 16-bit version and type fields with the existing resources
->> behaving as version 0 thereby providing backward compatibility.
->>
->> The version field is passed as an additional argument to each of
->> the handler functions, and all the existing handlers are updated
->> accordingly. Each specific handler will be updated on a need basis
->> when a new version of the resource type is added.
->>
+> Use the internal voltage switching and then control the voltage
+> switching using power irq.
 > 
-> I really would prefer that we add additional types for the new
-> structures, neither side will be compatible with new versions without
-> enhancements to their respective implementations anyways.
-
-OK.
-
+> Set the regulator load as well so that regulator can be configured
+> in LPM mode when in is not being used.
 > 
->> An alternate way would be to introduce the new types as completely
->> new resource types which would require additional customization of
->> the resource handlers based on the 32-bit or 64-bit mode of a remote
->> processor, and introduction of an additional mode flag to the rproc
->> structure.
->>
+> Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Co-developed-by: Vijay Viswanath <vviswana@codeaurora.org>
+> Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
+> Co-developed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+
+Looks better, thanks.
+
+> ---
+>  drivers/mmc/host/sdhci-msm.c | 207 +++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 198 insertions(+), 9 deletions(-)
 > 
-> What would this "mode" indicate? If it's version 0 or 1?
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+[..]
+>  static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
+> @@ -1298,6 +1302,71 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
+>  		sdhci_msm_hs400(host, &mmc->ios);
+>  }
+>  
+> +static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
+> +{
+> +	int ret;
+> +
+> +	if (IS_ERR(mmc->supply.vmmc))
+> +		return 0;
+> +
+> +	ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
+> +	if (ret)
+> +		dev_err(mmc_dev(mmc), "%s: vmmc set ocr with vdd=%d failed: %d\n",
+> +			mmc_hostname(mmc), mmc->ios.vdd, ret);
 
-No, for indicating if the remoteproc is 32-bit or 64-bit and adjust the 
-loading handlers if the resource types need to be segregated accordingly.
+Missed this one on v1, in the event that mmc_regulator_set_ocr() return
+a non-zero value it has already printed an error message. So please
+replace the tail with just:
 
-> 
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->>   drivers/remoteproc/remoteproc_core.c    | 25 +++++++++++++++----------
->>   drivers/remoteproc/remoteproc_debugfs.c | 17 ++++++++++-------
->>   include/linux/remoteproc.h              |  8 +++++++-
->>   3 files changed, 32 insertions(+), 18 deletions(-)
->>
-> [..]
->> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
->> index 77788a4bb94e..526d3cb45e37 100644
->> --- a/include/linux/remoteproc.h
->> +++ b/include/linux/remoteproc.h
->> @@ -86,7 +86,13 @@ struct resource_table {
->>    * this header, and it should be parsed according to the resource type.
->>    */
->>   struct fw_rsc_hdr {
->> -	u32 type;
->> +	union {
->> +		u32 type;
->> +		struct {
->> +			u16 t;
->> +			u16 v;
->> +		} st;
-> 
-> I see your "type" is little endian...
+	return mmc_regulator_set_ocr(...);
 
-Yeah, definitely a draw-back if we want to support big-endian rprocs. Do 
-you have any remoteprocs following big-endian? All TI remoteprocs are 
-little-endian except for really old ones.
+> +
+> +	return ret;
+> +}
+> +
+> +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
+> +			      struct mmc_host *mmc, bool level)
+> +{
+> +	int load, ret;
+> +	struct mmc_ios ios;
+> +
+> +	if (IS_ERR(mmc->supply.vqmmc)			 ||
+> +	    (mmc->ios.power_mode == MMC_POWER_UNDEFINED) ||
+> +	    (msm_host->vqmmc_enabled == level))
+> +		return 0;
+> +
+> +	if (msm_host->vqmmc_load) {
+> +		load = level ? msm_host->vqmmc_load : 0;
+> +		ret = regulator_set_load(mmc->supply.vqmmc, load);
 
-regards
-Suman
+Sorry for the late reply on v1, but please see my explanation regarding
+load and always-on regulators there.
+
+> +		if (ret) {
+> +			dev_err(mmc_dev(mmc), "%s: vqmmc set load failed: %d\n",
+> +				mmc_hostname(mmc), ret);
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	if (level) {
+> +		/* Set the IO voltage regulator to default voltage level */
+> +		if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
+> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
+> +		else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
+> +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
+> +
+> +		if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
+> +			ret = mmc_regulator_set_vqmmc(mmc, &ios);
+> +			if (ret < 0) {
+> +				dev_err(mmc_dev(mmc), "%s: vqmmc set volgate failed: %d\n",
+> +					mmc_hostname(mmc), ret);
+> +				goto out;
+> +			}
+> +		}
+> +		ret = regulator_enable(mmc->supply.vqmmc);
+> +	} else {
+> +		ret = regulator_disable(mmc->supply.vqmmc);
+> +	}
+> +
+> +	if (ret)
+> +		dev_err(mmc_dev(mmc), "%s: vqmm %sable failed: %d\n",
+> +			mmc_hostname(mmc), level ? "en":"dis", ret);
+> +	else
+> +		msm_host->vqmmc_enabled = level;
+> +out:
+> +	return ret;
+> +}
+[..]
+> +static int sdhci_msm_start_signal_voltage_switch(struct mmc_host *mmc,
+> +				      struct mmc_ios *ios)
+> +{
+> +	struct sdhci_host *host = mmc_priv(mmc);
+> +	u16 ctrl, status;
+> +
+> +	/*
+> +	 * Signal Voltage Switching is only applicable for Host Controllers
+> +	 * v3.00 and above.
+> +	 */
+> +	if (host->version < SDHCI_SPEC_300)
+> +		return 0;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +
+> +	switch (ios->signal_voltage) {
+> +	case MMC_SIGNAL_VOLTAGE_330:
+> +		if (!(host->flags & SDHCI_SIGNALING_330))
+> +			return -EINVAL;
+> +
+> +		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
+> +		ctrl &= ~SDHCI_CTRL_VDD_180;
+> +		break;
+> +	case MMC_SIGNAL_VOLTAGE_180:
+> +		if (!(host->flags & SDHCI_SIGNALING_180))
+> +			return -EINVAL;
+> +
+> +		/*
+> +		 * Enable 1.8V Signal Enable in the Host Control2
+> +		 * register
+> +		 */
+> +		ctrl |= SDHCI_CTRL_VDD_180;
+> +		break;
+> +	case MMC_SIGNAL_VOLTAGE_120:
+> +		if (!(host->flags & SDHCI_SIGNALING_120))
+> +			return -EINVAL;
+> +		return 0;
+> +	default:
+> +		/* No signal voltage switch required */
+> +		return 0;
+> +	}
+> +
+> +	sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+> +
+> +	/* Wait for 5ms */
+> +	usleep_range(5000, 5500);
+> +
+> +	/* regulator output should be stable within 5 ms */
+> +	status = !!(ctrl & SDHCI_CTRL_VDD_180);
+> +	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> +	if (!!(ctrl &  SDHCI_CTRL_VDD_180) == status)
+
+You should be able to drop the !! both here and when assigning status.
+
+Overall this looks neater, thanks for reworking it.
+
+Regards,
+Bjorn
