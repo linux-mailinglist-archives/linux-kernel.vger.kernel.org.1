@@ -2,176 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4301DDADF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFF31DDAE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730767AbgEUXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:19:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730041AbgEUXT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:19:27 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F17D3208A9;
-        Thu, 21 May 2020 23:19:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590103166;
-        bh=8cafiJEelzf4WJ/LLk0FHorXkrqE7sdt4U/xN6JWAE8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Np9y+T6CLI9Bi7doQBEdQUG+Eu1B+S0zCtdpsFDG4hpwD/ODRrRFAjYVN6qnZp1LH
-         AHSRMX2eWht08NR/9CXC8W3ET9qDHd1mXXOH8COU/+pFdyknau1szmQebQea3m1moY
-         3Ly3szd1iwyJKmH2gxbJ95FZLmodOXgaEtvIw9dQ=
-Date:   Thu, 21 May 2020 18:24:15 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org H. Peter Anvin" <hpa@zytor.com>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] x86/uv/time: Replace one-element array and save heap
- space
-Message-ID: <20200521232415.GD29907@embeddedor>
-References: <20200518190114.GA7757@embeddedor>
+        id S1730761AbgEUX2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:28:11 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:40048 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730741AbgEUX2K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 19:28:10 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200521232808epoutp044cf8731aefc8b21c364f68609976ea4e~RLuFZbJH51397513975epoutp04d
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:28:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200521232808epoutp044cf8731aefc8b21c364f68609976ea4e~RLuFZbJH51397513975epoutp04d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590103688;
+        bh=HWCziiPaJnNdzvCOhDUsacfYegMGVNrpvJbpZy4IQ3w=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=ryVfta9mIenFngIsY9CUg9X178bCr6sfUhJrU/MW2i3vT7thO9hP00u4GVHFZ9yLH
+         svaMvjBpPrd04qpWQmcOtQsC/EVltt3mN2SNgaWu+qMRxOMdn5+b2asi0sv3CNHqyu
+         XjMuagLzw4QYzBjBtFxrFo36w+5ucY/i/seokBp0=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200521232808epcas1p4c408b45323e506c195ddcddc1c490230~RLuFCRnWY3128131281epcas1p4K;
+        Thu, 21 May 2020 23:28:08 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49Sm5337BqzMqYlp; Thu, 21 May
+        2020 23:28:07 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        07.28.04402.78E07CE5; Fri, 22 May 2020 08:28:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200521232806epcas1p47c618d7f8a08c5144805c1d197d25d92~RLuDWS18M3124631246epcas1p4U;
+        Thu, 21 May 2020 23:28:06 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200521232806epsmtrp20ca25e44795fc8bc43257fd663270b55~RLuDSzwIH0871308713epsmtrp2K;
+        Thu, 21 May 2020 23:28:06 +0000 (GMT)
+X-AuditID: b6c32a35-76bff70000001132-7c-5ec70e879624
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B3.F7.18461.68E07CE5; Fri, 22 May 2020 08:28:06 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200521232806epsmtip1efbfd278e85e9b52d173a0523a08def5~RLuDDgRER0727807278epsmtip1m;
+        Thu, 21 May 2020 23:28:06 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Al Viro'" <viro@zeniv.linux.org.uk>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>,
+        "'Namjae Jeon'" <linkinjeon@kernel.org>
+In-Reply-To: <20200521173201.GG23230@ZenIV.linux.org.uk>
+Subject: RE: [PATCH] exfat: add the dummy mount options to be backward
+ compatible with staging/exfat
+Date:   Fri, 22 May 2020 08:28:06 +0900
+Message-ID: <004101d62fc7$7b2e5640$718b02c0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200518190114.GA7757@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH1VjccOADZmdfuS2FcImOIOWOQ6QExygk1AmrS+6WoV/o7AA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTURjHObt38yotr9PscUGtS35QMbfmdIaL3igxIaEvUbB1cbcp3d2t
+        3WlZBJJUam+aKbaUFM3CBHNqvpQUWpkZSlqIIZZiYZZSrRdCs+52lfz2O8/5n+d//uc8BKYo
+        kSmJDM7JODiapWQB+L3uCHX0uZU9RvWtGtAXld7E9A86e3H9UEe5TD9xacZPP/CnR7pVmuSu
+        y5clPSubw5M87rVJ7skZSSp+gE1MZ2gz41AxXJrNnMFZDNSefaYdJl2cWhOtSdDHUyqOtjIG
+        amdKavSuDFbwpVRZNJsplFJpnqditiQ6bJlORpVu450GirGbWbtGbd/I01Y+k7NsTLNZN2vU
+        6k06QXmITW+YdUvtNcTxC4PfJTloQFaA/AkgY+FN+2XkZQXZhmDkO1eAAgT+huDzi0qZuPiJ
+        oLm/3m/pxNuJUSRudCJoaWrHxcVHBB+aS329ZGQ0LMw/9HmEkBHwt6IQ84ow8jKC6drbPpE/
+        qYfqT30+DiYPg+fBFamXcTIcOgpP+1hOJoDn/igmchD0XpvEvYyR66B1phwTr6SC3+9rBT0h
+        mG2H8p4wURIC1/PP+nyBzCfg/vz0YuidUJS39ADBMN3TvBhNCZ7ZTpm3D5An4evDxfZ5CKZ+
+        GUTWwkjDXZ8VJuRq6IgRy+uhfa4CibYrYfbHBanYRQ55ZxWiJBwuDXZLRF4DBee++BUiyrUs
+        l2tZLteyAK7/ZpUIr0OhjJ23WhheY9cs/2s38o1kpK4NXe1P6UIkgagV8ndpT40KKZ3FZ1u7
+        EBAYFSKvCnxiVMjNdPYJxmEzOTJZhu9COuHZizDlqjSbMOCc06TRbdJqtfrYuPg4nZZaLS8Z
+        Zo0K0kI7mSMMY2ccS+ckhL8yB7UWVz/a33yjOmi4qhurrJhqimnKIsaCg1SPEy7K6wd6uWOd
+        L8tYVDbbmPM02MQ0VCb3h0VwNfNTR+MCi5NTh7jzG8badC25ReONZta4rbU3I7d43OTabTi1
+        EGrwfx3Ob6+tUMq/vioYCorac8cSdkbi6UvY2z7iPtjnp3weFUPhfDqticQcPP0PFGkddKgD
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsWy7bCSnG4b3/E4g1+XZSwmTlvKbLFn70kW
+        i8u75rBZPOp7y25x/u9xVgdWj02rOtk8Tsz4zeLxeZOcx6Ynb5kCWKK4bFJSczLLUov07RK4
+        Mta/28RasISjoufSF6YGxvNsXYycHBICJhL3H91h7GLk4hAS2M0oMXfhXHaIhLTEsRNnmLsY
+        OYBsYYnDh4shap4zSqx7P5URpIZNQFfi35/9YINEBDQl/s+dwAxSxCwwmVHi08OPLCAJIYGd
+        jBKrrpaD2JwCFhKLX58GaxYWSJGY/L0DzGYRUJXYNaGJFcTmFbCU+Lz7DjOELShxcuYTFpAj
+        mAX0JNo2gpUzC8hLbH87hxniTgWJn0+XsYKUiAg4Scw5LglRIiIxu7ONeQKj8Cwkg2YhDJqF
+        ZNAsJB0LGFlWMUqmFhTnpucWGxYY5qWW6xUn5haX5qXrJefnbmIEx4qW5g7G7as+6B1iZOJg
+        PMQowcGsJMK7kP9onBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeG4UL44QE0hNLUrNTUwtSi2Cy
+        TBycUg1MrYGX+TUfBzJsmrEyo3fBuS+pBfwW02w+NhU7WPx6N/NDkNX7KXbfzwluNT6gLfvg
+        yjq+A5n/Hric/Dhv/1vtDtO7Dwo+nhK9bnlzvc6rL8/l+fPvP9y80bH3y8pbCe0qouJrdqS6
+        SoWdmPE3SXtqFW9R6x9XDfZmW5nl7aqZccbRBQw9kkU3eDZZ++UEpZn2385zC8ldv9M/97Pi
+        h6n3lj5jSZ58auGbub8bFhYdnjPzQodvsPGm9h1Kioe4FRkvSnN0eO7dqrJl3uorzrYn5pRp
+        M5RUrExm3xTOf37/rYijrGnhliYTl9+aNVN3ysLCfV4Tw/1zw65O3yl15Xdx9/bPcma6xSJ3
+        Ndssew34lFiKMxINtZiLihMBzRMLMAQDAAA=
+X-CMS-MailID: 20200521232806epcas1p47c618d7f8a08c5144805c1d197d25d92
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200521173209epcas1p29a26d78a46e473308553c6b3a6d0ce83
+References: <20200521122034.2254-1-namjae.jeon@samsung.com>
+        <CGME20200521173209epcas1p29a26d78a46e473308553c6b3a6d0ce83@epcas1p2.samsung.com>
+        <20200521173201.GG23230@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+CC John Stultz <john.stultz@linaro.org> and +Kees' Reviewed-by tag]
+> On Thu, May 21, 2020 at 09:20:34PM +0900, Namjae Jeon wrote:
+> > As Ubuntu and Fedora release new version used kernel version equal to
+> > or higher than v5.4, They started to support kernel exfat filesystem.
+> >
+> > Linus Torvalds reported mount error with new version of exfat on Fedora.
+> >
+> > 	exfat: Unknown parameter 'namecase'
+> >
+> > This is because there is a difference in mount option between old
+> > staging/exfat and new exfat.
+> > And utf8, debug, and codepage options as well as namecase have been
+> > removed from new exfat.
+> >
+> > This patch add the dummy mount options as deprecated option to be
+> > backward compatible with old one.
+> >
+> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+> 
+> Do you want that to go via vfs.git #fixes, or would you rather have Linus apply it straight to
+> mainline?
+I would really appreciate if Linus apply it directly to mainline.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Thanks!
 
-On Mon, May 18, 2020 at 02:01:14PM -0500, Gustavo A. R. Silva wrote:
-> The current codebase makes use of one-element arrays in the following
-> form:
-> 
-> struct something {
->     int length;
->     u8 data[1];
-> };
-> 
-> struct something *instance;
-> 
-> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
-> instance->length = size;
-> memcpy(instance->data, source, size);
-> 
-> but the preferred mechanism to declare variable-length types such as
-> these ones is a flexible array member[1][2], introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on. So, replace
-> the one-element array with a flexible-array member.
-> 
-> Also, make use of the new struct_size() helper to properly calculate the
-> total size needed to allocate dynamic memory for struct uv_rtc_timer_head.
-> Notice that, due to the use of a one-element array, space for an extra
-> struct cpu:
-> 
-> struct {
-> 	int     lcpu;           /* systemwide logical cpu number */
-> 	u64     expires;        /* next timer expiration for this cpu */
-> } cpu[1]
-> 
-> was being allocated at the moment of applying the sizeof operator to
-> struct uv_rtc_timer_head in the call to kmalloc_node() at line 159:
-> 
-> 159		head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
-> 160			(uv_blade_nr_possible_cpus(bid) *
-> 161				2 * sizeof(u64)),
-> 162			GFP_KERNEL, nid);
-> 
-> but that extra cpu[] was never actually being accessed due to the
-> following piece of code at line 168:
-> 
-> 168		head->ncpus = uv_blade_nr_possible_cpus(bid);
-> 
-> and the piece of code at line 187:
-> 
-> 187		for (c = 0; c < head->ncpus; c++) {
-> 188			u64 exp = head->cpu[c].expires;
-> 189			if (exp < lowest) {
-> 190				bcpu = c;
-> 191				lowest = exp;
-> 192			}
-> 193		}
-> 
-> so heap space was being wasted.
-> 
-> Another thing important to notice is that through the use of the
-> struct_size() helper, code at line 161:
-> 
-> 161		2 * sizeof(u64)),
-> 
-> is changed to now be the actual size of struct cpu; see
-> sizeof(*(p)->member) at include/linux/overflow.h:314:
-> 
-> 314 #define struct_size(p, member, n)                                       \
-> 315         __ab_c_size(n,                                                  \
-> 316                     sizeof(*(p)->member) + __must_be_array((p)->member),\
-> 317                     sizeof(*(p)))
-> 
-> As a side note, the original developer could have implemented code at line
-> 161: 2 * sizeof(64) as follows:
-> 
-> sizeof(*head->cpu)
-> 
-> This issue has been out there since 2009.
-> 
-> This issue was found with the help of Coccinelle and fixed _manually_.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  arch/x86/platform/uv/uv_time.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-> index 7af31b245636..993a8ae6fdfb 100644
-> --- a/arch/x86/platform/uv/uv_time.c
-> +++ b/arch/x86/platform/uv/uv_time.c
-> @@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
->  	struct {
->  		int	lcpu;		/* systemwide logical cpu number */
->  		u64	expires;	/* next timer expiration for this cpu */
-> -	} cpu[1];
-> +	} cpu[];
->  };
->  
->  /*
-> @@ -156,9 +156,8 @@ static __init int uv_rtc_allocate_timers(void)
->  		struct uv_rtc_timer_head *head = blade_info[bid];
->  
->  		if (!head) {
-> -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
-> -				(uv_blade_nr_possible_cpus(bid) *
-> -					2 * sizeof(u64)),
-> +			head = kmalloc_node(struct_size(head, cpu,
-> +				uv_blade_nr_possible_cpus(bid)),
->  				GFP_KERNEL, nid);
->  			if (!head) {
->  				uv_rtc_deallocate_timers();
-> -- 
-> 2.26.2
-> 
