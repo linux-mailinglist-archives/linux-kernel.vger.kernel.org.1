@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568D11DCAFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 12:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1B11DCB00
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 12:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgEUKYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 06:24:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55580 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727009AbgEUKYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 06:24:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D6B51ACC3;
-        Thu, 21 May 2020 10:24:37 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4AC971E126F; Thu, 21 May 2020 12:24:34 +0200 (CEST)
-Date:   Thu, 21 May 2020 12:24:34 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 4/8] fs/ext4: Update ext4_should_use_dax()
-Message-ID: <20200521102434.GA17431@quack2.suse.cz>
-References: <20200520055753.3733520-1-ira.weiny@intel.com>
- <20200520055753.3733520-5-ira.weiny@intel.com>
- <20200520133728.GD30597@quack2.suse.cz>
- <20200520194050.GF3660833@iweiny-DESK2.sc.intel.com>
+        id S1728019AbgEUKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 06:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgEUKZh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 06:25:37 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B0C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 03:25:37 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u16so2387860lfl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 03:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w+ByA/OU5zd2HMXcW33Jii/680uEnjVLKLXSM+qMuT0=;
+        b=1jUzGc+YDrJFcyLWByQXrO3ofl3UrpgyKZhhQxlXT+meY1I/UarNoNTc89o/tNMBwY
+         jUa01vrHcm0mY2fVTltFtMtx7PkXE4Jr1joD2n0lEo47DbSUegwOoUo8nZdbd9+ueovb
+         IbL556guwW3C51r6g0+pNvoLDytfto4LKFK+GgVwpSLEnfspEr0Rpzf3mR837pjBF7yi
+         mOgdcvvHofBpHizmBRMYxa7UT4bXM9SJfW0NvlcDqbQg+dUlbIYEEYulOtafXHs9rQrE
+         +PgbljBTD5yikV97HjcGOaQ6G2YtaCerXWRXWwQSDv0FQzXVqCGG307OYR+TTRNRDm+x
+         8V+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w+ByA/OU5zd2HMXcW33Jii/680uEnjVLKLXSM+qMuT0=;
+        b=t7RFjbo+sVh1MXZDTg/9Yz303sWH383wcFTzMScJXTo+Y7yN2crBYjqr+ZDJl1vAgZ
+         ZiNT6DElKQVl/PhsL1lX2YySlnN+4skZlZwTcxAbEP+no0XvcHruXaGNf06EQ5SD0dpW
+         PtGr6kR5ftcRRuCkIijarhIMuMo8IoCK9ncm/c5YHTwaTlDjLC4BMBr3Xll12+oVjsff
+         LNwxYmAG15yhQ3k3Hwbt5ZmaERUlaW2vRFm3iGi0hAhNDxfhp0UMi77beFT+rvfEVsOL
+         pUYLCxnie7vXgtRDXquVLaTyfrsuzpOdXRjgrEjPIP+1buYGxCVNoDdMOd9lcdu6Bdf/
+         69iw==
+X-Gm-Message-State: AOAM532JBH4jdVHzw3LWfgJVEsos4swHrqEWkEs+t3KOUamFs2FC2aRP
+        /UxEN8TfkEasoDJP+2FEobdXIhc8JLE=
+X-Google-Smtp-Source: ABdhPJw/oUYhrJ3sVEgOUQmz+s8MlpdJbN3BdtwCOCxaIzqwQAuJWpVMJjEsrbgCWpgWVlimG3X4Pw==
+X-Received: by 2002:ac2:4295:: with SMTP id m21mr4687225lfh.164.1590056735286;
+        Thu, 21 May 2020 03:25:35 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:2e7:f767:fc67:94af:6414:5968? ([2a00:1fa0:2e7:f767:fc67:94af:6414:5968])
+        by smtp.gmail.com with ESMTPSA id i4sm1637149ljn.8.2020.05.21.03.25.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 03:25:34 -0700 (PDT)
+Subject: Re: [PATCH v3 11/14] bus: cdmm: Add MIPS R5 arch support
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        David Lechner <david@lechnology.com>,
+        John Garry <john.garry@huawei.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
+        Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org
+References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200521003443.11385-12-Sergey.Semin@baikalelectronics.ru>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <9ad8383b-8199-1006-cf91-d760bace705e@cogentembedded.com>
+Date:   Thu, 21 May 2020 13:25:21 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520194050.GF3660833@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200521003443.11385-12-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-05-20 12:40:50, Ira Weiny wrote:
-> On Wed, May 20, 2020 at 03:37:28PM +0200, Jan Kara wrote:
-> > On Tue 19-05-20 22:57:49, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > 
-> > > S_DAX should only be enabled when the underlying block device supports
-> > > dax.
-> > > 
-> > > Change ext4_should_use_dax() to check for device support prior to the
-> > > over riding mount option.
-> > > 
-> > > While we are at it change the function to ext4_should_enable_dax() as
-> > > this better reflects the ask as well as matches xfs.
-> > > 
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ...
-> > 
-> > > @@ -4412,7 +4410,13 @@ static bool ext4_should_use_dax(struct inode *inode)
-> > >  		return false;
-> > >  	if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY))
-> > >  		return false;
-> > > -	return true;
-> > > +	if (!bdev_dax_supported(inode->i_sb->s_bdev,
-> > > +				inode->i_sb->s_blocksize))
-> > > +		return false;
-> > > +	if (test_opt(inode->i_sb, DAX_ALWAYS))
-> > > +		return true;
-> > > +
-> > > +	return false;
-> > >  }
-> > 
-> > Now that I think about it - shouldn't we rather cache the result of
-> > bdev_dax_supported() in sb on mount and then just check the flag here?
-> > Because bdev_dax_supported() isn't exactly cheap (it does a lot of checks
-> > and mappings, tries to read from the pmem, ...).
-> 
-> Sounds reasonable.
-> 
-> Not sure which flags are appropriate.  So add it here?
+Hello!
 
-Yes, sounds good. Thanks!
+On 21.05.2020 3:34, Serge Semin wrote:
 
-								Honza
+> CDMM may be available not only MIPS R2 architectures, but also in
+                                 ^ on              -re, it's singular
 
+> newer MIPS R5 chips. For instance our P5600 chip has one. Lets mark
+> the CDMM bus being supported for that MIPS arch too.
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 1a3daf2d18ef..0b4db9ce7756 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1979,6 +1979,7 @@ static inline bool ext4_has_incompat_features(struct super_block *sb)
->   */
->  #define EXT4_FLAGS_RESIZING    0
->  #define EXT4_FLAGS_SHUTDOWN    1
-> +#define EXT4_FLAGS_BDEV_IS_DAX 2
->  
->  static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
->  {
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+[...]
+
+MBR, Sergei
