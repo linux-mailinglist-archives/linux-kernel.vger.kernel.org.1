@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0325F1DDB19
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6D11DDB39
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgEUXgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729211AbgEUXgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:36:38 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08C8C061A0E;
-        Thu, 21 May 2020 16:36:37 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z13so753939ljn.7;
-        Thu, 21 May 2020 16:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lr98ZQrqyjyq4YHmrbVhJM5II0MqsnvpDjt/afn5t4w=;
-        b=Tx9OGy4vx9rzTEcQprCyaNrtSKHDyMYRHrN8sRzHXQEHGsaC+B14RHS6W9MjWn8cmX
-         g8CXGw4xQuLxNoZ/FGTQ75h7G4swvyBhbnuuZzayKF8panIezpxzup+QEkyhnF8NtsLU
-         FTL5uKKqRqrshrgxadtEVlSTwuWysfK9KO9hBXkYmHdq9FpbJS9QwcXF9IGxQGbcd+as
-         YzA+mznjebmM5wQOrxvbJWroQDWEFBkPNueQKEQkqLD1wEqXYRV99jym1Zk6No519M3M
-         0n1x8XFF5pbcXebFYqWQCUc7uZjVIdj/qEF4UWURM44k4X6o72Fzg6JgoJNx2aN/DkFE
-         Vz0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lr98ZQrqyjyq4YHmrbVhJM5II0MqsnvpDjt/afn5t4w=;
-        b=HZ6jO+JeRIaKSmHW7nGGYz//SDE5neWDrNg/5tD1HOQ+4L66fc3hPd7pPrkaOCdCGn
-         tb+Vs81YAEHWGLBPySY79exsXr4CQsg3mGT7+PPXZFZ+FI4ymLPFLz4RiuY8AHFGL2wu
-         Xz3DmPB3ShEkiwXc1BHYIGKcNxLSiE08qdiBXEMv3XN/E7LuDinTiUyGfTD+v9zRAR0o
-         qWS1nVh3KhhHgeEcQrNGc93xFB3XDhieCDMrSDbf7IqfNDLQHzRu1T4BuOyo7sRDIUPJ
-         Rgs4rJDCICYXGO+dXrOGy7aaaCg7No28UJE38gIvLxhaBiUFguaOdRUl2JnrmBoeEGk2
-         Vd6w==
-X-Gm-Message-State: AOAM532ft0KR3CqPpFk0t7+BYgnnXK1WjSt6i1St0N2o1ouJ9bchWBOm
-        D8lbwVX565LPrbLPGSJeGJ6WFpTA/rq3TGNvK28=
-X-Google-Smtp-Source: ABdhPJzzEPWtdHrxKa1zWAlgpwgZrqVYi188fUIWDzPZ1tyBFlk45BTjUFICGicQhkSH8FJVbgziH2Uzbta/Fl26OPU=
-X-Received: by 2002:a05:651c:11d1:: with SMTP id z17mr3816234ljo.211.1590104196355;
- Thu, 21 May 2020 16:36:36 -0700 (PDT)
+        id S1730068AbgEUXkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:40:53 -0400
+Received: from mga12.intel.com ([192.55.52.136]:44255 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729827AbgEUXkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 19:40:53 -0400
+IronPort-SDR: CMP/rHqsP4yxK01NwUrghWpJLhMDwgVzMBmJcCnCFvFUfypSU62o6uL6ccRX9F89hn+bP5UbL0
+ g9cKl4qoyoBg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 16:40:52 -0700
+IronPort-SDR: oMV6pdOLmBBvp2tg/0s2cHXMXmtpef4jgFMpno2H4JRWJDg9h3nQBjoD400muqIm8TlxWhzOzA
+ IvQNURBpQYgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,419,1583222400"; 
+   d="scan'208";a="283229047"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by orsmga002.jf.intel.com with ESMTP; 21 May 2020 16:40:49 -0700
+Cc:     baolu.lu@linux.intel.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] iommu/vt-d: fix a GCC warning
+To:     Qian Cai <cai@lca.pw>, jroedel@suse.de
+References: <20200521215030.16938-1-cai@lca.pw>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <27cf90e4-57bc-38da-fa30-69244f006f63@linux.intel.com>
+Date:   Fri, 22 May 2020 07:37:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200521073925.19633-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200521073925.19633-1-dinghao.liu@zju.edu.cn>
-From:   Peter Chen <hzpeterchen@gmail.com>
-Date:   Fri, 22 May 2020 07:36:24 +0800
-Message-ID: <CAL411-qb5nCqGF77vpcM=+kPm30ORg_aTxRoy5P-wEFPsqJBKA@mail.gmail.com>
-Subject: Re: [PATCH] usb: cdns3: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Roger Quadros <rogerq@ti.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200521215030.16938-1-cai@lca.pw>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 3:42 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
->
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> when it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
->
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/usb/cdns3/cdns3-ti.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-> index 5685ba11480b..e701ab56b0a7 100644
-> --- a/drivers/usb/cdns3/cdns3-ti.c
-> +++ b/drivers/usb/cdns3/cdns3-ti.c
-> @@ -138,7 +138,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
->         error = pm_runtime_get_sync(dev);
->         if (error < 0) {
->                 dev_err(dev, "pm_runtime_get_sync failed: %d\n", error);
-> -               goto err_get;
-> +               goto err;
->         }
->
->         /* assert RESET */
-> @@ -185,7 +185,6 @@ static int cdns_ti_probe(struct platform_device *pdev)
->
->  err:
->         pm_runtime_put_sync(data->dev);
-> -err_get:
->         pm_runtime_disable(data->dev);
->
->         return error;
-> --
+Hi Qian,
 
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Thanks!
+
+On 5/22/20 5:50 AM, Qian Cai wrote:
+> The commit 6ee1b77ba3ac ("iommu/vt-d: Add svm/sva invalidate function")
+> introduced a GCC warning,
+> 
+> drivers/iommu/intel-iommu.c:5330:1: warning: 'static' is not at beginning of
+> declaration [-Wold-style-declaration]
+>   const static int
+>   ^~~~~
+> 
+> Signed-off-by: Qian Cai <cai@lca.pw>
+
+Fixes: 6ee1b77ba3ac0 ("iommu/vt-d: Add svm/sva invalidate function")
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
+
+> ---
+>   drivers/iommu/intel-iommu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+> index f75d7d9c231f..ff5a30a94679 100644
+> --- a/drivers/iommu/intel-iommu.c
+> +++ b/drivers/iommu/intel-iommu.c
+> @@ -5327,7 +5327,7 @@ static void intel_iommu_aux_detach_device(struct iommu_domain *domain,
+>    * [IOMMU_CACHE_INV_TYPE_IOTLB][IOMMU_INV_GRANU_ADDR]
+>    */
+>   
+> -const static int
+> +static const int
+>   inv_type_granu_table[IOMMU_CACHE_INV_TYPE_NR][IOMMU_INV_GRANU_NR] = {
+>   	/*
+>   	 * PASID based IOTLB invalidation: PASID selective (per PASID),
+> 
