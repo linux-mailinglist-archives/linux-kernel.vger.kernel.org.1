@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76531DCD62
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 14:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92351DCDAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgEUM65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 08:58:57 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37640 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgEUM64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 08:58:56 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D145E803078D;
-        Thu, 21 May 2020 12:58:53 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IIkDM5PcshWY; Thu, 21 May 2020 15:58:53 +0300 (MSK)
-Date:   Thu, 21 May 2020 15:58:51 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        David Lechner <david@lechnology.com>,
+        id S1729166AbgEUNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:04:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726878AbgEUNEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 09:04:21 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 931022072C;
+        Thu, 21 May 2020 13:04:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590066261;
+        bh=MRCEC+nXdSDz6i5TZrMw6mLNWWrHvA60N+e767YVxns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lmu3epPATx/GzY3jREbvlRwGrVQu7NJk8uFE7w/S8G1BcG1hgzymFGCxBxB3viHil
+         R4Hecc/Gx26n2kk2sBrr248PsSUtFBnxZcpkpZTD3fq88XA76zFMe4Kr03Js3lMNcM
+         cHsdSest9biXfmMIG+b2eQph4k3krZ8JUH+dhwf0=
+Date:   Thu, 21 May 2020 14:04:16 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
         John Garry <john.garry@huawei.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Sameer Pujar <spujar@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 11/14] bus: cdmm: Add MIPS R5 arch support
-Message-ID: <20200521125851.5upamjd7ldirj57a@mobilestation>
-References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
- <20200521003443.11385-12-Sergey.Semin@baikalelectronics.ru>
- <9ad8383b-8199-1006-cf91-d760bace705e@cogentembedded.com>
+        Mark Rutland <mark.rutland@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V1 RESEND 1/3] perf/imx_ddr: Add system PMU identifier
+ for userspace
+Message-ID: <20200521130415.GB5949@willie-the-truck>
+References: <20200512073115.14177-1-qiangqing.zhang@nxp.com>
+ <20200512073115.14177-2-qiangqing.zhang@nxp.com>
+ <20200519185125.GB453195@bogus>
+ <20200520073304.GA23534@willie-the-truck>
+ <CAL_JsqJfQ0PFy5mmwSG4aM91ghq5xiAEPR2YZOymws+BfGa+uA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9ad8383b-8199-1006-cf91-d760bace705e@cogentembedded.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <CAL_JsqJfQ0PFy5mmwSG4aM91ghq5xiAEPR2YZOymws+BfGa+uA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 01:25:21PM +0300, Sergei Shtylyov wrote:
-> Hello!
+On Wed, May 20, 2020 at 09:23:41AM -0600, Rob Herring wrote:
+> On Wed, May 20, 2020 at 1:33 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Tue, May 19, 2020 at 12:51:25PM -0600, Rob Herring wrote:
+> > > On Tue, May 12, 2020 at 03:31:13PM +0800, Joakim Zhang wrote:
+> > > > +static ssize_t ddr_perf_identifier_show(struct device *dev,
+> > > > +                                   struct device_attribute *attr,
+> > > > +                                   char *page)
+> > > > +{
+> > > > +   struct ddr_pmu *pmu = dev_get_drvdata(dev);
+> > > > +
+> > > > +   return sprintf(page, "%s\n", pmu->devtype_data->identifier);
+> > >
+> > > Why do we need yet another way to identify the SoC from userspace?
+> >
+> > I also really dislike this. What's the preferred way to identify the SoC
+> > from userspace?
 > 
-> On 21.05.2020 3:34, Serge Semin wrote:
-> 
-> > CDMM may be available not only MIPS R2 architectures, but also in
->                                 ^ on              -re, it's singular
+> /proc/cpuinfo? ;)
 
-Thanks, Sergey. Got it. I'll fix it in the next revision.
+The *SoC*!
 
-> 
-> > newer MIPS R5 chips. For instance our P5600 chip has one. Lets mark
-Probably also:                                                ^ Let's
-Right?
+> For an non-firmware specific case, I'd say soc_device should be. I'd
+> guess ACPI systems don't use it and for them it's dmidecode typically.
+> The other problem I have with soc_device is it is optional.
 
--Sergey
+John -- what do you think about using soc_device to expose this information,
+with ACPI systems using DMI data instead?
 
-> > the CDMM bus being supported for that MIPS arch too.
-
-> > 
-> > Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Reviewed-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Olof Johansson <olof@lixom.net>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: linux-mips@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> [...]
-> 
-> MBR, Sergei
+Will
