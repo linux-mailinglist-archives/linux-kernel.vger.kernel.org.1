@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1966A1DCA1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6A41DCA28
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgEUJfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 05:35:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49196 "EHLO huawei.com"
+        id S1728975AbgEUJf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:35:27 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49102 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728839AbgEUJfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:35:15 -0400
+        id S1728720AbgEUJfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 05:35:14 -0400
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A4699921F6B248863DA8;
+        by Forcepoint Email with ESMTP id 9BA5FE96E50757FA2EB1;
         Thu, 21 May 2020 17:35:12 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 21 May 2020 17:35:05 +0800
+ 14.3.487.0; Thu, 21 May 2020 17:35:06 +0800
 From:   Chen Zhou <chenzhou10@huawei.com>
 To:     <tglx@linutronix.de>, <mingo@redhat.com>,
         <catalin.marinas@arm.com>, <will@kernel.org>, <dyoung@redhat.com>,
@@ -27,9 +27,9 @@ CC:     <arnd@arndb.de>, <John.p.donnelly@oracle.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
-Subject: [PATCH v8 4/5] kdump: update Documentation about crashkernel on arm64
-Date:   Thu, 21 May 2020 17:38:04 +0800
-Message-ID: <20200521093805.64398-5-chenzhou10@huawei.com>
+Subject: [PATCH v8 5/5] dt-bindings: chosen: Document linux,low-memory-range for arm64 kdump
+Date:   Thu, 21 May 2020 17:38:05 +0800
+Message-ID: <20200521093805.64398-6-chenzhou10@huawei.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200521093805.64398-1-chenzhou10@huawei.com>
 References: <20200521093805.64398-1-chenzhou10@huawei.com>
@@ -43,83 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we support crashkernel=X,[low] on arm64, update the Documentation.
+Add documentation for DT property used by arm64 kdump:
+linux,low-memory-range.
+"linux,low-memory-range" is an another memory region used for crash
+dump kernel devices.
 
 Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-Tested-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
 ---
- Documentation/admin-guide/kdump/kdump.rst       | 13 +++++++++++--
- Documentation/admin-guide/kernel-parameters.txt | 12 +++++++++++-
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/chosen.txt | 25 ++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index ac7e131d2935..e55173ec1666 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,13 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
+diff --git a/Documentation/devicetree/bindings/chosen.txt b/Documentation/devicetree/bindings/chosen.txt
+index 45e79172a646..bfe6fb6976e6 100644
+--- a/Documentation/devicetree/bindings/chosen.txt
++++ b/Documentation/devicetree/bindings/chosen.txt
+@@ -103,6 +103,31 @@ While this property does not represent a real hardware, the address
+ and the size are expressed in #address-cells and #size-cells,
+ respectively, of the root node.
  
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
++linux,low-memory-range
++----------------------
++This property (arm64 only) holds a base address and size, describing a
++limited region below 4G. Similar to "linux,usable-memory-range", it is
++an another memory range which may be considered available for use by the
++kernel.
 +
-+   On x86_64, use "crashkernel=Y[@X]" to select a region under 4G first, and
-+   fall back to reserve region above 4G when '@offset' hasn't been specified.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
++e.g.
++
++/ {
++	chosen {
++		linux,low-memory-range = <0x0 0x70000000 0x0 0x10000000>;
++		linux,usable-memory-range = <0x202f 0xc0000000 0x0 0x40000000>;
++	};
++};
++
++The main usage is for crash dump kernel devices when reserving crashkernel
++above 4G. When reserving crashkernel above 4G, there may be two crash kernel
++regions, one is below 4G, the other is above 4G. In order to distinct from
++the high region, use this property to pass the low region.
++
++While this property does not represent a real hardware, the address
++and the size are expressed in #address-cells and #size-cells,
++respectively, of the root node.
++
+ linux,elfcorehdr
+ ----------------
  
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +322,11 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
-+   On arm64, use "crashkernel=Y[@X]". Note that the start address of
-    the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   If crashkernel=Z,low is specified simultaneously, reserve spcified size
-+   low memory for crash kdump kernel devices firstly and then reserve memory
-+   above 4G.
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7bc83f3d9bdf..97695783b817 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -722,6 +722,9 @@
- 			[KNL, x86_64] select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] If crashkernel=X,low is specified, reserve
-+			spcified size low memory for crash kdump kernel devices
-+			firstly, and then reserve memory above 4G.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -746,12 +749,19 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
-+			[KNL, arm64] range under 4G.
-+			This one let user to specify own low range under 4G
-+			for crash dump kernel instead.
-+			Different with x86_64, kernel allocates specified size
-+			physical memory region only when this parameter is specified
-+			instead of trying to allocate at least 256M below 4G
-+			automatically.
- 
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
 -- 
 2.20.1
 
