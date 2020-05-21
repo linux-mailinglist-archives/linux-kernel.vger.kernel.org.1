@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0BB1DD84E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBE51DD860
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgEUUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
+        id S1729820AbgEUUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729900AbgEUUcD (ORCPT
+        with ESMTP id S1729634AbgEUUby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:32:03 -0400
+        Thu, 21 May 2020 16:31:54 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB5DC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EEBC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:31:54 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jbrqd-0000Lr-6r; Thu, 21 May 2020 22:31:23 +0200
+        id 1jbrqd-0000M3-JI; Thu, 21 May 2020 22:31:23 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id D3742100606;
-        Thu, 21 May 2020 22:31:20 +0200 (CEST)
-Message-Id: <20200521202117.382387286@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 1AB7C100C2D;
+        Thu, 21 May 2020 22:31:22 +0200 (CEST)
+Message-Id: <20200521202117.473597954@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 21 May 2020 22:05:19 +0200
+Date:   Thu, 21 May 2020 22:05:20 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -52,7 +52,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V9 06/39] x86/idtentry: Switch to conditional RCU handling
+Subject: [patch V9 07/39] x86/entry: Cleanup idtentry_enter/exit() leftovers
 References: <20200521200513.656533920@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,107 +65,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch all idtentry_enter/exit() users over to the new conditional RCU
-handling scheme and make the user mode entries in #DB, #INT3 and #MCE use
-the user mode idtentry functions.
+Now that everything is converted to conditional RCU handling remove
+idtentry_enter/exit() and tidy up the conditional functions.
+
+This does not remove rcu_irq_exit_preempt() to avoid conflicts with the RCU
+tree. Will be removed once all of this hit Linus tree.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V9: New patch
 ---
- arch/x86/include/asm/idtentry.h |   10 ++++++----
- arch/x86/kernel/cpu/mce/core.c  |    4 ++--
- arch/x86/kernel/traps.c         |   10 +++++-----
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ arch/x86/entry/common.c         |   67 +++++++++++++++++-----------------------
+ arch/x86/include/asm/idtentry.h |   12 -------
+ 2 files changed, 30 insertions(+), 49 deletions(-)
 
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -515,7 +515,6 @@ SYSCALL_DEFINE0(ni_syscall)
+  * idtentry_enter_cond_rcu - Handle state tracking on idtentry with conditional
+  *			     RCU handling
+  * @regs:	Pointer to pt_regs of interrupted context
+- * @cond_rcu:	Invoke rcu_irq_enter() only if RCU is not watching
+  *
+  * Invokes:
+  *  - lockdep irqflag state tracking as low level ASM entry disabled
+@@ -545,12 +544,12 @@ SYSCALL_DEFINE0(ni_syscall)
+  * The return value must be fed into the rcu_exit argument of
+  * idtentry_exit_cond_rcu().
+  */
+-bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs, bool cond_rcu)
++bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
+ {
+ 	if (user_mode(regs)) {
+ 		enter_from_user_mode();
+ 	} else {
+-		if (!cond_rcu || !__rcu_is_watching()) {
++		if (!__rcu_is_watching()) {
+ 			/*
+ 			 * If RCU is not watching then the same careful
+ 			 * sequence vs. lockdep and tracing is required
+@@ -605,52 +604,44 @@ void noinstr idtentry_exit_cond_rcu(stru
+ 	if (user_mode(regs)) {
+ 		prepare_exit_to_usermode(regs);
+ 	} else if (regs->flags & X86_EFLAGS_IF) {
++		/*
++		 * If RCU was not watching on entry this needs to be done
++		 * carefully and needs the same ordering of lockdep/tracing
++		 * and RCU as the return to user mode path.
++		 */
++		if (rcu_exit) {
++			instrumentation_begin();
++			/* Tell the tracer that IRET will enable interrupts */
++			trace_hardirqs_on_prepare();
++			lockdep_hardirqs_on_prepare(CALLER_ADDR0);
++			instrumentation_end();
++			rcu_irq_exit();
++			lockdep_hardirqs_on(CALLER_ADDR0);
++			return;
++		}
++
++		instrumentation_begin();
++
+ 		/* Check kernel preemption, if enabled */
+ 		if (IS_ENABLED(CONFIG_PREEMPTION)) {
+-			/*
+-			 * This needs to be done very carefully.
+-			 * idtentry_enter() invoked rcu_irq_enter(). This
+-			 * needs to be undone before scheduling.
+-			 *
+-			 * Preemption is disabled inside of RCU idle
+-			 * sections. When the task returns from
+-			 * preempt_schedule_irq(), RCU is still watching.
+-			 *
+-			 * rcu_irq_exit_preempt() has additional state
+-			 * checking if CONFIG_PROVE_RCU=y
+-			 */
+ 			if (!preempt_count()) {
++				/* Sanity check RCU and thread stack */
++				rcu_irq_exit_check_preempt();
+ 				if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+ 					WARN_ON_ONCE(!on_thread_stack());
+-				instrumentation_begin();
+-				if (rcu_exit)
+-					rcu_irq_exit_preempt();
+ 				if (need_resched())
+ 					preempt_schedule_irq();
+-				/* Covers both tracing and lockdep */
+-				trace_hardirqs_on();
+-				instrumentation_end();
+-				return;
+ 			}
+ 		}
+-		/*
+-		 * If preemption is disabled then this needs to be done
+-		 * carefully with respect to RCU. The exception might come
+-		 * from a RCU idle section in the idle task due to the fact
+-		 * that safe_halt() enables interrupts. So this needs the
+-		 * same ordering of lockdep/tracing and RCU as the return
+-		 * to user mode path.
+-		 */
+-		instrumentation_begin();
+-		/* Tell the tracer that IRET will enable interrupts */
+-		trace_hardirqs_on_prepare();
+-		lockdep_hardirqs_on_prepare(CALLER_ADDR0);
++		/* Covers both tracing and lockdep */
++		trace_hardirqs_on();
++
+ 		instrumentation_end();
+-		if (rcu_exit)
+-			rcu_irq_exit();
+-		lockdep_hardirqs_on(CALLER_ADDR0);
+ 	} else {
+-		/* IRQ flags state is correct already. Just tell RCU. */
++		/*
++		 * IRQ flags state is correct already. Just tell RCU if it
++		 * was not watching on entry.
++		 */
+ 		if (rcu_exit)
+ 			rcu_irq_exit();
+ 	}
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -61,11 +61,12 @@ static __always_inline void __##func(str
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	idtentry_enter(regs);						\
-+	bool rcu_exit = idtentry_enter_cond_rcu(regs);			\
-+									\
- 	instrumentation_begin();					\
- 	__##func (regs);						\
- 	instrumentation_end();						\
--	idtentry_exit(regs);						\
-+	idtentry_exit_cond_rcu(regs, rcu_exit);				\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs)
-@@ -107,11 +108,12 @@ static __always_inline void __##func(str
- __visible noinstr void func(struct pt_regs *regs,			\
- 			    unsigned long error_code)			\
- {									\
--	idtentry_enter(regs);						\
-+	bool rcu_exit = idtentry_enter_cond_rcu(regs);			\
-+									\
- 	instrumentation_begin();					\
- 	__##func (regs, error_code);					\
- 	instrumentation_end();						\
--	idtentry_exit(regs);						\
-+	idtentry_exit_cond_rcu(regs, rcu_exit);				\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs,		\
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1929,11 +1929,11 @@ static __always_inline void exc_machine_
+@@ -10,19 +10,9 @@
+ void idtentry_enter_user(struct pt_regs *regs);
+ void idtentry_exit_user(struct pt_regs *regs);
  
- static __always_inline void exc_machine_check_user(struct pt_regs *regs)
- {
--	idtentry_enter(regs);
-+	idtentry_enter_user(regs);
- 	instrumentation_begin();
- 	machine_check_vector(regs);
- 	instrumentation_end();
--	idtentry_exit(regs);
-+	idtentry_exit_user(regs);
- }
+-bool idtentry_enter_cond_rcu(struct pt_regs *regs, bool cond_rcu);
++bool idtentry_enter_cond_rcu(struct pt_regs *regs);
+ void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit);
  
- #ifdef CONFIG_X86_64
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -619,18 +619,18 @@ DEFINE_IDTENTRY_RAW(exc_int3)
- 		return;
- 
- 	/*
--	 * idtentry_enter() uses static_branch_{,un}likely() and therefore
-+	 * idtentry_enter_user() uses static_branch_{,un}likely() and therefore
- 	 * can trigger INT3, hence poke_int3_handler() must be done
- 	 * before. If the entry came from kernel mode, then use nmi_enter()
- 	 * because the INT3 could have been hit in any context including
- 	 * NMI.
- 	 */
- 	if (user_mode(regs)) {
--		idtentry_enter(regs);
-+		idtentry_enter_user(regs);
- 		instrumentation_begin();
- 		do_int3_user(regs);
- 		instrumentation_end();
--		idtentry_exit(regs);
-+		idtentry_exit_user(regs);
- 	} else {
- 		nmi_enter();
- 		instrumentation_begin();
-@@ -877,7 +877,7 @@ static __always_inline void exc_debug_ke
- static __always_inline void exc_debug_user(struct pt_regs *regs,
- 					   unsigned long dr6)
- {
--	idtentry_enter(regs);
-+	idtentry_enter_user(regs);
- 	clear_thread_flag(TIF_BLOCKSTEP);
- 
- 	/*
-@@ -886,7 +886,7 @@ static __always_inline void exc_debug_us
- 	 * User wants a sigtrap for that.
- 	 */
- 	handle_debug(regs, dr6, !dr6);
--	idtentry_exit(regs);
-+	idtentry_exit_user(regs);
- }
- 
- #ifdef CONFIG_X86_64
+-static __always_inline void idtentry_enter(struct pt_regs *regs)
+-{
+-	idtentry_enter_cond_rcu(regs, false);
+-}
+-
+-static __always_inline void idtentry_exit(struct pt_regs *regs)
+-{
+-	idtentry_exit_cond_rcu(regs, true);
+-}
+-
+ /**
+  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
+  *		      No error code pushed by hardware
 
