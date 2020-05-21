@@ -2,157 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98211DD46E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4509E1DD741
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgEURa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 13:30:56 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:23378 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgEURaz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 13:30:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590082255; x=1621618255;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Jy/N3rXBqaPkEkb9eg+3JzspSpEQo1U1nxztCbeYZ9U=;
-  b=ULbE8NFEXrtZAeYWavM34nGAjZQL2VJIlOZuhwnAAFtnvEDjSnjoX/Z4
-   nHaWe6KBzWLIgiJnm2cyuOWhxoi89ejNUTyVv2q2Tqd6kSQ3+ym22Fflb
-   lrqXvlACL5wRZrxMdmaVkeVBocGDaaZx8VzEmVTS4oHLNxIaDJDwPsHyW
-   R7gqFjC6UDRnrZVNK8xAIeftUv7Yjzt3IZ/IkyNP/0TbqWChls/63erVj
-   vO1nOlgzhlwc5ZEy82P+5sGClM6/k5XPTsC73EKE+iv1wnc13Dju8ttSD
-   sHZwPGSRaL4tDpWurU74bhOKPeP2+8U8SxLl6ef+Q7sNcQM8U4dpBZ4Fr
-   w==;
-IronPort-SDR: fQGe2TnqJy/y13jXVDIOYviAEYOuT8hwN8rTE5UdkE1usCD6xgCxudqs4v8nIN4lOtTkmdBAw4
- E/dekCYJdfpF9kvvd9cJ+qeMrvEMFOLnuZeftgL4icKRrnfJzkyJoVo0w0bUzxsmzG72GlcaEz
- yC2v7OCyBdWBz8gbdgFdl4qKuI8CphAp5+XFJjUAMQD8CxkiUK4UtkhqX441gf18h5RnWzC2UX
- Gg/ibsiqFBc2qNhyegRe0coMnFGZrLKobSzkWTk7Wj9U0DZMFdSK1jhcV3yzYDcYHqxuUYIlm7
- JIg=
-X-IronPort-AV: E=Sophos;i="5.73,418,1583218800"; 
-   d="scan'208";a="76664518"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 May 2020 10:30:55 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 21 May 2020 10:30:53 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Thu, 21 May 2020 10:30:53 -0700
-Date:   Thu, 21 May 2020 19:30:33 +0000
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-CC:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <roopa@cumulusnetworks.com>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH 1/3] bridge: mrp: Add br_mrp_unique_ifindex function
-Message-ID: <20200521193033.3f553xieh2a7eapl@soft-dev3.localdomain>
-References: <20200520130923.3196432-1-horatiu.vultur@microchip.com>
- <20200520130923.3196432-2-horatiu.vultur@microchip.com>
- <cecbdbf0-bb49-1e3c-c163-8e7412c6fcec@cumulusnetworks.com>
- <20200521181337.ory6lxyswatqhoej@soft-dev3.localdomain>
- <39ba5110-2c2a-6fd9-a3e3-000b52a366dc@cumulusnetworks.com>
+        id S1729383AbgEUTbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 15:31:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26767 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728692AbgEUTbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 15:31:35 -0400
+IronPort-SDR: RJSZqMaUjxNUuwwJeod1JB0dqTiyLKbP8H2jcKJJYa2VUrAC0jqIZJ80wfzFTUWkvTQSCq4tu0
+ tCB8ohaRavbg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 12:31:34 -0700
+IronPort-SDR: Am4Zex30NwTh6gYz5Q9dfPyPuEXJ1wTvaCHUvLj9S+IcOZk3Ownb03X039JFbvq5nA9c7vi+2m
+ p/eeM6CqR48w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,419,1583222400"; 
+   d="scan'208";a="289859921"
+Received: from irishmed-mobl2.amr.corp.intel.com (HELO [10.254.66.124]) ([10.254.66.124])
+  by fmsmga004.fm.intel.com with ESMTP; 21 May 2020 12:31:33 -0700
+Subject: Re: [PATCH v1 1/1] PCI/ERR: Handle fatal error recovery for
+ non-hotplug capable devices
+To:     Yicong Yang <yangyicong@hisilicon.com>, bhelgaas@google.com
+Cc:     jay.vosburgh@canonical.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com
+References: <18609.1588812972@famine>
+ <f4bbacd3af453285271c8fc733652969e11b84f8.1588821160.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <dbb211ba-a5f1-0e4f-64c9-6eb28cd1fb7f@hisilicon.com>
+ <2569c75c-41a6-d0f3-ee34-0d288c4e0b61@linux.intel.com>
+ <8dd2233c-a636-59fa-4c6e-5da08556d09e@hisilicon.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <d59e5312-9f0b-f6b2-042a-363022989b8f@linux.intel.com>
+Date:   Thu, 21 May 2020 12:31:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <39ba5110-2c2a-6fd9-a3e3-000b52a366dc@cumulusnetworks.com>
+In-Reply-To: <8dd2233c-a636-59fa-4c6e-5da08556d09e@hisilicon.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/21/2020 19:58, Nikolay Aleksandrov wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On 21/05/2020 21:49, Horatiu Vultur wrote:
-> > The 05/21/2020 11:16, Nikolay Aleksandrov wrote:
-> >> On 20/05/2020 16:09, Horatiu Vultur wrote:
-> >>> It is not allow to have the same net bridge port part of multiple MRP
-> >>> rings. Therefore add a check if the port is used already in a different
-> >>> MRP. In that case return failure.
-> >>>
-> >>> Fixes: 9a9f26e8f7ea ("bridge: mrp: Connect MRP API with the switchdev API")
-> >>> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> >>> ---
-> >>>  net/bridge/br_mrp.c | 31 +++++++++++++++++++++++++++++++
-> >>>  1 file changed, 31 insertions(+)
-> >>>
-> >>> diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-> >>> index d7bc09de4c139..a5a3fa59c078a 100644
-> >>> --- a/net/bridge/br_mrp.c
-> >>> +++ b/net/bridge/br_mrp.c
-> >>> @@ -37,6 +37,32 @@ static struct br_mrp *br_mrp_find_id(struct net_bridge *br, u32 ring_id)
-> >>>       return res;
-> >>>  }
-> >>>
-> >>> +static bool br_mrp_unique_ifindex(struct net_bridge *br, u32 ifindex)
-> >>> +{
-> >>> +     struct br_mrp *mrp;
-> >>> +     bool res = true;
-> >>> +
-> >>> +     rcu_read_lock();
-> >>
-> >> Why do you need the rcu_read_lock() here when lockdep_rtnl_is_held() is used?
-> >> You should be able to just do rtnl_dereference() below as this is used only
-> >> under rtnl.
-> >
-> > Hi Nik,
-> >
-> > Also initially I thought that is not needed, but when I enabled all the
-> > RCU debug configs to see if I use correctly the RCU, I got a warning
-> > regarding suspicious RCU usage.
-> > And that is the reason why I have put it.
-> >
-> 
-> Did you try using rtnl_dereference() instead of rcu_dereference() ?
 
-I have just tried it now and that seems to work fine.
-I will redo the patch and send a new patch series.
 
+On 5/21/20 3:58 AM, Yicong Yang wrote:
+> On 2020/5/21 1:04, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>>
+>> On 5/20/20 1:28 AM, Yicong Yang wrote:
+>>> On 2020/5/7 11:32, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>>>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>>
+>>>> If there are non-hotplug capable devices connected to a given
+>>>> port, then during the fatal error recovery(triggered by DPC or
+>>>> AER), after calling reset_link() function, we cannot rely on
+>>>> hotplug handler to detach and re-enumerate the device drivers
+>>>> in the affected bus. Instead, we will have to let the error
+>>>> recovery handler call report_slot_reset() for all devices in
+>>>> the bus to notify about the reset operation. Although this is
+>>>> only required for non hot-plug capable devices, doing it for
+>>>> hotplug capable devices should not affect the functionality.
+>>>>
+>>>> Along with above issue, this fix also applicable to following
+>>>> issue.
+>>>>
+>>>> Commit 6d2c89441571 ("PCI/ERR: Update error status after
+>>>> reset_link()") added support to store status of reset_link()
+>>>> call. Although this fixed the error recovery issue observed if
+>>>> the initial value of error status is PCI_ERS_RESULT_DISCONNECT
+>>>> or PCI_ERS_RESULT_NO_AER_DRIVER, it also discarded the status
+>>>> result from report_frozen_detected. This can cause a failure to
+>>>> recover if _NEED_RESET is returned by report_frozen_detected and
+>>>> report_slot_reset is not invoked.
+>>>>
+>>>> Such an event can be induced for testing purposes by reducing the
+>>>> Max_Payload_Size of a PCIe bridge to less than that of a device
+>>>> downstream from the bridge, and then initiating I/O through the
+>>>> device, resulting in oversize transactions.  In the presence of DPC,
+>>>> this results in a containment event and attempted reset and recovery
+>>>> via pcie_do_recovery.  After 6d2c89441571 report_slot_reset is not
+>>>> invoked, and the device does not recover.
+>>>>
+>>>> [original patch is from jay.vosburgh@canonical.com]
+>>>> [original patch link https://lore.kernel.org/linux-pci/18609.1588812972@famine/]
+>>>> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>>>> Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+>>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>>> ---
+>>>>    drivers/pci/pcie/err.c | 19 +++++++++++++++----
+>>>>    1 file changed, 15 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>>>> index 14bb8f54723e..db80e1ecb2dc 100644
+>>>> --- a/drivers/pci/pcie/err.c
+>>>> +++ b/drivers/pci/pcie/err.c
+>>>> @@ -165,13 +165,24 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>>>        pci_dbg(dev, "broadcast error_detected message\n");
+>>>>        if (state == pci_channel_io_frozen) {
+>>>>            pci_walk_bus(bus, report_frozen_detected, &status);
+>>>> -        status = reset_link(dev);
+>>>> -        if (status != PCI_ERS_RESULT_RECOVERED) {
+>>>> +        status = PCI_ERS_RESULT_NEED_RESET;
+>>>> +    } else {
+>>>> +        pci_walk_bus(bus, report_normal_detected, &status);
+>>>> +    }
+>>>> +
+>>>> +    if (status == PCI_ERS_RESULT_NEED_RESET) {
+>>>> +        if (reset_link) {
+>>>> +            if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED)
+>>>
+>>> we'll call reset_link() only if link is frozen. so it may have problem here.
+>> you mean before this change right?
+>> After this change, reset_link() will be called as long as status is
+>> PCI_ERS_RESULT_NEED_RESET.
 > 
-> >>
-> >>> +     list_for_each_entry_rcu(mrp, &br->mrp_list, list,
-> >>> +                             lockdep_rtnl_is_held()) {
-> >>> +             struct net_bridge_port *p;
-> >>> +
-> >>> +             p = rcu_dereference(mrp->p_port);
-> >>> +             if (p && p->dev->ifindex == ifindex) {
-> >>> +                     res = false;
-> >>> +                     break;
-> >>> +             }
-> >>> +
-> >>> +             p = rcu_dereference(mrp->s_port);
-> >>> +             if (p && p->dev->ifindex == ifindex) {
-> >>> +                     res = false;
-> >>> +                     break;
-> >>> +             }
-> >>> +     }
-> >>> +     rcu_read_unlock();
-> >>> +     return res;
-> >>> +}
-> >>> +
-> >>>  static struct br_mrp *br_mrp_find_port(struct net_bridge *br,
-> >>>                                      struct net_bridge_port *p)
-> >>>  {
-> >>> @@ -255,6 +281,11 @@ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance)
-> >>>           !br_mrp_get_port(br, instance->s_ifindex))
-> >>>               return -EINVAL;
-> >>>
-> >>> +     /* It is not possible to have the same port part of multiple rings */
-> >>> +     if (!br_mrp_unique_ifindex(br, instance->p_ifindex) ||
-> >>> +         !br_mrp_unique_ifindex(br, instance->s_ifindex))
-> >>> +             return -EINVAL;
-> >>> +
-> >>>       mrp = kzalloc(sizeof(*mrp), GFP_KERNEL);
-> >>>       if (!mrp)
-> >>>               return -ENOMEM;
-> >>>
-> >>
-> >
-> 
+> Yes. I think we should reset the link only if the io is blocked as before. There's
+> no reason to reset a normal link.
+Currently, only AER and DPC driver uses pcie_do_recovery() call. So the
+possible reset_link options are dpc_reset_link() and aer_root_reset().
 
--- 
-/Horatiu
+In dpc_reset_link() case, the link is already disabled and hence we
+don't need to do another reset. In case of aer_root_reset() it
+uses pci_bus_error_reset() to reset the slot.
+> 
+> Furthermore, PCI_ERS_RESULT_NEED_RESET means device driver requires a slot reset rather
+> than a link reset, so it maybe improper to use it to judge whether a link reset is needed.
+> We decide whether to do a link reset only by the io state.
+> 
+> Thanks,
+> Yicong
+> 
+> 
+>>>
+>>> Thanks,
+>>> Yicong
+>>>
+>>>
+>>>> +                status = PCI_ERS_RESULT_DISCONNECT;
+>>>> +        } else {
+>>>> +            if (pci_bus_error_reset(dev))
+>>>> +                status = PCI_ERS_RESULT_DISCONNECT;
+>>>> +        }
+>>>> +
+>>>> +        if (status == PCI_ERS_RESULT_DISCONNECT) {
+>>>>                pci_warn(dev, "link reset failed\n");
+>>>>                goto failed;
+>>>>            }
+>>>> -    } else {
+>>>> -        pci_walk_bus(bus, report_normal_detected, &status);
+>>>>        }
+>>>>          if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>>
+>> .
+>>
+> 
