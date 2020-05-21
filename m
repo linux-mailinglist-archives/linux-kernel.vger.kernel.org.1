@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257031DD86B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0ED1DD870
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730569AbgEUUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
+        id S1730610AbgEUUdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729970AbgEUUcG (ORCPT
+        with ESMTP id S1729620AbgEUUbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:32:06 -0400
+        Thu, 21 May 2020 16:31:53 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E47DC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B2DC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:31:53 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jbrqh-0000Qk-Ow; Thu, 21 May 2020 22:31:27 +0200
+        id 1jbrqj-0000Ru-B2; Thu, 21 May 2020 22:31:29 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 13C3B100C2D;
-        Thu, 21 May 2020 22:31:27 +0200 (CEST)
-Message-Id: <20200521202117.870911120@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 4EE2F100606;
+        Thu, 21 May 2020 22:31:28 +0200 (CEST)
+Message-Id: <20200521202117.962199649@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 21 May 2020 22:05:24 +0200
+Date:   Thu, 21 May 2020 22:05:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -52,7 +52,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V9 11/39] x86/entry/64: Move do_softirq_own_stack() to C
+Subject: [patch V9 12/39] x86/entry: Split out idtentry_exit_cond_resched()
 References: <20200521200513.656533920@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,58 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+The XEN PV hypercall requires the ability of conditional rescheduling when
+preemption is disabled because some hypercalls take ages.
 
-The first step to get rid of the ENTER/LEAVE_IRQ_STACK ASM macro maze.  Use
-the new C code helpers to move do_softirq_own_stack() out of ASM code.
+Split out the rescheduling code from idtentry_exit_cond_rcu() so it can
+be reused for that.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V9: Simplified version
+V9: New patch
 ---
- arch/x86/entry/entry_64.S |   13 -------------
- arch/x86/kernel/irq_64.c  |    6 ++++++
- 2 files changed, 6 insertions(+), 13 deletions(-)
+ arch/x86/entry/common.c |   30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1145,19 +1145,6 @@ SYM_FUNC_START(asm_call_on_stack)
- 	ret
- SYM_FUNC_END(asm_call_on_stack)
- 
--/* Call softirq on interrupt stack. Interrupts are off. */
--.pushsection .text, "ax"
--SYM_FUNC_START(do_softirq_own_stack)
--	pushq	%rbp
--	mov	%rsp, %rbp
--	ENTER_IRQ_STACK regs=0 old_rsp=%r11
--	call	__do_softirq
--	LEAVE_IRQ_STACK regs=0
--	leaveq
--	ret
--SYM_FUNC_END(do_softirq_own_stack)
--.popsection
--
- #ifdef CONFIG_XEN_PV
- /*
-  * A note on the "critical region" in our callback handler.
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -20,6 +20,7 @@
- #include <linux/sched/task_stack.h>
- 
- #include <asm/cpu_entry_area.h>
-+#include <asm/irq_stack.h>
- #include <asm/io_apic.h>
- #include <asm/apic.h>
- 
-@@ -70,3 +71,8 @@ int irq_init_percpu_irqstack(unsigned in
- 		return 0;
- 	return map_irq_stack(cpu);
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -580,6 +580,20 @@ bool noinstr idtentry_enter_cond_rcu(str
+ 	return false;
  }
-+
-+void do_softirq_own_stack(void)
+ 
++static void idtentry_exit_cond_resched(struct pt_regs *regs, bool may_sched)
 +{
-+	run_on_irqstack_cond(__do_softirq, NULL, NULL);
++	if (may_sched && !preempt_count()) {
++		/* Sanity check RCU and thread stack */
++		rcu_irq_exit_check_preempt();
++		if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
++			WARN_ON_ONCE(!on_thread_stack());
++		if (need_resched())
++			preempt_schedule_irq();
++	}
++	/* Covers both tracing and lockdep */
++	trace_hardirqs_on();
 +}
++
+ /**
+  * idtentry_exit_cond_rcu - Handle return from exception with conditional RCU
+  *			    handling
+@@ -621,21 +635,7 @@ void noinstr idtentry_exit_cond_rcu(stru
+ 		}
+ 
+ 		instrumentation_begin();
+-
+-		/* Check kernel preemption, if enabled */
+-		if (IS_ENABLED(CONFIG_PREEMPTION)) {
+-			if (!preempt_count()) {
+-				/* Sanity check RCU and thread stack */
+-				rcu_irq_exit_check_preempt();
+-				if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+-					WARN_ON_ONCE(!on_thread_stack());
+-				if (need_resched())
+-					preempt_schedule_irq();
+-			}
+-		}
+-		/* Covers both tracing and lockdep */
+-		trace_hardirqs_on();
+-
++		idtentry_exit_cond_resched(regs, IS_ENABLED(CONFIG_PREEMPTION));
+ 		instrumentation_end();
+ 	} else {
+ 		/*
 
