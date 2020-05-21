@@ -2,131 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6665E1DD065
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BEA1DD071
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgEUOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
+        id S1729783AbgEUOqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728229AbgEUOnp (ORCPT
+        with ESMTP id S1728229AbgEUOqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:43:45 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF582C061A0E;
-        Thu, 21 May 2020 07:43:44 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id g1so8551581ljk.7;
-        Thu, 21 May 2020 07:43:44 -0700 (PDT)
+        Thu, 21 May 2020 10:46:07 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CD5C061A0E;
+        Thu, 21 May 2020 07:46:07 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f21so277345pgg.12;
+        Thu, 21 May 2020 07:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tuQ1zvOklpezgOq1qrrrAXi9Q/2zL0O9meBuAgy373s=;
-        b=hNauZCE4ZyQrnO0nntQayyVk53MtCYFx0x+QupMIZuQorwHuDn4bhd0+45d7gZ6d8m
-         L6FJKZwUbwT0yCAebmlFe/U6MIDVfJOulUCJ9E6SQ5+CZAc5oTbh9r4VX1H+J+9/unKS
-         OtVccceu5GPEqBPyaLM8ED/+C7SRnRPsQL+dDOic0gp0369C/z+gCWjmEsqcMLSXWCyR
-         xny6xU29xdDdJPSNElcbiaSIP3X8p+JpzsMp8hNSzPEJra2Ys18vzOJkZcgtxG4AIRzr
-         r4c9E/zTfdzTR9j8Bx5HE4BOlhs5/j7qSSM0Q7hagrta2JhNIsPXZXw0yNeOAqCIV5hp
-         G74g==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IuI0lrqA6XghbekyOiqEc/YXNp+qvYrREMAKxImJOeE=;
+        b=Xay7Fv9T8tZKUc3h+lXHrnlVvtVNIuOHcu+NLaivOf62M8a1DPPqa/drYrPjkMLCEC
+         7hzocSGikSayHdHrbeMQihX6Dlsa6N8RvPPU35XB1s2uGzsA89fNB0xv4kKq8vYEJ8MF
+         1YawEWWcteixfU9qmBGqM96P2HmAGLbcUSW68cUcROBQ2OHVrWWkB741O8VtbUTNQyF9
+         ICiY8YnKq3IgLPcR4VXQdlVMbf8y8GGlb8BIfAvh4i5q8w/7L7McP9YfwfWib/2i6RVE
+         DsC+UZurdSwbPg8VfpwfFbMWdMmcDsEYonnn2A0v2kbzSD+TW6uYl0dVM3k0LHNgvCeM
+         U06w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuQ1zvOklpezgOq1qrrrAXi9Q/2zL0O9meBuAgy373s=;
-        b=nf9WtUNQu5/kwZbTY0UUDsOyIc0GqrM5geapikU22pHO/ksvx9SCnlkKDMHP2I7h2J
-         75SD5ekFfD7TZwKik6HS8T5qpEZIfRU7NIZZHHQcbGc8mUCXJ9DS17CKPtdPi2aNOHZV
-         ioiZ4H7Lb1M9AvqNKGB68q/iY50io9kVwrx4kHVu8hJ9mPnlEdNfxRU4O4S6TxuNv4Qg
-         r4NtwX+7IKjIEd8Vn0mLNDbtbBt7mQyKLDKvNRzSbYIq5a4YR71m4bYwlJdeD8GBdK7Q
-         Z725/3/iFoRg4wWyUUWzty9xEsHqYVSbBPgSVxmZWYvmPx14BbmME6z7ZTkMNRdAzR9L
-         5NPA==
-X-Gm-Message-State: AOAM531JqQV1ngvmiCCMbfa2mKTGBXGu3x9eneLr1I5KVzwmXEh5qjd8
-        4hl5+D6IVFO5zOozICpYoEt/p5USK2LieCtfP8w=
-X-Google-Smtp-Source: ABdhPJzExRJlbujUemJvxqwrl+G4Cgtl0pUnc8oJA7iFqXep0LQNN0QQax7qtdllV0ZY5aX2u0RW9gWAArQn88T9G+4=
-X-Received: by 2002:a2e:6c0c:: with SMTP id h12mr5222291ljc.266.1590072223382;
- Thu, 21 May 2020 07:43:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200521110910.45518-1-tali.perry1@gmail.com> <20200521110910.45518-3-tali.perry1@gmail.com>
- <20200521142340.GM1634618@smile.fi.intel.com> <20200521143100.GA16812@ninjato>
-In-Reply-To: <20200521143100.GA16812@ninjato>
-From:   Tali Perry <tali.perry1@gmail.com>
-Date:   Thu, 21 May 2020 17:45:03 +0300
-Message-ID: <CAHb3i=vcVLWHjdiJoNZQrwJCqzszpOL7e9SAjqObsZCRH4ifwg@mail.gmail.com>
-Subject: Re: [PATCH v12 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ofer Yehielli <ofery@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        avifishman70@gmail.com, Tomer Maimon <tmaimon77@gmail.com>,
-        kfting@nuvoton.com, Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        devicetree <devicetree@vger.kernel.org>,
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=IuI0lrqA6XghbekyOiqEc/YXNp+qvYrREMAKxImJOeE=;
+        b=k7fYxD6jW9cU0fAGdqI2wr7pDpCQn6bLRfZfOO7nuUH1zn43eWpQmPriFmMK3JvSbb
+         1TjfTt+la7ODsBRPVZ2tpHDeY+ucdCNCqM5NRH/7BaUx0/276Sag3x3NYPNuQTJcLyT/
+         XJjZXZO0vNZEL9uiMWkTNaZ+ZK1+IyRJVODo5uNeS0r7i9NvmgjOEupH9OtfrVapfl9S
+         vE1GqFOdC0Orm8yQFv888vhTj39914wqz1PTocIBic+ar2gBaYmQotBf2S9wbSxY7J3y
+         +akvAXhKyMneneM85zB6+OT3WoFO3IBEIRgnYtvBEzudqc5mPRP46HRtLQS9VpsRmW0K
+         A8Fg==
+X-Gm-Message-State: AOAM533z0UGJ6NqzpPk/lo323LgTOAm7Bl+7kEEEzoQ1Uwt7S7woKy+c
+        JfOsqs7uQPE9/xVrskDvHXz0p0c0
+X-Google-Smtp-Source: ABdhPJw77feXumH0bTrpKFYq3048M6A7Ag5pSl1tHnPZ7bhTTFpZUT5P5Cjvq/438uTEHHPd8u7pUg==
+X-Received: by 2002:a65:6715:: with SMTP id u21mr9635597pgf.365.1590072366354;
+        Thu, 21 May 2020 07:46:06 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ep10sm2999825pjb.25.2020.05.21.07.46.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 07:46:05 -0700 (PDT)
+Subject: Re: [PATCH] csky: Fixup calltrace panic
+To:     Guo Ren <ren_guo@c-sky.com>,
+        =?UTF-8?B?556/5LuZ5re8?= <xianmiao_qu@c-sky.com>,
+        =?UTF-8?B?5bCa5LqR5rW3?= <yunhai_shang@c-sky.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>, linux-csky@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200517175220.GA48379@roeck-us.net>
+ <D93AFA5B-3BF1-4E11-B278-22E980C3EE36@c-sky.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <45e1a784-f8fe-5f17-45ca-3eb5453d4bb4@roeck-us.net>
+Date:   Thu, 21 May 2020 07:46:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <D93AFA5B-3BF1-4E11-B278-22E980C3EE36@c-sky.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 5:31 PM Wolfram Sang <wsa@the-dreams.de> wrote:
->
-> Hi Tali, Andy!
->
-> On Thu, May 21, 2020 at 05:23:40PM +0300, Andy Shevchenko wrote:
-> > On Thu, May 21, 2020 at 02:09:09PM +0300, Tali Perry wrote:
-> > > Add Nuvoton NPCM BMC I2C controller driver.
-> >
-> > Thanks. My comments below.
-> > After addressing them, FWIW,
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Thanks, Andy, for all the review!
->
+On 5/20/20 12:50 AM, Guo Ren wrote:
+> Hi Guenter,
+> 
+>> 在 2020年5月18日，上午1:52，Guenter Roeck <linux@roeck-us.net> 写道：
+>>
+>> Hi,
+>>
+>> On Wed, May 13, 2020 at 03:15:25PM +0800, Guo Ren wrote:
+>>> The implementation of show_stack will panic with wrong fp:
+>>>
+>>> addr    = *fp++;
+>>>
+>>> because the fp isn't checked properly.
+>>>
+>>> The current implementations of show_stack, wchan and stack_trace
+>>> haven't been designed properly, so just deprecate them.
+>>>
+>>> This patch is a reference to riscv's way, all codes are modified from
+>>> arm's. The patch is passed with:
+>>>
+>>> - cat /proc/<pid>/stack
+>>> - cat /proc/<pid>/wchan
+>>> - echo c > /proc/sysrq-trigger
+>>>
+>>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>>
+>> This patch results in:
+>>
+>> gcc version: csky-linux-gcc (GCC) 9.3.0
+>>
+>> Building csky:defconfig ... failed
+>> --------------
+>> Error log:
+>> csky-linux-gcc: error: unrecognized command line option '-mbacktrace'; did you mean '-fbacktrace'?
+>> csky-linux-gcc: error: unrecognized command line option '-mbacktrace'; did you mean '-fbacktrace'?
+>> make[2]: *** [scripts/mod/devicetable-offsets.s] Error 1
+>> make[2]: *** Waiting for unfinished jobs....
+>> csky-linux-gcc: error: unrecognized command line option '-mbacktrace'; did you mean '-fbacktrace'?
+>> make[2]: *** [scripts/mod/empty.o] Error 1
+>> make[1]: *** [prepare0] Error 2
+>> make: *** [sub-make] Error 2
+>>
+>> when trying to build csky images with upstream gcc 9.3.0.
+>>
+>> What version of gcc is needed to build csky images ? Also, would it be
+>> possible to support the upstream version of gcc ?
+>>
+> 
+> We tested it with https://github.com/c-sky/gcc (gcc-6.3)
+> 
 
-Highly appreciate your time and patience for a newbie :)
+That won't work for me. You really might want to consider
+supporting upstream gcc. I'll try disabling CONFIG_STACKTRACE
+for csky build tests. If that doesn't work, I may have to
+disable affected csky build tests for the time being.
 
-> From a glimpse, this looks good to go. I will have a close look later
-> today.
->
-> > > +#ifdef CONFIG_DEBUG_FS
-> >
-> > Again, why is this here?
-> >
-> > Have you checked debugfs.h for !CONFIG_DEBUG_FS case?
-
-I compiled both options. I removed the ifdef in most places, except in the
-struct itself. Users that don't use the debugfs don't need this in the struct.
-
->
-> I wondered also about DEBUG_FS entries. I can see their value when
-> developing the driver. But since this is done now, do they really help a
-> user to debug a difficult case? I am not sure, and then I wonder if we
-> should have that code in upstream. I am open for discussion, though.
-
-The user wanted to have health monitor implemented on top of the driver.
-The user has 16 channels connected the multiple devices. All are operated
-using various daemons in the system. Sometimes the slave devices are power down.
-Therefor the user wanted to track the health status of the devices.
-
->
-> > > +MODULE_VERSION("0.1.3");
-> >
-> > Module version is defined by kernel commit hash. But it's up to you and
-> > subsystem maintainer to decide.
->
-> Please drop it. I also think commit id's (or even kernel versions) are a
-> more precise description.
-
-will remove.
-
->
-> Regards,
->
->    Wolfram
->
-
-BR,
-Tali
+Guenter
