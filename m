@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CD41DCE3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E061DCE47
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 15:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729427AbgEUNfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 09:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729333AbgEUNfM (ORCPT
+        id S1729461AbgEUNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 09:38:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55012 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728060AbgEUNif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 09:35:12 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83514C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:35:12 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id z9so1359179oid.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 06:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zx1Zxii7kuqEBAAZh/SfralQu7+w6Yj6Omise5zlDew=;
-        b=lbnlAAnrNskZGuMGkYZHY1vCSCCxjBA8d4U/fxCr2/qMDE7ZCGaZBoEiO7auDLiiX0
-         2LAsqH5gfhniNU8lz509hK48CxoFbEyJ6eNIOzCR/QiMBXpRcIK3n0BZrxlYh+P26Uh9
-         sbMJCqF4FyIPwwF7KtlBv7pmdrcjLlwTNEoX7AsfIsXhoG1bKDz9rsYs14vDmHweS2yI
-         0xaICp3BR1Mu1WBso8nR7PREmtBpiAtl1Nd19szCTX1bgzpfvIPV1FFYReT1GpaIdN8D
-         6HjuGSj6pyy3Z6/eyGfxkuIJ7hsbfFSTSrT/UqcOQE0a9G9lBUitLQ/aZ5wFQ5fQchpz
-         TRDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zx1Zxii7kuqEBAAZh/SfralQu7+w6Yj6Omise5zlDew=;
-        b=oMFRVKU2GbY4nEGOajwQRMmbNrLHnxy8MfyCX0FsEmjwRuhaMdsegYNTDqpGkA7fNc
-         bsIkn7PDpnlVwv/YgboSdCfc3+9k2oVS5cFOdjX7ms6SRZzRZOvIpuw0os+eHLXFYGxU
-         YT/6w8AQekP1q9baLVsoqgk5DELrMaP7hXL1P5AnU37GrHe2V6mqqtOnuDHb8jLVwGRU
-         8XjKaNl38jk9hBiN3cQa5SgYcJgvFzKVOOtojdqrkXMWih+uKSQ/INopG0zgO7CWxz45
-         V4I6Vj4eTdrBXiydvbm3Z+S0zSicSkGK84IacommjSkiOtI27LygcxJqKGuLgR5ja2Ew
-         lIhA==
-X-Gm-Message-State: AOAM533YTPu5RSuhc0GaDZINE7dNqBuSsJbb1Ix3bIvCR13IQ1PxUTAm
-        vPSNx1bYpLTfRgfKPGZ4w59yTwlHD9w2s1hPUuWLUA==
-X-Google-Smtp-Source: ABdhPJyV+H2XuIpwPdXawrK7zAk9LhoUEYkcBzQ259T+WBC+TDCcYdf3viJw1KjepVRQtrjw2s7Kab7xpIPrx1WW3EM=
-X-Received: by 2002:aca:ebc5:: with SMTP id j188mr6839565oih.70.1590068111768;
- Thu, 21 May 2020 06:35:11 -0700 (PDT)
+        Thu, 21 May 2020 09:38:35 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LDRXYL158375;
+        Thu, 21 May 2020 13:37:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=1H9r5JbwrbyVDc6gEnRR1i+kqMeSEbJU8Fh66Zw0Ono=;
+ b=mELKqfIb/VLF3nLhd60AqlujPMbFxbC3kUlOfRV/D7eKxsNAFSSAoVneSVb3ryyxoTx+
+ LJqqlKXFxyqgplXsMeiRKdU8UynF5UbShCLb/dkYTe1IPpUPo210UzKdPqA5gnLHPA3v
+ n3IddseeQeByBqPTp0dIeCB4tBms07f0adn0ugf3XMmYtBewkGtqIGHKxE5NxCHJSB8x
+ ilHgqKskhSw6v/+IXOooWx4Ou7xAY3jK7ePcK/u8Cl7Wdf8pNz56YudAbQFK+OvAxt3W
+ rj+giVZfBog++TMnfF3FutpsHfuyVC3deNuLiUf5c5C9Vh+/0U+wixIh60eTTmfM2MpV 3Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31501rf221-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 21 May 2020 13:37:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LDXFgJ026782;
+        Thu, 21 May 2020 13:35:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 312t3b5xpa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 May 2020 13:35:14 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04LDZCMw016629;
+        Thu, 21 May 2020 13:35:12 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 21 May 2020 06:35:12 -0700
+Date:   Thu, 21 May 2020 09:35:32 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH -V2] swap: Reduce lock contention on swap cache from swap
+ slots allocation
+Message-ID: <20200521133532.psckytr456eevs5j@ca-dmjordan1.us.oracle.com>
+References: <20200520031502.175659-1-ying.huang@intel.com>
 MIME-Version: 1.0
-References: <20200521110854.114437-1-elver@google.com> <20200521110854.114437-8-elver@google.com>
- <20200521133322.GC6608@willie-the-truck>
-In-Reply-To: <20200521133322.GC6608@willie-the-truck>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 21 May 2020 15:35:00 +0200
-Message-ID: <CANpmjNNgQkw77uATD0jWezXheX0ZtKK9GcgWd_EQu1_u-m3PoA@mail.gmail.com>
-Subject: Re: [PATCH -tip v2 07/11] kcsan: Update Documentation to change
- supported compilers
-To:     Will Deacon <will@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520031502.175659-1-ying.huang@intel.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=2 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005210101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1015 priorityscore=1501 cotscore=-2147483648
+ impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005210100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020 at 15:33, Will Deacon <will@kernel.org> wrote:
->
-> On Thu, May 21, 2020 at 01:08:50PM +0200, Marco Elver wrote:
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> >  Documentation/dev-tools/kcsan.rst | 9 +--------
-> >  1 file changed, 1 insertion(+), 8 deletions(-)
->
-> -ENOCOMMITMSG
+On Wed, May 20, 2020 at 11:15:02AM +0800, Huang Ying wrote:
+> @@ -2827,6 +2865,11 @@ static struct swap_info_struct *alloc_swap_info(void)
+>  	p = kvzalloc(struct_size(p, avail_lists, nr_node_ids), GFP_KERNEL);
+>  	if (!p)
+>  		return ERR_PTR(-ENOMEM);
+> +	p->cluster_next_cpu = alloc_percpu(unsigned int);
+> +	if (!p->cluster_next_cpu) {
+> +		kvfree(p);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
 
-Oops. Ok, then there will be a v3.
+There should be free_percpu()s at two places after this, but I think the
+allocation really belongs right...
 
-> Will
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200521133322.GC6608%40willie-the-truck.
+> @@ -3202,7 +3245,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  		 * select a random position to start with to help wear leveling
+>  		 * SSD
+>  		 */
+> -		p->cluster_next = 1 + prandom_u32_max(p->highest_bit);
+
+...here because then it's only allocated when it's actually used.
+
+> +		for_each_possible_cpu(cpu) {
+> +			per_cpu(*p->cluster_next_cpu, cpu) =
+> +				1 + prandom_u32_max(p->highest_bit);
+> +		}
+>  		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+>  
+>  		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+> -- 
+> 2.26.2
+> 
+> 
