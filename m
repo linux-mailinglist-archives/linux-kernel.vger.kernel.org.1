@@ -2,150 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40291DD90D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8973D1DD96A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 23:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730527AbgEUVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 17:06:35 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14588 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729756AbgEUVGe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 17:06:34 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04LL3Cjv006444;
-        Thu, 21 May 2020 14:06:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=DQsTLKuzussdNJKqZpCsPKbkMiWOK/tUfqBsu5wFy6c=;
- b=O1greGcFUEcc7stZG8O6kihCWNmh3sZn2wPbiTQ47HR2jhI0vdYVGQU0kxeP4MGI7ec4
- 61G4Egg5Yc21BNPJbFSDcTW2GLGbNSEJaUE5arcCYAzW3JbmDbDYUOt607w2LZ8jUV+l
- c4IDd1i3S3/WT7D1QYD7kVYbYKR6BqHgOlc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 314jubjmxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 21 May 2020 14:06:25 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 21 May 2020 14:06:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OKBSIQ5cB+In12tArsdRgN9lwfWQ2XKINBWGwRE8WH6d7XseWui4gTs5gLPt0Hnq/v5bacjihZdTsXL9J2YN8ROogVpqU67jm1F341RkvfIom8XBpYfPzPoSAy0W6o0jfVdmpFlWQlw6aWzK5IGfHofkyTWfFH5oSoy4Sc2BfkBsGCZipuWj8sWCd+b1XkGVsYYvvaJj0SzODaRKtzYikBavZY1ZQWt7zuxsk1Q9bCybgz6+GbW0mQKBD+QxLFdso7fILEipNMP9GxEJ6O1yF/gbY6nxVZ0WB18SybbRi2FE0fF16JAwleBCt/k9+S33zN/ZUzLF/bFl0vh4vkyyhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DQsTLKuzussdNJKqZpCsPKbkMiWOK/tUfqBsu5wFy6c=;
- b=AZ0Zh7mDdcHNda7DOnrml3l7ONN/0H5GqOTLuAONZJrW3TATsId53ITTUbBjDBtqYhwGd/NcIAZu50AcSNvtP1L+W5wuFp+nQ4Nh4m1IJiiyOqW251SZxycI+0XmiN8h5JmdUQcYAV5h6lzJCrdz3lY5a5G1pNPR/6ZMGr4wNNPgovAmCbAnCguXmbUeFx+pWJfPij68pjXzTYvazMEcxYSEZJRxzctpd6awVTSWpDd1mPmcDH1X61nH87jHwG09UaC3jEKbY/dMUon58GGcmimMDr838pBucI44Nq6emQV7FcnmFyQ8yyuIuPw4ePj8u4X5SLsjytlMuxMKq13h5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DQsTLKuzussdNJKqZpCsPKbkMiWOK/tUfqBsu5wFy6c=;
- b=HPqqRWKs1x6yz6sZXaS8y4LuL60wiKKKQlQbkVeJXyP22Mcq1b2cWne5Z3fEOoAph7/7BeXIaWwWRCqQi1ayGX4iq8iR7HauqBAHeb52aQB/P1+LCWINZSj2t9kEvNQeTpIcJN5w4ZDNXU6KX0OG7Km1ViPe2ri4SXHZbhL0IfQ=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (20.177.229.24) by
- BYAPR15MB2310.namprd15.prod.outlook.com (52.135.198.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3021.23; Thu, 21 May 2020 21:06:20 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.3021.020; Thu, 21 May 2020
- 21:06:20 +0000
-Date:   Thu, 21 May 2020 14:06:16 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
- obj_to_index()
-Message-ID: <20200521210616.GA339999@carbon.DHCP.thefacebook.com>
-References: <20200422204708.2176080-1-guro@fb.com>
- <20200422204708.2176080-5-guro@fb.com>
- <0e0616f2-6c5a-8911-7d37-6f2027c2930b@suse.cz>
- <20200520210040.GC278395@carbon.dhcp.thefacebook.com>
- <266af2b2-41d0-368c-1896-1a7637389054@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <266af2b2-41d0-368c-1896-1a7637389054@suse.cz>
-X-ClientProxiedBy: BYAPR05CA0016.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::29) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1730714AbgEUVWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 17:22:38 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44087 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbgEUVWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 17:22:37 -0400
+IronPort-SDR: c940XEHsemPCTno+BJVB7u5d0P/VuSM2KUTV51qzFMMhnDuSO8nVfq8tJ8q2bbzMm5HmgbShwK
+ mFga5RCe/mRQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 14:22:30 -0700
+IronPort-SDR: 71bgyQKMtLqY4ISqeTwSMJwGZZCoGJgZcJx2SS5SLDa1/d7cqxIMmIBnbbqYW8//fIix/wEieE
+ fIppyz6GRNbQ==
+X-IronPort-AV: E=Sophos;i="5.73,419,1583222400"; 
+   d="scan'208";a="300453838"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 14:22:29 -0700
+Subject: [PATCH v4] /dev/mem: Revoke mappings when a driver claims the region
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Date:   Thu, 21 May 2020 14:06:17 -0700
+Message-ID: <159009507306.847224.8502634072429766747.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:84a2) by BYAPR05CA0016.namprd05.prod.outlook.com (2603:10b6:a03:c0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.11 via Frontend Transport; Thu, 21 May 2020 21:06:19 +0000
-X-Originating-IP: [2620:10d:c090:400::5:84a2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1b278c95-3ba6-4bd3-e413-08d7fdcacf24
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2310:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2310C0502AFE479889FD374FBEB70@BYAPR15MB2310.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-Forefront-PRVS: 041032FF37
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hDkaYJjXpmA0jcU5+czAcfBKwZUH+YYYcWXU6H1LxhfQFkMET7RQxghXVjKvOtwb0GO1CAM+f3SaVqe1p2Dyx/oimIl+jeykErZOQslRmGjCf7uOgZioH0Q819LxC2CEI8/tb+LYFKNUwz/5Wc1Pn4YzHxvU3RBxa7ZJbmLhTewLTm7qGQlLoFCCxue0sdrBpzv/cH296ovv8Ih655H1UNaziJmdcfWOZUiGHVAmzznXwQ6VHtm4osZtL2rqt7B6W5Iw7NpbNqLxpa+gQE4ODsuH8Rvynd+wxUxz0AIxu8O4DVW0BXruT//pvIgP7vE6rrdGE1YLibct1vhbJYtdCQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(39860400002)(396003)(366004)(376002)(478600001)(53546011)(6916009)(5660300002)(6506007)(52116002)(186003)(7696005)(9686003)(86362001)(6666004)(4326008)(16526019)(1076003)(316002)(54906003)(33656002)(55016002)(66556008)(8936002)(66476007)(66946007)(8676002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Q0o/0WC4Vr10mXE8W+YD7MN5W0GuqDdCKUt7F9ohpF2uffJDeh2P+yO4RHe/V2Vk+vgGr9CcrRRrDhPEnYIDifQoL6VM8lCFjaz3b4XRuIo1ogzWHktC0Oy6NkPMdpCP5WPIdysiJ2mspuseDWxVblZYLQ/+2AMzpGkUAzI1bJLMo1ESi3CGLTrbhRNHiaFFR4c/gQWigP1uJhKFZ9T+GfwQgMlFFotQ4EdVQ2eln+jhTSG2MA/C8aRpZVLYrXvZbe60S80gavl6DL5b1lJKGS5vzcmyW1IZnjbJtKmkq7Ytifm0CgwOrFoFyCIPneKw/7guQC/SIQb6Tgyk9F6k0ZZc3mBVQl5Lnrzet7tqRhIa2xmh9BLc9h3nfKIacc61emI+EveYVzws1u/DXf90bwwzHf8beKIjya/ITT8Y5bYSL0RqNvxaLC/A1E1gTSvvMpE8l6/y9kmHpyuw5ZYceUgQdUILdtD0SfLO6y+9GGt03fRN5+vet/k3WamIgiV6GkbSc+f5qBXY1X3To0ufSA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b278c95-3ba6-4bd3-e413-08d7fdcacf24
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2020 21:06:20.0484
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rabqyd7f1L3uOA7D6acxSpSkmGbb2yin15jnKb8f1wgCC0xz6kW1BFSFuvM1Q3mc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2310
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-21_14:2020-05-21,2020-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
- cotscore=-2147483648 mlxlogscore=750 clxscore=1015 bulkscore=0
- adultscore=0 impostorscore=0 suspectscore=1 phishscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005210157
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 01:01:38PM +0200, Vlastimil Babka wrote:
-> On 5/20/20 11:00 PM, Roman Gushchin wrote:
-> > 
-> > From beeaecdac85c3a395dcfb99944dc8c858b541cbf Mon Sep 17 00:00:00 2001
-> > From: Roman Gushchin <guro@fb.com>
-> > Date: Mon, 29 Jul 2019 18:18:42 -0700
-> > Subject: [PATCH v3.2 04/19] mm: slub: implement SLUB version of obj_to_index()
-> > 
-> > This commit implements SLUB version of the obj_to_index() function,
-> > which will be required to calculate the offset of obj_cgroup in the
-> > obj_cgroups vector to store/obtain the objcg ownership data.
-> > 
-> > To make it faster, let's repeat the SLAB's trick introduced by
-> > commit 6a2d7a955d8d ("[PATCH] SLAB: use a multiply instead of a
-> > divide in obj_to_index()") and avoid an expensive division.
-> > 
-> > Vlastimil Babka noticed, that SLUB does have already a similar
-> > function called slab_index(), which is defined only if SLUB_DEBUG
-> > is enabled. The function does a similar math, but with a division,
-> > and it also takes a page address instead of a page pointer.
-> > 
-> > Let's remove slab_index() and replace it with the new helper
-> > __obj_to_index(), which takes a page address. obj_to_index()
-> > will be a simple wrapper taking a page pointer and passing
-> > page_address(page) into __obj_to_index().
-> > 
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> 
-> Looks good!
-> 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Close the hole of holding a mapping over kernel driver takeover event of
+a given address range.
 
-Thanks!
+Commit 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+introduced CONFIG_IO_STRICT_DEVMEM with the goal of protecting the
+kernel against scenarios where a /dev/mem user tramples memory that a
+kernel driver owns. However, this protection only prevents *new* read(),
+write() and mmap() requests. Established mappings prior to the driver
+calling request_mem_region() are left alone.
+
+Especially with persistent memory, and the core kernel metadata that is
+stored there, there are plentiful scenarios for a /dev/mem user to
+violate the expectations of the driver and cause amplified damage.
+
+Teach request_mem_region() to find and shoot down active /dev/mem
+mappings that it believes it has successfully claimed for the exclusive
+use of the driver. Effectively a driver call to request_mem_region()
+becomes a hole-punch on the /dev/mem device.
+
+The typical usage of unmap_mapping_range() is part of
+truncate_pagecache() to punch a hole in a file, but in this case the
+implementation is only doing the "first half" of a hole punch. Namely it
+is just evacuating current established mappings of the "hole", and it
+relies on the fact that /dev/mem establishes mappings in terms of
+absolute physical address offsets. Once existing mmap users are
+invalidated they can attempt to re-establish the mapping, or attempt to
+continue issuing read(2) / write(2) to the invalidated extent, but they
+will then be subject to the CONFIG_IO_STRICT_DEVMEM checking that can
+block those subsequent accesses.
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Changes since v3 [1]:
+
+- Drop redundant memory barriers, READ_ONCE() and WRITE_ONCE() ensure
+  sufficient ordering (Matthew)
+
+- Drop redundant setting of i_mapping->host. (Matthew)
+
+[1]: http://lore.kernel.org/r/159002475918.686697.11844615159862491335.stgit@dwillia2-desk3.amr.corp.intel.com
+
+ drivers/char/mem.c         |  101 +++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/ioport.h     |    6 +++
+ include/uapi/linux/magic.h |    1 
+ kernel/resource.c          |    5 ++
+ 4 files changed, 111 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 43dd0891ca1e..31cae88a730b 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -31,11 +31,15 @@
+ #include <linux/uio.h>
+ #include <linux/uaccess.h>
+ #include <linux/security.h>
++#include <linux/pseudo_fs.h>
++#include <uapi/linux/magic.h>
++#include <linux/mount.h>
+ 
+ #ifdef CONFIG_IA64
+ # include <linux/efi.h>
+ #endif
+ 
++#define DEVMEM_MINOR	1
+ #define DEVPORT_MINOR	4
+ 
+ static inline unsigned long size_inside_page(unsigned long start,
+@@ -805,12 +809,64 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
+ 	return ret;
+ }
+ 
++static struct inode *devmem_inode;
++
++#ifdef CONFIG_IO_STRICT_DEVMEM
++void revoke_devmem(struct resource *res)
++{
++	struct inode *inode = READ_ONCE(devmem_inode);
++
++	/*
++	 * Check that the initialization has completed. Losing the race
++	 * is ok because it means drivers are claiming resources before
++	 * the fs_initcall level of init and prevent /dev/mem from
++	 * establishing mappings.
++	 */
++	if (!inode)
++		return;
++
++	/*
++	 * The expectation is that the driver has successfully marked
++	 * the resource busy by this point, so devmem_is_allowed()
++	 * should start returning false, however for performance this
++	 * does not iterate the entire resource range.
++	 */
++	if (devmem_is_allowed(PHYS_PFN(res->start)) &&
++	    devmem_is_allowed(PHYS_PFN(res->end))) {
++		/*
++		 * *cringe* iomem=relaxed says "go ahead, what's the
++		 * worst that can happen?"
++		 */
++		return;
++	}
++
++	unmap_mapping_range(inode->i_mapping, res->start, resource_size(res), 1);
++}
++#endif
++
+ static int open_port(struct inode *inode, struct file *filp)
+ {
++	int rc;
++
+ 	if (!capable(CAP_SYS_RAWIO))
+ 		return -EPERM;
+ 
+-	return security_locked_down(LOCKDOWN_DEV_MEM);
++	rc = security_locked_down(LOCKDOWN_DEV_MEM);
++	if (rc)
++		return rc;
++
++	if (iminor(inode) != DEVMEM_MINOR)
++		return 0;
++
++	/*
++	 * Use a unified address space to have a single point to manage
++	 * revocations when drivers want to take over a /dev/mem mapped
++	 * range.
++	 */
++	inode->i_mapping = devmem_inode->i_mapping;
++	filp->f_mapping = inode->i_mapping;
++
++	return 0;
+ }
+ 
+ #define zero_lseek	null_lseek
+@@ -885,7 +941,7 @@ static const struct memdev {
+ 	fmode_t fmode;
+ } devlist[] = {
+ #ifdef CONFIG_DEVMEM
+-	 [1] = { "mem", 0, &mem_fops, FMODE_UNSIGNED_OFFSET },
++	 [DEVMEM_MINOR] = { "mem", 0, &mem_fops, FMODE_UNSIGNED_OFFSET },
+ #endif
+ #ifdef CONFIG_DEVKMEM
+ 	 [2] = { "kmem", 0, &kmem_fops, FMODE_UNSIGNED_OFFSET },
+@@ -939,6 +995,45 @@ static char *mem_devnode(struct device *dev, umode_t *mode)
+ 
+ static struct class *mem_class;
+ 
++static int devmem_fs_init_fs_context(struct fs_context *fc)
++{
++	return init_pseudo(fc, DEVMEM_MAGIC) ? 0 : -ENOMEM;
++}
++
++static struct file_system_type devmem_fs_type = {
++	.name		= "devmem",
++	.owner		= THIS_MODULE,
++	.init_fs_context = devmem_fs_init_fs_context,
++	.kill_sb	= kill_anon_super,
++};
++
++static int devmem_init_inode(void)
++{
++	static struct vfsmount *devmem_vfs_mount;
++	static int devmem_fs_cnt;
++	struct inode *inode;
++	int rc;
++
++	rc = simple_pin_fs(&devmem_fs_type, &devmem_vfs_mount, &devmem_fs_cnt);
++	if (rc < 0) {
++		pr_err("Cannot mount /dev/mem pseudo filesystem: %d\n", rc);
++		return rc;
++	}
++
++	inode = alloc_anon_inode(devmem_vfs_mount->mnt_sb);
++	if (IS_ERR(inode)) {
++		rc = PTR_ERR(inode);
++		pr_err("Cannot allocate inode for /dev/mem: %d\n", rc);
++		simple_release_fs(&devmem_vfs_mount, &devmem_fs_cnt);
++		return rc;
++	}
++
++	/* publish /dev/mem initialized */
++	WRITE_ONCE(devmem_inode, inode);
++
++	return 0;
++}
++
+ static int __init chr_dev_init(void)
+ {
+ 	int minor;
+@@ -960,6 +1055,8 @@ static int __init chr_dev_init(void)
+ 		 */
+ 		if ((minor == DEVPORT_MINOR) && !arch_has_dev_port())
+ 			continue;
++		if ((minor == DEVMEM_MINOR) && devmem_init_inode() != 0)
++			continue;
+ 
+ 		device_create(mem_class, NULL, MKDEV(MEM_MAJOR, minor),
+ 			      NULL, devlist[minor].name);
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index a9b9170b5dd2..6c3eca90cbc4 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -301,5 +301,11 @@ struct resource *devm_request_free_mem_region(struct device *dev,
+ struct resource *request_free_mem_region(struct resource *base,
+ 		unsigned long size, const char *name);
+ 
++#ifdef CONFIG_IO_STRICT_DEVMEM
++void revoke_devmem(struct resource *res);
++#else
++static inline void revoke_devmem(struct resource *res) { };
++#endif
++
+ #endif /* __ASSEMBLY__ */
+ #endif	/* _LINUX_IOPORT_H */
+diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
+index d78064007b17..f3956fc11de6 100644
+--- a/include/uapi/linux/magic.h
++++ b/include/uapi/linux/magic.h
+@@ -94,6 +94,7 @@
+ #define BALLOON_KVM_MAGIC	0x13661366
+ #define ZSMALLOC_MAGIC		0x58295829
+ #define DMA_BUF_MAGIC		0x444d4142	/* "DMAB" */
++#define DEVMEM_MAGIC		0x454d444d	/* "DMEM" */
+ #define Z3FOLD_MAGIC		0x33
+ #define PPC_CMM_MAGIC		0xc7571590
+ 
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 76036a41143b..841737bbda9e 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -1126,6 +1126,7 @@ struct resource * __request_region(struct resource *parent,
+ {
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	struct resource *res = alloc_resource(GFP_KERNEL);
++	struct resource *orig_parent = parent;
+ 
+ 	if (!res)
+ 		return NULL;
+@@ -1176,6 +1177,10 @@ struct resource * __request_region(struct resource *parent,
+ 		break;
+ 	}
+ 	write_unlock(&resource_lock);
++
++	if (res && orig_parent == &iomem_resource)
++		revoke_devmem(res);
++
+ 	return res;
+ }
+ EXPORT_SYMBOL(__request_region);
+
