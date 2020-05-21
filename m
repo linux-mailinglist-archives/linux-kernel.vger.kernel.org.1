@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1851DCF9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E12C1DCF91
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgEUOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S1729691AbgEUOWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729652AbgEUOWl (ORCPT
+        with ESMTP id S1729675AbgEUOWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:22:41 -0400
+        Thu, 21 May 2020 10:22:45 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904ABC061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d7so5448853ybp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C541CC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:43 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k15so5501096ybt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:22:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2MIiys78gGheOmgr5sadClIeI2A+sMpKPCOuDS/ESKE=;
-        b=joJLl5J1SFsKoRJrjXUDcmh8qcs04F+6FwFKkVywrcnW7KuMYcookU54rJf5+8CxBU
-         jMcwH8Dy8k4JHN8jzYmaf1sIN4mhdK44x4cJjc+ebvK/VWsZMrLdnOkL+UlLCNUs4aV9
-         yYWlqI+RJLHZo4EII9VFD4DUAl81+0P1sqOZm+Wi3L0huYztYhhXDHbuVkwZczt+kfnq
-         vBVLUvjKXpIqm7YD2QSP9AK4y1TfGq/Ttorfoye6zY2EMVBPSTpwTP0GJanKX9ohyS6w
-         i5K6Dv6qkWVLyxDiXjhgghb1/ESB2AGq9buw/mw/W8ncpqrXs6kvtzNB2PcZ45+M4nex
-         Safw==
+        bh=Lmm+/+h5qLO6fUy4Is9S48RQHv+8MyPjNoPxJUCaU88=;
+        b=Ry3yF5S5/LqKUOIQpGNAL925QQehVK9jMWjX8PjHCVoA0XPJgDubp7oFbY/CDc5ThC
+         WT+0+uecdaVL9mF34dHUHm62BJaTSsum+nyk/7BRGtaSIo0CfuUst2nRWxDLmPQI89QI
+         +EfLiybS+tHYvCsDoFRrWrqcBiBaOxZY8EJgGeUvWdYTvlvj3g2KPPhIeGWj4lC4HOj4
+         lS1EU36gsfoCEpfUFIUQa1ABmK44OnOuPq7qricwYQzsXdq73eqRwAVoEg4qfKY1Wszz
+         qJvzYI+sBeM+aHoOD9Zfk+rBSEa3mXkekb06m6J8UASfj8D12i0ddnbMSjnmjhXb7rT3
+         4iOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2MIiys78gGheOmgr5sadClIeI2A+sMpKPCOuDS/ESKE=;
-        b=RikgyHUjoOQqPwcrgdci67BjWvLwslIFlwjO86SAoO3nlIV39e+ngyHIDbfiv1PZUF
-         ER766Ah3c/RW+ddknmXpmCGE2y8S9jyweu5FZcR8SidnURzuoT4uvAfgZHaf3vB5hoAd
-         zrHJjv+KuibibdZDJufIIIXzV0Cv61fmDGjMoGR5A8kLoDKcxIi5sSDRePo/JtrU06b6
-         hO5xgmuPZkyzokQr+JU+e9cvVOTWrGR4wXVyK7ZfwII0mr0w4aa09hp+dSdwcheaXBDc
-         Cc1rrDE6kv4pEKfZiXf5RiMvUfuHt9Ww0uQ7g1G8KRhwEPcJm0qiTKvfDInvG7fQZTOp
-         Vg0A==
-X-Gm-Message-State: AOAM530tKtcD913BN/CF0bmHdHGeYWScckTKcsCwwPXYdrs26gOHPvKz
-        5ZBjmBDEsLf8gd2JMdsGerEv6LonBQ==
-X-Google-Smtp-Source: ABdhPJxBdd/PJ/l0pmbr2bj8AZZmXbcBbSQ4T1JSFjAYQMfu6rBVOZq6XAPfzUPajdaBTfa4OC2pTwynow==
-X-Received: by 2002:a25:3608:: with SMTP id d8mr16539361yba.11.1590070960816;
- Thu, 21 May 2020 07:22:40 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:20:45 +0200
+        bh=Lmm+/+h5qLO6fUy4Is9S48RQHv+8MyPjNoPxJUCaU88=;
+        b=T7X56ecJmf/62ukYyNN+V6jvZ6Ea6LDI3oE98A13lnqfRQu6iJK741dn2deOfa7cZ9
+         3jiD+7Zef3UZ3kNos+7DoYeGL+aqw37iypgOb+9X5djZLEmrPARm6a95miF4rbPfROnl
+         dZtRQhNnp/1wVvvT16q94/2zx91WMxEOoQexdvlZrcPbKWv8bY1yi7WuhqPBCpFQhX1w
+         ipIilopCOYZK1FdENFr6VHyV3cHrC/U/yZQ0g/48xMXQ1+7AXL4+U3y5p8yc0VTbq54Z
+         NWyx3hECzZWzgZpXgU5OTQJI1wajTGuvk+Y+1nO5SAfTrDYjquiBslIAXjyaokhUtgsZ
+         +t8A==
+X-Gm-Message-State: AOAM531GNBr9ASqxBPzKRXHaVEpANO10HD2i4tNLJ5tpHeg24+CtrTwP
+        0/6limN0BvqNbARTlL/2xLsfhq6bnw==
+X-Google-Smtp-Source: ABdhPJxCbmIqG74ZKiFWtHzlEGlfTFXRBt+iLEI339Mbm7r+Lf9EBVzuxRUJ8/F5xLLcF6uwV4CNs3EzoQ==
+X-Received: by 2002:a25:77d0:: with SMTP id s199mr14286095ybc.333.1590070963005;
+ Thu, 21 May 2020 07:22:43 -0700 (PDT)
+Date:   Thu, 21 May 2020 16:20:46 +0200
 In-Reply-To: <20200521142047.169334-1-elver@google.com>
-Message-Id: <20200521142047.169334-10-elver@google.com>
+Message-Id: <20200521142047.169334-11-elver@google.com>
 Mime-Version: 1.0
 References: <20200521142047.169334-1-elver@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH -tip v3 09/11] data_race: Avoid nested statement expression
+Subject: [PATCH -tip v3 10/11] compiler.h: Move function attributes to compiler_types.h
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
@@ -64,45 +64,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that compilers have trouble with nested statement
-expressions. Therefore remove one level of statement expression nesting
-from the data_race() macro. This will help us avoid potential problems
-in future as its usage increases.
+Cleanup and move the KASAN and KCSAN related function attributes to
+compiler_types.h, where the rest of the same kind live.
 
-Link: https://lkml.kernel.org/r/20200520221712.GA21166@zn.tnic
+No functional change intended.
+
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 ---
-v3:
-* Fix for 'const' non-scalar expressions.
-v2:
-* Add patch to series in response to above linked discussion.
----
- include/linux/compiler.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/linux/compiler.h       | 29 -----------------------------
+ include/linux/compiler_types.h | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 29 deletions(-)
 
 diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 7444f026eead..379a5077e9c6 100644
+index 379a5077e9c6..652aee025c89 100644
 --- a/include/linux/compiler.h
 +++ b/include/linux/compiler.h
-@@ -211,12 +211,12 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-  */
- #define data_race(expr)							\
- ({									\
--	__kcsan_disable_current();					\
--	({								\
--		__unqual_scalar_typeof(({ expr; })) __v = ({ expr; });	\
--		__kcsan_enable_current();				\
--		__v;							\
-+	__unqual_scalar_typeof(({ expr; })) __v = ({			\
-+		__kcsan_disable_current();				\
-+		expr;							\
- 	});								\
-+	__kcsan_enable_current();					\
-+	__v;								\
- })
+@@ -250,35 +250,6 @@ do {									\
+ 	__WRITE_ONCE(x, val);						\
+ } while (0)
  
- /*
+-#ifdef CONFIG_KASAN
+-/*
+- * We can't declare function 'inline' because __no_sanitize_address conflicts
+- * with inlining. Attempt to inline it may cause a build failure.
+- *     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67368
+- * '__maybe_unused' allows us to avoid defined-but-not-used warnings.
+- */
+-# define __no_kasan_or_inline __no_sanitize_address notrace __maybe_unused
+-# define __no_sanitize_or_inline __no_kasan_or_inline
+-#else
+-# define __no_kasan_or_inline __always_inline
+-#endif
+-
+-#define __no_kcsan __no_sanitize_thread
+-#ifdef __SANITIZE_THREAD__
+-/*
+- * Rely on __SANITIZE_THREAD__ instead of CONFIG_KCSAN, to avoid not inlining in
+- * compilation units where instrumentation is disabled.
+- */
+-# define __no_kcsan_or_inline __no_kcsan notrace __maybe_unused
+-# define __no_sanitize_or_inline __no_kcsan_or_inline
+-#else
+-# define __no_kcsan_or_inline __always_inline
+-#endif
+-
+-#ifndef __no_sanitize_or_inline
+-#define __no_sanitize_or_inline __always_inline
+-#endif
+-
+ static __no_sanitize_or_inline
+ unsigned long __read_once_word_nocheck(const void *addr)
+ {
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 6ed0612bc143..b190a12e7089 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -167,6 +167,35 @@ struct ftrace_likely_data {
+  */
+ #define noinline_for_stack noinline
+ 
++#ifdef CONFIG_KASAN
++/*
++ * We can't declare function 'inline' because __no_sanitize_address conflicts
++ * with inlining. Attempt to inline it may cause a build failure.
++ *     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67368
++ * '__maybe_unused' allows us to avoid defined-but-not-used warnings.
++ */
++# define __no_kasan_or_inline __no_sanitize_address notrace __maybe_unused
++# define __no_sanitize_or_inline __no_kasan_or_inline
++#else
++# define __no_kasan_or_inline __always_inline
++#endif
++
++#define __no_kcsan __no_sanitize_thread
++#ifdef __SANITIZE_THREAD__
++/*
++ * Rely on __SANITIZE_THREAD__ instead of CONFIG_KCSAN, to avoid not inlining in
++ * compilation units where instrumentation is disabled.
++ */
++# define __no_kcsan_or_inline __no_kcsan notrace __maybe_unused
++# define __no_sanitize_or_inline __no_kcsan_or_inline
++#else
++# define __no_kcsan_or_inline __always_inline
++#endif
++
++#ifndef __no_sanitize_or_inline
++#define __no_sanitize_or_inline __always_inline
++#endif
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __ASSEMBLY__ */
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
