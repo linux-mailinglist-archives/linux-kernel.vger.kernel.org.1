@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6D11DDB39
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECB31DDB1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 01:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgEUXkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 19:40:53 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44255 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729827AbgEUXkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 19:40:53 -0400
-IronPort-SDR: CMP/rHqsP4yxK01NwUrghWpJLhMDwgVzMBmJcCnCFvFUfypSU62o6uL6ccRX9F89hn+bP5UbL0
- g9cKl4qoyoBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 16:40:52 -0700
-IronPort-SDR: oMV6pdOLmBBvp2tg/0s2cHXMXmtpef4jgFMpno2H4JRWJDg9h3nQBjoD400muqIm8TlxWhzOzA
- IvQNURBpQYgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,419,1583222400"; 
-   d="scan'208";a="283229047"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by orsmga002.jf.intel.com with ESMTP; 21 May 2020 16:40:49 -0700
-Cc:     baolu.lu@linux.intel.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] iommu/vt-d: fix a GCC warning
-To:     Qian Cai <cai@lca.pw>, jroedel@suse.de
-References: <20200521215030.16938-1-cai@lca.pw>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <27cf90e4-57bc-38da-fa30-69244f006f63@linux.intel.com>
-Date:   Fri, 22 May 2020 07:37:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729427AbgEUXip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 19:38:45 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18078 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728537AbgEUXio (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 19:38:44 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec710b40001>; Thu, 21 May 2020 16:37:24 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 May 2020 16:38:44 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 May 2020 16:38:44 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 May
+ 2020 23:38:43 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 21 May 2020 23:38:43 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.48.182]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec711020004>; Thu, 21 May 2020 16:38:43 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        "Joonas Lahtinen" <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH] mm/gup: fixup gup.c for "mm/gup: refactor and de-duplicate gup_fast() code"
+Date:   Thu, 21 May 2020 16:38:41 -0700
+Message-ID: <20200521233841.1279742-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200521215030.16938-1-cai@lca.pw>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590104244; bh=oK3cn3yjsB7kmSIMJxAJI0j+n+7vBZVJ7t2DXnyjgUI=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=izCdN89AWfExilHUwGQewVpC/TR2eV0PG31JIjZgDPHNR7BymtQsj13yg+A1XApO1
+         Ygum2vlEXMeDgkBjbCncWJsg8iHcSjtXVdwiUhGhkaTGTM/gu+LdUcnevDhwXTwJAU
+         d/FJRU0sldpoVEw2n7Wdu0aVAs224oYw4bvIo0h1mFTXZMxU1Rd9ARWwIXMvdR6m5b
+         17W3ETWgvQmu4GR+nl3xiJHeV/jEEhdSpBhO/Z+Mq0xT76DGr99gH5WkZEb6C0xA2s
+         brVRbZiat6q0a7vVARoEq+/4dtxXTO5rlj529m9CGd6dXmOVYIlW8xHp7/e3OAtZUW
+         rnXmFsdDGOFAA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qian,
+Include FOLL_FAST_ONLY in the list of flags to *not* WARN()
+on, in internal_get_user_pages_fast().
 
-Thanks!
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: "Joonas Lahtinen" <joonas.lahtinen@linux.intel.com>
+Cc: Matthew Auld <matthew.auld@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
 
-On 5/22/20 5:50 AM, Qian Cai wrote:
-> The commit 6ee1b77ba3ac ("iommu/vt-d: Add svm/sva invalidate function")
-> introduced a GCC warning,
-> 
-> drivers/iommu/intel-iommu.c:5330:1: warning: 'static' is not at beginning of
-> declaration [-Wold-style-declaration]
->   const static int
->   ^~~~~
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
+Hi Andrew, Chris,
 
-Fixes: 6ee1b77ba3ac0 ("iommu/vt-d: Add svm/sva invalidate function")
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Andrew: This is a fixup that applies to today's (20200521) linux-next.
+In that tree, this fixes up:
 
-Best regards,
-baolu
+commit dfb8dfe80808 ("mm/gup: refactor and de-duplicate gup_fast() code")
 
-> ---
->   drivers/iommu/intel-iommu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-> index f75d7d9c231f..ff5a30a94679 100644
-> --- a/drivers/iommu/intel-iommu.c
-> +++ b/drivers/iommu/intel-iommu.c
-> @@ -5327,7 +5327,7 @@ static void intel_iommu_aux_detach_device(struct iommu_domain *domain,
->    * [IOMMU_CACHE_INV_TYPE_IOTLB][IOMMU_INV_GRANU_ADDR]
->    */
->   
-> -const static int
-> +static const int
->   inv_type_granu_table[IOMMU_CACHE_INV_TYPE_NR][IOMMU_INV_GRANU_NR] = {
->   	/*
->   	 * PASID based IOTLB invalidation: PASID selective (per PASID),
-> 
+Chris: I'd like to request another CI run for the drm/i915 changes, so
+for that, would you prefer that I post a v2 of the series [1], or
+is it easier for you to just apply this patch here, on top of [2]?
+
+[1] https://lore.kernel.org/r/20200519002124.2025955-1-jhubbard@nvidia.com
+
+[2] https://lore.kernel.org/r/158985123351.31239.10766458886430429630@emeri=
+l.freedesktop.org
+
+thanks,
+John Hubbard
+NVIDIA
+
+ mm/gup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mm/gup.c b/mm/gup.c
+index dd8895f2fafa1..ada6aa79576dc 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2724,7 +2724,8 @@ static int internal_get_user_pages_fast(unsigned long=
+ start, int nr_pages,
+ 	int nr_pinned =3D 0, ret =3D 0;
+=20
+ 	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
+-				       FOLL_FORCE | FOLL_PIN | FOLL_GET)))
++				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
++				       FOLL_FAST_ONLY)))
+ 		return -EINVAL;
+=20
+ 	start =3D untagged_addr(start) & PAGE_MASK;
+--=20
+2.26.2
+
