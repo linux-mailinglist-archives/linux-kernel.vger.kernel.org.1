@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AD31DD871
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0BB1DD84E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 22:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728778AbgEUUd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 16:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        id S1729930AbgEUUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 16:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729517AbgEUUbv (ORCPT
+        with ESMTP id S1729900AbgEUUcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 16:31:51 -0400
+        Thu, 21 May 2020 16:32:03 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25EC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:31:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB5DC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 13:32:03 -0700 (PDT)
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jbrqa-0000Kv-58; Thu, 21 May 2020 22:31:20 +0200
+        id 1jbrqd-0000Lr-6r; Thu, 21 May 2020 22:31:23 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 96EB0100C2D;
-        Thu, 21 May 2020 22:31:19 +0200 (CEST)
-Message-Id: <20200521202117.289548561@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id D3742100606;
+        Thu, 21 May 2020 22:31:20 +0200 (CEST)
+Message-Id: <20200521202117.382387286@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 21 May 2020 22:05:18 +0200
+Date:   Thu, 21 May 2020 22:05:19 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -52,7 +52,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Jason Chen CJ <jason.cj.chen@intel.com>,
         Zhao Yakui <yakui.zhao@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V9 05/39] x86/entry: Provide idtentry_enter/exit_user()
+Subject: [patch V9 06/39] x86/idtentry: Switch to conditional RCU handling
 References: <20200521200513.656533920@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,65 +65,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there are exceptions which already handle entry from user mode and from
-kernel mode separately having an explicit user handling makes sense and
-makes the code easier to understand.
+Switch all idtentry_enter/exit() users over to the new conditional RCU
+handling scheme and make the user mode entries in #DB, #INT3 and #MCE use
+the user mode idtentry functions.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V9: New patch
 ---
- arch/x86/entry/common.c         |   31 +++++++++++++++++++++++++++++++
- arch/x86/include/asm/idtentry.h |    3 +++
- 2 files changed, 34 insertions(+)
+ arch/x86/include/asm/idtentry.h |   10 ++++++----
+ arch/x86/kernel/cpu/mce/core.c  |    4 ++--
+ arch/x86/kernel/traps.c         |   10 +++++-----
+ 3 files changed, 13 insertions(+), 11 deletions(-)
 
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -655,3 +655,34 @@ void noinstr idtentry_exit_cond_rcu(stru
- 			rcu_irq_exit();
- 	}
- }
-+
-+/**
-+ * idtentry_enter_user - Handle state tracking on idtentry from user mode
-+ * @regs:	Pointer to pt_regs of interrupted context
-+ *
-+ * Invokes enter_from_user_mode() to establish the proper context for
-+ * NOHZ_FULL. Otherwise scheduling on exit would not be possible.
-+ */
-+void noinstr idtentry_enter_user(struct pt_regs *regs)
-+{
-+	enter_from_user_mode();
-+}
-+
-+/**
-+ * idtentry_exit_user - Handle return from exception to user mode
-+ * @regs:	Pointer to pt_regs (exception entry regs)
-+ *
-+ * Runs the necessary preemption and work checks and returns to the caller
-+ * with interrupts disabled and no further work pending.
-+ *
-+ * This is the last action before returning to the low level ASM code which
-+ * just needs to return to the appropriate context.
-+ *
-+ * Counterpart to idtentry_enter_user().
-+ */
-+void noinstr idtentry_exit_user(struct pt_regs *regs)
-+{
-+	lockdep_assert_irqs_disabled();
-+
-+	prepare_exit_to_usermode(regs);
-+}
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -7,6 +7,9 @@
+@@ -61,11 +61,12 @@ static __always_inline void __##func(str
+ 									\
+ __visible noinstr void func(struct pt_regs *regs)			\
+ {									\
+-	idtentry_enter(regs);						\
++	bool rcu_exit = idtentry_enter_cond_rcu(regs);			\
++									\
+ 	instrumentation_begin();					\
+ 	__##func (regs);						\
+ 	instrumentation_end();						\
+-	idtentry_exit(regs);						\
++	idtentry_exit_cond_rcu(regs, rcu_exit);				\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs)
+@@ -107,11 +108,12 @@ static __always_inline void __##func(str
+ __visible noinstr void func(struct pt_regs *regs,			\
+ 			    unsigned long error_code)			\
+ {									\
+-	idtentry_enter(regs);						\
++	bool rcu_exit = idtentry_enter_cond_rcu(regs);			\
++									\
+ 	instrumentation_begin();					\
+ 	__##func (regs, error_code);					\
+ 	instrumentation_end();						\
+-	idtentry_exit(regs);						\
++	idtentry_exit_cond_rcu(regs, rcu_exit);				\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs,		\
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1929,11 +1929,11 @@ static __always_inline void exc_machine_
  
- #ifndef __ASSEMBLY__
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+ {
+-	idtentry_enter(regs);
++	idtentry_enter_user(regs);
+ 	instrumentation_begin();
+ 	machine_check_vector(regs);
+ 	instrumentation_end();
+-	idtentry_exit(regs);
++	idtentry_exit_user(regs);
+ }
  
-+void idtentry_enter_user(struct pt_regs *regs);
-+void idtentry_exit_user(struct pt_regs *regs);
-+
- bool idtentry_enter_cond_rcu(struct pt_regs *regs, bool cond_rcu);
- void idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit);
+ #ifdef CONFIG_X86_64
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -619,18 +619,18 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 		return;
  
+ 	/*
+-	 * idtentry_enter() uses static_branch_{,un}likely() and therefore
++	 * idtentry_enter_user() uses static_branch_{,un}likely() and therefore
+ 	 * can trigger INT3, hence poke_int3_handler() must be done
+ 	 * before. If the entry came from kernel mode, then use nmi_enter()
+ 	 * because the INT3 could have been hit in any context including
+ 	 * NMI.
+ 	 */
+ 	if (user_mode(regs)) {
+-		idtentry_enter(regs);
++		idtentry_enter_user(regs);
+ 		instrumentation_begin();
+ 		do_int3_user(regs);
+ 		instrumentation_end();
+-		idtentry_exit(regs);
++		idtentry_exit_user(regs);
+ 	} else {
+ 		nmi_enter();
+ 		instrumentation_begin();
+@@ -877,7 +877,7 @@ static __always_inline void exc_debug_ke
+ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 					   unsigned long dr6)
+ {
+-	idtentry_enter(regs);
++	idtentry_enter_user(regs);
+ 	clear_thread_flag(TIF_BLOCKSTEP);
+ 
+ 	/*
+@@ -886,7 +886,7 @@ static __always_inline void exc_debug_us
+ 	 * User wants a sigtrap for that.
+ 	 */
+ 	handle_debug(regs, dr6, !dr6);
+-	idtentry_exit(regs);
++	idtentry_exit_user(regs);
+ }
+ 
+ #ifdef CONFIG_X86_64
 
