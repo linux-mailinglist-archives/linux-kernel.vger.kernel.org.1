@@ -2,143 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBCC1DCF63
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9F21DC6EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729679AbgEUORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:17:37 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:62270 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729661AbgEUORh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:17:37 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200521141733epoutp046b6dc1b5c8e9e4d0cc2bccf317f81202~RENW29Gx52334723347epoutp04C
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 14:17:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200521141733epoutp046b6dc1b5c8e9e4d0cc2bccf317f81202~RENW29Gx52334723347epoutp04C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590070653;
-        bh=yaoOLNL/YwnMgUGKxYrh4eIUsX8d53qGNJ5vpxP3jDg=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=laAjjfYjT+Fl7JL9KEbQGkSuVgsDBtfsW3TjofdC8xxuHghczHhVhHEC3lF9xg2iL
-         bhBQFrdleGbJXNchbhwaPOLDnOEVBd5t+/7UfTjugChEpzBT/i8aqOIMF0uTX5YOXm
-         jw3VFfGKm2X5K7cbWjuLFG6xPNtCCL1KclPUVLeM=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200521141733epcas5p29db77a3345a33b9bfef5a9b128af6022~RENWbjCbd3018830188epcas5p2q;
-        Thu, 21 May 2020 14:17:33 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C4.80.23389.C7D86CE5; Thu, 21 May 2020 23:17:32 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200521141731epcas5p3970e37a1b1b1986b75814de104e4a857~RENVbBznh1164911649epcas5p38;
-        Thu, 21 May 2020 14:17:31 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200521141731epsmtrp1b904e2decbc2efb1412f81159a003615~RENVZ1AuM1587215872epsmtrp1b;
-        Thu, 21 May 2020 14:17:31 +0000 (GMT)
-X-AuditID: b6c32a4b-797ff70000005b5d-6a-5ec68d7c6ce6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E8.BB.18461.B7D86CE5; Thu, 21 May 2020 23:17:31 +0900 (KST)
-Received: from mshams01 (unknown [107.122.43.244]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200521141728epsmtip2175afe050debcb26c6df5c9eee7767df~RENR51xpw0089300893epsmtip2d;
-        Thu, 21 May 2020 14:17:27 +0000 (GMT)
-From:   "M Tamseel Shams" <m.shams@samsung.com>
-To:     "'Inki Dae'" <inki.dae@samsung.com>, <jy0922.shim@samsung.com>,
-        <sw0312.kim@samsung.com>, <kyungmin.park@samsung.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>
-Cc:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <shaik.ameer@samsung.com>,
-        <krzk@kernel.org>, <alim.akhtar@samsung.com>
-In-Reply-To: <fa372f07-abba-a296-c315-e9769fb43623@samsung.com>
-Subject: RE: [PATCH v2] drm/exynos: Remove dev_err() on platform_get_irq()
- failure
-Date:   Thu, 21 May 2020 19:47:25 +0530
-Message-ID: <000001d62f7a$90a004d0$b1e00e70$@samsung.com>
+        id S1728136AbgEUGRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:17:40 -0400
+Received: from mail-vi1eur05on2085.outbound.protection.outlook.com ([40.107.21.85]:33889
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726938AbgEUGRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 02:17:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SH5KfF/oCd9QBrhCgPyhjegYyMZN0uhQgBntNIM36ujWerNgjVC0SaHt/bSfntQdq93fKOE/D0OtIwsVdws1UzB2Qn+GvV/qgnK4k944iSmW8MHg2P0q31biUJVn8Th5xf3KK19LwYeTiitME9Hbb7WcIvBvb/RUN/lQYuXuvvRoX1vKZ0Xx2FyO5rPlt2cZY0zrlIt7PxDVVSd/XophpsUFOFhcOWGEhffvHrlg0gSakTGFHF6v3H6sbv+yrpBFIftkxoikI090AVvkCc5YBD5BW3wgaqZf5NeAWy1uvNnHaNqAiDws6w3T9ps5/vDAg4O98w7J8vO3Urt1FpIQ9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kZyVXa6OVYjI56fPdSOlinHR0mhsfjQmzse91s3Pqt4=;
+ b=LSTEVEQrJKij2U4CFwRFEvGu9lulmKRBhULIAzs51TBRwlxWGR9TaB+QJcjEH3/2h+Fl7PzNB1zsQNq8TKsjmhnOXXlx8dx9bIGF95vY4uWsdjys7vHBTKBJjTz2eH6G72svmLQXolE5PjBpi6+ZCPf8SxYcLwwQz2xVLVObflfdit/4j+DYLr7J1orPtvBnvhD9KE69cZnzRypF0atfbRqcV0jfYt2WJ18NfbfalujbJUIBSKvgPsMHuI5apb3eNg/HReD8xAb6MDNdWn5m0FTdpg6QZzB48YkgvBZimJVWHTt+z1ITXsANcdGHdndYYj7gphP/PLu+FBvsbpwMmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kZyVXa6OVYjI56fPdSOlinHR0mhsfjQmzse91s3Pqt4=;
+ b=DhryGNf1wSITqCfKIQUylXPmuaaCKyE4EHew+CEbNvt3DhRd0FKT1xXECF+37U6RKsSds17XtipBvgM9SPHfWfmTNH6TdKn2QHVzdUgLKZZLNwO4zOk+cwV8ADNsRFStN6ImVkZ7iAYq43pUD0XIYrRP/5X8k1lOnUSKrfSCKlM=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VE1PR04MB6720.eurprd04.prod.outlook.com (2603:10a6:803:123::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Thu, 21 May
+ 2020 06:17:34 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3021.020; Thu, 21 May 2020
+ 06:17:34 +0000
+From:   Robin Gong <yibin.gong@nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, anson.huang@nxp.com, peng.fan@nxp.com
+Cc:     kernel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH v2 1/2] arm64: dts: imx8mm-evk: correct ldo1/ldo2 voltage range
+Date:   Thu, 21 May 2020 22:17:53 +0800
+Message-Id: <1590070674-23027-1-git-send-email-yibin.gong@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22)
+ To VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH7RT4aJkRNX9fY1F1/HBHlZPyRGwGjzbRFAXV3RIKoT5+4wA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7bCmlm5t77E4g09iFr3nTjJZPJi3jc3i
-        /7aJzBZXvr5ns5h0fwKLxYt7F1kszp/fwG5xtukNu8Wmx9dYLS7vmsNmMeP8PiaLIw93s1vM
-        mPySzYHXY++3BSwem1Z1snls//aA1eN+93Emj81L6j36tqxi9Pi8SS6APYrLJiU1J7MstUjf
-        LoErY8XhXsaC7ewVG5YvZmlgXMLWxcjBISFgInF+p1wXIxeHkMBuRonbM9+yQzifGCWm971h
-        hXC+MUo8mvKYuYuRE6zj25lfbBCJvYwSTZ82QFU9Z5S4sPYrC0gVm4CuxKSDbcwgCRGBJYwS
-        f9f+YAJxmAUeMkp0rJwLNotTwF7i0v57rCC2sECIRMu3D2BxFgFViavXF4FdyCtgKXGvIQYk
-        zCsgKHFy5hOwBcwC2hLLFr6GOklB4ufTZWBjRAScJG49fM8MUSMu8fLoEbCHJASucEhMn/mB
-        FaLBRWL+rD4WCFtY4tXxLewQtpTEy/42KDtfYv68VVALKiRWXngDZdtLHLgyhwXkNmYBTYn1
-        u/QhdvFJ9P5+wgQJVF6JjjYhiGpFif+7+6Emiku8WzEF6gIPia+3l7FNYFScheSzWUg+m4Xk
-        g1kIyxYwsqxilEwtKM5NTy02LTDOSy3XK07MLS7NS9dLzs/dxAhOalreOxgfPfigd4iRiYPx
-        EKMEB7OSCO9C/qNxQrwpiZVVqUX58UWlOanFhxilOViUxHkfN26JExJITyxJzU5NLUgtgsky
-        cXBKNTBtVVlo80OHYYrT1+gpbc9frP6kldQgIaRddzg+eeefg72VLxdWxQZr8dlx6zwXv6r0
-        +cqLmEJbm0Va017UhHiyXOZV7e9o8i3gTS6exfHk3iXnn79lPkj5TQx8fUNwx5qK93HzXnQG
-        zU848/GPyMEC25QO1p/B6/dE2VWfyufWKTrgf+RSm/Gt8zPuOBdb2tuXegTUbGEvkilcPTti
-        zW1Jgd23Ik7lbGn8qtV7mZmV59wtV+63G1YEakx4xvS17Xpm84aCRQ5sL6oD0v1cNjZpmet+
-        2KVy+k+UZlLzlr0zNe7uCZM3d2Uwc7tzS6uoQJ412f3pxZQ53Tf+b2M1OC9+uvtYqv21aees
-        E5QmByqxFGckGmoxFxUnAgCSFEUL2QMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWy7bCSvG5177E4g+cTjS16z51ksngwbxub
-        xf9tE5ktrnx9z2Yx6f4EFosX9y6yWJw/v4Hd4mzTG3aLTY+vsVpc3jWHzWLG+X1MFkce7ma3
-        mDH5JZsDr8febwtYPDat6mTz2P7tAavH/e7jTB6bl9R79G1ZxejxeZNcAHsUl01Kak5mWWqR
-        vl0CV8a3G8+YCiawV3w7sIGpgfE/axcjJ4eEgInEtzO/2LoYuTiEBHYzSuz5epodIiEuMe3X
-        fkYIW1hi5b/n7BBFTxkl7i7bzAySYBPQlZh0sI0ZJCEisIpR4mznfTCHWeA5o0T/jnksEC17
-        GSV6Xh9kA2nhFLCXuLT/HthyYYEgiWVP5jCB2CwCqhJXry8CquHg4BWwlLjXEAMS5hUQlDg5
-        8wkLiM0soC3x9OZTOHvZwtfMEOcpSPx8ugxspIiAk8Sth++ZIWrEJV4ePcI+gVF4FpJRs5CM
-        moVk1CwkLQsYWVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgRHqJbmDsbtqz7oHWJk
-        4mA8xCjBwawkwruQ/2icEG9KYmVValF+fFFpTmrxIUZpDhYlcd4bhQvjhATSE0tSs1NTC1KL
-        YLJMHJxSDUz5enWazDe0vookt/+JKVec/rMxReXYVFl2/qri9y0C1asNGe42ZkyIe7Ho5ASr
-        VdMvuqsLhL2V2h/7VOOH/Llme5M/D2PrjX1vlwk68N/p+lyzIqD6ok3C/6glOdI7L7zmLCvb
-        KH/3mt+DmrpmIb8f37Rz79+3L26I1Z1fkuZx6YPQndwYBv1PU5O2bdky+WyIOAfvj9TAaZKz
-        tJ5lylVJfPjlGbfZT++Vm9nURfcYhW2amRgk7sutVSit0Z7ou+hfh4J7QeokpQuL5nzlaJnw
-        XcHP3XdHTV33kwe7Hx8+Z+H32Me5fk62b3iF6P/J62ZfEJ0ULH6ghWOhUaIi3w2fxi/+060X
-        e06++10tTomlOCPRUIu5qDgRANdX/eI/AwAA
-X-CMS-MailID: 20200521141731epcas5p3970e37a1b1b1986b75814de104e4a857
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200519110323epcas5p23b9472d505f5ba58d033fa468cb9969d
-References: <CGME20200519110323epcas5p23b9472d505f5ba58d033fa468cb9969d@epcas5p2.samsung.com>
-        <20200519104904.59246-1-m.shams@samsung.com>
-        <fa372f07-abba-a296-c315-e9769fb43623@samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3021.23 via Frontend Transport; Thu, 21 May 2020 06:17:30 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 89994a09-0434-4e68-af8d-08d7fd4ea64d
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6720:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB672076F0F7996CB95781972A89B70@VE1PR04MB6720.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Forefront-PRVS: 041032FF37
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IvV5abqoQa38WTyJL1ZXf5z/Lv0RJge4YWoDOpDSWCXUv3zfNbxLFHq/i5Em+A+MA6ZokedtG4X6wZb+u/r/9uPWWeI9QHa0iNmj+/q8ZTDCtbF23cOyWWCjN39AOKuWvKNwHczrsU7MLrBfESmeV7KEzujQZ5/AOy0ai+IauITHlnz5C6VCmXEUcUIT0A2AHb4FE7SKukqtEldCnASHNrfaXLqzyPV/QsVfZsRVAXto4V0Mbq4vxfDEEy9DIda1rPkewyZIX7eCuTJJQuToAF44bJs2FlOgBJc9U61WnSGPHy0C3Lk+iECGeuOyHC2BEraUxRfQbBLM1GVshmxH8ox9wgmgAEhuiWfXMQiCwpT5ZEy8JtAPJDZb12q3kpx7jDi7igw2967YIbdms1wzzGjqNfsGTc3uy51GDaSFw17ZCMtvSDqaxWYot1TTMpZY3s9c9RnbRgL62adoX8srtITs28xuDOOYjzO1jc0CQRg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(6506007)(36756003)(6636002)(2616005)(86362001)(6486002)(956004)(52116002)(4326008)(5660300002)(26005)(8676002)(186003)(16526019)(66476007)(66556008)(8936002)(316002)(6666004)(66946007)(2906002)(478600001)(6512007)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 6z2ubjY4anI+e89LieQ6dSKqVAlLB+UwCjuW8MZzVrXleKvc/0vqdUiKt3mVhH1ztDhi73J9XTRO5YqlG5GkbXLGK2rc6yMfjyq0sQID/tB8OEHXKnl+Ktxf912zqqiKpg9nfrodmU/WsF6SDoprgAJiAv25z9aNyNvKa9EhdB55grCkrNqc7XkVpBgBpmYpVRcMATE1k1+pVvfCEEl79Lt/Wu54S7RAcMjpOxa8hFrUZK00qNePXfkoUyfMoXqa4PRjCh7bFffkI5bibW5M1u+5g6GaSw6AvIq6CRmWzKW6lVw5cFdd8L5yX7nX5Ryx5+kG7d9VP2EYwbyYomcebDby/4Yo0qGF0w3QVuPvRG4cWVDvuIz1qw5AXQWCVC6+/+SuW2wcCUtNXGYxap3CaIeNUonkEjBxvepGMsf2hwYnDBvr38RWgP08b926NzUgyhrZEnNh72j5DixCLfVUVQM/htR6Um7djSrNxECrD9uMN/U9z7BnYaEtbxvm5AZR
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89994a09-0434-4e68-af8d-08d7fd4ea64d
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2020 06:17:33.9657
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m9uC8c3waRkn2btB9Hr/0ghRUpbHAO8EYSIxTge4gNlKXvTdLGy344Bg42rcloBptDj73M84JHKPFOdNJO2YuA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6720
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Correct ldo1 voltage range from wrong high group(3.0v~3.3v) to low group
+(1.6v~1.9v) because the ldo1 should be 1.8v. Actually, two voltage groups
+have been supported at bd718x7-regulator driver, hence, just corrrect the
+voltage range to 1.6v~3.3v. For ldo2@0.8v, correct voltage range too.
+Otherwise, ldo1 would be kept @3.0v and ldo2@0.9v which violate i.mx8mm
+datasheet as the below warning log in kernel:
 
+[    0.995524] LDO1: Bringing 1800000uV into 3000000-3000000uV
+[    0.999196] LDO2: Bringing 800000uV into 900000-900000uV
 
-> -----Original Message-----
-> From: Inki Dae <inki.dae=40samsung.com>
-> Sent: Wednesday, May 20, 2020 11:08 AM
-> To: Tamseel Shams <m.shams=40samsung.com>; jy0922.shim=40samsung.com;
-> sw0312.kim=40samsung.com; kyungmin.park=40samsung.com; airlied=40linux.ie=
-;
-> daniel=40ffwll.ch
-> Cc: dri-devel=40lists.freedesktop.org; linux-arm-kernel=40lists.infradead=
-.org; linux-
-> samsung-soc=40vger.kernel.org; linux-kernel=40vger.kernel.org;
-> shaik.ameer=40samsung.com; krzk=40kernel.org; alim.akhtar=40samsung.com
-> Subject: Re: =5BPATCH v2=5D drm/exynos: Remove dev_err() on platform_get_=
-irq()
-> failure
->=20
-> Hi Tamseel,
->=20
-> Same patch=5B1=5D has been merged. So could you re-post this patch after =
-rebasing
-> it on top of exynos-drm-next branch?
-> After rebase, only g2d part would be valid.
->=20
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mm-evk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Inki Dae,
-Thanks for letting me know, I will send updated patch for G2D file.
-
-Thanks & Regards
-Tamseel Shams
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
+index e5ec832..0f1d7f8 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
+@@ -208,7 +208,7 @@
+ 
+ 			ldo1_reg: LDO1 {
+ 				regulator-name = "LDO1";
+-				regulator-min-microvolt = <3000000>;
++				regulator-min-microvolt = <1600000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
+ 				regulator-always-on;
+@@ -216,7 +216,7 @@
+ 
+ 			ldo2_reg: LDO2 {
+ 				regulator-name = "LDO2";
+-				regulator-min-microvolt = <900000>;
++				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <900000>;
+ 				regulator-boot-on;
+ 				regulator-always-on;
+-- 
+2.7.4
 
