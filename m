@@ -2,156 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03011DC6FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD441DC703
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 08:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgEUGXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 02:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbgEUGW7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 02:22:59 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE7DC061A0E;
-        Wed, 20 May 2020 23:22:58 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z18so6815699lji.12;
-        Wed, 20 May 2020 23:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=1cDoFhrO3JlVD3tvhSXZOVSF58OQKaORYpnpmjOhqAs=;
-        b=PDnu1Q7JRIO6G+SaTh5J1ef0cPUleRFWGKq+NULLVLnVdB2HfpfRQbRkB4AcBfA9W8
-         jR0P0vfxJIFfYRIim8R0aFhSZtlSwn4wOpwc9xwRYXWa/MRje1MXg3wU0gyxasnnwT47
-         ldrlQnckvUoAuPZyDM1s39GWahGyt99Uoq9h7R4LD4hzrHFkZzEiVaAXqd/OhmkIIfZU
-         mEyd1xTzJrYj/tA+JK5UPcKm1+bh7NucrSuu7A3qwj69Xdv2eVWdVFzRyetw985RNcHr
-         Uc387dqPmgyAvLtsGGseVef/jOTJcAnaxahq/tYfZTX/FlfKJUOoLsLRKiuCGpjLb0v5
-         /zkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=1cDoFhrO3JlVD3tvhSXZOVSF58OQKaORYpnpmjOhqAs=;
-        b=eCj1Pj7LUaaDGvYIZ49TmV7HmMWeKrO2HdMCtk9CoxwP71WSRNIbXhMzmcZu+RrRDn
-         At68ssnNDItNd8NZMDOInEt2vphjKs9lVXYrkRaXAK5b0RiMatgac5PHGmlQLp2jLo6Q
-         PInem0h0JMfF9HXMx5O3mcqAupGkzhib/iu7WgbCoDMTuodzRw5OpG9LbSlp/IyM2dKy
-         TVzm9Rjf6amZk7gc2xaGOD8Z6AUWJZNDjVUXmA7Q3wIsSAGZHzELECgWSHlyMh4mXSSa
-         XW8ZAHIPHg44HfruF0jmXvl+7ylV35hPAVc4O/L97T2tVil4Xxmz2Nj3vWURKybmK4aS
-         PmZQ==
-X-Gm-Message-State: AOAM532rQ2smeCqsPbr/IsYIw6LF1nFV1kZTiJhbkdsn9M4RAjyixD27
-        rFK9Hl/MyfQm0G8Y+qtLF60=
-X-Google-Smtp-Source: ABdhPJyMuPbOwO0ZBJt4B4trT6XYOxwNynenEnFe+gwIXnCnca6GrxDBZcsmtwNt+kFBVKcudUiaFw==
-X-Received: by 2002:a2e:9850:: with SMTP id e16mr4096070ljj.163.1590042176833;
-        Wed, 20 May 2020 23:22:56 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id e21sm376688ljj.86.2020.05.20.23.22.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 May 2020 23:22:56 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>, Jun Li <jun.li@nxp.com>,
-        Jun Li <lijun.kernel@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yu Chen <chenyu56@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        ShuFan Lee <shufan_lee@richtek.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jack Pham <jackp@codeaurora.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        "open list\:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 3/9] usb: dwc3: Increase timeout for CmdAct cleared by device controller
-In-Reply-To: <87v9kpx0zh.fsf@kernel.org>
-References: <20191028215919.83697-1-john.stultz@linaro.org>
- <20191028215919.83697-4-john.stultz@linaro.org> <87mudjj4rc.fsf@gmail.com>
- <CALAqxLU+9uEcdRVaLfh+eQrDtZbDGod9pRXhBX=prAhg9MXagw@mail.gmail.com>
- <CAKgpwJVaKpsgMjKcnYyJsfNj0ibkPt=mdn-NxfOkeX1jfL=9iQ@mail.gmail.com>
- <87h7wqmwrv.fsf@kernel.org>
- <CAKgpwJXfWv5=MDqBCADhe2iXf6eiP0GQ13Bwo9fkuU5kGO7dsw@mail.gmail.com>
- <87imgx35pg.fsf@kernel.org>
- <VE1PR04MB65283F16826D2254128073C589BD0@VE1PR04MB6528.eurprd04.prod.outlook.com>
- <3d757998-56f2-6fff-a724-f713867ae785@synopsys.com>
- <87ftc0xsig.fsf@kernel.org>
- <VE1PR04MB6528AB046FD441A5DDD83CD289BA0@VE1PR04MB6528.eurprd04.prod.outlook.com>
- <87d074xfbq.fsf@kernel.org>
- <VE1PR04MB6528A50EA40BF40E4B09793789B90@VE1PR04MB6528.eurprd04.prod.outlook.com>
- <db7447c2-a39d-361f-8b35-a1d5c2705c89@synopsys.com>
- <e3b0ff51-70ab-7d16-2c7e-cacac7d97043@synopsys.com>
- <VE1PR04MB65286728B9546B5FAA818A0A89B90@VE1PR04MB6528.eurprd04.prod.outlook.com>
- <bbfbd3f7-4908-5529-1a4e-29469e794b27@synopsys.com>
- <1c16bdb6-8d8d-1e1b-f08b-b3963f905eb0@synopsys.com>
- <87v9kpx0zh.fsf@kernel.org>
-Date:   Thu, 21 May 2020 09:22:51 +0300
-Message-ID: <87r1vdx0w4.fsf@kernel.org>
+        id S1728223AbgEUGZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 02:25:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4831 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726506AbgEUGZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 02:25:38 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1BDDE98CBFABEE69D726;
+        Thu, 21 May 2020 14:25:35 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.101) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 21 May 2020
+ 14:25:26 +0800
+Subject: Re: [RFC PATCH v3 2/2] CPPC: add support for SW BOOST
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rjw@rjwysocki.net>, <Souvik.Chakravarty@arm.com>,
+        <Thanu.Rangarajan@arm.com>, <Sudeep.Holla@arm.com>,
+        <guohanjun@huawei.com>, <john.garry@huawei.com>,
+        <jonathan.cameron@huawei.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1589888489-13828-1-git-send-email-wangxiongfeng2@huawei.com>
+ <1589888489-13828-3-git-send-email-wangxiongfeng2@huawei.com>
+ <20200520050014.qpnnmyas2z7mvcss@vireshk-i7>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <161082be-0df8-0128-bc77-58aee8d43bf6@huawei.com>
+Date:   Thu, 21 May 2020 14:25:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <20200520050014.qpnnmyas2z7mvcss@vireshk-i7>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.101]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Viresh,
 
-
-Hi Jun,
-
-Felipe Balbi <balbi@kernel.org> writes:
->> In any case, increasing the timeout should be fine with me. It maybe=20
->> difficult to determine the max timeout base on the slowest clock rate=20
->> and number of cycles. Different controller and controller versions=20
->> behave differently and may have different number of clock cycles to=20
->> complete a command.
+On 2020/5/20 13:00, Viresh Kumar wrote:
+> On 19-05-20, 19:41, Xiongfeng Wang wrote:
+>> To add SW BOOST support for CPPC, we need to get the max frequency of
+>> boost mode and non-boost mode. ACPI spec 6.2 section 8.4.7.1 describe
+>> the following two CPC registers.
 >>
->> The RTL engineer recommended timeout to be at least 1ms (which maybe=20
->> more than the polling rate of this patch). I'm fine with either the rate=
-=20
->> provided by this tested patch or higher.
->
-> A whole ms waiting for a command to complete? Wow, that's a lot of time
-> blocking the CPU. It looks like, perhaps, we should move to command
-> completion interrupts. The difficulty here is that we issue commands
-> from within the interrupt handler and, as such, can't
-> wait_for_completion().
->
-> Meanwhile, we will take the timeout increase I guess, otherwise NXP
-> won't have a working setup.
+>> "Highest performance is the absolute maximum performance an individual
+>> processor may reach, assuming ideal conditions. This performance level
+>> may not be sustainable for long durations, and may only be achievable if
+>> other platform components are in a specific state; for example, it may
+>> require other processors be in an idle state.
+>>
+>> Nominal Performance is the maximum sustained performance level of the
+>> processor, assuming ideal operating conditions. In absence of an
+>> external constraint (power, thermal, etc.) this is the performance level
+>> the platform is expected to be able to maintain continuously. All
+>> processors are expected to be able to sustain their nominal performance
+>> state simultaneously."
+>>
+>> To add SW BOOST support for CPPC, we can use Highest Performance as the
+>> max performance in boost mode and Nominal Performance as the max
+>> performance in non-boost mode. If the Highest Performance is greater
+>> than the Nominal Performance, we assume SW BOOST is supported.
+>>
+>> The current CPPC driver does not support SW BOOST and use 'Highest
+>> Performance' as the max performance the CPU can achieve. 'Nominal
+>> Performance' is used to convert 'performance' to 'frequency'. That
+>> means, if firmware enable boost and provide a value for Highest
+>> Performance which is greater than Nominal Performance, boost feature is
+>> enabled by default.
+>>
+>> Because SW BOOST is disabled by default, so, after this patch, boost
+>> feature is disabled by default even if boost is enabled by firmware.
+>>
+>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>> ---
+>>  drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 37 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+>> index bda0b24..792ed9e 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -37,6 +37,7 @@
+>>   * requested etc.
+>>   */
+>>  static struct cppc_cpudata **all_cpu_data;
+>> +static bool boost_supported;
+>>  
+>>  struct cppc_workaround_oem_info {
+>>  	char oem_id[ACPI_OEM_ID_SIZE + 1];
+>> @@ -310,7 +311,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>  	 * Section 8.4.7.1.1.5 of ACPI 6.1 spec)
+>>  	 */
+>>  	policy->min = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_nonlinear_perf);
+>> -	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
+>> +	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
+>>  
+>>  	/*
+>>  	 * Set cpuinfo.min_freq to Lowest to make the full range of performance
+>> @@ -318,7 +319,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>  	 * nonlinear perf
+>>  	 */
+>>  	policy->cpuinfo.min_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_perf);
+>> -	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
+>> +	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
+>>  
+>>  	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu_num);
+>>  	policy->shared_type = cpu->shared_type;
+>> @@ -343,6 +344,13 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>  
+>>  	cpu->cur_policy = policy;
+>>  
+>> +	/*
+>> +	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
+>> +	 * is supported.
+>> +	 */
+>> +	if (cpu->perf_caps.highest_perf > cpu->perf_caps.nominal_perf)
+>> +		boost_supported = true;
+>> +
+>>  	/* Set policy->cur to max now. The governors will adjust later. */
+>>  	policy->cur = cppc_cpufreq_perf_to_khz(cpu,
+>>  					cpu->perf_caps.highest_perf);
+>> @@ -410,6 +418,32 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
+>>  	return cppc_get_rate_from_fbctrs(cpu, fb_ctrs_t0, fb_ctrs_t1);
+>>  }
+>>  
+>> +static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
+>> +{
+>> +	struct cppc_cpudata *cpudata;
+>> +	int ret = 0;
+> 
+> No need to initialize this.
 
-patch 1 in this series doesn't apply to testing/next. Care to rebase and
-resend?
+I will change it in the next version.
 
-Thank you
+Thanks for your advice. I will add your 'Suggested-by' for these two patches.
 
-=2D-=20
-balbi
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Xiongfeng
 
------BEGIN PGP SIGNATURE-----
+> 
+>> +
+>> +	if (!boost_supported) {
+>> +		pr_err("BOOST not supported by CPU or firmware\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	cpudata = all_cpu_data[policy->cpu];
+>> +	if (state)
+>> +		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
+>> +					cpudata->perf_caps.highest_perf);
+>> +	else
+>> +		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
+>> +					cpudata->perf_caps.nominal_perf);
+>> +	policy->cpuinfo.max_freq = policy->max;
+>> +
+>> +	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static struct cpufreq_driver cppc_cpufreq_driver = {
+>>  	.flags = CPUFREQ_CONST_LOOPS,
+>>  	.verify = cppc_verify_policy,
+>> @@ -417,6 +451,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
+>>  	.get = cppc_cpufreq_get_rate,
+>>  	.init = cppc_cpufreq_cpu_init,
+>>  	.stop_cpu = cppc_cpufreq_stop_cpu,
+>> +	.set_boost = cppc_cpufreq_set_boost,
+>>  	.name = "cppc_cpufreq",
+>>  };
+>>  
+>> -- 
+>> 1.7.12.4
+> 
 
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl7GHjsACgkQzL64meEa
-mQZinhAAudYIuvazPxapE687anJuiz/UEVAaqcfJK8dDh/BGT20JtTbI5J+1zwE7
-OVwDBVXEdUNLOsd0Tc84OVeLNKhzbKGXdyter8tVautvcaSGQZm0nqO/ctFfs1N4
-4kZf1LQd7HrA9Xju0Fzy3BIZcOJx39AD5cXFAkcHylfblO8On6OOm8q3zdMN3rPH
-5Rgf3bPQSvt07Ex4uS8zPPEXC5H2EHyPDLMzMXmbDlKRzJcLtZcIMbeKGUuzBdNo
-jobVMFblYbHf6f9gBjQtFfY1V64mnBT0ULDNmhWIKuXvRN7hfmCKmAZiDdDmzEqG
-tVZ9qEwIWIgTF5mWuWvrZ2mqtzBRwSCScjxZwK6GmnktrDxGgi3TPom6e8TNZ0Ee
-mV+UedcuqcFvpQeL58Ru478tl7Hmtw7Io7xMR0nNssXNLyIKKwSOKtbCHmHMC3NM
-kHlK8dLAEnAPJ5AYOqIHvXACEI3vKestgQeWvci2slwWuBcNZFuweS4ASC/fkRzD
-+QDE0t0L4AFY9bq1ML4QulL+3/0ogJkORLy1wnHb/QD++DfYDHhayFZ2Q6K9BF9X
-axL5Gqw3tIjW5muwErsMTsLruNaA91/L6hPugtypeBqFigozZGtRJYTyuCGFlazM
-zKtIsU7/wFUCfxhCQ9IcgXlfHk/240h22Gg5X2X+1/nX64WQzTI=
-=y08r
------END PGP SIGNATURE-----
---=-=-=--
