@@ -2,201 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B225A1DD602
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAD61DD620
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 20:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgEUSbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 14:31:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729475AbgEUSbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 14:31:00 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E6CE207D3;
-        Thu, 21 May 2020 18:30:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590085859;
-        bh=AqLKF3zevyYxXSz0Pxo3hQCsOdifZ/ID8n8/sQf1rJc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=awANiXB4wP23gHbQESWbezZdjDCzfg4EgP2Ypeh1rTLvAajzThzV74nM7G7aTOpCq
-         CEn+Nt/tldhCUta0v/B7iHfFGLMAb3gXSJ8GhBIWyWTewchk0S1rbUBSFFAKlzK9eJ
-         icxgFSKzIL48STYVxPx7zbi0GipRJ5pSR9GalOOA=
-Date:   Thu, 21 May 2020 19:30:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-kernel@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: Re: [PATCH v2 3/4] iio: imu: bmi160: added regulator support
-Message-ID: <20200521193055.7ee7cf9c@archlinux>
-In-Reply-To: <20200520071751.GD3361@ict14-OptiPlex-980>
-References: <20200519075111.6356-1-jonathan.albrieux@gmail.com>
-        <20200519075111.6356-4-jonathan.albrieux@gmail.com>
-        <20200519185535.00003cb7@Huawei.com>
-        <20200520071751.GD3361@ict14-OptiPlex-980>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729832AbgEUSiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 14:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729793AbgEUSit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 14:38:49 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B7DC061A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:49 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l5so7358993edn.7
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yrft6eXy+aY+C/nmbJKmKuZKyTimjGnAiz9JkgNsSbY=;
+        b=hSVTTmym1pgL9YcNpVDIJBWF6WU0hQ91UA8xDxq8K8H18M/aZmUq/ehn5QhJzi6OSO
+         jgDf9RIy4iDoFVM+3CP9qUB0XaV2kJzGcfpJMwvqCu3CWxmG2Sn3g20Dzb9Zjil0FiVX
+         xX6BwQrCtncslZ+6UNswXHyLa1VJK+8+P/OCE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yrft6eXy+aY+C/nmbJKmKuZKyTimjGnAiz9JkgNsSbY=;
+        b=LygSzrQ+UFoLP+x1h/Vn9DWnDV8KOlltyR0Xfoe6nx4nWhWrv8YVSuyHv9d0fZvyOL
+         iNCaatePWhZ/TCIo2zjv6RMWgaHrCDLMqOrbqxnGDnVr/8YQuYzvifh6QaSXYo/CMigx
+         ez3o4cZs5pu/WouElEKTsWMvgh25hLKlM7qTDiQsr7nfju6C1seKc47hpkOkkJzAoc8U
+         7Z+noKpgLAIrjesIs3yLXW60MSc7bUV6Zi8oj2y+dvanGFvgIiDWpm4M6KTJgkmS81Be
+         3gvZ7voKNxRdIDcQbMTp/bFZ1VgGe4Efxgmc1IyB+EEhP+Bjcsqolaf9tPc3TSrwq66Z
+         46vg==
+X-Gm-Message-State: AOAM532Lo1NP56Rp0OldKleEZ5j9/pHVmEf45lzyXOZ4ahMkWdAlX0MF
+        JJXj889bLEKT7xt430EPBCL8lIMXBFQ=
+X-Google-Smtp-Source: ABdhPJxo1UrSYSPC1odbzbpiFU4n4ovseZ6cS60HClSfEvJRJm756KKNx/+BwKMpwgHNlLdeLNGoTA==
+X-Received: by 2002:a50:88c6:: with SMTP id d64mr40612edd.324.1590086327585;
+        Thu, 21 May 2020 11:38:47 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id h19sm5494096ejb.66.2020.05.21.11.38.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 11:38:47 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id x1so10040746ejd.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 11:38:47 -0700 (PDT)
+X-Received: by 2002:a2e:7e0a:: with SMTP id z10mr3496127ljc.314.1590085914996;
+ Thu, 21 May 2020 11:31:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1583332764.git.vpillai@digitalocean.com> <20200520222642.70679-1-joel@joelfernandes.org>
+In-Reply-To: <20200520222642.70679-1-joel@joelfernandes.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 May 2020 11:31:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
+Message-ID: <CAHk-=wjUXRG53S0mLd8UVG2+cMC=2YLJGB-K_h2TkqHGZ-VSoA@mail.gmail.com>
+Subject: Re: [PATCH RFC] sched: Add a per-thread core scheduling interface
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Turner <pjt@google.com>,
+        vpillai <vpillai@digitalocean.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, aubrey.li@linux.intel.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 May 2020 09:17:51 +0200
-Jonathan Albrieux <jonathan.albrieux@gmail.com> wrote:
+On Wed, May 20, 2020 at 3:26 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> ChromeOS will use core-scheduling to securely enable hyperthreading.
+> This cuts down the keypress latency in Google docs from 150ms to 50ms
+> while improving the camera streaming frame rate by ~3%.
 
-> On Tue, May 19, 2020 at 06:55:35PM +0100, Jonathan Cameron wrote:
-> > On Tue, 19 May 2020 09:50:59 +0200
-> > Jonathan Albrieux <jonathan.albrieux@gmail.com> wrote:
-> >   
-> > > v2: fixed missing description  
-> > 
-> > Don't put change log here....  
-> 
-> Yep I will put it in the cover letter
-> 
-> > > 
-> > > Add vdd-supply and vddio-supply support. Without this support vdd and vddio
-> > > should be set to always-on in device tree  
-> > 
-> > Kind of the opposite.  If they are always on we don't have to provide them
-> > in the device tree.
-> >   
-> 
-> I wrote that because, testing on msm8916, without setting the regulators to
-> always on they were controlled by other components and it happened that
-> the line wasn't ready during probe causing failure to load the module.
-> 
-> I will try to reword based on your comment, thank you.
+I'm assuming this is "compared to SMT disabled"?
 
-Ah. Understood.  I'd give that explicit example in the patch description.
-I'd assumed this was the normal case of they weren't being described
-at all in DT, whereas you case is more complex.
+What is the cost compared to "SMT enabled but no core scheduling"?
 
-Jonathan
+But the real reason I'm piping up is that your  latency benchmark
+sounds very cool.
 
-> 
-> > A few trivial things inline.
-> >   
-> > > 
-> > > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > > ---  
-> > 
-> > Change log goes here so we don't end up keeping it in the git log.
-> >   
-> > >  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
-> > >  drivers/iio/imu/bmi160/bmi160_core.c | 27 ++++++++++++++++++++++++++-
-> > >  2 files changed, 28 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/iio/imu/bmi160/bmi160.h b/drivers/iio/imu/bmi160/bmi160.h
-> > > index 621f5309d735..923c3b274fde 100644
-> > > --- a/drivers/iio/imu/bmi160/bmi160.h
-> > > +++ b/drivers/iio/imu/bmi160/bmi160.h
-> > > @@ -3,10 +3,12 @@
-> > >  #define BMI160_H_
-> > >  
-> > >  #include <linux/iio/iio.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >  
-> > >  struct bmi160_data {
-> > >  	struct regmap *regmap;
-> > >  	struct iio_trigger *trig;
-> > > +	struct regulator_bulk_data supplies[2];
-> > >  };
-> > >  
-> > >  extern const struct regmap_config bmi160_regmap_config;
-> > > diff --git a/drivers/iio/imu/bmi160/bmi160_core.c b/drivers/iio/imu/bmi160/bmi160_core.c
-> > > index 6af65d6f1d28..9bbe0d8e6720 100644
-> > > --- a/drivers/iio/imu/bmi160/bmi160_core.c
-> > > +++ b/drivers/iio/imu/bmi160/bmi160_core.c
-> > > @@ -15,6 +15,7 @@
-> > >  #include <linux/delay.h>
-> > >  #include <linux/irq.h>
-> > >  #include <linux/of_irq.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >  
-> > >  #include <linux/iio/iio.h>
-> > >  #include <linux/iio/triggered_buffer.h>
-> > > @@ -709,6 +710,12 @@ static int bmi160_chip_init(struct bmi160_data *data, bool use_spi)
-> > >  	unsigned int val;
-> > >  	struct device *dev = regmap_get_device(data->regmap);
-> > >  
-> > > +	ret = regulator_bulk_enable(ARRAY_SIZE(data->supplies), data->supplies);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Failed to enable regulators: %d\n", ret);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > >  	ret = regmap_write(data->regmap, BMI160_REG_CMD, BMI160_CMD_SOFTRESET);
-> > >  	if (ret)
-> > >  		return ret;
-> > > @@ -793,9 +800,17 @@ int bmi160_probe_trigger(struct iio_dev *indio_dev, int irq, u32 irq_type)
-> > >  static void bmi160_chip_uninit(void *data)
-> > >  {
-> > >  	struct bmi160_data *bmi_data = data;
-> > > +	struct device *dev = regmap_get_device(bmi_data->regmap);
-> > > +	int ret;
-> > >  
-> > >  	bmi160_set_mode(bmi_data, BMI160_GYRO, false);
-> > >  	bmi160_set_mode(bmi_data, BMI160_ACCEL, false);
-> > > +
-> > > +	ret = regulator_bulk_disable(ARRAY_SIZE(bmi_data->supplies),
-> > > +				     bmi_data->supplies);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Failed to disable regulators: %d\n", ret);
-> > > +	}  
-> > No need for brackets around a 1 line if block
-> >   
-> 
-> Thank you, I didn't noticed that :-)
-> 
-> > 	if (ret)
-> > 		dev_err(dev, "failed to disable regulators: %d\n", ret);
-> >   
-> > >  }
-> > >  
-> > >  int bmi160_core_probe(struct device *dev, struct regmap *regmap,
-> > > @@ -815,6 +830,16 @@ int bmi160_core_probe(struct device *dev, struct regmap *regmap,
-> > >  	dev_set_drvdata(dev, indio_dev);
-> > >  	data->regmap = regmap;
-> > >  
-> > > +	data->supplies[0].supply = "vdd";
-> > > +	data->supplies[1].supply = "vddio";
-> > > +	ret = devm_regulator_bulk_get(dev,
-> > > +				      ARRAY_SIZE(data->supplies),
-> > > +				      data->supplies);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Failed to get regulators: %d\n", ret);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > >  	ret = bmi160_chip_init(data, use_spi);
-> > >  	if (ret)
-> > >  		return ret;
-> > > @@ -853,6 +878,6 @@ int bmi160_core_probe(struct device *dev, struct regmap *regmap,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(bmi160_core_probe);
-> > >  
-> > > -MODULE_AUTHOR("Daniel Baluta <daniel.baluta@intel.com");
-> > > +MODULE_AUTHOR("Daniel Baluta <daniel.baluta@intel.com>");  
-> > 
-> > Good fix but shouldn't be in this patch.   Put it a separate patch on it's own.
-> >   
-> 
-> Ok will separate this fix into another patch, thank you!
-> 
-> > >  MODULE_DESCRIPTION("Bosch BMI160 driver");
-> > >  MODULE_LICENSE("GPL v2");  
-> > 
-> >   
-> 
-> Best regards,
-> Jonathan Albrieux
+Generally throughput benchmarks are much easier to do, how do you do
+this latency benchmark, and is it perhaps something that could be run
+more widely (ie I'm thinking that if it's generic enough and stable
+enough to be run by some of the performance regression checking
+robots, it would be a much more interesting test-case than some of the
+ones they run right now...)
 
+I'm looking at that "threaded phoronix gzip performance regression"
+thread due to a totally unrelated scheduling change ("sched/fair:
+Rework load_balance()"), and then I see this thread and my reaction is
+"the keypress latency thing sounds like a much more interesting
+performance test than threaded gzip from clear linux".
+
+But the threaded gzip test is presumably trivial to script, while your
+latency test is perhaps very specific to one particular platform and
+setuip?
+
+                   Linus
