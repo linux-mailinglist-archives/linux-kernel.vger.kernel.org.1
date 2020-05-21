@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710701DD0AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9803A1DD09B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgEUPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:01:45 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49650 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgEUPBo (ORCPT
+        id S1729722AbgEUO7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:59:38 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52682 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728162AbgEUO7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:01:44 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LEfPAi102177;
-        Thu, 21 May 2020 15:01:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=zAw1u07pbRDu+xvWXDwgv7P7rAeqqEG3qCROxNYz4Qw=;
- b=WcR2EviD0S8hW4M2rvwjYzJmQw4FXWXPBUrrFqEw1sUnEyiMbxupFvOgeiaqsO35y4jQ
- CPzN4RPWZ6CN7vjd6wBYwrtQUBjUMj9m0EAj6CSAN7hZzaajn1ZSnKnNebi9STjS87+w
- JKL62APs7QzHF9pg28671gwh0ONBuSPHok4+1ywoLlXr3HhK4IfhyKSbOVhikEcTfkxF
- 9stgAB1nQtebaQ/IRHWLcG1ceA7kwj4KhpyGXBYsO9ItnyKUCR3Cg7SuHMkRyzT2Y+Ua
- jnI2GFQJ+lm1iENMft9tc6tPnnqNuUZR+w0R92TuT1D5sfFSWNj5/xpNnLmioaAkH55q Bw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3127krh0yp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 May 2020 15:01:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04LEXEmm064466;
-        Thu, 21 May 2020 14:59:32 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 312t3bdb1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 May 2020 14:59:32 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04LExUkO015814;
-        Thu, 21 May 2020 14:59:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 21 May 2020 07:59:29 -0700
-Date:   Thu, 21 May 2020 17:59:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+9c6f0f1f8e32223df9a4@syzkaller.appspotmail.com>,
-        bridge@lists.linux-foundation.org,
-        David Miller <davem@davemloft.net>,
-        horatiu.vultur@microchip.com, kuba@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in br_mrp_parse
-Message-ID: <20200521145921.GJ30374@kadam>
-References: <0000000000007b211005a6187dc9@google.com>
- <20200521140803.GI30374@kadam>
- <CACT4Y+bzz-h5vNGH0rDMUiuGZVX01oXawXAPbjtnNHb1KVWSvg@mail.gmail.com>
+        Thu, 21 May 2020 10:59:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590073176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=75FPnYIg4487ji/STTwVV18+TkDRf4bIG3MW4+gphww=;
+        b=FQFXCtc/fwGu8F47kSztAG3Jghv3NZ+016ffw7+W+fNP745StGXjiMDOjAPKM63ogOyCKH
+        Ufy1CKrioloTUKFhqi4U7HO25Ajd2gAmrpLLS9cHGCYpFistLnaiPEHA+ClSapiBuZpD4+
+        OY9lMeQV5FuGpLM1JKLUxRV/AK8qHpA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-ClHZIB3qPR2yu9SGKy2UYg-1; Thu, 21 May 2020 10:59:32 -0400
+X-MC-Unique: ClHZIB3qPR2yu9SGKy2UYg-1
+Received: by mail-ed1-f72.google.com with SMTP id f10so2787879edn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:59:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=75FPnYIg4487ji/STTwVV18+TkDRf4bIG3MW4+gphww=;
+        b=WwPuJXB5Ne3urwlryCdOZmJdNwBF/wiGKnOGetRDpLFzEEwT/92aUcjXD6NrkesYzK
+         AcxbPjPIpdYbzA22omPi2fHqzxeWGZe8eduhUoq59pMcZfqoYNkhH0IebsL4ac0ACMvw
+         FT57hGZ7Irr5xdf0rEfrNqBvVgYfi6CRzkwF3SG9BmEhwzcKWb1FTzsrO9pqmLoac3/g
+         zC6McHZ9vVYxczCn7NKre1M+i5414cF77M+bYahSLc40V9i4ygOhd90S6ieHtRITnZTw
+         1lm5ZciDGYdqE69lJJX65puNtc8wyM02zxc3psmVVyA6TUNb+XAP316kFKJf+qQIGOVn
+         B+Qw==
+X-Gm-Message-State: AOAM533WCLPW3NRE9NxbnH3Q3rYObVy5DHw6t0rolAHzZ79Me4VfFuu0
+        T7suborV/XKYrGJUp8L4qRLvS98xSJ1S/lQuHFLyjLyYfxoIAM7ktHnpo6Vg8GFgOPPqdquNH/1
+        bd0FMkpJ18MF9ra6UC0qD8ceJ
+X-Received: by 2002:aa7:cad3:: with SMTP id l19mr8148090edt.335.1590073171473;
+        Thu, 21 May 2020 07:59:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRmjc9KoFWYCB9UJuoPDyXwo3I7zGXEs/M6DBOpaO4a224WEnAMH71JGQVoMcFiFr19StZig==
+X-Received: by 2002:aa7:cad3:: with SMTP id l19mr8148065edt.335.1590073171184;
+        Thu, 21 May 2020 07:59:31 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id cz9sm4771599edb.18.2020.05.21.07.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 07:59:30 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, kvm@vger.kernel.org,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with token info
+In-Reply-To: <943cfc2f-5b18-e00a-f5a2-4577472a1ff5@redhat.com>
+References: <20200511164752.2158645-1-vkuznets@redhat.com> <20200511164752.2158645-3-vkuznets@redhat.com> <20200512152709.GB138129@redhat.com> <87o8qtmaat.fsf@vitty.brq.redhat.com> <20200512155339.GD138129@redhat.com> <20200512175017.GC12100@linux.intel.com> <20200513125241.GA173965@redhat.com> <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com> <20200515184646.GD17572@linux.intel.com> <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com> <20200515204341.GF17572@linux.intel.com> <943cfc2f-5b18-e00a-f5a2-4577472a1ff5@redhat.com>
+Date:   Thu, 21 May 2020 16:59:29 +0200
+Message-ID: <87y2plqqpa.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bzz-h5vNGH0rDMUiuGZVX01oXawXAPbjtnNHb1KVWSvg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=944
- phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005210110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9627 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=982 malwarescore=0 cotscore=-2147483648
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005210110
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:28:05PM +0200, 'Dmitry Vyukov' via syzkaller-bugs wrote:
-> On Thu, May 21, 2020 at 4:08 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Wed, May 20, 2020 at 11:23:18AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    dda18a5c selftests/bpf: Convert bpf_iter_test_kern{3, 4}.c..
-> > > git tree:       bpf-next
-> >                   ^^^^^^^^
-> >
-> > I can figure out what this is from reading Next/Trees but it would be
-> > more useful if it were easier to script.
-> 
-> Hi Dan,
-> 
-> Is there a canonical way to refer to a particular branch of a particular tree?
-> >From what I observed on mailing lists people seem to say "linux-next"
-> or "upstream tree" and that seems to mean specific things that
-> everybody understands.
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git#master
+> However, interrupts for 'page ready' do have a bunch of advantages (more
+> control on what can be preempted by the notification, a saner check for
+> new page faults which is effectively a bug fix) so it makes sense to get
+> them in more quickly (probably 5.9 at this point due to the massive
+> cleanups that are being done around interrupt vectors).
+>
 
-I kind of hate that format because you have to replace the # with a
-space, but it's what everyone uses.
+Actually, I have almost no feedback to address in v2 :-) Almost all
+discussion are happening around #VE. Don't mean to rush or anything but
+if the 'cleanups' are finalized I can hopefully rebase and retest very
+quickly as it's only the KVM guest part which intersects with them, the
+rest should be KVM-only. But 5.9 is good too)
 
-regards,
-dan carpenter
+-- 
+Vitaly
 
