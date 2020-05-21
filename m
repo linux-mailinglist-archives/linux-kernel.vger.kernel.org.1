@@ -2,152 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894341DCFBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3025D1DCFC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 16:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgEUOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 10:30:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39971 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727889AbgEUOaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 10:30:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590071418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=33n/Gf6RNU/kBg3GIK+QkAEBkWH8KP0a4EI5Qt53HYo=;
-        b=Patfj++QwP2H/fDHJ6Xnrcf1DD9/dFjsE70F+DVAyUmx5W+y+/n2fEbN5T2G8xkK+qArNk
-        Zvr17ql+CWYQGeUDkNQMUAread8lw2YV6pbf7SXv5XTPasFQpmqOYgYGWrkcY7Hs4GCKjd
-        tzA9sJZRiCKVLWVcxgLDYEd9On8e75c=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-Om1BNRc-MvCEKnz2c4G-Qg-1; Thu, 21 May 2020 10:30:14 -0400
-X-MC-Unique: Om1BNRc-MvCEKnz2c4G-Qg-1
-Received: by mail-ej1-f70.google.com with SMTP id lk22so2991868ejb.15
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 07:30:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=33n/Gf6RNU/kBg3GIK+QkAEBkWH8KP0a4EI5Qt53HYo=;
-        b=WD0Mu1uaoAO6JvQpQH2txdKVvz1yKtirhto8sCOsb0wQFeASuBgdwCzmhtnpUpx4BD
-         CCJ3XY0HDjRh1DYz69sx9EfatJpg+6U+aleGCqKGlUXz2mzEjX5UWdpH6qA1Ae1q+9di
-         +DBfvRDdOsXpfp9hNvj200+dTSQurwq4glPzf+G/R/WTxMCCWLBd3xlRis9DBjV3bjnJ
-         ejkj47o2q51c4LxRuGI7DW5Cq7ul2w2SGuAEKNWWlAne08wt8FiYW2zd8uPF3Lb+UKWv
-         3cLV7hepsJdP6GxsY72UAbWBRK0UIqtBlOQWziwz3Fn4QkhX9wAO4HeXyqAJl89v6mAV
-         ZHvw==
-X-Gm-Message-State: AOAM533/LVfWtriMBsqhjw6K+FGMGZ09i7YSmG39dzzwgTBx5DGgz8T+
-        DKe+kX5xVAImRK0SesNcmWPwXkzsEMLNCj7pMrRjpAQqzYyAEY5z770CAFlh0dSIjFjZCa7K901
-        CC+Hn4eMAFjDmIPLVdxs8SDIP
-X-Received: by 2002:a17:906:935a:: with SMTP id p26mr3978718ejw.103.1590071412906;
-        Thu, 21 May 2020 07:30:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUKpjWioM+uuAah+uc8oforedtyBusAP9usq4CnSJAox7u/DIUUcmuufkRUnAxVNtbkatLUQ==
-X-Received: by 2002:a17:906:935a:: with SMTP id p26mr3978677ejw.103.1590071412624;
-        Thu, 21 May 2020 07:30:12 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id h18sm5259402eji.86.2020.05.21.07.30.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 May 2020 07:30:11 -0700 (PDT)
-Subject: Re: asus-wmi fails to load on new ASUS laptop UX325JA
-To:     Chris Chiu <chiu@endlessm.com>, Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        gregkh@linuxfoundation.org, gayatri.kammela@intel.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Upstreaming Team <linux@endlessm.com>
-References: <CAB4CAweJ6Zi2DqQ5qgQq-apAMzSSk3uzoohEJ443F5T=LohAAA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <6c8e947e-ebd4-f63f-db17-fabd2082ae66@redhat.com>
-Date:   Thu, 21 May 2020 16:30:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729615AbgEUObI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 10:31:08 -0400
+Received: from sauhun.de ([88.99.104.3]:50418 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727840AbgEUObG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 10:31:06 -0400
+Received: from localhost (p5486ce13.dip0.t-ipconnect.de [84.134.206.19])
+        by pokefinder.org (Postfix) with ESMTPSA id F01102C1FCF;
+        Thu, 21 May 2020 16:31:03 +0200 (CEST)
+Date:   Thu, 21 May 2020 16:31:00 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Tali Perry <tali.perry1@gmail.com>, ofery@google.com,
+        brendanhiggins@google.com, avifishman70@gmail.com,
+        tmaimon77@gmail.com, kfting@nuvoton.com, venture@google.com,
+        yuenn@google.com, benjaminfair@google.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 2/3] i2c: npcm7xx: Add Nuvoton NPCM I2C controller
+ driver
+Message-ID: <20200521143100.GA16812@ninjato>
+References: <20200521110910.45518-1-tali.perry1@gmail.com>
+ <20200521110910.45518-3-tali.perry1@gmail.com>
+ <20200521142340.GM1634618@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAB4CAweJ6Zi2DqQ5qgQq-apAMzSSk3uzoohEJ443F5T=LohAAA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+In-Reply-To: <20200521142340.GM1634618@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 5/21/20 12:33 PM, Chris Chiu wrote:
-> Hi,
->      I have the ASUS new laptop UX325JA and most of the media keys are
-> not working even with the latest kernel (5.7.0-rc5+). Looking into the
-> dmesg log, the ASUS WMI driver fails to load because of
-> [    7.827241] asus-nb-wmi: probe of asus-nb-wmi failed with error -5.
-> 
->      Before this message, the following message repeat 5 times, please
-> check the full dmesg log here
-> https://gist.github.com/mschiu77/9a53cd8ff17029e949210dfb3ec1213f
-> [    7.825975] ACPI BIOS Error (bug): AE_AML_BUFFER_LIMIT, Field
-> [IIA3] at bit offset/length 96/32 exceeds size of target Buffer (96
-> bits) (20200326/dsopcode-203)
-> [    7.825985] No Local Variables are initialized for Method [WMNB]
-> [    7.826005] ACPI Error: Aborting method \_SB.ATKD.WMNB due to
-> previous error (AE_AML_BUFFER_LIMIT) (20200326/psparse-531)
-> 
->      It fails the \_SB.ATKD.WMNB because the local variable IIA3
-> exceeds the buffer limit. The WMNB is the function to deal with all
-> ASUS WMI functions, such as ASUS_WMI_METHODID_INIT...etc. The related
-> code in DSDT is as follows. The full DSDT is here
-> https://gist.github.com/mschiu77/849c6cb89a8d8cadd015fa75465882dd
-> 
-> Method (WMNB, 3, Serialized)
-> {
->      P8XH (Zero, 0x11)
->      CreateDWordField (Arg2, Zero, IIA0)
->      CreateDWordField (Arg2, 0x04, IIA1)
->      CreateDWordField (Arg2, 0x08, IIA2)
->      CreateDWordField (Arg2, 0x0C, IIA3)
->      CreateDWordField (Arg2, 0x10, IIA4)
->      Local0 = (Arg1 & 0xFFFFFFFF)
->      If ((Local0 == 0x54494E49))
-> 
->      Just as the error messages indicated,  the IIA3 is out of boundary
-> for the target Buffer. The limit 96bits (12 bytes) is determined by
-> the input acpi_buffer size, which refers to internally defined struct
-> bios_args, in asus_wmi_evaluate_method3. Because all ASUS WMI
-> evaluations will invoke  asus_wmi_evaluate_method3 at last, so all
-> ASUS WMI functions fail to work. I can simply fix this by extending
-> the bios_args from 3 args to 5 u32 args as follows, but I don't think
-> it's generic enough and may have to change if there're more local
-> variables declared in ACPI method on the future ASUS machines. Any
-> suggestions for this?
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think you fix with just adding the 2 extra args is fine. Yes we
-may need to extend this in the future. But we have no idea when and
-with how many extra args. So for now I believe we should just move
-forward with your suggested fix.
+Hi Tali, Andy!
 
-If you can turn this into a proper patch and submit it upstream
-that would be great.
+On Thu, May 21, 2020 at 05:23:40PM +0300, Andy Shevchenko wrote:
+> On Thu, May 21, 2020 at 02:09:09PM +0300, Tali Perry wrote:
+> > Add Nuvoton NPCM BMC I2C controller driver.
+>=20
+> Thanks. My comments below.
+> After addressing them, FWIW,
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thanks, Andy, for all the review!
+
+=46rom a glimpse, this looks good to go. I will have a close look later
+today.
+
+> > +#ifdef CONFIG_DEBUG_FS
+>=20
+> Again, why is this here?
+>=20
+> Have you checked debugfs.h for !CONFIG_DEBUG_FS case?
+
+I wondered also about DEBUG_FS entries. I can see their value when
+developing the driver. But since this is done now, do they really help a
+user to debug a difficult case? I am not sure, and then I wonder if we
+should have that code in upstream. I am open for discussion, though.
+
+> > +MODULE_VERSION("0.1.3");
+>=20
+> Module version is defined by kernel commit hash. But it's up to you and
+> subsystem maintainer to decide.
+
+Please drop it. I also think commit id's (or even kernel versions) are a
+more precise description.
 
 Regards,
 
-Hans
+   Wolfram
 
 
-> 
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -116,6 +116,8 @@ struct bios_args {
->          u32 arg0;
->          u32 arg1;
->          u32 arg2; /* At least TUF Gaming series uses 3 dword input buffer. */
-> +       u32 arg3;
-> +       u32 arg4;
->   } __packed;
-> 
-> 
-> Chris
-> 
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7GkKAACgkQFA3kzBSg
+KbZ4kA/+J19dZhaJMmLz3WgryibpVzJTnhheDeduLgYVUvQcBoHj7dvuMF9+RYNM
+R+ClE6BTGWDYBGglNFSSFq/M8TUro7GzIPJw1wzSjLLtxYh13FeFx9FFYX+XS1zO
+oKff+p2gC1XM6RjEsIyTz7+/e0AsUKgCM6ENX4re+BbU/6IHvv2zOOaaVn2oEsoO
+3jQ/V2yV9U1QsFLd/Ev2SnYT4owBZY/CVz93njaUc9/Hfvz5FawH0SD3/GnWh8+K
+3gm7Ry1VoW8oopkXEcquXTBjaLKQPE3/w0cuJHFh4f9PAi1aEYHCfFa6MgC/Z8xg
+Fkhwkxj5m226WUa41Lswib5sdQ/ITRLetMkoM3VTLFKj5x2HmluwSV2Jt6tGFReZ
+K5fP8h8b4/TjEqVILEctTAfW0pEVT+BF0/cg9MiPPlKjNKXdOollLpu6hnaUdUxb
+QYz3ehhDfsD9lKpKFfCTyx1seQ54DwBM/C/w+RAg8ThTWjMHuj2rz872SVC1i+hY
+OCqRzUicn60p0SzZW5rL+kAVEKQkWjuosQ9XyoBMASXZnfWjzhLIFde6Yas6SXHV
+rTKLx5840wEuTVnNKsQ5XoMN0eadd9H0eu4I/XBXoc5ywX5EISq6df4xKfGC0kx6
+VB9hc42qrJ5lmQVOMVQ1bAdFba+mwzLKdCNcC+qHISoNJOctprY=
+=dVRn
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
