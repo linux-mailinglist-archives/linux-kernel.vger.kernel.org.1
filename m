@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984621DD737
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 21:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98211DD46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 19:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgEUT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 15:29:29 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:39868 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729625AbgEUT32 (ORCPT
+        id S1728937AbgEURa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 13:30:56 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:23378 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726821AbgEURaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 15:29:28 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04LJTC58043109;
-        Thu, 21 May 2020 14:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590089352;
-        bh=5cVvI02ABWumpoVFjgbtGBb7mRTK+933hQtYxfCzASg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=TZPonNeTFavlWc0GMMWmkDac2ZYs5xQd9GeA8E7KLrefaT+Udbnq7bXlJMCi8y0Yn
-         ZgW9xJMzipd7hq8Mc61geOed1EZcJBFsS7aQb1E9C9LePJ3gek2LT03HTLK/N7+nGo
-         KR0KHjFEAGziMGVf9v2uCoxTMyoLcc3zzMgoXb6k=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04LJTC9c127528
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 21 May 2020 14:29:12 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
- May 2020 14:29:12 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 21 May 2020 14:29:12 -0500
-Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04LJTB1p074206;
-        Thu, 21 May 2020 14:29:12 -0500
-Subject: Re: [PATCH 2/4] remoteproc: introduce version element into resource
- type field
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Clement Leger <cleger@kalray.eu>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200325204701.16862-1-s-anna@ti.com>
- <20200325204701.16862-3-s-anna@ti.com> <20200521175421.GI408178@builder.lan>
- <b338480e-c586-f988-f5b6-784551b7beb6@ti.com>
- <20200521192146.GO408178@builder.lan>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <57ae5678-fd0a-07a8-6165-a2cf7ccdef88@ti.com>
-Date:   Thu, 21 May 2020 14:29:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 21 May 2020 13:30:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590082255; x=1621618255;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Jy/N3rXBqaPkEkb9eg+3JzspSpEQo1U1nxztCbeYZ9U=;
+  b=ULbE8NFEXrtZAeYWavM34nGAjZQL2VJIlOZuhwnAAFtnvEDjSnjoX/Z4
+   nHaWe6KBzWLIgiJnm2cyuOWhxoi89ejNUTyVv2q2Tqd6kSQ3+ym22Fflb
+   lrqXvlACL5wRZrxMdmaVkeVBocGDaaZx8VzEmVTS4oHLNxIaDJDwPsHyW
+   R7gqFjC6UDRnrZVNK8xAIeftUv7Yjzt3IZ/IkyNP/0TbqWChls/63erVj
+   vO1nOlgzhlwc5ZEy82P+5sGClM6/k5XPTsC73EKE+iv1wnc13Dju8ttSD
+   sHZwPGSRaL4tDpWurU74bhOKPeP2+8U8SxLl6ef+Q7sNcQM8U4dpBZ4Fr
+   w==;
+IronPort-SDR: fQGe2TnqJy/y13jXVDIOYviAEYOuT8hwN8rTE5UdkE1usCD6xgCxudqs4v8nIN4lOtTkmdBAw4
+ E/dekCYJdfpF9kvvd9cJ+qeMrvEMFOLnuZeftgL4icKRrnfJzkyJoVo0w0bUzxsmzG72GlcaEz
+ yC2v7OCyBdWBz8gbdgFdl4qKuI8CphAp5+XFJjUAMQD8CxkiUK4UtkhqX441gf18h5RnWzC2UX
+ Gg/ibsiqFBc2qNhyegRe0coMnFGZrLKobSzkWTk7Wj9U0DZMFdSK1jhcV3yzYDcYHqxuUYIlm7
+ JIg=
+X-IronPort-AV: E=Sophos;i="5.73,418,1583218800"; 
+   d="scan'208";a="76664518"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 May 2020 10:30:55 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 21 May 2020 10:30:53 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Thu, 21 May 2020 10:30:53 -0700
+Date:   Thu, 21 May 2020 19:30:33 +0000
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+CC:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <roopa@cumulusnetworks.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/3] bridge: mrp: Add br_mrp_unique_ifindex function
+Message-ID: <20200521193033.3f553xieh2a7eapl@soft-dev3.localdomain>
+References: <20200520130923.3196432-1-horatiu.vultur@microchip.com>
+ <20200520130923.3196432-2-horatiu.vultur@microchip.com>
+ <cecbdbf0-bb49-1e3c-c163-8e7412c6fcec@cumulusnetworks.com>
+ <20200521181337.ory6lxyswatqhoej@soft-dev3.localdomain>
+ <39ba5110-2c2a-6fd9-a3e3-000b52a366dc@cumulusnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <20200521192146.GO408178@builder.lan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <39ba5110-2c2a-6fd9-a3e3-000b52a366dc@cumulusnetworks.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/20 2:21 PM, Bjorn Andersson wrote:
-> On Thu 21 May 12:06 PDT 2020, Suman Anna wrote:
+The 05/21/2020 19:58, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
->> Hi Bjorn,
->>
->> On 5/21/20 12:54 PM, Bjorn Andersson wrote:
->>> On Wed 25 Mar 13:46 PDT 2020, Suman Anna wrote:
->>>
->>>> The current remoteproc core has supported only 32-bit remote
->>>> processors and as such some of the current resource structures
->>>> may not scale well for 64-bit remote processors, and would
->>>> require new versions of resource types. Each resource is currently
->>>> identified by a 32-bit type field. Introduce the concept of version
->>>> for these resource types by overloading this 32-bit type field
->>>> into two 16-bit version and type fields with the existing resources
->>>> behaving as version 0 thereby providing backward compatibility.
->>>>
->>>> The version field is passed as an additional argument to each of
->>>> the handler functions, and all the existing handlers are updated
->>>> accordingly. Each specific handler will be updated on a need basis
->>>> when a new version of the resource type is added.
->>>>
->>>
->>> I really would prefer that we add additional types for the new
->>> structures, neither side will be compatible with new versions without
->>> enhancements to their respective implementations anyways.
->>
->> OK.
->>
->>>
->>>> An alternate way would be to introduce the new types as completely
->>>> new resource types which would require additional customization of
->>>> the resource handlers based on the 32-bit or 64-bit mode of a remote
->>>> processor, and introduction of an additional mode flag to the rproc
->>>> structure.
->>>>
->>>
->>> What would this "mode" indicate? If it's version 0 or 1?
->>
->> No, for indicating if the remoteproc is 32-bit or 64-bit and adjust the
->> loading handlers if the resource types need to be segregated accordingly.
->>
+> On 21/05/2020 21:49, Horatiu Vultur wrote:
+> > The 05/21/2020 11:16, Nikolay Aleksandrov wrote:
+> >> On 20/05/2020 16:09, Horatiu Vultur wrote:
+> >>> It is not allow to have the same net bridge port part of multiple MRP
+> >>> rings. Therefore add a check if the port is used already in a different
+> >>> MRP. In that case return failure.
+> >>>
+> >>> Fixes: 9a9f26e8f7ea ("bridge: mrp: Connect MRP API with the switchdev API")
+> >>> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> >>> ---
+> >>>  net/bridge/br_mrp.c | 31 +++++++++++++++++++++++++++++++
+> >>>  1 file changed, 31 insertions(+)
+> >>>
+> >>> diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> >>> index d7bc09de4c139..a5a3fa59c078a 100644
+> >>> --- a/net/bridge/br_mrp.c
+> >>> +++ b/net/bridge/br_mrp.c
+> >>> @@ -37,6 +37,32 @@ static struct br_mrp *br_mrp_find_id(struct net_bridge *br, u32 ring_id)
+> >>>       return res;
+> >>>  }
+> >>>
+> >>> +static bool br_mrp_unique_ifindex(struct net_bridge *br, u32 ifindex)
+> >>> +{
+> >>> +     struct br_mrp *mrp;
+> >>> +     bool res = true;
+> >>> +
+> >>> +     rcu_read_lock();
+> >>
+> >> Why do you need the rcu_read_lock() here when lockdep_rtnl_is_held() is used?
+> >> You should be able to just do rtnl_dereference() below as this is used only
+> >> under rtnl.
+> >
+> > Hi Nik,
+> >
+> > Also initially I thought that is not needed, but when I enabled all the
+> > RCU debug configs to see if I use correctly the RCU, I got a warning
+> > regarding suspicious RCU usage.
+> > And that is the reason why I have put it.
+> >
 > 
-> Sorry, I think I'm misunderstanding something. Wouldn't your 64-bit
-> remote processor need different firmware from your 32-bit processor
-> anyways, if you want to support the wider resource? And you would pack
-> your firmware with the appropriate resource types?
+> Did you try using rtnl_dereference() instead of rcu_dereference() ?
 
-Yes, that's correct.
+I have just tried it now and that seems to work fine.
+I will redo the patch and send a new patch series.
 
 > 
-> Afaict the bit width of your remote processor, busses or memory is
-> unrelated to the choice of number of bits used to express things in the
-> resource table.
+> >>
+> >>> +     list_for_each_entry_rcu(mrp, &br->mrp_list, list,
+> >>> +                             lockdep_rtnl_is_held()) {
+> >>> +             struct net_bridge_port *p;
+> >>> +
+> >>> +             p = rcu_dereference(mrp->p_port);
+> >>> +             if (p && p->dev->ifindex == ifindex) {
+> >>> +                     res = false;
+> >>> +                     break;
+> >>> +             }
+> >>> +
+> >>> +             p = rcu_dereference(mrp->s_port);
+> >>> +             if (p && p->dev->ifindex == ifindex) {
+> >>> +                     res = false;
+> >>> +                     break;
+> >>> +             }
+> >>> +     }
+> >>> +     rcu_read_unlock();
+> >>> +     return res;
+> >>> +}
+> >>> +
+> >>>  static struct br_mrp *br_mrp_find_port(struct net_bridge *br,
+> >>>                                      struct net_bridge_port *p)
+> >>>  {
+> >>> @@ -255,6 +281,11 @@ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance)
+> >>>           !br_mrp_get_port(br, instance->s_ifindex))
+> >>>               return -EINVAL;
+> >>>
+> >>> +     /* It is not possible to have the same port part of multiple rings */
+> >>> +     if (!br_mrp_unique_ifindex(br, instance->p_ifindex) ||
+> >>> +         !br_mrp_unique_ifindex(br, instance->s_ifindex))
+> >>> +             return -EINVAL;
+> >>> +
+> >>>       mrp = kzalloc(sizeof(*mrp), GFP_KERNEL);
+> >>>       if (!mrp)
+> >>>               return -ENOMEM;
+> >>>
+> >>
+> >
+> 
 
-I would have to add the new resource type to the loading_handlers right, 
-so it is a question of whether we want to impose any restrictions in 
-remoteproc core or not from supporting a certain resource type (eg: I 
-don't expect RSC_TRACE entries on 64-bit processors).
-
-regards
-Suman
+-- 
+/Horatiu
