@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64BB1DD238
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E411DD243
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 17:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgEUPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 11:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
+        id S1728091AbgEUPrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 11:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728310AbgEUPpC (ORCPT
+        with ESMTP id S1726814AbgEUPrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 11:45:02 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1339FC061A0F
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:45:02 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f13so5937201wmc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:45:01 -0700 (PDT)
+        Thu, 21 May 2020 11:47:45 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822D2C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:47:43 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id n5so6858207wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 08:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=c5TekS/gqJoaBFfkjHpLDvrf7L/QxWIjFGYMdytg2QU=;
-        b=Rgc33QsBa95gR1OJets/mqYh/8ScIm9Z5t7vXdmjSSxh5PLS1/t+6pIlBZO77OLD5J
-         4/SThAZcFF4kRhjq9dnNJoF3MwPPSoaoUQRLMIzRbZ8uhGX2GCoKmgjKxF0R0USd1ST2
-         Hxveu0oCMX2gddjgHaxcRfTayVTyvqoXZapjM=
+        bh=ygXdshwZ6sqhNV/RMFYuAUef1d1MehMWLgDXSG2EHPs=;
+        b=Le6cJcuobanbwKgpp8zSivcyXze9t07R/UHYuERqTibtsy7X/7SAiRx3kKbE9q+2t7
+         a8LBUq/lE7CMVR3EFaUHcSr6o0pkzVkQudm8mbe8Brwi3sfop8yoJ0l/GyFhcrZqAQ89
+         OOtxQ24xQK1ODH4tvY+VAqxgZEWS0RFpiQGMo1SvpLsrxxJNEyA/2/ly+qvNOrvJDcnb
+         DJeOIaYP2xcpraV7aoTkNImBo83FCkvNbnqOlSTZk5cESrtBKP1XP9WZ/MsN9k+v2K4a
+         Uyhm1gX5Cn6BH6d+FSF9oaRhFniCeNWam4cS6kt+Om7gD86vLeCEhg32UKpaUKqtbDPb
+         zKEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=c5TekS/gqJoaBFfkjHpLDvrf7L/QxWIjFGYMdytg2QU=;
-        b=oHK+TmPBXbXAHyBjcND2wodLkGL1qHAgQ1sq9I+gq9bbUm2NuqhI3S1VnKn7YfUiuu
-         rJAjCqwPKcfkqkmh6W8cZAjL8svi8jeWvYzx9A44jI900gBt/EDMAuIKOdKagYUblfPU
-         Udt5xx/WJ6LYfpwUnBr16KSItpcjHottzqcCIKgVp8/oYjbGX0OBNgdDSF+QjB7dyA5C
-         kdpIYaF1KVoPkSF00gN7yMghtu1uXworCGKViiRsemR1GxhM92Ef/G/zCNrVtf43t8/o
-         F8bRvjRfSQvTrvJHzFZkozIN6IatCdNIQ1sHRW7NJ7VzZwdMcC4nze/C3yEYNOz/qYBa
-         wJLA==
-X-Gm-Message-State: AOAM533trqJDUTmlQwDYxjZNDwtuKSxcUhAKiGJXhlvPs1MDuNLoM3i8
-        uqxYGCByOGfVpXYCnr+EbsiZ6A==
-X-Google-Smtp-Source: ABdhPJwAVu5t0ZqfWJtIhj/nNKgxybzQqBLtV6Ok88bjUrcykbcSSAFQiIz/IgQV0Ib4W3Spc6IFAg==
-X-Received: by 2002:a1c:ed0b:: with SMTP id l11mr10060544wmh.31.1590075900750;
-        Thu, 21 May 2020 08:45:00 -0700 (PDT)
-Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
-        by smtp.gmail.com with ESMTPSA id l11sm7201650wmf.28.2020.05.21.08.45.00
+        bh=ygXdshwZ6sqhNV/RMFYuAUef1d1MehMWLgDXSG2EHPs=;
+        b=e4gjaAQOenkJ75/4/r+medt7tew2IE9OErYMtOAVcH7QA6nhtf+qobYruUkwKDndfZ
+         UaOvO/mkpFg9+GNCVhnBHKQ3PY8tj7dNNrxwR6XA4FgjOysSLhgbhi54D4mvNr5La11v
+         oLjJoI9QnLflei+2spcQ2cMKVJjEh3WOBkoy8IBhQuA8tiZCf80vw3IjmFrPTlWUNhwX
+         UN7ah3xsfZ5ew6mq8p41dCSqtsGV0rYQvnk6dZElR+RTKki/q2zwfdKSbExiYCvn7efb
+         6H/4u02bJN2BXZ8aZ5Qq3twujlrg0j/GNyEGbYcHeszbY3XBna+8OvZMzmcH1zlyxNIW
+         oq2w==
+X-Gm-Message-State: AOAM531orW1JghCjJRBIKlNbyKnisc/gDCCHa5Qrmx3YKGxmTfN7+70N
+        ZrNJ96l4f65zxwm+hmLMWFDn4L244qA=
+X-Google-Smtp-Source: ABdhPJw5aqhrGaCS0GkssHgUIq4kYKj48KGgn6bMqFfY0W6t9kiBEGtCB7dkNiSteJamudE6T3LTbA==
+X-Received: by 2002:a7b:c205:: with SMTP id x5mr9933734wmi.135.1590076062001;
+        Thu, 21 May 2020 08:47:42 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id a10sm7076374wmf.46.2020.05.21.08.47.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 08:45:00 -0700 (PDT)
-Date:   Thu, 21 May 2020 15:44:58 +0000
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Xia Jiang <xia.jiang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        srv_heupstream@mediatek.com, senozhatsky@chromium.org,
-        mojahsu@chromium.org, drinkcat@chromium.org,
-        maoguang.meng@mediatek.com, sj.huang@mediatek.com
-Subject: Re: [PATCH v8 09/14] media: platform: Change MTK_JPEG_COMP_MAX macro
- definition location
-Message-ID: <20200521154458.GH209565@chromium.org>
-References: <20200403094033.8288-1-xia.jiang@mediatek.com>
- <20200403094033.8288-10-xia.jiang@mediatek.com>
+        Thu, 21 May 2020 08:47:40 -0700 (PDT)
+Date:   Thu, 21 May 2020 16:47:39 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [Kgdb-bugreport] [PATCH v3] kdb: Remove the misfeature 'KDBFLAGS'
+Message-ID: <20200521154739.ukfro4uuxpmnrpsx@holly.lan>
+References: <20200521072125.21103-1-liwei391@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403094033.8288-10-xia.jiang@mediatek.com>
+In-Reply-To: <20200521072125.21103-1-liwei391@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 05:40:28PM +0800, Xia Jiang wrote:
-> Move MTK_JPEG_COMP_MAX definition to mtk_jpeg_core.h file, because it
-> is used by mtk_jpeg_core.c file.
+On Thu, May 21, 2020 at 03:21:25PM +0800, Wei Li wrote:
+> Currently, 'KDBFLAGS' is an internal variable of kdb, it is combined
+> by 'KDBDEBUG' and state flags. It will be shown only when 'KDBDEBUG'
+> is set, and the user can define an environment variable named 'KDBFLAGS'
+> too. These are puzzling indeed.
 > 
-> Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
-> ---
-> v8: no changes
-> ---
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h | 2 ++
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_reg.h  | 1 -
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> After communication with Daniel, it seems that 'KDBFLAGS' is a misfeature.
+> So let's replace 'KDBFLAGS' with 'KDBDEBUG' to just show the value we
+> wrote into. After this modification, we can use `md4c1 kdb_flags` instead,
+> to observe the state flags.
 > 
+> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+> v2 -> v3:
+>  - Change to replace the internal env 'KDBFLAGS' with 'KDBDEBUG'.
+> v1 -> v2:
+>  - Fix lack of braces.
+> 
+>  kernel/debug/kdb/kdb_main.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> index 4fc43fb17127..392029287083 100644
+> --- a/kernel/debug/kdb/kdb_main.c
+> +++ b/kernel/debug/kdb/kdb_main.c
+> @@ -418,8 +418,7 @@ int kdb_set(int argc, const char **argv)
+>  				    argv[2]);
+>  			return 0;
+>  		}
+> -		kdb_flags = (kdb_flags &
+> -			     ~(KDB_DEBUG_FLAG_MASK << KDB_DEBUG_FLAG_SHIFT))
+> +		kdb_flags = (kdb_flags & ~KDB_DEBUG(MASK))
+>  			| (debugflags << KDB_DEBUG_FLAG_SHIFT);
+>  
+>  		return 0;
+> @@ -2081,7 +2080,8 @@ static int kdb_env(int argc, const char **argv)
+>  	}
+>  
+>  	if (KDB_DEBUG(MASK))
+> -		kdb_printf("KDBFLAGS=0x%x\n", kdb_flags);
+> +		kdb_printf("KDBDEBUG=0x%x\n",
+> +			(kdb_flags & KDB_DEBUG(MASK)) >> KDB_DEBUG_FLAG_SHIFT);
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+For this expression to work correctly, kdb_flags, need to be unsigned
+(otherwise we get an arithmetic right shift and mis-report when
+KDBDEBUG == 0xfff).
 
-Best regards,
-Tomasz
+This is just FYI, I think I can fix this up when applying...
+
+
+Daniel.
