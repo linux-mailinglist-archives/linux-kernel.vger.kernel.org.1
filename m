@@ -2,25 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994221DC9BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6850E1DC9CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 11:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgEUJP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 05:15:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:42968 "EHLO foss.arm.com"
+        id S1728791AbgEUJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 05:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728746AbgEUJP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 05:15:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03CED30E;
-        Thu, 21 May 2020 02:15:28 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.114])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA7263F68F;
-        Thu, 21 May 2020 02:15:25 -0700 (PDT)
-Date:   Thu, 21 May 2020 10:15:15 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
+        id S1728686AbgEUJRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 05:17:44 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76A19206BE;
+        Thu, 21 May 2020 09:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590052664;
+        bh=lrCsi5PPelpIf3uelRQPGB1wFFjJDgGZhs/G1Te3fZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DIlBfpyARv0vGa3tJkUPcxfnPdKc50TPwojk12d275MhOI1sRQ9w98/1yEf93mcvb
+         fGzQMuJ4Yp96h/zonve+e907nxQne9iJCritIncVwG1NiNbA1b2Esh/dQWRpsOXRVg
+         jffBqfWUGRvQ/Fh2FpTfyCE3CYN/FfRqGeJ2pHgM=
+Date:   Thu, 21 May 2020 10:17:39 +0100
+From:   Will Deacon <will@kernel.org>
 To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Will Deacon <will@kernel.org>,
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -29,7 +35,7 @@ Cc:     Will Deacon <will@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v4 0/7] firmware: smccc: Add basic SMCCC v1.2 +
  ARCH_SOC_ID support
-Message-ID: <20200521091458.GA6425@bogus>
+Message-ID: <20200521091736.GA5091@willie-the-truck>
 References: <20200518091222.27467-1-sudeep.holla@arm.com>
  <158999823818.135150.13263761266508812198.b4-ty@kernel.org>
  <CAK8P3a0bx2eOFSqM7ihNkJBWU_KKSh0vGJZZdvpkH=1nppingw@mail.gmail.com>
@@ -42,7 +48,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <CAK8P3a3dV0B26XE3oFQGTFf8EWV0AHoLudNtpSSB_t+pCfkOkQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,29 +56,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, May 21, 2020 at 11:06:23AM +0200, Arnd Bergmann wrote:
 > On Thu, May 21, 2020 at 10:11 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > On Thu, May 21, 2020 at 08:57:56AM +0100, Will Deacon wrote:
-> > > On Thu, May 21, 2020 at 09:34:10AM +0200, Arnd Bergmann wrote:
-> > > > On Thu, May 21, 2020 at 9:07 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > > > On Wed, May 20, 2020 at 11:54:16PM +0200, Arnd Bergmann wrote:
-> > > > > > On Wed, May 20, 2020 at 11:29 PM Will Deacon <will@kernel.org> wrote:
-> > > > > > > Applied to arm64 (for-next/smccc), thanks!
-> > > > > > >
-> > > > > > > Arnd -- Sudeep's reply to you about the sysfs groups seemed reasonable to me,
-> > > > > > > but please shout if you'd rather I dropped this in order to pursue an
-> > > > > > > alternative approach.
-> > > > > >
-> > > > > > I missed the reply earlier, thanks for pointing me to it again.
-> > >
-> > > D'oh, I took your silence as "no objections". Oh well!
-> > >
-> > > > > > I'm not entirely convinced, but don't revert it for now because of that,
-> > > > > > I assume we can find a solution.
-> > >
-> > > Ok, cheers. It's on a separate branch so it's easy enough to drop if
-> > > necessary (i.e. no reverts needed). Sudeep -- please send any extra patches
-> > > on top of the branch.
-> > >
-> >
 > > Indeed, it is also last patch in the series. However if Arnd is happy
 > > with the sysfs names, we can move to generic code later without breaking
 > > anything.
@@ -82,17 +65,13 @@ On Thu, May 21, 2020 at 11:06:23AM +0200, Arnd Bergmann wrote:
 > > drivers in time for v5.8
 > >
 > > I am fine if you want to drop the last patch.
->
+> 
 > Ok, let's drop that patch then and make sure we do something that
 > everyone is happy with later on. I'm already in favor of adding
 > a more reliable soc_device instance based on this, but we need to
 > be sure we don't screw up the contents of the attributes when we
 > can't change them later.
->
-
-Sure. Will, please drop the last patch in the series. I will rework
-moving the custom attributes to the core.
-
+> 
 > > > > >> drivers/firmware/smccc/smccc.c:14:13: warning: no previous prototype for function 'arm_smccc_version_init' [-Wmissing-prototypes]
 > > > > void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit conduit)
 > > > > ^
@@ -106,26 +85,25 @@ moving the custom attributes to the core.
 > > >
 > >
 > > /me confused. Do you need the fix for this warning or you are happy to ignore?
->
+> 
 > I want a fix for that, as I hope we can eventually turn this warning on by
 > default and stop playing whack-a-mole when they come up. Most of these
 > warnings are harmless, but occasionally the prototypes don't match exactly
 > and cause real bugs depending on the configuration, and ensuring both
 > sides include a common header file is an easy way to make it work
 > more reliably.
->
-
-Agreed.
-
+> 
 > Note that the warning should come up for either W=1 or C=1, and I also
-> think that new code should generally be written sparse-clean and have
-> no warnings with 'make C=1' as a rule.
->
+> think that
+> new code should generally be written sparse-clean and have no warnings with
+> 'make C=1' as a rule.
 
-Sure, I am facing issues with clang-8, it fails to build arm_smccc_1_1_invoke
-which I think Nick was mentioning in some other thread. I will try latest
-clang.
+Fair enough. Is anybody working on a tree-wide sweep for this, like we've
+done for other things such as zero-length arrays? If so, I can start
+enforcing this in the arch code as well (I haven't been so far, even though
+I do run sparse on every commit).
 
---
-Regards,
-Sudeep
+Anyway, I've dropped the last patch from the branch, and we can put a fix
+for the missing prototype on top.
+
+Will
