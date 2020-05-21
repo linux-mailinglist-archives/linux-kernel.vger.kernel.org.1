@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3348E1DC762
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72301DC776
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 May 2020 09:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgEUHLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 03:11:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34644 "EHLO mga01.intel.com"
+        id S1728332AbgEUHSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 03:18:30 -0400
+Received: from elvis.franken.de ([193.175.24.41]:32948 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgEUHLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 03:11:55 -0400
-IronPort-SDR: KTZlZJrQeNdQKshFjTCIOCvySHzQgB58sIlvwwE9Tz2K1t3lKnH9tAkeZXVOOzBhjuOlhaULXH
- zmQwjE9jHvsw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2020 00:11:53 -0700
-IronPort-SDR: z7c0s6E/XsKg6S11eV0hFFqcwljSpul7VUxWd+FplJFBN88A21CKiBuf6ns6T90R9x0GcCoDe/
- ZgBKGsJO3syg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,417,1583222400"; 
-   d="scan'208";a="412297601"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 21 May 2020 00:11:50 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jbfMp-0003QD-8G; Thu, 21 May 2020 15:11:47 +0800
-Date:   Thu, 21 May 2020 15:11:13 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     kbuild-all@lists.01.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH linux-next] drm/msm/dpu: dpu_setup_dspp_pcc() can be
- static
-Message-ID: <20200521071112.GA92825@f61f8b3f25ca>
-References: <202005211507.nm5LmztD%lkp@intel.com>
+        id S1727003AbgEUHS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 03:18:27 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jbfTA-0001b7-01; Thu, 21 May 2020 09:18:20 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D2311C0155; Thu, 21 May 2020 09:14:57 +0200 (CEST)
+Date:   Thu, 21 May 2020 09:14:57 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/14] mips: Prepare MIPS-arch code for Baikal-T1 SoC
+ support
+Message-ID: <20200521071457.GC7309@alpha.franken.de>
+References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200521004217.6gdcpboxaqizreky@mobilestation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202005211507.nm5LmztD%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200521004217.6gdcpboxaqizreky@mobilestation>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 21, 2020 at 03:42:17AM +0300, Serge Semin wrote:
+> On Thu, May 21, 2020 at 03:34:29AM +0300, Serge Semin wrote:
+> >
+> > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+> > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+> > tag: v5.7-rc4
+> 
+> Thomas,
+> Please note that this patchset is based on the Linux 5.7-rc4 tree (it most likely
+> will get cleanly applied on rc6 as well), while mips-next is still at rc1. Due
+> to that the patchset fails to be applied on mips-next. I think it would be
+> better first to merge the last Linux tree into the mips-next, then try to merge
+> this patchset in. Should you have any problem after that, please let me know.
+> I'll resend the patchset being rebased on top of the new mips-next tree.
 
-Fixes: 4259ff7ae509 ("drm/msm/dpu: add support for pcc color block in dpu driver")
-Signed-off-by: kbuild test robot <lkp@intel.com>
----
- dpu_hw_dspp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+no, that's not how it works. Please rebase your patches on top of
+mips-next. Thank you.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
-index b5189cece3c66..a7a24539921f3 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
-@@ -22,7 +22,7 @@
- #define PCC_BLUE_G_OFF 0x24
- #define PCC_BLUE_B_OFF 0x30
- 
--void dpu_setup_dspp_pcc(struct dpu_hw_dspp *ctx,
-+static void dpu_setup_dspp_pcc(struct dpu_hw_dspp *ctx,
- 		struct dpu_hw_pcc_cfg *cfg)
- {
- 
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
