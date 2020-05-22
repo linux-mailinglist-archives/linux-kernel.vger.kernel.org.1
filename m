@@ -2,92 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DCC1DDE4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA771DDE12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgEVDsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 23:48:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:44102 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727836AbgEVDsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 23:48:05 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3F11374CB98CDB456CAC;
-        Fri, 22 May 2020 11:48:01 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 22 May 2020
- 11:47:53 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
-        <ryder.lee@mediatek.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <matthias.bgg@gmail.com>,
-        <shayne.chen@mediatek.com>, <chih-min.chen@mediatek.com>,
-        <yf.luo@mediatek.com>, <yiwei.chung@mediatek.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] mt76: mt7915: Fix build error
-Date:   Fri, 22 May 2020 11:45:33 +0800
-Message-ID: <20200522034533.61716-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1728533AbgEVDhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 23:37:39 -0400
+Received: from mail.windriver.com ([147.11.1.11]:58649 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728451AbgEVDhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 23:37:36 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 04M3bUlM018958
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 20:37:31 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 21 May 2020 20:37:26 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] kernel/hung_task: Use task_pid_nr function to get pid
+Date:   Fri, 22 May 2020 11:46:09 +0800
+Message-ID: <20200522034609.2048-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In file included from ./include/linux/firmware.h:6:0,
-                 from drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:4:
-In function ‘__mt7915_mcu_msg_send’,
-    inlined from ‘mt7915_mcu_send_message’ at drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:370:6:
-./include/linux/compiler.h:396:38: error: call to ‘__compiletime_assert_545’ declared with attribute error: BUILD_BUG_ON failed: cmd == MCU_EXT_CMD_EFUSE_ACCESS && mcu_txd->set_query != MCU_Q_QUERY
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-./include/linux/compiler.h:377:4: note: in definition of macro ‘__compiletime_assert’
-    prefix ## suffix();    \
-    ^~~~~~
-./include/linux/compiler.h:396:2: note: in expansion of macro ‘_compiletime_assert’
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-./include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-./include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-  ^~~~~~~~~~~~~~~~
-drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:280:2: note: in expansion of macro ‘BUILD_BUG_ON’
-  BUILD_BUG_ON(cmd == MCU_EXT_CMD_EFUSE_ACCESS &&
-  ^~~~~~~~~~~~
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-BUILD_BUG_ON is meaningless here, chang it to WARN_ON.
+Use task_pid_nr(t) function instead of t->pid when printing
+task pid
 
-Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/hung_task.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index f00ad2b66761..99eeea42478f 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -277,8 +277,8 @@ static int __mt7915_mcu_msg_send(struct mt7915_dev *dev, struct sk_buff *skb,
- 	}
- 
- 	mcu_txd->s2d_index = MCU_S2D_H2N;
--	BUILD_BUG_ON(cmd == MCU_EXT_CMD_EFUSE_ACCESS &&
--		     mcu_txd->set_query != MCU_Q_QUERY);
-+	WARN_ON(cmd == MCU_EXT_CMD_EFUSE_ACCESS &&
-+		mcu_txd->set_query != MCU_Q_QUERY);
- 
- exit:
- 	if (wait_seq)
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 14a625c16cb3..f397beb8c9e1 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -128,7 +128,7 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 		if (sysctl_hung_task_warnings > 0)
+ 			sysctl_hung_task_warnings--;
+ 		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
+-		       t->comm, t->pid, (jiffies - t->last_switch_time) / HZ);
++		       t->comm, task_pid_nr(t), (jiffies - t->last_switch_time) / HZ);
+ 		pr_err("      %s %s %.*s\n",
+ 			print_tainted(), init_utsname()->release,
+ 			(int)strcspn(init_utsname()->version, " "),
 -- 
-2.17.1
-
+2.24.1
 
