@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE131DE6F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09E71DE6F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgEVMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:32:57 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:65433 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgEVMc4 (ORCPT
+        id S1729658AbgEVMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728495AbgEVMeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:32:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1590150775; x=1621686775;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=jxpIcUQcFnD1p6i5FtXCqzY/ZBVzyH8VSD5KQpS2Dv4=;
-  b=YJFXzry9FtKA1A4X0muJJ29ab8k1dsQrA9rAVH4IokavErGjk5aMzx/g
-   Obr+eb44p5X4vPYpwQEpm6+5JrzQ+nTNf0zPTrfU/d0CI33mW0gpn5kkB
-   kGz/qlEDlM8YP3FH3fMxIwSJy9WxV27VfSU5eYrUxTNDnL82PrCB1C42b
-   +cGbK+05hZaRwKvKAF6tMSnJPn+TVAqjknFHWzxu0WLlk+X8aFRFY3PeH
-   aN/PRJVg0Q4Rq+RfpSoTayza9quuQ9b0KjmBNOEtMcr6XfZMBzrocXfyT
-   2Gjkir4g3pQoVwIJUpUBLcG6fMVT/yBWTtDVQDR75N6G4JWkteKVprQEM
-   Q==;
-IronPort-SDR: 8ZK7dF8XNyTVqcmAlieJNGc8ljWKTyZ86GajqAeHAD/M66C/8vrpRdodVajKVxcBkEM50NECXu
- YBTMSqFe48JXgTzgSQSyLrJmj9wfu2YRv5hBNuf4050KcPgOXelT7A7rvuA01zi4F2poQm0tqd
- +9XCEGEbSmDlxpODFm1UAAA/TFn12r8VbpTFKuWm/zzPj3sKk05Mc5NqQmxODS+16g6CzBrzxn
- ZQLnS69slGKl0TyJ3Z1hNwIPxOIy1B5i2tA4bQgJNBHP1lqO4f+7ChQDDqssvamLHvoGdm+TiM
- TYI=
-X-IronPort-AV: E=Sophos;i="5.73,421,1583164800"; 
-   d="scan'208";a="138635476"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 22 May 2020 20:32:55 +0800
-IronPort-SDR: WScRrQ8r1mHxw/nvSIXGkw9RkTs67dwGCoVQv4yu+90OHXk+HHwiMxBw7UF6IJIYihvjXK+fbo
- dwvyNPLGBY+Cnctpa/GaE7VYL1p90VLKI=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 05:22:54 -0700
-IronPort-SDR: OHwPvCphzfHlZfMUYqYjBYkAg+mjt1HpcboZgR02qCCB+C6sN2IL/1+cRCfEupoL/XD+oM1Iz8
- uL5wRqbiGh3g==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun52) ([10.149.66.28])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 05:32:55 -0700
-Date:   Fri, 22 May 2020 13:32:50 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@wdc.com>
-To:     Paul Burton <paulburton@kernel.org>
-cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>, linux-pci@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maciej W. Rozycki" <macro@linux-mips.org>
-Subject: Re: piix4-poweroff.c I/O BAR usage
-In-Reply-To: <CAG0y8xkAqscKC0qpx+zkBsmxtZFRaHdSgNLA78eGJUsQEtxQSA@mail.gmail.com>
-Message-ID: <alpine.LFD.2.21.2005221315360.21168@redsun52.ssa.fujisawa.hgst.com>
-References: <20200520135708.GA1086370@bjorn-Precision-5520> <alpine.LFD.2.21.2005220144230.21168@redsun52.ssa.fujisawa.hgst.com> <CAG0y8xkAqscKC0qpx+zkBsmxtZFRaHdSgNLA78eGJUsQEtxQSA@mail.gmail.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        Fri, 22 May 2020 08:34:09 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731FBC061A0E;
+        Fri, 22 May 2020 05:34:08 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w10so12471132ljo.0;
+        Fri, 22 May 2020 05:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eL8Nvkl6Jqd505Lrrd1U/0zX/XLAbGUHnr3EvdpPX9Y=;
+        b=KM9eNhY7gC7xlUELLqQ8ozhDetqCIUE0C9ZTdvsHPEn2bL0AQYYOSP//1eWA0U3ouo
+         A/NHKeKen202i2uIlPczj6xfOAi8lCAgqLrSBf05C7Do4TNDgc9usZGxAEKfI28OpetR
+         Xt/jjYyyDD7PTXna4AekrLyo++xfXRo6Qp40PNujlxU7ik4g3f8TIP5yq/lKCmWeqjB4
+         5toL8Q8jsmubnl5SE2yiioU7rom71w+yuMEx7Z7HkZCjskYgG6ogkk4Wtu7WVb35MynS
+         0QGpLErRTWZZE4zY0nITVocl2QQSCA7YvWKe6d/UkBJpMme/U6q26HRfL174QF2s6Bo0
+         8Uew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eL8Nvkl6Jqd505Lrrd1U/0zX/XLAbGUHnr3EvdpPX9Y=;
+        b=P02et84XkQOyyYO3c85QvOtjmTIL0Tyyw9J6u30zhIK6WZ1T8uh+MBjI72pbCdbPf6
+         LCjCrJhVJtq19CEExUSIRyaPdY+xR8ndyc9eLdBMgcIqm3ryi9CMfAl0Z2F3h+nYjJVB
+         FsuIhOK9phxMdnXOHhFIUfjPnc3QsHArKS+gBCmYf19D3puCEawskMEIBqvIP/tbHbf5
+         ++vNIu0FO3lktZ205GfKQn4sCa0xyq0s44Zs1IdXKvec/OWv7RC96FlMQ8J7WQBpLIc7
+         OnP0Ci3M33OfyR6famj3/6pAko64+ZsTYJ4sATt31bCiQXwBPlAWNNWphcpD12e7wdgC
+         vMLQ==
+X-Gm-Message-State: AOAM5308ocn7tGfsKUDrX5MDR3SncyQVNhphnpla9FDffCC3cVb0iQjS
+        5Ake3RY+XUFMaaOU+jTPPs6EHWjY7ilrj+nsw4w=
+X-Google-Smtp-Source: ABdhPJy0qbrKFhq2DTmr289nXFw7VgMAGyKyRIGU7V2kjdEOSEEAVwYnGjNg8RSoz66oTuirsQTEuDWTLA3AZQJEjrk=
+X-Received: by 2002:a2e:8347:: with SMTP id l7mr7457609ljh.243.1590150846890;
+ Fri, 22 May 2020 05:34:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200522065243.19590-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200522065243.19590-1-dinghao.liu@zju.edu.cn>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Fri, 22 May 2020 20:33:50 +0800
+Message-ID: <CADBw62oUW7-f05nHX1-cQM+tqyAVVt-knihmiPvekU93L=bLjA@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: sprd: Fix runtime PM imbalance on error
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        dmaengine@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 May 2020, Paul Burton wrote:
+On Fri, May 22, 2020 at 2:53 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> when it returns an error code. Thus a pairing decrement is needed on
+> the error handling path to keep the counter balanced.
+>
+> Also, call pm_runtime_disable() when pm_runtime_get_sync() returns
+> an error code.
 
-> I'm reachable but lacking free time & with no access to Malta hardware
-> I can't claim to be too useful here, so thanks for responding :)
+Good catch. Thanks.
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
- Great you're still around!  I hope you're doing good in this difficult 
-time, and overall.  I have recently learnt WaveComp is no more. :(
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/dma/sprd-dma.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+> index 0ef5ca81ba4d..275d83768d0d 100644
+> --- a/drivers/dma/sprd-dma.c
+> +++ b/drivers/dma/sprd-dma.c
+> @@ -1210,7 +1210,7 @@ static int sprd_dma_probe(struct platform_device *pdev)
+>         ret = dma_async_device_register(&sdev->dma_dev);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "register dma device failed:%d\n", ret);
+> -               goto err_register;
+> +               goto err_rpm;
+>         }
+>
+>         sprd_dma_info.dma_cap = sdev->dma_dev.cap_mask;
+> @@ -1224,10 +1224,9 @@ static int sprd_dma_probe(struct platform_device *pdev)
+>
+>  err_of_register:
+>         dma_async_device_unregister(&sdev->dma_dev);
+> -err_register:
+> +err_rpm:
+>         pm_runtime_put_noidle(&pdev->dev);
+>         pm_runtime_disable(&pdev->dev);
+> -err_rpm:
+>         sprd_dma_disable(sdev);
+>         return ret;
+>  }
+> --
+> 2.17.1
+>
 
-> Before being moved to a driver (which was mostly driven by a desire to
-> migrate Malta to a multi-platform/generic kernel using DT) this code
-> was part of arch/mips/mti-malta/ where I added it in commit
-> b6911bba598f ("MIPS: Malta: add suspend state entry code"). My main
-> motivation at the time was to make QEMU exit after running poweroff,
-> but I did ensure it worked on real Malta boards too (at least Malta-R
-> with CoreFPGA6). Over the years since then it shocked a couple of
-> hardware people to see software power off a Malta - if the original
-> hardware designers had intended that to work then the knowledge had
-> been lost over time :)
 
- Well, the Malta was designed by the Copenhagen team, which was dissolved 
-IIRC back in 2003, so indeed the intent may have been lost in the mist of 
-time.  I did know powering off is possible (same with the Atlas CompactPCI 
-board if you ever came across one, not supported by Linux anymore) as it 
-was inherent to the southbridge, and I remember discussing it once with 
-Chris Shaw back in the MIPS UK days.  I guess the further it went, the 
-more it became forgotten.
-
- Thanks for confirming it has been verified, though I was sure you did it 
-anyway.
-
-  Maciej
+-- 
+Baolin Wang
