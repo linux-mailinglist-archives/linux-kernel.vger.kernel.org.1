@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3F41DEE89
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4B81DEE8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730856AbgEVRqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:46:43 -0400
-Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:60480
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S1730881AbgEVRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:47:10 -0400
+Received: from mail-eopbgr680085.outbound.protection.outlook.com ([40.107.68.85]:51259
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730680AbgEVRql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:46:41 -0400
+        id S1730750AbgEVRrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 13:47:09 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AK+GUctfaMR/alQn0JVF368OgN7zxbueFW/feypvKCrLKm5Wbcoe79lxPmEY4JlEEKIi8F32dyqibdBK01DJp5382kixTxhdINue0ChCnKAQc1ES+ucLTz3n2BWv7twhXFtfTx8a5XuQjtb0Y1Y1sDKK4XlXi6kFjuEcjDZNwJQeqcPp/rKX9nnp63KBBL264e0LOWncJQb5jxawPMBwTI5glRNFffmwO6kNccf+zRoq3rgJmbDFKSPU94qC55vVi2h5qdr8KjaOrGaiPvnK4ptGxyQ7e7ZdkJRvw9gPF/1lZKZV644JzTeoEznitF7CRKiS1Y1VyQme54LW+o4KBw==
+ b=lZPcmjcJpjhkdoJYNVgLpiIg1C/ogNPaUe94Na99rRJbR1H7s4i1tEB+4hOmYGU6vMFDLwMIpkjsbMDJQnp5BpNMXGKbTJ5D0jXObapk9GN4S4hM1oEes4THU/D5ySfgn5DGA+9FR+HtO3c4EsScrAU8JMMVqOXmRBSNenaFZFciUx+WGAfSPkydCDIj6gvUhvv2tEVDPE3y7BUN7iFIv8M3fySkkXURp2itVRx4W695RRkyYr8oRsDiWmNL47oxR99DhRQuvtkz5j44URHAIA7/h3JkuWfe0C/Ml89Y/V2u+ucn8H3Hfjq/aVm2ew2fWtvEM1fab3a7BpPpNvH6bQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SEuKnysb8OxrA3D1W2e9xrXo7m1sdmc4EMku/6pVgNs=;
- b=LyIHHzet3uHyTb5Uod93ZR5tyCTcBGLUGyrpU0bLSRH/8h4rfOSSxkWSHxPYq7FlbStNn1BJKXmpRD0IyivYOfzzxS6SVZhOGQp4BV1/7EstCt+H6xGcKFUT5d9p3k1IbUhBvBqipG+CrjG25+/qrwc/HfxWB4mbjBQtm+tajMsf1eBgmdTv8ebEg4QfkmGJMzngA1Y9plXkvET3D2AQ19088HSNfjR0qx6zPjmN0QoeeIpOCZ9jtu7cSfR7vCfpoiOcWC9m1RQ7UvyEBOUBoTltjrlQ2hHj0DPnTXTGbZ1KJkBSV0ovVbon7HXqczm0wlqecTYnVSDCn1/Mg+eybw==
+ bh=eWco/JzVnqtAVm42ryCHq7pK5Wqk3cxgFgIXxp/za0w=;
+ b=jf4+J8C4YGsCSbEugyWIzjNp7GouCBzB0Ft2GTxaIlCZSSzh+jCBJOm1xGZusGxR/DiZRaShUuTKkZDajibUoAm1/pQYOxrceDZj5DA9rNBkgjzYcCDACc50vuyfX3dgSIY6dAh1OoTxkJrJaBho0na44lUtga5DupL7HXKzUVW5eM6o1S/aoSTBrb8YT8Aqi0VJ8o8kqOm5+Ei6SpnksGGqlbWSJm+6DslIQuHTsKwbYv8lQZoIRBG+ooR6TTDAIxMoCf9GScx9sUOaz6KUOAJpujVP7/Mg4v8OizSCoVQDWb7stboQZ9PPPDj8529spxgxSiGMgw0GN149Da+CUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SEuKnysb8OxrA3D1W2e9xrXo7m1sdmc4EMku/6pVgNs=;
- b=su5xPjIakyIcdMdzTv+M00SVqocnbE6MF9qTN2J4Weqj5K9V2H+BMGkm1LpAko/4Di2YSZiAz0Lz/7vTV9pkvb0Ms1WwpC/BojAyd2Y631ukDn1xnIL/nqxcZoRKLwI7DysziNfD5KdSEtdnuLfmdy4/9+uphWqHyi4vFPYfYN8=
+ bh=eWco/JzVnqtAVm42ryCHq7pK5Wqk3cxgFgIXxp/za0w=;
+ b=LgbKGJpTF75LzDycNp4T0DwoZM5JskXcfYHHfFQfENfoOY+BzCtjsGoaiqhPSJPtlCXx0rPz5RFPSMQYuYmtdxPchpOEqG1uu0QUtCOXqHwFwZehllGQZb4m3DrQtro0eH9IdmtQJ/+Q8xHDAb14jXpHryJpo7Cx1oyMN+Dqma8=
 Authentication-Results: zytor.com; dkim=none (message not signed)
  header.d=none;zytor.com; dmarc=none action=none header.from=amd.com;
 Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN1PR12MB2382.namprd12.prod.outlook.com (2603:10b6:802:2e::30) with
+ by SN1PR12MB2349.namprd12.prod.outlook.com (2603:10b6:802:2a::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24; Fri, 22 May
- 2020 17:46:39 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.26; Fri, 22 May
+ 2020 17:47:04 +0000
 Received: from SN1PR12MB2560.namprd12.prod.outlook.com
  ([fe80::2102:cc6b:b2db:4c2]) by SN1PR12MB2560.namprd12.prod.outlook.com
  ([fe80::2102:cc6b:b2db:4c2%3]) with mapi id 15.20.3021.027; Fri, 22 May 2020
- 17:46:39 +0000
-Subject: RE: [PATCH v3 08/10] x86/resctrl: Merge AMD/Intel parse_bw() calls
+ 17:47:04 +0000
+Subject: RE: [PATCH v3 09/10] x86/resctrl: Add arch_has_{sparse,empty}_bitmaps
+ to explain CAT differences
 To:     James Morse <james.morse@arm.com>,
         "x86@kernel.org" <x86@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
@@ -48,44 +49,44 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         H Peter Anvin <hpa@zytor.com>
 References: <20200518131924.7741-1-james.morse@arm.com>
- <20200518131924.7741-9-james.morse@arm.com>
+ <20200518131924.7741-10-james.morse@arm.com>
 From:   Babu Moger <babu.moger@amd.com>
-Message-ID: <14a0af1d-3879-d89c-20a8-a6d5118d5bf1@amd.com>
-Date:   Fri, 22 May 2020 12:46:36 -0500
+Message-ID: <b76c9118-7f6b-8d85-82a7-650d7db96c96@amd.com>
+Date:   Fri, 22 May 2020 12:47:01 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
-In-Reply-To: <20200518131924.7741-9-james.morse@arm.com>
+In-Reply-To: <20200518131924.7741-10-james.morse@arm.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR1401CA0011.namprd14.prod.outlook.com
- (2603:10b6:4:4a::21) To SN1PR12MB2560.namprd12.prod.outlook.com
+X-ClientProxiedBy: DM5PR1401CA0005.namprd14.prod.outlook.com
+ (2603:10b6:4:4a::15) To SN1PR12MB2560.namprd12.prod.outlook.com
  (2603:10b6:802:26::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.87] (165.204.77.1) by DM5PR1401CA0011.namprd14.prod.outlook.com (2603:10b6:4:4a::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Fri, 22 May 2020 17:46:37 +0000
+Received: from [10.236.30.87] (165.204.77.1) by DM5PR1401CA0005.namprd14.prod.outlook.com (2603:10b6:4:4a::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Fri, 22 May 2020 17:47:03 +0000
 X-Originating-IP: [165.204.77.1]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e09425a4-9c3d-4879-c2c8-08d7fe781446
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2382:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB23826D7B48139BEB0B73DE0C95B40@SN1PR12MB2382.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Office365-Filtering-Correlation-Id: e81739de-e499-4f1f-de8d-08d7fe78234c
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2349:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2349845AC29EBB72464AAB4595B40@SN1PR12MB2349.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-Forefront-PRVS: 04111BAC64
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: An2jnOKqpjlO4Bb5MfRLw+ciWiXzNR6NYjSTftQbV/umev8SZn5K4fgvHfOAbQ+5pJDOXF+vctXEvGSUu/im3mKOLwtDcNBahhs+PyahEtAQCOeB1ZsjdoRU6L8oWoBzOaL2g73WeRLfw/1+nAXGQyKKv0q6GXBZ3fhNNLkuBwrCjX5y5vS0wIckjTvlJjMnkQq2S+GiGBzJezyTSuZT4v7uZgHmia2Ygix63Ml57CC7uwrgeBMCtv6VKsIJen4EB9XMOOJslR491nL5YNryXALs3tfrnaSCwg3ECesKpWfcU2DTtkc+BY4f4ssytivT+YOvKWoNze8t/TXntYyLCJFZ1KInB6qagZXjWEtKEa8kBJSZ2wDSJI5+kM5rVdH3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(8936002)(2616005)(44832011)(956004)(8676002)(66946007)(4326008)(6486002)(66476007)(2906002)(31686004)(66556008)(478600001)(110136005)(26005)(54906003)(52116002)(16576012)(53546011)(16526019)(316002)(86362001)(5660300002)(186003)(36756003)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: OulonRzJyQT1s53nMIjGPTSut2XCF+mgz8UnBbZ/nfjnQrKqh4iOQ0Uux+Urg5atbWMBz+1XqnmyIMaFDFgnpSbFAksb3T1i64ck8dJtShS7+CrzyG84E38YPdv4s7QnhFuLc+QJl84tIrKLaAmI6/pAySV/mQM0r03e6PNRsh4CR0wrg9QPLRErYFwrhsL77+cBCsN38McExtUqNNE6PFSe//40OfAOMacq+wV9Q72bRMAzFSrZKQQuh2owBPYJ7mWgjIXvaY0waad6SmW8FU/VLPEC5YKXNJDuWhqQ2Zc0dk/9uMqxajgqtUz8iFKgC8aZFcXle3eugD+L6rMFshulhKifTkmANduGBYmx4tJyRoqStvS19FdqrkaesbpCMFmCIgwCHAlD69QhD2ehQeHot5obtBSqjnLuBcROFrpS4J3N8v18ZF73E1Si5frm+i7Dfv248csME+cIxuoGuBh87PephzDXcCj6eNhYXC0=
+X-Microsoft-Antispam-Message-Info: XmMRrA/p3yOucYRNRlQ8Sh1FYtuxl8tCqVfqYQbqO17Yyhw3dziSCDZQ809Pua6DQULJ0PAbUiFUNOG4BzIfXGp3wsqd+Mhvqgygp7OdWXULOFXHmZPkVsU6f0TIFnG3vruH8O9qTv7Q43dZHd2wGNSkh9O2wVzKuq4hhFG/8po30Z/85mTpuydw921YTkOYA0AWUEB3Bub3N57Yw1b/mI6wIcLlsZsEV+cGoPoEEAzo8GxAV2oAq+ynNCiC+u/kNC1Z2El7MQ162pVWT/xwYNYRdkS8uFtbWEJB4DbUOZLtBUN6lSlLcgaUZnQ0c1iSIIHCG0xyIbCZb9YE7sDr4nAIIQbZEjxGg3W4Omz7C49Jo0l5u5ZaPt+rTZbpnyU9NhVzJ0K1OFQjNkRVTeNHg1TS2zUcixAuYwJ6f5UMb10=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(39860400002)(346002)(366004)(396003)(136003)(66476007)(66946007)(66556008)(956004)(2616005)(31686004)(186003)(16526019)(16576012)(316002)(8676002)(54906003)(5660300002)(110136005)(478600001)(44832011)(36756003)(26005)(8936002)(31696002)(6486002)(52116002)(2906002)(86362001)(53546011)(4326008)(142933001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: sNrry6TGp+6Fznx1LgW5TCjfnHpt7cApFKsm6nSRM910gRo/hD0Grj5Ne4Rb1E/HlM58PqFAa0d6W1FCzyzLCnu4+40c4rO1yWq63nu4PtTcQsPZ+SKPWNjwiD0qwT1mXIsX2LJQsKVAzIo7/WjN0ttbFEYcMlgn0990y9awuQM3CpUI8L01aYmGjOtchFS5fchDjwilP3792gBvMU0m/Q2GB4E6D93KCnck5rBEP0w5cBpFtrrbfcM5dKQrYIgwN6xqO2J3fTf+XOkFDajVj/vNY2oEdtBe4a9y7WLuyCiHc8FX1rSrmeBk9BUQmNFCveMo4063D3dLgWrvVSTwh2zV0od8fToSWPsqzkEqHAXGBp+BkVA/KKvB3ZpK/RLCCdotY1uaJXxv9jTz4FegwH15Lwyy1i8pIx9CjhMYytpqusvADMnrHz81svhtEZ7IhAxWzng1K05iIHNGAmKv+0THay/DmLpwoRzfcOZXdr8=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e09425a4-9c3d-4879-c2c8-08d7fe781446
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 17:46:39.0834
+X-MS-Exchange-CrossTenant-Network-Message-Id: e81739de-e499-4f1f-de8d-08d7fe78234c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 17:47:03.9484
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YsQ09MivA4Zk4nX4zxHjChvcum1oqO+/thZGWTUe8xJOF5snLfImDtbPWTfUKe8F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2382
+X-MS-Exchange-CrossTenant-UserPrincipalName: xS2NvNf9HzF8gjVUUEiYk2rthxj53ckdGCx3AanjomWIE4o1fy+rNyG7qSGBHrkC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2349
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -102,155 +103,210 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > Molnar <mingo@redhat.com>; Borislav Petkov <bp@alien8.de>; H Peter Anvin
 > <hpa@zytor.com>; Moger, Babu <Babu.Moger@amd.com>; James Morse
 > <james.morse@arm.com>
-> Subject: [PATCH v3 08/10] x86/resctrl: Merge AMD/Intel parse_bw() calls
+> Subject: [PATCH v3 09/10] x86/resctrl: Add arch_has_{sparse,empty}_bitmaps to
+> explain CAT differences
 > 
-> Now that we've explained arch_needs_linear to resctrl, the parse_bw()
-> calls are almost the same between AMD and Intel.
+> Intel CPUs expect the cache bitmap provided by user-space to have on
+> a single span of 1s, whereas AMD can support bitmaps like 0xf00f.
+> Arm's MPAM support also allows sparse bitmaps.
 > 
-> The difference is '!is_mba_sc()', which is not checked on AMD. This
-> will always be true on AMD CPUs as mba_sc cannot be enabled as
-> is_mba_linear() is false.
+> Similarly, Intel CPUs check at least one bit set, whereas AMD CPUs
+> are quite happy with an empty bitmap. Arm's MPAM allows an empty
+> bitmap.
 > 
-> Removing this duplication means user-space visible behaviour and
-> error messages are not validated or generated in different places.
+> To move resctrl out to /fs/ we need to explain platform differences
+> like this. Add two resource properties arch_has_{empty,sparse}_bitmaps.
+> Test these around the relevant parts of cbm_validate().
+> 
+> Merging the validate calls causes AMD to gain the min_cbm_bits test
+> needed for Haswell, but as it always sets this value to 1, it will
+> never match.
 > 
 > CC: Babu Moger <Babu.Moger@amd.com>
+> CC: Reinette Chatre <reinette.chatre@intel.com>
 > Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-Reviewed-by : Babu Moger <babu.moger@amd.com>
+Reviewed-by: Babu Moger <babu.moger@amd.com>
 
 > ---
->  arch/x86/kernel/cpu/resctrl/core.c        |  3 +-
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 57 +----------------------
->  arch/x86/kernel/cpu/resctrl/internal.h    |  6 +--
->  3 files changed, 5 insertions(+), 61 deletions(-)
+>  arch/x86/kernel/cpu/resctrl/core.c        | 14 ++++----
+>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 39 ++++++-----------------
+>  arch/x86/kernel/cpu/resctrl/internal.h    |  8 ++---
+>  3 files changed, 22 insertions(+), 39 deletions(-)
 > 
 > diff --git a/arch/x86/kernel/cpu/resctrl/core.c
 > b/arch/x86/kernel/cpu/resctrl/core.c
-> index c6b73b0ee070..223e5b90bcfd 100644
+> index 223e5b90bcfd..587f9791d2a6 100644
 > --- a/arch/x86/kernel/cpu/resctrl/core.c
 > +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -168,6 +168,7 @@ struct rdt_resource rdt_resources_all[] = {
->  		.name			= "MB",
->  		.domains		= domain_init(RDT_RESOURCE_MBA),
->  		.cache_level		= 3,
-> +		.parse_ctrlval		= parse_bw,
->  		.format_str		= "%d=%*u",
->  		.fflags			= RFTYPE_RES_MB,
->  	},
-> @@ -926,7 +927,6 @@ static __init void rdt_init_res_defs_intel(void)
->  		else if (r->rid == RDT_RESOURCE_MBA) {
+> @@ -922,9 +922,10 @@ static __init void rdt_init_res_defs_intel(void)
+>  		    r->rid == RDT_RESOURCE_L3CODE ||
+>  		    r->rid == RDT_RESOURCE_L2 ||
+>  		    r->rid == RDT_RESOURCE_L2DATA ||
+> -		    r->rid == RDT_RESOURCE_L2CODE)
+> -			r->cbm_validate = cbm_validate_intel;
+> -		else if (r->rid == RDT_RESOURCE_MBA) {
+> +		    r->rid == RDT_RESOURCE_L2CODE) {
+> +			r->cache.arch_has_sparse_bitmaps = false;
+> +			r->cache.arch_has_empty_bitmaps = false;
+> +		} else if (r->rid == RDT_RESOURCE_MBA) {
 >  			r->msr_base = MSR_IA32_MBA_THRTL_BASE;
 >  			r->msr_update = mba_wrmsr_intel;
-> -			r->parse_ctrlval = parse_bw_intel;
 >  		}
->  	}
->  }
-> @@ -946,7 +946,6 @@ static __init void rdt_init_res_defs_amd(void)
->  		else if (r->rid == RDT_RESOURCE_MBA) {
+> @@ -941,9 +942,10 @@ static __init void rdt_init_res_defs_amd(void)
+>  		    r->rid == RDT_RESOURCE_L3CODE ||
+>  		    r->rid == RDT_RESOURCE_L2 ||
+>  		    r->rid == RDT_RESOURCE_L2DATA ||
+> -		    r->rid == RDT_RESOURCE_L2CODE)
+> -			r->cbm_validate = cbm_validate_amd;
+> -		else if (r->rid == RDT_RESOURCE_MBA) {
+> +		    r->rid == RDT_RESOURCE_L2CODE) {
+> +			r->cache.arch_has_sparse_bitmaps = true;
+> +			r->cache.arch_has_empty_bitmaps = true;
+> +		} else if (r->rid == RDT_RESOURCE_MBA) {
 >  			r->msr_base = MSR_IA32_MBA_BW_BASE;
 >  			r->msr_update = mba_wrmsr_amd;
-> -			r->parse_ctrlval = parse_bw_amd;
 >  		}
->  	}
->  }
 > diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
 > b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index e3bcd77add2b..b0e24cb6f85c 100644
+> index b0e24cb6f85c..cc854bb369c9 100644
 > --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
 > +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -21,59 +21,6 @@
->  #include <linux/slab.h>
->  #include "internal.h"
+> @@ -76,12 +76,14 @@ int parse_bw(struct rdt_parse_data *data, struct
+> rdt_resource *r,
+>  }
 > 
-> -/*
-> - * Check whether MBA bandwidth percentage value is correct. The value is
-> - * checked against the minimum and maximum bandwidth values specified by
-> - * the hardware. The allocated bandwidth percentage is rounded to the next
-> - * control step available on the hardware.
-> - */
-> -static bool bw_validate_amd(char *buf, unsigned long *data,
-> -			    struct rdt_resource *r)
-> -{
-> -	unsigned long bw;
-> -	int ret;
-> -
-> -	/* temporary: always false on AMD */
-> -	if (!r->membw.delay_linear && r->membw.arch_needs_linear) {
-> -		rdt_last_cmd_puts("No support for non-linear MB domains\n");
-> -		return false;
-> -	}
-> -
-> -	ret = kstrtoul(buf, 10, &bw);
-> -	if (ret) {
-> -		rdt_last_cmd_printf("Non-decimal digit in MB value %s\n", buf);
-> -		return false;
-> -	}
-> -
-> -	if (bw < r->membw.min_bw || bw > r->default_ctrl) {
-> -		rdt_last_cmd_printf("MB value %ld out of range [%d,%d]\n",
-> bw,
-> -				    r->membw.min_bw, r->default_ctrl);
-> -		return false;
-> -	}
-> -
-> -	*data = roundup(bw, (unsigned long)r->membw.bw_gran);
-> -	return true;
-> -}
-> -
-> -int parse_bw_amd(struct rdt_parse_data *data, struct rdt_resource *r,
-> -		 struct rdt_domain *d)
-> -{
-> -	unsigned long bw_val;
-> -
-> -	if (d->have_new_ctrl) {
-> -		rdt_last_cmd_printf("Duplicate domain %d\n", d->id);
-> -		return -EINVAL;
-> -	}
-> -
-> -	if (!bw_validate_amd(data->buf, &bw_val, r))
-> -		return -EINVAL;
-> -
-> -	d->new_ctrl = bw_val;
-> -	d->have_new_ctrl = true;
-> -
-> -	return 0;
-> -}
-> -
 >  /*
->   * Check whether MBA bandwidth percentage value is correct. The value is
->   * checked against the minimum and max bandwidth values specified by the
-> @@ -110,8 +57,8 @@ static bool bw_validate(char *buf, unsigned long *data,
-> struct rdt_resource *r)
+> - * Check whether a cache bit mask is valid. The SDM says:
+> + * Check whether a cache bit mask is valid.
+> + * For Intel the SDM says:
+>   *	Please note that all (and only) contiguous '1' combinations
+>   *	are allowed (e.g. FFFFH, 0FF0H, 003CH, etc.).
+>   * Additionally Haswell requires at least two bits set.
+> + * AMD allows non-contiguous bitmasks.
+>   */
+> -bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r)
+> +static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
+>  {
+>  	unsigned long first_bit, zero_bit, val;
+>  	unsigned int cbm_len = r->cache.cbm_len;
+> @@ -93,7 +95,8 @@ bool cbm_validate_intel(char *buf, u32 *data, struct
+> rdt_resource *r)
+>  		return false;
+>  	}
+> 
+> -	if (val == 0 || val > r->default_ctrl) {
+> +	if ((!r->cache.arch_has_empty_bitmaps && val == 0) ||
+> +	    (val > r->default_ctrl)) {
+>  		rdt_last_cmd_puts("Mask out of range\n");
+>  		return false;
+>  	}
+> @@ -101,7 +104,9 @@ bool cbm_validate_intel(char *buf, u32 *data, struct
+> rdt_resource *r)
+>  	first_bit = find_first_bit(&val, cbm_len);
+>  	zero_bit = find_next_zero_bit(&val, cbm_len, first_bit);
+> 
+> -	if (find_next_bit(&val, cbm_len, zero_bit) < cbm_len) {
+> +	/* Are non-contiguous bitmaps allowed? */
+> +	if (!r->cache.arch_has_sparse_bitmaps &&
+> +	    (find_next_bit(&val, cbm_len, zero_bit) < cbm_len)) {
+>  		rdt_last_cmd_printf("The mask %lx has non-consecutive 1-
+> bits\n", val);
+>  		return false;
+>  	}
+> @@ -116,30 +121,6 @@ bool cbm_validate_intel(char *buf, u32 *data, struct
+> rdt_resource *r)
 >  	return true;
 >  }
 > 
-> -int parse_bw_intel(struct rdt_parse_data *data, struct rdt_resource *r,
-> -		   struct rdt_domain *d)
-> +int parse_bw(struct rdt_parse_data *data, struct rdt_resource *r,
-> +	     struct rdt_domain *d)
->  {
->  	unsigned long bw_val;
+> -/*
+> - * Check whether a cache bit mask is valid. AMD allows non-contiguous
+> - * bitmasks
+> - */
+> -bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r)
+> -{
+> -	unsigned long val;
+> -	int ret;
+> -
+> -	ret = kstrtoul(buf, 16, &val);
+> -	if (ret) {
+> -		rdt_last_cmd_printf("Non-hex character in the mask %s\n",
+> buf);
+> -		return false;
+> -	}
+> -
+> -	if (val > r->default_ctrl) {
+> -		rdt_last_cmd_puts("Mask out of range\n");
+> -		return false;
+> -	}
+> -
+> -	*data = val;
+> -	return true;
+> -}
+> -
+>  /*
+>   * Read one cache bit mask (hex). Check that it is valid for the current
+>   * resource type.
+> @@ -165,7 +146,7 @@ int parse_cbm(struct rdt_parse_data *data, struct
+> rdt_resource *r,
+>  		return -EINVAL;
+>  	}
 > 
+> -	if (!r->cbm_validate(data->buf, &cbm_val, r))
+> +	if (!cbm_validate(data->buf, &cbm_val, r))
+>  		return -EINVAL;
+> 
+>  	if ((rdtgrp->mode == RDT_MODE_EXCLUSIVE ||
 > diff --git a/arch/x86/kernel/cpu/resctrl/internal.h
 > b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 0b288b6fefd9..5919aae946ba 100644
+> index 5919aae946ba..35f8137c4dce 100644
 > --- a/arch/x86/kernel/cpu/resctrl/internal.h
 > +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -470,10 +470,8 @@ struct rdt_resource {
+> @@ -357,6 +357,8 @@ struct msr_param {
+>   *			in a cache bit mask
+>   * @shareable_bits:	Bitmask of shareable resource with other
+>   *			executing entities
+> + * @arch_has_sparse_bitmaps:	True if a bitmap like f00f is valid.
+> + * @arch_has_empty_bitmaps:	True if the '0' bitmap is valid.
+>   */
+>  struct rdt_cache {
+>  	unsigned int	cbm_len;
+> @@ -364,6 +366,8 @@ struct rdt_cache {
+>  	unsigned int	cbm_idx_mult;
+>  	unsigned int	cbm_idx_offset;
+>  	unsigned int	shareable_bits;
+> +	bool		arch_has_sparse_bitmaps;
+> +	bool		arch_has_empty_bitmaps;
+>  };
 > 
->  int parse_cbm(struct rdt_parse_data *data, struct rdt_resource *r,
->  	      struct rdt_domain *d);
-> -int parse_bw_intel(struct rdt_parse_data *data, struct rdt_resource *r,
-> -		   struct rdt_domain *d);
-> -int parse_bw_amd(struct rdt_parse_data *data, struct rdt_resource *r,
-> -		 struct rdt_domain *d);
-> +int parse_bw(struct rdt_parse_data *data, struct rdt_resource *r,
-> +	     struct rdt_domain *d);
+>  /**
+> @@ -433,7 +437,6 @@ struct rdt_parse_data {
+>   * @cache:		Cache allocation related data
+>   * @format_str:		Per resource format string to show domain
+> value
+>   * @parse_ctrlval:	Per resource function pointer to parse control values
+> - * @cbm_validate	Cache bitmask validate function
+>   * @evt_list:		List of monitoring events
+>   * @num_rmid:		Number of RMIDs available
+>   * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+> @@ -460,7 +463,6 @@ struct rdt_resource {
+>  	int (*parse_ctrlval)(struct rdt_parse_data *data,
+>  			     struct rdt_resource *r,
+>  			     struct rdt_domain *d);
+> -	bool (*cbm_validate)(char *buf, u32 *data, struct rdt_resource *r);
+>  	struct list_head	evt_list;
+>  	int			num_rmid;
+>  	unsigned int		mon_scale;
+> @@ -603,8 +605,6 @@ void cqm_setup_limbo_handler(struct rdt_domain
+> *dom, unsigned long delay_ms);
+>  void cqm_handle_limbo(struct work_struct *work);
+>  bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d);
+>  void __check_limbo(struct rdt_domain *d, bool force_free);
+> -bool cbm_validate_intel(char *buf, u32 *data, struct rdt_resource *r);
+> -bool cbm_validate_amd(char *buf, u32 *data, struct rdt_resource *r);
+>  void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
 > 
->  extern struct mutex rdtgroup_mutex;
-> 
+>  #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
 > --
 > 2.19.1
 
