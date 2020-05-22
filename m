@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1351DEC44
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7191DEC4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbgEVPlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 11:41:14 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:45460 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbgEVPlN (ORCPT
+        id S1730393AbgEVPmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 11:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbgEVPmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 11:41:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 125998029EB7;
-        Fri, 22 May 2020 15:41:08 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8uWzmiuImIaK; Fri, 22 May 2020 18:41:07 +0300 (MSK)
-Date:   Fri, 22 May 2020 18:41:05 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/8] clocksource: Fix MIPS GIC and DW APB Timer for
- Baikal-T1 SoC support
-Message-ID: <20200522154105.6gkutlgi2hxqjjzc@mobilestation>
-References: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
- <211ab91d-6085-3073-1cbc-2300abade1b7@linaro.org>
+        Fri, 22 May 2020 11:42:07 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628EAC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:42:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w10so13224623ljo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oOYVOHpaIS+oIho1dCUDLjlIT96AiPQqcbd2UVpV+2w=;
+        b=xc5YNUMinAG4CGXABpBRi7fN1jT3RAq5g34Fsehb7FeGfXYItR+jv9zdzFUbWBZgED
+         LmniBIdug9ZVwtsM86rfNB4Ym0c53ixm9EKzBW+98lrn+8iymUA1pl2rPFTIORF5gQ62
+         S7DQ9GAYdIyD0+h/PDFxltIl+vny9nvjNZwtDFWooA9AaFqDP1f1M3b8WEMP5ciTcCjp
+         W9NaNLJ0XScz6f3UhpDiAU5ZGmdgvxMde4+OxowuByFtU+aSTB2XW+29FZ21ruR/AtlZ
+         X2z7XizfkhRaPFBSCM5YrIriiEQ/BuEbJkBwj+XeDUcSN1pBzeruIIxoHJrH2wvAAVgG
+         WYVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oOYVOHpaIS+oIho1dCUDLjlIT96AiPQqcbd2UVpV+2w=;
+        b=liPhdbl/A2wNlvvVdchUhSpA9zYM/jxl/x1s39GCGRZtYGp42KU+mTKhln/HR4DaT/
+         xZclwvpRWbSosqEWy9G16VFHoiwwbE1vV83LgkjJ+PDN8/SZutUK1WjmNlI1FQ5FaWQe
+         f3/92/OJcHAMuFN4/a+Z+2XfBpe2m2wEkciXiAM2+Ru51LscGnCOS7pbkIo/4Wn6L4Xm
+         I4RCsp/BePO66jbkrMFRswzeaqC6p0kUNtTnr3x80hd0iS6blbzMJQQrk0dnl7hKUa7Z
+         +z9rTcv5jDQ4JNMb6rXjQpCPqOzMOURnFAJZ+9KWFbNq+Ow4OVpWfDqIKGiAKR2aod9r
+         t/dg==
+X-Gm-Message-State: AOAM530l7skN7KhTqoh7x+Cp6VdxkrIRjSaBKcr4qV+AGHN+ogDBdWSv
+        dDeOSJbWKxPpZfWTRXDTpXBAZwdh4RUYhmdawq39NQ==
+X-Google-Smtp-Source: ABdhPJxRJSZJBv5r7tYd2u0AUqK3zkVLdXL1DZDbhQE8M+i8GAUoeEfr4zqO0vZ1A56dhmdh581qQsP3Tbtb1mlvNY0=
+X-Received: by 2002:a2e:150f:: with SMTP id s15mr7582617ljd.102.1590162124742;
+ Fri, 22 May 2020 08:42:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <211ab91d-6085-3073-1cbc-2300abade1b7@linaro.org>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20200505084127.12923-1-laoar.shao@gmail.com> <20200505084127.12923-3-laoar.shao@gmail.com>
+ <CA+G9fYseWc_7yq0M5Onju_HxbFid6DbuuaEFf-KUpqfxdF-QTg@mail.gmail.com> <20200522114544.GA1112005@chrisdown.name>
+In-Reply-To: <20200522114544.GA1112005@chrisdown.name>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 22 May 2020 21:11:53 +0530
+Message-ID: <CA+G9fYvw+oY-EK1+FYCUAD5-UGD4MhBGJHasjF+L5nLtzL2GLQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mm, memcg: Decouple e{low,min} state mutations
+ from protection checks
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, linux-mm <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 05:28:42PM +0200, Daniel Lezcano wrote:
-> On 21/05/2020 22:48, Serge Semin wrote:
-> > As for all Baikal-T1 SoC related patchsets, which need this, we replaced
-> > the DW APB Timer legacy plain text-based dt-binding file with DT schema.
-> > Similarly the MIPS GIC bindings file is also converted to DT schema seeing
-> > it also defines the MIPS GIC Timer binding.
-> > 
-> > Aside from MIPS-specific r4k timer Baikal-T1 chip also provides a
-> > functionality of two another timers: embedded into the MIPS GIC timer and
-> > three external DW timers available over APB bus. But we can't use them
-> > before the corresponding drivers are properly fixed. First of all DW APB
-> > Timer shouldn't be bound to a single CPU, since as being accessible over
-> > APB they are external with respect to all possible CPUs. Secondly there
-> > might be more than just two DW APB Timers in the system (Baikal-T1 has
-> > three of them), so permit the driver to use one of them as a clocksource
-> > and the rest - for clockevents. Thirdly it's possible to use MIPS GIC
-> > timer as a clocksource so register it in the corresponding subsystem
-> > (the patch has been found in the Paul Burton MIPS repo so I left the
-> > original Signed-off-by attribute). Finally in the same way as r4k timer
-> > the MIPS GIC timer should be used with care when CPUFREQ config is enabled
-> > since in case of CM2 the timer counting depends on the CPU reference clock
-> > frequency while the clocksource subsystem currently doesn't support the
-> > timers with non-stable clock.
-> > 
-> > This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
-> > base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
-> > tag: v5.7-rc4
-> 
-> Applied patch 1,2,4,5,6,7,8
-> 
-> Thanks!
+On Fri, 22 May 2020 at 17:15, Chris Down <chris@chrisdown.name> wrote:
+>
+> Naresh Kamboju writes:
+> >This patch is causing oom-killer while running mkfs -t ext4 on i386 kernel
+> >running on x86_64 machine version linux-next 5.7.0-rc6-next-20200521.
+>
+> I think I see what's wrong here -- if we bail out early, memory.e{min,low}
+> might be uninitialised.
+>
+> Does this patch fix it, by any chance?
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d3b23c57bed4..aa902b9cbb79 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5046,6 +5046,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>                         memory_cgrp_subsys.broken_hierarchy = true;
+>         }
+>
+> +       memcg->memory.emin = 0;
+> +       memcg->memory.elow = 0;
+> +
+>         /* The following stuff does not apply to the root */
+>         if (!parent) {
+>   #ifdef CONFIG_MEMCG_KMEM
 
-Great! Thanks. Am I right to expect the series in: git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-at the branch timers/core?
+This patch did not fix the problem.
+The test log showing oom-killer link,
+https://lkft.validation.linaro.org/scheduler/job/1445128#L1194
 
--Sergey
+Build images:
+https://builds.tuxbuild.com/YqW37GVsCHf8ndxOT2z1iQ/
 
-> 
->   -- Daniel
-> 
-> 
-> -- 
-> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-> 
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
+- Naresh
