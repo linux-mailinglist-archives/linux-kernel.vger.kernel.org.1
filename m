@@ -2,166 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC451DDE40
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8A71DDDE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgEVDlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 23:41:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4888 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727936AbgEVDlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 23:41:04 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7EF29B06DAA200E1A48D;
-        Fri, 22 May 2020 11:40:58 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 22 May 2020 11:40:49 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>
-CC:     <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>,
-        <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
-        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH v4 2/2] CPPC: add support for SW BOOST
-Date:   Fri, 22 May 2020 11:34:36 +0800
-Message-ID: <1590118476-28742-3-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
-In-Reply-To: <1590118476-28742-1-git-send-email-wangxiongfeng2@huawei.com>
-References: <1590118476-28742-1-git-send-email-wangxiongfeng2@huawei.com>
+        id S1728025AbgEVDgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 23:36:37 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40664 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgEVDgh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 23:36:37 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04M3aLPc037280;
+        Thu, 21 May 2020 22:36:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590118581;
+        bh=HrQjWJ1fQIqu1ayf7fVo3VgYbxThYydlatrnKWcfJzQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=tfwDFl2F4veF+44wEnyZlowAjXC0drn3TmboAkdNp0ZOyAkE78ogBwSbSWqLldhL3
+         Qhuhq/XcUxjP2k8I5fxsrbCSvPrp4cNNbO92twrmXmJohLjODsk1oo8VoEkfVkVTLl
+         +JrPaxJngNCUWSZzjOCCvzuHum4WA3kwsXqiceZU=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04M3aLWW007398;
+        Thu, 21 May 2020 22:36:21 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 21
+ May 2020 22:36:21 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 21 May 2020 22:36:21 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04M3aHDv049868;
+        Thu, 21 May 2020 22:36:18 -0500
+Subject: Re: [PATCH v4 03/14] PCI: cadence: Add support to use custom read and
+ write accessors
+To:     Rob Herring <robh@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        PCI <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200506151429.12255-1-kishon@ti.com>
+ <20200506151429.12255-4-kishon@ti.com> <20200520220724.GA636352@bogus>
+ <37d2d6c3-232d-adb8-4e0b-e0c699ec435a@ti.com>
+ <CAL_JsqK8xRTxuJ39yPMzE1JMBrYccXB5QqsSvn7HosvrEQGdWQ@mail.gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <0bb5280c-99d1-6b33-ce69-5698f9902415@ti.com>
+Date:   Fri, 22 May 2020 09:06:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAL_JsqK8xRTxuJ39yPMzE1JMBrYccXB5QqsSvn7HosvrEQGdWQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To add SW BOOST support for CPPC, we need to get the max frequency of
-boost mode and non-boost mode. ACPI spec 6.2 section 8.4.7.1 describe
-the following two CPC registers.
+Hi Rob,
 
-"Highest performance is the absolute maximum performance an individual
-processor may reach, assuming ideal conditions. This performance level
-may not be sustainable for long durations, and may only be achievable if
-other platform components are in a specific state; for example, it may
-require other processors be in an idle state.
+On 5/22/2020 3:47 AM, Rob Herring wrote:
+> On Thu, May 21, 2020 at 7:33 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 5/21/2020 3:37 AM, Rob Herring wrote:
+>>> On Wed, May 06, 2020 at 08:44:18PM +0530, Kishon Vijay Abraham I wrote:
+>>>> Add support to use custom read and write accessors. Platforms that
+>>>> don't support half word or byte access or any other constraint
+>>>> while accessing registers can use this feature to populate custom
+>>>> read and write accessors. These custom accessors are used for both
+>>>> standard register access and configuration space register access of
+>>>> the PCIe host bridge.
+>>>>
+>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>> ---
+>>>>  drivers/pci/controller/cadence/pcie-cadence.h | 107 +++++++++++++++---
+>>>>  1 file changed, 94 insertions(+), 13 deletions(-)
+>>>
+>>> Actually, take back my R-by...
+>>>
+>>>>
+>>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+>>>> index df14ad002fe9..70b6b25153e8 100644
+>>>> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+>>>> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+>>>> @@ -223,6 +223,11 @@ enum cdns_pcie_msg_routing {
+>>>>      MSG_ROUTING_GATHER,
+>>>>  };
+>>>>
+>>>> +struct cdns_pcie_ops {
+>>>> +    u32     (*read)(void __iomem *addr, int size);
+>>>> +    void    (*write)(void __iomem *addr, int size, u32 value);
+>>>> +};
+>>>> +
+>>>>  /**
+>>>>   * struct cdns_pcie - private data for Cadence PCIe controller drivers
+>>>>   * @reg_base: IO mapped register base
+>>>> @@ -239,7 +244,7 @@ struct cdns_pcie {
+>>>>      int                     phy_count;
+>>>>      struct phy              **phy;
+>>>>      struct device_link      **link;
+>>>> -    const struct cdns_pcie_common_ops *ops;
+>>>> +    const struct cdns_pcie_ops *ops;
+>>>>  };
+>>>>
+>>>>  /**
+>>>> @@ -299,69 +304,145 @@ struct cdns_pcie_ep {
+>>>>  /* Register access */
+>>>>  static inline void cdns_pcie_writeb(struct cdns_pcie *pcie, u32 reg, u8 value)
+>>>>  {
+>>>> -    writeb(value, pcie->reg_base + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->write) {
+>>>> +            pcie->ops->write(addr, 0x1, value);
+>>>> +            return;
+>>>> +    }
+>>>> +
+>>>> +    writeb(value, addr);
+>>>>  }
+>>>>
+>>>>  static inline void cdns_pcie_writew(struct cdns_pcie *pcie, u32 reg, u16 value)
+>>>>  {
+>>>> -    writew(value, pcie->reg_base + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->write) {
+>>>> +            pcie->ops->write(addr, 0x2, value);
+>>>> +            return;
+>>>> +    }
+>>>> +
+>>>> +    writew(value, addr);
+>>>>  }
+>>>
+>>> cdns_pcie_writeb and cdns_pcie_writew are used, so remove them.
+>>>
+>>>>
+>>>>  static inline void cdns_pcie_writel(struct cdns_pcie *pcie, u32 reg, u32 value)
+>>>>  {
+>>>> -    writel(value, pcie->reg_base + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->write) {
+>>>> +            pcie->ops->write(addr, 0x4, value);
+>>>> +            return;
+>>>> +    }
+>>>> +
+>>>> +    writel(value, addr);
+>>>
+>>> writel isn't broken for you, so you don't need this either.
+>>>
+>>>>  }
+>>>>
+>>>>  static inline u32 cdns_pcie_readl(struct cdns_pcie *pcie, u32 reg)
+>>>>  {
+>>>> -    return readl(pcie->reg_base + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->read)
+>>>> +            return pcie->ops->read(addr, 0x4);
+>>>> +
+>>>> +    return readl(addr);
+>>>
+>>> And neither is readl.
+>>
+>> Sure, I'll remove all the unused functions and avoid using ops for readl and
+>> writel.
+>>>
+>>>>  }
+>>>>
+>>>>  /* Root Port register access */
+>>>>  static inline void cdns_pcie_rp_writeb(struct cdns_pcie *pcie,
+>>>>                                     u32 reg, u8 value)
+>>>>  {
+>>>> -    writeb(value, pcie->reg_base + CDNS_PCIE_RP_BASE + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->write) {
+>>>> +            pcie->ops->write(addr, 0x1, value);
+>>>> +            return;
+>>>> +    }
+>>>> +
+>>>> +    writeb(value, addr);
+>>>>  }
+>>>>
+>>>>  static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
+>>>>                                     u32 reg, u16 value)
+>>>>  {
+>>>> -    writew(value, pcie->reg_base + CDNS_PCIE_RP_BASE + reg);
+>>>> +    void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+>>>> +
+>>>> +    if (pcie->ops && pcie->ops->write) {
+>>>> +            pcie->ops->write(addr, 0x2, value);
+>>>> +            return;
+>>>> +    }
+>>>> +
+>>>> +    writew(value, addr);
+>>>
+>>> You removed 2 out of 3 calls to this. I think I'd just make the root
+>>> port writes always be 32-bit. It is all just one time init stuff
+>>> anyways.
+>>>
+>>> Either rework the calls to assemble the data into 32-bits or keep these
+>>> functions and do the RMW here.
+>>
+>> The problem with assembling data into 32-bits is we have to read/write with
+>> different offsets. We'll give PCI_VENDOR_ID offset for modifying deviceID,
+>> PCI_INTERRUPT_LINE for modifying INTERRUPT_PIN which might get non-intuitive.
+>> Similarly in endpoint we read and write to MSI_FLAGS (which is at offset 2) we
+>> have to directly use MSI capability offset.
+>>
+>> And doing RMW in the accessors would mean the same RMW op is repeated. So if we
+>> just have cdns_pcie_rp_writeb() and cdns_pcie_rp_writew(), the same code will
+>> be repeated here twice.
+> 
+> Why repeated? Just copy what the config accessors do:
+> 
+> static inline void cdns_pcie_write_sz(u32 val, void __iomem *addr, int size)
+> {
+>   u32 tmp, mask, where = (unsigned long)addr & 0x3;
+> 
+>   addr -= where;
+> 
+>   mask = ~(((1 << (size * 8)) - 1) << (where * 8));
+>   tmp = readl(addr) & mask;
+>   tmp |= val << (where * 8);
+>   writel(tmp, addr);
+> }
+> 
+> /* Root Port register access */
+> static inline void cdns_pcie_rp_writeb(struct cdns_pcie *pcie,
+>        u32 reg, u8 value)
+> {
+>   cdns_pcie_write_sz(value, pcie->reg_base + CDNS_PCIE_RP_BASE + reg, 1);
+> }
+> 
+> static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
+>        u32 reg, u16 value)
+> {
+>   cdns_pcie_write_sz(value, pcie->reg_base + CDNS_PCIE_RP_BASE + reg, 2);
+> }
+> 
+>>
+>> IMHO using ops is a lot cleaner for these cases. IMHO except for removing
+>> unused functions and not changing readl/writel, others should use ops.
+> 
+> Trying to read the DW PCI driver I don't agree...
+> 
+> Again, unless doing RMW is fundamentally broken (like it is for config
+> space at runtime), then you only want to do it on broken h/w and ops
+> would be appropriate. It is all mostly one time setup, so doing a few
+> extra reads isn't a big deal. If you really care about speed on that,
+> probably should use the _relaxed accessor variants.
+> 
+> I'm being hopeful the Cadence IP doesn't become the mess that DW is.
 
-Nominal Performance is the maximum sustained performance level of the
-processor, assuming ideal operating conditions. In absence of an
-external constraint (power, thermal, etc.) this is the performance level
-the platform is expected to be able to maintain continuously. All
-processors are expected to be able to sustain their nominal performance
-state simultaneously."
+Okay, I'll remove ops for read/write accessors.
 
-To add SW BOOST support for CPPC, we can use Highest Performance as the
-max performance in boost mode and Nominal Performance as the max
-performance in non-boost mode. If the Highest Performance is greater
-than the Nominal Performance, we assume SW BOOST is supported.
-
-The current CPPC driver does not support SW BOOST and use 'Highest
-Performance' as the max performance the CPU can achieve. 'Nominal
-Performance' is used to convert 'performance' to 'frequency'. That
-means, if firmware enable boost and provide a value for Highest
-Performance which is greater than Nominal Performance, boost feature is
-enabled by default.
-
-Because SW BOOST is disabled by default, so, after this patch, boost
-feature is disabled by default even if boost is enabled by firmware.
-
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Suggested-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index bda0b24..257d726 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -37,6 +37,7 @@
-  * requested etc.
-  */
- static struct cppc_cpudata **all_cpu_data;
-+static bool boost_supported;
- 
- struct cppc_workaround_oem_info {
- 	char oem_id[ACPI_OEM_ID_SIZE + 1];
-@@ -310,7 +311,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * Section 8.4.7.1.1.5 of ACPI 6.1 spec)
- 	 */
- 	policy->min = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_nonlinear_perf);
--	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->max = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
- 
- 	/*
- 	 * Set cpuinfo.min_freq to Lowest to make the full range of performance
-@@ -318,7 +319,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	 * nonlinear perf
- 	 */
- 	policy->cpuinfo.min_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.lowest_perf);
--	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.highest_perf);
-+	policy->cpuinfo.max_freq = cppc_cpufreq_perf_to_khz(cpu, cpu->perf_caps.nominal_perf);
- 
- 	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu_num);
- 	policy->shared_type = cpu->shared_type;
-@@ -343,6 +344,13 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	cpu->cur_policy = policy;
- 
-+	/*
-+	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
-+	 * is supported.
-+	 */
-+	if (cpu->perf_caps.highest_perf > cpu->perf_caps.nominal_perf)
-+		boost_supported = true;
-+
- 	/* Set policy->cur to max now. The governors will adjust later. */
- 	policy->cur = cppc_cpufreq_perf_to_khz(cpu,
- 					cpu->perf_caps.highest_perf);
-@@ -410,6 +418,32 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
- 	return cppc_get_rate_from_fbctrs(cpu, fb_ctrs_t0, fb_ctrs_t1);
- }
- 
-+static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
-+{
-+	struct cppc_cpudata *cpudata;
-+	int ret;
-+
-+	if (!boost_supported) {
-+		pr_err("BOOST not supported by CPU or firmware\n");
-+		return -EINVAL;
-+	}
-+
-+	cpudata = all_cpu_data[policy->cpu];
-+	if (state)
-+		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
-+					cpudata->perf_caps.highest_perf);
-+	else
-+		policy->max = cppc_cpufreq_perf_to_khz(cpudata,
-+					cpudata->perf_caps.nominal_perf);
-+	policy->cpuinfo.max_freq = policy->max;
-+
-+	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static struct cpufreq_driver cppc_cpufreq_driver = {
- 	.flags = CPUFREQ_CONST_LOOPS,
- 	.verify = cppc_verify_policy,
-@@ -417,6 +451,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
- 	.get = cppc_cpufreq_get_rate,
- 	.init = cppc_cpufreq_cpu_init,
- 	.stop_cpu = cppc_cpufreq_stop_cpu,
-+	.set_boost = cppc_cpufreq_set_boost,
- 	.name = "cppc_cpufreq",
- };
- 
--- 
-1.7.12.4
-
+Thanks
+Kishon
