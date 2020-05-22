@@ -2,167 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2E81DDFCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E6B1DDFE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgEVGaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 02:30:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49278 "EHLO mx2.suse.de"
+        id S1728535AbgEVGbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:31:19 -0400
+Received: from mout.web.de ([212.227.15.14]:36125 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728080AbgEVGag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 02:30:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0F000ABBE;
-        Fri, 22 May 2020 06:30:37 +0000 (UTC)
-Subject: Re: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
-To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-References: <20200521204647.2578479-1-lyude@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- mQENBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAG0J1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPokBVAQTAQgAPhYh
- BHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMB
- Ah4BAheAAAoJEGgNwR1TC3ojR80H/jH+vYavwQ+TvO8ksXL9JQWc3IFSiGpuSVXLCdg62AmR
- irxW+qCwNncNQyb9rd30gzdectSkPWL3KSqEResBe24IbA5/jSkPweJasgXtfhuyoeCJ6PXo
- clQQGKIoFIAEv1s8l0ggPZswvCinegl1diyJXUXmdEJRTWYAtxn/atut1o6Giv6D2qmYbXN7
- mneMC5MzlLaJKUtoH7U/IjVw1sx2qtxAZGKVm4RZxPnMCp9E1MAr5t4dP5gJCIiqsdrVqI6i
- KupZstMxstPU//azmz7ZWWxT0JzgJqZSvPYx/SATeexTYBP47YFyri4jnsty2ErS91E6H8os
- Bv6pnSn7eAq5AQ0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRH
- UE9eosYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgT
- RjP+qbU63Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+R
- dhgATnWWGKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zb
- ehDda8lvhFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r
- 12+lqdsAEQEAAYkBPAQYAQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkD
- wmcAAAoJEGgNwR1TC3ojpfcIAInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2
- h9ifw9Nf2TjCZ6AMvC3thAN0rFDj55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxU
- n+LSiRrOdywn6erjxRi9EYTVLCHcDhBEjKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uI
- aMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU2y3ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBW
- HE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/tsZvyEX6zN8CtirPdPWu/VXNRYAl/lat7lSI
- 3H26qrE=
-Message-ID: <951f6bcc-49f5-ceae-c3a3-7b0a52f9fa2d@suse.de>
-Date:   Fri, 22 May 2020 08:30:30 +0200
+        id S1728439AbgEVGbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 02:31:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1590129053;
+        bh=splb0+8WO7eITGBItBY2nf0FXUphvqRnGPW6mcoqZRI=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=joZp6nPykM7tQDqcNWz73N+zg3aiT9XPFRIVm8lPB560kluFFjhUWDXDBw/tQFydT
+         lTvBGIBCC/e3stR+pklMedCTzj3A+4HyHqzoKXmiPNR3BjTAUyQRSM26Oo4ysIDCic
+         dxtp/6OJ+yx9iQYpKnywMHHhUEthSHYCO/0eapTA=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.48.165.155]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0M8zRF-1jlcWW00oH-00CUGJ; Fri, 22
+ May 2020 08:30:53 +0200
+To:     Qiushi Wu <wu000273@umn.edu>, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Kangjie Lu <kjlu@umn.edu>
+Subject: Re: [PATCH] rxrpc: Fix a memory leak in rxkad_verify_response()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <262bd413-9be4-3abe-9565-ac37a2e2e719@web.de>
+Date:   Fri, 22 May 2020 08:30:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200521204647.2578479-1-lyude@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="qXvrIStwO1M2q642iYF63eAzxDoe7fvSk"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GfxxN4lHt6KTDFfauaVELUU1qqXCKh3Ql1yCNUCMrUVTc2lItE/
+ oT4lrOk8IMiiZYozPTefGPkkQ9Ray4VbJWqDXQFydYT1DE3q3ApUBmYVw2JCFENchQX4D+9
+ exb6mtVMiMYFNsPcVR6vOZopL9tL+n83nXbzPAQ9xiXsHBhcd9A3h5pVkOBOozOlZSo+SLa
+ AnVd+MaKMqZyMpBB5bKNQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bGHI3wngxjc=:lzCGparOYED79VHEzmIwrn
+ bgOJc+Ma3LAgokHQGzC75JuwHyTLx96GkKXgy2cVi48QX0Mf9+hEZrsKvI/EkNgh4MubZxL2h
+ vmd+eN4a87YLABiXQ3yQAMIw38O4nPjFF4KOtfj0AjfuUXwzeEp6oNfisssx4ppwZkiYuPXRv
+ PBMpo+R/G4nCvd0X5oqxkU+VjOHUEzPy0DywocvI9KSIYPVwdwKfUl52w0ldcwHdMkr0ZuZg4
+ H3B4w8dh9o2YTpOiZqRqLpNpZ4AHNoJerAVDEmFm30gPmbjcq72efwkg2tEX2+ewGXjk6kMVO
+ u+4ZlT7guNZ8u5FlnvpXXpkYHviGP6vyLg+RF8bq08beOia2oiWl4UiPNyrPGXy3bgs0NO8nC
+ e0HXkBzi9Atp0CiOfvbMPHbFInxyuE3/E61jj+EiJcAAzJY+H+bTwssLlnHr8QNFwtceXe7pt
+ LfJp3fKKY86QGimsl1Xk61xkdcOeyjbtF3jV/eNHL6CBdNQ1vvC1ccn2KWbAa1aqB/Mp8k4aq
+ UJJLVAry+EzoWaN6ajmRNoTh0qmVByTXIo1j6nzmwzMXJsKe48qeWQLReSqn79DaMOANBQexf
+ ADVyAPWNPOD5NZZ1W9iEadK2+k3WEbnfIIv0RNfv+1RVa9Mjgtko2jcUrnSzZU4ImZCXmZ5d+
+ JeDlxW9WNAQwyfkF+epqkLnb0eJRUuXvXzPpzB6PyxKh/Md4HBEtyjFASOeFNDZKQBvqehhvz
+ /9Q38yb2Jj9QrzErt8biHpQWYnbTnc1kpoaxMaO1XHDX8MdmymPap8bgBoQ+bVktrV0s0NMjr
+ pFtTmX5f69GezlH4Fe+OJRTeL/nRntzoVt5A9PTrDgcYoee3qlP9nO5zkW94XRgokoYdoi6i6
+ iRBNymc2o/9JooT94pXSeR0C0xI9NYwPIaeD0bK5b+4HRcr73hVP96mMnWGuYbeOJww00hZsy
+ 28VAF4fdf+icf/VnKUtfVWm93WzrOqG1MnLlaRNza0cXeFgoxzuA5G6Nt/KW9XQRUnBh5VctI
+ vx0aybJLcwfnP+Evp1sAL5uIKqoYEJ2jNF6DRisnng40VQw2EIgPLk1F74MlraVBN4IO5HWVv
+ g5K8vi+7ApTY1fR/ty3V+RCVrqhdmP9ML1Qu8D7W70NuLAwD/LHtPsa0FH3eypLFqGsov5vti
+ WGsj8Kz9EBBjXIrQz7E6fMWb9C8DFSIrNXSQA2A4cEnphLZJuKw6gcM/LXRFkJJaJncAZ6WIO
+ Elob7Om8U43ogf9Ng
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qXvrIStwO1M2q642iYF63eAzxDoe7fvSk
-Content-Type: multipart/mixed; boundary="vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: Dave Airlie <airlied@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Message-ID: <951f6bcc-49f5-ceae-c3a3-7b0a52f9fa2d@suse.de>
-Subject: Re: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
-References: <20200521204647.2578479-1-lyude@redhat.com>
-In-Reply-To: <20200521204647.2578479-1-lyude@redhat.com>
+> In function rxkad_verify_response(), pointer "ticket" is not released,
+> when function rxkad_decrypt_ticket() returns an error, causing a
+> memory leak bug.
 
---vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I suggest to improve also this change description.
+How do you think about a wording variant like the following?
+
+   A ticket was not released after a call of the function =E2=80=9Cplatfor=
+m_get_irq=E2=80=9D failed.
+   Thus replace the jump target =E2=80=9Ctemporary_error_free_resp=E2=80=
+=9D
+   by =E2=80=9Ctemporary_error_free_ticket=E2=80=9D.
 
 
-
-Am 21.05.20 um 22:46 schrieb Lyude Paul:
-> On some architectures like ppc64le and aarch64, compiling with
-> -Wformat=3D1 will throw the following warnings:
->=20
->   In file included from drivers/gpu/drm/drm_vblank.c:33:
->   drivers/gpu/drm/drm_vblank.c: In function 'drm_update_vblank_count':
->   drivers/gpu/drm/drm_vblank.c:273:16: warning: format '%llu' expects
->   argument of type 'long long unsigned int', but argument 4 has type
->   'long int' [-Wformat=3D]
->     DRM_DEBUG_VBL("updating vblank count on crtc %u:"
->                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   ./include/drm/drm_print.h:407:22: note: in definition of macro
->   'DRM_DEBUG_VBL'
->     drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
->                         ^~~
->   drivers/gpu/drm/drm_vblank.c:274:22: note: format string is defined h=
-ere
->            " current=3D%llu, diff=3D%u, hw=3D%u hw_last=3D%u\n",
->                      ~~~^
->                      %lu
->=20
-> So, fix that with a typecast.
->=20
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Co-developed-by: Dave Airlie <airlied@redhat.com>
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-Thanks!
-
-> ---
->  drivers/gpu/drm/drm_vblank.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.=
-c
-> index acb3c3f65b579..1a96db2dd16fa 100644
-> --- a/drivers/gpu/drm/drm_vblank.c
-> +++ b/drivers/gpu/drm/drm_vblank.c
-> @@ -342,7 +342,7 @@ static void drm_update_vblank_count(struct drm_devi=
-ce *dev, unsigned int pipe,
-> =20
->  	DRM_DEBUG_VBL("updating vblank count on crtc %u:"
->  		      " current=3D%llu, diff=3D%u, hw=3D%u hw_last=3D%u\n",
-> -		      pipe, atomic64_read(&vblank->count), diff,
-> +		      pipe, (unsigned long long)atomic64_read(&vblank->count), diff,=
-
->  		      cur_vblank, vblank->last);
-> =20
->  	if (diff =3D=3D 0) {
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS--
-
---qXvrIStwO1M2q642iYF63eAzxDoe7fvSk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl7HcYkACgkQaA3BHVML
-eiNIBAgAi4NqxVlu1Y6OH32hzo33lnkALwxIFbzsPWKpxCbB/ignVxYdDpdsnhL9
-FW4+NfXnnROvZ2zGiKjwB5D6/RI+vM6d7KhB5ivlT7lYsRBZCA4lPrJ6bRzJKLuD
-OZXAFFeBEXjWlqc3PmyMIbpn9gCK/7pMMybfmWhQn7jxakMDMHDoyMITSXPWoESy
-Kpf0ICh6ypxPYfy1f+cUj0FBqeQb7MiesQHG4lFOfhT9UY6NBFZyWVNGLFb3wcyh
-+E1jwRwei/dP4yMldPoUQFqS1xuIi8/IK212UbCzFg58mRHRTW9cp6Vr+B4BK8fA
-iKdo1xnFrNUsksZ9Ew7X2OgR2k/+qw==
-=n6OO
------END PGP SIGNATURE-----
-
---qXvrIStwO1M2q642iYF63eAzxDoe7fvSk--
+Regards,
+Markus
