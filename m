@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB561DDFDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1961DE001
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgEVGbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 02:31:07 -0400
-Received: from twhmllg4.macronix.com ([211.75.127.132]:40290 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728392AbgEVGbF (ORCPT
+        id S1728209AbgEVGgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728125AbgEVGgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 02:31:05 -0400
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 04M6Uv0L024143;
-        Fri, 22 May 2020 14:30:57 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
-        by Forcepoint Email with ESMTP id 392FE906D490C16CE7F1;
-        Fri, 22 May 2020 14:30:58 +0800 (CST)
-In-Reply-To: <20200519142642.24131-6-p.yadav@ti.com>
-References: <20200519142642.24131-1-p.yadav@ti.com> <20200519142642.24131-6-p.yadav@ti.com>
-To:     "Pratyush Yadav" <p.yadav@ti.com>
-Cc:     "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Boris Brezillon" <boris.brezillon@collabora.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org,
-        "Ludovic Desroches" <ludovic.desroches@microchip.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Nicolas Ferre" <nicolas.ferre@microchip.com>,
-        "Sekhar Nori" <nsekhar@ti.com>, "Pratyush Yadav" <p.yadav@ti.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>, juliensu@mxic.com.tw
-Subject: Re: [PATCH v5 05/19] mtd: spi-nor: add support for DTR protocol
+        Fri, 22 May 2020 02:36:22 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5CDC05BD43
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:36:20 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id n18so8740825wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mp6z6BeKUJ4Z3j+pwMrXanCl98jvhdKIr7OaOufzROo=;
+        b=ycKBEsXTb+BxsF1E77LY/R04LkIWlGVEDVXwR0PFQnoFMwnAQaK1qonVfAKXfGUqVV
+         go4okfKzet3y0osi2r+mpOXkYNvUk9iU/3t/pD+GtTVo62YDChDlZDEgRc6ugYkl9UlI
+         pA5HIPu0U89oj1XLXQfYyNul4tVsV00fQ9ZfhDgbAFbXHLYOKf7KUnmvPyMbA4/f8CYD
+         n1qtH4pfLvrCK2LLVEfHE7Xzro2vu/torO/auE+bF69LPORosxZRLVriwoGuvLwRxQDW
+         MVSCz9JTf8ZlhIECQr8ji2+NvFf2YPmqWrGZNKDi3A1gowqwFci315M9B6ejoPUM5/ma
+         ATEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mp6z6BeKUJ4Z3j+pwMrXanCl98jvhdKIr7OaOufzROo=;
+        b=Gtm+dwHDfBMkxTKZdy4Go8+oPvxS6G9E+7zBEMiujyqxrci48BxV4Klq2EJBweeqSO
+         LorAwk5UdvoB3ZcZxkgdLQS+wLhVT5+mhCAxjdiiMaMyiHWVuLdBCuUQrRMAitIzm+Hs
+         ZoXxDSSD0jjogQnz8sVEUP/zMvAqJwTNgV3lwLVRWZbG8athx5hf3q4IY00u8bR83EQA
+         jfoqs6tvbmlYFUbPKP+qlHadPjnhFOFN6K5OUF1bZ6rfWEfSVpFP1Lo5yjAHKhC1vKhn
+         MhByIF1gr0o9YXBfRj1V4hZGtbAIxJs0hIUhwv1ohp4yR0e7ZuDJYI2e8rNRUBEHUHAo
+         v3Kg==
+X-Gm-Message-State: AOAM532DkeXQMcrt0liiEB0vQ7mG8Iywku5tCuWGJHnyJ5qblB2RFj4U
+        adNtSNIbCMWaMLo96fsBb1yc+/KMcV2PO/mAvnbYYw==
+X-Google-Smtp-Source: ABdhPJykCpEJOH6fDySj/9KTQUVlXV7NLYQkkTeYIL3vQp6QzdI5zeWjcL1/7ZOhIw9nOY0uY1U3fi2R3XWSJ7hyhmg=
+X-Received: by 2002:a1c:7410:: with SMTP id p16mr12579344wmc.134.1590129379212;
+ Thu, 21 May 2020 23:36:19 -0700 (PDT)
 MIME-Version: 1.0
-X-KeepSent: AC48157A:F337A12A-48258570:0021F23B;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFAC48157A.F337A12A-ON48258570.0021F23B-48258570.0023CB62@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Fri, 22 May 2020 14:30:58 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/05/22 PM 02:30:58,
-        Serialize complete at 2020/05/22 PM 02:30:58
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG4.macronix.com 04M6Uv0L024143
+References: <20200521134544.816918-1-anup.patel@wdc.com> <20200521134544.816918-6-anup.patel@wdc.com>
+ <2aec08b7-7197-4b60-89d9-c3b0d5a8a258@gmail.com> <CAAhSdy0OuxCwMVPBrvPpYMfVrhUuY3pONysk75yognOM5-0U+g@mail.gmail.com>
+ <c0e9e625-daf8-b72f-2237-06018ff5d8a0@gmail.com>
+In-Reply-To: <c0e9e625-daf8-b72f-2237-06018ff5d8a0@gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 22 May 2020 12:06:07 +0530
+Message-ID: <CAAhSdy3_D9S0X1gHoPjHpfcpeEpVWdUa_HE_KYV3eXbB3eVhdw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] dt-bindings: timer: Add CLINT bindings
+To:     Sean Anderson <seanga2@gmail.com>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 22, 2020 at 11:59 AM Sean Anderson <seanga2@gmail.com> wrote:
+>
+> On 5/22/20 1:54 AM, Anup Patel wrote:
+> > On Fri, May 22, 2020 at 1:35 AM Sean Anderson <seanga2@gmail.com> wrote:
+> >>
+> >> On 5/21/20 9:45 AM, Anup Patel wrote:
+> >>> +Required properties:
+> >>> +- compatible : "sifive,clint-1.0.0" and a string identifying the actual
+> >>> +  detailed implementation in case that specific bugs need to be worked around.
+> >>
+> >> Should the "riscv,clint0" compatible string be documented here? This
+> >
+> > Yes, I forgot to add this compatible string. I will add in v2.
+> >
+> >> peripheral is not really specific to sifive, as it is present in most
+> >> rocket-chip cores.
+> >
+> > I agree that CLINT is present in a lot of non-SiFive RISC-V SOCs and
+> > FPGAs but this IP is only documented as part of SiFive FU540 SOC.
+> > (Refer, https://static.dev.sifive.com/FU540-C000-v1.0.pdf)
+> >
+> > The RISC-V foundation should host the CLINT spec independently
+> > under https://github.com/riscv and make CLINT spec totally open.
+> >
+> > For now, I have documented it just like PLIC DT bindings found at:
+> > Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+>
+> The PLIC seems to have its own RISC-V-sponsored documentation [1] which
+> was split off from the older privileged specs. By your logic above,
+> should it be renamed to riscv,plic0.txt (with a corresponding change in
+> the documented compatible strings)?
+>
+> [1] https://github.com/riscv/riscv-plic-spec
 
-Hi Pratyush,
+For PLIC bindings, we can certainly do the renaming because now
+we have PLIC v1 specification hosted on RISC-V Foundation Github.
 
-
-> +/**
-> + * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem 
-op.
-> + * @nor:      pointer to a 'struct spi_nor'
-> + * @op:         pointer to the 'struct spi_mem_op' whose properties
-> + *         need to be initialized.
-> + * @proto:      the protocol from which the properties need to be set.
-> + */
-> +void spi_nor_spimem_setup_op(const struct spi_nor *nor,
-> +              struct spi_mem_op *op,
-> +              const enum spi_nor_protocol proto)
-> +{
-> +   u8 ext;
-> +
-> +   op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(proto);
-> +
-> +   if (op->addr.nbytes)
-> +      op->addr.buswidth = spi_nor_get_protocol_addr_nbits(proto);
-> +
-> +   if (op->dummy.nbytes)
-> +      op->dummy.buswidth = spi_nor_get_protocol_addr_nbits(proto);
-> +
-> +   if (op->data.nbytes)
-> +      op->data.buswidth = spi_nor_get_protocol_data_nbits(proto);
-> +
-> +   if (spi_nor_protocol_is_dtr(proto)) {
-
-As mentioned before that I am also patching mx25* which supports 8S-8S-8S 
-and 
-8D-8D-8D mode.
-
-please patch to spi_nor_protocol_is_8_8_8(proto) for 8S-8S-8S mode 
-support.
-
-> +      /*
-> +       * spi-mem supports mixed DTR modes, but right now we can only
-> +       * have all phases either DTR or STR. IOW, spi-mem can have
-> +       * something like 4S-4D-4D, but spi-nor can't. So, set all 4
-> +       * phases to either DTR or STR.
-> +       */
-
-        if (spi_nor_protocol_is_8D_8D_8D(proto) {
-
-> +      op->cmd.dtr = op->addr.dtr = op->dummy.dtr
-> +                = op->data.dtr = true;
-> +
-> +      /* 2 bytes per clock cycle in DTR mode. */
-> +      op->dummy.nbytes *= 2;
-
-        }
-
-> +
-> +      ext = spi_nor_get_cmd_ext(nor, op);
-> +      op->cmd.opcode = (op->cmd.opcode << 8) | ext;
-> +      op->cmd.nbytes = 2;
-> +   }
-> +}
-> +
-
-thanks & best regards,
-Mason
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+Regards,
+Anup
