@@ -2,166 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13A01E0900
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3672A1DEBE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389018AbgEYIi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 04:38:56 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:60051 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388956AbgEYIiz (ORCPT
+        id S1730554AbgEVPcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 11:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730469AbgEVPcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 04:38:55 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5E846580667;
-        Mon, 25 May 2020 04:38:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 25 May 2020 04:38:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=Ri9qjiyBiEOXkk9sDHg2CFYrqxt
-        dn6182rnMUiHzyQg=; b=wPjwDdTkJR4Lp6Yfr/SrGcmK14AkrgGuJKhIUhXtOO7
-        kMZI1RHjkF5E7Wzsn7OUnTMhAUKVaLhgbaPTd9DNASGUT+1KlrA8rOgSRxKao7kL
-        u+72wmN5nSMzn3/Ghcip9MBKf7R4UjuX3nCzCwR5ffkvMkEBNZpFhAo0uZV5psy7
-        981pfkM7r85+Ts+/ZQIAyCjlLBK8eVisb3tt2gYxYtdKlXSW70olDxKvCbzcFLLI
-        6hTKRyT+GC28s+5K9P9KRDrioiCnMzxTQcKGIfHnTky10M7eocaOywIYm2TaQL3v
-        OsglDFb7zn5QxjszzTRsRrl6nqsjKks7mcWVTopGknQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Ri9qji
-        yBiEOXkk9sDHg2CFYrqxtdn6182rnMUiHzyQg=; b=uIft9tDeyiLzqqol7PCgsf
-        lqMFLj8KRw2qT5IU6ChMSbZbl6uwfC3bZ4KnK+8WjG3ZgI8k1VpJDSm8QTZOH1B2
-        x97ycbKQZgOSTENs7sfCiWAz3ZIROAFQSgnhVXVdCrY38ilZzDIuyKFz7yeAA7RO
-        s6xH68rFCQz7K1HlSsZtf105gFVsKWHa8aOoyvYy0t/TrJct4lD4tUBMbufezhF0
-        j0tBguvumOmy4h2rRA7FNvicKKvvjAZ3AM/IsP+0iayfF+NFS/Fhk5+ltsNKDtnI
-        UP1A9TQcNenYXY/pvU4PF2TptCErYeKO7R0hI6D/hGNUMuQvc5BdVXVKezaVAoTg
-        ==
-X-ME-Sender: <xms:HoTLXjW0aGOkAZeejOU6kHnP1qaX3BZj41LQ9Ky5fi_KmAKMY8lcMA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvtddgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:HoTLXrl0TsQ8zSmmJJv5ZgBg1ACl2BJlMUVdhISRxjEAd9M9UhfsZg>
-    <xmx:HoTLXvZAMhI81gTw0m3c6MGE1AFAhP0m_KEUMdcjURChQqeSMryuqw>
-    <xmx:HoTLXuUYbmHWrpQMeXxaVRdAYYQbNZ92gl0D1SMVfWj_idoC3VraQg>
-    <xmx:HoTLXmdWF94R7p0M4Dtu3DJ7Yw0f0LU2rF7tHaFpPkLX5px-1TZrCQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EC7753280059;
-        Mon, 25 May 2020 04:38:53 -0400 (EDT)
-Date:   Fri, 22 May 2020 17:31:24 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     wens@csie.org, robh+dt@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, linus.walleij@linaro.org, p.zabel@pengutronix.de,
-        huangshuosheng@allwinnertech.com, tiny.windzz@gmail.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 4/4] arm64: allwinner: A100: add support for Allwinner
- Perf1 board
-Message-ID: <20200522153124.patpj7r6hubjnpmu@gilmour.lan>
-References: <20200522030743.10204-1-frank@allwinnertech.com>
- <20200522030743.10204-5-frank@allwinnertech.com>
+        Fri, 22 May 2020 11:32:08 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CCFC08C5C0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:32:07 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g14so4634451wme.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=otTjOhB3pQfb5rvNf3iE/1EF+uvqWUVNS9VHLDzOq6I=;
+        b=YjORt36Ol5Z1zqcZJ9PdVDQlWbU2xMv+HuUp2H6cXcxLt9hXl7O4guMpdaJSCxMlk/
+         F0ZgAw2FvlH34VcN4fni2/NgLuZkYmwMItA0MjVGnZ5p9uL6jvhBff0Q4CTl85Yw1pw3
+         rvDo4oOuVmI951FS3NPpy9tLJaA5xxllVZY0spCqdqsRGD2+abdJquNCoJXQpWfgPgGu
+         ZCn9yjxdzIlUYRfFPLW4aL2snRBCG82tP7948zBCVceR9ovXv0brb7+4rimzBnUS+lwv
+         j8ylwDgWE60TyNowyMK8CQRJ2u9gxTZKcsVP1PX2qZIf9VY10WFDjw1Xh8dRTP1Yiq0I
+         zC8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=otTjOhB3pQfb5rvNf3iE/1EF+uvqWUVNS9VHLDzOq6I=;
+        b=c6MVcydA1Cg744no7qXj4AGt60btKIOif7ydGyNRazvAl2w7Q7jkLaLSdIM2A5irKB
+         l9/XWWDVKs4JRvriqMxYPFgPa+RvOxDqptorbLEB7oVuXmJ2Kis07QetmnvJtD6tIiiR
+         YFQdtd4zCRJyVbPzhqH1CQfpU0ogCBemTee9LtzfO0PycwP1ii4It2JSgEIFKSuCh/hj
+         S6BzMbFCsXRUwcW1Si67LaxLZeycfhC85zbqeoEqObzvqBe7qv+JLafTrWD4SALLp9qg
+         c3cCrxh8ppdhDwtc5SUtOloqbmdXPL5D7A+0y9B3HuQJcZcKCsFwisqaggKoKK5Iwo+m
+         mz9A==
+X-Gm-Message-State: AOAM531aBpuGiDduYIof3NFJqz783BT0cnkVXJQOrao/7QhMVQTjmJvV
+        HQvejihsDyYSDzHwUdGn99RiWg==
+X-Google-Smtp-Source: ABdhPJxZhfb8FvGiHXbP4WIrzNxdJ9R0OJbYjAm99WLd9VjIJX2ehUsAjztVxh8MlTgphwpbBpEHEA==
+X-Received: by 2002:a1c:1983:: with SMTP id 125mr13524236wmz.43.1590161526337;
+        Fri, 22 May 2020 08:32:06 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a82f:eaec:3c49:875a? ([2a01:e34:ed2f:f020:a82f:eaec:3c49:875a])
+        by smtp.googlemail.com with ESMTPSA id x17sm9694035wrp.71.2020.05.22.08.32.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 08:32:05 -0700 (PDT)
+Subject: Re: [v4,6/7] thermal: mediatek: add another get_temp ops for thermal
+ sensors
+To:     Michael Kao <michael.kao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200323121537.22697-1-michael.kao@mediatek.com>
+ <20200323121537.22697-7-michael.kao@mediatek.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <fa43c55b-96c2-30c8-eb7e-983177dad13d@linaro.org>
+Date:   Fri, 22 May 2020 17:32:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kztrqmb2mweybzef"
-Content-Disposition: inline
-In-Reply-To: <20200522030743.10204-5-frank@allwinnertech.com>
+In-Reply-To: <20200323121537.22697-7-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23/03/2020 13:15, Michael Kao wrote:
+> Provide thermal zone to read thermal sensor
+> in the SoC. We can read all the thermal sensors
+> value in the SoC by the node /sys/class/thermal/
+> 
+> In mtk_thermal_bank_temperature, return -EAGAIN instead of -EACCESS
+> on the first read of sensor that often are bogus values.
+> This can avoid following warning on boot:
+> 
+>   thermal thermal_zone6: failed to read out thermal zone (-13)
 
---kztrqmb2mweybzef
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What the source problem of the sensor returning bogus values?
 
-Hi,
 
-On Fri, May 22, 2020 at 11:07:43AM +0800, Frank Lee wrote:
-> A100 perf1 is an Allwinner A100-based SBC, with the following features:
->=20
-> - 1GiB DDR3 DRAM
-> - AXP803 PMIC
-> - 2 USB 2.0 ports
-> - MicroSD slot and on-board eMMC module
-> - on-board Nand flash
-> - =B7=B7=B7
->=20
-> Adds initial support for it, including the UART.
->=20
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
 
-Which bootloader have you used to test this?
-
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
->  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
->  .../allwinner/sun50i-a100-allwinner-perf1.dts | 27 +++++++++++++++++++
->  2 files changed, 28 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-p=
-erf1.dts
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts=
-/allwinner/Makefile
-> index e4d3cd0ac5bb..ab780dbdd17b 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -14,6 +14,7 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.1.=
-dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-sopine-baseboard.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-teres-i.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a100-allwinner-perf1.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h5-bananapi-m2-plus.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h5-bananapi-m2-plus-v1.2.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h5-emlid-neutis-n5-devboard.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dt=
-s b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
-> new file mode 100644
-> index 000000000000..32c9986920ed
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (c) 2020 Frank Lee <frank@allwinner.com>
-> + */
+>  drivers/thermal/mtk_thermal.c | 74 +++++++++++++++++++++++++++++++----
+>  1 file changed, 67 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 6b7ef1993d7e..9eaca432920e 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -225,6 +225,11 @@ enum {
+>  
+>  struct mtk_thermal;
+>  
+> +struct mtk_thermal_zone {
+> +	struct mtk_thermal *mt;
+> +	int id;
+> +};
 > +
-> +/dts-v1/;
+>  struct thermal_bank_cfg {
+>  	unsigned int num_sensors;
+>  	const int *sensors;
+> @@ -607,7 +612,7 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>  		 * not immediately shut down.
+>  		 */
+>  		if (temp > 200000)
+> -			temp = 0;
+> +			temp = -EAGAIN;
+>  
+>  		if (temp > max)
+>  			max = temp;
+> @@ -618,7 +623,8 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>  
+>  static int mtk_read_temp(void *data, int *temperature)
+>  {
+> -	struct mtk_thermal *mt = data;
+> +	struct mtk_thermal_zone *tz = data;
+> +	struct mtk_thermal *mt = tz->mt;
+>  	int i;
+>  	int tempmax = INT_MIN;
+>  
+> @@ -637,10 +643,44 @@ static int mtk_read_temp(void *data, int *temperature)
+>  	return 0;
+>  }
+>  
+> +static int mtk_read_sensor_temp(void *data, int *temperature)
+> +{
+> +	struct mtk_thermal_zone *tz = data;
+> +	struct mtk_thermal *mt = tz->mt;
+> +	const struct mtk_thermal_data *conf = mt->conf;
+> +	int id = tz->id - 1;
+> +	int temp = INT_MIN;
+> +	u32 raw;
 > +
-> +#include "sun50i-a100.dtsi"
+> +	if (id < 0)
+> +		return  -EACCES;
 > +
-> +/{
-> +	model =3D "A100 perf1";
+> +	raw = readl(mt->thermal_base + conf->msr[id]);
+> +
+> +	temp = raw_to_mcelsius(mt, id, raw);
+> +
+> +	/*
+> +	 * The first read of a sensor often contains very high bogus
+> +	 * temperature value. Filter these out so that the system does
+> +	 * not immediately shut down.
+> +	 */
+> +
+> +	if (temp > 200000)
+> +		return  -EAGAIN;
+> +
+> +	*temperature = temp;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct thermal_zone_of_device_ops mtk_thermal_ops = {
+>  	.get_temp = mtk_read_temp,
+>  };
+>  
+> +static const struct thermal_zone_of_device_ops mtk_thermal_sensor_ops = {
+> +	.get_temp = mtk_read_sensor_temp,
+> +};
+> +
+>  static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
+>  				  u32 apmixed_phys_base, u32 auxadc_phys_base,
+>  				  int ctrl_id)
+> @@ -873,6 +913,7 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  	struct resource *res;
+>  	u64 auxadc_phys_base, apmixed_phys_base;
+>  	struct thermal_zone_device *tzdev;
+> +	struct mtk_thermal_zone *tz;
+>  
+>  	mt = devm_kzalloc(&pdev->dev, sizeof(*mt), GFP_KERNEL);
+>  	if (!mt)
+> @@ -954,11 +995,30 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, mt);
+>  
+> -	tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, mt,
+> -						     &mtk_thermal_ops);
+> -	if (IS_ERR(tzdev)) {
+> -		ret = PTR_ERR(tzdev);
+> -		goto err_disable_clk_peri_therm;
+> +	for (i = 0; i < mt->conf->num_sensors + 1; i++) {
+> +		tz = kmalloc(sizeof(*tz), GFP_KERNEL);
+> +		if (!tz)
+> +			return -ENOMEM;
+> +
+> +		tz->mt = mt;
+> +		tz->id = i;
+> +
+> +		tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, i,
+> +							     tz, (i == 0) ?
+> +				&mtk_thermal_ops : &mtk_thermal_sensor_ops);
+> +
+> +		if (IS_ERR(tzdev)) {
+> +			if (PTR_ERR(tzdev) == -ENODEV) {
+> +				dev_warn(&pdev->dev,
+> +					 "sensor %d not registered in thermal zone in dt\n",
+> +					 i);
+> +				continue;
+> +			}
+> +			if (PTR_ERR(tzdev) == -EACCES) {
+> +				ret = PTR_ERR(tzdev);
+> +				goto err_disable_clk_peri_therm;
+> +			}
+> +		}
+>  	}
+>  
+>  	return 0;
+> 
 
-Having the same casing and the "brand" would be great here, so something li=
-ke
-"Allwinner A100 Perf1", or just Perf1 if that name is only ever going to be=
- used
-on the A100
 
-> +	compatible =3D "allwinner,a100-perf1", "allwinner,sun50i-a100";
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-This binding needs to be documented
-
-Maxime
-
---kztrqmb2mweybzef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXsfwTAAKCRDj7w1vZxhR
-xc2nAQDFNKJNA7ecm5DJ6UkyDw3MuKEnfkK0bTsPHjkFxg3Z7AEAzetqnArNS6h2
-o2VsK50L0OmgTGiE3EBUOEPJj669XwE=
-=5KLY
------END PGP SIGNATURE-----
-
---kztrqmb2mweybzef--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
