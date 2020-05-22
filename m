@@ -2,148 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43371DDDE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD6B1DDE3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 05:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgEVDet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 23:34:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:57226 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727024AbgEVDet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 23:34:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B827431B;
-        Thu, 21 May 2020 20:34:48 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.76.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 447883F305;
-        Thu, 21 May 2020 20:34:46 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     hughd@google.com, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/vmstat: Add events for PMD based THP migration without split
-Date:   Fri, 22 May 2020 09:04:04 +0530
-Message-Id: <1590118444-21601-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728055AbgEVDlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 23:41:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4889 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727080AbgEVDlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 23:41:00 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 858741D5D9A6821937A9;
+        Fri, 22 May 2020 11:40:58 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 22 May 2020 11:40:48 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>
+CC:     <Souvik.Chakravarty@arm.com>, <Thanu.Rangarajan@arm.com>,
+        <Sudeep.Holla@arm.com>, <guohanjun@huawei.com>,
+        <john.garry@huawei.com>, <jonathan.cameron@huawei.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH v4 0/2] add SW BOOST support for CPPC
+Date:   Fri, 22 May 2020 11:34:34 +0800
+Message-ID: <1590118476-28742-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the following two new VM events which will help in validating PMD
-based THP migration without split. Statistics reported through these events
-will help in performance debugging.
+ACPI spec 6.2 section 8.4.7.1 provide the following two CPC registers.
 
-1. THP_PMD_MIGRATION_SUCCESS
-2. THP_PMD_MIGRATION_FAILURE
+"Highest performance is the absolute maximum performance an individual
+processor may reach, assuming ideal conditions. This performance level
+may not be sustainable for long durations, and may only be achievable if
+other platform components are in a specific state; for example, it may
+require other processors be in an idle state.
 
-Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-[hughd: fixed oops on NULL newpage]
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-Changes in V1:
+Nominal Performance is the maximum sustained performance level of the
+processor, assuming ideal operating conditions. In absence of an
+external constraint (power, thermal, etc.) this is the performance level
+the platform is expected to be able to maintain continuously. All
+processors are expected to be able to sustain their nominal performance
+state simultaneously."
 
-- Changed function name as thp_pmd_migration_success() per John
-- Folded in a fix (https://patchwork.kernel.org/patch/11563009/) from Hugh
+We can use Highest Performance as the max performance in boost mode and
+Nomial Performance as the max performance in non-boost mode. If the
+Highest Performance is greater than the Nominal Performance, we assume
+SW BOOST is supported.
 
-Changes in RFC V2: (https://patchwork.kernel.org/patch/11554861/)
+v3->v4:
+	run 'boost_set_msr_each' for each CPU in the policy rather than
+	each CPU in the system for 'acpi-cpufreq'
+	add 'Suggested-by'
 
-- Decopupled and renamed VM events from their implementation per Zi and John
-- Added THP_PMD_MIGRATION_FAILURE VM event upon allocation failure and split
+Xiongfeng Wang (2):
+  cpufreq: change '.set_boost' to act on only one policy
+  CPPC: add support for SW BOOST
 
-Changes in RFC V1: (https://patchwork.kernel.org/patch/11542055/)
+ drivers/cpufreq/acpi-cpufreq.c | 10 ++++----
+ drivers/cpufreq/cppc_cpufreq.c | 39 +++++++++++++++++++++++++++++--
+ drivers/cpufreq/cpufreq.c      | 53 +++++++++++++++++++++---------------------
+ include/linux/cpufreq.h        |  2 +-
+ 4 files changed, 71 insertions(+), 33 deletions(-)
 
- include/linux/vm_event_item.h |  4 ++++
- mm/migrate.c                  | 23 +++++++++++++++++++++++
- mm/vmstat.c                   |  4 ++++
- 3 files changed, 31 insertions(+)
-
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index ffef0f279747..23d8f9884c2b 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -91,6 +91,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		THP_ZERO_PAGE_ALLOC_FAILED,
- 		THP_SWPOUT,
- 		THP_SWPOUT_FALLBACK,
-+#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-+		THP_PMD_MIGRATION_SUCCESS,
-+		THP_PMD_MIGRATION_FAILURE,
-+#endif
- #endif
- #ifdef CONFIG_MEMORY_BALLOON
- 		BALLOON_INFLATE,
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 7160c1556f79..37f30bcfd628 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1170,6 +1170,20 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- #define ICE_noinline
- #endif
- 
-+#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-+static inline void thp_pmd_migration_success(bool success)
-+{
-+	if (success)
-+		count_vm_event(THP_PMD_MIGRATION_SUCCESS);
-+	else
-+		count_vm_event(THP_PMD_MIGRATION_FAILURE);
-+}
-+#else
-+static inline void thp_pmd_migration_success(bool success)
-+{
-+}
-+#endif
-+
- /*
-  * Obtain the lock on page, remove all ptes and migrate the page
-  * to the newly allocated page in newpage.
-@@ -1232,6 +1246,14 @@ static ICE_noinline int unmap_and_move(new_page_t get_new_page,
- 	 * we want to retry.
- 	 */
- 	if (rc == MIGRATEPAGE_SUCCESS) {
-+		/*
-+		 * When the page to be migrated has been freed from under
-+		 * us, that is considered a MIGRATEPAGE_SUCCESS, but no
-+		 * newpage has been allocated. It should not be counted
-+		 * as a successful THP migration.
-+		 */
-+		if (newpage && PageTransHuge(newpage))
-+			thp_pmd_migration_success(true);
- 		put_page(page);
- 		if (reason == MR_MEMORY_FAILURE) {
- 			/*
-@@ -1474,6 +1496,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 					unlock_page(page);
- 					if (!rc) {
- 						list_safe_reset_next(page, page2, lru);
-+						thp_pmd_migration_success(false);
- 						goto retry;
- 					}
- 				}
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 96d21a792b57..e258c782fd3a 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1274,6 +1274,10 @@ const char * const vmstat_text[] = {
- 	"thp_zero_page_alloc_failed",
- 	"thp_swpout",
- 	"thp_swpout_fallback",
-+#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-+	"thp_pmd_migration_success",
-+	"thp_pmd_migration_failure",
-+#endif
- #endif
- #ifdef CONFIG_MEMORY_BALLOON
- 	"balloon_inflate",
 -- 
-2.20.1
+1.7.12.4
 
