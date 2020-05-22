@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6A01DE4A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4321DE4A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgEVKkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:40:53 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:61056 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728506AbgEVKkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:40:53 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app3 (Coremail) with SMTP id cC_KCgC3TkEJrMdeGcjxAA--.53609S4;
-        Fri, 22 May 2020 18:40:13 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: Fix runtime PM imbalance on error
-Date:   Fri, 22 May 2020 18:40:06 +0800
-Message-Id: <20200522104008.28340-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgC3TkEJrMdeGcjxAA--.53609S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFW3Gr18JF1xWF4UArb_yoWfXrb_Kw
-        s8Zr97Wr13Krs2qwnrCwsxZrySgrsFg3WDWr1FvF4ft3yavrZ8J3yUZrnxAw4Yv3yIkFyU
-        tan8uay3Zrn7AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbT8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
-        67AK6r4DMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG
-        6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUFL05UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUIBlZdtOQgrAAMsS
+        id S1729030AbgEVKlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:41:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59102 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728703AbgEVKlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 06:41:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id DD063ACA5;
+        Fri, 22 May 2020 10:41:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 02B971E126B; Fri, 22 May 2020 12:41:10 +0200 (CEST)
+Date:   Fri, 22 May 2020 12:41:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 4/8] fs/ext4: Update ext4_should_use_dax()
+Message-ID: <20200522104109.GB14199@quack2.suse.cz>
+References: <20200521191313.261929-1-ira.weiny@intel.com>
+ <20200521191313.261929-5-ira.weiny@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521191313.261929-5-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+On Thu 21-05-20 12:13:09, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> S_DAX should only be enabled when the underlying block device supports
+> dax.
+> 
+> Cache the underlying support for DAX in the super block and modify
+> ext4_should_use_dax() to check for device support prior to the over
+> riding mount option.
+> 
+> While we are at it change the function to ext4_should_enable_dax() as
+> this better reflects the ask as well as matches xfs.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/mtd/nand/raw/omap_elm.c | 1 +
- 1 file changed, 1 insertion(+)
+The patch looks good to me. You can add:
 
-diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-index 3fa0e2cbbe53..078b1022ac2a 100644
---- a/drivers/mtd/nand/raw/omap_elm.c
-+++ b/drivers/mtd/nand/raw/omap_elm.c
-@@ -411,6 +411,7 @@ static int elm_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	if (pm_runtime_get_sync(&pdev->dev) < 0) {
- 		ret = -EINVAL;
-+		pm_runtime_put_sync(&pdev->dev);
- 		pm_runtime_disable(&pdev->dev);
- 		dev_err(&pdev->dev, "can't enable clock\n");
- 		return ret;
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+									Honza
+
+> 
+> ---
+> Changes from V3:
+> 	Add a sb DAX supported flag for performance
+> 
+> Changes from RFC
+> 	Change function name to 'should enable'
+> 	Clean up bool conversion
+> 	Reorder this for better bisect-ability
+> ---
+>  fs/ext4/ext4.h  |  1 +
+>  fs/ext4/inode.c | 15 ++++++++++-----
+>  fs/ext4/super.c |  5 ++++-
+>  3 files changed, 15 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 1a3daf2d18ef..0b4db9ce7756 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1979,6 +1979,7 @@ static inline bool ext4_has_incompat_features(struct super_block *sb)
+>   */
+>  #define EXT4_FLAGS_RESIZING	0
+>  #define EXT4_FLAGS_SHUTDOWN	1
+> +#define EXT4_FLAGS_BDEV_IS_DAX	2
+>  
+>  static inline int ext4_forced_shutdown(struct ext4_sb_info *sbi)
+>  {
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index a10ff12194db..6532870f6a0b 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4398,10 +4398,10 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
+>  		!ext4_test_inode_state(inode, EXT4_STATE_XATTR));
+>  }
+>  
+> -static bool ext4_should_use_dax(struct inode *inode)
+> +static bool ext4_should_enable_dax(struct inode *inode)
+>  {
+> -	if (!test_opt(inode->i_sb, DAX_ALWAYS))
+> -		return false;
+> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> +
+>  	if (!S_ISREG(inode->i_mode))
+>  		return false;
+>  	if (ext4_should_journal_data(inode))
+> @@ -4412,7 +4412,12 @@ static bool ext4_should_use_dax(struct inode *inode)
+>  		return false;
+>  	if (ext4_test_inode_flag(inode, EXT4_INODE_VERITY))
+>  		return false;
+> -	return true;
+> +	if (!test_bit(EXT4_FLAGS_BDEV_IS_DAX, &sbi->s_ext4_flags))
+> +		return false;
+> +	if (test_opt(inode->i_sb, DAX_ALWAYS))
+> +		return true;
+> +
+> +	return false;
+>  }
+>  
+>  void ext4_set_inode_flags(struct inode *inode)
+> @@ -4430,7 +4435,7 @@ void ext4_set_inode_flags(struct inode *inode)
+>  		new_fl |= S_NOATIME;
+>  	if (flags & EXT4_DIRSYNC_FL)
+>  		new_fl |= S_DIRSYNC;
+> -	if (ext4_should_use_dax(inode))
+> +	if (ext4_should_enable_dax(inode))
+>  		new_fl |= S_DAX;
+>  	if (flags & EXT4_ENCRYPT_FL)
+>  		new_fl |= S_ENCRYPTED;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 7b99c44d0a91..f7d76dcaedfe 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4092,13 +4092,16 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+>  		goto failed_mount;
+>  	}
+>  
+> +	if (bdev_dax_supported(sb->s_bdev, blocksize))
+> +		set_bit(EXT4_FLAGS_BDEV_IS_DAX, &sbi->s_ext4_flags);
+> +
+>  	if (sbi->s_mount_opt & EXT4_MOUNT_DAX_ALWAYS) {
+>  		if (ext4_has_feature_inline_data(sb)) {
+>  			ext4_msg(sb, KERN_ERR, "Cannot use DAX on a filesystem"
+>  					" that may contain inline data");
+>  			goto failed_mount;
+>  		}
+> -		if (!bdev_dax_supported(sb->s_bdev, blocksize)) {
+> +		if (!test_bit(EXT4_FLAGS_BDEV_IS_DAX, &sbi->s_ext4_flags)) {
+>  			ext4_msg(sb, KERN_ERR,
+>  				"DAX unsupported by block device.");
+>  			goto failed_mount;
+> -- 
+> 2.25.1
+> 
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
