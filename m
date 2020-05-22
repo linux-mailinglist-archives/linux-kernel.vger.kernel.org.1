@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D78C1DE0AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A830A1DE010
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgEVHOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 03:14:47 -0400
-Received: from outbound-ip8b.ess.barracuda.com ([209.222.82.190]:47974 "EHLO
-        outbound-ip8b.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728137AbgEVHOq (ORCPT
+        id S1728175AbgEVGoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726910AbgEVGoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 03:14:46 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104]) by mx2.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Fri, 22 May 2020 07:14:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q3gVtoO7z7ReeJb04Ica5NlNqamdwEPm8xWZpaiAR3P/1ddAl8rgpqJ2mssabg7ioaTCjO6vUn8WO5+aZtL/5yMcVc/t+ekReK4ApT/75VQsFTutwttxU3YMt3DSYbJAlr29RHXSSZi5QxJ7C1QR/H2u6zvqRA5l/0GL6ND76cn7/Li73eOFAcRJxQnA2TcVjxUVXOYicirAA09Scc7BRUu3iiJbqJltqIa4V8YeeD4L602gkfQ8tnJ59GpnYn8ODKs3EeIydoFM7zB1y4i72iLHnatrhC9rgrAcccUrtQIqGQVo2kj/kU9vhbfp2OjSwXo0j5ypYsZcR0U9W0a6VQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1ElRajXieyZM2RIf2Akwl4LiC5pfU941hcD5MHKnk0=;
- b=Oab3b9SZmdjEsMIIUR5NwfZGIcSllXUwaaoTOpBcUxF5WvcjIsc3tWVWuraz4GUnjnrJJhnQJvu4dnHWckmOYSEEk/ZnUEkAxT83SDVh2S+41QJUZeZxWyxlTtA2l6a6L/7nDh4MJ6uUcve3aQvV+wsnV/e4PFBVMqHP8sYdkJedPDh3IKeoq/ngiKyxTRyevqYiUSI/xHh3VCaYLnmKnMY+VPfXismTn3FLHN7ZslgX+BdRhsl4KHhzAlofritXmUAyhankmG4v7FYKpqOVZ6qZIIBxVW7L5GUuf1kI9r+kD5peWTcd9uM7B0ye1YbzUWatItW/npNbl9dcE9HIEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=biamp.com; dmarc=pass action=none header.from=biamp.com;
- dkim=pass header.d=biamp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1ElRajXieyZM2RIf2Akwl4LiC5pfU941hcD5MHKnk0=;
- b=GV4eylSAglKqOrydJvZbphLJLWn2ixeS36orCwTTyj6xB1tvZ3r2N/QFvzlwXo02WDcXhk9bgyrXyG5OV314QO6zdq2gsVCqRdWbavSBR2Ik7R/Y/BopyvV55mMYMExTvd/WNsEYsWRgxMZx/iDcsyVypJRZEhyR3F+TMgIMzY0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=biamp.com;
-Received: from DM6PR17MB3420.namprd17.prod.outlook.com (2603:10b6:5:1de::18)
- by DM6PR17MB2219.namprd17.prod.outlook.com (2603:10b6:5:b2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Fri, 22 May
- 2020 06:41:07 +0000
-Received: from DM6PR17MB3420.namprd17.prod.outlook.com
- ([fe80::8ca2:ccfb:f717:a7ad]) by DM6PR17MB3420.namprd17.prod.outlook.com
- ([fe80::8ca2:ccfb:f717:a7ad%4]) with mapi id 15.20.3021.020; Fri, 22 May 2020
- 06:41:07 +0000
-From:   Shreyas Joshi <shreyas.joshi@biamp.com>
-To:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, shreyasjoshi15@gmail.com
-CC:     linux-kernel@vger.kernel.org,
-        Shreyas Joshi <shreyas.joshi@biamp.com>
-Subject: [PATCH] printk: handle blank console arguments passed in.
-Date:   Fri, 22 May 2020 16:40:29 +1000
-Message-ID: <20200522064029.1510-1-shreyas.joshi@biamp.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-In-Reply-To: <20200520115023.GD520@jagdpanzerIV.localdomain>
-References: <20200520115023.GD520@jagdpanzerIV.localdomain>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: SYBPR01CA0022.ausprd01.prod.outlook.com (2603:10c6:10::34)
- To DM6PR17MB3420.namprd17.prod.outlook.com (2603:10b6:5:1de::18)
+        Fri, 22 May 2020 02:44:15 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EEEC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:44:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u188so8762398wmu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 23:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=srP7ViQWuk8gYrSzlJDDpsMNMVGdXtKx3PJIsQqVsew=;
+        b=nbAF/radFKg0JTqXnE60JqYHZmDYODGWY9hlBRKa3BF61ZyleZAkXggKz+J7ogsZpD
+         e+AtBBBKCPDKG+LWj7WK3f9WcMpXJ1zYT6YLanVLiXHPqLELMDgeWoMqdvMc8Fo8SFHl
+         EcMKDH1XlCBUMJgHg0GVbc8NOd4TC60Nw1lTWRjI4mW5cF0l+GTUxmpyKuY2/lN2atWH
+         thSjwkNjqjgBRwlUxwB0U+CZzwJZhloDed2QvumgFwdufRUbRU3MPDZBC30vqiHrBHhc
+         cDZZwgBUp0gHGpwEuDa5KQO09URDpsxTBs9CPIE4XV7VUYAbl4B8huYRUKuLvr10QlSH
+         90ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=srP7ViQWuk8gYrSzlJDDpsMNMVGdXtKx3PJIsQqVsew=;
+        b=V8hz7gPCO562r85YkX8yBlEpZOMxOx4G96XXxQRuHxh5eAYNgnM0qJaxK1fhef8TR1
+         6Ak8AnsSFlV8ICsWrKPmzO0NmFNqJ1tb9om7FWWOnlZFZK7Lqe0HaDilekA1pzWjjDdN
+         til5lhhXuMAJCLNFuyRZ9KLExhDtdC5yfXVvj3AIXsrDbkrL+lPYRdfhEzJSvqRFKFjP
+         5OAA8sPy5LX2iDEMFsVmJZ8S92XdSHOHIdpFp7u5omeyhhESiWcTRZsr6kwxXDR4v9iz
+         L9EB8/4XBmiqBAHsgx1jS5FlL/Dy2tja0K7WDUYOYzlOqE+VfE8tspcYP07X3LTgCLlQ
+         jSBA==
+X-Gm-Message-State: AOAM53001JUa+FnFXfSDjS4OVmagAVf6JPnbDup/C20J5s3WkAO3Uf7i
+        Sq19DZaYpjwpmgUAspiQKW+sEyuBFpKKUEzZW8Dl9g==
+X-Google-Smtp-Source: ABdhPJwYvmQAKNAdEtDF2lkuLPxuXrswdEf7MIonLNzRUZnJkpxeElIXQrYUopv0xM1XZE6wayG1r0Tgl/UL0dMyLlY=
+X-Received: by 2002:a1c:7410:: with SMTP id p16mr12607532wmc.134.1590129852604;
+ Thu, 21 May 2020 23:44:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from D19-03074.biamp.com (203.54.172.54) by SYBPR01CA0022.ausprd01.prod.outlook.com (2603:10c6:10::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.25 via Frontend Transport; Fri, 22 May 2020 06:41:05 +0000
-X-Mailer: git-send-email 2.23.0.windows.1
-X-Originating-IP: [203.54.172.54]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8bf71600-ed6c-45c7-74ad-08d7fe1b1afb
-X-MS-TrafficTypeDiagnostic: DM6PR17MB2219:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR17MB221919725FA2976AD8BB2659FCB40@DM6PR17MB2219.namprd17.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 04111BAC64
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aVCqE/tbjwrKSRHl8OtfyyPe7mZXSuoHMFqPSCh2/Y7PTkCA+mMYYP77NipWuy/3uuv6IKCgonbT1DQmcOhokbjXSXI8N42g58P/AD1sduvnvaY/54EvMpXhOkARVOPfLSm8/d1hJi/BtiUWkvNx/uHLvrz5SHvBUDIq0CYLdTDteGxim2dqNR3g+xWdBIR6KQ/ot7+RVXF4OWhB0EqljBPN2Y3OQSrE6F+XbGFskzZTF8hSpVNKm20spZNOr16AYR+iDpPTKmL5y8A9XvzYJXPBIj01BO4oNo6mniUtFxvkuL4JhiUwj5BQtuGOMhyvHKnZJysBqkHUa2mMpOhc9JdQF5cLcsEbhNZs1NMMJA3Pb0CzBlmk2keB0CVybuvDRivuIztmulq8V7V2JiIGfUEKOXFBn6nq0yskinTEUPkzzXhzLrSLUsIlvsldhnkU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR17MB3420.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(346002)(396003)(39850400004)(376002)(66556008)(8936002)(4326008)(316002)(16526019)(956004)(186003)(2906002)(44832011)(1076003)(36756003)(7696005)(52116002)(26005)(5660300002)(107886003)(66946007)(66476007)(478600001)(6486002)(8676002)(2616005)(86362001)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: VwIaJZbhOIIWWl0jDfA56+95cRj5fOPwXub5C88RVIzdINWPcadJpauTp/pxaWaeS1ZRYf8Ni+v/bHV/z4Ou840JWzpFjd3ZuDYuHXwxnybz4NNfuXyEfKlKIXOcGcxVei0gubmp84hoOqBXk/Qof1b38EB2AGpetdDchm+PIqoHk6snjJrvYdW04HQScKP94qqjAKVBovDkvjsal2rHLe+xwmAjqn78p+9b843SdGybRWqd0yMM9P8YFoA1pJSzSiwSN9UIx9xPHy4imRXW/1sWt5+XH6aPa640MF6Vg4Ta5TEoWTmqT2iZVzaKgzanLr84jHUcX02XgBiUDZtU+kd7dpSusj5/pnadpMy4x+C8K1OrdRnX121JX+uBfiXrOnjng6y0PCZeQCj1Z3eBoBcGJsvKvKoukM6A304EVtD8rBbuUtOmEEf+KRmVKbAEysjQFau5C7rTCWWAWwIbjc5R8cIzVWGGIX5vA3lwhnI=
-X-OriginatorOrg: biamp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bf71600-ed6c-45c7-74ad-08d7fe1b1afb
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 06:41:07.4668
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 341ac572-066c-46f6-bf06-b2d0c7ddf1be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8d89IKB5vMkXpO88YWfSyJHu2XGmRB/PWYE1Vn/tDSyC/GoCrSMsQyGcLHfkNgcBkKdXuwKafAEZU0s1HYMjuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR17MB2219
-X-BESS-ID: 1590131651-893003-411-33202-1
-X-BESS-VER: 2019.1_20200521.2236
-X-BESS-Apparent-Source-IP: 104.47.70.104
-X-BESS-Outbound-Spam-Score: 1.50
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.224285 [from 
-        cloudscan17-63.us-east-2b.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        1.50 MSGID_FROM_MTA_HEADER_2 META: Message-Id was added by a relay 
-X-BESS-Outbound-Spam-Status: SCORE=1.50 using account:ESS74049 scores of KILL_LEVEL=7.0 tests=MSGID_FROM_MTA_HEADER, BSF_BESS_OUTBOUND, MSGID_FROM_MTA_HEADER_2
-X-BESS-BRTS-Status: 1
+References: <20200518091441.94843-2-anup.patel@wdc.com> <mhng-724b2ebd-3b41-4b3e-8685-26860402e663@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-724b2ebd-3b41-4b3e-8685-26860402e663@palmerdabbelt-glaptop1>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 22 May 2020 12:14:00 +0530
+Message-ID: <CAAhSdy1X=4veB_3XDbrtVMc2KkZip-7bdaet9JqO3fGik4Oo1g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] irqchip/sifive-plic: Set default irq affinity in plic_irqdomain_map()
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If uboot passes a blank string to console_setup then it results in a trashe=
-d memory.
-Ultimately, the kernel crashes during freeing up the memory. This fix check=
-s if there
-is a blank parameter being passed to console_setup from uboot.
-In case it detects that the console parameter is blank then
-it doesn't setup the serial device and it gracefully exits.
+On Fri, May 22, 2020 at 3:36 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Mon, 18 May 2020 02:14:39 PDT (-0700), Anup Patel wrote:
+> > For multiple PLIC instances, each PLIC can only target a subset of
+> > CPUs which is represented by "lmask" in the "struct plic_priv".
+> >
+> > Currently, the default irq affinity for each PLIC interrupt is all
+> > online CPUs which is illegal value for default irq affinity when we
+> > have multiple PLIC instances. To fix this, we now set "lmask" as the
+> > default irq affinity in for each interrupt in plic_irqdomain_map().
+> >
+> > Fixes: f1ad1133b18f ("irqchip/sifive-plic: Add support for multiple PLICs")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index 822e074c0600..9f7f8ce88c00 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -176,9 +176,12 @@ static struct irq_chip plic_chip = {
+> >  static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
+> >                             irq_hw_number_t hwirq)
+> >  {
+> > +     struct plic_priv *priv = d->host_data;
+> > +
+> >       irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
+> >                           handle_fasteoi_irq, NULL, NULL);
+>
+> If you're going to re-spin this, d->host_data could be priv here.
 
-Signed-off-by: Shreyas Joshi <shreyas.joshi@biamp.com>
----
- V1:
-    Fixed console_loglevel to default as per the review comments
+The controller's private data is named "host_data" for "struct irq_domain"
+in Linux irq subsystem hence the usage.
 
- kernel/printk/printk.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> >       irq_set_noprobe(irq);
+> > +     irq_set_affinity(irq, &priv->lmask);
+> >       return 0;
+> >  }
+>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index ad4606234545..e9ad730991e0 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2165,7 +2165,10 @@ static int __init console_setup(char *str)
- 	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for "ttyS" */
- 	char *s, *options, *brl_options =3D NULL;
- 	int idx;
--
-+	if (str[0] =3D=3D 0) {
-+		return 1;
-+	}
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
-=20
---=20
-2.20.1
-
+Thanks,
+Anup
