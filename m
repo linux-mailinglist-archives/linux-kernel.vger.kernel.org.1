@@ -2,177 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914591DE7D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA51DE7E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729916AbgEVNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 09:15:36 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:44684 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbgEVNPf (ORCPT
+        id S1729888AbgEVNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 09:20:33 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:59174 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729046AbgEVNUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 09:15:35 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5A558803087B;
-        Fri, 22 May 2020 13:15:31 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2SinbSvoL-v6; Fri, 22 May 2020 16:15:30 +0300 (MSK)
-Date:   Fri, 22 May 2020 16:15:26 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        Huacai Chen <chenhc@lemote.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
-        Zou Wei <zou_wei@huawei.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 03/13] mips: Add MIPS Release 5 support
-Message-ID: <20200522131526.pmqtpmreq6ly3kou@mobilestation>
-References: <20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru>
- <20200521140725.29571-4-Sergey.Semin@baikalelectronics.ru>
- <20200522072743.GA7331@alpha.franken.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200522072743.GA7331@alpha.franken.de>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Fri, 22 May 2020 09:20:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590153630; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Wf+Ft3GAXv6Hn11ap7JENTyHYvhs9XYIKDP7SgyDCBk=; b=TjbYVXQkEWwrceCMDQKQoamX1G0ijLhLr/5ICmy6HuSN6eX6mPSJn24iJ5iQbw+c2bSfO+vZ
+ viUk3gsdu6kp7r2eIVE01LYoZ+10NGyuqcWFQ0rsd3fkGmWkqyrju1ihnqQyBY+tE+FKOQMO
+ RAa4nQqnGAECZu50wAP3oDrjUCk=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ec7d1872a41f3ed006fdfe5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 May 2020 13:20:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 221C1C43391; Fri, 22 May 2020 13:20:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68FF4C433C8;
+        Fri, 22 May 2020 13:19:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 68FF4C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     bjorn.andersson@linaro.org, maz@kernel.org,
+        linus.walleij@linaro.org, swboyd@chromium.org,
+        evgreen@chromium.org, mka@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH 0/4] irqchip: qcom: pdc: Introduce irq_set_wake call
+Date:   Fri, 22 May 2020 18:49:25 +0530
+Message-Id: <1590153569-21706-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 09:27:43AM +0200, Thomas Bogendoerfer wrote:
-> On Thu, May 21, 2020 at 05:07:14PM +0300, Serge Semin wrote:
-> > There are five MIPS32/64 architecture releases currently available:
-> > from 1 to 6 except fourth one, which was intentionally skipped.
-> > Three of them can be called as major: 1st, 2nd and 6th, that not only
-> > have some system level alterations, but also introduced significant
-> > core/ISA level updates. The rest of the MIPS architecture releases are
-> > minor.
-> > 
-> > Even though they don't have as much ISA/system/core level changes
-> > as the major ones with respect to the previous releases, they still
-> > provide a set of updates (I'd say they were intended to be the
-> > intermediate releases before a major one) that might be useful for the
-> > kernel and user-level code, when activated by the kernel or compiler.
-> > In particular the following features were introduced or ended up being
-> > available at/after MIPS32/64 Release 5 architecture:
-> > + the last release of the misaligned memory access instructions,
-> > + virtualisation - VZ ASE - is optional component of the arch,
-> > + SIMD - MSA ASE - is optional component of the arch,
-> > + DSP ASE is optional component of the arch,
-> > + CP0.Status.FR=1 for CP1.FIR.F64=1 (pure 64-bit FPU general registers)
-> >   must be available if FPU is implemented,
-> > + CP1.FIR.Has2008 support is required so CP1.FCSR.{ABS2008,NAN2008} bits
-> >   are available.
-> > + UFR/UNFR aliases to access CP0.Status.FR from user-space by means of
-> >   ctc1/cfc1 instructions (enabled by CP0.Config5.UFR),
-> > + CP0.COnfig5.LLB=1 and eretnc instruction are implemented to without
-> >   accidentally clearing LL-bit when returning from an interrupt,
-> >   exception, or error trap,
-> > + XPA feature together with extended versions of CPx registers is
-> >   introduced, which needs to have mfhc0/mthc0 instructions available.
-> > 
-> > So due to these changes GNU GCC provides an extended instructions set
-> > support for MIPS32/64 Release 5 by default like eretnc/mfhc0/mthc0. Even
-> > though the architecture alteration isn't that big, it still worth to be
-> > taken into account by the kernel software. Finally we can't deny that
-> > some optimization/limitations might be found in future and implemented
-> > on some level in kernel or compiler. In this case having even
-> > intermediate MIPS architecture releases support would be more than
-> > useful.
-> > 
-> > So the most of the changes provided by this commit can be split into
-> > either compile- or runtime configs related. The compile-time related
-> > changes are caused by adding the new CONFIG_CPU_MIPS32_R5/CONFIG_CPU_MIPSR5
-> > configs and concern the code activating MIPSR2 or MIPSR6 already
-> > implemented features (like eretnc/LLbit, mthc0/mfhc0). In addition
-> > CPU_HAS_MSA can be now freely enabled for MIPS32/64 release 5 based
-> > platforms as this is done for CPU_MIPS32_R6 CPUs. The runtime changes
-> > concerns the features which are handled with respect to the MIPS ISA
-> > revision detected at run-time by means of CP0.Config.{AT,AR} bits. Alas
-> > these fields can be used to detect either r1 or r2 or r6 releases.
-> > But since we know which CPUs in fact support the R5 arch, we can manually
-> > set MIPS_CPU_ISA_M32R5/MIPS_CPU_ISA_M64R5 bit of c->isa_level and then
-> > use cpu_has_mips32r5/cpu_has_mips64r5 where it's appropriate.
-> > 
-> > Since XPA/EVA provide too complex alterationss and to have them used with
-> > MIPS32 Release 2 charged kernels (for compatibility with current platform
-> > configs) they are left to be setup as a separate kernel configs.
-> > 
-> > Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: devicetree@vger.kernel.org
-> > ---
-> >  arch/mips/Kconfig                    | 56 +++++++++++++++++++++++++---
-> >  arch/mips/Makefile                   |  2 +
-> >  arch/mips/include/asm/asmmacro.h     | 18 +++++----
-> >  arch/mips/include/asm/compiler.h     |  5 +++
-> >  arch/mips/include/asm/cpu-features.h | 27 ++++++++++----
-> >  arch/mips/include/asm/cpu-info.h     |  2 +-
-> >  arch/mips/include/asm/cpu-type.h     |  7 +++-
-> >  arch/mips/include/asm/cpu.h          | 10 +++--
-> >  arch/mips/include/asm/fpu.h          |  4 +-
-> >  arch/mips/include/asm/hazards.h      |  8 ++--
-> >  arch/mips/include/asm/module.h       |  4 ++
-> >  arch/mips/include/asm/stackframe.h   |  2 +-
-> >  arch/mips/include/asm/switch_to.h    |  8 ++--
-> >  arch/mips/kernel/cpu-probe.c         | 17 +++++++++
-> >  arch/mips/kernel/entry.S             |  6 +--
-> >  arch/mips/kernel/proc.c              |  4 ++
-> >  arch/mips/kernel/r4k_fpu.S           | 14 +++----
-> >  arch/mips/kvm/vz.c                   |  6 +--
-> >  arch/mips/lib/csum_partial.S         |  6 ++-
-> >  arch/mips/mm/c-r4k.c                 |  7 ++--
-> >  arch/mips/mm/sc-mips.c               |  7 ++--
-> >  21 files changed, 163 insertions(+), 57 deletions(-)
-> 
-> applied to mips-next. I've changed the two /* fall through */ by fallthrough;
-> while appliny. Running checkpatch would have caught that ;-)
+This series adds support to lazy disable pdc interrupt.
 
-Good. Thanks. Actually I've seen that warning, but just didn't know what way to
-choose.) So I've decided to leave the comment-based Fall-through fixup seeing
-the rest of the file is using the older way. By doing so I've kept the locally
-implemented coding style. Though I've heard the explicit attribute "fallthrough;"
-utilization is a preferred way of marking combined case statements.
+Some drivers using gpio interrupts want to configure gpio for wakeup using
+enable_irq_wake() but during suspend entry disables irq and expects system
+to resume when interrupt occurs. In the driver resume call interrupt is
+re-enabled and removes wakeup capability using disable_irq_wake() one such
+example is cros ec driver.
 
--Sergey
+With [1] in documentation saying "An irq can be disabled with disable_irq()
+and still wake the system as long as the irq has wake enabled".
 
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+The PDC IRQs are currently "unlazy disabled" (disable here means that it
+will be masked in PDC & GIC HW GICD_ISENABLER, the moment driver invokes
+disable_irq()) such IRQs can not wakeup from low power modes like suspend
+to RAM since the driver chosen to disable this.
+
+During suspend entry, no one re-enable/unmask in HW, even if its marked for
+wakeup.
+
+One solutions thought to address this problem was...During suspend entry at
+last point, irq chip driver re-enable/unmask IRQs in HW that are marked for
+wakeup. This was attemped in [2].
+
+This series adds alternate solution to [2] by "lazy disable" IRQs in HW.
+The genirq takes care of lazy disable in case if irqchip did not implement
+irq_disable callback. Below is high level steps on how this works out..
+
+a. During driver's disable_irq() call, IRQ will be marked disabled in SW
+b. IRQ will still be enabled(read unmasked in HW)
+c. The device then enters low power mode like suspend to RAM
+d. The HW detects unmasked IRQs and wakesup the CPU
+e. During resume after local_irq_enable() CPU goes to handle the wake IRQ
+f. Generic handler comes to know that IRQ is disabled in SW
+g. Generic handler marks IRQ as pending and now invokes mask callback
+h. IRQ gets disabled/masked in HW now
+i. When driver invokes enable_irq() the SW pending IRQ leads IRQ's handler
+j. enable_irq() will again enable/unmask in HW
+
+[1] https://www.spinics.net/lists/kernel/msg3398294.html
+[2] https://patchwork.kernel.org/patch/11466021/
+
+Maulik Shah (4):
+  gpio: gpiolib: Allow GPIO IRQs to lazy disable
+  pinctrl: qcom: Remove irq_disable callback from msmgpio irqchip
+  pinctrl: qcom: Add msmgpio irqchip flags
+  irqchip: qcom-pdc: Introduce irq_set_wake call
+
+ drivers/gpio/gpiolib.c             | 59 ++++++++++++++++++++++++--------------
+ drivers/irqchip/qcom-pdc.c         | 33 ++++++++++-----------
+ drivers/pinctrl/qcom/pinctrl-msm.c | 15 ++--------
+ include/linux/gpio/driver.h        | 13 +++++++++
+ 4 files changed, 70 insertions(+), 50 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
