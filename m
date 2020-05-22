@@ -2,133 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A6D1DECD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D091DECE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgEVQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 12:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S1730511AbgEVQLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 12:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730609AbgEVQI4 (ORCPT
+        with ESMTP id S1730195AbgEVQLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 12:08:56 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD51EC061A0E;
-        Fri, 22 May 2020 09:08:55 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jcAE7-0000C8-BJ; Fri, 22 May 2020 18:08:51 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E26181C0475;
-        Fri, 22 May 2020 18:08:49 +0200 (CEST)
-Date:   Fri, 22 May 2020 16:08:49 -0000
-From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/kcsan] ubsan, kcsan: Don't combine sanitizer with kcov on clang
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200505142341.1096942-1-arnd@arndb.de>
-References: <20200505142341.1096942-1-arnd@arndb.de>
+        Fri, 22 May 2020 12:11:14 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121E9C061A0E;
+        Fri, 22 May 2020 09:11:14 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id f21so2197324pgg.12;
+        Fri, 22 May 2020 09:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6yGwOkXLg7GHKHathTBWhqxYl0q0EDsPE6Xli2YNqgM=;
+        b=ezt7no7rFfuyVnbv7ys1ZSAS1QceFEK4CnfrJrloyrjdfo/ENc5Jb/vUSIt9qZRCVi
+         k82tOj5elvhMWbRZe7bZ49J7RC6Kduui61/Ww2qccIalrNT/PAHjeoqXWEVhxCnq5Lem
+         QSMI2UXek50KnEObR+SeCEFa39WavI7wwrFd5PU61DDBA+JbQDgxYG9pap/0S/pN1Axt
+         f3uM+GVBUCgRjKDa/WjeLM3x3F9fh0ZgF680OefkIu9FBrUL0xw8+I3M/TXi5gnqp8oC
+         b1KNBbf1vx6nmtbyfyJH3iuogURcdbw5f2DUPCk3DLw/2HaHUh7hAy2j9xsIKn7guhLS
+         0Htw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6yGwOkXLg7GHKHathTBWhqxYl0q0EDsPE6Xli2YNqgM=;
+        b=E6TJ57T9PaX3RlMJzFfwr/ONC/vRxMSv+66Efg0fbn/sBzgBvbBTzlBmbZEROTf6jD
+         oUNxeWGDrGdgcj/3LZzyrdQEvCM5QBtGp2pV5jGjnZDFndB8CEWUURmAJ0EXxaY/R7vZ
+         4id61IEXDTsglSgOfMb9YDmQCltqPKacBIX3ojvhzN98qgU9Gisf9XDkxxfL+es2IYUO
+         8j+TU3gPrFfNjMfThLG8hod4Lt2bmZZU5CBP2Wr2Cf6h2kBkVPAaNrA8tAN3XzXdSux6
+         03IgwORNBh0+UsjEUD14C4sH7elzYPtoC3pAbRM1WiaSwztSgw6NpDIv9RyA2TlMGoVC
+         dZeQ==
+X-Gm-Message-State: AOAM530oDrF0yjS+yKXE2zGhef5MhsziHEFQ05JGyqEtsX1u3/v3XZO3
+        HwIKIbcmo9i2QeAuvahatKtP6UIJ
+X-Google-Smtp-Source: ABdhPJxiQcMkTlT2EgGKGmZxNBYjphQYy22duEAY+YaW20zVknDvqyZME8MWl9SPtKdIrM1SgckLsg==
+X-Received: by 2002:a65:6799:: with SMTP id e25mr14924885pgr.9.1590163873042;
+        Fri, 22 May 2020 09:11:13 -0700 (PDT)
+Received: from [10.230.188.43] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u4sm11820575pjf.3.2020.05.22.09.11.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 09:11:12 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 2/4] net: phy: Add a helper to return the
+ index for of the internal delay
+To:     Dan Murphy <dmurphy@ti.com>, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, robh@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20200522122534.3353-1-dmurphy@ti.com>
+ <20200522122534.3353-3-dmurphy@ti.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <da85ecb0-1da1-2ccd-0830-a3ec18ee486c@gmail.com>
+Date:   Fri, 22 May 2020 09:11:09 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.0
 MIME-Version: 1.0
-Message-ID: <159016372979.17951.17454667382044301929.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200522122534.3353-3-dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/kcsan branch of tip:
 
-Commit-ID:     e87c5783e9e43ec8bd5c0a1cf7cfa4add33603b0
-Gitweb:        https://git.kernel.org/tip/e87c5783e9e43ec8bd5c0a1cf7cfa4add33603b0
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Thu, 21 May 2020 16:20:37 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 22 May 2020 14:34:26 +02:00
 
-ubsan, kcsan: Don't combine sanitizer with kcov on clang
+On 5/22/2020 5:25 AM, Dan Murphy wrote:
+> Add a helper function that will return the index in the array for the
+> passed in internal delay value.  The helper requires the array, size and
+> delay value.
+> 
+> The helper will then return the index for the exact match or return the
+> index for the index to the closest smaller value.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  drivers/net/phy/phy_device.c | 45 ++++++++++++++++++++++++++++++++++++
+>  include/linux/phy.h          |  2 ++
+>  2 files changed, 47 insertions(+)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 7481135d27ab..40f53b379d2b 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -2661,6 +2661,51 @@ void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause)
+>  }
+>  EXPORT_SYMBOL(phy_get_pause);
+>  
+> +/**
+> + * phy_get_delay_index - returns the index of the internal delay
+> + * @phydev: phy_device struct
+> + * @delay_values: array of delays the PHY supports
+> + * @size: the size of the delay array
+> + * @delay: the delay to be looked up
+> + *
+> + * Returns the index within the array of internal delay passed in.
 
-Clang does not allow -fsanitize-coverage=trace-{pc,cmp} together
-with -fsanitize=bounds or with ubsan:
+Can we consider using s32 for storage that way the various
+of_read_property_read_u32() are a natural fit (int works too, but I
+would prefer being explicit).
 
-  clang: error: argument unused during compilation: '-fsanitize-coverage=trace-pc' [-Werror,-Wunused-command-line-argument]
-  clang: error: argument unused during compilation: '-fsanitize-coverage=trace-cmp' [-Werror,-Wunused-command-line-argument]
+> + */
+> +int phy_get_delay_index(struct phy_device *phydev, int *delay_values, int size,
+> +			int delay)
+> +{
+> +	int i;
+> +
+> +	if (size <= 0)
+> +		return -EINVAL;
+> +
+> +	if (delay <= delay_values[0])
+> +		return 0;
+> +
+> +	if (delay > delay_values[size - 1])
+> +		return size - 1;
 
-To avoid the warning, check whether clang can handle this correctly or
-disallow ubsan and kcsan when kcov is enabled.
+Does not that assume that the delays are sorted by ascending order, if
+so, can you make it clear in the kernel doc?
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Marco Elver <elver@google.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://bugs.llvm.org/show_bug.cgi?id=45831
-Link: https://lore.kernel.org/lkml/20200505142341.1096942-1-arnd@arndb.de
-Link: https://lkml.kernel.org/r/20200521142047.169334-2-elver@google.com
----
- lib/Kconfig.kcsan | 11 +++++++++++
- lib/Kconfig.ubsan | 11 +++++++++++
- 2 files changed, 22 insertions(+)
+> +
+> +	for (i = 0; i < size; i++) {
+> +		if (delay == delay_values[i])
+> +			return i;
+> +
+> +		/* Find an approximate index by looking up the table */
+> +		if (delay > delay_values[i - 1] &&
 
-diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
-index 689b6b8..b5d88ac 100644
---- a/lib/Kconfig.kcsan
-+++ b/lib/Kconfig.kcsan
-@@ -3,9 +3,20 @@
- config HAVE_ARCH_KCSAN
- 	bool
- 
-+config KCSAN_KCOV_BROKEN
-+	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
-+	depends on CC_IS_CLANG
-+	depends on !$(cc-option,-Werror=unused-command-line-argument -fsanitize=thread -fsanitize-coverage=trace-pc)
-+	help
-+	  Some versions of clang support either KCSAN and KCOV but not the
-+	  combination of the two.
-+	  See https://bugs.llvm.org/show_bug.cgi?id=45831 for the status
-+	  in newer releases.
-+
- menuconfig KCSAN
- 	bool "KCSAN: dynamic data race detector"
- 	depends on HAVE_ARCH_KCSAN && DEBUG_KERNEL && !KASAN
-+	depends on !KCSAN_KCOV_BROKEN
- 	select STACKTRACE
- 	help
- 	  The Kernel Concurrency Sanitizer (KCSAN) is a dynamic
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 48469c9..3baea77 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -26,9 +26,20 @@ config UBSAN_TRAP
- 	  the system. For some system builders this is an acceptable
- 	  trade-off.
- 
-+config UBSAN_KCOV_BROKEN
-+	def_bool KCOV && CC_HAS_SANCOV_TRACE_PC
-+	depends on CC_IS_CLANG
-+	depends on !$(cc-option,-Werror=unused-command-line-argument -fsanitize=bounds -fsanitize-coverage=trace-pc)
-+	help
-+	  Some versions of clang support either UBSAN or KCOV but not the
-+	  combination of the two.
-+	  See https://bugs.llvm.org/show_bug.cgi?id=45831 for the status
-+	  in newer releases.
-+
- config UBSAN_BOUNDS
- 	bool "Perform array index bounds checking"
- 	default UBSAN
-+	depends on !UBSAN_KCOV_BROKEN
- 	help
- 	  This option enables detection of directly indexed out of bounds
- 	  array accesses, where the array size is known at compile time.
+&& i > 0 so you do not accidentally under-run the array?
+
+> +		    delay < delay_values[i]) {
+> +			if (delay - delay_values[i - 1] < delay_values[i] - delay)
+> +				return i - 1;
+> +			else
+> +				return i;
+> +		}
+> +
+> +	}
+> +
+> +	phydev_err(phydev, "error finding internal delay index for %d\n",
+> +		   delay);
+> +
+> +	return -EINVAL;
+> +}
+> +EXPORT_SYMBOL(phy_get_delay_index);
+> +
+>  static bool phy_drv_supports_irq(struct phy_driver *phydrv)
+>  {
+>  	return phydrv->config_intr && phydrv->ack_interrupt;
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 2bcdf19ed3b4..73552612c189 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -1408,6 +1408,8 @@ void phy_set_asym_pause(struct phy_device *phydev, bool rx, bool tx);
+>  bool phy_validate_pause(struct phy_device *phydev,
+>  			struct ethtool_pauseparam *pp);
+>  void phy_get_pause(struct phy_device *phydev, bool *tx_pause, bool *rx_pause);
+> +int phy_get_delay_index(struct phy_device *phydev, int *delay_values,
+> +			int size, int delay);
+>  void phy_resolve_pause(unsigned long *local_adv, unsigned long *partner_adv,
+>  		       bool *tx_pause, bool *rx_pause);
+>  
+> 
+
+-- 
+Florian
