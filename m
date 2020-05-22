@@ -2,191 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7921DE809
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDA11DE811
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbgEVN3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 09:29:00 -0400
-Received: from outbound-smtp05.blacknight.com ([81.17.249.38]:45140 "EHLO
-        outbound-smtp05.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728898AbgEVN27 (ORCPT
+        id S1729906AbgEVNby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 09:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729367AbgEVNby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 09:28:59 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp05.blacknight.com (Postfix) with ESMTPS id C095BCCAFB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 14:28:56 +0100 (IST)
-Received: (qmail 7197 invoked from network); 22 May 2020 13:28:56 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.57])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 May 2020 13:28:56 -0000
-Date:   Fri, 22 May 2020 14:28:54 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jirka Hladky <jhladky@redhat.com>, Phil Auld <pauld@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Shakshober <dshaks@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Bill Gray <bgray@redhat.com>,
-        riel@surriel.com
-Subject: Re: [PATCH 00/13] Reconcile NUMA balancing decisions with the load
- balancer v6
-Message-ID: <20200522132854.GF7167@techsingularity.net>
-References: <20200508092212.GE3758@techsingularity.net>
- <CAE4VaGC_v6On-YvqdTwAWu3Mq4ofiV0pLov-QpV+QHr_SJr+Rw@mail.gmail.com>
- <CAE4VaGDQWPePtmtCZP=ROYW1KPxtPhGDrxqy2QbirHGJdwk4=w@mail.gmail.com>
- <20200513153023.GF3758@techsingularity.net>
- <20200514153122.GE2978@hirez.programming.kicks-ass.net>
- <20200515084740.GJ3758@techsingularity.net>
- <20200515111732.GS2957@hirez.programming.kicks-ass.net>
- <20200515142444.GK3001@hirez.programming.kicks-ass.net>
- <20200521103816.GA7167@techsingularity.net>
- <20200521114132.GI325280@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20200521114132.GI325280@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 22 May 2020 09:31:54 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F3DC061A0E;
+        Fri, 22 May 2020 06:31:54 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id u22so4378166plq.12;
+        Fri, 22 May 2020 06:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fIP5XgLNH8pQd/AT+lCYKyHiYHAS6BGBNzZ5yozZhZ0=;
+        b=HXcf6ZXOabHaWhWWiBKy1SEjM5KKFbiHktOCs6UpJOsdHEQw86gLtsnxG1mj1Hmqq7
+         ASQpWbDHKzp4r8oS6ZOIIZo/IycsomCm5iRIWEpxMoDU5wJJOXNcVcKo5mFnzzIEotx/
+         T6uZXfnP2/Z0ldHFKw7qWPI6+6HtlJkP2yRqChHzEuYpa1AajOsYIdkycWjkKaz6GUfZ
+         685rdsXYbb7PA9b0zS3aEdA3gzglOt45FeqLZmS/MEhjfhVHhCDWiPCzzFcAVqUXQlCG
+         2WcAzYVmD8z8qEcV94HIkoAtQUh2aYtCJ2Mr2UPmaGTOYkd078NXQBygTIky717HHv+9
+         FpOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fIP5XgLNH8pQd/AT+lCYKyHiYHAS6BGBNzZ5yozZhZ0=;
+        b=RathOnKM2pRWmxjlGjLiJQ/bqg7E6cSSJEWbW1a2b6YJdDuuKdxgjtDiFwMYyLphnS
+         v6O2VZ7ArvmzJJT6CpRePMyBZHgbgjwH4AGJWAPR2ygu1lowyH4L01kv648wUz1Ju3TO
+         N/JWaV6GnkAQ7/4AIw0k0J1ycLuDLT25B9DTE1COaSiaDpNGSgG+FzOYMF7XsG+HcYYr
+         STyeUZH3G3t2DNi5cZ+lRPEVniSp1IWTLQ0BkRipnLqoXdFTHkZNnCwS53WaZHYfrQWs
+         S/5EKJ8wIKA7q8aq0uHeWtkH/i8C7FUTihX9vBYxpydlC793wc0FHOwj1QBiwJFaBSin
+         PIsw==
+X-Gm-Message-State: AOAM533YKasvqeteuaO0c6IsTJWAcE0RnVbIFdCE5b2bRPh5SFAbmLNM
+        wZ2UuhYsXwZqWAICznDzYAKFCiZc
+X-Google-Smtp-Source: ABdhPJxxegpbhEmta8ZCz6dKfvWPO/4qUjiovSmBDzZfUPENTctCBSEEGmfUrxmMkUTsSubpd4hJeQ==
+X-Received: by 2002:a17:902:a414:: with SMTP id p20mr15222856plq.333.1590154298234;
+        Fri, 22 May 2020 06:31:38 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.16])
+        by smtp.gmail.com with ESMTPSA id c14sm6753132pfp.122.2020.05.22.06.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 06:31:37 -0700 (PDT)
+From:   Baolin Wang <baolin.wang7@gmail.com>
+To:     robh+dt@kernel.org, jassisinghbrar@gmail.com
+Cc:     orsonzhai@gmail.com, baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: mailbox: Add the Spreadtrum mailbox documentation
+Date:   Fri, 22 May 2020 21:31:08 +0800
+Message-Id: <8d29eba045ef18c5489e122b3668afc20431f15d.1590153779.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 01:41:32PM +0200, Peter Zijlstra wrote:
-> On Thu, May 21, 2020 at 11:38:16AM +0100, Mel Gorman wrote:
-> > IIUC, this patch front-loads as much work as possible before checking if
-> > the task is on_rq and then the waker/wakee shares a cache, queue task on
-> > the wake_list and otherwise do a direct wakeup.
-> > 
-> > The advantage is that spinning is avoided on p->on_rq when p does not
-> > share a cache. The disadvantage is that it may result in tasks being
-> > stacked but this should only happen when the domain is overloaded and
-> > select_task_eq() is unlikely to find an idle CPU. The load balancer would
-> > soon correct the situation anyway.
-> > 
-> > In terms of netperf for my testing, the benefit is marginal because the
-> > wakeups are primarily between tasks that share cache. It does trigger as
-> > perf indicates that some time is spent in ttwu_queue_remote with this
-> > patch, it's just that the overall time spent spinning on p->on_rq is
-> > very similar. I'm still waiting on other workloads to complete to see
-> > what the impact is.
-> 
-> So it might make sense to play with the exact conditions under which
-> we'll attempt this remote queue, if we see a large 'local' p->on_cpu
-> spin time, it might make sense to attempt the queue even in this case.
-> 
-> We could for example change it to:
-> 
-> 	if (REAC_ONCE(p->on_cpu) && ttwu_queue_remote(p, cpu, wake_flags | WF_ON_CPU))
-> 		goto unlock;
-> 
-> and then use that in ttwu_queue_remote() to differentiate between these
-> two cases.
-> 
+From: Baolin Wang <baolin.wang@unisoc.com>
 
->  #endif /* CONFIG_SMP */
->  
->  	ttwu_queue(p, cpu, wake_flags);
+Add the Spreadtrum mailbox documentation.
 
-Is something like this on top of your patch what you had in mind?
-
----8<---
-
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Baolin Wang <baolin.wang@unisoc.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 ---
- kernel/sched/core.c  | 35 ++++++++++++++++++++++++++---------
- kernel/sched/sched.h |  3 ++-
- 2 files changed, 28 insertions(+), 10 deletions(-)
+Changes from v4:
+ -None.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 987b8ecf2ee9..435ecf5820ee 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2330,13 +2330,19 @@ void scheduler_ipi(void)
- 	irq_exit();
- }
- 
--static void __ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
-+/*
-+ * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
-+ * necessary. The wakee CPU on receipt of the IPI will queue the task
-+ * via sched_ttwu_wakeup() for activation instead of the waking task
-+ * activating and queueing the wakee.
-+ */
-+static void __ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 
- 	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
- 
--	if (llist_add(&p->wake_entry, &cpu_rq(cpu)->wake_list)) {
-+	if (llist_add(&p->wake_entry, &rq->wake_list)) {
- 		if (!set_nr_if_polling(rq->idle))
- 			smp_send_reschedule(cpu);
- 		else
-@@ -2373,12 +2379,23 @@ bool cpus_share_cache(int this_cpu, int that_cpu)
- 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
- }
- 
--static bool ttwu_queue_remote(struct task_struct *p, int cpu, int wake_flags)
-+static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
- {
--	if (sched_feat(TTWU_QUEUE) && !cpus_share_cache(smp_processor_id(), cpu)) {
--		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
--		__ttwu_queue_remote(p, cpu, wake_flags);
--		return true;
-+	if (sched_feat(TTWU_QUEUE)) {
-+		/*
-+		 * If CPU does not share cache then queue the task on the remote
-+		 * rqs wakelist to avoid accessing remote data. Alternatively,
-+		 * if the task is descheduling and the only running task on the
-+		 * CPU then use the wakelist to offload the task activation to
-+		 * the CPU that will soon be idle so the waker can continue.
-+		 * nr_running is checked to avoid unnecessary task stacking.
-+		 */
-+		if (!cpus_share_cache(smp_processor_id(), cpu) ||
-+		    ((wake_flags & WF_ON_RQ) && cpu_rq(cpu)->nr_running <= 1)) {
-+			sched_clock_cpu(cpu); /* Sync clocks across CPUs */
-+			__ttwu_queue_wakelist(p, cpu, wake_flags);
-+			return true;
-+		}
- 	}
- 
- 	return false;
-@@ -2391,7 +2408,7 @@ static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
- 	struct rq_flags rf;
- 
- #if defined(CONFIG_SMP)
--	if (ttwu_queue_remote(p, cpu, wake_flags))
-+	if (ttwu_queue_wakelist(p, cpu, wake_flags))
- 		return;
- #endif
- 
-@@ -2611,7 +2628,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	 * let the waker make forward progress. This is safe because IRQs are
- 	 * disabled and the IPI will deliver after on_cpu is cleared.
- 	 */
--	if (READ_ONCE(p->on_cpu) && ttwu_queue_remote(p, cpu, wake_flags))
-+	if (READ_ONCE(p->on_cpu) && ttwu_queue_wakelist(p, cpu, wake_flags | WF_ON_RQ))
- 		goto unlock;
- 
- 	/*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index db3a57675ccf..06297d1142a0 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1688,7 +1688,8 @@ static inline int task_on_rq_migrating(struct task_struct *p)
-  */
- #define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
- #define WF_FORK			0x02		/* Child wakeup after fork */
--#define WF_MIGRATED		0x4		/* Internal use, task got migrated */
-+#define WF_MIGRATED		0x04		/* Internal use, task got migrated */
-+#define WF_ON_RQ		0x08		/* Wakee is on_rq */
- 
- /*
-  * To aid in avoiding the subversion of "niceness" due to uneven distribution
+Changes from v3:
+ - None.
+
+Changes from v2:
+ - Add reviewed tag from Rob.
+ - Remove redundant 'minItems'.
+
+Changes from v1:
+ - Add 'additionalProperties'.
+ - Split description for each entry.
+---
+ .../bindings/mailbox/sprd-mailbox.yaml        | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+
+diff --git a/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+new file mode 100644
+index 000000000000..0f7451b42d7e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/mailbox/sprd-mailbox.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Spreadtrum mailbox controller bindings
++
++maintainers:
++  - Orson Zhai <orsonzhai@gmail.com>
++  - Baolin Wang <baolin.wang7@gmail.com>
++  - Chunyan Zhang <zhang.lyra@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - sprd,sc9860-mailbox
++
++  reg:
++    items:
++      - description: inbox registers' base address
++      - description: outbox registers' base address
++
++  interrupts:
++    items:
++      - description: inbox interrupt
++      - description: outbox interrupt
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: enable
++
++  "#mbox-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#mbox-cells"
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    mailbox: mailbox@400a0000 {
++      compatible = "sprd,sc9860-mailbox";
++      reg = <0 0x400a0000 0 0x8000>, <0 0x400a8000 0 0x8000>;
++      #mbox-cells = <1>;
++      clock-names = "enable";
++      clocks = <&aon_gate 53>;
++      interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++    };
++...
+-- 
+2.17.1
+
