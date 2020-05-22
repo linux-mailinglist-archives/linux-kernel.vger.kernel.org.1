@@ -2,159 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883341DF2AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 01:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538D91DF2B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 01:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731347AbgEVXE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 19:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
+        id S1731291AbgEVXGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 19:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731336AbgEVXE6 (ORCPT
+        with ESMTP id S1731212AbgEVXGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 19:04:58 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A709C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:04:58 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k7so5633215pjs.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:04:58 -0700 (PDT)
+        Fri, 22 May 2020 19:06:40 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87468C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:06:40 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id cx22so5646700pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:06:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pUaPVMC09hl06qSXUpE1EvRthGMUA9KIdvTwa/SNtao=;
-        b=XIvrI1Age+qLhwfNd+lbSvQYGl4k+WJqvjNvrzTSDg0QHiALujGIk2KrgxJzZyOseb
-         JekLWAP02WMFggjTtERAE/1CkVDaU8/NFvKT1QXQT6CgoSAh1H3XHPnfqdrXD1qYNHVV
-         WG676jBogc7z1fZC/YRuTSzPBENYiLXZWtFlw=
+         :content-disposition:in-reply-to;
+        bh=UDBJnpqs4guG2IKDR9m4vwvwiE5N+bg36FfcwvVlz2A=;
+        b=mkluO687LVso/dsC1rAI/gRjJi44aU9fK2VWzOqz1zxKu2QZSL8xaI403RjCISmRJ8
+         JL309NjnkbwPYTR79HFfVd/pRry+bzc/kwrEu+0aHHAPGcRutbjCp24Q5y/i7T4Vim1i
+         oGv12zFZoKpcjMN5d3+GI21cq992zWMqViN3M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pUaPVMC09hl06qSXUpE1EvRthGMUA9KIdvTwa/SNtao=;
-        b=rTRyRf7VAAOeUSSUPcYewDmGsPEG+KBrfQEMIouf7JQ1ny/n11UvGUg1RUcwNxhRgO
-         TM3wEWZvNM6dn5ND+JKFDlxH1vMe+lJGlF/ddOfDRi07h/bN9oQ5/vtKgTYnuLlebcJM
-         9jKrI44b2BGAdgZlT2NPT+UDuYUwx278RImqpjTPP8yzMuMiHTkXPIwUCjmO/0qXJZWS
-         LNF+R7PB8KTcHUD400PWPdV3iROdICqDUloJcoXQ30u1pzBVV58DmLvA8hu4SQB4UUJ5
-         7LpHTFfrpz/Z/WaPuXBrqUD7omYvPw0cSZVCX06+IFQUqgVPwopvlAGyusUDnfWem/S5
-         RIUg==
-X-Gm-Message-State: AOAM530HmhIGZsltVWTqjxKUwhMbCIu/ANAoZDdRUzSy5ojU/bMJEd6H
-        cZf4Trde0q1X609SwSszhtj0UA==
-X-Google-Smtp-Source: ABdhPJyHbPJWn77LlmiUvns1tpgeNo5nU5pwSjXvY1wZUGSR98Pt3PhFX+KS7CqLzK9zvYsLOV5LZg==
-X-Received: by 2002:a17:902:b787:: with SMTP id e7mr16308030pls.272.1590188697497;
-        Fri, 22 May 2020 16:04:57 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=UDBJnpqs4guG2IKDR9m4vwvwiE5N+bg36FfcwvVlz2A=;
+        b=CAsmnUVzGJAJQGEHRdrUERSocUAWJsUfVTTIPRBKa9f8op8OR/EX/wjaXjyUjNgcW8
+         neHYP8/BS1CS1DaTvNnOfPf5pNNmhuOZX1AE3LJTIZMDuFpPhdEl/gjTkZW6l6rFCPyN
+         mMhzVG6hIyKmPleDfFDeHrD/D58765OazxaJuK1xx552K8xwEED5EU/FeHAntJMw9mEd
+         WhujUFvqt+Mv2h5tU842lTaW+Zye0Yde0gYFtaCymMv3LySkf6Jk/ZHXu8K6gTI2LlM1
+         5YmMIEaHEkUklHJgWakEVSfW47wSOUnrg1e8J+8BV+NLpIDRv1bOw9cHDMbmy6wHbcMD
+         d7AA==
+X-Gm-Message-State: AOAM533qWoPJ//nYyKdmiXohY45Cj8JxU9nfi4ZqATX4/iujfkuFv4tj
+        6V8QT+rhBNjZbIijyD1AB3/Aiq/D19IhSw==
+X-Google-Smtp-Source: ABdhPJzp4FkAxbHTFWvBoWFS3oqPj6uFB0meF12cnXnWnjlJgcZ7qGqSIAEIBNTj56dt1R7JL5bBOA==
+X-Received: by 2002:a17:90a:8b83:: with SMTP id z3mr7242680pjn.212.1590188800000;
+        Fri, 22 May 2020 16:06:40 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id bu7sm6592929pjb.41.2020.05.22.16.04.56
+        by smtp.gmail.com with ESMTPSA id i25sm7889358pfd.45.2020.05.22.16.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 16:04:56 -0700 (PDT)
-Date:   Fri, 22 May 2020 16:04:55 -0700
+        Fri, 22 May 2020 16:06:39 -0700 (PDT)
+Date:   Fri, 22 May 2020 16:06:38 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Luis Chamberlain <mcgrof@kernel.org>, viro@zeniv.linux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        ebiederm@xmission.com, jeyu@kernel.org, jmorris@namei.org,
-        paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, nayna@linux.ibm.com,
-        dan.carpenter@oracle.com, skhan@linuxfoundation.org,
-        geert@linux-m68k.org, tglx@linutronix.de, bauerman@linux.ibm.com,
-        dhowells@redhat.com, linux-integrity@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] fs: reduce export usage of kerne_read*() calls
-Message-ID: <202005221551.5CA1372@keescook>
-References: <20200513152108.25669-1-mcgrof@kernel.org>
- <20200513181736.GA24342@infradead.org>
- <20200515212933.GD11244@42.do-not-panic.com>
- <20200518062255.GB15641@infradead.org>
- <1589805462.5111.107.camel@linux.ibm.com>
- <7525ca03-def7-dfe2-80a9-25270cb0ae05@broadcom.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "linux-xfs@vger.kernel.orgCc:linux-kernel"@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] xfs: Replace one-element arrays with flexible-array
+ members
+Message-ID: <202005221606.A1647A0@keescook>
+References: <20200522215542.GA18898@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7525ca03-def7-dfe2-80a9-25270cb0ae05@broadcom.com>
+In-Reply-To: <20200522215542.GA18898@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 03:24:32PM -0700, Scott Branden wrote:
-> On 2020-05-18 5:37 a.m., Mimi Zohar wrote:
-> > On Sun, 2020-05-17 at 23:22 -0700, Christoph Hellwig wrote:
-> > > On Fri, May 15, 2020 at 09:29:33PM +0000, Luis Chamberlain wrote:
-> > > > On Wed, May 13, 2020 at 11:17:36AM -0700, Christoph Hellwig wrote:
-> > > > > Can you also move kernel_read_* out of fs.h?  That header gets pulled
-> > > > > in just about everywhere and doesn't really need function not related
-> > > > > to the general fs interface.
-> > > > Sure, where should I dump these?
-> > > Maybe a new linux/kernel_read_file.h?  Bonus points for a small top
-> > > of the file comment explaining the point of the interface, which I
-> > > still don't get :)
-> > Instead of rolling your own method of having the kernel read a file,
-> > which requires call specific security hooks, this interface provides a
-> > single generic set of pre and post security hooks.  The
-> > kernel_read_file_id enumeration permits the security hook to
-> > differentiate between callers.
-> > 
-> > To comply with secure and trusted boot concepts, a file cannot be
-> > accessible to the caller until after it has been measured and/or the
-> > integrity (hash/signature) appraised.
-> > 
-> > In some cases, the file was previously read twice, first to measure
-> > and/or appraise the file and then read again into a buffer for
-> > use.  This interface reads the file into a buffer once, calls the
-> > generic post security hook, before providing the buffer to the caller.
-> >   (Note using firmware pre-allocated memory might be an issue.)
-> > 
-> > Partial reading firmware will result in needing to pre-read the entire
-> > file, most likely on the security pre hook.
-> The entire file may be very large and not fit into a buffer.
-> Hence one of the reasons for a partial read of the file.
-> For security purposes, you need to change your code to limit the amount
-> of data it reads into a buffer at one time to not consume or run out of much
-> memory.
+On Fri, May 22, 2020 at 04:55:42PM -0500, Gustavo A. R. Silva wrote:
+> The current codebase makes use of one-element arrays in the following
+> form:
+> 
+> struct something {
+>     int length;
+>     u8 data[1];
+> };
+> 
+> struct something *instance;
+> 
+> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+> instance->length = size;
+> memcpy(instance->data, source, size);
+> 
+> but the preferred mechanism to declare variable-length types such as
+> these ones is a flexible array member[1][2], introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on. So, replace
+> the one-element array with a flexible-array member.
+> 
+> This issue was found with the help of Coccinelle and audited
+> _manually_.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  fs/xfs/libxfs/xfs_log_format.h | 12 ++++++------
+>  fs/xfs/xfs_extfree_item.c      | 18 +++++++++---------
+>  fs/xfs/xfs_ondisk.h            |  8 ++++----
+>  3 files changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_log_format.h b/fs/xfs/libxfs/xfs_log_format.h
+> index e3400c9c71cdb..2864ec47eee5c 100644
+> --- a/fs/xfs/libxfs/xfs_log_format.h
+> +++ b/fs/xfs/libxfs/xfs_log_format.h
+> @@ -571,7 +571,7 @@ typedef struct xfs_efi_log_format {
+>  	uint16_t		efi_size;	/* size of this item */
+>  	uint32_t		efi_nextents;	/* # extents to free */
+>  	uint64_t		efi_id;		/* efi identifier */
+> -	xfs_extent_t		efi_extents[1];	/* array of extents to free */
+> +	xfs_extent_t		efi_extents[];	/* array of extents to free */
+>  } xfs_efi_log_format_t;
+>  
+>  typedef struct xfs_efi_log_format_32 {
+> @@ -579,7 +579,7 @@ typedef struct xfs_efi_log_format_32 {
+>  	uint16_t		efi_size;	/* size of this item */
+>  	uint32_t		efi_nextents;	/* # extents to free */
+>  	uint64_t		efi_id;		/* efi identifier */
+> -	xfs_extent_32_t		efi_extents[1];	/* array of extents to free */
+> +	xfs_extent_32_t		efi_extents[];	/* array of extents to free */
+>  } __attribute__((packed)) xfs_efi_log_format_32_t;
+>  
+>  typedef struct xfs_efi_log_format_64 {
+> @@ -587,7 +587,7 @@ typedef struct xfs_efi_log_format_64 {
+>  	uint16_t		efi_size;	/* size of this item */
+>  	uint32_t		efi_nextents;	/* # extents to free */
+>  	uint64_t		efi_id;		/* efi identifier */
+> -	xfs_extent_64_t		efi_extents[1];	/* array of extents to free */
+> +	xfs_extent_64_t		efi_extents[];	/* array of extents to free */
+>  } xfs_efi_log_format_64_t;
+>  
+>  /*
+> @@ -600,7 +600,7 @@ typedef struct xfs_efd_log_format {
+>  	uint16_t		efd_size;	/* size of this item */
+>  	uint32_t		efd_nextents;	/* # of extents freed */
+>  	uint64_t		efd_efi_id;	/* id of corresponding efi */
+> -	xfs_extent_t		efd_extents[1];	/* array of extents freed */
+> +	xfs_extent_t		efd_extents[];	/* array of extents freed */
+>  } xfs_efd_log_format_t;
+>  
+>  typedef struct xfs_efd_log_format_32 {
+> @@ -608,7 +608,7 @@ typedef struct xfs_efd_log_format_32 {
+>  	uint16_t		efd_size;	/* size of this item */
+>  	uint32_t		efd_nextents;	/* # of extents freed */
+>  	uint64_t		efd_efi_id;	/* id of corresponding efi */
+> -	xfs_extent_32_t		efd_extents[1];	/* array of extents freed */
+> +	xfs_extent_32_t		efd_extents[];	/* array of extents freed */
+>  } __attribute__((packed)) xfs_efd_log_format_32_t;
+>  
+>  typedef struct xfs_efd_log_format_64 {
+> @@ -616,7 +616,7 @@ typedef struct xfs_efd_log_format_64 {
+>  	uint16_t		efd_size;	/* size of this item */
+>  	uint32_t		efd_nextents;	/* # of extents freed */
+>  	uint64_t		efd_efi_id;	/* id of corresponding efi */
+> -	xfs_extent_64_t		efd_extents[1];	/* array of extents freed */
+> +	xfs_extent_64_t		efd_extents[];	/* array of extents freed */
+>  } xfs_efd_log_format_64_t;
+>  
+>  /*
+> diff --git a/fs/xfs/xfs_extfree_item.c b/fs/xfs/xfs_extfree_item.c
+> index b9c333bae0a12..faf1b780fe8c4 100644
+> --- a/fs/xfs/xfs_extfree_item.c
+> +++ b/fs/xfs/xfs_extfree_item.c
+> @@ -74,7 +74,7 @@ xfs_efi_item_sizeof(
+>  	struct xfs_efi_log_item *efip)
+>  {
+>  	return sizeof(struct xfs_efi_log_format) +
+> -	       (efip->efi_format.efi_nextents - 1) * sizeof(xfs_extent_t);
+> +	       efip->efi_format.efi_nextents * sizeof(xfs_extent_t);
+>  }
+>  
+>  STATIC void
+> @@ -158,7 +158,7 @@ xfs_efi_init(
+>  	ASSERT(nextents > 0);
+>  	if (nextents > XFS_EFI_MAX_FAST_EXTENTS) {
+>  		size = (uint)(sizeof(struct xfs_efi_log_item) +
+> -			((nextents - 1) * sizeof(xfs_extent_t)));
+> +			nextents * sizeof(xfs_extent_t));
+>  		efip = kmem_zalloc(size, 0);
+>  	} else {
+>  		efip = kmem_zone_zalloc(xfs_efi_zone, 0);
+> @@ -186,11 +186,11 @@ xfs_efi_copy_format(xfs_log_iovec_t *buf, xfs_efi_log_format_t *dst_efi_fmt)
+>  	xfs_efi_log_format_t *src_efi_fmt = buf->i_addr;
+>  	uint i;
+>  	uint len = sizeof(xfs_efi_log_format_t) + 
+> -		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_t);  
+> +		src_efi_fmt->efi_nextents * sizeof(xfs_extent_t);
 
-Hm? That's not how whole-file hashing works. :)
+I think these should all be using struct_size(), yes?
 
-These hooks need to finish their hashing and policy checking before they
-can allow the rest of the code to move forward. (That's why it's a
-security hook.) If kernel memory utilization is the primary concern,
-then sure, things could be rearranged to do partial read and update the
-hash incrementally, but the entire file still needs to be locked,
-entirely hashed by hook, then read by the caller, then unlocked and
-released.
+-Kees
 
-So, if you want to have partial file reads work, you'll need to
-rearchitect the way this works to avoid regressing the security coverage
-of these operations.
-
-So, probably, the code will look something like:
-
-
-file = kernel_open_file_for_reading(...)
-	file = open...
-	disallow_writes(file);
-	while (processed < size-of-file) {
-		buf = read(file, size...)
-		security_file_read_partial(buf)
-	}
-	ret = security_file_read_finished(file);
-	if (ret < 0) {
-		allow_writes(file);
-		return PTR_ERR(ret);
-	}
-	return file;
-
-while (processed < size-of-file) {
-	buf = read(file, size...)
-	firmware_send_partial(buf);
-}
-
-kernel_close_file_for_reading(file)
-	allow_writes(file);
-
+>  	uint len32 = sizeof(xfs_efi_log_format_32_t) + 
+> -		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_32_t);  
+> +		src_efi_fmt->efi_nextents * sizeof(xfs_extent_32_t);
+>  	uint len64 = sizeof(xfs_efi_log_format_64_t) + 
+> -		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_64_t);  
+> +		src_efi_fmt->efi_nextents * sizeof(xfs_extent_64_t);
+>  
+>  	if (buf->i_len == len) {
+>  		memcpy((char *)dst_efi_fmt, (char*)src_efi_fmt, len);
+> @@ -253,7 +253,7 @@ xfs_efd_item_sizeof(
+>  	struct xfs_efd_log_item *efdp)
+>  {
+>  	return sizeof(xfs_efd_log_format_t) +
+> -	       (efdp->efd_format.efd_nextents - 1) * sizeof(xfs_extent_t);
+> +	       efdp->efd_format.efd_nextents * sizeof(xfs_extent_t);
+>  }
+>  
+>  STATIC void
+> @@ -329,7 +329,7 @@ xfs_trans_get_efd(
+>  
+>  	if (nextents > XFS_EFD_MAX_FAST_EXTENTS) {
+>  		efdp = kmem_zalloc(sizeof(struct xfs_efd_log_item) +
+> -				(nextents - 1) * sizeof(struct xfs_extent),
+> +				nextents * sizeof(struct xfs_extent),
+>  				0);
+>  	} else {
+>  		efdp = kmem_zone_zalloc(xfs_efd_zone, 0);
+> @@ -716,9 +716,9 @@ xlog_recover_efd_commit_pass2(
+>  
+>  	efd_formatp = item->ri_buf[0].i_addr;
+>  	ASSERT((item->ri_buf[0].i_len == (sizeof(xfs_efd_log_format_32_t) +
+> -		((efd_formatp->efd_nextents - 1) * sizeof(xfs_extent_32_t)))) ||
+> +		efd_formatp->efd_nextents * sizeof(xfs_extent_32_t))) ||
+>  	       (item->ri_buf[0].i_len == (sizeof(xfs_efd_log_format_64_t) +
+> -		((efd_formatp->efd_nextents - 1) * sizeof(xfs_extent_64_t)))));
+> +		efd_formatp->efd_nextents * sizeof(xfs_extent_64_t))));
+>  
+>  	xlog_recover_release_intent(log, XFS_LI_EFI, efd_formatp->efd_efi_id);
+>  	return 0;
+> diff --git a/fs/xfs/xfs_ondisk.h b/fs/xfs/xfs_ondisk.h
+> index 5f04d8a5ab2a9..ceba638fd99ce 100644
+> --- a/fs/xfs/xfs_ondisk.h
+> +++ b/fs/xfs/xfs_ondisk.h
+> @@ -113,10 +113,10 @@ xfs_check_ondisk_structs(void)
+>  	/* log structures */
+>  	XFS_CHECK_STRUCT_SIZE(struct xfs_buf_log_format,	88);
+>  	XFS_CHECK_STRUCT_SIZE(struct xfs_dq_logformat,		24);
+> -	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_32,	28);
+> -	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_64,	32);
+> -	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_32,	28);
+> -	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_64,	32);
+> +	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_32,	16);
+> +	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_64,	16);
+> +	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_32,	16);
+> +	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_64,	16);
+>  	XFS_CHECK_STRUCT_SIZE(struct xfs_extent_32,		12);
+>  	XFS_CHECK_STRUCT_SIZE(struct xfs_extent_64,		16);
+>  	XFS_CHECK_STRUCT_SIZE(struct xfs_log_dinode,		176);
+> -- 
+> 2.26.2
+> 
 
 -- 
 Kees Cook
