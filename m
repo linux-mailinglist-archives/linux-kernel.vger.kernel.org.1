@@ -2,85 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FD21DEEB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EB21DEEAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730867AbgEVR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:57:45 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:51062 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730702AbgEVR5o (ORCPT
+        id S1730829AbgEVR4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:56:40 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:64957 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730702AbgEVR4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:57:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SbtXz2KxBEXJVwWCF/dhZtyuKKpK8ni/j8x+ZnTXLmE=; b=ApUZGocY6403LXIv55sOILFDLz
-        QEwHOlCRYKGJhB2DMRy9u3VcZwuGKDP0A7WbFtzpkFZ7tbszOrwkCarkm6Dh7IOSgVxtfuObQC4Dc
-        igBILVPcuqfBXx3+bguBI4DSTIYwGQ6TB4QF/x1CmedC/kZFZAq+ZkHK5FadjqF7wfaUhYJOb8gf6
-        Md4HSkDXgm43Tyg+uHvuXP6dhIMOZoFfMKGrUR0JT+gGni0BLL6Kq+8ScT9POYTu47ENOWT8FSDnO
-        nWUFALAJXnYyqtdDGvtI73CqG0AURZQoo1YSQP0bALlE/tbtZoZouJc7iZvnDncZ/rlWpDBfcZaZp
-        7Mn2VXOQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jcBsv-00083d-8x; Fri, 22 May 2020 17:55:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBD14305EEE;
-        Fri, 22 May 2020 19:55:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9B78A20B5D17E; Fri, 22 May 2020 19:55:03 +0200 (CEST)
-Date:   Fri, 22 May 2020 19:55:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 07/25] lockdep: Add preemption disabled assertion API
-Message-ID: <20200522175503.GQ325280@hirez.programming.kicks-ass.net>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200519214547.352050-8-a.darwish@linutronix.de>
+        Fri, 22 May 2020 13:56:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590170198; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=KsXiQmpLIAN5c5M7YvALpjfUVVNpRDHzU1icueEVx0Q=;
+ b=aeyxcFKyIzG1lT8ms+oXhCXd3G5tgBBOhRy8vC6tqHsAVOUKjMw0L4N0YTF4nkjYOIrQNn0R
+ KBXBE82VwYDGw2hhvUUBDHD46tgJ9l9+X4Y5ssPpAv+OA/mhhApS+o0wDbhnILthTzZI4akj
+ DyzVL/kd2Fe7U42HB31jaK2KVK4=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ec81248.7fe5fac5aa40-smtp-out-n05;
+ Fri, 22 May 2020 17:56:24 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 93622C433C8; Fri, 22 May 2020 17:56:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6714C433C6;
+        Fri, 22 May 2020 17:56:23 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200519214547.352050-8-a.darwish@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 22 May 2020 23:26:23 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        coresight@lists.linaro.org
+Subject: Re: [PATCHv2 3/4] coresight: replicator: Reset replicator if context
+ is lost
+In-Reply-To: <20200522174052.GA3379@xps15>
+References: <cover.1589894597.git.saiprakash.ranjan@codeaurora.org>
+ <c2e02d0c92b081c05b91d07ec17e648c40af3897.1589894597.git.saiprakash.ranjan@codeaurora.org>
+ <20200522174052.GA3379@xps15>
+Message-ID: <e723febb6f6e794d292423b33efdf3e6@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 11:45:29PM +0200, Ahmed S. Darwish wrote:
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 206774ac6946..54c929ea5b98 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -702,6 +702,14 @@ do {									\
->  			  "Not in hardirq as expected\n");		\
->  	} while (0)
->  
-> +/*
-> + * Don't define this assertion here to avoid a call-site's header file
-> + * dependency on sched.h task_struct current. This is needed by call
-> + * sites that are inline defined at header files already included by
-> + * sched.h.
-> + */
-> +void lockdep_assert_preemption_disabled(void);
+Hi Mathieu,
 
-So how about:
+On 2020-05-22 23:10, Mathieu Poirier wrote:
+> Hi Sai,
+> 
+> On Tue, May 19, 2020 at 07:06:02PM +0530, Sai Prakash Ranjan wrote:
+>> On some QCOM SoCs, replicators in Always-On domain loses its
+>> context as soon as the clock is disabled. Currently as a part
+>> of pm_runtime workqueue, clock is disabled after the replicator
+>> is initialized by amba_pm_runtime_suspend assuming that context
+>> is not lost which is not true for replicators with such
+>> limitations. So add a new property "qcom,replicator-loses-context"
+>> to identify such replicators and reset them.
+>> 
+>> Suggested-by: Mike Leach <mike.leach@linaro.org>
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>> 
+>> Added Mike's suggested by for parts other than the DT property.
+>> Perhaps I should add Co-developed-by Mike since the full skeletal
+>> was given by Mike. I can add that if required on the next version.
+> 
+>  I will let Mike decide what he wants to do - I'm fine either way.
+> 
 
-#if defined(CONFIG_PREEMPT_COUNT) && defined(CONFIG_TRACE_IRQFLAGS)
-#define lockdep_assert_preemption_disabled() do { \
-		WARN_ON(debug_locks && !preempt_count() && \
-			current->hardirqs_enabled); \
-	} while (0)
-#else
-#define lockdep_assert_preemption_disabled() do { } while (0)
-#endif
+Mike was ok with suggested-by, so I will go with that.
 
-That is both more consistent with the things you claim it's modelled
-after and also completely avoids that header dependency.
+>> 
+>> ---
+>>  .../coresight/coresight-replicator.c          | 53 
+>> +++++++++++++------
+>>  1 file changed, 36 insertions(+), 17 deletions(-)
+>> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c 
+>> b/drivers/hwtracing/coresight/coresight-replicator.c
+>> index c619b456f55a..ba66160c8140 100644
+>> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+>> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+>> @@ -38,6 +38,7 @@ struct replicator_drvdata {
+>>  	struct clk		*atclk;
+>>  	struct coresight_device	*csdev;
+>>  	spinlock_t		spinlock;
+>> +	bool			check_idfilter_val;
+> 
+> Please add documentation for the new field, the same way other fields 
+> are
+> documented.
+> 
+
+Sure will add that.
+
+>>  };
+>> 
+>>  static void dynamic_replicator_reset(struct replicator_drvdata 
+>> *drvdata)
+>> @@ -66,29 +67,43 @@ static int dynamic_replicator_enable(struct 
+>> replicator_drvdata *drvdata,
+>>  				     int inport, int outport)
+>>  {
+>>  	int rc = 0;
+>> -	u32 reg;
+>> -
+>> -	switch (outport) {
+>> -	case 0:
+>> -		reg = REPLICATOR_IDFILTER0;
+>> -		break;
+>> -	case 1:
+>> -		reg = REPLICATOR_IDFILTER1;
+>> -		break;
+>> -	default:
+>> -		WARN_ON(1);
+>> -		return -EINVAL;
+>> -	}
+>> +	u32 id0val, id1val;
+>> 
+>>  	CS_UNLOCK(drvdata->base);
+>> 
+>> -	if ((readl_relaxed(drvdata->base + REPLICATOR_IDFILTER0) == 0xff) &&
+>> -	    (readl_relaxed(drvdata->base + REPLICATOR_IDFILTER1) == 0xff))
+>> +	id0val = readl_relaxed(drvdata->base + REPLICATOR_IDFILTER0);
+>> +	id1val = readl_relaxed(drvdata->base + REPLICATOR_IDFILTER1);
+>> +
+>> +	/*
+>> +	 * Some replicator designs lose context when AMBA clocks are 
+>> removed,
+>> +	 * so have a check for this.
+>> +	 */
+>> +	if (drvdata->check_idfilter_val && id0val == 0x0 && id1val == 0x0)
+>> +		id0val = id1val = 0xff;
+>> +
+>> +	if (id0val == 0xff && id1val == 0xff)
+>>  		rc = coresight_claim_device_unlocked(drvdata->base);
+>> 
+>> +	if (!rc) {
+>> +		switch (outport) {
+>> +		case 0:
+>> +			id0val = 0x0;
+>> +			break;
+>> +		case 1:
+>> +			id1val = 0x0;
+>> +			break;
+>> +		default:
+>> +			WARN_ON(1);
+>> +			rc = -EINVAL;
+>> +		}
+>> +	}
+>> +
+>>  	/* Ensure that the outport is enabled. */
+>> -	if (!rc)
+>> -		writel_relaxed(0x00, drvdata->base + reg);
+>> +	if (!rc) {
+>> +		writel_relaxed(id0val, drvdata->base + REPLICATOR_IDFILTER0);
+>> +		writel_relaxed(id1val, drvdata->base + REPLICATOR_IDFILTER1);
+>> +	}
+>> +
+>>  	CS_LOCK(drvdata->base);
+>> 
+>>  	return rc;
+>> @@ -239,6 +254,10 @@ static int replicator_probe(struct device *dev, 
+>> struct resource *res)
+>>  		desc.groups = replicator_groups;
+>>  	}
+>> 
+>> +	if (fwnode_property_present(dev_fwnode(dev),
+>> +				    "qcom,replicator-loses-context"))
+>> +		drvdata->check_idfilter_val = true;
+>> +
+> 
+> The header <linux/property.h> needs to be added for function
+> fwnode_property_present().
+> 
+
+Sure will add in next version.
+
+> What is the clock situation with other QC components like funnels?  
+> Have they
+> also been designed the same way?  If so the binding should probably be
+> "qcom,component-loses-context", otherwise what you have suggested will 
+> work just
+> fine.  My goal here is to avoid having "qcom,replicator-loses-context" 
+> and
+> "qcom,funnel-loses-context".
+> 
+
+Yes I understand it is quite ugly, but AFAIK we do not have any SoCs 
+already released
+and coming in near future with such limitations in funnels or other 
+components. So I will
+stick to the replicator specific property.
+
+> Lastly, I have applied patch 1 and 2 of this set to my tree so no need 
+> to resend
+> them again with the next revision.
+> 
+
+Thanks for reviewing these patches.
+
+Thanks,
+Sai
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
