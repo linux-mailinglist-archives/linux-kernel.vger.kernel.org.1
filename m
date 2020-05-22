@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80C11DE216
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E5E1DE22A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbgEVIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 04:37:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53922 "EHLO mail.kernel.org"
+        id S1729700AbgEVIhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 04:37:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:59296 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728959AbgEVIhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 04:37:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F235920814;
-        Fri, 22 May 2020 08:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590136637;
-        bh=j6qtTP5kv+N7sEEXX9Q96Y4lswh83lQW35iSocg99dY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xgbRAsgTMT3V2eFlfwqVTRSD5KsXdqwPZntM7v++sw+uUuiHNsIvx6ZaaosN/xCpF
-         MK+GLjxzYzyPDUSWac6bAu0laPUywevioKUxlHJC2dKNQicn8x1eRyNR4PJygBvOae
-         pPSbjsAqOS74g7BaFQVGQn5z0Oso0r8rvK0v0yKM=
-Date:   Fri, 22 May 2020 10:37:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     gengcixi@gmail.com
-Cc:     jslaby@suse.com, oberpar@linux.ibm.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-Subject: Re: [RFC][PATCH V3] GCOV: profile by modules
-Message-ID: <20200522083715.GD1078778@kroah.com>
-References: <20200522071917.17163-1-gengcixi@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522071917.17163-1-gengcixi@gmail.com>
+        id S1729672AbgEVIhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 04:37:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7F8855D;
+        Fri, 22 May 2020 01:37:52 -0700 (PDT)
+Received: from entos-d05.shanghai.arm.com (entos-d05.shanghai.arm.com [10.169.40.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F34DC3F52E;
+        Fri, 22 May 2020 01:37:46 -0700 (PDT)
+From:   Jianyong Wu <jianyong.wu@arm.com>
+To:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, maz@kernel.org,
+        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
+        suzuki.poulose@arm.com, steven.price@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, Kaly.Xin@arm.com, justin.he@arm.com,
+        Wei.Chen@arm.com, jianyong.wu@arm.com, nd@arm.com
+Subject: [RFC PATCH v12 02/11] arm/arm64: KVM: Advertise KVM UID to guests via SMCCC
+Date:   Fri, 22 May 2020 16:37:15 +0800
+Message-Id: <20200522083724.38182-3-jianyong.wu@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200522083724.38182-1-jianyong.wu@arm.com>
+References: <20200522083724.38182-1-jianyong.wu@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 03:19:17PM +0800, gengcixi@gmail.com wrote:
-> From: Cixi Geng <cixi.geng1@unisoc.com>
-> 
-> The CONFIG_GCOV_PROFILE_ALL will compile kernel by profiling entire
-> kernel which will lead to kernel run slower.Use GCOV_PROFILE_PREREQS
-> to control part of the kernel modules to open gcov.
-> 
-> Only add SERIAL_GCOV for an example.
-> 
-> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
-> ---
->  drivers/tty/serial/Kconfig  |  7 +++++++
->  drivers/tty/serial/Makefile |  1 +
->  kernel/gcov/Kconfig         | 13 +++++++++++++
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index adf9e80e7dc9..6df002370f18 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1566,3 +1566,10 @@ endmenu
->  
->  config SERIAL_MCTRL_GPIO
->  	tristate
-> +
-> +config SERIAL_GCOV
-> +	bool "Enable profile gcov for serial directory"
-> +	depends on GCOV_PROFILE_PREREQS
-> +	help
-> +	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
-> +	  Say 'Y' here if you want the gcov data for the serial directory,
-> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> index d056ee6cca33..17272733db95 100644
-> --- a/drivers/tty/serial/Makefile
-> +++ b/drivers/tty/serial/Makefile
-> @@ -3,6 +3,7 @@
->  # Makefile for the kernel serial device drivers.
->  #
->  
-> +GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
->  obj-$(CONFIG_SERIAL_CORE) += serial_core.o
->  
->  obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
-> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> index 3941a9c48f83..4d75fa158726 100644
-> --- a/kernel/gcov/Kconfig
-> +++ b/kernel/gcov/Kconfig
-> @@ -51,6 +51,19 @@ config GCOV_PROFILE_ALL
->  	larger and run slower. Also be sure to exclude files from profiling
->  	which are not linked to the kernel image to prevent linker errors.
->  
-> +config GCOV_PROFILE_PREREQS
-> +	bool "Profile Kernel subsytem"
-> +	depends on !COMPILE_TEST
-> +	depends on GCOV_KERNEL
-> +	help
-> +	  This options activates profiling for the specified kernel modules.
-> +
-> +	  When some modules need Gcov data, enable this config, then configure
-> +	  with gcov on the corresponding modules,The directories or files of
-> +	  these modules will be added profiling flags after kernel compile.
-> +
-> +	  If unsure, say N.
-> +
->  choice
->  	prompt "Specify GCOV format"
->  	depends on GCOV_KERNEL
+From: Will Deacon <will@kernel.org>
 
+We can advertise ourselves to guests as KVM and provide a basic features
+bitmap for discoverability of future hypervisor services.
 
-I understand the goal here, but don't you need to have the main GCov
-option depend on your new Kconfig option here?  You have it switched
-around here, so what keeps all code from being built with gcov support
-at the moment?
+Cc: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
+---
+ virt/kvm/arm/hypercalls.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-thanks,
+diff --git a/virt/kvm/arm/hypercalls.c b/virt/kvm/arm/hypercalls.c
+index 550dfa3e53cd..db6dce3d0e23 100644
+--- a/virt/kvm/arm/hypercalls.c
++++ b/virt/kvm/arm/hypercalls.c
+@@ -12,13 +12,13 @@
+ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+ {
+ 	u32 func_id = smccc_get_function(vcpu);
+-	long val = SMCCC_RET_NOT_SUPPORTED;
++	u32 val[4] = {SMCCC_RET_NOT_SUPPORTED};
+ 	u32 feature;
+ 	gpa_t gpa;
+ 
+ 	switch (func_id) {
+ 	case ARM_SMCCC_VERSION_FUNC_ID:
+-		val = ARM_SMCCC_VERSION_1_1;
++		val[0] = ARM_SMCCC_VERSION_1_1;
+ 		break;
+ 	case ARM_SMCCC_ARCH_FEATURES_FUNC_ID:
+ 		feature = smccc_get_arg1(vcpu);
+@@ -28,10 +28,10 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+ 			case KVM_BP_HARDEN_UNKNOWN:
+ 				break;
+ 			case KVM_BP_HARDEN_WA_NEEDED:
+-				val = SMCCC_RET_SUCCESS;
++				val[0] = SMCCC_RET_SUCCESS;
+ 				break;
+ 			case KVM_BP_HARDEN_NOT_REQUIRED:
+-				val = SMCCC_RET_NOT_REQUIRED;
++				val[0] = SMCCC_RET_NOT_REQUIRED;
+ 				break;
+ 			}
+ 			break;
+@@ -41,31 +41,40 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+ 			case KVM_SSBD_UNKNOWN:
+ 				break;
+ 			case KVM_SSBD_KERNEL:
+-				val = SMCCC_RET_SUCCESS;
++				val[0] = SMCCC_RET_SUCCESS;
+ 				break;
+ 			case KVM_SSBD_FORCE_ENABLE:
+ 			case KVM_SSBD_MITIGATED:
+-				val = SMCCC_RET_NOT_REQUIRED;
++				val[0] = SMCCC_RET_NOT_REQUIRED;
+ 				break;
+ 			}
+ 			break;
+ 		case ARM_SMCCC_HV_PV_TIME_FEATURES:
+-			val = SMCCC_RET_SUCCESS;
++			val[0] = SMCCC_RET_SUCCESS;
+ 			break;
+ 		}
+ 		break;
+ 	case ARM_SMCCC_HV_PV_TIME_FEATURES:
+-		val = kvm_hypercall_pv_features(vcpu);
++		val[0] = kvm_hypercall_pv_features(vcpu);
+ 		break;
+ 	case ARM_SMCCC_HV_PV_TIME_ST:
+ 		gpa = kvm_init_stolen_time(vcpu);
+ 		if (gpa != GPA_INVALID)
+-			val = gpa;
++			val[0] = gpa;
++		break;
++	case ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID:
++		val[0] = ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0;
++		val[1] = ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1;
++		val[2] = ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2;
++		val[3] = ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3;
++		break;
++	case ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID:
++		val[0] = BIT(ARM_SMCCC_KVM_FUNC_FEATURES);
+ 		break;
+ 	default:
+ 		return kvm_psci_call(vcpu);
+ 	}
+ 
+-	smccc_set_retval(vcpu, val, 0, 0, 0);
++	smccc_set_retval(vcpu, val[0], val[1], val[2], val[3]);
+ 	return 1;
+ }
+-- 
+2.17.1
 
-greg k-h
