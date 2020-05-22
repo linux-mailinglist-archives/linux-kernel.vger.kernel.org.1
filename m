@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B521B1DF21F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9522F1DF238
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbgEVWmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 18:42:24 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:37358 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731391AbgEVWmV (ORCPT
+        id S1731207AbgEVWnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 18:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731122AbgEVWnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 18:42:21 -0400
-Received: by mail-il1-f196.google.com with SMTP id r2so1159167ila.4;
-        Fri, 22 May 2020 15:42:20 -0700 (PDT)
+        Fri, 22 May 2020 18:43:41 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA984C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:43:41 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id z15so2576097pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=EU5e/l95lnHmNp8beRxDwq3G8lD1LFgouw11x+VJMvM=;
+        b=xq+rr9NhyM1ZgqTrmiGV4vdmnQTujwwHsg3dF5aeifUH4u6DfowA+gqRTLm3ocRwO/
+         P8YHcMh6du4+wHtz4n29FBF6keDnjFVcZPaARuWX6nL7zBnRabH4zvU5RLH6SfRcPDCj
+         fMfJYVKGZlN48oHAc2jIzqNO9hl8JGaDwwAzyv4HCNdGOdA6DS8dBVtuNzV+muc3Ju47
+         ZjGm3agrWIA84ZCwDeCPXgdagTXGj83HpISN7Ihid+gFO5DN+Ppwkuh9jrsjKpFhxNWB
+         y/tgKzs0K7KY9EanaMEFo9wtAWs9MAHPF3Hmf9H6u1RR97GZpDOSY+BWwWLzZb0SpIk3
+         1FTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JuCuXLGKu/Cpaze8rVHktM6qeXHp4VtIRO2ypPo4gW0=;
-        b=MwBXZT4VluQgaBM4YTyhs1WPQLrUoC0Y5JISmCV1P/8Yc7s/kN2vZIjJWYQCmqItZa
-         2ievMRPCbuB8UqZb5Si2tFgAMVYoTMriR4D5LAHccy9oafDf9edjYvAVn1kwzqImP3z2
-         d7W0OPTF8csEa6Fbe8IidaTJnAz5PXohNKAXlXQPfUY2wOCBg7g55WUR+5OvxPg9cfOG
-         JaAMmrDYPyS+yLZOZh0Iam9f5KhaLwP07tyCcxEim+IO8N1rvL5QTufGQGdzu2FkUoq/
-         bkjSBuHLKagc1B4zlMeMFo+ABOLS8Eibx8D46q36bGVH2uVWE8ohr3nGxAbDm6sWEAK3
-         RKug==
-X-Gm-Message-State: AOAM5320Yz6j7q1EJZqf7F+BKCYC3flVmv8QRkzZdxnlbYYZGrqAGKAo
-        LftA9f59EWdyjCFz+EOvnodInfc=
-X-Google-Smtp-Source: ABdhPJzavXPf6QraDSSP+C8Cf0zAAigF73AyOksGDL0HvQxYO0MhIQUfBalrWcaf30LuSiDr4uw5bQ==
-X-Received: by 2002:a05:6e02:130e:: with SMTP id g14mr15735257ilr.38.1590187339802;
-        Fri, 22 May 2020 15:42:19 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id e26sm4195065ioe.39.2020.05.22.15.42.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 15:42:19 -0700 (PDT)
-Received: (nullmailer pid 848403 invoked by uid 1000);
-        Fri, 22 May 2020 22:42:17 -0000
-Date:   Fri, 22 May 2020 16:42:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kfting@nuvoton.com, benjaminfair@google.com,
-        avifishman70@gmail.com, yuenn@google.com,
-        andriy.shevchenko@linux.intel.com, openbmc@lists.ozlabs.org,
-        tmaimon77@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, wsa@the-dreams.de,
-        brendanhiggins@google.com, robh+dt@kernel.org, venture@google.com,
-        ofery@google.com
-Subject: Re: [PATCH v13 1/3] dt-bindings: i2c: npcm7xx: add NPCM I2C
- controller
-Message-ID: <20200522224217.GA847856@bogus>
-References: <20200522113312.181413-1-tali.perry1@gmail.com>
- <20200522113312.181413-2-tali.perry1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522113312.181413-2-tali.perry1@gmail.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=EU5e/l95lnHmNp8beRxDwq3G8lD1LFgouw11x+VJMvM=;
+        b=ZCVdWHBf8E1KeTgSZ6o8HMsfHEtjkvN1QiQBJHHo3WiDrDBCenq5js2cXnS0/q9idW
+         hidd6HIVeE1KCqtfCqbBbQfVJcKTfjMi2+vLEGOlf7bd8YfqHKzX68GRT+AY1FPFCDXe
+         iA9ZXX7+f7t19XQFa4AOBZl9QYZLymm8cobMzYXTdt5ppznsX6o3d7bpwEIQcN05oYWE
+         Uuwop/Zl8YMe8QsE9LhU3FEU5LM7ZqH0vQx8okHVkDiPFaNv1x1NnNPYnJxfajPrzZ4e
+         zhR+X/yTJIOrDyGrsAMhooRw499rv95CiaDV3smDI0hTGUJ2kVnBYu+/b/mPhKyMetU/
+         dq0A==
+X-Gm-Message-State: AOAM532W6niqLLq92fXw7E6WU/dvuOKWnXXNCnSu96hIbpISw/vO4oG6
+        hAs8+wnY3So2r27kv3jauGjkhq/qkrI=
+X-Google-Smtp-Source: ABdhPJyoTSra4X3zw/UGq89aJPKVz7w/MFz+PbHbZufPD5Y9Cc8R0iOnVNGiShdXCUom5TVcDY/vgQ==
+X-Received: by 2002:a17:90b:3705:: with SMTP id mg5mr6651553pjb.24.1590187420961;
+        Fri, 22 May 2020 15:43:40 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b008:3b8f:1dea:762f:4d89:de4d? ([2600:1010:b008:3b8f:1dea:762f:4d89:de4d])
+        by smtp.gmail.com with ESMTPSA id s36sm6923408pgl.35.2020.05.22.15.43.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 15:43:40 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC][PATCH 0/4] x86/entry: disallow #DB more
+Date:   Fri, 22 May 2020 15:43:35 -0700
+Message-Id: <692612FC-4599-4774-857C-7E20CD99A832@amacapital.net>
+References: <20200522222055.GE25128@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
+In-Reply-To: <20200522222055.GE25128@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 May 2020 14:33:10 +0300, Tali Perry wrote:
-> Added device tree binding documentation for Nuvoton BMC
-> NPCM I2C controller.
-> 
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-> ---
->  .../bindings/i2c/nuvoton,npcm7xx-i2c.yaml     | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.yaml
-> 
 
+> On May 22, 2020, at 3:20 PM, Sean Christopherson <sean.j.christopherson@in=
+tel.com> wrote:
+>=20
+> =EF=BB=BFOn Fri, May 22, 2020 at 03:13:57PM -0700, Andy Lutomirski wrote:
+>>> On Fri, May 22, 2020 at 1:49 PM Peter Zijlstra <peterz@infradead.org> wr=
+ote:
+>>>=20
+>>> Hai, this kills #DB during NMI/#MC and with that allows removing all the=
+ nasty
+>>> IST rewrite crud.
+>>>=20
+>>=20
+>> This is great, except that the unconditional DR7 write is going to
+>> seriously hurt perf performance.  Fortunately, no one cares about
+>> perf, right? :)  Even just reading first won't help enough because DR7
+>> reads are likely to be VM exits.  Can we have a percpu dr7 shadow
+>> (with careful ordering) or even just a percpu count of dr7 users so we
+>> can skip this if there are no breakpoints?
+>=20
+> Hmm, I believe hw_breakpoint_active() is what you're looking for, KVM uses=
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> it to avoid unnecessary restoration of host DR7 after VM-Exit.
+>=20
+> Amusingly, checking that in the NMI handler could give a false positive if=
 
-Error: Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.example.dts:22.28-29 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:312: recipe for target 'Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/i2c/nuvoton,npcm7xx-i2c.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1300: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+> an NMI occurs in guest as DR7 is cleared on exit and KVM invokes the NMI
+> handler prior to restoring host DR7.  I doubt that's common enough to care=
 
-See https://patchwork.ozlabs.org/patch/1296162
+> about though.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+False positives are unavoidable: there=E2=80=99s no way we can set a percpu v=
+ariable and set DR7 without risking an NMI in between.=
