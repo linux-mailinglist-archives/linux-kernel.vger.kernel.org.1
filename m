@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166AE1DE5AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA21DE58C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgEVLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 07:38:16 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:46478 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728601AbgEVLiP (ORCPT
+        id S1729719AbgEVLg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 07:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728465AbgEVLgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 07:38:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XH1Yj5aOcR07TnTGoIfuiVoH/MNimUictOSMhtQ2KiY=; b=d6QGp6XmaKNFEj/c8MOhRbc7Nb
-        gE6pY2ftZhVxSAmjrHj4IBZb0jGA8vL8TlrtWe3b3GC8FnQfCob4DPQRbu7+kOrx+c/PmkrfyJKF0
-        8ZmVja26AcPbSozSalm8CS5xdX8gUp+S9auKcN5/tMzGQANGIuqHFHumwazARBiSwsaJwjaBTY3yo
-        hFPlFEoNQbOiwH7hJG9X8sE9v89b1UW31jicK0B0Dpju0EEs0aNxYynZ5DZNgXgK4X/Fr88R2p2pq
-        S+NeJaQlXngxq890AVlcdgdbxeilPkb6uHy2fP1A5TU6gUhnaI9aBEwM2dOSyRhiX5XGcL+4zwGnH
-        PTTMiacw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jc5xy-0007dX-JN; Fri, 22 May 2020 11:35:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D6EE300478;
-        Fri, 22 May 2020 13:35:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F2D12201479A0; Fri, 22 May 2020 13:35:47 +0200 (CEST)
-Date:   Fri, 22 May 2020 13:35:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        will@kernel.org, clang-built-linux@googlegroups.com, bp@alien8.de
-Subject: Re: [PATCH -tip v3 00/11] Fix KCSAN for new ONCE (require Clang 11)
-Message-ID: <20200522113547.GL325280@hirez.programming.kicks-ass.net>
-References: <20200521142047.169334-1-elver@google.com>
+        Fri, 22 May 2020 07:36:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E2DC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 04:36:24 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w7so9796276wre.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 04:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YkS66D2KhkTc0tni03HYE1pCRExjRVUOWUe/sJDevcs=;
+        b=M6XrIxVgb8uYfB176RSMrC1sFz6rbgMwue9IYGt/vMFZYsfM6p/8Xu9H+xsbMMjlpP
+         xGqK/kfSn0nddjxLr6T7fJgnx+ectzyDE868o692ejDlORVWc0DgobHlRl2YPTShqN33
+         OfFWLcQ1Y6iMvtvtypwmEZ51g8CHJUFrSMOtmKgct1VkhAnt0EcsuyI9rXEDcMJY1Djv
+         V2vmBJlJC9iuGklE7HP7c43uN/yc78xNFpwbhphI1JZHf2XsxVjyTOmANmXAGAv+EatC
+         lB3U7C16Rz826nzASqU/4VBZeevPAGjvKyXjwbl30MADYk0AXn610D0mk0F72fNU7EVz
+         Sp+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YkS66D2KhkTc0tni03HYE1pCRExjRVUOWUe/sJDevcs=;
+        b=iPPLSAVipF70kX1lET6+WhqJOvTAWdTECYfqk5Vpiel3ZLV0iCXbjpH6984GuDo3hz
+         5w3WBMZk6DzY08aTgm5fJhsS/fZuX6isvk0hiCErS+wU/lEM3WnZShAbvjJ6E8DnlDSD
+         HAZtn7sOPchQVKyNnI9eHkSoAkZtQw0p5flsnQDstIbFGdyIjCGHsoBVWc5vBIUSjHA9
+         8luWuZTHllTwzTuLP0pbgpIE90188Sffa0nm5GkoPHg/x3zSPsAYPfsNRU232VnUC7dK
+         L2XXTFzARq7Vu8JW3HvZed/QlXbQht8blcGkhWEvC9gzyA3qjV5uhjM9Jk/+1a/V/cbp
+         f2Ug==
+X-Gm-Message-State: AOAM530OEt/UTzWflGms2M1c9f26ru5Xw+rjYoJl9VojTcM5+GQapDRd
+        U4WNjK64Cv0/CXXCiA5VAaxU2CvjOVU=
+X-Google-Smtp-Source: ABdhPJxjmPXvu1EAeGjbB1jrtmPWiPeyizL42yVZjRotWf4CVdZl1yAS43G53ln91j5+2H/rVinGKA==
+X-Received: by 2002:adf:ea11:: with SMTP id q17mr1508180wrm.75.1590147383664;
+        Fri, 22 May 2020 04:36:23 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id u7sm8944121wmm.8.2020.05.22.04.36.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 May 2020 04:36:22 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Fix some issues about NVMEM
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+References: <1590133861-25515-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <f1891be1-ec77-2f73-cbd2-59f92fe66495@linaro.org>
+Date:   Fri, 22 May 2020 12:36:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521142047.169334-1-elver@google.com>
+In-Reply-To: <1590133861-25515-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:20:36PM +0200, Marco Elver wrote:
-> Arnd Bergmann (1):
->   ubsan, kcsan: don't combine sanitizer with kcov on clang
-> 
-> Marco Elver (10):
->   kcsan: Avoid inserting __tsan_func_entry/exit if possible
->   kcsan: Support distinguishing volatile accesses
->   kcsan: Pass option tsan-instrument-read-before-write to Clang
->   kcsan: Remove 'noinline' from __no_kcsan_or_inline
->   kcsan: Restrict supported compilers
->   kcsan: Update Documentation to change supported compilers
->   READ_ONCE, WRITE_ONCE: Remove data_race() and unnecessary checks
->   data_race: Avoid nested statement expression
->   compiler.h: Move function attributes to compiler_types.h
->   compiler_types.h, kasan: Use __SANITIZE_ADDRESS__ instead of
->     CONFIG_KASAN to decide inlining
-> 
->  Documentation/dev-tools/kcsan.rst |  9 +-----
->  include/linux/compiler.h          | 54 ++++---------------------------
->  include/linux/compiler_types.h    | 32 ++++++++++++++++++
->  kernel/kcsan/core.c               | 43 ++++++++++++++++++++++++
->  lib/Kconfig.kcsan                 | 20 +++++++++++-
->  lib/Kconfig.ubsan                 | 11 +++++++
->  scripts/Makefile.kcsan            | 15 ++++++++-
->  7 files changed, 127 insertions(+), 57 deletions(-)
 
-LTGM
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 22/05/2020 08:50, Tiezhu Yang wrote:
+> This patch series is based on the latest Linus' tree.
+> 
+> Tiezhu Yang (2):
+>    nvmem: sprd: Fix return value of sprd_efuse_probe()
+>    MAINTAINERS: Add git tree for NVMEM FRAMEWORK
+> 
+>   MAINTAINERS                | 1 +
+>   drivers/nvmem/sprd-efuse.c | 4 ++--
+>   2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+Thanks Applied!
+
+--srini
