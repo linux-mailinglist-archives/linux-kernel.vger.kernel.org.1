@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB501DE640
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F561DE62C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgEVMIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
+        id S1729763AbgEVMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729504AbgEVMHb (ORCPT
+        with ESMTP id S1729623AbgEVMHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:07:31 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9883CC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:31 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u1so8429779wmn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:31 -0700 (PDT)
+        Fri, 22 May 2020 08:07:34 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3317AC08C5C0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:34 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w64so9557818wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A3BhZ5w2nZuK3+ZudhXc+00fKQMrXVNQ6trbR5U2M5Y=;
-        b=agS9SYZmiExPn1QFT+zp3KAP7WUdbVr14uPS6nJ27iB1uTA+ehxDy0YnoR9vFVYpwe
-         ejKdXTzf8HvvGvnXEBEKYv0XRMvOXLfibnVZ4RxWk+opDqL/ZcUAhJfc3z/bq9Kd+/Lv
-         ruVgGtvfmDrn3JOLXqEAJ6ZeygoSjuZdHAhLF0oHaU+To5M7N4RW+0P2ItNRNBKmSbBE
-         P4pXfoUCxapPvWFYEm/mn3y/hTHEXZT2TuYxVmxdofXn2xpEq3tf4L0boBEWWiTDpsO9
-         6AKtCVsk83JdgrJUbOkFst5Wy7TT750YifbEa617FJS68K9UwdH1KMuj3t3gdeqwoNUh
-         txoQ==
+        bh=cLB08H4ZIlTMzvj5hInDPm3tTNq7mk/XtYoMNSk6v2w=;
+        b=Sn/1CrJlRf1gaXAt7BzExoLU8RuOHChRbTQLpaUrzwFYqGsov68ZYpiUu778e1h74U
+         EG8H1AkAkI/Dvmx5QKB9iXaqQh4CeJTf3KZiOAOTno9BIiFgfkjQQ3V4IRkEH4GAPrLA
+         maiOekJ94V3I7H6hUXcjbEOxaDc55leACFe7VuKpdTyg7O80elge/QfPQjJeWku+bhMk
+         /BOFybbSX0X7y3Qvi81k2fAIAzdXkIexmNVingkHUbHWITInUkDyAjfPXgMuJPMXVerx
+         QZT3djIizjK6MVClkQM2eCBMIBdSWPweS9uJyC7sYma38spotFpi6WHBHlfhEvvRmcPV
+         FXNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A3BhZ5w2nZuK3+ZudhXc+00fKQMrXVNQ6trbR5U2M5Y=;
-        b=ZwU2CIGeNI5YeqFz3/6Ns3HcFeOn1XBa6TgfLKssJBY8rHFujXYg1PH1bZ4YsUJrPe
-         X3T/56b+oH0UPF81PR3AJSAwWioeUBDhJy1SriJpmS0NwnyznW+S46u5/Z9n/KJYgz4s
-         Mdn2Uenpzyp/Vs8tLux4K2ZoF/4iNtl+Yj3Xz8/noxSZ92S5857PuUkO5U6yko+wjcoS
-         1sERf8cIfBCz2bLMTdoFPgnvYjyhuTR2ssTZRxfoRNRfeXpchjDhjmEjSYke0n4eOdLb
-         2+mnf7SxADX/XNbCtUt9+GK515FNcj5CdWrI9SdWDeSr25UnewPPlTzSJm3ZMBL8TgS7
-         XZAw==
-X-Gm-Message-State: AOAM531+Xq7EXC4KX9H3gU+ejCe8yu+a59+wyh/2xKBJPB4bkM3pdBWo
-        rCLTsst5AWWs5UXz0SFaUYs9fg==
-X-Google-Smtp-Source: ABdhPJyMDEfpWBgRlr7TcCLSZc1VpzT4+1vIWxF001lm1q4j5p/zwqQ3+nBq6019j5V6S7cI+dSStA==
-X-Received: by 2002:a7b:c778:: with SMTP id x24mr13962597wmk.144.1590149250359;
-        Fri, 22 May 2020 05:07:30 -0700 (PDT)
+        bh=cLB08H4ZIlTMzvj5hInDPm3tTNq7mk/XtYoMNSk6v2w=;
+        b=dh/PE9993NCmJdC6G9/2IKq0blf229vloJjsqPgmwrxbOd63zU+C71jGbthIHnKUvT
+         YDm5894ZH9/Qn1JoiGKFOg0vgA5EVKfDmQmL1oK3ZHrp8DbnP9Dl8omf9fo6NQU3xrhs
+         fejVj7/Jd95xUluuGwVEjCOF/NhFGmxjp6t5+/UHWNp1Uzp4wrp0/zwNVbn1g+CYJHcs
+         aLq/begyQXAaSzLksuITVhaqbUcOtx+0CV1sTk3AC+MyNMdjazZjWXzBiUzNpxuqkD3X
+         xanHL3E0SDpnCkbS2fojbaFN303sy8jbKklO8Ukd3kBqozlf2RNMltGJNzrpOk36NPyY
+         /J0w==
+X-Gm-Message-State: AOAM532tOHf3egCBE8ojKli8KYo4h1YlM+uofuFZ8QmteBnAvBL+tuLa
+        4aMOkP8kJHQOJRToF5W7Azq6Uw==
+X-Google-Smtp-Source: ABdhPJy2DwWygp0CZukF1c5MDhWbG3suEHoLEk61djOMVZnj0q+0DRdXHTp94SuAfm6DtS52JEtM4Q==
+X-Received: by 2002:a1c:4857:: with SMTP id v84mr13962835wma.106.1590149252025;
+        Fri, 22 May 2020 05:07:32 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id f128sm9946233wme.1.2020.05.22.05.07.29
+        by smtp.gmail.com with ESMTPSA id f128sm9946233wme.1.2020.05.22.05.07.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 05:07:29 -0700 (PDT)
+        Fri, 22 May 2020 05:07:31 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Rob Herring <robh+dt@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v5 07/11] ARM64: dts: mediatek: add pericfg syscon to mt8516.dtsi
-Date:   Fri, 22 May 2020 14:06:56 +0200
-Message-Id: <20200522120700.838-8-brgl@bgdev.pl>
+Subject: [PATCH v5 08/11] ARM64: dts: mediatek: add the ethernet node to mt8516.dtsi
+Date:   Fri, 22 May 2020 14:06:57 +0200
+Message-Id: <20200522120700.838-9-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200522120700.838-1-brgl@bgdev.pl>
 References: <20200522120700.838-1-brgl@bgdev.pl>
@@ -82,30 +82,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This adds support for the PERICFG register range as a syscon. This will
-soon be used by the MediaTek Ethernet MAC driver for NIC configuration.
+Add the Ethernet MAC node to mt8516.dtsi. This defines parameters common
+to all the boards based on this SoC.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8516.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/mediatek/mt8516.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-index 2f8adf042195..8cedaf74ae86 100644
+index 8cedaf74ae86..89af661e7f63 100644
 --- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-@@ -191,6 +191,11 @@ infracfg: infracfg@10001000 {
- 			#clock-cells = <1>;
+@@ -406,6 +406,18 @@ mmc2: mmc@11170000 {
+ 			status = "disabled";
  		};
  
-+		pericfg: pericfg@10003050 {
-+			compatible = "mediatek,mt8516-pericfg", "syscon";
-+			reg = <0 0x10003050 0 0x1000>;
++		ethernet: ethernet@11180000 {
++			compatible = "mediatek,mt8516-eth";
++			reg = <0 0x11180000 0 0x1000>;
++			mediatek,pericfg = <&pericfg>;
++			interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_RG_ETH>,
++				 <&topckgen CLK_TOP_66M_ETH>,
++				 <&topckgen CLK_TOP_133M_ETH>;
++			clock-names = "core", "reg", "trans";
++			status = "disabled";
 +		};
 +
- 		apmixedsys: apmixedsys@10018000 {
- 			compatible = "mediatek,mt8516-apmixedsys", "syscon";
- 			reg = <0 0x10018000 0 0x710>;
+ 		rng: rng@1020c000 {
+ 			compatible = "mediatek,mt8516-rng",
+ 				     "mediatek,mt7623-rng";
 -- 
 2.25.0
 
