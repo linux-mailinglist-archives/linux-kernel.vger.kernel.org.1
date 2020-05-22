@@ -2,220 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353F11DDF38
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D976A1DDF30
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgEVFTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:19:38 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6776 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728190AbgEVFTe (ORCPT
+        id S1728153AbgEVFTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:19:31 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:44338 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgEVFTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:19:34 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ec760d90000>; Thu, 21 May 2020 22:19:21 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 21 May 2020 22:19:33 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 21 May 2020 22:19:33 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 May
- 2020 05:19:32 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 22 May 2020 05:19:32 +0000
-Received: from sandstorm.nvidia.com (Not Verified[10.2.48.182]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5ec760e40003>; Thu, 21 May 2020 22:19:32 -0700
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 1/4] mm/gup: move __get_user_pages_fast() down a few lines in gup.c
-Date:   Thu, 21 May 2020 22:19:28 -0700
-Message-ID: <20200522051931.54191-2-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200522051931.54191-1-jhubbard@nvidia.com>
-References: <20200522051931.54191-1-jhubbard@nvidia.com>
+        Fri, 22 May 2020 01:19:30 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200522051928euoutp02bdb25ff7e8b69ebb25e890de6ecb44ca~RQg1fplHF2205622056euoutp024
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:19:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200522051928euoutp02bdb25ff7e8b69ebb25e890de6ecb44ca~RQg1fplHF2205622056euoutp024
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590124768;
+        bh=bDBvRfRwXpfJfQj2KXHjRFIv2OKEmKMJBjpkDpCPm3o=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=fEGc3xK//4xmizDC3Lwt/WL6Lc1RO1I1CCKcjMXmd9E9cCATyEKAGwHBOJ3uqbVVS
+         P/c5qSS7wMONMPJ8euUOxN0FJRNs8dsOqCfCUH8q41izHujPPR9qDJyCr4paUEBzjw
+         GtEnDGARkdGqjIAvwaBiYnpPCO8oQ6l+UIKTXoHk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200522051928eucas1p2ae7e6d0237f73826f0ec5fe6346314be~RQg1IgnGu1567415674eucas1p2Q;
+        Fri, 22 May 2020 05:19:28 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 1F.78.61286.0E067CE5; Fri, 22
+        May 2020 06:19:28 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200522051927eucas1p107f4aae8f0f47043f067d7d6b58efd19~RQg04aWgR3127431274eucas1p1H;
+        Fri, 22 May 2020 05:19:27 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200522051927eusmtrp132203103fb852f9fbbbdaf357a54095b~RQg030OQj2136521365eusmtrp1n;
+        Fri, 22 May 2020 05:19:27 +0000 (GMT)
+X-AuditID: cbfec7f2-ef1ff7000001ef66-53-5ec760e0572c
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id B5.BE.08375.FD067CE5; Fri, 22
+        May 2020 06:19:27 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200522051927eusmtip2f7fc78fc9283057109a1d9cdb3fa9efd~RQg0cUKZL3144231442eusmtip2O;
+        Fri, 22 May 2020 05:19:27 +0000 (GMT)
+Subject: Re: [PATCH] PM: runtime: clk: Fix clk_pm_runtime_get() error path
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e9130ce8-fd22-c871-c089-585585c7133f@samsung.com>
+Date:   Fri, 22 May 2020 07:19:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.8.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1590124761; bh=rovyqRvoWmUY8LZ787X+YkZeUTez+YCYnMbA60VZKSY=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=XuIBAq/A0KBu9ehMAokSDp1goZT+al4PJYx5H38f0UguHmNxz7iT7NXIk9uMd+jzO
-         sN/WE6p/FHXZi0w9OYMKDeqVnqZkeJwXrtf/4Il66h5dbaJJCCE9YJ7PXupyL4aOni
-         86TBqrNg4UxLuMJNtneeOZIPCegiExALDEDtRRjVJAP9EwaN4JURPo61fXCGc6yk5I
-         p0/gBzB9CmeVpumV5bps7FcEJG5SGINVXO+z8JSI3PSVdbpj73vl1wDByk9AGI8nJl
-         LknBJFWTZHAIc49c7bEho9YjnVotwALQi//zrck2GPgKExY7ThvXD6SMl7OBLLI5AL
-         t7z/swtSVv/uw==
+In-Reply-To: <5127441.yGvM1JjtLk@kreacher>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djPc7oPEo7HGUw5zGexccZ6Vovz5zew
+        W1zeNYfN4nPvEUaLi6dcLc6cvsRqcXxtuAO7x/sbrewem1Z1snncubaHzWPL1XYWj74tqxg9
+        Pm+SC2CL4rJJSc3JLEst0rdL4MqYtWcbW8Fq/oqPl+6wNDAu4Oli5OSQEDCRWLngGVMXIxeH
+        kMAKRokt66ZBOV8YJc4tOsIG4XxmlLjzaw9rFyMHWMvvkwYQ8eWMEmtmLGGEcN4zSnz7/YQd
+        ZK6wgJfEh95mVhBbRCBIYu3cWWwgNrPAXUaJM/s4QWw2AUOJrrddYHFeATuJR3fbmEBsFgFV
+        iT+HZjCC2KICsRKnF29mhKgRlDg58wkLiM0poCWx7ekRVoiZ8hLb385hhrDFJW49mQ/2goTA
+        PnaJtrn3mSGudpE42p8K8bOwxKvjW9ghbBmJ05N7WCDqmxklHp5byw7h9DBKXG6CuEJCwFri
+        zrlfbCCDmAU0Jdbv0ocIO0rsunGEHWI+n8SNt4IQN/BJTNo2HWotr0RHmxBEtZrErOPr4NYe
+        vHCJeQKj0iwkn81C8s0sJN/MQti7gJFlFaN4amlxbnpqsWFearlecWJucWleul5yfu4mRmAi
+        Ov3v+KcdjF8vJR1iFOBgVOLhfZB8LE6INbGsuDL3EKMEB7OSCO9C/qNxQrwpiZVVqUX58UWl
+        OanFhxilOViUxHmNF72MFRJITyxJzU5NLUgtgskycXBKNTBa/w8tPTJbp+v17y0ckt0yHVZb
+        Voq4TAiWUVTe/K/RsChMTEXPeOad96u/HVN+knLrVr/HG6k9T5skTaX/bFAtOab2Immixsyz
+        Fb/vhvS9qiys0q0/cH7PHaEwXkG/GlOdxPUib/cosGXzTbt0MVzPyJZvykM5UcGNTvZKPjGs
+        czMdd76SzFFiKc5INNRiLipOBAC1zfHdQAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsVy+t/xe7r3E47HGUxcYGGxccZ6Vovz5zew
+        W1zeNYfN4nPvEUaLi6dcLc6cvsRqcXxtuAO7x/sbrewem1Z1snncubaHzWPL1XYWj74tqxg9
+        Pm+SC2CL0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL
+        0MuYtWcbW8Fq/oqPl+6wNDAu4Oli5OCQEDCR+H3SoIuRi0NIYCmjxPoXZ9m7GDmB4jISJ6c1
+        sELYwhJ/rnWxQRS9ZZQ4sfkXE0hCWMBL4kNvM1iRiECQxP15f1hAipgF7jJK/Dw/ESwhJFAr
+        cfXsQ7CpbAKGEl1vQSZxcvAK2Ek8utsGNohFQFXiz6EZjCC2qECsxOprrYwQNYISJ2c+YQGx
+        OQW0JLY9PQI2k1nATGLe5ofMELa8xPa3c6BscYlbT+YzTWAUmoWkfRaSlllIWmYhaVnAyLKK
+        USS1tDg3PbfYUK84Mbe4NC9dLzk/dxMjMPa2Hfu5eQfjpY3BhxgFOBiVeHgfJB+LE2JNLCuu
+        zD3EKMHBrCTCu5D/aJwQb0piZVVqUX58UWlOavEhRlOg5yYyS4km5wPTQl5JvKGpobmFpaG5
+        sbmxmYWSOG+HwMEYIYH0xJLU7NTUgtQimD4mDk6pBsaEnM0vvP7rpJpPf9dxI2d3lu9+uY1i
+        U3wtsu3WzqqtPDDz+pt9XiGeD6TyD9yfqFbp7vN8Q8OT/R5+QcvzNdukMsqauDoWcB/NTN5z
+        8+Av3XuHbpyyyZY/vXn9Iv6gm1qf3q2weriUJ17xoVFL2jKLf/5iIf0zre4utPu02Cyx5mSQ
+        cRnf1a9KLMUZiYZazEXFiQCOKI8Y0wIAAA==
+X-CMS-MailID: 20200522051927eucas1p107f4aae8f0f47043f067d7d6b58efd19
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200521170817eucas1p13d9477a0a5d13d2df876134cf41131d8
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200521170817eucas1p13d9477a0a5d13d2df876134cf41131d8
+References: <CGME20200521170817eucas1p13d9477a0a5d13d2df876134cf41131d8@eucas1p1.samsung.com>
+        <5127441.yGvM1JjtLk@kreacher>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is in order to avoid a forward declaration of
-internal_get_user_pages_fast(), in the next patch.
+Hi Rafael,
 
-This is code movement only--all generated code should
-be identical.
+On 21.05.2020 19:08, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> clk_pm_runtime_get() assumes that the PM-runtime usage counter will
+> be dropped by pm_runtime_get_sync() on errors, which is not the case,
+> so PM-runtime references to devices acquired by the former are leaked
+> on errors returned by the latter.
+>
+> Fix this by modifying clk_pm_runtime_get() to drop the reference if
+> pm_runtime_get_sync() returns an error.
+>
+> Fixes: 9a34b45397e5 clk: Add support for runtime PM
+> Cc: 4.15+ <stable@vger.kernel.org> # 4.15+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- mm/gup.c | 112 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 56 insertions(+), 56 deletions(-)
+Frankly, I would rather fix the runtime_get_sync() instead of fixing the 
+return path everywhere in the kernel. The current behavior of the 
+pm_runtime_get_sync() is completely counter-intuitive then. I bet that 
+in the 99% of the places where it is being called assume that no special 
+fixup is needed in case of failure. This is one of the most common 
+runtime PM related function and it is really a common pattern in the 
+drivers to call:
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 50cd9323efff..4502846d57f9 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2666,62 +2666,6 @@ static bool gup_fast_permitted(unsigned long start, =
-unsigned long end)
- }
- #endif
-=20
--/*
-- * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall b=
-ack to
-- * the regular GUP.
-- * Note a difference with get_user_pages_fast: this always returns the
-- * number of pages pinned, 0 if no pages were pinned.
-- *
-- * If the architecture does not support this function, simply return with =
-no
-- * pages pinned.
-- */
--int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
--			  struct page **pages)
--{
--	unsigned long len, end;
--	unsigned long flags;
--	int nr_pinned =3D 0;
--	/*
--	 * Internally (within mm/gup.c), gup fast variants must set FOLL_GET,
--	 * because gup fast is always a "pin with a +1 page refcount" request.
--	 */
--	unsigned int gup_flags =3D FOLL_GET;
--
--	if (write)
--		gup_flags |=3D FOLL_WRITE;
--
--	start =3D untagged_addr(start) & PAGE_MASK;
--	len =3D (unsigned long) nr_pages << PAGE_SHIFT;
--	end =3D start + len;
--
--	if (end <=3D start)
--		return 0;
--	if (unlikely(!access_ok((void __user *)start, len)))
--		return 0;
--
--	/*
--	 * Disable interrupts.  We use the nested form as we can already have
--	 * interrupts disabled by get_futex_key.
--	 *
--	 * With interrupts disabled, we block page table pages from being
--	 * freed from under us. See struct mmu_table_batch comments in
--	 * include/asm-generic/tlb.h for more details.
--	 *
--	 * We do not adopt an rcu_read_lock(.) here as we also want to
--	 * block IPIs that come from THPs splitting.
--	 */
--
--	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
--	    gup_fast_permitted(start, end)) {
--		local_irq_save(flags);
--		gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
--		local_irq_restore(flags);
--	}
--
--	return nr_pinned;
--}
--EXPORT_SYMBOL_GPL(__get_user_pages_fast);
--
- static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
- 				   unsigned int gup_flags, struct page **pages)
- {
-@@ -2794,6 +2738,62 @@ static int internal_get_user_pages_fast(unsigned lon=
-g start, int nr_pages,
- 	return ret;
- }
-=20
-+/*
-+ * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall b=
-ack to
-+ * the regular GUP.
-+ * Note a difference with get_user_pages_fast: this always returns the
-+ * number of pages pinned, 0 if no pages were pinned.
-+ *
-+ * If the architecture does not support this function, simply return with =
-no
-+ * pages pinned.
-+ */
-+int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
-+			  struct page **pages)
-+{
-+	unsigned long len, end;
-+	unsigned long flags;
-+	int nr_pinned =3D 0;
-+	/*
-+	 * Internally (within mm/gup.c), gup fast variants must set FOLL_GET,
-+	 * because gup fast is always a "pin with a +1 page refcount" request.
-+	 */
-+	unsigned int gup_flags =3D FOLL_GET;
-+
-+	if (write)
-+		gup_flags |=3D FOLL_WRITE;
-+
-+	start =3D untagged_addr(start) & PAGE_MASK;
-+	len =3D (unsigned long) nr_pages << PAGE_SHIFT;
-+	end =3D start + len;
-+
-+	if (end <=3D start)
-+		return 0;
-+	if (unlikely(!access_ok((void __user *)start, len)))
-+		return 0;
-+
-+	/*
-+	 * Disable interrupts.  We use the nested form as we can already have
-+	 * interrupts disabled by get_futex_key.
-+	 *
-+	 * With interrupts disabled, we block page table pages from being
-+	 * freed from under us. See struct mmu_table_batch comments in
-+	 * include/asm-generic/tlb.h for more details.
-+	 *
-+	 * We do not adopt an rcu_read_lock(.) here as we also want to
-+	 * block IPIs that come from THPs splitting.
-+	 */
-+
-+	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
-+	    gup_fast_permitted(start, end)) {
-+		local_irq_save(flags);
-+		gup_pgd_range(start, end, gup_flags, pages, &nr_pinned);
-+		local_irq_restore(flags);
-+	}
-+
-+	return nr_pinned;
-+}
-+EXPORT_SYMBOL_GPL(__get_user_pages_fast);
-+
- /**
-  * get_user_pages_fast() - pin user pages in memory
-  * @start:      starting user address
---=20
-2.26.2
+pm_runtime_get_sync()
+
+do something with the hardware
+
+pm_runtime_put()
+
+Do you really want to fix the error paths of the all such calls?
+
+
+> ---
+>   drivers/clk/clk.c |    6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> Index: linux-pm/drivers/clk/clk.c
+> ===================================================================
+> --- linux-pm.orig/drivers/clk/clk.c
+> +++ linux-pm/drivers/clk/clk.c
+> @@ -114,7 +114,11 @@ static int clk_pm_runtime_get(struct clk
+>   		return 0;
+>   
+>   	ret = pm_runtime_get_sync(core->dev);
+> -	return ret < 0 ? ret : 0;
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(core->dev);
+> +		return ret;
+> +	}
+> +	return 0;
+>   }
+>   
+>   static void clk_pm_runtime_put(struct clk_core *core)
+>
+>
+>
+>
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
