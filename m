@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2E81DE96B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967791DE962
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730540AbgEVOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:46:40 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:35851 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730105AbgEVOqd (ORCPT
+        id S1730506AbgEVOq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730105AbgEVOqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:46:33 -0400
-Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MplPh-1jGolW1bDB-00qBfc for <linux-kernel@vger.kernel.org>; Fri, 22 May
- 2020 16:46:31 +0200
-Received: by mail-qk1-f169.google.com with SMTP id f13so10955775qkh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:46:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533Xvy54bNuJ2f5pzevaee7ls6/C10KoORXZYTkEIP9dClJddvSc
-        kmip8z+mgeumRHXhKz4qAFdMX0lCYcAPfNsi94Q=
-X-Google-Smtp-Source: ABdhPJwmy6G1wj6rGXkLGjuBlUbBUGagMMbZcrCm8GJrsSSbymy5nqhhK5vv/LW4p6M6tI7x1VRfvM/WVypzvcohCls=
-X-Received: by 2002:a37:434b:: with SMTP id q72mr16186729qka.352.1590158790247;
- Fri, 22 May 2020 07:46:30 -0700 (PDT)
+        Fri, 22 May 2020 10:46:25 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8F5C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:46:25 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j21so5083347pgb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:46:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PP3NlRQyU9hVtOdAQG1RX9CTlatqPKoXALMeR0iOkSU=;
+        b=lxlss0ZnfC4Z/AbhW67TOHU6mhwsl1MwL6RchBIVSr/q+I2CV8QoajVGUif9/k/4sk
+         U/t7cSReHxUX/OESlDS5lVyoJVYFtCzkNBSJ8iskjmqqfmuJpp0LSgBFO8YmuJiE4qqu
+         PZsB+Gj7MFYbLow6WLjiKlbkYZJt9cXBYrFOFdV+7HT7H4tyKre3aZalNxIF1wbK6SWo
+         2RQO994KR8W0zBxufyyT3KUGbdwoMkvZoYYcePbIhBHPsqbUIL0wWNNbPf+KWy2ix2WO
+         JSGx86NTWKao51q6tFo82+UH2Hta73TUuqGLCATWgF1MyeynsJfhdtlWnON4Pvs+Lbnh
+         TNDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PP3NlRQyU9hVtOdAQG1RX9CTlatqPKoXALMeR0iOkSU=;
+        b=AO+nNIPU+XbFMkrc9p7+Ff/ukyPXtGu3zsAM9I67bbTB+B+EuJ9HUmtiiXYW1k0CLY
+         UnTiclFb4A6WVZFJiyDt26SIPva0oKTDQMOPyd9U1JRr2gGlHH8FqWDKJGB9kq78bs4U
+         vhpacGxBtuIJSeexKVyEQZLLBxSU3yy+rLfMsHB7xgP5ryPjijx6z+eqVf8X0BtQuv76
+         AZ/jCoOqcZWjcw5CkaXUZbMPTh9tURkAFaVcvTPnIm5rQYT62o6595YwzpfOOBdjwadt
+         +G1M1lLWB7R0qroN40LcRlagrtjHhOwLCB8s6AOzy1VXcGD9/KvGF8njwQXtVbn3lJ+Y
+         kCNg==
+X-Gm-Message-State: AOAM532OmL1Q9oPtAFA3NW87zhVZ1XkMXXrlCGrUl+CYSb/3gKM55a2F
+        w4/mou4FIB8uw+nDWc6aW2qO6YyFzcw=
+X-Google-Smtp-Source: ABdhPJyOskFVbu5Q7jztS/JY+dJEhfz7pdsgkS1G8FHxMjsxcwx7mtvJ/wUGWknKrnr7P9rFJfWeCA==
+X-Received: by 2002:aa7:9510:: with SMTP id b16mr4234538pfp.265.1590158784741;
+        Fri, 22 May 2020 07:46:24 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:892a:d4e5:be12:19f? ([2605:e000:100e:8c61:892a:d4e5:be12:19f])
+        by smtp.gmail.com with ESMTPSA id mn19sm7014158pjb.8.2020.05.22.07.46.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 07:46:24 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20200522213202.38ebe825@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7bb2cb93-062c-4ef5-4986-5dd82694edfe@kernel.dk>
+Date:   Fri, 22 May 2020 08:46:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200522124951.35776-1-sudeep.holla@arm.com> <20200522124951.35776-3-sudeep.holla@arm.com>
-In-Reply-To: <20200522124951.35776-3-sudeep.holla@arm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 22 May 2020 16:46:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1t6BrB_Gti138VDRbmaiR_TjwR9d6qMstLBFDWxZ1kjQ@mail.gmail.com>
-Message-ID: <CAK8P3a1t6BrB_Gti138VDRbmaiR_TjwR9d6qMstLBFDWxZ1kjQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] firmware: smccc: Add ARCH_SOC_ID support
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        harb@amperecomputing.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Francois Ozog <francois.ozog@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:eUgxqSzEZfnXE/1hGmbTVnvsKP2q4WegGufvE2inKA1u4Nkwrz2
- Q0Qi4Jgx90YiqsEQP3fBIPunYbP1JsbKbz0QdIWmQy0tLxgThaWdqmtG0noQL7q4OSj2bvR
- XXouDtPCvz0g8wYVDBsl4obqFjLUGaHEUr0H+jJOYKNbE/kJCjKUE+om3RmmHj37ifWXHZD
- P0fwZagr4k/luCc5H09ow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:R1yk67n4mYc=:91k32ihezTulJxhTAjnkam
- dkjanHvL/foC9H2C+JCdTX5HtDxyj1F7x1/fSPv7J1/PmYMQhX0nrW8grLg3bua7FM+EyX3mS
- j67ESIQbdxhAx0cLlqWDGSJit0Po1RWQ9LfepcSCy9hx68cDsVhuUwStylItkob7DD6RVrQ0K
- q/wIQrq/f49wAJTWbxoTQ8MrexDsMmySxarpdRthVmnOT9hvX0H7Ew2yRohqXiWX3lSZ3KUQe
- oVUzEpOq8+MsKV44Yc1qNiVaiMreiG51NNVsrTCN1ya6nbxpN3IVLkmmIdiJWKUU9b5IG5bQC
- 2HlnSBkDn11Nw0vE1FGlPcKGcVooRberJi3evUchdv+mNR7tqcOYEEHxsf5yLH1dvITIALFO6
- 2dsFIk1ofo54ZO8jUA3WnDunZLMHynLZJLDZvdZAKx1brQi4yRh3nDqUhdXqj7NrwqBsZTmYL
- 95aiKerJcvVK4s0UBi0I/zdnm5F1q5j4SRuBtCK/L4Zk8cbARt5fS/6uBIDlW0ZLQhS8RDcw8
- JEU1IAzA+IbiVejzfU0VbdhnMMDHS7uEaTOkX4IeUCaKopejdzieyQAcqmXoD/II9WKN6OWZ/
- pjndVZ1dideDikugWpTHhTtYdorn9BvXhie/VOdSE4vG+VAxyKsFfPPZJ7YM4EKbK8u6QjdxZ
- Z9zsTscHPb0+GgWNYfxOTJlO3MUVh7S34FlVhLk/zOhzTOHT0k4ziBffOv/s8VbCXPbhrkU9v
- C2FFC1b7qHSZg+Ef9z81E9jbqULaDozwOWhI88pKUiIG95MdvyDop6Ou+joi0lUEc6t2Jtx3j
- KT84NjWvRjBXcGNdwYjKlO/7lfHaLHj64R2pUuS2BYT+IJHTMY=
+In-Reply-To: <20200522213202.38ebe825@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 2:50 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> +
-> +       soc_id_rev = res.a0;
-> +
-> +       soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
-> +       if (!soc_dev_attr)
-> +               return -ENOMEM;
-> +
-> +       sprintf(soc_id_str, "0x%04x", IMP_DEF_SOC_ID(soc_id_version));
-> +       sprintf(soc_id_rev_str, "0x%08x", soc_id_rev);
-> +       sprintf(soc_id_jep106_id_str, "0x%02x%02x",
-> +               JEP106_BANK_CONT_CODE(soc_id_version),
-> +               JEP106_ID_CODE(soc_id_version));
-> +
-> +       soc_dev_attr->soc_id = soc_id_str;
-> +       soc_dev_attr->revision = soc_id_rev_str;
-> +       soc_dev_attr->jep106_id = soc_id_jep106_id_str;
+On 5/22/20 5:32 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the block tree, today's linux-next build (x86_64
+> allnoconfig) failed like this:
+> 
+> fs/libfs.c: In function 'generic_file_fsync':
+> fs/libfs.c:1116:9: error: too few arguments to function 'blkdev_issue_flush'
+>  1116 |  return blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL);
+>       |         ^~~~~~~~~~~~~~~~~~
+> In file included from fs/libfs.c:7:
+> include/linux/blkdev.h:1875:19: note: declared here
+>  1875 | static inline int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask,
+>       |                   ^~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   c64644ce363b ("block: remove the error_sector argument to blkdev_issue_flush")
 
-Ok, let me try to understand how this maps the 64-bit ID into the
-six strings in user space:
+Gah, I'll fold in the fix. Thanks Stephen.
 
-For a chip that identifies as
+-- 
+Jens Axboe
 
-JEP106_BANK_CONT_CODE = 12
-JEP106_ID_CODE = 34
-IMP_DEF_SOC_ID = 5678
-soc_id_rev = 9abcdef0
-
-the normal sysfs attributes contain these strings:
-
-machine = ""
-family = ""
-revision = "0x9abcdef0
-serial_number = ""
-soc_id = "0x5678"
-
-and the new attribute is
-
-jep106_identification_code = "0x1234"
-
-This still looks like a rather poorly designed interface to me, with a
-number of downsides:
-
-- Nothing in those strings identifies the numbers as using jep106
-  numbers rather than some something else that might use strings
-  with hexadecimal numbers.
-
-- I think we should have something unique in "family" just because
-  existing scripts can use that as the primary indentifier
-
-- It seems odd that there is no way to read the serial number through
-  the same interface and publish it the usual way. Francois Ozog
-  recently asked for a generic way to find out a serial number for
-  inventory management, and this would be the obvious place to have it.
-  It can of course be added later when the next revision of the spec
-  is there, it just seems like a surprising omission.
-
-How about making the contents:
-
-machine = "" /* could be a future addition, but board specific */
-family = "jep106:1234"
-revision = "0x9abcdef0
-serial_number = "0xfedcba987654321" /* to be implemented later */
-soc_id = "jep106:1234:5678" /* duplicates family but makes it unique*/
-
-That would work without any new properties, dropping the other patch,
-and be easier to use for identification from user space.
-
-    Arnd
