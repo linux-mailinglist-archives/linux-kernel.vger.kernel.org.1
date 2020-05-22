@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FE21DE740
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F0D1DE745
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbgEVMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        id S1730197AbgEVMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729975AbgEVMw3 (ORCPT
+        with ESMTP id S1729828AbgEVMw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:52:29 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE56AC02A199
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:52:26 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id c12so6437753lfc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:52:26 -0700 (PDT)
+        Fri, 22 May 2020 08:52:26 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF266C08C5C2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:52:25 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k5so12452381lji.11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:52:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+GYG0qSSXXWNbW6SjclZipkt2clARhTBGL72G1TzR+g=;
-        b=i0Xow3WAyL0kpKfuXIdY3nsoVq7W+EV6oRNEhiS9/GqxAvqsfGsFEey4lDq1sbsAgR
-         c2wOtAadryEu9FVsEyb1ufe/OZRu6HsI0zAsPfnJX9Cza8D1+FE0u0l9tdERa4Ih4Qn7
-         fRUKi+BP4n4l/2k0Hne8Q33RiCfF5XEv1W2P9dxFOKQTZJRUJ0/vO6IRlqN1zBseWmfP
-         8B17qjaBI3U81aZuJDuNQwNREoT4KhZYstsVtwwjfCtaska2sJP88wjLooXeBtpWQPjW
-         0N9lRb6YrjPKdWl3ZP52L/8qV5vUTrMVgo4oObShrgOoEz+q8mEDmzi+0iTqjyjvzrfw
-         41/g==
+        bh=pE6faVejbkAIUEORvfpEBGX8dWE5OEtccf8+g3bpDfA=;
+        b=RPoE0F31yzBfOvWe7SLr/WKR/C2Sx4Gh7bwAeclpxq0/Vb+GNjxAJuEDdywAhAV+rG
+         LPSwpxjdhaPrO6tPK9kLyU9lN+J2ICMlxxas0V3l5kGBMo3GGtqma7ZKf2e7FtyzTZqS
+         KG5R8274XsAkdGpxCT1EQsqp3V4eoAOQ4oqvJ4wtWaqB9Ir9xHzwM7bFrSpATnNTj6er
+         1QQiE6gfmsKimMLDlHETHNkpXH6oKGpbXDEkowiisx49AcyncgVvc25A2cOV7mVWKXHV
+         79ghSiISaygzuziCXm5Lg5/wF/eQqqmW0HwJzq/V+XbVuTqhqr1DrqhesngodJsRG9EX
+         SMCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+GYG0qSSXXWNbW6SjclZipkt2clARhTBGL72G1TzR+g=;
-        b=l+4/SgpsUh96QkcwAH6b4EgnKF8I3jZNlrvBh/RIBnFdb4QIP6UUf79rpY/OH9E4uN
-         87VWL3od2VQCT/uEsXxgkGoOHqDzCUI8S7ExqQyYPil6mEvFpl/jWtmrWnXD01y6Mr09
-         JUYSXwb+MqZuyz/Sk94Loug+r+0qo4dQp8mEUBRqtpR/bFMTMTJgNKdwwDdhassANSsr
-         CzOhol32EzM3O+t7/gpnWkqBaRGNHwN9MRv4XZP1d/NuItgFuYf3/J/MH4UwYu9VyjjB
-         WO/O/PNfoktJQ2SoJy9au35fCm4nvoybnUbL5RRxn1QSOrLIr0897nCDD9sVM8+OETns
-         ZvkA==
-X-Gm-Message-State: AOAM532tyLASP4shQyNDk0T396xEGMcappaFHgm/vp6TFtssXMRAWVVb
-        MmYBbaPmW+8voHbxHa3maMPWTA==
-X-Google-Smtp-Source: ABdhPJycCB0b0poeoDUYOr547M1WglFr8iGoptYLIwiwPw+BjbaimdNLYbqeeMIrOC3lCpI+0PYUJQ==
-X-Received: by 2002:a19:6b14:: with SMTP id d20mr1776578lfa.202.1590151945216;
-        Fri, 22 May 2020 05:52:25 -0700 (PDT)
+        bh=pE6faVejbkAIUEORvfpEBGX8dWE5OEtccf8+g3bpDfA=;
+        b=WfobP79lgay02GqKHdaQ1w3UAXt3JtKGhWFJ+MKX+xjk5NtGY3IaPrnpHyxoxzSEL+
+         /hO5Uc0HHoUvaZHJb7Dh7SfrdscXUSxU3DBwGkx9wLGavkt66gIQBMcQ07kiTO61w2ky
+         tPrdaqtXUeZggtGoEuMVCSGh5OvUIsYWgsfGmZnzjYOq5kjT9mxoKOMWqm+b1lvso4gM
+         5HLOK+/T1yilQuvK00npfH68nDI7flOUPdHv/5ISV+58Wos0QMeRz9zRj0d1df4ney6i
+         p5dJcTwgzzY9Qi1/iuTxLY4PoQAd/kAYkmR5xmR7H4ijox7RrjhspmDM5EgEANYgIoJg
+         fcMw==
+X-Gm-Message-State: AOAM532ZBpay0ZZyl3xpFyBEn7ZC++3tnUl6QjlVASusLq99/pFg1ZCo
+        hdoj9SpbliI+d+ODpHRpnPkqKg==
+X-Google-Smtp-Source: ABdhPJxgFPaCjAkcKRCcIN9VQB3EgCJQ/VVHg9h7HUrXezHSNTMlbVQq98oVAeqSL+RKdW5J2/HvFQ==
+X-Received: by 2002:a05:651c:2ce:: with SMTP id f14mr7217431ljo.87.1590151944358;
+        Fri, 22 May 2020 05:52:24 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id v28sm2405723lfd.35.2020.05.22.05.52.20
+        by smtp.gmail.com with ESMTPSA id t22sm2303766ljk.11.2020.05.22.05.52.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 22 May 2020 05:52:22 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 02FC710205A; Fri, 22 May 2020 15:52:20 +0300 (+03)
+        id 0ABFA10205B; Fri, 22 May 2020 15:52:20 +0300 (+03)
 To:     Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -70,9 +70,9 @@ Cc:     David Rientjes <rientjes@google.com>,
         kvm@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFC 12/16] x86/kvm: Share steal time page with host
-Date:   Fri, 22 May 2020 15:52:10 +0300
-Message-Id: <20200522125214.31348-13-kirill.shutemov@linux.intel.com>
+Subject: [RFC 13/16] x86/kvmclock: Share hvclock memory with the host
+Date:   Fri, 22 May 2020 15:52:11 +0300
+Message-Id: <20200522125214.31348-14-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
 References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
@@ -83,35 +83,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct kvm_steal_time is shared between guest and host. Mark it as
-shared.
+hvclock is shared between the guest and the hypervisor. It has to be
+accessible by host.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/x86/kernel/kvm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kernel/kvmclock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index f50d65df4412..b0f445796ed1 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -286,11 +286,15 @@ static void kvm_register_steal_time(void)
- {
- 	int cpu = smp_processor_id();
- 	struct kvm_steal_time *st = &per_cpu(steal_time, cpu);
-+	unsigned long phys;
- 
- 	if (!has_steal_clock)
- 		return;
- 
--	wrmsrl(MSR_KVM_STEAL_TIME, (slow_virt_to_phys(st) | KVM_MSR_ENABLED));
-+	phys = slow_virt_to_phys(st);
-+	if (kvm_mem_protected())
-+		kvm_hypercall2(KVM_HC_MEM_SHARE, phys >> PAGE_SHIFT, 1);
-+	wrmsrl(MSR_KVM_STEAL_TIME, (phys | KVM_MSR_ENABLED));
- 	pr_info("kvm-stealtime: cpu %d, msr %llx\n",
- 		cpu, (unsigned long long) slow_virt_to_phys(st));
- }
+diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+index 34b18f6eeb2c..ac6c2abe0d0f 100644
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -253,7 +253,7 @@ static void __init kvmclock_init_mem(void)
+ 	 * hvclock is shared between the guest and the hypervisor, must
+ 	 * be mapped decrypted.
+ 	 */
+-	if (sev_active()) {
++	if (sev_active() || kvm_mem_protected()) {
+ 		r = set_memory_decrypted((unsigned long) hvclock_mem,
+ 					 1UL << order);
+ 		if (r) {
 -- 
 2.26.2
 
