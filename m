@@ -2,160 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78221DE3C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11EA1DE401
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728668AbgEVKN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:13:27 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21695 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728592AbgEVKN0 (ORCPT
+        id S1730012AbgEVKPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:15:31 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:60925 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729994AbgEVKP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:13:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590142404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jmmhgCWLlRr4VrUoOVJYV5wmsB/OPdH6k2kU0IKZExE=;
-        b=Oy8jYKu6jLJRAgEsEs0JF5GvwO0sliwJBGI0poo53izCdWKgyzqWyS7gLIJNfZLQB/9SA1
-        Px+xnMhUK+OLurq5xdUbCf9wKLqDdwIvG9wnW+2Th/iMYiQhP7ZykrzsDBOJKMQzgwZMV9
-        J7gO5MP8Ry68YYPCTg5irg0mXtH/CEE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-kwhSc4EHP92KGJQ6eq9sSg-1; Fri, 22 May 2020 06:13:20 -0400
-X-MC-Unique: kwhSc4EHP92KGJQ6eq9sSg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA24C8015CF;
-        Fri, 22 May 2020 10:13:17 +0000 (UTC)
-Received: from krava (unknown [10.40.195.217])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 55C413420A;
-        Fri, 22 May 2020 10:13:12 +0000 (UTC)
-Date:   Fri, 22 May 2020 12:13:11 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 0/7] Share events between metrics
-Message-ID: <20200522101311.GA404187@krava>
-References: <20200520182011.32236-1-irogers@google.com>
- <20200521114325.GT157452@krava>
- <20200521172235.GD14034@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521172235.GD14034@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Fri, 22 May 2020 06:15:27 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200522101525euoutp01fa6652e7dceaf538dc37156bfdedfa8e~RUjObqn892709827098euoutp012
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:15:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200522101525euoutp01fa6652e7dceaf538dc37156bfdedfa8e~RUjObqn892709827098euoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590142525;
+        bh=3HYxB7x/RUYeYsXTIciTAB5xWK8LkdywlB5eocgLdQ0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=IekGMGPOzNhxP44nfZreaPriyNBk7hAoPdvbmvNiXz/ln33P04aQdABFviLn9mFCY
+         B4oRMo0mEvEi+dU7Fk1aEsE05saDekiAouBBkglyiASqGrWEAkmNiQXWWO51ZR7etb
+         jaCZluQmzgNXOpkA6YCdTUrejKKdsOzAooVFfMHM=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200522101524eucas1p29f7a3412e8b0e5dac432cff706978a68~RUjOG-Jrb0131201312eucas1p2v;
+        Fri, 22 May 2020 10:15:24 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 82.7F.60679.C36A7CE5; Fri, 22
+        May 2020 11:15:24 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7~RUjNtIl9n1170811708eucas1p1o;
+        Fri, 22 May 2020 10:15:24 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200522101524eusmtrp1e6df08f904aec341f6609ab7cbf267f0~RUjNscnWn2581025810eusmtrp1m;
+        Fri, 22 May 2020 10:15:24 +0000 (GMT)
+X-AuditID: cbfec7f4-0e5ff7000001ed07-eb-5ec7a63c203f
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id C1.9B.07950.C36A7CE5; Fri, 22
+        May 2020 11:15:24 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200522101523eusmtip1cdfc4bd183275555e857da2166e0bd3b~RUjNMSTAp2127421274eusmtip19;
+        Fri, 22 May 2020 10:15:23 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        srv_heupstream@mediatek.com,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH] i2c: core: fix NULL pointer dereference in suspend/resume
+ callbacks
+Date:   Fri, 22 May 2020 12:13:27 +0200
+Message-Id: <20200522101327.13456-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnleLIzCtJLcpLzFFi42LZduznOV2bZcfjDG6dV7HYOGM9q8WXuadY
+        LGZumMFi0fH3C6PF5V1z2Cw+9x5htJhxfh+Txdojd9ktpt8Vsvjc+o/NYuWJWcwO3B7vb7Sy
+        e8xuuMji0XJyP4tH35ZVjB4nTz1h8fi8SS6ALYrLJiU1J7MstUjfLoEr48rJ66wFT5Qq1k+6
+        wtLAuFW2i5GDQ0LAROL2NK4uRi4OIYEVjBLn+w8zQzhfGCVuNM9hhXA+M0q8X3+HpYuRE6xj
+        291GJhBbSGA5o8TfIw5wHfPvfgIrYhMwlOh628UGYosIhEt8uXGbDaSIWeAUk8S1/72MIAlh
+        gTCJV78fsILYLAKqEp9+PQebyitgK/Hl3h1miG3yEqs3HAC7SULgN5vE1ocXoBIuEkeWr4ay
+        hSVeHd/CDmHLSJye3MMC0dDMKPHw3Fp2CKeHUeJy0wxGiCpriTvnfrGBgoBZQFNi/S59iLCj
+        xKa/V5ghIcMnceOtIEiYGcictG06VJhXoqNNCKJaTWLW8XVwaw9euAR1jofE2xUnGSEhFCtx
+        6fkX5gmMcrMQdi1gZFzFKJ5aWpybnlpslJdarlecmFtcmpeul5yfu4kRmDxO/zv+ZQfjrj9J
+        hxgFOBiVeHgfJB+LE2JNLCuuzD3EKMHBrCTCu5D/aJwQb0piZVVqUX58UWlOavEhRmkOFiVx
+        XuNFL2OFBNITS1KzU1MLUotgskwcnFINjCZsCueNLx1Zel+yOfUZx7yYNK3DMxNv5Zi/bnP7
+        MZn95g0e7qr+A3GJ7x2Ent4zC/iUsujJFk7j/t9Tgy7eaKp9oBqovlE9Xb5BdVbX4UxHfrtq
+        QZlfe5Pdp7ca8q14W3h1c3395eaJHZGmOQffVckLGv/29UyQtffLfOpnUyWvJ7xFRPe+Ektx
+        RqKhFnNRcSIAc7kAlhoDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHLMWRmVeSWpSXmKPExsVy+t/xu7o2y47HGdw6ym2xccZ6Vosvc0+x
+        WMzcMIPFouPvF0aLy7vmsFl87j3CaDHj/D4mi7VH7rJbTL8rZPG59R+bxcoTs5gduD3e32hl
+        95jdcJHFo+XkfhaPvi2rGD1OnnrC4vF5k1wAW5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJ
+        pZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexpWT11kLnihVrJ90haWBcatsFyMnh4SAicS2u41M
+        XYxcHEICSxklXn7rZ4RIyEicnNbACmELS/y51sUGUfSJUeLGhU5mkASbgKFE11uQBCeHiECk
+        xOu9K8GKmAUuMEkcePwSrEhYIETiy8uL7CA2i4CqxKdfz5lAbF4BW4kv9+4wQ2yQl1i94QDz
+        BEaeBYwMqxhFUkuLc9Nzi430ihNzi0vz0vWS83M3MQLDdtuxn1t2MHa9Cz7EKMDBqMTD+yD5
+        WJwQa2JZcWXuIUYJDmYlEd6F/EfjhHhTEiurUovy44tKc1KLDzGaAi2fyCwlmpwPjKm8knhD
+        U0NzC0tDc2NzYzMLJXHeDoGDMUIC6YklqdmpqQWpRTB9TBycUg2MPRPX/litvKYn8V5u8NSJ
+        1aGexuaKDixSaxMXWhocquR0uewg/eUQe2zjk6uXnlzdN2Ebh/M8Ed7M07trPjA/ZU0J+/Iv
+        f1/98j0imSvX30i8wcwZnchj0apSryf1qqb8gysji6/2Np64O51tVZOkfQUNma/M91/Eeey3
+        QpDP8vdquc0W9xOUWIozEg21mIuKEwFeZN0KcQIAAA==
+X-CMS-MailID: 20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7
+References: <CGME20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 02:22:35PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, May 21, 2020 at 01:43:25PM +0200, Jiri Olsa escreveu:
-> > On Wed, May 20, 2020 at 11:20:04AM -0700, Ian Rogers wrote:
-> > 
-> > SNIP
-> > 
-> > > There are 5 out of 12 metric groups where no events are shared, such
-> > > as Power, however, disabling grouping of events always reduces the
-> > > number of events.
-> > > 
-> > > The result for Memory_BW needs explanation:
-> > > 
-> > > Metric group: Memory_BW
-> > >  - No merging (old default, now --metric-no-merge): 9
-> > >  - Merging over metrics (new default)             : 5
-> > >  - No event groups and merging (--metric-no-group): 11
-> > > 
-> > > Both with and without merging the groups fail to be set up and so the
-> > > event counts here are for broken metrics. The --metric-no-group number
-> > > is accurate as all the events are scheduled. Ideally a constraint
-> > > would be added for these metrics in the json code to avoid grouping.
-> > > 
-> > > v2. rebases on kernel/git/acme/linux.git branch tmp.perf/core, fixes a
-> > > missing comma with metric lists (reported-by Jiri Olsa
-> > > <jolsa@redhat.com>) and adds early returns to metricgroup__add_metric
-> > > (suggested-by Jiri Olsa).
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> 
-> Applied and pushed to tmp.perf/core, will move to perf/core as soon as
-> testing finishes,
+Commit 6fe12cdbcfe3 ("i2c: core: support bus regulator controlling in
+adapter") added generic suspend and resume functions for i2c devices.
+Those functions unconditionally access an i2c_client structure assigned
+to the given i2c device. However, there exist i2c devices in the system
+without a valid i2c_client. Add the needed check before accessing the
+i2c_client.
 
-I checked tmp.perf/core and I'm getting segfault for 'perf test expr'
+This fixes the following issue observed on Samsung Exynos4412-based
+Odroid U3 board:
 
-	 7: Simple expression parser                              :
-	Program received signal SIGSEGV, Segmentation fault.
-	0x000000000067841e in hashmap_find_entry (map=0x7fffffffd0c0, key=0xc83b30, hash=9893851511679796638, pprev=0x0, entry=0x7fffffffc658) at hashmap.c:131
-	131             for (prev_ptr = &map->buckets[hash], cur = *prev_ptr;
-	(gdb) bt
-	#0  0x000000000067841e in hashmap_find_entry (map=0x7fffffffd0c0, key=0xc83b30, hash=9893851511679796638, pprev=0x0, entry=0x7fffffffc658) at hashmap.c:131
-	#1  0x000000000067853a in hashmap__insert (map=0x7fffffffd0c0, key=0xc83b30, value=0x0, strategy=HASHMAP_SET, old_key=0x7fffffffc718, 
-	    old_value=0x7fffffffc710) at hashmap.c:160
-	#2  0x00000000005d3209 in hashmap__set (map=0x7fffffffd0c0, key=0xc83b30, value=0x0, old_key=0x7fffffffc718, old_value=0x7fffffffc710)
-	    at /home/jolsa/kernel/linux-perf/tools/perf/util/hashmap.h:107
-	#3  0x00000000005d3386 in expr__add_id (ctx=0x7fffffffd0c0, name=0xc83b30 "FOO", val=0) at util/expr.c:45
-	#4  0x00000000005d27ee in expr_parse (final_val=0x0, ctx=0x7fffffffd0c0, scanner=0xc87990) at util/expr.y:63
-	#5  0x00000000005d35b7 in __expr__parse (val=0x0, ctx=0x7fffffffd0c0, expr=0x75a84b "FOO + BAR + BAZ + BOZO", start=259, runtime=1) at util/expr.c:102
-	#6  0x00000000005d36c6 in expr__find_other (expr=0x75a84b "FOO + BAR + BAZ + BOZO", one=0x75a791 "FOO", ctx=0x7fffffffd0c0, runtime=1) at util/expr.c:121
-	#7  0x00000000004e3aaf in test__expr (t=0xa7bd40 <generic_tests+384>, subtest=-1) at tests/expr.c:55
-	#8  0x00000000004b5651 in run_test (test=0xa7bd40 <generic_tests+384>, subtest=-1) at tests/builtin-test.c:393
-	#9  0x00000000004b5787 in test_and_print (t=0xa7bd40 <generic_tests+384>, force_skip=false, subtest=-1) at tests/builtin-test.c:423
-	#10 0x00000000004b61c4 in __cmd_test (argc=1, argv=0x7fffffffd7f0, skiplist=0x0) at tests/builtin-test.c:628
-	#11 0x00000000004b6911 in cmd_test (argc=1, argv=0x7fffffffd7f0) at tests/builtin-test.c:772
-	#12 0x00000000004e977b in run_builtin (p=0xa7eee8 <commands+552>, argc=3, argv=0x7fffffffd7f0) at perf.c:312
-	#13 0x00000000004e99e8 in handle_internal_command (argc=3, argv=0x7fffffffd7f0) at perf.c:364
-	#14 0x00000000004e9b2f in run_argv (argcp=0x7fffffffd64c, argv=0x7fffffffd640) at perf.c:408
-	#15 0x00000000004e9efb in main (argc=3, argv=0x7fffffffd7f0) at perf.c:538
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000018
+pgd = 2aed198a
+[00000018] *pgd=00000000
+Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 1 PID: 1295 Comm: rtcwake Not tainted 5.7.0-rc6-02700-g4773d1324da6 #739
+Hardware name: Samsung Exynos (Flattened Device Tree)
+PC is at i2c_suspend_late+0x20/0x48
+LR is at dpm_run_callback+0xb4/0x3fc
+pc : [<c07b404c>]    lr : [<c064b7cc>]    psr: 20000053
+...
+Process rtcwake (pid: 1295, stack limit = 0x7f1885cf)
+Stack: (0xec8f3d70 to 0xec8f4000)
+...
+[<c07b404c>] (i2c_suspend_late) from [<c064b7cc>] (dpm_run_callback+0xb4/0x3fc)
+[<c064b7cc>] (dpm_run_callback) from [<c064ce04>] (__device_suspend_late+0xcc/0x16c)
+[<c064ce04>] (__device_suspend_late) from [<c064f0b0>] (dpm_suspend_late+0x10c/0x568)
+[<c064f0b0>] (dpm_suspend_late) from [<c01996f0>] (suspend_devices_and_enter+0x31c/0xc70)
+[<c01996f0>] (suspend_devices_and_enter) from [<c019a43c>] (pm_suspend+0x3f8/0x480)
+[<c019a43c>] (pm_suspend) from [<c0198174>] (state_store+0x6c/0xc8)
+[<c0198174>] (state_store) from [<c035cf4c>] (kernfs_fop_write+0x10c/0x228)
+[<c035cf4c>] (kernfs_fop_write) from [<c02b94a4>] (__vfs_write+0x30/0x1d0)
+[<c02b94a4>] (__vfs_write) from [<c02bc444>] (vfs_write+0xa4/0x170)
+[<c02bc444>] (vfs_write) from [<c02bc690>] (ksys_write+0x60/0xd8)
+[<c02bc690>] (ksys_write) from [<c0100060>] (ret_fast_syscall+0x0/0x28)
+Exception stack(0xec8f3fa8 to 0xec8f3ff0)
+...
+---[ end trace a43afef431782f37 ]---
 
-attached patch fixes it for me, but I'm not sure this
-should be necessary
-
-jirka
-
-
+Fixes: 6fe12cdbcfe3 ("i2c: core: support bus regulator controlling in adapter")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
-diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index 1cb02ca2b15f..21693fe516c1 100644
---- a/tools/perf/tests/expr.c
-+++ b/tools/perf/tests/expr.c
-@@ -52,6 +52,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 	TEST_ASSERT_VAL("missing operand", ret == -1);
- 
- 	expr__ctx_clear(&ctx);
-+	expr__ctx_init(&ctx);
- 	TEST_ASSERT_VAL("find other",
- 			expr__find_other("FOO + BAR + BAZ + BOZO", "FOO",
- 					 &ctx, 1) == 0);
-@@ -64,6 +65,7 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 						    (void **)&val_ptr));
- 
- 	expr__ctx_clear(&ctx);
-+	expr__ctx_init(&ctx);
- 	TEST_ASSERT_VAL("find other",
- 			expr__find_other("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
- 					 NULL, &ctx, 3) == 0);
+This fixes suspend/resume issue observed on various board with linux-next
+from 20200521.
+---
+ drivers/i2c/i2c-core-base.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 5be24bf8a194..b531f5ad06b2 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -454,11 +454,13 @@ static int i2c_device_remove(struct device *dev)
+ static int i2c_resume_early(struct device *dev)
+ {
+ 	struct i2c_client *client = i2c_verify_client(dev);
+-	struct i2c_adapter *adap = client->adapter;
+ 	int err;
+ 
++	if (!client)
++		return 0;
++
+ 	if (!pm_runtime_status_suspended(&client->dev)) {
+-		err = regulator_enable(adap->bus_regulator);
++		err = regulator_enable(client->adapter->bus_regulator);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -469,15 +471,17 @@ static int i2c_resume_early(struct device *dev)
+ static int i2c_suspend_late(struct device *dev)
+ {
+ 	struct i2c_client *client = i2c_verify_client(dev);
+-	struct i2c_adapter *adap = client->adapter;
+ 	int err;
+ 
++	if (!client)
++		return 0;
++
+ 	err = pm_generic_suspend_late(&client->dev);
+ 	if (err)
+ 		return err;
+ 
+ 	if (!pm_runtime_status_suspended(&client->dev))
+-		return regulator_disable(adap->bus_regulator);
++		return regulator_disable(client->adapter->bus_regulator);
+ 
+ 	return 0;
+ }
+@@ -487,10 +491,12 @@ static int i2c_suspend_late(struct device *dev)
+ static int i2c_runtime_resume(struct device *dev)
+ {
+ 	struct i2c_client *client = i2c_verify_client(dev);
+-	struct i2c_adapter *adap = client->adapter;
+ 	int err;
+ 
+-	err = regulator_enable(adap->bus_regulator);
++	if (!client)
++		return 0;
++
++	err = regulator_enable(client->adapter->bus_regulator);
+ 	if (err)
+ 		return err;
+ 
+@@ -500,14 +506,16 @@ static int i2c_runtime_resume(struct device *dev)
+ static int i2c_runtime_suspend(struct device *dev)
+ {
+ 	struct i2c_client *client = i2c_verify_client(dev);
+-	struct i2c_adapter *adap = client->adapter;
+ 	int err;
+ 
++	if (!client)
++		return 0;
++
+ 	err = pm_generic_runtime_suspend(&client->dev);
+ 	if (err)
+ 		return err;
+ 
+-	return regulator_disable(adap->bus_regulator);
++	return regulator_disable(client->adapter->bus_regulator);
+ }
+ #endif
+ 
+-- 
+2.17.1
 
