@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1759D1DEDAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76471DEDB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730745AbgEVQvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 12:51:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51736 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730487AbgEVQvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 12:51:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9E6B6ABE3;
-        Fri, 22 May 2020 16:51:24 +0000 (UTC)
-Date:   Fri, 22 May 2020 18:51:20 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Benson Leung <bleung@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 2/6] printk: honor the max_reason field in kmsg_dumper
-Message-ID: <20200522165120.GL3464@linux-b0ei>
-References: <20200515184434.8470-1-keescook@chromium.org>
- <20200515184434.8470-3-keescook@chromium.org>
+        id S1730679AbgEVQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 12:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730306AbgEVQyP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 12:54:15 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93F2C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:54:13 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u1so9257116wmn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=D41fWNXM4E76M8otqHIMLX5Q3+yBUTACTvwrcVZCAHI=;
+        b=RCmMVi9Dz1XooKApIlmF1/8QpJLXFt3vqBRHE/xJ1+/s2cZoiFtvpRnyTQr+QZ1J+J
+         sslyEgIpgGpjhaf/POsxjPOa8ei054v1mVkZfJ034n3zpg3kejPKw6y4Qf/sD+sgQrhQ
+         oYw5SHFNTvGu/qnstCoHrCChbfIFsour/n1ea68GTuMX0pEZteNP1PJ3Qtn5Vp23Rgfg
+         Ij7VM+y0GKXM+uGgP60c6jU7xBGlbfMVbRlrNMFMB1cWxHmwuqB7i1/FxMbJjlfIoWPQ
+         UocIw6nMYeMb11YIIz2wLh/lQjZK5+Kb2EShXKAyo/RUEcpnLmdujqwj3Vq+p1b42Dxt
+         1yiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=D41fWNXM4E76M8otqHIMLX5Q3+yBUTACTvwrcVZCAHI=;
+        b=JVoyUIoUC+YRe259qCTQP3v8jU/sV1HGvCFxOn5iZv1+1/usNrlwCNpDkR86HbTpN+
+         s/WXrLKEKTNNH2OxnJV/mT+5cuMM4YeaT8YVDwhKguHQeFme3hnSF1DGdLNZd7g0DXWa
+         Mkj5vnLWXYnaI7/RMr8GtYsJG6ZzGtBk74212Nvl0fLssnNnvfbt+xGWQTK5RcRnETFy
+         844TOk/5TqZedDTDOs9Yilfb2mc/U8+ItIxlv1cQHqTeLHq62pPDLjclJ9ldzLXd8cTI
+         7SC/kLQnxmxELjn3EzWF0quLCyuxzFfkPu6loT9YjLbU+vymxrC+WAsDjfLw3SFZ9n1c
+         b3FA==
+X-Gm-Message-State: AOAM532cMP879rZTypWpeUmdEUY7CN5XhPtb7/T9rcG4EzHCbIytfY0p
+        Qgy2jGSRdns/r7u4LvA4X7Mipg==
+X-Google-Smtp-Source: ABdhPJyLfvpzWF8i9mPj++40s7RpjPi9tUhZKsxcKcAaVR76luGftMkDcwTSHTC4eWCULe3ztCEQ/Q==
+X-Received: by 2002:a1c:2b46:: with SMTP id r67mr14881888wmr.160.1590166452302;
+        Fri, 22 May 2020 09:54:12 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a82f:eaec:3c49:875a? ([2a01:e34:ed2f:f020:a82f:eaec:3c49:875a])
+        by smtp.googlemail.com with ESMTPSA id z10sm9985907wmi.2.2020.05.22.09.54.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 09:54:11 -0700 (PDT)
+Subject: Re: [PATCH] drivers: thermal: tsens: Merge tsens-common.c into
+ tsens.c
+To:     Amit Kucheria <amit.kucheria@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        bjorn.andersson@linaro.org, Andy Gross <agross@kernel.org>
+Cc:     Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-pm@vger.kernel.org
+References: <e30e2ba6fa5c007983afd4d7d4e0311c0b57917a.1588183879.git.amit.kucheria@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <4e0660a7-4603-ca85-3c16-703f7343b7e3@linaro.org>
+Date:   Fri, 22 May 2020 18:54:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515184434.8470-3-keescook@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e30e2ba6fa5c007983afd4d7d4e0311c0b57917a.1588183879.git.amit.kucheria@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-05-15 11:44:30, Kees Cook wrote:
-> From: Pavel Tatashin <pasha.tatashin@soleen.com>
+On 29/04/2020 20:14, Amit Kucheria wrote:
+> tsens-common.c has outlived its usefuless. It was created expecting lots
+> of custom routines per version of the TSENS IP. We haven't needed those,
+> there is now only data in the version-specific files.
 > 
-> kmsg_dump() allows to dump kmesg buffer for various system events: oops,
-> panic, reboot, etc. It provides an interface to register a callback call
-> for clients, and in that callback interface there is a field "max_reason"
-> which gets ignored unless always_kmsg_dump is passed as kernel parameter.
+> Merge the code for tsens-common.c into tsens.c. As a result,
+> - Remove any unnecessary forward declarations in tsens.h.
+> - Add a Linaro copyright to tsens.c.
+> - Fixup the Makefile to remove tsens-common.c.
+> - Where it made sense, fix some 80-column alignments in the
+>   tsens-common.c code being copied over.
+> 
+> There is no functional change with this patch.
+> 
+> Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
+Applied, thanks
 
-Strictly speaking, this is not fully true. "max_reason" field is not
-ignored when set to KMSG_DUMP_PANIC even when always_kmsg_dump was not set.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-It should be something like:
-
-"which gets ignored for reason higher than KMSG_DUMP_OOPS unless
-always_kmsg_dump is passed as kernel parameter".
-
-Heh, I wonder if anyone will be able to parse this ;-)
-
-
-Otherwise, it looks good to me. With the updated commit message:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
