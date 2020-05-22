@@ -2,152 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA631DE7F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACDB1DE80F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbgEVNZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 09:25:09 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:14382 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729399AbgEVNZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 09:25:09 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Fri, 22 May 2020 21:23:59
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.77.158]
-Date:   Fri, 22 May 2020 21:23:59 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Steven Price" <steven.price@arm.com>
-Cc:     kjlu@umn.edu, "Rob Herring" <robh@kernel.org>,
-        "Tomeu Vizoso" <tomeu.vizoso@collabora.com>,
-        "Alyssa Rosenzweig" <alyssa.rosenzweig@collabora.com>,
-        "David Airlie" <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] drm/panfrost: fix runtime pm imbalance on error
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <272650ba-2c44-9084-7829-b04023eba723@arm.com>
-References: <20200520110504.24388-1-dinghao.liu@zju.edu.cn>
- <73a1dc37-f862-f908-4c9f-64e256283857@arm.com>
- <1986c141.ba6f5.172360851d6.Coremail.dinghao.liu@zju.edu.cn>
- <272650ba-2c44-9084-7829-b04023eba723@arm.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1729855AbgEVNba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 09:31:30 -0400
+Received: from 4.mo177.mail-out.ovh.net ([46.105.37.72]:34282 "EHLO
+        4.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729367AbgEVNba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 09:31:30 -0400
+X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 May 2020 09:31:27 EDT
+Received: from player756.ha.ovh.net (unknown [10.110.115.182])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id B92A612FE56
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:24:26 +0200 (CEST)
+Received: from 3mdeb.com (85-222-117-222.dynamic.chello.pl [85.222.117.222])
+        (Authenticated sender: krystian.hebel@3mdeb.com)
+        by player756.ha.ovh.net (Postfix) with ESMTPSA id 8ADB811C7B1D3;
+        Fri, 22 May 2020 13:24:02 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-97G002d4487a8e-2fca-4765-9259-b8e2fabc2189,FCEDB92AD14E9058E5246D4C75F3ACF5DAAC6A74) smtp.auth=krystian.hebel@3mdeb.com
+Subject: Re: [GRUB PATCH RFC 15/18] i386/txt: Add Intel TXT core
+ implementation
+To:     Daniel Kiper <daniel.kiper@oracle.com>, grub-devel@gnu.org,
+        linux-kernel@vger.kernel.org, trenchboot-devel@googlegroups.com,
+        x86@kernel.org
+Cc:     alexander.burmashev@oracle.com, andrew.cooper3@citrix.com,
+        ard.biesheuvel@linaro.org, dpsmith@apertussolutions.com,
+        eric.snowberg@oracle.com, javierm@redhat.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        lukasz.hawrylko@linux.intel.com, michal.zygowski@3mdeb.com,
+        mjg59@google.com, phcoder@gmail.com, pirot.krol@3mdeb.com,
+        pjones@redhat.com, ross.philipson@oracle.com
+References: <20200504232132.23570-1-daniel.kiper@oracle.com>
+ <20200504232132.23570-16-daniel.kiper@oracle.com>
+From:   Krystian Hebel <krystian.hebel@3mdeb.com>
+Message-ID: <7056a782-714a-c3e9-7c5b-9659c67e9949@3mdeb.com>
+Date:   Fri, 22 May 2020 15:24:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Message-ID: <5f12c70e.c0426.1723c8e0549.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgBHf3hv0sdeTYkDAg--.39818W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgIIBlZdtOQq2QAGsg
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbXCS07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
-        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
-        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
-        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWxJVW8Jr1lV2xY6cvjeVCFs4IE7xkEbVWU
-        JVW8JwCS07vE7I0Y64k_MIAIbVCY02Avz4vE14v_Xr4lV2xY6xkI7II2jI8vz4vEwIxGrw
-        CS07vE42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMIAIbVCF72vE77IF4wCS07vE4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lV2xY6I8I3I0E5I8CrVAFwI0_Jr0_Jr4lV2xY6I8I3I0E7480Y4
-        vE14v26r106r1rMIAIbVC2zVAF1VAY17CE14v26r1q6r43MIAIbVCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIAIbVCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lV2xY6IIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIAIbVCI42IY6I8E87Iv67AKxVW8JVWxJwCS07vEIxAI
-        cVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU=
+In-Reply-To: <20200504232132.23570-16-daniel.kiper@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Ovh-Tracer-Id: 15170938297460448174
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedruddufedgieefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepmfhrhihsthhirghnucfjvggsvghluceokhhrhihsthhirghnrdhhvggsvghlseefmhguvggsrdgtohhmqeenucggtffrrghtthgvrhhnpedvieeuhfegvdfhhfeiveeltdelieeuteeljeffteefgeeuleefhfdvudegleelueenucffohhmrghinhepfehmuggvsgdrtghomhenucfkpheptddrtddrtddrtddpkeehrddvvddvrdduudejrddvvddvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehiedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehkrhihshhtihgrnhdrhhgvsggvlhesfehmuggvsgdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ClRoYW5rIHlvdSBmb3IgeW91ciBmdXJ0aGVyIGV4cGxhbmF0aW9uISBJdCdzIGFsbCBjbGVhciBm
-b3IgbWUgYW5kIEkgCndpbGwgd3JpdGUgYSBuZXcgcGF0Y2ggdG8gZml4IHRoaXMgaW1iYWxhbmNl
-LgoKUmVnYXJkcywKRGluZ2hhbwo+IE9uIDIxLzA1LzIwMjAgMDg6MDAsIGRpbmdoYW8ubGl1QHpq
-dS5lZHUuY24gd3JvdGU6Cj4gPiBIaSBTdGV2ZSwKPiA+IAo+ID4gVGhlcmUgYXJlIHR3byBiYWls
-aW5nIG91dCBwb2ludHMgaW4gcGFuZnJvc3Rfam9iX2h3X3N1Ym1pdCgpOiBvbmUgaXMKPiA+IHRo
-ZSBlcnJvciBwYXRoIGJlZ2lubmluZyBmcm9tIHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSwgdGhlIG90
-aGVyIG9uZSBpcwo+ID4gdGhlIGVycm9yIHBhdGggYmVnaW5uaW5nIGZyb20gV0FSTl9PTigpIGlu
-IHRoZSBpZiBzdGF0ZW1lbnQuIFRoZSBwbQo+ID4gaW1iYWxhbmNlIGZpeGVkIGluIHRoaXMgcGF0
-Y2ggaXMgYmV0d2VlbiB0aGVzZSB0d28gcGF0aHMuIEkgdGhpbmsgdGhlCj4gPiBjYWxsZXIgb2Yg
-cGFuZnJvc3Rfam9iX2h3X3N1Ym1pdCgpIGNhbm5vdCBkaXN0aW5ndWlzaCB0aGlzIGltYmFsYW5j
-ZQo+ID4gb3V0c2lkZSB0aGlzIGZ1bmN0aW9uLgo+IAo+IE15IHBvaW50IGlzIHRoZSBjYWxsZXIg
-ZXhwZWN0cyBwYW5mcm9zdF9qb2JfaHdfc3VibWl0KCkgdG8gaW5jcmVhc2UgdGhlIAo+IFBNIHJl
-ZmVyZW5jZSBjb3VudC4gU2luY2UgcGFuZnJvc3Rfam9iX2h3X3N1Ym1pdCgpIGNhbm5vdCByZXR1
-cm4gYW4gCj4gZXJyb3IgKGl0J3Mgdm9pZCByZXR1cm4pIHdlIGNhbm5vdCBzaWduYWwgdG8gdGhl
-IGNhbGxlciB0aGF0IHRoZSAKPiByZWZlcmVuY2UgaGFzbid0IGJlZW4gdGFrZW4uCj4gCj4gPiBw
-YW5mcm9zdF9qb2JfdGltZWRvdXQoKSBjYWxscyBwbV9ydW50aW1lX3B1dF9ub2lkbGUoKSBmb3Ig
-ZXZlcnkgam9iIGl0Cj4gPiBmaW5kcywgYnV0IGFsbCBqb2JzIGFyZSBhZGRlZCB0byB0aGUgcGZk
-ZXYtPmpvYnMganVzdCBiZWZvcmUgY2FsbGluZwo+ID4gcGFuZnJvc3Rfam9iX2h3X3N1Ym1pdCgp
-LiBUaGVyZWZvcmUgSSB0aGluayB0aGUgaW1iYWxhbmNlIHN0aWxsIGV4aXN0cy4KPiAKPiBNeSBw
-b2ludCdzIGV4YWN0bHkgdGhhdCAtIHRoZSAiam9icyBhcmUgYWRkZWQgdG8gcGZkZXYtPmpvYnMg
-anVzdCBiZWZvcmUgCj4gY2FsbGluZyBwYW5mcm9zdF9qb2JfaHdfc3VibWl0KCkiLiBTaW5jZSB3
-ZSBkb24ndCBoYXZlIGEgd2F5IGZvciAKPiBwYW5mcm9zdF9qb2JfaHdfc3VibWl0KCkgdG8gZmFp
-bCBpdCBtdXN0IHVuY29uZGl0aW9uYWxseSB0YWtlIGFueSAKPiByZWZlcmVuY2VzIHRoYXQgd2ls
-bCB0aGVuIGJlIGZyZWVkIGxhdGVyIG9uLgo+IAo+ID4gQnV0IEknbSBub3QgdmVyeSBzdXJlIGlm
-IHdlIHNob3VsZCBhZGQgcG1fcnVudGltZV9wdXQgb24gdGhlIGVycm9yIHBhdGgKPiA+IGFmdGVy
-IHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSwgb3IgcmVtb3ZlIHBtX3J1bnRpbWVfcHV0IG9uZSB0aGUg
-ZXJyb3IgcGF0aAo+ID4gYWZ0ZXIgV0FSTl9PTigpLgo+IAo+IFRoZSBwbV9ydW50aW1lX3B1dCBh
-ZnRlciB0aGUgV0FSTl9PTigpIGlzIGEgYnVnLiBTb3JyeSB0aGlzIGlzIHByb2JhYmx5IAo+IHdo
-YXQgY29uZnVzZWQgeW91IC0gY2xlYXJseSB0aGUgV0FSTl9PTigpIHNpdHVhdGlvbiBpcyBuZXZl
-ciBtZWFudCB0byAKPiBoYXBwZW4gaW4gdGhlIGZpcnN0IHBsYWNlLCBzbyBob3BlZnVsbHkgdGhp
-cyBpc24ndCBhY3R1YWxseSBwb3NzaWJsZS4KPiAKPiBGZWVsIGZyZWUgdG8gc2VuZCBhIHBhdGNo
-IHJlbW92aW5nIGl0ISA7KQo+IAo+ID4gQXMgZm9yIHRoZSBwcm9ibGVtIGFib3V0IHBhbmZyb3N0
-X2RldmZyZXFfcmVjb3JkX2J1c3koKSwgdGhpcyBtYXkgYmUgYQo+ID4gbmV3IGJ1ZyBhbmQgcmVx
-dWlyZXMgaW5kZXBlbmRlbnQgcGF0Y2ggdG8gZml4IGl0Lgo+IAo+IEluZGVlZCwgSSdsbCBwb3N0
-IGEgcHJvcGVyIHBhdGNoIGZvciB0aGF0IGxhdGVyIC0gSSBqdXN0IHNwb3R0ZWQgaXQgCj4gd2hp
-bGUgbG9va2luZyBhdCB0aGUgY29kZS4KPiAKPiBUaGFua3MsCj4gCj4gU3RldmUKPiAKPiA+IFJl
-Z2FyZHMsCj4gPiBEaW5naGFvCj4gPiAKPiA+IAo+ID4+IE9uIDIwLzA1LzIwMjAgMTI6MDUsIERp
-bmdoYW8gTGl1IHdyb3RlOgo+ID4+PiBwbV9ydW50aW1lX2dldF9zeW5jKCkgaW5jcmVtZW50cyB0
-aGUgcnVudGltZSBQTSB1c2FnZSBjb3VudGVyIGV2ZW4KPiA+Pj4gdGhlIGNhbGwgcmV0dXJucyBh
-biBlcnJvciBjb2RlLiBUaHVzIGEgcGFpcmluZyBkZWNyZW1lbnQgaXMgbmVlZGVkCj4gPj4+IG9u
-IHRoZSBlcnJvciBoYW5kbGluZyBwYXRoIHRvIGtlZXAgdGhlIGNvdW50ZXIgYmFsYW5jZWQuCj4g
-Pj4+Cj4gPj4+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1
-LmNuPgo+ID4+Cj4gPj4gQWN0dWFsbHkgSSB0aGluayB3ZSBoYXZlIHRoZSBvcHBvc2l0ZSBwcm9i
-bGVtLiBUbyBiZSBob25lc3Qgd2UgZG9uJ3QKPiA+PiBoYW5kbGUgdGhpcyBzaXR1YXRpb24gdmVy
-eSB3ZWxsLiBCeSB0aGUgdGltZSBwYW5mcm9zdF9qb2JfaHdfc3VibWl0KCkgaXMKPiA+PiBjYWxs
-ZWQgdGhlIGpvYiBoYXMgYWxyZWFkeSBiZWVuIGFkZGVkIHRvIHRoZSBwZmRldi0+am9icyBhcnJh
-eSwgc28gaXQncwo+ID4+IGNvbnNpZGVyZWQgc3VibWl0dGVkIGV2ZW4gaWYgaXQgbmV2ZXIgYWN0
-dWFsbHkgbGFuZHMgb24gdGhlIGhhcmR3YXJlLiBTbwo+ID4+IGluIHRoZSBjYXNlIG9mIHRoaXMg
-ZnVuY3Rpb24gYmFpbGluZyBvdXQgZWFybHkgd2Ugd2lsbCB0aGVuIChldmVudHVhbGx5KQo+ID4+
-IGhpdCBhIHRpbWVvdXQgYW5kIHRyaWdnZXIgYSBHUFUgcmVzZXQuCj4gPj4KPiA+PiBwYW5mcm9z
-dF9qb2JfdGltZWRvdXQoKSBpdGVyYXRlcyB0aHJvdWdoIHRoZSBwZmRldi0+am9icyBhcnJheSBh
-bmQgY2FsbHMKPiA+PiBwbV9ydW50aW1lX3B1dF9ub2lkbGUoKSBmb3IgZWFjaCBqb2IgaXQgZmlu
-ZHMuIFNvIHRoZXJlJ3Mgbm8gaW5iYWxhbmNlCj4gPj4gaGVyZSB0aGF0IEkgY2FuIHNlZS4KPiA+
-Pgo+ID4+IEhhdmUgeW91IGFjdHVhbGx5IG9ic2VydmVkIHRoZSBzaXR1YXRpb24gd2hlcmUgcG1f
-cnVudGltZV9nZXRfc3luYygpCj4gPj4gcmV0dXJucyBhIGZhaWx1cmU/Cj4gPj4KPiA+PiBIT1dF
-VkVSLCBpdCBhcHBlYXJzIHRoYXQgYnkgYmFpbGluZyBvdXQgZWFybHkgdGhlIGNhbGwgdG8KPiA+
-PiBwYW5mcm9zdF9kZXZmcmVxX3JlY29yZF9idXN5KCkgaXMgbmV2ZXIgbWFkZSwgd2hpY2ggYXMg
-ZmFyIGFzIEkgY2FuIHNlZQo+ID4+IG1lYW5zIHRoYXQgdGhlcmUgbWF5IGJlIGFuIGV4dHJhIGNh
-bGwgdG8gcGFuZnJvc3RfZGV2ZnJlcV9yZWNvcmRfaWRsZSgpCj4gPj4gd2hlbiB0aGUgam9icyBo
-YXZlIHRpbWVkIG91dC4gV2hpY2ggY291bGQgdW5kZXJmbG93IHRoZSBjb3VudGVyLgo+ID4+Cj4g
-Pj4gQnV0IGVxdWFsbHkgbG9va2luZyBhdCBwYW5mcm9zdF9qb2JfdGltZWRvdXQoKSwgd2Ugb25s
-eSBjYWxsCj4gPj4gcGFuZnJvc3RfZGV2ZnJlcV9yZWNvcmRfaWRsZSgpICpvbmNlKiBldmVuIHRo
-b3VnaCBtdWx0aXBsZSBqb2JzIG1pZ2h0IGJlCj4gPj4gcHJvY2Vzc2VkLgo+ID4+Cj4gPj4gVGhl
-cmUncyBhIGNvbXBsZXRlbHkgdW50ZXN0ZWQgcGF0Y2ggYmVsb3cgd2hpY2ggaW4gdGhlb3J5IHNo
-b3VsZCBmaXggdGhhdC4uLgo+ID4+Cj4gPj4gU3RldmUKPiA+Pgo+ID4+IC0tLS04PC0tLQo+ID4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcGFuZnJvc3QvcGFuZnJvc3Rfam9iLmMKPiA+
-PiBiL2RyaXZlcnMvZ3B1L2RybS9wYW5mcm9zdC9wYW5mcm9zdF9qb2IuYwo+ID4+IGluZGV4IDc5
-MTRiMTU3MDg0MS4uZjk1MTlhZmNhMjlkIDEwMDY0NAo+ID4+IC0tLSBhL2RyaXZlcnMvZ3B1L2Ry
-bS9wYW5mcm9zdC9wYW5mcm9zdF9qb2IuYwo+ID4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9wYW5m
-cm9zdC9wYW5mcm9zdF9qb2IuYwo+ID4+IEBAIC0xNDUsNiArMTQ1LDggQEAgc3RhdGljIHZvaWQg
-cGFuZnJvc3Rfam9iX2h3X3N1Ym1pdChzdHJ1Y3QKPiA+PiBwYW5mcm9zdF9qb2IgKmpvYiwgaW50
-IGpzKQo+ID4+ICAgIAl1NjQgamNfaGVhZCA9IGpvYi0+amM7Cj4gPj4gICAgCWludCByZXQ7Cj4g
-Pj4KPiA+PiArCXBhbmZyb3N0X2RldmZyZXFfcmVjb3JkX2J1c3kocGZkZXYpOwo+ID4+ICsKPiA+
-PiAgICAJcmV0ID0gcG1fcnVudGltZV9nZXRfc3luYyhwZmRldi0+ZGV2KTsKPiA+PiAgICAJaWYg
-KHJldCA8IDApCj4gPj4gICAgCQlyZXR1cm47Cj4gPj4gQEAgLTE1NSw3ICsxNTcsNiBAQCBzdGF0
-aWMgdm9pZCBwYW5mcm9zdF9qb2JfaHdfc3VibWl0KHN0cnVjdAo+ID4+IHBhbmZyb3N0X2pvYiAq
-am9iLCBpbnQganMpCj4gPj4gICAgCX0KPiA+Pgo+ID4+ICAgIAljZmcgPSBwYW5mcm9zdF9tbXVf
-YXNfZ2V0KHBmZGV2LCAmam9iLT5maWxlX3ByaXYtPm1tdSk7Cj4gPj4gLQlwYW5mcm9zdF9kZXZm
-cmVxX3JlY29yZF9idXN5KHBmZGV2KTsKPiA+Pgo+ID4+ICAgIAlqb2Jfd3JpdGUocGZkZXYsIEpT
-X0hFQURfTkVYVF9MTyhqcyksIGpjX2hlYWQgJiAweEZGRkZGRkZGKTsKPiA+PiAgICAJam9iX3dy
-aXRlKHBmZGV2LCBKU19IRUFEX05FWFRfSEkoanMpLCBqY19oZWFkID4+IDMyKTsKPiA+PiBAQCAt
-NDEwLDEyICs0MTEsMTIgQEAgc3RhdGljIHZvaWQgcGFuZnJvc3Rfam9iX3RpbWVkb3V0KHN0cnVj
-dAo+ID4+IGRybV9zY2hlZF9qb2IgKnNjaGVkX2pvYikKPiA+PiAgICAJZm9yIChpID0gMDsgaSA8
-IE5VTV9KT0JfU0xPVFM7IGkrKykgewo+ID4+ICAgIAkJaWYgKHBmZGV2LT5qb2JzW2ldKSB7Cj4g
-Pj4gICAgCQkJcG1fcnVudGltZV9wdXRfbm9pZGxlKHBmZGV2LT5kZXYpOwo+ID4+ICsJCQlwYW5m
-cm9zdF9kZXZmcmVxX3JlY29yZF9pZGxlKHBmZGV2KTsKPiA+PiAgICAJCQlwZmRldi0+am9ic1tp
-XSA9IE5VTEw7Cj4gPj4gICAgCQl9Cj4gPj4gICAgCX0KPiA+PiAgICAJc3Bpbl91bmxvY2tfaXJx
-cmVzdG9yZSgmcGZkZXYtPmpzLT5qb2JfbG9jaywgZmxhZ3MpOwo+ID4+Cj4gPj4gLQlwYW5mcm9z
-dF9kZXZmcmVxX3JlY29yZF9pZGxlKHBmZGV2KTsKPiA+PiAgICAJcGFuZnJvc3RfZGV2aWNlX3Jl
-c2V0KHBmZGV2KTsKPiA+Pgo+ID4+ICAgIAlmb3IgKGkgPSAwOyBpIDwgTlVNX0pPQl9TTE9UUzsg
-aSsrKQo=
+
+On 05.05.2020 01:21, Daniel Kiper wrote:
+> +static grub_err_t
+> +init_txt_heap (struct grub_slaunch_params *slparams, struct grub_txt_acm_header *sinit)
+> +{
+> +  grub_uint8_t *txt_heap;
+> +  grub_uint32_t os_sinit_data_ver, sinit_caps;
+> +  grub_uint64_t *size;
+> +  struct grub_txt_os_mle_data *os_mle_data;
+> +  struct grub_txt_os_sinit_data *os_sinit_data;
+> +  struct grub_txt_heap_end_element *heap_end_element;
+> +  struct grub_txt_heap_event_log_pointer2_1_element *heap_event_log_pointer2_1_element;
+> +#ifdef GRUB_MACHINE_EFI
+> +  struct grub_acpi_rsdp_v20 *rsdp;
+> +#endif
+> +
+> +  /* BIOS data already verified in grub_txt_verify_platform(). */
+> +
+> +  txt_heap = grub_txt_get_heap ();
+> +
+> +  /* OS/loader to MLE data. */
+> +
+> +  os_mle_data = grub_txt_os_mle_data_start (txt_heap);
+> +  size = (grub_uint64_t *) ((grub_addr_t) os_mle_data - sizeof (grub_uint64_t));
+There is 'grub_txt_os_mle_data_size()' in previous patch, it would look 
+better.
+> +  *size = sizeof (*os_mle_data) + sizeof (grub_uint64_t);
+> +
+> +  grub_memset (os_mle_data, 0, sizeof (*os_mle_data));
+> +
+> +  os_mle_data->version = GRUB_SL_OS_MLE_STRUCT_VERSION;
+> +  os_mle_data->zero_page_addr = (grub_uint32_t)(grub_addr_t) slparams->params;
+> +  os_mle_data->saved_misc_enable_msr = grub_rdmsr (GRUB_MSR_X86_MISC_ENABLE);
+> +
+> +  os_mle_data->ap_wake_block = slparams->ap_wake_block;
+> +
+> +  save_mtrrs (os_mle_data);
+> +
+> +  /* OS/loader to SINIT data. */
+> +
+> +  os_sinit_data_ver = grub_txt_supported_os_sinit_data_ver (sinit);
+> +
+> +  if (os_sinit_data_ver < OS_SINIT_DATA_MIN_VER)
+> +    return grub_error (GRUB_ERR_BAD_DEVICE,
+> +		       N_("unsupported OS to SINIT data version in SINIT ACM: %d"
+> +		       " expected >= %d"), os_sinit_data_ver, OS_SINIT_DATA_MIN_VER);
+> +
+> +  os_sinit_data = grub_txt_os_sinit_data_start (txt_heap);
+> +  size = (grub_uint64_t *) ((grub_addr_t) os_sinit_data - sizeof (grub_uint64_t));
+Ditto
+> +
+> +  *size = sizeof(grub_uint64_t) + sizeof (struct grub_txt_os_sinit_data) +
+> +	  sizeof (struct grub_txt_heap_end_element);
+> +
+> +  if (grub_get_tpm_ver () == GRUB_TPM_12)
+> +    *size += sizeof (struct grub_txt_heap_tpm_event_log_element);
+> +  else if (grub_get_tpm_ver () == GRUB_TPM_20)
+> +    *size += sizeof (struct grub_txt_heap_event_log_pointer2_1_element);
+> +  else
+> +    return grub_error (GRUB_ERR_BAD_DEVICE, N_("unsupported TPM version"));
+> +
+> +  grub_memset (os_sinit_data, 0, *size);
+> +
+> +#ifdef GRUB_MACHINE_EFI
+> +  rsdp = grub_acpi_get_rsdpv2 ();
+> +
+> +  if (rsdp == NULL)
+> +    return grub_printf ("WARNING: ACPI RSDP 2.0 missing\n");
+> +
+> +  os_sinit_data->efi_rsdt_ptr = (grub_uint64_t)(grub_addr_t) rsdp;
+> +#endif
+> +
+> +  os_sinit_data->mle_ptab = slparams->mle_ptab_target;
+> +  os_sinit_data->mle_size = slparams->mle_size;
+> +
+> +  os_sinit_data->mle_hdr_base = slparams->mle_header_offset;
+> +
+> +  /* TODO: Check low PMR with RMRR. Look at relevant tboot code too. */
+> +  /* TODO: Kernel should not allocate any memory outside of PMRs regions!!! */
+> +  os_sinit_data->vtd_pmr_lo_base = 0;
+> +  os_sinit_data->vtd_pmr_lo_size = ALIGN_DOWN (grub_mmap_get_highest (0x100000000),
+> +					       GRUB_TXT_PMR_ALIGN);
+> +
+> +  os_sinit_data->vtd_pmr_hi_base = ALIGN_UP (grub_mmap_get_lowest (0x100000000),
+> +					     GRUB_TXT_PMR_ALIGN);
+> +  os_sinit_data->vtd_pmr_hi_size = ALIGN_DOWN (grub_mmap_get_highest (0xffffffffffffffff),
+> +					       GRUB_TXT_PMR_ALIGN);
+> +  os_sinit_data->vtd_pmr_hi_size -= os_sinit_data->vtd_pmr_hi_base;
+Could it be done with just one PMR, from 0 to top of memory, or would 
+TXT complain?
+> +
+> +  grub_dprintf ("slaunch",
+> +		"vtd_pmr_lo_base: 0x%" PRIxGRUB_UINT64_T " vtd_pmr_lo_size: 0x%"
+> +		PRIxGRUB_UINT64_T " vtd_pmr_hi_base: 0x%" PRIxGRUB_UINT64_T
+> +		" vtd_pmr_hi_size: 0x%" PRIxGRUB_UINT64_T "\n",
+> +		os_sinit_data->vtd_pmr_lo_base, os_sinit_data->vtd_pmr_lo_size,
+> +		os_sinit_data->vtd_pmr_hi_base, os_sinit_data->vtd_pmr_hi_size);
+> +
+>
+> <snip>
+>
+> +/*
+> + * The MLE page tables have to be below the MLE and have no special regions in
+> + * between them and the MLE (this is a bit of an unwritten rule).
+> + * 20 pages are carved out of memory below the MLE. That leave 18 page table
+> + * pages that can cover up to 36M .
+> + * can only contain 4k pages
+> + *
+> + * TODO: TXT Spec p.32; List section name and number with PT MLE requirments here.
+> + *
+> + * TODO: This function is not able to cover MLEs larger than 1 GiB. Fix it!!!
+> + * After fixing inrease GRUB_TXT_MLE_MAX_SIZE too.
+> + */
+
+What do you mean by "special regions"? In TXT spec it is written that 
+there may be no holes
+in the virtual address space:
+
+"There may not be any invalid (not-present) page table entries after the 
+first valid
+entry (i.e. there may not be any gaps in the MLE’s linear address space)."
+
+Also that spec:
+"A breadth-first search of page tables must produce increasing physical 
+addresses."
+
+Maybe I misunderstood, but does it mean that the paging structures 
+themselves cannot
+be mapped? Or does it apply to the page tables only, not to the 
+addresses of pages in PTEs?
+
+> +void
+> +grub_txt_setup_mle_ptab (struct grub_slaunch_params *slparams)
+> +{
+> +  grub_uint8_t *pg_dir, *pg_dir_ptr_tab = slparams->mle_ptab_mem, *pg_tab;
+IMHO using 'grub_uint64_t' would result in less type casting and cleaner 
+code below.
+> +  grub_uint32_t mle_off = 0, pd_off = 0;
+> +  grub_uint64_t *pde, *pte;
+> +
+> +  grub_memset (pg_dir_ptr_tab, 0, slparams->mle_ptab_size);
+> +
+> +  pg_dir         = pg_dir_ptr_tab + GRUB_PAGE_SIZE;
+> +  pg_tab         = pg_dir + GRUB_PAGE_SIZE;
+> +
+> +  /* Only use first entry in page dir ptr table */
+> +  *(grub_uint64_t *)pg_dir_ptr_tab = MAKE_PT_MLE_ENTRY(pg_dir);
+> +
+> +  /* Start with first entry in page dir */
+> +  *(grub_uint64_t *)pg_dir = MAKE_PT_MLE_ENTRY(pg_tab);
+> +
+> +  pte = (grub_uint64_t *)pg_tab;
+> +  pde = (grub_uint64_t *)pg_dir;
+> +
+> +  do
+> +    {
+> +      *pte = MAKE_PT_MLE_ENTRY(slparams->mle_start + mle_off);
+> +
+> +      pte++;
+> +      mle_off += GRUB_PAGE_SIZE;
+> +
+> +      if (!(++pd_off % 512))
+> +        {
+> +          /* Break if we don't need any additional page entries */
+> +          if (mle_off >= slparams->mle_size)
+> +            break;
+> +          pde++;
+> +          *pde = MAKE_PT_MLE_ENTRY(pte);
+> +        }
+> +    } while (mle_off < slparams->mle_size);
+> +}
+>
+> <snip>
+>
+> +grub_err_t
+> +grub_txt_boot_prepare (struct grub_slaunch_params *slparams)
+> +{
+> +  grub_err_t err;
+> +  struct grub_txt_mle_header *mle_header;
+> +  struct grub_txt_acm_header *sinit_base;
+> +
+> +  sinit_base = grub_txt_sinit_select (grub_slaunch_module ());
+> +
+> +  if (sinit_base == NULL)
+> +    return grub_errno;
+> +
+> +  err = init_txt_heap (slparams, sinit_base);
+> +
+> +  if (err != GRUB_ERR_NONE)
+> +    return err;
+> +
+> +  /* Update the MLE header. */
+> +  mle_header = (struct grub_txt_mle_header *)(grub_addr_t) (slparams->mle_start + slparams->mle_header_offset);
+> +  mle_header->first_valid_page = 0;
+> +  mle_header->mle_end = slparams->mle_size;
+> +
+> +  slparams->sinit_acm_base = (grub_uint32_t)(grub_addr_t) sinit_base;
+> +  slparams->sinit_acm_size = sinit_base->size * 4;
+> +
+> +  grub_tpm_relinquish_lcl (0);
+> +
+> +  err = set_mtrrs_for_acmod (sinit_base);
+> +  if (err)
+> +    return grub_error (err, N_("secure launch failed to set MTRRs for ACM"));
+> +
+> +  err = grub_txt_prepare_cpu ();
+> +  if ( err )
+> +    return err;
+> +
+> +  if (!(grub_rdmsr (GRUB_MSR_X86_APICBASE) & GRUB_MSR_X86_APICBASE_BSP))
+> +    return grub_error (GRUB_ERR_BAD_DEVICE, N_("secure launch must run on BSP"));
+This test should be the first one, before messing with TPM and MTTRs.
+> +
+> +  return GRUB_ERR_NONE;
+> +}
+Best regards,
+
+-- 
+Krystian Hebel
+Firmware Engineer
+https://3mdeb.com | @3mdeb_com
+
