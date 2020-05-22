@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A571DDC94
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 03:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186021DDC8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 03:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgEVBXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 21:23:10 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:56050 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726335AbgEVBXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 21:23:10 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Fri, 22 May 2020 09:23:01
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.77.158]
-Date:   Fri, 22 May 2020 09:23:01 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Bin Liu" <b-liu@ti.com>
-Cc:     kjlu@umn.edu, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] usb: musb: Fix runtime PM imbalance on error
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20200521203728.GB25575@iaqt7>
-References: <20200521073547.18828-1-dinghao.liu@zju.edu.cn>
- <20200521203728.GB25575@iaqt7>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1727067AbgEVBU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 21:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726737AbgEVBU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 21:20:59 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C568207D8;
+        Fri, 22 May 2020 01:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590110458;
+        bh=2+PPWtAtIWrXh8GHaxR6UZHkYVkCWucHPcLYyfkfZjg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=xG3o7F2/P+VdCTnXo4QWqPyFSMVI8Fy2R3lkyvwLIfDCWDd318uMpZrIHpMXDenuj
+         2Rs1PL0DBHzCHn3vjzwbPtGCVi9OVhImQqdORChYY3pnhrOPASQl7OApA7tC3yBsdY
+         S7l4Oumx61oWHzX7Nk6mHHXg+AmWDna992KeSVTg=
+Date:   Thu, 21 May 2020 20:25:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] drm/radeon/dpm: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200522012547.GA6783@embeddedor>
 MIME-Version: 1.0
-Message-ID: <52fdeb8d.bcf65.17239f9f3a8.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgCXPxx1Kcde2n_4AQ--.31233W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0IBlZdtOP4JAABsA
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbX0S07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUGVWUXwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6w4lV2xY6xkI7II2jI8vz4vEwIxGrwCS07
-        vE42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMIAIbVCF72vE77IF4wCS07vE4I8I3I0E4IkC
-        6x0Yz7v_Jr0_Gr1lV2xY6I8I3I0E5I8CrVAFwI0_Jr0_Jr4lV2xY6I8I3I0E7480Y4vE14
-        v26r106r1rMIAIbVC2zVAF1VAY17CE14v26r126r1DMIAIbVCI42IY6xIIjxv20xvE14v2
-        6r1j6r1xMIAIbVCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lV2xY6IIF0xvE42xK8V
-        AvwI8IcIk0rVWrJr0_WFyUJwCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U3VyZS4KClJlZ2FyZHMsCkRpbmdoYW8KCj4gSGksCj4gCj4gT24gVGh1LCBNYXkgMjEsIDIwMjAg
-YXQgMDM6MzU6NDdQTSArMDgwMCwgRGluZ2hhbyBMaXUgd3JvdGU6Cj4gPiBXaGVuIGNvcHlfZnJv
-bV91c2VyKCkgcmV0dXJucyBhbiBlcnJvciBjb2RlLCBhIHBhaXJpbmcKPiA+IHJ1bnRpbWUgUE0g
-dXNhZ2UgY291bnRlciBkZWNyZW1lbnQgaXMgbmVlZGVkIHRvIGtlZXAKPiA+IHRoZSBjb3VudGVy
-IGJhbGFuY2VkLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5naGFvIExpdSA8ZGluZ2hhby5s
-aXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvdXNiL211c2IvbXVzYl9kZWJ1Z2Zz
-LmMgfCA1ICsrKystCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
-dGlvbigtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvbXVzYi9tdXNiX2RlYnVn
-ZnMuYyBiL2RyaXZlcnMvdXNiL211c2IvbXVzYl9kZWJ1Z2ZzLmMKPiA+IGluZGV4IDdiNjI4MWFi
-NjJlZC4uODM3YzM4YTVlNGVmIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy91c2IvbXVzYi9tdXNi
-X2RlYnVnZnMuYwo+ID4gKysrIGIvZHJpdmVycy91c2IvbXVzYi9tdXNiX2RlYnVnZnMuYwo+ID4g
-QEAgLTE3OCw4ICsxNzgsMTEgQEAgc3RhdGljIHNzaXplX3QgbXVzYl90ZXN0X21vZGVfd3JpdGUo
-c3RydWN0IGZpbGUgKmZpbGUsCj4gPiAgCj4gPiAgCW1lbXNldChidWYsIDB4MDAsIHNpemVvZihi
-dWYpKTsKPiA+ICAKPiA+IC0JaWYgKGNvcHlfZnJvbV91c2VyKGJ1ZiwgdWJ1ZiwgbWluX3Qoc2l6
-ZV90LCBzaXplb2YoYnVmKSAtIDEsIGNvdW50KSkpCj4gPiArCWlmIChjb3B5X2Zyb21fdXNlcihi
-dWYsIHVidWYsIG1pbl90KHNpemVfdCwgc2l6ZW9mKGJ1ZikgLSAxLCBjb3VudCkpKSB7Cj4gPiAr
-CQlwbV9ydW50aW1lX21hcmtfbGFzdF9idXN5KG11c2ItPmNvbnRyb2xsZXIpOwo+ID4gKwkJcG1f
-cnVudGltZV9wdXRfYXV0b3N1c3BlbmQobXVzYi0+Y29udHJvbGxlcik7Cj4gPiAgCQlyZXR1cm4g
-LUVGQVVMVDsKPiA+ICsJfQo+IAo+IFRoYW5rcyBmb3IgY2F0Y2hpbmcgdGhlIGJ1Zy4gQ2FuIHlv
-dSBwbGVhc2UgaW5zdGVhZCBtb3ZlIHRoZXNlIGxpbmVzIHRvCj4gdGhlIGJlZ2lubmluZyBvZiB0
-aGlzIGZ1bmN0aW9uIHNvIHRoYXQgcG1fcnVudGltZV9nZXRfc3luYygpIGlzIG5vdAo+IGNhbGxl
-ZCBpZiBjb3B5X2Zyb21fdXNlcigpIGZhaWxlZD8KPiAKPiAtQmluLgo=
+The current codebase makes use of one-element arrays in the following
+form:
+
+struct something {
+    int length;
+    u8 data[1];
+};
+
+struct something *instance;
+
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
+
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
+
+struct foo {
+        int stuff;
+        struct boo array[];
+};
+
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
+
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct NISLANDS_SMC_SWSTATE.
+
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/gpu/drm/amd/amdgpu/si_dpm.h | 2 +-
+ drivers/gpu/drm/radeon/ni_dpm.c     | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/si_dpm.h b/drivers/gpu/drm/amd/amdgpu/si_dpm.h
+index 6b7d292b919f3..bc0be6818e218 100644
+--- a/drivers/gpu/drm/amd/amdgpu/si_dpm.h
++++ b/drivers/gpu/drm/amd/amdgpu/si_dpm.h
+@@ -781,7 +781,7 @@ struct NISLANDS_SMC_SWSTATE
+     uint8_t                             levelCount;
+     uint8_t                             padding2;
+     uint8_t                             padding3;
+-    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[1];
++    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[];
+ };
+ 
+ typedef struct NISLANDS_SMC_SWSTATE NISLANDS_SMC_SWSTATE;
+diff --git a/drivers/gpu/drm/radeon/ni_dpm.c b/drivers/gpu/drm/radeon/ni_dpm.c
+index b57c37ddd164c..7d81dde509dc9 100644
+--- a/drivers/gpu/drm/radeon/ni_dpm.c
++++ b/drivers/gpu/drm/radeon/ni_dpm.c
+@@ -2685,11 +2685,12 @@ static int ni_upload_sw_state(struct radeon_device *rdev,
+ 	struct rv7xx_power_info *pi = rv770_get_pi(rdev);
+ 	u16 address = pi->state_table_start +
+ 		offsetof(NISLANDS_SMC_STATETABLE, driverState);
+-	u16 state_size = sizeof(NISLANDS_SMC_SWSTATE) +
+-		((NISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1) * sizeof(NISLANDS_SMC_HW_PERFORMANCE_LEVEL));
++	NISLANDS_SMC_SWSTATE *smc_state;
++	u16 state_size = struct_size(smc_state, levels,
++			NISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE);
+ 	int ret;
+-	NISLANDS_SMC_SWSTATE *smc_state = kzalloc(state_size, GFP_KERNEL);
+ 
++	smc_state = kzalloc(state_size, GFP_KERNEL);
+ 	if (smc_state == NULL)
+ 		return -ENOMEM;
+ 
+-- 
+2.26.2
+
