@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9331DEB2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D501DEB33
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgEVO7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:59:12 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29489 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730306AbgEVO7K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:59:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590159548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9V1KMcVCYfmseNXs10csHjrAiE7ISkQIhvFETaCXQP4=;
-        b=S4PISZ5QTjDYKxVCkRBHJSL8KzmiSQZCBnjj+My6Xc6TZcQO6dEdlWLSFSGs5kLq7USRVL
-        hVlkybR8GLSubMAsiFrBKpLDkZ3haawnWLT+/ZuPWUxw1ua6W8ZCgsJDfWAyDeh/qkZyrM
-        uQxlBagSvMXsXua/TM3GHdUmhzY6zW8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-QzIjg918Mpat1EMVi8ib5w-1; Fri, 22 May 2020 10:59:06 -0400
-X-MC-Unique: QzIjg918Mpat1EMVi8ib5w-1
-Received: by mail-wm1-f72.google.com with SMTP id m11so2756197wml.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:59:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9V1KMcVCYfmseNXs10csHjrAiE7ISkQIhvFETaCXQP4=;
-        b=e+HGqm5yonCcHIWESO9XM/77a6YX7LqVjcYWtjZoVJoXfAQ8qpZ/hLXJGQ/oCDrPPC
-         VVOZi2spws5BAeWKYrycNDHHYpY0W/zBH9lkJQwkyMg7oxGU7OROmoI9hHk1vu6rdBEN
-         soko0kmF24dgdF4kA4gSoNJLcGsV4tmzb8kj+GX5XnlCZN6/1svd3CCeLJcYbKUyEha7
-         XtFWWi5AMo8nru1D8+0koprK+pb2GEAIXrJ2/G/I6ijHwmTZjwrOgbvJkyfcVMqT5bdm
-         tt7fy8F6xhELfrhJLhidwd27l5FVbq5qNXR44YQ3dvlt9QEFO+yPBXX1WCrUirr3qdFV
-         FqNA==
-X-Gm-Message-State: AOAM531kfAboOgQnX3P9X0rnEJqeTmj59QoWi/WELBJtwqbafL4IBKN7
-        hFh9nDAsZM2JLxVKV01G0a8Q3WheNLb2StviFU/oIfj3AyswsEQOy5qPUoxlC1PewEB/W60JRwM
-        eLu0uIqw7bhvZ7zyRVMKRgjke
-X-Received: by 2002:a05:6000:1c5:: with SMTP id t5mr4066391wrx.229.1590159545170;
-        Fri, 22 May 2020 07:59:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLKrDXMh7GgjbEFduXzdNuG+aerFiNNHbYbt/h3MNDMdzyBSK5PcErcAMEZLwwBm9Ff2XVkA==
-X-Received: by 2002:a05:6000:1c5:: with SMTP id t5mr4066372wrx.229.1590159544888;
-        Fri, 22 May 2020 07:59:04 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.176.125])
-        by smtp.gmail.com with ESMTPSA id h137sm16059488wme.0.2020.05.22.07.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 07:59:04 -0700 (PDT)
-Date:   Fri, 22 May 2020 16:59:02 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] sched/deadline: Implement fallback mechanism for
- !fit case
-Message-ID: <20200522145902.GF600689@localhost.localdomain>
-References: <20200520134243.19352-1-dietmar.eggemann@arm.com>
- <20200520134243.19352-6-dietmar.eggemann@arm.com>
+        id S1731417AbgEVO7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:59:22 -0400
+Received: from mail-am6eur05on2067.outbound.protection.outlook.com ([40.107.22.67]:6078
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730870AbgEVO7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 10:59:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VQwrnMMHJQUPrrIUxJ2TIaZXsLsgSjJpUTAWOMAslPRijyu11/I0tv2RpJxh6vw7oJ0iS9ZBcAqrR06YsqpxmSdVlKuGn8PmO3Qi+o3coetgtr+n1YizMPZGs7lXopwWPRCeAWC8Yh4bgxr0v3l7NL+xS5Wdg2cFoJdPLlKQ0Yf/t+leUJdJrQ2Rz6xom7DHLLdIPmUzIy7sFPOYB/6+u2+/yW3/WrYLhzBgBNsNIbhyEl1TI0mO9/tb1/XCRe8sUV/INxm2VTwsiVoV+lXoiHRMaKe4aeWhCja4s5Pp0Ztht0ONT00t8c6K6ZfUp415UeC+VuUYYinVU1GzMH1Skw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aPZ0XD2LsSrwCT0U2dGReWMLnUYhbxZJ0vfAMN91ov4=;
+ b=H0JHuPh5dupFWOGAud4BHesRSmZ50rwkbpSS/mKnbrovhewNfWj4xVNQFcILRrr21pkpvAw/Adq6H42B3cFnqdcSPOa46gpgDtazLl6w2azUbo74JqDPeoItBGgy12rmuqn0m74g3tDtj9d2CXaGQCodyFZTYaKXdk5WZUCHywgXxn9z7JOPLsQs74lQct4yIU9hdygyuOY7GW45iQ5eEpoRzHO0nFhJdT5Yuz2qy/DQ4+0HU0GjuQ8KdgNv+Tbqhh3bT16RP3y3a88xpkD0NPwRIZ45+QPcR28tjDayd1L1UCEABtk+lPUT9Zvr39ITAaV657/fjb45TiJepxVvjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aPZ0XD2LsSrwCT0U2dGReWMLnUYhbxZJ0vfAMN91ov4=;
+ b=S9LcB1nND8mNqw/o0at1t/DPc+cRNAIOEmCIcSfK4laWg4sf0qC7PRb7sP+ifiUwZ1j/G4SnIi0UxUuoa+W8hHLUvPqB6UNSI5JApzjT2c8+ttYvRJ5V78vxcZsh9P2RTuZe366l+RT0dV+9T0/SCQALLOVGgeiWbXi+w2sDCPY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VI1PR0401MB2525.eurprd04.prod.outlook.com
+ (2603:10a6:800:4f::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Fri, 22 May
+ 2020 14:59:14 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60%3]) with mapi id 15.20.3021.027; Fri, 22 May 2020
+ 14:59:14 +0000
+Subject: Re: [PATCH v2 1/4] dt-bindings: iio: imu: bmi160: convert txt format
+ to yaml
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-kernel@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20200519075111.6356-1-jonathan.albrieux@gmail.com>
+ <20200519075111.6356-2-jonathan.albrieux@gmail.com>
+ <20200519184933.00003f00@Huawei.com>
+ <20200520072423.GF3361@ict14-OptiPlex-980>
+ <20200521192736.4818f17b@archlinux>
+ <20200522082208.GB19742@ict14-OptiPlex-980>
+ <134f419f-de85-f14e-0331-49b8bb72625c@nxp.com>
+ <20200522142633.GA21655@ict14-OptiPlex-980>
+From:   Daniel Baluta <daniel.baluta@nxp.com>
+Message-ID: <2cb64245-a3ec-b6c0-5f64-b2fdf6cd3689@nxp.com>
+Date:   Fri, 22 May 2020 17:59:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200522142633.GA21655@ict14-OptiPlex-980>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR01CA0094.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::35) To VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520134243.19352-6-dietmar.eggemann@arm.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:2f08:5904:2000:15db:c74f:dbc5:65d3] (2a02:2f08:5904:2000:15db:c74f:dbc5:65d3) by AM0PR01CA0094.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Fri, 22 May 2020 14:59:13 +0000
+X-Originating-IP: [2a02:2f08:5904:2000:15db:c74f:dbc5:65d3]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 33e064dc-59ae-4616-4cb3-08d7fe60b134
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2525:
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB252594F89AAD6D042101EF20F9B40@VI1PR0401MB2525.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04111BAC64
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8KGDYIWJH//YDHsXnNdYJAmb6FqgZEIZdegqRkmBIMc7Mj5RS9OMTWGVeqhttB8lqZfHtmNi3Fhek0Aip6cb9g00FgpriKzZJXv5+tRrPQtG/nMshqqfInypGxoFxkmLzO+7itFwa9F27sq/Md5RfG8j+3n5htDdqDnRfR9KezummQi5orA44tvVk/pJ5BmdQ+E085VEPRERJYDD0DyWs1jrq9cC076ezHnztK8sV9Ddgup3PIwHL7bIbEJvuVP3ui9nDaYPjgufqtYk+45tIP4V2MCRwuU1ldV6oQuU4MrwduZ4hAqsUsZFu9H3o4n+QtmhZaqBSf8JJ7XgMV8Qr1PnPuC7AS4IRsfbBEzZbHohwCDnrnwI2XAYli3bIize0qHo8G21i6LumbTdZ3Wft3R9tTMXnPHbSO/KIuj3XrhGyidEf3EIgjMToUyhRTAiQgD8gHfLRQVhguQkRY0Wp3cFirtHUXDa5zsfiaWfuq+R+0HS5qFVQ85+KhIwsUqv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(54906003)(316002)(478600001)(36756003)(8936002)(16526019)(53546011)(52116002)(8676002)(186003)(5660300002)(66946007)(66476007)(4326008)(6916009)(66556008)(7416002)(31696002)(6486002)(44832011)(31686004)(2906002)(86362001)(2616005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: UF+HvYh5234mdsbbuBuDZStBWgZVf5JgzWQEMzf7l/ZaivxNEI3iD7P3w0lh8v5KIlJJcY1hqMOozgX+DHchbGBFhCwNsjKJxmy0x5YIg3+Qgz4yyhUzii9/XdxQPFe3Z25OiWK94qXW/y8Gi2KxXnM08LFzCKymKOmyUHr0t4tLSe2HRPgCxDC+3i17G7YgIkvSt7+06EX9ttavIGC80jdf2HipfKrJcPViolw9dZZaOtYRCfUl0KLYG4OB5eZg731oDUo9cDdU+s+bi/AxKyh+tNiKw2fAhK3Si0pT7rrgoJf8Sgxxa9+vFksWtCTMyogAi8L/UIIZXujDs0NcdDvLG3rYKwUVAEQ956fDWkRyP7dThsJPvWTp2BCenikqF4pcqz3lFNWZ0ZwzBbk1XD6M1ojqEXlu8BBZa89b0gIOejOHVR+n6bg6cTblf9ouO21HKLj/W/amMZaPQ2aWQlpHWFPhM5m9MblmRqgWOemXy3sw4vJND1It7J1VFck/P0xtUVJ6tTntBid7tgBBIJccT1p1QE8kb4GfAZN945y1G3lkY9C3E7GnYXTTRwRD
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33e064dc-59ae-4616-4cb3-08d7fe60b134
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 14:59:14.1743
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AvxYZ+6ebzUALnKu9CUfH2BPDQ1LoZbmxqQy38YWwzcy3xDiIad0kzwbnRSJncBeLKT/7lkCZS8onDPYFnCtiw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2525
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/20 15:42, Dietmar Eggemann wrote:
-> From: Luca Abeni <luca.abeni@santannapisa.it>
-> 
-> When a task has a runtime that cannot be served within the scheduling
-> deadline by any of the idle CPU (later_mask) the task is doomed to miss
-> its deadline.
-> 
-> This can happen since the SCHED_DEADLINE admission control guarantees
-> only bounded tardiness and not the hard respect of all deadlines.
-> In this case try to select the idle CPU with the largest CPU capacity
-> to minimize tardiness.
-> 
-> Favor task_cpu(p) if it has max capacity of !fitting CPUs so that
-> find_later_rq() can potentially still return it (most likely cache-hot)
-> early.
-> 
-> Signed-off-by: Luca Abeni <luca.abeni@santannapisa.it>
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> ---
->  kernel/sched/cpudeadline.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/cpudeadline.c b/kernel/sched/cpudeadline.c
-> index 8630f2a40a3f..8cb06c8c7eb1 100644
-> --- a/kernel/sched/cpudeadline.c
-> +++ b/kernel/sched/cpudeadline.c
-> @@ -121,19 +121,31 @@ int cpudl_find(struct cpudl *cp, struct task_struct *p,
->  
->  	if (later_mask &&
->  	    cpumask_and(later_mask, cp->free_cpus, p->cpus_ptr)) {
-> -		int cpu;
-> +		unsigned long cap, max_cap = 0;
-> +		int cpu, max_cpu = -1;
->  
->  		if (!static_branch_unlikely(&sched_asym_cpucapacity))
->  			return 1;
->  
->  		/* Ensure the capacity of the CPUs fits the task. */
->  		for_each_cpu(cpu, later_mask) {
-> -			if (!dl_task_fits_capacity(p, cpu))
-> +			if (!dl_task_fits_capacity(p, cpu)) {
->  				cpumask_clear_cpu(cpu, later_mask);
-> +
-> +				cap = capacity_orig_of(cpu);
-> +
-> +				if (cap > max_cap ||
-> +				    (cpu == task_cpu(p) && cap == max_cap)) {
-> +					max_cap = cap;
-> +					max_cpu = cpu;
-> +				}
-> +			}
->  		}
->  
-> -		if (!cpumask_empty(later_mask))
-> -			return 1;
-> +		if (cpumask_empty(later_mask))
-> +			cpumask_set_cpu(max_cpu, later_mask);
-> +
-> +		return 1;
->  	} else {
->  		int best_cpu = cpudl_maximum(cp);
->  
-> -- 
 
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
+On 22.05.2020 17:26, Jonathan Albrieux wrote:
+> On Fri, May 22, 2020 at 01:47:21PM +0300, Daniel Baluta wrote:
+>>>>>>> +
+>>>>>>> +maintainers:
+>>>>>>> +  - can't find a mantainer, author is Daniel Baluta <daniel.baluta@intel.com>
+>>>>>> Daniel is still active in the kernel, just not at Intel any more. +CC
+>>>>> Oh ok thank you! Daniel are you still maintaining this driver?
+>> I can do reviews if requested but I'm not actively maintaining this driver.
+>> If anyone wants
+>>
+>> to take this over, will be more than happy.
+>>
+>>
+>> Other than that we can add my gmail address: Daniel Baluta
+>> <daniel.baluta@gmail.com>
+>>
+>>
+>>
+> Well if you'd like to review this patch I'd really appreciate :-)
+> Forgive me for not having understood your answer regarding the maintainer
+> field, can I add you to this binding as maintainer or are you saying to
+> not add you? Thank you and sorry for the repeated question,
+>
+>
+
+OK, so I think would be better not to add me as a maintainer because
+
+this would set some expecation from people, and I most likely won't
+
+have time to met them.
+
+
+Can you instead add the linux-iio mailing list as a maintainer, not sure
+
+if this is a common practice though.
+
 
