@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF8D1DEEFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5B81DEF04
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730814AbgEVSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 14:13:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726373AbgEVSN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 14:13:26 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FCCC206F6;
-        Fri, 22 May 2020 18:13:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590171206;
-        bh=990VpNbmnJRTKTRrlUlARO0pDj6MiynA5eE1JHvdWfo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=xqeqkVfANeqiwiXzYLYE2CoP+19RFUGgr549v01CAaPqlYAs2GY6NpM5wf0LEcsXN
-         A+MbqJrgKpsrhwaHpaaWFE96ijxeUhICm62vM2/Y0rrflsDVA60nLj0AThqMU033yo
-         JjdEtKinwXv9tt4W0spOirczax9mLclGaSUVNVfg=
-Subject: Re: [PATCH v3 0/3] selftests: vdso: Add a selftest for vDSO getcpu()
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah <shuah@kernel.org>
-References: <20200522162139.44380-1-broonie@kernel.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <24b15074-7135-38d7-d491-76087d949498@kernel.org>
-Date:   Fri, 22 May 2020 12:13:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730810AbgEVSQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 14:16:10 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:58818 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726373AbgEVSQK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 14:16:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hLKSuZTQ4zo02OD599iePD2/rvDfeT9Ihh6Ut+Ss5iQ=; b=DyxCae+oxFpfbkgZWHTM5ZUy30
+        QNvkMcKVhEsiKm65FENKqqRVklyCPJplTthhwbFSX5pNHFWGcMlwchcEd58WvagHoo2/Knwx0WCKi
+        1VCuyhyQtCmyJ7q8REVY+XFLjUDnZloNlsyddVIjeKQZ4GLFweJW5+XnQUD1pO/1+JeU=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1jcCDI-0001HQ-Sg; Fri, 22 May 2020 18:16:08 +0000
+Received: from 54-240-197-238.amazon.com ([54.240.197.238] helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <julien@xen.org>)
+        id 1jcCDI-0004LV-Ix; Fri, 22 May 2020 18:16:08 +0000
+Subject: Re: [PATCH 02/10] swiotlb-xen: remove start_dma_addr
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     jgross@suse.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s>
+ <20200520234520.22563-2-sstabellini@kernel.org>
+ <6241b8f6-5c51-0486-55ae-d571b117a184@xen.org>
+ <alpine.DEB.2.21.2005211243060.27502@sstabellini-ThinkPad-T480s>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <ab89bf08-a02f-85af-8f83-6a851d72ccf2@xen.org>
+Date:   Fri, 22 May 2020 19:16:06 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200522162139.44380-1-broonie@kernel.org>
+In-Reply-To: <alpine.DEB.2.21.2005211243060.27502@sstabellini-ThinkPad-T480s>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/20 10:21 AM, Mark Brown wrote:
-> This series does a bit of a cleanup of the existing tests for the vDSO
-> in kselftest and then adds a new test for getcpu().
-> 
-> v3: Remove some extern keywords.
-> v2: Silence checkpatch
-> 
-> Mark Brown (3):
->    selftests: vdso: Rename vdso_test to vdso_test_gettimeofday
->    selftests: vdso: Use a header file to prototype parse_vdso API
->    selftests: vdso: Add a selftest for vDSO getcpu()
-> 
->   tools/testing/selftests/vDSO/.gitignore       |  2 +
->   tools/testing/selftests/vDSO/Makefile         |  5 +-
->   tools/testing/selftests/vDSO/parse_vdso.c     | 24 +--------
->   tools/testing/selftests/vDSO/parse_vdso.h     | 31 +++++++++++
->   .../selftests/vDSO/vdso_standalone_test_x86.c |  4 +-
->   .../testing/selftests/vDSO/vdso_test_getcpu.c | 54 +++++++++++++++++++
->   .../{vdso_test.c => vdso_test_gettimeofday.c} | 10 ++--
->   7 files changed, 96 insertions(+), 34 deletions(-)
->   create mode 100644 tools/testing/selftests/vDSO/parse_vdso.h
->   create mode 100644 tools/testing/selftests/vDSO/vdso_test_getcpu.c
->   rename tools/testing/selftests/vDSO/{vdso_test.c => vdso_test_gettimeofday.c} (84%)
-> 
+Hi,
 
-Thanks for the cleaning this up and the rework.
+On 22/05/2020 04:55, Stefano Stabellini wrote:
+> On Thu, 21 May 2020, Julien Grall wrote:
+>> Hi,
+>>
+>> On 21/05/2020 00:45, Stefano Stabellini wrote:
+>>> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+>>>
+>>> It is not strictly needed. Call virt_to_phys on xen_io_tlb_start
+>>> instead. It will be useful not to have a start_dma_addr around with the
+>>> next patches.
+>>>
+>>> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+>>> ---
+>>>    drivers/xen/swiotlb-xen.c | 5 +----
+>>>    1 file changed, 1 insertion(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+>>> index a42129cba36e..b5e0492b07b9 100644
+>>> --- a/drivers/xen/swiotlb-xen.c
+>>> +++ b/drivers/xen/swiotlb-xen.c
+>>> @@ -52,8 +52,6 @@ static unsigned long xen_io_tlb_nslabs;
+>>>     * Quick lookup value of the bus address of the IOTLB.
+>>>     */
+>>>    -static u64 start_dma_addr;
+>>> -
+>>>    /*
+>>>     * Both of these functions should avoid XEN_PFN_PHYS because phys_addr_t
+>>>     * can be 32bit when dma_addr_t is 64bit leading to a loss in
+>>> @@ -241,7 +239,6 @@ int __ref xen_swiotlb_init(int verbose, bool early)
+>>>    		m_ret = XEN_SWIOTLB_EFIXUP;
+>>>    		goto error;
+>>>    	}
+>>> -	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
+>>>    	if (early) {
+>>>    		if (swiotlb_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs,
+>>>    			 verbose))
+>>> @@ -389,7 +386,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device
+>>> *dev, struct page *page,
+>>>    	 */
+>>>    	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
+>>>    -	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys,
+>>> +	map = swiotlb_tbl_map_single(dev, virt_to_phys(xen_io_tlb_start),
+>>> phys,
+>>
+>> xen_virt_to_bus() is implemented as xen_phys_to_bus(virt_to_phys()). Can you
+>> explain how the two are equivalent?
+> 
+> They are not equivalent. Looking at what swiotlb_tbl_map_single expects,
+> and also the implementation of swiotlb_init_with_tbl, I think
+> virt_to_phys is actually the one we want.
+> 
+> swiotlb_tbl_map_single compares the argument with __pa(tlb) which is
+> __pa(xen_io_tlb_start) which is virt_to_phys(xen_io_tlb_start).
 
-Applied to linux-kselftest next for Linux 5.8-rc1
+I can't find such check in master. What is your baseline? Could you 
+point to the exact line of code?
 
-thanks,
--- Shuah
+Cheers,
+
+-- 
+Julien Grall
