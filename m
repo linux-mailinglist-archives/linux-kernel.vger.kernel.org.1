@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4611DE48B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16F21DE491
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729332AbgEVKfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:35:04 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:54847 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgEVKfC (ORCPT
+        id S1728921AbgEVKg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgEVKg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:35:02 -0400
-Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MRTEr-1jNb3x49Dh-00NPcK for <linux-kernel@vger.kernel.org>; Fri, 22 May
- 2020 12:35:01 +0200
-Received: by mail-qk1-f174.google.com with SMTP id w3so4673975qkb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 03:35:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5301fMTLXCscwIgj5zmqD8NvVhUDld8pEXrBE9p1szdln3iqVBr7
-        R35dckFaHIvzvOCe7mRd19Vl7z1k07vHcN3quPg=
-X-Google-Smtp-Source: ABdhPJw02PN89jQLaghKhRZTtfY6WsfKzDAL+DXC4ThLX3EU4DLyXZpzZP+4lu/INdppa9h1Ex+aEXLdggZRZcql5jY=
-X-Received: by 2002:a37:bc7:: with SMTP id 190mr14053233qkl.286.1590143699835;
- Fri, 22 May 2020 03:34:59 -0700 (PDT)
+        Fri, 22 May 2020 06:36:56 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3292C061A0E;
+        Fri, 22 May 2020 03:36:55 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id m6so10206038ilq.7;
+        Fri, 22 May 2020 03:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S9mNXQGxYRI6qULQw9Ylvem2CGTTDqLbr/fEXVEpF4U=;
+        b=vd4VYINYuEVdmUQvHlTA9KXdDm9DE/zeNAYpOQv75fwt4OmH/SIAObjGaEBV4RxvZz
+         q6i66VQgCbwB2DJnpkEs3CNS44zpx0/PzCDxw+TMIy0QqPe/1Vb9Qtz+UKk3APYhG57W
+         0iTd/hJBqukptHPRhJKJwFSc7T8wM0FpEmbg6I6kTzq+aeXPRSzbG/9VmyhLf821lJYv
+         r3xmT/IG4xyoBXd8AFUfyLhmGkOuqCvdk90pwWNRlm08GL4a15VsChynvxCw55pjfyQo
+         wbiCGX/jvpdtkVcZHfD2F6GQ+KJBLXyqJ7b3XSsKGprTz+kBwt26Bme5bvOjKtZPhW2q
+         gqZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S9mNXQGxYRI6qULQw9Ylvem2CGTTDqLbr/fEXVEpF4U=;
+        b=b7GjcjFB72QqWBYVJyLpGixUwi7R7wY604c+wrCfUFm56HL4HV3tzdZ94D/pQ2Dbg/
+         3mN/vVlsaS+jG8JLdr2TtVfYmy7AWVQztZuQ+ooj4BKT5cwpH2CrV3fND9cxENnIlq0W
+         oezIOPDcUEO/YIm8tgoULpGM9+loiB9A66ctMCcwQ38Kdh1ZJUT7+TrUMi2cRvf0qYX6
+         kfCPeW9iPe6/bcglQwxSRzwpOP3LoPNGzyvjgcUweW2t9AdCYNp0u0esWTuoOqC2pTgt
+         hEehaverP17cKYeIuGBBMYarObujkQv/jOzorRvJ9Ifs+yx3kbS22pLAPigLe8QN2gUP
+         pVug==
+X-Gm-Message-State: AOAM533Gb4MxEnYmqSZBxVeBKR8z3YJMS8sNE2JAn8ruaghYGbICo4wH
+        Ix+3tIrt/kCMfjjfMZSyPVxJtk3pJP9G3wjtJYzIdkRL
+X-Google-Smtp-Source: ABdhPJx0XAiW7gALipTyOEYHcUb8snFaOYG31JH89mxDkIvzBtiW7XAO+lC0bUVICWp15csuijP3fwq29n6skZcb3/g=
+X-Received: by 2002:a92:ca84:: with SMTP id t4mr10176899ilo.276.1590143815240;
+ Fri, 22 May 2020 03:36:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505150722.1575-1-geert+renesas@glider.be>
- <20200505150722.1575-7-geert+renesas@glider.be> <20200522181118.36de5dd9@xhacker.debian>
-In-Reply-To: <20200522181118.36de5dd9@xhacker.debian>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 22 May 2020 12:34:43 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1qu-E8XKPiaBF0PqgGfBjNHbcONz-tgby3jt1X1X8Ymw@mail.gmail.com>
-Message-ID: <CAK8P3a1qu-E8XKPiaBF0PqgGfBjNHbcONz-tgby3jt1X1X8Ymw@mail.gmail.com>
-Subject: Re: [PATCH v2 06/15] ARM: berlin: Drop unneeded select of HAVE_SMP
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        SoC Team <soc@kernel.org>, Kevin Hilman <khilman@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+References: <20200518201646.48312-1-dagmcr@gmail.com> <73d98905-930d-3549-1a85-293f4d213716@ideasonboard.com>
+In-Reply-To: <73d98905-930d-3549-1a85-293f4d213716@ideasonboard.com>
+From:   Daniel G <dagmcr@gmail.com>
+Date:   Fri, 22 May 2020 12:36:44 +0200
+Message-ID: <CAPsT6hk=3Z2nwGW=WdxB7UVwvOVMdiZ1oVdR_Xb4kqXpQ8jC5w@mail.gmail.com>
+Subject: Re: [PATCH] drm: rcar-du: Fix build error
+To:     kieran.bingham+renesas@ideasonboard.com
+Cc:     Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:wScuWOB3lDpbSmWnmsciaTQZtZSH2TcEz2dX/aED0fMTllLJ4N1
- 8OevsIeq5i37Oa/5cqGGoXFX1t/H2IJuV1I+0nVaWbYaHqRcAW+Qsil7PBp9+ro2TTyVOHH
- LScdqfENR2rFGuHTds3bfWNMJUg+wkPli8L7K7Mb2BiT+PVH2STym11wIhfJPcN2UJWrXEX
- KkBmh20dmuJ+oc0cAQ7Iw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:s9QqT+9x2M4=:f3R4KM+Xo3eqcFymP1DzbD
- KSo5VjkLWTKHmNGiwn8Hf51KEYW2sOP08Mo6p8JPake5UJ0+7h53CEYXq+UFPJjydBsHIOcgU
- 0tuhgNfCCYTQ83sKIqvUeHgCuiDyteowAeVD+sBeT48fumc5apS8OVvZe4NvQDf1BvO3Qyk/j
- O3fUwAOMcU8oqhj6Ev1sXgXj4zbdWh8bej6d3Ui5cG05b9x2rJtRyzg8TIUPZl3EBjJ5kGhey
- UOveyocGLOdHSQCvBoJ3NesQDXfRlaI88eGOy7PJmbvT+fKxewA/NufrsxJPVwg/IV0p6EJt6
- LBPCMpmdlisMg1o32C+w9ouF0dtBRdgSwfyhI1cQ3b3O8zKE44l0bqr8ndLPXNu5BikebCFCH
- m7buhXVBUm8mQ4vWitP5eCyFnpGWSUlVhkwtuknpCqvXsKzoA9MkIBRW7tuc5N3F51BhfJMce
- Zzxo9dc9VCAB/b6oql/srkptG4uPqBvGi0IM5V0deeeMDFUsRieq/OPVxLwRulnuaeTJJSHXi
- eifQshig4UIkgcshIHEXiMmlXre3K378HT5KD1rCo7kGBXEckMx1Mv3WDkTh5+tNmOFw6VCU1
- kWjyY3JN2bxdGnyr625idpBGnYn1d3HLIdAOoee5HfmmXxsAy3quhfmkPXrOQjKyvxzSe+ZnB
- 11bfYrvLQ9tWXFvst5XRIMUt7erdMr/x+TJBjBcxUwxErVHJHOPSwcuxpNi7z28kD7eGpLrbC
- FCgU25jJ1qDyMnZ0A5D4okCwKh8xspRYZRiCu+SLCgfW5dk4lY2puDP3AFUbWYETG5XO4Osrw
- 2m3NYWmulXa6DfXC+HMVcM7WLkovDQUoyIbfByPAjHjnFa/OnU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 12:13 PM Jisheng Zhang
-<Jisheng.Zhang@synaptics.com> wrote:
->
-> Hi Arnd, Kevin, Olof,
->
-> On Tue,  5 May 2020 17:07:13 +0200 Geert Uytterhoeven wrote:
->
-> >
-> >
-> > Support for Marvell Berlin SoCs depends on ARCH_MULTI_V7.
-> > As the latter selects HAVE_SMP, there is no need for MACH_BERLIN_BG2 to
-> > select HAVE_SMP.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> The patch looks good to me. I want to know what will be the mainline
-> path of this series. SoC maintainers take it then send A PR to arm-soc?
-> Or each SoC maintainers ack it, arm-soc will take the whole series?
-> If later, then
->
-> Acked-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
->
->
-> This is the first time I see a series touch different SoC platforms.
+Hi Kieran and Emil,
 
-I have already merged it. The normal way we do this is that platform
-maintainers can choose to merge individual patches when they
-are happy with them on the early review, or provide an Ack for
-them to get merged as a branch.
+On Fri, 22 May 2020 at 11:43, Kieran Bingham
+<kieran.bingham+renesas@ideasonboard.com> wrote:
+>
+> Hi Daniel,
+>
+> On 18/05/2020 21:16, Daniel Gomez wrote:
+> > Select DRM_KMS_HELPER dependency.
+> >
+> > Build error when DRM_KMS_HELPER is not selected:
+> >
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd48): undefined reference to `drm_atomic_helper_bridge_duplicate_state'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd50): undefined reference to `drm_atomic_helper_bridge_destroy_state'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd70): undefined reference to `drm_atomic_helper_bridge_reset'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xdc8): undefined reference to `drm_atomic_helper_connector_reset'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xde0): undefined reference to `drm_helper_probe_single_connector_modes'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe08): undefined reference to `drm_atomic_helper_connector_duplicate_state'
+> > drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe10): undefined reference to `drm_atomic_helper_connector_destroy_state'
+> >
+>
+> Looking at the files in rcar_du that utilise drm_atomic_helpers...
+>
+> git grep -l drm_atomic_helper_ drivers/gpu/drm/rcar-du/
+>  drivers/gpu/drm/rcar-du/rcar_du_crtc.c
+>  drivers/gpu/drm/rcar-du/rcar_du_kms.c
+>  drivers/gpu/drm/rcar-du/rcar_du_plane.c
+>  drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+>  drivers/gpu/drm/rcar-du/rcar_du_writeback.c
+>  drivers/gpu/drm/rcar-du/rcar_lvds.c
+>
+> of those, these are configurable:
+>
+>  rcar_du_vsp.c          # DRM_RCAR_VSP
+>  rcar_du_writeback.c    # DRM_RCAR_WRITEBACK
+>  rcar_lvds.c            # DRM_RCAR_LVDS
+>
+> But VSP and WRITEBACK are already implicitly dependant upon DRM_RCAR_DU
+> because they get built into the DU module.
+>
+> So indeed, only the RCAR_LVDS is a separate module, using those helpers,
+> so I think a select is a reasonable fix.
+>
+> I would also ask whether DRM_RCAR_LVDS should depend upon DRM_RCAR_DU
+> though as well.
+>
+> There is no linkage requirement, as it's a standalone bridge driver from
+> what I can see, but I don't think it serves much purpose without the DU?
 
-I picked up v2 of the series as there seemed to be a sufficient
-number of Acks and everyone that commented had agreed
-in principle.
+I have actually spotted when using arch/arm/configs/multi_v7_defconfig where
+DRM_RCAR_DU is built as module. But when I was reviewing it I was able to
+compile RCAR_LVDS=y with DRM_RCAR_DU=n. Also, according to
+https://patchwork.kernel.org/patch/10159063/, the LVDS encoders used to be
+described as part of the DU but not after the patch. So, I assume it can
+be used without the DU but not completely sure.
 
-      Arnd
+>
+> Anyway, even if it's just for compile testing maybe, the select here
+> should be fine.
+>
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+> > Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
+> > ---
+> >  drivers/gpu/drm/rcar-du/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+> > index 0919f1f159a4..f65d1489dc50 100644
+> > --- a/drivers/gpu/drm/rcar-du/Kconfig
+> > +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> > @@ -31,6 +31,7 @@ config DRM_RCAR_DW_HDMI
+> >  config DRM_RCAR_LVDS
+> >       tristate "R-Car DU LVDS Encoder Support"
+> >       depends on DRM && DRM_BRIDGE && OF
+> > +     select DRM_KMS_HELPER
+> >       select DRM_PANEL
+> >       select OF_FLATTREE
+> >       select OF_OVERLAY
+> >
+>
