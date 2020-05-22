@@ -2,180 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710011DECB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5A51DECC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgEVQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 12:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S1730338AbgEVQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 12:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbgEVQDC (ORCPT
+        with ESMTP id S1730124AbgEVQG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 12:03:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFD3C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:03:02 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l17so10686209wrr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:03:02 -0700 (PDT)
+        Fri, 22 May 2020 12:06:29 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF43CC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:06:28 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id f5so2079816wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 09:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v7wWb7qz1S/4lL8SzUygns1tNzo6SO+dGchGg8zLr9M=;
-        b=pdmt9jvSDpqc8VKxRM6ywNws6EyfZ67QtvF5KUqSkObbIgXcqhf0pYqSji8iOn8wQ8
-         rU62omd9QZzYnv0h34TdkeRL09Mpgdg4IkTLQOBm1sLhwj+gbl2oKLfFvy7ce0oijm8V
-         I/ZtkWI0RbSw8rfaiSKOEoGBDtZKM0JjjDJzisQ4JwxF1zM72dqqxb7/IUTFKUkYSaEY
-         t12b5VowqgPLJelJ/1PHZNO9vzM/IwdBY7qU/qzOk5oHUzLNmzj5IErvaNGnQbq1hSi6
-         obORDL0EH4eMh9H5EQuR2E1ESTS7zWZ09YuwTlPZRlgKrKSiM4IlXe3KhHTNpj5MfAfU
-         lX+Q==
+         :content-disposition:in-reply-to:user-agent;
+        bh=WtbmX0dyqTdFrd4tlTLyqr9RkMznchbfW/cN9uktbsE=;
+        b=ah7RmwWxN9q7dxKf+gAuYNWjx6K6QPOaXvntt2YUcRn9h4NJFUGvkk1Ac/sTaqPucC
+         brS1J2kyueAkaOOEsl7Jt5j1lSuy9e7MxolKLydJzGOCfm7pV2Itel7DowMiX6eBqwaW
+         P6lIrkxT5Q6m19lxPitR+Wqn0NwtVXgOXDtfQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v7wWb7qz1S/4lL8SzUygns1tNzo6SO+dGchGg8zLr9M=;
-        b=LkMcsUBsCc0g8Pp4PxBKyBkBnxOPEhWvVppZYE1QKQWl2F+aCy6PaNYV+HNSieeqTc
-         cPXkoeoP6vS8Lg/0XZnt7zsY73u5xUG0dvtpt6WDOp9Uxz3VwaNqDX5pXmO0uI58I+l8
-         q0XEvDi7EVDAdwBeC7AOVX7sreLyiCfZScfokTb3VE1vY0mGkd/g9k/li6lHtTZv/Mpp
-         nY1rnKmKcri6O/flthViHVq8YsVLONLVQ0ZvaHsL8lhqeqgjy1wvzfyI8juSXKUJi9a7
-         QRizDyc/PMB096/E0vvtr2BBGHzQccuJN5zPqk4hNWlNZlIL1Q5WSSeAzkYiTh1wo8LH
-         emIA==
-X-Gm-Message-State: AOAM530aJp7iI588/EXYvpyVfpBQaGe+Xws9z9eyZUYs0nLXY/oqeTpa
-        JVdT7RWBHfvO3qg1lppCXyCtjA==
-X-Google-Smtp-Source: ABdhPJwU51KpmkS467wd2YMDKD0z34ZlqcGlXENl9FRlqREBHGZ+7bsCCEAi8bTDtYZlmauzrcd5QQ==
-X-Received: by 2002:adf:e84e:: with SMTP id d14mr3802982wrn.31.1590163381322;
-        Fri, 22 May 2020 09:03:01 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id v205sm9818955wmg.11.2020.05.22.09.03.00
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WtbmX0dyqTdFrd4tlTLyqr9RkMznchbfW/cN9uktbsE=;
+        b=N+nRklw9/09seheGEjmV24LWZDA+Wc3xeH8xGdiNAPN+Zhree2lVAY7DuSRhIPboRf
+         Z0cYGjI5h97EK9LT02gnEgK4KGzQqOHqmm4uheQIEVxjgSg30VSDDXcxScWq6LLZss1l
+         J4osx5GPiLsVGXWmKHMxF1R9a6Uwaon+WdbFRjxxqkkduyHbV+oHjp78pVIJ16OVodBA
+         +A9WtsxuEz/N1aBNLFLR463JnnUu2xZqpFN23ejlgCha17eMM1uLMpCN/CoZkyV8j/tj
+         NjaXjoDeTZs/vnPI6Kb6aLP0Fp4pr7K4LPqhlpu4I0mx+Cyys4kERnvwHTiWsR7qRoFL
+         Vjfw==
+X-Gm-Message-State: AOAM532Oe0DtnTA8QI2Jb525VvPJqPcsbqC2P/4tCioA+TSuu6pTDaxL
+        +j+EgkEsmtFmtrJ2eAlQCA3+jA==
+X-Google-Smtp-Source: ABdhPJygEawD/lJudaTltpgXyXjT5L0fi1Rd5uEVjbbJe1bbL0UYGwlL+SuYBnoIwxkETsDzoBuWtg==
+X-Received: by 2002:a1c:4b0e:: with SMTP id y14mr14490673wma.170.1590163587553;
+        Fri, 22 May 2020 09:06:27 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
+        by smtp.gmail.com with ESMTPSA id n9sm9514256wrv.43.2020.05.22.09.06.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 09:03:00 -0700 (PDT)
-Date:   Fri, 22 May 2020 17:02:58 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
-        dianders@chromium.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] kdb: Switch kdb_printf to use safer console poll APIs
-Message-ID: <20200522160258.yq63iigp74u3ngtn@holly.lan>
-References: <1590158071-15325-1-git-send-email-sumit.garg@linaro.org>
+        Fri, 22 May 2020 09:06:26 -0700 (PDT)
+Date:   Fri, 22 May 2020 17:06:26 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, linux-mm <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH v3 2/2] mm, memcg: Decouple e{low,min} state mutations
+ from protection checks
+Message-ID: <20200522160626.GB1112005@chrisdown.name>
+References: <20200505084127.12923-1-laoar.shao@gmail.com>
+ <20200505084127.12923-3-laoar.shao@gmail.com>
+ <CA+G9fYseWc_7yq0M5Onju_HxbFid6DbuuaEFf-KUpqfxdF-QTg@mail.gmail.com>
+ <CALOAHbBTt1pMo0kwheWqPfU7RTXcDHWJ-x8=5mpw327uiy2qzA@mail.gmail.com>
+ <CA+G9fYtmpjunUetTmf2yquB1rwZA+nnWOiueWbAMx483c0wUvQ@mail.gmail.com>
+ <CALOAHbCdXrU1AeLd4pWubutuG6HP4xKvxRkXeOv=sd_MMW58rg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1590158071-15325-1-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <CALOAHbCdXrU1AeLd4pWubutuG6HP4xKvxRkXeOv=sd_MMW58rg@mail.gmail.com>
+User-Agent: Mutt/1.14.1 (2020-05-03)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 08:04:31PM +0530, Sumit Garg wrote:
-> In kgdb NMI context, polling driver APIs are more safer to use instead
-> of console APIs since the polling drivers know they will execute from
-> all sorts of crazy places. And for the most common use cases this would
-> also result in no console handler ever being called. So switch to use
-> polling driver APIs in case a particular console supports polling mode.
+Yafang Shao writes:
+>I will do it.
+>If no one has objection to my proposal, I will send it tomorrow.
 
-This comment seems rather half hearted, not least because it doesn't
-explain what the current problem is nor why using the polling API is
-safer.
-
-Compare the above against the advice in
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
-and I think it comes up short. Perhaps also consider Ingo Molnar's much
-more concise suggestion on describing changes:
-
-: Please use the customary changelog style we use in the kernel:
-:   " Current code does (A), this has a problem when (B).
-:   We can improve this doing (C), because (D)."
--- http://lkml.iu.edu/hypermail//linux/kernel/1311.1/01157.html
-
-
-> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  kernel/debug/kdb/kdb_io.c | 39 +++++++++++++++++++++++++++++++++------
->  1 file changed, 33 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 3a5a068..8e0d581 100644
-> --- a/kernel/debug/kdb/kdb_io.c
-> +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -24,6 +24,7 @@
->  #include <linux/kgdb.h>
->  #include <linux/kdb.h>
->  #include <linux/kallsyms.h>
-> +#include <linux/tty_driver.h>
->  #include "kdb_private.h"
->  
->  #define CMD_BUFLEN 256
-> @@ -699,11 +700,24 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
->  			}
->  		}
->  		for_each_console(c) {
-> +			int line;
-> +			struct tty_driver *p;
-> +
->  			if (!(c->flags & CON_ENABLED))
->  				continue;
-> -			++oops_in_progress;
-> -			c->write(c, cp, retlen - (cp - kdb_buffer));
-> -			--oops_in_progress;
-> +			p = c->device ? c->device(c, &line) : NULL;
-> +			if (p && p->ops && p->ops->poll_put_char) {
-
-What prevents this logic from matching an active console that hasn't
-been selected as the polling driver?
-
-
-> +				len = retlen - (cp - kdb_buffer);
-> +				cp2 = cp;
-> +				while (len--) {
-> +					p->ops->poll_put_char(p, line, *cp2);
-> +					cp2++;
-> +				}
-
-Assuming it is possible to identify the console that matches the
-currently selected polling driver can't we just drop the
-is_console test and get rid of this branch entirely.
-
-The only reason for the is_console test is to avoid issuing messages
-twice so if we are able to suppress the c->write() for the same UART
-then is_console check becomes pointless and can go.
-
-
-> +			} else {
-> +				++oops_in_progress;
-> +				c->write(c, cp, retlen - (cp - kdb_buffer));
-> +				--oops_in_progress;
-> +			}
->  			touch_nmi_watchdog();
->  		}
->  	}
-> @@ -765,11 +779,24 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
->  			}
->  		}
->  		for_each_console(c) {
-> +			int line;
-> +			struct tty_driver *p;
-> +
->  			if (!(c->flags & CON_ENABLED))
->  				continue;
-> -			++oops_in_progress;
-> -			c->write(c, moreprompt, strlen(moreprompt));
-> -			--oops_in_progress;
-> +			p = c->device ? c->device(c, &line) : NULL;
-> +			if (p && p->ops && p->ops->poll_put_char) {
-> +				len = strlen(moreprompt);
-> +				cp = moreprompt;
-> +				while (len--) {
-> +					p->ops->poll_put_char(p, line, *cp);
-> +					cp++;
-> +				}
-> +			} else {
-> +				++oops_in_progress;
-> +				c->write(c, moreprompt, strlen(moreprompt));
-> +				--oops_in_progress;
-> +			}
-
-Maybe also consider pulling the string emit to a separate function.
-
-
-Daniel.
+If the fixup patch works, just send that. Otherwise, sure.
