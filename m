@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6841DF0C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D611DF0BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731098AbgEVUuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 16:50:17 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:60098 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731088AbgEVUuQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 16:50:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=k3Mbxlp1+H5DgdG9uWBmILKu8uyCSkCfmikx/X5pBLQ=; b=17Hsyi8C22Bv0zQjJr5xM4LQ/2
-        1LrFEIrygSAqD4UFTK3A92iJD/aWA5GVjzPhlyJT3Z1E+j5v04ywDU/bbHVc4gdXx1neJO8fVBkt/
-        Sv5xjl47Ts/wAhYqTlSrMaz2Db5smjYFsjuv8enq/JbnwAa4JupoXohbhjjLj7ecCZTVMqAUCW4Ja
-        wlAKN6A11SHTywlfmZdcYWzGmplOs7VvnhXK9gQZ1iBqPWG4fl9olbhhy8GpR+SrhsxKVwrSOOTHm
-        yicFxBszwpioCQ1LU+Sh1aFZWZhmk1TEcDyQ1aVtgsLj+2K9P4DqYEmpL8JJ4TjoaMDYTtAnFI8ht
-        rybfH+aw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jcEcJ-0002gT-Hs; Fri, 22 May 2020 20:50:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1731041AbgEVUrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 16:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730946AbgEVUrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 16:47:49 -0400
+Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9C42306102;
-        Fri, 22 May 2020 22:49:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B67832B951B52; Fri, 22 May 2020 22:49:56 +0200 (CEST)
-Message-ID: <20200522204943.407362690@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 22 May 2020 22:47:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [RFC][PATCH 4/4] x86/entry, mce: Disallow #DB during #MC
-References: <20200522204738.645043059@infradead.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44A1C20723;
+        Fri, 22 May 2020 20:47:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590180468;
+        bh=ABXEd3vc08BMg4ogCVIQEmBIL34CZ7hlNe8SZ9PbUAg=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=QBQVmp1VQZ2dAmCNmxEI92dXe8V0WuRDH3d/aYG8pRWxtwKEeupy1RLtLeK0fqVGJ
+         yH0YKWXQ2E1JqwtNUKz1bfqrKnayppYXP5JBYeNJZVX+JM4GetGxI8H2+TPmrB1hHL
+         Dext8r1i2WPfHkst+1gu6kSoUmo/96C3RHGFAxus=
+Date:   Fri, 22 May 2020 13:47:47 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Julien Grall <julien@xen.org>
+cc:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>
+Subject: Re: [PATCH 02/10] swiotlb-xen: remove start_dma_addr
+In-Reply-To: <ab89bf08-a02f-85af-8f83-6a851d72ccf2@xen.org>
+Message-ID: <alpine.DEB.2.21.2005221336530.27502@sstabellini-ThinkPad-T480s>
+References: <alpine.DEB.2.21.2005201628330.27502@sstabellini-ThinkPad-T480s> <20200520234520.22563-2-sstabellini@kernel.org> <6241b8f6-5c51-0486-55ae-d571b117a184@xen.org> <alpine.DEB.2.21.2005211243060.27502@sstabellini-ThinkPad-T480s>
+ <ab89bf08-a02f-85af-8f83-6a851d72ccf2@xen.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#MC is fragile as heck, don't tempt fate.
+On Fri, 22 May 2020, Julien Grall wrote:
+> On 22/05/2020 04:55, Stefano Stabellini wrote:
+> > On Thu, 21 May 2020, Julien Grall wrote:
+> > > Hi,
+> > > 
+> > > On 21/05/2020 00:45, Stefano Stabellini wrote:
+> > > > From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> > > > 
+> > > > It is not strictly needed. Call virt_to_phys on xen_io_tlb_start
+> > > > instead. It will be useful not to have a start_dma_addr around with the
+> > > > next patches.
+> > > > 
+> > > > Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> > > > ---
+> > > >    drivers/xen/swiotlb-xen.c | 5 +----
+> > > >    1 file changed, 1 insertion(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+> > > > index a42129cba36e..b5e0492b07b9 100644
+> > > > --- a/drivers/xen/swiotlb-xen.c
+> > > > +++ b/drivers/xen/swiotlb-xen.c
+> > > > @@ -52,8 +52,6 @@ static unsigned long xen_io_tlb_nslabs;
+> > > >     * Quick lookup value of the bus address of the IOTLB.
+> > > >     */
+> > > >    -static u64 start_dma_addr;
+> > > > -
+> > > >    /*
+> > > >     * Both of these functions should avoid XEN_PFN_PHYS because
+> > > > phys_addr_t
+> > > >     * can be 32bit when dma_addr_t is 64bit leading to a loss in
+> > > > @@ -241,7 +239,6 @@ int __ref xen_swiotlb_init(int verbose, bool early)
+> > > >    		m_ret = XEN_SWIOTLB_EFIXUP;
+> > > >    		goto error;
+> > > >    	}
+> > > > -	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
+> > > >    	if (early) {
+> > > >    		if (swiotlb_init_with_tbl(xen_io_tlb_start,
+> > > > xen_io_tlb_nslabs,
+> > > >    			 verbose))
+> > > > @@ -389,7 +386,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device
+> > > > *dev, struct page *page,
+> > > >    	 */
+> > > >    	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
+> > > >    -	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys,
+> > > > +	map = swiotlb_tbl_map_single(dev, virt_to_phys(xen_io_tlb_start),
+> > > > phys,
+> > > 
+> > > xen_virt_to_bus() is implemented as xen_phys_to_bus(virt_to_phys()). Can
+> > > you
+> > > explain how the two are equivalent?
+> > 
+> > They are not equivalent. Looking at what swiotlb_tbl_map_single expects,
+> > and also the implementation of swiotlb_init_with_tbl, I think
+> > virt_to_phys is actually the one we want.
+> > 
+> > swiotlb_tbl_map_single compares the argument with __pa(tlb) which is
+> > __pa(xen_io_tlb_start) which is virt_to_phys(xen_io_tlb_start).
+> 
+> I can't find such check in master. What is your baseline? Could you point to
+> the exact line of code?
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/cpu/mce/core.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1943,22 +1943,34 @@ static __always_inline void exc_machine_
- /* MCE hit kernel mode */
- DEFINE_IDTENTRY_MCE(exc_machine_check)
- {
-+	unsigned long dr7;
-+
-+	local_db_save(&dr7);
- 	exc_machine_check_kernel(regs);
-+	local_db_restore(dr7);
- }
- 
- /* The user mode variant. */
- DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
- {
-+	unsigned long dr7;
-+
-+	local_db_save(&dr7);
- 	exc_machine_check_user(regs);
-+	local_db_restore(dr7);
- }
- #else
- /* 32bit unified entry point */
- DEFINE_IDTENTRY_MCE(exc_machine_check)
- {
-+	unsigned long dr7;
-+
-+	local_db_save(&dr7);
- 	if (user_mode(regs))
- 		exc_machine_check_user(regs);
- 	else
- 		exc_machine_check_kernel(regs);
-+	local_db_restore(dr7);
- }
- #endif
- 
+My base is b85051e755b0e9d6dd8f17ef1da083851b83287d, which is master
+from a couple of days back.
 
 
+xen_swiotlb_init calls swiotlb_init_with_tbl which takes a virt address
+as a parameter (xen_io_tlb_start), it gets converted to phys and stored
+in io_tlb_start as a physical address.
+
+Later, xen_swiotlb_map_page calls swiotlb_tbl_map_single passing a
+dma addr as parameter (tbl_dma_addr). tbl_dma_addr is used to calculate
+the right slot in the swiotlb buffer to use. (Strangely tbl_dma_addr is
+a dma_addr_t and it is not converted to phys_addr_t before doing
+operations... I think tbl_dma_addr should be a phys addr.)
+
+The comparison with io_tlb_start is done here:
+
+	do {
+		while (iommu_is_span_boundary(index, nslots, offset_slots,
+					      max_slots)) {
+			index += stride;
+			if (index >= io_tlb_nslabs)
+				index = 0;
+			if (index == wrap)
+				goto not_found;
+		}
+
+index is io_tlb_start and offset_slots is derived by tbl_dma_addr.
