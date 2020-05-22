@@ -2,300 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD2F1DDF82
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16181DDF88
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgEVFyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:54:12 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:53008 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgEVFyM (ORCPT
+        id S1728214AbgEVFzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:55:24 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22520 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726798AbgEVFzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:54:12 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04M5rquC068318;
-        Fri, 22 May 2020 00:53:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590126832;
-        bh=NshuB9n7qwMmk0C1n2A19PvAX8raMBe1CgqKMTbZRv8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AYQq070JKTsfBEbKIFPWTxHq9qYSEOhjzxZ3Uh0/ZFEQhzAlRCGREtpRYFpOuQD7C
-         hz5I9YZjggvNCMFBCl+j4TeytsHzxqUrCpn1kYYnCFV8wUJADIu63T37pCnTrC7ZPc
-         6jQYM955cFR1cjcIWEpdNo/l2HHSi0F0JHHkvZtI=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04M5rqub091641
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 May 2020 00:53:52 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 00:53:51 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 00:53:51 -0500
-Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04M5rlfU114971;
-        Fri, 22 May 2020 00:53:47 -0500
-Subject: Re: [PATCH 01/19] dt-bindings: PCI: Endpoint: Add DT bindings for PCI
- EPF NTB Device
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-pci@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-ntb@googlegroups.com>
-References: <20200514145927.17555-1-kishon@ti.com>
- <20200514145927.17555-2-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <73193475-5244-554d-df71-df600f70c0d9@ti.com>
-Date:   Fri, 22 May 2020 11:23:46 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 22 May 2020 01:55:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590126921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rLKxeVDwjfxiw38I4xWn7gigjYTT0PUzgJGXylCWNk8=;
+        b=DXM6lU7hLmCtEQo7LO05uHeocdPu33gQ8/OXPfV2BHssu6oD/2KapJuFUQhvJK7l97ZZAM
+        UlUy6KNpdYOLcxkiIJy7bgXsmBjbali5Eyn7w72uv8La6doxhi6ysH819ERQARqGedplvf
+        kGXvMmTu0B72Wgu+zTwwNxSwUTfwby8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-TieoHGhBNBeZcN6oR4X9RA-1; Fri, 22 May 2020 01:55:17 -0400
+X-MC-Unique: TieoHGhBNBeZcN6oR4X9RA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30836EC1A0;
+        Fri, 22 May 2020 05:55:14 +0000 (UTC)
+Received: from dcbz.redhat.com (ovpn-112-157.ams2.redhat.com [10.36.112.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DB8166248F;
+        Fri, 22 May 2020 05:54:59 +0000 (UTC)
+From:   Adrian Reber <areber@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        =?UTF-8?q?Micha=C5=82=20C=C5=82api=C5=84ski?= 
+        <mclapinski@google.com>, Kamil Yurtsever <kyurtsever@google.com>,
+        Dirk Petersen <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        Adrian Reber <areber@redhat.com>,
+        Cyrill Gorcunov <gorcunov@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>
+Subject: [PATCH] capabilities: Introduce CAP_RESTORE
+Date:   Fri, 22 May 2020 07:53:50 +0200
+Message-Id: <20200522055350.806609-1-areber@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200514145927.17555-2-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi RobH,
+This enables CRIU to checkpoint and restore a process as non-root.
 
-On 5/14/2020 8:29 PM, Kishon Vijay Abraham I wrote:
-> Add device tree schema for PCI endpoint function bus to which
-> endpoint function devices should be attached. Then add device tree
-> schema for PCI endpoint function device to include bindings thats
-> generic to all endpoint functions. Finally add device tree schema
-> for PCI endpoint NTB function device by including the generic
-> device tree schema for PCIe endpoint function.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../bindings/pci/endpoint/pci-epf-bus.yaml    | 42 +++++++++++
->  .../bindings/pci/endpoint/pci-epf-device.yaml | 69 +++++++++++++++++++
->  .../bindings/pci/endpoint/pci-epf-ntb.yaml    | 68 ++++++++++++++++++
->  3 files changed, 179 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/endpoint/pci-epf-bus.yaml
->  create mode 100644 Documentation/devicetree/bindings/pci/endpoint/pci-epf-device.yaml
->  create mode 100644 Documentation/devicetree/bindings/pci/endpoint/pci-epf-ntb.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/endpoint/pci-epf-bus.yaml b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-bus.yaml
-> new file mode 100644
-> index 000000000000..1c504f2e85e4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-bus.yaml
-> @@ -0,0 +1,42 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/endpoint/pci-epf-bus.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PCI Endpoint Function Bus
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: pci-epf-bus
-> +
-> +patternProperties:
-> +  "^func@[0-9a-f]+$":
-> +    type: object
-> +    description: |
-> +      PCI Endpoint Function Bus node should have subnodes for each of
-> +      the implemented endpoint function. It should follow the bindings
-> +      specified for endpoint function in
-> +      Documentation/devicetree/bindings/pci/endpoint/
-> +
-> +examples:
-> +  - |
-> +    epf_bus {
-> +      compatible = "pci-epf-bus";
-> +
-> +      func@0 {
-> +        compatible = "pci-epf-ntb";
-> +        epcs = <&pcie0_ep>, <&pcie1_ep>;
-> +        epc-names = "primary", "secondary";
-> +        reg = <0>;
+Over the last years CRIU upstream has been asked a couple of time if it
+is possible to checkpoint and restore a process as non-root. The answer
+usually was: 'almost'.
 
-I'm not sure how to represent "reg" property properly for cases like this where
-it represents ID and not a memory resource. I seem to get warning for
-"reg_format" even after adding address-cells and size-cells property in
-epf_bus. Can you give some hints here please?
+The main blocker to restore a process was that selecting the PID of the
+restored process, which is necessary for CRIU, is guarded by CAP_SYS_ADMIN.
 
-> +        epf,vendor-id = /bits/ 16 <0x104c>;
+In the last two years the questions about checkpoint/restore as non-root
+have increased and especially in the last few months we have seen
+multiple people inventing workarounds.
 
-I want to make vendor-id and device-id as 16 bits from the beginning at-least
-for PCIe endpoint. So I'm prefixing these properties with "epf,". However I get
-this "do not match any of the regexes:". Can we add "epf" as a standard prefix?
+The use-cases so far and their workarounds:
 
-Thanks
-Kishon
-> +        epf,device-id = /bits/ 16 <0xb00d>;
-> +        num-mws = <4>;
-> +        mws-size = <0x0 0x100000>, <0x0 0x100000>, <0x0 0x100000>, <0x0 0x100000>;
-> +      };
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/pci/endpoint/pci-epf-device.yaml b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-device.yaml
-> new file mode 100644
-> index 000000000000..cee72864c8ca
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-device.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/endpoint/pci-epf-device.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PCI Endpoint Function Device
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: pci-epf-bus
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^func@"
-> +
-> +  epcs:
-> +    description:
-> +      Phandle to the endpoint controller device. Should have "2" entries for
-> +      NTB endpoint function and "1" entry for others.
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  epc-names:
-> +    description:
-> +      Must contain an entry for each entry in "epcs" when "epcs" have more than
-> +      one entry.
-> +
-> +  reg:
-> +    maxItems: 0
-> +    description: Must contain the index number of the function.
-> +
-> +  epf,vendor-id:
-> +    description:
-> +      The PCI vendor ID
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint16
-> +
-> +  epf,device-id:
-> +    description:
-> +      The PCI device ID
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint16
-> +
-> +  epf,baseclass-code:
-> +    description: Code to classify the type of operation the function performs
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint8
-> +
-> +  epf,subclass-code:
-> +    description:
-> +      Specifies a base class sub-class, which identifies more specifically the
-> +      operation of the Function
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint8
-> +
-> +  epf,subsys-vendor-id:
-> +    description: Code to identify vendor of the add-in card or subsystem
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint16
-> +
-> +  epf,subsys-id:
-> +    description: Code to specify an id that is specific to a vendor
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint16
-> diff --git a/Documentation/devicetree/bindings/pci/endpoint/pci-epf-ntb.yaml b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-ntb.yaml
-> new file mode 100644
-> index 000000000000..92c2e522b9e5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/endpoint/pci-epf-ntb.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/endpoint/pci-epf-ntb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PCI Endpoint NTB Function Device
-> +
-> +maintainers:
-> +  - Kishon Vijay Abraham I <kishon@ti.com>
-> +
-> +allOf:
-> +  - $ref: "pci-epf-device.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: pci-epf-ntb
-> +
-> +  epcs:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  epc-names:
-> +    items:
-> +      - const: primary
-> +      - const: secondary
-> +
-> +  num-mws:
-> +    description:
-> +      Specify the number of memory windows
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint8
-> +    minimum: 1
-> +    maximum: 4
-> +
-> +  mws-size:
-> +    description:
-> +      List of 'num-mws' entries containing size of each memory window.
-> +    minItems: 1
-> +    maxItems: 4
-> +
-> +required:
-> +  - compatible
-> +  - epcs
-> +  - epc-names
-> +  - epf,vendor-id
-> +  - epf,device-id
-> +  - num-mws
-> +  - mws-size
-> +
-> +examples:
-> +  - |
-> +    epf_bus {
-> +      compatible = "pci-epf-bus";
-> +
-> +      func@0 {
-> +        compatible = "pci-epf-ntb";
-> +        reg = <0>;
-> +        epcs = <&pcie0_ep>, <&pcie1_ep>;
-> +        epc-names = "primary", "secondary";
-> +        epf,vendor-id = /bits/ 16 <0x104c>;
-> +        epf,device-id = /bits/ 16 <0xb00d>;
-> +        num-mws = <4>;
-> +        mws-size = <0x0 0x100000>, <0x0 0x100000>, <0x0 0x100000>, <0x0 0x100000>;
-> +      };
-> +    };
-> +...
-> 
+ * Checkpoint/Restore in an HPC environment in combination with
+   a resource manager distributing jobs. Users are always running
+   as non root, but there was the desire to provide a way to
+   checkpoint and restore long running jobs.
+   Workaround: setuid wrapper to start CRIU as root as non-root
+   https://github.com/FredHutch/slurm-examples/blob/master/checkpointer/lib/checkpointer/checkpointer-suid.c
+ * Another use case to checkpoint/restore processes as non-root
+   uses as workaround a non privileged process which cycles through
+   PIDs by calling fork() as fast as possible with a rate of
+   100,000 pids/s instead of writing to ns_last_pid
+   https://github.com/twosigma/set_ns_last_pid
+ * Fast Java startup using checkpoint/restore.
+   We have been in contact with JVM developers who are integrating
+   CRIU into a JVM to decrease the startup time.
+   Workaround so far: patch out CAP_SYS_ADMIN checks in the kernel
+ * Container migration as non root. There are people already
+   using CRIU to migrate containers as non-root. The solution
+   there is to run it in a user namespace. So if you are able
+   to carefully setup your environment with the namespaces
+   it is already possible to restore a container/process as non-root.
+   Unfortunately it is not always possible to setup an environment
+   in such a way and for easier access to non-root based container
+   migration this patch is also required.
+
+There are probably a few more things guarded by CAP_SYS_ADMIN required
+to run checkpoint/restore as non-root, but by applying this patch I can
+already checkpoint and restore processes as non-root. As there are
+already multiple workarounds I would prefer to do it correctly in the
+kernel to avoid that CRIU users are starting to invent more workarounds.
+
+I have used the following tests to verify that this change works as
+expected by setting the new capability CAP_RESTORE on the two resulting
+test binaries:
+
+$ cat ns_last_pid.c
+ // http://efiop-notes.blogspot.com/2014/06/how-to-set-pid-using-nslastpid.html
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/file.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	pid_t pid, new_pid;
+	char buf[32];
+	int fd;
+
+	if (argc != 2)
+		return 1;
+
+	printf("Opening ns_last_pid...\n");
+	fd = open("/proc/sys/kernel/ns_last_pid", O_RDWR | O_CREAT, 0644);
+	if (fd < 0) {
+		perror("Cannot open ns_last_pid");
+		return 1;
+	}
+
+	printf("Locking ns_last_pid...\n");
+	if (flock(fd, LOCK_EX)) {
+		close(fd);
+		printf("Cannot lock ns_last_pid\n");
+		return 1;
+	}
+
+	pid = atoi(argv[1]);
+	snprintf(buf, sizeof(buf), "%d", pid - 1);
+	printf("Writing pid-1 to ns_last_pid...\n");
+	if (write(fd, buf, strlen(buf)) != strlen(buf)) {
+		printf("Cannot write to buf\n");
+		return 1;
+	}
+
+	printf("Forking...\n");
+	new_pid = fork();
+	if (new_pid == 0) {
+		printf("I am the child!\n");
+		exit(0);
+	} else if (new_pid == pid)
+		printf("I am the parent. My child got the pid %d!\n", new_pid);
+	else
+		printf("pid (%d) does not match expected pid (%d)\n", new_pid, pid);
+
+	printf("Cleaning up...\n");
+	if (flock(fd, LOCK_UN))
+		printf("Cannot unlock\n");
+	close(fd);
+	return 0;
+}
+$ id -u; /home/libcap/ns_last_pid 300000
+1001
+Opening ns_last_pid...
+Locking ns_last_pid...
+Writing pid-1 to ns_last_pid...
+Forking...
+I am the parent. My child got the pid 300000!
+I am the child!
+Cleaning up...
+
+For the clone3() based approach:
+$ cat clone3_set_tid.c
+ #define _GNU_SOURCE
+ #include <linux/sched.h>
+ #include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+
+ #define ptr_to_u64(ptr) ((__u64)((uintptr_t)(ptr)))
+
+int main(int argc, char *argv[])
+{
+	struct clone_args c_args = { };
+	pid_t pid, new_pid;
+
+	if (argc != 2)
+		return 1;
+
+	pid = atoi(argv[1]);
+	c_args.set_tid = ptr_to_u64(&pid);
+	c_args.set_tid_size = 1;
+
+	printf("Forking...\n");
+	new_pid = syscall(__NR_clone3, &c_args, sizeof(c_args));
+	if (new_pid == 0) {
+		printf("I am the child!\n");
+		exit(0);
+	} else if (new_pid == pid)
+		printf("I am the parent. My child got the pid %d!\n", new_pid);
+	else
+		printf("pid (%d) does not match expected pid (%d)\n", new_pid, pid);
+	printf("Done\n");
+
+	return 0;
+}
+$ id -u; /home/libcap/clone3_set_tid 300000
+1001
+Forking...
+I am the parent. My child got the pid 300000!
+Done
+I am the child!
+
+Signed-off-by: Adrian Reber <areber@redhat.com>
+---
+ include/linux/capability.h          | 5 +++++
+ include/uapi/linux/capability.h     | 9 ++++++++-
+ kernel/pid.c                        | 2 +-
+ kernel/pid_namespace.c              | 2 +-
+ security/selinux/include/classmap.h | 5 +++--
+ 5 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/capability.h b/include/linux/capability.h
+index b4345b38a6be..1278313cb2bc 100644
+--- a/include/linux/capability.h
++++ b/include/linux/capability.h
+@@ -261,6 +261,11 @@ static inline bool bpf_capable(void)
+ 	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
+ }
+ 
++static inline bool restore_ns_capable(struct user_namespace *ns)
++{
++	return ns_capable(ns, CAP_RESTORE) || ns_capable(ns, CAP_SYS_ADMIN);
++}
++
+ /* audit system wants to get cap info from files as well */
+ extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
+ 
+diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
+index c7372180a0a9..4bcc4e3d41ff 100644
+--- a/include/uapi/linux/capability.h
++++ b/include/uapi/linux/capability.h
+@@ -406,7 +406,14 @@ struct vfs_ns_cap_data {
+  */
+ #define CAP_BPF			39
+ 
+-#define CAP_LAST_CAP         CAP_BPF
++
++/* Allow checkpoint/restore related operations */
++/* Allow PID selection during clone3() */
++/* Allow writing to ns_last_pid */
++
++#define CAP_RESTORE		40
++
++#define CAP_LAST_CAP         CAP_RESTORE
+ 
+ #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+ 
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 3122043fe364..bbc26f2bcff6 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -198,7 +198,7 @@ struct pid *alloc_pid(struct pid_namespace *ns, pid_t *set_tid,
+ 			if (tid != 1 && !tmp->child_reaper)
+ 				goto out_free;
+ 			retval = -EPERM;
+-			if (!ns_capable(tmp->user_ns, CAP_SYS_ADMIN))
++			if (!restore_ns_capable(tmp->user_ns))
+ 				goto out_free;
+ 			set_tid_size--;
+ 		}
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index 0e5ac162c3a8..f58186b31ce6 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -269,7 +269,7 @@ static int pid_ns_ctl_handler(struct ctl_table *table, int write,
+ 	struct ctl_table tmp = *table;
+ 	int ret, next;
+ 
+-	if (write && !ns_capable(pid_ns->user_ns, CAP_SYS_ADMIN))
++	if (write && !restore_ns_capable(pid_ns->user_ns))
+ 		return -EPERM;
+ 
+ 	/*
+diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
+index 98e1513b608a..f8b8f12a6ebd 100644
+--- a/security/selinux/include/classmap.h
++++ b/security/selinux/include/classmap.h
+@@ -27,9 +27,10 @@
+ 	    "audit_control", "setfcap"
+ 
+ #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
+-		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf"
++		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf", \
++		"restore"
+ 
+-#if CAP_LAST_CAP > CAP_BPF
++#if CAP_LAST_CAP > CAP_RESTORE
+ #error New capability defined, please update COMMON_CAP2_PERMS.
+ #endif
+ 
+
+base-commit: e8f3274774b45b5f4e9e3d5cad7ff9f43ae3add5
+-- 
+2.26.2
+
