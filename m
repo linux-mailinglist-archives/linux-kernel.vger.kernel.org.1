@@ -2,111 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDE61DDFFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2E81DDFCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgEVGdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 02:33:00 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:20918 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728209AbgEVGc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 02:32:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590129179; x=1621665179;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Sf33lwe+INgQJ3nfbsCYbHw2Wj4q8ImFKELp3Gjh7hY=;
-  b=h3CAYiHHmaNscsm1GWjtMtqtk11Rn6g3l8xqNsR6IaEv8HTeo/lDkpOH
-   KLDH7Z3QpB9sdPR9m7TtoMUz3X0FPoWHNnHdcLPt4jmEXiNNn+o6/47ux
-   CnzfD7Z+xudGzgif+V9IvYslsDe+t2H0tsq5fflQ5YCoJ/vOjKBX4NnB3
-   4=;
-IronPort-SDR: jIgftmOx8xzurRLAyb1BYUHcvImfS/rto7jUmpbYgEsG9uCTRY5bWzE6bnoysFpHSp3mHouHvh
- ShEx/EZJJNwQ==
-X-IronPort-AV: E=Sophos;i="5.73,420,1583193600"; 
-   d="scan'208";a="31775604"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 22 May 2020 06:32:58 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 80E942831A3;
-        Fri, 22 May 2020 06:32:56 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 22 May 2020 06:32:56 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.175) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 22 May 2020 06:32:47 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Bjoern Doebel" <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v2 18/18] MAINTAINERS: Add entry for the Nitro Enclaves driver
-Date:   Fri, 22 May 2020 09:29:46 +0300
-Message-ID: <20200522062946.28973-19-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200522062946.28973-1-andraprs@amazon.com>
-References: <20200522062946.28973-1-andraprs@amazon.com>
+        id S1728246AbgEVGaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:30:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49278 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728080AbgEVGag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 02:30:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0F000ABBE;
+        Fri, 22 May 2020 06:30:37 +0000 (UTC)
+Subject: Re: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
+To:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+References: <20200521204647.2578479-1-lyude@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ mQENBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAG0J1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPokBVAQTAQgAPhYh
+ BHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMB
+ Ah4BAheAAAoJEGgNwR1TC3ojR80H/jH+vYavwQ+TvO8ksXL9JQWc3IFSiGpuSVXLCdg62AmR
+ irxW+qCwNncNQyb9rd30gzdectSkPWL3KSqEResBe24IbA5/jSkPweJasgXtfhuyoeCJ6PXo
+ clQQGKIoFIAEv1s8l0ggPZswvCinegl1diyJXUXmdEJRTWYAtxn/atut1o6Giv6D2qmYbXN7
+ mneMC5MzlLaJKUtoH7U/IjVw1sx2qtxAZGKVm4RZxPnMCp9E1MAr5t4dP5gJCIiqsdrVqI6i
+ KupZstMxstPU//azmz7ZWWxT0JzgJqZSvPYx/SATeexTYBP47YFyri4jnsty2ErS91E6H8os
+ Bv6pnSn7eAq5AQ0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRH
+ UE9eosYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgT
+ RjP+qbU63Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+R
+ dhgATnWWGKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zb
+ ehDda8lvhFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r
+ 12+lqdsAEQEAAYkBPAQYAQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkD
+ wmcAAAoJEGgNwR1TC3ojpfcIAInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2
+ h9ifw9Nf2TjCZ6AMvC3thAN0rFDj55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxU
+ n+LSiRrOdywn6erjxRi9EYTVLCHcDhBEjKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uI
+ aMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU2y3ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBW
+ HE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/tsZvyEX6zN8CtirPdPWu/VXNRYAl/lat7lSI
+ 3H26qrE=
+Message-ID: <951f6bcc-49f5-ceae-c3a3-7b0a52f9fa2d@suse.de>
+Date:   Fri, 22 May 2020 08:30:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.175]
-X-ClientProxiedBy: EX13D24UWA003.ant.amazon.com (10.43.160.195) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200521204647.2578479-1-lyude@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="qXvrIStwO1M2q642iYF63eAzxDoe7fvSk"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qXvrIStwO1M2q642iYF63eAzxDoe7fvSk
+Content-Type: multipart/mixed; boundary="vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: Dave Airlie <airlied@redhat.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Message-ID: <951f6bcc-49f5-ceae-c3a3-7b0a52f9fa2d@suse.de>
+Subject: Re: [PATCH] drm/vblank: Fix -Wformat compile warnings on some arches
+References: <20200521204647.2578479-1-lyude@redhat.com>
+In-Reply-To: <20200521204647.2578479-1-lyude@redhat.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ecc0749810b0..69fe37999a9e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11956,6 +11956,19 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
- F:	arch/nios2/
- 
-+NITRO ENCLAVES (NE)
-+M:	Andra Paraschiv <andraprs@amazon.com>
-+M:	Alexandru Vasile <lexnv@amazon.com>
-+M:	Alexandru Ciobotaru <alcioa@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	include/linux/nitro_enclaves.h
-+F:	include/uapi/linux/nitro_enclaves.h
-+F:	drivers/virt/nitro_enclaves/
-+F:	samples/nitro_enclaves/
-+F:	Documentation/nitro_enclaves/
-+
- NOHZ, DYNTICKS SUPPORT
- M:	Frederic Weisbecker <fweisbec@gmail.com>
- M:	Thomas Gleixner <tglx@linutronix.de>
--- 
-2.20.1 (Apple Git-117)
+--vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
+Am 21.05.20 um 22:46 schrieb Lyude Paul:
+> On some architectures like ppc64le and aarch64, compiling with
+> -Wformat=3D1 will throw the following warnings:
+>=20
+>   In file included from drivers/gpu/drm/drm_vblank.c:33:
+>   drivers/gpu/drm/drm_vblank.c: In function 'drm_update_vblank_count':
+>   drivers/gpu/drm/drm_vblank.c:273:16: warning: format '%llu' expects
+>   argument of type 'long long unsigned int', but argument 4 has type
+>   'long int' [-Wformat=3D]
+>     DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+>                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   ./include/drm/drm_print.h:407:22: note: in definition of macro
+>   'DRM_DEBUG_VBL'
+>     drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
+>                         ^~~
+>   drivers/gpu/drm/drm_vblank.c:274:22: note: format string is defined h=
+ere
+>            " current=3D%llu, diff=3D%u, hw=3D%u hw_last=3D%u\n",
+>                      ~~~^
+>                      %lu
+>=20
+> So, fix that with a typecast.
+>=20
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Co-developed-by: Dave Airlie <airlied@redhat.com>
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
+Thanks!
+
+> ---
+>  drivers/gpu/drm/drm_vblank.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.=
+c
+> index acb3c3f65b579..1a96db2dd16fa 100644
+> --- a/drivers/gpu/drm/drm_vblank.c
+> +++ b/drivers/gpu/drm/drm_vblank.c
+> @@ -342,7 +342,7 @@ static void drm_update_vblank_count(struct drm_devi=
+ce *dev, unsigned int pipe,
+> =20
+>  	DRM_DEBUG_VBL("updating vblank count on crtc %u:"
+>  		      " current=3D%llu, diff=3D%u, hw=3D%u hw_last=3D%u\n",
+> -		      pipe, atomic64_read(&vblank->count), diff,
+> +		      pipe, (unsigned long long)atomic64_read(&vblank->count), diff,=
+
+>  		      cur_vblank, vblank->last);
+> =20
+>  	if (diff =3D=3D 0) {
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--vO0ySq7Bw8jBAuXnAOrNHBRiJXDIaFxBS--
+
+--qXvrIStwO1M2q642iYF63eAzxDoe7fvSk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl7HcYkACgkQaA3BHVML
+eiNIBAgAi4NqxVlu1Y6OH32hzo33lnkALwxIFbzsPWKpxCbB/ignVxYdDpdsnhL9
+FW4+NfXnnROvZ2zGiKjwB5D6/RI+vM6d7KhB5ivlT7lYsRBZCA4lPrJ6bRzJKLuD
+OZXAFFeBEXjWlqc3PmyMIbpn9gCK/7pMMybfmWhQn7jxakMDMHDoyMITSXPWoESy
+Kpf0ICh6ypxPYfy1f+cUj0FBqeQb7MiesQHG4lFOfhT9UY6NBFZyWVNGLFb3wcyh
++E1jwRwei/dP4yMldPoUQFqS1xuIi8/IK212UbCzFg58mRHRTW9cp6Vr+B4BK8fA
+iKdo1xnFrNUsksZ9Ew7X2OgR2k/+qw==
+=n6OO
+-----END PGP SIGNATURE-----
+
+--qXvrIStwO1M2q642iYF63eAzxDoe7fvSk--
