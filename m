@@ -2,288 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE841DDFE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D72F1DDFC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgEVGbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 02:31:23 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:20657 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728475AbgEVGbT (ORCPT
+        id S1728137AbgEVG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727839AbgEVG3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 02:31:19 -0400
+        Fri, 22 May 2020 02:29:39 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682C2C061A0E;
+        Thu, 21 May 2020 23:29:39 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id er16so4283340qvb.0;
+        Thu, 21 May 2020 23:29:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590129078; x=1621665078;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KLTkN11PYw1BrFhTsfFoVnUQqECKaZPdZ/tYIEVKWpQ=;
-  b=e753uDyUYt6T2gxojllc2OHv15XjkG4koY8VGLp3i2EsmPJD/IhinhdF
-   QMA8v4lS0fKuKKH+NU6EXS3g8gxCjFrwIEeBWNtxWLvNDPlsx/tkIu66A
-   DEYRlyxUbYXsPEV62jmIihi39AQTVVQmuffBUZGq6znkaaPUe8804h3R5
-   g=;
-IronPort-SDR: CyiohJ0v2eKp/mVeAczusX6eMtdHFllTZr4mZItOIhG9QQRdgNM0mfzA7k7C25Hl5vLLL4teXQ
- wNd4Cxate2vg==
-X-IronPort-AV: E=Sophos;i="5.73,420,1583193600"; 
-   d="scan'208";a="31775434"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 22 May 2020 06:31:18 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 2C5B6A2075;
-        Fri, 22 May 2020 06:31:16 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 22 May 2020 06:31:15 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.50) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 22 May 2020 06:31:07 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Bjoern Doebel" <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v2 08/18] nitro_enclaves: Add logic for enclave vm creation
-Date:   Fri, 22 May 2020 09:29:36 +0300
-Message-ID: <20200522062946.28973-9-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200522062946.28973-1-andraprs@amazon.com>
-References: <20200522062946.28973-1-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HjmL6pfe0f3OhioV2JNbpEM60lA22erI2gsb1y8QDSY=;
+        b=PT4yOoiuKuBt/zdxmrF57ViJ9qT4kYjccVUk7DVs1GipOIi/hfbL9Tn+woIX5fd3wM
+         wIrnNvSTAYlQb7jgE5DUtDGU28+L7wK9Hc21fd43W8HRmTpJlLck6DsR1xgmoMxSdZLv
+         0UjE2FWy02blFLBedkvCwOdgLSud9h4kfXlPTWpWBXSE6nU+HyQlkVTdOkMAqwjPjhhe
+         SWbw+VF30WeZNPacf1fW49o2HbnC1oRKurYqgjoNRLMIWvxL4IreseJZK4VKskzt2bFf
+         GsNys43B9ssz6DIml/iE/vIJmO7UKbtBWOqTcO+dBgTyYdzSRyphExX9opYO73n+L0f+
+         asug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=HjmL6pfe0f3OhioV2JNbpEM60lA22erI2gsb1y8QDSY=;
+        b=lsKm/joNmvg8iQM72H7WjMO1AHnlDouoxTFrgnMMBe2/b+O/x1LshxNFoZo6m2FIvU
+         2yfWN5uhFdqOJZmgwZgNA5GOVz7WEtkefhxXEMHC8VDNVmq4FD/O/fjHGg9fDMw64Cq3
+         YCrLq532TEjk1WoRIhkAt9XgWzPhgwrwd9fnU/3O6tPv8mXQtaik/w7hhE7LDQspeHlv
+         BroVn+LyROuGdTZAG/1nzV7udBgeZUewRjV0sWWMLWYxs5vjeaNSktIDNVGmZ/bow2C3
+         u4xvZxhyoDvzmhJtY8HO1bCXP3pEIQSmofx0H6+sjPvCUxU2KFE+tR9gBaP1IpPON6+F
+         UrOg==
+X-Gm-Message-State: AOAM532xeG6ZoOAEKTN/40T4m3lQv8jAnIYftqxRpAw3Yng/Zl4fQTVH
+        XdVMTsc3cMrOXDH01Zyc90g=
+X-Google-Smtp-Source: ABdhPJyBja49phXuJS/COK+hhpwZH7O+f/HMQzLZuJcaLN+ios1xoFmUBHgcTYOnRbcjwNR4GhzggQ==
+X-Received: by 2002:a0c:b60c:: with SMTP id f12mr2308661qve.244.1590128978414;
+        Thu, 21 May 2020 23:29:38 -0700 (PDT)
+Received: from [192.168.1.209] (pool-108-51-35-162.washdc.fios.verizon.net. [108.51.35.162])
+        by smtp.googlemail.com with ESMTPSA id v4sm6198876qkv.43.2020.05.21.23.29.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 May 2020 23:29:37 -0700 (PDT)
+Subject: Re: [PATCH 5/5] dt-bindings: timer: Add CLINT bindings
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20200521134544.816918-1-anup.patel@wdc.com>
+ <20200521134544.816918-6-anup.patel@wdc.com>
+ <2aec08b7-7197-4b60-89d9-c3b0d5a8a258@gmail.com>
+ <CAAhSdy0OuxCwMVPBrvPpYMfVrhUuY3pONysk75yognOM5-0U+g@mail.gmail.com>
+From:   Sean Anderson <seanga2@gmail.com>
+Autocrypt: addr=seanga2@gmail.com; prefer-encrypt=mutual; keydata=
+ mQENBFe74PkBCACoLC5Zq2gwrDcCkr+EPGsT14bsxrW07GiYzQhLCgwnPdEpgU95pXltbFhw
+ 46GfyffABWxHKO2x+3L1S6ZxC5AiKbYXo7lpnTBYjamPWYouz+VJEVjUx9aaSEByBah5kX6a
+ lKFZWNbXLAJh+dE1HFaMi3TQXXaInaREc+aO1F7fCa2zNE75ja+6ah8L4TPRFZ2HKQzve0/Y
+ GXtoRw97qmnm3U36vKWT/m2AiLF619F4T1mHvlfjyd9hrVwjH5h/2rFyroXVXBZHGA9Aj8eN
+ F2si35dWSZlIwXkNu9bXp0/pIu6FD0bI+BEkD5S7aH1G1iAcMFi5Qq2RNa041DfQSDDHABEB
+ AAG0K1NlYW4gR2FsbGFnaGVyIEFuZGVyc29uIDxzZWFuZ2EyQGdtYWlsLmNvbT6JAVcEEwEK
+ AEECGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4ACGQEWIQSQYR1bzo1I0gPoYCg+6I/stKEQ
+ bgUCXT+S2AUJB2TlXwAKCRA+6I/stKEQbhNOB/9ooea0hU9Sgh7PBloU6CgaC5mlqPLB7NTp
+ +JkB+nh3Fqhk+qLZwzEynnuDLl6ESpVHIc0Ym1lyF4gT3DsrlGT1h0Gzw7vUwd1+ZfN0CuIx
+ Rn861U/dAUjvbtN5kMBqOI4/5ea+0r7MACcIVnKF/wMXBD8eypHsorT2sJTzwZ6DRCNP70C5
+ N1ahpqqNmXe0uLdP0pu55JCqhrGw2SinkRMdWyhSxT56uNwIVHGhLTqH7Q4t1N6G1EH626qa
+ SvIJsWlNpll6Y3AYLDw2/Spw/hqieS2PQ/Ky3rPZnvJt7/aSNYsKoFGX0yjkH67Uq8Lx0k1L
+ w8jpXnbEPQN3A2ZJCbeMuQENBF0/k2UBCADhvSlHblNc/aRAWtCFDblCJJMN/8Sd7S9u4ZRS
+ w1wIB4tTF7caxc8yfCHa+FjMFeVu34QPtMOvd/gfHz0mr+t0PiTAdDSbd6o7tj+g5ylm+FhT
+ OTUtJQ6mx6L9GzMmIDEbLxJMB9RfJaL2mT5JkujKxEst6nlHGV/lEQ54xBl5ImrPvuR5Dbnr
+ zWQYlafb1IC5ZFwSMpBeSfhS7/kGPtFY3NkpLrii/CF+ME0DYYWxlkDIycqF3fsUGGfb3HIq
+ z2l95OB45+mCs9DrIDZXRT6mFjLcl35UzuEErNIskCl9NKlbvAMAl+gbDH275SnE44ocC4qu
+ 0tMe7Z5jpOy6J8nNABEBAAGJATwEGAEKACYWIQSQYR1bzo1I0gPoYCg+6I/stKEQbgUCXT+T
+ ZQIbDAUJAeEzgAAKCRA+6I/stKEQbjAGB/4mYRqZTTEFmcS+f+8zsmjt2CfWvm38kR+sJFWB
+ vz82pFiUWbUM5xvcuOQhz698WQnIazbDGSYaOipyVNS52YiuYJDqMszzgw++DrcSuu0oRYWN
+ EWCkJjxMqjGg8uY0OZ6FJG+gYRN5wMFErGfV1OqQ7l00FYA9OzpOEuW9PzPZEutFnAbbh77i
+ zvxbQtT7IJCL24A4KutNYKmWg98im4mCzQcJCxE86Bv69ErLVPUyYbp4doLadScilXlvkkjL
+ iq1wOt3rRzOuw+qnWVgWGBPxdDftz0Wck941tYF9XE0aMgkf4o1sGoDZFUFPCQdfEYPzzV7O
+ S5hN3/mP5UeooFHb
+Message-ID: <c0e9e625-daf8-b72f-2237-06018ff5d8a0@gmail.com>
+Date:   Fri, 22 May 2020 02:29:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Originating-IP: [10.43.162.50]
-X-ClientProxiedBy: EX13D06UWC004.ant.amazon.com (10.43.162.97) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAhSdy0OuxCwMVPBrvPpYMfVrhUuY3pONysk75yognOM5-0U+g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ioctl command logic for enclave VM creation. It triggers a slot
-allocation. The enclave resources will be associated with this slot and
-it will be used as an identifier for triggering enclave run.
+On 5/22/20 1:54 AM, Anup Patel wrote:
+> On Fri, May 22, 2020 at 1:35 AM Sean Anderson <seanga2@gmail.com> wrote=
+:
+>>
+>> On 5/21/20 9:45 AM, Anup Patel wrote:
+>>> +Required properties:
+>>> +- compatible : "sifive,clint-1.0.0" and a string identifying the act=
+ual
+>>> +  detailed implementation in case that specific bugs need to be work=
+ed around.
+>>
+>> Should the "riscv,clint0" compatible string be documented here? This
+>=20
+> Yes, I forgot to add this compatible string. I will add in v2.
+>=20
+>> peripheral is not really specific to sifive, as it is present in most
+>> rocket-chip cores.
+>=20
+> I agree that CLINT is present in a lot of non-SiFive RISC-V SOCs and
+> FPGAs but this IP is only documented as part of SiFive FU540 SOC.
+> (Refer, https://static.dev.sifive.com/FU540-C000-v1.0.pdf)
+>=20
+> The RISC-V foundation should host the CLINT spec independently
+> under https://github.com/riscv and make CLINT spec totally open.
+>=20
+> For now, I have documented it just like PLIC DT bindings found at:
+> Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.=
+0.txt
 
-Return a file descriptor, namely enclave fd. This is further used by the
-associated user space enclave process to set enclave resources and
-trigger enclave termination.
+The PLIC seems to have its own RISC-V-sponsored documentation [1] which
+was split off from the older privileged specs. By your logic above,
+should it be renamed to riscv,plic0.txt (with a corresponding change in
+the documented compatible strings)?
 
-The poll function is implemented in order to notify the enclave process
-when an enclave exits without a specific enclave termination command
-trigger e.g. when an enclave crashes.
+[1] https://github.com/riscv/riscv-plic-spec
 
-Signed-off-by: Alexandru Vasile <lexnv@amazon.com>
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 169 ++++++++++++++++++++++
- 1 file changed, 169 insertions(+)
+>=20
+> If RISC-V maintainers agree then I will document it as "RISC-V CLINT".
+>=20
+> @Palmer ?? @Paul ??
+>=20
+> Regards,
+> Anup
+>=20
 
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index e1866fac8220..1036221238f4 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -63,6 +63,146 @@ struct ne_cpu_pool {
- 
- static struct ne_cpu_pool ne_cpu_pool;
- 
-+static int ne_enclave_open(struct inode *node, struct file *file)
-+{
-+	return 0;
-+}
-+
-+static long ne_enclave_ioctl(struct file *file, unsigned int cmd,
-+			     unsigned long arg)
-+{
-+	switch (cmd) {
-+	default:
-+		return -ENOTTY;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ne_enclave_release(struct inode *inode, struct file *file)
-+{
-+	return 0;
-+}
-+
-+static __poll_t ne_enclave_poll(struct file *file, poll_table *wait)
-+{
-+	__poll_t mask = 0;
-+	struct ne_enclave *ne_enclave = file->private_data;
-+
-+	poll_wait(file, &ne_enclave->eventq, wait);
-+
-+	if (!ne_enclave->has_event)
-+		return mask;
-+
-+	mask = POLLHUP;
-+
-+	return mask;
-+}
-+
-+static const struct file_operations ne_enclave_fops = {
-+	.owner		= THIS_MODULE,
-+	.llseek		= noop_llseek,
-+	.poll		= ne_enclave_poll,
-+	.unlocked_ioctl	= ne_enclave_ioctl,
-+	.open		= ne_enclave_open,
-+	.release	= ne_enclave_release,
-+};
-+
-+/**
-+ * ne_create_vm_ioctl - Alloc slot to be associated with an enclave. Create
-+ * enclave file descriptor to be further used for enclave resources handling
-+ * e.g. memory regions and CPUs.
-+ *
-+ * This function gets called with the ne_pci_dev enclave mutex held.
-+ *
-+ * @pdev: PCI device used for enclave lifetime management.
-+ * @ne_pci_dev: private data associated with the PCI device.
-+ * @type: type of the virtual machine to be created.
-+ *
-+ * @returns: enclave fd on success, negative return value on failure.
-+ */
-+static int ne_create_vm_ioctl(struct pci_dev *pdev,
-+			      struct ne_pci_dev *ne_pci_dev, unsigned long type)
-+{
-+	struct ne_pci_dev_cmd_reply cmd_reply = {};
-+	int fd = 0;
-+	struct file *file = NULL;
-+	struct ne_enclave *ne_enclave = NULL;
-+	int rc = -EINVAL;
-+	struct slot_alloc_req slot_alloc_req = {};
-+
-+	if (WARN_ON(!pdev) || WARN_ON(!ne_pci_dev))
-+		return -EINVAL;
-+
-+	ne_enclave = kzalloc(sizeof(*ne_enclave), GFP_KERNEL);
-+	if (!ne_enclave)
-+		return -ENOMEM;
-+
-+	if (!zalloc_cpumask_var(&ne_enclave->cpu_siblings, GFP_KERNEL)) {
-+		kzfree(ne_enclave);
-+
-+		return -ENOMEM;
-+	}
-+
-+	fd = get_unused_fd_flags(O_CLOEXEC);
-+	if (fd < 0) {
-+		rc = fd;
-+
-+		pr_err_ratelimited(NE "Error in getting unused fd [rc=%d]\n",
-+				   rc);
-+
-+		goto free_cpumask;
-+	}
-+
-+	file = anon_inode_getfile("ne-vm", &ne_enclave_fops, ne_enclave,
-+				  O_RDWR);
-+	if (IS_ERR(file)) {
-+		rc = PTR_ERR(file);
-+
-+		pr_err_ratelimited(NE "Error in anon inode get file [rc=%d]\n",
-+				   rc);
-+
-+		goto put_fd;
-+	}
-+
-+	ne_enclave->pdev = pdev;
-+
-+	rc = ne_do_request(ne_enclave->pdev, SLOT_ALLOC, &slot_alloc_req,
-+			   sizeof(slot_alloc_req), &cmd_reply,
-+			   sizeof(cmd_reply));
-+	if (rc < 0) {
-+		pr_err_ratelimited(NE "Error in slot alloc [rc=%d]\n", rc);
-+
-+		goto put_file;
-+	}
-+
-+	init_waitqueue_head(&ne_enclave->eventq);
-+	ne_enclave->has_event = false;
-+	mutex_init(&ne_enclave->enclave_info_mutex);
-+	ne_enclave->max_mem_regions = cmd_reply.mem_regions;
-+	INIT_LIST_HEAD(&ne_enclave->mem_regions_list);
-+	ne_enclave->mm = current->mm;
-+	ne_enclave->slot_uid = cmd_reply.slot_uid;
-+	ne_enclave->state = NE_STATE_INIT;
-+	INIT_LIST_HEAD(&ne_enclave->vcpu_ids_list);
-+
-+	list_add(&ne_enclave->enclave_list_entry, &ne_pci_dev->enclaves_list);
-+
-+	fd_install(fd, file);
-+
-+	return fd;
-+
-+put_file:
-+	fput(file);
-+put_fd:
-+	put_unused_fd(fd);
-+free_cpumask:
-+	free_cpumask_var(ne_enclave->cpu_siblings);
-+	kzfree(ne_enclave);
-+
-+	return rc;
-+}
-+
- static int ne_open(struct inode *node, struct file *file)
- {
- 	return 0;
-@@ -70,7 +210,36 @@ static int ne_open(struct inode *node, struct file *file)
- 
- static long ne_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
-+	struct ne_pci_dev *ne_pci_dev = NULL;
-+	struct pci_dev *pdev = pci_get_device(PCI_VENDOR_ID_AMAZON,
-+					      PCI_DEVICE_ID_NE, NULL);
-+
-+	if (WARN_ON(!pdev))
-+		return -EINVAL;
-+
-+	ne_pci_dev = pci_get_drvdata(pdev);
-+	if (WARN_ON(!ne_pci_dev))
-+		return -EINVAL;
-+
- 	switch (cmd) {
-+	case KVM_CREATE_VM: {
-+		int rc = -EINVAL;
-+		unsigned long type = 0;
-+
-+		if (copy_from_user(&type, (void *)arg, sizeof(type))) {
-+			pr_err_ratelimited(NE "Error in copy from user\n");
-+
-+			return -EFAULT;
-+		}
-+
-+		mutex_lock(&ne_pci_dev->enclaves_list_mutex);
-+
-+		rc = ne_create_vm_ioctl(pdev, ne_pci_dev, type);
-+
-+		mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
-+
-+		return rc;
-+	}
- 
- 	default:
- 		return -ENOTTY;
--- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+--Sean
 
