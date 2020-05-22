@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1018D1DEF9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 21:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076631DEFA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 21:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730935AbgEVTCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 15:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730840AbgEVTCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 15:02:19 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804F1C061A0E;
-        Fri, 22 May 2020 12:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=3WYApwMQHv/jK2wjKkDG3PzXHTttraCjB18s9qs0m9Q=; b=oIYuKmUbm7Iz4mLUIgxRg3v4+Y
-        9+sgh7Vf4L1vzyqBwRTlR1wbayzhVg6R9cnCs/3GzWiZJQd/P1+JDdE9OVKyU0B+pKi4tPTXJoIrH
-        zb/MdevVMWFu9zsAKEr0VWCkVdxJQDRbhJcfWYdVRdVXOmo8L6176IF0hDGq4Y3KEWH3CDYUhLGSV
-        UGGHjWqVcmnxY6aLEzqGR03IlwjP8H58HZoZP9MzS9pcfHlXFRMyUxFS+wcTohEemt78oCR8V+YFp
-        rdM9EmTxzpefGAlduTvKUqvZILzsKaNMKCMOJfCa7fZ/JxW15/9q+pDafuLHgHpILYHn7omdFChq/
-        fQzqkwLA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jcCvy-0005AK-8C; Fri, 22 May 2020 19:02:18 +0000
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Yotam Gigi <yotam.gi@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -net-next] net: psample: depends on INET
-Message-ID: <3c51bea5-b7f5-f64d-eaf2-b4dcba82ce16@infradead.org>
-Date:   Fri, 22 May 2020 12:02:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1730941AbgEVTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 15:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730866AbgEVTFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 15:05:03 -0400
+Subject: Re: [GIT PULL] io_uring fixes for 5.7-rc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590174303;
+        bh=nctvkNR0q8oOHi3g8MVv7QBdrox+PkH3tC/gIkx0DzY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=UohL01btv8q15v4f47WoZNdIPaGR2YO6nzCokrdREUJ40sGWu30faGECnleiEg/Lu
+         ROKDejoCDHI1vkDeYtzE+zNrwg6jOrcDox2wNphyrtIvPMluK9MQ+HQEhqVejdKXA8
+         dh83dyrfhSrXrn91st2gbgXeNJBzn9jbpIQaEyBc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <89dab0b5-a43d-fd21-e22d-8d5d4c2ae510@kernel.dk>
+References: <89dab0b5-a43d-fd21-e22d-8d5d4c2ae510@kernel.dk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <89dab0b5-a43d-fd21-e22d-8d5d4c2ae510@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
+ tags/io_uring-5.7-2020-05-22
+X-PR-Tracked-Commit-Id: d4ae271dfaae2a5f41c015f2f20d62a1deeec734
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 444565650a5fe9c63ddf153e6198e31705dedeb2
+Message-Id: <159017430346.18534.11150149570914168415.pr-tracker-bot@kernel.org>
+Date:   Fri, 22 May 2020 19:05:03 +0000
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+The pull request you sent on Fri, 22 May 2020 11:12:07 -0600:
 
-Fix psample build error when CONFIG_INET is not set/enabled.
-PSAMPLE should depend on INET instead of NET since
-ip_tunnel_info_opts() is only present for CONFIG_INET.
+> git://git.kernel.dk/linux-block.git tags/io_uring-5.7-2020-05-22
 
-../net/psample/psample.c: In function ‘__psample_ip_tun_to_nlattr’:
-../net/psample/psample.c:216:25: error: implicit declaration of function ‘ip_tunnel_info_opts’; did you mean ‘ip_tunnel_info_opts_set’? [-Werror=implicit-function-declaration]
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/444565650a5fe9c63ddf153e6198e31705dedeb2
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yotam Gigi <yotam.gi@gmail.com>
----
-This might be too stringent...
+Thank you!
 
- net/psample/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20200522.orig/net/psample/Kconfig
-+++ linux-next-20200522/net/psample/Kconfig
-@@ -4,7 +4,7 @@
- #
- 
- menuconfig PSAMPLE
--	depends on NET
-+	depends on INET
- 	tristate "Packet-sampling netlink channel"
- 	default n
- 	help
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
