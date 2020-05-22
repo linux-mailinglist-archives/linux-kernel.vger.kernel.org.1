@@ -2,148 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429F91DE959
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45371DE937
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730497AbgEVOqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48762 "EHLO mail.kernel.org"
+        id S1730184AbgEVOpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730357AbgEVOqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:46:10 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729868AbgEVOpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 10:45:30 -0400
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10128204EF;
-        Fri, 22 May 2020 14:46:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2200621534;
+        Fri, 22 May 2020 14:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590158770;
-        bh=xL0iNQA61zcd+Iy+CRhN4KujKqVvoopu6rrafJslSYk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07CBE6yL8mB6BaiAGeIP8E7u9ppDj+LFMIN/lwK1oOqis9HVXDBWiw0o7lfNXmqHr
-         Mx2GhHNv2HSkmgoMWqwlC1uQjSC3ZDKZYHc3LoXCGV1sI14emQwsPiwa1cwjAM/rGf
-         j5NOZPFFqtZBYD1I2MUSa3Of1aRp/BZXdQ9CdSzE=
-Received: by pali.im (Postfix)
-        id 3863B51E; Fri, 22 May 2020 16:46:08 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-        b43-dev@lists.infradead.org, brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, libertas-dev@lists.infradead.org,
-        linux-wireless@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-Subject: [PATCH 11/11] mmc: sdio: Sort all SDIO IDs in common include file
-Date:   Fri, 22 May 2020 16:44:12 +0200
-Message-Id: <20200522144412.19712-12-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200522144412.19712-1-pali@kernel.org>
-References: <20200522144412.19712-1-pali@kernel.org>
+        s=default; t=1590158729;
+        bh=JJFT+F3Ml0IsJnlUkyWUziZpN/+xTkSQfeqtW0Lv3ek=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Lp8ESUFXUWue5ssidflAQSNbp4QO3jmmq4j/PF1vFWw9ND1ZXlOwpk8i+ej8YykFl
+         ixZFC0MY0umf6tR+wHBwpzAjvnrPvsKm9GpIQiS0qcwmpC0vYPK/qsc7pyZipiC5Nd
+         F+Kmc7e0dBlG73Pc5Neja6bc3n6O76iI8eqSyXLc=
+Received: by mail-io1-f42.google.com with SMTP id d7so11608522ioq.5;
+        Fri, 22 May 2020 07:45:29 -0700 (PDT)
+X-Gm-Message-State: AOAM532dn+nPJCJlKeT3eMpE/otlRicunC91oM3Q7xoEhqCTko+ZdSzc
+        ZQ+vmxxEdHgytHqt2nflmv2YOvG3nmjJslx2oww=
+X-Google-Smtp-Source: ABdhPJyhlLvFQ0WQkr3hDN61INpdGsheflZGjozbDLpURWMljOyFHLzvNSXk8utBm7+M4D0JYgdLDCCOjonAHHDaNik=
+X-Received: by 2002:a05:6602:2dcd:: with SMTP id l13mr3392593iow.203.1590158728428;
+ Fri, 22 May 2020 07:45:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200517125754.8934-1-ardb@kernel.org> <CAMj1kXGUxPuQCv9KPezqpLf1qLTbJh_j9JeVnnYZ=HbnL65=AQ@mail.gmail.com>
+ <20200522134004.GF28750@zn.tnic> <CAMj1kXHogO=3wAyZPi9WtHP9++N5KH6OjNgY_CQ_o8nZJ5jjVA@mail.gmail.com>
+ <87mu60rrq2.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87mu60rrq2.fsf@nanos.tec.linutronix.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 22 May 2020 16:45:16 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFZhq09MWCMTuN07WqA=PEKtJf5i7feO5pTPRObK-NeQQ@mail.gmail.com>
+Message-ID: <CAMj1kXFZhq09MWCMTuN07WqA=PEKtJf5i7feO5pTPRObK-NeQQ@mail.gmail.com>
+Subject: Re: [GIT PULL 0/7] EFI fixes for v5.7
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Dave Young <dyoung@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Lenny Szubowicz <lszubowi@redhat.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Loic Yhuel <loic.yhuel@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Mike Lothian <mike@fireburn.co.uk>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix ordering of SDIO IDs to conform to the comment above, which says vendor
-first, device next.
+On Fri, 22 May 2020 at 16:04, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Ard,
+>
+> Ard Biesheuvel <ardb@kernel.org> writes:
+> > On Fri, 22 May 2020 at 15:40, Borislav Petkov <bp@alien8.de> wrote:
+> >>
+> >> On Fri, May 22, 2020 at 03:06:20PM +0200, Ard Biesheuvel wrote:
+> >> > Ping?
+> >>
+> >> Did you want to make your tags unique from the next pull request onwards
+> >> and I were supposed to pull this one as is?
+> >
+> > What usually happens is that Ingo applies the patches piecemeal,
+> > ignoring the tag altogether, so without any coordination between you
+> > as x86 maintainers or communication back to me, that is what i was
+> > expecting to happen this time as well.
+> >
+> > Note that I have another PR pending since two weeks ago [0].
+> >
+> > So if you want to start dealing with the EFI trees in a different way
+> > from now on, that is perfectly fine with me, but please align with
+> > Ingo and Thomas first.
+>
+> /me dons managerial hat
+>
+> Yes, please. Your pull request really do not need any special handling.
+>
+> Please add a unique signed tag to each pull request and stick the
+> description, e.g.
+>
+>  " EFI fixes for v5.7-rcX:
+>    - fix EFI framebuffer earlycon for wide fonts
+>    - avoid filling screen_info with garbage...."
+>
+> into the tag which gives us the merge commit message automagically.
+>
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- include/linux/mmc/sdio_ids.h | 43 ++++++++++++++++++------------------
- 1 file changed, 22 insertions(+), 21 deletions(-)
+Sure.
 
-diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index b19200aea56a..15ed8ce9d394 100644
---- a/include/linux/mmc/sdio_ids.h
-+++ b/include/linux/mmc/sdio_ids.h
-@@ -25,9 +25,23 @@
-  * Vendors and devices.  Sort key: vendor first, device next.
-  */
- 
-+#define SDIO_VENDOR_ID_STE			0x0020
-+#define SDIO_DEVICE_ID_STE_CW1200		0x2280
-+
-+#define SDIO_VENDOR_ID_INTEL			0x0089
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200WIMAX	0x1402
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200WIFI	0x1403
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200TOP	0x1404
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200GPS	0x1405
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200BT		0x1406
-+#define SDIO_DEVICE_ID_INTEL_IWMC3200WIMAX_2G5	0x1407
-+
- #define SDIO_VENDOR_ID_CGUYS			0x0092
- #define SDIO_DEVICE_ID_CGUYS_EW_CG1102GC	0x0004
- 
-+#define SDIO_VENDOR_ID_TI			0x0097
-+#define SDIO_DEVICE_ID_TI_WL1271		0x4076
-+
- #define SDIO_VENDOR_ID_ATHEROS			0x0271
- #define SDIO_DEVICE_ID_ATHEROS_AR6003_00	0x0300
- #define SDIO_DEVICE_ID_ATHEROS_AR6003_01	0x0301
-@@ -41,34 +55,26 @@
- 
- #define SDIO_VENDOR_ID_BROADCOM			0x02d0
- #define SDIO_DEVICE_ID_BROADCOM_NINTENDO_WII	0x044b
--#define SDIO_DEVICE_ID_BROADCOM_43143		0xa887
- #define SDIO_DEVICE_ID_BROADCOM_43241		0x4324
- #define SDIO_DEVICE_ID_BROADCOM_4329		0x4329
- #define SDIO_DEVICE_ID_BROADCOM_4330		0x4330
- #define SDIO_DEVICE_ID_BROADCOM_4334		0x4334
--#define SDIO_DEVICE_ID_BROADCOM_43340		0xa94c
--#define SDIO_DEVICE_ID_BROADCOM_43341		0xa94d
- #define SDIO_DEVICE_ID_BROADCOM_4335_4339	0x4335
- #define SDIO_DEVICE_ID_BROADCOM_4339		0x4339
--#define SDIO_DEVICE_ID_BROADCOM_43362		0xa962
--#define SDIO_DEVICE_ID_BROADCOM_43364		0xa9a4
--#define SDIO_DEVICE_ID_BROADCOM_43430		0xa9a6
- #define SDIO_DEVICE_ID_BROADCOM_4345		0x4345
--#define SDIO_DEVICE_ID_BROADCOM_43455		0xa9bf
- #define SDIO_DEVICE_ID_BROADCOM_4354		0x4354
-+#define SDIO_DEVICE_ID_BROADCOM_CYPRESS_89359	0x4355
- #define SDIO_DEVICE_ID_BROADCOM_4356		0x4356
- #define SDIO_DEVICE_ID_BROADCOM_4359		0x4359
- #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_4373	0x4373
- #define SDIO_DEVICE_ID_BROADCOM_CYPRESS_43012	0xa804
--#define SDIO_DEVICE_ID_BROADCOM_CYPRESS_89359	0x4355
--
--#define SDIO_VENDOR_ID_INTEL			0x0089
--#define SDIO_DEVICE_ID_INTEL_IWMC3200WIMAX	0x1402
--#define SDIO_DEVICE_ID_INTEL_IWMC3200WIFI	0x1403
--#define SDIO_DEVICE_ID_INTEL_IWMC3200TOP	0x1404
--#define SDIO_DEVICE_ID_INTEL_IWMC3200GPS	0x1405
--#define SDIO_DEVICE_ID_INTEL_IWMC3200BT		0x1406
--#define SDIO_DEVICE_ID_INTEL_IWMC3200WIMAX_2G5	0x1407
-+#define SDIO_DEVICE_ID_BROADCOM_43143		0xa887
-+#define SDIO_DEVICE_ID_BROADCOM_43340		0xa94c
-+#define SDIO_DEVICE_ID_BROADCOM_43341		0xa94d
-+#define SDIO_DEVICE_ID_BROADCOM_43362		0xa962
-+#define SDIO_DEVICE_ID_BROADCOM_43364		0xa9a4
-+#define SDIO_DEVICE_ID_BROADCOM_43430		0xa9a6
-+#define SDIO_DEVICE_ID_BROADCOM_43455		0xa9bf
- 
- #define SDIO_VENDOR_ID_MARVELL			0x02df
- #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
-@@ -112,12 +118,7 @@
- #define SDIO_DEVICE_ID_SIANO_NOVA_A0		0x1100
- #define SDIO_DEVICE_ID_SIANO_STELLAR 		0x5347
- 
--#define SDIO_VENDOR_ID_TI			0x0097
--#define SDIO_DEVICE_ID_TI_WL1271		0x4076
- #define SDIO_VENDOR_ID_TI_WL1251		0x104c
- #define SDIO_DEVICE_ID_TI_WL1251		0x9066
- 
--#define SDIO_VENDOR_ID_STE			0x0020
--#define SDIO_DEVICE_ID_STE_CW1200		0x2280
--
- #endif /* LINUX_MMC_SDIO_IDS_H */
--- 
-2.20.1
+In that case, please pull these changes from
 
+efi-fixes-for-v5.7-rc6
+
+instead, and disregard the PR for v5.8. I will respin that, include
+some patches that came in in the mean time, and tag it in the correct
+way before resending the PR.
