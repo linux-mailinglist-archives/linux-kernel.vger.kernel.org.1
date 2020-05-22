@@ -2,118 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ED61DE212
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DE91DE21B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgEVIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 04:37:00 -0400
-Received: from mail-co1nam11on2046.outbound.protection.outlook.com ([40.107.220.46]:32602
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728959AbgEVIg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 04:36:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZKoAWZ+rX7eY2R77WD+hCJV38abdLAnjxoRswKaIhTwMNjLOnoDOfvP9F7jCvQjYXXa6jy4fbhh76HNNA7DYRU5l4eeYxX18GVVC4xj+NjIGyvv4bsL2e4WVqWeHvG32Eciin5SuL8g/pK6Lfj1frmObyaPpSKM+FTId+k0YmvKAgyGdGxOg21pGvdTBHqmGAsfXzZt0NacD9iFbIbhezM6ROR5x2YwQ42MMhxOCecCmFaPrRIBJrQyepFOZMdyuxvFTZhCo7wRA1Qr/0+6FMQaV/wFUS3RYRzgWPNKML7ZEj4YPcjt4jDcSF4JVbORnKlDMXKwndny775N9xzFqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Lby/dmjQ5F8asMRZ69wH+huKDwLA2+unC7J/ZCQKmE=;
- b=GQCrueShdQEXHATlvpL8sxzPY0cvtZDrj6cTczDAAGyUjl4Y1roIu16SWupLbXjreazD07kt8XywymhyXeS2JIX873ajoHFUebTfDBUdyJBFEe5rxdAcuc3BsE6mYhPbIGLAUnyn/2ccgDpALTOTkP6H5TCBweYEFtH8X+hDS+dGMz7g/43gGjRmEpICvBe8KZiNO/qnzVEoFdh8EseCvtx9Q2+7mBcNntHTEzPLrhxhUyFK8aRXIcPwCnFkl+1Qan2lffg6vhLrYt2Z7lohCHG8ZGlg8svreskEsGk/7Nj54ygRphZ5/EqXLXM0SD8H9ybCS7U06o/3vnGFtLQVSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Lby/dmjQ5F8asMRZ69wH+huKDwLA2+unC7J/ZCQKmE=;
- b=M8yy+r3f+Pq9/SsP9imJ+KJUJj89sYBHr4NDkVdVn4Q0aOMFvvPHxBs/ow6hkdLmHugZmUNAXrkXGlRtawcBDYbwxrgIIZglWR1tyK/eHXpoYWqLM/vFL51Y4smwuATxOQJgUeXi7YVOfdC9KuULg3He+919ydvdKFMoicI00b0=
-Received: from SN6PR08MB5693.namprd08.prod.outlook.com (2603:10b6:805:f8::33)
- by SN6PR08MB4975.namprd08.prod.outlook.com (2603:10b6:805:69::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Fri, 22 May
- 2020 08:36:56 +0000
-Received: from SN6PR08MB5693.namprd08.prod.outlook.com
- ([fe80::d5fe:2ead:9b9a:c340]) by SN6PR08MB5693.namprd08.prod.outlook.com
- ([fe80::d5fe:2ead:9b9a:c340%4]) with mapi id 15.20.3021.020; Fri, 22 May 2020
- 08:36:56 +0000
-From:   "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, "kjlu@umn.edu" <kjlu@umn.edu>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] [PATCH] scsi: ufs-bsg: Fix runtime PM imbalance on error
-Thread-Topic: [EXT] [PATCH] scsi: ufs-bsg: Fix runtime PM imbalance on error
-Thread-Index: AQHWL/XSkL9YvKr2Y0+njmc4MiuIK6izvNjg
-Date:   Fri, 22 May 2020 08:36:56 +0000
-Message-ID: <SN6PR08MB56932A6D579AFB4E28AFD001DBB40@SN6PR08MB5693.namprd08.prod.outlook.com>
-References: <20200522045932.31795-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20200522045932.31795-1-dinghao.liu@zju.edu.cn>
-Accept-Language: en-150, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: zju.edu.cn; dkim=none (message not signed)
- header.d=none;zju.edu.cn; dmarc=none action=none header.from=micron.com;
-x-originating-ip: [165.225.81.96]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 18a5f352-f520-49e3-a0c9-08d7fe2b4970
-x-ms-traffictypediagnostic: SN6PR08MB4975:
-x-microsoft-antispam-prvs: <SN6PR08MB497523C465EF90A6AEB3785BDBB40@SN6PR08MB4975.namprd08.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:2000;
-x-forefront-prvs: 04111BAC64
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PzxztHiZIwPeNhqkHmXcgubspMxfgMxjjwlN1uAjefTz8/nfaMKYrcGr8S18KmvS2qgpQ6RiutiiZEVZ78qJzjIsX2vqg+ER9GHOCSBo9NpwQNN9o4PFrP8l4TN2VOv6IgQE6A/JG5nmgoghC78RaMr0E4q3PBGApxn0eT862uhhI/08c5zoXyNlub+yA5Ba2b4FMbGaruLuPvBDYfB/5az5bFs7cqshFEG8tvc+Q+bImD752BlzSyy0j81mlQ1/lmyqnrMJaVi7fsDyH9MK99PQpIF6qYFsF8ILgVrGdGGRhVqM7Hluz7jS/Ul1iCpdzno4EH4PCkkedxhvmepmeg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB5693.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(136003)(396003)(346002)(26005)(4326008)(110136005)(54906003)(6506007)(52536014)(2906002)(86362001)(7696005)(55236004)(316002)(186003)(66556008)(7416002)(66446008)(64756008)(9686003)(4744005)(66946007)(76116006)(8936002)(71200400001)(66476007)(8676002)(5660300002)(33656002)(478600001)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: bHf3EwSvtduAMZ8H0psKukVT/9JxmYkslHf1q4NwiptAu5Kik0AmN/2byO9V5iWBmOgzYjWhLb+Yha+MkZLqhVur8OWxlaXT/ETUefDoxHOV4SAMmEBpMJh0ScCdIvsYG5emR780xWTrTvY8nPI4+XI6uxnNauWnbmliwIs1IC4k6CBHA+Yuw3hpbWGCDCy8tJFBzkwDjPwpQkBHnfOrhGwOU1yEgDDAFOqXVTKsCY9T4TH74z5e7ujvE+43FsqI5sBSTREGGQChBn4Lk4VkTueQMvVn10dwj7cn69v/jpq0XzwlSG80Bf4MWCOtiv8oByyORh13p4lD/kJLSC8Mu3V+92n5uMsl/ilOlLRw7zyUlfpPZCxMURl+GxffidiJLToyEa387Dr9hmvy/TPP0OVbMlqbm8YzbObTH/9ItgVqIyXcSzaPB/Z6u4U6VZcl1s/oAcCb7xeDOLnggJJsTbM1oqgIeomRQ92YwWSqcDE=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18a5f352-f520-49e3-a0c9-08d7fe2b4970
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2020 08:36:56.3749
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3a0OfCmGB5F3jrCieJV32FSK3Fun0D/ihBpxaXdHd4JJWOla50gDj+Du/PDTd82DLacOD/cPlJhxcpixnUbAqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4975
+        id S1729617AbgEVIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 04:37:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:59234 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728959AbgEVIhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 04:37:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DFB455D;
+        Fri, 22 May 2020 01:37:39 -0700 (PDT)
+Received: from entos-d05.shanghai.arm.com (entos-d05.shanghai.arm.com [10.169.40.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B55613F52E;
+        Fri, 22 May 2020 01:37:32 -0700 (PDT)
+From:   Jianyong Wu <jianyong.wu@arm.com>
+To:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, maz@kernel.org,
+        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
+        suzuki.poulose@arm.com, steven.price@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, Kaly.Xin@arm.com, justin.he@arm.com,
+        Wei.Chen@arm.com, jianyong.wu@arm.com, nd@arm.com
+Subject: [RFC PATCH v12 0/11] Enable ptp_kvm for arm64
+Date:   Fri, 22 May 2020 16:37:13 +0800
+Message-Id: <20200522083724.38182-1-jianyong.wu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  1 file changed, 3 insertions(+), 1 deletion(-)
-Hi, Dinghao
->=20
-> diff --git a/drivers/scsi/ufs/ufs_bsg.c b/drivers/scsi/ufs/ufs_bsg.c inde=
-x
-> 53dd87628cbe..516a7f573942 100644
-> --- a/drivers/scsi/ufs/ufs_bsg.c
-> +++ b/drivers/scsi/ufs/ufs_bsg.c
-> @@ -106,8 +106,10 @@ static int ufs_bsg_request(struct bsg_job *job)
->  		desc_op =3D bsg_request->upiu_req.qr.opcode;
->  		ret =3D ufs_bsg_alloc_desc_buffer(hba, job, &desc_buff,
->  						&desc_len, desc_op);
-> -		if (ret)
-> +		if (ret) {
-> +			pm_runtime_put_sync(hba->dev);
+Currently, we offen use ntp (sync time with remote network clock)
+to sync time in VM. But the precision of ntp is subject to network delay
+so it's difficult to sync time in a high precision.
 
-No  need to add pm_runtime_put_sync() here, you can change "goto out" to "b=
-reak",
-Or move original pm_runtime_put_sync() to after goto label.
+kvm virtual ptp clock (ptp_kvm) offers another way to sync time in VM,
+as the remote clock locates in the host instead of remote network clock.
+It targets to sync time between guest and host in virtualization
+environment and in this way, we can keep the time of all the VMs running
+in the same host in sync. In general, the delay of communication between
+host and guest is quiet small, so ptp_kvm can offer time sync precision
+up to in order of nanosecond. Please keep in mind that ptp_kvm just
+limits itself to be a channel which transmit the remote clock from
+host to guest and leaves the time sync jobs to an application, eg. chrony,
+in usersapce in VM.
 
->  			goto out;
-> +		}
->=20
->  		/* fall through */
->  	case UPIU_TRANSACTION_NOP_OUT:
-> --
-> 2.17.1
+How ptp_kvm works:
+After ptp_kvm initialized, there will be a new device node under
+/dev called ptp%d. A guest userspace service, like chrony, can use this
+device to get host walltime, sometimes also counter cycle, which depends
+on the service it calls. Then this guest userspace service can use those
+data to do the time sync for guest.
+here is a rough sketch to show how kvm ptp works.
+
+|----------------------------|              |--------------------------|
+|       guest userspace      |              |        host              |
+|ioctl -> /dev/ptp%d         |              |                          |
+|       ^   |                |              |                          |
+|----------------------------|              |                          |
+|       |   | guest kernel   |              |                          | 
+|       |   V      (get host walltime/counter cycle)                   |
+|  kvm ptp API (hypercall)- -|- - - - - - - - - ->hypercall service    |
+|                         <- - - - - - - - - - - -                     |              
+|----------------------------|              |--------------------------|
+
+1. time sync service in guest userspace call ptp device using ioctl.
+2. guest kernel ptp_kvm API get this request then invoke hypercall to request
+host walltime/counter cycle to host kernel.
+3. ptp_kvm host hypercall service response to the request and send back data
+4. ptp copy the data to userspace.
+This ptp_kvm implemetation focuses itself to step 2 and 3 and step 2 works
+in guest comparing step 3 works in host kernel.
+
+change log:
+from v11 to v12:
+        (1) rebase code on 5.7_rc6 and rebase 2 patches from Will Decon
+including 1/11 and 2/11. as these patches introduce discover mechanism of
+vendor smccc service.
+        (2) rebase ptp_kvm hypercall service from standard smccc to vendor
+smccc and add ptp_kvm to vendor smccc service discover mechanism.
+        (3) add detail of why we need ptp_kvm and how ptp_kvm works in cover
+letter.
+
+from v10 to v11:
+        (1) rebase code on 5.7_rc2.
+        (2) remove support for arm32, as kvm support for arm32 will be
+removed [1]
+        (3) add error report in ptp_kvm initialization.
+
+from v11 to v10:
+        (1) change code base to v5.5.
+	(2) enable ptp_kvm both for arm32 and arm64.
+        (3) let user choose which of virtual counter or physical counter
+should return when using crosstimestamp mode of ptp_kvm for arm/arm64.
+        (4) extend input argument for getcrosstimestamp API.
+
+from v8 to v9:
+        (1) move ptp_kvm.h to driver/ptp/
+        (2) replace license declaration of ptp_kvm.h the same with other
+header files in the same directory.
+
+from v7 to v8:
+        (1) separate adding clocksource id for arm_arch_counter as a
+single patch.
+        (2) update commit message for patch 4/8.
+        (3) refine patch 7/8 and patch 8/8 to make them more independent.
+
+from v6 to v7:
+        (1) include the omitted clocksource_id.h in last version.
+        (2) reorder the header file in patch.
+        (3) refine some words in commit message to make it more impersonal.
+
+from v5 to v6:
+        (1) apply Mark's patch[4] to get SMCCC conduit.
+        (2) add mechanism to recognize current clocksource by add
+clocksouce_id value into struct clocksource instead of method in patch-v5.
+        (3) rename kvm_arch_ptp_get_clock_fn into
+kvm_arch_ptp_get_crosststamp.
+
+from v4 to v5:
+        (1) remove hvc delay compensasion as it should leave to userspace.
+        (2) check current clocksource in hvc call service.
+        (3) expose current clocksource by adding it to
+system_time_snapshot.
+        (4) add helper to check if clocksource is arm_arch_counter.
+        (5) rename kvm_ptp.c to ptp_kvm_common.c
+
+from v3 to v4:
+        (1) fix clocksource of ptp_kvm to arch_sys_counter.
+        (2) move kvm_arch_ptp_get_clock_fn into arm_arch_timer.c
+        (3) subtract cntvoff before return cycles from host.
+        (4) use ktime_get_snapshot instead of getnstimeofday and
+get_current_counterval to return time and counter value.
+        (5) split ktime and counter into two 32-bit block respectively
+to avoid Y2038-safe issue.
+        (6) set time compensation to device time as half of the delay of
+hvc call.
+        (7) add ARM_ARCH_TIMER as dependency of ptp_kvm for
+arm64.
+
+from v2 to v3:
+        (1) fix some issues in commit log.
+        (2) add some receivers in send list.
+
+from v1 to v2:
+        (1) move arch-specific code from arch/ to driver/ptp/
+        (2) offer mechanism to inform userspace if ptp_kvm service is
+available.
+        (3) separate ptp_kvm code for arm64 into hypervisor part and
+guest part.
+        (4) add API to expose monotonic clock and counter value.
+        (5) refine code: remove no necessary part and reconsitution.
+
+[1] https://patchwork.kernel.org/cover/11373351/
+
+Jianyong Wu (8):
+  psci: export psci conduit get helper.
+  ptp: Reorganize ptp_kvm modules to make it arch-independent.
+  clocksource: Add clocksource id for arm arch counter
+  psci: Add hypercall service for ptp_kvm.
+  ptp: arm64: Enable ptp_kvm for arm/arm64
+  ptp: extend input argument for getcrosstimestamp API
+  arm64: add mechanism to let user choose which counter to return
+  arm64: Add kvm capability check extension for ptp_kvm
+
+Thomas Gleixner (1):
+  time: Add mechanism to recognize clocksource in time_get_snapshot
+
+ drivers/clocksource/arm_arch_timer.c        | 33 ++++++++
+ drivers/firmware/psci/psci.c                |  1 +
+ drivers/net/ethernet/intel/e1000e/ptp.c     |  3 +-
+ drivers/ptp/Kconfig                         |  2 +-
+ drivers/ptp/Makefile                        |  1 +
+ drivers/ptp/ptp_chardev.c                   |  8 +-
+ drivers/ptp/ptp_kvm.h                       | 11 +++
+ drivers/ptp/ptp_kvm_arm64.c                 | 53 ++++++++++++
+ drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} | 85 ++++++--------------
+ drivers/ptp/ptp_kvm_x86.c                   | 89 +++++++++++++++++++++
+ include/linux/arm-smccc.h                   | 21 +++++
+ include/linux/clocksource.h                 |  6 ++
+ include/linux/clocksource_ids.h             | 12 +++
+ include/linux/ptp_clock_kernel.h            |  3 +-
+ include/linux/timekeeping.h                 | 12 +--
+ include/uapi/linux/kvm.h                    |  1 +
+ include/uapi/linux/ptp_clock.h              |  4 +-
+ kernel/time/clocksource.c                   |  3 +
+ kernel/time/timekeeping.c                   |  1 +
+ virt/kvm/arm/arm.c                          |  1 +
+ virt/kvm/arm/hypercalls.c                   | 44 +++++++++-
+ 21 files changed, 322 insertions(+), 72 deletions(-)
+ create mode 100644 drivers/ptp/ptp_kvm.h
+ create mode 100644 drivers/ptp/ptp_kvm_arm64.c
+ rename drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} (60%)
+ create mode 100644 drivers/ptp/ptp_kvm_x86.c
+ create mode 100644 include/linux/clocksource_ids.h
+
+-- 
+2.17.1
 
