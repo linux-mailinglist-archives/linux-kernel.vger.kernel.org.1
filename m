@@ -2,146 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1021DDFC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1701C1DDFCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 08:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgEVGZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 02:25:56 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:38462 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728137AbgEVGZ4 (ORCPT
+        id S1728192AbgEVGaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 02:30:08 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:33541 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727839AbgEVGaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 02:25:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590128755; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=H359ESmKnUtSY7Q0hAO68B/54fVOQ0qzAvK2WHo9oz8=;
- b=nSlqKGOPTSt7Mxkmyc57AI+3wrGgD4yFjTaiNtsMTZ33a2dQEeI0iAugTmiePTEk1lHQuvcu
- zmTzcmMUjlDSVf5PqVkkLBRyH9ky1+xyFF5FTxfp4AsvTJz3mzSrBm428QYbOwRw6Co9OdsG
- s1pzRCLZVDYhNo53xw22d8oDa9E=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec77069.7fe5ffd92650-smtp-out-n05;
- Fri, 22 May 2020 06:25:45 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CB1F3C433C6; Fri, 22 May 2020 06:25:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: guptap)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB428C433C6;
-        Fri, 22 May 2020 06:25:44 +0000 (UTC)
+        Fri, 22 May 2020 02:30:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590129007; x=1621665007;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dB4uiqb0UU3pcaDTIs+QkIb5+DB0Pvay5OBjSM95epA=;
+  b=SZ9HoWTFCIObvd351xNkHo7E+BjU3RGJuDKQ+dynO7r2ocjQKPeTySUN
+   hedSJh6KxMMR73WSVZk/6SP1XrotPQsu+AC/pJ6/IbcY0q81R2RSZs7Ah
+   karqH2LlhGawR0sMRg6roCBDbhwWksaJNABZ8hl113WFbPM5TjiKKVw9B
+   Y=;
+IronPort-SDR: d40h38juIFs1fKkrqizg/hAVtWnstOL1jE2N+Ar3FyC4ExPvJBIJ8+95ltqamulrlXKHcVTWyy
+ mwn+MNcJgUkg==
+X-IronPort-AV: E=Sophos;i="5.73,420,1583193600"; 
+   d="scan'208";a="36944210"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 May 2020 06:30:04 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 32CE42821C1;
+        Fri, 22 May 2020 06:30:02 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 22 May 2020 06:30:01 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.175) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 22 May 2020 06:29:52 +0000
+From:   Andra Paraschiv <andraprs@amazon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Bjoern Doebel" <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        "Martin Pohlack" <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+Subject: [PATCH v2 00/18] Add support for Nitro Enclaves
+Date:   Fri, 22 May 2020 09:29:28 +0300
+Message-ID: <20200522062946.28973-1-andraprs@amazon.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+X-Originating-IP: [10.43.161.175]
+X-ClientProxiedBy: EX13D20UWC004.ant.amazon.com (10.43.162.41) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 22 May 2020 11:55:44 +0530
-From:   guptap@codeaurora.org
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     mhocko@suse.com, joro@8bytes.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        owner-linux-mm@kvack.org, stable@vger.kernel.org
-Subject: Re: [PATCH] iommu/dma: limit iova free size to unmmaped iova
-In-Reply-To: <7aaa8dcc-6a47-f256-431d-2a1b034b4076@arm.com>
-References: <20200521113004.12438-1-guptap@codeaurora.org>
- <7aaa8dcc-6a47-f256-431d-2a1b034b4076@arm.com>
-Message-ID: <90662ef3123dbf2e93f9718ee5cc14a7@codeaurora.org>
-X-Sender: guptap@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-22 01:46, Robin Murphy wrote:
-> On 2020-05-21 12:30, Prakash Gupta wrote:
->> Limit the iova size while freeing based on unmapped size. In absence 
->> of
->> this even with unmap failure, invalid iova is pushed to iova rcache 
->> and
->> subsequently can cause panic while rcache magazine is freed.
-> 
-> Can you elaborate on that panic?
-> 
-We have seen couple of stability issues around this.
-Below is one such example:
+Nitro Enclaves (NE) is a new Amazon Elastic Compute Cloud (EC2) capability
+that allows customers to carve out isolated compute environments within EC2
+instances [1].
 
-kernel BUG at kernel/msm-4.19/drivers/iommu/iova.c:904!
-iova_magazine_free_pfns
-iova_rcache_insert
-free_iova_fast
-__iommu_unmap_page
-iommu_dma_unmap_page
+For example, an application that processes sensitive data and runs in a VM,
+can be separated from other applications running in the same VM. This
+application then runs in a separate VM than the primary VM, namely an enclave.
+
+An enclave runs alongside the VM that spawned it. This setup matches low latency
+applications needs. The resources that are allocated for the enclave, such as
+memory and CPU, are carved out of the primary VM. Each enclave is mapped to a
+process running in the primary VM, that communicates with the NE driver via an
+ioctl interface.
+
+In this sense, there are two components:
+
+1. An enclave abstraction process - a user space process running in the primary
+VM guest  that uses the provided ioctl interface of the NE driver to spawn an
+enclave VM (that's 2 below).
+
+How does all gets to an enclave VM running on the host?
+
+There is a NE emulated PCI device exposed to the primary VM. The driver for this
+new PCI device is included in the current patch series.
+
+The ioctl logic is mapped to PCI device commands e.g. the NE_START_ENCLAVE ioctl
+maps to an enclave start PCI command or the KVM_SET_USER_MEMORY_REGION maps to
+an add memory PCI command. The PCI device commands are then translated into
+actions taken on the hypervisor side; that's the Nitro hypervisor running on the
+host where the primary VM is running. The Nitro hypervisor is based on core KVM
+technology.
+
+2. The enclave itself - a VM running on the same host as the primary VM that
+spawned it. Memory and CPUs are carved out of the primary VM and are dedicated
+for the enclave VM. An enclave does not have persistent storage attached.
+
+An enclave communicates with the primary VM via a local communication channel,
+using virtio-vsock [2]. The primary VM has virtio-pci vsock emulated device,
+while the enclave VM has a virtio-mmio vsock emulated device. The vsock device
+uses eventfd for signaling. The enclave VM sees the usual interfaces - local
+APIC and IOAPIC - to get interrupts from virtio-vsock device. The virtio-mmio
+device is placed in memory below the typical 4 GiB.
+
+The application that runs in the enclave needs to be packaged in an enclave
+image together with the OS ( e.g. kernel, ramdisk, init ) that will run in the
+enclave VM. The enclave VM has its own kernel and follows the standard Linux
+boot protocol.
+
+The kernel bzImage, the kernel command line, the ramdisk(s) are part of the
+Enclave Image Format (EIF); plus an EIF header including metadata such as magic
+number, eif version, image size and CRC.
+
+Hash values are computed for the entire enclave image (EIF), the kernel and
+ramdisk(s). That's used, for example, to check that the enclave image that is
+loaded in the enclave VM is the one that was intended to be run.
+
+These crypto measurements are included in a signed attestation document
+generated by the Nitro Hypervisor and further used to prove the identity of the
+enclave; KMS is an example of service that NE is integrated with and that checks
+the attestation doc.
+
+The enclave image (EIF) is loaded in the enclave memory at offset 8 MiB. The
+init process in the enclave connects to the vsock CID of the primary VM and a
+predefined port - 9000 - to send a heartbeat value - 0xb7. This mechanism is
+used to check in the primary VM that the enclave has booted.
+
+If the enclave VM crashes or gracefully exits, an interrupt event is received by
+the NE driver. This event is sent further to the user space enclave process
+running in the primary VM via a poll notification mechanism. Then the user space
+enclave process can exit.
+
+The following patch series covers the NE driver for enclave lifetime management.
+It provides an ioctl interface to the user space and includes the NE PCI device
+driver that is the means of communication with the hypervisor running on the
+host where the primary VM and the enclave are launched.
+
+The proposed solution is following the KVM model and uses KVM ioctls to be able
+to create and set resources for enclaves. Additional NE ioctl commands, besides
+the ones provided by KVM, are used to start an enclave and get memory offset for
+in-memory enclave image loading.
+
+Thank you.
+
+Andra
+
+[1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
+[2] http://man7.org/linux/man-pages/man7/vsock.7.html
+
+---
+
+Patch Series Changelog
+
+The patch series is built on top of v5.7-rc6.
+
+v1 -> v2
+
+* Rebase on top of v5.7-rc6.
+* Adapt codebase based on feedback from v1.
+* Update ioctl number definition - major and minor.
+* Add sample / documentation for the ioctl interface basic flow usage.
+* Update cover letter to include more context on the NE overall.
+* Add fix for the enclave / vcpu fd creation error cleanup path.
+* Add fix reported by kbuild test robot <lkp@intel.com>.
+* v1: https://lore.kernel.org/lkml/20200421184150.68011-1-andraprs@amazon.com/
+
+---
+
+Andra Paraschiv (18):
+  nitro_enclaves: Add ioctl interface definition
+  nitro_enclaves: Define the PCI device interface
+  nitro_enclaves: Define enclave info for internal bookkeeping
+  nitro_enclaves: Init PCI device driver
+  nitro_enclaves: Handle PCI device command requests
+  nitro_enclaves: Handle out-of-band PCI device events
+  nitro_enclaves: Init misc device providing the ioctl interface
+  nitro_enclaves: Add logic for enclave vm creation
+  nitro_enclaves: Add logic for enclave vcpu creation
+  nitro_enclaves: Add logic for enclave image load metadata
+  nitro_enclaves: Add logic for enclave memory region set
+  nitro_enclaves: Add logic for enclave start
+  nitro_enclaves: Add logic for enclave termination
+  nitro_enclaves: Add Kconfig for the Nitro Enclaves driver
+  nitro_enclaves: Add Makefile for the Nitro Enclaves driver
+  nitro_enclaves: Add sample for ioctl interface usage
+  nitro_enclaves: Add overview documentation
+  MAINTAINERS: Add entry for the Nitro Enclaves driver
+
+ Documentation/nitro_enclaves/ne_overview.txt  |   86 ++
+ .../userspace-api/ioctl/ioctl-number.rst      |    5 +-
+ MAINTAINERS                                   |   13 +
+ drivers/virt/Kconfig                          |    2 +
+ drivers/virt/Makefile                         |    2 +
+ drivers/virt/nitro_enclaves/Kconfig           |   28 +
+ drivers/virt/nitro_enclaves/Makefile          |   23 +
+ drivers/virt/nitro_enclaves/ne_misc_dev.c     | 1152 +++++++++++++++++
+ drivers/virt/nitro_enclaves/ne_misc_dev.h     |  121 ++
+ drivers/virt/nitro_enclaves/ne_pci_dev.c      |  717 ++++++++++
+ drivers/virt/nitro_enclaves/ne_pci_dev.h      |  266 ++++
+ include/linux/nitro_enclaves.h                |   23 +
+ include/uapi/linux/nitro_enclaves.h           |   77 ++
+ samples/nitro_enclaves/.gitignore             |    2 +
+ samples/nitro_enclaves/Makefile               |   28 +
+ .../include/linux/nitro_enclaves.h            |   23 +
+ .../include/uapi/linux/nitro_enclaves.h       |   77 ++
+ samples/nitro_enclaves/ne_ioctl_sample.c      |  502 +++++++
+ 18 files changed, 3146 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/nitro_enclaves/ne_overview.txt
+ create mode 100644 drivers/virt/nitro_enclaves/Kconfig
+ create mode 100644 drivers/virt/nitro_enclaves/Makefile
+ create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev.c
+ create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev.h
+ create mode 100644 drivers/virt/nitro_enclaves/ne_pci_dev.c
+ create mode 100644 drivers/virt/nitro_enclaves/ne_pci_dev.h
+ create mode 100644 include/linux/nitro_enclaves.h
+ create mode 100644 include/uapi/linux/nitro_enclaves.h
+ create mode 100644 samples/nitro_enclaves/.gitignore
+ create mode 100644 samples/nitro_enclaves/Makefile
+ create mode 100644 samples/nitro_enclaves/include/linux/nitro_enclaves.h
+ create mode 100644 samples/nitro_enclaves/include/uapi/linux/nitro_enclaves.h
+ create mode 100644 samples/nitro_enclaves/ne_ioctl_sample.c
+
+-- 
+2.20.1 (Apple Git-117)
 
 
-It turned out an iova pfn 0 got into iova_rcache. One possibility I see 
-is
-where client unmap with invalid dma_addr. The unmap call will fail and 
-warn on
-and still try to free iova. This will cause invalid pfn to be inserted 
-into
-rcache. As and when the magazine with invalid pfn will be freed
-private_find_iova() will return NULL for invalid iova and meet bug 
-condition.
 
->> Signed-off-by: Prakash Gupta <guptap@codeaurora.org>
->> 
->> :100644 100644 4959f5df21bd 098f7d377e04 M	drivers/iommu/dma-iommu.c
->> 
->> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->> index 4959f5df21bd..098f7d377e04 100644
->> --- a/drivers/iommu/dma-iommu.c
->> +++ b/drivers/iommu/dma-iommu.c
->> @@ -472,7 +472,8 @@ static void __iommu_dma_unmap(struct device *dev, 
->> dma_addr_t dma_addr,
->>     	if (!cookie->fq_domain)
->>   		iommu_tlb_sync(domain, &iotlb_gather);
->> -	iommu_dma_free_iova(cookie, dma_addr, size);
->> +	if (unmapped)
->> +		iommu_dma_free_iova(cookie, dma_addr, unmapped);
-> 
-> Frankly, if any part of the unmap fails then things have gone
-> catastrophically wrong already, but either way this isn't right. The
-> IOVA API doesn't support partial freeing - an IOVA *must* be freed
-> with its original size, or not freed at all, otherwise it will corrupt
-> the state of the rcaches and risk a cascade of further misbehaviour
-> for future callers.
-> 
-I agree, we shouldn't be freeing the partial iova. Instead just making
-sure if unmap was successful should be sufficient before freeing iova. 
-So change
-can instead be something like this:
 
--	iommu_dma_free_iova(cookie, dma_addr, size);
-+	if (unmapped)
-+		iommu_dma_free_iova(cookie, dma_addr, size);
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
-> TBH my gut feeling here is that you're really just trying to treat a
-> symptom of another bug elsewhere, namely some driver calling
-> dma_unmap_* or dma_free_* with the wrong address or size in the first
-> place.
-> 
-This condition would arise only if driver calling dma_unmap/free_* with 
-0
-iova_pfn. This will be flagged with a warning during unmap but will 
-trigger
-panic later on while doing unrelated dma_map/unmap_*. If unmapped has 
-already
-failed for invalid iova, there is no reason we should consider this as 
-valid
-iova and free. This part should be fixed.
-
-On 2020-05-22 00:19, Andrew Morton wrote:
-> I think we need a cc:stable here?
-> 
-Added now.
-
-Thanks,
-Prakash
