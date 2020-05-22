@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312081DEF58
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175C31DEF61
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730954AbgEVShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 14:37:34 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:57546 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730941AbgEVShd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 14:37:33 -0400
-X-IronPort-AV: E=Sophos;i="5.73,422,1583161200"; 
-   d="scan'208";a="47582362"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 23 May 2020 03:37:32 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 44FF440065A7;
-        Sat, 23 May 2020 03:37:30 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2] ARM: dts: r8a7742: Add RWDT node
-Date:   Fri, 22 May 2020 19:37:21 +0100
-Message-Id: <1590172641-1556-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
+        id S1730907AbgEVSjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 14:39:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37716 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730810AbgEVSjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 14:39:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9EFFBAE09;
+        Fri, 22 May 2020 18:39:52 +0000 (UTC)
+From:   Petr Tesarik <ptesarik@suse.com>
+To:     linux-s390@vger.kernel.org
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Petr Tesarik <ptesarik@suse.com>
+Subject: [PATCH 1/1] s390/pci: Log new handle in clp_disable_fh()
+Date:   Fri, 22 May 2020 20:39:22 +0200
+Message-Id: <20200522183922.5253-1-ptesarik@suse.com>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device node for the Watchdog Timer (RWDT) controller on the Renesas
-RZ/G1H (r8a7742) SoC.
+After disabling a function, the original handle is logged instead of
+the disabled handle.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 17cdec960cf77 (s390/pci: Recover handle in clp_set_pci_fn())
+Signed-off-by: Petr Tesarik <ptesarik@suse.com>
 ---
-Hi All,
+ arch/s390/pci/pci_clp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-This patch is part of series [1] ("RZ/G1H describe I2C, IIC, MMC0, SATA,
-AVB, RWDT and APMU nodes") as rest of the patches have been acked/reviewed
-just re-sending this alone patch.
-
-[1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=288491
-
-v1->v2
-* Added missing interrupts property
-* Included Reviewed-by tags
----
- arch/arm/boot/dts/r8a7742.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/arch/arm/boot/dts/r8a7742.dtsi b/arch/arm/boot/dts/r8a7742.dtsi
-index da75767..df914da 100644
---- a/arch/arm/boot/dts/r8a7742.dtsi
-+++ b/arch/arm/boot/dts/r8a7742.dtsi
-@@ -201,6 +201,17 @@
- 		#size-cells = <2>;
- 		ranges;
+diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
+index ea794ae755ae..179bcecefdee 100644
+--- a/arch/s390/pci/pci_clp.c
++++ b/arch/s390/pci/pci_clp.c
+@@ -309,14 +309,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
  
-+		rwdt: watchdog@e6020000 {
-+			compatible = "renesas,r8a7742-wdt",
-+				     "renesas,rcar-gen2-wdt";
-+			reg = <0 0xe6020000 0 0x0c>;
-+			interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 402>;
-+			power-domains = <&sysc R8A7742_PD_ALWAYS_ON>;
-+			resets = <&cpg 402>;
-+			status = "disabled";
-+		};
-+
- 		gpio0: gpio@e6050000 {
- 			compatible = "renesas,gpio-r8a7742",
- 				     "renesas,rcar-gen2-gpio";
+ int clp_disable_fh(struct zpci_dev *zdev)
+ {
+-	u32 fh = zdev->fh;
+ 	int rc;
+ 
+ 	if (!zdev_enabled(zdev))
+ 		return 0;
+ 
+ 	rc = clp_set_pci_fn(zdev, 0, CLP_SET_DISABLE_PCI_FN);
+-	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, fh, rc);
++	zpci_dbg(3, "dis fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
+ 	return rc;
+ }
+ 
 -- 
-2.7.4
+2.26.1
 
