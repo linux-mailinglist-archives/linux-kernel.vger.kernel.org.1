@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AB91DE775
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A661DE77A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729771AbgEVM7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729619AbgEVM7R (ORCPT
+        id S1729868AbgEVM7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:59:32 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:27565 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729792AbgEVM7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:59:17 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC25C061A0E;
-        Fri, 22 May 2020 05:59:17 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h21so12932418ejq.5;
-        Fri, 22 May 2020 05:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZW5lGmB6LapbscwV/BtBehKVwRSoVgdjATk0hkmmT0o=;
-        b=pCYb+erS0ga5JAdH3+v7xJEGa80jYFbQf/IjxC70Wz9WnXm4mbKkPQ5pWCvnpu0eJk
-         ZpYd3BY+Kc5pLF9NWfnxhHn6Pt5BtznZwGbXUIS9+X5M1+kPfG1b47zQ5gbSytrEyaab
-         fIr48P7BVgAGbkHrHWzwh2eezAV+XDyb5ooSgsY9m12ZT1mstCpMs/43LGPnwGBilx5l
-         qw3Fzz+amJYBjH4p2RgSJMZ1iXlrgi4gDMSegzHjliRKrhvPoqKh5WWnN6K2WN21XqoO
-         9SEBQs6vpgR7AfDvA+mVwUi18utSB+PyyACqGGQHQ8yoTbPLTfIyFCyAPHXXVQvrZo9C
-         wAtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZW5lGmB6LapbscwV/BtBehKVwRSoVgdjATk0hkmmT0o=;
-        b=uTWnTve9nDyOGcjOIX9oMX9Wh6PO7fb1jIeClMf6kcZm0hFOEnvbYWCP39gGaVs3wn
-         926+9GRDSBJhYF9a+8AcXmRMKzNXLU0n+tcocDN9HFGkDothk+aOJb9N9eYs/mzOXGFC
-         LLx56OMXWx/noUGABcFfPg8sxlAFhyKdS5xEjg/V5MebA5ZXG8BGX1qEUnHmLlq7lpDm
-         ++K0jGFOuh9KjQzbyp6o7gttnk+sb/F4iY/FW27Lc0XoI/9+fanR0EFc6ofcnCTMA4lR
-         zv+GJsvoVYg0TyEFXzMj9/uHSWNvOiiQmMFP2i3h9lI6lYowo1xcRHCQb38ydAfTXwLY
-         VKNg==
-X-Gm-Message-State: AOAM530At0NOyzMS8zup0OP+r32SxmBF0PaJBtHIPsCgNeoWUS/KN+jg
-        A7rMBXbq6NbQC5O4IqI6fmU=
-X-Google-Smtp-Source: ABdhPJzbVOQxgtkfX5DSe5uy+Y4yhs9DBCwwJvPjdCZVLa9SRWBLMBVIiYqLk4QkteajZIvbjKZHCA==
-X-Received: by 2002:a17:906:64c:: with SMTP id t12mr7852404ejb.524.1590152355994;
-        Fri, 22 May 2020 05:59:15 -0700 (PDT)
-Received: from localhost (pd9e51079.dip0.t-ipconnect.de. [217.229.16.121])
-        by smtp.gmail.com with ESMTPSA id a15sm8008320ejj.104.2020.05.22.05.59.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 05:59:14 -0700 (PDT)
-Date:   Fri, 22 May 2020 14:59:13 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, jonathanh@nvidia.com,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/tegra: hub: Do not enable orphaned window group
-Message-ID: <20200522125913.GK2163848@ulmo>
-References: <20200519090301.32689-1-nicoleotsuka@gmail.com>
+        Fri, 22 May 2020 08:59:25 -0400
+X-IronPort-AV: E=Sophos;i="5.73,421,1583190000"; 
+   d="scan'208";a="450910885"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 May 2020 14:59:22 +0200
+Date:   Fri, 22 May 2020 14:59:22 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     kbuild-all@lists.01.org,
+        "Andrew-sh.Cheng" <andrew-sh.cheng@mediatek.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        "Andrew-sh . Cheng" <andrew-sh.cheng@mediatek.com>,
+        srv_heupstream@mediatek.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Saravana Kannan <skannan@codeaurora.org>,
+        linux-mediatek@lists.infradead.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] PM / devfreq: fix odd_ptr_err.cocci warnings
+In-Reply-To: <20200521160908.GA88022@052716d1a29e>
+Message-ID: <alpine.DEB.2.21.2005221458020.2442@hadrien>
+References: <202005220024.mccUgEgn%lkp@intel.com> <20200521160908.GA88022@052716d1a29e>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M9kwpIYUMbI/2cCx"
-Content-Disposition: inline
-In-Reply-To: <20200519090301.32689-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---M9kwpIYUMbI/2cCx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This provides a patch, but it doesn't look like the right one.  It looks
+like the if test should be testing opp_table,
 
-On Tue, May 19, 2020 at 02:03:01AM -0700, Nicolin Chen wrote:
-> Though the unconditional enable/disable code is not a final solution,
-> we don't want to run into a NULL pointer situation when window group
-> doesn't link to its DC parent if the DC is disabled in Device Tree.
->=20
-> So this patch simply adds a check to make sure that window group has
-> a valid parent before running into tegra_windowgroup_enable/disable.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+julia
+
+On Fri, 22 May 2020, kbuild test robot wrote:
+
+> From: kbuild test robot <lkp@intel.com>
+>
+> drivers/devfreq/governor_passive.c:336:7-13: inconsistent IS_ERR and PTR_ERR on line 337.
+>
+>  PTR_ERR should access the value just tested by IS_ERR
+>
+> Semantic patch information:
+>  There can be false positives in the patch case, where it is the call to
+>  IS_ERR that is wrong.
+>
+> Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
+>
+> CC: Saravana Kannan <skannan@codeaurora.org>
+> Signed-off-by: kbuild test robot <lkp@intel.com>
 > ---
->  drivers/gpu/drm/tegra/hub.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-
-Applied, thanks.
-
-Thierry
-
---M9kwpIYUMbI/2cCx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7HzKEACgkQ3SOs138+
-s6H7NxAAlocR8/osRzgQ4vml66I6m+TJuF9k2Ow7YvMDRZYSDXW/Vsl2rqwUZrwZ
-A6wx5r9OxEq/eXjSpNHvF2nOqPRetvKHqJKBFFXOixDdD0UtIvlAKdIEZ8Ch3Gx0
-fu+OHajYhSQwEUxgNToQy5lqRJz4nZKTmXJgirAHD1BBqxjc3FqZaXBnwkE2bmMx
-rwJGkoylRBaw3TSxzSHx+CalaDf2yxfLHwcXa9/zcfFKJ8oEOBgREnL5PxbZhH5J
-LOhqHzDR7TpQgGJjA3XAHYwt+nS04lfbQpiy+gYWwVQ+n5S0I5nThGUEXbNSKivR
-REjA95NXLQLBziROaxWuUlH8iWggdfhnAP8PfM5pG/TR26/r3f//4VDaR3RZoqzA
-dkaPwAg14VPir9OOOOkFxYp9hBw9fh91FbzwSMguAbG9bE4Dt9ENCH6+2EVYi3qo
-14NESubshj9GpokX6gjs2Ksz6GDzvXsCygYC+gcmTRSYZq30D5LFgvWqLtElw2/P
-j8w0Wq/yg9KSCf5/4YMGynGeZ6NLWbch+jolHGeothCJ1DbZqiZYbqO+UECEJtCh
-+m0PRjJMLvCRsjGwyG8vGY9QoOtsoUT8nCKSy1bRaNcK+OGwOUpzAp0bZUyJKkgs
-5ci/nJu96j3qB+W/5fKnjT9JMMiUxInzQyU91aeurJWtPIAH+Oo=
-=G02C
------END PGP SIGNATURE-----
-
---M9kwpIYUMbI/2cCx--
+>
+> url:    https://github.com/0day-ci/linux/commits/Andrew-sh-Cheng/Add-cpufreq-and-cci-devfreq-for-mt8183-and-SVS-support/20200520-222709
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+> :::::: branch date: 26 hours ago
+> :::::: commit date: 26 hours ago
+>
+> Please take the patch only if it's a positive warning. Thanks!
+>
+>  governor_passive.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- a/drivers/devfreq/governor_passive.c
+> +++ b/drivers/devfreq/governor_passive.c
+> @@ -334,7 +334,7 @@ static int cpufreq_passive_register(stru
+>
+>  			opp_table = dev_pm_opp_get_opp_table(cpu_dev);
+>  			if (IS_ERR(devfreq->opp_table)) {
+> -				ret = PTR_ERR(opp_table);
+> +				ret = PTR_ERR(devfreq->opp_table);
+>  				goto out;
+>  			}
+>
+>
