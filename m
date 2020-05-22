@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DF51DDF47
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E2C1DDF55
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgEVFX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:23:59 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:32996 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726910AbgEVFX6 (ORCPT
+        id S1728070AbgEVF2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:28:38 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:34685 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgEVF2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:23:58 -0400
-Received: by mail-pj1-f68.google.com with SMTP id z15so1894920pjb.0;
-        Thu, 21 May 2020 22:23:57 -0700 (PDT)
+        Fri, 22 May 2020 01:28:38 -0400
+Received: by mail-pj1-f67.google.com with SMTP id l73so1896044pjb.1;
+        Thu, 21 May 2020 22:28:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tIS20nIVD3N2tOP8HqpGQTGvTajJC3k9skSycjshVvo=;
-        b=OelwsbVASVPz58GDVNV3N1pIB8GrBLnDJHUL4Si4vNutNwlrFbz+RI8ICE+COFq2pv
-         pfRSNrgtB5HdKh7G8zInrPyTAsCwy4olC9ZqqAAiXOscUwSB5jXU1VxkZhy7xn5He/eW
-         Py3ArJHCpGfKE4qnWZ0Rx78hZNSTxaPWLHUGdXPYuqgO+Ndy2y3m18dtAQ89UtKUOCU/
-         hqmsSRQL7wiYjT73W8TSB1ndHiviZ1Yy/ojsu2WSCv9XKaZN1c4AhmUe3jAFm1By0v34
-         HAJ+XOKPhQGdcLEcml5M1zofNNwLDtNxGj9NxpGreAj3+O1pkqH6YVajz+8SODR5EsoH
-         Z/fQ==
-X-Gm-Message-State: AOAM5305Od7L5F6Zk75Rmut+VrFm1ZS6uBD5wmMF4dc8UgQV6+67DHXp
-        D7zYFo8fCvA1ork8VrAlVXA=
-X-Google-Smtp-Source: ABdhPJwrA8Ug/bhBlMQocPIWph3Tg+gvIO2vU/EDcU5VOBbAHGT6IBZ5MccngBHWe4I5el1EFY91Dw==
-X-Received: by 2002:a17:90a:150:: with SMTP id z16mr2536283pje.37.1590125037470;
-        Thu, 21 May 2020 22:23:57 -0700 (PDT)
+        bh=BLhBQjWh3vPdreTupUs7bFFVPIKBNLytXsVa4L/6vRQ=;
+        b=PbAGRW1LWNiuep/TbmHgGLzAf0+t2xayDfi1Nswh9NDtEGWbvh3helQ4sUKb2aXJi2
+         u6oje7u29DXermOee+uyZzr5j3VLbDvOKV1jOMLTIpKxP5/EaDBYoZhmhiZ9caTsRLSi
+         DlY4piyQNDGC8APuMXxtxvWtBAAEtbU4hLwTtfj3loqcehWmDr3XLp3THbRM7kRhFCW6
+         rNOBgDwRgSsKdA3U5Bq6+xs2rKWcJ5p3trE2ITiesXl4fo8wgdv9aO3axc8qu0MlBrEJ
+         YJAnaspfy5GNrrZVI6xJR/W+5XQDvpc+B3fmOC2cy5V2hYSKwCj9t9FxMGSQJgz7xsNe
+         Ju/w==
+X-Gm-Message-State: AOAM532k/S82oYxSablhu6uaCNbr8AStf54YBULRoNbToa7SjdirIS8K
+        hhxzN2jUi4b18x9uNxvJ6Fs=
+X-Google-Smtp-Source: ABdhPJyL+iPBCUgerW0KeYpl+ZPhlXZhTxk9OFxI4cmQwymiPSbYoX7S12u1wl9qyCnzI7PIKsTt+Q==
+X-Received: by 2002:a17:902:ba8d:: with SMTP id k13mr12987095pls.290.1590125316267;
+        Thu, 21 May 2020 22:28:36 -0700 (PDT)
 Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id l3sm5931550pjb.39.2020.05.21.22.23.56
+        by smtp.gmail.com with ESMTPSA id v22sm6422400pfu.172.2020.05.21.22.28.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 22:23:56 -0700 (PDT)
+        Thu, 21 May 2020 22:28:35 -0700 (PDT)
 Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 531AD4088B; Fri, 22 May 2020 05:23:55 +0000 (UTC)
-Date:   Fri, 22 May 2020 05:23:55 +0000
+        id 845C94088B; Fri, 22 May 2020 05:28:34 +0000 (UTC)
+Date:   Fri, 22 May 2020 05:28:34 +0000
 From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Emmanuel Grumbach <egrumbach@gmail.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        aquini@redhat.com, peterz@infradead.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        mchehab+samsung@kernel.org, will@kernel.org, bhe@redhat.com,
-        ath10k@lists.infradead.org, Takashi Iwai <tiwai@suse.de>,
-        mingo@redhat.com, dyoung@redhat.com, pmladek@suse.com,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, gpiccoli@canonical.com,
-        Steven Rostedt <rostedt@goodmis.org>, cai@lca.pw,
-        tglx@linutronix.de,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        schlad@suse.de, Linux Kernel <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 12/15] ath10k: use new module_firmware_crashed()
-Message-ID: <20200522052355.GZ11244@42.do-not-panic.com>
+To:     Alex Elder <elder@ieee.org>
+Cc:     jeyu@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+        rostedt@goodmis.org, mingo@redhat.com, aquini@redhat.com,
+        cai@lca.pw, dyoung@redhat.com, bhe@redhat.com,
+        peterz@infradead.org, tglx@linutronix.de, gpiccoli@canonical.com,
+        pmladek@suse.com, tiwai@suse.de, schlad@suse.de,
+        andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        daniel.vetter@ffwll.ch, will@kernel.org,
+        mchehab+samsung@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alex Elder <elder@kernel.org>
+Subject: Re: [PATCH v2 10/15] soc: qcom: ipa: use new
+ module_firmware_crashed()
+Message-ID: <20200522052834.GA11244@42.do-not-panic.com>
 References: <20200515212846.1347-1-mcgrof@kernel.org>
- <20200515212846.1347-13-mcgrof@kernel.org>
- <2b74a35c726e451b2fab2b5d0d301e80d1f4cdc7.camel@sipsolutions.net>
- <7306323c35e6f44d7c569e689b48f380f80da5e5.camel@sipsolutions.net>
- <CA+ASDXOg9oKeMJP1Mf42oCMMM3sVe0jniaWowbXVuaYZ=ZpDjQ@mail.gmail.com>
- <20200519140212.GT11244@42.do-not-panic.com>
- <CA+ASDXMUHOcvJ_7UWgyANMxSz15Ji7TcLDXVCtSPa+fOr=+FGA@mail.gmail.com>
- <CANUX_P1pnV46gOo0aL6QV0b+49ubB7C5nuUOuOfoT7aOM+ye9w@mail.gmail.com>
- <CA+ASDXPAVJwyThAXRQT0_ao4s1nDYOEQifxMc+JsEMa=cTEGJA@mail.gmail.com>
- <CANUX_P2thzh9oB4KkrAoyT6H-E6MDFUNQ_p0e9QZtScgMuKm7Q@mail.gmail.com>
+ <20200515212846.1347-11-mcgrof@kernel.org>
+ <0b159c53-57a6-b771-04ab-2a76c45d0ef4@ieee.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANUX_P2thzh9oB4KkrAoyT6H-E6MDFUNQ_p0e9QZtScgMuKm7Q@mail.gmail.com>
+In-Reply-To: <0b159c53-57a6-b771-04ab-2a76c45d0ef4@ieee.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 08:12:59AM +0300, Emmanuel Grumbach wrote:
-> >
-> > On Tue, May 19, 2020 at 10:37 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
-> > > So I believe we already have this uevent, it is the devcoredump. All
-> > > we need is to add the unique id.
-> >
-> > I think there are a few reasons that devcoredump doesn't satisfy what
-> > either Luis or I want.
-> >
-> > 1) it can be disabled entirely [1], for good reasons (e.g., think of
-> > non-${CHIP_VENDOR} folks, who can't (and don't want to) do anything
-> > with the opaque dumps provided by closed-source firmware)
+On Tue, May 19, 2020 at 05:34:13PM -0500, Alex Elder wrote:
+> On 5/15/20 4:28 PM, Luis Chamberlain wrote:
+> > This makes use of the new module_firmware_crashed() to help
+> > annotate when firmware for device drivers crash. When firmware
+> > crashes devices can sometimes become unresponsive, and recovery
+> > sometimes requires a driver unload / reload and in the worst cases
+> > a reboot.
+> > 
+> > Using a taint flag allows us to annotate when this happens clearly.
 > 
-> Ok, if all you're interested into is the information that this event
-> happen (as opposed to report a bug and providing the data), then I
-> agree. 
+> I don't fully understand what this is meant to do, so I can't
+> fully assess whether it's the right thing to do.
 
-I've now hit again a firmware crash with ath10k with the latest firwmare
-and kernel and the *only* thing that helped recovery was a full reboot,
-so that is a crystal clear case that this needs to taint the kernel, and
-yes we do want to inform users too, so I've just added uevent support
-for a few panic / taint events in the kernel now and rolled into my
-series. I'll run some final tests and then post this as a follow up.
+It is meant to taint the kernel to ensure it is clear that something
+critically bad has happened with the device firmware, it crashed, and
+recovery may or may not happen, we are not 100% certain.
+> 
+> But in this particular place in the IPA code, the *modem* has
+> crashed.  And the IPA driver is not responsible for modem
+> firmware, remoteproc is.
 
-devlink didn't cut it, its networking specific.
+Oi vei. So the device it depends on has crashed.
+
+> The IPA driver *can* be responsible for loading some other
+> firmware, but even in that case, it only happens on initial
+> boot, and it's basically assumed to never crash.
+
+OK is this an issue which we can recover from? If for the slightest bit
+this can affect users it is something we should inform them over.
+
+This patch set is missing uevents for these issues, but I just added
+support for this.
+
+> So regardless of whether this module_firmware_crashed() call is
+> appropriate in some places, I believe it should not be used here.
+
+OK thanks. Can the user be affected by this crash? If so how? Can
+we recover ? Is that always guaranteed?
 
   Luis
