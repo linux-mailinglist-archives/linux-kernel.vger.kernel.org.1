@@ -2,49 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB171DDC2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 02:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B752E1DDC41
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 02:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgEVAbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 20:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgEVAbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 20:31:08 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A317C061A0E;
-        Thu, 21 May 2020 17:31:08 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 236F9120ED486;
-        Thu, 21 May 2020 17:31:07 -0700 (PDT)
-Date:   Thu, 21 May 2020 17:31:05 -0700 (PDT)
-Message-Id: <20200521.173105.157572657643183117.davem@davemloft.net>
-To:     antoine.tenart@bootlin.com
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: phy: mscc: fix initialization of the
- MACsec protocol mode
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200520100355.587686-1-antoine.tenart@bootlin.com>
-References: <20200520100355.587686-1-antoine.tenart@bootlin.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 21 May 2020 17:31:07 -0700 (PDT)
+        id S1726940AbgEVAiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 20:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbgEVAiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 20:38:51 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7461207D8;
+        Fri, 22 May 2020 00:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590107930;
+        bh=3h8Qn+1ZHpVeahuSd6+R1zr7dTCLNVMAgzYYzw6rsEo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=btURzFMvrRsvv8+ZuqT3XUdzRbGmqrdSwu+Gpf2MxXuV4TysKuzigxbhFDr0PRv9Y
+         E6ncvlvSkBXa/rpUeO62JMtL0bOEG7dqgBxPT9OM5NL35WXcVmYsPhhJ226xoz/SuJ
+         LMYZTHdftGpa+9PKh5LXBc8hqC+/t1z0AGm3NMBU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 759133522FEB; Thu, 21 May 2020 17:38:50 -0700 (PDT)
+Date:   Thu, 21 May 2020 17:38:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        andriin@fb.com
+Subject: Some -serious- BPF-related litmus tests
+Message-ID: <20200522003850.GA32698@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <antoine.tenart@bootlin.com>
-Date: Wed, 20 May 2020 12:03:55 +0200
+Hello!
 
-> What's the best way to handle this? I can provide all the patches.
+Just wanted to call your attention to some pretty cool and pretty serious
+litmus tests that Andrii did as part of his BPF ring-buffer work:
 
-Resubmit this against 'net' please, then I'll deal with the fallout
-when I merge net into net-next.
+https://lore.kernel.org/bpf/20200517195727.279322-3-andriin@fb.com/
+
+Thoughts?
+
+							Thanx, Paul
