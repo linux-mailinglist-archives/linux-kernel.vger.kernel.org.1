@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11B31DF284
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6801DF298
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgEVWyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 18:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731138AbgEVWyU (ORCPT
+        id S1731216AbgEVW72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 18:59:28 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:18099 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731029AbgEVW71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 18:54:20 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AE9C061A0E;
-        Fri, 22 May 2020 15:54:20 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B1F0F12748826;
-        Fri, 22 May 2020 15:54:19 -0700 (PDT)
-Date:   Fri, 22 May 2020 15:54:18 -0700 (PDT)
-Message-Id: <20200522.155418.406408375053374516.davem@davemloft.net>
-To:     dhowells@redhat.com
-Cc:     netdev@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/3] rxrpc: Fix retransmission timeout and ACK
- discard
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <159001690181.18663.663730118645460940.stgit@warthog.procyon.org.uk>
-References: <159001690181.18663.663730118645460940.stgit@warthog.procyon.org.uk>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 22 May 2020 15:54:19 -0700 (PDT)
+        Fri, 22 May 2020 18:59:27 -0400
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 22 May 2020 15:59:24 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 22 May 2020 15:59:24 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id DAB454DAC; Fri, 22 May 2020 15:59:23 -0700 (PDT)
+Date:   Fri, 22 May 2020 15:59:23 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v13 00/11] Convert PWM period and duty cycle to u64
+Message-ID: <20200522225923.GA2873@codeaurora.org>
+References: <20200423114857.GG3612@dell>
+ <20200423215306.GA8670@codeaurora.org>
+ <20200424064303.GJ3612@dell>
+ <20200424221422.GA31118@codeaurora.org>
+ <20200427064434.GA3559@dell>
+ <20200520231508.GA29437@codeaurora.org>
+ <20200521071505.GL271301@dell>
+ <20200522111657.GA2163848@ulmo>
+ <20200522113147.GU271301@dell>
+ <20200522125028.GG2163848@ulmo>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522125028.GG2163848@ulmo>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 21 May 2020 00:21:42 +0100
+On Fri, May 22, 2020 at 02:50:28PM +0200, Thierry Reding wrote:
+> Looking at v14 I think there are no longer any discussions (looks like
+> the last comment I thought was from v14 was actually on v13 and it seems
+> to have been solved in v14 now) and there are Acked-bys for all the non-
+> PWM patches, so there's nothing in the way of me applying this to the
+> PWM tree. I can let it soak there for a few days and send out a stable
+> branch if anyone needs it if there aren't any huge issues.
+> 
+> Does that sound like a plan?
 
-> 
-> Here are a couple of fixes and an extra tracepoint for AF_RXRPC:
-> 
->  (1) Calculate the RTO pretty much as TCP does, rather than making
->      something up, including an initial 4s timeout (which causes return
->      probes from the fileserver to fail if a packet goes missing), and add
->      backoff.
-> 
->  (2) Fix the discarding of out-of-order received ACKs.  We mustn't let the
->      hard-ACK point regress, nor do we want to do unnecessary
->      retransmission because the soft-ACK list regresses.  This is not
->      trivial, however, due to some loose wording in various old protocol
->      specs, the ACK field that should be used for this sometimes has the
->      wrong information in it.
-> 
->  (3) Add a tracepoint to log a discarded ACK.
-> 
-> The patches are tagged here:
-> 
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
-> 	rxrpc-fixes-20200520
+There is one ongoing discussion on v14 [1]: Daniel just gave me some
+comments on the clps711x.c patch that I will address in the next
+patchset. The plan you outlined sounds good to me - just let me send out
+v15 which you may then pick up.
 
-Pulled, thanks David.
+[1] https://lore.kernel.org/lkml/20200521101934.j5ivjky4e6byveut@holly.lan/
+
+Thank you.
+
+Guru Das.
