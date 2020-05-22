@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211B91DE3B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA751DE3BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbgEVKF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728246AbgEVKF5 (ORCPT
+        id S1728315AbgEVKLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:11:30 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:38765 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728281AbgEVKL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:05:57 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C4AC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 03:05:57 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g9so8867405edr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 03:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DtZfx2mo8Milc18ngyMfW1PIcYKBj/EvVpvJqR76B+Y=;
-        b=jw5fHtL/RIM8xz3E7sdN0sc8voc91MwoIIXai4ooDW3LkOeQGwMZMR5x4k7IoykRVw
-         nceGbEdL8kBLjrHQGcoqPbP3QWGcrvwJlGepODGT+tTiexRgI7/fxoU9Dg/0t/nOj0Ax
-         W8a0S8U1i4xN8yv0ngkz1Mjhi30imTAiGDmW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DtZfx2mo8Milc18ngyMfW1PIcYKBj/EvVpvJqR76B+Y=;
-        b=JdAqju0wbxs4PeboHpcTZxDllyNCBYB/Wi+nEkQ5in0PuyOee97qZISawNyNCv1YpP
-         07BuxSzN3A+n37vzS4/T/fBPVPJ7Ssy4C7rfwunB2+wrb+xCnkcVV1Ob9cyyNTLZwzT5
-         ET2UJmEeHj+9v/3QruTaBn7hUG5GxUxCm+LvuuRxbSUnK5DAHUD5O37cAzmdufmepUP9
-         wwY93Q3mafalgsSc4dnYbkMpqrRtnvN9tk9PVLfW7Gx9x/iPsNpAbEFSyKSPtaBC8nZy
-         E06GC9CFGy/LFI3DTP+1gV8t12yk0xcUvpJ+aHv/3A/c7W5aHANlchQ9CpWAALsN5hZX
-         +OQg==
-X-Gm-Message-State: AOAM532e0jOwmZaHgZyu05oYkqEuQfRRrGXsb3kjF6TrNyHwJY0hCFye
-        ZCi8Nzgp7nnsLJpJA1bmIuft9g==
-X-Google-Smtp-Source: ABdhPJxesQBnmboD62I4SZU4WGLsBVnkI5YIilNVuotJbFhyVWl5+N/8HBerDSceQ46v2AtGVAVygQ==
-X-Received: by 2002:a50:dac4:: with SMTP id s4mr2416371edj.84.1590141956086;
-        Fri, 22 May 2020 03:05:56 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-212-96-48-140.catv.broadband.hu. [212.96.48.140])
-        by smtp.gmail.com with ESMTPSA id s17sm7132537edr.84.2020.05.22.03.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 03:05:55 -0700 (PDT)
-Date:   Fri, 22 May 2020 12:05:53 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Colin Walters <walters@verbum.org>,
-        syzbot <syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-unionfs@vger.kernel.org
-Subject: Re: kernel BUG at mm/hugetlb.c:LINE!
-Message-ID: <20200522100553.GE13131@miu.piliscsaba.redhat.com>
-References: <000000000000b4684e05a2968ca6@google.com>
- <aa7812b8-60ae-8578-40db-e71ad766b4d3@oracle.com>
- <CAJfpegtVca6H1JPW00OF-7sCwpomMCo=A2qr5K=9uGKEGjEp3w@mail.gmail.com>
- <bb232cfa-5965-42d0-88cf-46d13f7ebda3@www.fastmail.com>
- <9a56a79a-88ed-9ff4-115e-ec169cba5c0b@oracle.com>
- <CAJfpegsNVB12MQ-Jgbb-f=+i3g0Xy52miT3TmUAYL951HVQS_w@mail.gmail.com>
- <78313ae9-8596-9cbe-f648-3152660be9b3@oracle.com>
+        Fri, 22 May 2020 06:11:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590142288; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=NW8Jsqkb6pnbBs1zr+nqGOErhbAaUKt/K4f9G+vJyjQ=; b=JGoJNkrX7jZ/a1y46Q8C/C65gVdfyGUiwr6VC/7S+c3tDRFVP3gHOYzv1HN8kjUq+6lK7v2N
+ PFr/LWcwU0pI5CYJWamm2InpsW68U+bEYD+KWOYjL6zAUmoxiJV9mv2Q3sGbj1bDnTON8pBW
+ xWBwykePnv36AAgNtQid7EDAzRg=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ec7a55082c96b5d3b84f359 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 May 2020 10:11:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3B0CC433C6; Fri, 22 May 2020 10:11:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB89FC433C8;
+        Fri, 22 May 2020 10:11:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DB89FC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
+        <ryder.lee@mediatek.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <matthias.bgg@gmail.com>, <shayne.chen@mediatek.com>,
+        <chih-min.chen@mediatek.com>, <yf.luo@mediatek.com>,
+        <yiwei.chung@mediatek.com>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mt76: mt7915: Fix build error
+References: <20200522034533.61716-1-yuehaibing@huawei.com>
+Date:   Fri, 22 May 2020 13:11:16 +0300
+In-Reply-To: <20200522034533.61716-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Fri, 22 May 2020 11:45:33 +0800")
+Message-ID: <87a720b7p7.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78313ae9-8596-9cbe-f648-3152660be9b3@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 10:27:15AM -0700, Mike Kravetz wrote:
+YueHaibing <yuehaibing@huawei.com> writes:
 
-> I am fairly confident it is all about checking limits and alignment.  The
-> filesystem knows if it can/should align to base or huge page size. DAX has
-> some interesting additional restrictions, and several 'traditional' filesystems
-> check if they are 'on DAX'.
+> In file included from ./include/linux/firmware.h:6:0,
+>                  from drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:4:
+> In function =E2=80=98__mt7915_mcu_msg_send=E2=80=99,
+>     inlined from =E2=80=98mt7915_mcu_send_message=E2=80=99 at drivers/net=
+/wireless/mediatek/mt76/mt7915/mcu.c:370:6:
+> ./include/linux/compiler.h:396:38: error: call to =E2=80=98__compiletime_=
+assert_545=E2=80=99 declared with attribute error: BUILD_BUG_ON failed: cmd=
+ =3D=3D MCU_EXT_CMD_EFUSE_ACCESS && mcu_txd->set_query !=3D MCU_Q_QUERY
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                       ^
+> ./include/linux/compiler.h:377:4: note: in definition of macro =E2=80=98_=
+_compiletime_assert=E2=80=99
+>     prefix ## suffix();    \
+>     ^~~~~~
+> ./include/linux/compiler.h:396:2: note: in expansion of macro =E2=80=98_c=
+ompiletime_assert=E2=80=99
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>   ^~~~~~~~~~~~~~~~~~~
+> ./include/linux/build_bug.h:39:37: note: in expansion of macro =E2=80=98c=
+ompiletime_assert=E2=80=99
+>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                      ^~~~~~~~~~~~~~~~~~
+> ./include/linux/build_bug.h:50:2: note: in expansion of macro =E2=80=98BU=
+ILD_BUG_ON_MSG=E2=80=99
+>   BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>   ^~~~~~~~~~~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:280:2: note: in expansion=
+ of macro =E2=80=98BUILD_BUG_ON=E2=80=99
+>   BUILD_BUG_ON(cmd =3D=3D MCU_EXT_CMD_EFUSE_ACCESS &&
+>   ^~~~~~~~~~~~
+>
+> BUILD_BUG_ON is meaningless here, chang it to WARN_ON.
+>
+> Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chi=
+psets")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
+I'm curious why I don't see this build error? I was about to send a pull
+request to Dave, should I hold off the pull request due to this problem?
 
-Okay, I haven't looked at DAX vs. overlay.  I'm sure it's going to come up at
-some point, if it hasn't already.
-
-> 
-> In a previous e-mail, you suggested hugetlb_get_unmapped_area could do the
-> length adjustment in hugetlb_get_unmapped_area (generic and arch specific).
-> I agree, although there may be the need to add length overflow checks in
-> these routines (after round up) as this is done in core code now.  However,
-> this can be done as a separate cleanup patch.
-> 
-> In any case, we need to get the core mmap code to call filesystem specific
-> get_unmapped_area if on a union/overlay.  The patch I suggested does this
-> by simply calling real_file to determine if there is a filesystem specific
-> get_unmapped_area.  The other approach would be to provide an overlayfs
-> get_unmapped_area that calls the underlying filesystem get_unmapped_area.
-
-That latter is what's done for all other stacked operations in overlayfs.
-
-Untested patch below.
-
-Thanks,
-Miklos
-
----
- fs/overlayfs/file.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -757,6 +757,17 @@ static loff_t ovl_remap_file_range(struc
- 			    remap_flags, op);
- }
- 
-+static unsigned long ovl_get_unmapped_area(struct file *file,
-+				unsigned long uaddr, unsigned long len,
-+				unsigned long pgoff, unsigned long flags)
-+{
-+	struct file *realfile = file->private_data;
-+
-+	return (realfile->f_op->get_unmapped_area ?:
-+		current->mm->get_unmapped_area)(realfile,
-+						uaddr, len, pgoff, flags);
-+}
-+
- const struct file_operations ovl_file_operations = {
- 	.open		= ovl_open,
- 	.release	= ovl_release,
-@@ -774,6 +785,7 @@ const struct file_operations ovl_file_op
- 
- 	.copy_file_range	= ovl_copy_file_range,
- 	.remap_file_range	= ovl_remap_file_range,
-+	.get_unmapped_area	= ovl_get_unmapped_area,
- };
- 
- int __init ovl_aio_request_cache_init(void)
+--=20
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
