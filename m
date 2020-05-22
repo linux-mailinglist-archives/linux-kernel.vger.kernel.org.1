@@ -2,131 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314231DE82E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C7A1DE833
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 15:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgEVNiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 09:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729922AbgEVNiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 09:38:18 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438E8C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 06:38:18 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f13so10716449qkh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 06:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YBx0QmgBlhkPaubO0vtt6QDHFJk7HKYLiMKXWU9gGLs=;
-        b=PrjvHlWoGx0tOv0xWyqyUec5LfWVpFdXT95xXV2W7uO6uczntwzYivL0XfeTSyxKOJ
-         rbS28lT8ArAQ3vl6VS9se8TLJFiS/+VqDagHUXwvaY6okiRqnr4r7mqZYeA6/3rhZrMG
-         f9jVGK3EDVQgrJYwc+PXdgKKGw7FOdxNKC/pg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YBx0QmgBlhkPaubO0vtt6QDHFJk7HKYLiMKXWU9gGLs=;
-        b=e/k26ejN9JfrttHfmdgI8a8G9HN2dLGLyl4Tar6s3q1fOuQGlCrxbUY595D10/jvd+
-         Z47Ir9f2KwdHSsmbMCpJF8POu1MnmscXoJm/MnskWDKzmwzXtZ54ljuVGXGNlu9chBpB
-         6+/U0F+qW4ybNPox9soYMi56AcjsWUjtLX13Zni4HrAcJJyc2rUFRgpRs2mK7WMktKIR
-         7Db5P2NNZMAtlgxv9ygkT/k3zXi95bknNkmRFeVJg0Mwbdlx+NizoQGjax9nFX0CZysc
-         0szb14H/GUb9Q57Ro2kVacYLHL2TXNRE/Lqz4lEROzO/z7jMkqfQvS6ERtzPTryfwPJp
-         2bjg==
-X-Gm-Message-State: AOAM530MgyWiJobZmmaYWGShCh6NN2xAjhVvqSxyI0sFromchhMJOq03
-        uLbFuBzJTzY2JzvlmMRbbjaP5g==
-X-Google-Smtp-Source: ABdhPJwIySgd5FjYEb2seaX5kyI0Ej2bREBDLCoGNYAWJMUC5WkeYKNtC90051dOURxepwzIcfAp0Q==
-X-Received: by 2002:a05:620a:6b7:: with SMTP id i23mr14461310qkh.156.1590154697354;
-        Fri, 22 May 2020 06:38:17 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id m33sm7675398qte.17.2020.05.22.06.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 06:38:16 -0700 (PDT)
-Date:   Fri, 22 May 2020 09:38:16 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Matthew Blecker <matthewb@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Mike Frysinger <vapier@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        vineethrp@gmail.com, Peter Zijlstra <peterz@infradead.org>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RFC] sched/headers: Fix sched_setattr userspace
- compilation issues
-Message-ID: <20200522133816.GB210175@google.com>
-References: <20200521155346.168413-1-joel@joelfernandes.org>
- <CAEXW_YTj83gO0STovrOuL9zgDwEYWRJusUZ3ebVw_jOG6yJxTg@mail.gmail.com>
- <20200522131355.f4bdc2f4h2zyqbku@wittgenstein>
+        id S1730019AbgEVNkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 09:40:11 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53156 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729406AbgEVNkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 09:40:11 -0400
+Received: from zn.tnic (p200300ec2f0d4900a503efeda57d2ecc.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4900:a503:efed:a57d:2ecc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 07B341EC02DD;
+        Fri, 22 May 2020 15:40:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590154810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Pw4qZddkN9GARxEt8dEIB/8bXHBWj3ikGLqk4GalsDI=;
+        b=OMXeKQ+lA5i44nvFQReQLVYF4u5t5YzXL+c9LW740nPyR9rd7bNT752oRFxrmq05fHnm2y
+        A9KklmoK6nbusEHZtzVRcWBa0d3ekTrHXUuDyYWz2tdqkDbspvDnn6VIGQfWFDiyKWoZML
+        Y1XxO57yR1hRM37VQwpeYIjqI92mO5c=
+Date:   Fri, 22 May 2020 15:40:04 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Dave Young <dyoung@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Lenny Szubowicz <lszubowi@redhat.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Loic Yhuel <loic.yhuel@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Mike Lothian <mike@fireburn.co.uk>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Subject: Re: [GIT PULL 0/7] EFI fixes for v5.7
+Message-ID: <20200522134004.GF28750@zn.tnic>
+References: <20200517125754.8934-1-ardb@kernel.org>
+ <CAMj1kXGUxPuQCv9KPezqpLf1qLTbJh_j9JeVnnYZ=HbnL65=AQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200522131355.f4bdc2f4h2zyqbku@wittgenstein>
+In-Reply-To: <CAMj1kXGUxPuQCv9KPezqpLf1qLTbJh_j9JeVnnYZ=HbnL65=AQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 03:13:55PM +0200, Christian Brauner wrote:
-> On Thu, May 21, 2020 at 11:55:21AM -0400, Joel Fernandes wrote:
-> > On Thu, May 21, 2020 at 11:53 AM Joel Fernandes (Google)
-> > <joel@joelfernandes.org> wrote:
-> > >
-> > > On a modern Linux distro, compiling the following program fails:
-> > >  #include<stdlib.h>
-> > >  #include<stdint.h>
-> > >  #include<pthread.h>
-> > >  #include<linux/sched/types.h>
-> > >
-> > >  void main() {
-> > >          struct sched_attr sa;
-> > >
-> > >          return;
-> > >  }
-> > >
-> > > with:
-> > > /usr/include/linux/sched/types.h:8:8: \
-> > >                         error: redefinition of ‘struct sched_param’
-> > >     8 | struct sched_param {
-> > >       |        ^~~~~~~~~~~
-> > > In file included from /usr/include/x86_64-linux-gnu/bits/sched.h:74,
-> > >                  from /usr/include/sched.h:43,
-> > >                  from /usr/include/pthread.h:23,
-> > >                  from /tmp/s.c:4:
-> > > /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:23:8:
-> > > note: originally defined here
-> > >    23 | struct sched_param
-> > >       |        ^~~~~~~~~~~
-> > >
-> > > This is also causing a problem on using sched_attr Chrome. The issue is
-> > > sched_param is already provided by glibc.
-> > >
-> > > Guard the kernel's UAPI definition of sched_param with __KERNEL__ so
-> > > that userspace can compile.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > 
-> > If it is more preferable, another option is to move sched_param to
-> > include/linux/sched/types.h
-> 
-> Might it be worth Ccing libc-alpha here? Seems like one of those classic
-> header conflicts.
+On Fri, May 22, 2020 at 03:06:20PM +0200, Ard Biesheuvel wrote:
+> Ping?
 
-sched_param is defined by POSIX from my reading of the manpage. Is the kernel
-supposed to define it in the UAPI at all? I guarded it with __KERNEL__ as you
-can see.
+Did you want to make your tags unique from the next pull request onwards
+and I were supposed to pull this one as is?
 
-Resent with libc-alpha CC'd per your suggestion.
+Thx.
 
-thanks,
+-- 
+Regards/Gruss,
+    Boris.
 
- - Joel
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
