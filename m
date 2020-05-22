@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D931DE487
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED7C1DE48F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgEVKeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbgEVKeN (ORCPT
+        id S1728784AbgEVKgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:36:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48602 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgEVKgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:34:13 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50B0C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 03:34:12 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id i9so2069206ool.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 03:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5ktmTy4SBF1rMKSXisJeFl7NM4HKoH9GRsdYqKi4Yhk=;
-        b=r+p4rL6dIfZka9/kOM/z/qvR8koTdip9r+Ida4SrydWrQbMAl/U17vCfvc9dV+1HKP
-         nPSQgCHjHTfLBNCNuq2OQjost52ETQWbL27CpfyFIPkKXg/V4Ssrg7u8Fs37ksLv5L5d
-         N29orFGlaibmiszJnkHCqKo1DuLTdJ2bTAU/dyIUvVKqQVM26qB9BhRVHedyu19dWnKa
-         G7GkPigV/ud9N8tv64tgALtAIgYuWSRQhpVfPFDy946hqW4gWjLrQdtJk4hmi8ZDEM3C
-         kzvV41BvVGYvSZSIKg/porkInfmkPxxvkokGw29B9JWPwWp/Or9Wq1oOIBVDEVq75GuP
-         G30g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5ktmTy4SBF1rMKSXisJeFl7NM4HKoH9GRsdYqKi4Yhk=;
-        b=UFNMoSwysHPTMbj/3xzo2Vced0xOqgRa6vfPhLsO01HSuJ51MPfrLWqs78zDdwjW8n
-         qoJa1FVWJScmwpQqPQfP1PwrFors3XBNSq9aT3NCgaruZxGS4VfiPopyXAFmP/m5dHPU
-         oeZKvfARf8mdNqImzu3nXE88jDLl6wXe3uej7J0ge+QmSgAa0MspkKVWxDMp2g+YGQzG
-         w905M/BfdwLheyIG3ndPkH7932SfRdRIfdj373Nw0Fze6M2Y85hV39rTKVMy7plDv3Pm
-         PV2XpuHs5fTyfVpzzyFu/CK8tgo4Fzg0TOmbWj5SG5CIbSVSjd46pDoEYZuWgBKAiPY1
-         +Jlw==
-X-Gm-Message-State: AOAM532AKEG33Dxr5cyMjn15FREhMSavvecU7yFxAR9ucyl9bPprmL0K
-        ie4fvoWeK3LW0w+KdroNzfu3tafBEc8qnhMdIOES5Q==
-X-Google-Smtp-Source: ABdhPJwrhxKMFtD7P+RI0CQDAjknGBuZPr69lWCEuIfEcpoVvW6AvyTUoQvMfPMIjwqV4k4JmQ36BgVFa7vwpTZEZ2E=
-X-Received: by 2002:a4a:e836:: with SMTP id d22mr2501899ood.54.1590143652013;
- Fri, 22 May 2020 03:34:12 -0700 (PDT)
+        Fri, 22 May 2020 06:36:42 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04MAXNnw065360;
+        Fri, 22 May 2020 10:36:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=K27L96mmV4GmzDbNladkq7oBFSKsiC4OG9GSzTfY0Ak=;
+ b=BCpOf+BKx5AqZuHLlQvpkhfyOOlTJ2mOxlBW1TFVIzh3GdXhVWby1IxuqOq2J6Cgikvc
+ 1nHdQ4FRh1opqD1mtvnxyWpkK/lazqvA81Szytq3Ifor6fXs8He485Rnc8G6DHdX2nKb
+ 1Ak9x9YzyG5Zp9q+SFPzcYI1UJJIBPgAEmebcDCO+s9KyKjGqHf9oZJsVMXLbfUEAydH
+ k3iOGswe2xdTMG6Rw3yq1wfRz2y741cauIcTPbLUg7yUA/27cMssCgL+KzkZxn6sD5Q2
+ T6LsQgjKIkTUhHh+m+NKIxbJer/YFT4t+/dqxfp6FBbj9pgj/Gqh628O/TpAJMRo2it2 +Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3127krn4hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 May 2020 10:36:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04MAXGkp165946;
+        Fri, 22 May 2020 10:34:20 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 312t3e55g5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 May 2020 10:34:20 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04MAYEBO031342;
+        Fri, 22 May 2020 10:34:17 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 22 May 2020 03:34:13 -0700
+Date:   Fri, 22 May 2020 13:34:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     MugilRaj <dmugil2000@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Kirk Reiser <kirk@reisers.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Chris Brannon <chris@the-brannons.com>
+Subject: Re: [PATCH] taging: speakup: remove volatile
+Message-ID: <20200522103406.GK30374@kadam>
+References: <1590138989-6091-1-git-send-email-dmugil2000@gmail.com>
 MIME-Version: 1.0
-References: <20200521142047.169334-1-elver@google.com> <20200521142047.169334-4-elver@google.com>
- <20200522102630.GC28750@zn.tnic>
-In-Reply-To: <20200522102630.GC28750@zn.tnic>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 22 May 2020 12:34:00 +0200
-Message-ID: <CANpmjNM=aHuTWFk45j8BwRFoTQxc-ovghjfwQr5m4K3kVP8r0w@mail.gmail.com>
-Subject: Re: [PATCH -tip v3 03/11] kcsan: Support distinguishing volatile accesses
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590138989-6091-1-git-send-email-dmugil2000@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=788
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005220086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9628 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=0 mlxlogscore=822 malwarescore=0 cotscore=-2147483648
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005220086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 May 2020 at 12:26, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, May 21, 2020 at 04:20:39PM +0200, Marco Elver wrote:
-> > diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
-> > index 20337a7ecf54..75d2942b9437 100644
-> > --- a/scripts/Makefile.kcsan
-> > +++ b/scripts/Makefile.kcsan
-> > @@ -9,7 +9,10 @@ else
-> >  cc-param =3D --param -$(1)
-> >  endif
-> >
-> > +# Keep most options here optional, to allow enabling more compilers if=
- absence
-> > +# of some options does not break KCSAN nor causes false positive repor=
-ts.
-> >  CFLAGS_KCSAN :=3D -fsanitize=3Dthread \
-> > -     $(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=
-=3D0) -fno-optimize-sibling-calls)
-> > +     $(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=
-=3D0) -fno-optimize-sibling-calls) \
-> > +     $(call cc-param,tsan-distinguish-volatile=3D1)
->
-> gcc 9 doesn't like this:
->
-> cc1: error: invalid --param name =E2=80=98-tsan-distinguish-volatile=E2=
-=80=99
-> make[1]: *** [scripts/Makefile.build:100: scripts/mod/devicetable-offsets=
-.s] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> cc1: error: invalid --param name =E2=80=98-tsan-distinguish-volatile=E2=
-=80=99
-> make[1]: *** [scripts/Makefile.build:267: scripts/mod/empty.o] Error 1
-> make: *** [Makefile:1141: prepare0] Error 2
-> make: *** Waiting for unfinished jobs....
->
-> git grep "tsan-distinguish-volatile" in gcc's git doesn't give anything.
->
-> Hmm.
+On Fri, May 22, 2020 at 02:46:28PM +0530, MugilRaj wrote:
+> fix checkpatch.pl warning, which is Use of volatile is usually wrong: see
+> Documentation/process/volatile-considered-harmful.rst
+> Signed-off-by: MugilRaj <dmugil2000@gmail.com>
 
-Yeah, my patch for GCC is still pending. But we probably need more
-fixes for GCC, before we can re-enable it.
+Please put a blank before the Signed-off-by line.
 
-We restrict supported compilers later in the series:
-https://lore.kernel.org/lkml/20200521142047.169334-7-elver@google.com/
+Probably there should be a space between your first and last name.  It's
+supposed to your legal name like for signing a legal document so use
+whatever is appropriate legal documents in your country.
 
-More background is also in the cover letter:
-https://lore.kernel.org/lkml/20200521142047.169334-1-elver@google.com/
+Also the Documentation/process/volatile-considered-harmful.rst explains
+that people often use "volatile" when they should be using locking for
+synchronization.  That seems to be the case here.  So the correct fix is
+to add locking.  That's a little bit complicated to do and requires
+testing.
 
-Thanks,
--- Marco
+If we apply this patch, then we have silenced the warning so now someone
+will have to look for the bug.  But if we leave it as-is, then everyone
+will know that the code is buggy.  So let's leave it as-is until we are
+able to fix the bug.
+
+It's always better to have easy to find bugs, than hidden bugs.
+
+regards,
+dan carpenter
+
