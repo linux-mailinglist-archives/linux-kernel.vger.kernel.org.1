@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C329D1DE721
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFA21DE722
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgEVMuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:50:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:34882 "EHLO foss.arm.com"
+        id S1729406AbgEVMuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:50:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:34898 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728878AbgEVMuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:50:01 -0400
+        id S1728878AbgEVMuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 08:50:02 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D92A555D;
-        Fri, 22 May 2020 05:50:00 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C0461063;
+        Fri, 22 May 2020 05:50:02 -0700 (PDT)
 Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 99A583F68F;
-        Fri, 22 May 2020 05:49:59 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 16E1C3F68F;
+        Fri, 22 May 2020 05:50:00 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
@@ -25,41 +25,140 @@ Cc:     Sudeep Holla <sudeep.holla@arm.com>, Will Deacon <will@kernel.org>,
         linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         harb@amperecomputing.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 0/2] base: soc: Add JEP106 manufacturer's identification code
-Date:   Fri, 22 May 2020 13:49:49 +0100
-Message-Id: <20200522124951.35776-1-sudeep.holla@arm.com>
+Subject: [PATCH 1/2] base: soc: Add JEDEC JEP106 manufacturer's identification code attribute
+Date:   Fri, 22 May 2020 13:49:50 +0100
+Message-Id: <20200522124951.35776-2-sudeep.holla@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200522124951.35776-1-sudeep.holla@arm.com>
+References: <20200522124951.35776-1-sudeep.holla@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+SMCCC v1.2 adds a new optional function SMCCC_ARCH_SOC_ID to obtain a
+SiP defined SoC identification value. Indeed of making it custom
+attribute, let us add the same as generic attribute to soc_device.
 
-While attempting to add custom sysfs attributes for SMCCC ARCH_SOC_ID
-Arnd suggested to make it generic. Here is my first attempt.
+There are various ways in which it can be represented in shortened form
+for efficiency and ease of parsing for userspace. The chosen form is
+described in the ABI document.
 
-The original thread/discussion can be found here[1]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ Documentation/ABI/testing/sysfs-devices-soc | 31 +++++++++++++++++++++
+ drivers/base/soc.c                          | 12 ++++++++
+ include/linux/sys_soc.h                     |  1 +
+ 3 files changed, 44 insertions(+)
 
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/r/CAK8P3a3dV0B26XE3oFQGTFf8EWV0AHoLudNtpSSB_t+pCfkOkQ@mail.gmail.com/
-
-Sudeep Holla (2):
-  base: soc: Add JEDEC JEP106 manufacturer's identification code attribute
-  firmware: smccc: Add ARCH_SOC_ID support
-
- Documentation/ABI/testing/sysfs-devices-soc |  31 ++++++
- drivers/base/soc.c                          |  12 +++
- drivers/firmware/smccc/Kconfig              |   9 ++
- drivers/firmware/smccc/Makefile             |   1 +
- drivers/firmware/smccc/soc_id.c             | 113 ++++++++++++++++++++
- include/linux/arm-smccc.h                   |   5 +
- include/linux/sys_soc.h                     |   1 +
- 7 files changed, 172 insertions(+)
- create mode 100644 drivers/firmware/smccc/soc_id.c
-
+diff --git a/Documentation/ABI/testing/sysfs-devices-soc b/Documentation/ABI/testing/sysfs-devices-soc
+index ba3a3fac0ee1..fd44c9b1e09a 100644
+--- a/Documentation/ABI/testing/sysfs-devices-soc
++++ b/Documentation/ABI/testing/sysfs-devices-soc
+@@ -54,6 +54,37 @@ contact:	Lee Jones <lee.jones@linaro.org>
+ 		Read-only attribute supported ST-Ericsson's silicon. Contains the
+ 		the process by which the silicon chip was manufactured.
+ 
++What:		/sys/devices/socX/jep106_identification_code
++Date:		June 2020
++Contact:	Sudeep Holla <sudeep.holla@arm.com>
++Description:
++		Read-only attribute supported on many of ARM based silicon
++		with SMCCC v1.2+ compliant firmware. Contains the JEDEC
++		JEP106 manufacturer’s identification code.
++
++		This manufacturer’s identification code is defined by one
++		or more eight (8) bit fields, each consisting of seven (7)
++		data bits plus one (1) odd parity bit. It is a single field,
++		limiting the possible number of vendors to 126. To expand
++		the maximum number of identification codes, a continuation
++		scheme has been defined.
++
++		The specified mechanism is that an identity code of 0x7F
++		represents the "continuation code" and implies the presence
++		of an additional identity code field, and this mechanism
++		may be extended to multiple continuation codes followed
++		by the manufacturer's identity code.
++
++		For example, ARM has identity code 0x7F 0x7F 0x7F 0x7F 0x3B,
++		which is code 0x3B on the fifth 'page'. This can be shortened
++		as JEP106 identity code of 0x3B and a continuation code of
++		0x4 to represent the four continuation codes preceding the
++		identity code.
++
++		This property represents it in the shortened form:
++		8-bit continuation code followed by 8 bit identity code
++		without the parity bit.
++
+ What:		/sys/bus/soc
+ Date:		January 2012
+ contact:	Lee Jones <lee.jones@linaro.org>
+diff --git a/drivers/base/soc.c b/drivers/base/soc.c
+index 4af11a423475..44dc757aadf4 100644
+--- a/drivers/base/soc.c
++++ b/drivers/base/soc.c
+@@ -36,6 +36,7 @@ static DEVICE_ATTR(family,   S_IRUGO, soc_info_get,  NULL);
+ static DEVICE_ATTR(serial_number, S_IRUGO, soc_info_get,  NULL);
+ static DEVICE_ATTR(soc_id,   S_IRUGO, soc_info_get,  NULL);
+ static DEVICE_ATTR(revision, S_IRUGO, soc_info_get,  NULL);
++static DEVICE_ATTR(jep106_identification_code, S_IRUGO, soc_info_get,  NULL);
+ 
+ struct device *soc_device_to_device(struct soc_device *soc_dev)
+ {
+@@ -64,6 +65,9 @@ static umode_t soc_attribute_mode(struct kobject *kobj,
+ 	if ((attr == &dev_attr_soc_id.attr)
+ 	    && (soc_dev->attr->soc_id != NULL))
+ 		return attr->mode;
++	if ((attr == &dev_attr_jep106_identification_code.attr)
++	    && (soc_dev->attr->jep106_id != NULL))
++		return attr->mode;
+ 
+ 	/* Unknown or unfilled attribute. */
+ 	return 0;
+@@ -85,6 +89,8 @@ static ssize_t soc_info_get(struct device *dev,
+ 		return sprintf(buf, "%s\n", soc_dev->attr->serial_number);
+ 	if (attr == &dev_attr_soc_id)
+ 		return sprintf(buf, "%s\n", soc_dev->attr->soc_id);
++	if (attr == &dev_attr_jep106_identification_code)
++		return sprintf(buf, "%s\n", soc_dev->attr->jep106_id);
+ 
+ 	return -EINVAL;
+ 
+@@ -96,6 +102,7 @@ static struct attribute *soc_attr[] = {
+ 	&dev_attr_serial_number.attr,
+ 	&dev_attr_soc_id.attr,
+ 	&dev_attr_revision.attr,
++	&dev_attr_jep106_identification_code.attr,
+ 	NULL,
+ };
+ 
+@@ -214,6 +221,11 @@ static int soc_device_match_attr(const struct soc_device_attribute *attr,
+ 	    (!attr->soc_id || !glob_match(match->soc_id, attr->soc_id)))
+ 		return 0;
+ 
++	if (match->jep106_id &&
++	    (!attr->jep106_id ||
++	     !glob_match(match->jep106_id, attr->jep106_id)))
++		return 0;
++
+ 	return 1;
+ }
+ 
+diff --git a/include/linux/sys_soc.h b/include/linux/sys_soc.h
+index d9b3cf0f410c..394fa70ae16f 100644
+--- a/include/linux/sys_soc.h
++++ b/include/linux/sys_soc.h
+@@ -14,6 +14,7 @@ struct soc_device_attribute {
+ 	const char *revision;
+ 	const char *serial_number;
+ 	const char *soc_id;
++	const char *jep106_id;
+ 	const void *data;
+ 	const struct attribute_group *custom_attr_group;
+ };
 -- 
 2.17.1
 
