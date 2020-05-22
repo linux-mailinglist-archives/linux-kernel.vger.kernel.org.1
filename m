@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458D71DDE93
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 06:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377C71DDEA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 06:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgEVENE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 00:13:04 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:56834 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725956AbgEVENC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 00:13:02 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZuolUcdeFrA3AA--.1237S4;
-        Fri, 22 May 2020 12:12:22 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>
-Cc:     bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH 3/3] gpio: pxa: Add COMPILE_TEST support
-Date:   Fri, 22 May 2020 12:12:20 +0800
-Message-Id: <1590120740-22912-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9AxZuolUcdeFrA3AA--.1237S4
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYt7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14
-        v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK
-        67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I
-        0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF
-        7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F4
-        0Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC
-        6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIec
-        xEwVAFwVW8XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-        F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-        ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-        1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUU
-        gArUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726798AbgEVEPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 00:15:09 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11816 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgEVEPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 00:15:09 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec7517c0000>; Thu, 21 May 2020 21:13:49 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 May 2020 21:15:09 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 May 2020 21:15:09 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 May
+ 2020 04:15:08 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 22 May 2020 04:15:08 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.48.182]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec751cb0005>; Thu, 21 May 2020 21:15:08 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     John Hubbard <jhubbard@nvidia.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>
+Subject: [PATCH 0/2] video: fbdev: fix error handling, convert to pin_user_pages*()
+Date:   Thu, 21 May 2020 21:15:04 -0700
+Message-ID: <20200522041506.39638-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590120829; bh=4CvomaKzVwHB+77SfF7gRmZ5Wb1M+7zo/2BM1L60cTk=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=IHgj/s0tM22z621m0z8ePs8Uvb1f01gFZTsmrfC4NWm58+BHqupDe1z8HyohCtUPD
+         xFZERRuzJgbzy3FpFiRVVklOb8j7ry1m6NCgtQd4zmeFQV6RpUQBJyT0rN03kvEEfM
+         PC+lmZGzXxeY00Fn64STilbZm1LqHwjoh7FUXCYSQI899vTRsFTNz6Eo1is8ej5bcu
+         qkMjXjiStDYm7zjLYU02pC3HaWWGRZDsHu9y8zUYxCOsIXERPr2TeQVqpLC17sKoEx
+         cWqserHfltRNnMKtT8v6yZAfBKU9VisFjyQtFj35L4pBOgNVGWdVMgdDdpeq/ohEfM
+         E9o5kJXdzF3XA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add COMPILE_TEST support to the PXA GPIO driver for better compile
-testing coverage.
+Hi,
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/gpio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note that I have only compile-tested this series, although that does
+also include cross-compiling for a few other arches. I'm hoping that
+this posting will lead to some run-time testing.
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 03c01f4..5e90aad 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -439,7 +439,7 @@ config GPIO_PMIC_EIC_SPRD
- 
- config GPIO_PXA
- 	bool "PXA GPIO support"
--	depends on ARCH_PXA || ARCH_MMP
-+	depends on ARCH_PXA || ARCH_MMP || COMPILE_TEST
- 	help
- 	  Say yes here to support the PXA GPIO device
- 
--- 
-2.1.0
+Also: the proposed fix does not have a "Fixes:" tag, nor does it
+Cc stable. That's because the issue has been there since the dawn of
+git history for the kernel. If it's gone unnoticed this long, then
+there is clearly no need for the relatively fast track of putting it
+into stable, IMHO. But please correct me if that's wrong.
+
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+
+John Hubbard (2):
+  video: fbdev: fix error handling for get_user_pages_fast()
+  video: fbdev: convert get_user_pages() --> pin_user_pages()
+
+ drivers/video/fbdev/pvr2fb.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+
+base-commit: 051143e1602d90ea71887d92363edd539d411de5
+--=20
+2.26.2
 
