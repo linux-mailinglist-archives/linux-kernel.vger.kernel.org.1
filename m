@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522CD1DDC85
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 03:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7721DDC92
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 03:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgEVBSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 May 2020 21:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S1727083AbgEVBWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 21:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgEVBSm (ORCPT
+        with ESMTP id S1726335AbgEVBWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 21:18:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA6FC05BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 18:18:40 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id m44so7136602qtm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 18:18:40 -0700 (PDT)
+        Thu, 21 May 2020 21:22:00 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DF0C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 18:21:59 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id d191so7921518oib.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 18:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Puv1BV91r6SjZkjuOU7H5cmGIu56s9jB/MY9elYkgSk=;
-        b=bCOGh4IBnzxtvHN6uHYYXFvOkvGLA05aypKg9VveLlImf/EjhsiWQEZqEaDxx0hFBw
-         oS/O9Js/qJmDaoEi1Vf9HnVAjgflpNI5PzXwdpd0f6UqWPphMZ8DSMUZPdUd0fnSf90a
-         G6H4rG0ew2DZu7LNTTIOriEl4v0aZi3QI5AXLz2PZxxszXiGSBiS4g+L56Yr0QIrKuLw
-         ezr/H1TDBLZi3n/LG/7H206p26KCSI3+wsjmT5k/IRnUlDysOU1c57Hxfe/Cbyzp/jd7
-         5t8GNCOgNNYyprLix4KNSCg3rmb8EzxhGaqXe6iqofMcf/RxC6yGeoL1L4pqHcthN8+k
-         i3jg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=QyvoWyLbSuP/CE36awIf5BB51IMB409+51eWDRrnj+o=;
+        b=Eo7lQGKOHDF30A7GNcKV32v4KA/gw8VRNtfwaqUHbU//l8VFzYd4AL6nlOvXafYo1J
+         oGmiOu1nIw4u/UXYm/HIxmDLIT24DDR16SLM0VxYqPNGEkqiwzuWZG7MvXYnrMYxIM5p
+         bj2tbLMJlKqusuKH8oIIgEEoZOl7Ku9uDuUtdg6iXHphIOZw12qUfviX9cVVJTFUrx6W
+         8ezZYEAbkJVvy9zoCHi5QtkVxwfCJQRgFDJIFFIM5ZGYPuDtXA7fnHPuh6EZ59IC4zhV
+         wA9BonHZEeM9/QHiPJh6qE3xG65XMUpTnUJeCMybdL0a8B+Qy+qZ0Y677bR6Q92cr4Bh
+         RpBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Puv1BV91r6SjZkjuOU7H5cmGIu56s9jB/MY9elYkgSk=;
-        b=NrShtHJU6q7eWUtDNJWusVb7TzVchkHXalJiZ6RdBTTvTP53xb/7FsEuIuODBJsmpH
-         3uFaP+gnsdnKGIWfWx3F978Iv/ifiTA8jYCWHxtEfPx9m3uRtNWFqn4faymAx9/RjtiG
-         NwO6oCm0bIrCbjmpYTZo4sym/ccq8yw60/xmm02w3lqQu2a4SKMQQg11w9YoXkFeTOg2
-         61x3ukRoADKYGz5TptWu2kSCZx4VHzOPWVOnSZEYP3tG7L/g6XIaD0yo7qt6Axxc2Pb9
-         CScXjy7Efuq00boyA8vuCbSuyPCKB7mm0KM5vtBxlAn+aZiguuHPq10avq3H0fbF7sZa
-         J+nQ==
-X-Gm-Message-State: AOAM533mxfMTMJ3SaIUQzfK4+gevzXC7RUjvHvbg34fFGbjcSlGcQ4gW
-        oSai5bDd3JZOGv5RS1EQ4YCAAg==
-X-Google-Smtp-Source: ABdhPJwMoUeBYjRzyp9R0VCrKxKw3AszW5mQi04RCM1s4y0bzosHq3N+Y/7dGmnHCVVDXVF3pf9Tqw==
-X-Received: by 2002:ac8:b48:: with SMTP id m8mr13649501qti.206.1590110319843;
-        Thu, 21 May 2020 18:18:39 -0700 (PDT)
-Received: from ovpn-112-192.phx2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id f43sm60212qte.58.2020.05.21.18.18.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 May 2020 18:18:39 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-To:     alex.williamson@redhat.com
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>
-Subject: [PATCH -next] vfio/pci: fix a null-ptr-deref in vfio_config_free()
-Date:   Thu, 21 May 2020 21:18:29 -0400
-Message-Id: <20200522011829.17301-1-cai@lca.pw>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=QyvoWyLbSuP/CE36awIf5BB51IMB409+51eWDRrnj+o=;
+        b=NzGzDT28os5PWZ9r0teyZ2ucINmByN/36aVqdjFbSp1awTZs9+PdzrilbX+/cuHhOT
+         0pjxLcsLHY9uFkdh1CFspj/iloRCbjlDJyTVMBXnk87dLdelzTkCPogx1CA160jDuxfU
+         K6CxpsL3iC0xLTK2ei5YKEIEs9Bm2MpY+VO2zBfO7pn2pOax6lUHyw57MsZ+N+jRcA0B
+         uhzvyeOueJ2vgjzrES4Hbekao9Thyq5Snvn2pQvcXzDQRFzeKBszt6txVCh5O5fN0s0K
+         uZ6cf04zVRJbWWmgTSqINOiUKzgbTSyyPw+Oup2n/aL+sXQG8gejjKIc2pq8disOqn7p
+         kElQ==
+X-Gm-Message-State: AOAM532JIFMWatKHTNDfqqcciKxTGTMU1jB8ZB8luFBQ/38pFGaH0G5z
+        ELBmy1pOe4DCQDE9uAOqv3NDxA==
+X-Google-Smtp-Source: ABdhPJzyjC58A+oSo8vkohjD8TJiMy24fhHGzlIv/bIFMwS15PjCYp3lfL/QwYU03q+/SI2A4S/kVQ==
+X-Received: by 2002:aca:ad45:: with SMTP id w66mr1001114oie.59.1590110518857;
+        Thu, 21 May 2020 18:21:58 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id p26sm2103753ood.28.2020.05.21.18.21.57
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 21 May 2020 18:21:57 -0700 (PDT)
+Date:   Thu, 21 May 2020 18:21:42 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH mmotm] mm/vmstat: Add events for PMD based THP migration
+ without split fix
+In-Reply-To: <f1673e4f-64ca-9cf2-861c-7e8a7deeede1@arm.com>
+Message-ID: <alpine.LSU.2.11.2005211812400.1524@eggly.anvils>
+References: <alpine.LSU.2.11.2005210643340.482@eggly.anvils> <f1673e4f-64ca-9cf2-861c-7e8a7deeede1@arm.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible vfio_config_init() does not call vfio_cap_len(), and then
-vdev->msi_perm == NULL. Later, in vfio_config_free(), it could trigger a
-null-ptr-deref.
+On Fri, 22 May 2020, Anshuman Khandual wrote:
+> On 05/21/2020 07:19 PM, Hugh Dickins wrote:
+> > Fix 5.7-rc6-mm1 page migration crash in unmap_and_move(): when the
+> > page to be migrated has been freed from under us, that is considered 
+> > a MIGRATEPAGE_SUCCESS, but no newpage has been allocated (and I don't
+> > think it would ever need to be counted as a successful THP migration).
+> > 
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > ---
+> > Fix to mm-vmstat-add-events-for-pmd-based-thp-migration-without-split.patch
+> > 
+> >  mm/migrate.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > --- 5.7-rc6-mm1/mm/migrate.c	2020-05-20 12:21:56.117693827 -0700
+> > +++ linux/mm/migrate.c	2020-05-20 15:08:12.319476978 -0700
+> > @@ -1248,7 +1248,7 @@ out:
+> >  	 * we want to retry.
+> >  	 */
+> >  	if (rc == MIGRATEPAGE_SUCCESS) {
+> > -		if (PageTransHuge(newpage))
+> > +		if (newpage && PageTransHuge(newpage))
+> >  			thp_migration_success(true);
+> >  		put_page(page);
+> >  		if (reason == MR_MEMORY_FAILURE) {
+> > 
+> 
+> Thanks Hugh. I am preparing to respin the vmstat patch accommodating some
+> earlier comments. Wondering if I should also fold these changes here after
+> adding your signed-off-by ?
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- RIP: 0010:vfio_config_free+0x7a/0xe0 [vfio_pci]
- vfio_config_free+0x7a/0xe0:
- free_perm_bits at drivers/vfio/pci/vfio_pci_config.c:340
- (inlined by) vfio_config_free at drivers/vfio/pci/vfio_pci_config.c:1760
- Call Trace:
-  vfio_pci_release+0x3a4/0x9e0 [vfio_pci]
-  vfio_device_fops_release+0x50/0x80 [vfio]
-  __fput+0x200/0x460
-  ____fput+0xe/0x10
-  task_work_run+0x127/0x1b0
-  do_exit+0x782/0x10d0
-  do_group_exit+0xc7/0x1c0
-  __x64_sys_exit_group+0x2c/0x30
-  do_syscall_64+0x64/0x350
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thanks for asking, but please just fold this one-line fixup into your
+respin without my signed-off-by: I'm not heavily invested in these stats,
+just want to avoid the crash; and don't know if I would want to sign the
+result.  You could add something like [hughd: fixed oops on NULL newpage]
+to confirm that the fix is on board, but the fix is what matters.
 
-Fixes: bea890bdb161 ("vfio/pci: fix memory leaks in alloc_perm_bits()")
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- drivers/vfio/pci/vfio_pci_config.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index d127a0c50940..8746c943247a 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1757,9 +1757,11 @@ void vfio_config_free(struct vfio_pci_device *vdev)
- 	vdev->vconfig = NULL;
- 	kfree(vdev->pci_config_map);
- 	vdev->pci_config_map = NULL;
--	free_perm_bits(vdev->msi_perm);
--	kfree(vdev->msi_perm);
--	vdev->msi_perm = NULL;
-+	if (vdev->msi_perm) {
-+		free_perm_bits(vdev->msi_perm);
-+		kfree(vdev->msi_perm);
-+		vdev->msi_perm = NULL;
-+	}
- }
- 
- /*
--- 
-2.17.2 (Apple Git-113)
-
+Hugh
