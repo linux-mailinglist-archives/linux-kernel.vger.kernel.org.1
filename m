@@ -2,213 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE991DEF43
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D811DEF48
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgEVSdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 14:33:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58398 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730798AbgEVSdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 14:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590172386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uta1I5iF41Eoil1XzR/BDEIMHG3jmCK+59X2nwZOw7Y=;
-        b=Vgqno1AiMXG4CP++6DDDfViWUht/31f9vCJTGpWHCwL8Audvraa7gI8x5JjIjhMeeeOgzv
-        XHYMGSlAoYijJe1fu3Urfop0O5rHRcsTEnbe5EGSr3NnFXhGm2OxMw/HO0CZLHIKjLYwaD
-        X1w7Tue906gTYl4US9XFFzObkvzWwaA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-jbPDxY8CPPSm1qgaNwB3Zw-1; Fri, 22 May 2020 14:33:04 -0400
-X-MC-Unique: jbPDxY8CPPSm1qgaNwB3Zw-1
-Received: by mail-wr1-f70.google.com with SMTP id z8so4700189wrp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 11:33:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uta1I5iF41Eoil1XzR/BDEIMHG3jmCK+59X2nwZOw7Y=;
-        b=UAUBVFwtl9VCvcqKWD2IQAhlKyiOfPi+yPS5I+jCCnz742Lly6e7+ss2bra8Z5kvPx
-         gHCwB/IEHfU4S8SgTw8ANF1sz8MGKEGpWGsaZHXtUs++EhtDS61bF/I09FSxM/b08ap3
-         qg9gCIfCp3JxId9pZHp9x6sqN88x6RJkKnz02jeM3fswc3PidfR+bBoBp4JIwRNvbYfJ
-         vHNtqD/AogQKVgZ3UTDK/5u4OssvbXMtqLtvApQByQi1gJSFFI//aU6Ne0pwZO/RGfrs
-         wEXgweW0rUwIZBdPObew38+U5WM4pUKr8cmwXwQ1/dj0LVtEyZ/bYjp63HsLAjx1sH0C
-         iUnw==
-X-Gm-Message-State: AOAM533IH+Bk3aXUuk0eOwbvZpSEtnNLtwI+zDm+JDZEK3Bicg0KybVn
-        ynRg6jdgeA3LpHWBaZ4G0WTNZuVyBoiDfPiKchs8fEd/fwUv9eeHnQ/ElhDw8lW8ZH/Gl4mn4dv
-        m6d83fGOL2bu9AGkHLVXWTNJh
-X-Received: by 2002:adf:e752:: with SMTP id c18mr4302970wrn.353.1590172383464;
-        Fri, 22 May 2020 11:33:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzn/9jhwi2m5kBMJV4PsKRS2Rwy8FdJSifbCfwoz7LBYi0qkU+MUcZbwiy9UVXg/sYxLJm62A==
-X-Received: by 2002:adf:e752:: with SMTP id c18mr4302945wrn.353.1590172383198;
-        Fri, 22 May 2020 11:33:03 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:803:ce64:3f04:d540? ([2001:b07:6468:f312:803:ce64:3f04:d540])
-        by smtp.gmail.com with ESMTPSA id x186sm1848481wmg.8.2020.05.22.11.33.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2020 11:33:02 -0700 (PDT)
-Subject: Re: [PATCH 5.4] KVM: x86: Fix pkru save/restore when guest CR4.PKE=0,
- move it to x86.c
-To:     Babu Moger <babu.moger@amd.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sean.j.christopherson@intel.com, stable@vger.kernel.org
-Cc:     x86@kernel.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, mchehab+samsung@kernel.org,
-        changbin.du@intel.com, namit@vmware.com, bigeasy@linutronix.de,
-        yang.shi@linux.alibaba.com, asteinhauser@google.com,
-        anshuman.khandual@arm.com, jan.kiszka@siemens.com,
-        akpm@linux-foundation.org, steven.price@arm.com,
-        rppt@linux.vnet.ibm.com, peterx@redhat.com,
-        dan.j.williams@intel.com, arjunroy@google.com, logang@deltatee.com,
-        thellstrom@vmware.com, aarcange@redhat.com, justin.he@arm.com,
-        robin.murphy@arm.com, ira.weiny@intel.com, keescook@chromium.org,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
-        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
-        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <159016509437.3131.17229420966309596602.stgit@naples-babu.amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <66c7b432-39ce-c942-d4a1-c5bac540ac94@redhat.com>
-Date:   Fri, 22 May 2020 20:33:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <159016509437.3131.17229420966309596602.stgit@naples-babu.amd.com>
-Content-Type: text/plain; charset=utf-8
+        id S1730921AbgEVSeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 14:34:20 -0400
+Received: from mail-mw2nam10on2105.outbound.protection.outlook.com ([40.107.94.105]:11489
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730798AbgEVSeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 14:34:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BCnN0Wa2ceDhop1Flzb6IX+F0ssU9D6PtZ2+I/C6ghZIziB6hbhGtnNoHgTvHj5LaT9mkC17hPKyfz9pY8NFVz+URXgmeptUQ+cVVNyEnrwr8jY6vQv28AdeshWJ69CN3Rmwba9kl3ZSChBDGS2YEeWxgNXsIAac/gpZfg3S2GwFyo/oJHHMIj0nwVQEqEXcKRcX083BYcBfYwudfp8HcX6K7z0oaBBCSMlFoTd9W1W/T3tJO0gqO/LmH0KPlVDF78d1dMGAtSk0NzqWQNPL6a+6hil4cYC+3ewyyW1NsH+Ja+ulCeLzRmvmIA5Oo8NIY7yg9PX4bh0EBrr/TI5rUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2p/IDs+yp69yvqNsky4UCT31F4vxm3vxrcMuPvmuyHI=;
+ b=KJP/Lek/pPti98oi9R4AOHDA9dEGDy/WxVdaXKhsVa43KdjtKB5+5ppaCB73Hcu1VdJ9nZoDoo5KY2MWIMzlLyk5FaVsiIBQuSJI1hw4dYJTpyhAM2OlNvfBeA7eQvsubASESQIwzrn1nuqWDpz1xZqaQmU4/HypedhDXFqFOS4cB8jS3Ju2DWUuZi5PBc/3wOaDWE+qKz5IF6Nn3TjIKeNPYp2JkK6dppc01v3PicXucbYkClYNlWbEy3kpATRjiEiUqVjeZZMltdqffrdpeVVzU1BAJPFany7oDfYbBmct+kc6uYlJ1qtLaDl3cu8SA2sdckzOYWcb+zfI0CTpFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2p/IDs+yp69yvqNsky4UCT31F4vxm3vxrcMuPvmuyHI=;
+ b=Cb8FMdbspAxSmPj4MlEZTZnNdk+bQwicGZ0RaZvZaEh4ERRyhZT2dKung6/Of0mhVT9zDzWltPU+HMXH8bUovLEb7siw6ibFl87MQo0OiZO8WujIK6jdm9ekhtKFRAarfmvSVGvxUWaRzc5M/z1zUeqvTvQkYa+T0/m8xtLK3DU=
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
+ by MW2PR2101MB1034.namprd21.prod.outlook.com (2603:10b6:302:a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.6; Fri, 22 May
+ 2020 18:34:15 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::5a3:a5e0:1e3c:e950]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::5a3:a5e0:1e3c:e950%7]) with mapi id 15.20.3021.002; Fri, 22 May 2020
+ 18:34:15 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: RE: [PATCH 1/2] Drivers: hv: vmbus: Resolve race between
+ init_vp_index() and CPU hotplug
+Thread-Topic: [PATCH 1/2] Drivers: hv: vmbus: Resolve race between
+ init_vp_index() and CPU hotplug
+Thread-Index: AQHWMF02y64NPbAdtUulklFpuaSRq6i0bhnw
+Date:   Fri, 22 May 2020 18:34:14 +0000
+Message-ID: <MW2PR2101MB1052C380E026F86F34C19D50D7B40@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20200522171901.204127-1-parri.andrea@gmail.com>
+ <20200522171901.204127-2-parri.andrea@gmail.com>
+In-Reply-To: <20200522171901.204127-2-parri.andrea@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-05-22T18:34:13Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c0077a71-8599-40ba-8ef9-c3b07321d214;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 93144a90-6943-4ddf-2df9-08d7fe7ebae9
+x-ms-traffictypediagnostic: MW2PR2101MB1034:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB1034D1B9026DB860E80B4FEAD7B40@MW2PR2101MB1034.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-forefront-prvs: 04111BAC64
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Jqv7JxzKv7InYdIZqiVFwuY8PmmUWd8ewEkILFqglLjdLWZA4PmgBPtTKaE3rj1yCWdHbLr2LN4bNkufv58li37Xl/Jjr1q4X5rsG5cMrmDIdcHBl31OExSMjKBCW/qDXj3OzS0/6S/Fjp66FLNjKfFyeM/kyVPigVV/LNUZjVDuXqrUNQJ48KiB8ZEPgFGXicfeMxcRgiV1rMY6lMG0JwPSqIAYWQhM6cfBFRLZSKJl8c89qpQbAywxbQv8ndWG0Ajux8XgsFC3XBbrUocvNihs4scAtPAT7KeO3/Y2qgrRtC6h3G+0eVpCEygpZXCoiZiiJcY0ZojMlkAp70Hlwjrf784YMolo83Hngzb5v36TA4GXRUND9WgeNg5e4prrm/bA2KVowH0QlkQYpcNP4NTml5XRp5Ln/XCVOpmWpDHOnstake/RErLP65GCI1/V
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(39860400002)(396003)(376002)(346002)(26005)(478600001)(10290500003)(6506007)(8990500004)(316002)(52536014)(8936002)(55016002)(9686003)(5660300002)(186003)(66946007)(82960400001)(82950400001)(110136005)(2906002)(76116006)(8676002)(54906003)(66476007)(66556008)(66446008)(86362001)(7696005)(71200400001)(33656002)(64756008)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: a3ge9qWgzn+p+0+GFZx4NohW9MU9FpbmX0JySwAJbdT/zNvrXCF91SpCdnFq+2oYiWh7eqH/hyvP++IkeEwbG8NNy5ldkPa/V6fVvyUe7YjhIKaHuVCMIymzv79kvmDKCf7PTyeW4+T6OSV708HGeTXKMUCZ5iUwaRBFO5N7tOwt7vtByyGR9zLqt6yFn2ttMMXfXxRi+Y1LQ+6M29S4hPQR2QzgWU3XorvFsO5f07zy3UGQS4rt0ZsPdn0xCqWerqys4V0YeGW3ISEA2OLgOcuMwDt9gqzzFyUwjAv1rvOK4eCtFmx7AwmjqTSX3wcUKaWX5J5h54RkfNiAip7eawh2iXOCM+KcWbU0zwFUXxE1PscXfLPe5/f9CGAG4CKkq9PQQX61zborjQceZB4h+rmSD97fJDY6Afn/C0dqkNHpkrUkVXLp9/8k56i58HblaXnLNbiGrSLvHbs9QJNwlXDqN3bg2xmFermD9adWP2dJ+2nMmpblK84avLYDsKtC
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93144a90-6943-4ddf-2df9-08d7fe7ebae9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2020 18:34:14.6725
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ErUaITKtFn0RzT5T88L+XMleIvNtyDyr4IELPqvtribH0grZOZNNo0MJ/Dl8y8c6RO9KD6+Tbzmr51rCjExF8ucYJpq/ZAj1A1JAQmyZTQQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1034
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/20 18:32, Babu Moger wrote:
-> [Backported upstream commit 37486135d3a7b03acc7755b63627a130437f066a]
-> 
-> Though rdpkru and wrpkru are contingent upon CR4.PKE, the PKRU
-> resource isn't. It can be read with XSAVE and written with XRSTOR.
-> So, if we don't set the guest PKRU value here(kvm_load_guest_xsave_state),
-> the guest can read the host value.
-> 
-> In case of kvm_load_host_xsave_state, guest with CR4.PKE clear could
-> potentially use XRSTOR to change the host PKRU value.
-> 
-> While at it, move pkru state save/restore to common code and the
-> host_pkru field to kvm_vcpu_arch.  This will let SVM support protection keys.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Friday, May 2=
+2, 2020 10:19 AM
+>=20
+> vmbus_process_offer() does two things (among others):
+>=20
+>  1) first, it sets the channel's target CPU with cpu_hotplug_lock;
+>  2) it then adds the channel to the channel list(s) with channel_mutex.
+>=20
+> Since cpu_hotplug_lock is released before (2), the channel's target CPU
+> (as designated in (1)) can be deemed "free" by hv_synic_cleanup() and go
+> offline before the channel is added to the list.
+>=20
+> Fix the race condition by "extending" the cpu_hotplug_lock critical
+> section to include (2) (and (1)), nesting the channel_mutex critical
+> section within the cpu_hotplug_lock critical section as done elsewhere
+> (hv_synic_cleanup(), target_cpu_store()) in the hyperv drivers code.
+>=20
+> Move even further by extending the channel_mutex critical section to
+> include (1) (and (2)): this change allows to remove (the now redundant)
+> bind_channel_to_cpu_lock, and generally simplifies the handling of the
+> target CPUs (that are now always modified with channel_mutex held).
+>=20
+> Fixes: d570aec0f2154e ("Drivers: hv: vmbus: Synchronize init_vp_index() v=
+s. CPU hotplug")
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
 > ---
->  arch/x86/include/asm/kvm_host.h |    1 +
->  arch/x86/kvm/vmx/vmx.c          |   18 ------------------
->  arch/x86/kvm/x86.c              |   17 +++++++++++++++++
->  3 files changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 4fc61483919a..e204c43ed4b0 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -550,6 +550,7 @@ struct kvm_vcpu_arch {
->  	unsigned long cr4;
->  	unsigned long cr4_guest_owned_bits;
->  	unsigned long cr8;
-> +	u32 host_pkru;
->  	u32 pkru;
->  	u32 hflags;
->  	u64 efer;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 04a8212704c1..728758880cb6 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1384,7 +1384,6 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
->  
->  	vmx_vcpu_pi_load(vcpu, cpu);
->  
-> -	vmx->host_pkru = read_pkru();
->  	vmx->host_debugctlmsr = get_debugctlmsr();
->  }
->  
-> @@ -6541,11 +6540,6 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  
->  	kvm_load_guest_xcr0(vcpu);
->  
-> -	if (static_cpu_has(X86_FEATURE_PKU) &&
-> -	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE) &&
-> -	    vcpu->arch.pkru != vmx->host_pkru)
-> -		__write_pkru(vcpu->arch.pkru);
-> -
->  	pt_guest_enter(vmx);
->  
->  	atomic_switch_perf_msrs(vmx);
-> @@ -6634,18 +6628,6 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  
->  	pt_guest_exit(vmx);
->  
-> -	/*
-> -	 * eager fpu is enabled if PKEY is supported and CR4 is switched
-> -	 * back on host, so it is safe to read guest PKRU from current
-> -	 * XSAVE.
-> -	 */
-> -	if (static_cpu_has(X86_FEATURE_PKU) &&
-> -	    kvm_read_cr4_bits(vcpu, X86_CR4_PKE)) {
-> -		vcpu->arch.pkru = rdpkru();
-> -		if (vcpu->arch.pkru != vmx->host_pkru)
-> -			__write_pkru(vmx->host_pkru);
-> -	}
-> -
->  	kvm_put_guest_xcr0(vcpu);
->  
->  	vmx->nested.nested_run_pending = 0;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 5d530521f11d..502a23313e7b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -821,11 +821,25 @@ void kvm_load_guest_xcr0(struct kvm_vcpu *vcpu)
->  			xsetbv(XCR_XFEATURE_ENABLED_MASK, vcpu->arch.xcr0);
->  		vcpu->guest_xcr0_loaded = 1;
->  	}
-> +
-> +	if (static_cpu_has(X86_FEATURE_PKU) &&
-> +	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-> +	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
-> +	    vcpu->arch.pkru != vcpu->arch.host_pkru)
-> +		__write_pkru(vcpu->arch.pkru);
->  }
->  EXPORT_SYMBOL_GPL(kvm_load_guest_xcr0);
->  
->  void kvm_put_guest_xcr0(struct kvm_vcpu *vcpu)
->  {
-> +	if (static_cpu_has(X86_FEATURE_PKU) &&
-> +	    (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
-> +	     (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
-> +		vcpu->arch.pkru = rdpkru();
-> +		if (vcpu->arch.pkru != vcpu->arch.host_pkru)
-> +			__write_pkru(vcpu->arch.host_pkru);
-> +	}
-> +
->  	if (vcpu->guest_xcr0_loaded) {
->  		if (vcpu->arch.xcr0 != host_xcr0)
->  			xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
-> @@ -3437,6 +3451,9 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
->  
->  	kvm_x86_ops->vcpu_load(vcpu, cpu);
->  
-> +	/* Save host pkru register if supported */
-> +	vcpu->arch.host_pkru = read_pkru();
-> +
->  	fpregs_assert_state_consistent();
->  	if (test_thread_flag(TIF_NEED_FPU_LOAD))
->  		switch_fpu_return();
-> 
+>  drivers/hv/channel_mgmt.c | 46 +++++++++++++++------------------------
+>  1 file changed, 18 insertions(+), 28 deletions(-)
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
