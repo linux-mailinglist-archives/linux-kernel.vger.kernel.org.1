@@ -2,57 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBC61DF105
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 23:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4A21DF106
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 23:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731097AbgEVVXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 17:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730976AbgEVVXg (ORCPT
+        id S1731103AbgEVVYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 17:24:11 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:36134 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730976AbgEVVYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 17:23:36 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D7FC061A0E;
-        Fri, 22 May 2020 14:23:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 479AF12723346;
-        Fri, 22 May 2020 14:23:36 -0700 (PDT)
-Date:   Fri, 22 May 2020 14:23:35 -0700 (PDT)
-Message-Id: <20200522.142335.2074810945591510427.davem@davemloft.net>
-To:     tanhuazhong@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
-        linuxarm@huawei.com, kuba@kernel.org, huangguangbin2@huawei.com
-Subject: Re: [PATCH net-next 1/5] net: hns3: add support for VF to query
- ring and vector mapping
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1590115786-9940-2-git-send-email-tanhuazhong@huawei.com>
-References: <1590115786-9940-1-git-send-email-tanhuazhong@huawei.com>
-        <1590115786-9940-2-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 22 May 2020 14:23:36 -0700 (PDT)
+        Fri, 22 May 2020 17:24:10 -0400
+Received: by mail-il1-f194.google.com with SMTP id 17so12146939ilj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 14:24:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5YCi9Dp13bDOmLIrC4hBxAOPuLUqxhaS10/WtAvU6TE=;
+        b=E4nTa21FkNc29U9w1G6tTEgM3nsFGkCLh/utCgkLyTA5nGex152AARjgWdYVDfoBNk
+         tP/MIsV9TaP9k8qrX5wmlTXPhzrQBO71r1pJc7ouZ0w2lz+IAQ9YeXv+vJ2fibHuXVcQ
+         YCB3xhgY0XKRdhyZBTiadYSzH5xfE2qUMmyEhjN+XjYOTaBpBCq64FUNqQYbFu0q5DPH
+         OqagQfJvo8iYxQmGvhGAq7GmGd4jUm4ZUJZxh8O8ACu/WqB3qPpYogQKFbwGNQAD0z7Q
+         NOzPZnoWApCVYzOccn1IpeSfXcDUJIfnPN0T/IaS75E06jIwypi0QGd6KWnYt2ow1G6h
+         N2wQ==
+X-Gm-Message-State: AOAM531H5pnFpr/bYSkI3lByme7xpAno+caQ9U0Aljufm37lo0Aif5j1
+        S+KGKpnJ3cC5pIRW32eBWyxyVHlY/ww=
+X-Google-Smtp-Source: ABdhPJwfEaSZ5KMJB0ZENJ2xk517skPwFYrCr5kVjxMF3VMOCI1T5JYEGYO9kba+JimUR/Vw1MftaQ==
+X-Received: by 2002:a92:9e51:: with SMTP id q78mr15556920ili.268.1590182650059;
+        Fri, 22 May 2020 14:24:10 -0700 (PDT)
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com. [209.85.166.171])
+        by smtp.gmail.com with ESMTPSA id w88sm5371900ilk.83.2020.05.22.14.24.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 14:24:09 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id l20so12088636ilj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 14:24:09 -0700 (PDT)
+X-Received: by 2002:a92:c401:: with SMTP id e1mr15870971ilp.134.1590182649355;
+ Fri, 22 May 2020 14:24:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200518221904.GA22274@embeddedor>
+In-Reply-To: <20200518221904.GA22274@embeddedor>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Fri, 22 May 2020 16:23:46 -0500
+X-Gmail-Original-Message-ID: <CADRPPNST6qhAHAEKXAnnJhQhoyb=r5O5YVs2KJW5qNgOjanu-Q@mail.gmail.com>
+Message-ID: <CADRPPNST6qhAHAEKXAnnJhQhoyb=r5O5YVs2KJW5qNgOjanu-Q@mail.gmail.com>
+Subject: Re: [PATCH] soc: fsl: qe: Replace one-element array and use
+ struct_size() helper
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Qiang Zhao <qiang.zhao@nxp.com>, Kees Cook <keescook@chromium.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huazhong Tan <tanhuazhong@huawei.com>
-Date: Fri, 22 May 2020 10:49:42 +0800
+On Mon, May 18, 2020 at 5:16 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> The current codebase makes use of one-element arrays in the following
+> form:
+>
+> struct something {
+>     int length;
+>     u8 data[1];
+> };
+>
+> struct something *instance;
+>
+> instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+> instance->length = size;
+> memcpy(instance->data, source, size);
+>
+> but the preferred mechanism to declare variable-length types such as
+> these ones is a flexible array member[1][2], introduced in C99:
+>
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+>
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on. So, replace
+> the one-element array with a flexible-array member.
+>
+> Also, make use of the new struct_size() helper to properly calculate the
+> size of struct qe_firmware.
+>
+> This issue was found with the help of Coccinelle and, audited and fixed
+> _manually_.
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/soc/fsl/qe/qe.c | 4 ++--
+>  include/soc/fsl/qe/qe.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 
-> From: Guangbin Huang <huangguangbin2@huawei.com>
-> 
-> This patch adds support for VF to query the mapping of ring and
-> vector.
-> 
-> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Applied for next.  Thanks.
 
-As Jakub said nothing is making this request, please remove it until
-you add code that does.
+Regards,
+Leo
