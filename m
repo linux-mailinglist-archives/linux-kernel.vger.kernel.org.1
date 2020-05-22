@@ -2,59 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9162D1DE0E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6D81DE106
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbgEVH2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 03:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        id S1728988AbgEVHbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 03:31:25 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34188 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726578AbgEVH2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 03:28:34 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94223206DD;
-        Fri, 22 May 2020 07:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590132514;
-        bh=a+GWZTXoEmAqJ588Ld4QrK6+dfifuM37WVBYkefXSgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=quDWI+OJ7MZQgBlI9ukwhi9CNgoNFN6Y9tPAex3fnyo7GLU8VnsHkTa7ArhP2vU4v
-         6Gul75XflD0bDuPoiv4fGUh+EGcWwuDr8oQkFpY/ulcP2N4/GKtIGR0A2xqdIdA8lG
-         j+IdQd3iTsR9e3UpBG8Zzoaljfcvwbw7+g0fvjZ8=
-Date:   Fri, 22 May 2020 09:27:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] soundwire updates for v5.8-rc1
-Message-ID: <20200522072751.GA853066@kroah.com>
-References: <20200521142739.GB374218@vkoul-mobl.Dlink>
+        id S1728369AbgEVHbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 03:31:11 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jc28x-0003HE-01; Fri, 22 May 2020 09:30:59 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B7A8EC015D; Fri, 22 May 2020 09:28:03 +0200 (CEST)
+Date:   Fri, 22 May 2020 09:28:03 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Fangrui Song <maskray@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 04/13] mips: Add MIPS Warrior P5600 support
+Message-ID: <20200522072803.GB7331@alpha.franken.de>
+References: <20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru>
+ <20200521140725.29571-5-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200521142739.GB374218@vkoul-mobl.Dlink>
+In-Reply-To: <20200521140725.29571-5-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 07:57:39PM +0530, Vinod Koul wrote:
-> Hi Greg,
+On Thu, May 21, 2020 at 05:07:15PM +0300, Serge Semin wrote:
+> This is a MIPS32 Release 5 based IP core with XPA, EVA, dual/quad issue
+> exec pipes, MMU with two-levels TLB, UCA, MSA, MDU core level features
+> and system level features like up to six P5600 calculation cores, CM2
+> with L2 cache, IOCU/IOMMU (though might be unused depending on the
+> system-specific IP core configuration), GIC, CPC, virtualisation module,
+> eJTAG and PDtrace.
 > 
-> Please pull to receive updates for soundwire. The big news the
-> sdw_master_device getting completed along with sysfs attributes for
-> master and slave devices. That closes the long cleanup work done by
-> Pierre and Bard for the devices.
+> As being MIPS32 Release 5 based core it provides all the features
+> available by the CPU_MIPS32_R5 config, while adding a few more like
+> UCA attribute support, availability of CPU-freq (by means of L2/CM
+> clock ratio setting), EI/VI GIC modes detection at runtime.
 > 
-> The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+> In addition to this if P5600 architecture is enabled modern GNU GCC
+> provides a specific tuning for P5600 processors with respect to the
+> classic MIPS32 Release 5. First of all branch-likely avoidance is
+> activated only when the code is compiled with the speed optimization
+> (avoidance is always enabled for the pure MIPS32 Release 5
+> architecture). Secondly the madd/msub avoidance is enabled since
+> madd/msub utilization isn't profitable due to overhead of getting the
+> result out of the HI/LO registers. Multiply-accumulate instructions are
+> activated and utilized together with the necessary code reorder when
+> multiply-add/multiply-subtract statements are met. Finally load/store
+> bonding is activated by default. All of these optimizations may make
+> the code relatively faster than if just MIP32 release 5 architecture
+> was requested.
 > 
->   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.8-rc1
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  arch/mips/Kconfig              | 37 +++++++++++++++++++++++++++++-----
+>  arch/mips/Makefile             |  1 +
+>  arch/mips/include/asm/module.h |  2 ++
+>  3 files changed, 35 insertions(+), 5 deletions(-)
 
-Pulled and pushed out, thanks.
+applied to mips-next.
 
-greg k-h
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
