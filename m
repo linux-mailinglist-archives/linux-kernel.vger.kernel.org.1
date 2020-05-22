@@ -2,151 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0437A1DDF86
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ABA1DDF8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgEVFyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
+        id S1727839AbgEVF4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgEVFyV (ORCPT
+        with ESMTP id S1725894AbgEVF4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:54:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B69C061A0E
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:54:20 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u188so8671656wmu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:54:20 -0700 (PDT)
+        Fri, 22 May 2020 01:56:39 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A840C061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:56:39 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 63so7420301oto.8
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aIk25yXFBXzVd2JD01BBzYOv1Gg6yn56UGtgn996fw0=;
-        b=JT1BLyDzBfEuLHxkQaZ3XLCFkoZmRsT1N912PHah3lVhoqoq8JLyx4QkKZsoPUywUl
-         E8PjWS0l/TEp1xK0mrl7UoiGv0RIkC4oZIhGYEYhQwMuD2/uXOdMLL2IkSjV5JEGLgEu
-         hj4YoPe4YprgbTbrKfT1Nu4aNFpoW8dgf0B3kbjxNFXc4BsbKku9MqU5Q1RXnbJtzvI5
-         xk7NFC/3TEqxST4kdWTIpy40xEPajjPX9ncrzUYWfeR0bEFQS+jRN5+P16lXMnvzUr41
-         awxZth5SCE6kzfOWGlFHf1t/Wjx8G4cPS2di/vbxuQSFpkN9iBmP1ZYvg94K/83Lijpl
-         Y6Dg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=xuMkRmj7HE1TUvvSzA0QEvz2ex2xVPIDBfTSJuTOfeM=;
+        b=DoicN+vf5RhMplKcLT6Q88DGW2yRh2mPk5cdDgjAhGMTK0/qjr+Im1t6vFCyxp6nlk
+         aaCqtH6peZqvmRbNxpNCrkEdjbZ3400UA67sK79laJCnob5U9hYXowk2Sj7r9FNrh5Ak
+         DCMwtt50NogFtmaDdYVDQrJytC57uIZulPFtxNwBIsTG8CEhcQfi1DrnV7qtG/gRVV6z
+         42++D8/WRiQ0NmxYrY7tZJiaztrgt2Lm8Saycau9jIQE8b86ABAue2LWTPBp/z+C0i0P
+         TJ9SoGBwzJd1ZMR9CKaBhF28RQtNbpjQo0V5JLPoHs+E3DXL8bH2wt0tAOcjrgfX9y55
+         VBZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIk25yXFBXzVd2JD01BBzYOv1Gg6yn56UGtgn996fw0=;
-        b=A4Dmmzj9EmSAYY7eOVPdqCvrZckOiEzSLskobc3lOsLotgCbsKVErMBZId5JQyiC8e
-         ybDrsVHPjmMtNxzOQnZqlO0bgFuTD1YXtBPrmxeu0D//weA+uxRO100hvfX9Ndxwrbvs
-         F6fsCssMIBzOMQzCUshIlDWT/Szz1X4B0uKrMoVweS4apE+IyMuDP4+4SGRBHG0MK2CY
-         kfpdjgdqc69sQ4UNFbgzZOkVnDV7GybUknK9nC6WaVwDe+6GE+mYmCYC/+k7q3ieZovA
-         R0TXkLEt3AgYw8ToYrFm9gBPkECIz+xtZkwnQTWtv1cz64M4gqknYa3DP4SU6FkdDmeZ
-         8zgw==
-X-Gm-Message-State: AOAM532kfMyu5d0S3qkyA9bEdfXvk46EkVX2GTkIrQh4kHG1blfX7KSp
-        8DV6eD+ubl4+g3O5PAyY/+462HdSJLxaM3t9PVSvEg==
-X-Google-Smtp-Source: ABdhPJynY0OTAvvIBrM+2Ad3FdHSwp7eR2/+LIesoKwApFshfRqfP2uvsUvf/GyYJKsRhjNqdIuaVpXMiLoV/07JSRc=
-X-Received: by 2002:a7b:c4da:: with SMTP id g26mr11532873wmk.3.1590126858584;
- Thu, 21 May 2020 22:54:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=xuMkRmj7HE1TUvvSzA0QEvz2ex2xVPIDBfTSJuTOfeM=;
+        b=jQgWDQAw58NO1Qqf27/RZRIClAUG7tEZw6r3hajtC8T4bGAne1tQTdPPUlEbNW2sJt
+         KkhrGCEglWECjFxGIvzHs5a8Ai20X0XF+QdXrLqdKXciJJ/llM7Ob+y9f13IZInPHDRe
+         H4EC6PxUV1fjUGv9F+BO/cYcqZvGjcPHBJW9882VqtW5toVyNcGZMHHSJnhWO63TEHt5
+         Zycw7UfClNjKRlnTg+0MFLlzS0iVo38G5yDVl/XRfHDV0R3dUFo6Dgl2cdpd0vu3kVN3
+         8ov+zZnFJ7cGrORsBISOZ8roCFvoey32enutBU6t3Ij4yMf5x7pfbNaPjI3grzMGEa3p
+         xT9w==
+X-Gm-Message-State: AOAM533zXWABDWAuUi1kL1pL692YlD6QWqPCQgAZoLHOh2zMON/ylqmv
+        M2+IeDFaRe6LhR/MQLbInR3SPQ==
+X-Google-Smtp-Source: ABdhPJzCalQObzgSFGb19GhNEMR5QmicKyzdXqH+w02qvkfyMP6HhEUzFPOl66qMcsTFeD0Vy+CjrA==
+X-Received: by 2002:a9d:6645:: with SMTP id q5mr9424059otm.211.1590126998592;
+        Thu, 21 May 2020 22:56:38 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id y23sm2225479otk.10.2020.05.21.22.56.36
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 21 May 2020 22:56:37 -0700 (PDT)
+Date:   Thu, 21 May 2020 22:56:20 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH mmotm] mm/swap: fix livelock in __read_swap_cache_async()
+Message-ID: <alpine.LSU.2.11.2005212246080.8458@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20200521134544.816918-1-anup.patel@wdc.com> <20200521134544.816918-6-anup.patel@wdc.com>
- <2aec08b7-7197-4b60-89d9-c3b0d5a8a258@gmail.com>
-In-Reply-To: <2aec08b7-7197-4b60-89d9-c3b0d5a8a258@gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 22 May 2020 11:24:07 +0530
-Message-ID: <CAAhSdy0OuxCwMVPBrvPpYMfVrhUuY3pONysk75yognOM5-0U+g@mail.gmail.com>
-Subject: Re: [PATCH 5/5] dt-bindings: timer: Add CLINT bindings
-To:     Sean Anderson <seanga2@gmail.com>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 1:35 AM Sean Anderson <seanga2@gmail.com> wrote:
->
-> On 5/21/20 9:45 AM, Anup Patel wrote:
-> > We add DT bindings documentation for CLINT device.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > ---
-> >  .../bindings/timer/sifive,clint.txt           | 33 +++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.txt b/Documentation/devicetree/bindings/timer/sifive,clint.txt
-> > new file mode 100644
-> > index 000000000000..cae2dad1223a
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/timer/sifive,clint.txt
-> > @@ -0,0 +1,33 @@
-> > +SiFive Core Local Interruptor (CLINT)
-> > +-------------------------------------
-> > +
-> > +SiFive (and other RISC-V) SOCs include an implementation of the SiFive Core
-> > +Local Interruptor (CLINT) for M-mode timer and inter-processor interrupts.
-> > +
-> > +It directly connects to the timer and inter-processor interrupt lines of
-> > +various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local interrupt
-> > +controller is the parent interrupt controller for CLINT device.
-> > +
-> > +The clock frequency of CLINT is specified via "timebase-frequency" DT
-> > +property of "/cpus" DT node. The "timebase-frequency" DT property is
-> > +described in: Documentation/devicetree/bindings/riscv/cpus.yaml
-> > +
-> > +Required properties:
-> > +- compatible : "sifive,clint-1.0.0" and a string identifying the actual
-> > +  detailed implementation in case that specific bugs need to be worked around.
->
-> Should the "riscv,clint0" compatible string be documented here? This
+I've only seen this livelock on one machine (repeatably, but not to
+order), and not fully analyzed it - two processes seen looping around
+getting -EEXIST from swapcache_prepare(), I guess a third (at lower
+priority? but wanting the same cpu as one of the loopers? preemption
+or cond_resched() not enough to let it back in?) set SWAP_HAS_CACHE,
+then went off into direct reclaim, scheduled away, and somehow could
+not get back to add the page to swap cache and let them all complete.
 
-Yes, I forgot to add this compatible string. I will add in v2.
+Restore the page allocation in __read_swap_cache_async() to before
+the swapcache_prepare() call: "mm: memcontrol: charge swapin pages
+on instantiation" moved it outside the loop, which indeed looks much
+nicer, but exposed this weakness.  We used to allocate new_page once
+and then keep it across all iterations of the loop: but I think that
+just optimizes for a rare case, and complicates the flow, so go with
+the new simpler structure, with allocate+free each time around (which
+is more considerate use of the memory too).
 
-> peripheral is not really specific to sifive, as it is present in most
-> rocket-chip cores.
+Fix the comment on the looping case, which has long been inaccurate:
+it's not a racing get_swap_page() that's the problem here.
 
-I agree that CLINT is present in a lot of non-SiFive RISC-V SOCs and
-FPGAs but this IP is only documented as part of SiFive FU540 SOC.
-(Refer, https://static.dev.sifive.com/FU540-C000-v1.0.pdf)
+Fix the add_to_swap_cache() and mem_cgroup_charge() error recovery:
+not swap_free(), but put_swap_page() to undo SWAP_HAS_CACHE, as was
+done before; but delete_from_swap_cache() already includes it.
 
-The RISC-V foundation should host the CLINT spec independently
-under https://github.com/riscv and make CLINT spec totally open.
+And one more nit: I don't think it makes any difference in practice,
+but remove the "& GFP_KERNEL" mask from the mem_cgroup_charge() call:
+add_to_swap_cache() needs that, to convert gfp_mask from user and page
+cache allocation (e.g. highmem) to radix node allocation (lowmem), but
+we don't need or usually apply that mask when charging mem_cgroup.
 
-For now, I have documented it just like PLIC DT bindings found at:
-Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+Mostly fixing mm-memcontrol-charge-swapin-pages-on-instantiation.patch
+but now I see that mm-memcontrol-delete-unused-lrucare-handling.patch
+made a further change here (took an arg off the mem_cgroup_charge call):
+as is, this patch is diffed to go on top of both of them, and better
+that I get it out now for Johannes look at; but could be rediffed for
+folding into blah-instantiation.patch later.
 
-If RISC-V maintainers agree then I will document it as "RISC-V CLINT".
+Earlier in the day I promised two patches to __read_swap_cache_async(),
+but find now that I cannot quite justify the second patch: it makes a
+slight adjustment in swapcache_prepare(), then removes the redundant
+__swp_swapcount() && swap_slot_cache_enabled business from blah_async().
 
-@Palmer ?? @Paul ??
+I'd still like to do that, but this patch here brings back the
+alloc_page_vma() in between them, and I don't have any evidence to
+reassure us that I'm not then pessimizing a readahead case by doing
+unnecessary allocation and free. Leave it for some other time perhaps.
 
->
-> > +- reg : Should contain 1 register range (address and length).
-> > +- interrupts-extended : Specifies which HARTs (or CPUs) are connected to
-> > +  the CLINT.  Each node pointed to should be a riscv,cpu-intc node, which
-> > +  has a riscv node as parent.
-> > +
-> > +Example:
-> > +
-> > +     clint@2000000 {
-> > +             compatible = "sifive,clint-1.0.0", "sifive,fu540-c000-clint";
-> > +             interrupts-extended = <
-> > +                     &cpu1-intc 3 &cpu1-intc 7
-> > +                     &cpu2-intc 3 &cpu2-intc 7
-> > +                     &cpu3-intc 3 &cpu3-intc 7
-> > +                     &cpu4-intc 3 &cpu4-intc 7>;
-> > +             reg = <0x2000000 0x4000000>;
-> > +     };
-> >
->
-> --Sean
+ mm/swap_state.c |   52 +++++++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
 
-Regards,
-Anup
+--- 5.7-rc6-mm1/mm/swap_state.c	2020-05-20 12:21:56.149694170 -0700
++++ linux/mm/swap_state.c	2020-05-21 20:17:50.188773901 -0700
+@@ -392,56 +392,62 @@ struct page *__read_swap_cache_async(swp
+ 			return NULL;
+ 
+ 		/*
++		 * Get a new page to read into from swap.  Allocate it now,
++		 * before marking swap_map SWAP_HAS_CACHE, when -EEXIST will
++		 * cause any racers to loop around until we add it to cache.
++		 */
++		page = alloc_page_vma(gfp_mask, vma, addr);
++		if (!page)
++			return NULL;
++
++		/*
+ 		 * Swap entry may have been freed since our caller observed it.
+ 		 */
+ 		err = swapcache_prepare(entry);
+ 		if (!err)
+ 			break;
+ 
+-		if (err == -EEXIST) {
+-			/*
+-			 * We might race against get_swap_page() and stumble
+-			 * across a SWAP_HAS_CACHE swap_map entry whose page
+-			 * has not been brought into the swapcache yet.
+-			 */
+-			cond_resched();
+-			continue;
+-		}
++		put_page(page);
++		if (err != -EEXIST)
++			return NULL;
+ 
+-		return NULL;
++		/*
++		 * We might race against __delete_from_swap_cache(), and
++		 * stumble across a swap_map entry whose SWAP_HAS_CACHE
++		 * has not yet been cleared.  Or race against another
++		 * __read_swap_cache_async(), which has set SWAP_HAS_CACHE
++		 * in swap_map, but not yet added its page to swap cache.
++		 */
++		cond_resched();
+ 	}
+ 
+ 	/*
+-	 * The swap entry is ours to swap in. Prepare a new page.
++	 * The swap entry is ours to swap in. Prepare the new page.
+ 	 */
+ 
+-	page = alloc_page_vma(gfp_mask, vma, addr);
+-	if (!page)
+-		goto fail_free;
+-
+ 	__SetPageLocked(page);
+ 	__SetPageSwapBacked(page);
+ 
+ 	/* May fail (-ENOMEM) if XArray node allocation failed. */
+-	if (add_to_swap_cache(page, entry, gfp_mask & GFP_KERNEL))
++	if (add_to_swap_cache(page, entry, gfp_mask & GFP_KERNEL)) {
++		put_swap_page(page, entry);
+ 		goto fail_unlock;
++	}
+ 
+-	if (mem_cgroup_charge(page, NULL, gfp_mask & GFP_KERNEL))
+-		goto fail_delete;
++	if (mem_cgroup_charge(page, NULL, gfp_mask)) {
++		delete_from_swap_cache(page);
++		goto fail_unlock;
++	}
+ 
+-	/* Initiate read into locked page */
++	/* Caller will initiate read into locked page */
+ 	SetPageWorkingset(page);
+ 	lru_cache_add_anon(page);
+ 	*new_page_allocated = true;
+ 	return page;
+ 
+-fail_delete:
+-	delete_from_swap_cache(page);
+ fail_unlock:
+ 	unlock_page(page);
+ 	put_page(page);
+-fail_free:
+-	swap_free(entry);
+ 	return NULL;
+ }
+ 
