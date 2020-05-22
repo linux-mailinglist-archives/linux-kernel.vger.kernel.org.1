@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A041DE111
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE6C1DE116
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgEVHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 03:33:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58276 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728214AbgEVHdZ (ORCPT
+        id S1728640AbgEVHh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 03:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgEVHh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 03:33:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590132804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6EtbHbZKdks/ocBUdzOilBq6OTiCmy87fOc1ctWzSB8=;
-        b=J/q40vuvSBdOCkpqSMXBqVOQNJFyj+BZBrKXfED6n6Jfg8b6LHGivW3Roa9lq2JL7T5331
-        dCRHFugb4f5CNLrtYo3rJlSpPPoVeeOaxC1er95QHFBujVzdRZrBZQpwRF2qKDli0kWWmo
-        zL8NZ2ajwefdZD7uZalG00q2d4jAads=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-S600NW0GOlKzgecVSm4Teg-1; Fri, 22 May 2020 03:33:21 -0400
-X-MC-Unique: S600NW0GOlKzgecVSm4Teg-1
-Received: by mail-wr1-f70.google.com with SMTP id p8so4033210wrj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 00:33:21 -0700 (PDT)
+        Fri, 22 May 2020 03:37:28 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4F6C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 00:37:26 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u188so8881819wmu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 00:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FxhyYotOdsb3Prsxlw/PCmLh9cDfCT3MjS19m7K8Q5o=;
+        b=s2XwS2bDg3iy2QFTSYYUp2zSt1XfNkCltyHI70cuooryTjTrmQxbyoYtC7EKyK4J/A
+         CMELJ8ZUfGTSxOg6AYlN57glArOF+Ly3LjBs501uqsGcZR+l5Ibxqj5DBoVL8XlApo+b
+         atG2eMn0WIvN4x1PzdTxcIHXw7mmI8zyZgEqdH4lRMCpbTWYzhSglv9A05yWl0+Rvm4o
+         a1TeQChSuAktfp1bMBydXDruT0T7jEQlllRF0IEpKC1x+j4OCj2MCcDtMbvOQOrfVMww
+         V3l5bx0/GQmy7oWXfKlljrEXIicKaJzqGjj0q/1VOv2DQAj2EGtyTx5RDElE8IrTsPbQ
+         hSlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6EtbHbZKdks/ocBUdzOilBq6OTiCmy87fOc1ctWzSB8=;
-        b=NctEqcptSFYdc0DsIc67dhmyOGGeN633Yl/Jm+NVoA4GVyxFYerLfWUWnSrnG8dZsW
-         mJwtIfpKopzKpZprDeooAICXBJvliIqKFyBm1p4TjqFyPGalCmf6mbf1KVD+C7I35Bc9
-         46E3ewNSKXqRzIzbo8N/s86Jx2TFtRTe3qPurP+/YBbiw+n+Vgfej2KZS75q+C2sclzy
-         Fl5Zj7Bs/qbNLIF/WDDybxOw43Kc3h5o7iLXZ2JEaUp8XpqLa0mFhMFkospG0M46FGl6
-         TZo6/rrzNZxK1UOg0lAGXceAxJ+0jJtDn8cGtq60+1zBJGLYDVvDPwFZzU2HCTD+uWtG
-         PxmQ==
-X-Gm-Message-State: AOAM533Fd5rpWQLElKlKDDk4VZCHbBuJ9buRZF05vW2z1zc8kGDsb6jT
-        RV3YSBpi2Is7UrjepLYsy7GK5Xj3qxWhz7w69xehtuVKqnsyCB5DVptaNohOw97BoLTJUSWbkbr
-        VnuXCYTyumKkH3v2uOjMLzFiP
-X-Received: by 2002:adf:82c3:: with SMTP id 61mr2352148wrc.326.1590132800742;
-        Fri, 22 May 2020 00:33:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHE+96FYxJjwlkKncGlD0w505R5oIT+cQodzUqCD8Ml+XOl1XFdP5KV9lsIxGty7UQKdEwtQ==
-X-Received: by 2002:adf:82c3:: with SMTP id 61mr2352119wrc.326.1590132800484;
-        Fri, 22 May 2020 00:33:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:71e6:9616:7fe3:7a17? ([2001:b07:6468:f312:71e6:9616:7fe3:7a17])
-        by smtp.gmail.com with ESMTPSA id l13sm8583790wrm.55.2020.05.22.00.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2020 00:33:19 -0700 (PDT)
-Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with
- token info
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20200511164752.2158645-1-vkuznets@redhat.com>
- <20200511164752.2158645-3-vkuznets@redhat.com>
- <20200512152709.GB138129@redhat.com> <87o8qtmaat.fsf@vitty.brq.redhat.com>
- <20200512155339.GD138129@redhat.com> <20200512175017.GC12100@linux.intel.com>
- <20200513125241.GA173965@redhat.com>
- <0733213c-9514-4b04-6356-cf1087edd9cf@redhat.com>
- <20200515184646.GD17572@linux.intel.com>
- <d84b6436-9630-1474-52e5-ffcc4d2bd70a@redhat.com>
- <20200515204341.GF17572@linux.intel.com>
- <943cfc2f-5b18-e00a-f5a2-4577472a1ff5@redhat.com>
- <87y2plqqpa.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e79fe0d3-0a73-ed84-7021-150d03a80f93@redhat.com>
-Date:   Fri, 22 May 2020 09:33:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FxhyYotOdsb3Prsxlw/PCmLh9cDfCT3MjS19m7K8Q5o=;
+        b=YSl9yMPo6I8SSlfsF8D9xGjId4lk46YzwlSVu8ePfNhMm7u1O/YmN88krY8MdnZtmu
+         eovmTQ5KHs7rd69BrC5CtV12WldE/mENJ6U5hp1E2IPDdk+qLLti995tIk9bcwYGzwdz
+         zmaMiIbFbjaVsceIsIDkfhvL1ls5pUTuMV/xDD33+Hfcq4IFr2923g+Tf4IyRy5/gdGm
+         EbcJwY6OErnRLLOvqiNw28xH5WJp9zpquDOhegy+pXLms6Z3X0Y2ODJqWAOEiZ/AuGls
+         InrOaRk9BJg3H1U9pp82RwEv2hfJ2VwpwriAdSA7ghzorjjFIYI8H1efISlmSQ1aBZUE
+         jzrg==
+X-Gm-Message-State: AOAM532NGqW8SO4oC1xe8lw/lVL6bBT4d4P0DOvFZ17PDCbh7TMTqZuE
+        /ws/fmmeMEkrV4tU0EG4RxtXQg==
+X-Google-Smtp-Source: ABdhPJxs2hJYnfDm6N4+o9/p+SF/UJ8IDcPxC+ZnYoNz7e9Bj+uhDyIZoQpHZd769I0Jckb0UavO0Q==
+X-Received: by 2002:a1c:6042:: with SMTP id u63mr12028802wmb.65.1590133045474;
+        Fri, 22 May 2020 00:37:25 -0700 (PDT)
+Received: from dell ([95.149.164.102])
+        by smtp.gmail.com with ESMTPSA id l19sm9221775wmj.14.2020.05.22.00.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 00:37:24 -0700 (PDT)
+Date:   Fri, 22 May 2020 08:37:22 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     matthias.bgg@kernel.org, Rob Herring <robh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: mfd: mediatek: Add MT6397 Pin Controller
+Message-ID: <20200522073722.GP271301@dell>
+References: <20200110145952.9720-1-matthias.bgg@kernel.org>
+ <20200115151938.GA8182@bogus>
+ <ce3747e5-41db-a168-0602-37337d8530f2@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87y2plqqpa.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce3747e5-41db-a168-0602-37337d8530f2@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/20 16:59, Vitaly Kuznetsov wrote:
->> However, interrupts for 'page ready' do have a bunch of advantages (more
->> control on what can be preempted by the notification, a saner check for
->> new page faults which is effectively a bug fix) so it makes sense to get
->> them in more quickly (probably 5.9 at this point due to the massive
->> cleanups that are being done around interrupt vectors).
->>
-> Actually, I have almost no feedback to address in v2 :-) Almost all
-> discussion are happening around #VE. Don't mean to rush or anything but
-> if the 'cleanups' are finalized I can hopefully rebase and retest very
-> quickly as it's only the KVM guest part which intersects with them, the
-> rest should be KVM-only. But 5.9 is good too)
+On Thu, 21 May 2020, Matthias Brugger wrote:
 
-Yeah, going for 5.9 would only be due to the conflicts.  Do send v2
-anyway now, so that we can use a merge commit to convert the interrupt
-vector to the 5.8 style.
+> Hi Lee,
+> 
+> On 15/01/2020 16:19, Rob Herring wrote:
+> > On Fri, 10 Jan 2020 15:59:51 +0100, matthias.bgg@kernel.org wrote:
+> >> From: Matthias Brugger <matthias.bgg@gmail.com>
+> >>
+> >> The MT6397 mfd includes a pin controller. Add binding
+> >> a description for it.
+> >>
+> >> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+> >>
+> >> ---
+> >>
+> >>  Documentation/devicetree/bindings/mfd/mt6397.txt | 5 +++++
+> >>  1 file changed, 5 insertions(+)
+> >>
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > 
+> 
+> It looks like this fall through the cracks.
+> Would you consider to queue it or do you have further comments?
 
-Paolo
+There is a current issue where Rob and I are both taking patches.
+Sometimes we both assume the other will take the patch.
 
+Apologies.
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
