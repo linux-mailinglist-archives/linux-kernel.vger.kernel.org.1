@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9119E1DE265
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0521DE1EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 10:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgEVIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 04:48:43 -0400
-Received: from fgw20-4.mail.saunalahti.fi ([62.142.5.107]:24063 "EHLO
-        fgw20-4.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728152AbgEVIsn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 04:48:43 -0400
-X-Greylist: delayed 963 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 May 2020 04:48:41 EDT
-Received: from imac.makisara.private (85-131-115-176.bb.dnainternet.fi [85.131.115.176])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTPSA
-        id ca2c9ed3-9c06-11ea-ba22-005056bd6ce9;
-        Fri, 22 May 2020 11:32:36 +0300 (EEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] scsi: st: convert convert get_user_pages() -->
- pin_user_pages()
-From:   =?utf-8?B?IkthaSBNw6RraXNhcmEgKEtvbHVtYnVzKSI=?= 
-        <kai.makisara@kolumbus.fi>
-In-Reply-To: <494478b6-9a8c-5271-fc9f-fd758af850c0@acm.org>
-Date:   Fri, 22 May 2020 11:32:36 +0300
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <C1CFE522-CEA6-4130-9433-73243BC00782@kolumbus.fi>
-References: <20200519045525.2446851-1-jhubbard@nvidia.com>
- <494478b6-9a8c-5271-fc9f-fd758af850c0@acm.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1729422AbgEVIdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 04:33:35 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38344 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729382AbgEVIdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 04:33:33 -0400
+Received: from zn.tnic (p200300ec2f0d4900b115cc0add6835a7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4900:b115:cc0a:dd68:35a7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA2481EC02B3;
+        Fri, 22 May 2020 10:33:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590136411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MWGiXlMNmCUQrdL2VMbcT6Bsa2l19TPcZCK5SYOHTQo=;
+        b=O9AFrS5SFc4FVW5LZq+2OvQsE8crvfBABJ6KpFEy5z3reuvsHKsaxuPdeTSNV1SR9Tpc8K
+        8JMk0rMt3O+4UuTn07lpAK8mVm4KNWW57XrXVQNzFsFoxwcCmjNHfhZCOrBpkQWXNqQWHb
+        DOaEnO50y9eDEQvBB3+TP2+26IxN5AM=
+Date:   Fri, 22 May 2020 10:33:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v3 43/75] x86/sev-es: Setup per-cpu GHCBs for the runtime
+ handler
+Message-ID: <20200522083321.GA28750@zn.tnic>
+References: <20200428151725.31091-1-joro@8bytes.org>
+ <20200428151725.31091-44-joro@8bytes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200428151725.31091-44-joro@8bytes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 05:16:53PM +0200, Joerg Roedel wrote:
+> @@ -198,6 +210,48 @@ static bool __init sev_es_setup_ghcb(void)
+>  	return true;
+>  }
+>  
+> +static void __init sev_es_alloc_runtime_data(int cpu)
+> +{
+> +	struct sev_es_runtime_data *data;
+> +
+> +	data = memblock_alloc(sizeof(*data), PAGE_SIZE);
+> +	if (!data)
+> +		panic("Can't allocate SEV-ES runtime data");
+> +
+> +	per_cpu(runtime_data, cpu) = data;
+> +}
+> +
+> +static void __init sev_es_init_ghcb(int cpu)
 
+Since those are static functions, I'd drop the "sev_es_" prefix from the
+name for better readability. Because otherwise the whole file is a sea
+of "sev_es_"-prefixed identifiers which you need to read until the end
+to know what they are.
 
-> On 21. May 2020, at 22.47, Bart Van Assche <bvanassche@acm.org> wrote:
-> 
-> On 2020-05-18 21:55, John Hubbard wrote:
->> This code was using get_user_pages*(), in a "Case 2" scenario
->> (DMA/RDMA), using the categorization from [1]. That means that it's
->> time to convert the get_user_pages*() + put_page() calls to
->> pin_user_pages*() + unpin_user_pages() calls.
->> 
->> There is some helpful background in [2]: basically, this is a small
->> part of fixing a long-standing disconnect between pinning pages, and
->> file systems' use of those pages.
->> 
->> Note that this effectively changes the code's behavior as well: it now
->> ultimately calls set_page_dirty_lock(), instead of SetPageDirty().This
->> is probably more accurate.
->> 
->> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
->> dealing with a file backed page where we have reference on the inode it
->> hangs off." [3]
->> 
->> Also, this deletes one of the two FIXME comments (about refcounting),
->> because there is nothing wrong with the refcounting at this point.
->> 
->> [1] Documentation/core-api/pin_user_pages.rst
->> 
->> [2] "Explicit pinning of user-space pages":
->>    https://lwn.net/Articles/807108/
->> 
->> [3] https://lore.kernel.org/r/20190723153640.GB720@lst.de
-> 
-> Kai, why is the st driver calling get_user_pages_fast() directly instead
-> of calling blk_rq_map_user()? blk_rq_map_user() is already used in
-> st_scsi_execute(). I think that the blk_rq_map_user() implementation is
-> also based on get_user_pages_fast(). See also iov_iter_get_pages_alloc()
-> in lib/iov_iter.c.
-> 
-The reason is that the blk_ functions were not available when that part
-of the code was done. Nobody has converted that to use the more
-modern functions because the old method still works.
+> +{
+> +	struct sev_es_runtime_data *data;
+> +	int err;
+> +
+> +	data = per_cpu(runtime_data, cpu);
+> +
+> +	err = early_set_memory_decrypted((unsigned long)&data->ghcb_page,
+> +					 sizeof(data->ghcb_page));
+> +	if (err)
+> +		panic("Can not map GHCBs unencrypted");
 
-Thanks,
-Kai
+			"Error mapping ..."
 
+> +
+> +	memset(&data->ghcb_page, 0, sizeof(data->ghcb_page));
+> +}
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
