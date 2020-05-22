@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8798A1DF1A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438141DF1A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731188AbgEVWDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 18:03:37 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:32054 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731171AbgEVWDg (ORCPT
+        id S1731218AbgEVWES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 18:04:18 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:32896 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731156AbgEVWER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 18:03:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590185015; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Qp38DuAR0RZQl1vysCG2SkE6AAVIOtnZRMm4cw+P1jk=; b=kX80Ws9KYKSIzkYRy8+kx4Ku5jN18a3IyBxjrKFksl0BmAUgmFUWAIgmPKRpmRcpm48cl5Os
- J9QVxlugzqD0OHTk1mU8eSk5BEfyRl2iiF9jeH3wF00pEC8oEAt0pOVdIZiXGIi8yTPwj0dH
- FQfHvYohgvG9yzU5Bi5f5WcRErM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ec84c36.7fad287c7bc8-smtp-out-n03;
- Fri, 22 May 2020 22:03:34 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5E218C43395; Fri, 22 May 2020 22:03:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BDE8C433CB;
-        Fri, 22 May 2020 22:03:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7BDE8C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] drm/msm: Update the MMU helper function APIs
-Date:   Fri, 22 May 2020 16:03:16 -0600
-Message-Id: <20200522220316.23772-4-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200522220316.23772-1-jcrouse@codeaurora.org>
-References: <20200522220316.23772-1-jcrouse@codeaurora.org>
+        Fri, 22 May 2020 18:04:17 -0400
+Received: by mail-il1-f193.google.com with SMTP id y17so10041686ilg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:04:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=973NC73pjk2NBifwj8WHpMk/zDWJCDkNGu1zxBkh+HU=;
+        b=pnG398FlhLshHiw329/3Y9eCcycpwia6MAXkwdqqLHXvKTow2CEiwyHiEgD6KkZ5/c
+         ybppnI4tXHxe3FYkRKjibbNfFfMnxOr9rjyqF50smpWIfxuLFRjeqJIaZSZuKdK9Fmdv
+         +5beBjo4/zPX2pGNalul6w3T769mmm39sX5dl3h//VeIlhrGMQk7eVaOul6CQuDR7MhW
+         gHH1MywjKxYRc80+V4IeTLZOKbQBqGlzVo4GfMCwdjuaiHr3Anm76r0lXT9YDrBspI1x
+         WvI9P702rY4kCDRTJHdmCZ6F6azJQoPVImBj6sUS8jXPgmuV61oNlUF/WtVX/bJADsW+
+         YNPg==
+X-Gm-Message-State: AOAM532lnkdmbouMdWCMYBgk+oH450VDjWvgVVzcai2eSgcQIf4y/m0+
+        Z3cP2r+ZTA7hwGiP6FGgb39D4enzrVw=
+X-Google-Smtp-Source: ABdhPJyYMul10MLN8/0RuNemnHlg/7RGIY8JawSioG0PC/DiuKgLRb8q7iIa6Xh80EGbiwbqCzzJ3g==
+X-Received: by 2002:a92:5a5d:: with SMTP id o90mr15265718ilb.206.1590185056059;
+        Fri, 22 May 2020 15:04:16 -0700 (PDT)
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com. [209.85.166.171])
+        by smtp.gmail.com with ESMTPSA id v14sm5090279ilm.66.2020.05.22.15.04.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2020 15:04:15 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id c20so12264214ilk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:04:14 -0700 (PDT)
+X-Received: by 2002:a92:c401:: with SMTP id e1mr15993370ilp.134.1590185054260;
+ Fri, 22 May 2020 15:04:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200427134003.45188-1-max.krummenacher@toradex.com> <20200427134003.45188-5-max.krummenacher@toradex.com>
+In-Reply-To: <20200427134003.45188-5-max.krummenacher@toradex.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Fri, 22 May 2020 17:03:50 -0500
+X-Gmail-Original-Message-ID: <CADRPPNT8FQJ4vZUkk-t=o2GnNB=JSxkadjxiH0LZcQhC1e8VMg@mail.gmail.com>
+Message-ID: <CADRPPNT8FQJ4vZUkk-t=o2GnNB=JSxkadjxiH0LZcQhC1e8VMg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] arm64: defconfig: add MEDIA_PLATFORM_SUPPORT
+To:     Max Krummenacher <max.oss.09@gmail.com>
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>, soc@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using a bare unsigned type for the length value for map/unmap
-functions pass in a size_t to more correctly match up with the underlying
-APIs.
+On Mon, Apr 27, 2020 at 8:43 AM Max Krummenacher <max.oss.09@gmail.com> wrote:
+>
+> Commit 06b93644f4d1 ("media: Kconfig: add an option to filter in/out
+> platform drivers") adds a new Kconfig symbol which now hides drivers
+> currently enabled in the arm64 defconfig. Enable it to get those
+> drivers back.
+>
+> Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
+Acked-by: Li Yang <leoyang.li@nxp.com>
 
- drivers/gpu/drm/msm/msm_gpummu.c | 4 ++--
- drivers/gpu/drm/msm/msm_iommu.c  | 4 ++--
- drivers/gpu/drm/msm/msm_mmu.h    | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+This is pretty important otherwise some of the drivers enabled in
+defconfig will no longer build.
 
-diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
-index 0ad0f848560a..310a31b05faa 100644
---- a/drivers/gpu/drm/msm/msm_gpummu.c
-+++ b/drivers/gpu/drm/msm/msm_gpummu.c
-@@ -26,7 +26,7 @@ static void msm_gpummu_detach(struct msm_mmu *mmu)
- }
- 
- static int msm_gpummu_map(struct msm_mmu *mmu, uint64_t iova,
--		struct sg_table *sgt, unsigned len, int prot)
-+		struct sg_table *sgt, size_t len, int prot)
- {
- 	struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
- 	unsigned idx = (iova - GPUMMU_VA_START) / GPUMMU_PAGE_SIZE;
-@@ -54,7 +54,7 @@ static int msm_gpummu_map(struct msm_mmu *mmu, uint64_t iova,
- 	return 0;
- }
- 
--static int msm_gpummu_unmap(struct msm_mmu *mmu, uint64_t iova, unsigned len)
-+static int msm_gpummu_unmap(struct msm_mmu *mmu, uint64_t iova, size_t len)
- {
- 	struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
- 	unsigned idx = (iova - GPUMMU_VA_START) / GPUMMU_PAGE_SIZE;
-diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-index 627e1187d8aa..f8d5a294e1be 100644
---- a/drivers/gpu/drm/msm/msm_iommu.c
-+++ b/drivers/gpu/drm/msm/msm_iommu.c
-@@ -38,7 +38,7 @@ static void msm_iommu_detach(struct msm_mmu *mmu)
- }
- 
- static int msm_iommu_map(struct msm_mmu *mmu, uint64_t iova,
--		struct sg_table *sgt, unsigned len, int prot)
-+		struct sg_table *sgt, size_t len, int prot)
- {
- 	struct msm_iommu *iommu = to_msm_iommu(mmu);
- 	size_t ret;
-@@ -49,7 +49,7 @@ static int msm_iommu_map(struct msm_mmu *mmu, uint64_t iova,
- 	return (ret == len) ? 0 : -EINVAL;
- }
- 
--static int msm_iommu_unmap(struct msm_mmu *mmu, uint64_t iova, unsigned len)
-+static int msm_iommu_unmap(struct msm_mmu *mmu, uint64_t iova, size_t len)
- {
- 	struct msm_iommu *iommu = to_msm_iommu(mmu);
- 
-diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
-index bae9e8e67ec1..3a534ee59bf6 100644
---- a/drivers/gpu/drm/msm/msm_mmu.h
-+++ b/drivers/gpu/drm/msm/msm_mmu.h
-@@ -12,8 +12,8 @@
- struct msm_mmu_funcs {
- 	void (*detach)(struct msm_mmu *mmu);
- 	int (*map)(struct msm_mmu *mmu, uint64_t iova, struct sg_table *sgt,
--			unsigned len, int prot);
--	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, unsigned len);
-+			size_t len, int prot);
-+	int (*unmap)(struct msm_mmu *mmu, uint64_t iova, size_t len);
- 	void (*destroy)(struct msm_mmu *mmu);
- };
- 
--- 
-2.17.1
+>
+>
+> ---
+>
+> Changes in v3:
+> - new patch: added 'arm64: defconfig: add MEDIA_PLATFORM_SUPPORT' now
+>   needed for some enabled drivers or these drivers will silently not
+>   be built.
+>
+> Changes in v2: None
+>
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index b8259814065dc..472aa82b9feee 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -569,6 +569,7 @@ CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
+>  CONFIG_MEDIA_SDR_SUPPORT=y
+>  CONFIG_MEDIA_CONTROLLER=y
+>  CONFIG_VIDEO_V4L2_SUBDEV_API=y
+> +CONFIG_MEDIA_PLATFORM_SUPPORT=y
+>  # CONFIG_DVB_NET is not set
+>  CONFIG_MEDIA_USB_SUPPORT=y
+>  CONFIG_USB_VIDEO_CLASS=m
+> --
+> 2.20.1
+>
