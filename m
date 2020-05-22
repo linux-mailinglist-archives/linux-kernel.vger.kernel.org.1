@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F0E1DE332
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453DE1DE340
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729947AbgEVJfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:35:18 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35900 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728424AbgEVJfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 05:35:17 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6EEB8BA3EB6C87F79A13;
-        Fri, 22 May 2020 17:35:14 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 22 May 2020
- 17:35:06 +0800
-Subject: Re: [PATCH V2 net-next 0/2] net: hns3: adds two VLAN feature
-To:     David Miller <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>
-References: <1590061105-36478-1-git-send-email-tanhuazhong@huawei.com>
- <20200521121707.6499ca6b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200521.143726.481524442371246082.davem@davemloft.net>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <cb427604-05ee-504c-03d0-fcce16b3cfcc@huawei.com>
-Date:   Fri, 22 May 2020 17:35:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        id S1729702AbgEVJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:37:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbgEVJho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 05:37:44 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE628C05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:37:42 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id i15so9469960wrx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+JaGmfrUHhcQkFEPqWe0bVFYz2Arc5TLSoXsPeih+bY=;
+        b=NDE9gcYyqD5IEt9rXJkmi/wEyz9UCuTNGRlh7pxa3vfQZLtnrb0Yh6gbJ7K6nO2Kbz
+         c8NLy66N6aIhVAMZ2J3zCgJdhK7UhUWk9L5TDQgwBIqSRGfqXc4vnv0QPE17Mbq7BJHA
+         JSgLgqn/MxflMn9nvVXvv6xtxhn7uGAXsmEXNSqaSte/pQtBqJWAexAp4asgLGlwA8++
+         SWWkv9B8ybyPTREFSvSpyERKSYj7WfhANiXUaEx0o6zPF+PPc+pcLDQa8r2+SDEfMUPL
+         sTvz5RTqFljDfVi1YilfsOw8kY0yIwFeJ1KuotodP28/DK7TfAaYGU70lvBCsraWTuUP
+         3/7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+JaGmfrUHhcQkFEPqWe0bVFYz2Arc5TLSoXsPeih+bY=;
+        b=pI3Aq9/ErZLCIM/zRLmp5S3OoVBj4FEc54hVwlEdTZNV6PJpsO6snrkQuiHM0AwcRf
+         1K5mw7acmlo+8gcPVCyHWs4TJC0nKiJI22lHjGQL7T4wDpd5x03mCXsqlNTB91IYV4L7
+         nDRBF2U5vyjqn0mbrJUbM0Zo1le7xvqEyqrZDL0xDw3MLaA4S3pMYB2Tm05Yh9eTU55N
+         UE8CMyUSH+HV4TKycOFN/xjql79LY5L7HMVcLnX3XstXpX13b9+yKN/VqdlOd2AInE4N
+         nZZEqSEtOojzH0JFLPa6tf2ltbM3Ylzpj5UL9bB67J1UuLDvUXTp/Eo4j1/tDHsQkENa
+         8kCQ==
+X-Gm-Message-State: AOAM533GMXeMgCi+ppcFwvYSJjAZU0fQUItaJ9FnPm41/QzIUi8yy7aL
+        qmiGdNVnVW7meFQRf1rKW/yc4A==
+X-Google-Smtp-Source: ABdhPJzoncU+lNgmINUvGoMOt+KFP+k6Tci7J6tYcLGnKlR7Ymv0eheScbKLeM/5XEl62TSRKym5IQ==
+X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr870054wrt.199.1590140261310;
+        Fri, 22 May 2020 02:37:41 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id c140sm9479234wmd.18.2020.05.22.02.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 02:37:40 -0700 (PDT)
+Date:   Fri, 22 May 2020 10:37:38 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Guru Das Srinagesh <gurus@codeaurora.org>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v14 04/11] pwm: clps711x: Cast period to u32
+ before use as divisor
+Message-ID: <20200522093738.cko5rj4wrxfd4hxu@holly.lan>
+References: <cover.1589330178.git.gurus@codeaurora.org>
+ <1d6918c3fc2976bdbdb687bf54a2ef09fc1558db.1589330178.git.gurus@codeaurora.org>
+ <20200521101934.j5ivjky4e6byveut@holly.lan>
+ <20200521202525.GA24026@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200521.143726.481524442371246082.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521202525.GA24026@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/5/22 5:37, David Miller wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Thu, 21 May 2020 12:17:07 -0700
+On Thu, May 21, 2020 at 01:25:25PM -0700, Guru Das Srinagesh wrote:
+> On Thu, May 21, 2020 at 11:19:34AM +0100, Daniel Thompson wrote:
+> > On Wed, May 20, 2020 at 03:55:57PM -0700, Guru Das Srinagesh wrote:
+> > > Since the PWM framework is switching struct pwm_args.period's datatype
+> > > to u64, prepare for this transition by typecasting it to u32.
+> > > 
+> > > Also, since the dividend is still a 32-bit number, any divisor greater
+> > > than the numerator will cause the quotient to be zero, so return 0 in
+> > > that case to efficiently skip the division.
+> > > 
+> > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > > ---
+> > >  drivers/pwm/pwm-clps711x.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)> > > 
+> > > diff --git a/drivers/pwm/pwm-clps711x.c b/drivers/pwm/pwm-clps711x.c
+> > > index 924d39a..da771b1 100644
+> > > --- a/drivers/pwm/pwm-clps711x.c
+> > > +++ b/drivers/pwm/pwm-clps711x.c
+> > > @@ -43,7 +43,10 @@ static void clps711x_pwm_update_val(struct clps711x_chip *priv, u32 n, u32 v)
+> > >  static unsigned int clps711x_get_duty(struct pwm_device *pwm, unsigned int v)
+> > >  {
+> > >  	/* Duty cycle 0..15 max */
+> > > -	return DIV_ROUND_CLOSEST(v * 0xf, pwm->args.period);
+> > > +	if (pwm->args.period > (v * 0xf))
+> > > +		return 0;
+> > 
+> > This doesn't look right to me.
+> > 
+> > DIV_ROUND_CLOSEST() does rounded division and the short circuit doesn't
+> > implement that.
 > 
->> On Thu, 21 May 2020 19:38:23 +0800 Huazhong Tan wrote:
->>> This patchset adds two new VLAN feature.
->>>
->>> [patch 1] adds a new dynamic VLAN mode.
->>> [patch 2] adds support for 'QoS' field to PVID.
->>>
->>> Change log:
->>> V1->V2: modifies [patch 1]'s commit log, suggested by Jakub Kicinski.
->>
->> I don't like the idea that FW is choosing the driver behavior in a way
->> that's not observable via standard Linux APIs. This is the second time
->> a feature like that posted for a driver this week, and we should
->> discourage it.
-> 
-> Agreed, this is an unacceptable approach to driver features.
-> 
+> My initial patch [1] was to simply use DIV64_U64_ROUND_CLOSEST(), but I
+> got review feedback to add a short-circuit (same thread, [2]). I feel
+> like I should skip the short-circuiting and type casting and simply just
+> use DIV64_U64_ROUND_CLOSEST() - what do you think?
 
-Hi, Jakub & David.
+A trivial review of pwm-clps711x.c suggests that the period is always
+32-bit anyway so why not just throw away the short circuit entirely and
+replace with a comment saying that CLPS711X has a hard coded period
+that is always >1000000000 ?
 
-As decribed in patch #1, there is a scenario which needs the dynamic
-mode(port VLAN filter is always disabled, andVF VLAN filter is keep
-disable until a non-zero VLAN ID being used for the function).
 
-Is this mode selection provided through "ethtool --set-priv-flags"
-more acceptable? Or is there any other better suggestion for this?
-
-Thanks.
-
-> .
-> 
-
+Daniel.
