@@ -2,139 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09321DDF2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB78A1DDF37
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgEVFRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgEVFRt (ORCPT
+        id S1728225AbgEVFTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:19:36 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6834 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728187AbgEVFTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:17:49 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6CCC061A0E;
-        Thu, 21 May 2020 22:17:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49SvrT31pgz9sRW;
-        Fri, 22 May 2020 15:17:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590124666;
-        bh=faS4nLFZfFTVQGtxXn47idEsA6wHtJuwJj8xWrJUg3I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OPrHO9frmWfmFnL+UBxKH5VtTeChrP+LRXfXSccXX92h772IlR9psx3PpSDmCYJFI
-         hT97stn/o8H/EYHmVT5jC8D0E2P1p+oof++k9QLug0kjKCf5dof5j24cEaMXi2PQnC
-         ixkoNMpJQM7XFj6b+mNZr4F89g2tn4AsKxCKSfZI4O+iJjvw+q74ro8OACcxpMvwBB
-         ZCY8zbW6PPw6iMkMhscE01RITYiZy2qI3c1iaqs/YAhyHMQyfCUrwd508ZKkjupjtn
-         BSjCFz7Z22RMOhedV4KHlvQGubiEiMqUasl90H5EFAZBhrPpHC7//phVWG/v7LLgr3
-         XOLM7ADcunjnQ==
-Date:   Fri, 22 May 2020 15:17:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>
-Subject: linux-next: manual merge of the device-mapper tree with the block
- tree
-Message-ID: <20200522151743.5c3cdbbf@canb.auug.org.au>
+        Fri, 22 May 2020 01:19:34 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec760530000>; Thu, 21 May 2020 22:17:08 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 May 2020 22:19:33 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 May 2020 22:19:33 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 May
+ 2020 05:19:32 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Fri, 22 May 2020 05:19:32 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.48.182]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ec760e40002>; Thu, 21 May 2020 22:19:32 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2 0/4] mm/gup, drm/i915: refactor gup_fast, convert to pin_user_pages()
+Date:   Thu, 21 May 2020 22:19:27 -0700
+Message-ID: <20200522051931.54191-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/F=h_zdAYkN/C=9r=7aVTu2e";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590124628; bh=hhCuG4lTr8DGvhmADVoRUDXJfb9QfkbC0ipkPVPTT7E=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=FdOAmhGrmXVMJza0Fp11gi+KN7tPFZCcxwJ84N3GZOaBBjhCcAkKDPUSALSQYikAU
+         MzT0Zbeo5nS3tAjstxwkYQ8FA8wrGmkUzrf9deBBmgnpmHBkK5mydRsXFWDPKBnudG
+         p1GvWq8+hVB3Bl9d9Tr47KvpTBKuS9fU3pJqPA4pNQxhqQ3ESaHIIOeURRW+rbP6Ua
+         kmolkd/z3pcX2mE9bz5e1E4P40PUlMtpjg+SKJN75igFfPsWSdJiAoU+IyFynQ93uQ
+         pqb8YqUVrl+Fa97koH4oxUZEg0J7tk5+Y2oIeWBII3a+M8IXtIAIh79z60ir5gA5BI
+         2SVPpX0yT9bHQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/F=h_zdAYkN/C=9r=7aVTu2e
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The purpose of posting this series is to launch a test in the
+intel-gfx-ci tree. (The patches have already been merged into Andrew's
+linux-mm tree.)
 
-Hi all,
+This applies to today's linux.git (note the base-commit tag at the
+bottom).
 
-Today's linux-next merge of the device-mapper tree got a conflict in:
+Changes since V1:
 
-  drivers/md/dm-zoned-metadata.c
+* Fixed a bug in the refactoring patch: added FOLL_FAST_ONLY to the
+  list of gup_flags *not* to WARN() on. This lead to a failure in the
+  first intel-gfx-ci test run [1].
 
-between commit:
+[1] https://lore.kernel.org/r/159008745422.32320.5724805750977048669@build.=
+alporthouse.com
 
-  c64644ce363b ("block: remove the error_sector argument to blkdev_issue_fl=
-ush")
+Original cover letter:
 
-from the block tree and commit:
+This needs to go through Andrew's -mm tree, due to adding a new gup.c
+routine. However, I would really love to have some testing from the
+drm/i915 folks, because I haven't been able to run-time test that part
+of it.
 
-  bf28a3ba0986 ("dm zoned: store device in struct dmz_sb")
+Otherwise, though, the series has passed my basic run time testing:
+some LTP tests, some xfs and etx4 non-destructive xfstests, and an
+assortment of other smaller ones: vm selftests, io_uring_register, a
+few more. But that's only on one particular machine. Also, cross-compile
+tests for half a dozen arches all pass.
 
-from the device-mapper tree.
+Details:
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+In order to convert the drm/i915 driver from get_user_pages() to
+pin_user_pages(), a FOLL_PIN equivalent of __get_user_pages_fast() was
+required. That led to refactoring __get_user_pages_fast(), with the
+following goals:
 
+1) As above: provide a pin_user_pages*() routine for drm/i915 to call,
+   in place of __get_user_pages_fast(),
+
+2) Get rid of the gup.c duplicate code for walking page tables with
+   interrupts disabled. This duplicate code is a minor maintenance
+   problem anyway.
+
+3) Make it easy for an upcoming patch from Souptick, which aims to
+   convert __get_user_pages_fast() to use a gup_flags argument, instead
+   of a bool writeable arg.  Also, if this series looks good, we can
+   ask Souptick to change the name as well, to whatever the consensus
+   is. My initial recommendation is: get_user_pages_fast_only(), to
+   match the new pin_user_pages_only().
+
+John Hubbard (4):
+  mm/gup: move __get_user_pages_fast() down a few lines in gup.c
+  mm/gup: refactor and de-duplicate gup_fast() code
+  mm/gup: introduce pin_user_pages_fast_only()
+  drm/i915: convert get_user_pages() --> pin_user_pages()
+
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  22 +--
+ include/linux/mm.h                          |   3 +
+ mm/gup.c                                    | 153 ++++++++++++--------
+ 3 files changed, 109 insertions(+), 69 deletions(-)
+
+
+base-commit: 051143e1602d90ea71887d92363edd539d411de5
 --=20
-Cheers,
-Stephen Rothwell
+2.26.2
 
-diff --cc drivers/md/dm-zoned-metadata.c
-index bf2245370305,db0dc2b5d44d..000000000000
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@@ -659,9 -816,10 +816,10 @@@ static int dmz_write_sb(struct dmz_meta
-  	sb->crc =3D 0;
-  	sb->crc =3D cpu_to_le32(crc32_le(sb_gen, (unsigned char *)sb, DMZ_BLOCK_=
-SIZE));
- =20
-- 	ret =3D dmz_rdwr_block(zmd, REQ_OP_WRITE, block, mblk->page);
-+ 	ret =3D dmz_rdwr_block(dev, REQ_OP_WRITE, zmd->sb[set].block,
-+ 			     mblk->page);
-  	if (ret =3D=3D 0)
-- 		ret =3D blkdev_issue_flush(zmd->dev->bdev, GFP_NOIO);
- -		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO, NULL);
-++		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO);
- =20
-  	return ret;
-  }
-@@@ -703,7 -862,7 +862,7 @@@ static int dmz_write_dirty_mblocks(stru
- =20
-  	/* Flush drive cache (this will also sync data) */
-  	if (ret =3D=3D 0)
-- 		ret =3D blkdev_issue_flush(zmd->dev->bdev, GFP_NOIO);
- -		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO, NULL);
-++		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO);
- =20
-  	return ret;
-  }
-@@@ -772,7 -933,7 +933,7 @@@ int dmz_flush_metadata(struct dmz_metad
- =20
-  	/* If there are no dirty metadata blocks, just flush the device cache */
-  	if (list_empty(&write_list)) {
-- 		ret =3D blkdev_issue_flush(zmd->dev->bdev, GFP_NOIO);
- -		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO, NULL);
-++		ret =3D blkdev_issue_flush(dev->bdev, GFP_NOIO);
-  		goto err;
-  	}
- =20
-
---Sig_/F=h_zdAYkN/C=9r=7aVTu2e
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7HYHcACgkQAVBC80lX
-0GzQYAf/RA0QQH9qR/2M7JY9NJfYSPnDdqBa44exCQbx/k9vSlKK0Wvuuyt2dsmF
-kC3E29mNGb67PfA4ZAQ75F98BYjf07xafRgkVIrCogYcMhwx3/EeMdfri8RCgYhq
-9jQq0NkVTCFViqFff8Ae/VFUmFQsoGtCS9LZHp+XgM1XJdHusii7bzyPqkRmg1uQ
-I/CbCDitdq0nAKaSRcq84eRNvh+8XJa9e3G8RI5B9nvUt7gQteOmdy4QLh0ODKcd
-z3ubh3bgFBuO8hr6DJFw30lVzAUQ0iffWGzhOiG/E7AyGbdpz9wvaC2NxQVb3jBE
-gDPRPtomd0LtAMYsHnBZFEeHBf7UiQ==
-=HgIy
------END PGP SIGNATURE-----
-
---Sig_/F=h_zdAYkN/C=9r=7aVTu2e--
