@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C7E1DE2B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337E81DE2BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgEVJOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728183AbgEVJOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 05:14:47 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47AB5206B6;
-        Fri, 22 May 2020 09:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590138886;
-        bh=sNvSw3IbUgU0YNH4rTVZO9VBdhyYR82XfdDnZlIa0rU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QXioF3YwAd9SccnnH0Vwzkf7appN5O5A2JBs1r134NbiujCNdF61xveBClGlRSz9l
-         T1mZmmw0YcxTDfaoutIHZhJzo76p0GFmlJT2WCshGAxucu8+NITyzOgewRd+mlxfVb
-         PlQn04S9bumxHTHG+UctXkOVsu8ERheW2ZGdRu5U=
-Date:   Fri, 22 May 2020 11:14:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thommy Jakobsson <thommyj@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uio: disable lazy irq disable to avoid double fire
-Message-ID: <20200522091444.GA1192483@kroah.com>
-References: <20200521144209.19413-1-thommyj@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521144209.19413-1-thommyj@gmail.com>
+        id S1729526AbgEVJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgEVJRH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 05:17:07 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EEAC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:17:06 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so4731295pgv.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1xYKxvvZ1z74EVfTyWa+2nvhPJspgg6ccXHqA7I5bu4=;
+        b=lFR172sQ2cEdHj7hwVMucNDHtLV8DAy6vN/j7W9x5leMGqmM1IRqm0xgH3fxFQbZ0X
+         bB42pdtpgiTI2cV4jJ7nRlOPu9mw7/0txoLoFiCWCfgxE7UnVZ2ZyQqQz51rDFJDePlj
+         GscTYfipqeM5XkGB255ziuF7hHr+PzpdJJJ7lPSjk4vslQSeHrVyXYxN9KrPN//xYTny
+         MZgPCWk+b45XqPkreMPhSiuh55VwYi7xOYcP7LkgYgw+MbppOe+99HBxHkiOdv++IsrG
+         GLfZAtaZpi/D8gO4yE7lsCizDjNq58I1ZAO3kxCoPlZnpqsp61H/fShw4Y3WuArFhkjR
+         FUiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1xYKxvvZ1z74EVfTyWa+2nvhPJspgg6ccXHqA7I5bu4=;
+        b=hKD7KDH8zV97hkpAeZQS0uD+WquMKEjQ9KQ5dbCfgpbN1PYn+nJ/r0axg22d1O5Wq0
+         jZvR7wU2xx24ZsyGVjL8VrO7Kh8/UEF5N/r+okrGbiHd7d9nxcQu+H8XMYzrzPPXjNhS
+         G01dYssKj0a5iQvLJYIFgJ4Z7VJr3oNXBI/qQZmEfd0iQzPct+fGZBvblfzhdmvISmud
+         uceNOq9wDG4YZyPIf+pCbDutcx+mTMlgXKp7f9QpeRhBgrvmu2VmJOezFUxZAsziZ/pH
+         4F7lGm9lAyPOVbeE3ERAtADVPywMh+IZW0J+w5PI2sz59uL69W6duNlSxZiHI3BRHRpF
+         Fz0A==
+X-Gm-Message-State: AOAM533BX9tYGIDin95bOsW8ngIZ+Q5SUxXxoGuTCMyR8VZyQKG+Eq3i
+        BoLCiZOEJ/oU+ekJ2qQf0vw=
+X-Google-Smtp-Source: ABdhPJwpZaaNYy7SGwVU4avF7WMe3u1BYvpK/nGnVS9yBCPYBmZ24ZIDsPkMcjAJwDSwg+GQJw16Pw==
+X-Received: by 2002:a63:1615:: with SMTP id w21mr8174775pgl.217.1590139025750;
+        Fri, 22 May 2020 02:17:05 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:690:5767:49e2:74e6:c65c:429e])
+        by smtp.gmail.com with ESMTPSA id m63sm6612872pfb.101.2020.05.22.02.17.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 May 2020 02:17:05 -0700 (PDT)
+From:   MugilRaj <dmugil2000@gmail.com>
+Cc:     MugilRaj <dmugil2000@gmail.com>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        speakup@linux-speakup.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] taging: speakup: remove volatile
+Date:   Fri, 22 May 2020 14:46:28 +0530
+Message-Id: <1590138989-6091-1-git-send-email-dmugil2000@gmail.com>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:42:09PM +0200, Thommy Jakobsson wrote:
-> uio_pdrv_genirq and uio_dmem_genirq interrupts are handled in
-> userspace. So the condition for the interrupt hasn't normally not been
-> cleared when top half returns. disable_irq_nosync is called in top half,
-> but since that normally is lazy the irq isn't actually disabled.
-> 
-> For level triggered interrupts this will always result in a spurious
-> additional fire since the level in to the interrupt controller still is
-> active. The actual interrupt handler isn't run though since this
-> spurious irq is just recorded, and later on discared (for level).
-> 
-> This commit disables lazy masking for level triggered interrupts. It
-> leaves edge triggered interrupts as before, because they work with the
-> lazy scheme.
-> 
-> All other UIO drivers already seem to clear the interrupt cause at
-> driver levels.
-> 
-> Example of double fire. First goes all the way up to
-> uio_pdrv_genirq_handler, second is terminated in handle_fasteoi_irq and
-> marked as pending.
-> 
-> <idle>-0 [000] d... 8.245870: gic_handle_irq: irq 29
-> <idle>-0 [000] d.h. 8.245873: uio_pdrv_genirq_handler: disable irq 29
-> <idle>-0 [000] d... 8.245878: gic_handle_irq: irq 29
-> <idle>-0 [000] d.h. 8.245880: handle_fasteoi_irq: irq 29 PENDING
-> HInt-34  [001] d... 8.245897: uio_pdrv_genirq_irqcontrol: enable irq 29
-> 
-> Tested on 5.7rc2 using uio_pdrv_genirq and a custom Xilinx MPSoC board.
-> 
-> Signed-off-by: Thommy Jakobsson <thommyj@gmail.com>
-> ---
->  drivers/uio/uio_dmem_genirq.c | 24 ++++++++++++++++++++++++
->  drivers/uio/uio_pdrv_genirq.c | 24 ++++++++++++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
-> diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
-> index f6ab3f28c838..14899ed19143 100644
-> --- a/drivers/uio/uio_dmem_genirq.c
-> +++ b/drivers/uio/uio_dmem_genirq.c
-> @@ -20,6 +20,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/slab.h>
-> +#include <linux/irq.h>
->  
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
-> @@ -200,6 +201,29 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
->  			goto bad1;
->  		uioinfo->irq = ret;
->  	}
-> +
-> +	if (uioinfo->irq) {
+fix checkpatch.pl warning, which is Use of volatile is usually wrong: see
+Documentation/process/volatile-considered-harmful.rst
+Signed-off-by: MugilRaj <dmugil2000@gmail.com>
+---
+ drivers/staging/speakup/speakup_decext.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How is this not true at this point in time based on the code above this?
-->irq should always be set here, right?
+diff --git a/drivers/staging/speakup/speakup_decext.c b/drivers/staging/speakup/speakup_decext.c
+index ddbb7e9..22baaeb 100644
+--- a/drivers/staging/speakup/speakup_decext.c
++++ b/drivers/staging/speakup/speakup_decext.c
+@@ -21,7 +21,7 @@
+ #define SYNTH_CLEAR 0x03
+ #define PROCSPEECH 0x0b
+ 
+-static volatile unsigned char last_char;
++static unsigned char last_char;
+ 
+ static void read_buff_add(u_char ch)
+ {
+-- 
+2.7.4
 
-> +		struct irq_data *irq_data = irq_get_irq_data(uioinfo->irq);
-> +
-> +		/*
-> +		 * If a level interrupt, dont do lazy disable. Otherwise the
-> +		 * irq will fire again since clearing of the actual cause, on
-> +		 * device level, is done in userspace
-> +		 */
-> +		if (!irq_data) {
-> +			dev_err(&pdev->dev, "unable to get irq data\n");
-> +			ret = -ENXIO;
-> +			goto bad1;
-
-Why is not having this information all of a sudden an error for this
-code?  What could cause that info to not be there?  Existing systems
-without this set would work just fine before this change, and I think
-this breaks them, right?
-
-> +		}
-> +		/*
-> +		 * irqd_is_level_type() isn't used since isn't valid unitil
-> +		 * irq is configured.
-> +		 */
-> +		if (irqd_get_trigger_type(irq_data) & IRQ_TYPE_LEVEL_MASK) {
-> +			dev_info(&pdev->dev, "disable lazy unmask\n");
-
-Why dev_info?  If drivers are working properly, they should be quiet.
-dev_dbg() is fine to use here if you want to debug things to see what is
-happening.
-
-> +			irq_set_status_flags(uioinfo->irq, IRQ_DISABLE_UNLAZY);
-> +		}
-> +	}
->  	uiomem = &uioinfo->mem[0];
->  
->  	for (i = 0; i < pdev->num_resources; ++i) {
-> diff --git a/drivers/uio/uio_pdrv_genirq.c b/drivers/uio/uio_pdrv_genirq.c
-> index ae319ef3a832..abf8e21d7158 100644
-> --- a/drivers/uio/uio_pdrv_genirq.c
-> +++ b/drivers/uio/uio_pdrv_genirq.c
-> @@ -20,6 +20,7 @@
->  #include <linux/stringify.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/slab.h>
-> +#include <linux/irq.h>
->  
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
-> @@ -171,6 +172,29 @@ static int uio_pdrv_genirq_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	if (uioinfo->irq) {
-
-<snip>
-
-All of the same comments I made above in the other file, also apply
-here.
-
-thanks,
-
-greg k-h
