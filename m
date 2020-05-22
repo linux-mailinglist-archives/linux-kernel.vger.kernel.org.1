@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF281DE977
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32F71DE986
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730558AbgEVOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729903AbgEVOrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:47:11 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D17C061A0E;
-        Fri, 22 May 2020 07:47:11 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id l73so2297354pjb.1;
-        Fri, 22 May 2020 07:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pyI8RXJv0A9qOfUOs7+t5xXq9tBCjrOPiOAhgZoNJGU=;
-        b=Ujuhda9sRCNvYqh00NglKq18LhbkIq8aE4BUcXG3v7wbWcu1ySHA8zIVb+5qyZ5cXW
-         UPnhYOx5gxzweUHjEMfamVI16WBTsGW/NWZNFpC9CEQgX161wxmC4s/WE5Nr6RTQeIaH
-         4b0YabqbO/sH76bBoye3TRdm6o763j0xliAkqVo4UvT1jBaZSTQ2HyKPHfXhhuaOEGov
-         OnPnEuh+Lz3gZcTkTSnw3jkWnBbRhfB3bq6nDxWHwRcrdf+dhjoA/2tWBwEyXr13fZGJ
-         fX40OFWM3EC8WYw3wOseIxV8YbmhcqwcoQNHcF/foWZpegvLrHtAdMB1s4r0DZIG6ixg
-         HPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pyI8RXJv0A9qOfUOs7+t5xXq9tBCjrOPiOAhgZoNJGU=;
-        b=O/hCP1V0NNJMQZUG+t9Bh5lxdUqVMSr3Qi+spR+8ouILsF45hzs17drHoHlshSpY4U
-         3mUc0WKdF2fu8kwlhsRdftUaJFrahz05moRmmNqv0O1u602gkT0lzGC3KUrsEwA0bay/
-         1wv0eEKLXcctPNITtDP9vcIH7iCzR1nWBaSzKfjdGZNAQYc0CEJamx6qcL4Gg5//PpBm
-         3QV7gGO7UtBHIRKl8UJJfDJ5n42mzywPS8t3rf9ZJx7o9QidtqCkb+c39l2+qA7xQoAD
-         QS4g/N4YwzI95zZBNYTKUUvBF+HWh/BPRHe1N7ebM51DkRl553jNi0vwEyNttL7qFDy5
-         bDow==
-X-Gm-Message-State: AOAM5302slwv5SbSva3ryBEGqn2pmj+qe/qzpqMMwdYBn7itrccZydCA
-        mymHwrCSXGrvwzS3lx2/a0k=
-X-Google-Smtp-Source: ABdhPJwEjkbC0ZRvqsKRNasE1thUYFAv46HEbfQoZ9/iqC+b34JBVlEVMv+91eqFvfq8/THk/tyv3A==
-X-Received: by 2002:a17:902:bd42:: with SMTP id b2mr14491950plx.219.1590158830652;
-        Fri, 22 May 2020 07:47:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v127sm7113218pfb.91.2020.05.22.07.47.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 May 2020 07:47:08 -0700 (PDT)
-Date:   Fri, 22 May 2020 07:47:07 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 16/17] dt-bindings: watchdog: renesas,wdt: Document
- r8a7742 support
-Message-ID: <20200522144707.GA173101@roeck-us.net>
-References: <1589555337-5498-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1589555337-5498-17-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1730201AbgEVOry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:47:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729903AbgEVOrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 10:47:53 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BF072053B;
+        Fri, 22 May 2020 14:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590158873;
+        bh=raIADVb+UkJizyoPCsxQYw2PqWtp3N/rKlscrbRCbvA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iAs/omKsTX5z+jiiD65a/OkLhPepFhPVXOx2g9S8IzcljenaPbcmpjB8cIfulkdSm
+         EbBPQtg2cSC5B+rdA56mJgRkjrf3f+Fb4szcJjwV5gyKuEz+9g87jgcWHaInrf70cc
+         q6RfPSavSO+bQgoELw3dQI9T8ZAu+e8dUj5JgmrE=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: avoid inifinite loop to wait for flushing node pages at cp_error
+Date:   Fri, 22 May 2020 07:47:52 -0700
+Message-Id: <20200522144752.216197-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589555337-5498-17-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:08:56PM +0100, Lad Prabhakar wrote:
-> RZ/G1H (R8A7742) watchdog implementation is compatible with R-Car Gen2,
-> therefore add relevant documentation.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Shutdown test is somtime hung, since dirty node pages weren't flushed out.
+Let's drop dirty pages at umount after shutdown.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/node.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> ---
->  Documentation/devicetree/bindings/watchdog/renesas,wdt.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.txt b/Documentation/devicetree/bindings/watchdog/renesas,wdt.txt
-> index 79b3c62..e42fd30 100644
-> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.txt
-> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.txt
-> @@ -5,6 +5,7 @@ Required properties:
->  		fallback compatible string when compatible with the generic
->  		version.
->  	       Examples with soctypes are:
-> +		 - "renesas,r8a7742-wdt" (RZ/G1H)
->  		 - "renesas,r8a7743-wdt" (RZ/G1M)
->  		 - "renesas,r8a7744-wdt" (RZ/G1N)
->  		 - "renesas,r8a7745-wdt" (RZ/G1E)
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index e632de10aedab..8c63964a82fd0 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -1520,8 +1520,15 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
+ 
+ 	trace_f2fs_writepage(page, NODE);
+ 
+-	if (unlikely(f2fs_cp_error(sbi)))
++	if (unlikely(f2fs_cp_error(sbi))) {
++		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
++			dec_page_count(sbi, F2FS_DIRTY_NODES);
++			up_read(&sbi->node_write);
++			unlock_page(page);
++			return 0;
++		}
+ 		goto redirty_out;
++	}
+ 
+ 	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+ 		goto redirty_out;
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
+
