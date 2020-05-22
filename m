@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79AB1DEA15
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D610F1DEAA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbgEVOwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730312AbgEVOwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:52:13 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7625320756;
-        Fri, 22 May 2020 14:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590159133;
-        bh=GXXj6hQz+sGwSms1JwSKF7z36WZ+ep/aZfuObAE5nbM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SB/+8pWGLGFHhc+UrPdIZbJDz1T41O88voLp8zwpNnNBrfseS5Mfc5Umg7xiDTjJG
-         xCb8KTbMn8RA2EiYyB/XdEDRaf75vcXRHX46f+2AgbSo3LAqGjuDmgW4XtJUb41ZB9
-         EU68TOXtLnKyOtmbIZqFmVRe0fYDxK8KpD/Qa8Fk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Steve French <stfrench@microsoft.com>,
-        Coverity <scan-admin@coverity.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 4.4 5/5] cifs: Fix null pointer check in cifs_read
-Date:   Fri, 22 May 2020 10:52:07 -0400
-Message-Id: <20200522145207.435314-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200522145207.435314-1-sashal@kernel.org>
-References: <20200522145207.435314-1-sashal@kernel.org>
+        id S1731236AbgEVOzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731361AbgEVOzQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 10:55:16 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF5FC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:55:15 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f5so1844770wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lgzE6vmodHXJVgkKRydSUcePpApP1sHs6gyeaxLAapY=;
+        b=nlECE+b5yqlKJA6jFTmww2E3QJ5WbURdCUstW1I6PIZDCOg7WHcBF8kQGWXownwX8q
+         cx47KBJ7D3Kpgz7C/7gSay4yxudmJQeS0U6UpnN8yikGE80+hrwjyvSeR1qtaT3ZgFKE
+         ieRGgX9H7LAdv95xfmKHwW8jV2ZRnxqpjjBf4NZx4nvPLuUu/BJTHWw7eqV6Koa9/qkr
+         JB0fkVDznqDDtD+xlGCIU0gIk7VJ0Xuww0a46q46q0i/o3SnK7lYEd4BfRs87OX6KBp/
+         Ym+angsnPVjD1w6IrheE1cC8TpDgg2vBCMdQt6/wtp8Cdjk+KOybz62XMS/vl1SaHje7
+         ZRuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lgzE6vmodHXJVgkKRydSUcePpApP1sHs6gyeaxLAapY=;
+        b=N7F9pWw8TBRZ/zSjshxOm7HXC5iYM3qIAeZtfeEdyHEP21oHfCQafLk4yINmv71f41
+         5BJkCixGld4XwYKIq/bEmHOyspNAYz/qfL9QHPSScVtRJUFf2mouMf80R2LjZ5AiVKHj
+         Ug3G3bVgpPGRmGW8SmmiWdjacxU7DzEHmpxAuGAVFgOGOaPQxZoMuzMSO6Hrxy/TXlIF
+         4HmOeLAcEXzFK88mN/A+aZLEGjeLvom1bR7CRBtFZLOzcZGWYrU9PiR2dipliy9PXUFP
+         HklAXRLY+C8QF+v09Oa46CxgZCSxUUcCgXf1bXE2ChBtXfJju85fjOK27OGav2orCExQ
+         ynAQ==
+X-Gm-Message-State: AOAM530OQ0Ns6QJHyf9ZNdHN2XyhYFJpx6sO0EGzXpNL/bL2yfdPW+R/
+        xSYp2+zf/4frVoGbWNL+5RkURQ==
+X-Google-Smtp-Source: ABdhPJx3E/Vjh2T3jdWf3YQgn4TzMfj6PDDxH6vq8U6IEpR89l/Y7afo7n+52RmZLhGuPaW2lu7RlA==
+X-Received: by 2002:a1c:6583:: with SMTP id z125mr13863329wmb.102.1590159314476;
+        Fri, 22 May 2020 07:55:14 -0700 (PDT)
+Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id i21sm9746911wml.5.2020.05.22.07.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 07:55:13 -0700 (PDT)
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     sumit.garg@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org, pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: [RFC PATCH 0/2] Introduce KGDB_DEBUG_SPINLOCKS
+Date:   Fri, 22 May 2020 15:55:08 +0100
+Message-Id: <20200522145510.2109799-1-daniel.thompson@linaro.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+The execution context for kgdb/kdb is pretty much unique. We are running
+a debug trap handler with all CPUs parked in a holding loop and with
+interrupts disabled. At least one CPU is in an unknowable execution
+state (could be NMI, IRQ, irqs disabled, etc) and the others are either
+servicing an IRQ or NMI depending on architecture.
 
-[ Upstream commit 9bd21d4b1a767c3abebec203342f3820dcb84662 ]
+Breakpoints (including some implicit breakpoints when serious errors
+are detected) can happen on more or less any context, including when we
+own important spin locks.
 
-Coverity scan noted a redundant null check
+As such spin lock waits should never happen whilst we are executing the
+kgdb trap handler used except, occasionally, via an explicit command
+from a (forewarned?) local operator.
 
-Coverity-id: 728517
-Reported-by: Coverity <scan-admin@coverity.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/cifs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Currently kdb doesn't meet this criteria (although I think kgdb does)
+so I started thinking about what tooling we could employ to reinforce
+code review and bring problems to the surface.
 
-diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-index 2ffdaedca7e9..b5a05092f862 100644
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -3230,7 +3230,7 @@ cifs_read(struct file *file, char *read_data, size_t read_size, loff_t *offset)
- 			 * than it negotiated since it will refuse the read
- 			 * then.
- 			 */
--			if ((tcon->ses) && !(tcon->ses->capabilities &
-+			if (!(tcon->ses->capabilities &
- 				tcon->ses->server->vals->cap_large_files)) {
- 				current_read_size = min_t(uint,
- 					current_read_size, CIFSMaxBufSize);
--- 
-2.25.1
+The result is a patch that extends DEBUG_SPINLOCKS and checks whether
+the execution context is safe. The "except via an explicit command"
+aspect (mentioned above) convinced me to make the checks conditional
+on KGDB_DEBUG_SPINLOCKS.
+
+Daniel Thompson (2):
+  debug: Convert dbg_slave_lock to an atomic
+  locking/spinlock/debug: Add checks for kgdb trap safety
+
+ include/linux/kgdb.h            | 16 ++++++++++++++++
+ kernel/debug/debug_core.c       |  8 ++++----
+ kernel/locking/spinlock_debug.c |  4 ++++
+ lib/Kconfig.kgdb                | 11 +++++++++++
+ 4 files changed, 35 insertions(+), 4 deletions(-)
+
+
+base-commit: 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c
+--
+2.25.4
 
