@@ -2,237 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234CE1DEDD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774781DEDD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730706AbgEVRCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:02:45 -0400
-Received: from mail-eopbgr760123.outbound.protection.outlook.com ([40.107.76.123]:22377
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730665AbgEVRCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:02:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JtA0Y8NvNmfhI5FLsGkSl4U62mXApLMq93vjxGtR/oPxRnUJOdrQ48o9H6+Q1lcwNWXieyO5U4yb/frAC7YXJ89X0tvEn2rZSfuACaIbNGuKGDDA+zC6dqimPOBSJGWNQ4ETJexFFteec3jCaL6PBt/z/1fCSijtbJav0IPg18RUCqq3n4hLEVK76sp+GumEP+2iA3201p1dlLnBufkFaFkwER4rRj8ITt7QXd5Ox0hTfcmPqQzMMqWLwZ9VKu6ArZ0YceWXxTAE6/JNiXHBegUL6IqLE5eOPpW7ELBZstg4BLwvDWTis6jWk/OtJWpcO2PQcDBlJ9pWO9pn01mnzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jxRs73AASE9Z9C+8Q1D5+ukrLkFXekvF/2evPkAjyZs=;
- b=G4hh4tEswLta36xLwAT/1W6ZdSz9I8iGUDPYcj9T3k3IOtkNoxTQv0abknP7SmMyx861uLpEll2A8tfD8t2VJ4yJmsBVBckRf9zCWExXem7fhZjaCDGUc4Eqiihdjw0P+hAdQ3zdLC7C0L0ox6EUtn81QRvFxjuxK66OkiD/r/9MlaeH/Wz08oaazMTErDRVRzW+JaRAQPGfEq5k0yhpwrCJIsg7st4LiqD94sPIVqhsfbdZFZ1v6xdupanJuJ15lBckPZAUzgulo4LScNF87WlIfvKTSK2iy6dh0Vb+6u9xxNB0PHo6JIvGAXNX6GFwx7JcZJMDsXRb+S7mTdEWcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jxRs73AASE9Z9C+8Q1D5+ukrLkFXekvF/2evPkAjyZs=;
- b=YNR7pUMwRkwKFlKWNyOfyLCGp6Ik/oYFdrInGznhTRT92OLUsKuB/GRpMLQd+MynKou53zvCvwXnb/GhywF7zUVUxsWN7eNd76V8TogN8Mj7OxijZiqEpNy7/WlY4DF9hj0WJ+xnA1+Vy9vep5UpXuyZQ8oPO00148ouBuJ5RRo=
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- (2603:10b6:803:51::33) by SN4PR2101MB0815.namprd21.prod.outlook.com
- (2603:10b6:803:51::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.8; Fri, 22 May
- 2020 17:02:42 +0000
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::e954:af85:b4a6:a718]) by SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::e954:af85:b4a6:a718%8]) with mapi id 15.20.3045.007; Fri, 22 May 2020
- 17:02:42 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     vkuznets <vkuznets@redhat.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] x86/Hyper-V: Support for free page
- reporting
-Thread-Topic: [EXTERNAL] Re: [PATCH] x86/Hyper-V: Support for free page
- reporting
-Thread-Index: AdYuDAEiPLOc+vnoR1KnBaBInLPPAQAePL4AAHTd3lA=
-Date:   Fri, 22 May 2020 17:02:41 +0000
-Message-ID: <SN4PR2101MB0880E7DD03EF18680A2A88B8C0B40@SN4PR2101MB0880.namprd21.prod.outlook.com>
-References: <SN4PR2101MB0880BB5C9780A854B2609992C0B90@SN4PR2101MB0880.namprd21.prod.outlook.com>
- <87ftbvt21h.fsf@vitty.brq.redhat.com>
-In-Reply-To: <87ftbvt21h.fsf@vitty.brq.redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2601:602:9400:570:c8ca:a51:eff4:4aba]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 968cffb4-9013-44ec-f398-08d7fe71f0c1
-x-ms-traffictypediagnostic: SN4PR2101MB0815:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <SN4PR2101MB0815745B1E0578B89C477242C0B40@SN4PR2101MB0815.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 04111BAC64
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OAWcI9P+/Od7JEJ0hm+J2eKg4rv6QLSJsFAhomW4VxBdyjVCudS1pqGwITS3MeMeerWzUXbSEkYo6VZzEkvj33fraGWaUmKo+YvoU3MKhTbii1UedKm5mxjrKMVOMf0N60dwUaR9QlLfgnabSYVv+UOGJjldSrNP2dgUehhrMyHwr1D96liuJT5dWE10e4iWoFgoaFqq0Rk8fb/9t755/ZQ8C4BCIR4gIWFp77Bs1igJbXBZDa1s9oSZHCOcsy11IFmfu5tSi3DGqP28hKuoitWRD4mHP/7Dazydz3OBGVh5iq4IGobg1JSjD/7PLWXZBfO6d2YXPamjNDVC5ZjKbyVpwETZYTf8oLGOSVj95ePfLD2gWlQwwyAJY9a3sTgdT+Xss2dxc8OIFzaal0//glEh3XOPJ/9nmMzasd/Kpl//NjKE36PMUmYjF748M/rDSn4KQIAUmNv9K2Zh7IDmgGTu5SaizryVm4cXmwJ3uJI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR2101MB0880.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(8936002)(4326008)(8676002)(478600001)(107886003)(33656002)(10290500003)(186003)(86362001)(9686003)(8990500004)(71200400001)(2906002)(55016002)(6506007)(82960400001)(82950400001)(5660300002)(66446008)(64756008)(54906003)(6916009)(316002)(52536014)(7696005)(66476007)(66946007)(76116006)(66556008)(4533004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Ihg5ZqLluExFLrB+4p4or3nza6JqEVFt/0YAr7gzLBdeFHFTkixrgoo6ork/DTWal7RZ4gsb3VfKP8UfX3s221UdEF/d0qZXx3eIxWOLLRC/5tS2jkxr73/AhrtMDGq5oxgRbVQL4++zbACXJ9/SXAFyGsibe3btn0uksnBXiFWpazw3DR0StzkszKYhTG+NJwvIOMoNqO+ofKpmddCF8gZgpMXmNicGyMDrPgzzdcEsB5ny7c4Q2MEmDe/jo+tJmBP2QKhlY+Kb76XVqVGhR8GYhZ7wnPSZE36jRcpF+rIMTNI42FbSLU3UNLoWmrUVthkV3/UWycF0OQbQHpvrDDtFY/lZ3TI7DcejRPaMXBPFLie/DTcUfB9d1XNDXWhhCiDdA9hbI02fIyoJvTXuXcN/Ys75D+uQ1VTD5CUD57TB0lGJScAjRfJIASHkWw+cAqNSYzjBENQszU8HMa8TUzv5PVdYUXJugwcLbhbrbh5RVqRfZVKL3F4aT4DDSkAFqz2M2u546P+fPbVe3hDi7uHbsKMRfz8005LRLzWiEL8=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730764AbgEVREU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730364AbgEVRET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 13:04:19 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97537C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:04:19 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id cx22so5191824pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7A6iyO2k2fi02P/NzWp7Gyx0jmN7Am3f02P31ob4Wmc=;
+        b=fyFyhTTB5I3oZm7mqgoPivDGwIHsZVBXT7hlfCm1r17aWGihsF/7DzUE5n5ymXQadM
+         Xx7DrNWzGZ8CyhoaXlFFGJv4Oa5KZ7s/Q8m408B5BoJdeHhdrZBTAwyVTP7kr5IyJpuV
+         w5tRGrTNGRg8OAoytmEfTBcbZw1jsQEQJuRQFji1Duza9xdS03AnksIM3/IJmpPXjaWw
+         eQVpxkrKEW4TLCEU/bnHxLoQhSp/fgQlpSUFe4ZBPeZY6GHb+sAE9F77v17eOefUQpBn
+         UEPGPMh9UQbyS1c0m0F9/SOY5TuPERV6crAQsDYa0+XtQJ8LoglkV1BKAPWzGgPeDRkT
+         Qhjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7A6iyO2k2fi02P/NzWp7Gyx0jmN7Am3f02P31ob4Wmc=;
+        b=ebVFrJPIXgDd07UYSe15niq1Gx84IxxlSNnuPF4jXWkl4NMGISCb/vPYStaFwbYbQY
+         tJ7293HOVQ7Xeyk+HkHbvYQNMvCOk+ScEwEVHiQRljNP3Nkl5U8Cpg0wfB6agPkSpLYM
+         Le4kSoTukmIwm2LQQdFLAX/3iy4b+6zgh0Ye3dJPcxrHvHGXAlxZalLwKPI2gybWVKMR
+         g+6Re19hIomkyuZyNA69iCn+0JQRDSfzG9FndK5waCQXCh4Cos/Fio8J3Bb1xODPADJz
+         oOXmjnBb45YbsLhL3sswKdbvMt494uS/kb3DNdh4U62iyEJoHJ6KYT6G1xF3/XQfrEPA
+         9YRA==
+X-Gm-Message-State: AOAM533rp9YJ/XzqE9JwpVeNzIWg4TnlTbcAL9vel7Bw1oy9hxpK0uLr
+        L8bUwe7bw8wbswEKEfbideTwzw==
+X-Google-Smtp-Source: ABdhPJw1bAIOwqeWNM4uyzvNWma2h1I8Plu3ZI448K7S2XdchrZ8hmvPUwbAWaJPRNGNAtIMnEEsqQ==
+X-Received: by 2002:a17:90a:2242:: with SMTP id c60mr5861928pje.224.1590167058911;
+        Fri, 22 May 2020 10:04:18 -0700 (PDT)
+Received: from yoga (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id l9sm7757804pfd.5.2020.05.22.10.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 10:04:18 -0700 (PDT)
+Date:   Fri, 22 May 2020 10:04:15 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, Asutosh Das <asutoshd@codeaurora.org>,
+        Vijay Viswanath <vviswana@codeaurora.org>,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V2 2/3] mmc: sdhci-msm: Use internal voltage control
+Message-ID: <20200522170415.GI11847@yoga>
+References: <1589541535-8523-1-git-send-email-vbadigan@codeaurora.org>
+ <1590074615-10787-1-git-send-email-vbadigan@codeaurora.org>
+ <1590074615-10787-3-git-send-email-vbadigan@codeaurora.org>
+ <20200521190739.GC1331782@builder.lan>
+ <08d11687-7aee-2c62-9435-670be1afb21e@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 968cffb4-9013-44ec-f398-08d7fe71f0c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2020 17:02:41.8807
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8Q8aECZsjIvvc30Ae04m8VHsi2Yz4Z0+v+Z5DankJwpug3h0JUMljfpCG2YaxoBBodUNpKE0M+smhr4/Sqdz3RnWEdNg+n0iQLX9Fru1OU0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR2101MB0815
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08d11687-7aee-2c62-9435-670be1afb21e@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> As the only usage of this function looks like
-> if (!(hv_query_ext_cap() & HV_EXT_CAPABILITY_MEMORY_COLD_DISCARD_HINT))
->=20
-> I would've change the interface to
->=20
-> bool hv_query_ext_cap(u64 cap)
->=20
-> so the usage would look like
->=20
-> if (!(hv_query_ext_cap(HV_EXT_CAPABILITY_MEMORY_COLD_DISCARD_HINT))
+On Fri 22 May 06:27 PDT 2020, Veerabhadrarao Badiganti wrote:
 
-Good idea. Will do in v2.
+> Hi Bjorn,
+> 
+> On 5/22/2020 12:37 AM, Bjorn Andersson wrote:
+> > On Thu 21 May 08:23 PDT 2020, Veerabhadrarao Badiganti wrote:
+> > 
+> > > On qcom SD host controllers voltage switching be done after the HW
+> > > is ready for it. The HW informs its readiness through power irq.
+> > > The voltage switching should happen only then.
+> > > 
+> > > Use the internal voltage switching and then control the voltage
+> > > switching using power irq.
+> > > 
+> > > Set the regulator load as well so that regulator can be configured
+> > > in LPM mode when in is not being used.
+> > > 
+> > > Co-developed-by: Asutosh Das <asutoshd@codeaurora.org>
+> > > Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> > > Co-developed-by: Vijay Viswanath <vviswana@codeaurora.org>
+> > > Signed-off-by: Vijay Viswanath <vviswana@codeaurora.org>
+> > > Co-developed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> > Looks better, thanks.
+> > 
+> > > ---
+> > >   drivers/mmc/host/sdhci-msm.c | 207 +++++++++++++++++++++++++++++++++++++++++--
+> > >   1 file changed, 198 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> > [..]
+> > >   static const struct sdhci_msm_offset *sdhci_priv_msm_offset(struct sdhci_host *host)
+> > > @@ -1298,6 +1302,71 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
+> > >   		sdhci_msm_hs400(host, &mmc->ios);
+> > >   }
+> > > +static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	if (IS_ERR(mmc->supply.vmmc))
+> > > +		return 0;
+> > > +
+> > > +	ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, mmc->ios.vdd);
+> > > +	if (ret)
+> > > +		dev_err(mmc_dev(mmc), "%s: vmmc set ocr with vdd=%d failed: %d\n",
+> > > +			mmc_hostname(mmc), mmc->ios.vdd, ret);
+> > Missed this one on v1, in the event that mmc_regulator_set_ocr() return
+> > a non-zero value it has already printed an error message. So please
+> > replace the tail with just:
+> > 
+> > 	return mmc_regulator_set_ocr(...);
+> > 
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int sdhci_msm_set_vqmmc(struct sdhci_msm_host *msm_host,
+> > > +			      struct mmc_host *mmc, bool level)
+> > > +{
+> > > +	int load, ret;
+> > > +	struct mmc_ios ios;
+> > > +
+> > > +	if (IS_ERR(mmc->supply.vqmmc)			 ||
+> > > +	    (mmc->ios.power_mode == MMC_POWER_UNDEFINED) ||
+> > > +	    (msm_host->vqmmc_enabled == level))
+> > > +		return 0;
+> > > +
+> > > +	if (msm_host->vqmmc_load) {
+> > > +		load = level ? msm_host->vqmmc_load : 0;
+> > > +		ret = regulator_set_load(mmc->supply.vqmmc, load);
+> > Sorry for the late reply on v1, but please see my explanation regarding
+> > load and always-on regulators there.
+> 
+> <Merging your comment from V1 here>
+> 
+> >> You should still call regulator_enable()/regulator_disable() on your
+> >> consumer regulator in this driver. When you do this the regulator core
+> >> will conclude that the regulator_dev (i.e. the part that represents the
+> >> hardware) is marked always_on and will not enable/disable the regulator.
+> 
+> >> But it will still invoke _regulator_handle_consumer_enable() and
+> >> _regulator_handle_consumer_disable(), which will aggregate the "load" of
+> >> all client regulators and update the regulator's load.
+> 
+> >> So this will apply the load as you expect regardless of it being
+> >> supplied by a regulator marked as always_on.
+> 
+> Since I'm not turning off this regulator for eMMC, I wanted to keep it in
+> LPM mode
+> to save some power.
+> When the regulator configured in auto mode (RPMH_REGULATOR_MODE_AUTO) it
+> switches to LPM/HPM mode based on the active load.
+> So i have to minimize my driver load requirement so that I can let this
+> regulator
+> in LPM mode.
+> So i need to set load every-time I disable/enable the regulator.
+> 
 
-> >  	ms_hyperv.features =3D cpuid_eax(HYPERV_CPUID_FEATURES);
-> > +	ms_hyperv.b_features =3D cpuid_ebx(HYPERV_CPUID_FEATURES);
-> >  	ms_hyperv.misc_features =3D cpuid_edx(HYPERV_CPUID_FEATURES);
-> >  	ms_hyperv.hints    =3D cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
-> >
-> > -	pr_info("Hyper-V: features 0x%x, hints 0x%x, misc 0x%x\n",
-> > -		ms_hyperv.features, ms_hyperv.hints, ms_hyperv.misc_features);
-> > +	pr_info("Hyper-V: features 0x%x, additional features: 0x%x, hints 0x%=
-x, misc 0x%x\n",
-> > +		ms_hyperv.features, ms_hyperv.b_features, ms_hyperv.hints,
-> > +		ms_hyperv.misc_features);
->=20
-> HYPERV_CPUID_FEATURES(0x40000003) EAX and EBX correspond to Partition
-> Privilege Flags (TLFS), I'd suggest to take the opportunity and rename
-> this to something like 'privilege flags low=3D0x%x high=3D0x%x'.
->=20
-> Also, I don't quite like 'ms_hyperv.b_features' as I'll always have to
-> look at what it's being assigned to understand what it holds. I'd even
-> suggest to rename ms_hyperv.features to ms_hyperv.priv_low and
-> ms_hyperv.b_features tp ms_hyperv.priv_high. Or maybe even better, pack
-> them to the same 'u64 ms_hyperv.privileges'.
+You call regulator_enable(vqmmc) and regulator_disable() below, so you
+are telling the regulator framework that your struct regulator should be
+"on" or "off".
 
-Good idea. I will make the change to rename this to 'priv_high' in v2. I li=
-ke the idea of
-combining 'features' & 'priv_high' to a u64, but that would be a cleanup ch=
-ange and a
-separate patch.
+This will cause the sum of all struct regulator's for the underlying
+struct regulator_dev to be recalculated. So after calling
+regulator_disable() below your effective addition to the load
+calculation is 0, regardless of which load you have specified.
 
->=20
-> Why is largepage always '1'?
-I have responded to a similar question by Wei. Page reporting only supports=
- huge pages
-and, so does the Hyper-V hypervisor. Let's follow this there.
+Independent of this the property regulator-always-on (always_on in
+struct regulator_dev) will determine if the enable/disable request will
+actually be sent to the RPMh.
 
->=20
-> > +		range->page.additional_pages =3D (1ull << (order - 9)) - 1;
-> > +		range->base_large_pfn =3D page_to_pfn(sg_page(sg)) >> 9;
->=20
-> What is '9'? Could you please define it through PAGE_*/HPAGE_* macro?
-Yes, I will define a macro. Essentially, it is to get a count of 2M pages.
 
-> Nit: you could've just used
->=20
->         if (status & HV_HYPERCALL_RESULT_MASK !=3D HV_STATUS_SUCCESS) {
-Sure, coming in v2.
+So, if you where to not call regulator_disable() for eMMC your argument
+is correct, but as far as I can see you are and you're relying on the
+regulator core to keep it always-on - and then the load logic is in
+effect still.
 
->         ...
->=20
-> > +		pr_err("Cold memory discard hypercall failed with status %llx\n",
-> > +			status);
-> > +		return -1;
->=20
-> -EFAULT or something like it maybe?
-Coming in v2.
+Regards,
+Bjorn
 
-> > +#ifdef CONFIG_PAGE_REPORTING
-> > +	if (enable_page_reporting() < 0)
-> > +		goto probe_error;
->=20
-> Why? The hyperv-balloon driver itself may still be functional and you
-> already set dm_device.pr_dev_info.report to NULL.
-An error here would reflect an internal error and should not happen and
-it was to make it easy to catch such errors, which are otherwise difficult
-with just a print. But, the code should follow the general spirit. I will c=
-hange
-this in v2.
-
->=20
-> >  enum HV_GENERIC_SET_FORMAT {
-> >  	HV_GENERIC_SET_SPARSE_4K,
-> >  	HV_GENERIC_SET_ALL,
-> > @@ -371,6 +379,12 @@ union hv_gpa_page_range {
->=20
-> There is a comment before this structure:
->=20
-> /* HvFlushGuestPhysicalAddressList hypercall */
->=20
-> which is now obsolete.
-
-I will add that it also applies to 'HvExtCallMemoryHeatHint' hypercall also=
-.
-
->=20
-> >  		u64 largepage:1;
-> >  		u64 basepfn:52;
-> >  	} page;
-> > +	struct {
-> > +		u64:12;
->=20
-> What is this unnamed member? Another 'reserved', 'pad'? Let's name it.
-
-Sure, coming in v2.
-
->=20
-> > +		u64 page_size:1;
-> > +		u64 reserved:8;
-> > +		u64 base_large_pfn:43;
-> > +	};
->=20
-> Please name this structure in the union.
-
-Sure, coming in v2.
-
-> > + */
-> > +#define HV_MAX_GPA_PAGE_RANGES ((PAGE_SIZE - sizeof(u64)) / \
-> > +				sizeof(union hv_gpa_page_range))
-> > +
->=20
-> The name HV_MAX_GPA_PAGE_RANGES sounds too generic and I think this is
-> specific to the HvExtCallMemoryHeatHint hypercall as other hypercalls
-> may have a different header length.
->=20
-
-Good idea to rename. Coming in v2.
-
-> > +/* HvExtCallMemoryHeatHint hypercall */
-> > +#define HV_EXT_MEMORY_HEAT_HINT_TYPE_COLD_DISCARD	2
-> > +struct hv_memory_hint {
-> > +	u64 type:2;
-> > +	u64 reserved:62;
-> > +	union hv_gpa_page_range ranges[1];
->=20
-> Why '[1]' and not '[]'? If it was '[]' you could've used 'sizeof(struct
-> hv_memory_hint)' in HV_MAX_GPA_PAGE_RANGES macro definition instead of
-> 'sizeof(u64)'.
->=20
-Good idea, coming in v2.
-
-- Sunil
+> > > +		if (ret) {
+> > > +			dev_err(mmc_dev(mmc), "%s: vqmmc set load failed: %d\n",
+> > > +				mmc_hostname(mmc), ret);
+> > > +			goto out;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	if (level) {
+> > > +		/* Set the IO voltage regulator to default voltage level */
+> > > +		if (msm_host->caps_0 & CORE_3_0V_SUPPORT)
+> > > +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_330;
+> > > +		else if (msm_host->caps_0 & CORE_1_8V_SUPPORT)
+> > > +			ios.signal_voltage = MMC_SIGNAL_VOLTAGE_180;
+> > > +
+> > > +		if (msm_host->caps_0 & CORE_VOLT_SUPPORT) {
+> > > +			ret = mmc_regulator_set_vqmmc(mmc, &ios);
+> > > +			if (ret < 0) {
+> > > +				dev_err(mmc_dev(mmc), "%s: vqmmc set volgate failed: %d\n",
+> > > +					mmc_hostname(mmc), ret);
+> > > +				goto out;
+> > > +			}
+> > > +		}
+> > > +		ret = regulator_enable(mmc->supply.vqmmc);
+> > > +	} else {
+> > > +		ret = regulator_disable(mmc->supply.vqmmc);
+> > > +	}
+> > > +
+> > > +	if (ret)
+> > > +		dev_err(mmc_dev(mmc), "%s: vqmm %sable failed: %d\n",
+> > > +			mmc_hostname(mmc), level ? "en":"dis", ret);
+> > > +	else
+> > > +		msm_host->vqmmc_enabled = level;
+> > > +out:
+> > > +	return ret;
+> > > +}
