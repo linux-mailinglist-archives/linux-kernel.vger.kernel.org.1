@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487CB1DE328
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963871DE322
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgEVJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S1729864AbgEVJdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729533AbgEVJdA (ORCPT
+        with ESMTP id S1729561AbgEVJdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 May 2020 05:33:00 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10DBC061A0E;
-        Fri, 22 May 2020 02:32:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34613C08C5C1;
+        Fri, 22 May 2020 02:33:00 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jc42y-0001P7-8e; Fri, 22 May 2020 11:32:56 +0200
+        id 1jc42y-0001PS-MI; Fri, 22 May 2020 11:32:56 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E7CF81C0475;
-        Fri, 22 May 2020 11:32:55 +0200 (CEST)
-Date:   Fri, 22 May 2020 09:32:55 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5D68F1C0095;
+        Fri, 22 May 2020 11:32:56 +0200 (CEST)
+Date:   Fri, 22 May 2020 09:32:56 -0000
 From:   "tip-bot2 for Balbir Singh" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/kvm: Refactor L1D flushing
+Subject: [tip: x86/mm] x86/mm: Refactor cond_ibpb() to support other use cases
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Balbir Singh <sblbir@amazon.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200510014803.12190-5-sblbir@amazon.com>
-References: <20200510014803.12190-5-sblbir@amazon.com>
+In-Reply-To: <20200510014803.12190-4-sblbir@amazon.com>
+References: <20200510014803.12190-4-sblbir@amazon.com>
 MIME-Version: 1.0
-Message-ID: <159013997582.17951.6885445528498270174.tip-bot2@tip-bot2>
+Message-ID: <159013997625.17951.11700977214065015650.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,235 +50,168 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     3f768f0032dbc0657ed7e48f4735a3c4e49e25d7
-Gitweb:        https://git.kernel.org/tip/3f768f0032dbc0657ed7e48f4735a3c4e49e25d7
+Commit-ID:     83ce56f712af79eac5f761e6b058359336803500
+Gitweb:        https://git.kernel.org/tip/83ce56f712af79eac5f761e6b058359336803500
 Author:        Balbir Singh <sblbir@amazon.com>
-AuthorDate:    Sun, 10 May 2020 11:48:01 +10:00
+AuthorDate:    Sun, 10 May 2020 11:48:00 +10:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Wed, 13 May 2020 18:12:20 +02:00
 
-x86/kvm: Refactor L1D flushing
+x86/mm: Refactor cond_ibpb() to support other use cases
 
-Move more L1D flush related code out of KVM/VMX into builtin code to allow
-reuse for L1D flushing:
+cond_ibpb() has the necessary bits required to track the previous mm in
+switch_mm_irqs_off(). This can be reused for other use cases like L1D
+flushing on context switch.
 
- - Move the initialization to l1d_flush_init_once() and remove the
-   deallocation of the L1D flush pages.
-
-   This avoids adding complex refcounting of users (VMX or tasks which
-   opt into a L1D flush on context switch) for the price of a few pages
-   potentially wasted when no users are left.
-
- - Unify the flush invocations as arch_l1d_flush() which attempts
-   hardware flushing and falls back to the software implementation
-   with the option of prepopulating the TLB entries first.
-
-[ tglx: Massage changelog and add a paranoid check of the flush pages
-  	pointer ]
+[ tglx: Moved comment, added a separate define for state (re)initialization ]
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Balbir Singh <sblbir@amazon.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200510014803.12190-5-sblbir@amazon.com
+Link: https://lkml.kernel.org/r/20200510014803.12190-4-sblbir@amazon.com
 
 ---
- arch/x86/include/asm/cacheflush.h | 12 ++---
- arch/x86/kernel/l1d_flush.c       | 68 ++++++++++++++++++++++--------
- arch/x86/kvm/vmx/vmx.c            | 20 +--------
- 3 files changed, 60 insertions(+), 40 deletions(-)
+ arch/x86/include/asm/tlbflush.h |  2 +-
+ arch/x86/mm/tlb.c               | 53 +++++++++++++++++---------------
+ 2 files changed, 30 insertions(+), 25 deletions(-)
 
-diff --git a/arch/x86/include/asm/cacheflush.h b/arch/x86/include/asm/cacheflush.h
-index 21cc3b2..851d8f1 100644
---- a/arch/x86/include/asm/cacheflush.h
-+++ b/arch/x86/include/asm/cacheflush.h
-@@ -7,11 +7,13 @@
- #include <asm/special_insns.h>
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 8c87a2e..a927d40 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -83,7 +83,7 @@ struct tlb_state {
+ 	/* Last user mm for optimizing IBPB */
+ 	union {
+ 		struct mm_struct	*last_user_mm;
+-		unsigned long		last_user_mm_ibpb;
++		unsigned long		last_user_mm_spec;
+ 	};
  
- #define L1D_CACHE_ORDER 4
+ 	u16 loaded_mm_asid;
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index cf81902..35017a0 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -43,10 +43,14 @@
+  */
+ 
+ /*
+- * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
+- * stored in cpu_tlb_state.last_user_mm_ibpb.
++ * Bits to mangle the TIF_SPEC_IB state into the mm pointer which is
++ * stored in cpu_tlb_state.last_user_mm_spec.
+  */
+ #define LAST_USER_MM_IBPB	0x1UL
++#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB)
 +
-+enum l1d_flush_options {
-+	L1D_FLUSH_POPULATE_TLB = 0x1,
-+};
-+
- void clflush_cache_range(void *addr, unsigned int size);
--void l1d_flush_populate_tlb(void *l1d_flush_pages);
--void *l1d_flush_alloc_pages(void);
--void l1d_flush_cleanup_pages(void *l1d_flush_pages);
--void l1d_flush_sw(void *l1d_flush_pages);
--int l1d_flush_hw(void);
-+int l1d_flush_init_once(void);
-+void arch_l1d_flush(enum l1d_flush_options options);
++/* Bits to set when tlbstate and flush is (re)initialized */
++#define LAST_USER_MM_INIT	LAST_USER_MM_IBPB
  
- #endif /* _ASM_X86_CACHEFLUSH_H */
-diff --git a/arch/x86/kernel/l1d_flush.c b/arch/x86/kernel/l1d_flush.c
-index 32119ee..4662f90 100644
---- a/arch/x86/kernel/l1d_flush.c
-+++ b/arch/x86/kernel/l1d_flush.c
-@@ -4,10 +4,10 @@
+ /*
+  * The x86 feature is called PCID (Process Context IDentifier). It is similar
+@@ -345,20 +349,29 @@ static void sync_current_stack_to_mm(struct mm_struct *mm)
+ 	}
+ }
  
- #include <asm/cacheflush.h>
- 
--void *l1d_flush_alloc_pages(void)
-+static void *l1d_flush_alloc_pages(void)
+-static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
++static inline unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
  {
- 	struct page *page;
--	void *l1d_flush_pages = NULL;
-+	void *flush_pages = NULL;
- 	int i;
+ 	unsigned long next_tif = task_thread_info(next)->flags;
+-	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
++	unsigned long spec_bits = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_MASK;
  
- 	/*
-@@ -17,7 +17,7 @@ void *l1d_flush_alloc_pages(void)
- 	page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
- 	if (!page)
- 		return NULL;
--	l1d_flush_pages = page_address(page);
-+	flush_pages = page_address(page);
+-	return (unsigned long)next->mm | ibpb;
++	return (unsigned long)next->mm | spec_bits;
+ }
  
+-static void cond_ibpb(struct task_struct *next)
++static void cond_mitigation(struct task_struct *next)
+ {
++	unsigned long prev_mm, next_mm;
++
+ 	if (!next || !next->mm)
+ 		return;
+ 
++	next_mm = mm_mangle_tif_spec_bits(next);
++	prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_spec);
++
  	/*
- 	 * Initialize each page with a different pattern in
-@@ -25,20 +25,13 @@ void *l1d_flush_alloc_pages(void)
- 	 * virtualization case.
++	 * Avoid user/user BTB poisoning by flushing the branch predictor
++	 * when switching between processes. This stops one process from
++	 * doing Spectre-v2 attacks on another.
++	 *
+ 	 * Both, the conditional and the always IBPB mode use the mm
+ 	 * pointer to avoid the IBPB when switching between tasks of the
+ 	 * same process. Using the mm pointer instead of mm->context.ctx_id
+@@ -368,8 +381,6 @@ static void cond_ibpb(struct task_struct *next)
+ 	 * exposed data is not really interesting.
  	 */
- 	for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
--		memset(l1d_flush_pages + i * PAGE_SIZE, i + 1,
-+		memset(flush_pages + i * PAGE_SIZE, i + 1,
- 				PAGE_SIZE);
- 	}
--	return l1d_flush_pages;
-+	return flush_pages;
- }
--EXPORT_SYMBOL_GPL(l1d_flush_alloc_pages);
- 
--void l1d_flush_cleanup_pages(void *l1d_flush_pages)
--{
--	free_pages((unsigned long)l1d_flush_pages, L1D_CACHE_ORDER);
--}
--EXPORT_SYMBOL_GPL(l1d_flush_cleanup_pages);
+ 	if (static_branch_likely(&switch_mm_cond_ibpb)) {
+-		unsigned long prev_mm, next_mm;
 -
--void l1d_flush_populate_tlb(void *l1d_flush_pages)
-+static void l1d_flush_populate_tlb(void *l1d_flush_pages)
- {
- 	int size = PAGE_SIZE << L1D_CACHE_ORDER;
- 
-@@ -56,9 +49,8 @@ void l1d_flush_populate_tlb(void *l1d_flush_pages)
- 		    [size] "r" (size)
- 		: "eax", "ebx", "ecx", "edx");
- }
--EXPORT_SYMBOL_GPL(l1d_flush_populate_tlb);
- 
--int l1d_flush_hw(void)
-+static int l1d_flush_hw(void)
- {
- 	if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
- 		wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
-@@ -66,9 +58,8 @@ int l1d_flush_hw(void)
- 	}
- 	return -ENOTSUPP;
- }
--EXPORT_SYMBOL_GPL(l1d_flush_hw);
- 
--void l1d_flush_sw(void *l1d_flush_pages)
-+static void l1d_flush_sw(void *l1d_flush_pages)
- {
- 	int size = PAGE_SIZE << L1D_CACHE_ORDER;
- 
-@@ -85,4 +76,45 @@ void l1d_flush_sw(void *l1d_flush_pages)
- 			[size] "r" (size)
- 			: "eax", "ecx");
- }
--EXPORT_SYMBOL_GPL(l1d_flush_sw);
-+
-+static void *l1d_flush_pages;
-+static DEFINE_MUTEX(l1d_flush_mutex);
-+
-+/*
-+ * Initialize and setup L1D flush once, each caller will reuse the
-+ * l1d_flush_pages for flushing, no per CPU allocations or NUMA aware
-+ * allocations at the moment.
-+ */
-+int l1d_flush_init_once(void)
-+{
-+	int ret = 0;
-+
-+	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
-+		return -ENOTSUPP;
-+
-+	if (static_cpu_has(X86_FEATURE_FLUSH_L1D) || l1d_flush_pages)
-+		return ret;
-+
-+	mutex_lock(&l1d_flush_mutex);
-+	if (!l1d_flush_pages)
-+		l1d_flush_pages = l1d_flush_alloc_pages();
-+	ret = l1d_flush_pages ? 0 : -ENOMEM;
-+	mutex_unlock(&l1d_flush_mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(l1d_flush_init_once);
-+
-+void arch_l1d_flush(enum l1d_flush_options options)
-+{
-+	if (!l1d_flush_hw())
-+		return;
-+
-+	if (WARN_ON_ONCE(!l1d_flush_pages))
-+		return;
-+
-+	if (options & L1D_FLUSH_POPULATE_TLB)
-+		l1d_flush_populate_tlb(l1d_flush_pages);
-+
-+	l1d_flush_sw(l1d_flush_pages);
-+}
-+EXPORT_SYMBOL_GPL(arch_l1d_flush);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 786d161..d489234 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -203,8 +203,6 @@ static const struct {
- 	[VMENTER_L1D_FLUSH_NOT_REQUIRED] = {"not required", false},
- };
- 
--static void *vmx_l1d_flush_pages;
+ 		/*
+ 		 * This is a bit more complex than the always mode because
+ 		 * it has to handle two cases:
+@@ -399,20 +410,14 @@ static void cond_ibpb(struct task_struct *next)
+ 		 * Optimize this with reasonably small overhead for the
+ 		 * above cases. Mangle the TIF_SPEC_IB bit into the mm
+ 		 * pointer of the incoming task which is stored in
+-		 * cpu_tlbstate.last_user_mm_ibpb for comparison.
+-		 */
+-		next_mm = mm_mangle_tif_spec_ib(next);
+-		prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_ibpb);
 -
- static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
- {
- 	if (!boot_cpu_has_bug(X86_BUG_L1TF)) {
-@@ -247,12 +245,9 @@ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
- 		l1tf = VMENTER_L1D_FLUSH_ALWAYS;
+-		/*
++		 * cpu_tlbstate.last_user_mm_spec for comparison.
++		 *
+ 		 * Issue IBPB only if the mm's are different and one or
+ 		 * both have the IBPB bit set.
+ 		 */
+ 		if (next_mm != prev_mm &&
+ 		    (next_mm | prev_mm) & LAST_USER_MM_IBPB)
+ 			indirect_branch_prediction_barrier();
+-
+-		this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, next_mm);
  	}
  
--	if (l1tf != VMENTER_L1D_FLUSH_NEVER && !vmx_l1d_flush_pages &&
--	    !boot_cpu_has(X86_FEATURE_FLUSH_L1D)) {
--		vmx_l1d_flush_pages = l1d_flush_alloc_pages();
--		if (!vmx_l1d_flush_pages)
-+	if (l1tf != VMENTER_L1D_FLUSH_NEVER)
-+		if (l1d_flush_init_once())
- 			return -ENOMEM;
--	}
- 
- 	l1tf_vmx_mitigation = l1tf;
- 
-@@ -6010,12 +6005,7 @@ static void vmx_l1d_flush(struct kvm_vcpu *vcpu)
+ 	if (static_branch_unlikely(&switch_mm_always_ibpb)) {
+@@ -421,11 +426,12 @@ static void cond_ibpb(struct task_struct *next)
+ 		 * different context than the user space task which ran
+ 		 * last on this CPU.
+ 		 */
+-		if (this_cpu_read(cpu_tlbstate.last_user_mm) != next->mm) {
++		if ((prev_mm & ~LAST_USER_MM_SPEC_MASK) !=
++					(unsigned long)next->mm)
+ 			indirect_branch_prediction_barrier();
+-			this_cpu_write(cpu_tlbstate.last_user_mm, next->mm);
+-		}
  	}
- 
- 	vcpu->stat.l1d_flush++;
--
--	if (!l1d_flush_hw())
--		return;
--
--	l1d_flush_populate_tlb(vmx_l1d_flush_pages);
--	l1d_flush_sw(vmx_l1d_flush_pages);
-+	arch_l1d_flush(L1D_FLUSH_POPULATE_TLB);
++
++	this_cpu_write(cpu_tlbstate.last_user_mm_spec, next_mm);
  }
  
- static void update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
-@@ -7983,10 +7973,6 @@ static struct kvm_x86_init_ops vmx_init_ops __initdata = {
+ #ifdef CONFIG_PERF_EVENTS
+@@ -547,11 +553,10 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 		need_flush = true;
+ 	} else {
+ 		/*
+-		 * Avoid user/user BTB poisoning by flushing the branch
+-		 * predictor when switching between processes. This stops
+-		 * one process from doing Spectre-v2 attacks on another.
++		 * Apply process to process speculation vulnerability
++		 * mitigations if applicable.
+ 		 */
+-		cond_ibpb(tsk);
++		cond_mitigation(tsk);
  
- static void vmx_cleanup_l1d_flush(void)
- {
--	if (vmx_l1d_flush_pages) {
--		l1d_flush_cleanup_pages(vmx_l1d_flush_pages);
--		vmx_l1d_flush_pages = NULL;
--	}
- 	/* Restore state so sysfs ignores VMX */
- 	l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
- }
+ 		if (IS_ENABLED(CONFIG_VMAP_STACK)) {
+ 			/*
+@@ -677,7 +682,7 @@ void initialize_tlbstate_and_flush(void)
+ 	write_cr3(build_cr3(mm->pgd, 0));
+ 
+ 	/* Reinitialize tlbstate. */
+-	this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
++	this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_INIT);
+ 	this_cpu_write(cpu_tlbstate.loaded_mm_asid, 0);
+ 	this_cpu_write(cpu_tlbstate.next_asid, 1);
+ 	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
