@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A702A1DE3C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA531DE3CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgEVKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:12:34 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:25166 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728281AbgEVKMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:12:33 -0400
-X-UUID: aa7538676fed4a19805128da08b1b442-20200522
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6VbmeS/yrB1shYHBD+b0ArTurRXYrmNDPa81/IwQ/tI=;
-        b=rORpKnmyumfflCfytKRhmTVJuOy37KS2lD8cDOBpUqY+wnPY2vyfA2ykKfT5mf2A+X1gqZnpTFpVToJy2FBBiKVq2Zo71jMj/70kcdFcwmol6zDWei2libtTVIoeHsKl3/oiu96t94bSBQVHcgHCQU2Xcm9n3I3Tzx7Ep5jP0lw=;
-X-UUID: aa7538676fed4a19805128da08b1b442-20200522
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1393466909; Fri, 22 May 2020 18:12:27 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33DR.mediatek.inc
- (172.27.6.106) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 22 May
- 2020 18:12:25 +0800
-Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Fri, 22 May 2020 18:12:24 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH] drm/mediatek: dsi: fix scrolling of panel with small hfp or hbp
-Date:   Fri, 22 May 2020 18:12:25 +0800
-Message-ID: <20200522101225.62571-1-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728801AbgEVKN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:13:56 -0400
+Received: from mail-dm6nam12on2059.outbound.protection.outlook.com ([40.107.243.59]:55008
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728396AbgEVKNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 06:13:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OgK5/HfNibtMQzBGs1ukSDOWwPGds9RFNKkU0YHUaHG+JYeUCKtPHGTH/EMmIJAfGm3a08MJksn6lVx2fbxRe/iy4FMkyUZbKS/Nvh8gby55O/n1ov2bwxOe2ZNG61zgi6H7/y+t54e/66A2JT7NT4wpgqC3EmpURAWQRdkL5h0G/9saepMD+mGaeoaLBuBG0zDUO/ok3hBKrUV0dub1hOyytOsK4NOsF/IIfQerj0EgRT85KTUccoX5lpyQ7aQCPpEL8AM4ujQhtLcuXfrWbdqy/i4xfcnZj2ZQCJy1MDOPQ5m80aMx0ofn3H4exXOpjL3RQ9emS8jIrmDACf18KA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mTKtN9Ug6mmfRFpD6K6zDwDVkPakQr9Of6JoGRC6fO8=;
+ b=jJuIcSetadZ1P2tDo+Hy6FspuaqUna5Y6BALaWglttu71838O0dX0v2lC/saOt1La8zvQ5vybb/k4pUyJkGpBAC8KVeMT4NwEjWWnymhD/SI8U2KA0+Hq0ryLGcfrDF+J944UrGweC4vjnA0P8En/X7WVej1WGCG7uNK8dr2/7UC9v4UlLUEqVH4N2uzazFPfLto4nKzCuAiMBHhcBKVNIVRKhXT5fZ6ZA9kaxTFj2zEfZMDFMn1fuR60FvnrvqRTdLovpFExrN6jyeMDWv+aHeSAgdxu/fNNiyq2Qiy5iWg8Gz9aLvuY2AdEUPUqITG3jzOO+IlphqY4ibSaNK2gQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mTKtN9Ug6mmfRFpD6K6zDwDVkPakQr9Of6JoGRC6fO8=;
+ b=NOGVi4rTKieF8MK8vorTuBpF5o0HTDf8h+5FjRBwijdnLuREBPLHCCCs1o1jG/ltxkvTMKPog0kbD1YK46Sip6VfHGr3rJUdwA5kTz1opjxGkhlEhOjGGMxMXiKDFwuKOm2JXyF3yH8ZswfNNyp6jq/YpkWenmAH5Ipn5GYADCg=
+Authentication-Results: glider.be; dkim=none (message not signed)
+ header.d=none;glider.be; dmarc=none action=none header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BYAPR03MB3750.namprd03.prod.outlook.com (2603:10b6:a03:6f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Fri, 22 May
+ 2020 10:13:51 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3021.026; Fri, 22 May 2020
+ 10:13:50 +0000
+Date:   Fri, 22 May 2020 18:12:30 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Kevin Hilman <khilman@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH v2 06/15] ARM: berlin: Drop unneeded select of HAVE_SMP
+Message-ID: <20200522181118.36de5dd9@xhacker.debian>
+In-Reply-To: <20200505150722.1575-7-geert+renesas@glider.be>
+References: <20200505150722.1575-1-geert+renesas@glider.be>
+        <20200505150722.1575-7-geert+renesas@glider.be>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR04CA0012.apcprd04.prod.outlook.com
+ (2603:1096:404:f6::24) To BYAPR03MB3573.namprd03.prod.outlook.com
+ (2603:10b6:a02:ae::15)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 9EFD99E22082E0674480556A643F1BD34B12751A45F5F49297FAC1342418AC822000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TY2PR04CA0012.apcprd04.prod.outlook.com (2603:1096:404:f6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Fri, 22 May 2020 10:13:48 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 31eda608-cc58-4b15-336b-08d7fe38d2b2
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3750:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB3750577EEDA0E9CB8B07C537EDB40@BYAPR03MB3750.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 04111BAC64
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5LviJ8V6PWnVhZAnMiDAB83WgUzIrxhu5UZV5bnjX9UYtEygsWMPYUEoV5jkT21v+SCYKEV4CLdiBFkID0l4Id/Zd7FnpCDDEp/UO+n2bQboWyNeDth+F2jiV6/DMETKA/JmGrTRvXrGMlJCJ3NVA9G7VTIbuLa+dMBNgwOiY47KiPOi/GSU3zWv02k7cPeeC4p2hOqgJS/qjh8PsNYcsv2Cbc/X/v3ilxHNXWTmUGYvZX73ZgFjGDyOE8zpV/vszZfec+QggUm8R+2qLaWBl7VxxgdKB1dKojPanGpJlrwtstbHDvauBYhHUAvW8zzkHD7LbzDGCIv21Z+A66pnQxYjryl2NOK7DgNUWorcW1oYeGhDFlNkO4aaR7QZjSvszSyXuLTglF54zZq6eC051F/g3tu06Vc8gVKjUjuQ414NTdhs6zYw2YdHITR31I76
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(366004)(136003)(376002)(346002)(316002)(7696005)(55016002)(956004)(52116002)(54906003)(6666004)(6506007)(9686003)(5660300002)(2906002)(8676002)(86362001)(8936002)(478600001)(66476007)(66946007)(186003)(66556008)(26005)(1076003)(4326008)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: LvspS/C47dCAFz9y1RYWt4dT1m7xN4O+SAJSojAW2GSEazrDsdVhLtVDTr5yopoCEfxze7GBWI6YfKVlXFHOOSQm2z5SYNEVT2iDXWmvkJK3QXxcKUtyHr5BtC5zEBW4KaFFpk52GXyHhyKu9fiYmq6kWg482BrxgXwdaK4bMO+FBDttGPD0rk6NF4LAXO9gNAi6ZKNAwNzSn3I/Grqji0vtT8eQ8qWaamB4JqTkYhYqe6EBxJe4VdIqUnbIIDD/UYVniINiiB4oGicQJWpSQZ568f2crjnqBIMPaXGoGSBkoJpcyhVKYGFwTWm8yY65cewB5OozjQjg8hnU42DEASp7lkypEQn9IhcIMNTBKlyx1ZFS7YtIYPar4Q4hPcRzeF9oEyEB+JgVwNnYjzS8aXBkD7sbNG5W6s5weO7tcvjMbV0pqE0TTWtvcMfKLL7kLiSv4oGdaMH4YZ3mzCRK/hmhZcmznQz/FXGN2Eeqruk=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31eda608-cc58-4b15-336b-08d7fe38d2b2
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2020 10:13:50.5190
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m1XsDOkAFXXwU9VvEnLOqyTMTJT6G/dC3G83N2gKAzmNqZY93db2l5MN+4ckBqoGWj6jCzaUlWBv4UMoRIfO0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3750
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SWYgcGFuZWwgaGFzIHRvbyBzbWFsbCBoZnAgb3IgaGJwLCBob3Jpem9udGFsX2Zyb250cG9yY2hf
-Ynl0ZSBvcg0KaG9yaXpvbnRhbF9iYWNrcG9yY2hfYnl0ZSBtYXkgYmVjb21lIHZlcnkgc21hbGwg
-dmFsdWUgb3IgbmVnYXRpdmUNCnZhbHVlLiBUaGlzIHBhdGNoIGFkanVzdHMgdGhlaXIgdmFsdWVz
-IHNvIHRoYXQgdGhleSBhcmUgZ3JlYXRlcg0KdGhhbiBtaW5pbXVtIHZhbHVlIGFuZCBrZWVwIHRv
-dGFsIG9mIHRoZW0gdW5jaGFuZ2VkLg0KDQpTaWduZWQtb2ZmLWJ5OiBKaXRhbyBTaGkgPGppdGFv
-LnNoaUBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rz
-aS5jIHwgMTggKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlv
-bnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMg
-Yi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQppbmRleCAwZWRlNjk4MzBhOWQu
-LmFlYmFhZmQ5MGNlYiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-ZHNpLmMNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCkBAIC0xNDgs
-NiArMTQ4LDkgQEANCiAJKHR5cGUgPT0gTUlQSV9EU0lfR0VORVJJQ19SRUFEX1JFUVVFU1RfMl9Q
-QVJBTSkgfHwgXA0KIAkodHlwZSA9PSBNSVBJX0RTSV9EQ1NfUkVBRCkpDQogDQorI2RlZmluZSBN
-SU5fSEZQX0JZVEUJCTB4MDINCisjZGVmaW5lIE1JTl9IQlBfQllURQkJMHgwMg0KKw0KIHN0cnVj
-dCBtdGtfcGh5X3RpbWluZyB7DQogCXUzMiBscHg7DQogCXUzMiBkYV9oc19wcmVwYXJlOw0KQEAg
-LTQ1MCw2ICs0NTMsNyBAQCBzdGF0aWMgdm9pZCBtdGtfZHNpX2NvbmZpZ192ZG9fdGltaW5nKHN0
-cnVjdCBtdGtfZHNpICpkc2kpDQogCXUzMiBob3Jpem9udGFsX3N5bmNfYWN0aXZlX2J5dGU7DQog
-CXUzMiBob3Jpem9udGFsX2JhY2twb3JjaF9ieXRlOw0KIAl1MzIgaG9yaXpvbnRhbF9mcm9udHBv
-cmNoX2J5dGU7DQorCXMzMiBzaWduZWRfaGZwX2J5dGUsIHNpZ25lZF9oYnBfYnl0ZTsNCiAJdTMy
-IGRzaV90bXBfYnVmX2JwcCwgZGF0YV9waHlfY3ljbGVzOw0KIAlzdHJ1Y3QgbXRrX3BoeV90aW1p
-bmcgKnRpbWluZyA9ICZkc2ktPnBoeV90aW1pbmc7DQogDQpAQCAtNTE5LDYgKzUyMywyMCBAQCBz
-dGF0aWMgdm9pZCBtdGtfZHNpX2NvbmZpZ192ZG9fdGltaW5nKHN0cnVjdCBtdGtfZHNpICpkc2kp
-DQogCQl9DQogCX0NCiANCisJc2lnbmVkX2hmcF9ieXRlID0gKHMzMilob3Jpem9udGFsX2Zyb250
-cG9yY2hfYnl0ZTsNCisJc2lnbmVkX2hicF9ieXRlID0gKHMzMilob3Jpem9udGFsX2JhY2twb3Jj
-aF9ieXRlOw0KKw0KKwlpZiAoc2lnbmVkX2hmcF9ieXRlICsgc2lnbmVkX2hicF9ieXRlIDwgTUlO
-X0hGUF9CWVRFICsgTUlOX0hCUF9CWVRFKSB7DQorCQlEUk1fV0FSTigiQ2FsY3VsYXRlZCBoZnBf
-Ynl0ZSBhbmQgaGJwX2J5dGUgYXJlIHRvbyBzbWFsbCwgIg0KKwkJCSAicGFuZWwgbWF5IG5vdCB3
-b3JrIHByb3Blcmx5LlxuIik7DQorCX0gZWxzZSBpZiAoc2lnbmVkX2hmcF9ieXRlIDwgTUlOX0hG
-UF9CWVRFKSB7DQorCQlob3Jpem9udGFsX2Zyb250cG9yY2hfYnl0ZSA9IE1JTl9IRlBfQllURTsN
-CisJCWhvcml6b250YWxfYmFja3BvcmNoX2J5dGUgLT0gTUlOX0hGUF9CWVRFIC0gc2lnbmVkX2hm
-cF9ieXRlOw0KKwl9IGVsc2UgaWYgKHNpZ25lZF9oYnBfYnl0ZSA8IE1JTl9IQlBfQllURSkgew0K
-KwkJaG9yaXpvbnRhbF9mcm9udHBvcmNoX2J5dGUgLT0gTUlOX0hCUF9CWVRFIC0gc2lnbmVkX2hi
-cF9ieXRlOw0KKwkJaG9yaXpvbnRhbF9iYWNrcG9yY2hfYnl0ZSA9IE1JTl9IQlBfQllURTsNCisJ
-fQ0KKw0KIAl3cml0ZWwoaG9yaXpvbnRhbF9zeW5jX2FjdGl2ZV9ieXRlLCBkc2ktPnJlZ3MgKyBE
-U0lfSFNBX1dDKTsNCiAJd3JpdGVsKGhvcml6b250YWxfYmFja3BvcmNoX2J5dGUsIGRzaS0+cmVn
-cyArIERTSV9IQlBfV0MpOw0KIAl3cml0ZWwoaG9yaXpvbnRhbF9mcm9udHBvcmNoX2J5dGUsIGRz
-aS0+cmVncyArIERTSV9IRlBfV0MpOw0KLS0gDQoyLjI1LjENCg==
+Hi Arnd, Kevin, Olof,
+
+On Tue,  5 May 2020 17:07:13 +0200 Geert Uytterhoeven wrote:
+
+> 
+> 
+> Support for Marvell Berlin SoCs depends on ARCH_MULTI_V7.
+> As the latter selects HAVE_SMP, there is no need for MACH_BERLIN_BG2 to
+> select HAVE_SMP.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+The patch looks good to me. I want to know what will be the mainline
+path of this series. SoC maintainers take it then send A PR to arm-soc?
+Or each SoC maintainers ack it, arm-soc will take the whole series?
+If later, then
+
+Acked-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+
+
+This is the first time I see a series touch different SoC platforms.
+
+Thanks in advance,
+Jisheng
+
+> ---
+> v2:
+>   - Add Acked-by.
+> ---
+>  arch/arm/mach-berlin/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-berlin/Kconfig b/arch/arm/mach-berlin/Kconfig
+> index 5b1f61fd78780300..01861fa72c9714b7 100644
+> --- a/arch/arm/mach-berlin/Kconfig
+> +++ b/arch/arm/mach-berlin/Kconfig
+> @@ -19,7 +19,6 @@ config MACH_BERLIN_BG2
+>         select CPU_PJ4B
+>         select HAVE_ARM_SCU if SMP
+>         select HAVE_ARM_TWD if SMP
+> -       select HAVE_SMP
+>         select PINCTRL_BERLIN_BG2
+> 
+>  config MACH_BERLIN_BG2CD
+> --
+> 2.17.1
+> 
 
