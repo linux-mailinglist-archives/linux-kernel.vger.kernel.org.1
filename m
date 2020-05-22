@@ -2,96 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69B31DED5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32C11DED62
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730510AbgEVQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 12:36:09 -0400
-Received: from smtprelay0061.hostedemail.com ([216.40.44.61]:54824 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726762AbgEVQgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 12:36:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E613418028231;
-        Fri, 22 May 2020 16:36:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4031:4321:4419:5007:6119:7514:8909:8957:10007:10400:10848:11026:11232:11658:11914:12043:12296:12297:12555:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21324:21451:21611:21627:21740:21939:30012:30020:30029:30054:30056:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: pan16_100eb4426d28
-X-Filterd-Recvd-Size: 3024
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 22 May 2020 16:36:06 +0000 (UTC)
-Message-ID: <6ab4139ec78928961a19e5fdbda139bb8cff9cb5.camel@perches.com>
-Subject: Re: [PATCH] taging: speakup: remove volatile
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        MugilRaj <dmugil2000@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Kirk Reiser <kirk@reisers.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Chris Brannon <chris@the-brannons.com>
-Date:   Fri, 22 May 2020 09:36:05 -0700
-In-Reply-To: <20200522103406.GK30374@kadam>
-References: <1590138989-6091-1-git-send-email-dmugil2000@gmail.com>
-         <20200522103406.GK30374@kadam>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1730544AbgEVQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 12:37:18 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10483 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729040AbgEVQhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 12:37:17 -0400
+IronPort-SDR: 1QtKuzXxy09gjlss3IrGdLLb8GCyZSlFpWrR0I3rvOBijZmSoBCNwKJ2wJL2ONhMdVDOFybskA
+ 7bz7gIStYOZQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 09:37:16 -0700
+IronPort-SDR: JEidF67PYSgBq5aX5xATp9ya5JSrCiRO+JzkEuIQOb6UmY6yIawRJ1h3RwT9Xv4uv4rOtOTBEX
+ sbadxAt4klzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,422,1583222400"; 
+   d="scan'208";a="300722038"
+Received: from omillerx-mobl.ger.corp.intel.com (HELO localhost) ([10.249.43.59])
+  by fmsmga002.fm.intel.com with ESMTP; 22 May 2020 09:37:12 -0700
+Date:   Fri, 22 May 2020 19:37:14 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Nikita Sobolev <Nikita.Sobolev@synopsys.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Tadeusz Struk <tadeusz.struk@intel.com>,
+        Joey Pabalinas <joeypabalinas@gmail.com>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH v3] Kernel selftests: Add check if TPM devices are
+ supported
+Message-ID: <20200522163714.GA10319@linux.intel.com>
+References: <20200521144344.1886-1-Nikita.Sobolev@synopsys.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521144344.1886-1-Nikita.Sobolev@synopsys.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-22 at 13:34 +0300, Dan Carpenter wrote:
-> On Fri, May 22, 2020 at 02:46:28PM +0530, MugilRaj wrote:
-> > fix checkpatch.pl warning, which is Use of volatile is usually wrong: see
-> > Documentation/process/volatile-considered-harmful.rst
-> > Signed-off-by: MugilRaj <dmugil2000@gmail.com>
+On Thu, May 21, 2020 at 05:43:44PM +0300, Nikita Sobolev wrote:
+> TPM2 tests set uses /dev/tpm0 and /dev/tpmrm0 without check if they
+> are available. In case, when these devices are not available test
+> fails, but expected behaviour is skipped test.
 > 
-> Please put a blank before the Signed-off-by line.
-> 
-> Probably there should be a space between your first and last name.  It's
-> supposed to your legal name like for signing a legal document so use
-> whatever is appropriate legal documents in your country.
-> 
-> Also the Documentation/process/volatile-considered-harmful.rst explains
-> that people often use "volatile" when they should be using locking for
-> synchronization.  That seems to be the case here.  So the correct fix is
-> to add locking.  That's a little bit complicated to do and requires
-> testing.
-> 
-> If we apply this patch, then we have silenced the warning so now someone
-> will have to look for the bug.  But if we leave it as-is, then everyone
-> will know that the code is buggy.  So let's leave it as-is until we are
-> able to fix the bug.
-> 
-> It's always better to have easy to find bugs, than hidden bugs.
+> Signed-off-by: Nikita Sobolev <Nikita.Sobolev@synopsys.com>
 
-And better still to comment known opportunities to
-improve the code so the next time someone tries to
-remove this volatile, there's a comment right there
-showing what's necessary instead.
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-Something like:
----
- drivers/staging/speakup/speakup_decext.c | 1 +
- 1 file changed, 1 insertion(+)
+Thank you.
 
-diff --git a/drivers/staging/speakup/speakup_decext.c b/drivers/staging/speakup/speakup_decext.c
-index 7408eb29cf38..e68e6046bb51 100644
---- a/drivers/staging/speakup/speakup_decext.c
-+++ b/drivers/staging/speakup/speakup_decext.c
-@@ -21,6 +21,7 @@
- #define SYNTH_CLEAR 0x03
- #define PROCSPEECH 0x0b
- 
-+/* TODO: Remove volatile, maybe add locks to read_buff_add and synth_full() ? */
- static volatile unsigned char last_char;
- 
- static void read_buff_add(u_char ch)
-
-
+/Jarkko
