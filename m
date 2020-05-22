@@ -2,208 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C39D1DF0C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2F21DF0CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbgEVUsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 16:48:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63292 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730946AbgEVUsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 16:48:13 -0400
-IronPort-SDR: wNKDgk572ASTUH0LmHEC37RsItpc7n/YK2pzzgc0E6OJKL7GmjusKm5M4tbUvMVXs16LHPSsFN
- SljG2Z4pnwmA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 13:48:13 -0700
-IronPort-SDR: Ozv8PEYBc6FfaoH9pI8tRE/Fw0hJ/UKChA6fBQHuVwIR4CsO+A31lXcVoHHrVyHLQ9nfsTivVH
- GXHKeOiNKsUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,423,1583222400"; 
-   d="scan'208";a="412866418"
-Received: from mpritz-mobl.amr.corp.intel.com (HELO [10.254.66.178]) ([10.254.66.178])
-  by orsmga004.jf.intel.com with ESMTP; 22 May 2020 13:48:12 -0700
-Subject: Re: [PATCH v3 0/2] PCI/ERR: Allow Native AER/DPC using _OSC
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Derrick, Jonathan" <jonathan.derrick@intel.com>
-Cc:     "Patel, Mayurkumar" <mayurkumar.patel@intel.com>,
-        "rajatja@google.com" <rajatja@google.com>,
-        "fred@fredlawl.com" <fred@fredlawl.com>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "sbobroff@linux.ibm.com" <sbobroff@linux.ibm.com>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-References: <20200522194616.GA11359@bjorn-Precision-5520>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <05605bef-31f1-7a5f-5078-e4eced6d36ff@linux.intel.com>
-Date:   Fri, 22 May 2020 13:48:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1731054AbgEVUvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 16:51:24 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38122 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731014AbgEVUvX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 16:51:23 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04MKlmDM073415;
+        Fri, 22 May 2020 20:51:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=drP7/HHoal0yXG4Fpu0/xgdYChPYTHuRmSqtgjprTvQ=;
+ b=Tdi/I60EHV+DKN5+Oox6KP0EQZ+C+04CsCribEF/6SS6x5W2ghIyX/B6p0y3SiJLVwqj
+ 9l4uzYx+6/LmxX+YN9vlmJx+mBjb1Vv4oJ9i8Au8tu5FOjarTt6xeobafltGrsVOBq+x
+ CBHACvk8kCoWNCBvk19O5V9eidfAdurCEEUeLCR0qowPSh7/v3xPW2UxlosHhKcSuE3N
+ Ys3lRcnpPG6JV1vpAxclSXrO2JSK91N2zUEb49d6cLTE43WHaNOYSCummJmdKrFRl4BV
+ pmE/qCTuCeGNw0eIkD6WS35lRY9NJiZWioPm80kkzt/CIadwroUchgZpQqYV+3VFhXdQ Bg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 31501rp8tq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 22 May 2020 20:51:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04MKmkVe113470;
+        Fri, 22 May 2020 20:51:19 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 313gj84wbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 May 2020 20:51:19 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04MKpI6S012489;
+        Fri, 22 May 2020 20:51:18 GMT
+Received: from localhost (/10.159.153.228)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 22 May 2020 13:51:17 -0700
+Date:   Fri, 22 May 2020 13:51:16 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dave Airlie <airlied@gmail.com>, Dave Chinner <david@fromorbit.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        xfs <linux-xfs@vger.kernel.org>
+Subject: Re: lockdep trace with xfs + mm in it from 5.7.0-rc5
+Message-ID: <20200522205116.GD8230@magnolia>
+References: <CAPM=9tyy5vubggbcj32bGpA_h6yDaBNM3QeJPySTzci-etfBZw@mail.gmail.com>
+ <20200521231312.GJ17635@magnolia>
+ <20200522003027.GC2040@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <20200522194616.GA11359@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522003027.GC2040@dread.disaster.area>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9629 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 bulkscore=0 suspectscore=1 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005220161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9629 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 clxscore=1015 priorityscore=1501 cotscore=-2147483648
+ impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2005220161
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn, Derrick,
+OTOH, it didn't take that long to whip up a patch.
 
-On 5/22/20 12:46 PM, Bjorn Helgaas wrote:
-> On Fri, May 22, 2020 at 05:23:31PM +0000, Derrick, Jonathan wrote:
->> On Fri, 2020-05-01 at 11:35 -0600, Jonathan Derrick wrote:
->>> On Fri, 2020-05-01 at 12:16 -0500, Bjorn Helgaas wrote:
->>>> On Thu, Apr 30, 2020 at 12:46:07PM -0600, Jon Derrick wrote:
->>>>> Hi Bjorn & Kuppuswamy,
->>>>>
->>>>> I see a problem in the DPC ECN [1] to _OSC in that it doesn't
->>>>> give us a way to determine if firmware supports _OSC DPC
->>>>> negotation, and therefore how to handle DPC.
->>>>>
->>>>> Here is the wording of the ECN that implies that Firmware
->>>>> without _OSC DPC negotiation support should have the OSPM rely
->>>>> on _OSC AER negotiation when determining DPC control:
->>>>>
->>>>>    PCIe Base Specification suggests that Downstream Port
->>>>>    Containment may be controlled either by the Firmware or the
->>>>>    Operating System. It also suggests that the Firmware retain
->>>>>    ownership of Downstream Port Containment if it also owns
->>>>>    AER. When the Firmware owns Downstream Port Containment, it
->>>>>    is expected to use the new "Error Disconnect Recover"
->>>>>    notification to alert OSPM of a Downstream Port Containment
->>>>>    event.
->>>>>
->>>>> In legacy platforms, as bits in _OSC are reserved prior to
->>>>> implementation, ACPI Root Bus enumeration will mark these Host
->>>>> Bridges as without Native DPC support, even though the
->>>>> specification implies it's expected that AER _OSC negotiation
->>>>> determines DPC control for these platforms. There seems to be
->>>>> a need for a way to determine if the DPC control bit in _OSC
->>>>> is supported and fallback on AER otherwise.
->>>>>
->>>>>
->>>>> Currently portdrv assumes DPC control if the port has Native
->>>>> AER services:
->>>>>
->>>>> static int get_port_device_capability(struct pci_dev *dev)
->>>>> ...
->>>>> 	if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
->>>>> 	    pci_aer_available() &&
->>>>> 	    (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
->>>>> 		services |= PCIE_PORT_SERVICE_DPC;
->>>>>
->>>>> Newer firmware may not grant OSPM DPC control, if for
->>>>> instance, it expects to use Error Disconnect Recovery. However
->>>>> it looks like ACPI will use DPC services via the EDR driver,
->>>>> without binding the full DPC port service driver.
->>>>>
->>>>>
->>>>> If we change portdrv to probe based on host->native_dpc and
->>>>> not AER, then we break instances with legacy firmware where
->>>>> OSPM will clear host->native_dpc solely due to _OSC bits being
->>>>> reserved:
->>>>>
->>>>> struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->>>>> ...
->>>>> 	if (!(root->osc_control_set & OSC_PCI_EXPRESS_DPC_CONTROL))
->>>>> 		host_bridge->native_dpc = 0;
->>>>>
->>>>>
->>>>>
->>>>> So my assumption instead is that host->native_dpc can be 0 and
->>>>> expect Native DPC services if AER is used. In other words, if
->>>>> and only if DPC probe is invoked from portdrv, then it needs
->>>>> to rely on the AER dependency. Otherwise it should be assumed
->>>>> that ACPI set up DPC via EDR. This covers legacy firmware.
->>>>>
->>>>> However it seems like that could be trouble with newer
->>>>> firmware that might give OSPM control of AER but not DPC, and
->>>>> would result in both Native DPC and EDR being in effect.
->>>>>
->>>>>
->>>>> Anyways here are two patches that give control of AER and DPC
->>>>> on the results of _OSC. They don't mess with the HEST parser
->>>>> as I expect those to be removed at some point. I need these
->>>>> for VMD support which doesn't even rely on _OSC, but I suspect
->>>>> this won't be the last effort as we detangle Firmware First.
->>>>>
->>>>> [1] https://members.pcisig.com/wg/PCI-SIG/document/12888
->>>>
->>>> Hi Jon, I think we need to sort out the _OSC/FIRMWARE_FIRST patches
->>>> from Alex and Sathy first, then see what needs to be done on top of
->>>> those, so I'm going to push these off for a few days and they'll
->>>> probably need a refresh.
->>>>
->>>> Bjorn
->>>
->>> Agreed, no need to merge now. Just wanted to bring up the DPC
->>> ambiguity, which I think was first addressed by dpc-native:
->>>
->>> commit 35a0b2378c199d4f26e458b2ca38ea56aaf2d9b8
->>> Author: Olof Johansson <olof@lixom.net>
->>> Date:   Wed Oct 23 12:22:05 2019 -0700
->>>
->>>      PCI/DPC: Add "pcie_ports=dpc-native" to allow DPC without AER control
->>>      
->>>      Prior to eed85ff4c0da7 ("PCI/DPC: Enable DPC only if AER is available"),
->>>      Linux handled DPC events regardless of whether firmware had granted it
->>>      ownership of AER or DPC, e.g., via _OSC.
->>>      
->>>      PCIe r5.0, sec 6.2.10, recommends that the OS link control of DPC to
->>>      control of AER, so after eed85ff4c0da7, Linux handles DPC events only if it
->>>      has control of AER.
->>>      
->>>      On platforms that do not grant OS control of AER via _OSC, Linux DPC
->>>      handling worked before eed85ff4c0da7 but not after.
->>>      
->>>      To make Linux DPC handling work on those platforms the same way they did
->>>      before, add a "pcie_ports=dpc-native" kernel parameter that makes Linux
->>>      handle DPC events regardless of whether it has control of AER.
->>>      
->>>      [bhelgaas: commit log, move pcie_ports_dpc_native to drivers/pci/]
->>>      Link: https://lore.kernel.org/r/20191023192205.97024-1-olof@lixom.net
->>>      Signed-off-by: Olof Johansson <olof@lixom.net>
->>>      Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->>
->> Are you still thinking about removing the HEST parser?
->>
->> For VMD we still need the ability to bind DPC if native_dpc==1.
->> I think if we can do that, this set should still pretty much still
->> apply with a modification to patch 2 to allow matching
->> pcie_ports_dpc_native in dpc_probe.
+Dave, does this fix your problem?
+
+--D
+---
+xfs: more lockdep whackamole with kmem_alloc*
+
+Dave Airlie reported the following lockdep complaint:
+
+>  ======================================================
+>  WARNING: possible circular locking dependency detected
+>  5.7.0-0.rc5.20200515git1ae7efb38854.1.fc33.x86_64 #1 Not tainted
+>  ------------------------------------------------------
+>  kswapd0/159 is trying to acquire lock:
+>  ffff9b38d01a4470 (&xfs_nondir_ilock_class){++++}-{3:3},
+>  at: xfs_ilock+0xde/0x2c0 [xfs]
 > 
-> Yes, I think we should remove the HEST firmware-first parsing, because
-> IIRC the spec really doesn't specify any action the OS should take
-> based on it.  I was thinking Sathy might update the patch, and it fell
-> off my radar.
-
-Sorry for the delay.
-
-I was just waiting to see whether we get any issues with merging
-following commit.
-
-commit c100beb9ccfb98e2474586a4006483cbf770c823
-Author: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Date:   Mon Apr 27 18:25:13 2020 -0500
-
-     PCI/AER: Use only _OSC to determine AER ownership
-
-Since I did not see any email reporting any issues about it,
-I will work on follow up patch.
-
+>  but task is already holding lock:
+>  ffffffffbbb8bd00 (fs_reclaim){+.+.}-{0:0}, at:
+>  __fs_reclaim_acquire+0x5/0x30
 > 
-> Bjorn
+>  which lock already depends on the new lock.
 > 
+> 
+>  the existing dependency chain (in reverse order) is:
+> 
+>  -> #1 (fs_reclaim){+.+.}-{0:0}:
+>         fs_reclaim_acquire+0x34/0x40
+>         __kmalloc+0x4f/0x270
+>         kmem_alloc+0x93/0x1d0 [xfs]
+>         kmem_alloc_large+0x4c/0x130 [xfs]
+>         xfs_attr_copy_value+0x74/0xa0 [xfs]
+>         xfs_attr_get+0x9d/0xc0 [xfs]
+>         xfs_get_acl+0xb6/0x200 [xfs]
+>         get_acl+0x81/0x160
+>         posix_acl_xattr_get+0x3f/0xd0
+>         vfs_getxattr+0x148/0x170
+>         getxattr+0xa7/0x240
+>         path_getxattr+0x52/0x80
+>         do_syscall_64+0x5c/0xa0
+>         entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> 
+>  -> #0 (&xfs_nondir_ilock_class){++++}-{3:3}:
+>         __lock_acquire+0x1257/0x20d0
+>         lock_acquire+0xb0/0x310
+>         down_write_nested+0x49/0x120
+>         xfs_ilock+0xde/0x2c0 [xfs]
+>         xfs_reclaim_inode+0x3f/0x400 [xfs]
+>         xfs_reclaim_inodes_ag+0x20b/0x410 [xfs]
+>         xfs_reclaim_inodes_nr+0x31/0x40 [xfs]
+>         super_cache_scan+0x190/0x1e0
+>         do_shrink_slab+0x184/0x420
+>         shrink_slab+0x182/0x290
+>         shrink_node+0x174/0x680
+>         balance_pgdat+0x2d0/0x5f0
+>         kswapd+0x21f/0x510
+>         kthread+0x131/0x150
+>         ret_from_fork+0x3a/0x50
+> 
+>  other info that might help us debug this:
+> 
+>   Possible unsafe locking scenario:
+> 
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(fs_reclaim);
+>                                 lock(&xfs_nondir_ilock_class);
+>                                 lock(fs_reclaim);
+>    lock(&xfs_nondir_ilock_class);
+> 
+>   *** DEADLOCK ***
+> 
+>  4 locks held by kswapd0/159:
+>   #0: ffffffffbbb8bd00 (fs_reclaim){+.+.}-{0:0}, at:
+>  __fs_reclaim_acquire+0x5/0x30
+>   #1: ffffffffbbb7cef8 (shrinker_rwsem){++++}-{3:3}, at:
+>  shrink_slab+0x115/0x290
+>   #2: ffff9b39f07a50e8
+>  (&type->s_umount_key#56){++++}-{3:3}, at: super_cache_scan+0x38/0x1e0
+>   #3: ffff9b39f077f258
+>  (&pag->pag_ici_reclaim_lock){+.+.}-{3:3}, at:
+>  xfs_reclaim_inodes_ag+0x82/0x410 [xfs]
+
+This is a known false positive because inodes cannot simultaneously be
+getting reclaimed and the target of a getxattr operation, but lockdep
+doesn't know that.  We can (selectively) shut up lockdep until either
+it gets smarter or we change inode reclaim not to require the ILOCK by
+applying a stupid GFP_NOLOCKDEP bandaid.
+
+Reported-by: Dave Airlie <airlied@gmail.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+---
+ fs/xfs/kmem.h                 |    6 +++++-
+ fs/xfs/libxfs/xfs_attr_leaf.c |    2 +-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+index 6143117770e9..11623489b769 100644
+--- a/fs/xfs/kmem.h
++++ b/fs/xfs/kmem.h
+@@ -19,6 +19,7 @@ typedef unsigned __bitwise xfs_km_flags_t;
+ #define KM_NOFS		((__force xfs_km_flags_t)0x0004u)
+ #define KM_MAYFAIL	((__force xfs_km_flags_t)0x0008u)
+ #define KM_ZERO		((__force xfs_km_flags_t)0x0010u)
++#define KM_NOLOCKDEP	((__force xfs_km_flags_t)0x0020u)
+ 
+ /*
+  * We use a special process flag to avoid recursive callbacks into
+@@ -30,7 +31,7 @@ kmem_flags_convert(xfs_km_flags_t flags)
+ {
+ 	gfp_t	lflags;
+ 
+-	BUG_ON(flags & ~(KM_NOFS|KM_MAYFAIL|KM_ZERO));
++	BUG_ON(flags & ~(KM_NOFS | KM_MAYFAIL | KM_ZERO | KM_NOLOCKDEP));
+ 
+ 	lflags = GFP_KERNEL | __GFP_NOWARN;
+ 	if (flags & KM_NOFS)
+@@ -49,6 +50,9 @@ kmem_flags_convert(xfs_km_flags_t flags)
+ 	if (flags & KM_ZERO)
+ 		lflags |= __GFP_ZERO;
+ 
++	if (flags & KM_NOLOCKDEP)
++		lflags |= __GFP_NOLOCKDEP;
++
+ 	return lflags;
+ }
+ 
+diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
+index 224462b8bf08..55e184722b81 100644
+--- a/fs/xfs/libxfs/xfs_attr_leaf.c
++++ b/fs/xfs/libxfs/xfs_attr_leaf.c
+@@ -489,7 +489,7 @@ xfs_attr_copy_value(
+ 	}
+ 
+ 	if (!args->value) {
+-		args->value = kmem_alloc_large(valuelen, 0);
++		args->value = kmem_alloc_large(valuelen, KM_NOLOCKDEP);
+ 		if (!args->value)
+ 			return -ENOMEM;
+ 	}
