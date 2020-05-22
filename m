@@ -2,81 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE481DF1CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EEC1DF1DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731166AbgEVWZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 18:25:56 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37051 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731122AbgEVWZz (ORCPT
+        id S1731162AbgEVWaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 18:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731130AbgEVWap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 18:25:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590186354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RE13U10VZKBg+i9d80FBqzbnGRh0EIeAg1GDlPx5sdM=;
-        b=Om0I0XPAi+ZPAtTMbjsOpsygYXZ2xovnR7V/kOIs7j8f+z3p7+IpeT9sBbTVJAMGW6318j
-        9LIchdcGB2x2RcyiAXjsx0jQ/Q8Y/4dWew8U1eYfzGtlvc6in7YJcROmXNrpCaqPgyHQxA
-        0VVYnWwv3FbtBCZl+8+2VjrbkDHgal0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-6-QiEK-lMru0oEIMPGdXPw-1; Fri, 22 May 2020 18:25:52 -0400
-X-MC-Unique: 6-QiEK-lMru0oEIMPGdXPw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 189C88005AA;
-        Fri, 22 May 2020 22:25:51 +0000 (UTC)
-Received: from x1.home (ovpn-114-203.phx2.redhat.com [10.3.114.203])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9894F1059138;
-        Fri, 22 May 2020 22:25:47 +0000 (UTC)
-Date:   Fri, 22 May 2020 16:25:45 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, jgg@ziepe.ca, peterx@redhat.com
-Subject: Re: [PATCH v3 0/3] vfio-pci: Block user access to disabled device
- MMIO
-Message-ID: <20200522162545.28bb7db4@x1.home>
-In-Reply-To: <20200522220858.GE1337@Qians-MacBook-Air.local>
-References: <159017449210.18853.15037950701494323009.stgit@gimli.home>
-        <20200522220858.GE1337@Qians-MacBook-Air.local>
-Organization: Red Hat
+        Fri, 22 May 2020 18:30:45 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E62CC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:30:45 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id n11so6835590qkn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 15:30:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+SSfZ9IdBClHLXK3pfg1yXkNX5wz/8jpNFyfhF/pEsw=;
+        b=MtLePMPE37iKUqsdbm0WI0hZpMobQwNowF1YqzxZnkYGg8jCoFbmpzz0//yIRCnLGN
+         w46JzPzlw6YLUbAFhFo3jYibwkOrEugtULj1tlH7wBQjj/NoLByH3rRDMOhpf4QCu2OC
+         7vZXitKqyXM/mbgU713y0LHxjS4tP93m47sM+O6mfGxVs/2uyN9A2Ag1pVMtPZjy+lXY
+         jJ/z2rxdpJI7w0vjRkHx03Qav8Pi1+S2eNs84TeqOaWV90KpnNUapsPnmu7bsV++CVgR
+         bWGaiVyay3ePM2ReDShlAmJb6wnY5Og1MZXP0CKM0vAoYvJDIG5AYA7ZS7UfkSu/uhCf
+         ppqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+SSfZ9IdBClHLXK3pfg1yXkNX5wz/8jpNFyfhF/pEsw=;
+        b=lQUt4+FnSu9RQSUxFETX2Bt1gBKQUHErBmcvlJesVxZj2KjIz/2RPef/73xO0zRdpU
+         ElP1uFyaO0J/KbFidPBy9jmr+TKQBGP7EbxR+nfPT54ePr0q4cI0Vz18INbw+guQ+Wka
+         FXTMJkXrQ9u85nU+PJ+jEkUk/UDsPEZYDhcfrA8lTheCh5WxPf2NtqY1aGbZkgSI2LUb
+         8NLHUX+P6Q0OtmUbclQrbmtS9uAXTu+D7OnvQ3lUN8mIJr+HRroXgsDbplFTkRuZWzko
+         QKAZ03hHvUN1gFLQWTfE1C6VKwAppMXum2htWgL9rSKk+NdJaBemTpKIswij32TN1imB
+         gjRQ==
+X-Gm-Message-State: AOAM531dCAtCl6vAABiY91TFon7JFOVhZBdVeHoVqXptQL89HULVwrVv
+        /7h61q4PL28SAdsH5JLYbBiaNg==
+X-Google-Smtp-Source: ABdhPJzAnLLFpegQtoCoMHFW91a6ZzaBMIso6a0e2wpumt9qbPxo0WGAnu7uCpmn8mWsPKd33gg68Q==
+X-Received: by 2002:a37:b3c7:: with SMTP id c190mr16615709qkf.466.1590186644182;
+        Fri, 22 May 2020 15:30:44 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id l184sm8416876qkf.84.2020.05.22.15.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 15:30:43 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedreno.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/msm/a6xx: skip HFI set freq if GMU is powered down
+Date:   Fri, 22 May 2020 18:29:08 -0400
+Message-Id: <20200522222909.27260-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200522221159.GA20960@jcrouse1-lnx.qualcomm.com>
+References: <20200522221159.GA20960@jcrouse1-lnx.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 May 2020 18:08:58 -0400
-Qian Cai <cai@lca.pw> wrote:
+Also skip the newly added HFI set freq path if the GMU is powered down,
+which was missing because of patches crossing paths.
 
-> On Fri, May 22, 2020 at 01:17:09PM -0600, Alex Williamson wrote:
-> > v3:
-> > 
-> > The memory_lock semaphore is only held in the MSI-X path for callouts
-> > to functions that may access MSI-X MMIO space of the device, this
-> > should resolve the circular locking dependency reported by Qian
-> > (re-testing very much appreciated).  I've also incorporated the
-> > pci_map_rom() and pci_unmap_rom() calls under the memory_lock.  Commit
-> > 0cfd027be1d6 ("vfio_pci: Enable memory accesses before calling
-> > pci_map_rom") made sure memory was enabled on the info path, but did
-> > not provide locking to protect that state.  The r/w path of the BAR
-> > access is expanded to include ROM mapping/unmapping.  Unless there
-> > are objections, I'll plan to drop v2 from my next branch and replace
-> > it with this.  Thanks,  
-> 
-> FYI, the lockdep warning is gone.
-> 
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Thank you for testing!
-
-Alex
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 67c58345b26a..9851367a88cd 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -110,13 +110,6 @@ static void __a6xx_gmu_set_freq(struct a6xx_gmu *gmu, int index)
+ 	struct msm_gpu *gpu = &adreno_gpu->base;
+ 	int ret;
+ 
+-	/*
+-	 * This can get called from devfreq while the hardware is idle. Don't
+-	 * bring up the power if it isn't already active
+-	 */
+-	if (pm_runtime_get_if_in_use(gmu->dev) == 0)
+-		return;
+-
+ 	gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+ 
+ 	gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
+@@ -141,7 +134,6 @@ static void __a6xx_gmu_set_freq(struct a6xx_gmu *gmu, int index)
+ 	 * for now leave it at max so that the performance is nominal.
+ 	 */
+ 	icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
+-	pm_runtime_put(gmu->dev);
+ }
+ 
+ void a6xx_gmu_set_freq(struct msm_gpu *gpu, unsigned long freq)
+@@ -159,13 +151,21 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, unsigned long freq)
+ 			break;
+ 
+ 	gmu->current_perf_index = perf_index;
++	gmu->freq = gmu->gpu_freqs[perf_index];
++
++	/*
++	 * This can get called from devfreq while the hardware is idle. Don't
++	 * bring up the power if it isn't already active
++	 */
++	if (pm_runtime_get_if_in_use(gmu->dev) == 0)
++		return;
+ 
+ 	if (gmu->legacy)
+ 		__a6xx_gmu_set_freq(gmu, perf_index);
+ 	else
+ 		a6xx_hfi_set_freq(gmu, perf_index);
+ 
+-	gmu->freq = gmu->gpu_freqs[perf_index];
++	pm_runtime_put(gmu->dev);
+ }
+ 
+ unsigned long a6xx_gmu_get_freq(struct msm_gpu *gpu)
+-- 
+2.26.1
 
