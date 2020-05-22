@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6021DEEAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FD21DEEB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgEVRze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730741AbgEVRzd (ORCPT
+        id S1730867AbgEVR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:57:45 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:51062 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730702AbgEVR5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:55:33 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C572AC05BD43
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:55:32 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id s21so14009542ejd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g7+ZinecQk+vU2tx3USRyzTX9hWXqwnrfU8Z0ao5NFs=;
-        b=RM1/oCRXDo9ryPT24QfNPtGbMQpFbyhAtGPByRCCCkRsAIqdrbBXgtD+Xp5SO5xHVD
-         Y5nW0iZ21Q903SnBry33l1LxeDFngn3uirbmpxBPPre74pAl3PQlkFV/9PLuVlTtF12n
-         59lPUphICio+7TuzrBBJrxD5HeyV9gmylFGU8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g7+ZinecQk+vU2tx3USRyzTX9hWXqwnrfU8Z0ao5NFs=;
-        b=riXQxIfb76nWs5hQtgR37UUDWeSxIia5BF3Ad9EEz7lSPUfzttqvBbkc/3urvlJlLz
-         CregeJIHLTQqWVpEbyzTrAa02FJraDcfuuGYADP9N8i9QiD9JnP3+pkCAJglG9KBjE9u
-         Dadpz9GP3+MSvOjsPYJahc4Of7cV+m8tObNMMoZeN3eClRGOUjfDDt1HSDWETYulw6C+
-         sQShXb2z/C1smS0xsRcjS5cDfMHrzSynATtbnWPFGfER28qJPgjmjeDoY6h/lboAFE3s
-         bgocW9KEkENTKtoXT+QFuNlFq5gN0C1fkErEk0cQHJ01hECAbTo1GeQf5ADmnyqfHd5T
-         +ryQ==
-X-Gm-Message-State: AOAM532zi/dnqjYm5amDW3k1SfjUB7HLScV0rFSwy4YwvxRg/tryUCDa
-        9VBr3tvu/A/WmklP/cS6Piv0YDJdZaKWUpmlvfLRMA==
-X-Google-Smtp-Source: ABdhPJz/m46fpJfBvIY7sjEMmScn7M1dEiRH6YRxpET3JjeVNzQT8FxrHABIFR2TSp9Tpc7jFZXMsMl+UXhXNGe1F4U=
-X-Received: by 2002:a17:906:9404:: with SMTP id q4mr9055108ejx.138.1590170131063;
- Fri, 22 May 2020 10:55:31 -0700 (PDT)
+        Fri, 22 May 2020 13:57:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SbtXz2KxBEXJVwWCF/dhZtyuKKpK8ni/j8x+ZnTXLmE=; b=ApUZGocY6403LXIv55sOILFDLz
+        QEwHOlCRYKGJhB2DMRy9u3VcZwuGKDP0A7WbFtzpkFZ7tbszOrwkCarkm6Dh7IOSgVxtfuObQC4Dc
+        igBILVPcuqfBXx3+bguBI4DSTIYwGQ6TB4QF/x1CmedC/kZFZAq+ZkHK5FadjqF7wfaUhYJOb8gf6
+        Md4HSkDXgm43Tyg+uHvuXP6dhIMOZoFfMKGrUR0JT+gGni0BLL6Kq+8ScT9POYTu47ENOWT8FSDnO
+        nWUFALAJXnYyqtdDGvtI73CqG0AURZQoo1YSQP0bALlE/tbtZoZouJc7iZvnDncZ/rlWpDBfcZaZp
+        7Mn2VXOQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jcBsv-00083d-8x; Fri, 22 May 2020 17:55:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBD14305EEE;
+        Fri, 22 May 2020 19:55:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9B78A20B5D17E; Fri, 22 May 2020 19:55:03 +0200 (CEST)
+Date:   Fri, 22 May 2020 19:55:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 07/25] lockdep: Add preemption disabled assertion API
+Message-ID: <20200522175503.GQ325280@hirez.programming.kicks-ass.net>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-8-a.darwish@linutronix.de>
 MIME-Version: 1.0
-References: <20200515234005.32370-1-sargun@sargun.me> <87h7wc4zac.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87h7wc4zac.fsf@x220.int.ebiederm.org>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Fri, 22 May 2020 10:54:55 -0700
-Message-ID: <CAMp4zn_v-D=gyzdWO7D2KrdZ_vct87dV_0pM5HVNE_3zDG7k8Q@mail.gmail.com>
-Subject: Re: [PATCH] seccomp: Add group_leader pid to seccomp_notif
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Kees Cook <keescook@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200519214547.352050-8-a.darwish@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 4:11 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Sargun Dhillon <sargun@sargun.me> writes:
->
-> > This includes the thread group leader ID in the seccomp_notif. This is
-> > immediately useful for opening up a pidfd for the group leader, as
-> > pidfds only work on group leaders.
->
-> The code looks fine (except for the name of the test), but can you
-> please talk and think about this as something other than the
-> group leader?
->
-> The initial thread in a thread group can die, and the tgid is still
-> valid for the entire group.  Because the initial thread of a
-> process/thread group can die (but rarely does) that tends to result in
-> kernel code that fails when thread_group_leader dies.
->
-> To remove that class of bugs I am slowy working to remove the
-> thread_group_leader from the kernel entirely.
->
-> Looking at the names of the fields in the structure it looks like
-> there is another class of bugs to be removed by renaming PIDTYPE_PID
-> to PIDTYPE_TID in the kernel as well.  Just skimming the example code
-> it looks very simple to get confused.
->
-> Is there any chance some can modify struct seccomp_notify to do
-> {
->         ...
->         union {
->                 __u32 pid;
->                 __u32 tid;
->         };
->         ...
-> }
->
-> Just to reduce the chance of confusion between the userspace pid and the
-> in kernel pid names?
->
-> Eric
-Our use cases would be unaffected by this. I think this would be a wonderful
-way to move forward, but I don't know if it could break userspace.
+On Tue, May 19, 2020 at 11:45:29PM +0200, Ahmed S. Darwish wrote:
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 206774ac6946..54c929ea5b98 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -702,6 +702,14 @@ do {									\
+>  			  "Not in hardirq as expected\n");		\
+>  	} while (0)
+>  
+> +/*
+> + * Don't define this assertion here to avoid a call-site's header file
+> + * dependency on sched.h task_struct current. This is needed by call
+> + * sites that are inline defined at header files already included by
+> + * sched.h.
+> + */
+> +void lockdep_assert_preemption_disabled(void);
 
-I believe Christian's team is the biggest user of this feature in OSS right now,
-so he might know.
+So how about:
 
-In addition, I'm not sure where you would want the thread's ID versus the
-process's ID, unless you wanted to do something like SIGSTOP, and freeze
-the thread to prevent it from making more progress, or being interrupted
-while you go do notifier work.
+#if defined(CONFIG_PREEMPT_COUNT) && defined(CONFIG_TRACE_IRQFLAGS)
+#define lockdep_assert_preemption_disabled() do { \
+		WARN_ON(debug_locks && !preempt_count() && \
+			current->hardirqs_enabled); \
+	} while (0)
+#else
+#define lockdep_assert_preemption_disabled() do { } while (0)
+#endif
 
-Christian & Kees,
-Thoughts?
+That is both more consistent with the things you claim it's modelled
+after and also completely avoids that header dependency.
