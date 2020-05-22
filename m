@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC121DE5A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9916F1DE5B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729853AbgEVLhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 07:37:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:33792 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728601AbgEVLhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 07:37:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 008FA55D;
-        Fri, 22 May 2020 04:37:52 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C15B53F305;
-        Fri, 22 May 2020 04:37:50 -0700 (PDT)
-Date:   Fri, 22 May 2020 12:37:48 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH] PCI: endpoint: Fix epc windows allocation in
- pci_epc_multi_mem_init()
-Message-ID: <20200522113748.GC11785@e121166-lin.cambridge.arm.com>
-References: <1589901081-29948-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1729365AbgEVLkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 07:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728901AbgEVLkp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 07:40:45 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD40C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 04:40:45 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r125so6299768lff.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 04:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hj2fTCjbxOKsyZP7M3oTIyRA9mJ2Bc+fUg1m8uH2yYk=;
+        b=Fctbeo2rUCXQwGpTpFGVse8+WCb+g1DgkimSxd0aywjWQzd7bhxHHSHfy1FP+QqJ5E
+         HQGcAIndvBPaVq+mvvXrYxa60iZ270cp/hL7v335T389bW5HYMkEi/Mut44zha6NDaG4
+         UCrNm9pJDDi2UNXl+PlD6bv/w4smxNEG9g8AyCyft6tAOApW/apnSn16+WYKI0WwO/LX
+         QygL+8MKePZCy7xTU8Q+o6DXxVRskTBMwRQQsFJ+VR7QHRA9Pic1hmOdE0dfFierlTBM
+         XmumN0HJD7IHx+R0ZAzFlmPROpUU2YmKdDsZd/Q7eTLT58JceLPdRakROdwY5S4uTJxp
+         Cehw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hj2fTCjbxOKsyZP7M3oTIyRA9mJ2Bc+fUg1m8uH2yYk=;
+        b=ikks4OUmV7o9J6aw0q4UQuKSvYm8ITAsqpFx7/hveNfHqGGNfYNvX0yS4+RUPOvvgT
+         9NttISV+1d4JFWlkAgf7khGgY89fpoYWl62TtEc5V6LBnOA63Uob/Ni7/c5ArCHdV/5D
+         IvOJPt01b0qi1OlhD1a5OMZhFInjCMWR/hOhpeSPOY0kHHggz7dyBMRp4P5ZCWTJLChm
+         Zq4NAbEDoAM2wBvKbv6UC12M3Tbngn5TzuXTD90n85DmtBrMOIdVqlhNfEE4juY7N1iO
+         DKvu2bjKi4zPcOxBIi0H8DDM2B0fiCRxyTv6zIdGmmI/buqyd2lMM3BhE1oTCqeF2m5t
+         A0qA==
+X-Gm-Message-State: AOAM532m4vO1yn2BBhh1ckAvAbxywmZA3cbM+jBZgYW10Si5Q1hmCNGl
+        lRHhXkvEt2EuA3FTU0TrRSv7mXxzkpOTwdCH3zddtI1z
+X-Google-Smtp-Source: ABdhPJyCH6J7CaJtTe9PzunF+afSux/PTZRtv8MDXaAqacG2ZKbC4Y+MdKt3boWpmeIuz1KBImEFTAKzX+qejKOKM8k=
+X-Received: by 2002:ac2:53a2:: with SMTP id j2mr7071822lfh.139.1590147643673;
+ Fri, 22 May 2020 04:40:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589901081-29948-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200519002124.2025955-1-jhubbard@nvidia.com>
+In-Reply-To: <20200519002124.2025955-1-jhubbard@nvidia.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Fri, 22 May 2020 17:10:32 +0530
+Message-ID: <CAFqt6zZTZrB=LiGQpcOtZfnr7-CL4tkLHz8eXFvxwCTcfKy4sQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] mm/gup, drm/i915: refactor gup_fast, convert to pin_user_pages()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 04:11:20PM +0100, Lad Prabhakar wrote:
-> Fix allocation of epc windows with the correct size, this also fix smatch
-> warning:
-> 
-> drivers/pci/endpoint/pci-epc-mem.c:65 pci_epc_multi_mem_init()
-> warn: double check that we're allocating correct size: 4 vs 112
-> 
-> Fixes: ecbae87 ("PCI: endpoint: Add support to handle multiple base for mapping outbound memory")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/pci/endpoint/pci-epc-mem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi John,
 
-Squashed in the original commit in pci/rcar, pushed out.
 
-Thanks,
-Lorenzo
+On Tue, May 19, 2020 at 5:51 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> This needs to go through Andrew's -mm tree, due to adding a new gup.c
+> routine. However, I would really love to have some testing from the
+> drm/i915 folks, because I haven't been able to run-time test that part
+> of it.
+>
+> Otherwise, though, the series has passed my basic run time testing:
+> some LTP tests, some xfs and etx4 non-destructive xfstests, and an
+> assortment of other smaller ones: vm selftests, io_uring_register, a
+> few more. But that's only on one particular machine. Also, cross-compile
+> tests for half a dozen arches all pass.
+>
+> Details:
+>
+> In order to convert the drm/i915 driver from get_user_pages() to
+> pin_user_pages(), a FOLL_PIN equivalent of __get_user_pages_fast() was
+> required. That led to refactoring __get_user_pages_fast(), with the
+> following goals:
+>
+> 1) As above: provide a pin_user_pages*() routine for drm/i915 to call,
+>    in place of __get_user_pages_fast(),
+>
+> 2) Get rid of the gup.c duplicate code for walking page tables with
+>    interrupts disabled. This duplicate code is a minor maintenance
+>    problem anyway.
+>
+> 3) Make it easy for an upcoming patch from Souptick, which aims to
+>    convert __get_user_pages_fast() to use a gup_flags argument, instead
+>    of a bool writeable arg.  Also, if this series looks good, we can
+>    ask Souptick to change the name as well, to whatever the consensus
+>    is. My initial recommendation is: get_user_pages_fast_only(), to
+>    match the new pin_user_pages_only().
 
-> diff --git a/drivers/pci/endpoint/pci-epc-mem.c b/drivers/pci/endpoint/pci-epc-mem.c
-> index 2325f74..80c46f3 100644
-> --- a/drivers/pci/endpoint/pci-epc-mem.c
-> +++ b/drivers/pci/endpoint/pci-epc-mem.c
-> @@ -62,7 +62,7 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
->  	if (!windows || !num_windows)
->  		return -EINVAL;
->  
-> -	epc->windows = kcalloc(num_windows, sizeof(*mem), GFP_KERNEL);
-> +	epc->windows = kcalloc(num_windows, sizeof(*epc->windows), GFP_KERNEL);
->  	if (!epc->windows)
->  		return -ENOMEM;
->  
-> -- 
-> 2.7.4
-> 
+Shall I hold my changes till 5.8-rc1 , when this series will appear upstream ?
+>
+> John Hubbard (4):
+>   mm/gup: move __get_user_pages_fast() down a few lines in gup.c
+>   mm/gup: refactor and de-duplicate gup_fast() code
+>   mm/gup: introduce pin_user_pages_fast_only()
+>   drm/i915: convert get_user_pages() --> pin_user_pages()
+>
+>  drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  22 +--
+>  include/linux/mm.h                          |   3 +
+>  mm/gup.c                                    | 150 ++++++++++++--------
+>  3 files changed, 107 insertions(+), 68 deletions(-)
+>
+>
+> base-commit: 642b151f45dd54809ea00ecd3976a56c1ec9b53d
+> --
+> 2.26.2
+>
