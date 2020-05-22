@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472501DE64F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6051DE64D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 14:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730004AbgEVMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 08:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S1729983AbgEVMI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 08:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728878AbgEVMHZ (ORCPT
+        with ESMTP id S1729253AbgEVMH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 08:07:25 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D37AC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:24 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id z4so8432101wmi.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:24 -0700 (PDT)
+        Fri, 22 May 2020 08:07:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB934C08C5C5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:25 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id c11so435956wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 05:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SYamWCGpGqZL1TdMciPU3s1N0hd2ppZ++0/IfJ1caGY=;
-        b=z09pplDzbGu8zzHYZwmUG8WYuN5QnZoIThbQYmhBMWEdeanmgiQmeEaOJAAsMBH5co
-         Vc9SJuMdt4nXdaLIqtA5xDnvUSVBnfcy8+HUHt+7XekAI9e36/NJH0qHuP3oPkZSLY28
-         LxPlZYlsDw4W1ckHD0Es7lqGaXILSlhaTD2WhJ45RQCKFru6rVsyfbYXPtNE6rVrSQRh
-         IE0Bnp/5oPPCepTQASBnHTtpJDXwfdNkKtDoTYs/yLZbblVMktuo8Y5utgxPeh07MRaN
-         2JzjgOFu1d/xixp3xct7DO4Siv8YXryeMOIM+u9ZZWnonUMTeRGBc7bTnOhr9As4Kam8
-         2eFA==
+        bh=/pmWjPydDcH2ECRLQQUecpuUxdBwIQiF7KV5PtBBYA0=;
+        b=i0LAaJO4/OsiG8tHqQqh8QMJFnyB9fw0SVJmnxPGwVTC6c84IGU5mK5QyKhXXyAdJY
+         gwxhvTbndWQZIPz4rlVu6qopD/zba+IYsJRc0V8W25aObCVlipS1HOIqHGeuz4IRwc0C
+         3WkftM8s+RgwQxuqLazSX/TOdAZqK2SNnCMJCce1G8I5UroZMlsPaWtI1A3KC0M35wNv
+         5PTjSWIHb9XdOhVpsE/mAichJ+oodz+TsK9zHPZGJCX7A4uGLz0CCB5ySpw+QlijqLzE
+         utvl5/7gbRxf6t+9Os+RqahStxHmEBlGoJ9zX+YiptZIfhJagdJ0rLderVS/L4oc62u1
+         vMHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SYamWCGpGqZL1TdMciPU3s1N0hd2ppZ++0/IfJ1caGY=;
-        b=dRmYwAF07UuMiw8IO1NpXuJhE88CBuHcs/9AkJiFUq4IHHLmqztOUHnHwdxsxzPjaH
-         AA0cU6qBNkiPhds5j4s9cbcLXWmHsmIeJtVRZFCB7/8mgLu97skN9wxe12oDx6eVsj6l
-         GXEOLef2a7xThQ4oWITvmL4itCd1t2Ho9n5MVuyL3lVdyIRmea89OHCPmgaWutvL7+kg
-         EP6SryurR9rdAdrQddVLYW/KK6k/PUgd0KhizaT3izKc/luaWA+7i4Q+UlrQqmw60hQG
-         06+XOh8GXzFBxIcc5GiF9FNGyuOGCnQkgmiulm9/F+uJ7E34q2cisChuB95pFMQwc4oA
-         bUJQ==
-X-Gm-Message-State: AOAM531/xjVOA8lS9Dg7nt2Dfza1J8cP5FD4WOZ2Z1M5a3/bghc2JOoM
-        itGNNTrjUkOYc4By7AtxLZe2lw==
-X-Google-Smtp-Source: ABdhPJw0hJl3cQP5flK/6nQax5Ceb2AK3ZRifZ2de+tpHbVYDyDSC0mU0F2KKkWDNbi4cMfQO0bWhg==
-X-Received: by 2002:a1c:5402:: with SMTP id i2mr14046163wmb.185.1590149243221;
-        Fri, 22 May 2020 05:07:23 -0700 (PDT)
+        bh=/pmWjPydDcH2ECRLQQUecpuUxdBwIQiF7KV5PtBBYA0=;
+        b=ASCtdgio7aFarwN1rPx38HcgHelOTb8uz8uUCD8m7EZKmfL4Dfnb759G8tXNcRlur0
+         9nxAEfL67dxWCt2dRIfxM9ch94tERwW+T1H2cvE7V2QPsrYvrtrJFHscQep9I6F5wR+L
+         MQpilXgoLCqx+7hjTLxK/YJyyFxHt6yaKvXFAOQVfRE2cD8FBgAPRa8s8ay4MEq5QhC2
+         eHEK5YA5d2uJoptc1w+S7zfh0yM7tSl4ku0bj7YxDcon8nH3ND1cHjHkGPynMgt/tQTC
+         Nw6SQC/7WcDXTCTUC+ULKtjBdP2dIWSdbPecMogM9yE0Cs0hXfO6gC1slMqPAzi3I97r
+         Za9w==
+X-Gm-Message-State: AOAM530ppVCcOuE0hA2TapZSEnmrF5+Zbe732kSiI/Tp9bLtpJ6tooGL
+        vbf60BKfozMWZ0jdAkp1RO+wXw==
+X-Google-Smtp-Source: ABdhPJyhBs1vuweSsT6UnZzHIxmupzWKr/Mklf9iaHHEzRP3oB0F6VGJEWNBq1p2UGylX27IQJUkew==
+X-Received: by 2002:a5d:4dd0:: with SMTP id f16mr1475060wru.117.1590149244637;
+        Fri, 22 May 2020 05:07:24 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id f128sm9946233wme.1.2020.05.22.05.07.21
+        by smtp.gmail.com with ESMTPSA id f128sm9946233wme.1.2020.05.22.05.07.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 05:07:22 -0700 (PDT)
+        Fri, 22 May 2020 05:07:24 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Rob Herring <robh+dt@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v5 02/11] dt-bindings: add new compatible to mediatek,pericfg
-Date:   Fri, 22 May 2020 14:06:51 +0200
-Message-Id: <20200522120700.838-3-brgl@bgdev.pl>
+Subject: [PATCH v5 03/11] dt-bindings: net: add a binding document for MediaTek STAR Ethernet MAC
+Date:   Fri, 22 May 2020 14:06:52 +0200
+Message-Id: <20200522120700.838-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200522120700.838-1-brgl@bgdev.pl>
 References: <20200522120700.838-1-brgl@bgdev.pl>
@@ -82,26 +82,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The PERICFG controller is present on the MT8516 SoC. Add an appropriate
-compatible variant.
+This adds yaml DT bindings for the MediaTek STAR Ethernet MAC present
+on the mt8* family of SoCs.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- .../devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/net/mediatek,eth-mac.yaml        | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-index 1340c6288024..55209a2baedc 100644
---- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,pericfg.yaml
-@@ -25,6 +25,7 @@ properties:
-           - mediatek,mt8135-pericfg
-           - mediatek,mt8173-pericfg
-           - mediatek,mt8183-pericfg
-+          - mediatek,mt8516-pericfg
-         - const: syscon
-       - items:
-         # Special case for mt7623 for backward compatibility
+diff --git a/Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml b/Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+new file mode 100644
+index 000000000000..f85d91a9d6e5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/mediatek,eth-mac.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/mediatek,eth-mac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek STAR Ethernet MAC Controller
++
++maintainers:
++  - Bartosz Golaszewski <bgolaszewski@baylibre.com>
++
++description:
++  This Ethernet MAC is used on the MT8* family of SoCs from MediaTek.
++  It's compliant with 802.3 standards and supports half- and full-duplex
++  modes with flow-control as well as CRC offloading and VLAN tags.
++
++allOf:
++  - $ref: "ethernet-controller.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - mediatek,mt8516-eth
++      - mediatek,mt8518-eth
++      - mediatek,mt8175-eth
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 3
++    maxItems: 3
++
++  clock-names:
++    additionalItems: false
++    items:
++      - const: core
++      - const: reg
++      - const: trans
++
++  mediatek,pericfg:
++    $ref: /schemas/types.yaml#definitions/phandle
++    description:
++      Phandle to the device containing the PERICFG register range. This is used
++      to control the MII mode.
++
++  mdio:
++    type: object
++    description:
++      Creates and registers an MDIO bus.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - mediatek,pericfg
++  - phy-handle
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/mt8516-clk.h>
++
++    ethernet: ethernet@11180000 {
++        compatible = "mediatek,mt8516-eth";
++        reg = <0x11180000 0x1000>;
++        mediatek,pericfg = <&pericfg>;
++        interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_LOW>;
++        clocks = <&topckgen CLK_TOP_RG_ETH>,
++                 <&topckgen CLK_TOP_66M_ETH>,
++                 <&topckgen CLK_TOP_133M_ETH>;
++        clock-names = "core", "reg", "trans";
++        phy-handle = <&eth_phy>;
++        phy-mode = "rmii";
++
++        mdio {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            eth_phy: ethernet-phy@0 {
++                reg = <0>;
++            };
++        };
++    };
 -- 
 2.25.0
 
