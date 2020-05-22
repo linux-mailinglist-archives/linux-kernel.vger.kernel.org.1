@@ -2,56 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22B01DE0B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6428F1DE0AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 09:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728530AbgEVHQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 03:16:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40398 "EHLO mail.kernel.org"
+        id S1728459AbgEVHPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 03:15:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:46811 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728315AbgEVHQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 03:16:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 490AC2072C;
-        Fri, 22 May 2020 07:15:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590131759;
-        bh=+cgU0wMXtjiiPiwmQF5MdeuXZDnY+h2nwu6P/YI6mO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tmpl037AitqltwHJ0INKsejYVbFunwcUkRmyrkwI1nuTm0uQ8d8ZxLsVMenSfU36h
-         v48G0OewHOFlzwq0VASfw4oRjexftZ0/qDiWag6MzKufN14wtrLbaBqAQdcoS8JXIG
-         U+KrPePzduUlNpL1UNUlKb74QJTao5DfLma+bvaA=
-Date:   Fri, 22 May 2020 09:15:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] interconnect changes for 5.8
-Message-ID: <20200522071535.GA800007@kroah.com>
-References: <20200521134304.31099-1-georgi.djakov@linaro.org>
+        id S1728137AbgEVHPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 03:15:54 -0400
+IronPort-SDR: 7LB6WXHDPmM5eZ9wK08infduL20Nr1uKLQZyiXyjjejKYhV8/NVZA5cGiA2Cex/A64K83C3JCM
+ 8GZUUCIli0uQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 00:15:54 -0700
+IronPort-SDR: KY8FM2XvlW2PX8YM2WYKJFEgZsnlmqCYvrpnrZfhR2WhTrdD09HCdYjmObussU4WB2N7Dvyhfl
+ x4YJVhq0HkFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,420,1583222400"; 
+   d="scan'208";a="255525320"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga008.fm.intel.com with ESMTP; 22 May 2020 00:15:53 -0700
+Date:   Fri, 22 May 2020 00:15:53 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        haitao.huang@intel.com, andriy.shevchenko@linux.intel.com,
+        tglx@linutronix.de, kai.svahn@intel.com, bp@alien8.de,
+        josh@joshtriplett.org, luto@kernel.org, kai.huang@intel.com,
+        rientjes@google.com, cedric.xing@intel.com, puiterwijk@redhat.com,
+        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>
+Subject: Re: [PATCH v30 12/20] x86/sgx: Add a page reclaimer
+Message-ID: <20200522071553.GA24377@linux.intel.com>
+References: <20200515004410.723949-1-jarkko.sakkinen@linux.intel.com>
+ <20200515004410.723949-13-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200521134304.31099-1-georgi.djakov@linaro.org>
+In-Reply-To: <20200515004410.723949-13-jarkko.sakkinen@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 04:43:04PM +0300, Georgi Djakov wrote:
-> Hello Greg,
-> 
-> This is the pull request with the interconnect changes for the 5.8-rc1
-> merge window. It contains some core framework changes (helper functions,
-> conversion of the framework from tristate to bool, etc). Some of these
-> are in immutable branch, which is shared with the OPP tree. There are
-> also new drivers for several i.MX8 platforms. More details are available
-> in the signed tag.
-> 
-> Patches have been in linux-next without any reported issues. Please pull
-> into char-misc-next.
+On Fri, May 15, 2020 at 03:44:02AM +0300, Jarkko Sakkinen wrote:
+> +static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
+> +				struct sgx_backing *backing)
+> +{
+> +	struct sgx_encl_page *encl_page = epc_page->owner;
+> +	struct sgx_encl *encl = encl_page->encl;
+> +	struct sgx_backing secs_backing;
+> +	int ret;
+> +
+> +	mutex_lock(&encl->lock);
+> +
+> +	if (atomic_read(&encl->flags) & SGX_ENCL_DEAD) {
+> +		ret = __eremove(sgx_epc_addr(epc_page));
+> +		ENCLS_WARN(ret, "EREMOVE returned %d\n");
 
-Pulled and pushed out, thanks.
+The " returned %d\n" is unnecessary and leads to a bad message, ENCLS_WARN
+handles the message and formatting, i.e. this should simply be:
 
-greg k-h
+		ENCLS_WARN(ret, "EREMOVE");
+
+> +	} else {
+> +		sgx_encl_ewb(epc_page, backing);
+> +	}
+> +
+> +	encl_page->epc_page = NULL;
+> +	encl->secs_child_cnt--;
