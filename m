@@ -2,162 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97DF1DE3B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7F31DE399
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgEVKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 06:07:27 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:55298 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728374AbgEVKH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 06:07:27 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 56EFF1A324F;
-        Fri, 22 May 2020 12:07:23 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9A8B21A3239;
-        Fri, 22 May 2020 12:07:18 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0A9A740318;
-        Fri, 22 May 2020 18:07:12 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_asrc: Merge suspend/resume function to runtime_suspend/resume
-Date:   Fri, 22 May 2020 17:57:24 +0800
-Message-Id: <1590141444-28668-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728587AbgEVJ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728362AbgEVJ5z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 05:57:55 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7E0C05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:57:55 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id l15so11540796lje.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zTT4v84DbNJrNGuRg9j5/ODbFJsAM/aU00CkLjhVRhU=;
+        b=SwpRkcvJmno5jAejAy/rhvSBb67O1fb5ck7ZPITWACBKuY9dpmznRXbj6jV1lekY2q
+         N3y3TEcMQaTRCUQd0wMizTnCZ/W0jJmaumg9DQSv1B7GhIOA3frDFwUSdnwO/ib//uEV
+         gfXFaoyRbDESPUPkeH8vag9sW6FMD7WBTuNAVpJlfTik7ZlJdJo5uNm0yHjzQrCZrjl7
+         3JnPblH7u3dStOMDUYpN4H+DDqKdw5ghXFIKrkn3Jw+/cNNvKOGSv4ShhU5Y6T50nkwF
+         CaPntV9EMDk2coTroj+KBdScfrKZKVFDI1m9iKxOxfERt0u/vRmiy8BW5uaYlHF8pj+v
+         UV2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zTT4v84DbNJrNGuRg9j5/ODbFJsAM/aU00CkLjhVRhU=;
+        b=O5zXkWmrY9Vt6FNDroVzz5jsHH1jagBZnGmexQY4FFN5j4TgjKfEaQPRJ7tCorxxtV
+         Sf/PY7ufNlOkFTUw4N9OByfU6peJm528WUs8uB+/0pdqfPz33RBXKH2W91m/qwC23g2t
+         seO9mN1ZwaBB0AZwv0+ylW+3JXn/3hEdHWbKA7dJWa/+cdNOMQf7pPduwW5fFVsLK0uz
+         j4JEcZxNUBa7NP32yS685eM2+b1QVBsyX7+vYrGefTfDKWmgorC7CsYNSbi5gp8Igq60
+         amBKdAZ9D0mtN9rHiKmWrWkbvp9SNMwsu9/JrBmz1jd1Uxq7d5PiPYE6aowbOCjlTcc7
+         jpEA==
+X-Gm-Message-State: AOAM531eWJ+eAH1a2g2zmNhnidt+UU1t7LwyEY4n0Ss6hRS8ytbaArj9
+        q6HB/8EuPnnHcP+6hlhnR6A8rctMZFnRNDHDCTZwqA==
+X-Google-Smtp-Source: ABdhPJwvWpHdh12TXJb5Ol2McEEtJCHFS5m/5WUTO909JKTAY8DS+sYl6Sva05hNjkBeAQy4DdsXOSk/koy0cqXwe7I=
+X-Received: by 2002:a05:651c:2046:: with SMTP id t6mr6908884ljo.227.1590141473342;
+ Fri, 22 May 2020 02:57:53 -0700 (PDT)
+MIME-Version: 1.0
+From:   Martijn Coenen <maco@android.com>
+Date:   Fri, 22 May 2020 11:57:42 +0200
+Message-ID: <CAB0TPYGCOZmixbzrV80132X=V5TcyQwD6V7x-8PKg_BqCva8Og@mail.gmail.com>
+Subject: Writeback bug causing writeback stalls
+To:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, miklos@szeredi.hu, tj@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        android-storage-core@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With dedicated power domain for asrc, power can be disabled after
-probe and pm runtime suspend, then the value of all registers need to
-be restored in pm runtime resume. So we can merge suspend/resume function
-to runtime_suspend/resume function and enable regcache only in end of
-probe.
+Hi,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_asrc.c | 70 ++++++++++++++++------------------------
- 1 file changed, 27 insertions(+), 43 deletions(-)
+We've been working on implementing a FUSE filesystem in Android, and have
+run into what appears to be a bug in the kernel writeback code. The problem
+that we observed is that an inode in the filesystem is on the b_dirty_time list,
+but its i_state field does have I_DIRTY_PAGES set, which I think means that
+the inode is on the wrong list. This condition doesn't appear to fix itself even
+as new pages are dirtied, because __mark_inode_dirty() has this check:
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 432936039de4..3ebbe15ac378 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1100,6 +1100,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, asrc);
- 	pm_runtime_enable(&pdev->dev);
- 	spin_lock_init(&asrc->lock);
-+	regcache_cache_only(asrc->regmap, true);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_asrc_component,
- 					      &fsl_asrc_dai, 1);
-@@ -1117,6 +1118,7 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	struct fsl_asrc *asrc = dev_get_drvdata(dev);
- 	struct fsl_asrc_priv *asrc_priv = asrc->private;
- 	int i, ret;
-+	u32 asrctr;
- 
- 	ret = clk_prepare_enable(asrc->mem_clk);
- 	if (ret)
-@@ -1135,6 +1137,24 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 			goto disable_asrck_clk;
- 	}
- 
-+	/* Stop all pairs provisionally */
-+	regmap_read(asrc->regmap, REG_ASRCTR, &asrctr);
-+	regmap_update_bits(asrc->regmap, REG_ASRCTR,
-+			   ASRCTR_ASRCEi_ALL_MASK, 0);
-+
-+	/* Restore all registers */
-+	regcache_cache_only(asrc->regmap, false);
-+	regcache_mark_dirty(asrc->regmap);
-+	regcache_sync(asrc->regmap);
-+
-+	regmap_update_bits(asrc->regmap, REG_ASRCFG,
-+			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
-+			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
-+
-+	/* Restart enabled pairs */
-+	regmap_update_bits(asrc->regmap, REG_ASRCTR,
-+			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
-+
- 	return 0;
- 
- disable_asrck_clk:
-@@ -1155,6 +1175,11 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
- 	struct fsl_asrc_priv *asrc_priv = asrc->private;
- 	int i;
- 
-+	regmap_read(asrc->regmap, REG_ASRCFG,
-+		    &asrc_priv->regcache_cfg);
-+
-+	regcache_cache_only(asrc->regmap, true);
-+
- 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
- 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
- 	if (!IS_ERR(asrc->spba_clk))
-@@ -1166,51 +1191,10 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
- }
- #endif /* CONFIG_PM */
- 
--#ifdef CONFIG_PM_SLEEP
--static int fsl_asrc_suspend(struct device *dev)
--{
--	struct fsl_asrc *asrc = dev_get_drvdata(dev);
--	struct fsl_asrc_priv *asrc_priv = asrc->private;
--
--	regmap_read(asrc->regmap, REG_ASRCFG,
--		    &asrc_priv->regcache_cfg);
--
--	regcache_cache_only(asrc->regmap, true);
--	regcache_mark_dirty(asrc->regmap);
--
--	return 0;
--}
--
--static int fsl_asrc_resume(struct device *dev)
--{
--	struct fsl_asrc *asrc = dev_get_drvdata(dev);
--	struct fsl_asrc_priv *asrc_priv = asrc->private;
--	u32 asrctr;
--
--	/* Stop all pairs provisionally */
--	regmap_read(asrc->regmap, REG_ASRCTR, &asrctr);
--	regmap_update_bits(asrc->regmap, REG_ASRCTR,
--			   ASRCTR_ASRCEi_ALL_MASK, 0);
--
--	/* Restore all registers */
--	regcache_cache_only(asrc->regmap, false);
--	regcache_sync(asrc->regmap);
--
--	regmap_update_bits(asrc->regmap, REG_ASRCFG,
--			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
--			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
--
--	/* Restart enabled pairs */
--	regmap_update_bits(asrc->regmap, REG_ASRCTR,
--			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
--
--	return 0;
--}
--#endif /* CONFIG_PM_SLEEP */
--
- static const struct dev_pm_ops fsl_asrc_pm = {
- 	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static const struct fsl_asrc_soc_data fsl_asrc_imx35_data = {
--- 
-2.21.0
+    if ((inode->i_state & flags) != flags) {
 
+before considering moving the inode to another list. Since the inode already
+has I_DIRTY_PAGES set, we're not going to move it to the dirty list. I *think*
+the only way the inode gets out of this condition is whenever we handle the
+b_dirty_time list, which can take a while.
+
+The reason we even noticed this bug in the first place is that FUSE has a very
+low wb max_ratio by default (1), and so at some point processes get stuck in
+balance_dirty_pages_ratelimited(), waiting for pages to be written. They hold
+the inode's write lock, and when other processes try to acquire it, they get
+stuck. We have a watchdog that reboots the device after ~10 mins of a task
+being stuck in D state, and this triggered regularly in some tests.
+
+After careful studying of the kernel code, I found a reliable repro scenario
+for this condition, which is described in more detail below. But essentially
+what I think is happening is this:
+
+__mark_inode_dirty() has an early return condition for when a sync is in
+progress, where it updates the inode i_state but not the writeback list:
+
+    inode->i_state |= flags;
+
+    /*
+    * If the inode is being synced, just update its dirty state.
+    * The unlocker will place the inode on the appropriate
+    * superblock list, based upon its state.
+    */
+    if (inode->i_state & I_SYNC)
+        goto out_unlock_inode;
+
+now this comment is true for the generic flusher threads, which run
+writeback_sb_inodes(), which calls requeue_inode() to move the inode back to the
+correct wb list when the sync is done. However, there is another
+function that uses
+I_SYNC: writeback_single_inode(). This function has some comments saying it
+prefers not to touch writeback lists, and in fact only removes it if the inode
+is clean:
+
+    /*
+    * Skip inode if it is clean and we have no outstanding writeback in
+    * WB_SYNC_ALL mode. We don't want to mess with writeback lists in this
+    * function since flusher thread may be doing for example sync in
+    * parallel and if we move the inode, it could get skipped. So here we
+    * make sure inode is on some writeback list and leave it there unless
+    * we have completely cleaned the inode.
+    */
+
+writeback_single_inode() is called from a few functions, in particular
+write_inode_now(). write_inode_now() is called by FUSE's flush() f_ops.
+
+So, the sequence of events is something like this. Let's assume the inode is
+already on b_dirty_time for valid reasons. Then:
+
+CPU1                                          CPU2
+fuse_flush()
+  write_inode_now()
+    writeback_single_inode()
+      sets I_SYNC
+        __writeback_single_inode()
+          writes back data
+          clears inode dirty flags
+          unlocks inode
+          calls mark_inode_dirty_sync()
+            sets I_DIRTY_SYNC, but doesn't
+            update wb list because I_SYNC is
+            still set
+                                              write() // somebody else writes
+                                              mark_inode_dirty(I_DIRTY_PAGES)
+                                              sets I_DIRTY_PAGES on i_state
+                                              doesn't update wb list,
+                                              because I_SYNC set
+      locks inode again
+      sees inode is still dirty,
+      doesn't touch WB list
+      clears I_SYNC
+
+So now we have an inode on b_dirty_time with I_DIRTY_PAGES | I_DIRTY_SYNC set,
+and subsequent calls to mark_inode_dirty() with either I_DIRTY_PAGES or
+I_DIRTY_SYNC will do nothing to change that. The flusher won't touch
+the inode either,
+because it's not on a b_dirty or b_io list.
+
+The easiest way to fix this, I think, is to call requeue_inode() at the end of
+writeback_single_inode(), much like it is called from writeback_sb_inodes().
+However, requeue_inode() has the following ominous warning:
+
+/*
+ * Find proper writeback list for the inode depending on its current state and
+ * possibly also change of its state while we were doing writeback.  Here we
+ * handle things such as livelock prevention or fairness of writeback among
+ * inodes. This function can be called only by flusher thread - noone else
+ * processes all inodes in writeback lists and requeueing inodes behind flusher
+ * thread's back can have unexpected consequences.
+ */
+
+Obviously this is very critical code both from a correctness and a performance
+point of view, so I wanted to run this by the maintainers and folks who have
+contributed to this code first.
+
+The way I got to reproduce this reliably was by using what is pretty much a
+pass-through FUSE filesystem, and the following two commands run in parallel:
+
+[1] fio --rw=write --size=5G -blocksize=80000 --name=test --directory=/sdcard/
+
+[2] while true; do echo flushme >> /sdcard/test.0.0; sleep 0.1; done
+
+I doubt the blocksize matters, it's just the blocksize that I observed being
+used in one of our testruns that hit this. [2] essentially calls fuse_flush()
+every 100ms, which is often enough to reproduce this problem within seconds;
+FIO will stall and enter balance_dirty_pages_ratelimited(), and [2] will hang
+because it needs the inode write lock.
+
+Other filesystems may hit the same problem, though write_inode_now() is usually
+only used when no more dirty pages are expected (eg in final iput()). There are
+some other functions that call writeback_single_inode() that are more
+widely used,
+like sync_inode() and sync_inode_metadata().
+
+Curious to hear your thoughts on this. I'm happy to provide more info
+or traces if
+needed.
+
+Thanks,
+Martijn
