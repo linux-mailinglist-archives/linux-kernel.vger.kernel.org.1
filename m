@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BA31DEAF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7631DEAEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731401AbgEVO5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731342AbgEVO5r (ORCPT
+        id S1731314AbgEVO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:57:28 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39430 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730218AbgEVO5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:57:47 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAE2C061A0E;
-        Fri, 22 May 2020 07:57:47 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id j8so11576754iog.13;
-        Fri, 22 May 2020 07:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4E93R1F4OMg9K2XLuc0UwI5BfmV/kB8DZ8DcAqlj91Q=;
-        b=RJh8B/6rHjjbkuji4u+fJ26zGQ2weYdBP8O87V6gBC0R3uO3Cxuxwia4xEC5fiQpVd
-         BVao3bcj3EENB6cqKTKGBQu174xQRasXIfU4q+TkCRor9QpUGn/bNvOhtPgxnpksjF4z
-         3fsMvYjJfJTHISaJ3cUFiRzeDfD7i3e9PZi6fj0SkJEmzk7TEWtsxWUY/iwJxQpOJ2R4
-         T9SYcuC5mIwu3BPDv9d/KbkENTdJY9raVR0/065zsK9r46jPvzUkAxudp8zmyxpkPzW8
-         Mh3IcqqBDWoU5MuQNyfGmuqSaUQzuiK4qAbocc1kDDt5QghsG+0LEtcX/A9knBg3T5Ef
-         pvLw==
+        Fri, 22 May 2020 10:57:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590159442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kROCnYv6LREfrKUdHHTtWyBXmahp7MvO2JxokBV6UXk=;
+        b=Hc3jCj4wTbu1FwPRipGAAlrMnGbAY4nLVG48igpqbX8KCOd79m8tDZLeaPoxrbX2og+L2m
+        A+Ah19i5ytmG/02flgHW2OZXNlQBDZv+fOu16ZFKEszLBEziL7kzxTMXceH0q3GssNoO8v
+        nHLml7uX4jQ+Wa6z14ebNVNIcS9NGS0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-tsHMKgf-PFCaJLYB0sag-g-1; Fri, 22 May 2020 10:57:21 -0400
+X-MC-Unique: tsHMKgf-PFCaJLYB0sag-g-1
+Received: by mail-wr1-f71.google.com with SMTP id f4so1795886wrp.21
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:57:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4E93R1F4OMg9K2XLuc0UwI5BfmV/kB8DZ8DcAqlj91Q=;
-        b=A8HAwTy87BkFgPBjC5bZ9vWtb7A3CPFHn+mypgqLRaGzLTcx6LaszXDLvCh6yvCPH3
-         jM0X6Pmjspr3xcYqx5Qc9pSxKvOa+dGUcCBYjfrACWASbhtJpM8qV5dDph3tN3LxvBDc
-         AvvzBnnTteSNlm4wekzi3T/9hnfHfmu4HMiW+J4+GzJPC7gjcRi6GRJHNl2Y/cnghQ80
-         PfJJdgnbmq+2OKnpomNjtoe8YQ7q6NjzChJtqOt4NWlzqtZLjnmj7Mpz6VZL817Ck+7x
-         5Yquj91e6nEwtkPCXUgXSxPT71obhiQ8eKgFRYqN84MWFnZJPSAzqgogMxp4LpVOrORb
-         uflQ==
-X-Gm-Message-State: AOAM530iIcwXx0ow2TCegm1QtUIfThknF51Av7FqPMYg08j47eKUk3lM
-        O44wTQCrrxMR56+s3QkiFOmGVGrtM5veU/fwpu4=
-X-Google-Smtp-Source: ABdhPJzIBFSsXPwSSCGw73KtvrqDIXMGD/+GjvxVG0mSEkFCp7BWwg4nqAvzm+UoIsx0S8/uDt84GiJO2N2vFmJg7HM=
-X-Received: by 2002:a05:6602:2ac9:: with SMTP id m9mr3461002iov.68.1590159466755;
- Fri, 22 May 2020 07:57:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kROCnYv6LREfrKUdHHTtWyBXmahp7MvO2JxokBV6UXk=;
+        b=Hcki5YMq2x4zLZX/43eFqce5AlomjHwqxb4wQNStW5izLPr0oLUGfE6MWVJ3C+PZcm
+         u0fsrnyAXyWwuBUIP5O7PVU+cPWVnWLYfxOmcM+swB2vPbtSn4OxLXmuXoLPgsf/TpFA
+         L/pt9Iq9poH1FbKhMLBIdHG/M7O1T8RUC3L+cAEKQi7vc63yqcigIEk2E7WRpj3ZNwFw
+         BjfpOju3LYDEbiyiGx7cJ72Q2zUZJUQXrCwNt5UQnH3uhgS8KbWGstok1e+aqLHZLxRT
+         VRj+TX4vodL1+TP6lZ363x9/j7p/pOXWTsyNzatuQIM3R9az1SRQL//VmlvuB/eJ1puQ
+         jgOA==
+X-Gm-Message-State: AOAM532gx5glDn63j5W5zta/TMQzvWm/uQFRv+CjpoGbb5pDUcmY/NJX
+        Egcu1AUWcx4mMlUE5LWwcQs+yOMlVo2TV+4sJv3JzDRIU6gkyCKmWVMIvbQFU3tIienUewT6iqX
+        oZ8pfnQ81Tbm+toOswyA7W46P
+X-Received: by 2002:a1c:6708:: with SMTP id b8mr3236913wmc.40.1590159439905;
+        Fri, 22 May 2020 07:57:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHV/KbvZIVp0wKxEP+jtMVSN5LGOn/ZT4mrduYmtIcDmFom+oOmj2t8rPOGT4FQowl10Lefg==
+X-Received: by 2002:a1c:6708:: with SMTP id b8mr3236882wmc.40.1590159439650;
+        Fri, 22 May 2020 07:57:19 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.176.125])
+        by smtp.gmail.com with ESMTPSA id x6sm9582516wrv.57.2020.05.22.07.57.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 07:57:19 -0700 (PDT)
+Date:   Fri, 22 May 2020 16:57:16 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] sched/deadline: Optimize dl_bw_cpus()
+Message-ID: <20200522145716.GB600689@localhost.localdomain>
+References: <20200520134243.19352-1-dietmar.eggemann@arm.com>
+ <20200520134243.19352-2-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-References: <1589800165-3271-1-git-send-email-dillon.minfei@gmail.com>
- <1589800165-3271-4-git-send-email-dillon.minfei@gmail.com> <20200522113634.GE5801@sirena.org.uk>
-In-Reply-To: <20200522113634.GE5801@sirena.org.uk>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Fri, 22 May 2020 22:57:10 +0800
-Message-ID: <CAL9mu0LAnT+AfjpGs0O-MD2HYrpnQRmrj6qXtJQrJi9kbQLPUw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/8] spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX'
- support for stm32f4
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, p.zabel@pengutronix.de,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        thierry.reding@gmail.com, Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200520134243.19352-2-dietmar.eggemann@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Mark,
+On 20/05/20 15:42, Dietmar Eggemann wrote:
+> Return the weight of the root domain (rd) span in case it is a subset
+> of the cpu_active_mask.
+> 
+> Continue to compute the number of CPUs over rd span and cpu_active_mask
+> when in hotplug.
+> 
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>  kernel/sched/deadline.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index 504d2f51b0d6..4ae22bfc37ae 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -54,10 +54,16 @@ static inline struct dl_bw *dl_bw_of(int i)
+>  static inline int dl_bw_cpus(int i)
+>  {
+>  	struct root_domain *rd = cpu_rq(i)->rd;
+> -	int cpus = 0;
+> +	int cpus;
+>  
+>  	RCU_LOCKDEP_WARN(!rcu_read_lock_sched_held(),
+>  			 "sched RCU must be held");
+> +
+> +	if (cpumask_subset(rd->span, cpu_active_mask))
+> +		return cpumask_weight(rd->span);
+> +
+> +	cpus = 0;
+> +
+>  	for_each_cpu_and(i, rd->span, cpu_active_mask)
+>  		cpus++;
+>  
+> -- 
 
-Thanks for reviewing.
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
 
-On Fri, May 22, 2020 at 7:36 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, May 18, 2020 at 07:09:20PM +0800, dillon.minfei@gmail.com wrote:
->
-> > 2, use stm32 spi's "In full-duplex (BIDIMODE=0 and RXONLY=0)", as tx_buf is
-> > null, we must add dummy data sent out before read data.
-> > so, add stm32f4_spi_tx_dummy() to handle this situation.
->
-> There are flags SPI_CONTROLLER_MUST_TX and SPI_CONTROLLER_MUST_RX flags
-> that the driver can set if it needs to, no need to open code this in the
-> driver.
-
-Yes, after check SPI_CONTROLLER_MUST_TX in drivers/spi/spi.c , it's
-indeed to meet
-this situation,  i will try it and sumbmit a new patch.
-
-thanks.
-
-best regards
-
-Dillon
