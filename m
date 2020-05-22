@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960371DEE2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054311DEE3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgEVRZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730554AbgEVRZf (ORCPT
+        id S1730747AbgEVR3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:29:48 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:48418 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730554AbgEVR3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:25:35 -0400
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3D6C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:25:35 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id 9D2733BA9;
-        Fri, 22 May 2020 19:25:33 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id f7N5Eo55GPMW; Fri, 22 May 2020 19:25:32 +0200 (CEST)
-Received: from function (lfbn-bor-1-797-11.w86-234.abo.wanadoo.fr [86.234.239.11])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 6214F3B89;
-        Fri, 22 May 2020 19:25:32 +0200 (CEST)
-Received: from samy by function with local (Exim 4.93)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1jcBQJ-00HAVN-9Y; Fri, 22 May 2020 19:25:31 +0200
-Date:   Fri, 22 May 2020 19:25:31 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        MugilRaj <dmugil2000@gmail.com>, devel@driverdev.osuosl.org,
-        Kirk Reiser <kirk@reisers.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
-        Chris Brannon <chris@the-brannons.com>
-Subject: Re: [PATCH] taging: speakup: remove volatile
-Message-ID: <20200522172531.va2hi6jqog3a6473@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        MugilRaj <dmugil2000@gmail.com>, devel@driverdev.osuosl.org,
-        Kirk Reiser <kirk@reisers.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        speakup@linux-speakup.org, linux-kernel@vger.kernel.org,
-        Chris Brannon <chris@the-brannons.com>
-References: <1590138989-6091-1-git-send-email-dmugil2000@gmail.com>
- <20200522103406.GK30374@kadam>
- <6ab4139ec78928961a19e5fdbda139bb8cff9cb5.camel@perches.com>
- <20200522171312.s2ciifuxozwav2ym@function>
- <162676bb69044efadd31daa9ea49fc6fb9664297.camel@perches.com>
+        Fri, 22 May 2020 13:29:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xp/n5IlXvNYZw1QeKHpP6RwwzQHWUekVgDIojWgljN4=; b=gOKxCu3cJi0QhaY/PHqOuAEj0C
+        nguZNzHzd1uHaQ2IK91Bz0G7iqmIodCmPIX020e0af4N9LkKsB2ZH9GI9GK2uP0As8mrH/dOBIEvU
+        OeERwnp2jVo2O50jF1bR5n9U+p/U/BkaO8V+0EwejxQaMcwtoYHvrBWyYFKNcvr1VizA5vHAxQVkZ
+        1SiNEL+EwmW1tinerNONOO4poWq+RyvFdYBaMwf8M5G8W0h4EgN0D6eEJfO+glllebZ4t+OJXzVyE
+        FLrEQCr0w6lhkqOyUOlrgf/3j2jxxfoL2C/eVxPvioBsXscLKWMK+BiM2Qh7MbGVSnGw1p6ZN6zuK
+        daMDXh7g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jcBRx-0007SW-CE; Fri, 22 May 2020 17:27:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1FC98305E45;
+        Fri, 22 May 2020 19:27:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E41B20BDB12E; Fri, 22 May 2020 19:27:11 +0200 (CEST)
+Date:   Fri, 22 May 2020 19:27:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Subject: Re: [RFC PATCH 5/5] selftest/x86: Add CET quick test
+Message-ID: <20200522172711.GA317569@hirez.programming.kicks-ass.net>
+References: <20200521211720.20236-1-yu-cheng.yu@intel.com>
+ <20200521211720.20236-6-yu-cheng.yu@intel.com>
+ <20200522092848.GJ325280@hirez.programming.kicks-ass.net>
+ <202005221020.B578B8C6@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162676bb69044efadd31daa9ea49fc6fb9664297.camel@perches.com>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <202005221020.B578B8C6@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches, le ven. 22 mai 2020 10:22:03 -0700, a ecrit:
-> > Put another way: I don't think putting any hint here would help, on the
-> > contrary, somebody has to really look at what protection is needed,
-> > without getting influenced by rules-of-thumb.
-> 
-> checkpatch newbies/robots will submit this change again otherwise.
+On Fri, May 22, 2020 at 10:22:51AM -0700, Kees Cook wrote:
 
-Ah, ok, right.
+> But yes, I think getting a copy of asm.h would be nice here. I don't
+> think the WRITE_ONCE() is needed in this particular case. Hmm.
 
-I don't think removing volatiles is a thing for newbies, 
-
-> Comment wording can always be improved.
-
-I'd then suggest
-
-/* TODO: determine what proper synchronization "volatile" should be
- * replaced with.  */
-
-Samuel
+Paranoia on my end because I had no clue wth he wanted with his -O0
+magic gunk.
