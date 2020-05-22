@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E331DE2BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF371DE2C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgEVJQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
+        id S1729571AbgEVJRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:17:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50538 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgEVJQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 05:16:49 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F302206B6;
-        Fri, 22 May 2020 09:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590139009;
-        bh=+P5DbH+AIsYNWPmv6pViWEeIbunPXxfLSvFWHwHY8gQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2MET8yL0hrR9szNF2qjGr0Q9f0XmZYyeRzfO9cwgnzRc7gE9C2hqJAuL4QyCjPEuh
-         S+jCF+1hyELdBX2llOqy+gwMrDj5FyKDkyYBsau7ZXRRWnXm+CIyaoqo6qvoHrTz37
-         L/u84VnMTLHqiQ9giljAjryHZXmtc5aCdRcfwrt8=
-Date:   Fri, 22 May 2020 11:16:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ulf.hansson@linaro.org
-Cc:     rui_feng@realsil.com.cn, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [V2] mmc: rtsx: Add SD Express mode support for RTS5261
-Message-ID: <20200522091646.GA1201234@kroah.com>
-References: <1589875163-3367-1-git-send-email-rui_feng@realsil.com.cn>
+        id S1728068AbgEVJRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 05:17:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 4597EB215F;
+        Fri, 22 May 2020 09:17:14 +0000 (UTC)
+Message-ID: <75a1dd87d18103f1e8b0afbd1e0718c74c4a77d4.camel@suse.de>
+Subject: Re: [PATCH 04/15] PCI: brcmstb: Add compatibily of other chips
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Fri, 22 May 2020 11:17:08 +0200
+In-Reply-To: <CA+-6iNyqtFguHJ=sB=nKoghX6PR9ve5OuyafPw88mfSmhe+c8Q@mail.gmail.com>
+References: <20200519203419.12369-1-james.quinlan@broadcom.com>
+         <20200519203419.12369-5-james.quinlan@broadcom.com>
+         <5a52e39ce99214877e83104b8ea9f95c0d5b4e90.camel@suse.de>
+         <CA+-6iNyqtFguHJ=sB=nKoghX6PR9ve5OuyafPw88mfSmhe+c8Q@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-IGhRx3S6S3ntSbJkcWLj"
+User-Agent: Evolution 3.36.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1589875163-3367-1-git-send-email-rui_feng@realsil.com.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 03:59:23PM +0800, rui_feng@realsil.com.cn wrote:
-> From: rui_feng <rui_feng@realsil.com.cn>
-> 
-> RTS5261 support legacy SD mode and SD Express mode.
-> In SD7.x, SD association introduce SD Express as a new mode.
-> SD Express mode is distinguished by CMD8.
-> Therefore, CMD8 has new bit for SD Express.
-> SD Express is based on PCIe/NVMe.
-> RTS5261 uses CMD8 to switch to SD Express mode.
-> 
-> Signed-off-by: rui_feng <rui_feng@realsil.com.cn>
-> ---
-> v2: remove config option MISC_RTSX_PCI_SD_EXPRESS 
-> ---
-> 
->  drivers/misc/cardreader/rts5261.c  |  5 ++++
->  drivers/misc/cardreader/rts5261.h  | 23 ----------------
->  drivers/misc/cardreader/rtsx_pcr.c |  5 ++++
->  drivers/mmc/core/sd_ops.c          |  9 ++++++-
->  drivers/mmc/host/rtsx_pci_sdmmc.c  | 43 ++++++++++++++++++++++++++++++
->  include/linux/mmc/host.h           |  1 +
->  include/linux/rtsx_pci.h           | 27 +++++++++++++++++++
->  7 files changed, 89 insertions(+), 24 deletions(-)
 
-If I can get an ack from the MMC maintainer, I can take this in my
-tree...
+--=-IGhRx3S6S3ntSbJkcWLj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-{hint}
+On Thu, 2020-05-21 at 15:35 -0400, Jim Quinlan wrote:
+> On Wed, May 20, 2020 at 7:51 AM Nicolas Saenz Julienne
 
-thanks,
+[...]
 
-greg k-h
+> > >  /*
+> > > @@ -602,20 +667,21 @@ static struct pci_ops brcm_pcie_ops =3D {
+> > >=20
+> > >  static inline void brcm_pcie_bridge_sw_init_set(struct brcm_pcie *pc=
+ie,
+> > > u32
+> > > val)
+> > >  {
+> > > -     u32 tmp;
+> > > +     u32 tmp, mask =3D  pcie->reg_field_info[RGR1_SW_INIT_1_INIT_MAS=
+K];
+> > > +     u32 shift =3D pcie->reg_field_info[RGR1_SW_INIT_1_INIT_SHIFT];
+> >=20
+> > I don't think you need shift here, IIUC u32p_replace_bits() will take c=
+are
+> > of
+> > all the masking and shifting internally, moreover, you'd be able to dro=
+p the
+> > shift entry from reg_field_info.
+> I believe that u32p_replace_bits requires at least one of the value or
+> mask to be compile time constants to work and we don't have that here.
+
+Of course, sorry for the noise then.
+
+Regards,
+Nicolas
+
+
+--=-IGhRx3S6S3ntSbJkcWLj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7HmJQACgkQlfZmHno8
+x/70WAf+JoTHq0ZhGNKW8bxgqcUyLEW3dAtHwfItO+wAuflXC/o+CEKjpSFs2+j0
+pG6Vatt7V46ZMMUgZb3clhJxgd2VQ/rJYIRPr8l9E7OplbhGdbmjXMD1CyD4y+j7
+vyGxrliBdi63YKcBdLGwXjuzDG3kn2b35qWONfBb6j5n8N0tfQPUKNbJcw0VxVFB
+0vC0MCEDYxGCWrW0jifLamw1U5OYZTN59aX7BW/9+csiXoWGLdwu8TmO1G3GAUf9
+7hA1B8n9ReG8le34eQbsufe/qRrQuGwaBvjbYkMkOML2N8GL1tNDkglGA7OlAL+h
+pDvQnKJkJltAZ5+bOP4gaILPBLVVzQ==
+=eV6J
+-----END PGP SIGNATURE-----
+
+--=-IGhRx3S6S3ntSbJkcWLj--
+
