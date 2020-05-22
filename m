@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C5D1DF2B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 01:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0818C1DF2BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 01:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731306AbgEVXH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 19:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
+        id S1731236AbgEVXLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 19:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbgEVXHY (ORCPT
+        with ESMTP id S1731117AbgEVXLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 19:07:24 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C08C061A0E;
-        Fri, 22 May 2020 16:07:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 60DFF1274E076;
-        Fri, 22 May 2020 16:07:24 -0700 (PDT)
-Date:   Fri, 22 May 2020 16:07:23 -0700 (PDT)
-Message-Id: <20200522.160723.1511383489001652430.davem@davemloft.net>
-To:     noodles@earth.li
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        adron@yapic.net, marcel@ziswiler.com
-Subject: Re: [PATCH] net: ethernet: stmmac: Enable interface clocks on
- probe for IPQ806x
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200521114934.GY311@earth.li>
-References: <20200521114934.GY311@earth.li>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 22 May 2020 16:07:24 -0700 (PDT)
+        Fri, 22 May 2020 19:11:13 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495A1C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:11:12 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id u22so4995880plq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 16:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XwLJSYwASLEYgULcmxjHMYHm0gclCEZFExWcoADNDfk=;
+        b=iqA7xGFH7nRzZSARF8J/6I87gXVGh2PeDk3JEKv2iZubsvfzUBXuI4+LMaQN/t5r73
+         GxdIq3VmZYudQHfuCUBKXnoOEGklNrGsoBld+BCQJuSPZ5puYurVTAtOvqGVEizDcfnO
+         dKZUzJA5p+9vV8xarJqChzjMdOUsTQnJzK3J9QWkk54jp7awFsugw4+nAjBNMkZT1rOp
+         RAxAprQIszHXmayLMUAMIb7XqpQYhRwbqmJR69p7VJ56HF3l4Eoa4NSFxfSeS7TSjcHp
+         4jMlmdQt34zQIhx5j8tuLcqneY31xwXOV+gzEpToqFrpH5koOfnGUMO/ZhzDvR6bv94X
+         XJBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XwLJSYwASLEYgULcmxjHMYHm0gclCEZFExWcoADNDfk=;
+        b=Blqg8lYeU7VXqudaj+wx5UDG5dw73KQHpUTo6dLSNlDc91WXSe4LtL5ePEJn5aOd20
+         5goY4a+t2QhY1KxZvhelQN76oKgxVg1v4Rv4vMntoqfbBtBSPbHFcMLv9GpXQ6YAvW6d
+         ABjeuXDn1kHKzqscxOlGn07+EXKwHj3/rK+4LKKEZMZ3j62fGntAt44FByHs7NtI17cX
+         P/oXy51nSRHT7bMxkRXwLhRLiBRPRUuRHN/mZKU2Pb8222U7z6s7N0UNDISSgnY3UKyA
+         AqpPHntDClXdelOhdlT8F5qLT0D2XPQS+HG/WQXsgtnMZZk3uIHgrCV84pohZAbNeCAM
+         Ikzg==
+X-Gm-Message-State: AOAM533iBPt2qLHi1tAqgYCdWdo/xW/Kf+uaSID63fSQ6W0uXJI8pU5L
+        vFO8B9zn8VQR7TWquvT9tRzKoyvk
+X-Google-Smtp-Source: ABdhPJzWH+H30rB22gfRPrtAIbrZkJvP48IdUiW2B/+G2yBfRKCZi6tlnmd0/ESwRg3CPpeax+pm0Q==
+X-Received: by 2002:a17:90a:ce17:: with SMTP id f23mr7495181pju.51.1590189071893;
+        Fri, 22 May 2020 16:11:11 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:e00:d0d2:96ff:22ac:b8e6])
+        by smtp.gmail.com with ESMTPSA id b24sm7454401pfi.4.2020.05.22.16.11.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 16:11:11 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, Arnd Bergmann <arnd@arndb.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: fix error paths in __get_user_{check,size}
+Date:   Fri, 22 May 2020 16:10:56 -0700
+Message-Id: <20200522231056.27879-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
-Date: Thu, 21 May 2020 12:49:34 +0100
+Error paths in __get_user_check and __get_user_size directly assing 0 to
+the result. It causes the following sparse warnings:
 
-> The ipq806x_gmac_probe() function enables the PTP clock but not the
-> appropriate interface clocks. This means that if the bootloader hasn't
-> done so attempting to bring up the interface will fail with an error
-> like:
-> 
-> [   59.028131] ipq806x-gmac-dwmac 37600000.ethernet: Failed to reset the dma
-> [   59.028196] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_hw_setup: DMA engine initialization failed
-> [   59.034056] ipq806x-gmac-dwmac 37600000.ethernet eth1: stmmac_open: Hw setup failed
-> 
-> This patch, a slightly cleaned up version of one posted by Sergey
-> Sergeev in:
-> 
-> https://forum.openwrt.org/t/support-for-mikrotik-rb3011uias-rm/4064/257
-> 
-> correctly enables the clock; we have already configured the source just
-> before this.
-> 
-> Tested on a MikroTik RB3011.
-> 
-> Signed-off-by: Jonathan McDowell <noodles@earth.li>
+  sparse: warning: Using plain integer as NULL pointer
 
-Applied, thanks.
+Convert 0 to the type pointed to by the user pointer before assigning it.
+
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+---
+ arch/xtensa/include/asm/uaccess.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/xtensa/include/asm/uaccess.h b/arch/xtensa/include/asm/uaccess.h
+index 445bb4cf3c28..0fd9b4086ae2 100644
+--- a/arch/xtensa/include/asm/uaccess.h
++++ b/arch/xtensa/include/asm/uaccess.h
+@@ -184,7 +184,7 @@ __asm__ __volatile__(					\
+ 	if (access_ok(__gu_addr, size))					\
+ 		__get_user_size((x), __gu_addr, (size), __gu_err);	\
+ 	else								\
+-		(x) = 0;						\
++		(x) = (__typeof__(*(ptr)))0;				\
+ 	__gu_err;							\
+ })
+ 
+@@ -202,13 +202,15 @@ do {									\
+ 		u64 __x;						\
+ 		if (unlikely(__copy_from_user(&__x, ptr, 8))) {		\
+ 			retval = -EFAULT;				\
+-			(x) = 0;					\
++			(x) = (__typeof__(*(ptr)))0;			\
+ 		} else {						\
+ 			(x) = *(__force __typeof__(*(ptr)) *)&__x;	\
+ 		}							\
+ 		break;							\
+ 	}								\
+-	default: (x) = 0; __get_user_bad();				\
++	default:							\
++		(x) = (__typeof__(*(ptr)))0;				\
++		__get_user_bad();					\
+ 	}								\
+ } while (0)
+ 
+-- 
+2.20.1
+
