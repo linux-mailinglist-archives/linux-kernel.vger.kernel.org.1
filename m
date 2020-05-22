@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668C11DE593
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC121DE5A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 13:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgEVLgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 07:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42818 "EHLO mail.kernel.org"
+        id S1729853AbgEVLhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 07:37:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:33792 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728465AbgEVLgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 07:36:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6CF8206C3;
-        Fri, 22 May 2020 11:36:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590147397;
-        bh=z/6OXOepRElS/C2Gkk6RRZeDF9+60BoN0+lQKMHv4sc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SViwwqlJ87aevdHn4RYwBdrJnJkpk2rgiCE7e168UaD8MlGXvEupOGhOH7ejYfrbJ
-         N3kZOSYajFR+FWCWBWyZDHjCeSTW6pHxtLB0BJj1sTzEGGQE0HGaQz/KalAcMtdjVw
-         a7j7/Lewv8pBtYtgHXcvbty7bFHiOt4Q0y6gEdzA=
-Date:   Fri, 22 May 2020 12:36:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     dillon.minfei@gmail.com
-Cc:     robh+dt@kernel.org, p.zabel@pengutronix.de,
-        mcoquelin.stm32@gmail.com, devicetree@vger.kernel.org,
-        alexandre.torgue@st.com, thierry.reding@gmail.com,
-        sam@ravnborg.org, airlied@linux.ie, daniel@ffwll.ch,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v4 3/8] spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX'
- support for stm32f4
-Message-ID: <20200522113634.GE5801@sirena.org.uk>
-References: <1589800165-3271-1-git-send-email-dillon.minfei@gmail.com>
- <1589800165-3271-4-git-send-email-dillon.minfei@gmail.com>
+        id S1728601AbgEVLhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 07:37:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 008FA55D;
+        Fri, 22 May 2020 04:37:52 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C15B53F305;
+        Fri, 22 May 2020 04:37:50 -0700 (PDT)
+Date:   Fri, 22 May 2020 12:37:48 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] PCI: endpoint: Fix epc windows allocation in
+ pci_epc_multi_mem_init()
+Message-ID: <20200522113748.GC11785@e121166-lin.cambridge.arm.com>
+References: <1589901081-29948-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HeFlAV5LIbMFYYuh"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589800165-3271-4-git-send-email-dillon.minfei@gmail.com>
-X-Cookie: C for yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1589901081-29948-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 19, 2020 at 04:11:20PM +0100, Lad Prabhakar wrote:
+> Fix allocation of epc windows with the correct size, this also fix smatch
+> warning:
+> 
+> drivers/pci/endpoint/pci-epc-mem.c:65 pci_epc_multi_mem_init()
+> warn: double check that we're allocating correct size: 4 vs 112
+> 
+> Fixes: ecbae87 ("PCI: endpoint: Add support to handle multiple base for mapping outbound memory")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/pci/endpoint/pci-epc-mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
---HeFlAV5LIbMFYYuh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Squashed in the original commit in pci/rcar, pushed out.
 
-On Mon, May 18, 2020 at 07:09:20PM +0800, dillon.minfei@gmail.com wrote:
+Thanks,
+Lorenzo
 
-> 2, use stm32 spi's "In full-duplex (BIDIMODE=0 and RXONLY=0)", as tx_buf is
-> null, we must add dummy data sent out before read data.
-> so, add stm32f4_spi_tx_dummy() to handle this situation.
-
-There are flags SPI_CONTROLLER_MUST_TX and SPI_CONTROLLER_MUST_RX flags
-that the driver can set if it needs to, no need to open code this in the
-driver.
-
---HeFlAV5LIbMFYYuh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7HuUEACgkQJNaLcl1U
-h9DV4Qf/SihsJbdjpA046b8/NxOUN0XzKoBRryG9nf4DC4x3Fpb0tscXdk2/FeTd
-JceAquzFzEEQ49acoXxDA2UQXUMtmlEiGfbWhNHS0Jwo9JVU3XPHLG5d+nX+sudU
-L+O+LPQB61KcC2OQniMIjgApMjvyj2ePQY0lfjl1jnAb3PLHvlpaUt5Mjp8P0iVB
-N2skbxjLqD/nDEDYXV+S0Jp689oOuNDJ/zeNk3ds99vhHEc55yvZxvZB8OcWNuop
-AJ94iVaqJX+b7qak3V7Ts6Hb6GgkNvr/78bWpjGK5eB+a00Ia0l8yP9svyYdczOK
-GS605iD0geP72ehzZUhOjifzaJ7rgg==
-=XMsa
------END PGP SIGNATURE-----
-
---HeFlAV5LIbMFYYuh--
+> diff --git a/drivers/pci/endpoint/pci-epc-mem.c b/drivers/pci/endpoint/pci-epc-mem.c
+> index 2325f74..80c46f3 100644
+> --- a/drivers/pci/endpoint/pci-epc-mem.c
+> +++ b/drivers/pci/endpoint/pci-epc-mem.c
+> @@ -62,7 +62,7 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+>  	if (!windows || !num_windows)
+>  		return -EINVAL;
+>  
+> -	epc->windows = kcalloc(num_windows, sizeof(*mem), GFP_KERNEL);
+> +	epc->windows = kcalloc(num_windows, sizeof(*epc->windows), GFP_KERNEL);
+>  	if (!epc->windows)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.7.4
+> 
