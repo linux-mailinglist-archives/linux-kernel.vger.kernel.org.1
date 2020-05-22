@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371051DEAB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E06C1DEAB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731279AbgEVOzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:55:52 -0400
-Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:62977
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731365AbgEVOzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:55:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jm0Fnz3/Gwg27rKxxXTtLWvId4FXocRzzrPdQ4cNIE67sGOF3HjWYWbb2i/IPgrvo5dmTB+wMJayrIvlb8kNmb1uXjduhhcfVSbQLuR08LnRTJ34h+6GcTjJcDb0+WhPEAjJd0INaIB2KLdgR2bkZ6MMVLFYwm92cuvoQwqUeHnsbPzKQ7GK3CQEY0rypFeB6RASx0AdNxXi6RsAQIMpmIFCVTMUmPrhYNn1QMRw7YW4szwQdEfwkyjZrVvPXLqUnmSTw6r3DvTBnMuagp9uSkR4mY8NIp+WGRC6vytQBLmVOOO233SJEBGb70luU8mL84k+P+80iCRsuGI9g5l9xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Aa8OfpbX5JGsjxlkBvH58TN+EspF9dos4LaIks6SASA=;
- b=hTzarp75GWIOb4ZJKeMXRPBo2Sixqz1cBdS9+83eqUHTf6Ve+8XoIX1QzQ0yP14QyZjFU1vbl0fk9jujz0i7V8bv3ZMtOen4lD1AAZ0H0FI5bGjXmGzU3d7xnxiWw6Bih8sYgT5yG1+MQoZ0mFcM1WXQQN9m9W9+4QvQsnGyVWptlaBlNwsUlWGTw6rMQ9ZJIOvSWoun2oJCVoc286KluSnBJAeGd9eUh7qwtomzsNhfBxIGYOdfpRU/npx9EiCOIkpGTIIVEdcTz5HKx3vKuMWXXZUHrXhB+vH6Z577Iqq00dKaRLZ9ShdXZYNV+IzNC2h22oRXO3VvnuAzJsKLyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Aa8OfpbX5JGsjxlkBvH58TN+EspF9dos4LaIks6SASA=;
- b=5x6/QOtgimNmqSljn0wYpYedjZOKne0PP2GS2dqJOKeOxV7BYKg9zVzn80nRhU9gKeCa+UWuLD0s0qxqxh5qswE525fhEws7ZQlNU7eJ00p3XmhxWEcBaic4TDy79kh0Cp7/UcchwmqTgpYW61r4xMcT28POM21oN9gmhpN+DOA=
-Received: from SN6PR08MB5693.namprd08.prod.outlook.com (2603:10b6:805:f8::33)
- by SN6PR08MB3920.namprd08.prod.outlook.com (2603:10b6:805:1f::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Fri, 22 May
- 2020 14:55:44 +0000
-Received: from SN6PR08MB5693.namprd08.prod.outlook.com
- ([fe80::d5fe:2ead:9b9a:c340]) by SN6PR08MB5693.namprd08.prod.outlook.com
- ([fe80::d5fe:2ead:9b9a:c340%4]) with mapi id 15.20.3021.020; Fri, 22 May 2020
- 14:55:44 +0000
-From:   "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To:     "dinghao.liu@zju.edu.cn" <dinghao.liu@zju.edu.cn>
-CC:     "kjlu@umn.edu" <kjlu@umn.edu>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: RE: [EXT] [PATCH] scsi: ufs-bsg: Fix runtime PM imbalance on
- error
-Thread-Topic: RE: [EXT] [PATCH] scsi: ufs-bsg: Fix runtime PM imbalance on
- error
-Thread-Index: AQHWL/XSkL9YvKr2Y0+njmc4MiuIK6izvNjggAAQhwCAAGAPUA==
-Date:   Fri, 22 May 2020 14:55:43 +0000
-Message-ID: <SN6PR08MB5693D06B4B30D0A76824D2BBDBB40@SN6PR08MB5693.namprd08.prod.outlook.com>
-References: <20200522045932.31795-1-dinghao.liu@zju.edu.cn>
- <SN6PR08MB56932A6D579AFB4E28AFD001DBB40@SN6PR08MB5693.namprd08.prod.outlook.com>
- <4a6ba414.bf5c4.1723b9792df.Coremail.dinghao.liu@zju.edu.cn>
-In-Reply-To: <4a6ba414.bf5c4.1723b9792df.Coremail.dinghao.liu@zju.edu.cn>
-Accept-Language: en-150, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: zju.edu.cn; dkim=none (message not signed)
- header.d=none;zju.edu.cn; dmarc=none action=none header.from=micron.com;
-x-originating-ip: [165.225.81.101]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2a855cc2-1da5-4be0-b52e-08d7fe60341b
-x-ms-traffictypediagnostic: SN6PR08MB3920:
-x-microsoft-antispam-prvs: <SN6PR08MB3920224845BC93B8D53FEC07DBB40@SN6PR08MB3920.namprd08.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 04111BAC64
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WVXau2LPn6e7fptyYuIb/Iv+8SUC4VDUjO+uqItpa8QCrUq63rZ3+dvD9WLdLlydpestMXbVUkxD627VIXHHHSC9tUIfWEV0ANXLtABQxchx+ldk95bPeD53cGLxF55IoYo1155TtQ4e5lL+SfGmp2auBHhAW7qdqRrtDV7Wno8NxllAOBhlOC0yAeNxoVYZPgpQdl/27UoxbQmgj+0guumUXLiMiyc82xiqlG7RoPTApOgwC2ZFcYCLpS8vsHVjCMdhhMidvJllSoy8E5ajTNBK6GEzWfJq1r+2icd+BZG3hCCcPRl859jeOUfCGWgOhv5Js0SYnEeDPovX8XQKSw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB5693.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(4326008)(8676002)(54906003)(9686003)(8936002)(5660300002)(71200400001)(316002)(76116006)(4744005)(7416002)(33656002)(186003)(55016002)(86362001)(66946007)(26005)(6916009)(2906002)(66476007)(66556008)(66446008)(64756008)(6506007)(52536014)(55236004)(7696005)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: GZqJzNma6V0edxZwvAdU4szGd2AfuGnJTFhc1/OjVKpovPuG/OBMtFX02Dt4880c2P+LDUdUcroaOSUyZqpVBpfSGs4ALG3F17pNgu4TjO62hbyOcdFbgTcpaNu0vWenX0bnI7LiHDTse48KQlO7q9DaKf6oBphP+grHkp0ThKSeoawlA8ZuGC+xSB0j1Uq9YejKE1Nk8KkEOumTPskB6lDlWlPyzVVuKdD+9o5bddbGM9IBoY5GVYtDvpKgEyPfRG2ewGW8J/lA6uqHS7ZSty96RALLt9uoaoCa09oPgcb1iebRhw1TREt+KngQo1nsDNQzJ31DJ/OdtMtXdkA1d7mFpMIDvqcwHj275xxypPcrHDpwp65bU0TpN2+MrS1uhhuLvHZu4Bh9z1yii66uE6j6Pqgu4S76ZgZQE9gsxJi9BdsqS8syO/Kj3TKFmG0w5eM5accQuSbY6OLhCgL7wKGFsxUbP2n6V3g/tWVdVTojTSyxR3mgsMPyaIpOSBiy
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731174AbgEVO4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:56:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730481AbgEVO4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 10:56:02 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ADAA205CB;
+        Fri, 22 May 2020 14:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590159361;
+        bh=0cKEoWpTu+DWnt1dxTx3zYaBzjzi9zNBJ/UJhCY6MEw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=S2tGsp0elzP5bZPCTi84SjVeZaLlaznv1T5xlzOMg4Y0dF+KyjMmUuge2RGTdWSu2
+         NdXIrSGe2fRhRE0TIIF18GNfbWdGRo2kIaIcwAVDOxMZD1ntv6qO3M0DnHJ3iOth6T
+         0EJiDT9nxF+rFogASJMrv2NEMfke4sBLhm/iKjOQ=
+Subject: Re: [PATCH 3/3] selftests: vdso: Add a selftest for vDSO getcpu()
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah <shuah@kernel.org>
+References: <20200505174728.46594-1-broonie@kernel.org>
+ <20200505174728.46594-4-broonie@kernel.org>
+ <dff4dfbd-f3f1-d683-5dac-4404e9023b2e@kernel.org>
+ <20200519174452.GR4611@sirena.org.uk>
+From:   shuah <shuah@kernel.org>
+Message-ID: <0f1a7c29-340d-f61b-b102-d300932dc92c@kernel.org>
+Date:   Fri, 22 May 2020 08:55:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a855cc2-1da5-4be0-b52e-08d7fe60341b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2020 14:55:43.8395
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JqJx4iTHQEUQV08Pla/Gk7euoGrL+IVX7pLsQUUpcZXGb8VW/NYHaND7JEKoZpLeYhtCDBbWf67CVXP+sMlAYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB3920
+In-Reply-To: <20200519174452.GR4611@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIERpbmdoYW8NCg0KPiBUaGFuayB5b3UgZm9yIHlvdXIgYWR2aWNlISBNb3Zpbmcgb3JpZ2lu
-YWwgcG1fcnVudGltZV9wdXRfc3luYygpIHRvIGFmdGVyDQo+ICJvdXQiIGxhYmVsIHdpbGwgaW5m
-bHVlbmNlIGFuIGVycm9yIHBhdGggYnJhbmNoZWQgZnJvbQ0KPiB1cHNfYnNnX3ZlcmlmeV9xdWVy
-eV9zaXplKCkuIFNvIEkgdGhpbmsgY2hhbmdpbmcgImdvdG8gb3V0IiB0byAiYnJlYWsiIGlzIGEg
-Z29vZA0KPiBpZGVhLiBCdXQgaW4gdGhpcyBjYXNlIHdlIG1heSBleGVjdXRlIGFuIGV4dHJhDQo+
-IHNnX2NvcHlfZnJvbV9idWZmZXIoKSBhbmQgYW4gZXh0cmEga2ZyZWUoKSBjb21wYXJlZCB3aXRo
-IHVucGF0Y2hlZCB2ZXJzaW9uLg0KPiBEb2VzIHRoaXMgbWF0dGVyPw0KPiANCldoYXQgZG8geW91
-IG1lYW4gIiB1bnBhdGNoZWQgdmVyc2lvbiAiPyANCg0KSSBzZWUsIGJlbG93IGdvdG8gd2lsbCBi
-eXBhc3Mgc2dfY29weV9mcm9tX2J1ZmZlcigpIGFuZCBhbiBleHRyYSBrZnJlZSgpDQpJbiBjYXNl
-IHVmc19ic2dfYWxsb2NfZGVzY19idWZmZXIoKSBmYWlscy4gDQoNCkJlYW4NCg0K
+On 5/19/20 11:44 AM, Mark Brown wrote:
+> On Tue, May 19, 2020 at 11:11:28AM -0600, shuah wrote:
+>> On 5/5/20 11:47 AM, Mark Brown wrote:
+> 
+>>> +int main(int argc, char **argv)
+>>> +{
+>>> +	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
+>>
+>> WARNING: Missing a blank line after declarations
+>> WARNING: Missing a blank line after declarations
+>> #135: FILE: tools/testing/selftests/vDSO/vdso_test_getcpu.c:27:
+>> +	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
+
+A blank line after declarations here just like what checkpatch
+suggests. It makes it readable.
+
+>> +	if (!sysinfo_ehdr) {
+> 
+> This is the idiom in use by the existing gettimeofday test:
+> 
+> WARNING: Missing a blank line after declarations
+> #38: FILE: tools/testing/selftests/vDSO/vdso_test_gettimeofday.c:38:
+> +	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
+> +	if (!sysinfo_ehdr) {
+> 
+> so I don't know how you want the code to look here?
+> 
+
+See above.
+
+thanks,
+-- Shuah
