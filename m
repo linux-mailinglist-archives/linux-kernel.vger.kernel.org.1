@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081131DECCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C81E1DECDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 18:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgEVQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 12:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        id S1730751AbgEVQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 12:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgEVQIv (ORCPT
+        with ESMTP id S1730533AbgEVQIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 12:08:51 -0400
+        Fri, 22 May 2020 12:08:52 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F6BC05BD43;
-        Fri, 22 May 2020 09:08:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506EFC05BD43;
+        Fri, 22 May 2020 09:08:52 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jcAE3-00009T-0i; Fri, 22 May 2020 18:08:47 +0200
+        id 1jcAE4-0000AG-2C; Fri, 22 May 2020 18:08:48 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id AAF171C0475;
-        Fri, 22 May 2020 18:08:46 +0200 (CEST)
-Date:   Fri, 22 May 2020 16:08:46 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8FEFB1C0475;
+        Fri, 22 May 2020 18:08:47 +0200 (CEST)
+Date:   Fri, 22 May 2020 16:08:47 -0000
 From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/kcsan] compiler.h: Remove data_race() and unnecessary
- checks from {READ,WRITE}_ONCE()
+Subject: [tip: locking/kcsan] kcsan: Remove 'noinline' from __no_kcsan_or_inline
 Cc:     Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200521142047.169334-9-elver@google.com>
-References: <20200521142047.169334-9-elver@google.com>
+In-Reply-To: <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
+References: <CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <159016372659.17951.9279233583704092655.tip-bot2@tip-bot2>
+Message-ID: <159016372746.17951.1491330046676441338.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -52,67 +51,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/kcsan branch of tip:
 
-Commit-ID:     777f73c4e79106d45b304f6af0d31917864dbdf1
-Gitweb:        https://git.kernel.org/tip/777f73c4e79106d45b304f6af0d31917864dbdf1
+Commit-ID:     f487a549ea30ee894055d8d20e81c1996a6e10a0
+Gitweb:        https://git.kernel.org/tip/f487a549ea30ee894055d8d20e81c1996a6e10a0
 Author:        Marco Elver <elver@google.com>
-AuthorDate:    Thu, 21 May 2020 16:20:44 +02:00
+AuthorDate:    Thu, 21 May 2020 16:20:41 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 22 May 2020 15:19:53 +02:00
+CommitterDate: Fri, 22 May 2020 15:12:39 +02:00
 
-compiler.h: Remove data_race() and unnecessary checks from {READ,WRITE}_ONCE()
+kcsan: Remove 'noinline' from __no_kcsan_or_inline
 
-The volatile accesses no longer need to be wrapped in data_race()
-because compilers that emit instrumentation distinguishing volatile
-accesses are required for KCSAN.
+Some compilers incorrectly inline small __no_kcsan functions, which then
+results in instrumenting the accesses. For this reason, the 'noinline'
+attribute was added to __no_kcsan_or_inline. All known versions of GCC
+are affected by this. Supported versions of Clang are unaffected, and
+never inline a no_sanitize function.
 
-Consequently, the explicit kcsan_check_atomic*() are no longer required
-either since the compiler emits instrumentation distinguishing the
-volatile accesses.
+However, the attribute 'noinline' in __no_kcsan_or_inline causes
+unexpected code generation in functions that are __no_kcsan and call a
+__no_kcsan_or_inline function.
 
-Finally, simplify __READ_ONCE_SCALAR() and remove __WRITE_ONCE_SCALAR().
-
- [ bp: Convert commit message to passive voice. ]
+In certain situations it is expected that the __no_kcsan_or_inline
+function is actually inlined by the __no_kcsan function, and *no* calls
+are emitted. By removing the 'noinline' attribute, give the compiler
+the ability to inline and generate the expected code in __no_kcsan
+functions.
 
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Will Deacon <will@kernel.org>
-Link: https://lkml.kernel.org/r/20200521142047.169334-9-elver@google.com
+Link: https://lkml.kernel.org/r/CANpmjNNOpJk0tprXKB_deiNAv_UmmORf1-2uajLhnLWQQ1hvoA@mail.gmail.com
+Link: https://lkml.kernel.org/r/20200521142047.169334-6-elver@google.com
 ---
- include/linux/compiler.h | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ include/linux/compiler.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 17c98b2..7444f02 100644
+index e24cc3a..17c98b2 100644
 --- a/include/linux/compiler.h
 +++ b/include/linux/compiler.h
-@@ -228,9 +228,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 
- #define __READ_ONCE_SCALAR(x)						\
- ({									\
--	typeof(x) *__xp = &(x);						\
--	__unqual_scalar_typeof(x) __x = data_race(__READ_ONCE(*__xp));	\
--	kcsan_check_atomic_read(__xp, sizeof(*__xp));			\
-+	__unqual_scalar_typeof(x) __x = __READ_ONCE(x);			\
- 	smp_read_barrier_depends();					\
- 	(typeof(x))__x;							\
- })
-@@ -246,17 +244,10 @@ do {									\
- 	*(volatile typeof(x) *)&(x) = (val);				\
- } while (0)
- 
--#define __WRITE_ONCE_SCALAR(x, val)					\
--do {									\
--	typeof(x) *__xp = &(x);						\
--	kcsan_check_atomic_write(__xp, sizeof(*__xp));			\
--	data_race(({ __WRITE_ONCE(*__xp, val); 0; }));			\
--} while (0)
--
- #define WRITE_ONCE(x, val)						\
- do {									\
- 	compiletime_assert_rwonce_type(x);				\
--	__WRITE_ONCE_SCALAR(x, val);					\
-+	__WRITE_ONCE(x, val);						\
- } while (0)
- 
- #ifdef CONFIG_KASAN
+@@ -276,11 +276,9 @@ do {									\
+ #ifdef __SANITIZE_THREAD__
+ /*
+  * Rely on __SANITIZE_THREAD__ instead of CONFIG_KCSAN, to avoid not inlining in
+- * compilation units where instrumentation is disabled. The attribute 'noinline'
+- * is required for older compilers, where implicit inlining of very small
+- * functions renders __no_sanitize_thread ineffective.
++ * compilation units where instrumentation is disabled.
+  */
+-# define __no_kcsan_or_inline __no_kcsan noinline notrace __maybe_unused
++# define __no_kcsan_or_inline __no_kcsan notrace __maybe_unused
+ # define __no_sanitize_or_inline __no_kcsan_or_inline
+ #else
+ # define __no_kcsan_or_inline __always_inline
