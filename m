@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB5F1DE355
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A87B1DE317
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730011AbgEVJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:38:12 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:8679 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729580AbgEVJiK (ORCPT
+        id S1729471AbgEVJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 05:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgEVJcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 05:38:10 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 22 May 2020 15:08:08 +0530
-Received: from minint-dvc2thc.qualcomm.com (HELO sartgarg-linux.qualcomm.com) ([10.206.24.245])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 22 May 2020 15:08:08 +0530
-Received: by sartgarg-linux.qualcomm.com (Postfix, from userid 2339771)
-        id 35FD9179E; Fri, 22 May 2020 15:08:07 +0530 (IST)
-From:   Sarthak Garg <sartgarg@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sarthak Garg <sartgarg@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH V2 8/8] mmc: sdhci-msm: dump vendor specific registers during error
-Date:   Fri, 22 May 2020 15:02:30 +0530
-Message-Id: <1590139950-7288-9-git-send-email-sartgarg@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590139950-7288-1-git-send-email-sartgarg@codeaurora.org>
-References: <1588838535-6050-1-git-send-email-sartgarg@codeaurora.org>
- <1590139950-7288-1-git-send-email-sartgarg@codeaurora.org>
+        Fri, 22 May 2020 05:32:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E2AC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 02:32:39 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jc42d-0004xj-09; Fri, 22 May 2020 11:32:35 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jc42c-0000dW-0u; Fri, 22 May 2020 11:32:34 +0200
+Date:   Fri, 22 May 2020 11:32:33 +0200
+From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        linux-pwm@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [PATCH v1 2/2] Add PWM driver for LGM
+Message-ID: <20200522093233.yy3tcalveoutxcsj@pengutronix.de>
+References: <cover.1590132733.git.rahul.tanwar@linux.intel.com>
+ <3c1d2343b034325dbc185ccd23a35b40a62a4e7b.1590132733.git.rahul.tanwar@linux.intel.com>
+ <20200522085613.ktb2ruw2virj337v@pengutronix.de>
+ <20200522091824.GR1634618@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200522091824.GR1634618@smile.fi.intel.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement dump_vendor_registers host operation to print the
-vendor specific registers in addition to standard SDHC
-register during error conditions.
+Hello Andy,
 
-Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/mmc/host/sdhci-msm.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+On Fri, May 22, 2020 at 12:18:24PM +0300, Andy Shevchenko wrote:
+> On Fri, May 22, 2020 at 10:56:13AM +0200, Uwe Kleine-König wrote:
+> > On Fri, May 22, 2020 at 03:41:59PM +0800, Rahul Tanwar wrote:
+> 
+> > > +	io_base = devm_platform_ioremap_resource(pdev, 0);
+> > > +	if (IS_ERR(io_base))
+> > 
+> > error message here?
+> 
+> platform core provides it. No need to duplicate (esp. taking into consideration
+> that it can issue IIRC three different error messages depending on actual error).
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 61cf0f1..95cd973 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1874,6 +1874,36 @@ static void sdhci_msm_reset(struct sdhci_host *host, u8 mask)
- 	sdhci_reset(host, mask);
- }
- 
-+#define DRIVER_NAME "sdhci_msm"
-+#define SDHCI_MSM_DUMP(f, x...) \
-+	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
-+
-+void sdhci_msm_dump_vendor_regs(struct sdhci_host *host)
-+{
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
-+	const struct sdhci_msm_offset *msm_offset = msm_host->offset;
-+
-+	SDHCI_MSM_DUMP("----------- VENDOR REGISTER DUMP -----------\n");
-+
-+	SDHCI_MSM_DUMP(
-+			"DLL sts: 0x%08x | DLL cfg:  0x%08x | DLL cfg2: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_status),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config_2));
-+	SDHCI_MSM_DUMP(
-+			"DLL cfg3: 0x%08x | DLL usr ctl:  0x%08x | DDR cfg: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_config_3),
-+		readl_relaxed(host->ioaddr + msm_offset->core_dll_usr_ctl),
-+		readl_relaxed(host->ioaddr + msm_offset->core_ddr_config));
-+	SDHCI_MSM_DUMP(
-+			"Vndr func: 0x%08x | Vndr func2 : 0x%08x Vndr func3: 0x%08x\n",
-+		readl_relaxed(host->ioaddr + msm_offset->core_vendor_spec),
-+		readl_relaxed(host->ioaddr +
-+			msm_offset->core_vendor_spec_func2),
-+		readl_relaxed(host->ioaddr + msm_offset->core_vendor_spec3));
-+}
-+
- static const struct sdhci_msm_variant_ops mci_var_ops = {
- 	.msm_readl_relaxed = sdhci_msm_mci_variant_readl_relaxed,
- 	.msm_writel_relaxed = sdhci_msm_mci_variant_writel_relaxed,
-@@ -1929,6 +1959,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
- 	.write_w = sdhci_msm_writew,
- 	.write_b = sdhci_msm_writeb,
- 	.irq	= sdhci_msm_cqe_irq,
-+	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
- };
- 
- static const struct sdhci_pltfm_data sdhci_msm_pdata = {
+Ah, missed that. Indeed that's fine as is in the patch.
+
+Thanks
+Uwe
+
 -- 
-2.7.4
-
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
