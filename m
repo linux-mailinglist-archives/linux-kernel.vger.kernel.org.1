@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9481DEBD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265A81DEBDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730505AbgEVP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 11:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730387AbgEVP2r (ORCPT
+        id S1730416AbgEVPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 11:31:10 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18625 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729851AbgEVPbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 11:28:47 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CE0C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:28:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i15so10523953wrx.10
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 08:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RE02VevKPga5GawhGamW95ZE1kXVYxGQzWhCIbMIzNY=;
-        b=MMWImdE/2ZE9LDYQnaGCIARyM962IGLuiw6eGA/jljxOaR7yh5pCQt+3wfvYRSnfOp
-         k5JKNPBeS69Vv4hi1byp7pnaA42f2saUD3rcNGfywZnGGpjwbapkrf/6bKIN53qVqNEO
-         rhdXGWgY4e93wR/0RmGUPVlIalsuTe6sMQE1MZS0cu5t5Qc8ZNM/VRySlOhxfKB+2Gkb
-         wJ4Nf4RndEct8/FO2q4BKzMAbtrRS1/9TtSOs0WiR0qB5mcwBixid/P0ECqitXmzRmOP
-         tkkkcU98mmsZgoNL7ljU3e7uujxzyRprCWUfqgC1FsPs9fl0G122XUrDsBGIZdWSkmqd
-         nT/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RE02VevKPga5GawhGamW95ZE1kXVYxGQzWhCIbMIzNY=;
-        b=TeYNQEedSqIUTjMb43DTnmtTaXQo4h+7tis0Pd3p+gxIcfJIZaE59pF/xJWzV0OX23
-         yIzRHRB3NSSI4Ow+cmxxbbgyRnm9OdAgeWshxj89Sai9N/3/O41AcwCbfVjL1WaiH9Hg
-         yePCTizlVhfxmQveziLlyb9ARX4J48EuI/IiE8iKvUdq5ofVD1ELUfGyA7pK0ocKcqfN
-         0HBL0pOs/L6i9jQo0cnK+dp2yCiS7774ojkgoofcihqef2Hdje5n+Pmo+2/47KLZ63Dm
-         slvl9m3LsdyybEtBYjol7/7uZotiBInzKk0qDOVlHjpI+J3e4/P/94gomvqaLA72QJQO
-         Zzeg==
-X-Gm-Message-State: AOAM533OT0d01v7eRbczXZxgl4lFEHiXwTWyZzBz/ejzSu+x+GhQwd7v
-        xaCRX2alkGwOaZZmAD4NE/tKm9NyCuQ=
-X-Google-Smtp-Source: ABdhPJxdCf7sw2JHdZ8XQZwe1iL/1ihyu6MfIaO/x8mio0kAv1N7GEStdaiFyyQDolFStnz3Rqs/ew==
-X-Received: by 2002:adf:a3c9:: with SMTP id m9mr1159741wrb.405.1590161325014;
-        Fri, 22 May 2020 08:28:45 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a82f:eaec:3c49:875a? ([2a01:e34:ed2f:f020:a82f:eaec:3c49:875a])
-        by smtp.googlemail.com with ESMTPSA id s19sm6092584wmj.21.2020.05.22.08.28.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2020 08:28:44 -0700 (PDT)
-Subject: Re: [PATCH v5 0/8] clocksource: Fix MIPS GIC and DW APB Timer for
- Baikal-T1 SoC support
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <211ab91d-6085-3073-1cbc-2300abade1b7@linaro.org>
-Date:   Fri, 22 May 2020 17:28:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 22 May 2020 11:31:09 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec7efab0000>; Fri, 22 May 2020 08:28:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 22 May 2020 08:31:09 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 22 May 2020 08:31:09 -0700
+Received: from ubuntu.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 May
+ 2020 15:31:07 +0000
+From:   Leon Yu <leoyu@nvidia.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Leon Yu <leoyu@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: stmmac: don't attach interface until resume finishes
+Date:   Fri, 22 May 2020 23:29:43 +0800
+Message-ID: <1590161383-8141-1-git-send-email-leoyu@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590161323; bh=VB2D7nby06TiBHyXC2plrdVwB7fVkP01QEXkGaFMelg=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-Originating-IP:X-ClientProxiedBy:Content-Type;
+        b=KC2gGbk9ZS3khsqAoF+ndCxIN315dVmQTwVAH2GCSNs0Ey+jEZC194onuZHApD5/L
+         UrY5ZoBukEz7QGmeJ4jJz3Aqwk1J3low7N+Ql9S+BGlkb9R9iabFMPcCLMe9K5IFxW
+         ZCkgFMMM6FRbNSbpD8ysQYvFzNX0bf7JUwYvtRqMzRwFyI5R/TtGhdxSw8ScrLgpD4
+         DBZLZoAuxrW5UNZ+VjGvGoNruo7qqo3DPvxh6XKDeT8+DrYc5rtyZEhN36gM5iww1j
+         yWOf8kJAyZlSUwgk5gPzQNZjPnZY7Zh5JtAgyZ4kChuGYUxjz6vxU9UeqQ2vRehq/y
+         zkVLI9YL8PiEA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2020 22:48, Serge Semin wrote:
-> As for all Baikal-T1 SoC related patchsets, which need this, we replaced
-> the DW APB Timer legacy plain text-based dt-binding file with DT schema.
-> Similarly the MIPS GIC bindings file is also converted to DT schema seeing
-> it also defines the MIPS GIC Timer binding.
-> 
-> Aside from MIPS-specific r4k timer Baikal-T1 chip also provides a
-> functionality of two another timers: embedded into the MIPS GIC timer and
-> three external DW timers available over APB bus. But we can't use them
-> before the corresponding drivers are properly fixed. First of all DW APB
-> Timer shouldn't be bound to a single CPU, since as being accessible over
-> APB they are external with respect to all possible CPUs. Secondly there
-> might be more than just two DW APB Timers in the system (Baikal-T1 has
-> three of them), so permit the driver to use one of them as a clocksource
-> and the rest - for clockevents. Thirdly it's possible to use MIPS GIC
-> timer as a clocksource so register it in the corresponding subsystem
-> (the patch has been found in the Paul Burton MIPS repo so I left the
-> original Signed-off-by attribute). Finally in the same way as r4k timer
-> the MIPS GIC timer should be used with care when CPUFREQ config is enabled
-> since in case of CM2 the timer counting depends on the CPU reference clock
-> frequency while the clocksource subsystem currently doesn't support the
-> timers with non-stable clock.
-> 
-> This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
-> base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
-> tag: v5.7-rc4
+Commit 14b41a2959fb ("net: stmmac: Delete txtimer in suspend") was the
+first attempt to fix a race between mod_timer() and setup_timer()
+during stmmac_resume(). However the issue still exists as the commit
+only addressed half of the issue.
 
-Applied patch 1,2,4,5,6,7,8
+Same race can still happen as stmmac_resume() re-attaches interface
+way too early - even before hardware is fully initialized.  Worse,
+doing so allows network traffic to restart and stmmac_tx_timer_arm()
+being called in the middle of stmmac_resume(), which re-init tx timers
+in stmmac_init_coalesce().  timer_list will be corrupted and system
+crashes as a result of race between mod_timer() and setup_timer().
 
-Thanks!
+  systemd--1995    2.... 552950018us : stmmac_suspend: 4994
+  ksoftirq-9       0..s2 553123133us : stmmac_tx_timer_arm: 2276
+  systemd--1995    0.... 553127896us : stmmac_resume: 5101
+  systemd--320     7...2 553132752us : stmmac_tx_timer_arm: 2276
+  (sd-exec-1999    5...2 553135204us : stmmac_tx_timer_arm: 2276
+  ---------------------------------
+  pc : run_timer_softirq+0x468/0x5e0
+  lr : run_timer_softirq+0x570/0x5e0
+  Call trace:
+   run_timer_softirq+0x468/0x5e0
+   __do_softirq+0x124/0x398
+   irq_exit+0xd8/0xe0
+   __handle_domain_irq+0x6c/0xc0
+   gic_handle_irq+0x60/0xb0
+   el1_irq+0xb8/0x180
+   arch_cpu_idle+0x38/0x230
+   default_idle_call+0x24/0x3c
+   do_idle+0x1e0/0x2b8
+   cpu_startup_entry+0x28/0x48
+   secondary_start_kernel+0x1b4/0x208
 
-  -- Daniel
+Fix this by deferring netif_device_attach() to the end of
+stmmac_resume().
 
+Signed-off-by: Leon Yu <leoyu@nvidia.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index a999d6b33a64..1f319c9cee46 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5190,8 +5190,6 @@ int stmmac_resume(struct device *dev)
+ 			return ret;
+ 	}
+ 
+-	netif_device_attach(ndev);
+-
+ 	mutex_lock(&priv->lock);
+ 
+ 	stmmac_reset_queues_param(priv);
+@@ -5218,6 +5216,8 @@ int stmmac_resume(struct device *dev)
+ 
+ 	phylink_mac_change(priv->phylink, true);
+ 
++	netif_device_attach(ndev);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(stmmac_resume);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.7.4
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
