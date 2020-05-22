@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418451DDF75
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218E51DDF7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 07:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgEVFmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 01:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S1728070AbgEVFw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 01:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgEVFmQ (ORCPT
+        with ESMTP id S1726449AbgEVFw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 01:42:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F5CC061A0E;
-        Thu, 21 May 2020 22:42:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h17so8904211wrc.8;
-        Thu, 21 May 2020 22:42:15 -0700 (PDT)
+        Fri, 22 May 2020 01:52:57 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015ACC061A0E
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:52:56 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id o19so7450929qtr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 21 May 2020 22:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=06chsOrgQpjkS/G2JV9vsqi2MbhiGEqCYsM+9Un41es=;
-        b=jPnRvWt0Avnr0RC4x9kzCcbvBpUAY6gYq4Xa3jTEkdnW2bv7mRka283TqCNillZXnK
-         B+a7TR9U+qeRm+6iVFuCXhqtQzfeWAnJ9QFcLZcCzCW2TRAI2kDxVDTYn1YDsTpvM/UL
-         5InKSX3ZmNdHUH4CTMJ3i2FDV7uJqi0ggZNyPb+N18STDoTqSh20ExoagsmUtZw2W5hs
-         VESKnoeEcQt19wMOz6zYjtFtPMnmPlPKk0Mr6SFzka9QuRuZUAjAeS89gqK6/1su+K09
-         CX8+UCFhJ4dfQ9lYV7HZNLB5+VhTyB/mUDk26xo71geMDgjZplGocmJ0vpWdNsiTYmcm
-         GSKg==
+         :cc:content-transfer-encoding;
+        bh=jUEtbJTo/s1k1xKnZ5zayiAt68J7p5qR5HPp3/wYSZA=;
+        b=VcX2eEh3SL5ffZNERfkyISXQ6MCd1g4T5WttpHghQyjoqXCunYEOHKWTiXuFxFDDO+
+         RiyHOeC/1rtKcSzk4eVY29tK1CgXvKazKQ450DPV5+o9/HkAuPJZ5MiEvXyLKCMmJdrH
+         b9tn+kmTLU/2NoHoYdTwkyOWs0+9qfnhPAxRin1piESzDojseiK8XMIWVZS9UrWEf/Zo
+         dNODe+ctDtyH3T8qAc9ke1Dpw2hKQlqy9cMS3RRk32Wi5FdpyrDmPeU2t2e5rGgkhZE8
+         rXzchMgLsOGGNMmpryaXQbNXXzPMd1YKngF9rxrGEcNl/+2nJHVnaMB0FTJ7WzuLDMQe
+         8Y3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=06chsOrgQpjkS/G2JV9vsqi2MbhiGEqCYsM+9Un41es=;
-        b=aNtOQbkrJyZS/QnoNp9FIXGxcMIrIfCBg+r4B68/tvmrzaE8z95wBUdrV6TWObahiW
-         /RoYE2mKKlG91wsgjIt7Ko6z1Qfytc5Aij/phYg9d6liZ/AqSzILU+2KtVAtZgHp2ig4
-         wwKKTuvOOnCuwtQOyBKzBJI2xyi5uVVdbd7cJGGm/3p7QKvD57bZDFdumaQDBtxJDSC/
-         9C6xJvdlsvi/8jIeXA6w+4C7cikmmBK1Yf6a1kE8bqNknHqfT9+jP6fKtNQRIIg0MCMG
-         MAQv8NoXADxnvnZS5OyUreE0uMRNTnAHr3lD2t/7Uk8bTscKmdFdalAjvhGnYybyNwCH
-         YtxA==
-X-Gm-Message-State: AOAM531J0qoAxfYhkbJaGgpHOyaHlJthyBcBIasFKCJ5Gx0qsOA9Y/rY
-        T3KMt3nvLTAZ+WFQG0YuIzRxtHTXMNgG1woXxr0=
-X-Google-Smtp-Source: ABdhPJynqthIPJWIRUluyP+U5q4i7nZgEP4LkojJ69yqmT0dksFo1fdRblwHxH1sjpJ6sczNubh0UyGl7ocbFBtBAzM=
-X-Received: by 2002:a5d:654a:: with SMTP id z10mr1737856wrv.234.1590126134702;
- Thu, 21 May 2020 22:42:14 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jUEtbJTo/s1k1xKnZ5zayiAt68J7p5qR5HPp3/wYSZA=;
+        b=kkXYqZ0m4gVQM1x9OtLbAOvaEJAfhceX8AaVG2jbkIGBs7XCXMbfHG+8oGNZIdE/EM
+         AnaIDD0Hs2SbBJWW3yyXa+C98q5JElNaD7hO5T5o551fsJEDlRsf5+ZX4GG5hat7lReF
+         9ozX355kHuz/MQWy9memrLyfuuiovrfqe72nwNAKtb0PfDFWwJbI1uT0RrX8ZELzw8fi
+         WvUcrtB7tcTD5ZICUuXdD3aOCG1s7+1AUI51VHGR0LHG/jGpvnf8dGqTP4KHT24mRbZY
+         BsfDZn7Ci8pWEFzdyWEG8cVXvdYT4XYbWdNWktgM1/odJbnBF10H5Xc7Upbl1EbDTlsS
+         /wPA==
+X-Gm-Message-State: AOAM531EJ+PMaLauACO0rij340maP/gMje1OdgNOfhn3YGyo759Dn/5+
+        Cr9y1EZaZkEsJ9AINZMHIWMuvlNAJ9dfI9FF2BMHjP2o
+X-Google-Smtp-Source: ABdhPJx1e8fFPtfihkdBuMz8sSFzb5vEt3BGO8+bUlwtEUnB32VqfYrjCACaarEDs5fdv997BUKImmDVBsolkJPtSdU=
+X-Received: by 2002:ac8:6c6:: with SMTP id j6mr14085108qth.194.1590126775932;
+ Thu, 21 May 2020 22:52:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200421143149.45108-1-yuehaibing@huawei.com> <20200422125346.27756-1-yuehaibing@huawei.com>
- <0015ec4c-0e9c-a9d2-eb03-4d51c5fbbe86@huawei.com> <20200519085353.GE13121@gauss3.secunet.de>
- <CADvbK_eXW24SkuLUOKkcg4JPa8XLcWpp6RNCrQT+=okaWe+GDA@mail.gmail.com> <550a82f1-9cb3-2392-25c6-b2a84a00ca33@huawei.com>
-In-Reply-To: <550a82f1-9cb3-2392-25c6-b2a84a00ca33@huawei.com>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Fri, 22 May 2020 13:49:05 +0800
-Message-ID: <CADvbK_cpXOxbWzHzonrzzrrb+Vh3q8NhXnapz0yc9h4H4gN02A@mail.gmail.com>
-Subject: Re: [PATCH v2] xfrm: policy: Fix xfrm policy match
-To:     Yuehaibing <yuehaibing@huawei.com>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1589764857-6800-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1589764857-6800-4-git-send-email-iamjoonsoo.kim@lge.com> <3499673c-d103-bb69-5f38-8cce8e659a85@oracle.com>
+In-Reply-To: <3499673c-d103-bb69-5f38-8cce8e659a85@oracle.com>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Fri, 22 May 2020 14:52:45 +0900
+Message-ID: <CAAmzW4N7f5WbcJbhEdPq2W+6xOpdMR_5jDRU_3UmZK_VOBvZnw@mail.gmail.com>
+Subject: Re: [PATCH 03/11] mm/hugetlb: introduce alloc_control structure to
+ simplify migration target allocation APIs
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 9:45 AM Yuehaibing <yuehaibing@huawei.com> wrote:
+2020=EB=85=84 5=EC=9B=94 22=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 3:57, M=
+ike Kravetz <mike.kravetz@oracle.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> On 2020/5/21 14:49, Xin Long wrote:
-> > On Tue, May 19, 2020 at 4:53 PM Steffen Klassert
-> > <steffen.klassert@secunet.com> wrote:
-> >>
-> >> On Fri, May 15, 2020 at 04:39:57PM +0800, Yuehaibing wrote:
-> >>>
-> >>> Friendly ping...
-> >>>
-> >>> Any plan for this issue?
-> >>
-> >> There was still no consensus between you and Xin on how
-> >> to fix this issue. Once this happens, I consider applying
-> >> a fix.
-> >>
-> > Sorry, Yuehaibing, I can't really accept to do: (A->mark.m & A->mark.v)
-> > I'm thinking to change to:
+> On 5/17/20 6:20 PM, js1304@gmail.com wrote:
+> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > >
-> >  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
-> >                                    struct xfrm_policy *pol)
-> >  {
-> > -       u32 mark = policy->mark.v & policy->mark.m;
-> > -
-> > -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> > -               return true;
-> > -
-> > -       if ((mark & pol->mark.m) == pol->mark.v &&
-> > -           policy->priority == pol->priority)
-> > +       if (policy->mark.v == pol->mark.v &&
-> > +           (policy->mark.m == pol->mark.m ||
-> > +            policy->priority == pol->priority))
-> >                 return true;
+> > Currently, page allocation functions for migration requires some argume=
+nts.
+> > More worse, in the following patch, more argument will be needed to uni=
+fy
+> > the similar functions. To simplify them, in this patch, unified data
+> > structure that controls allocation behaviour is introduced.
+>
+> As a followup to Roman's question and your answer about adding a suffix/p=
+refix
+> to the new structure.  It 'may' be a bit confusing as alloc_context is al=
+ready
+> defined and *ac is passsed around for page allocations.  Perhaps, this ne=
+w
+> structure could somehow have migrate in the name as it is all about alloc=
+ating
+> migrate targets?
+
+I have considered that but I cannot find appropriate prefix. In hugetlb cod=
+e,
+struct alloc_control is passed to the internal function which is not
+fully dedicated
+to the migration so 'migrate' would not be appropriate prefix.
+
+alloc_context is used by page allocation core and alloc_control would be us=
+ed by
+outside of it so I think that we can endure it. If there is a good
+suggestion, I will change
+the name happily.
+
 > >
-> >         return false;
+> > For clean-up, function declarations are re-ordered.
 > >
-> > which means we consider (the same value and mask) or
-> > (the same value and priority) as the same one. This will
-> > cover both problems.
+> > Note that, gfp_mask handling on alloc_huge_page_(node|nodemask) is
+> > slightly changed, from ASSIGN to OR. It's safe since caller of these
+> > functions doesn't pass extra gfp_mask except htlb_alloc_mask().
+> >
+> > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 >
->   policy A (mark.v = 0x1011, mark.m = 0x1011, priority = 1)
->   policy B (mark.v = 0x1001, mark.m = 0x1001, priority = 1)
-I'd think these are 2 different policies.
+> Patch makes sense.
 
->
->   when fl->flowi_mark == 0x12341011, in xfrm_policy_match() do check like this:
->
->         (fl->flowi_mark & pol->mark.m) != pol->mark.v
->
->         0x12341011 & 0x1011 == 0x00001011
->         0x12341011 & 0x1001 == 0x00001001
->
->  This also match different policy depends on the order of policy inserting.
-Yes, this may happen when a user adds 2  policies like that.
-But I think this's a problem that the user doesn't configure it well,
-'priority' should be set.
-and this can not be avoided, also such as:
+Thanks!
 
-   policy A (mark.v = 0xff00, mark.m = 0x1000, priority = 1)
-   policy B (mark.v = 0x00ff, mark.m = 0x0011, priority = 1)
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index a298a8c..94d2386 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1526,10 +1526,15 @@ struct page *new_page_nodemask(struct page *pag=
+e,
+> >       unsigned int order =3D 0;
+> >       struct page *new_page =3D NULL;
+> >
+> > -     if (PageHuge(page))
+> > -             return alloc_huge_page_nodemask(
+> > -                             page_hstate(compound_head(page)),
+> > -                             preferred_nid, nodemask);
+> > +     if (PageHuge(page)) {
+> > +             struct hstate *h =3D page_hstate(page);
+>
+> I assume the removal of compound_head(page) was intentional?  Just asking
+> because PageHuge will look at head page while page_hstate will not.  So,
+> if passed a non-head page things could go bad.
 
-   try with 0x12341011
+I was thinking that page_hstate() can handle the tail page but it seems tha=
+t
+it's not. Thanks for correction. I will change it on next version.
 
-So just be it, let users decide.
+Thanks.
