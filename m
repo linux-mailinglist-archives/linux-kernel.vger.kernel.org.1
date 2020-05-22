@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B327A1DE38E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 11:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97DF1DE3B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 12:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728697AbgEVJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbgEVJyv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 05:54:51 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FFDC061A0E;
-        Fri, 22 May 2020 02:54:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v16so11913291ljc.8;
-        Fri, 22 May 2020 02:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=XzN7vQSAeKD/eMd3BXZFqaFdo1S/tdrEDVtMr2FGnLU=;
-        b=Og7+X8GsBOfeJA3VJxO9QrF+eNA1WImqglo1OAStxYRp8TU5PGXrQmNtGmN0qlyp34
-         RaxDZmB5YkfLP3SlmIT6TNWFSnle76nSJBo4/fwN8LgyJXBjkfPFCieho97KHlfsf1iM
-         mdbPjltolPJBj6iROxZsLe7NtGT37gpt6jsIgbGVYgonW2hN1Wy3V9EuZaU2iQ61t0lo
-         OAvVy7v3ekVESgM1gcZZ/fglsARr2nC4a5Qni0+5BI467TUO23O0cxWPCNgOWO0VBEH+
-         uOzLY+dAnO5mKK8l2wQ32FuDjQrLZXbLh9J311jODurfsqOzjMrSQ3yWJxZzRW38uoP2
-         5+gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=XzN7vQSAeKD/eMd3BXZFqaFdo1S/tdrEDVtMr2FGnLU=;
-        b=O0C/8HTIl5JXNT4S5KnIgKZafH3qzuFh4Yw8+2VJ5h9TUmnF/czN8zQfIWtKBfNpF2
-         H3Dk3AU8PXgGj7daazYcbyIFkmnCiRL2LySj15FyK9qYbvuvO9E463GKS6WTYy+Wrb8l
-         G2yiuoCYzDEgt/JWEJPorbVzOrnxotgMVtQ+m6CuoXqxApW1E4wQ+wTfEW8ChHkiNbyb
-         wdOcUOT5ujAg3mn+8Yj3Zm3vtfqkqerDrCAVWNhpIKPDg4wNxIgpgOb17W9yp8XdWWb5
-         +Oms7UTD2eYIEwucn22qlfDY0sO1unqPGf4IgBNSrnijQvUd1vqlWwt86iJsgVgg9SQ/
-         NhwQ==
-X-Gm-Message-State: AOAM530OO+KeFxgd0dXHumim5mLGsEBbIRe1GFRB9x4jvCjgOmsdTWbZ
-        6N0zbo8Mwyt4g7LPP6zvuOs=
-X-Google-Smtp-Source: ABdhPJxls6sqBFx9as0rTD7ea7wRBsOpMahmM8dx899ivTV953sT8LrHdqpRnsVfBCHXJSWevqBg9Q==
-X-Received: by 2002:a2e:980d:: with SMTP id a13mr7372013ljj.277.1590141288728;
-        Fri, 22 May 2020 02:54:48 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id o23sm2655294lfg.0.2020.05.22.02.54.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 May 2020 02:54:47 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: Re: [PATCH v2 0/3] Re-introduce TX FIFO resize for larger EP bursting
-In-Reply-To: <1590050169-30747-1-git-send-email-wcheng@codeaurora.org>
-References: <1590050169-30747-1-git-send-email-wcheng@codeaurora.org>
-Date:   Fri, 22 May 2020 12:54:25 +0300
-Message-ID: <87o8qgwazy.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S1728544AbgEVKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 06:07:27 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:55298 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728374AbgEVKH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 06:07:27 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 56EFF1A324F;
+        Fri, 22 May 2020 12:07:23 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9A8B21A3239;
+        Fri, 22 May 2020 12:07:18 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0A9A740318;
+        Fri, 22 May 2020 18:07:12 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_asrc: Merge suspend/resume function to runtime_suspend/resume
+Date:   Fri, 22 May 2020 17:57:24 +0800
+Message-Id: <1590141444-28668-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+With dedicated power domain for asrc, power can be disabled after
+probe and pm runtime suspend, then the value of all registers need to
+be restored in pm runtime resume. So we can merge suspend/resume function
+to runtime_suspend/resume function and enable regcache only in end of
+probe.
 
-Wesley Cheng <wcheng@codeaurora.org> writes:
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_asrc.c | 70 ++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 43 deletions(-)
 
-> Changes in V2:
->  - Modified TXFIFO resizing logic to ensure that each EP is reserved a
->    FIFO.
->  - Removed dev_dbg() prints and fixed typos from patches
->  - Added some more description on the dt-bindings commit message
->
-> Reviewed-by: Felipe Balbi <balbi@kernel.org>
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 432936039de4..3ebbe15ac378 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1100,6 +1100,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, asrc);
+ 	pm_runtime_enable(&pdev->dev);
+ 	spin_lock_init(&asrc->lock);
++	regcache_cache_only(asrc->regmap, true);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_asrc_component,
+ 					      &fsl_asrc_dai, 1);
+@@ -1117,6 +1118,7 @@ static int fsl_asrc_runtime_resume(struct device *dev)
+ 	struct fsl_asrc *asrc = dev_get_drvdata(dev);
+ 	struct fsl_asrc_priv *asrc_priv = asrc->private;
+ 	int i, ret;
++	u32 asrctr;
+ 
+ 	ret = clk_prepare_enable(asrc->mem_clk);
+ 	if (ret)
+@@ -1135,6 +1137,24 @@ static int fsl_asrc_runtime_resume(struct device *dev)
+ 			goto disable_asrck_clk;
+ 	}
+ 
++	/* Stop all pairs provisionally */
++	regmap_read(asrc->regmap, REG_ASRCTR, &asrctr);
++	regmap_update_bits(asrc->regmap, REG_ASRCTR,
++			   ASRCTR_ASRCEi_ALL_MASK, 0);
++
++	/* Restore all registers */
++	regcache_cache_only(asrc->regmap, false);
++	regcache_mark_dirty(asrc->regmap);
++	regcache_sync(asrc->regmap);
++
++	regmap_update_bits(asrc->regmap, REG_ASRCFG,
++			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
++			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
++
++	/* Restart enabled pairs */
++	regmap_update_bits(asrc->regmap, REG_ASRCTR,
++			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
++
+ 	return 0;
+ 
+ disable_asrck_clk:
+@@ -1155,6 +1175,11 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+ 	struct fsl_asrc_priv *asrc_priv = asrc->private;
+ 	int i;
+ 
++	regmap_read(asrc->regmap, REG_ASRCFG,
++		    &asrc_priv->regcache_cfg);
++
++	regcache_cache_only(asrc->regmap, true);
++
+ 	for (i = 0; i < ASRC_CLK_MAX_NUM; i++)
+ 		clk_disable_unprepare(asrc_priv->asrck_clk[i]);
+ 	if (!IS_ERR(asrc->spba_clk))
+@@ -1166,51 +1191,10 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+ }
+ #endif /* CONFIG_PM */
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int fsl_asrc_suspend(struct device *dev)
+-{
+-	struct fsl_asrc *asrc = dev_get_drvdata(dev);
+-	struct fsl_asrc_priv *asrc_priv = asrc->private;
+-
+-	regmap_read(asrc->regmap, REG_ASRCFG,
+-		    &asrc_priv->regcache_cfg);
+-
+-	regcache_cache_only(asrc->regmap, true);
+-	regcache_mark_dirty(asrc->regmap);
+-
+-	return 0;
+-}
+-
+-static int fsl_asrc_resume(struct device *dev)
+-{
+-	struct fsl_asrc *asrc = dev_get_drvdata(dev);
+-	struct fsl_asrc_priv *asrc_priv = asrc->private;
+-	u32 asrctr;
+-
+-	/* Stop all pairs provisionally */
+-	regmap_read(asrc->regmap, REG_ASRCTR, &asrctr);
+-	regmap_update_bits(asrc->regmap, REG_ASRCTR,
+-			   ASRCTR_ASRCEi_ALL_MASK, 0);
+-
+-	/* Restore all registers */
+-	regcache_cache_only(asrc->regmap, false);
+-	regcache_sync(asrc->regmap);
+-
+-	regmap_update_bits(asrc->regmap, REG_ASRCFG,
+-			   ASRCFG_NDPRi_ALL_MASK | ASRCFG_POSTMODi_ALL_MASK |
+-			   ASRCFG_PREMODi_ALL_MASK, asrc_priv->regcache_cfg);
+-
+-	/* Restart enabled pairs */
+-	regmap_update_bits(asrc->regmap, REG_ASRCTR,
+-			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
+-
+-	return 0;
+-}
+-#endif /* CONFIG_PM_SLEEP */
+-
+ static const struct dev_pm_ops fsl_asrc_pm = {
+ 	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
+-	SET_SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static const struct fsl_asrc_soc_data fsl_asrc_imx35_data = {
+-- 
+2.21.0
 
-I don't remember giving you a Reviewed-by, did I?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl7HoVEACgkQzL64meEa
-mQZY/hAAobcsEW4IFsU2bxTrcCRnV6RQNz20bIfxZRKcyKquzoBrV66YyGxsyE+t
-egAiLviJmCxwGdOzOSdHETrrG6HequyOGzwoux/HrGre/OCJqmrh6WnJPunPIqg3
-hzYN9Jos3yFDZUUi8KPoYeS88Ke//VKXXKEwKdAyKFrB1BO2+elWtfMexyDluxlk
-oZggbGmDVlenHL2/IUrxs6EvkL1ry1ogAa5U97hwwAJApJhjqKDTswoJJvvnm+e5
-01pkLPgvD+GWOHKV+zMQ5CnjVc+cVtpTqcQJ3FY+7cbkHgzOcnb2ANgn0gygK68w
-ljUf0kopym3Y3uAuEnRzIUdrLZMjwiDepXQb2Q1hoC6sS0ptO3Qso1SFRwGsCiNR
-9ocFjCios7dA8obaELDLXMwS3B0dfMW7HR2SFgeVQ9btB00ZYNMyAqE0yMcnhdHv
-Er+5fCcHy9ObwYoXbhI30eA64rn1+KBpyJo1UMh1XLoo3Z3ON/nuI/ozaBs7xexb
-4OPsf5E4CnkPSSqBpHG1ukGU7uHyEla/lwKCIBteb0iuX2LO+kn5G3tkcd0vBrua
-ceZmOk7UDMcYFN8jGNpitKqtrCuhiMn1UpGqdEySJYh40hI92lkAv3/brvouU8Pz
-C5R4GNwFrHqYHozr+39cQAX7BKDKoJ7hvzAjIllw4t2Lzum6OEc=
-=pWoV
------END PGP SIGNATURE-----
---=-=-=--
