@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E890C1DEE8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB31F1DEEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgEVRqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730680AbgEVRqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:46:52 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A95E92072C;
-        Fri, 22 May 2020 17:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590169612;
-        bh=D18/tscbxNYJt7Qi51OajMBP8/Y1ftjXaTbS8M/yx6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nb6aIsQcHONH6fn8FyPFvbOOwO3QjVHZd40VefUzq2Aa6TUjr/ikpuBaIan+XiE/L
-         mVYg8LPnlNqb6RaLcUR4WMGfypNbRiJ1qbMenZVRKfUrBPOve31RnG2Wr53k7AUMae
-         l+prLfZh08RC2CGMiwEo2m1OO8NeU57g1c2xzUoU=
-Date:   Fri, 22 May 2020 12:51:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+        id S1730787AbgEVRyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730635AbgEVRyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 13:54:13 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EC6C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:54:13 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k13so11018796wrx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pf8ZbrNYhqExC9KlQDsW36HsSdXFIIPGxctjlqUhPhU=;
+        b=u7RbKLwjVjVzyigBMehTZA8DZ8q5mbPJhVRZm6b5dfW8TZB/BDoYYQtn+kJTQVQooR
+         tutjnmSCKhbXhltjZ47l7fpwMjaGwDOJ8PxvMMbkw5bjHWd+Rw+01hsi0MEJf6vDmYLf
+         IkUETqM3VjFJIdTQ4W4vgTPcpjo4PcMPaAd4AeHfpuWlI8WwZneTofDEE8uaaaYUU2Zj
+         qn0JHeEZ0RBiTCBmRCkPXS0A1XDwDgstTkU1rsnlzkm/y8QJPb250SCSKULGpmx9msW+
+         9N1r7SruAt/HdxBXAsVX+FunUtJHSGLh91Y6nvUi9Kk1FPUHl1xB9tpsKXjKOyTrq95y
+         zCuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pf8ZbrNYhqExC9KlQDsW36HsSdXFIIPGxctjlqUhPhU=;
+        b=FniquTGLSbK53x+assK5r5m95sRHnocVEX2MrMjq3eLyC6qDdGOBVGiK8hRqeNJVd3
+         sgZltg5NgfgKwW0RPHZVxEIUeqXwZTgho1EYP5iF5Djo1LTwitZ5V1RGGZITh5eeD3Ye
+         BS34iWyb0x7+aOQYgBW8w3c0F0UxyAnCk+LhpAIorLzLIBuJ92XnjmkkWkI6dYjpx/nt
+         ydSjXAjxZVR3qGqLcA6H2O2zanFOHOaH9y65RKDtTcqPKjhe9Q4KlxpyeUlwt6bXShbs
+         nOPRqiE+fBmemQDrK8KDiFS/oLAw+eloLF4yJQZYiuiuhJUqWbVyvl7vtIJQGCkr/tgw
+         fBQA==
+X-Gm-Message-State: AOAM533gexrlQik24QGOonnrRHhX1BQ3sK8IeyGzHOK9d4cFkh0AZAlf
+        SJlYSiFxxVv1298hEw8J4PO4zy/fJYi76FV9NJQ=
+X-Google-Smtp-Source: ABdhPJzvWdhRPfLMzR36gDh2x1ZCpNeC2MEquHBzD0O8Idsmsrs64y9LjzBbuf3andQmXrkZnIRYjU6VUv3tzxnzNtM=
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr4535314wrp.419.1590170052313;
+ Fri, 22 May 2020 10:54:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200519225545.GA2066@embeddedor> <1065d63e-7959-e4b4-af4e-70607ba92296@amd.com>
+ <20200522175142.GF29907@embeddedor>
+In-Reply-To: <20200522175142.GF29907@embeddedor>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 22 May 2020 13:54:01 -0400
+Message-ID: <CADnq5_NQRYkeHY-9733rqh1ykRbVXKyBa5+r8qzbavo240jjug@mail.gmail.com>
 Subject: Re: [PATCH] drm/amdgpu/smu10: Replace one-element array and use
  struct_size() helper
-Message-ID: <20200522175142.GF29907@embeddedor>
-References: <20200519225545.GA2066@embeddedor>
- <1065d63e-7959-e4b4-af4e-70607ba92296@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1065d63e-7959-e4b4-af4e-70607ba92296@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 09:42:27AM +0200, Christian König wrote:
-> > 
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Acked-by: Christian König <christian.koenig@amd.com>
-> 
-> May I suggest that we add a section how to correctly do this to
-> Documentation/process/coding-style.rst or similar document?
-> 
+On Fri, May 22, 2020 at 1:46 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> On Wed, May 20, 2020 at 09:42:27AM +0200, Christian K=C3=B6nig wrote:
+> > >
+> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> >
+> > Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+> >
+> > May I suggest that we add a section how to correctly do this to
+> > Documentation/process/coding-style.rst or similar document?
+> >
+>
+> That's already on my list. :)
+>
+> > I've seen a bunch of different approaches and some even doesn't work wi=
+th
+> > some gcc versions and result in a broken binary.
+> >
+>
+> Do you have an example of that one that doesn't work with some GCC
+> versions? It'd be interesting to take a look...
 
-That's already on my list. :)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/d=
+rivers/gpu/drm/radeon/radeon_atombios.c?id=3Da7ee824a6255e347ea76e2f00827e8=
+1bbe01004e
 
-> I've seen a bunch of different approaches and some even doesn't work with
-> some gcc versions and result in a broken binary.
-> 
+Alex
 
-Do you have an example of that one that doesn't work with some GCC
-versions? It'd be interesting to take a look...
-
-Thanks
---
-Gustavo
+>
+> Thanks
+> --
+> Gustavo
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
