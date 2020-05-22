@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75481DF0C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B6F1DF0CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731074AbgEVUuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 16:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730967AbgEVUuD (ORCPT
+        id S1731107AbgEVUuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 16:50:21 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:60100 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731089AbgEVUuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 16:50:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A137C05BD43
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 13:50:03 -0700 (PDT)
+        Fri, 22 May 2020 16:50:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=POcE9Zsqk5Wj8pYWDoycnkQXPDgA8x0UIJc1wCvh6Cg=; b=hLHCGOoTHozoeyt1KML5u/pIX7
-        5XNaQKLnOviptdOFxpOyf03mprgK6usaaLarhEWnDneQb4ay5whBH2Ddb5afEP3bWph2UGsPErRxC
-        /o6WBbNvjitXSKJY26ktamCuQl8/PWtdZf7Fv3lzJzzY7jX82kzek3n3KtaL0fea+PGBNwrU1dYFP
-        30/gn7mjVKh9sQ8DJpIDsH/N9bEDleBPmfYJNRu7gda/pKj+B8ZsrRsljGfHaVZeeKmhOPKze/vx5
-        ei9CkZmMDYSxcAbSEUP40icKfQ30kM//LxvlQalR9D1JvJBY8898wYmfi6ecB8Ws93rxvUMWHXHQK
-        uFGMvl8Q==;
+        bh=ECXIFCqzMAsRJ+1Dq9iprTLNShImRuIXIFz/RxLWG5c=; b=dP5vBGcV3cLzZJUAPrKAofsAi/
+        4Aq0iDWkaZMHbueUJ11ju8CfdRTFVnVh31+XCuqXSvVc6sTWJyCKB92u8LjN4Fh9FU1YEnYfqJ5ur
+        8Uw67jEauMud5s8qP3wR06y6PnalTA71Iw+iSFAAyuQKqjmKYLMoYXVMysn86Vdz9t0Xv41M+1iL/
+        oXtRyC5MPRNwLMqN0HwVlLQb58B4aXY/p+WR50i8+knV/fzho/G2sEgbFdErcyd3ajrkA1J1f6xdr
+        g24/GEjP+tBLudJ7HWwXdM2SNJS/3Q/Y61usOzqycbN6gwhSsvkDn90BfVV0gFQCJhT2NEV3sHuz9
+        cJrtdCKg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jcEcA-0000lO-PM; Fri, 22 May 2020 20:49:58 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jcEcJ-0002gS-Hb; Fri, 22 May 2020 20:50:07 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF95B3060FC;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD4C5305E45;
         Fri, 22 May 2020 22:49:56 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B05DC2B4213E7; Fri, 22 May 2020 22:49:56 +0200 (CEST)
-Message-ID: <20200522204943.293321207@infradead.org>
+        id B2EDB2B7F3D20; Fri, 22 May 2020 22:49:56 +0200 (CEST)
+Message-ID: <20200522204943.350442553@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 22 May 2020 22:47:40 +0200
+Date:   Fri, 22 May 2020 22:47:41 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, luto@amacapital.net, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [RFC][PATCH 2/4] x86/entry, nmi: Disable #DB
+Subject: [RFC][PATCH 3/4] x86/entry: Remove debug IST frobbing
 References: <20200522204738.645043059@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,95 +47,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of playing stupid games with IST stacks, fully disallow #DB
-during NMIs. There is absolutely no reason to allow them, and killing
-this saves a heap of trouble.
-
-We already disallow #BD on noinstr and CEA, so we can't get #DB before
-this, and this ensures we can't get it after this either.
+This is all unused now.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/nmi.c |   55 ++------------------------------------------------
- 1 file changed, 3 insertions(+), 52 deletions(-)
+ arch/x86/include/asm/debugreg.h |   19 -------------------
+ arch/x86/include/asm/desc.h     |   32 +-------------------------------
+ arch/x86/kernel/cpu/common.c    |   17 -----------------
+ arch/x86/kernel/idt.c           |   22 ----------------------
+ arch/x86/kernel/traps.c         |    9 ---------
+ 5 files changed, 1 insertion(+), 98 deletions(-)
 
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -478,40 +478,7 @@ enum nmi_states {
- };
- static DEFINE_PER_CPU(enum nmi_states, nmi_state);
- static DEFINE_PER_CPU(unsigned long, nmi_cr2);
--
+--- a/arch/x86/include/asm/debugreg.h
++++ b/arch/x86/include/asm/debugreg.h
+@@ -94,25 +94,6 @@ extern void aout_dump_debugregs(struct u
+ 
+ extern void hw_breakpoint_restore(void);
+ 
 -#ifdef CONFIG_X86_64
--/*
-- * In x86_64, we need to handle breakpoint -> NMI -> breakpoint.  Without
-- * some care, the inner breakpoint will clobber the outer breakpoint's
-- * stack.
-- *
-- * If a breakpoint is being processed, and the debug stack is being
-- * used, if an NMI comes in and also hits a breakpoint, the stack
-- * pointer will be set to the same fixed address as the breakpoint that
-- * was interrupted, causing that stack to be corrupted. To handle this
-- * case, check if the stack that was interrupted is the debug stack, and
-- * if so, change the IDT so that new breakpoints will use the current
-- * stack and not switch to the fixed address. On return of the NMI,
-- * switch back to the original IDT.
-- */
--static DEFINE_PER_CPU(int, update_debug_stack);
--
--static noinstr bool is_debug_stack(unsigned long addr)
+-DECLARE_PER_CPU(int, debug_stack_usage);
+-static inline void debug_stack_usage_inc(void)
 -{
--	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
--	unsigned long top = CEA_ESTACK_TOP(cs, DB);
--	unsigned long bot = CEA_ESTACK_BOT(cs, DB1);
+-	__this_cpu_inc(debug_stack_usage);
+-}
+-static inline void debug_stack_usage_dec(void)
+-{
+-	__this_cpu_dec(debug_stack_usage);
+-}
+-void debug_stack_set_zero(void);
+-void debug_stack_reset(void);
+-#else /* !X86_64 */
+-static inline void debug_stack_set_zero(void) { }
+-static inline void debug_stack_reset(void) { }
+-static inline void debug_stack_usage_inc(void) { }
+-static inline void debug_stack_usage_dec(void) { }
+-#endif /* X86_64 */
 -
--	if (__this_cpu_read(debug_stack_usage))
+ static __always_inline void local_db_save(unsigned long *dr7)
+ {
+ 	get_debugreg(*dr7, 7);
+--- a/arch/x86/include/asm/desc.h
++++ b/arch/x86/include/asm/desc.h
+@@ -390,31 +390,6 @@ void alloc_intr_gate(unsigned int n, con
+ 
+ extern unsigned long system_vectors[];
+ 
+-#ifdef CONFIG_X86_64
+-DECLARE_PER_CPU(u32, debug_idt_ctr);
+-static __always_inline bool is_debug_idt_enabled(void)
+-{
+-	if (this_cpu_read(debug_idt_ctr))
 -		return true;
--	/*
--	 * Note, this covers the guard page between DB and DB1 as well to
--	 * avoid two checks. But by all means @addr can never point into
--	 * the guard page.
--	 */
--	return addr >= bot && addr < top;
+-
+-	return false;
+-}
+-
+-static __always_inline void load_debug_idt(void)
+-{
+-	load_idt((const struct desc_ptr *)&debug_idt_descr);
+-}
+-#else
+-static inline bool is_debug_idt_enabled(void)
+-{
+-	return false;
+-}
+-
+-static inline void load_debug_idt(void)
+-{
 -}
 -#endif
-+static DEFINE_PER_CPU(unsigned long, nmi_dr7);
- 
- DEFINE_IDTENTRY_NMI(exc_nmi)
+-
+ /*
+  * The load_current_idt() must be called with interrupts disabled
+  * to avoid races. That way the IDT will always be set back to the expected
+@@ -424,10 +399,7 @@ static inline void load_debug_idt(void)
+  */
+ static __always_inline void load_current_idt(void)
  {
-@@ -526,18 +493,7 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
- 	this_cpu_write(nmi_cr2, read_cr2());
- nmi_restart:
+-	if (is_debug_idt_enabled())
+-		load_debug_idt();
+-	else
+-		load_idt((const struct desc_ptr *)&idt_descr);
++	load_idt((const struct desc_ptr *)&idt_descr);
+ }
  
--#ifdef CONFIG_X86_64
+ extern void idt_setup_early_handler(void);
+@@ -438,11 +410,9 @@ extern void idt_setup_apic_and_irq_gates
+ #ifdef CONFIG_X86_64
+ extern void idt_setup_early_pf(void);
+ extern void idt_setup_ist_traps(void);
+-extern void idt_setup_debugidt_traps(void);
+ #else
+ static inline void idt_setup_early_pf(void) { }
+ static inline void idt_setup_ist_traps(void) { }
+-static inline void idt_setup_debugidt_traps(void) { }
+ #endif
+ 
+ extern void idt_invalidate(void *addr);
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1689,23 +1689,6 @@ void syscall_init(void)
+ 	       X86_EFLAGS_IOPL|X86_EFLAGS_AC|X86_EFLAGS_NT);
+ }
+ 
+-DEFINE_PER_CPU(int, debug_stack_usage);
+-DEFINE_PER_CPU(u32, debug_idt_ctr);
+-
+-noinstr void debug_stack_set_zero(void)
+-{
+-	this_cpu_inc(debug_idt_ctr);
+-	load_current_idt();
+-}
+-
+-noinstr void debug_stack_reset(void)
+-{
+-	if (WARN_ON(!this_cpu_read(debug_idt_ctr)))
+-		return;
+-	if (this_cpu_dec_return(debug_idt_ctr) == 0)
+-		load_current_idt();
+-}
+-
+ #else	/* CONFIG_X86_64 */
+ 
+ DEFINE_PER_CPU(struct task_struct *, current_task) = &init_task;
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -177,9 +177,6 @@ struct desc_ptr idt_descr __ro_after_ini
+ };
+ 
+ #ifdef CONFIG_X86_64
+-/* No need to be aligned, but done to keep all IDTs defined the same way. */
+-gate_desc debug_idt_table[IDT_ENTRIES] __page_aligned_bss;
+-
+ /*
+  * The exceptions which use Interrupt stacks. They are setup after
+  * cpu_init() when the TSS has been initialized.
+@@ -192,15 +189,6 @@ static const __initconst struct idt_data
+ 	ISTG(X86_TRAP_MC,	asm_exc_machine_check,	IST_INDEX_MCE),
+ #endif
+ };
+-
+-/*
+- * Override for the debug_idt. Same as the default, but with interrupt
+- * stack set to DEFAULT_STACK (0). Required for NMI trap handling.
+- */
+-const struct desc_ptr debug_idt_descr = {
+-	.size		= IDT_ENTRIES * 16 - 1,
+-	.address	= (unsigned long) debug_idt_table,
+-};
+ #endif
+ 
+ static inline void idt_init_desc(gate_desc *gate, const struct idt_data *d)
+@@ -292,16 +280,6 @@ void __init idt_setup_ist_traps(void)
+ {
+ 	idt_setup_from_table(idt_table, ist_idts, ARRAY_SIZE(ist_idts), true);
+ }
+-
+-/**
+- * idt_setup_debugidt_traps - Initialize the debug idt table with debug traps
+- */
+-void __init idt_setup_debugidt_traps(void)
+-{
+-	memcpy(&debug_idt_table, &idt_table, IDT_ENTRIES * 16);
+-
+-	idt_setup_from_table(debug_idt_table, dbg_idts, ARRAY_SIZE(dbg_idts), false);
+-}
+ #endif
+ 
+ /**
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -798,12 +798,6 @@ static void noinstr handle_debug(struct
+ 		return;
+ 	}
+ 
 -	/*
--	 * If we interrupted a breakpoint, it is possible that
--	 * the nmi handler will have breakpoints too. We need to
--	 * change the IDT such that breakpoints that happen here
--	 * continue to use the NMI stack.
+-	 * Let others (NMI) know that the debug stack is in use
+-	 * as we may switch to the interrupt stack.
 -	 */
--	if (unlikely(is_debug_stack(regs->sp))) {
--		debug_stack_set_zero();
--		this_cpu_write(update_debug_stack, 1);
--	}
--#endif
-+	local_db_save(this_cpu_ptr(&nmi_dr7));
+-	debug_stack_usage_inc();
+-
+ 	/* It's safe to allow irq's after DR6 has been saved */
+ 	cond_local_irq_enable(regs);
  
- 	nmi_enter();
+@@ -831,7 +825,6 @@ static void noinstr handle_debug(struct
  
-@@ -548,12 +504,7 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ out:
+ 	cond_local_irq_disable(regs);
+-	debug_stack_usage_dec();
+ 	instrumentation_end();
+ }
  
- 	nmi_exit();
+@@ -1077,6 +1070,4 @@ void __init trap_init(void)
+ 	cpu_init();
  
--#ifdef CONFIG_X86_64
--	if (unlikely(this_cpu_read(update_debug_stack))) {
--		debug_stack_reset();
--		this_cpu_write(update_debug_stack, 0);
--	}
--#endif
-+	local_db_restore(*this_cpu_ptr(&nmi_dr7));
- 
- 	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
- 		write_cr2(this_cpu_read(nmi_cr2));
+ 	idt_setup_ist_traps();
+-
+-	idt_setup_debugidt_traps();
+ }
 
 
