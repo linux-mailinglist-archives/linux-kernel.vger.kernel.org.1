@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39F1DEE58
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071061DEE37
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730803AbgEVReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730648AbgEVReU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:34:20 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2171CC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:34:20 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u5so5293973pgn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 10:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vpvOtYEoQPYr60AvQ4lbOXVaOz+PqOzSuTIlFxZC7hs=;
-        b=mrLZoriVWpSjIlqWcoKRs7Vf38HcNAIbk1aA1aj5M9bm3Kplf4mG3Nlg9o2f8mXie9
-         Fzh3k6kQqtcs2C2Z92Xjo5uCe7mXGGZJ7OhLbKqmeBdBJLXUSvy785BjEvi9KRPXlUyV
-         Jt9fS28KExNgHI2bGC8ZrNS0cBGoCgm/quS1o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vpvOtYEoQPYr60AvQ4lbOXVaOz+PqOzSuTIlFxZC7hs=;
-        b=tr0Jk8xrlGbOXc8wepMg57RH0zYN2wowrbhtEqGJPXanqARXKiB6UnuZK0RXbDpO0O
-         cG8sYkn95IE8fnCoDlJRB8zzSab4Yx/MHseZkV4TS5tZMrYAkNl0ZdrvoHuhJO2At4bU
-         +wU8grC4CYfJz/yUQ2b7YBGs16Q/9HMzrZhKll9lz4Gok+kFiUmBSPJAJ4w3XxWCZZbL
-         D8eWmnK8yes+2D6nKJH2g6JoBxwzeGI1e3IW/6/5DjCTESs2OHOU2UnZI2X7Cq++62b/
-         PUdBgjWMUWa4s6bO1zc7Y8HCMnzZQ3gTnhG4VgtoeysQ6PxzGqKjIszi0SrnjYCgboYH
-         LFQA==
-X-Gm-Message-State: AOAM5331ChWGhjC62VMPJ+8wnmHklpNXUmXSmVZY0zKsHEEaFQw+7mt2
-        ztPhNv5HSpCUdv1OBJaOZvyA3w==
-X-Google-Smtp-Source: ABdhPJw3mEZJxGUEwT+YtZuRAtkaUC2r/G5yxPoHLWK7Hcz3C0nz+4i4d6ISwNAJSlDeH54wMalB+Q==
-X-Received: by 2002:a63:b64e:: with SMTP id v14mr15087127pgt.164.1590168859526;
-        Fri, 22 May 2020 10:34:19 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q4sm7769112pfu.42.2020.05.22.10.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 10:34:18 -0700 (PDT)
-Date:   Fri, 22 May 2020 10:34:17 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Benson Leung <bleung@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 2/6] printk: honor the max_reason field in kmsg_dumper
-Message-ID: <202005221032.859452DFA0@keescook>
-References: <20200515184434.8470-1-keescook@chromium.org>
- <20200515184434.8470-3-keescook@chromium.org>
- <20200522165120.GL3464@linux-b0ei>
+        id S1730700AbgEVR3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:29:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730554AbgEVR3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 13:29:30 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7338206C3;
+        Fri, 22 May 2020 17:29:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590168569;
+        bh=noVq5vIzK2zOX8f731NA23cZdVRrWDncOL4AESsRsPg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sw+5iUX6i1Ax9MaJRERLYh2ki2CKYhNykMEqas7Ctlfz6msB9sN4MXsg7L1VIWqjx
+         3RcjOaMXlp6CL6yNlzef+jlOxjnKn6W9NQqhAcMSd5NVEDKs+f70fdKlcVBFj0c8lv
+         XUzwUNpJixMJWyEAI62JI9PKfm3YskgKeQkPkqqM=
+Date:   Fri, 22 May 2020 12:34:19 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v2] drm/radeon/dpm: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200522173419.GA2297@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200522165120.GL3464@linux-b0ei>
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 06:51:20PM +0200, Petr Mladek wrote:
-> On Fri 2020-05-15 11:44:30, Kees Cook wrote:
-> > From: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > 
-> > kmsg_dump() allows to dump kmesg buffer for various system events: oops,
-> > panic, reboot, etc. It provides an interface to register a callback call
-> > for clients, and in that callback interface there is a field "max_reason"
-> > which gets ignored unless always_kmsg_dump is passed as kernel parameter.
-> 
-> Strictly speaking, this is not fully true. "max_reason" field is not
-> ignored when set to KMSG_DUMP_PANIC even when always_kmsg_dump was not set.
-> 
-> It should be something like:
-> 
-> "which gets ignored for reason higher than KMSG_DUMP_OOPS unless
-> always_kmsg_dump is passed as kernel parameter".
-> 
-> Heh, I wonder if anyone will be able to parse this ;-)
+The current codebase makes use of one-element arrays in the following
+form:
 
-Ah yeah, good point. I've reworded things like this:
+struct something {
+    int length;
+    u8 data[1];
+};
 
+struct something *instance;
 
-    kmsg_dump() allows to dump kmesg buffer for various system events: oops,
-    panic, reboot, etc. It provides an interface to register a callback
-    call for clients, and in that callback interface there is a field
-    "max_reason", but it was getting ignored when set to any "reason"
-    higher than KMSG_DUMP_OOPS unless "always_kmsg_dump" was passed as
-    kernel parameter.
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
 
-    Allow clients to actually control their "max_reason", and keep the
-    current behavior when "max_reason" is not set.
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
 
-> Otherwise, it looks good to me. With the updated commit message:
-> 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-Thanks!
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
 
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct NISLANDS_SMC_SWSTATE.
+
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Use type size_t instead of u16 for state_size variable.
+
+ drivers/gpu/drm/amd/amdgpu/si_dpm.h | 2 +-
+ drivers/gpu/drm/radeon/ni_dpm.c     | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/si_dpm.h b/drivers/gpu/drm/amd/amdgpu/si_dpm.h
+index 6b7d292b919f3..bc0be6818e218 100644
+--- a/drivers/gpu/drm/amd/amdgpu/si_dpm.h
++++ b/drivers/gpu/drm/amd/amdgpu/si_dpm.h
+@@ -781,7 +781,7 @@ struct NISLANDS_SMC_SWSTATE
+     uint8_t                             levelCount;
+     uint8_t                             padding2;
+     uint8_t                             padding3;
+-    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[1];
++    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[];
+ };
+ 
+ typedef struct NISLANDS_SMC_SWSTATE NISLANDS_SMC_SWSTATE;
+diff --git a/drivers/gpu/drm/radeon/ni_dpm.c b/drivers/gpu/drm/radeon/ni_dpm.c
+index b57c37ddd164c..abb6345bfae32 100644
+--- a/drivers/gpu/drm/radeon/ni_dpm.c
++++ b/drivers/gpu/drm/radeon/ni_dpm.c
+@@ -2685,11 +2685,12 @@ static int ni_upload_sw_state(struct radeon_device *rdev,
+ 	struct rv7xx_power_info *pi = rv770_get_pi(rdev);
+ 	u16 address = pi->state_table_start +
+ 		offsetof(NISLANDS_SMC_STATETABLE, driverState);
+-	u16 state_size = sizeof(NISLANDS_SMC_SWSTATE) +
+-		((NISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE - 1) * sizeof(NISLANDS_SMC_HW_PERFORMANCE_LEVEL));
++	NISLANDS_SMC_SWSTATE *smc_state;
++	size_t state_size = struct_size(smc_state, levels,
++			NISLANDS_MAX_SMC_PERFORMANCE_LEVELS_PER_SWSTATE);
+ 	int ret;
+-	NISLANDS_SMC_SWSTATE *smc_state = kzalloc(state_size, GFP_KERNEL);
+ 
++	smc_state = kzalloc(state_size, GFP_KERNEL);
+ 	if (smc_state == NULL)
+ 		return -ENOMEM;
+ 
 -- 
-Kees Cook
+2.26.2
+
