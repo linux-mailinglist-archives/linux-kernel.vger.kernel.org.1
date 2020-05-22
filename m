@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CC51DE87D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B200C1DE881
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 16:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgEVOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 10:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S1729947AbgEVOIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 10:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729399AbgEVOGl (ORCPT
+        with ESMTP id S1729399AbgEVOIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 10:06:41 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1225C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:06:40 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49T7Zh23lMz9sRW;
-        Sat, 23 May 2020 00:06:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1590156397;
-        bh=9XdBfu5nekIGtDkEUofNMJ8BY7msGaFJ0KoVdLZTEcU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WK99tbW9akmKDF/RAZoZo0SxSq/W5+6ttzw7I402bZpallYgSrhJComdgb77SRCDN
-         WU7YrgtSOgtPtLiEPeiJniP7vBGgwWM8MtEMtd4+RUj4Rm+dBUsD66knL6IZ0xJOna
-         SOK5YH5CPF2I/d4MK1ZtOROyXEkKQw8dK6arRwv6TGNF9UhVAwX3Dl+8YUrq7SiKKw
-         BdHhQz8//+Zl2FXntjIBU/8/c6JvfRWvO3br3BTAxjkNXPrCz0SPN+bZMdFPN9XxRM
-         3z8BmSG1/g8BPx3H2eimysS5Ul+B9Xa00UneXVua5emdSPj8m/JO5s+5VnVlkEt+sa
-         iH7qTcE8PjdEA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.7-5 tag
-Date:   Sat, 23 May 2020 00:06:55 +1000
-Message-ID: <87sgfsf4hs.fsf@mpe.ellerman.id.au>
+        Fri, 22 May 2020 10:08:09 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8351DC05BD43
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:08:09 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x22so6596525lfd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 07:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ASpIJRV1LgbYaIn/8sihf9PSqZ7K//HA8oIfV5Jji1U=;
+        b=Q98veh9b1zBp4PWhmCf74WRK0Byrzkwey2rtOIQaXyx1kyEDcG3M6jXlCJOhaNxM5/
+         9sj2TOOYHXEwh0fYzQ9FWMZfc0E8eE1/WZ2qrZajc+2KYj6iyYljfm/4TvkU3jkfOFI3
+         YYUty1xtwI/bERs9jSMcLkRivOd74V0q8VEyy+weMSJJux6/WgAlmVEJMy5S77lYpI6X
+         C4RRVTYaZZ3O6DoGtybBgW13esxeDx7YL6yHgkoJ4xGvMUndKjLCAM0tNGLW0pfCIKJU
+         1RIk/vV7uokJ+qdYAfnkLwrgbKEC2CRiXSL18tpjvsHmOZiGRKjVtgqW4lxZcNme/MRF
+         2niQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ASpIJRV1LgbYaIn/8sihf9PSqZ7K//HA8oIfV5Jji1U=;
+        b=YGpBA7fbXCGyXZRWeQUi8mL0DxEmo45fyNapsVUintq9f4TKICAgiE9yZqYoForOS3
+         Y3tgoiZ1Eu/hXX/nfO+bBRF42SF4TqBF3ezF4Thr2t8Dbnmlf+bAamdVw+EMYJkZd2bs
+         GkNjYAq/58obiNzsrptXMOodQRdg8tpUS5LC+LA2xLA9XzZv0b7zQJRhNr7hHONjmZz1
+         Yz3EpSColCtKlvAwy+anFwky+jS7sJsqdXw3K8n0xPjhwj59o9Tybv2cLTbKZ4848IRr
+         3EpDcr9MzSG7rSJSCQnZn7T/N7E09Q/TnQMQEOLS+x1+am7WVHvMsnq3bfHmlQulzjht
+         ffzA==
+X-Gm-Message-State: AOAM532NCnFGeC1nYkH7ZdDbEhZIGxzIgWt8/ZcEjyQUfU5AYrhlkqUD
+        LWUiCHE5rKmJhvkyjqHUQ/RX/g9yUl7T4cioyZ2PaA==
+X-Google-Smtp-Source: ABdhPJx2ifzFEDI+8FVLUA5dMaNvcKyEcuulaqadgxsGJ+06MBXDJr9QzwzWTQLe7Y3YlQblnOnWWMOrrm/JyeFd854=
+X-Received: by 2002:a19:490d:: with SMTP id w13mr7491640lfa.96.1590156487605;
+ Fri, 22 May 2020 07:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200520163142.GA808793@chrisdown.name>
+In-Reply-To: <20200520163142.GA808793@chrisdown.name>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 22 May 2020 07:07:56 -0700
+Message-ID: <CALvZod6ijEUKTXzi1oDV0R2HdU6bcxUn_zDigskuSPtzn-vw0g@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: unify reclaim retry limits with page allocator
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Wed, May 20, 2020 at 9:32 AM Chris Down <chris@chrisdown.name> wrote:
+>
+> Reclaim retries have been set to 5 since the beginning of time in
+> 66e1707bc346 ("Memory controller: add per cgroup LRU and reclaim").
+> However, we now have a generally agreed-upon standard for page reclaim:
+> MAX_RECLAIM_RETRIES (currently 16), added many years later in
+> 0a0337e0d1d1 ("mm, oom: rework oom detection").
+>
+> In the absence of a compelling reason to declare an OOM earlier in memcg
+> context than page allocator context, it seems reasonable to supplant
+> MEM_CGROUP_RECLAIM_RETRIES with MAX_RECLAIM_RETRIES, making the page
+> allocator and memcg internals more similar in semantics when reclaim
+> fails to produce results, avoiding premature OOMs or throttling.
+>
+> Signed-off-by: Chris Down <chris@chrisdown.name>
 
-Hi Linus,
-
-Please pull some more powerpc fixes for 5.7:
-
-The following changes since commit 249c9b0cd193d983c3a0b00f3fd3b92333bfeebe:
-
-  powerpc/40x: Make more space for system call exception (2020-05-12 21:22:11 +1000)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.7-5
-
-for you to fetch changes up to 8659a0e0efdd975c73355dbc033f79ba3b31e82c:
-
-  powerpc/64s: Disable STRICT_KERNEL_RWX (2020-05-22 00:04:51 +1000)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.7 #5
-
-A revert of a recent change to the PTE bits for 32-bit BookS, which broke swap.
-
-And a "fix" to disable STRICT_KERNEL_RWX for 64-bit in Kconfig, as it's causing
-crashes for some people.
-
-Thanks to:
-  Christophe Leroy, Rui Salvaterra.
-
-- ------------------------------------------------------------------
-Christophe Leroy (1):
-      Revert "powerpc/32s: reorder Linux PTE bits to better match Hash PTE bits."
-
-Michael Ellerman (1):
-      powerpc/64s: Disable STRICT_KERNEL_RWX
-
-
- arch/powerpc/Kconfig                      |  2 +-
- arch/powerpc/include/asm/book3s/32/hash.h |  8 ++++----
- arch/powerpc/kernel/head_32.S             |  9 ++++++---
- arch/powerpc/mm/book3s32/hash_low.S       | 14 ++++++++------
- 4 files changed, 19 insertions(+), 14 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl7H3DQACgkQUevqPMjh
-pYCc6RAAtxBm0aHlZsitFfLGRVWjXAanWlstF0Gnd/uOT+OLERE7MCD4PQzISKU8
-XeHJORzhnfBgcN596vE5EHvTPNkZQdd+VW1Fxp9Pw1wcfZi0XACOdA5YrSN6nDlH
-vWUFE0WdcX7MksaviX8AnTmjK9MmHiKySZnTZ5cKlFcJWuawy4mjmK/L1y2DbAId
-YdGPJ/Yptda/aZbgi4hV8T1fhgl7odqKhrFf+I5SRojL6M2hnt0mSpUq5shk4Zsw
-YZtz86o10CLHpyXdi7zcJb0h7n8JLX3mB+veNVHrQ2o+NeSkwEhQJFYq2CzmTZSK
-n79vjG9iCg5KQIQ513cwPjJuo9tIoFULuBPomWiKQ8z/wAyJwzApAJ9y3YWTpQ3e
-MBo/rvhMCJvlDt2uAKp8DVMCaXdG8zeE/2iGcnvbQ5l9RwJDEUO8IcUHCdUyZchF
-erIjeGLodqB4Vm9+v8gOSjAL4CRrgVRHX6ZDZdOMoHkQBc36mMIu3/X4LfknZ1PT
-6TR6AK+DQXY5pguiUeutHPEjzB+f5dgjueTnU4yjOST07xq28dRfeBvRAWdnH5ev
-bzQ/VAShdQBLTuwOcYajvYh9HCzcTvuRDOj4LrPRud/qIBECKjB9QlqbsWIPM1Vv
-RBX79Fs2ML1Lz3GtVXKUy+9n+KncCEC7H0YkbYiVRZdbYQBbw/U=
-=KT4L
------END PGP SIGNATURE-----
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
