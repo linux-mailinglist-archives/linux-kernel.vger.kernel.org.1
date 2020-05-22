@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672191DEEE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AC71DEEEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730838AbgEVSIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 14:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgEVSIt (ORCPT
+        id S1730849AbgEVSKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 14:10:18 -0400
+Received: from zimbra2.kalray.eu ([92.103.151.219]:51130 "EHLO
+        zimbra2.kalray.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726373AbgEVSKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 14:08:49 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F5FC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 11:08:49 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jcC5e-0002PA-2O; Fri, 22 May 2020 20:08:14 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 9DEB6100F17; Fri, 22 May 2020 20:08:11 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Subject: Re: [patch V9 00/39] x86/entry: Rework leftovers (was part V)
-In-Reply-To: <878shjsvz2.fsf@nanos.tec.linutronix.de>
-References: <20200521200513.656533920@linutronix.de> <0f9e4601-0d7c-728a-ecaf-a98d1826b5ec@oracle.com> <878shjsvz2.fsf@nanos.tec.linutronix.de>
-Date:   Fri, 22 May 2020 20:08:11 +0200
-Message-ID: <874ks7sv04.fsf@nanos.tec.linutronix.de>
+        Fri, 22 May 2020 14:10:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 002A727E06AA;
+        Fri, 22 May 2020 20:10:16 +0200 (CEST)
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id R-U1f_76ElBJ; Fri, 22 May 2020 20:10:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 43C3A27E1552;
+        Fri, 22 May 2020 20:10:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra2.kalray.eu 43C3A27E1552
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalray.eu;
+        s=32AE1B44-9502-11E5-BA35-3734643DEF29; t=1590171015;
+        bh=bK83LII32CYIXyNdBCoJRVs5oREoCEW0+9bccKTq9hk=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=NVtj+Ij+ss4G7UKccUqDpaqJ6k3alv4FFmlutBMH6TKECR4B9pdEfjUey3hS29asP
+         k4AzlgGLkGIHc7LSyAhWmtBYuCuO97RXvvmJInVeW9rkiPh625qIIX98U6vAdUaMxt
+         abGB0OGkTCP4INpZmk7pAhPs1rTMvOKkR1/ZqyWw=
+X-Virus-Scanned: amavisd-new at zimbra2.kalray.eu
+Received: from zimbra2.kalray.eu ([127.0.0.1])
+        by localhost (zimbra2.kalray.eu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id efYqJTyB0HMQ; Fri, 22 May 2020 20:10:15 +0200 (CEST)
+Received: from zimbra2.kalray.eu (localhost [127.0.0.1])
+        by zimbra2.kalray.eu (Postfix) with ESMTP id 286DD27E06AA;
+        Fri, 22 May 2020 20:10:15 +0200 (CEST)
+Date:   Fri, 22 May 2020 20:10:14 +0200 (CEST)
+From:   =?utf-8?Q?Cl=C3=A9ment?= Leger <cleger@kalray.eu>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     s-anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1334263091.4218509.1590171014972.JavaMail.zimbra@kalray.eu>
+In-Reply-To: <1739080680.4218297.1590170621467.JavaMail.zimbra@kalray.eu>
+References: <20200325204701.16862-1-s-anna@ti.com> <20200325204701.16862-4-s-anna@ti.com> <20200521180417.GJ408178@builder.lan> <997d6f9a-64ba-7a89-e909-9a5a474120b0@ti.com> <f15b0c6d-eee8-b839-0c79-a5316dbbfa7b@ti.com> <20200522173346.GJ11847@yoga> <1739080680.4218297.1590170621467.JavaMail.zimbra@kalray.eu>
+Subject: Re: [PATCH 3/4] remoteproc: add support for a new 64-bit trace
+ version
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [192.168.40.202]
+X-Mailer: Zimbra 8.8.15_GA_3895 (ZimbraWebClient - GC81 (Linux)/8.8.15_GA_3895)
+Thread-Topic: remoteproc: add support for a new 64-bit trace version
+Thread-Index: L30XW51sgsk7NRKU7I+TV4VplJ8G6Xb707z7
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-> Boris Ostrovsky <boris.ostrovsky@oracle.com> writes:
->> On 5/21/20 4:05 PM, Thomas Gleixner wrote:
->>>
->>> The full series is available from:
->>>
->>>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v9-the-rest
->>
->>
->> Did you mean noinstr-v9-the-rest? I don't see entry-v9-the-rest tag.
->
-> Bah. Yes.
->
->> (Also, this series as posted probably won't build. At least based on
->> definition of get_and_clear_inhcall() in patch 13)
->
-> Darn. I'm very sure that I built this and then did some final cleanups.
 
-Just figured out why i did not notice: The final test had preemption
-enabled ...
 
-Fixed and pushed and the tag is now correct
+----- On 22 May, 2020, at 20:03, Cl=C3=A9ment Leger cleger@kalray.eu wrote:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-v9-the-rest
+> Hi Suman,
+>=20
+> ----- On 22 May, 2020, at 19:33, Bjorn Andersson bjorn.andersson@linaro.o=
+rg
+> wrote:
+>=20
+>> On Fri 22 May 09:54 PDT 2020, Suman Anna wrote:
+>>=20
+>>> On 5/21/20 2:42 PM, Suman Anna wrote:
+>>> > Hi Bjorn,
+>>> >=20
+>>> > On 5/21/20 1:04 PM, Bjorn Andersson wrote:
+>>> > > On Wed 25 Mar 13:47 PDT 2020, Suman Anna wrote:
+>> [..]
+>>> > > > diff --git a/include/linux/remoteproc.h b/include/linux/remotepro=
+c.h
+>> [..]
+>>> > > > +struct fw_rsc_trace2 {
+>>> > >=20
+>>> > > Sounds more like fw_rsc_trace64 to me - in particular since the ver=
+sion
+>>> > > of trace2 is 1...
+>>> >=20
+>>> > Yeah, will rename this.
+>>> >=20
+>>> > >=20
+>>> > > > +=C2=A0=C2=A0=C2=A0 u32 padding;
+>>> > > > +=C2=A0=C2=A0=C2=A0 u64 da;
+>>> > > > +=C2=A0=C2=A0=C2=A0 u32 len;
+>>> > > > +=C2=A0=C2=A0=C2=A0 u32 reserved;
+>>> > >=20
+>>> > > What's the purpose of this reserved field?
+>>> >=20
+>>> > Partly to make sure the entire resource is aligned on an 8-byte, and
+>>> > partly copied over from fw_rsc_trace entry. I guess 32-bits is alread=
+y
+>>> > large enough of a size for trace entries irrespective of 32-bit or
+>>> > 64-bit traces, so I doubt if we want to make the len field also a u64=
+.
+>>>=20
+>>> Looking at this again, I can drop both padding and reserved fields, if =
+I
+>>> move the len field before da. Any preferences/comments?
+>=20
+Sorry, my message went a bit too fast... So as I was saying:
 
-/me goes and rumages in the brown paperbag supply stash.
+Not only the in-structure alignment matters but also in the resource table.
+Since the resource table is often packed (see [1] for instance), if a trace
+resource is embedded in the resource table after another resource aligned
+on 32 bits only, your 64 bits trace field will potentially end up
+misaligned.
 
-Thanks,
+To overcome this, there is multiple solutions:
 
-        tglx
+- Split the 64 bits fields into 32bits low and high parts:
+Since all resources are aligned on 32bits, it will be ok
+
+- Use memcpy_from/to_io when reading/writing such fields
+As I said in a previous message this should probably be used since
+the memories that are accessed by rproc are io mem (ioremap in almost
+all drivers).
+
+Regards,
+
+Cl=C3=A9ment
+
+[1]  https://github.com/OpenAMP/open-amp/blob/master/apps/machine/zynqmp_r5=
+/rsc_table.h
+>=20
+>=20
+>=20
+>=20
+>>>=20
+>>=20
+>> Sounds good to me.
+>>=20
+>> Thanks,
+> > Bjorn
