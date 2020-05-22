@@ -2,216 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5DB1DF08C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C031DF09A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 22:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731138AbgEVUXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 16:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        id S1731188AbgEVUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 16:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731114AbgEVUXd (ORCPT
+        with ESMTP id S1731056AbgEVUYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 16:23:33 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80AAC08C5C0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 13:23:32 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d3so4835730pln.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 13:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1VFf/UOKNgDVHZUKx45LznEg0u8N2FCy/awErcAtR0g=;
-        b=Qy+W6tsCL3NH8Bq3rG6/UjcK93NBssdcv0jZGDBJKxqpc8Af5iRRlidXvE4LvcTbjQ
-         VswLrbHzrKsuwOrz8VLGnv4GIz9ELw0+Ck61xKY0Cn/sicxCkPfwlPILus5BsdR4XbHd
-         FivBuJiFW4rFu1pVMTyYm5FNYETtOu+OOK1rt/4nQryYpkvnhwXM0A8XWOflc3woQ/sR
-         5DVb+1ZIdrXK55MofhVLQcNwXyEsdQ/96R6uxVzL1zl1RP6pM7dRbw7qO6+uESrtdbTm
-         TkK2TDXxpzbuWMaamdVVkjq2ku206Y+RpE6CKRjgQcmzRKlbx4iykHwOt3uPGN411ew9
-         Vgxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1VFf/UOKNgDVHZUKx45LznEg0u8N2FCy/awErcAtR0g=;
-        b=NT6BZcGYuPSTf5yHoKxiy3IW0yfWhKg96RzLaSl+aBH4jgR1Z+FfHB3VOPRjJYSM4d
-         CjvD+HqhZr1YQ+G70PWDwRKnQqXwC7QCfSdkqfPGFCOMhjmTUBcjYzwk+RE1Vg4w9K7l
-         wYkvrlYvpeGdag4ixme1DpZG+8leQN74e6UM5iKY1jADGxAe0GFQxIUiVEMh5qDO2vPJ
-         kq8HDU7THN4xZHHzGGkm4k/YAcSKJsTfjzn1lnHQv1oW1Rbkf2z0fE6IQ1MHo4ngBFZf
-         MC73wr7ws64PJsWuhzB4MPhOPm6hwUhrW+ReMmt517wrJZ/lrOfcxt9xQA4y04NSQaa8
-         onIQ==
-X-Gm-Message-State: AOAM530zH2EQ66Cf7YEPEv22Wn5uSycyXTbrnSS1TSGKRnlCo4C0rVr9
-        NnLoRtYpWV2CcpWfLXy1+t7GMA==
-X-Google-Smtp-Source: ABdhPJyT3Ms2U6ScNVRxn8m3K+qYSXq6NTkzTCRzpeAAa7saFGGrDfVA2J0tFqYg01QCmFSbHYGH+w==
-X-Received: by 2002:a17:902:228:: with SMTP id 37mr16857591plc.105.1590179012288;
-        Fri, 22 May 2020 13:23:32 -0700 (PDT)
-Received: from x1.lan ([2605:e000:100e:8c61:e0db:da55:b0a4:601])
-        by smtp.gmail.com with ESMTPSA id e19sm7295561pfn.17.2020.05.22.13.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 13:23:31 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 11/11] io_uring: support true async buffered reads, if file provides it
-Date:   Fri, 22 May 2020 14:23:11 -0600
-Message-Id: <20200522202311.10959-12-axboe@kernel.dk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200522202311.10959-1-axboe@kernel.dk>
-References: <20200522202311.10959-1-axboe@kernel.dk>
+        Fri, 22 May 2020 16:24:04 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8ECC05BD43;
+        Fri, 22 May 2020 13:24:03 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0390B55;
+        Fri, 22 May 2020 22:24:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1590179041;
+        bh=eHYE+NQkQ5F13N+F0zH4qMpO6wi5gp39cWdyPaPGwMc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lG6Lr1pXS+PdX3mO4+MCydqQxgESvaSwVRqZOYRatNHph9oPDsxoUxVNB9ZR0bIXM
+         rKm1pxsciai7SfU65O5Wv6cgey0Xo7pjoLxbKAPrVGuSPWp1FdDeAmPoq2wg2XrvrM
+         +SX/50OE2QwcASuwJjiEXod9Rd7Av1KnlpbZQauk=
+Date:   Fri, 22 May 2020 23:23:49 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Gomez <dagmcr@gmail.com>
+Cc:     daniel@ffwll.ch, airlied@linux.ie,
+        kieran.bingham+renesas@ideasonboard.com,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: rcar-du: Fix build error
+Message-ID: <20200522202349.GF5824@pendragon.ideasonboard.com>
+References: <20200518201646.48312-1-dagmcr@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200518201646.48312-1-dagmcr@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the file is flagged with FMODE_BUF_RASYNC, then we don't have to punt
-the buffered read to an io-wq worker. Instead we can rely on page
-unlocking callbacks to support retry based async IO. This is a lot more
-efficient than doing async thread offload.
+Hi Daniel,
 
-The retry is done similarly to how we handle poll based retry. From
-the unlock callback, we simply queue the retry to a task_work based
-handler.
+Thank you for the patch.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/io_uring.c | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+On Mon, May 18, 2020 at 10:16:46PM +0200, Daniel Gomez wrote:
+> Select DRM_KMS_HELPER dependency.
+> 
+> Build error when DRM_KMS_HELPER is not selected:
+> 
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd48): undefined reference to `drm_atomic_helper_bridge_duplicate_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd50): undefined reference to `drm_atomic_helper_bridge_destroy_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xd70): undefined reference to `drm_atomic_helper_bridge_reset'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xdc8): undefined reference to `drm_atomic_helper_connector_reset'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xde0): undefined reference to `drm_helper_probe_single_connector_modes'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe08): undefined reference to `drm_atomic_helper_connector_duplicate_state'
+> drivers/gpu/drm/rcar-du/rcar_lvds.o:(.rodata+0xe10): undefined reference to `drm_atomic_helper_connector_destroy_state'
+> 
+> Signed-off-by: Daniel Gomez <dagmcr@gmail.com>
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index e95481c552ff..f0ca98bb688f 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -498,6 +498,8 @@ struct io_async_rw {
- 	struct iovec			*iov;
- 	ssize_t				nr_segs;
- 	ssize_t				size;
-+	struct wait_page_async		wait;
-+	struct callback_head		task_work;
- };
- 
- struct io_async_ctx {
-@@ -2568,6 +2570,101 @@ static int io_read_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
- 	return 0;
- }
- 
-+static void io_async_buf_cancel(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_ring_ctx *ctx;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wait.wait.private;
-+	ctx = req->ctx;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	io_cqring_fill_event(req, -ECANCELED);
-+	io_commit_cqring(ctx);
-+	spin_unlock_irq(&ctx->completion_lock);
-+
-+	io_cqring_ev_posted(ctx);
-+	req_set_fail_links(req);
-+	io_double_put_req(req);
-+}
-+
-+static void io_async_buf_retry(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_ring_ctx *ctx;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wait.wait.private;
-+	ctx = req->ctx;
-+
-+	__set_current_state(TASK_RUNNING);
-+	mutex_lock(&ctx->uring_lock);
-+	__io_queue_sqe(req, NULL);
-+	mutex_unlock(&ctx->uring_lock);
-+}
-+
-+static int io_async_buf_func(struct wait_queue_entry *wait, unsigned mode,
-+			     int sync, void *arg)
-+{
-+	struct wait_page_async *wp;
-+	struct io_kiocb *req = wait->private;
-+	struct io_async_rw *rw = &req->io->rw;
-+	struct wait_page_key *key = arg;
-+	struct task_struct *tsk;
-+	int ret;
-+
-+	wp = container_of(wait, struct wait_page_async, wait);
-+	if (wp->key.page != key->page)
-+		return 0;
-+	if (wp->key.bit_nr != key->bit_nr)
-+		return 0;
-+	if (test_bit(PG_locked, &key->page->flags))
-+		return -1;
-+
-+	list_del_init(&wait->entry);
-+
-+	init_task_work(&rw->task_work, io_async_buf_retry);
-+	/* submit ref gets dropped, acquire a new one */
-+	refcount_inc(&req->refs);
-+	tsk = req->task;
-+	ret = task_work_add(tsk, &rw->task_work, true);
-+	if (unlikely(ret)) {
-+		/* queue just for cancelation */
-+		init_task_work(&rw->task_work, io_async_buf_cancel);
-+		tsk = io_wq_get_task(req->ctx->io_wq);
-+		task_work_add(tsk, &rw->task_work, true);
-+	}
-+	wake_up_process(tsk);
-+	return 1;
-+}
-+
-+static bool io_rw_should_retry(struct io_kiocb *req)
-+{
-+	struct kiocb *kiocb = &req->rw.kiocb;
-+	int ret;
-+
-+	/* already tried, or we're doing O_DIRECT */
-+	if (kiocb->ki_flags & (IOCB_DIRECT | IOCB_WAITQ))
-+		return false;
-+	/*
-+	 * just use poll if we can, and don't attempt if the fs doesn't
-+	 * support callback based unlocks
-+	 */
-+	if (file_can_poll(req->file) || !(req->file->f_mode & FMODE_BUF_RASYNC))
-+		return false;
-+
-+	ret = kiocb_wait_page_async_init(kiocb, &req->io->rw.wait,
-+						io_async_buf_func, req);
-+	if (ret)
-+		return false;
-+	get_task_struct(current);
-+	req->task = current;
-+	return true;
-+}
-+
- static int io_read(struct io_kiocb *req, bool force_nonblock)
- {
- 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
-@@ -2601,6 +2698,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 	if (!ret) {
- 		ssize_t ret2;
- 
-+retry:
- 		if (req->file->f_op->read_iter)
- 			ret2 = call_read_iter(req->file, kiocb, &iter);
- 		else
-@@ -2619,6 +2717,9 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 			if (!(req->flags & REQ_F_NOWAIT) &&
- 			    !file_can_poll(req->file))
- 				req->flags |= REQ_F_MUST_PUNT;
-+			if (io_rw_should_retry(req))
-+				goto retry;
-+			kiocb->ki_flags &= ~IOCB_WAITQ;
- 			return -EAGAIN;
- 		}
- 	}
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+and taken in my tree for v5.9. If you think it should get in v5.8 as a
+fix, I can do so as well, could you then provide a Fixes: tag ?
+
+> ---
+>  drivers/gpu/drm/rcar-du/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+> index 0919f1f159a4..f65d1489dc50 100644
+> --- a/drivers/gpu/drm/rcar-du/Kconfig
+> +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> @@ -31,6 +31,7 @@ config DRM_RCAR_DW_HDMI
+>  config DRM_RCAR_LVDS
+>  	tristate "R-Car DU LVDS Encoder Support"
+>  	depends on DRM && DRM_BRIDGE && OF
+> +	select DRM_KMS_HELPER
+>  	select DRM_PANEL
+>  	select OF_FLATTREE
+>  	select OF_OVERLAY
+
 -- 
-2.26.2
+Regards,
 
+Laurent Pinchart
