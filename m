@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E681DEF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F861DEF3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 20:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730933AbgEVSaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 14:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
+        id S1730971AbgEVSae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 14:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730824AbgEVSaU (ORCPT
+        with ESMTP id S1730838AbgEVSaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 14:30:20 -0400
+        Fri, 22 May 2020 14:30:21 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08D5C061A0E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E73C08C5C0;
         Fri, 22 May 2020 11:30:20 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jcCQy-0002kr-Kl; Fri, 22 May 2020 20:30:16 +0200
+        id 1jcCQz-0002lW-FX; Fri, 22 May 2020 20:30:17 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3E7FD1C0095;
-        Fri, 22 May 2020 20:30:16 +0200 (CEST)
-Date:   Fri, 22 May 2020 18:30:16 -0000
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 28E1F1C0095;
+        Fri, 22 May 2020 20:30:17 +0200 (CEST)
+Date:   Fri, 22 May 2020 18:30:17 -0000
+From:   "tip-bot2 for Lenny Szubowicz" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] x86/boot: Mark global variables as static
-Cc:     Mike Lothian <mike@fireburn.co.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
+Subject: [tip: efi/urgent] efi/libstub/x86: Avoid EFI map buffer alloc in
+ allocate_e820()
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>,
         Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200511225849.1311869-1-nivedita@alum.mit.edu>
-References: <20200511225849.1311869-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Message-ID: <159017221614.17951.9790248963724097639.tip-bot2@tip-bot2>
+Message-ID: <159017221704.17951.4059011817062465149.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,74 +49,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/urgent branch of tip:
 
-Commit-ID:     e78d334a5470ead861590ec83158f3b17bd6c807
-Gitweb:        https://git.kernel.org/tip/e78d334a5470ead861590ec83158f3b17bd6c807
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Mon, 11 May 2020 18:58:49 -04:00
+Commit-ID:     fd62619598069c974739476d1851a00d665041d7
+Gitweb:        https://git.kernel.org/tip/fd62619598069c974739476d1851a00d665041d7
+Author:        Lenny Szubowicz <lszubowi@redhat.com>
+AuthorDate:    Thu, 07 May 2020 14:33:32 -04:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Thu, 14 May 2020 11:11:20 +02:00
+CommitterDate: Thu, 14 May 2020 11:11:18 +02:00
 
-x86/boot: Mark global variables as static
+efi/libstub/x86: Avoid EFI map buffer alloc in allocate_e820()
 
-Mike Lothian reports that after commit
-  964124a97b97 ("efi/x86: Remove extra headroom for setup block")
-gcc 10.1.0 fails with
+In allocate_e820(), call the EFI get_memory_map() service directly
+instead of indirectly via efi_get_memory_map(). This avoids allocation
+of a buffer and return of the full EFI memory map, which is not needed
+here and would otherwise need to be freed.
 
-  HOSTCC  arch/x86/boot/tools/build
-  /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld:
-  error: linker defined: multiple definition of '_end'
-  /usr/lib/gcc/x86_64-pc-linux-gnu/10.1.0/../../../../x86_64-pc-linux-gnu/bin/ld:
-  /tmp/ccEkW0jM.o: previous definition here
-  collect2: error: ld returned 1 exit status
-  make[1]: *** [scripts/Makefile.host:103: arch/x86/boot/tools/build] Error 1
-  make: *** [arch/x86/Makefile:303: bzImage] Error 2
+Routine allocate_e820() only needs to know how many EFI memory
+descriptors there are in the map to allocate an adequately sized
+e820ext buffer, if it's needed. Note that since efi_get_memory_map()
+returns a memory map buffer sized with extra headroom, allocate_e820()
+now needs to explicitly factor that into the e820ext size calculation.
 
-The issue is with the _end variable that was added, to hold the end of
-the compressed kernel from zoffsets.h (ZO__end). The name clashes with
-the linker-defined _end symbol that indicates the end of the build
-program itself.
-
-Even when there is no compile-time error, this causes build to use
-memory past the end of its .bss section.
-
-To solve this, mark _end as static, and for symmetry, mark the rest of
-the variables that keep track of symbols from the compressed kernel as
-static as well.
-
-Fixes: 964124a97b97 ("efi/x86: Remove extra headroom for setup block")
-Reported-by: Mike Lothian <mike@fireburn.co.uk>
-Tested-by: Mike Lothian <mike@fireburn.co.uk>
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Link: https://lore.kernel.org/r/20200511225849.1311869-1-nivedita@alum.mit.edu
+Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/boot/tools/build.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/firmware/efi/libstub/efistub.h  | 13 +++++++++++++-
+ drivers/firmware/efi/libstub/mem.c      |  2 +--
+ drivers/firmware/efi/libstub/x86-stub.c | 24 +++++++++---------------
+ 3 files changed, 22 insertions(+), 17 deletions(-)
 
-diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index 8f8c8e3..c8b8c1a 100644
---- a/arch/x86/boot/tools/build.c
-+++ b/arch/x86/boot/tools/build.c
-@@ -59,14 +59,14 @@ u8 buf[SETUP_SECT_MAX*512];
- #define PECOFF_COMPAT_RESERVE 0x0
- #endif
+diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+index 67d2694..6294399 100644
+--- a/drivers/firmware/efi/libstub/efistub.h
++++ b/drivers/firmware/efi/libstub/efistub.h
+@@ -92,6 +92,19 @@ extern __pure efi_system_table_t  *efi_system_table(void);
+ #define EFI_LOCATE_BY_REGISTER_NOTIFY		1
+ #define EFI_LOCATE_BY_PROTOCOL			2
  
--unsigned long efi32_stub_entry;
--unsigned long efi64_stub_entry;
--unsigned long efi_pe_entry;
--unsigned long efi32_pe_entry;
--unsigned long kernel_info;
--unsigned long startup_64;
--unsigned long _ehead;
--unsigned long _end;
-+static unsigned long efi32_stub_entry;
-+static unsigned long efi64_stub_entry;
-+static unsigned long efi_pe_entry;
-+static unsigned long efi32_pe_entry;
-+static unsigned long kernel_info;
-+static unsigned long startup_64;
-+static unsigned long _ehead;
-+static unsigned long _end;
++/*
++ * An efi_boot_memmap is used by efi_get_memory_map() to return the
++ * EFI memory map in a dynamically allocated buffer.
++ *
++ * The buffer allocated for the EFI memory map includes extra room for
++ * a minimum of EFI_MMAP_NR_SLACK_SLOTS additional EFI memory descriptors.
++ * This facilitates the reuse of the EFI memory map buffer when a second
++ * call to ExitBootServices() is needed because of intervening changes to
++ * the EFI memory map. Other related structures, e.g. x86 e820ext, need
++ * to factor in this headroom requirement as well.
++ */
++#define EFI_MMAP_NR_SLACK_SLOTS	8
++
+ struct efi_boot_memmap {
+ 	efi_memory_desc_t	**map;
+ 	unsigned long		*map_size;
+diff --git a/drivers/firmware/efi/libstub/mem.c b/drivers/firmware/efi/libstub/mem.c
+index 869a79c..09f4fa0 100644
+--- a/drivers/firmware/efi/libstub/mem.c
++++ b/drivers/firmware/efi/libstub/mem.c
+@@ -5,8 +5,6 @@
  
- /*----------------------------------------------------------------------*/
+ #include "efistub.h"
  
+-#define EFI_MMAP_NR_SLACK_SLOTS	8
+-
+ static inline bool mmap_has_headroom(unsigned long buff_size,
+ 				     unsigned long map_size,
+ 				     unsigned long desc_size)
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index 05ccb22..f0339b5 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -606,24 +606,18 @@ static efi_status_t allocate_e820(struct boot_params *params,
+ 				  struct setup_data **e820ext,
+ 				  u32 *e820ext_size)
+ {
+-	unsigned long map_size, desc_size, buff_size;
+-	struct efi_boot_memmap boot_map;
+-	efi_memory_desc_t *map;
++	unsigned long map_size, desc_size, map_key;
+ 	efi_status_t status;
+-	__u32 nr_desc;
++	__u32 nr_desc, desc_version;
+ 
+-	boot_map.map		= &map;
+-	boot_map.map_size	= &map_size;
+-	boot_map.desc_size	= &desc_size;
+-	boot_map.desc_ver	= NULL;
+-	boot_map.key_ptr	= NULL;
+-	boot_map.buff_size	= &buff_size;
++	/* Only need the size of the mem map and size of each mem descriptor */
++	map_size = 0;
++	status = efi_bs_call(get_memory_map, &map_size, NULL, &map_key,
++			     &desc_size, &desc_version);
++	if (status != EFI_BUFFER_TOO_SMALL)
++		return (status != EFI_SUCCESS) ? status : EFI_UNSUPPORTED;
+ 
+-	status = efi_get_memory_map(&boot_map);
+-	if (status != EFI_SUCCESS)
+-		return status;
+-
+-	nr_desc = buff_size / desc_size;
++	nr_desc = map_size / desc_size + EFI_MMAP_NR_SLACK_SLOTS;
+ 
+ 	if (nr_desc > ARRAY_SIZE(params->e820_table)) {
+ 		u32 nr_e820ext = nr_desc - ARRAY_SIZE(params->e820_table);
