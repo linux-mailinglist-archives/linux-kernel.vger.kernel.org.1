@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22D61DF219
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909361DF1F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 00:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731380AbgEVWmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 18:42:12 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:54426 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731132AbgEVWmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 18:42:10 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04MMfvcI061288;
-        Fri, 22 May 2020 17:41:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1590187317;
-        bh=vZHWXLCtyhdJG9oIb95lQ7NP/FmYNPGx8pS+OBRUJx0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=YHMIz4OdrwMc7NBz4YggDr/eiUOn3lP9kVsW1wlS+Zxz8YOJ7IjWZ7KO3j/dvne+9
-         6ufOyZjOndTCm7qqHd7IJMScSt9D3te9IWqY3vSNUxu0Q7eM0HodcCTMj3iC3S4pmI
-         vItaIww/0YA/4kauvv60Rji9jWaCKXiBVjXQcYqM=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04MMfvib044408
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 May 2020 17:41:57 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- May 2020 17:41:57 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 May 2020 17:41:57 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04MMeh5k044559;
-        Fri, 22 May 2020 17:41:52 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Mason Yang <masonccyang@mxic.com.tw>
-Subject: [PATCH v8 13/19] mtd: spi-nor: sfdp: do not make invalid quad enable fatal
-Date:   Sat, 23 May 2020 04:10:36 +0530
-Message-ID: <20200522224042.29970-14-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200522224042.29970-1-p.yadav@ti.com>
-References: <20200522224042.29970-1-p.yadav@ti.com>
+        id S1731213AbgEVWki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 18:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731029AbgEVWkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 18:40:37 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41FC1204EA;
+        Fri, 22 May 2020 22:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590187237;
+        bh=nKJ+NR8Zq+TjBW09KzQrYnkOO8kcQo/Q4ZyZXpe3MRc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=WsppzdI8VXf4M+BwrdzL4O3DYOxOubNAwjRAvieTSPIKz+CS6yRT/m3/MzgOS9dSj
+         lGaS9RcFvCS9zR82f/CQg2N/HRzXbW7VjExuBVbkiXeOW5eMgFrY4aAbLqMbQM43kz
+         PS0bqCt/sGLzuFnpaw8MSwRBvCuFZseviJZc7etc=
+Subject: Re: [PATCH] kunit: use KUnit defconfig by default
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        shuah <shuah@kernel.org>
+References: <20200414233753.94978-1-vitor@massaru.org>
+ <CAFd5g442ka0c+D+qs7--_ERqn=Bqc3V4AHuER8FLsJi1oesirQ@mail.gmail.com>
+From:   shuah <shuah@kernel.org>
+Message-ID: <97d1f27d-7156-6207-73ae-fb06d2b218d6@kernel.org>
+Date:   Fri, 22 May 2020 16:40:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAFd5g442ka0c+D+qs7--_ERqn=Bqc3V4AHuER8FLsJi1oesirQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Micron MT35XU512ABA flash does not support the quad enable bit. But
-instead of programming the Quad Enable Require field to 000b ("Device
-does not have a QE bit"), it is programmed to 111b ("Reserved").
+On 4/16/20 5:20 PM, Brendan Higgins wrote:
+> On Tue, Apr 14, 2020 at 4:37 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
+>>
+>> To improve the usability of KUnit, defconfig is used
+>> by default if no kunitconfig is present.
+>>
+>>   * https://bugzilla.kernel.org/show_bug.cgi?id=205259
+>>
+>> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> 
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> 
 
-While this is technically incorrect, it is not reason enough to abort
-BFPT parsing. Instead, continue BFPT parsing assuming there is no quad
-enable bit present.
+Applied the patch to kselftest/kunit on top of
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/sfdp.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+45ba7a893ad89114e773b3dc32f6431354c465d6
+kunit: kunit_tool: Separate out config/build/exec/parse
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 052cabb52df9..9fd3d8d9a127 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -576,10 +576,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 
- 	/* Quad Enable Requirements. */
- 	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
--	case BFPT_DWORD15_QER_NONE:
--		params->quad_enable = NULL;
--		break;
--
- 	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
- 		/*
- 		 * Writing only one byte to the Status Register has the
-@@ -616,8 +612,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		params->quad_enable = spi_nor_sr2_bit1_quad_enable;
- 		break;
- 
-+	case BFPT_DWORD15_QER_NONE:
- 	default:
--		return -EINVAL;
-+		params->quad_enable = NULL;
-+		break;
- 	}
- 
- 	/* Stop here if JESD216 rev B. */
--- 
-2.26.2
+from David's work resolving merge conflicts. Please check if it is
+sane.
 
+thanks,
+-- Shuah
