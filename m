@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DAC1DEE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10B91DEE68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 19:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgEVRnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 13:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
+        id S1730741AbgEVRjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 13:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726373AbgEVRnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 13:43:53 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        id S1730572AbgEVRjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 13:39:05 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4E5620723;
-        Fri, 22 May 2020 17:43:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89F0F20723;
+        Fri, 22 May 2020 17:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590169432;
-        bh=t22SyB9/K0m7E486hZD+8n3eS0aL0e1D5tiaHegV7t4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FbvkIrVI+T2eCWT0T7gRxnb98/8VdBn4hzMhVK3rF9tB4lYEISVUrrayGEoSOG25L
-         4BK+yKfkU4EyB9swUyvf9VivrR5ydvB7E5qmyVnKp5RM1l4MO88lptxGLiPYSbL1Mm
-         H5mYORDCqyVUzKjzY3buBkk1ShuYVqCYoKDrX78Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AFA063522E41; Fri, 22 May 2020 10:43:52 -0700 (PDT)
-Date:   Fri, 22 May 2020 10:43:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Peter Zijlstra <peterz@infradead.org>, parri.andrea@gmail.com,
-        will@kernel.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        andriin@fb.com
-Subject: Re: Some -serious- BPF-related litmus tests
-Message-ID: <20200522174352.GJ2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200522003850.GA32698@paulmck-ThinkPad-P72>
- <20200522094407.GK325280@hirez.programming.kicks-ass.net>
- <20200522143201.GB32434@rowland.harvard.edu>
+        s=default; t=1590169145;
+        bh=uZktogMIldBXs3EnkclH2OcbwF2xvrt9qAcFBj9JxyA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CVlVu6Tl94Ujfw9k+IunjftvcjK9C0E5co+apqaj98AFWqlF1k/xFfB1D4Tn8Mz1R
+         b+mYAeybR5/5Tk1oGForFgLQgPWPhUFM3BCr3kFzjllepPyv3cM4eHTOVMa1j5ZaDr
+         DGq2QtamnmFGWx9kw7NSfnWlTcOVm1PJBa3r43Jg=
+Date:   Fri, 22 May 2020 12:43:55 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] drm/[radeon|amdgpu]: Replace one-element array and use
+ struct_size() helper
+Message-ID: <20200522174355.GA4406@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200522143201.GB32434@rowland.harvard.edu>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 10:32:01AM -0400, Alan Stern wrote:
-> On Fri, May 22, 2020 at 11:44:07AM +0200, Peter Zijlstra wrote:
-> > On Thu, May 21, 2020 at 05:38:50PM -0700, Paul E. McKenney wrote:
-> > > Hello!
-> > > 
-> > > Just wanted to call your attention to some pretty cool and pretty serious
-> > > litmus tests that Andrii did as part of his BPF ring-buffer work:
-> > > 
-> > > https://lore.kernel.org/bpf/20200517195727.279322-3-andriin@fb.com/
-> > > 
-> > > Thoughts?
-> > 
-> > I find:
-> > 
-> > 	smp_wmb()
-> > 	smp_store_release()
-> > 
-> > a _very_ weird construct. What is that supposed to even do?
-> 
-> Indeed, it looks like one or the other of those is redundant (depending 
-> on the context).
+The current codebase makes use of one-element arrays in the following
+form:
 
-Probably.  Peter instead asked what it was supposed to even do.  ;-)
+struct something {
+    int length;
+    u8 data[1];
+};
 
-> Also, what use is a spinlock that is accessed in only one thread?
+struct something *instance;
 
-Multiple writers synchronize via the spinlock in this case.  I am
-guessing that his larger 16-hour test contended this spinlock.
+instance = kmalloc(sizeof(*instance) + size, GFP_KERNEL);
+instance->length = size;
+memcpy(instance->data, source, size);
 
-> Finally, I doubt that these tests belong under tools/memory-model.  
-> Shouldn't they go under the new Documentation/ directory for litmus 
-> tests?  And shouldn't the patch update a README file?
+but the preferred mechanism to declare variable-length types such as
+these ones is a flexible array member[1][2], introduced in C99:
 
-Agreed, and I responded to that effect to his original patch:
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-https://lore.kernel.org/bpf/20200522003433.GG2869@paulmck-ThinkPad-P72/
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on. So, replace
+the one-element array with a flexible-array member.
 
-							Thanx, Paul
+Also, make use of the new struct_size() helper to properly calculate the
+size of struct SISLANDS_SMC_SWSTATE.
+
+This issue was found with the help of Coccinelle and, audited and fixed
+_manually_.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/gpu/drm/amd/amdgpu/si_dpm.c       | 5 ++---
+ drivers/gpu/drm/amd/amdgpu/sislands_smc.h | 2 +-
+ drivers/gpu/drm/radeon/si_dpm.c           | 5 ++---
+ 3 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/si_dpm.c b/drivers/gpu/drm/amd/amdgpu/si_dpm.c
+index c00ba4b23c9a6..0fc56c5bac080 100644
+--- a/drivers/gpu/drm/amd/amdgpu/si_dpm.c
++++ b/drivers/gpu/drm/amd/amdgpu/si_dpm.c
+@@ -5715,10 +5715,9 @@ static int si_upload_sw_state(struct amdgpu_device *adev,
+ 	int ret;
+ 	u32 address = si_pi->state_table_start +
+ 		offsetof(SISLANDS_SMC_STATETABLE, driverState);
+-	u32 state_size = sizeof(SISLANDS_SMC_SWSTATE) +
+-		((new_state->performance_level_count - 1) *
+-		 sizeof(SISLANDS_SMC_HW_PERFORMANCE_LEVEL));
+ 	SISLANDS_SMC_SWSTATE *smc_state = &si_pi->smc_statetable.driverState;
++	size_t state_size = struct_size(smc_state, levels,
++					new_state->performance_level_count);
+ 
+ 	memset(smc_state, 0, state_size);
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/sislands_smc.h b/drivers/gpu/drm/amd/amdgpu/sislands_smc.h
+index d2930eceaf3c8..a089dbf8f7a93 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sislands_smc.h
++++ b/drivers/gpu/drm/amd/amdgpu/sislands_smc.h
+@@ -186,7 +186,7 @@ struct SISLANDS_SMC_SWSTATE
+     uint8_t                             levelCount;
+     uint8_t                             padding2;
+     uint8_t                             padding3;
+-    SISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[1];
++    SISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[];
+ };
+ 
+ typedef struct SISLANDS_SMC_SWSTATE SISLANDS_SMC_SWSTATE;
+diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
+index a167e1c36d243..bab01ca864c63 100644
+--- a/drivers/gpu/drm/radeon/si_dpm.c
++++ b/drivers/gpu/drm/radeon/si_dpm.c
+@@ -5253,10 +5253,9 @@ static int si_upload_sw_state(struct radeon_device *rdev,
+ 	int ret;
+ 	u32 address = si_pi->state_table_start +
+ 		offsetof(SISLANDS_SMC_STATETABLE, driverState);
+-	u32 state_size = sizeof(SISLANDS_SMC_SWSTATE) +
+-		((new_state->performance_level_count - 1) *
+-		 sizeof(SISLANDS_SMC_HW_PERFORMANCE_LEVEL));
+ 	SISLANDS_SMC_SWSTATE *smc_state = &si_pi->smc_statetable.driverState;
++	size_t state_size = struct_size(smc_state, levels,
++					new_state->performance_level_count);
+ 
+ 	memset(smc_state, 0, state_size);
+ 
+-- 
+2.26.2
+
