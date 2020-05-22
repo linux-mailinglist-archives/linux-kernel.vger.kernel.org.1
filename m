@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945601DDD5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 04:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200031DDD6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 04:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgEVCrR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 21 May 2020 22:47:17 -0400
-Received: from mail.fireflyinternet.com ([109.228.58.192]:64489 "EHLO
-        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727004AbgEVCrR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 May 2020 22:47:17 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21254549-1500050 
-        for multiple; Fri, 22 May 2020 03:47:00 +0100
-Content-Type: text/plain; charset="utf-8"
+        id S1728150AbgEVCvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 May 2020 22:51:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4885 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727080AbgEVCvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 May 2020 22:51:14 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A8D2C669D7020FC37829;
+        Fri, 22 May 2020 10:51:11 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 22 May 2020 10:51:01 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH net-next 0/5] net: hns3: misc updates for -next
+Date:   Fri, 22 May 2020 10:49:41 +0800
+Message-ID: <1590115786-9940-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200521233841.1279742-1-jhubbard@nvidia.com>
-References: <20200521233841.1279742-1-jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        John Hubbard <jhubbard@nvidia.com>
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH] mm/gup: fixup gup.c for "mm/gup: refactor and de-duplicate gup_fast() code"
-Message-ID: <159011561851.32320.15372940900085926477@build.alporthouse.com>
-User-Agent: alot/0.8.1
-Date:   Fri, 22 May 2020 03:46:58 +0100
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting John Hubbard (2020-05-22 00:38:41)
-> Include FOLL_FAST_ONLY in the list of flags to *not* WARN()
-> on, in internal_get_user_pages_fast().
-> 
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: "Joonas Lahtinen" <joonas.lahtinen@linux.intel.com>
-> Cc: Matthew Auld <matthew.auld@intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
-> 
-> Hi Andrew, Chris,
-> 
-> Andrew: This is a fixup that applies to today's (20200521) linux-next.
-> In that tree, this fixes up:
-> 
-> commit dfb8dfe80808 ("mm/gup: refactor and de-duplicate gup_fast() code")
-> 
-> Chris: I'd like to request another CI run for the drm/i915 changes, so
-> for that, would you prefer that I post a v2 of the series [1], or
-> is it easier for you to just apply this patch here, on top of [2]?
+This patchset includes some misc updates for the HNS3 ethernet driver.
 
-If you post your series again with this patch included to intel-gfx, CI
-will pick it up. Or I'll do that in the morning.
--Chris
+#1 adds support for dump VF's mapping of ring and vector, this
+   is needed by the hns3 DPDK VF PMD driver.
+#2 adds a resetting check in hclgevf_init_nic_client_instance().
+#3 adds a preparatory work for RMDA VF's driver.
+#4 removes some unnecessary operations in app loopback.
+#5 adds an error log for debugging.
+
+Guangbin Huang (2):
+  net: hns3: add support for VF to query ring and vector mapping
+  net: hns3: add a resetting check in hclgevf_init_nic_client_instance()
+
+Huazhong Tan (1):
+  net: hns3: add a print for initializing CMDQ when reset pending
+
+Yufeng Mo (2):
+  net: hns3: change the order of reinitializing RoCE and NIC client
+    during reset
+  net: hns3: remove unnecessary MAC enable in app loopback
+
+ drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h    |  1 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |  3 +
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 11 +--
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 91 ++++++++++++++++++++++
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  |  9 +++
+ 5 files changed, 108 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
+
