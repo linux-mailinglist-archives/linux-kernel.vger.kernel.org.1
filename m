@@ -2,56 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE481DEC81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEFE1DEC91
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 May 2020 17:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730702AbgEVPyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 11:54:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:38594 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730137AbgEVPye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 11:54:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54FBC55D;
-        Fri, 22 May 2020 08:54:33 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 815553F305;
-        Fri, 22 May 2020 08:54:29 -0700 (PDT)
-Date:   Fri, 22 May 2020 16:54:27 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 09/29] arm64: use asm-generic/cacheflush.h
-Message-ID: <20200522155426.GI26492@gaia>
-References: <20200515143646.3857579-1-hch@lst.de>
- <20200515143646.3857579-10-hch@lst.de>
+        id S1730515AbgEVP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 11:56:18 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:55025 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730195AbgEVP4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 May 2020 11:56:17 -0400
+X-Originating-IP: 90.76.143.236
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 36BA940008;
+        Fri, 22 May 2020 15:56:15 +0000 (UTC)
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+To:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com
+Cc:     Antoine Tenart <antoine.tenart@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] net: phy: mscc: fix initialization of the MACsec protocol mode
+Date:   Fri, 22 May 2020 17:55:45 +0200
+Message-Id: <20200522155545.881263-1-antoine.tenart@bootlin.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200515143646.3857579-10-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:36:26PM +0200, Christoph Hellwig wrote:
-> ARM64 needs almost no cache flushing routines of its own.  Rely on
-> asm-generic/cacheflush.h for the defaults.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+At the very end of the MACsec block initialization in the MSCC PHY
+driver, the MACsec "protocol mode" is set. This setting should be set
+based on the PHY id within the package, as the bank used to access the
+register used depends on this. This was not done correctly, and only the
+first bank was used leading to the two upper PHYs being unstable when
+using the VSC8584. This patch fixes it.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 1bbe0ecc2a1a ("net: phy: mscc: macsec initialization")
+Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
+---
+
+Since v1:
+  - Resent to net.
+
+ drivers/net/phy/mscc/mscc.h        |  2 ++
+ drivers/net/phy/mscc/mscc_mac.h    |  6 +++---
+ drivers/net/phy/mscc/mscc_macsec.c | 16 ++++++++++------
+ drivers/net/phy/mscc/mscc_macsec.h |  3 ++-
+ drivers/net/phy/mscc/mscc_main.c   |  4 ++++
+ 5 files changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/phy/mscc/mscc.h b/drivers/net/phy/mscc/mscc.h
+index 030bf8b600df..414e3b31bb1f 100644
+--- a/drivers/net/phy/mscc/mscc.h
++++ b/drivers/net/phy/mscc/mscc.h
+@@ -354,6 +354,8 @@ struct vsc8531_private {
+ 	u64 *stats;
+ 	int nstats;
+ 	bool pkg_init;
++	/* PHY address within the package. */
++	u8 addr;
+ 	/* For multiple port PHYs; the MDIO address of the base PHY in the
+ 	 * package.
+ 	 */
+diff --git a/drivers/net/phy/mscc/mscc_mac.h b/drivers/net/phy/mscc/mscc_mac.h
+index fcb5ba5e5d03..59b6837c60b3 100644
+--- a/drivers/net/phy/mscc/mscc_mac.h
++++ b/drivers/net/phy/mscc/mscc_mac.h
+@@ -152,8 +152,8 @@
+ #define MSCC_MAC_PAUSE_CFG_STATE_PAUSE_STATE			BIT(0)
+ #define MSCC_MAC_PAUSE_CFG_STATE_MAC_TX_PAUSE_GEN		BIT(4)
+ 
+-#define MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL			0x2
+-#define MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE(x)	(x)
+-#define MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE_M	GENMASK(2, 0)
++#define MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL			0x2
++#define MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE(x)	(x)
++#define MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE_M	GENMASK(2, 0)
+ 
+ #endif /* _MSCC_PHY_LINE_MAC_H_ */
+diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
+index e99e2cd72a0c..b4d3dc4068e2 100644
+--- a/drivers/net/phy/mscc/mscc_macsec.c
++++ b/drivers/net/phy/mscc/mscc_macsec.c
+@@ -316,6 +316,8 @@ static void vsc8584_macsec_mac_init(struct phy_device *phydev,
+ /* Must be called with mdio_lock taken */
+ static int __vsc8584_macsec_init(struct phy_device *phydev)
+ {
++	struct vsc8531_private *priv = phydev->priv;
++	enum macsec_bank proc_bank;
+ 	u32 val;
+ 
+ 	vsc8584_macsec_block_init(phydev, MACSEC_INGR);
+@@ -351,12 +353,14 @@ static int __vsc8584_macsec_init(struct phy_device *phydev)
+ 	val |= MSCC_FCBUF_ENA_CFG_TX_ENA | MSCC_FCBUF_ENA_CFG_RX_ENA;
+ 	vsc8584_macsec_phy_write(phydev, FC_BUFFER, MSCC_FCBUF_ENA_CFG, val);
+ 
+-	val = vsc8584_macsec_phy_read(phydev, IP_1588,
+-				      MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL);
+-	val &= ~MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE_M;
+-	val |= MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE(4);
+-	vsc8584_macsec_phy_write(phydev, IP_1588,
+-				 MSCC_PROC_0_IP_1588_TOP_CFG_STAT_MODE_CTL, val);
++	proc_bank = (priv->addr < 2) ? PROC_0 : PROC_2;
++
++	val = vsc8584_macsec_phy_read(phydev, proc_bank,
++				      MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL);
++	val &= ~MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE_M;
++	val |= MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL_PROTOCOL_MODE(4);
++	vsc8584_macsec_phy_write(phydev, proc_bank,
++				 MSCC_PROC_IP_1588_TOP_CFG_STAT_MODE_CTL, val);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/phy/mscc/mscc_macsec.h b/drivers/net/phy/mscc/mscc_macsec.h
+index d0783944d106..d751f2946b79 100644
+--- a/drivers/net/phy/mscc/mscc_macsec.h
++++ b/drivers/net/phy/mscc/mscc_macsec.h
+@@ -64,7 +64,8 @@ enum macsec_bank {
+ 	FC_BUFFER   = 0x04,
+ 	HOST_MAC    = 0x05,
+ 	LINE_MAC    = 0x06,
+-	IP_1588     = 0x0e,
++	PROC_0      = 0x0e,
++	PROC_2      = 0x0f,
+ 	MACSEC_INGR = 0x38,
+ 	MACSEC_EGR  = 0x3c,
+ };
+diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+index acddef79f4e8..c8aa6d905d8e 100644
+--- a/drivers/net/phy/mscc/mscc_main.c
++++ b/drivers/net/phy/mscc/mscc_main.c
+@@ -1347,6 +1347,8 @@ static int vsc8584_config_init(struct phy_device *phydev)
+ 	else
+ 		vsc8531->base_addr = phydev->mdio.addr - addr;
+ 
++	vsc8531->addr = addr;
++
+ 	/* Some parts of the init sequence are identical for every PHY in the
+ 	 * package. Some parts are modifying the GPIO register bank which is a
+ 	 * set of registers that are affecting all PHYs, a few resetting the
+@@ -1771,6 +1773,8 @@ static int vsc8514_config_init(struct phy_device *phydev)
+ 	else
+ 		vsc8531->base_addr = phydev->mdio.addr - addr;
+ 
++	vsc8531->addr = addr;
++
+ 	/* Some parts of the init sequence are identical for every PHY in the
+ 	 * package. Some parts are modifying the GPIO register bank which is a
+ 	 * set of registers that are affecting all PHYs, a few resetting the
+-- 
+2.26.2
+
