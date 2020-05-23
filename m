@@ -2,100 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7971DF409
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 03:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6CA1DF419
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 03:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387632AbgEWBvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 21:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387615AbgEWBvc (ORCPT
+        id S2387665AbgEWBwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 21:52:35 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1583 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387481AbgEWBwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 21:51:32 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7118EC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:32 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id c24so9866335qtw.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dl+KxsROb4cPj2iQZSsr1bvDaOCEwSXc+9sPYn2MtWc=;
-        b=EP3CkkiMjXBNO33JU9tRJ5LOwWZYredBb+mvwPWhXXCKQAWAlsiQQsQRPkFQPC0nRx
-         ZkbxSuoT6LV4EXeZ4pWL3Yhlfo8nx80UCABTT4KAbIxUlWTcaOC87qRpVUQnN1IlECSU
-         /f+YDMuL2deibxh4BYYOUk4wDVykqh2S0uUepuWSGiRzpC4QkrCSzFjtTeDpiepWSJeA
-         69mziKBIWAi7G48ZvWI8Rlrg0FIyT63r8u1qZR+xIGts5r6/I3G/fPw2tZOQnL8WoJLm
-         RhlPUh8PkYbfgy0f++xZ7SI/Er7oQu6UxF6+uaIp1H+2mLVxKbQZCpilU8MEltoMVjjs
-         8dlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dl+KxsROb4cPj2iQZSsr1bvDaOCEwSXc+9sPYn2MtWc=;
-        b=SpQygXVL6fZip4VBvUL04023Y8J8n++sR/zxktQHp2YHNGkCQCJSZRLt4kYW+ssyZI
-         i+7e75a5aigU/ue0WGolu8+61fNm7JY/L44Z9id4R+1SihZrjSwfbQfpEc5p/h2Dj3Fi
-         7IvH+6iRqyc2ixt+zzvOUsLxfbYFAI1Gat/gvRzrALnFRNE2vsz/tLQoIridL7+hPl69
-         Z8UT1MxePR+o2Oeii1PryndG3BNF1EsTcr5fFkccP1yFX9CT5E3rSpLc/4g/ItS9G91x
-         Ozx1ClOsQuvsgkH7R4MQ4eHZbp9Yr/G0kjOvpch31fIZOb3L48ybDayjSfHvxY083P5H
-         cNAA==
-X-Gm-Message-State: AOAM533hK7hfOCATN276/7C3pJO68pZFxX63SCWVHVansrei4Fi37VJY
-        IB1FAuOL42tPpy0773mEJAc=
-X-Google-Smtp-Source: ABdhPJwzByhTsHMepg7YrKn+Hzag2OKQNukvBSM7yD5thAMQVpVOrtmWv5O46EbvlNY9CVs+/Upmng==
-X-Received: by 2002:ac8:699a:: with SMTP id o26mr18085807qtq.92.1590198691654;
-        Fri, 22 May 2020 18:51:31 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o18sm9859239qtb.7.2020.05.22.18.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 18:51:30 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 22 May 2020 21:51:29 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     "Tobin C . Harding" <me@tobin.cc>, Tycho Andersen <tycho@tycho.ws>,
-        kernel-hardening@lists.openwall.com,
-        Kees Cook <keescook@chromium.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/mm/init: Stop printing pgt_buf addresses
-Message-ID: <20200523015129.GA717759@rani.riverdale.lan>
-References: <20200229231120.1147527-1-nivedita@alum.mit.edu>
+        Fri, 22 May 2020 21:52:35 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ec881920000>; Fri, 22 May 2020 18:51:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 22 May 2020 18:52:34 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 22 May 2020 18:52:34 -0700
+Received: from [10.2.52.1] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 23 May
+ 2020 01:52:34 +0000
+Subject: Re: [PATCH v2] fpga: dfl: afu: convert get_user_pages() -->
+ pin_user_pages()
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     Xu Yilun <yilun.xu@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, <linux-fpga@vger.kernel.org>
+References: <20200519201449.3136033-1-jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <64aa1494-7570-5319-b096-ea354ff20431@nvidia.com>
+Date:   Fri, 22 May 2020 18:52:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200229231120.1147527-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200519201449.3136033-1-jhubbard@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590198674; bh=H0H4bnfmZctAlDk5DLSVcRpTFSw3qTsKUJh0ZTZurr0=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=X2SnSaT7Sre/ZYhMC6y2b6BWRFVOldzacF6lVvqQ6bEN1JPnOQM4Pr8en2VFy77DJ
+         bu48Qgw92YsFEu3twD2Zlq5M1hRCuvLBcu8WmT+mPDWqVkfK/lYqqp5hjG16VzwFRt
+         9aXkfPEVxjvv//sTJZ5f3RQCkNiRMKhbunRzMyNub4PD4hzEGKUAGGDiOcQq3hSKAG
+         LMffZkVrCKRB4ERw+wSd3szU5l07qmea/t20Bolj5+p2z/LqECpvcEPsRwLcO19voP
+         ACBwxvYV0Yrz3KrnfmlljYgoOyFdwSVOH39ctMSHlaqCDqeR75vouuLaLMKn+nHHFD
+         GZPSf0WA92Rcg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 06:11:20PM -0500, Arvind Sankar wrote:
-> This currently leaks kernel physical addresses into userspace.
+On 2020-05-19 13:14, John Hubbard wrote:
+> This code was using get_user_pages_fast(), in a "Case 2" scenario
+> (DMA/RDMA), using the categorization from [1]. That means that it's
+> time to convert the get_user_pages_fast() + put_page() calls to
+> pin_user_pages_fast() + unpin_user_pages() calls.
 > 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> There is some helpful background in [2]: basically, this is a small
+> part of fixing a long-standing disconnect between pinning pages, and
+> file systems' use of those pages.
+> 
+> [1] Documentation/core-api/pin_user_pages.rst
+> 
+> [2] "Explicit pinning of user-space pages":
+>      https://lwn.net/Articles/807108/
+> 
+> Cc: Xu Yilun <yilun.xu@intel.com>
+> Cc: Wu Hao <hao.wu@intel.com>
+> Cc: Moritz Fischer <mdf@kernel.org>
+> Cc: linux-fpga@vger.kernel.org
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+
+
+Hi Moritz and FPGA developers,
+
+Is this OK? And if so, is it going into your git tree? Or should I
+send it up through a different tree? (I'm new to the FPGA development
+model).
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+
+
 > ---
->  arch/x86/mm/init.c | 2 --
->  1 file changed, 2 deletions(-)
 > 
-> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> index e7bb483557c9..dc4711f09cdc 100644
-> --- a/arch/x86/mm/init.c
-> +++ b/arch/x86/mm/init.c
-> @@ -121,8 +121,6 @@ __ref void *alloc_low_pages(unsigned int num)
->  	} else {
->  		pfn = pgt_buf_end;
->  		pgt_buf_end += num;
-> -		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
-> -			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
->  	}
->  
->  	for (i = 0; i < num; i++) {
-> -- 
-> 2.24.1
+> Hi,
+> 
+> Changes since v1:
+> 
+> Changed the label from "put_pages", to "unpin_pages".
+> 
+> thanks,
+> John Hubbard
+> NVIDIA
+>   
+>   drivers/fpga/dfl-afu-dma-region.c | 19 +++++--------------
+>   1 file changed, 5 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
+> index 62f924489db5..a31dd3a7e581 100644
+> --- a/drivers/fpga/dfl-afu-dma-region.c
+> +++ b/drivers/fpga/dfl-afu-dma-region.c
+> @@ -16,15 +16,6 @@
+>   
+>   #include "dfl-afu.h"
+>   
+> -static void put_all_pages(struct page **pages, int npages)
+> -{
+> -	int i;
+> -
+> -	for (i = 0; i < npages; i++)
+> -		if (pages[i])
+> -			put_page(pages[i]);
+> -}
+> -
+>   void afu_dma_region_init(struct dfl_feature_platform_data *pdata)
+>   {
+>   	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
+> @@ -57,11 +48,11 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
+>   		goto unlock_vm;
+>   	}
+>   
+> -	pinned = get_user_pages_fast(region->user_addr, npages, FOLL_WRITE,
+> +	pinned = pin_user_pages_fast(region->user_addr, npages, FOLL_WRITE,
+>   				     region->pages);
+>   	if (pinned < 0) {
+>   		ret = pinned;
+> -		goto put_pages;
+> +		goto unpin_pages;
+>   	} else if (pinned != npages) {
+>   		ret = -EFAULT;
+>   		goto free_pages;
+> @@ -71,8 +62,8 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
+>   
+>   	return 0;
+>   
+> -put_pages:
+> -	put_all_pages(region->pages, pinned);
+> +unpin_pages:
+> +	unpin_user_pages(region->pages, pinned);
+>   free_pages:
+>   	kfree(region->pages);
+>   unlock_vm:
+> @@ -94,7 +85,7 @@ static void afu_dma_unpin_pages(struct dfl_feature_platform_data *pdata,
+>   	long npages = region->length >> PAGE_SHIFT;
+>   	struct device *dev = &pdata->dev->dev;
+>   
+> -	put_all_pages(region->pages, npages);
+> +	unpin_user_pages(region->pages, npages);
+>   	kfree(region->pages);
+>   	account_locked_vm(current->mm, npages, false);
+>   
 > 
 
-Ping.
-
-https://lore.kernel.org/lkml/20200229231120.1147527-1-nivedita@alum.mit.edu/
