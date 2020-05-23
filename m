@@ -2,167 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048611DFAAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 21:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A251DFAB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 21:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387814AbgEWTUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 15:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgEWTUq (ORCPT
+        id S2387587AbgEWTeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 15:34:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27714 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727918AbgEWTeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 15:20:46 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A90C08C5C0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 12:20:45 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id u22so5754242plq.12
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 12:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hA9QPDx7hlE3ND4DwWRlDMJ19Frvrmq/H2EqY+eNJ64=;
-        b=0q+YU9P9GK7f7corz/MS41QLym929QjELiRrpW8MG8nwgFwcsxsqzCbNyC7laJ1+PF
-         glJphrkI1udiLmwSzBkbGBRq+UPe73XZoD2mvtEOZ4ia2S44JuxRfUumeDe4yb98XkRZ
-         P5yD3lBb+VKq6WVq34r3Ou4D6u7gizH6e7wDh7/5gwBjIVCkJ5KgFhS+c6pf7/vrEzJy
-         AkgSLIH8Z/r7HU6xk2xehOVbOp05rjgCDx4olsrirOGmqMR80ofSNU686R2TjN7Rhvct
-         fjYmAUM0vHO1N3eVEB+5PPKJmsdd0ligK7RL/JZb1osl2D7+Z2ZNcRhTw69SNr8BEkjg
-         r9Nw==
+        Sat, 23 May 2020 15:34:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590262462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZwVeospWQzWBd2Ckz6qsa+cBIBayXfsa3U5rcqOkNSc=;
+        b=hGBvsA05+/RATfO0md7Bm9LDTyR3azhsdHRSQPMlBDjP1KkcoNzoUNg/0P9TDANFqOkvzk
+        aXhY4rlqE7Tr9+2q/8U/ZupVNt7+tIIy8AIj86waJjniBDGF1Vl4AzRq+RnUGYm0Idg1TJ
+        iIfkZtPQAYsZDG/0AhSHno/fikS/gok=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-0zSs8ditNRmF3q3UmKZuhg-1; Sat, 23 May 2020 15:34:20 -0400
+X-MC-Unique: 0zSs8ditNRmF3q3UmKZuhg-1
+Received: by mail-qk1-f200.google.com with SMTP id p126so14474816qke.8
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 12:34:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hA9QPDx7hlE3ND4DwWRlDMJ19Frvrmq/H2EqY+eNJ64=;
-        b=llYVGq1cdLtTkFUj0CyeKzSspJ3HwSuc69wOFaliOxFRnfjcrnd7qFdXc7xi6NNYqJ
-         1Ls0yXRfNWdZVFhFvfbS09gO6Xvrv/+amhW8GNpBCaWzmOiAgUGiSg0hd8xraiprKIzw
-         jez7110vhAnJkZROyZV213TbCZYGe7mcQHRhGodA7tLBSzMZ6zMyfaQgnCHnZYt+B3bh
-         Byzc7Cd8yOvpdBLjP6mg1v+Jt7/TwgAvWwa6lBhPP6cVr8nFz4hpurM8zDSYluc7yrGd
-         lHWgeBvQ1Fm1SWsbfMtwUIfzH4w60zs91paoqkV1PMIXVojU/LJ1c+FnYaKvPJSjMZ7/
-         ysZw==
-X-Gm-Message-State: AOAM5337KBEBtr55ZJ8N0CU5iVUQrk3eo7HTEBqovwlBNFxw+TMEcdda
-        a9NOUZGXWpL+H7zyfE0N4BYF2vnjmCLKIg==
-X-Google-Smtp-Source: ABdhPJxXzjl6T/Z1yURPua6/Yup1Xp5ljESCno0qdshH4asOxNjDPYFoS3I9T3IMOBXTfYoB8AZclg==
-X-Received: by 2002:a17:90a:8545:: with SMTP id a5mr11496077pjw.200.1590261644246;
-        Sat, 23 May 2020 12:20:44 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:c94:a67a:9209:cf5f? ([2605:e000:100e:8c61:c94:a67a:9209:cf5f])
-        by smtp.gmail.com with ESMTPSA id 202sm2033541pfv.155.2020.05.23.12.20.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 May 2020 12:20:43 -0700 (PDT)
-Subject: Re: [PATCHSET v2 0/12] Add support for async buffered reads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200523185755.8494-1-axboe@kernel.dk>
-Message-ID: <2b42c0c3-5d3c-e381-4193-83cb3f971399@kernel.dk>
-Date:   Sat, 23 May 2020 13:20:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZwVeospWQzWBd2Ckz6qsa+cBIBayXfsa3U5rcqOkNSc=;
+        b=fOUnFaq0GVhnquJL5MdRmjcVedCAWzAA9l2FfCTD01RLr7PEP5iiu5KUL+F8ipgGSg
+         /FAONj9j/acaK5XOLa/Xm8je41Az96zptolUBbLdT2PSMIdLzww08da6Fxp4jqVwU4xD
+         SbL2q+pdQc/BVzLZTyf/7tVjdwHyuk5hlWAoj/30lNXikbX9DTdn1QeapiNOIpurINh/
+         ogVVNfsZGyo5nH+xkf5/iY/XBU5maRVoJj/hLpfDv/PWiSIaiekgNjJgtJbPOzVjxVsB
+         DVnmtdqLH2gpr7OUifQYQxg3c8PW8PAkEU00FVjhbwvFxqUbq2pKScz+S86Mg1WC4nti
+         piyQ==
+X-Gm-Message-State: AOAM532Hm0lqY6tHEYYT90CM00TOLZM6BOBOlFVmJyDWMQJIsU5tslkC
+        v3WXJ89TLBqttRLIVC6awU0PnTMGOn7kIdOYIgxLKEtqu5cp4rXmQRbMSGc+950w1uxnMW6XlDl
+        hebkPAKPWlrqfwO8aI5pGOWZK
+X-Received: by 2002:a37:490:: with SMTP id 138mr20187715qke.199.1590262460144;
+        Sat, 23 May 2020 12:34:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXoWZIY0o5CFf8fx4b1C6Zs4/6XKmwWKD3ydRMLJhK+DLPOyxQZBXyhKbfchOrVAsReukLiA==
+X-Received: by 2002:a37:490:: with SMTP id 138mr20187698qke.199.1590262459865;
+        Sat, 23 May 2020 12:34:19 -0700 (PDT)
+Received: from xz-x1 (CPEf81d0fb19163-CMf81d0fb19160.cpe.net.fido.ca. [72.137.123.47])
+        by smtp.gmail.com with ESMTPSA id s45sm725970qte.26.2020.05.23.12.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 May 2020 12:34:18 -0700 (PDT)
+Date:   Sat, 23 May 2020 15:34:17 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, jgg@ziepe.ca, cai@lca.pw
+Subject: Re: [PATCH v3 3/3] vfio-pci: Invalidate mmaps and block MMIO access
+ on disabled memory
+Message-ID: <20200523193417.GI766834@xz-x1>
+References: <159017449210.18853.15037950701494323009.stgit@gimli.home>
+ <159017506369.18853.17306023099999811263.stgit@gimli.home>
 MIME-Version: 1.0
-In-Reply-To: <20200523185755.8494-1-axboe@kernel.dk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <159017506369.18853.17306023099999811263.stgit@gimli.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And this one is v3, obviously, not v2...
+Hi, Alex,
 
+On Fri, May 22, 2020 at 01:17:43PM -0600, Alex Williamson wrote:
+> @@ -1346,15 +1526,32 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct vfio_pci_device *vdev = vma->vm_private_data;
+> +	vm_fault_t ret = VM_FAULT_NOPAGE;
+> +
+> +	mutex_lock(&vdev->vma_lock);
+> +	down_read(&vdev->memory_lock);
 
-On 5/23/20 12:57 PM, Jens Axboe wrote:
-> We technically support this already through io_uring, but it's
-> implemented with a thread backend to support cases where we would
-> block. This isn't ideal.
-> 
-> After a few prep patches, the core of this patchset is adding support
-> for async callbacks on page unlock. With this primitive, we can simply
-> retry the IO operation. With io_uring, this works a lot like poll based
-> retry for files that support it. If a page is currently locked and
-> needed, -EIOCBQUEUED is returned with a callback armed. The callers
-> callback is responsible for restarting the operation.
-> 
-> With this callback primitive, we can add support for
-> generic_file_buffered_read(), which is what most file systems end up
-> using for buffered reads. XFS/ext4/btrfs/bdev is wired up, but probably
-> trivial to add more.
-> 
-> The file flags support for this by setting FMODE_BUF_RASYNC, similar
-> to what we do for FMODE_NOWAIT. Open to suggestions here if this is
-> the preferred method or not.
-> 
-> In terms of results, I wrote a small test app that randomly reads 4G
-> of data in 4K chunks from a file hosted by ext4. The app uses a queue
-> depth of 32. If you want to test yourself, you can just use buffered=1
-> with ioengine=io_uring with fio. No application changes are needed to
-> use the more optimized buffered async read.
-> 
-> preadv for comparison:
-> 	real    1m13.821s
-> 	user    0m0.558s
-> 	sys     0m11.125s
-> 	CPU	~13%
-> 
-> Mainline:
-> 	real    0m12.054s
-> 	user    0m0.111s
-> 	sys     0m5.659s
-> 	CPU	~32% + ~50% == ~82%
-> 
-> This patchset:
-> 	real    0m9.283s
-> 	user    0m0.147s
-> 	sys     0m4.619s
-> 	CPU	~52%
-> 
-> The CPU numbers are just a rough estimate. For the mainline io_uring
-> run, this includes the app itself and all the threads doing IO on its
-> behalf (32% for the app, ~1.6% per worker and 32 of them). Context
-> switch rate is much smaller with the patchset, since we only have the
-> one task performing IO.
-> 
-> The goal here is efficiency. Async thread offload adds latency, and
-> it also adds noticable overhead on items such as adding pages to the
-> page cache. By allowing proper async buffered read support, we don't
-> have X threads hammering on the same inode page cache, we have just
-> the single app actually doing IO.
-> 
-> Been beating on this and it's solid for me, and I'm now pretty happy
-> with how it all turned out. Not aware of any missing bits/pieces or
-> code cleanups that need doing.
-> 
-> Series can also be found here:
-> 
-> https://git.kernel.dk/cgit/linux-block/log/?h=async-buffered.3
-> 
-> or pull from:
-> 
-> git://git.kernel.dk/linux-block async-buffered.3
-> 
->  fs/block_dev.c            |   2 +-
->  fs/btrfs/file.c           |   2 +-
->  fs/ext4/file.c            |   2 +-
->  fs/io_uring.c             |  99 ++++++++++++++++++++++++++++++++++
->  fs/xfs/xfs_file.c         |   2 +-
->  include/linux/blk_types.h |   3 +-
->  include/linux/fs.h        |   5 ++
->  include/linux/pagemap.h   |  64 ++++++++++++++++++++++
->  mm/filemap.c              | 111 ++++++++++++++++++++++++--------------
->  9 files changed, 245 insertions(+), 45 deletions(-)
-> 
-> Changes since v2:
-> - Get rid of unnecessary wait_page_async struct, just use wait_page_async
-> - Add another prep handler, adding wake_page_match()
-> - Use wake_page_match() in both callers
-> Changes since v1:
-> - Fix an issue with inline page locking
-> - Fix a potential race with __wait_on_page_locked_async()
-> - Fix a hang related to not setting page_match, thus missing a wakeup
-> 
+I remembered to have seen the fault() handling FAULT_FLAG_RETRY_NOWAIT at least
+in the very first version, but it's not here any more...  Could I ask what's
+the reason behind?  I probably have missed something along with the versions,
+I'm just not sure whether e.g. this would potentially block a GUP caller even
+if it's with FOLL_NOWAIT.
 
+Side note: Another thing I thought about when reading this patch - there seems
+to have quite some possibility that the VFIO_DEVICE_PCI_HOT_RESET ioctl will
+start to return -EBUSY now.  Not a problem for this series, but maybe we should
+rememeber to let the userspace handle -EBUSY properly as follow up too, since I
+saw QEMU seemed to not handle -EBUSY for host reset path right now.
+
+Thanks,
 
 -- 
-Jens Axboe
+Peter Xu
 
