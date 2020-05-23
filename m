@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540BA1DF67B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 11:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415F1DF682
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 12:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387784AbgEWJ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 05:56:42 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60720 "EHLO loongson.cn"
+        id S2387766AbgEWKDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 06:03:49 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:16114 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387775AbgEWJ4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 05:56:41 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_2lG88hecSk4AA--.531S3;
-        Sat, 23 May 2020 17:56:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH 2/2] rtc: mpc5121: Fix return value of mpc5121_rtc_probe()
-Date:   Sat, 23 May 2020 17:56:22 +0800
-Message-Id: <1590227782-32249-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1590227782-32249-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1590227782-32249-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_2lG88hecSk4AA--.531S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruw18Zw1xXFykWFyxCF45ZFb_yoWfJrg_Cr
-        WavFn3Jw1kCF4vq3WFyay3uryIkanY9FWxW3WUK39aka43Jry7GrykArs5t3yUJw47CF98
-        CFZruryxAryfKjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbh8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
-        0Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFWl42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0YFCUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1725270AbgEWKDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 06:03:49 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app2 (Coremail) with SMTP id by_KCgCnHr709Mhe2tm5AQ--.78S4;
+        Sat, 23 May 2020 18:03:36 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: coda: Fix runtime PM imbalance in coda_probe
+Date:   Sat, 23 May 2020 18:03:32 +0800
+Message-Id: <20200523100332.32626-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCnHr709Mhe2tm5AQ--.78S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4rJFyfAF15Wr1rAw1xAFb_yoW8Gr13pa
+        9Ykay0kFWFgws0vr4DAw1UuFW5WFyS9ry7Kr9ruwn5A3s8Jas2qw4rtFy3tFy8JrZ7A3W7
+        AFnIq39rAF4j9r7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8twCF04k20xvY0x0EwIxG
+        rwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JUd-B_UUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQJBlZdtORGcwAFsi
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When call function devm_platform_ioremap_resource(), we should use IS_ERR()
-to check the return value and return PTR_ERR() if failed.
+When coda_firmware_request() returns an error code,
+a pairing runtime PM usage counter decrement is needed
+to keep the counter balanced.
 
-Fixes: d53d4ae981d0 ("rtc: mpc5121: simplify probe")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Also, the caller expects coda_probe() to increase PM
+usage counter, there should be a refcount decrement
+in coda_remove() to keep the counter balanced.
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/rtc/rtc-mpc5121.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/coda/coda-common.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/rtc/rtc-mpc5121.c b/drivers/rtc/rtc-mpc5121.c
-index 3040844..5c2ce71 100644
---- a/drivers/rtc/rtc-mpc5121.c
-+++ b/drivers/rtc/rtc-mpc5121.c
-@@ -316,7 +316,7 @@ static int mpc5121_rtc_probe(struct platform_device *op)
- 	rtc->regs = devm_platform_ioremap_resource(op, 0);
- 	if (IS_ERR(rtc->regs)) {
- 		dev_err(&op->dev, "%s: couldn't map io space\n", __func__);
--		return -ENOSYS;
-+		return PTR_ERR(rtc->regs);
- 	}
+diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
+index d0d093dd8f7c..550e9a1266da 100644
+--- a/drivers/media/platform/coda/coda-common.c
++++ b/drivers/media/platform/coda/coda-common.c
+@@ -3119,6 +3119,8 @@ static int coda_probe(struct platform_device *pdev)
+ 	return 0;
  
- 	device_init_wakeup(&op->dev, 1);
+ err_alloc_workqueue:
++	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
+ 	destroy_workqueue(dev->workqueue);
+ err_v4l2_register:
+ 	v4l2_device_unregister(&dev->v4l2_dev);
+@@ -3136,6 +3138,7 @@ static int coda_remove(struct platform_device *pdev)
+ 	}
+ 	if (dev->m2m_dev)
+ 		v4l2_m2m_release(dev->m2m_dev);
++	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	v4l2_device_unregister(&dev->v4l2_dev);
+ 	destroy_workqueue(dev->workqueue);
 -- 
-2.1.0
+2.17.1
 
