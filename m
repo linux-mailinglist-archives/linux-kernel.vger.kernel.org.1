@@ -2,170 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9669A1DF860
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 19:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05AD1DF867
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 19:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgEWRES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 13:04:18 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56545 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgEWREQ (ORCPT
+        id S1728618AbgEWRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 13:07:25 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:44105 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728476AbgEWRHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 13:04:16 -0400
-Received: by mail-io1-f70.google.com with SMTP id s126so3685090iod.23
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 10:04:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FdGLVP6jFvspilK5mlGdpxLb6QDOVBb8VkJA1JQ5dF8=;
-        b=fFs9jufSDV95CxPwJeDZY32V9w4N3HS4NN8rbnK+Z7Ab3bX8zrYHR/xHSt4QnxO9Ly
-         bopPCn5QKLmbXoRCu3zO/88PuNiyXkx3U3xC3DOm+mzpCqblmu424MOb792Gr2LO7vnJ
-         YXN+KKNV3C83jnb1AyzLRp7+3EEUUp+7zH+FGGr3N0U2sIMaO+O96hJ9o+1ZzmUFnDf1
-         rrOkJTrlY/m9cttp4BG3LlY+MS7MA7P6eQlO3NSwVhw3FHt0DWTPgvV1LtwZv3cAopEZ
-         wUdrToNf96rdJEYHiC+rhDihn9rdpmjv8bbCizFUVIHad23fAwgyzmUvxideO3yvZWPW
-         IK6Q==
-X-Gm-Message-State: AOAM531hChh8m9YMr071G9ps/IwTovgIWBsE09vqJcI9Apt7MsGUBIy7
-        5vUpP6Iel+zAjfbpjiXCbr8L8IqekAeIFwBsv4N4fX4bvoN+
-X-Google-Smtp-Source: ABdhPJyJwGM1jcgAdcXLStTjcoWfk7wsKv10o1w1Yf2nnT/b6TukyPxzTaln+JyEe63txGM/cgfzJ01jtuKRTWTIBoh0UDA9NNCm
+        Sat, 23 May 2020 13:07:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590253644; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bROKX/djbcXfyKcI+T3w7r8zl613AlHc8MDTB/AnzJI=; b=R1XZgxxW+9eiyEZfYQFLl8/at/DmRTgfmV1G1Wub2hmwXAIUHX5t2ltWj8Zbf+RTbz0EDShe
+ TRIx+6uyVZJ+v4RbxGyIDLcepkP9UOGQY+0eenJdtHWpR5rM1KyqUddNuOpslWykfH4LWWsQ
+ KquworR7RhQUn+pD7/qQhCOZU/Y=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ec95838569a62550d6cb5f0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 May 2020 17:07:04
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E6496C43387; Sat, 23 May 2020 17:07:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.137] (unknown [106.213.147.123])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6317FC433C6;
+        Sat, 23 May 2020 17:06:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6317FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH 1/4] gpio: gpiolib: Allow GPIO IRQs to lazy disable
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        swboyd@chromium.org, evgreen@chromium.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org
+References: <1590153569-21706-1-git-send-email-mkshah@codeaurora.org>
+ <1590153569-21706-2-git-send-email-mkshah@codeaurora.org>
+ <5888fc645d26b4780e9d9c6fd582374f@kernel.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <e08c9f6e-0e84-5f2a-766d-7a1c45bd977a@codeaurora.org>
+Date:   Sat, 23 May 2020 22:36:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:262:: with SMTP id x2mr3178882jaq.10.1590253455072;
- Sat, 23 May 2020 10:04:15 -0700 (PDT)
-Date:   Sat, 23 May 2020 10:04:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ae30305a653bc86@google.com>
-Subject: possible deadlock in media_devnode_release
-From:   syzbot <syzbot+e3c234427cd464510547@syzkaller.appspotmail.com>
-To:     brendanhiggins@google.com, gregkh@linuxfoundation.org,
-        heikki.krogerus@linux.intel.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mchehab@kernel.org, rafael.j.wysocki@intel.com,
-        rdunlap@infradead.org, sakari.ailus@linux.intel.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5888fc645d26b4780e9d9c6fd582374f@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following crash on:
+On 5/23/2020 3:12 PM, Marc Zyngier wrote:
+> On 2020-05-22 14:19, Maulik Shah wrote:
+>> With 'commit 461c1a7d4733 ("gpiolib: override irq_enable/disable")' 
+>> gpiolib
+>> overrides irqchip's irq_enable and irq_disable callbacks. If irq_disable
+>> callback is implemented then genirq takes unlazy path to disable irq.
+>>
+>> Underlying irqchip may not want to implement irq_disable callback to 
+>> lazy
+>> disable irq when client drivers invokes disable_irq(). By overriding
+>> irq_disable callback, gpiolib ends up always unlazy disabling IRQ.
+>>
+>> Allow gpiolib to lazy disable IRQs by overriding irq_disable callback 
+>> only
+>> if irqchip implemented irq_disable. In cases where irq_disable is not
+>> implemented irq_mask is overridden. Similarly override irq_enable 
+>> callback
+>> only if irqchip implemented irq_enable otherwise irq_unmask is 
+>> overridden.
+>>
+>> Fixes: 461c1a7d47 (gpiolib: override irq_enable/disable)
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+>>  drivers/gpio/gpiolib.c      | 59 
+>> +++++++++++++++++++++++++++++----------------
+>>  include/linux/gpio/driver.h | 13 ++++++++++
+>>  2 files changed, 51 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+>> index eaa0e20..a8fdc74 100644
+>> --- a/drivers/gpio/gpiolib.c
+>> +++ b/drivers/gpio/gpiolib.c
+>> @@ -2465,33 +2465,38 @@ static void gpiochip_irq_relres(struct 
+>> irq_data *d)
+>>      gpiochip_relres_irq(gc, d->hwirq);
+>>  }
+>>
+>> +static void gpiochip_irq_mask(struct irq_data *d)
+>> +{
+>> +    struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+>> +
+>> +    if (chip->irq.irq_mask)
+>> +        chip->irq.irq_mask(d);
+>> +    gpiochip_disable_irq(chip, d->hwirq);
+>> +}
+>> +
+>> +static void gpiochip_irq_unmask(struct irq_data *d)
+>> +{
+>> +    struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+>> +
+>> +    gpiochip_enable_irq(chip, d->hwirq);
+>> +    if (chip->irq.irq_unmask)
+>> +        chip->irq.irq_unmask(d);
+>> +}
+>> +
+>>  static void gpiochip_irq_enable(struct irq_data *d)
+>>  {
+>>      struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>>
+>> -    gpiochip_enable_irq(gc, d->hwirq);
+>> -    if (gc->irq.irq_enable)
+>> -        gc->irq.irq_enable(d);
+>> -    else
+>> -        gc->irq.chip->irq_unmask(d);
+>> +    gpiochip_enable_irq(chip, d->hwirq);
+>
+> You really never compiled this, did you?
+>
+> I've stopped looking at this. Please send something that you will have 
+> actually tested.
+>
+>         M.
 
-HEAD commit:    c11d28ab Add linux-next specific files for 20200522
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17330172100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3f6dbdea4159fb66
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3c234427cd464510547
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122eacba100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fffa9a100000
+Apologies.
 
-The bug was bisected to:
+I did tested out on internal devices based on kernel 5.4 as well as 
+linux-next with sc7180.
 
-commit 4ef12f7198023c09ad6d25b652bd8748c965c7fa
-Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Date:   Wed May 13 15:18:40 2020 +0000
+While posting i somehow taken patch from kernel 5.4 and messed up this 
+patch during merge conflicts.
 
-    kobject: Make sure the parent does not get released before its children
+I fixed this in v2 and posted out changes that cleanly applies on latest 
+linux-next tag (next-20200521).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=146b3d22100000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=166b3d22100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=126b3d22100000
+Thanks,
+Maulik
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+e3c234427cd464510547@syzkaller.appspotmail.com
-Fixes: 4ef12f719802 ("kobject: Make sure the parent does not get released before its children")
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
-usb 1-1: USB disconnect, device number 2
-============================================
-WARNING: possible recursive locking detected
-5.7.0-rc6-next-20200522-syzkaller #0 Not tainted
---------------------------------------------
-kworker/1:1/28 is trying to acquire lock:
-ffffffff8a4f3aa8 (media_devnode_lock){+.+.}-{3:3}, at: media_devnode_release+0x1a/0xe0 drivers/media/mc/mc-devnode.c:53
-
-but task is already holding lock:
-ffffffff8a4f3aa8 (media_devnode_lock){+.+.}-{3:3}, at: media_devnode_unregister+0x1c/0x69 drivers/media/mc/mc-devnode.c:283
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(media_devnode_lock);
-  lock(media_devnode_lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-6 locks held by kworker/1:1/28:
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: __write_once_size include/linux/compiler.h:303 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:615 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:642 [inline]
- #0: ffff88821a8e6138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x844/0x16a0 kernel/workqueue.c:2239
- #1: ffffc90000de7dc0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x878/0x16a0 kernel/workqueue.c:2243
- #2: ffff88809e850218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff88809e850218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1b6/0x38f0 drivers/usb/core/hub.c:5522
- #3: ffff88809749e218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #3: ffff88809749e218 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x91/0x8d0 drivers/usb/core/hub.c:2208
- #4: ffff8880951c01a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal+0x23/0x500 drivers/base/dd.c:1141
- #5: ffffffff8a4f3aa8 (media_devnode_lock){+.+.}-{3:3}, at: media_devnode_unregister+0x1c/0x69 drivers/media/mc/mc-devnode.c:283
-
-stack backtrace:
-CPU: 1 PID: 28 Comm: kworker/1:1 Not tainted 5.7.0-rc6-next-20200522-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_deadlock_bug kernel/locking/lockdep.c:2391 [inline]
- check_deadlock kernel/locking/lockdep.c:2432 [inline]
- validate_chain kernel/locking/lockdep.c:3202 [inline]
- __lock_acquire.cold+0x240/0x3e2 kernel/locking/lockdep.c:4380
- lock_acquire+0x1f2/0x8f0 kernel/locking/lockdep.c:4959
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x156/0x13c0 kernel/locking/mutex.c:1103
- media_devnode_release+0x1a/0xe0 drivers/media/mc/mc-devnode.c:53
- device_release+0x71/0x200 drivers/base/core.c:1541
- kobject_cleanup lib/kobject.c:701 [inline]
- kobject_release lib/kobject.c:732 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x2f0 lib/kobject.c:749
- cdev_device_del+0x69/0x80 fs/char_dev.c:575
- media_devnode_unregister+0x2b/0x69 drivers/media/mc/mc-devnode.c:285
- media_device_unregister drivers/media/mc/mc-device.c:846 [inline]
- media_device_unregister+0x3da/0x570 drivers/media/mc/mc-device.c:800
- uvc_unregister_video+0x1b6/0x210 drivers/media/usb/uvc/uvc_driver.c:1960
- uvc_disconnect+0xbc/0x160 drivers/media/usb/uvc/uvc_driver.c:2270
- usb_unbind_interface+0x1bd/0x8a0 drivers/usb/core/driver.c:436
- __device_release_driver drivers/base/dd.c:1113 [inline]
- device_release_driver_internal+0x432/0x500 drivers/base/dd.c:1144
- bus_remove_device+0x2dc/0x4a0 drivers/base/bus.c:533
- device_del+0x481/0xd30 drivers/base/core.c:2839
- usb_disable_device+0x211/0x690 drivers/usb/core/message.c:1245
- usb_disconnect+0x284/0x8d0 drivers/usb/core/hub.c:2217
- hub_port_connect drivers/usb/core/hub.c:5059 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x17ca/0x38f0 drivers/usb/core/hub.c:5576
- process_one_work+0x965/0x16a0 kernel/workqueue.c:2268
- worker_thread+0x96/0xe20 kernel/workqueue.c:2414
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
