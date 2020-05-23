@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C7E1DFB1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 23:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425551DFB24
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 23:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388017AbgEWVND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 17:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387984AbgEWVND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 17:13:03 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC34C061A0E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 14:13:03 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 19so15759436qtp.8
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 14:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=2bby9cI45fyWKXrKxGRnCB0PRSUsYL3TkgfMjCuANdc=;
-        b=dNeKxX1T//NGG+vd4uYpN00vNrJRS7onBOZtFFDXQPplWUpavI0ZRFPSGOxiUoCKkL
-         9ulpdOjmwUdhFktPdMKioK1Z3sZ3cX6mcNzWzqRQYt9DojkHv6yMNNq2Zj6ftm0QcxN5
-         tH72kJn7qHRu5p6FiMKXPNOPoYqeuSO7Kov2urHL6Cu7Y5R5AU+h5B0XXH0pmvozrnsU
-         ZZz9aaLYUBrYvWwkE9PAdx6ghEB3KDmYt87ovSQ/mEq/geuIu8Sjd4Lre8fx/p1vboqD
-         f+SqAQX9fJmbaZv1QCqR6bqAPfI+/yuHt4wpM1agiK+Va+I63YrWPRTtGFHFhbFrE5l4
-         M30g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=2bby9cI45fyWKXrKxGRnCB0PRSUsYL3TkgfMjCuANdc=;
-        b=p8GewW4dZ9dPC8IZW4IYL5Zi6rH7kiaVPehVPlhPOcPawlz5qx114LIvkTEofRBokT
-         UKSrNBPRaGJPZA8q7J0LiJt6og3mgwjZfKdKPtJe/lcE2q4zaqyewmw4EOA6FtAXsL2u
-         xCDL7Vz9endAW+AWSCQiv9uFCfiYEl85fZsAM4VyRtOuWSA4PFoQVdrzbYX52wtfbaWL
-         kdbCm0tBMpE4f1UjKBAt5pdi2TRNqCikfwh5q4mCePrvcH7FwxRVnjbQtcG1T+7Kcub4
-         rowclloDtemAIj+RIDnBww1g2CUgsRXzXRtdmsEpCqAVfVVYyE3tVBTAs8tmGvGrTuhB
-         7NQw==
-X-Gm-Message-State: AOAM530ojqojoCoRWLLFIE/ApZ7z3HEEBW4CFxZ0PBeNu4+UEx9cmU8S
-        uvuyHQPN07pGOtlrblwHFIy/5GeRXz7m
-X-Google-Smtp-Source: ABdhPJwcJbwcvkxkyoyFSZSbn82VKMzlrI84RDXWlN8XaC46q1B7drpSxXma/Hm3zmPp9rGVqI2twciQSTlq
-X-Received: by 2002:a0c:a5c5:: with SMTP id z63mr9694727qvz.50.1590268381597;
- Sat, 23 May 2020 14:13:01 -0700 (PDT)
-Date:   Sat, 23 May 2020 22:12:47 +0100
-Message-Id: <20200523211247.23262-1-pterjan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
-Subject: [PATCH] staging: rtl8712: Fix IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK
-From:   Pascal Terjan <pterjan@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Taihsiang Ho (tai271828)" <tai271828@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Pascal Terjan <pterjan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388037AbgEWVXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 17:23:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387586AbgEWVXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 17:23:46 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D9DF2072C;
+        Sat, 23 May 2020 21:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590269026;
+        bh=FJ+we7Wp4RFWgIBg7miQSN2ilxbswIuR7F8eVxZGfFI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=yBiF/OlYvCJArLxROuca1TrD8GCNWEhz92e30hI6iQ/+qVjNSZDoqNqAtwAwkD0ck
+         3vnj3ImHJclxCwe96zKD43kUIfJKRmK8G9en4QyIpO7AJb/lEhV25yrgv8N07B6+xk
+         yZjfCEl/XVnz6ENsyqOvVBCkD8knqmYiyN5UmgZY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id F1BE23522A2B; Sat, 23 May 2020 14:23:45 -0700 (PDT)
+Date:   Sat, 23 May 2020 14:23:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        elver@google.com
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20200523212345.GR2869@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200522033119.1bbd99c5@canb.auug.org.au>
+ <20200521173520.GL6608@willie-the-truck>
+ <20200522171708.5f392fde@canb.auug.org.au>
+ <20200522174944.1a1732fa@canb.auug.org.au>
+ <20200523001223.GA23921@paulmck-ThinkPad-P72>
+ <20200523064643.GA27431@zn.tnic>
+ <87a71zq8ml.fsf@nanos.tec.linutronix.de>
+ <20200523150614.GP2869@paulmck-ThinkPad-P72>
+ <871rnaqxor.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871rnaqxor.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value in shared headers was fixed 9 years ago in commit 8d661f1e462d
-("ieee80211: correct IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK macro") and
-while looking at using shared headers for other duplicated constants
-I noticed this driver uses the old value.
+On Sat, May 23, 2020 at 09:05:24PM +0200, Thomas Gleixner wrote:
+> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > On Sat, May 23, 2020 at 11:54:26AM +0200, Thomas Gleixner wrote:
+> >> core/rcu is the one which diverged and caused the merge conflict with
+> >> PPC to happen twice. So Paul needs to remove the stale core/rcu bits and
+> >> rebase on the current version (which is not going to change again).
+> >
+> > So there will be another noinstr-rcu-* tag, and I will rebase on top
+> > of that, correct?  If so, fair enough!
+> 
+> Here you go: noinstr-rcu-220-05-23
+> 
+> I wanted this to be 2020 and not 220 but I noticed after pushing it
+> out. I guess it still does the job :)
 
-The macros are also defined twice in this file so I am deleting the
-second definition.
+Now -that- is what I call an old-school tag name!!!  ;-)
 
-Signed-off-by: Pascal Terjan <pterjan@google.com>
----
- drivers/staging/rtl8712/wifi.h | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+I remerged, rebased, and pushed to -rcu branch "dev".
 
-diff --git a/drivers/staging/rtl8712/wifi.h b/drivers/staging/rtl8712/wifi.h
-index be731f1a2209..91b65731fcaa 100644
---- a/drivers/staging/rtl8712/wifi.h
-+++ b/drivers/staging/rtl8712/wifi.h
-@@ -440,7 +440,7 @@ static inline unsigned char *get_hdr_bssid(unsigned char *pframe)
- /* block-ack parameters */
- #define IEEE80211_ADDBA_PARAM_POLICY_MASK 0x0002
- #define IEEE80211_ADDBA_PARAM_TID_MASK 0x003C
--#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFA0
-+#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFC0
- #define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
- #define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
- 
-@@ -532,13 +532,6 @@ struct ieee80211_ht_addt_info {
- #define IEEE80211_HT_IE_NON_GF_STA_PRSNT	0x0004
- #define IEEE80211_HT_IE_NON_HT_STA_PRSNT	0x0010
- 
--/* block-ack parameters */
--#define IEEE80211_ADDBA_PARAM_POLICY_MASK 0x0002
--#define IEEE80211_ADDBA_PARAM_TID_MASK 0x003C
--#define IEEE80211_ADDBA_PARAM_BUF_SIZE_MASK 0xFFA0
--#define IEEE80211_DELBA_PARAM_TID_MASK 0xF000
--#define IEEE80211_DELBA_PARAM_INITIATOR_MASK 0x0800
--
- /*
-  * A-PMDU buffer sizes
-  * According to IEEE802.11n spec size varies from 8K to 64K (in powers of 2)
--- 
-2.27.0.rc0.183.gde8f92d652-goog
+If it survives testing, I will reset -rcu branch "rcu/next" as well.
 
+							Thanx, Paul
