@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839261DF82B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 18:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B831DF83E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 18:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgEWQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 12:15:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56019 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728154AbgEWQPd (ORCPT
+        id S1728190AbgEWQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 12:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727884AbgEWQbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 12:15:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590250532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HFg02eb4YubKQIu550jTk5UUZALiVej3kr4L4u3iifQ=;
-        b=S7ocvhb1Qj4uIJ2lOieIOzlXrfBJJm+FWjfr06QHSQvkaHNq3gvCvl6u96OrCdt51z48dz
-        et+o+68v7AvqgKnkLZ4mdMq1Z5fbRlvZXim5NtNvtTEj4p7DnIDBgYHJk92mTCNoHmV8ab
-        XCW4yMa0PINlDKR4a0vWeezyRo2DK+Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-0ITODA4gNVadJer3b5CRCw-1; Sat, 23 May 2020 12:15:28 -0400
-X-MC-Unique: 0ITODA4gNVadJer3b5CRCw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 810B18005AA;
-        Sat, 23 May 2020 16:15:26 +0000 (UTC)
-Received: from starship.f32vm (unknown [10.35.206.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 01ACC600E5;
-        Sat, 23 May 2020 16:15:15 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tao Xu <tao3.xu@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jingqi Liu <jingqi.liu@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 2/2] kvm/x86: don't expose MSR_IA32_UMWAIT_CONTROL unconditionally
-Date:   Sat, 23 May 2020 19:14:55 +0300
-Message-Id: <20200523161455.3940-3-mlevitsk@redhat.com>
-In-Reply-To: <20200523161455.3940-1-mlevitsk@redhat.com>
-References: <20200523161455.3940-1-mlevitsk@redhat.com>
+        Sat, 23 May 2020 12:31:48 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F1C061A0E
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 09:31:48 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x23so12133568oic.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 09:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
+        b=Ws/3L4j7Id89QstV3UG8fk3qd215R2nTIG95dOlQXevuAO0cHuarFPJWoUmP2rCk66
+         18U+plihktqeBcBVdr//W36w7urv9BqbTsvM9CYTOekJTtjjUYP1Ge1i9XMnu6hzHOIr
+         gzuiFKvVqMgq5zdRsOo5RL8eS8QIEKXy363FA42EIBl8lEFFweIa8IEsewOTYAdOaZvy
+         drM4/KH978FZcd5aRH0exku0NAR7yEOX5no3djtnM0OSlytXr4sdt0n/Lz1xqzSTogyj
+         3UiTXZtLtxObUPR/OWViEx9XxNP8DpHE4sKHnf+qToti7Irl2dTHcpJZFMoju8AQnTzN
+         CIHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
+        b=gAI8fPgMgV2v/LvunTO915mT5COyjbUwVfHpsMH32StOEaDn7Tx6+Qzx8aDze6yWmq
+         9P9KjLIIyxJa/gqjrWG6zqarhp/DuTA0A49+jAUYKs1dwMl8yjv+KSq7uZYnMimW+HN3
+         HADXkpIMA391MhISadqoTd9oGogGBzvbNwaW08XgjhdXOVp9IRUhqqpBW+bjMdwzThYS
+         T+Jsb4wl6i3YjIqUnR80xu1dRnIvB4e/SPeASJwwSJmzNy4+b4FOORzxPj/HO1dz4gWG
+         K1msqFG1seJ9LjS51JwsJ7exgDZZ9uzsI8ta8Ihg6iMiLfR9cu3fqx8O6Php3cEBz7zN
+         sLHQ==
+X-Gm-Message-State: AOAM533/d1qtGWtQDoG3CscUMXOfST6M1U357BoojAISfT89+zTU6uWC
+        Me6icOBOZoqdEy3sNEDta7uPSwMhWCBV6Fe9TI4=
+X-Google-Smtp-Source: ABdhPJwK2OQ7lq+Z69UVO24ttNJoTVD5mC7aCWSSM9E0MpA2pETDqGI4aUmG7RdB4GMWPoKX0p9isc1ZDl+kqMreVYM=
+X-Received: by 2002:aca:3a55:: with SMTP id h82mr6034762oia.135.1590251507929;
+ Sat, 23 May 2020 09:31:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Received: by 2002:ac9:e83:0:0:0:0:0 with HTTP; Sat, 23 May 2020 09:31:47 -0700 (PDT)
+Reply-To: bukuridervishi@seznam.cz
+From:   Bukuri Dervishi <clementinaabe@gmail.com>
+Date:   Sat, 23 May 2020 18:31:47 +0200
+Message-ID: <CAAghV-sKpJmWCb0aqRQ4NX8HJ3BO4U29xk+baFghKR0k=YbvyQ@mail.gmail.com>
+Subject: URGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This msr is only available when the host supports WAITPKG feature.
+Ramadan Kareem to you,
 
-This breaks a nested guest, if the L1 hypervisor is set to ignore
-unknown msrs, because the only other safety check that the
-kernel does is that it attempts to read the msr and
-rejects it if it gets an exception.
+My name is Bukuri Dervishi, I=E2=80=99m a citizen of Albania base in Turkey
+for my previous business. This is a confidential message, I have lost
+two of my children due to covid19; early February we came to Italy on
+visit without knowing that things was about to fall appart. Not only
+did my children die as a result of covid19; I also tested
+positive, and it has defied all forms of medical treatment,
 
-Fixes: 6e3ba4abce KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL
+I may have only a few days to live, as a result of that I want to
+donate my entire Money thirteen million five hundred and eighty
+thousand usd($13,580 million usd) to you for charity work as my
+promise to God since I will not be needing the money any more. I'm
+donating the money to you because I do not have any other heir and my
+trusted Steward who would have handly this assignment is incapable due
+to old age and ill health.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/x86.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I am given you 40% for this job while you are to give 20% to my former
+Steward and donate the remaining 40% for charitable works such as to
+donate 20% towards the fight of coronavirus and 20% to the less
+priviledges in the society. I will give you
+more details on how to get the money. Kindly let me know if you are
+capable to handle this,and if you can=E2=80=99t please kindly reject the
+offer.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b226fb8abe41b..4752293312947 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5316,6 +5316,10 @@ static void kvm_init_msr_list(void)
- 			    min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
- 				continue;
- 			break;
-+		case MSR_IA32_UMWAIT_CONTROL:
-+			if (!kvm_cpu_cap_has(X86_FEATURE_WAITPKG))
-+				continue;
-+			break;
- 		default:
- 			break;
- 		}
--- 
-2.26.2
-
+Thanks and stay safe
+Regards
+Bukuri Dervishi.
