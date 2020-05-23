@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF4B1DFB7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 00:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1DD1DFB72
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 00:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388168AbgEWW5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 18:57:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28627 "EHLO
+        id S2388208AbgEWW5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 18:57:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22800 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388131AbgEWW5P (ORCPT
+        with ESMTP id S2388142AbgEWW5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 18:57:15 -0400
+        Sat, 23 May 2020 18:57:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590274632;
+        s=mimecast20190719; t=1590274634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=22utaCyfbtKn27i14vYGiEHHVO+fY5FzT5nkr278gIM=;
-        b=bp2ZIqQjMlrYTCsnmVfztahxusWAoRulBQdYo4x/+BUi1CWmyy3o4Z4gqEozcXu8VCGeD6
-        qOyfp+jQjRgcpCOaNKe/6iEXmXaYM9LLNiM5LtxaMtEf3xQZZBUmrZy/u2oBx3J5niHQ1F
-        5x2ITvtvjKuinGh6UO/owmzf5+ZT2H0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-112-O1yeXIupNRO6q4C0dJSJmQ-1; Sat, 23 May 2020 18:57:11 -0400
-X-MC-Unique: O1yeXIupNRO6q4C0dJSJmQ-1
-Received: by mail-qv1-f70.google.com with SMTP id dt19so14181525qvb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 15:57:11 -0700 (PDT)
+        bh=lGajJ5Jhq7kYf/eZuYHImU8+LqdZSurBYGpeS7xJD9M=;
+        b=Ek3lEELX3aEliy1Ky6fns8hxjARKNrpZv8yPba8/31PBWNsQG+TZ42T8j+y35nOmdCwJi8
+        uzhhly86eFl6/DJTxjqvSVG8HSClO7aLcGEPV7++eetWRCrqxqGGGvik5NMzReRXUl1qvF
+        vtfFtFbcrOW8dHVL0KBhJ1bKMz/c/OQ=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-lOrbXs3FM0Gcf-Y-kvvj1g-1; Sat, 23 May 2020 18:57:13 -0400
+X-MC-Unique: lOrbXs3FM0Gcf-Y-kvvj1g-1
+Received: by mail-qk1-f200.google.com with SMTP id 205so9940528qkh.5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 15:57:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=22utaCyfbtKn27i14vYGiEHHVO+fY5FzT5nkr278gIM=;
-        b=Gycm9bxbmm5yYzDqaboJ+x9UwznLl1sD6u51YEsHmLj7+R2ADFZVlfv1+FEjeExl71
-         OUtmx8Aq6EzA1nYuMI2VeoacuUvFKEJzwUClNXnLXgP15aUPTvF/mTrL7gJpB+ZIXAdC
-         6zPE2hMYOGsbTjofbT1syHcdiD31HcUY48yemOJ4/N6EgxBAQIYpi0fxO9zbQ4heZYel
-         NO/l156f0vng1pvkqpoaEeHHM29Lou997WC6MeQ6eWcj6p6b5vsDBjoGJyBTV4wv11Xb
-         q2Y3bgnXkKqVIUhU2N7+t/DOakGxjCb2ferVzV6PwwC69S+anTSmKA35koDv4kNj2cDK
-         +Nfg==
-X-Gm-Message-State: AOAM531ozDWOdFMURa+Z6OExVZdYbJzNXLJsYtr5mroDjWTBUrx95zp6
-        Khv5PUC9WHM0arSLuQoQLC6rY9wPFkGTXhqt2dxqHx07b9g1kzbO44UJ8k3rnE7AVLcYM596S5j
-        RZYDiC6qxpCib4NnhAfBVYmfL
-X-Received: by 2002:ac8:4b77:: with SMTP id g23mr22147160qts.352.1590274629810;
-        Sat, 23 May 2020 15:57:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9PiNAoKD+xEbcdFJnAwDh236V2rnqFbDZIp0w4iGamacvzyZM5rY0w/3qREjkICNHATlUJA==
-X-Received: by 2002:ac8:4b77:: with SMTP id g23mr22147140qts.352.1590274629440;
-        Sat, 23 May 2020 15:57:09 -0700 (PDT)
+        bh=lGajJ5Jhq7kYf/eZuYHImU8+LqdZSurBYGpeS7xJD9M=;
+        b=P1cUd+SneEQjnMVaX3+8GHD+fk2NG/NKU6F/R9KspLqLvJCx0e+z1rfUnV+hAXKYS8
+         1NzzoD49VcHW14+TBFoPMZIxF3HoieSPrT15MgDBaaLQUwMOi5ZUxXoiUDonxA6Jf34Y
+         gwfaKtnrU4+KOcIbenyZXfC0y4HLn1bfCsIXbiMvo8lR5UWP0hlCNW8j7Wsy6C9FEGRH
+         DXx84bhFONgBUlQ5Qip/r6JyWNE9GSS/A72Kf9qW9snsRzAeyPJ8DDNKuaNkRUm/ZrNk
+         LXwDfBsxgKKZndi89qvHVs7W8Mxih6yIlVhjfI9MoYQ7mhsl723zNp0GUtuNLt1iakeI
+         hYpg==
+X-Gm-Message-State: AOAM53252UgUbRL//9DOum9weQk8w/+Duw8vvvctK/fxPech7AZ8Nhl7
+        JTEakkU1R9Wk7Z6naHNvJihGNsaEia8Vi1yH8grxuZ0m6vGMUfgetedvf1i/wEVqkqwHpihlBhR
+        tPZ/9O+mjQ/4DNDptSyDdZpUq
+X-Received: by 2002:ac8:3ae6:: with SMTP id x93mr22582998qte.355.1590274632220;
+        Sat, 23 May 2020 15:57:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5J1Cen68R1cpStf4i0q2srFzZIAPmgDfnaiHMVS5AQ3XdJyTQ3xI8wRJzw1PuZJEQcip/UQ==
+X-Received: by 2002:ac8:3ae6:: with SMTP id x93mr22582983qte.355.1590274631968;
+        Sat, 23 May 2020 15:57:11 -0700 (PDT)
 Received: from xz-x1.hitronhub.home (CPEf81d0fb19163-CMf81d0fb19160.cpe.net.fido.ca. [72.137.123.47])
-        by smtp.gmail.com with ESMTPSA id w14sm11630979qtt.82.2020.05.23.15.57.07
+        by smtp.gmail.com with ESMTPSA id w14sm11630979qtt.82.2020.05.23.15.57.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 May 2020 15:57:08 -0700 (PDT)
+        Sat, 23 May 2020 15:57:11 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -63,9 +63,9 @@ Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
         Kevin Tian <kevin.tian@intel.com>, peterx@redhat.com,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Yan Zhao <yan.y.zhao@intel.com>
-Subject: [PATCH v9 03/14] KVM: X86: Don't track dirty for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
-Date:   Sat, 23 May 2020 18:56:48 -0400
-Message-Id: <20200523225659.1027044-4-peterx@redhat.com>
+Subject: [PATCH v9 04/14] KVM: Pass in kvm pointer into mark_page_dirty_in_slot()
+Date:   Sat, 23 May 2020 18:56:49 -0400
+Message-Id: <20200523225659.1027044-5-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200523225659.1027044-1-peterx@redhat.com>
 References: <20200523225659.1027044-1-peterx@redhat.com>
@@ -76,331 +76,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, we have three code paths that can dirty a page without
-vcpu context for X86:
+The context will be needed to implement the kvm dirty ring.
 
-  - init_rmode_identity_map
-  - init_rmode_tss
-  - kvmgt_rw_gpa
-
-init_rmode_identity_map and init_rmode_tss will be setup on
-destination VM no matter what (and the guest cannot even see them), so
-it does not make sense to track them at all.
-
-To do this, allow __x86_set_memory_region() to return the userspace
-address that just allocated to the caller.  Then in both of the
-functions we directly write to the userspace address instead of
-calling kvm_write_*() APIs.
-
-Another trivial change is that we don't need to explicitly clear the
-identity page table root in init_rmode_identity_map() because no
-matter what we'll write to the whole page with 4M huge page entries.
-
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h |  3 +-
- arch/x86/kvm/svm/avic.c         | 11 +++--
- arch/x86/kvm/vmx/vmx.c          | 82 ++++++++++++++++-----------------
- arch/x86/kvm/x86.c              | 44 ++++++++++++++----
- 4 files changed, 86 insertions(+), 54 deletions(-)
+ virt/kvm/kvm_main.c | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 42a2d0d3984a..39477f8f3f2c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1650,7 +1650,8 @@ void __kvm_request_immediate_exit(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index ebdd98a30e82..a7460e93d457 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -144,7 +144,9 @@ static void hardware_disable_all(void);
  
- int kvm_is_in_guest(void);
+ static void kvm_io_bus_destroy(struct kvm_io_bus *bus);
  
--int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size);
-+void __user *__x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
-+				     u32 size);
- bool kvm_vcpu_is_reset_bsp(struct kvm_vcpu *vcpu);
- bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu);
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
++static void mark_page_dirty_in_slot(struct kvm *kvm,
++				    struct kvm_memory_slot *memslot,
++				    gfn_t gfn);
  
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index e80daa98682f..86e9621ba026 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -235,7 +235,9 @@ static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
-  */
- static int avic_update_access_page(struct kvm *kvm, bool activate)
+ __visible bool kvm_rebooting;
+ EXPORT_SYMBOL_GPL(kvm_rebooting);
+@@ -2120,7 +2122,8 @@ int kvm_vcpu_map(struct kvm_vcpu *vcpu, gfn_t gfn, struct kvm_host_map *map)
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_map);
+ 
+-static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
++static void __kvm_unmap_gfn(struct kvm *kvm,
++			struct kvm_memory_slot *memslot,
+ 			struct kvm_host_map *map,
+ 			struct gfn_to_pfn_cache *cache,
+ 			bool dirty, bool atomic)
+@@ -2145,7 +2148,7 @@ static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
+ #endif
+ 
+ 	if (dirty)
+-		mark_page_dirty_in_slot(memslot, map->gfn);
++		mark_page_dirty_in_slot(kvm, memslot, map->gfn);
+ 
+ 	if (cache)
+ 		cache->dirty |= dirty;
+@@ -2159,7 +2162,7 @@ static void __kvm_unmap_gfn(struct kvm_memory_slot *memslot,
+ int kvm_unmap_gfn(struct kvm_vcpu *vcpu, struct kvm_host_map *map, 
+ 		  struct gfn_to_pfn_cache *cache, bool dirty, bool atomic)
  {
--	int ret = 0;
-+	void __user *ret;
-+	int r = 0;
-+
- 
- 	mutex_lock(&kvm->slots_lock);
- 	/*
-@@ -251,13 +253,16 @@ static int avic_update_access_page(struct kvm *kvm, bool activate)
- 				      APIC_ACCESS_PAGE_PRIVATE_MEMSLOT,
- 				      APIC_DEFAULT_PHYS_BASE,
- 				      activate ? PAGE_SIZE : 0);
--	if (ret)
-+	if (IS_ERR(ret)) {
-+		r = PTR_ERR(ret);
- 		goto out;
-+	}
-+
- 
- 	kvm->arch.apic_access_page_done = activate;
- out:
- 	mutex_unlock(&kvm->slots_lock);
--	return ret;
-+	return r;
+-	__kvm_unmap_gfn(gfn_to_memslot(vcpu->kvm, map->gfn), map,
++	__kvm_unmap_gfn(vcpu->kvm, gfn_to_memslot(vcpu->kvm, map->gfn), map,
+ 			cache, dirty, atomic);
+ 	return 0;
  }
+@@ -2167,8 +2170,8 @@ EXPORT_SYMBOL_GPL(kvm_unmap_gfn);
  
- static int avic_init_backing_page(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c2c6335a998c..ad1d9120283e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3442,34 +3442,26 @@ static bool guest_state_valid(struct kvm_vcpu *vcpu)
- 	return true;
- }
- 
--static int init_rmode_tss(struct kvm *kvm)
-+static int init_rmode_tss(struct kvm *kvm, void __user *ua)
+ void kvm_vcpu_unmap(struct kvm_vcpu *vcpu, struct kvm_host_map *map, bool dirty)
  {
--	gfn_t fn;
--	u16 data = 0;
--	int idx, r;
-+	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
-+	u16 data;
-+	int i, r;
-+
-+	for (i = 0; i < 3; i++) {
-+		r = __copy_to_user(ua + PAGE_SIZE * i, zero_page, PAGE_SIZE);
-+		if (r)
-+			return -EFAULT;
-+	}
- 
--	idx = srcu_read_lock(&kvm->srcu);
--	fn = to_kvm_vmx(kvm)->tss_addr >> PAGE_SHIFT;
--	r = kvm_clear_guest_page(kvm, fn, 0, PAGE_SIZE);
--	if (r < 0)
--		goto out;
- 	data = TSS_BASE_SIZE + TSS_REDIRECTION_SIZE;
--	r = kvm_write_guest_page(kvm, fn++, &data,
--			TSS_IOPB_BASE_OFFSET, sizeof(u16));
--	if (r < 0)
--		goto out;
--	r = kvm_clear_guest_page(kvm, fn++, 0, PAGE_SIZE);
--	if (r < 0)
--		goto out;
--	r = kvm_clear_guest_page(kvm, fn, 0, PAGE_SIZE);
--	if (r < 0)
--		goto out;
-+	r = __copy_to_user(ua + TSS_IOPB_BASE_OFFSET, &data, sizeof(u16));
-+	if (r)
-+		return -EFAULT;
-+
- 	data = ~0;
--	r = kvm_write_guest_page(kvm, fn, &data,
--				 RMODE_TSS_SIZE - 2 * PAGE_SIZE - 1,
--				 sizeof(u8));
--out:
--	srcu_read_unlock(&kvm->srcu, idx);
-+	r = __copy_to_user(ua + RMODE_TSS_SIZE - 1, &data, sizeof(u8));
-+
- 	return r;
+-	__kvm_unmap_gfn(kvm_vcpu_gfn_to_memslot(vcpu, map->gfn), map, NULL,
+-			dirty, false);
++	__kvm_unmap_gfn(vcpu->kvm, kvm_vcpu_gfn_to_memslot(vcpu, map->gfn),
++			map, NULL, dirty, false);
  }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_unmap);
  
-@@ -3478,6 +3470,7 @@ static int init_rmode_identity_map(struct kvm *kvm)
- 	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
- 	int i, r = 0;
- 	kvm_pfn_t identity_map_pfn;
-+	void __user *uaddr;
- 	u32 tmp;
+@@ -2342,7 +2345,8 @@ int kvm_vcpu_read_guest_atomic(struct kvm_vcpu *vcpu, gpa_t gpa,
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_atomic);
  
- 	/* Protect kvm_vmx->ept_identity_pagetable_done. */
-@@ -3490,22 +3483,24 @@ static int init_rmode_identity_map(struct kvm *kvm)
- 		kvm_vmx->ept_identity_map_addr = VMX_EPT_IDENTITY_PAGETABLE_ADDR;
- 	identity_map_pfn = kvm_vmx->ept_identity_map_addr >> PAGE_SHIFT;
- 
--	r = __x86_set_memory_region(kvm, IDENTITY_PAGETABLE_PRIVATE_MEMSLOT,
--				    kvm_vmx->ept_identity_map_addr, PAGE_SIZE);
--	if (r < 0)
-+	uaddr = __x86_set_memory_region(kvm,
-+					IDENTITY_PAGETABLE_PRIVATE_MEMSLOT,
-+					kvm_vmx->ept_identity_map_addr,
-+					PAGE_SIZE);
-+	if (IS_ERR(uaddr)) {
-+		r = PTR_ERR(uaddr);
- 		goto out;
-+	}
- 
--	r = kvm_clear_guest_page(kvm, identity_map_pfn, 0, PAGE_SIZE);
--	if (r < 0)
--		goto out;
- 	/* Set up identity-mapping pagetable for EPT in real mode */
- 	for (i = 0; i < PT32_ENT_PER_PAGE; i++) {
- 		tmp = (i << 22) + (_PAGE_PRESENT | _PAGE_RW | _PAGE_USER |
- 			_PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_PSE);
--		r = kvm_write_guest_page(kvm, identity_map_pfn,
--				&tmp, i * sizeof(tmp), sizeof(tmp));
--		if (r < 0)
-+		r = __copy_to_user(uaddr + i * sizeof(tmp), &tmp, sizeof(tmp));
-+		if (r) {
-+			r = -EFAULT;
- 			goto out;
-+		}
- 	}
- 	kvm_vmx->ept_identity_pagetable_done = true;
- 
-@@ -3532,19 +3527,22 @@ static void seg_setup(int seg)
- static int alloc_apic_access_page(struct kvm *kvm)
+-static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
++static int __kvm_write_guest_page(struct kvm *kvm,
++				  struct kvm_memory_slot *memslot, gfn_t gfn,
+ 			          const void *data, int offset, int len)
  {
- 	struct page *page;
--	int r = 0;
-+	void __user *r;
-+	int ret = 0;
- 
- 	mutex_lock(&kvm->slots_lock);
- 	if (kvm->arch.apic_access_page_done)
- 		goto out;
- 	r = __x86_set_memory_region(kvm, APIC_ACCESS_PAGE_PRIVATE_MEMSLOT,
- 				    APIC_DEFAULT_PHYS_BASE, PAGE_SIZE);
--	if (r)
-+	if (IS_ERR(r)) {
-+		ret = PTR_ERR(r);
- 		goto out;
-+	}
- 
- 	page = gfn_to_page(kvm, APIC_DEFAULT_PHYS_BASE >> PAGE_SHIFT);
- 	if (is_error_page(page)) {
--		r = -EFAULT;
-+		ret = -EFAULT;
- 		goto out;
- 	}
- 
-@@ -3556,7 +3554,7 @@ static int alloc_apic_access_page(struct kvm *kvm)
- 	kvm->arch.apic_access_page_done = true;
- out:
- 	mutex_unlock(&kvm->slots_lock);
--	return r;
-+	return ret;
+ 	int r;
+@@ -2354,7 +2358,7 @@ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
+ 	r = __copy_to_user((void __user *)addr + offset, data, len);
+ 	if (r)
+ 		return -EFAULT;
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(kvm, memslot, gfn);
+ 	return 0;
  }
  
- int allocate_vpid(void)
-@@ -4483,7 +4481,7 @@ static int vmx_interrupt_allowed(struct kvm_vcpu *vcpu)
- 
- static int vmx_set_tss_addr(struct kvm *kvm, unsigned int addr)
+@@ -2363,7 +2367,7 @@ int kvm_write_guest_page(struct kvm *kvm, gfn_t gfn,
  {
--	int ret;
-+	void __user *ret;
+ 	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
  
- 	if (enable_unrestricted_guest)
- 		return 0;
-@@ -4493,10 +4491,12 @@ static int vmx_set_tss_addr(struct kvm *kvm, unsigned int addr)
- 				      PAGE_SIZE * 3);
- 	mutex_unlock(&kvm->slots_lock);
- 
--	if (ret)
--		return ret;
-+	if (IS_ERR(ret))
-+		return PTR_ERR(ret);
-+
- 	to_kvm_vmx(kvm)->tss_addr = addr;
--	return init_rmode_tss(kvm);
-+
-+	return init_rmode_tss(kvm, ret);
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(kvm, slot, gfn, data, offset, len);
  }
+ EXPORT_SYMBOL_GPL(kvm_write_guest_page);
  
- static int vmx_set_identity_map_addr(struct kvm *kvm, u64 ident_addr)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ac7b0e6f4000..5c106ca948ed 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9826,7 +9826,32 @@ void kvm_arch_sync_events(struct kvm *kvm)
- 	kvm_free_pit(kvm);
- }
- 
--int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
-+#define  ERR_PTR_USR(e)  ((void __user *)ERR_PTR(e))
-+
-+/**
-+ * __x86_set_memory_region: Setup KVM internal memory slot
-+ *
-+ * @kvm: the kvm pointer to the VM.
-+ * @id: the slot ID to setup.
-+ * @gpa: the GPA to install the slot (unused when @size == 0).
-+ * @size: the size of the slot. Set to zero to uninstall a slot.
-+ *
-+ * This function helps to setup a KVM internal memory slot.  Specify
-+ * @size > 0 to install a new slot, while @size == 0 to uninstall a
-+ * slot.  The return code can be one of the following:
-+ *
-+ *   HVA:           on success (uninstall will return a bogus HVA)
-+ *   -errno:        on error
-+ *
-+ * The caller should always use IS_ERR() to check the return value
-+ * before use.  Note, the KVM internal memory slots are guaranteed to
-+ * remain valid and unchanged until the VM is destroyed, i.e., the
-+ * GPA->HVA translation will not change.  However, the HVA is a user
-+ * address, i.e. its accessibility is not guaranteed, and must be
-+ * accessed via __copy_{to,from}_user().
-+ */
-+void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
-+				      u32 size)
+@@ -2372,7 +2376,7 @@ int kvm_vcpu_write_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn,
  {
- 	int i, r;
- 	unsigned long hva, uninitialized_var(old_npages);
-@@ -9835,12 +9860,12 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+ 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
  
- 	/* Called with kvm->slots_lock held.  */
- 	if (WARN_ON(id >= KVM_MEM_SLOTS_NUM))
--		return -EINVAL;
-+		return ERR_PTR_USR(-EINVAL);
- 
- 	slot = id_to_memslot(slots, id);
- 	if (size) {
- 		if (slot && slot->npages)
--			return -EEXIST;
-+			return ERR_PTR_USR(-EEXIST);
- 
- 		/*
- 		 * MAP_SHARED to prevent internal slot pages from being moved
-@@ -9849,17 +9874,18 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
- 		hva = vm_mmap(NULL, 0, size, PROT_READ | PROT_WRITE,
- 			      MAP_SHARED | MAP_ANONYMOUS, 0);
- 		if (IS_ERR((void *)hva))
--			return PTR_ERR((void *)hva);
-+			return (void __user *)hva;
- 	} else {
--		if (!slot || !slot->npages)
--			return 0;
--
- 		/*
- 		 * Stuff a non-canonical value to catch use-after-delete.  This
- 		 * ends up being 0 on 32-bit KVM, but there's no better
- 		 * alternative.
- 		 */
- 		hva = (unsigned long)(0xdeadull << 48);
-+
-+		if (!slot || !slot->npages)
-+			return (void __user *)hva;
-+
- 		old_npages = slot->npages;
- 	}
- 
-@@ -9873,13 +9899,13 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
- 		m.memory_size = size;
- 		r = __kvm_set_memory_region(kvm, &m);
- 		if (r < 0)
--			return r;
-+			return ERR_PTR_USR(r);
- 	}
- 
- 	if (!size)
- 		vm_munmap(hva, old_npages * PAGE_SIZE);
- 
--	return 0;
-+	return (void __user *)hva;
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(vcpu->kvm, slot, gfn, data, offset, len);
  }
- EXPORT_SYMBOL_GPL(__x86_set_memory_region);
+ EXPORT_SYMBOL_GPL(kvm_vcpu_write_guest_page);
+ 
+@@ -2491,7 +2495,7 @@ int kvm_write_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 	r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
+ 	if (r)
+ 		return -EFAULT;
+-	mark_page_dirty_in_slot(ghc->memslot, gpa >> PAGE_SHIFT);
++	mark_page_dirty_in_slot(kvm, ghc->memslot, gpa >> PAGE_SHIFT);
+ 
+ 	return 0;
+ }
+@@ -2558,7 +2562,8 @@ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
+ }
+ EXPORT_SYMBOL_GPL(kvm_clear_guest);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
++static void mark_page_dirty_in_slot(struct kvm *kvm,
++				    struct kvm_memory_slot *memslot,
+ 				    gfn_t gfn)
+ {
+ 	if (memslot && memslot->dirty_bitmap) {
+@@ -2573,7 +2578,7 @@ void mark_page_dirty(struct kvm *kvm, gfn_t gfn)
+ 	struct kvm_memory_slot *memslot;
+ 
+ 	memslot = gfn_to_memslot(kvm, gfn);
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(kvm, memslot, gfn);
+ }
+ EXPORT_SYMBOL_GPL(mark_page_dirty);
+ 
+@@ -2582,7 +2587,7 @@ void kvm_vcpu_mark_page_dirty(struct kvm_vcpu *vcpu, gfn_t gfn)
+ 	struct kvm_memory_slot *memslot;
+ 
+ 	memslot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+-	mark_page_dirty_in_slot(memslot, gfn);
++	mark_page_dirty_in_slot(vcpu->kvm, memslot, gfn);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_mark_page_dirty);
  
 -- 
 2.26.2
