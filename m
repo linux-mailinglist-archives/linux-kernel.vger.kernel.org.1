@@ -2,110 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2901DF578
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 09:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5E01DF588
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 09:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387682AbgEWHTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 03:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
+        id S2387714AbgEWHX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 03:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387627AbgEWHTj (ORCPT
+        with ESMTP id S2387622AbgEWHXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 03:19:39 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906F3C061A0E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 00:19:39 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id s10so6070993pgm.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 00:19:39 -0700 (PDT)
+        Sat, 23 May 2020 03:23:25 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BADC061A0E
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 00:23:24 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n18so6249890pfa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 00:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mQpwDorfwvq+V62PfvwOYJvrHs3QMzFsZXgFJo18jk4=;
-        b=MSrBnupi+5YHYIwS9y2RbUaGZ+TCSJcSu1bQ5t995mrwnPtUwyNeHzimkw3adTJCXH
-         TaKBt18aHyJ9P8w3pjxzliEmQ1b7kQZ46QssUwJBAfUqLfNiws0JdQPs93NWG0kxVE3x
-         uaJGm00uYa8KC7gpxNnpYix0fh+2eauT3zeSgFZ3wk2pD06Om/E402x9vAa639q68p4b
-         LRrH3rCbfinfjERxe8qqBRejbiGwQ1oSi/6CjN60NPl9sBlLZW3NUa/Vef/zLGm+r6wz
-         2tZY+UPo96qmeCB3PT6R/srJXa3q1q0S8irkCs9F/nA6Ki7B1Cwz72RdQq7Vi4pTBcCw
-         WCUw==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=rkQjo00JjFI2fAC/o/2WCC1p0oPD9CQpCRaJecUJgjw=;
+        b=b98PVWiNaivm9ZiyZan+DVPHGPcXBj6ewOabjJD+9e81ibdAoRXx4l1oTj7FbChlUo
+         4vPZhqxfy3UFwAkN8iNMTU7mFc+4fqlw8LHjxRBRdJdZFHnf7zqxGgFEi2T5SBcbb9AM
+         iAyhRHC8v2NHCBOlf79Ml00dVLBUmD7oBCb7hrXdBea8jfX+T2jJLOi+5pdD2raTJR+2
+         t7u09a29UrI7myl6xPmDuhz3VyNhSXP3TYJRsYgsM28p76SyQLE3Pm4A+K2XJ5kI6/OK
+         fPvX3fMuFpy9kYRIupb4Y7HO/CUxtfxZ6+SKnOhjUiAHsuUyiDudOxjjns4AT8Yd9yex
+         UHPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mQpwDorfwvq+V62PfvwOYJvrHs3QMzFsZXgFJo18jk4=;
-        b=CYvc3YGBhD/IyYryVgMTmITwvvzn3VhXFUS+nM8TcDXH46MAwL2stzb2V3mafpmyZg
-         1dv9eTfrHoMlUibR2vAIvckenlEURtoQ8pcbp3tN/0BLovdG7CkcetfAbqtQivTvs4DT
-         ABNxLpOkMENlCu8tWgswznv0z/TFB7Q055CyinQYr4BghQ2izH6jGBbCV7ML4S4cYIOr
-         yHkLHP+mBRm5DuCT85ojd6Q1fjWE2Ikn6SApW9DE5qqwfB58Sll0aGPALJypsAtGjwoA
-         xZ+dZRJ+sB+XdA3xoDsvWmwMIZPNfcQPLZIL/FLUwcxKpbjzNO1i/JhnPBDVdet9nU7Q
-         56OQ==
-X-Gm-Message-State: AOAM532m55swPjxk2H/vQ1ctFn0uTTs4+JCqpq1ZmZD0GzBd8WePCOkI
-        dLYrbRuxiLH1mu+cLEPyWX6wkg==
-X-Google-Smtp-Source: ABdhPJxqFZXbgyrGG2llkCELkJ4vr8owyGAmFuNdn5IWKK4N2BoHTIjn1LpADdQE5iBYiIrZ/JTh+w==
-X-Received: by 2002:a63:e50f:: with SMTP id r15mr4250466pgh.192.1590218378840;
-        Sat, 23 May 2020 00:19:38 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=rkQjo00JjFI2fAC/o/2WCC1p0oPD9CQpCRaJecUJgjw=;
+        b=N10p8hxyxYV1OztnK/ys2/FFFj0q62Ofp/rRwu6uuUgrmfG1FTyz/Nyxz3eyaB9qjS
+         X68cFh49VBrIamW4ym2zEGFrHaQYh/ex0xvG7uzfaMBmcy1SeB6i8rvIr60H5pVuG3nF
+         5iuB/IZ7F2MuGFVZdUHOKIdfMeW9KX6rlWQIiLLmIhTB50TpUNn56HYbgawWmIxf2086
+         ByHfCUjg++LTSl8Oyg17vemCtd4gOFiU3yCG1yb9OCFcq1EdT3U1SLkoGpXVzE3DKNGV
+         /H794BJm/mAQf/2uaSnDPbzKcp/6gGFqP56dkEd7CTxTJNFkHPa1Su8HQc5kqiCbQsQX
+         hZyA==
+X-Gm-Message-State: AOAM531j4euXZUtliWWFZlDK5xRRnWEa0aNofFitWw+VIwtnQvVg18em
+        gS4r5Y9Zup2BxLD280MQUwuBYA==
+X-Google-Smtp-Source: ABdhPJwBXAYthcc94MlJNYar0cK8NQ0m6fDRrV1047IEGn1lJ7oVpxn+yl5bbg5BfOkLu2OAiW8nvA==
+X-Received: by 2002:a65:51c1:: with SMTP id i1mr17010704pgq.272.1590218604234;
+        Sat, 23 May 2020 00:23:24 -0700 (PDT)
 Received: from dragon ([80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id d21sm3969329pfd.109.2020.05.23.00.19.31
+        by smtp.gmail.com with ESMTPSA id h4sm9368364pje.29.2020.05.23.00.23.11
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 23 May 2020 00:19:38 -0700 (PDT)
-Date:   Sat, 23 May 2020 15:19:26 +0800
+        Sat, 23 May 2020 00:23:23 -0700 (PDT)
+Date:   Sat, 23 May 2020 15:23:02 +0800
 From:   Shawn Guo <shawn.guo@linaro.org>
 To:     Jordan Crouse <jcrouse@codeaurora.org>
 Cc:     linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
         AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
         Drew Davenport <ddavenport@chromium.org>,
-        Enrico Weigelt <info@metux.net>, Eric Anholt <eric@anholt.net>,
         Georgi Djakov <georgi.djakov@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
         Kalyan Thota <kalyan_t@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
         Rob Clark <robdclark@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Takashi Iwai <tiwai@suse.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         Wambui Karuga <wambui.karugax@gmail.com>,
         dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, tongtiangen <tongtiangen@huawei.com>,
-        zhengbin <zhengbin13@huawei.com>
-Subject: Re: [PATCH v1 0/3] drm/msm: Cleanups ahead of per-instance pagetables
-Message-ID: <20200523071925.GA28198@dragon>
+        linux-kernel@vger.kernel.org, tongtiangen <tongtiangen@huawei.com>
+Subject: Re: [PATCH v1 1/3] drm/msm: Attach the IOMMU device during
+ initialization
+Message-ID: <20200523072300.GB28198@dragon>
 References: <20200522220316.23772-1-jcrouse@codeaurora.org>
+ <20200522220316.23772-2-jcrouse@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200522220316.23772-1-jcrouse@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200522220316.23772-2-jcrouse@codeaurora.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 04:03:13PM -0600, Jordan Crouse wrote:
-> These are three cleanup and reorganization patches that were originally
-> part of one of my many per-instance pagetable stacks [1] [2] but make life
-> better in general and can stand on their own. Send them now to get them
-> out of my other stack and make that processs ever so easier.
-> 
-> [1] https://patchwork.kernel.org/patch/11355255/
-> [2] https://patchwork.kernel.org/patch/11355259/
-> 
-> Jordan Crouse (3):
->   drm/msm: Attach the IOMMU device during initialization
->   drm/msm: Refactor address space initialization
->   drm/msm: Update the MMU helper function APIs
+On Fri, May 22, 2020 at 04:03:14PM -0600, Jordan Crouse wrote:
+> diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
+> index 34980d8eb7ad..0ad0f848560a 100644
+> --- a/drivers/gpu/drm/msm/msm_gpummu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpummu.c
+> @@ -21,11 +21,6 @@ struct msm_gpummu {
+>  #define GPUMMU_PAGE_SIZE SZ_4K
+>  #define TABLE_SIZE (sizeof(uint32_t) * GPUMMU_VA_RANGE / GPUMMU_PAGE_SIZE)
+>  
+> -static int msm_gpummu_attach(struct msm_mmu *mmu)
+> -{
+> -	return 0;
+> -}
+> -
+>  static void msm_gpummu_detach(struct msm_mmu *mmu)
+>  {
+>  }
+> @@ -85,7 +80,6 @@ static void msm_gpummu_destroy(struct msm_mmu *mmu)
+>  }
+>  
+>  static const struct msm_mmu_funcs funcs = {
+> -		.attach = msm_gpummu_attach,
+>  		.detach = msm_gpummu_detach,
+>  		.map = msm_gpummu_map,
+>  		.unmap = msm_gpummu_unmap,
+> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
+> index ad58cfe5998e..e35dab5792cf 100644
+> --- a/drivers/gpu/drm/msm/msm_iommu.c
+> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+> @@ -66,7 +66,6 @@ static void msm_iommu_destroy(struct msm_mmu *mmu)
+>  }
+>  
+>  static const struct msm_mmu_funcs funcs = {
+> -		.attach = msm_iommu_attach,
 
-FWIW, on A405 with glmark2:
+It causes an unused function warning as below.
 
-Tested-by: Shawn Guo <shawn.guo@linaro.org>
+drivers/gpu/drm/msm/msm_iommu.c:26:12: warning: ‘msm_iommu_attach’ defined but not used [-Wunused-function]
+ static int msm_iommu_attach(struct msm_mmu *mmu)
+            ^~~~~~~~~~~~~~~~
+
+Not sure if you will use it again in future patches though.
+
+Shawn
+
+>  		.detach = msm_iommu_detach,
+>  		.map = msm_iommu_map,
+>  		.unmap = msm_iommu_unmap,
+> @@ -76,6 +75,7 @@ static const struct msm_mmu_funcs funcs = {
+>  struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain)
+>  {
+>  	struct msm_iommu *iommu;
+> +	int ret;
+>  
+>  	iommu = kzalloc(sizeof(*iommu), GFP_KERNEL);
+>  	if (!iommu)
+> @@ -85,5 +85,11 @@ struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain)
+>  	msm_mmu_init(&iommu->base, dev, &funcs);
+>  	iommu_set_fault_handler(domain, msm_fault_handler, iommu);
+>  
+> +	ret = iommu_attach_device(iommu->domain, dev);
+> +	if (ret) {
+> +		kfree(iommu);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+>  	return &iommu->base;
+>  }
+> diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
+> index 67a623f14319..bae9e8e67ec1 100644
+> --- a/drivers/gpu/drm/msm/msm_mmu.h
+> +++ b/drivers/gpu/drm/msm/msm_mmu.h
+> @@ -10,7 +10,6 @@
+>  #include <linux/iommu.h>
+>  
+>  struct msm_mmu_funcs {
+> -	int (*attach)(struct msm_mmu *mmu);
+>  	void (*detach)(struct msm_mmu *mmu);
+>  	int (*map)(struct msm_mmu *mmu, uint64_t iova, struct sg_table *sgt,
+>  			unsigned len, int prot);
+> -- 
+> 2.17.1
+> 
