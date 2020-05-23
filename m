@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4CC1DFAF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 22:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F22F1DF7BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387930AbgEWUVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 16:21:25 -0400
-Received: from smtp.precisionairtz.com ([41.204.150.156]:60322 "EHLO
-        smtp.precisionairtz.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387843AbgEWUVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 16:21:24 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Sat, 23 May 2020 16:21:24 EDT
-Received: from smtp.precisionairtz.com (smtp.precisionairtz.com [127.0.0.1])
-        by smtp.precisionairtz.com (Postfix) with ESMTP id 2E30A22E51
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 23:17:30 +0300 (EAT)
-X-Virus-Scanned: amavisd-new at smtp.precisionairtz.com
-X-Spam-Flag: NO
-X-Spam-Score: 6.16
-X-Spam-Level: ******
-X-Spam-Status: No, score=6.16 tagged_above=2 required=6.2
-        tests=[FREEMAIL_FORGED_REPLYTO=2.503, MISSING_HEADERS=1.207,
-        RCVD_IN_DNSWL_BLOCKED=0.001, REPLYTO_WITHOUT_TO_CC=1.946,
-        SPF_HELO_NONE=0.001, SPF_NONE=0.001, SUBJ_ALL_CAPS=0.5,
-        URIBL_BLOCKED=0.001] autolearn=no autolearn_force=no
-Received: from smtp.precisionairtz.com ([127.0.0.1])
-        by smtp.precisionairtz.com (smtp.precisionairtz.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hIk-HVVJxwnM for <linux-kernel@vger.kernel.org>;
-        Sat, 23 May 2020 23:17:28 +0300 (EAT)
-Received: from mail.precisionairtz.com (mail.precisionairtz.com [41.204.150.158])
-        by smtp.precisionairtz.com (Postfix) with ESMTPS id 7E27E21625;
-        Sat, 23 May 2020 16:57:40 +0300 (EAT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.precisionairtz.com (Postfix) with ESMTP id 3BEF16E6179;
-        Sat, 23 May 2020 16:57:37 +0300 (EAT)
-Received: from mail.precisionairtz.com ([127.0.0.1])
-        by localhost (mail.precisionairtz.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1oaHM4ddp5aN; Sat, 23 May 2020 16:57:36 +0300 (EAT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.precisionairtz.com (Postfix) with ESMTP id 43B3D6E617D;
-        Sat, 23 May 2020 16:57:36 +0300 (EAT)
-X-Virus-Scanned: amavisd-new at precisionairtz.com
-Received: from mail.precisionairtz.com ([127.0.0.1])
-        by localhost (mail.precisionairtz.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gafTF_zJbPM5; Sat, 23 May 2020 16:57:35 +0300 (EAT)
-Received: from mail.precisionairtz.com (localhost [127.0.0.1])
-        by mail.precisionairtz.com (Postfix) with ESMTP id 7E9D86E6177;
-        Sat, 23 May 2020 16:57:33 +0300 (EAT)
-Date:   Sat, 23 May 2020 16:57:33 +0300 (EAT)
-From:   Abdwabbo Maddah <smkupete@precisionairtz.com>
-Reply-To: AbdWabbo Maddah <assighassan@mail.com>
-Message-ID: <2073576285.1118789.1590242253441.JavaMail.zimbra@precisionairtz.com>
-Subject: DID YOU RECEIVE MY MAIL?
+        id S2387858AbgEWOEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 10:04:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387529AbgEWOEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 10:04:14 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75BB62072C;
+        Sat, 23 May 2020 14:04:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590242653;
+        bh=3GrDS2+LfV+5Q1mKglHDFkYxRwI4AAtXMEEXKunzq3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YVZj5q+FKln2NEIeK0OZ41mzcqT7ILj9jfKpLGM4QNnhZoYBpGvPFOkPtDHvIMfGQ
+         Jxv1rT7u92dlCkjmMv86YzODMCHGzSWqCPTV3Wc8x+ffZCX15ylxAINbASOUIPAhFA
+         cpW/4oHZO4BEgq0cwgIOYKO5g9fRI6IH4NJKep9M=
+Date:   Sat, 23 May 2020 16:04:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] kobject: Make sure the parent does not get released
+ before its children
+Message-ID: <20200523140411.GA114366@kroah.com>
+References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
+ <20200523132101.GA76443@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [41.190.31.116]
-X-Mailer: Zimbra 8.8.15_GA_3928 (zclient/8.8.15_GA_3928)
-Thread-Index: /OFUFW7Mm/a/L1CbWlM0rN+m87aeAg==
-Thread-Topic: DID YOU RECEIVE MY MAIL?
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200523132101.GA76443@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, May 23, 2020 at 06:21:01AM -0700, Guenter Roeck wrote:
+> On Wed, May 13, 2020 at 06:18:40PM +0300, Heikki Krogerus wrote:
+> > In the function kobject_cleanup(), kobject_del(kobj) is
+> > called before the kobj->release(). That makes it possible to
+> > release the parent of the kobject before the kobject itself.
+> > 
+> > To fix that, adding function __kboject_del() that does
+> 
+> s/kboject/kobject/
+> 
+> > everything that kobject_del() does except release the parent
+> > reference. kobject_cleanup() then calls __kobject_del()
+> > instead of kobject_del(), and separately decrements the
+> > reference count of the parent kobject after kobj->release()
+> > has been called.
+> > 
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+> > Cc: Brendan Higgins <brendanhiggins@google.com>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> > Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> > Tested-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> All my arm64be (arm64 big endian) boot tests crash with this patch
+> applied. Reverting it fixes the problem. Crash log and bisect results
+> (from pending-fixes branch) below.
 
+Ugh, ok, just when I send Linus a pull request.  Let me go fix that...
 
-Dear,
-
-I had sent you a mail but i don't think you received it that's why am writing you again.It is important you get back to me as soon as you can.
-
-AbdWabbo Maddah
+greg k-h
