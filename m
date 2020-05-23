@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2886E1DF5B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 09:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2048A1DF5B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 09:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387672AbgEWHg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 03:36:57 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:8548 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387471AbgEWHg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 03:36:57 -0400
-Received: from localhost.localdomain (unknown [222.205.77.158])
-        by mail-app2 (Coremail) with SMTP id by_KCgAHGBCH0she5564AQ--.42805S4;
-        Sat, 23 May 2020 15:36:44 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: camss: csid: Fix runtime PM imbalance in csid_set_power
-Date:   Sat, 23 May 2020 15:36:39 +0800
-Message-Id: <20200523073639.7442-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAHGBCH0she5564AQ--.42805S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFW3Gr18JF1xWF4UArb_yoWfZwb_Gr
-        4DXF1xXrW5GrWktr4jkw13uryfXa95u3W8CF1ftF1ayayv9a4kWrykZr98Zwn3ur1jvr17
-        GFn8uFyfCr93ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUbhiSPUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQJBlZdtORGcwABsm
+        id S2387629AbgEWHlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 03:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgEWHlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 03:41:39 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318D6C061A0E;
+        Sat, 23 May 2020 00:41:39 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jcOmf-0000Nd-AK; Sat, 23 May 2020 09:41:29 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BBCFB1C0082;
+        Sat, 23 May 2020 09:41:28 +0200 (CEST)
+Date:   Sat, 23 May 2020 07:41:28 -0000
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/mm: Stop printing BRK addresses
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200229231120.1147527-1-nivedita@alum.mit.edu>
+References: <20200229231120.1147527-1-nivedita@alum.mit.edu>
+MIME-Version: 1.0
+Message-ID: <159021968859.17951.9516200260774594729.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Commit-ID:     67d631b7c05eff955ccff4139327f0f92a5117e5
+Gitweb:        https://git.kernel.org/tip/67d631b7c05eff955ccff4139327f0f92a5117e5
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Sat, 29 Feb 2020 18:11:20 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 23 May 2020 09:34:18 +02:00
+
+x86/mm: Stop printing BRK addresses
+
+This currently leaks kernel physical addresses into userspace.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Kees Cook <keescook@chromium.org>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Link: https://lkml.kernel.org/r/20200229231120.1147527-1-nivedita@alum.mit.edu
 ---
- drivers/media/platform/qcom/camss/camss-csid.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/mm/init.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-index a5ae85674ffb..8a247b6f5550 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid.c
-@@ -562,8 +562,10 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
- 		u32 hw_version;
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 1bba16c..a573a3e 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -121,8 +121,6 @@ __ref void *alloc_low_pages(unsigned int num)
+ 	} else {
+ 		pfn = pgt_buf_end;
+ 		pgt_buf_end += num;
+-		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
+-			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
+ 	}
  
- 		ret = pm_runtime_get_sync(dev);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_sync(dev);
- 			return ret;
-+		}
- 
- 		ret = regulator_enable(csid->vdda);
- 		if (ret < 0) {
--- 
-2.17.1
-
+ 	for (i = 0; i < num; i++) {
