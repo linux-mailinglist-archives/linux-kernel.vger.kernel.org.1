@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B831DF83E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1F91DF841
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 18:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgEWQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 12:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgEWQbs (ORCPT
+        id S1728335AbgEWQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 12:34:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23623 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728234AbgEWQe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 12:31:48 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833F1C061A0E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 09:31:48 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x23so12133568oic.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 09:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
-        b=Ws/3L4j7Id89QstV3UG8fk3qd215R2nTIG95dOlQXevuAO0cHuarFPJWoUmP2rCk66
-         18U+plihktqeBcBVdr//W36w7urv9BqbTsvM9CYTOekJTtjjUYP1Ge1i9XMnu6hzHOIr
-         gzuiFKvVqMgq5zdRsOo5RL8eS8QIEKXy363FA42EIBl8lEFFweIa8IEsewOTYAdOaZvy
-         drM4/KH978FZcd5aRH0exku0NAR7yEOX5no3djtnM0OSlytXr4sdt0n/Lz1xqzSTogyj
-         3UiTXZtLtxObUPR/OWViEx9XxNP8DpHE4sKHnf+qToti7Irl2dTHcpJZFMoju8AQnTzN
-         CIHg==
+        Sat, 23 May 2020 12:34:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590251668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HuZzbZkGqE+3pTQ3powlX9CzpAalpjRkp2uqWJb6cGs=;
+        b=HQc8MInTWc6HQnnxpS66TeZoO8j1Lqjv7YoyyRZfFtHfFbMRwOBlU4o2kcXrKEhZ+4dQxc
+        z455D5i4HLnTeph3HN6QS2qs8OUrdw8HTpK3VvchnUPCLfxR1bM7bNVvJHn7CLvUV+8NYC
+        MrdnRMMmz61bT+xh50E0Xc05uEGQdf0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-lDWbfcN1OGS2iKT009cYgA-1; Sat, 23 May 2020 12:34:21 -0400
+X-MC-Unique: lDWbfcN1OGS2iKT009cYgA-1
+Received: by mail-ej1-f71.google.com with SMTP id ci7so3516441ejb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 09:34:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
-        b=gAI8fPgMgV2v/LvunTO915mT5COyjbUwVfHpsMH32StOEaDn7Tx6+Qzx8aDze6yWmq
-         9P9KjLIIyxJa/gqjrWG6zqarhp/DuTA0A49+jAUYKs1dwMl8yjv+KSq7uZYnMimW+HN3
-         HADXkpIMA391MhISadqoTd9oGogGBzvbNwaW08XgjhdXOVp9IRUhqqpBW+bjMdwzThYS
-         T+Jsb4wl6i3YjIqUnR80xu1dRnIvB4e/SPeASJwwSJmzNy4+b4FOORzxPj/HO1dz4gWG
-         K1msqFG1seJ9LjS51JwsJ7exgDZZ9uzsI8ta8Ihg6iMiLfR9cu3fqx8O6Php3cEBz7zN
-         sLHQ==
-X-Gm-Message-State: AOAM533/d1qtGWtQDoG3CscUMXOfST6M1U357BoojAISfT89+zTU6uWC
-        Me6icOBOZoqdEy3sNEDta7uPSwMhWCBV6Fe9TI4=
-X-Google-Smtp-Source: ABdhPJwK2OQ7lq+Z69UVO24ttNJoTVD5mC7aCWSSM9E0MpA2pETDqGI4aUmG7RdB4GMWPoKX0p9isc1ZDl+kqMreVYM=
-X-Received: by 2002:aca:3a55:: with SMTP id h82mr6034762oia.135.1590251507929;
- Sat, 23 May 2020 09:31:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HuZzbZkGqE+3pTQ3powlX9CzpAalpjRkp2uqWJb6cGs=;
+        b=ABdlMljV4IeJORYW1ocY5EdJyQQ0Zu2BHu6sTXssQrM9PzflCyC423EwvpjK8xdvH5
+         2qJ5xF9tb4PKdgJiBQQNET649IfPHz/lrrgxpGaw+fMKS9ohGJbE0enKN8Ep29lTHYmN
+         vSSEyehTaPwGw9i/fCPhgcP/njFTFIqhZYWhTm6NZtitNWlAtMFx475llgKPOT7BFwEd
+         GmE35XPHNksrtYGFY1WTz+aUGgq6VAHCiAWm93kQ4LUqlNykj8+8RrRXl2wwqp2e3Sc4
+         zCSQeOAbs7rsrdB02zf6x0IZBiKk1eAPk5WiRTeOoZk75Ca+wm7uQKwX6rehdy1zFan2
+         wh3Q==
+X-Gm-Message-State: AOAM533Xucyu5hUMq36PYwuNhVUqh9204lf6z17bNFwvn31Qf6VoIxI1
+        2mX8M0KLG0WdSuUPJqGPlIIUln4wz4NVqq0z2eL7zH7CkZxVQZ90SMSk6q66sK5R42vTahBXX98
+        AnlDmuF4X4nZxoeqy5nLftBhx
+X-Received: by 2002:a17:906:63c9:: with SMTP id u9mr13178575ejk.487.1590251660272;
+        Sat, 23 May 2020 09:34:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7dhtvhIMSi54iwS+CUxrxgAY6k5WRmLc4pl9vgr9H/PwlkHIpt/cYv0rq9eje8EQckB2j8Q==
+X-Received: by 2002:a17:906:63c9:: with SMTP id u9mr13178556ejk.487.1590251659992;
+        Sat, 23 May 2020 09:34:19 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f5sm11154367edj.1.2020.05.23.09.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 May 2020 09:34:18 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] KVM: x86: extend struct kvm_vcpu_pv_apf_data with token info
+In-Reply-To: <20200521183832.GB46035@redhat.com>
+References: <20200511164752.2158645-1-vkuznets@redhat.com> <20200511164752.2158645-3-vkuznets@redhat.com> <20200521183832.GB46035@redhat.com>
+Date:   Sat, 23 May 2020 18:34:17 +0200
+Message-ID: <87sgfq8vau.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:e83:0:0:0:0:0 with HTTP; Sat, 23 May 2020 09:31:47 -0700 (PDT)
-Reply-To: bukuridervishi@seznam.cz
-From:   Bukuri Dervishi <clementinaabe@gmail.com>
-Date:   Sat, 23 May 2020 18:31:47 +0200
-Message-ID: <CAAghV-sKpJmWCb0aqRQ4NX8HJ3BO4U29xk+baFghKR0k=YbvyQ@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ramadan Kareem to you,
+Vivek Goyal <vgoyal@redhat.com> writes:
 
-My name is Bukuri Dervishi, I=E2=80=99m a citizen of Albania base in Turkey
-for my previous business. This is a confidential message, I have lost
-two of my children due to covid19; early February we came to Italy on
-visit without knowing that things was about to fall appart. Not only
-did my children die as a result of covid19; I also tested
-positive, and it has defied all forms of medical treatment,
+> On Mon, May 11, 2020 at 06:47:46PM +0200, Vitaly Kuznetsov wrote:
+>> Currently, APF mechanism relies on the #PF abuse where the token is being
+>> passed through CR2. If we switch to using interrupts to deliver page-ready
+>> notifications we need a different way to pass the data. Extent the existing
+>> 'struct kvm_vcpu_pv_apf_data' with token information for page-ready
+>> notifications.
+>> 
+>> The newly introduced apf_put_user_ready() temporary puts both reason
+>> and token information, this will be changed to put token only when we
+>> switch to interrupt based notifications.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
+>>  arch/x86/kvm/x86.c                   | 17 +++++++++++++----
+>>  2 files changed, 15 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+>> index 2a8e0b6b9805..e3602a1de136 100644
+>> --- a/arch/x86/include/uapi/asm/kvm_para.h
+>> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+>> @@ -113,7 +113,8 @@ struct kvm_mmu_op_release_pt {
+>>  
+>>  struct kvm_vcpu_pv_apf_data {
+>>  	__u32 reason;
+>
+> Hi Vitaly,
+>
+> Given we are redoing it, can we convert "reason" into a flag instead
+> and use bit 0 for signalling "page not present" Then rest of the 31
+> bits can be used for other purposes. I potentially want to use one bit to
+> signal error (if it is known at the time of injecting #PF).
 
-I may have only a few days to live, as a result of that I want to
-donate my entire Money thirteen million five hundred and eighty
-thousand usd($13,580 million usd) to you for charity work as my
-promise to God since I will not be needing the money any more. I'm
-donating the money to you because I do not have any other heir and my
-trusted Steward who would have handly this assignment is incapable due
-to old age and ill health.
+Yes, I think we can do that. The existing KVM_PV_REASON_PAGE_READY and
+KVM_PV_REASON_PAGE_NOT_PRESENT are mutually exclusive and can be
+converted to flags (we'll only have KVM_PV_REASON_PAGE_NOT_PRESENT in
+use when this series is merged).
 
-I am given you 40% for this job while you are to give 20% to my former
-Steward and donate the remaining 40% for charitable works such as to
-donate 20% towards the fight of coronavirus and 20% to the less
-priviledges in the society. I will give you
-more details on how to get the money. Kindly let me know if you are
-capable to handle this,and if you can=E2=80=99t please kindly reject the
-offer.
+>
+>> -	__u8 pad[60];
+>> +	__u32 pageready_token;
+>> +	__u8 pad[56];
+>
+> Given token is 32 bit, for returning error in "page ready" type messages,
+> I will probably use padding bytes and create pagready_flag and use one
+> of the bits to signal error.
 
-Thanks and stay safe
-Regards
-Bukuri Dervishi.
+In case we're intended to pass more data in synchronous notifications,
+shall we leave some blank space after 'flags' ('reason' previously) and
+before 'token'?
+
+-- 
+Vitaly
+
