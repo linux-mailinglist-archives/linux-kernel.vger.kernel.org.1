@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708531DF676
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 11:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C051D1DF67C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 11:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387758AbgEWJyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 05:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbgEWJyr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 05:54:47 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6CEC061A0E;
-        Sat, 23 May 2020 02:54:47 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jcQrK-0000on-M7; Sat, 23 May 2020 11:54:26 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 33AAA100D0B; Sat, 23 May 2020 11:54:26 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Borislav Petkov <bp@alien8.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        elver@google.com
-Subject: Re: linux-next: build failure after merge of the tip tree
-In-Reply-To: <20200523064643.GA27431@zn.tnic>
-References: <20200522033119.1bbd99c5@canb.auug.org.au> <20200521173520.GL6608@willie-the-truck> <20200522171708.5f392fde@canb.auug.org.au> <20200522174944.1a1732fa@canb.auug.org.au> <20200523001223.GA23921@paulmck-ThinkPad-P72> <20200523064643.GA27431@zn.tnic>
-Date:   Sat, 23 May 2020 11:54:26 +0200
-Message-ID: <87a71zq8ml.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+        id S2387793AbgEWJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 05:56:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60724 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387687AbgEWJ4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 05:56:42 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_2lG88hecSk4AA--.531S2;
+        Sat, 23 May 2020 17:56:24 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 1/2] rtc: goldfish: Fix return value of goldfish_rtc_probe()
+Date:   Sat, 23 May 2020 17:56:21 +0800
+Message-Id: <1590227782-32249-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx_2lG88hecSk4AA--.531S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw18Zw1xXFykAFyUAw4fKrg_yoWfWFXEka
+        18ur4fJF1kZr1qvw12vw43Cry7CFnYgrZ7XFn5Ka9av3y7Xw17WayDZFs7Aa95Ar4jkF98
+        Gas7GFyfuw1fJjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4f
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjzBT5UUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borislav Petkov <bp@alien8.de> writes:
+When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-> On Fri, May 22, 2020 at 05:12:23PM -0700, Paul E. McKenney wrote:
->> Marco, Thomas, is there any better setup I can provide Stephen?  Or
->> is the next-20200519 -rcu tree the best we have right now?
->
-> I've queued the fixes yesterday into tip:locking/kcsan and tglx said
-> something about you having to rebase anyway. I guess you can find him on
-> IRC at some point later. :)
+Fixes: 89576bebbc17 ("rtc: Use devm_platform_ioremap_resource()")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/rtc/rtc-goldfish.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-locking/kcsan is not the problem (it just has more fixes on top)
+diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
+index cb6b0ad..2779715 100644
+--- a/drivers/rtc/rtc-goldfish.c
++++ b/drivers/rtc/rtc-goldfish.c
+@@ -174,7 +174,7 @@ static int goldfish_rtc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, rtcdrv);
+ 	rtcdrv->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(rtcdrv->base))
+-		return -ENODEV;
++		return PTR_ERR(rtcdrv->base);
+ 
+ 	rtcdrv->irq = platform_get_irq(pdev, 0);
+ 	if (rtcdrv->irq < 0)
+-- 
+2.1.0
 
-core/rcu is the one which diverged and caused the merge conflict with
-PPC to happen twice. So Paul needs to remove the stale core/rcu bits and
-rebase on the current version (which is not going to change again).
-
-Thanks,
-
-        tglx
