@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BD21DF72E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 14:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2C51DF73A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 14:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387823AbgEWMWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 08:22:04 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:32878 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387795AbgEWMWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 08:22:03 -0400
-Received: from zn.tnic (p200300ec2f1b96000903d0e8ce6c3fc4.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:9600:903:d0e8:ce6c:3fc4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 34F781EC0322;
-        Sat, 23 May 2020 14:22:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1590236522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=LDpR9wqJSbrif4ZbcLoGQ7gTT2in9pNC/j6i9ymqcoU=;
-        b=ERV9ZPomgRSs3ujgmNTWDcBEpkhwfNwjqarfp7Ogeh+4yb5Z0ausqgOaileEtW0aHyV4yf
-        DZ6jFtf4T+Ilk6LVC2hbcy16b2yBS7neJNTrllRKaKA/wLS5Va/h/odkjlhxztho+DDAnN
-        ufu4NwDzYx73NnvlqZdxTzlytChL7tU=
-Date:   Sat, 23 May 2020 14:21:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, x86@kernel.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, mchehab+samsung@kernel.org,
-        changbin.du@intel.com, namit@vmware.com, bigeasy@linutronix.de,
-        yang.shi@linux.alibaba.com, asteinhauser@google.com,
-        anshuman.khandual@arm.com, jan.kiszka@siemens.com,
-        akpm@linux-foundation.org, steven.price@arm.com,
-        rppt@linux.vnet.ibm.com, peterx@redhat.com,
-        dan.j.williams@intel.com, arjunroy@google.com, logang@deltatee.com,
-        thellstrom@vmware.com, aarcange@redhat.com, justin.he@arm.com,
-        robin.murphy@arm.com, ira.weiny@intel.com, keescook@chromium.org,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        pawan.kumar.gupta@linux.intel.com, fenghua.yu@intel.com,
-        vineela.tummalapalli@intel.com, yamada.masahiro@socionext.com,
-        sam@ravnborg.org, acme@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v5] arch/x86: Update config and kernel doc for MPK
- feature on AMD
-Message-ID: <20200523122149.GF27431@zn.tnic>
-References: <158940940570.47998.17107695356894054769.stgit@naples-babu.amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <158940940570.47998.17107695356894054769.stgit@naples-babu.amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2387792AbgEWM3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 08:29:25 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:23726 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728969AbgEWM3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 08:29:24 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app4 (Coremail) with SMTP id cS_KCgAnfwkVF8leVdkSAg--.9139S4;
+        Sat, 23 May 2020 20:29:13 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] spi: tegra20-slink: Fix runtime PM imbalance on error
+Date:   Sat, 23 May 2020 20:29:09 +0800
+Message-Id: <20200523122909.25247-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgAnfwkVF8leVdkSAg--.9139S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrW7ZFW3Gr18JF1xWF4UArb_yoWfKrb_Cr
+        s0v3Z7Wr4Sgr4kJF17uay3ZrySv3Z8Xr1vqrs7tFy3K3909FnrC34DXFn0krs8uw4UAr1q
+        yr93KFyxAr98CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JUID73UUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBlZdtORShQABsB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 13, 2020 at 05:39:12PM -0500, Babu Moger wrote:
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 1197b5596d5a..6b7303ccc1dd 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1887,10 +1887,10 @@ config X86_UMIP
->  	  results are dummy.
->  
->  config X86_INTEL_MEMORY_PROTECTION_KEYS
-> -	prompt "Intel Memory Protection Keys"
-> +	prompt "Memory Protection Keys"
->  	def_bool y
->  	# Note: only available in 64-bit mode
-> -	depends on CPU_SUP_INTEL && X86_64
-> +	depends on X86_64 && (CPU_SUP_INTEL || CPU_SUP_AMD)
->  	select ARCH_USES_HIGH_VMA_FLAGS
->  	select ARCH_HAS_PKEYS
->  	---help---
-> @@ -1902,6 +1902,13 @@ config X86_INTEL_MEMORY_PROTECTION_KEYS
->  
->  	  If unsure, say y.
->  
-> +config X86_MEMORY_PROTECTION_KEYS
-> +	# Set the "INTEL_"-free option whenever the "INTEL_" one is set.
-> +	# The "INTEL_" one should be removed and replaced by this option
-> +	# after 5.10. This avoids exposing most 'oldconfig' users to this
-> +	# churn.
-> +	def_bool X86_INTEL_MEMORY_PROTECTION_KEYS
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-I only picked up the discussion from the sidelines but why do we need
-this at all? If we don't want to have churn, then we can leave it be
-called X86_INTEL_MEMORY_PROTECTION_KEYS, not change the manpage and
-have this depend on CPU_SUP_AMD too so that people can select it on AMD
-machines, and get on with our lives.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-So what's up?
+Changelog:
 
+v2: - Use pm_runtime_put_noidle() instead of pm_runtime_put().
+---
+ drivers/spi/spi-tegra20-slink.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+index 7f4d932dade7..a07b72e9c344 100644
+--- a/drivers/spi/spi-tegra20-slink.c
++++ b/drivers/spi/spi-tegra20-slink.c
+@@ -1118,6 +1118,7 @@ static int tegra_slink_probe(struct platform_device *pdev)
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "pm runtime get failed, e = %d\n", ret);
++		pm_runtime_put_noidle(&pdev->dev);
+ 		goto exit_pm_disable;
+ 	}
+ 	tspi->def_command_reg  = SLINK_M_S;
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
