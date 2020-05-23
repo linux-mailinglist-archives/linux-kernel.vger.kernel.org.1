@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AC61DF428
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 04:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9111DF429
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 04:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387543AbgEWCVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 22:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387427AbgEWCVg (ORCPT
+        id S2387515AbgEWC1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 22:27:02 -0400
+Received: from smtprelay0043.hostedemail.com ([216.40.44.43]:54470 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387427AbgEWC1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 22:21:36 -0400
-X-Greylist: delayed 231 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 May 2020 19:21:35 PDT
-Received: from mx.h4ck.space (mx.h4ck.space [IPv6:2a01:4f8:1c1c:f2f5::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E688FC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 19:21:35 -0700 (PDT)
-Date:   Sat, 23 May 2020 04:21:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=notmuch.email;
-        s=mail; t=1590200493;
-        bh=Qbmux8TBIyumzPkqdTO5JW7secQMsHMFpVe42GokGHY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=EgDMD/AE6k40hgy8j1qnn0E97vCeVhXbdOAY1VMLREP1yJB8YAT2k8Oq6sXsKn+fE
-         BSuDbZqnrqJ8KLlOJk8d0j2awkol4aIJz93Aa7uht7z2ByxfXK3ahVlZXzHcGt09gE
-         w4hwXBTrJZqHyYvVEx6HIuPyV/AYvhYEhE+XqVf8=
-From:   andi@notmuch.email
-To:     Brendan Shanks <bshanks@codeweavers.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: umip: AMD Ryzen 3900X, pagefault after emulate SLDT/SIDT
- instruction
-Message-ID: <20200523022133.rjgu7kw2goyoj4ip@wrt>
-References: <20200519143815.cpsd2xfx2kl3khsq@wrt>
- <2330FAB4-A6CE-49E7-921C-B7D55763BDED@codeweavers.com>
+        Fri, 22 May 2020 22:27:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E1340837F24A;
+        Sat, 23 May 2020 02:27:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3870:3871:3872:4321:5007:6119:7514:7809:7901:7903:7974:9010:10004:10400:10848:11232:11658:11914:12043:12048:12297:12740:12760:12895:13019:13069:13072:13255:13311:13357:13439:13891:14096:14097:14181:14659:14721:14777:21080:21324:21325:21433:21451:21627:21660:21819:30003:30022:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: hook24_400a8fc26d2c
+X-Filterd-Recvd-Size: 2265
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 23 May 2020 02:26:59 +0000 (UTC)
+Message-ID: <7366c990d4352e093ff7d17953079d7f0420c3a9.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: Update my maintainer entries to reorder
+ email addresses
+From:   Joe Perches <joe@perches.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab+huawei@kernel.org,
+        davem@davemloft.net, robh@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Fri, 22 May 2020 19:26:58 -0700
+In-Reply-To: <20200523021928.67126-1-skhan@linuxfoundation.org>
+References: <20200523021928.67126-1-skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2330FAB4-A6CE-49E7-921C-B7D55763BDED@codeweavers.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:56 19.05.20, Brendan Shanks wrote:
-> The problem is that the kernel does not emulate/spoof the SLDT instruction, only SGDT, SIDT, and SMSW.
-> SLDT and STR weren't thought to be commonly used, so emulation/spoofing wasn’t added.
-> In the last few months I have seen reports of one or two (32-bit) Windows games that use SLDT though.
-> Can you share more information about the application you’re running?
+On Fri, 2020-05-22 at 20:19 -0600, Shuah Khan wrote:
+> get_maintainer.pl picks only the first email address found in the file.
+> Reorder my email addresses so it finds my linuxfoundation.org email.
 
-This is basically the "minimal" reproducer for the issue I've been
-observed (as by the previously linked article):
+OK.
 
-https://gist.githubusercontent.com/andir/071981717460242a1df2e0fc20836fdc/raw/0c31877aa7ee59146596fe68934f9cecb5c998ae/test.c
+btw:  --noremove-duplicates is also an option.  For instance:
+
+$ ./scripts/get_maintainer.pl -f Documentation/usb/usbip_protocol.rst
+Valentina Manea <valentina.manea.m@gmail.com> (maintainer:USB OVER IP DRIVER)
+Shuah Khan <shuah@kernel.org> (maintainer:USB OVER IP DRIVER)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:USB SUBSYSTEM)
+Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+linux-usb@vger.kernel.org (open list:USB OVER IP DRIVER)
+linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+linux-kernel@vger.kernel.org (open list)
+
+vs:
+
+$ ./scripts/get_maintainer.pl --noremove-duplicates -f Documentation/usb/usbip_protocol.rst
+Valentina Manea <valentina.manea.m@gmail.com> (maintainer:USB OVER IP DRIVER)
+Shuah Khan <shuah@kernel.org> (maintainer:USB OVER IP DRIVER)
+Shuah Khan <skhan@linuxfoundation.org> (maintainer:USB OVER IP DRIVER)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> (supporter:USB SUBSYSTEM)
+Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+linux-usb@vger.kernel.org (open list:USB OVER IP DRIVER)
+linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+linux-kernel@vger.kernel.org (open list)
+
+
+
