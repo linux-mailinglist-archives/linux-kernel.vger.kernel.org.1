@@ -2,70 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A211DF499
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 06:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264D31DF46D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 05:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387562AbgEWEUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 00:20:16 -0400
-Received: from mail-m964.mail.126.com ([123.126.96.4]:54788 "EHLO
-        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgEWEUQ (ORCPT
+        id S2387569AbgEWDu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 23:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387540AbgEWDu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 00:20:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=Fynj679f2jrOclrqH6
-        Nydv7tjRQ5vbBgRn0vdlSqZ50=; b=Mv9P92EPwGOwCVWPGo7+ksRlTkUbl8zfbp
-        Ve3LExdLn1ScA1fzmqumZ7veaP1o8jxo/zpDZt88MZTEu9oyQayNVzTGsbxmGSaT
-        yJK3+dzLrlMoCDL1DLETWQlxgeTo/UcfTxGJ9bgcUJzk9egktS92u0Y2FPSAESAH
-        42g31mAZ0=
-Received: from localhost.localdomain (unknown [122.194.9.243])
-        by smtp9 (Coremail) with SMTP id NeRpCgAHxS01nchePzBaPA--.303S3;
-        Sat, 23 May 2020 11:49:13 +0800 (CST)
-From:   chenxb_99091@126.com
-To:     David Airlie <airlied@linux.ie>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Xuebing Chen <chenxb_99091@126.com>
-Subject: [PATCH] drm: fix setting of plane_mask in pan_display_atomic()  function for linux-4.4
-Date:   Sat, 23 May 2020 11:49:07 +0800
-Message-Id: <1590205747-19599-1-git-send-email-chenxb_99091@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NeRpCgAHxS01nchePzBaPA--.303S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrury3XFy7tr1kAryUtw47urg_yoWfGFg_CF
-        48Zws2krsFyryIv3Wayw43ZFyFka1rAF4rJrs5K3sIyrnFvrn3Gw12va4xur1UXF18tFyq
-        va42v3WfXryxtjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUntDG3UUUUU==
-X-Originating-IP: [122.194.9.243]
-X-CM-SenderInfo: hfkh05lebzmiizr6ij2wof0z/1tbi7hktxVtC3bsREAAAsh
+        Fri, 22 May 2020 23:50:58 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3179C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 20:50:58 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e11so5132042pfn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 20:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EPafhH9pnJaTqstx2UvGSdDHFfhLmyPCCnvVrZ2DidM=;
+        b=jicZvPr0SoeIUl4JxC5OBdgpKchxt9qYT873yS6tIpQ6a96t9AcmsRXb7WokzdGKGr
+         sRmBdQzO7cwnkzWIv0228SkHyNoJQx7vjS59hTpYUieeXdqUn2UKvDJTOGNGM9pYU4eh
+         kvDDtmxRZ7g3ovM6se1HlB76g/f9HMod9N3kjdlSE6QVldS8RmtG8sRM1NFx8xO9l5YA
+         dx6aUHyjKPrS7iebbf0E4a0k+65rmHf6jK4Zj7SI23LR7Fc3ir8+5XW1nKbyg3B/Hwpi
+         uXdXzwsnQzEQyMOHOebYkQnvzBj750en6d2wZpBR1G1aup2DjB8YL6GAPepAsBK6lktZ
+         68dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EPafhH9pnJaTqstx2UvGSdDHFfhLmyPCCnvVrZ2DidM=;
+        b=iwU3x6pNdsMCHeDEBWKj0H8tREwUBjLchlgRZbfeojR0ib8HQIkFX/iRiBqogdl3Kg
+         dv2VFDPHviwwFE/bX0qqX83Ibwkf4yUYTy8BEMpZ7MI8832lsRsTp/UFatgeMeRnZc4N
+         XkRVtn1JfrZr7z2kMGi3wTwgNK9pLwHdQJxTHXkGo5zchG+tOF/vhcmOmkA+WiAe9wl1
+         fM/dbVog0WWABjdgEEpNXjGaBW7SVxapAVNFKkvQUss9l2KSXniXQm9QSMEzWCtVNd+l
+         Pz9Gz1xVcxcKvXbOPddlnmVLfU1Z6+fFcZHwAxCDwQcIeVOk7kdYpA5p7pX/x+4eJ6v4
+         zf1Q==
+X-Gm-Message-State: AOAM532qwXKDsnBYnVHH4Sq20MXCuTKvNqsYuV83IVkBa+d4zYMfLXwA
+        LKYv6F7NBTwxc9KF3JnU/BQ=
+X-Google-Smtp-Source: ABdhPJxTWDo7li/tipVSzpOG0m+rTPXb+P1lgnDWZ9lsZOiiVm34jsZ56FQfYk6HasZllfTQdLSd7Q==
+X-Received: by 2002:a63:5a07:: with SMTP id o7mr16785320pgb.450.1590205857912;
+        Fri, 22 May 2020 20:50:57 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id e1sm7805171pjv.54.2020.05.22.20.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 20:50:57 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] phy: intel: Eliminate unnecessary assignment in intel_cbphy_set_mode
+Date:   Fri, 22 May 2020 20:50:43 -0700
+Message-Id: <20200523035043.3305846-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuebing Chen <chenxb_99091@126.com>
+Clang warns:
 
-The <include/drm/drm_crtc.h> provides drm_for_each_plane_mask macro and
-plane_mask is defined as bitmask of plane indices, such as
-1<<drm_plane_index(plane). This patch fixes error setting of plane_mask
-in pan_display_atomic() function.
+drivers/phy/intel/phy-intel-combo.c:202:34: warning: implicit conversion
+from enumeration type 'enum intel_phy_mode' to different enumeration
+type 'enum intel_combo_mode' [-Wenum-conversion]
+        enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
+                              ~~~~~~~   ^~~~~~~~~~~~~
+1 warning generated.
 
-Signed-off-by: Xuebing Chen <chenxb_99091@126.com>
+The correct enum to use would be PCIE0_PCIE1_MODE. However, eliminating
+this assignment is a little better because the switch statement always
+assigns a new value to cb_mode, which also takes care of the warning.
+
+Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1034
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- drivers/gpu/drm/drm_fb_helper.c | 2 +-
+ drivers/phy/intel/phy-intel-combo.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index e449f22..6a9f7ee 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -1256,7 +1256,7 @@ retry:
- 			goto fail;
+diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
+index c2a35be4cdfb..4bc1276ecf23 100644
+--- a/drivers/phy/intel/phy-intel-combo.c
++++ b/drivers/phy/intel/phy-intel-combo.c
+@@ -199,9 +199,9 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
  
- 		plane = mode_set->crtc->primary;
--		plane_mask |= drm_plane_index(plane);
-+		plane_mask |= 1 << drm_plane_index(plane);
- 		plane->old_fb = plane->fb;
- 	}
+ static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
+ {
+-	enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
+ 	enum aggregated_mode aggr = cbphy->aggr_mode;
+ 	struct device *dev = cbphy->dev;
++	enum intel_combo_mode cb_mode;
+ 	enum intel_phy_mode mode;
+ 	int ret;
  
+
+base-commit: c11d28ab4a691736e30b49813fb801847bd44e83
 -- 
-2.7.4
+2.27.0.rc0
 
