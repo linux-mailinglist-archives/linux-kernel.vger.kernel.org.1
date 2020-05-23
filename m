@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE171DF9BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60FA1DF7AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 15:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388193AbgEWRpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 13:45:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:3490 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387660AbgEWRpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 13:45:09 -0400
-IronPort-SDR: XAaqXMBX43/A5PfxKwGo1spHIIsnCa3oh7ExIzFSBuknJnxoaJX7GsEFU+IceAQ5tYvoP9AsZz
- 8dpCHLz2vZ6g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2020 06:34:57 -0700
-IronPort-SDR: IO3jCsmfjnhxYNdxnhnpaydv5y3Fg8fUowsRYODGTa5f12cF47kAxzUI6WYkPrsHLhUKKNoLuZ
- pMI+bmp6XrYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,425,1583222400"; 
-   d="scan'208";a="413035856"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga004.jf.intel.com with ESMTP; 23 May 2020 06:34:56 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id C0C96301A90; Sat, 23 May 2020 06:34:56 -0700 (PDT)
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Anand K Mistry <amistry@google.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S2387830AbgEWNgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 09:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387529AbgEWNgb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 09:36:31 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F157C061A0E;
+        Sat, 23 May 2020 06:36:31 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a5so6213265pjh.2;
+        Sat, 23 May 2020 06:36:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ii2tfPDbICPIbAX80VgxFGRLNNHttHydSq8bO/SDJ2E=;
+        b=RN8BwmiM+CA/4AX37RLN5GteJNCnpNgrL01C+K8PE69yAMuNAhvz+WsGDngrBMWf7n
+         a0KUe3ZYNmOM4phj2wNcNgINr14+O/YFXeVIzRg0Yk1zNYgLNCC5IpbAdkqC5Wwi/1a6
+         Xkc5HB00AaUAKd8PNiO3lcusJooyE21wsHGxGyi8moE+95LV7F4iydfyyfsaNxPQDIT1
+         5EzSlOVyWEq+OszTWVHETj0DEjUvKIzu41z3B84gZWnY23bXnQXJJnQ591YN4OtW+tkL
+         VT/w4cW0tzIRrxlxDTNoWo4AYG8yWrJANJCseXV0BUV+35JafLx05yl5fYq+iUGg0Dg2
+         bIqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ii2tfPDbICPIbAX80VgxFGRLNNHttHydSq8bO/SDJ2E=;
+        b=uY11WUmOPsZ1ZTFtwMY6vmGLZgYSFA8H+boQ2KmGurkxSDelICABN833d8rNOQQA68
+         HQ6sjghjm4+YZ9XjtXOsMV2QNuFrvOYgveuAbtfha4Kzm8tRyNp/XDrGK0fUTnIJdbuj
+         yiSaX2J4hGEqeiGuIKEjA3LxWQMNMZFH27zhZWAdzKDnn9Yh+51zDKRDQv09w9+bxefL
+         uniYb4G1GJfI9i1l1oDTW3a7ZGQhLYY9ZEz1xPjuOJFW49zBBizs3XrZAWSYVWz1IDzp
+         wNR3ZSue8q7GLRPkV+bl9J5jKRBK+DcVkYkX5O2t05vYUjRrAeEUFj3lTqkwAazXjdDD
+         ltCA==
+X-Gm-Message-State: AOAM532RNARucmQVxKeP8BypZCOsb3y6Cup2rUBTgkJHm1Zi0HpuHF8F
+        KQmRle1QpGkDrsnXWjXFAnBDxqmB
+X-Google-Smtp-Source: ABdhPJy8p7lJlKxI4aRRHJ86l83k3hGC2L5VR6CX/tbZiOOHrNeqEKtEyPIFn8F6d9rhiyuLDLGPnQ==
+X-Received: by 2002:a17:902:9882:: with SMTP id s2mr19415096plp.184.1590240990972;
+        Sat, 23 May 2020 06:36:30 -0700 (PDT)
+Received: from localhost (176.122.159.134.16clouds.com. [176.122.159.134])
+        by smtp.gmail.com with ESMTPSA id gd1sm9112654pjb.14.2020.05.23.06.36.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 23 May 2020 06:36:30 -0700 (PDT)
+Date:   Sat, 23 May 2020 21:36:26 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Michal Simek <michal.simek@xilinx.com>, harinik@xilinx.com,
+        soren.brinkmann@xilinx.com, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] perf record: Use an eventfd to wakeup when done
-References: <20200508145624.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-        <20200513122012.v3.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-Date:   Sat, 23 May 2020 06:34:56 -0700
-In-Reply-To: <20200513122012.v3.1.I4d7421c6bbb1f83ea58419082481082e19097841@changeid>
-        (Anand K. Mistry's message of "Wed, 13 May 2020 12:20:23 +1000")
-Message-ID: <87a71y93lr.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+Subject: Re: [PATCH v2] i2c: cadence: Add an error handling for
+ platform_get_irq()
+Message-ID: <20200523133626.GA27369@nuc8i5>
+References: <20200520144821.8069-1-zhengdejin5@gmail.com>
+ <2d99f043-f854-8975-86ee-2f0ba1382275@xilinx.com>
+ <20200522151459.GK5670@ninjato>
+ <7763d79e-3a44-2dbe-a4d3-45d40a3a1e02@xilinx.com>
+ <20200522201956.GB21376@ninjato>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522201956.GB21376@ninjato>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anand K Mistry <amistry@google.com> writes:
->  	}
->  
-> +	done_fd = eventfd(0, EFD_NONBLOCK);
+On Fri, May 22, 2020 at 10:19:56PM +0200, Wolfram Sang wrote:
+> 
+> > You know about
+> > devm_platform_get_and_ioremap_resource()
+> > usage.
+> >  Maybe that's the way to go. Because as of today there is no way to pass
+> > position of irq resource.
+> > 
+> > But I expect it will come in near future.
+> 
+> Has been tried, has been nacked:
+> 
+> http://patchwork.ozlabs.org/project/linux-i2c/patch/20200518155304.28639-3-zhengdejin5@gmail.com/
+> 
+Wolfram and Michal, Thanks very much for your comments, I will resend
+devm_platform_request_irq() again. 
 
-This will make perf depend on a recent glibc or other library
-that implements eventfd. Wouldn't surprise me if some kind
-of build time check is needed for this to pass all of Arnaldo's
-built tests.
+BR,
+Dejin
 
 
--Andi
