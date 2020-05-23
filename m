@@ -2,66 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78611DFA18
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 20:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5821DFA22
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 20:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388280AbgEWSBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 14:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387860AbgEWSAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 14:00:39 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217F4C061A0E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 11:00:39 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id p12so10917922qtn.13
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 11:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
-        b=vhvRG4iP0p/cCM0/gHqK0xx0MaMNF3/azTtn5P0fCT1b4XLjGRAoR85FXgvwYtowP6
-         J1ev3dPiedOMtPyOzUYmKFEqsj6BkIi2lR8s0YRNLylOZ8MbeWQpwNTWDXPX57LUrKeO
-         FLL54WToKnc9WyFCTQNZdn8yjuqVF61dsdwJrbIWn1f8+mXNgwQXd1Xox425XdFJLCTr
-         UNYtD5Mkr7J8HytQpl125rrGiBWdOVTtdeDic18s2v1Ex5H4EMrCDseWe8z8QJUA2DPl
-         pMcmWf9nM5lni1dYRbVMyTKtLHSFCzrJM5oRvB7Hp9K31CMWsqtaG47ZQbJG6ZEre6uU
-         kwNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=F3NMDrR9dummcUXdRfruEEfbIS6yB2vx68nB8Asq/5Q=;
-        b=BkjW5P70Jmv4XNlrZVcsbAaR0wfFaiJq1KNh5xvWc6ipDJ5abP870nvG4hd9yOmR6c
-         g+LYXxak/OlzeI5Z3v9btRZ4VOhqwaL7jaIrKjtGTl7vQc8Fn/0W/OEA9eFKybyWPVk3
-         ioQJKf2fzq0m7R77cgzlNja2cxShb/UJDFkZA+8I+oOizCHiyoXdbO8ai6eM33cbszJX
-         IITkfQ1vuP664TFD7ky6dgHTgVy7XvrkaYUjHx33hyfPz9yAyvuMGyf2CI2+NTR2nwyi
-         MA+BAG1wMMNsXrloDDLMdsWKCIKeFe/wn2u5wQ4x0anLIUkbF4heK3ByS6ZBhnZoKSgW
-         yT6w==
-X-Gm-Message-State: AOAM530FaCUMhdXnMD8onPqHui072UaQvrZEtTFeEKFwADr0f6Jbuf03
-        5FabMUlPf4CrV3VKQGQH3ByKfPndh1dYrlXebKU=
-X-Google-Smtp-Source: ABdhPJw4JSLl4s8hKmdikxPHOZTjp7LuShJQWo5DKJXfhdyHNpRWrWLXX1iWw/azZwGF2Nz0kU5bTrWvyq5YmK6naS0=
-X-Received: by 2002:ac8:1e16:: with SMTP id n22mr21502226qtl.78.1590256838401;
- Sat, 23 May 2020 11:00:38 -0700 (PDT)
+        id S1728432AbgEWSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 14:09:59 -0400
+Received: from muru.com ([72.249.23.125]:55602 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726865AbgEWSJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 14:09:59 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D732780F3;
+        Sat, 23 May 2020 18:10:48 +0000 (UTC)
+Date:   Sat, 23 May 2020 11:09:55 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org,
+        kernel@pyra-handheld.com, letux-kernel@openphoenux.org,
+        linux-omap@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] w1: omap-hdq: cleanup to add missing newline for
+ some dev_dbg
+Message-ID: <20200523180955.GE37466@atomide.com>
+References: <cover.1590255176.git.hns@goldelico.com>
+ <cd0d55749a091214106575f6e1d363c6db56622f.1590255176.git.hns@goldelico.com>
 MIME-Version: 1.0
-Received: by 2002:a37:9fd3:0:0:0:0:0 with HTTP; Sat, 23 May 2020 11:00:37
- -0700 (PDT)
-Reply-To: mrs.chantala2055@gmail.com
-From:   mrs chantal <mrs.chantalas1@gmail.com>
-Date:   Sat, 23 May 2020 18:00:37 +0000
-Message-ID: <CAMdkyyDY_0O7YgysHCjgRTJ=8-B7XurK7o1razRHDVOjgr2V2g@mail.gmail.com>
-Subject: jjCompliment
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd0d55749a091214106575f6e1d363c6db56622f.1590255176.git.hns@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-     Compliment of the day to you. I am Mrs.CHANTAL I am sending this brief
-    letter to solicit your partnership to transfer $13.5 Million US
-    Dollars.I shall send you more information and procedures when I receive
-    positive response From you. Please send me a message in My private
-    email address is ( mrschantal066@gmail.com  )
-    Best Regards
-    MrS.Chantal
+* H. Nikolaus Schaller <hns@goldelico.com> [200523 17:34]:
+> Otherwise it will corrupt the console log during debugging.
+
+Acked-by: Tony Lindgren <tony@atomide.com>
