@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A961DF999
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 19:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1B31DF9A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 19:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388133AbgEWRa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 13:30:29 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37450 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387501AbgEWRa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 13:30:28 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49Tr3M1FsRz9v0rq;
-        Sat, 23 May 2020 19:30:23 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 6AYhYT_9Gpsv; Sat, 23 May 2020 19:30:23 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49Tr3M0TyQz9v0rp;
-        Sat, 23 May 2020 19:30:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6DCA18B876;
-        Sat, 23 May 2020 19:30:25 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id F9Ne9NoMRqYB; Sat, 23 May 2020 19:30:25 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1121E8B86D;
-        Sat, 23 May 2020 19:30:25 +0200 (CEST)
-Subject: Re: Kernel bug in 5.7 for PPC32 on PowerBook G4 - bisected to commit
- 697ece7
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <2c361d8e-5e2a-cdd9-da8e-aa49a4f93cfd@lwfinger.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3e3e2343-d674-02e0-7b23-81636b472641@csgroup.eu>
-Date:   Sat, 23 May 2020 19:30:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2388158AbgEWRdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 13:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727123AbgEWRdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 13:33:12 -0400
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1942C05BD43;
+        Sat, 23 May 2020 10:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1590255190;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=GMAFg4Iya6Ifjur2kiGXLgqc7VRC8A3T4g1LmlEgMKI=;
+        b=CWnFiLjq6I6mUfSDh2Z0n0Pru/uDkdeVOpSZcyrLyTP41RyLXSU+kU62sA0v0hxa2K
+        ijGJacG4kCYerAu8M5B0aVwdALuP+2SVI6hsfsfIOSxRFuIk340qIo7gfN4Mm4P+HSGG
+        kAtpOkepp0t9QFJJB2nioAHMvjezkynKUyn+cR54fIZpuXEq8Mio1hMMIcZuBF5eAPYm
+        wRUMJlcN7FZggIXk1yPkz9GAUUCtgHWqxUcDBAKoQv2gTTk/1DP3ZqJY+T8GU5Esk9IA
+        4WDN8QJHO8VbyU33L9Ut75H2mp0IZDWk1nriQNX6UyHkrzB+ZHIfRJFmifbgkmzyf7D2
+        yG7Q==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o19MtK65S+//9m1YB9g="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.7.0 AUTH)
+        with ESMTPSA id D0a7c0w4NHWwFaa
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 23 May 2020 19:32:58 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Evgeniy Polyakov <zbr@ioremap.net>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Tony Lindgren <tony@atomide.com>
+Cc:     linux-kernel@vger.kernel.org, kernel@pyra-handheld.com,
+        letux-kernel@openphoenux.org, linux-omap@vger.kernel.org
+Subject: [PATCH 0/4] w1: omap: fix some regressions/bugs (some were introduced in v5.6 but some are older)
+Date:   Sat, 23 May 2020 19:32:53 +0200
+Message-Id: <cover.1590255176.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <2c361d8e-5e2a-cdd9-da8e-aa49a4f93cfd@lwfinger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Larry,
+This series fixes:
+* some dev_dbg are missing an explicit \n
+* wrong return value if battery is removed and no hdq response
+* problems with resetting interrupt flags too early leading to timeouts and wrong values
+* print error if interrupt flags get mixed up
 
-Le 23/05/2020 à 19:24, Larry Finger a écrit :
-> Hi Christophe,
-> 
-> Although kernel 5.7.0-rc2 appeared to boot cleanly, it failed on my G4 
-> when I tried to generate a new kernel. The following BUG message is logged:
-> 
 
-[...]
+H. Nikolaus Schaller (4):
+  w1: omap-hdq: cleanup to add missing newline for some dev_dbg
+  w1: omap-hdq: fix return value to be -1 if there is a timeout
+  w1: omap-hdq: fix interrupt handling which did show spurious timeouts
+  w1: omap-hdq: print dev_err if irq flags are not cleared
 
-> 
-> This problem was bisected to commit 697ece7 ("powerpc/32s: reorder Linux 
-> PTE bits to better match Hash PTE bits").
+ drivers/w1/masters/omap_hdq.c | 82 ++++++++++++++++++++++++-----------
+ 1 file changed, 56 insertions(+), 26 deletions(-)
 
-Being reversed in new -rc , see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/87sgfsf4hs.fsf@mpe.ellerman.id.au/
+-- 
+2.26.2
 
-> 
-> If I had done more rigorous tests earlier, I would have found the bug 
-> with more time to fix it before release of 5.7, but every other problem 
-> I have found happened at boot, not when the machine had to swap.
-> 
-> Thanks,
-> 
-> Larry
-
-Christophe
