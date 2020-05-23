@@ -2,217 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1991DF3FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 03:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7971DF409
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 03:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387475AbgEWBvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 May 2020 21:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        id S2387632AbgEWBvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 May 2020 21:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387461AbgEWBvM (ORCPT
+        with ESMTP id S2387615AbgEWBvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 May 2020 21:51:12 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC5CC08C5C4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t11so5832666pgg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:11 -0700 (PDT)
+        Fri, 22 May 2020 21:51:32 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7118EC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:32 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c24so9866335qtw.7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 May 2020 18:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Wd+Rnx5Y+ukW2PvArxihC3mXgVqc6YPFp4BCl1P9bmM=;
-        b=cuiALyzqy5LdaGkggEMKMw8ZCbPYkVsgaGoYkowUv2YSqau1sCJea1+tn9y+FD2jE0
-         hqs9giU8Mi3LAGZ7Yy4V2tu22HzwH3W81J8+fBe9bvb1GODyDanjB735pb1vgFfx19+c
-         vSLpeyOjo6AaiBKXXUUUCBj5yRXMrOhX4sjADgLdrD6qQfN2X3QnC6PsVLemka9yqxy2
-         LDVcNP7vH1c4WJIP5GG2T5p+I+bqIcwJAREQ8SkTyyjweJ4KWTvpGe1TR5xjJXMA3Ww4
-         5K73NgWM8zvy5ZCFXxxXE4JdmpfIlctPbay9J6SCA/1iaFUvCpYuDLZeLP+qDI2bVj7S
-         4CWg==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dl+KxsROb4cPj2iQZSsr1bvDaOCEwSXc+9sPYn2MtWc=;
+        b=EP3CkkiMjXBNO33JU9tRJ5LOwWZYredBb+mvwPWhXXCKQAWAlsiQQsQRPkFQPC0nRx
+         ZkbxSuoT6LV4EXeZ4pWL3Yhlfo8nx80UCABTT4KAbIxUlWTcaOC87qRpVUQnN1IlECSU
+         /f+YDMuL2deibxh4BYYOUk4wDVykqh2S0uUepuWSGiRzpC4QkrCSzFjtTeDpiepWSJeA
+         69mziKBIWAi7G48ZvWI8Rlrg0FIyT63r8u1qZR+xIGts5r6/I3G/fPw2tZOQnL8WoJLm
+         RhlPUh8PkYbfgy0f++xZ7SI/Er7oQu6UxF6+uaIp1H+2mLVxKbQZCpilU8MEltoMVjjs
+         8dlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Wd+Rnx5Y+ukW2PvArxihC3mXgVqc6YPFp4BCl1P9bmM=;
-        b=X/Gdnps8CkSIYf2mHOKjx3IZ/CAvVw0WfFR5eXw4+uLCPhQHJH7A3afs6AQL0PS1DU
-         sWvW0p2HJtA8GZr6alr+1llFc4Va/83hmwG4NhbhsP8dftLseQaLSHkkICgdiGryTpDP
-         S6RS/winN0LlEAsuQisr5VkrOnpAOFy8lFKCJIgKYNL3zD2aZfmeW8BRH6dl4QglyQc2
-         WH1XP66JYhhzYwIeOljXD0dsUl+NpgUCxckVp/MUvjsbUE7wjbYIkqFF1+BgKq3ikWiY
-         46jarOXSFmftNmfZqCHqat6gE5swxkjncdlBQ8JE4Xi13nN40SCuw0TLTss5YsPHdxCN
-         r/Fw==
-X-Gm-Message-State: AOAM531CFnAQG3GEktNYCAVSElKaXJv27n9gH8IhtiYAhhALvR4vjnBZ
-        zaH+LWQRBlqgCQLyMT/76B7AY3odJKA=
-X-Google-Smtp-Source: ABdhPJyd+1pCYzGsi2Ok0s0JF7kIgQclUmTGxfhARdgyfgJsfSNYz06K7py8/X/MIRJH7+fbjmCzaw==
-X-Received: by 2002:aa7:9096:: with SMTP id i22mr6644986pfa.250.1590198671034;
-        Fri, 22 May 2020 18:51:11 -0700 (PDT)
-Received: from x1.lan ([2605:e000:100e:8c61:e0db:da55:b0a4:601])
-        by smtp.gmail.com with ESMTPSA id a71sm8255477pje.0.2020.05.22.18.51.10
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=dl+KxsROb4cPj2iQZSsr1bvDaOCEwSXc+9sPYn2MtWc=;
+        b=SpQygXVL6fZip4VBvUL04023Y8J8n++sR/zxktQHp2YHNGkCQCJSZRLt4kYW+ssyZI
+         i+7e75a5aigU/ue0WGolu8+61fNm7JY/L44Z9id4R+1SihZrjSwfbQfpEc5p/h2Dj3Fi
+         7IvH+6iRqyc2ixt+zzvOUsLxfbYFAI1Gat/gvRzrALnFRNE2vsz/tLQoIridL7+hPl69
+         Z8UT1MxePR+o2Oeii1PryndG3BNF1EsTcr5fFkccP1yFX9CT5E3rSpLc/4g/ItS9G91x
+         Ozx1ClOsQuvsgkH7R4MQ4eHZbp9Yr/G0kjOvpch31fIZOb3L48ybDayjSfHvxY083P5H
+         cNAA==
+X-Gm-Message-State: AOAM533hK7hfOCATN276/7C3pJO68pZFxX63SCWVHVansrei4Fi37VJY
+        IB1FAuOL42tPpy0773mEJAc=
+X-Google-Smtp-Source: ABdhPJwzByhTsHMepg7YrKn+Hzag2OKQNukvBSM7yD5thAMQVpVOrtmWv5O46EbvlNY9CVs+/Upmng==
+X-Received: by 2002:ac8:699a:: with SMTP id o26mr18085807qtq.92.1590198691654;
+        Fri, 22 May 2020 18:51:31 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id o18sm9859239qtb.7.2020.05.22.18.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2020 18:51:10 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 11/11] io_uring: support true async buffered reads, if file provides it
-Date:   Fri, 22 May 2020 19:50:49 -0600
-Message-Id: <20200523015049.14808-12-axboe@kernel.dk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200523015049.14808-1-axboe@kernel.dk>
-References: <20200523015049.14808-1-axboe@kernel.dk>
+        Fri, 22 May 2020 18:51:30 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 22 May 2020 21:51:29 -0400
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     "Tobin C . Harding" <me@tobin.cc>, Tycho Andersen <tycho@tycho.ws>,
+        kernel-hardening@lists.openwall.com,
+        Kees Cook <keescook@chromium.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/mm/init: Stop printing pgt_buf addresses
+Message-ID: <20200523015129.GA717759@rani.riverdale.lan>
+References: <20200229231120.1147527-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200229231120.1147527-1-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the file is flagged with FMODE_BUF_RASYNC, then we don't have to punt
-the buffered read to an io-wq worker. Instead we can rely on page
-unlocking callbacks to support retry based async IO. This is a lot more
-efficient than doing async thread offload.
+On Sat, Feb 29, 2020 at 06:11:20PM -0500, Arvind Sankar wrote:
+> This currently leaks kernel physical addresses into userspace.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  arch/x86/mm/init.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> index e7bb483557c9..dc4711f09cdc 100644
+> --- a/arch/x86/mm/init.c
+> +++ b/arch/x86/mm/init.c
+> @@ -121,8 +121,6 @@ __ref void *alloc_low_pages(unsigned int num)
+>  	} else {
+>  		pfn = pgt_buf_end;
+>  		pgt_buf_end += num;
+> -		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
+> -			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
+>  	}
+>  
+>  	for (i = 0; i < num; i++) {
+> -- 
+> 2.24.1
+> 
 
-The retry is done similarly to how we handle poll based retry. From
-the unlock callback, we simply queue the retry to a task_work based
-handler.
+Ping.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/io_uring.c | 102 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index e95481c552ff..9eeae10db648 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -498,6 +498,8 @@ struct io_async_rw {
- 	struct iovec			*iov;
- 	ssize_t				nr_segs;
- 	ssize_t				size;
-+	struct wait_page_async		wait;
-+	struct callback_head		task_work;
- };
- 
- struct io_async_ctx {
-@@ -2568,6 +2570,102 @@ static int io_read_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe,
- 	return 0;
- }
- 
-+static void io_async_buf_cancel(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_ring_ctx *ctx;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wait.wait.private;
-+	ctx = req->ctx;
-+
-+	spin_lock_irq(&ctx->completion_lock);
-+	io_cqring_fill_event(req, -ECANCELED);
-+	io_commit_cqring(ctx);
-+	spin_unlock_irq(&ctx->completion_lock);
-+
-+	io_cqring_ev_posted(ctx);
-+	req_set_fail_links(req);
-+	io_double_put_req(req);
-+}
-+
-+static void io_async_buf_retry(struct callback_head *cb)
-+{
-+	struct io_async_rw *rw;
-+	struct io_ring_ctx *ctx;
-+	struct io_kiocb *req;
-+
-+	rw = container_of(cb, struct io_async_rw, task_work);
-+	req = rw->wait.wait.private;
-+	ctx = req->ctx;
-+
-+	__set_current_state(TASK_RUNNING);
-+	mutex_lock(&ctx->uring_lock);
-+	__io_queue_sqe(req, NULL);
-+	mutex_unlock(&ctx->uring_lock);
-+}
-+
-+static int io_async_buf_func(struct wait_queue_entry *wait, unsigned mode,
-+			     int sync, void *arg)
-+{
-+	struct wait_page_async *wp;
-+	struct io_kiocb *req = wait->private;
-+	struct io_async_rw *rw = &req->io->rw;
-+	struct wait_page_key *key = arg;
-+	struct task_struct *tsk;
-+	int ret;
-+
-+	wp = container_of(wait, struct wait_page_async, wait);
-+	if (wp->key.page != key->page)
-+		return 0;
-+	key->page_match = 1;
-+	if (wp->key.bit_nr != key->bit_nr)
-+		return 0;
-+	if (test_bit(PG_locked, &key->page->flags))
-+		return -1;
-+
-+	list_del_init(&wait->entry);
-+
-+	init_task_work(&rw->task_work, io_async_buf_retry);
-+	/* submit ref gets dropped, acquire a new one */
-+	refcount_inc(&req->refs);
-+	tsk = req->task;
-+	ret = task_work_add(tsk, &rw->task_work, true);
-+	if (unlikely(ret)) {
-+		/* queue just for cancelation */
-+		init_task_work(&rw->task_work, io_async_buf_cancel);
-+		tsk = io_wq_get_task(req->ctx->io_wq);
-+		task_work_add(tsk, &rw->task_work, true);
-+	}
-+	wake_up_process(tsk);
-+	return 1;
-+}
-+
-+static bool io_rw_should_retry(struct io_kiocb *req)
-+{
-+	struct kiocb *kiocb = &req->rw.kiocb;
-+	int ret;
-+
-+	/* already tried, or we're doing O_DIRECT */
-+	if (kiocb->ki_flags & (IOCB_DIRECT | IOCB_WAITQ))
-+		return false;
-+	/*
-+	 * just use poll if we can, and don't attempt if the fs doesn't
-+	 * support callback based unlocks
-+	 */
-+	if (file_can_poll(req->file) || !(req->file->f_mode & FMODE_BUF_RASYNC))
-+		return false;
-+
-+	ret = kiocb_wait_page_async_init(kiocb, &req->io->rw.wait,
-+						io_async_buf_func, req);
-+	if (ret)
-+		return false;
-+	get_task_struct(current);
-+	req->task = current;
-+	return true;
-+}
-+
- static int io_read(struct io_kiocb *req, bool force_nonblock)
- {
- 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
-@@ -2601,6 +2699,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 	if (!ret) {
- 		ssize_t ret2;
- 
-+retry:
- 		if (req->file->f_op->read_iter)
- 			ret2 = call_read_iter(req->file, kiocb, &iter);
- 		else
-@@ -2619,6 +2718,9 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 			if (!(req->flags & REQ_F_NOWAIT) &&
- 			    !file_can_poll(req->file))
- 				req->flags |= REQ_F_MUST_PUNT;
-+			if (io_rw_should_retry(req))
-+				goto retry;
-+			kiocb->ki_flags &= ~IOCB_WAITQ;
- 			return -EAGAIN;
- 		}
- 	}
--- 
-2.26.2
-
+https://lore.kernel.org/lkml/20200229231120.1147527-1-nivedita@alum.mit.edu/
