@@ -2,65 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2998A1DF491
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 06:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13BA1DF4CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 06:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgEWETa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 00:19:30 -0400
-Received: from mga01.intel.com ([192.55.52.88]:13131 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725294AbgEWET3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 00:19:29 -0400
-IronPort-SDR: Keyzep65a6EtPqBqxEVdyUlXeauHDlRuhIX2DaRAgMtDcvm52Q1Ont+y2n3qcLJfDDmUMoiq/g
- hFZ/KrCpmDfA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2020 21:19:29 -0700
-IronPort-SDR: rpiurWJ+oFUBqukQpqVgrxtkeoWbz5PLleNm/cebf4hgnIWdDiecDJMq06DaOoVkyYVDps+yT/
- YTe87xmjt94w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,424,1583222400"; 
-   d="scan'208";a="467494390"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga006.fm.intel.com with ESMTP; 22 May 2020 21:19:28 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 4D93F301A90; Fri, 22 May 2020 21:19:28 -0700 (PDT)
-Date:   Fri, 22 May 2020 21:19:28 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Don Porter <porter@cs.unc.edu>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: Re: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200523041928.GU499505@tassilo.jf.intel.com>
-References: <20200511045311.4785-1-sashal@kernel.org>
- <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
- <20200515164013.GF29995@sasha-vm>
- <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
- <20200518153407.GA499505@tassilo.jf.intel.com>
- <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
- <87v9ksvoaq.fsf@nanos.tec.linutronix.de>
- <20200519164853.GA19706@linux.intel.com>
- <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu>
+        id S2387573AbgEWE1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 00:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgEWE1x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 00:27:53 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B6CC061A0E;
+        Fri, 22 May 2020 21:27:52 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id q16so5222299plr.2;
+        Fri, 22 May 2020 21:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C2oaJ/TeH9h/Ses/5flX0t0+2GPRsirL3Ix59rT/3uo=;
+        b=UhzY7J9+KCLeMXEB0x5/JYLsXcF2rLqnBYZsezjDmmaWeU2eXzSWAy7ExbfFinlt0h
+         oD+/yx2FqLMUx6oYlhZZ1nAx2okSnaBGN0taiOxwFduM44/t5yL1HcdNYJNPojgy84gK
+         tODEWzdeuhJi30XoaBQXn2nXsAVh7GLIA8aeEq98wBmbi31odtZj15cCH2VT3rnZvKcd
+         gJVl9dVYI+EN9c7Svpj145az+WB83+msRP9vP2ypIcYVcmOdoTjq80jUu0mkQlx4iDYD
+         JlssprdK89mPNrlVxz81XdkpvnHi+MqoPqYnP7WRkAPLA+mJg6SH3K8BQtlvRjI4RwuW
+         rvlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C2oaJ/TeH9h/Ses/5flX0t0+2GPRsirL3Ix59rT/3uo=;
+        b=pBLJcHycROc4kxIOtgBnyhBLx8ZAS+mupeaHQ7KGeiNQUgWJvA4gNTCiRcolX4/mRH
+         YuLHzKRR/a13F5XmUrz0dfYJ49a/Lbet/ov+RyfkREDeVVXiC7k+5yKngX17TfI1Qy9Q
+         m7aFo9P45FBkGO7YoputSdnTwsHjeHJ7+8ulXE7R6CUMot6a8iqzeR3DnXFgge0nIolv
+         7dGdpkKc9HxBoOyk0fBHp4SPF92uFyOj6alibcTXTNnUUiOHSy22QIr/2YKcG/iOWmEB
+         pRsX3srTGFbdjBnTbaQdRiAdB68UhxPP2mNMpFCUsvutAQ8iqBhcAXVdlO/oS7CXGAt7
+         8WVw==
+X-Gm-Message-State: AOAM530MZ2kixJwtGfT2OeKYTg3yibwi83HEUC7d00IJiUzNab08IQTA
+        nGzqSX8jLCFtygLZ6fXEBWsizXG7Q0eG1A==
+X-Google-Smtp-Source: ABdhPJzGiSZlqt61UixW5UamCs2yESeKusCKau2NIDepW0lVjbXdkbJjigi7aqwO/6tCOiqfG9A5+g==
+X-Received: by 2002:a17:902:848a:: with SMTP id c10mr17901055plo.124.1590208071913;
+        Fri, 22 May 2020 21:27:51 -0700 (PDT)
+Received: from gmail.com ([2601:600:817f:a132:df3e:521d:99d5:710d])
+        by smtp.gmail.com with ESMTPSA id t21sm7300922pgu.39.2020.05.22.21.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 May 2020 21:27:51 -0700 (PDT)
+Date:   Fri, 22 May 2020 21:27:49 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Adrian Reber <areber@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Dirk Petersen <dipeit@gmail.com>,
+        Christine Flood <chf@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Radostin Stoyanov <rstoyanov1@gmail.com>,
+        Cyrill Gorcunov <gorcunov@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH] capabilities: Introduce CAP_RESTORE
+Message-ID: <20200523042749.GA19115@gmail.com>
+References: <20200522055350.806609-1-areber@redhat.com>
+ <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
-In-Reply-To: <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu>
+In-Reply-To: <dc86dffb-c7f8-15bb-db4e-be135da650cc@schaufler-ca.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Setting the fs register in userspace is an essential feature for running
-> legacy code in SGX.  We have been following LKML discussions on this
-> instruction for years, and hoping this feature would be supported by Linux,
+On Fri, May 22, 2020 at 09:40:37AM -0700, Casey Schaufler wrote:
+> On 5/21/2020 10:53 PM, Adrian Reber wrote:
+> > There are probably a few more things guarded by CAP_SYS_ADMIN required
+> > to run checkpoint/restore as non-root,
+> 
+> If you need CAP_SYS_ADMIN anyway you're not gaining anything by
+> separating out CAP_RESTORE.
+> 
+> >  but by applying this patch I can
+> > already checkpoint and restore processes as non-root. As there are
+> > already multiple workarounds I would prefer to do it correctly in the
+> > kernel to avoid that CRIU users are starting to invent more workarounds.
+> 
+> You've presented a couple of really inappropriate implementations
+> that would qualify as workarounds. But the other two are completely
+> appropriate within the system security policy. They don't "get around"
+> the problem, they use existing mechanisms as they are intended.
+> 
 
-If you need a feature you should comment on it. One of the reasons
-it took so long is that the users didn't speak up.
+With CAP_CHECKPOINT_RESTORE, we will need to use the same mechanisms.
 
+The problem is that CAP_SYS_ADMIN is too wide. If a process has
+CAP_SYS_ADMIN, it can do a lot of things and  the operation of forking a
+process with a specified pid isn't the most dangerous one in this case.
+Offten security policies don't allow to grant CAP_SYS_ADMIN to any
+third-party tools even in non-root user namespaces.
 
--Andi
