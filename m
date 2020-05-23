@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E5B1DF512
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 08:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51DB1DF52D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 08:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387617AbgEWGFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 02:05:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387446AbgEWGFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 02:05:53 -0400
+        id S2387644AbgEWGQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 02:16:31 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:57127 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387446AbgEWGQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 May 2020 02:16:31 -0400
+X-Greylist: delayed 365 seconds by postgrey-1.27 at vger.kernel.org; Sat, 23 May 2020 02:16:31 EDT
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id B27D18CB;
+        Sat, 23 May 2020 02:10:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Sat, 23 May 2020 02:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        from:date:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=LrrYTVFkm9x5WAtV96l5QFTVfXK
+        7jcQpg5sr70HsgwE=; b=kAPKJBbB3e4aBtF2OcbBUICIud8yPLH22RFoStnp4e8
+        yDZXaIlUHk0hzMRsWVU1tHFiy4j0L0oLLRjDEWOTmhX/S/kyk3zo4JPIGMqvBvu/
+        pVHsRR8shbwejVVYYURo0N2WYAO0gpTmU1ZNWJ2HUmC1oVxu4P8anVPVK5dPa3D3
+        VCtDB+/zUbFUwYk4BMaqAjLO9JlrzQtA/2FPzETfMh6ca94xQ5B/gQDe0te1qzXw
+        /DdP9SgJLR7qZbBpupaF2rfmz2uUpswbVzE6RAxliD1hVZEC6Cxme/m7h+bltlXo
+        sgi1B50yNPN4u/lqaF3ofGVVEz6iGA+UFhvCDk9u8bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LrrYTV
+        Fkm9x5WAtV96l5QFTVfXK7jcQpg5sr70HsgwE=; b=o3LniShnRlpl+p+BDDClSJ
+        gFgFe65lkZbszodtwx+k48xiTCURwK42S+Fty6srSnJabd4skcMtn27IN77BBB4t
+        0m6wvn6WSvufHru66KSihYcVKdZmLEv188Rj/+jHrpJRk7vef08ZiRmu6xJzZeUb
+        brmvvzvNucIVMlzSlDVdJOwBLrzodmiQwcIIvPxG2miwdgmgYaS1xK3qbGXy0b/B
+        0gwn3JDRJH9RlFMvMAS5WoQy9X9IX7E6Zbaj4Oc+/Nc8SxPoasIiShar3D91kh21
+        l8/i2gHtlYm6pgY2gXS1A6QnKUZM07e1CXyuBXaMoKSP1JNtmNR25lY6c3PjWSTg
+        ==
+X-ME-Sender: <xms:T77IXlv6y-F4jWSN-g0qsuwh-D2FgNmSuQkyix1z2-REyP1dBZ1AQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddugedguddttdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhfffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepghhrvghg
+    sehkrhhorghhrdgtohhmnecuggftrfgrthhtvghrnheptdehveeuieekuddvjefhlefgke
+    dugeeffeffjeetieefgfduveehfedvheeludfhnecukfhppeekfedrkeeirdekledruddt
+    jeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrh
+    gvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:T77IXud2oWQcXqtjJpYSLzcm7xfysXz80uywdWroCd0IuG6WeZsNvQ>
+    <xmx:T77IXoyC589Z7sLJ5OoU5m3ZDXiWXru70tkQEr2CPDnobSrWxGnt4Q>
+    <xmx:T77IXsPJz4o-qG0QNang-l9w2SYk8cE6fRSpM7EiEVXr9iU2A99IVg>
+    <xmx:UL7IXsVykN8rG8y8fgoGUWZ6glDMhYsF3Sub3bpYfEABCX_YO4a-ML45vUs>
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CACD42072C;
-        Sat, 23 May 2020 06:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590213952;
-        bh=C1Z/ykijQkXEDxKuat87W9+yNZvMZvP4bUwTmC+spjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XjXxc9dw7SZ93/g6KObshDL9/6CkEB6mKSTSZ0Ay1pyfblZRRPVDdr5XCf3rvjT4J
-         gv58zQ1jkBmwl7eR3xCk35Sw0+etCsWgN0yMuhc3uZ3/Ipa0tfg+XZB7B15nB2PsQQ
-         8pwI3oHK1JDr5D4U8WMzN86Uiy8HFHwtVoTws6jQ=
-Date:   Sat, 23 May 2020 08:05:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        by mail.messagingengine.com (Postfix) with ESMTPA id CFB1530664D9;
+        Sat, 23 May 2020 02:10:22 -0400 (EDT)
+From:   greg@kroah.com
+Date:   Sat, 23 May 2020 08:10:18 +0200
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     stable <stable@vger.kernel.org>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
         Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH] firmware_loader: change enum fw_opt to u32
-Message-ID: <20200523060548.GA3124611@kroah.com>
-References: <20200522214658.12722-1-scott.branden@broadcom.com>
- <20200522224508.GE11244@42.do-not-panic.com>
- <d87aabd0-1195-64ae-d871-b0771be832a8@broadcom.com>
- <20200522230025.GG11244@42.do-not-panic.com>
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        kernel-hardening@lists.openwall.com,
+        linux1394-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        "Lev R . Oshvang ." <levonshe@gmail.com>
+Subject: Re: [PATCH v2] firewire: Remove function callback casts
+Message-ID: <20200523061018.GA3131938@kroah.com>
+References: <20200519173425.4724-1-oscar.carter@gmx.com>
+ <20200520061624.GA25690@workstation>
+ <20200522174308.GB3059@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200522230025.GG11244@42.do-not-panic.com>
+In-Reply-To: <20200522174308.GB3059@ubuntu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 11:00:25PM +0000, Luis Chamberlain wrote:
-> On Fri, May 22, 2020 at 03:49:05PM -0700, Scott Branden wrote:
-> > Hi Luis,
-> > 
-> > On 2020-05-22 3:45 p.m., Luis Chamberlain wrote:
-> > > On Fri, May 22, 2020 at 02:46:58PM -0700, Scott Branden wrote:
-> > > >   /**
-> > > > - * enum fw_opt - options to control firmware loading behaviour
-> > > > + * fw_opt - options to control firmware loading behaviour
-> > > >    *
-> > > >    * @FW_OPT_UEVENT: Enables the fallback mechanism to send a kobject uevent
-> > > >    *	when the firmware is not found. Userspace is in charge to load the
-> > > > @@ -33,15 +33,13 @@
-> > > >    *	the platform's main firmware. If both this fallback and the sysfs
-> > > >    *      fallback are enabled, then this fallback will be tried first.
-> > > >    */
-> > > > -enum fw_opt {
-> > > > -	FW_OPT_UEVENT			= BIT(0),
-> > > > -	FW_OPT_NOWAIT			= BIT(1),
-> > > > -	FW_OPT_USERHELPER		= BIT(2),
-> > > > -	FW_OPT_NO_WARN			= BIT(3),
-> > > > -	FW_OPT_NOCACHE			= BIT(4),
-> > > > -	FW_OPT_NOFALLBACK_SYSFS		= BIT(5),
-> > > > -	FW_OPT_FALLBACK_PLATFORM	= BIT(6),
-> > > > -};
-> > > > +#define FW_OPT_UEVENT			BIT(0)
-> > > > +#define FW_OPT_NOWAIT			BIT(1)
-> > > > +#define FW_OPT_USERHELPER		BIT(2)
-> > > > +#define FW_OPT_NO_WARN			BIT(3)
-> > > > +#define FW_OPT_NOCACHE			BIT(4)
-> > > > +#define FW_OPT_NOFALLBACK_SYSFS		BIT(5)
-> > > > +#define FW_OPT_FALLBACK_PLATFORM	BIT(6)
-> > > Everything looked good up to here. The enum defines each flag.
-> > > We just want to use an enum for *one* flag represetnation, not
-> > > a bundle.
-> >
-> > I do not know exactly what you are looking for then.  The FW_OPT_*
-> > values are OR'd together in the code.  You still want the fw_opt enum
-> > above left in place entirely and then the values used in OR'd
-> > together?
+On Fri, May 22, 2020 at 07:43:08PM +0200, Oscar Carter wrote:
+> Hi,
 > 
-> Yes, exactly. If they are combined then we just use a u32 to represent
-> these are then flags combined. An enum represents just *one* flag, not
-> a set which are OR'd together. Let me know if this is still not clear.
+> On Wed, May 20, 2020 at 03:16:24PM +0900, Takashi Sakamoto wrote:
+> > Hi,
+> >
+> > I'm an author of ALSA firewire stack and thanks for the patch. I agree with
+> > your intention to remove the cast of function callback toward CFI build.
+> >
+> > Practically, the isochronous context with FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL
+> > is never used by in-kernel drivers. Here, I propose to leave current
+> > kernel API (fw_iso_context_create() with fw_iso_callback_t) as is.
 
-If this is the case, why have an enum at all?  What difference is it
-from a #define like was done here?
+If it's not used by anyone, why is it still there?  Can't we just delete
+it?
 
 thanks,
 
