@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D471DFA30
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 20:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878F41DFA33
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 May 2020 20:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgEWSOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 14:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S2387851AbgEWSVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 14:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726865AbgEWSOr (ORCPT
+        with ESMTP id S1726865AbgEWSVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 14:14:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8D6C061A0E
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 11:14:47 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b6so16519246ljj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 11:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JtI0UP3HCAd6yl271WG5xHASAjmU3x5qBZaN7aSNblU=;
-        b=Me5tDQ58b02SUxQ1K6RgO7JpWJ8qtS6N6HSpnFC+vXHQ1oPf5yEhmaqOEmDtbKinTk
-         NUs3aeN2+vN7mBGjKTCj1D2l1/FQNMeipnpzocz0NsaHPlzeLRzEIiTetHcRyh5mxfiW
-         AUMMQaJRA3XvuaKJnH9q0v/29ctP1DZH941TQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JtI0UP3HCAd6yl271WG5xHASAjmU3x5qBZaN7aSNblU=;
-        b=OrIjg7fCCX4V9L7/QFWmVtzx69QmElXcBizDs+PVcJoBgAaJIx0ssUVUPXq6O8L/D7
-         K6ACB1U3JjDQ9l13oQqV/uFFb8XN/iG2wdxR5XY8gWV3Z539gEN2PqjAZS8elB8ntvg8
-         dujTBYJetIlLrj4Y6klXrDDXhTYs9uPZO5NTSka/DJWCVjuLJUyKWd05sq2L6OI4Jxkv
-         1V6OHdhkysWzpO6yfX2CXd6sdq+ZAbN81Lto/0iRQqFWqaM4vteTJgraJ3hNNS1C3ZhG
-         AaNVvG8kBFeSFXlgkz10jkV2tXN5q/wf/IRCnzUedJF11j/uJbVJZFqRflIVyVQhi2Oo
-         I1sg==
-X-Gm-Message-State: AOAM530LP2RVQwj3ff/Lewls7rL7Bqbx7w82UnlerTDa/SoToIRnxtFu
-        KYz3IiwZ7Fi/gOKFyF0Mu2wug/RDXWs=
-X-Google-Smtp-Source: ABdhPJw3+XBcg12caD+4L8b6WEV6ipYH3AO9Ao8483nKZVxKMrjT503A3vzefy1NrJCkfn3Uyte/fQ==
-X-Received: by 2002:a2e:9a56:: with SMTP id k22mr4227257ljj.308.1590257685588;
-        Sat, 23 May 2020 11:14:45 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id a17sm1048656lji.50.2020.05.23.11.14.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 May 2020 11:14:44 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id c12so8349203lfc.10
-        for <linux-kernel@vger.kernel.org>; Sat, 23 May 2020 11:14:44 -0700 (PDT)
-X-Received: by 2002:a19:4048:: with SMTP id n69mr5329431lfa.31.1590257684192;
- Sat, 23 May 2020 11:14:44 -0700 (PDT)
+        Sat, 23 May 2020 14:21:18 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF49C061A0E;
+        Sat, 23 May 2020 11:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=nSUTrS+Js2HSvmnL14DjqtpgJSSsEW5R57ypchErLwg=; b=gA/uZNdkmC2JRZFCEyrK9jpf9
+        5T7RYZPGGJCvZlrYXeWaE2rkNFs7Rxm5GK6RVkLbzaLW8mydeE1CEZbuADlUuMpM7dJ8ewap+itmr
+        1XF2Q5oHZoQREGSDw6MLo8gKZQjkWaUbhFZtCnJK9jMmCQgBuMahSM6pSGWu8cujz+aRvb+08nYyP
+        vvzq5fRnSbd38h6eaVFqrzs3trfVBnAnx0IGdTn2taGv6Hifd7yHYzAVIGN+XhsHufCy+1b4kHsdp
+        Wg5YI5RZbEAzyqTEB5THomCJL3gM1d0/CNziOwZXgeS644GH+uzvywhP5zLzBP7L9FKRLwlol8Rul
+        1q/3T5HNA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36018)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jcYlY-0000Sm-T0; Sat, 23 May 2020 19:21:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jcYlS-0002Sz-SK; Sat, 23 May 2020 19:20:54 +0100
+Date:   Sat, 23 May 2020 19:20:54 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, andrew@lunn.ch,
+        f.fainelli@gmail.com, hkallweit1@gmail.com,
+        madalin.bucur@oss.nxp.com, calvin.johnson@oss.nxp.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 01/11] net: phy: Don't report success if devices weren't
+ found
+Message-ID: <20200523182054.GW1551@shell.armlinux.org.uk>
+References: <20200522213059.1535892-1-jeremy.linton@arm.com>
+ <20200522213059.1535892-2-jeremy.linton@arm.com>
 MIME-Version: 1.0
-References: <20200523131759.GA55886@kroah.com> <20200523152922.GA224858@kroah.com>
-In-Reply-To: <20200523152922.GA224858@kroah.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 23 May 2020 11:14:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wih_B_8a48Au=6B+gwFcYnM7qF02dGX3R0QN_2bzVcjVA@mail.gmail.com>
-Message-ID: <CAHk-=wih_B_8a48Au=6B+gwFcYnM7qF02dGX3R0QN_2bzVcjVA@mail.gmail.com>
-Subject: Re: [GIT PULL] Driver core fixes for 5.7-rc7 - take 2
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522213059.1535892-2-jeremy.linton@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 8:29 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> The kobject patch that was originally in here has now been reverted, as
-> Guenter reported boot problems with it on some of his systems.
+On Fri, May 22, 2020 at 04:30:49PM -0500, Jeremy Linton wrote:
+> C45 devices are to return 0 for registers they haven't
+> implemented. This means in theory we can terminate the
+> device search loop without finding any MMDs. In that
+> case we want to immediately return indicating that
+> nothing was found rather than continuing to probe
+> and falling into the success state at the bottom.
 
-Hmm. That original patch looks obviously buggy: in kobject_cleanup()
-it would end up doing "kobject_put(parent)" regardless of whether it
-had actually done __kobject_del() or not.
+This is a little confusing when you read this comment:
 
-That _could_ have been intentional, but considering the commit
-message, it clearly wasn't in this case.  It might be worth re-trying
-to the commit, just with that fixed.
+                        /*  If mostly Fs, there is no device there,
+                         *  then let's continue to probe more, as some
+                         *  10G PHYs have zero Devices In package,
+                         *  e.g. Cortina CS4315/CS4340 PHY.
+                         */
 
-Btw, when you end up reverting a patch that was already the top patch,
-you might as well just remove it entirely from that tree instead (ie
-"git reset --hard HEAD^" instead of "git revert HEAD").
+Since it appears to be talking about the case of a PHY where *devs will
+be zero.  However, tracking down the original submission, it seems this
+is not the case at all, and the comment is grossly misleading.
 
-Unless somebody else uses your branches and you are afraid that the
-non-reverted commit escaped out in the wild that way?
+It seems these PHYs only report a valid data in the Devices In Package
+registers for devad=0 - it has nothing to do with a zero Devices In
+Package.
 
-            Linus
+Can I suggest that this comment is fixed while we're changing the code
+to explicitly reject this "zero Devices In package" so that it's not
+confusing?
+
+Thanks.
+
+> 
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> ---
+>  drivers/net/phy/phy_device.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index ac2784192472..245899b58a7d 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -742,6 +742,12 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+>  		}
+>  	}
+>  
+> +	/* no reported devices */
+> +	if (*devs == 0) {
+> +		*phy_id = 0xffffffff;
+> +		return 0;
+> +	}
+> +
+>  	/* Now probe Device Identifiers for each device present. */
+>  	for (i = 1; i < num_ids; i++) {
+>  		if (!(c45_ids->devices_in_package & (1 << i)))
+> -- 
+> 2.26.2
+> 
+> 
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
