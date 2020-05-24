@@ -2,54 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9941DFE88
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 13:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90381DFE90
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 13:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgEXLR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 07:17:59 -0400
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:35582 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725873AbgEXLR7 (ORCPT
+        id S1728420AbgEXLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 07:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgEXLVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 07:17:59 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 2BCA318006CF4;
-        Sun, 24 May 2020 11:17:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3868:3870:3873:3874:4321:5007:6119:7903:8603:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12740:12760:12895:13069:13311:13357:13439:13869:14659:21080:21627:30005:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: eyes43_3a0b98a26d37
-X-Filterd-Recvd-Size: 1344
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 24 May 2020 11:17:56 +0000 (UTC)
-Message-ID: <9ac5f51837a2e4e86fc4009ebc4d56ecfe733598.camel@perches.com>
-Subject: Re: [PATCH v2 2/2] staging: rtl8188eu: make some arrays static const
-From:   Joe Perches <joe@perches.com>
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 24 May 2020 04:17:55 -0700
-In-Reply-To: <20200524101514.20557-2-straube.linux@gmail.com>
-References: <20200524101514.20557-1-straube.linux@gmail.com>
-         <20200524101514.20557-2-straube.linux@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Sun, 24 May 2020 07:21:20 -0400
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C67C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 04:21:20 -0700 (PDT)
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 48FA32E14F5;
+        Sun, 24 May 2020 14:21:16 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id cPMFzIToUY-LEYGKdUM;
+        Sun, 24 May 2020 14:21:16 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1590319276; bh=b0o68+aOnARHj9/nq/+LVPyiRVbyiqWIANFK3o0ma0M=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=HYCLbgglTXT05CLaIJVZjXdf/rzckKrZ+/2ZP/jyUDm2xknikSiBhtHai7/ijVxKm
+         NTQfnbR+O8eKOM1N6iogGjrHt/6fROslkz5crWqGKRkBXiUC4oJw8KlUXY97hUzB+G
+         cKPxwa7Rszg6hvmpAr3/MHZX+wDZEwwUs49QbdsY=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:606::1:1])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 3faDg9DMvq-LEWCw22w;
+        Sun, 24 May 2020 14:21:14 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] mm/compaction: avoid VM_BUG_ON(PageSlab()) in
+ page_mapcount()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <158937872515.474360.5066096871639561424.stgit@buzz>
+ <alpine.LSU.2.11.2005231650070.1171@eggly.anvils>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <63fe94c7-78d1-ae03-00da-ba0e6d207a70@yandex-team.ru>
+Date:   Sun, 24 May 2020 14:21:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <alpine.LSU.2.11.2005231650070.1171@eggly.anvils>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-05-24 at 12:15 +0200, Michael Straube wrote:
-> Make some arrays in phy_iq_calibrate() static const and adjust
-> the functions that take these arrays as parameters accordingly.
-> Reduces object file size by 84 bytes (GCC 9.3.1 x86_64).
+On 24/05/2020 04.01, Hugh Dickins wrote:
+> On Wed, 13 May 2020, Konstantin Khlebnikov wrote:
+> 
+>> Function isolate_migratepages_block() runs some checks out of lru_lock
+>> when choose pages for migration. After checking PageLRU() it checks extra
+>> page references by comparing page_count() and page_mapcount(). Between
+>> these two checks page could be removed from lru, freed and taken by slab.
+>>
+>> As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+>> Race window is tiny. For certain workload this happens around once a year.
+> 
+> Around once a year, that was my guess too. I have no record of us ever
+> hitting this, but yes it could happen when you have CONFIG_DEBUG_VM=y
+> (which I too like to run with, but would not recommend for users).
 
-You could also do drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-and reduce data by a fair amount there too.
+Yep, but for large cluster and pinpointed workload this happens surprisingly
+frequently =) I've believed into this race only after seeing statistics for
+count of compactions and how it correlates with incidents.
 
-Just change the prototype for _rtl92d_phy_calc_curvindex there.
+Probably the key component is a slab allocation from network irq/bh context
+which interrupts compaction exactly at this spot.
 
+> 
+>>
+>>
+>>   page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+>>   flags: 0x500000000008100(slab|head)
+>>   raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+>>   raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+>>   page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+>>   ------------[ cut here ]------------
+>>   kernel BUG at ./include/linux/mm.h:628!
+>>   invalid opcode: 0000 [#1] SMP NOPTI
+>>   CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+>>   Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+>>   RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+>>
+>>
+>> To fix just opencode page_mapcount() in racy check for 0-order case and
+>> recheck carefully under lru_lock when page cannot escape from lru.
+>>
+>> Also add checking extra references for file pages and swap cache.
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+>> Fixes: 119d6d59dcc0 ("mm, compaction: avoid isolating pinned pages")
+> 
+> Not really, that commit was correct at the time it went in.
+> 
+>> Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+> 
+> Exactly, that commit was well-intentioned, but did not allow for this
+> (admittedly very exceptional) usage.  How many developers actually
+> make the mistake of applying page_mapcount() to their slab pages?
+> None, I expect.  That VM_BUG_ON_PAGE() is there for documentation,
+> and could just be replaced by a comment - and Linus would be happy
+> with that.
+
+Ok, I'll redo the fix in this way.
+
+> 
+>> ---
+>>   mm/compaction.c |   17 +++++++++++++----
+>>   1 file changed, 13 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index 46f0fcc93081..91bb87fd9420 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -935,12 +935,16 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>>   		}
+>>   
+>>   		/*
+>> -		 * Migration will fail if an anonymous page is pinned in memory,
+>> +		 * Migration will fail if an page is pinned in memory,
+>>   		 * so avoid taking lru_lock and isolating it unnecessarily in an
+>> -		 * admittedly racy check.
+>> +		 * admittedly racy check simplest case for 0-order pages.
+>> +		 *
+>> +		 * Open code page_mapcount() to avoid VM_BUG_ON(PageSlab(page)).
+> 
+> But open coding page_mapcount() is not all that you did.  You have
+> (understandably) chosen to avoid calling page_mapping(page), but...
+> 
+>> +		 * Page could have extra reference from mapping or swap cache.
+>>   		 */
+>> -		if (!page_mapping(page) &&
+>> -		    page_count(page) > page_mapcount(page))
+>> +		if (!PageCompound(page) &&
+>> +		    page_count(page) > atomic_read(&page->_mapcount) + 1 +
+>> +				(!PageAnon(page) || PageSwapCache(page)))
+>>   			goto isolate_fail;
+> 
+> Isn't that test going to send all the file cache pages with buffer heads
+> in page->private, off to isolate_fail when they're actually great
+> candidates for migration?
+
+Yes. What a shame. Adding page_has_private() could fix that?
+
+Kind of
+
+page_count(page) > page_mapcount(page) +
+(PageAnon(page) ? PageSwapCache(page) : (1 + page_has_private(page)))
+
+or probably something like this:
+
+page_count(page) > page_mapcount(page) +
+(PageAnon(page) ? PageSwapCache(page) : GUP_PIN_COUNTING_BIAS)
+
+I.e. skip only file pages pinned by dma or something slower.
+I see some movements in this direction in recent changes.
+
+of course that's independent matter.
+
+> 
+> Given that the actual bug spotted was with the VM_BUG_ON_PAGE(PageSlab),
+> and nobody has reported any crash from the use of page_mapping() there
+> (and we only need the test to be right most of the time: all of this
+> knowingly racy, as you explain in other mail): I'd go for just replacing
+> the VM_BUG_ON_PAGE in page_mapcount() by a comment about this case.
+> 
+> But if you think developers are really in danger of coding page_mapcount()
+> on their slab pages, then you could add a _page_mapcount() to linux/mm.h,
+> which omits the VM_BUG_ON_PAGE, for use here only.
+> 
+> Then we wouldn't have to think so hard about the counting above!
+> 
+>>   
+>>   		/*
+>> @@ -975,6 +979,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>>   				low_pfn += compound_nr(page) - 1;
+>>   				goto isolate_fail;
+>>   			}
+>> +
+>> +			/* Recheck page extra references under lock */
+>> +			if (page_count(page) > page_mapcount(page) +
+>> +				    (!PageAnon(page) || PageSwapCache(page)))
+>> +				goto isolate_fail;
+> 
+> Well, that lru_lock (and the intervening PageLRU check after getting it)
+> may restrict PageAnon and PageSwapCache transitions to some extent, but
+> it certainly has no effect on page_count and page_mapcount: so I think
+> such an additional check here is rather superfluous, and we should just
+> rely on the final checks in migrate_page_move_mapping(), as before.
+> 
+>>   		}
+>>   
+>>   		lruvec = mem_cgroup_page_lruvec(page, pgdat);
