@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF4F1E017C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98701E0185
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387942AbgEXSiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 14:38:04 -0400
-Received: from mxs.msl.ua ([185.128.235.3]:40816 "EHLO mxs.msl.ua"
+        id S2388021AbgEXSlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 14:41:35 -0400
+Received: from mxs.msl.ua ([185.128.235.3]:54432 "EHLO mxs.msl.ua"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387656AbgEXSiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 14:38:04 -0400
+        id S2387656AbgEXSlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 14:41:35 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mxs.msl.ua (Postfix) with ESMTP id 17FF2756361;
-        Sun, 24 May 2020 21:32:52 +0300 (EEST)
+        by mxs.msl.ua (Postfix) with ESMTP id 0906F767FD5;
+        Sun, 24 May 2020 21:37:51 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
         message-id:reply-to:date:from:to:subject:content-description
         :content-transfer-encoding:mime-version:content-type; s=dkim; t=
-        1590345172; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=j
-        MmFW7tJVDypTc2N5+K0RMWHMJhu7BJG96cJRH2dJRiIl3nfD7TCmtby2lQf5uRbK
-        5K5FkMjqKgnjvYQjeSwvV0Hp0/0EE6q38AH2cYH7jK+2ZTAdN6E2V8mN4H58aDdO
-        Po57rOpM6ZEexT56Fsb50FiZ3+vuKndS/VlDtIVqe8=
+        1590345470; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=L
+        MwHvifpzTqjs1NxwhjGHfzvHiHnF55q0EkKeb+fYjJHg368ju5m2qd8AfS8BIttj
+        D4Zga6TNjqeU0HfEmGIoDIRWckvz4tfzCK7gob32Rdh2N2bcSv2vKgPVkmFFYS7E
+        z5aIecyy94Mem4t9mmFj6d2bygHsrlhh1+6mFfZq5A=
 X-Virus-Scanned: amavisd-new at msl.ua
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
@@ -31,11 +31,11 @@ Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GE
  =?utf-8?q?rftigen!!!?=
 To:     Recipients <o.sapelkin@msl.ua>
 From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
-Date:   Sun, 24 May 2020 20:32:37 +0200
+Date:   Sun, 24 May 2020 20:37:21 +0200
 Reply-To: s.manuelfranco95@gmail.com
 X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
 X-Antivirus-Status: Clean
-Message-Id: <20200524183244.4D8616E2B74E0@zimbra.msl.intranet>
+Message-Id: <20200524183733.7728C6E2B74D3@zimbra.msl.intranet>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
