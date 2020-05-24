@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EAB1E027D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DAF1E02A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388449AbgEXT1p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 15:27:45 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:53403 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387982AbgEXT1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 15:27:45 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 1F098240003;
-        Sun, 24 May 2020 19:27:41 +0000 (UTC)
-Date:   Sun, 24 May 2020 21:27:40 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
-        computersforpeace@gmail.com, kdasu.kdev@gmail.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 4/5] dt: bindings: brcmnand: add v2.1 and v2.2
- support
-Message-ID: <20200524212740.08c2810f@xps13>
-In-Reply-To: <20200524192550.4559-1-miquel.raynal@bootlin.com>
-References: <20200522121524.4161539-5-noltari@gmail.com>
-        <20200524192550.4559-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2388175AbgEXT4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 15:56:07 -0400
+Received: from mxs.msl.ua ([185.128.235.3]:35214 "EHLO mxs.msl.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388032AbgEXT4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 15:56:07 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mxs.msl.ua (Postfix) with ESMTP id 7FC103477C0;
+        Sun, 24 May 2020 22:43:25 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
+        message-id:reply-to:date:from:to:subject:content-description
+        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
+        1590349405; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=o
+        JleyJyIK5r/yJiyFi5ui8CCjbI7flhdHJYqNCUslXgucGC0tRikCE7Lwlfkrgeps
+        EJ0aEI8vHDtwzI9IqAEeSk8hL0189SL1CVHe6F20VQnWhfo/f1/iKU6jvFSl3KnQ
+        c89O/acgv7pwGlD3xKtC8N77l0IgMwNXnD0XFJyaXA=
+X-Virus-Scanned: amavisd-new at msl.ua
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
+ =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
+ =?utf-8?q?rftigen!!!?=
+To:     Recipients <o.sapelkin@msl.ua>
+From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
+Date:   Sun, 24 May 2020 21:43:00 +0200
+Reply-To: s.manuelfranco95@gmail.com
+X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20200524194313.09B236E2B74E2@zimbra.msl.intranet>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
+ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
+=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
+en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
+ ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
+eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
+below for an interview about my lottery win: https://www.youtube.com/watch?=
+v=3DMMC3DHoGhP8.
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun, 24 May 2020
-21:25:50 +0200:
+Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
 
-> On Fri, 2020-05-22 at 12:15:23 UTC, =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= wrote:
-> > Added brcm,brcmnand-v2.1 and brcm,brcmnand-v2.2 as possible compatible
-> > strings to support brcmnand controllers v2.1 and v2.2.
-> > 
-> > Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> > Acked-by: Florian Fainelli <f.fainelli@gmail.com>  
-> 
-> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Seien Sie sicher und geborgen,
+MANUEL FRANCO
++ 1 754-231-3468 (nur Whatsapp)
 
-FYI I updated the commit log:
-s/dt: bindings:/dt-bindings: mtd:/
-s/Added/Add/
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
-Thanks,
-Miquèl
