@@ -2,76 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159F91E0189
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175151E018B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388016AbgEXSti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 14:49:38 -0400
-Received: from smtprelay0074.hostedemail.com ([216.40.44.74]:40220 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387903AbgEXSth (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 14:49:37 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9A4F418009FEB;
-        Sun, 24 May 2020 18:49:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3866:3868:3872:3874:4321:5007:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12297:12438:12533:12555:12740:12760:12895:12986:13069:13075:13311:13357:13439:14181:14659:14721:21067:21080:21451:21627:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: base72_230952626d3a
-X-Filterd-Recvd-Size: 2154
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 24 May 2020 18:49:35 +0000 (UTC)
-Message-ID: <d00a5503d271e127c948e3352a51d9646136a6d1.camel@perches.com>
-Subject: Re: [PATCH] printk: Remove pr_cont_once()
-From:   Joe Perches <joe@perches.com>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Sun, 24 May 2020 11:49:34 -0700
-In-Reply-To: <20200524153243.11690-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20200524153243.11690-1-penguin-kernel@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S2387995AbgEXSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 14:52:49 -0400
+Received: from mxs.msl.ua ([185.128.235.3]:34388 "EHLO mxs.msl.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387951AbgEXSwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 14:52:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mxs.msl.ua (Postfix) with ESMTP id 8282C776636;
+        Sun, 24 May 2020 21:50:17 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
+        message-id:reply-to:date:from:to:subject:content-description
+        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
+        1590346217; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=l
+        QIcWCdwsZKmPFZ+jSM82bd/L6MwtfpjXpEIyolPaiaZ9/4PkEArq7VYTdFFk0EkH
+        bSnBUUeWwUfPXBS7K9cBal8Y5m/SCpha4ZdbmaPn+v8Rlc0qXb/Siyhpd5QLWlXT
+        zTer7FrPv7YvFIe3rBchp/fw6MlGfPsYBa62iDVxUg=
+X-Virus-Scanned: amavisd-new at msl.ua
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
+ =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
+ =?utf-8?q?rftigen!!!?=
+To:     Recipients <o.sapelkin@msl.ua>
+From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
+Date:   Sun, 24 May 2020 20:49:47 +0200
+Reply-To: s.manuelfranco95@gmail.com
+X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20200524185004.893F06E2B74D7@zimbra.msl.intranet>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-05-25 at 00:32 +0900, Tetsuo Handa wrote:
-> pr_cont_once() does not make sense; at least emitting module name using
-> pr_fmt() into middle of a line (after e.g. pr_info_once()) does not make
-> sense. Let's remove unused pr_cont_once().
+Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
+ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
+=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
+en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
+ ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
+eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
+below for an interview about my lottery win: https://www.youtube.com/watch?=
+v=3DMMC3DHoGhP8.
 
-Right, thanks.
+Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
 
-It's nearly a decade old cut'n'paste defect and
-no one has ever used it or noticed it until now.
+Seien Sie sicher und geborgen,
+MANUEL FRANCO
++ 1 754-231-3468 (nur Whatsapp)
 
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Cc: Joe Perches <joe@perches.com>
-> ---
->  include/linux/printk.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index 2562ffb438ed..4c565871f659 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -476,8 +476,7 @@ extern int kptr_restrict;
->  	printk_once(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
->  #define pr_info_once(fmt, ...)					\
->  	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-> -#define pr_cont_once(fmt, ...)					\
-> -	printk_once(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
-> +/* no pr_cont_once, don't do that... */
->  
->  #if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
->  #define pr_devel_once(fmt, ...)					\
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
