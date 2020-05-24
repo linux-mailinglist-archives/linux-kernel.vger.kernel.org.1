@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4717F1E02FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 23:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57A91E0304
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 23:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387973AbgEXV1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 17:27:22 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57496 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387830AbgEXV1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 17:27:22 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id CF0E11C02AB; Sun, 24 May 2020 23:27:20 +0200 (CEST)
-Date:   Sun, 24 May 2020 23:27:19 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        akpm@linux-foundation.org, dave.hansen@intel.com,
-        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
-        andriy.shevchenko@linux.intel.com, kai.svahn@intel.com,
-        bp@alien8.de, josh@joshtriplett.org, luto@kernel.org,
-        kai.huang@intel.com, rientjes@google.com, cedric.xing@intel.com,
-        puiterwijk@redhat.com
-Subject: Re: [PATCH v29 00/20] Intel SGX foundations
-Message-ID: <20200524212719.GA1192@bug>
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
- <20200426165753.GA11046@wind.enjellic.com>
- <87d07gk24l.fsf@nanos.tec.linutronix.de>
- <20200508190226.GA31465@wind.enjellic.com>
- <20200508195635.GR27052@linux.intel.com>
- <20200514091637.GA25156@wind.enjellic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200514091637.GA25156@wind.enjellic.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S2388297AbgEXV2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 17:28:14 -0400
+Received: from mga04.intel.com ([192.55.52.120]:34175 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388210AbgEXV2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 17:28:12 -0400
+IronPort-SDR: 5fl8YizSDrRhg+mIhDSID7XJcjyAdd/FPndifGl2ou01LhZ1CPj+oc+Cz3Kaut7Vg/NZzgOIgI
+ 3FgCBG+Ik0Lw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2020 14:28:11 -0700
+IronPort-SDR: FzsUfGIz+lqZEULJSpFqMqJe8JUbf9mKPUQm7T9ujv4sDhR+uEKLkUHXkcF5b8Rg1AcDn1tkXN
+ h5HFE4QU2oSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,431,1583222400"; 
+   d="scan'208";a="254928533"
+Received: from tjrondo-mobl.amr.corp.intel.com (HELO localhost.localdomain) ([10.251.20.235])
+  by orsmga007.jf.intel.com with ESMTP; 24 May 2020 14:28:06 -0700
+From:   sathyanarayanan.kuppuswamy@linux.intel.com
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: [PATCH v2 0/5] Remove AER HEST table parser
+Date:   Sun, 24 May 2020 14:27:51 -0700
+Message-Id: <cover.1590355211.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-> > > At the very least a modular form of the driver should be
-> > > considered that would allow alternate implementations.  Sean
-> > > indicated that there was a 'kludgy' approach that would allow an
-> > > alternate modular implementation alongside the in-kernel driver.
-> > > I believe that Andy has already indicated that may not be an
-> > > advisable approach.
-> 
-> > Modularizing the the driver does nothing for your use case.  The
-> > "driver" is a relatively lightweight wrapper, removing that is akin
-> > to making /dev/sgx/enclave inaccessible, i.e. it doesn't make the
+Commit e7909188dd4d ("PCI/AER: Use only _OSC to determine AER ownership")
+removed HEST dependency in determining the AER ownership status. The
+following patch set cleansup rest of the HEST table related code from
+AER driver.
 
-Well... SGX is proprietary feature of Intel. I don't see any effort for standartization
-so that other architectures could use it. Yet it provides userspace interface...
+This patchset also includes some minor AER driver fixes.
 
-You clearly want distros to enable it, but that will waste memory on non-Intel systems.
+Kuppuswamy Sathyanarayanan (5):
+  PCI/AER: Remove redundant pci_is_pcie() checks.
+  PCI/AER: Remove redundant dev->aer_cap checks.
+  ACPI/PCI: Ignore _OSC negotiation result if pcie_ports_native is set.
+  ACPI/PCI: Ignore _OSC DPC negotiation result if pcie_ports_dpc_native
+    is set.
+  PCI/AER: Replace pcie_aer_get_firmware_first() with
+    pcie_aer_is_native()
 
-That is not good.
+ drivers/acpi/pci_root.c    |  28 ++++----
+ drivers/pci/pcie/aer.c     | 139 ++++---------------------------------
+ drivers/pci/pcie/dpc.c     |   2 +-
+ drivers/pci/pcie/portdrv.h |  13 +---
+ include/linux/pci.h        |   2 +
+ 5 files changed, 34 insertions(+), 150 deletions(-)
 
-> Here in a nutshell is the paradox the kernel faces:
-> 
-> No one seems to be disputing the fact that the primary focus of this
-> driver will be to support the notion of 'runtime encryption' and
-> Confidential Computing.  The whole premise of the concept and economic
-> predicate of the initiative is that the owner/manager of the platform
-> has no visibility into what is being done on the platform.
-
-Well, in my eyes preventing owner of the machine from accessing all its parts is
-pretty questionable.
-
-Physics says it is impossible, many tried, and many failed. Why it should be
-different this time?
-
-> If the Linux community believes that standard platform security
-> controls can make qualitatively good judgements on what enclave based
-> execution is doing, it is effectively making the statement that the
-> very concept of runtime encryption and by extension Confidential
-> Computing is invalid.
-
-And yes, I believe that concept of Confidential Computing is invalid.. and we
-should simply not merge this support.
-
-It provides false sense of security, and I'm afraid big companies will try to force
-people to use it. "DRM, now with hardware support". "Finally advertisments you can
-not skip". "Just run this piece of code on your machine to access your bank account.
-Trust us!"
-
-:-(.
-
-									Pavel
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+2.17.1
+
