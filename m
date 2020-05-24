@@ -2,145 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BA01E0064
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 18:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA791E0060
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 18:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgEXQHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 12:07:01 -0400
-Received: from mout.gmx.net ([212.227.17.22]:60241 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728696AbgEXQHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 12:07:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590336398;
-        bh=+nFXZkgBoRhnqmTS84jk7w6behECRnCIt5FlWN27unw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=CdXI2jfwxkxHhkjYgEZDKBvLOInjJrIbNkTKhgpf9K51CAhgoBkwcEjwoit4E3SEA
-         qYnPC8odvgHGPTBHYqe8ayYulpNZvBuXH0LzZ3TB9mK++veVJ9tngwqKKCk2D4xBvr
-         FT3PkQA8DEm457CugrV4LQhgUpxkm1RYx38wACkA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mirng-1j92Ve1ULE-00eusD; Sun, 24
- May 2020 18:06:38 +0200
-Date:   Sun, 24 May 2020 18:06:26 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/irqchip: Remove function callback casts
-Message-ID: <20200524160626.GA30346@ubuntu>
-References: <20200524080910.13087-1-oscar.carter@gmx.com>
- <20200524124634.113203f6@why>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200524124634.113203f6@why>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:Rq3XbNZH4RgeTsRXWMEwPYjA3ioEEfsOiDigB7WhoZAsaaG0ZOu
- A9vTfGTRB8dbo96G6XNMN8kjNxfS739adOZlT3CZnIcCDasr1No/RJno1ctMLqodUVP1Bgk
- SgFVFy05cn/+NpRhj5PefHdt2Bqj7RYoNJiyw8LU8LYhicbq7/Vkndafu+HwdguQkL9R4Iw
- Fl1vzIb5IxWltG6cC69KA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ms6icXGKjqo=:aAJKyt7ZHWgYEjxcsva6bg
- TfGGDta8SylgAZlC0e8Fm5yeggoLM5ycxrzGDYbdY935is+0uwCG2J7tTOJB1gRhUIgKQTpvX
- IMZ+NEINwayiDLuOOyOjGs0qwNdMN3l2MYQ3lUstgJfwLxk7vv70ix6uZI5PpwSQqS70o0Xhr
- cofEv7HLyLwbkit9LHcQqE9tvK/mAitODAgaZP7lyahyYTE199ny5RcvoSVpyGiZWXAuWFER1
- ucMWbN0XZiDQPuND4xrjmX0fOpe8MFzDpEOL0oYN47cGtdy8JzV5AUMKlGZUXO0o9pV1XF0Sm
- K7eqPRvt83gEFU7efYssBIfYAng3XA6fX1/Kc9G1Mxi9PxohX7LDskYL8WpB2avUTH0d8TdbT
- XOPsfhO46FqL9/1ip0PwgxVGYt1EZt1+xitrqRWWcCyg1lDkupmQz3hGX8f/zYOWUEc6aniAe
- tfTAqL8Y1kCldbuWNS58yjFXSrZo/LUhWbTIP7VdxC6ixk1R1n7Lg332zuNus6Qh7PZK+xfy1
- 6aRbzgQm2KLRxIs0E82qQP3KOsl+CXp8gr17mM2mX3xq339528I+z6JxzvW4I+tpjSx6x6IYX
- iicsKKZXW372r/J8zWN4lI9y+thcWCGTyCHfNVkDhJAbyoFjxfimHw/MzAgh0XqIpAQe5TWIR
- T5a6PjT3A4+nw5F7PxXgDbDo4NssG7OzM9CNtEGH7W8Vcts5JB33tZCW1jqw/eUEpKFU+jtQA
- Nc8M1uG3coH8Xw0/tlC3YNNkL4Hfq60or54Vzqlu+cXjCG3VhUiEZJpMGRq69zqy12mOHxsfQ
- rNP3jht0YH3I9/K3HJjrzmsITBLVibjzGipbZx3FQ6ZaMqI55PqVeGiiiXMQurF9n4fUMteWa
- URnaNDxdO5oAvzYOfCRGXZ9mHtjYPMkNxsqHkSnLa6PgXImSffKkYl7vHGQPOLS8cRWRkGwbV
- pCi+eQ0Kus03a4RaDmDNAjGIqJ36VhZuxUbEKtYdjiRaRSCPwSE3bEz2em6cXEuWMH7Zc1Afs
- GiBggc6JLNZrhHbYUx5aid5e/1maq8WfREz6VTeU2OcQhB0R0xp42xqH18f5DSuGogOqcKb3W
- Ejq6ptOajNhOXzywYNb5twLeNG5WmNSa01J7f5R4OkblHIEZpS63caeAKwa96ewKNzbN2hJO8
- +dG9rj19LOUREcxThLRexH9O5qfvgWtm5SFPvvPp1HKXxfi26npXUgO6ybWe25zjZsNE9Y6p3
- R4DopH9eWK6ZDTrSG
-Content-Transfer-Encoding: quoted-printable
+        id S1728407AbgEXQGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 12:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727027AbgEXQGq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 12:06:46 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D080C061A0E;
+        Sun, 24 May 2020 09:06:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a2so18168085ejb.10;
+        Sun, 24 May 2020 09:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=sxEJyU9TaXEIp1/fo5xw/QmL2ngVwpIdCduUvrBnplM=;
+        b=sNurkOT5nUX7mei8dVVCD9bx5S0mCWH7rHU9DVn0oa3Vx7AfqWTBIx0aarjsKH5eju
+         L4gExWaOHiGlROrm30c1VnApfd0vAWtc5qimIIAZsDHjzHLWjzm5RQokNDXvE8pOGenZ
+         B+JUKwXawsHXzLtmOvSQ84qWp/YCXb5XRIlW7Bfxie73D3Xyow8yji/3+HMOwYxyCF6w
+         LCslZhGni3ZvD6GVNoA2uDUJWC8DBYJ5U39amRMg2WimQFI+a3wyaJfoN4aIQYFENPiB
+         3TtM+RBVySGuQlz63QjE6coT9Wh1aanRw5u/3toxXPvulECFDGpjDiLw2McDWlPaJGnV
+         g/2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sxEJyU9TaXEIp1/fo5xw/QmL2ngVwpIdCduUvrBnplM=;
+        b=d8ChdSXnB22hL1jst7krdfGpqotAch7EzBDNUmtNZHL2wcZC19e5WtX7qytuuBr8NF
+         RU/9cc3EdD/pjcG3sCNXR6vGxcdqKf33VsjKgj522Fwg+6zt5TwF0OkcpFlZrlFP95d2
+         BuhV34gYZtNThO4z3YVXbKqkBVIWeEQJIrE1Z2/UpOAT46VFIaC+RTbyRuK22ihSILSB
+         Np5mAYWIKghvET3bc/PCBq7mSLBDCG9KRboVq3+cvgmUDDw/upvkscCckNJI6+Y+30l9
+         JaiYsHpvojHfadND6r+ZgquwwoLPo4OSUCUA8ZZvDi2BvrXyn4dvb/Vej/6GXzx3MA0D
+         EmyA==
+X-Gm-Message-State: AOAM532isD7D5+ahxgZR7TsqUTVg1qR69xCC6fk1CHq3TuByV9yjNirG
+        TqhkojvetJy7OhEaSo1L5vkq93haILk=
+X-Google-Smtp-Source: ABdhPJzppSARRKRiOw707Bp1+PJaCjNmzltSjjaQgRwiUuFBPOVi5G7Fh6mBA5jXNi2qvpZvG8bZSA==
+X-Received: by 2002:a17:906:c943:: with SMTP id fw3mr15404257ejb.288.1590336404894;
+        Sun, 24 May 2020 09:06:44 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id qn17sm13252855ejb.125.2020.05.24.09.06.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 May 2020 09:06:44 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ARM: dts: rockchip: rename label and nodename pinctrl subnodes that end with gpio
+Date:   Sun, 24 May 2020 18:06:35 +0200
+Message-Id: <20200524160636.16547-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+A test with the command below gives for example this error:
 
-On Sun, May 24, 2020 at 12:46:34PM +0100, Marc Zyngier wrote:
-> On Sun, 24 May 2020 10:09:10 +0200
-> Oscar Carter <oscar.carter@gmx.com> wrote:
->
-> Hi Oscar,
->
-> Thanks for this. Comments below.
->
-> > In an effort to enable -Wcast-function-type in the top-level Makefile =
-to
-> > support Control Flow Integrity builds, remove all the function callbac=
-k
-> > casts.
-> >
-> > To do this, modify the IRQCHIP_ACPI_DECLARE macro initializing the
-> > acpi_probe_entry struct directly instead of use the existent macro
-> > ACPI_DECLARE_PROBE_ENTRY.
-> >
-> > In this new initialization use the probe_subtbl field instead of the
-> > probe_table field use in the ACPI_DECLARE_PROBE_ENTRY macro.
->
-> Please add *why* this is a valid transformation (probe_table and
-> probe_subtbl are part of a union).
+arch/arm/boot/dts/rk3288-tinker.dt.yaml: tsadc: otp-gpio:
+{'phandle': [[54]], 'rockchip,pins': [[0, 10, 0, 118]]}
+is not of type 'array'
 
-Ok, I will add a more detailed explanation.
+'gpio' is a sort of reserved nodename and should not be used
+for pinctrl in combination with 'rockchip,pins', so change
+nodes that end with 'gpio' to end with 'pin' or 'pins'.
 
-> > Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> > ---
-> >  include/linux/irqchip.h | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
-> > index 950e4b2458f0..1f464fd10df0 100644
-> > --- a/include/linux/irqchip.h
-> > +++ b/include/linux/irqchip.h
-> > @@ -39,8 +39,14 @@
-> >   * @fn: initialization function
-> >   */
-> >  #define IRQCHIP_ACPI_DECLARE(name, subtable, validate, data, fn)	\
-> > -	ACPI_DECLARE_PROBE_ENTRY(irqchip, name, ACPI_SIG_MADT, 		\
-> > -				 subtable, validate, data, fn)
-> > +	static const struct acpi_probe_entry __acpi_probe_##name	\
-> > +		__used __section(__irqchip_acpi_probe_table) =3D {	\
-> > +			.id =3D ACPI_SIG_MADT,				\
-> > +			.type =3D subtable,				\
-> > +			.subtable_valid =3D validate,			\
-> > +			.probe_subtbl =3D (acpi_tbl_entry_handler)fn,	\
-> > +			.driver_data =3D data,				\
-> > +		}
-> >
->
-> I'd rather you add an ACPI_DECLARE_SUBTABLE_PROBE_ENTRY to acpi.h, and
-> use that here so that we can keep the ACPI gunk in a single place.
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/
+dtschema/schemas/gpio/gpio.yaml
 
-Ok, I will do the changes you suggested and I will resend a new version.
-Later, I will also send a series to clean up the checkpatch warnings and
-errors for the acpi.h header.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm/boot/dts/rk322x.dtsi              |  6 +++---
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts    |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-jerry.dts  |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-mighty.dts |  6 +++---
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-pinky.dts  |  6 +++---
+ arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-speedy.dts |  2 +-
+ arch/arm/boot/dts/rk3288.dtsi              |  6 +++---
+ arch/arm/boot/dts/rv1108.dtsi              | 12 ++++++------
+ 10 files changed, 23 insertions(+), 23 deletions(-)
 
-> >  #ifdef CONFIG_IRQCHIP
-> >  void irqchip_init(void);
-> > --
-> > 2.20.1
-> >
-> >
->
-> Thanks,
->
-> 	M.
-> --
-> Jazz is not dead. It just smells funny...
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index 7a1a69183..3590ce15a 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -522,9 +522,9 @@
+ 		resets = <&cru SRST_TSADC>;
+ 		reset-names = "tsadc-apb";
+ 		pinctrl-names = "init", "default", "sleep";
+-		pinctrl-0 = <&otp_gpio>;
++		pinctrl-0 = <&otp_pin>;
+ 		pinctrl-1 = <&otp_out>;
+-		pinctrl-2 = <&otp_gpio>;
++		pinctrl-2 = <&otp_pin>;
+ 		#thermal-sensor-cells = <0>;
+ 		rockchip,hw-tshut-temp = <95000>;
+ 		status = "disabled";
+@@ -1103,7 +1103,7 @@
+ 		};
+ 
+ 		tsadc {
+-			otp_gpio: otp-gpio {
++			otp_pin: otp-pin {
+ 				rockchip,pins = <0 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+index 171ba6185..8efba9dea 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+@@ -47,7 +47,7 @@
+ &sdmmc {
+ 	disable-wp;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
+ 			&sdmmc_bus4>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jerry.dts b/arch/arm/boot/dts/rk3288-veyron-jerry.dts
+index 66f00d288..2c916c50d 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jerry.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jerry.dts
+@@ -192,7 +192,7 @@
+ &sdmmc {
+ 	disable-wp;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
+ 			&sdmmc_bus4>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mighty.dts b/arch/arm/boot/dts/rk3288-veyron-mighty.dts
+index 27fbc0747..fa695a88f 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mighty.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mighty.dts
+@@ -18,8 +18,8 @@
+ };
+ 
+ &sdmmc {
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
+-			&sdmmc_wp_gpio &sdmmc_bus4>;
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
++			&sdmmc_wp_pin &sdmmc_bus4>;
+ 	wp-gpios = <&gpio7 10 GPIO_ACTIVE_HIGH>;
+ 
+ 	/delete-property/ disable-wp;
+@@ -27,7 +27,7 @@
+ 
+ &pinctrl {
+ 	sdmmc {
+-		sdmmc_wp_gpio: sdmmc-wp-gpio {
++		sdmmc_wp_pin: sdmmc-wp-pin {
+ 			rockchip,pins = <7 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
+ 		};
+ 	};
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index 383fad1a8..f8b69e0a1 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -114,7 +114,7 @@
+ &sdmmc {
+ 	disable-wp;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
+ 			&sdmmc_bus4>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-pinky.dts b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+index 71e6629cc..4e9fdb0f7 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-pinky.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+@@ -105,7 +105,7 @@
+ 	};
+ 
+ 	sdmmc {
+-		sdmmc_wp_gpio: sdmmc-wp-gpio {
++		sdmmc_wp_pin: sdmmc-wp-pin {
+ 			rockchip,pins = <7 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
+ 		};
+ 	};
+@@ -126,8 +126,8 @@
+ 
+ &sdmmc {
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
+-		     &sdmmc_wp_gpio &sdmmc_bus4>;
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
++		     &sdmmc_wp_pin &sdmmc_bus4>;
+ 	wp-gpios = <&gpio7 RK_PB2 GPIO_ACTIVE_HIGH>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi b/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi
+index fe950f986..27fb06ce9 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-sdmmc.dtsi
+@@ -41,7 +41,7 @@
+ 		};
+ 
+ 		/* This is where we actually hook up CD */
+-		sdmmc_cd_gpio: sdmmc-cd-gpio {
++		sdmmc_cd_pin: sdmmc-cd-pin {
+ 			rockchip,pins = <7 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
+diff --git a/arch/arm/boot/dts/rk3288-veyron-speedy.dts b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+index e354c61a4..4a3ea934d 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-speedy.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+@@ -54,7 +54,7 @@
+ &sdmmc {
+ 	disable-wp;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_gpio
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd_disabled &sdmmc_cd_pin
+ 			&sdmmc_bus4>;
+ };
+ 
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 0cd88774d..d052a4758 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -575,9 +575,9 @@
+ 		resets = <&cru SRST_TSADC>;
+ 		reset-names = "tsadc-apb";
+ 		pinctrl-names = "init", "default", "sleep";
+-		pinctrl-0 = <&otp_gpio>;
++		pinctrl-0 = <&otp_pin>;
+ 		pinctrl-1 = <&otp_out>;
+-		pinctrl-2 = <&otp_gpio>;
++		pinctrl-2 = <&otp_pin>;
+ 		#thermal-sensor-cells = <1>;
+ 		rockchip,grf = <&grf>;
+ 		rockchip,hw-tshut-temp = <95000>;
+@@ -1930,7 +1930,7 @@
+ 		};
+ 
+ 		tsadc {
+-			otp_gpio: otp-gpio {
++			otp_pin: otp-pin {
+ 				rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+index b453f8d0f..f3ff54753 100644
+--- a/arch/arm/boot/dts/rv1108.dtsi
++++ b/arch/arm/boot/dts/rv1108.dtsi
+@@ -352,9 +352,9 @@
+ 		clocks = <&cru SCLK_TSADC>, <&cru PCLK_TSADC>;
+ 		clock-names = "tsadc", "apb_pclk";
+ 		pinctrl-names = "init", "default", "sleep";
+-		pinctrl-0 = <&otp_gpio>;
++		pinctrl-0 = <&otp_pin>;
+ 		pinctrl-1 = <&otp_out>;
+-		pinctrl-2 = <&otp_gpio>;
++		pinctrl-2 = <&otp_pin>;
+ 		resets = <&cru SRST_TSADC>;
+ 		reset-names = "tsadc-apb";
+ 		rockchip,hw-tshut-temp = <120000>;
+@@ -729,7 +729,7 @@
+ 						<0 RK_PC6 3 &pcfg_pull_none>;
+ 			};
+ 
+-			i2c2m1_gpio: i2c2m1-gpio {
++			i2c2m1_pins: i2c2m1-pins {
+ 				rockchip,pins = <0 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>,
+ 						<0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+@@ -741,7 +741,7 @@
+ 						<1 RK_PD4 2 &pcfg_pull_none>;
+ 			};
+ 
+-			i2c2m05v_gpio: i2c2m05v-gpio {
++			i2c2m05v_pins: i2c2m05v-pins {
+ 				rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>,
+ 						<1 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+@@ -868,7 +868,7 @@
+ 				rockchip,pins = <0 RK_PB7 1 &pcfg_pull_none>;
+ 			};
+ 
+-			otp_gpio: otp-gpio {
++			otp_pin: otp-pin {
+ 				rockchip,pins = <0 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+ 		};
+@@ -887,7 +887,7 @@
+ 				rockchip,pins = <3 RK_PA3 1 &pcfg_pull_none>;
+ 			};
+ 
+-			uart0_rts_gpio: uart0-rts-gpio {
++			uart0_rts_pin: uart0-rts-pin {
+ 				rockchip,pins = <3 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
+ 			};
+ 		};
+-- 
+2.11.0
 
-Thanks,
-Oscar Carter
