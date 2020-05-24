@@ -2,181 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8491DFD4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 07:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579D31DFD50
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 07:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgEXFHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 01:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgEXFHO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 01:07:14 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E0DC061A0E;
-        Sat, 23 May 2020 22:07:14 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ci21so6932288pjb.3;
-        Sat, 23 May 2020 22:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mvYhtqV1U4qqhDVOWFjEaTG959+IGNH15YQtyFmwOMk=;
-        b=NK9MXfpY/j07O5SEzOIz6vmM8uitKXAVhNCl78GoFuyoMSl3Ju3Y1LOp1r5n3k3Uti
-         qAId0zGO/uQmZoPLTK2fv0F9VJR1JCG87zsD5AEGCEfaTUXH+F+9JQORk//ZvioDaf21
-         I7cN4ryMBsN/FZ/Vdh0c0WnC58sJ8tvFzyYFjAXB9ADZC1b0z6eZ6L4KITmyNJ5OycL6
-         VIAHI0Wl8TQ36rlBEuAg1n4nd+7Lly0BD/+0N3YIBYJLHrKIm330hRmVWPDYdhCBm2V9
-         U/g8lqbwi0Z1/UpEj3tslj9qgTX0lGCrnbYsRh3DmqfjEKT9ZGC5OVymv6Mmt/N2HCsW
-         z0Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mvYhtqV1U4qqhDVOWFjEaTG959+IGNH15YQtyFmwOMk=;
-        b=sb/Bjn8DTIdFijfvtHkPlU5ldIX1DS6lgDx84jWTlA0imXO+1gr2A9wGbZFOkBHcdK
-         7AMa7yn8JTwmeizUSjemtENWrSzQzs2nr8tSif5VacLFJYcEmyEPYkbtE5rUn0sDz9ib
-         A+DUGru4pxK39ofWtjJDtOPvIX94hLL6QGdSC3Xz0s0pkn97EOgU2bwNfpFdbuz9VLAj
-         v9rcM1HOcAarAgNyo8ks9g2Menbo+dTaYlS51jpKhVGVzewKRqkFi4/YMzn8TBfV4rE6
-         0n2Gue7VwmeHmty6f7jD4bXKTFpG0V5gSbvcGY/JqWZW6VGq5bOIwG7cFsEM2iESNmZw
-         sl9Q==
-X-Gm-Message-State: AOAM533wcFZxQInm1qgDujL5zPNzTJUlEaElWZODXvnz0sPdRXIdwDf6
-        LkkeJqa+NnoiDoTHtzU10II=
-X-Google-Smtp-Source: ABdhPJwu4ENvd3yDcG8988brVGHraIQrJeOh4O49kmpFQr7sJeqeLJebPf41K5Zy9eSurQOaa2czwQ==
-X-Received: by 2002:a17:902:6b09:: with SMTP id o9mr21058970plk.100.1590296834091;
-        Sat, 23 May 2020 22:07:14 -0700 (PDT)
-Received: from syed ([106.223.122.111])
-        by smtp.gmail.com with ESMTPSA id h7sm8985165pgn.60.2020.05.23.22.07.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 23 May 2020 22:07:13 -0700 (PDT)
-Date:   Sun, 24 May 2020 10:36:56 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     linus.walleij@linaro.org, akpm@linux-foundation.org
-Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
-        bgolaszewski@baylibre.com, michal.simek@xilinx.com,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 4/4] gpio: xilinx: Utilize for_each_set_clump macro
-Message-ID: <c0c47f777522aa16c31248e9b8c75d2b96c7b652.1590017578.git.syednwaris@gmail.com>
-References: <cover.1590017578.git.syednwaris@gmail.com>
+        id S1726749AbgEXF3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 01:29:01 -0400
+Received: from mga12.intel.com ([192.55.52.136]:12732 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726014AbgEXF3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 01:29:01 -0400
+IronPort-SDR: XL5yFXlMDsiNSA5wECb4tnSuLouarHAQwX48990wHRh6ECkd+JhRLZzR6OGzrwjBUl7YCpd1Wx
+ /9tQGS9XG7zQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2020 22:29:00 -0700
+IronPort-SDR: IFoBZC1WP6hBXsYE3/GxtlXqtrs/WO8+ir/h98nDrVPJEs71hmxFrY7SD8/yFWEWXQPvGwNv7D
+ wLcfFuLgPzyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,428,1583222400"; 
+   d="scan'208";a="413178843"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 23 May 2020 22:28:58 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jcjBx-0002Yw-TK; Sun, 24 May 2020 13:28:57 +0800
+Date:   Sun, 24 May 2020 13:28:30 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: drivers/misc/pci_endpoint_test.c:347:6: warning: Local variable
+ 'irq_type' shadows outer variable [shadowVariable]
+Message-ID: <202005241325.ko7vAgMK%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1590017578.git.syednwaris@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reimplements the xgpio_set_multiple function in
-drivers/gpio/gpio-xilinx.c to use the new for_each_set_clump macro.
-Instead of looping for each bit in xgpio_set_multiple
-function, now we can check each channel at a time and save cycles.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   caffb99b6929f41a69edbb5aef3a359bf45f3315
+commit: b2ba9225e0313b1de631a44b7b48c109032bffec misc: pci_endpoint_test: Avoid using module parameter to determine irqtype
+date:   7 weeks ago
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build):
+        git checkout b2ba9225e0313b1de631a44b7b48c109032bffec
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
 
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+cppcheck warnings: (new ones prefixed by >>)
+
+>> drivers/misc/pci_endpoint_test.c:347:6: warning: Local variable 'irq_type' shadows outer variable [shadowVariable]
+    int irq_type = test->irq_type;
+        ^
+   drivers/misc/pci_endpoint_test.c:86:12: note: Shadowed declaration
+   static int irq_type = IRQ_TYPE_MSI;
+              ^
+   drivers/misc/pci_endpoint_test.c:347:6: note: Shadow variable
+    int irq_type = test->irq_type;
+        ^
+   drivers/misc/pci_endpoint_test.c:481:6: warning: Local variable 'irq_type' shadows outer variable [shadowVariable]
+    int irq_type = test->irq_type;
+        ^
+   drivers/misc/pci_endpoint_test.c:86:12: note: Shadowed declaration
+   static int irq_type = IRQ_TYPE_MSI;
+              ^
+   drivers/misc/pci_endpoint_test.c:481:6: note: Shadow variable
+    int irq_type = test->irq_type;
+        ^
+   drivers/misc/pci_endpoint_test.c:580:6: warning: Local variable 'irq_type' shadows outer variable [shadowVariable]
+    int irq_type = test->irq_type;
+        ^
+   drivers/misc/pci_endpoint_test.c:86:12: note: Shadowed declaration
+   static int irq_type = IRQ_TYPE_MSI;
+              ^
+   drivers/misc/pci_endpoint_test.c:580:6: note: Shadow variable
+    int irq_type = test->irq_type;
+        ^
+
+vim +/irq_type +347 drivers/misc/pci_endpoint_test.c
+
+   326	
+   327	static bool pci_endpoint_test_copy(struct pci_endpoint_test *test,
+   328					   unsigned long arg)
+   329	{
+   330		struct pci_endpoint_test_xfer_param param;
+   331		bool ret = false;
+   332		void *src_addr;
+   333		void *dst_addr;
+   334		u32 flags = 0;
+   335		bool use_dma;
+   336		size_t size;
+   337		dma_addr_t src_phys_addr;
+   338		dma_addr_t dst_phys_addr;
+   339		struct pci_dev *pdev = test->pdev;
+   340		struct device *dev = &pdev->dev;
+   341		void *orig_src_addr;
+   342		dma_addr_t orig_src_phys_addr;
+   343		void *orig_dst_addr;
+   344		dma_addr_t orig_dst_phys_addr;
+   345		size_t offset;
+   346		size_t alignment = test->alignment;
+ > 347		int irq_type = test->irq_type;
+   348		u32 src_crc32;
+   349		u32 dst_crc32;
+   350		int err;
+   351	
+   352		err = copy_from_user(&param, (void __user *)arg, sizeof(param));
+   353		if (err) {
+   354			dev_err(dev, "Failed to get transfer param\n");
+   355			return false;
+   356		}
+   357	
+   358		size = param.size;
+   359		if (size > SIZE_MAX - alignment)
+   360			goto err;
+   361	
+   362		use_dma = !!(param.flags & PCITEST_FLAGS_USE_DMA);
+   363		if (use_dma)
+   364			flags |= FLAG_USE_DMA;
+   365	
+   366		if (irq_type < IRQ_TYPE_LEGACY || irq_type > IRQ_TYPE_MSIX) {
+   367			dev_err(dev, "Invalid IRQ type option\n");
+   368			goto err;
+   369		}
+   370	
+   371		orig_src_addr = kzalloc(size + alignment, GFP_KERNEL);
+   372		if (!orig_src_addr) {
+   373			dev_err(dev, "Failed to allocate source buffer\n");
+   374			ret = false;
+   375			goto err;
+   376		}
+   377	
+   378		get_random_bytes(orig_src_addr, size + alignment);
+   379		orig_src_phys_addr = dma_map_single(dev, orig_src_addr,
+   380						    size + alignment, DMA_TO_DEVICE);
+   381		if (dma_mapping_error(dev, orig_src_phys_addr)) {
+   382			dev_err(dev, "failed to map source buffer address\n");
+   383			ret = false;
+   384			goto err_src_phys_addr;
+   385		}
+   386	
+   387		if (alignment && !IS_ALIGNED(orig_src_phys_addr, alignment)) {
+   388			src_phys_addr = PTR_ALIGN(orig_src_phys_addr, alignment);
+   389			offset = src_phys_addr - orig_src_phys_addr;
+   390			src_addr = orig_src_addr + offset;
+   391		} else {
+   392			src_phys_addr = orig_src_phys_addr;
+   393			src_addr = orig_src_addr;
+   394		}
+   395	
+   396		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_LOWER_SRC_ADDR,
+   397					 lower_32_bits(src_phys_addr));
+   398	
+   399		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_UPPER_SRC_ADDR,
+   400					 upper_32_bits(src_phys_addr));
+   401	
+   402		src_crc32 = crc32_le(~0, src_addr, size);
+   403	
+   404		orig_dst_addr = kzalloc(size + alignment, GFP_KERNEL);
+   405		if (!orig_dst_addr) {
+   406			dev_err(dev, "Failed to allocate destination address\n");
+   407			ret = false;
+   408			goto err_dst_addr;
+   409		}
+   410	
+   411		orig_dst_phys_addr = dma_map_single(dev, orig_dst_addr,
+   412						    size + alignment, DMA_FROM_DEVICE);
+   413		if (dma_mapping_error(dev, orig_dst_phys_addr)) {
+   414			dev_err(dev, "failed to map destination buffer address\n");
+   415			ret = false;
+   416			goto err_dst_phys_addr;
+   417		}
+   418	
+   419		if (alignment && !IS_ALIGNED(orig_dst_phys_addr, alignment)) {
+   420			dst_phys_addr = PTR_ALIGN(orig_dst_phys_addr, alignment);
+   421			offset = dst_phys_addr - orig_dst_phys_addr;
+   422			dst_addr = orig_dst_addr + offset;
+   423		} else {
+   424			dst_phys_addr = orig_dst_phys_addr;
+   425			dst_addr = orig_dst_addr;
+   426		}
+   427	
+   428		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_LOWER_DST_ADDR,
+   429					 lower_32_bits(dst_phys_addr));
+   430		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_UPPER_DST_ADDR,
+   431					 upper_32_bits(dst_phys_addr));
+   432	
+   433		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_SIZE,
+   434					 size);
+   435	
+   436		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_FLAGS, flags);
+   437		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_TYPE, irq_type);
+   438		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_IRQ_NUMBER, 1);
+   439		pci_endpoint_test_writel(test, PCI_ENDPOINT_TEST_COMMAND,
+   440					 COMMAND_COPY);
+   441	
+   442		wait_for_completion(&test->irq_raised);
+   443	
+   444		dma_unmap_single(dev, orig_dst_phys_addr, size + alignment,
+   445				 DMA_FROM_DEVICE);
+   446	
+   447		dst_crc32 = crc32_le(~0, dst_addr, size);
+   448		if (dst_crc32 == src_crc32)
+   449			ret = true;
+   450	
+   451	err_dst_phys_addr:
+   452		kfree(orig_dst_addr);
+   453	
+   454	err_dst_addr:
+   455		dma_unmap_single(dev, orig_src_phys_addr, size + alignment,
+   456				 DMA_TO_DEVICE);
+   457	
+   458	err_src_phys_addr:
+   459		kfree(orig_src_addr);
+   460	
+   461	err:
+   462		return ret;
+   463	}
+   464	
+
 ---
-Changes in v7:
- - No change.
-
-Changes in v6:
- - No change.
-
-Changes in v5:
- - Minor change: Inline values '32' and '64' in code for better
-   code readability.
-
-Changes in v4:
- - Minor change: Inline values '32' and '64' in code for better
-   code readability.
-
-Changes in v3:
- - No change.
-
-Changes in v2:
- - No change.
-
- drivers/gpio/gpio-xilinx.c | 62 ++++++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-index 67f9f82e0db0..e81092dea27e 100644
---- a/drivers/gpio/gpio-xilinx.c
-+++ b/drivers/gpio/gpio-xilinx.c
-@@ -136,39 +136,41 @@ static void xgpio_set(struct gpio_chip *gc, unsigned int gpio, int val)
- static void xgpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,
- 			       unsigned long *bits)
- {
--	unsigned long flags;
-+	unsigned long flags[2];
- 	struct xgpio_instance *chip = gpiochip_get_data(gc);
--	int index = xgpio_index(chip, 0);
--	int offset, i;
--
--	spin_lock_irqsave(&chip->gpio_lock[index], flags);
--
--	/* Write to GPIO signals */
--	for (i = 0; i < gc->ngpio; i++) {
--		if (*mask == 0)
--			break;
--		/* Once finished with an index write it out to the register */
--		if (index !=  xgpio_index(chip, i)) {
--			xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
--				       index * XGPIO_CHANNEL_OFFSET,
--				       chip->gpio_state[index]);
--			spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
--			index =  xgpio_index(chip, i);
--			spin_lock_irqsave(&chip->gpio_lock[index], flags);
--		}
--		if (__test_and_clear_bit(i, mask)) {
--			offset =  xgpio_offset(chip, i);
--			if (test_bit(i, bits))
--				chip->gpio_state[index] |= BIT(offset);
--			else
--				chip->gpio_state[index] &= ~BIT(offset);
--		}
-+	u32 *const state = chip->gpio_state;
-+	unsigned int *const width = chip->gpio_width;
-+	unsigned long offset, clump;
-+	size_t index;
-+
-+	DECLARE_BITMAP(old, 64);
-+	DECLARE_BITMAP(new, 64);
-+	DECLARE_BITMAP(changed, 64);
-+
-+	spin_lock_irqsave(&chip->gpio_lock[0], flags[0]);
-+	spin_lock_irqsave(&chip->gpio_lock[1], flags[1]);
-+
-+	bitmap_set_value(old, state[0], 0, width[0]);
-+	bitmap_set_value(old, state[1], width[0], width[1]);
-+	bitmap_replace(new, old, bits, mask, gc->ngpio);
-+
-+	bitmap_set_value(old, state[0], 0, 32);
-+	bitmap_set_value(old, state[1], 32, 32);
-+	state[0] = bitmap_get_value(new, 0, width[0]);
-+	state[1] = bitmap_get_value(new, width[0], width[1]);
-+	bitmap_set_value(new, state[0], 0, 32);
-+	bitmap_set_value(new, state[1], 32, 32);
-+	bitmap_xor(changed, old, new, 64);
-+
-+	for_each_set_clump(offset, clump, changed, 64, 32) {
-+		index = offset / 32;
-+		xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
-+				index * XGPIO_CHANNEL_OFFSET,
-+				state[index]);
- 	}
- 
--	xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
--		       index * XGPIO_CHANNEL_OFFSET, chip->gpio_state[index]);
--
--	spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
-+	spin_unlock_irqrestore(&chip->gpio_lock[1], flags[1]);
-+	spin_unlock_irqrestore(&chip->gpio_lock[0], flags[0]);
- }
- 
- /**
--- 
-2.26.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
