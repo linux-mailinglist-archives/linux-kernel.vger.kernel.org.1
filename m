@@ -2,236 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FAF1E02DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 23:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392FD1E02EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 23:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388330AbgEXVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 17:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388311AbgEXVGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 17:06:35 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FA5C05BD43
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 14:06:34 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id o19so12527467qtr.10
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 14:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=K0FV4gDWANQPDDk3Qcqd7n0WZF5nF9QpVrxzsC0+ROQ=;
-        b=ppJWH4TWXQrqBS1oqnCG5bBN51rlxhSS7K+fr4P8jI5cdDcWagjBIyFe6mTTLJJXu3
-         EHvB3OtgFISr77VZGLcFr5z39GTQ4vdFNll7UGScjCN4b0mjN9WHscll0mkxiL67V0EG
-         Jh3lAY8ICqHfQeojBpFghjPkO3nXJPmhtZ+5RnZur1fO3GjjOXpe44eqQp/cmzcKTPJN
-         F05Q8YdvnDX/9j4BR3yFMRbvFMsPraYHS8hLN7S6M7SXqerW8HGTbDmZmnr30HH769ba
-         PCn1zLw67jE3UWVqn5iAcIdUtesCTxHZFPpT/+0G6YTfbexgskErcbFeRKozrT6gNoeo
-         AJ9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K0FV4gDWANQPDDk3Qcqd7n0WZF5nF9QpVrxzsC0+ROQ=;
-        b=Ft4x6YSVpo/SLM02gfeYJ6NQFU2E2Bx0e8yKmVtkj3wMIgT8P4sTJUNd9YaAG+62PO
-         mCpoZJu7oxf5JzzSJFyTe9451QPuCsZtMUNeEaFnNb6QQPQQlJp9FlLJLN1cV6VV4dMS
-         Oi3Eal8NY7q/K9Hpa++DgpkhkQPBeXcWRmWL9NIQYmfjT8JCe9QyrcFff+bb9zwTiaOe
-         0ePfru8nngs42OW+Y3Dff+AtM3WIkFuLop+EY0hW68Ye4tf2wx3ZaOZOuptrP0PHx6ed
-         MrYwa2Vi4HIVqLtXQMjHvq5+DXSKnfCEF4wQoxi4Y/IFHO42BpEp9gFSSwuQV0cN54AM
-         UNWw==
-X-Gm-Message-State: AOAM533ICkSFtZI97eWhKQl9KgRkNpHlQK2Ctz+8nCnsELs4fZLtfQIi
-        p5Ndsjaqji7s/f0KRbMReylfEcD5Kys=
-X-Google-Smtp-Source: ABdhPJzHUDxBBjtUNeq8JlCgH/w/+qn1imv9TCQck3AoNbnMGzYBC+Dy/Twnm8Arw+Zbq1XNxZdLyg==
-X-Received: by 2002:ac8:340b:: with SMTP id u11mr25926922qtb.38.1590354393351;
-        Sun, 24 May 2020 14:06:33 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id g51sm4401769qtb.69.2020.05.24.14.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 14:06:32 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 10/10] arm64: dts: qcom: add sm8250 GPU nodes
-Date:   Sun, 24 May 2020 17:06:11 -0400
-Message-Id: <20200524210615.17035-11-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200524210615.17035-1-jonathan@marek.ca>
-References: <20200524210615.17035-1-jonathan@marek.ca>
+        id S2388400AbgEXVHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 17:07:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388211AbgEXVHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 17:07:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8046FAD85;
+        Sun, 24 May 2020 21:07:01 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 8F7E2604C8; Sun, 24 May 2020 23:06:53 +0200 (CEST)
+Date:   Sun, 24 May 2020 23:06:53 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     netdev@vger.kernel.org, Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Auke Kok <auke-jan.h.kok@intel.com>,
+        Jeff Garzik <jeff@garzik.org>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "Neftin, Sasha" <sasha.neftin@intel.com>,
+        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+        Stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] e1000e: Make WOL info in ethtool consistent with
+ device wake up ability
+Message-ID: <20200524210653.2bzmotjbsknm6zhn@lion.mk-sys.cz>
+References: <cover.1590081982.git.yu.c.chen@intel.com>
+ <725bad2f3ce7f7b7f1667d53b6527dc059f9e419.1590081982.git.yu.c.chen@intel.com>
+ <20200521192342.GE8771@lion.mk-sys.cz>
+ <20200523090950.GA20370@chenyu-office.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200523090950.GA20370@chenyu-office.sh.intel.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This brings up the GPU. Tested on HDK865 by running vulkan CTS.
+On Sat, May 23, 2020 at 05:09:50PM +0800, Chen Yu wrote:
+> Hi Michal,
+> Thanks for reviewing,
+> and sorry for late reply.
+> On Thu, May 21, 2020 at 09:23:42PM +0200, Michal Kubecek wrote:
+> > On Fri, May 22, 2020 at 01:59:13AM +0800, Chen Yu wrote:
+> > > Currently the ethtool shows that WOL(Wake On Lan) is enabled
+> > > even if the device wakeup ability has been disabled via sysfs:
+> > >   cat /sys/devices/pci0000:00/0000:00:1f.6/power/wakeup
+> > >    disabled
+> > > 
+> > >   ethtool eno1
+> > >   ...
+> > >   Wake-on: g
+> > > 
+> > > Fix this in ethtool to check if the user has explicitly disabled the
+> > > wake up ability for this device.
+> > 
+> > Wouldn't this lead to rather unexpected and inconsistent behaviour when
+> > the wakeup is disabled? As you don't touch the set_wol handler, I assume
+> > it will still allow setting enabled modes as usual so that you get e.g.
+> > 
+> >   ethtool -s eth0 wol g   # no error or warning, returns 0
+> >   ethtool eth0            # reports no modes enabled
+> > 
+> > The first command would set the enabled wol modes but that would be
+> > hidden from user and even the netlink notification would claim something
+> > different. Another exampe (with kernel and ethtool >= 5.6):
+> > 
+> >   ethtool -s eth0 wol g
+> >   ethtool -s eth0 wol +m
+> > 
+> > resulting in "mg" if device wakeup is enabled but "m" when it's disabled
+> > (but the latter would be hidden from user and only revealed when you
+> > enable the device wakeup).
+> > 
+> I've tested ethtool v5.6 on top of kernel v5.7-rc6, it looks like
+> the scenario you described will not happen as it will not allow
+> the user to enable the wol options with device wakeup disabled,
+> not sure if I missed something:
+> 
+> /sys/devices/pci0000:00/0000:00:1f.6/power# echo disabled > wakeup
+> 
+> ethtool -s eno1 wol g
+> netlink error: cannot enable unsupported WoL mode (offset 36)
+> netlink error: Invalid argument
+> 
+> I've not digged into the code too much, but according to
+> ethhl_set_wol(), it will first get the current wol options
+> via dev->ethtool_ops->get_wol(), and both the wolopts and
+> wol.supported are 0 when device wake up are disabled. Then
+> ethnl_update_bitset32 might manipulate on wolopts and
+> make it non-zero each is controdict with the precondition that
+> no opts should be enabled due to 0 wol.supported.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 139 +++++++++++++++++++++++++++
- 1 file changed, 139 insertions(+)
+You are right, I didn't realize that you report 0 even for supported WoL
+modes. However, this feels even more wrong from my point of view as then
+even the list of supported WoL modes would be hidden from user when the
+sysfs switch is off.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 3bdce658c08a..a55d0e5d7425 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/qcom,gcc-sm8250.h>
-+#include <dt-bindings/clock/qcom,gpucc-sm8250.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-@@ -387,6 +388,144 @@ tcsr_mutex: hwlock@1f40000 {
- 			#hwlock-cells = <1>;
- 		};
- 
-+		gpu: gpu@3d00000 {
-+			/*
-+			 * note: the amd,imageon compatible makes it possible
-+			 * to use the drm/msm driver without the display node,
-+			 * make sure to remove it when display node is added
-+			 */
-+			compatible = "qcom,adreno-650.2",
-+				     "qcom,adreno",
-+				     "amd,imageon";
-+			#stream-id-cells = <16>;
-+
-+			reg = <0 0x3d00000 0 0x40000>;
-+			reg-names = "kgsl_3d0_reg_memory";
-+
-+			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			iommus = <&adreno_smmu 0 0x401>;
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+
-+			qcom,gmu = <&gmu>;
-+
-+			zap-shader {
-+				memory-region = <&gpu_mem>;
-+			};
-+
-+			/* note: downstream checks gpu binning for 670 Mhz */
-+			gpu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-670000000 {
-+					opp-hz = /bits/ 64 <670000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
-+				};
-+
-+				opp-587000000 {
-+					opp-hz = /bits/ 64 <587000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
-+				};
-+
-+				opp-525000000 {
-+					opp-hz = /bits/ 64 <525000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L2>;
-+				};
-+
-+				opp-490000000 {
-+					opp-hz = /bits/ 64 <490000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+				};
-+
-+				/* opp-441600000 {
-+					opp-hz = /bits/ 64 <441600000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L0>;
-+				}; */
-+
-+				opp-400000000 {
-+					opp-hz = /bits/ 64 <400000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+				};
-+
-+				opp-305000000 {
-+					opp-hz = /bits/ 64 <305000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+				};
-+			};
-+		};
-+
-+		gmu: gmu@3d6a000 {
-+			compatible="qcom,adreno-gmu-650.2", "qcom,adreno-gmu";
-+
-+			reg = <0 0x3d6a000 0 0x30000>,
-+			      <0 0x3de0000 0 0x10000>,
-+			      <0 0xb290000 0 0x10000>,
-+			      <0 0xb490000 0 0x10000>;
-+			reg-names = "gmu", "rscc", "gmu_pdc", "gmu_pdc_seq";
-+
-+			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "hfi", "gmu";
-+
-+			clocks = <&gpucc GPU_CC_AHB_CLK>,
-+				 <&gpucc GPU_CC_CX_GMU_CLK>,
-+			         <&gpucc GPU_CC_CXO_CLK>,
-+				 <&gcc GCC_DDRSS_GPU_AXI_CLK>,
-+				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>;
-+			clock-names = "ahb", "gmu", "cxo", "axi", "memnoc";
-+
-+			power-domains = <&gpucc GPU_CX_GDSC>,
-+					<&gpucc GPU_GX_GDSC>;
-+			power-domain-names = "cx", "gx";
-+
-+			iommus = <&adreno_smmu 5 0x400>;
-+
-+			operating-points-v2 = <&gmu_opp_table>;
-+
-+			gmu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+				};
-+			};
-+		};
-+
-+		gpucc: clock-controller@3d90000 {
-+			compatible = "qcom,sm8250-gpucc";
-+			reg = <0 0x3d90000 0 0x9000>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "xo";
-+		};
-+
-+		adreno_smmu: iommu@3da0000 {
-+			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
-+			reg = <0 0x3da0000 0 0x10000>;
-+			#iommu-cells = <2>;
-+			#global-interrupts = <2>;
-+			interrupts = <GIC_SPI 672 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gpucc GPU_CC_AHB_CLK>,
-+				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+				 <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>;
-+			clock-names = "ahb", "bus", "iface";
-+
-+			power-domains = <&gpucc GPU_CX_GDSC>;
-+		};
-+
- 		usb_1_hsphy: phy@88e3000 {
- 			compatible = "qcom,sm8250-usb-hs-phy",
- 				     "qcom,usb-snps-hs-7nm-phy";
--- 
-2.26.1
+Also, AFAICS "ethtool -s <dev> wol d" would be still allowed but the
+behaviour would differ between ioctl and netlink code path: netlink
+would identify the operation as no-op and do nothing. But ioctl does not
+check new value against old one so that it would call your set_wol()
+handler which would set the (hidden) set of enabled WoL modes to empty
+which would mean WoL would stay disabled even after enabling the wakeup
+via sysctl. In other words, you would allow disabling all WoL modes
+(via ioctl) but not setting them to anything else.
 
+> > This is a general problem discussed recently for EEE and pause
+> > autonegotiation: if setting A can be effectively used only when B is
+> > enabled, should we hide actual setting of A from userspace when B is
+> > disabled or even reset the value of A whenever B gets toggled or rather
+> > allow setting A and B independently? AFAICS the consensus seemed to be
+> > that A should be allowed to be set and queried independently of the
+> > value of B.
+> 
+> But then there would be an inconsistence between A and B. I was
+> thinking if there's a way to align them in kernel space and  maintain
+> the difference in user space?
+
+I'm not sure what exactly you mean by maintaining the difference in
+userspace but there are many situations like this and we usually do not
+block the ability to query or set A when the "main switch" is off.
+For example, you can add IPv4/6 addresses to an interface when it is
+down, even if you cannot receive or transmit packets with these
+addresses. Or you can set up netlilter rules in FORWARDING chain
+independently of the global ip_forward sysctl which can block all
+IPv4 forwarding.
+
+Moreover, if we really wanted to report no supported and enabled WoL
+modes when device wakeup is disabled, it should be done for all network
+devices, not only in one driver.
+
+Michal
