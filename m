@@ -2,61 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3887E1E0130
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 19:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF8A1E012B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 19:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387888AbgEXRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 13:37:35 -0400
-Received: from mxs.msl.ua ([185.128.235.3]:47576 "EHLO mxs.msl.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387656AbgEXRhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 13:37:34 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxs.msl.ua (Postfix) with ESMTP id E23975C0386;
-        Sun, 24 May 2020 20:34:29 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
-        message-id:reply-to:date:from:to:subject:content-description
-        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
-        1590341669; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=h
-        Hiyrx3ArLrHR+VmDZlG5uu6lxV1APfWbgwCk50xYtXraTgP/Kvj20alZS5cWV4oE
-        rlFXjGebqkM6OYX3coVbQbyY6vyWgjK6aA64+T7FzB2zI3XwJr7FnYr97ns5v+C4
-        vby0biIm6j+1pBcv0k83BN4U491RZTw0zZwLisaNfI=
-X-Virus-Scanned: amavisd-new at msl.ua
-Content-Type: text/plain; charset="utf-8"
+        id S2387830AbgEXRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 13:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387656AbgEXRfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 13:35:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B301C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 10:35:34 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jcuX2-0008V7-F0; Sun, 24 May 2020 19:35:28 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jcuX1-0002Rf-8g; Sun, 24 May 2020 19:35:27 +0200
+Date:   Sun, 24 May 2020 19:35:27 +0200
+From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, od@zcrc.me,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] pwm: jz4740: Make PWM start with the active part
+Message-ID: <20200524173527.xlie3iycszvtugam@pengutronix.de>
+References: <20200413121445.72996-1-paul@crapouillou.net>
+ <20200413121445.72996-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
- =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
- =?utf-8?q?rftigen!!!?=
-To:     Recipients <o.sapelkin@msl.ua>
-From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
-Date:   Sun, 24 May 2020 19:33:55 +0200
-Reply-To: s.manuelfranco95@gmail.com
-X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200524173411.54A366E2B74D3@zimbra.msl.intranet>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200413121445.72996-2-paul@crapouillou.net>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
-ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
-=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
-en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
- ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
-eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
-below for an interview about my lottery win: https://www.youtube.com/watch?=
-v=3DMMC3DHoGhP8.
+On Mon, Apr 13, 2020 at 02:14:44PM +0200, Paul Cercueil wrote:
+> The PWM would previously always start with the inactive part.
+> To counter that, the common trick is to use an inverted duty as the
+> real duty (as in, 'period - duty'), and invert the polarity when the
+> PWM is enabled.
+> 
+> However, for some reason the driver was already configuring the hardware
+> for an inverted duty, so inverting it again means we do configure the
+> hardware with the actual duty value.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/pwm/pwm-jz4740.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+> index 3cd5c054ad9a..f566f9d248d6 100644
+> --- a/drivers/pwm/pwm-jz4740.c
+> +++ b/drivers/pwm/pwm-jz4740.c
+> @@ -6,7 +6,6 @@
+>   * Limitations:
+>   * - The .apply callback doesn't complete the currently running period before
+>   *   reconfiguring the hardware.
+> - * - Each period starts with the inactive part.
+>   */
+>  
+>  #include <linux/clk.h>
+> @@ -163,7 +162,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 
-Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
+Side note: in the calculation above the driver is loosing precision as
+the calculation for the duty counter uses the (already rounded) stuff
+for the period counter.
 
-Seien Sie sicher und geborgen,
-MANUEL FRANCO
-+ 1 754-231-3468 (nur Whatsapp)
+The currently used calculation is (somewhat simplified syntax):
+
+	period = (rate * requested_period) // NSEC_PER_SEC;
+	duty = (period * requested_duty) // requested_period
+
+The output then is an actual period of
+
+	period * NSEC_PER_SEC / rate
+
+and the duty cycle is
+
+	duty * NSEC_PER_SEC / rate
+
+.
+
+Consider the following:
+
+	rate = 23856100
+	requested_period = 20959
+	requested_duty = 16000
+
+With the currently implemented algorithm we get:
+
+	period = 499
+	duty = 380
+
+yielding a real period of 20917.08 ns (ok) and a duty cycle of 15928.84
+ns. With duty = 381 we'd get 15970.758 ns which is better.
+
+To reach that we'd need:
+
+	/* Calculate duty value */
+	tmp = (unsigned long long)rate * state->duty_cycle;
+	do_div(tmp, NSEC_PER_SEC);
+	duty = tmp
+
+>  	/* Calculate duty value */
+>  	tmp = (unsigned long long)period * state->duty_cycle;
+>  	do_div(tmp, state->period);
+> -	duty = period - tmp;
+> +	duty = (unsigned long)tmp;
+
+That cast is unnecessary.
+
+>  
+>  	if (duty >= period)
+>  		duty = period - 1;
+> @@ -190,17 +189,13 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  			   TCU_TCSR_PWM_SD, TCU_TCSR_PWM_SD);
+>  
+>  	/* Set polarity */
+> -	switch (state->polarity) {
+> -	case PWM_POLARITY_NORMAL:
+> +	if ((state->polarity != PWM_POLARITY_INVERSED) ^ state->enabled)
+
+This needs to be more complicated than before as a disabled PWM needs
+the other setting to yield its inactive level?
+
+Maybe worth a comment?
+
+>  		regmap_update_bits(jz4740->map, TCU_REG_TCSRc(pwm->hwpwm),
+>  				   TCU_TCSR_PWM_INITL_HIGH, 0);
+> -		break;
+> -	case PWM_POLARITY_INVERSED:
+> +	else
+>  		regmap_update_bits(jz4740->map, TCU_REG_TCSRc(pwm->hwpwm),
+>  				   TCU_TCSR_PWM_INITL_HIGH,
+>  				   TCU_TCSR_PWM_INITL_HIGH);
+> -		break;
+> -	}
+
+Best regards
+Uwe
 
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
