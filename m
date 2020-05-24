@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCE21E0281
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743BD1E0279
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388459AbgEXT1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 15:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387862AbgEXT1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 15:27:50 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A320AC061A0E;
-        Sun, 24 May 2020 12:27:49 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id a4so9349842lfh.12;
-        Sun, 24 May 2020 12:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rKQHqAYuyPGCkAJDsVVw4O2WcuzpsiIQPL4viSQa7G0=;
-        b=tAcJd41AAo8LrMlZLQNlAz7LYU4eMuMN3ndTg4otcrNEp1Hv+lk+cx2V2IjRq6kULk
-         upwt3u9MKW0j0vmt1VQlQZYMRY04RH5yRro4gRui9YDO3BjHM9rf27POQfcCsyarP8V1
-         yfyRznBNg8g6ctXtaOzFDseKwwoog+EVNFSIzyI/w/EY//RDDzMWnXYDrJy++yT+9OQZ
-         ScMjRN166SrMp9hWQHeccljhhVEQ174/zy5KyvFDiRxiY/xWUSjjd5Tp42vP37NQulKM
-         VEqYz3eUtYfS15ZiSafaikgKBbONNsoxkqcFayZmoP73dqf8+GtFJERNqdwMYZ1GlazF
-         KAYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rKQHqAYuyPGCkAJDsVVw4O2WcuzpsiIQPL4viSQa7G0=;
-        b=CJTYchLBKbMKMmvfaq9oRDIZEm4UX9nqi/Zm5HfBAFy9gAxWTGfIh7Jjo59+JYyifD
-         JcaF3mqw5Yst3d0YjUHmGf8XnfgIBLURikTRc1RGM1KYzFLDt6OfiqeWY5z5maMzyZJU
-         0VmmYrefKkT3UNcjtbjnfUqbNgJKqXMjFNjLkUGP1sblFBL/NueoE1BOCjUoQcr7PFNA
-         teuNJ2D0BRVR590ynwtm7d5zHduRo4QhXSb5b1E+TATr++BTcoWLX8p4+EGrMJVNnNe+
-         zkRJfEzB7CHu5pGZV7NLzIaBzAuYJoNxltDyOe8lWpOIyenme4uwX5gOLQnUaC+8Bx45
-         0YXg==
-X-Gm-Message-State: AOAM530q5YtC0tCS+01H9MsXNqVOb+aaZFqLJ65MB522L6Nc7IJO9i9p
-        JRrlqNFup/e2Ew0eG5dAfq4=
-X-Google-Smtp-Source: ABdhPJy8024FpbHaKx/cRVMDCHBg1vTzwrl0TzfsFiiXVv1Y2Jz3TJTlE03IcaqYQbBS4oSuI3QZJw==
-X-Received: by 2002:ac2:5324:: with SMTP id f4mr12993687lfh.209.1590348468196;
-        Sun, 24 May 2020 12:27:48 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-76-17-204.pppoe.mtu-net.ru. [91.76.17.204])
-        by smtp.gmail.com with ESMTPSA id x8sm3879864ljh.97.2020.05.24.12.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 12:27:47 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Tony Lindgren <tony@atomide.com>, Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Zack Pearsall <zpearsall@yahoo.com>
-Cc:     linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mfd: tps65910: Correct power-off programming sequence
-Date:   Sun, 24 May 2020 22:26:43 +0300
-Message-Id: <20200524192643.18207-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
+        id S2388445AbgEXT1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 15:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387992AbgEXT1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 15:27:24 -0400
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FEDD2075F;
+        Sun, 24 May 2020 19:27:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590348444;
+        bh=FzOHq6c7QFOy1Q1Z7apPD+mOvKHo4MaeuHH98f8ZlGY=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=idep3C1p3bUspKEkJE9ZaG/Iyyx+xA2laeDujyI4XQGgtI/65qg8R1KQuPagXDGdP
+         miAPl5OSeZrcqJK0V1wZtER5GGrnQefy/1rZIzU1QqY0xfimi2aJNCpulZschSvS8x
+         OMvyuMEbgZiOcPc3swiHqO2vbjkNxKraXLiLwLGM=
+Subject: Re: [PATCH V2] media: s3c-camif: fix missing disable in
+ tegra_adma_probe().
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+To:     wu000273@umn.edu
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjlu@umn.edu
+References: <20200524034616.31625-1-wu000273@umn.edu>
+ <9b1cdd76-1fbf-c66b-a8e1-929ce2aba791@kernel.org>
+Message-ID: <1c635607-b3b1-decc-a395-5d0464a59e17@kernel.org>
+Date:   Sun, 24 May 2020 21:27:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <9b1cdd76-1fbf-c66b-a8e1-929ce2aba791@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes system shutdown on a devices that use TPS65910 as a
-system's power controller. In accordance to the TPS65910 datasheet, the
-PMIC's state-machine transitions into the OFF state only when DEV_OFF
-bit of DEVCTRL_REG is set. The ON / SLEEP states also should be cleared,
-otherwise PMIC won't get into a proper state on shutdown. Devices like
-Nexus 7 tablet and Ouya game console are now shutting down properly.
+On 5/24/20 21:03, Sylwester Nawrocki wrote:
+> On 5/24/20 05:46, wu000273@umn.edu wrote:
+>> From: Qiushi Wu <wu000273@umn.edu>
+>>
+>> "pm_runtime_enable()" was not handled by "pm_runtime_disable()"
+>> after a call of the function “pm_runtime_get_sync()” failed.
+>> Thus move the jump target “err_pm” before calling function
+>> "calling pm_runtime_disable()".
+>>
+>> Fixes: babde1c243b2 ("[media] V4L: Add driver for S3C24XX/S3C64XX SoC 
+>> series camera interface")
+>> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+>> ---
+>>
+>> V2: improving commit messages.
+> 
+> Thanks for the patch. It seems you have got typo in the subject line.
+> With tegra_adma_probe changed to s3c_camif_probe feel free to add:
+> 
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Tested-by: Zack Pearsall <zpearsall@yahoo.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
-
-Changelog:
-
-v2: - Now using a single tps65910_reg_update_bits() instead of set+clear.
-      Thanks to Michał Mirosław for the suggestion.
-
- drivers/mfd/tps65910.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
-index 11959021b50a..3f4483dec871 100644
---- a/drivers/mfd/tps65910.c
-+++ b/drivers/mfd/tps65910.c
-@@ -440,8 +440,13 @@ static void tps65910_power_off(void)
- 			DEVCTRL_PWR_OFF_MASK) < 0)
- 		return;
- 
--	tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
--			DEVCTRL_DEV_ON_MASK);
-+	if (tps65910_reg_clear_bits(tps65910, TPS65910_DEVCTRL,
-+			DEVCTRL_DEV_SLP_MASK) < 0)
-+		return;
-+
-+	tps65910_reg_update_bits(tps65910, TPS65910_DEVCTRL,
-+				 DEVCTRL_DEV_OFF_MASK | DEVCTRL_DEV_ON_MASK,
-+				 DEVCTRL_DEV_OFF_MASK);
- }
- 
- static int tps65910_i2c_probe(struct i2c_client *i2c,
--- 
-2.26.0
-
+I just noticed this patch https://patchwork.linuxtv.org/patch/63976
+which includes your fix and handles one more issue. Thus it might be
+better to apply the patch from Dinghao Liu instead.
