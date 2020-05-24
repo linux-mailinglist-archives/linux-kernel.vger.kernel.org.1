@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA281E03B7
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8EB1E03B8
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388510AbgEXWmk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 18:42:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35420 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387850AbgEXWmk (ORCPT
+        id S2388543AbgEXWmo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 18:42:44 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:46370 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387850AbgEXWmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 18:42:40 -0400
+        Sun, 24 May 2020 18:42:43 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-_CjfpuZLPEeY7cD3Jo16FQ-1; Sun, 24 May 2020 18:42:33 -0400
-X-MC-Unique: _CjfpuZLPEeY7cD3Jo16FQ-1
+ us-mta-211-RMqsU2sTO66M6GJ_uTm6Zg-1; Sun, 24 May 2020 18:42:36 -0400
+X-MC-Unique: RMqsU2sTO66M6GJ_uTm6Zg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3465800688;
-        Sun, 24 May 2020 22:42:31 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51EEA107ACCD;
+        Sun, 24 May 2020 22:42:34 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 15A6C5D788;
-        Sun, 24 May 2020 22:42:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 06E7E5D788;
+        Sun, 24 May 2020 22:42:31 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 02/14] perf tools: Do not pass avg to generic_metric
-Date:   Mon, 25 May 2020 00:42:07 +0200
-Message-Id: <20200524224219.234847-3-jolsa@kernel.org>
+Subject: [PATCH 03/14] perf tools: Add struct parse_events_state pointer to scanner
+Date:   Mon, 25 May 2020 00:42:08 +0200
+Message-Id: <20200524224219.234847-4-jolsa@kernel.org>
 In-Reply-To: <20200524224219.234847-1-jolsa@kernel.org>
 References: <20200524224219.234847-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -51,57 +51,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to pass the given evsel's count to
-metric data, because it will be pushed again within
-the following metric_events loop.
+We need to pass more data to the scanner so let's
+start with having it to take pointer to struct
+parse_events_state object instead of just start
+token.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/stat-shadow.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ tools/perf/util/parse-events.c | 15 +++++++++------
+ tools/perf/util/parse-events.h |  1 +
+ tools/perf/util/parse-events.l |  8 ++++----
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index c44dc814b377..a7c13a88ecb9 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -737,7 +737,6 @@ static void generic_metric(struct perf_stat_config *config,
- 			   const char *metric_name,
- 			   const char *metric_unit,
- 			   int runtime,
--			   double avg,
- 			   int cpu,
- 			   struct perf_stat_output_ctx *out,
- 			   struct runtime_stat *st)
-@@ -750,11 +749,6 @@ static void generic_metric(struct perf_stat_config *config,
- 	char *n, *pn;
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index e0ccf027d214..27b8e49d690e 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -26,7 +26,7 @@
+ #include <api/fs/tracing_path.h>
+ #include <perf/cpumap.h>
+ #include "parse-events-bison.h"
+-#define YY_EXTRA_TYPE int
++#define YY_EXTRA_TYPE void*
+ #include "parse-events-flex.h"
+ #include "pmu.h"
+ #include "thread_map.h"
+@@ -2027,13 +2027,14 @@ perf_pmu__parse_check(const char *name)
+ 	return r ? r->type : PMU_EVENT_SYMBOL_ERR;
+ }
  
- 	expr__ctx_init(&pctx);
--	/* Must be first id entry */
--	n = strdup(name);
--	if (!n)
--		return;
--	expr__add_id(&pctx, n, avg);
- 	for (i = 0; metric_events[i]; i++) {
- 		struct saved_value *v;
- 		struct stats *stats;
-@@ -1042,7 +1036,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 			print_metric(config, ctxp, NULL, NULL, name, 0);
- 	} else if (evsel->metric_expr) {
- 		generic_metric(config, evsel->metric_expr, evsel->metric_events, evsel->name,
--				evsel->metric_name, NULL, 1, avg, cpu, out, st);
-+				evsel->metric_name, NULL, 1, cpu, out, st);
- 	} else if (runtime_stat_n(st, STAT_NSECS, 0, cpu) != 0) {
- 		char unit = 'M';
- 		char unit_buf[10];
-@@ -1071,7 +1065,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 				out->new_line(config, ctxp);
- 			generic_metric(config, mexp->metric_expr, mexp->metric_events,
- 					evsel->name, mexp->metric_name,
--					mexp->metric_unit, mexp->runtime, avg, cpu, out, st);
-+					mexp->metric_unit, mexp->runtime, cpu, out, st);
- 		}
- 	}
- 	if (num == 0)
+-static int parse_events__scanner(const char *str, void *parse_state, int start_token)
++static int parse_events__scanner(const char *str,
++				 struct parse_events_state *parse_state)
+ {
+ 	YY_BUFFER_STATE buffer;
+ 	void *scanner;
+ 	int ret;
+ 
+-	ret = parse_events_lex_init_extra(start_token, &scanner);
++	ret = parse_events_lex_init_extra(parse_state, &scanner);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2057,11 +2058,12 @@ static int parse_events__scanner(const char *str, void *parse_state, int start_t
+ int parse_events_terms(struct list_head *terms, const char *str)
+ {
+ 	struct parse_events_state parse_state = {
+-		.terms = NULL,
++		.terms  = NULL,
++		.stoken = PE_START_TERMS,
+ 	};
+ 	int ret;
+ 
+-	ret = parse_events__scanner(str, &parse_state, PE_START_TERMS);
++	ret = parse_events__scanner(str, &parse_state);
+ 	if (!ret) {
+ 		list_splice(parse_state.terms, terms);
+ 		zfree(&parse_state.terms);
+@@ -2080,10 +2082,11 @@ int parse_events(struct evlist *evlist, const char *str,
+ 		.idx    = evlist->core.nr_entries,
+ 		.error  = err,
+ 		.evlist = evlist,
++		.stoken = PE_START_EVENTS,
+ 	};
+ 	int ret;
+ 
+-	ret = parse_events__scanner(str, &parse_state, PE_START_EVENTS);
++	ret = parse_events__scanner(str, &parse_state);
+ 	perf_pmu__parse_cleanup();
+ 
+ 	if (!ret && list_empty(&parse_state.list)) {
+diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+index 6ead9661238c..d60510e0609f 100644
+--- a/tools/perf/util/parse-events.h
++++ b/tools/perf/util/parse-events.h
+@@ -128,6 +128,7 @@ struct parse_events_state {
+ 	struct parse_events_error *error;
+ 	struct evlist	  *evlist;
+ 	struct list_head	  *terms;
++	int			   stoken;
+ };
+ 
+ void parse_events__handle_error(struct parse_events_error *err, int idx,
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 394132254447..002802e17059 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -209,10 +209,10 @@ modifier_bp	[rwx]{1,3}
+ %%
+ 
+ %{
+-	{
+-		int start_token;
++	struct parse_events_state *_parse_state = parse_events_get_extra(yyscanner);
+ 
+-		start_token = parse_events_get_extra(yyscanner);
++	{
++		int start_token = _parse_state->stoken;
+ 
+ 		if (start_token == PE_START_TERMS)
+ 			BEGIN(config);
+@@ -220,7 +220,7 @@ modifier_bp	[rwx]{1,3}
+ 			BEGIN(event);
+ 
+ 		if (start_token) {
+-			parse_events_set_extra(NULL, yyscanner);
++			_parse_state->stoken = 0;
+ 			/*
+ 			 * The flex parser does not init locations variable
+ 			 * via the scan_string interface, so we need do the
 -- 
 2.25.4
 
