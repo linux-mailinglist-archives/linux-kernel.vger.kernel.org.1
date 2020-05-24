@@ -2,79 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050571DFE4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FF71DFE51
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 12:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387602AbgEXKVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 06:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbgEXKVe (ORCPT
+        id S2387594AbgEXKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 06:24:15 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:46458 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728927AbgEXKYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 06:21:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98156C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 03:21:33 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jcnkv-00081r-N0; Sun, 24 May 2020 12:21:21 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jcnkt-0003Gk-Pq; Sun, 24 May 2020 12:21:19 +0200
-Date:   Sun, 24 May 2020 12:21:19 +0200
-From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-pwm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] pwm: pca9685: Remove set but not used variable
- 'pwm'
-Message-ID: <20200524102119.2fzcl7bqu6qh3w5g@pengutronix.de>
-References: <CAGngYiVDCCjo6VKt660Uz5mbEGOBOZpcUWeRHWx_L=TapZgv_w@mail.gmail.com>
- <20190606151111.14237-1-TheSven73@gmail.com>
- <20200523201730.o7y7pent4hjtgia3@pengutronix.de>
- <CAGngYiWCT=_H+PwXRTgMWRpwRWMrgvA3vD1is2r704oZn14LiA@mail.gmail.com>
+        Sun, 24 May 2020 06:24:14 -0400
+Received: by mail-il1-f200.google.com with SMTP id x2so1408676ill.13
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 03:24:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=aQ2R90lcBZ5pzqo7KH+THps7IFll5Sr+F8zeDKtgZJM=;
+        b=bbCcEFmFn4RtCACRLg+Ebxfkc8vIjcYxbO0TZHDDPl3T0EEmg03evZFVxh97tRfke4
+         OgTZFpqUt8FKIIsYH/ApGIygXJcqvCqvEcZHw/EnesqKwblv+1V7//HTGvHtCr96uyFP
+         9cXoHaPZmHdJZULmom5pucGnEdKMgqTEm5fAGBY7aoPOortywPUGBylIYmjlAfVCad/z
+         Sy/KRHv8N00GYdTt11k/ctSKNPjEJ9CQkXFny4UaCG3iuf+nHzkVodho26oZ5ARU8bIN
+         qsb+CU79TxOg8YK5Z/uDcpkMxAfidD2o68hvB2KIxPoVLFfUN0KtH1IZ42Z7A+fW8+IB
+         t0Mw==
+X-Gm-Message-State: AOAM532ueuz28YJH2rjd4FnAgY2n7TYx0twGGFFrObVHyGhlVUwwETak
+        MQ8WP2UrR1fkVN4O7jio4bFdFgKJyL8h0yI8LqYdStWyixi2
+X-Google-Smtp-Source: ABdhPJySFHH59iBm+iOPcUtJl+p87aJm++qydSvRgFrddy4gCSv4A+y2Y/Wsb07YprMzwYjiSGPEjxlNkeOoq/gGGwDObWbBBF7N
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGngYiWCT=_H+PwXRTgMWRpwRWMrgvA3vD1is2r704oZn14LiA@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Received: by 2002:a02:2708:: with SMTP id g8mr15615078jaa.52.1590315852684;
+ Sun, 24 May 2020 03:24:12 -0700 (PDT)
+Date:   Sun, 24 May 2020 03:24:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007ae41505a66243fb@google.com>
+Subject: KASAN: use-after-free Read in evdev_cleanup
+From:   syzbot <syzbot+20458a5eab138777efc9@syzkaller.appspotmail.com>
+To:     brendanhiggins@google.com, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, heikki.krogerus@linux.intel.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rafael.j.wysocki@intel.com, rdunlap@infradead.org,
+        rydberg@bitmath.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 08:24:23PM -0400, Sven Van Asbroeck wrote:
-> Hi Uwe,
-> 
-> On Sat, May 23, 2020 at 4:17 PM Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> >
-> > Is this patch still relevant?
-> 
-> A slightly different version of this patch has already landed in
-> mainline. Clemens Gruber had
-> relevant hardware available, and was able to test it out.
-> 
-> See Linus's tree here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/pwm/pwm-pca9685.c?h=v5.7-rc6&id=9cc5f232a4b6a0ef6e9b57876d61b88f61bdd7c2
+Hello,
 
-Optimal, thanks for the feedback. So this thread can be closed.
+syzbot found the following crash on:
 
-Thanks
-Uwe
+HEAD commit:    c11d28ab Add linux-next specific files for 20200522
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f54441100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3f6dbdea4159fb66
+dashboard link: https://syzkaller.appspot.com/bug?extid=20458a5eab138777efc9
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133e254a100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dbf016100000
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+The bug was bisected to:
+
+commit 4ef12f7198023c09ad6d25b652bd8748c965c7fa
+Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Date:   Wed May 13 15:18:40 2020 +0000
+
+    kobject: Make sure the parent does not get released before its children
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16763f06100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=15763f06100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11763f06100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+20458a5eab138777efc9@syzkaller.appspotmail.com
+Fixes: 4ef12f719802 ("kobject: Make sure the parent does not get released before its children")
+
+input: syz1 as /devices/virtual/input/input5
+==================================================================
+BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+BUG: KASAN: use-after-free in __mutex_lock+0x1033/0x13c0 kernel/locking/mutex.c:1103
+Read of size 8 at addr ffff8880a019f158 by task syz-executor054/6791
+
+CPU: 0 PID: 6791 Comm: syz-executor054 Not tainted 5.7.0-rc6-next-20200522-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd3/0x413 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+ __mutex_lock+0x1033/0x13c0 kernel/locking/mutex.c:1103
+ evdev_mark_dead drivers/input/evdev.c:1314 [inline]
+ evdev_cleanup+0x21/0x190 drivers/input/evdev.c:1323
+ evdev_disconnect+0x45/0xb0 drivers/input/evdev.c:1408
+ __input_unregister_device+0x1b0/0x430 drivers/input/input.c:2091
+ input_unregister_device+0xb4/0xf0 drivers/input/input.c:2273
+ uinput_destroy_device+0x1e2/0x240 drivers/input/misc/uinput.c:298
+ uinput_release+0x37/0x50 drivers/input/misc/uinput.c:710
+ __fput+0x33e/0x880 fs/file_table.c:281
+ task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+ exit_task_work include/linux/task_work.h:22 [inline]
+ do_exit+0xb5e/0x2e10 kernel/exit.c:805
+ do_group_exit+0x125/0x340 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x43f9e8
+Code: Bad RIP value.
+RSP: 002b:00007ffd043eeff8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043f9e8
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004bf228 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 6791:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc mm/kasan/common.c:494 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:467
+ kmem_cache_alloc_trace+0x153/0x7d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ evdev_connect+0x80/0x4d0 drivers/input/evdev.c:1352
+ input_attach_handler+0x194/0x200 drivers/input/input.c:1031
+ input_register_device.cold+0xf5/0x246 drivers/input/input.c:2229
+ uinput_create_device drivers/input/misc/uinput.c:364 [inline]
+ uinput_ioctl_handler.isra.0+0x1210/0x1d80 drivers/input/misc/uinput.c:870
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ ksys_ioctl+0x11a/0x180 fs/ioctl.c:753
+ __do_sys_ioctl fs/ioctl.c:762 [inline]
+ __se_sys_ioctl fs/ioctl.c:760 [inline]
+ __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Freed by task 6791:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf7/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x109/0x2b0 mm/slab.c:3757
+ device_release+0x71/0x200 drivers/base/core.c:1541
+ kobject_cleanup lib/kobject.c:701 [inline]
+ kobject_release lib/kobject.c:732 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x2f0 lib/kobject.c:749
+ cdev_device_del+0x69/0x80 fs/char_dev.c:575
+ evdev_disconnect+0x3d/0xb0 drivers/input/evdev.c:1407
+ __input_unregister_device+0x1b0/0x430 drivers/input/input.c:2091
+ input_unregister_device+0xb4/0xf0 drivers/input/input.c:2273
+ uinput_destroy_device+0x1e2/0x240 drivers/input/misc/uinput.c:298
+ uinput_release+0x37/0x50 drivers/input/misc/uinput.c:710
+ __fput+0x33e/0x880 fs/file_table.c:281
+ task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+ exit_task_work include/linux/task_work.h:22 [inline]
+ do_exit+0xb5e/0x2e10 kernel/exit.c:805
+ do_group_exit+0x125/0x340 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+The buggy address belongs to the object at ffff8880a019f000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 344 bytes inside of
+ 2048-byte region [ffff8880a019f000, ffff8880a019f800)
+The buggy address belongs to the page:
+page:ffffea00028067c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00029b4348 ffff8880aa001950 ffff8880aa000e00
+raw: 0000000000000000 ffff8880a019f000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a019f000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a019f080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880a019f100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff8880a019f180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a019f200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
