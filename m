@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799121DFC59
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 04:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37F91DFC5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 04:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388266AbgEXCJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 May 2020 22:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
+        id S2388305AbgEXCLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 May 2020 22:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387611AbgEXCJW (ORCPT
+        with ESMTP id S2388225AbgEXCLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 May 2020 22:09:22 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB111C061A0E;
-        Sat, 23 May 2020 19:09:22 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x13so7051474pfn.11;
-        Sat, 23 May 2020 19:09:22 -0700 (PDT)
+        Sat, 23 May 2020 22:11:11 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40444C061A0E;
+        Sat, 23 May 2020 19:11:11 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x10so6006247plr.4;
+        Sat, 23 May 2020 19:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M8t92UHEG9xmX2x0+2zxvglG7xZzbvBYHiKbas5wX2g=;
-        b=Eh0Ffe4YOqhUHMOMy+kZXneDCldnbN1x73i1+Pnksv5Wm65E69uoN0l4qdqLYOqO4O
-         32JpM3+oyIatSUfC0CpmPHs2mvcXjNZtSVvRZ4isDoGcUNMWyu/qp1H3ODje5SVZ4DSJ
-         D1RO2zTdcFJMrC1BjsgXG10FX+MeYJgk94LVaO3pD1sNQV3SpEH+swCJOJB7vVRfpBMA
-         0PsdbiPvEWyiYuQje1yy+yPfUsi0K97xvwvb3iVgoJ2zeWCgp7bmOq5YU7U2VGU71Qpv
-         mClgEEm+6fDbZdond/kxIBPlmGYbXOSO1Ah9y3fnQBDY6btDTamFrVQXP4YxR1BdAqAe
-         T05w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1NYHauUBWTQgbc43oFTAJCreNKv+baIo/68K96Zs4rc=;
+        b=J786UewExllUKHofcVvgLTI358KCYatvgJpAOm0F2OufvL+pVNAtJGo1pj6JUBbbpC
+         3NF7ePvGe1k+NcGAVJWA2jqXhGQgat6fKQL9C+cfS+HDIRW3Ap1PV2RjfeIRroac1Ezk
+         KhFr6z8QBUa1W8cUNJnD/40ivm8kFHrTlkiHK7cocLe4YIU63lxvhlKVJLa1uVkKSRXG
+         K5T/3uWMrNaxJoDU2eQqFcsAoD5BLt9X90hzco/4eRKjYTM1gkTYB1q7X53w991RSW2v
+         1MVV+EKruZWQnr+ZrRghABtNQQDfIE7Sfy1pYYOvIS3EeWc8l92vFliiDW9EjpixaL1h
+         Qflg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=M8t92UHEG9xmX2x0+2zxvglG7xZzbvBYHiKbas5wX2g=;
-        b=Hdfe6xce/v1hgbG+wbiDSngt9TImhDHaQtc0uwjUyBtsigZT6bPVelJQmKT0n9yy6M
-         /EjN6DmjCFq1AdRqpo/r3z760CaEwq8CG7nS5TSYBXBbDbOcac3bezjRU7RwkSkLdTTE
-         uoPUR4Fs9KXhiP5912oJKxu2jZjn2CiCDFuGoCAFw91fSKuP6+pplFzvo8PW4U/JAZB5
-         uWberXcHDe0olT1lybubUlMwThQToMXR1fnwF42tk3yNfOd+7QqdvSom50Ee0kuIUq8f
-         /a6ZZjq2z9fZKDZpOFpmp5E1v38ZIJiucBHeXz6yzR1zn4fljLFDoBpFckqO8kmKEqQO
-         kQJQ==
-X-Gm-Message-State: AOAM530d1piu/VkFwqT702JJ+A+UqGwKKk1h/ByNwW22+Em8+uWHCp/P
-        G/eq4VcQ5uldaJAE9/mB1Uq6DnVP
-X-Google-Smtp-Source: ABdhPJxMfiYYebn1lA5gJzgZy7wOXY6RNfKe0AyXL5g5hLa6iXb1zvvkU8Qj07bMOT1XlhLfxjr0dQ==
-X-Received: by 2002:a62:e801:: with SMTP id c1mr10861060pfi.217.1590286161707;
-        Sat, 23 May 2020 19:09:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r2sm10140098pfq.194.2020.05.23.19.09.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 May 2020 19:09:21 -0700 (PDT)
-Subject: Re: [PATCH] sparc32: use PUD rather than PGD to get PMD in
- srmmu_nocache_init()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Anatoly Pugachev <matorola@gmail.com>,
-        sparclinux@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-References: <20200523224732.GA243603@roeck-us.net>
- <CAHk-=wjnwsRfE_RJLAV8SX465uEmpOOJxyqjsLRwoX-UPH0kQg@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <3bc16457-55d1-3d1f-6a78-fc3e95a1855f@roeck-us.net>
-Date:   Sat, 23 May 2020 19:09:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1NYHauUBWTQgbc43oFTAJCreNKv+baIo/68K96Zs4rc=;
+        b=Qb9sNV064AArRV05HIGQ6y9u5uXrTjVSEBDbki/iMQ+pi6j7p0mSaz7zYpV8sJK7F1
+         SnAKETVrr1kiqND/xtpj4rTmJ9vDJM+gDlH52p7fXgi4gG8VYHHviqdgh/Q4pxlqmAE+
+         2Ggp+8zUpP/PC7mDAtUyCoKozvF6tWfXW9FGgI9Ladfgltn3de2A83j8bmyweAdp4IFd
+         5IJA7kOiPgVGF/fMG9bwkVtorZ6tqIR6U+ZV0GYyMR10vbPUM0ylo0BttwhPdmmdw2Vs
+         BxwwMcRtOUFn79f+TZkIWI9NrvKLHRHNyWiPEiQcaMQ5OPE4RrqRbsoBPLixUJVgMUsV
+         DrtQ==
+X-Gm-Message-State: AOAM533jwINdWIdx6a8eKtZ9wcS5OrU277jRE5R+DietqyoGPCTLCQ8w
+        YqCuEBXqLwmNMfVyen4AWDM=
+X-Google-Smtp-Source: ABdhPJzjaswgBjGeZOebznwn3ru9lufOX3WhHax+o+4Bd9NRfLzG3TqcRXoKe1CoWCEUQMaErKCTqQ==
+X-Received: by 2002:a17:90a:10c1:: with SMTP id b1mr7863131pje.232.1590286270773;
+        Sat, 23 May 2020 19:11:10 -0700 (PDT)
+Received: from localhost (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id p1sm1961780pjz.36.2020.05.23.19.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 May 2020 19:11:10 -0700 (PDT)
+Date:   Sat, 23 May 2020 19:11:06 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, maz@kernel.org,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        steven.price@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Steve.Capper@arm.com, Kaly.Xin@arm.com,
+        justin.he@arm.com, Wei.Chen@arm.com, nd@arm.com
+Subject: Re: [RFC PATCH v12 10/11] arm64: add mechanism to let user choose
+ which counter to return
+Message-ID: <20200524021106.GC335@localhost>
+References: <20200522083724.38182-1-jianyong.wu@arm.com>
+ <20200522083724.38182-11-jianyong.wu@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjnwsRfE_RJLAV8SX465uEmpOOJxyqjsLRwoX-UPH0kQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522083724.38182-11-jianyong.wu@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/20 5:15 PM, Linus Torvalds wrote:
-> On Sat, May 23, 2020 at 3:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> This quite innocent looking patch crashes all my sparc32 boot tests.
->> Crash log and bisect results below. Reverting it fixes the problem.
-> 
-> It should also fixed by 0cfc8a8d70dc ("sparc32: fix page table
-> traversal in srmmu_nocache_init()"). No?
-> 
+On Fri, May 22, 2020 at 04:37:23PM +0800, Jianyong Wu wrote:
+> In general, vm inside will use virtual counter compered with host use
+> phyical counter. But in some special scenarios, like nested
+> virtualization, phyical counter maybe used by vm. A interface added in
+> ptp_kvm driver to offer a mechanism to let user choose which counter
+> should be return from host.
 
-Yes, it is. Sorry for the noise. 0cfc8a8d70dc wasn't available
-when I started the bisect, and I didn't re-check afterwards.
+Sounds like you have two time sources, one for normal guest, and one
+for nested.  Why not simply offer the correct one to user space
+automatically?  If that cannot be done, then just offer two PHC
+devices with descriptive names.
 
-Guenter
+> diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+> index fef72f29f3c8..8b0a7b328bcd 100644
+> --- a/drivers/ptp/ptp_chardev.c
+> +++ b/drivers/ptp/ptp_chardev.c
+> @@ -123,6 +123,9 @@ long ptp_ioctl(struct posix_clock *pc, unsigned int cmd, unsigned long arg)
+>  	struct timespec64 ts;
+>  	int enable, err = 0;
+>  
+> +#ifdef CONFIG_ARM64
+> +	static long flag;
+
+static?  This is not going to fly.
+
+> +		 * In most cases, we just need virtual counter from host and
+> +		 * there is limited scenario using this to get physical counter
+> +		 * in guest.
+> +		 * Be careful to use this as there is no way to set it back
+> +		 * unless you reinstall the module.
+
+How on earth is the user supposed to know this?
+
+From your description, this "flag" really should be a module
+parameter.
+
+Thanks,
+Richard
