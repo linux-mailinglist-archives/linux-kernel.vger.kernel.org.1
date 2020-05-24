@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707C01E03BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5881E03BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388573AbgEXWmt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 18:42:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27379 "EHLO
+        id S2388595AbgEXWm5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 18:42:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21939 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388289AbgEXWms (ORCPT
+        with ESMTP id S2388561AbgEXWmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 18:42:48 -0400
+        Sun, 24 May 2020 18:42:49 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-zWBnyYi6MyecgeZlY0V42g-1; Sun, 24 May 2020 18:42:41 -0400
-X-MC-Unique: zWBnyYi6MyecgeZlY0V42g-1
+ us-mta-254-opWfOEG4NkClZ-GlKWoc0Q-1; Sun, 24 May 2020 18:42:43 -0400
+X-MC-Unique: opWfOEG4NkClZ-GlKWoc0Q-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9B7D460;
-        Sun, 24 May 2020 22:42:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59028835B40;
+        Sun, 24 May 2020 22:42:42 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 593AC5D788;
-        Sun, 24 May 2020 22:42:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EB4D6ED9C;
+        Sun, 24 May 2020 22:42:39 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 05/14] perf tools: Add parse_events_fake interface
-Date:   Mon, 25 May 2020 00:42:10 +0200
-Message-Id: <20200524224219.234847-6-jolsa@kernel.org>
+Subject: [PATCH 06/14] perf tests: Add another pmu-events tests
+Date:   Mon, 25 May 2020 00:42:11 +0200
+Message-Id: <20200524224219.234847-7-jolsa@kernel.org>
 In-Reply-To: <20200524224219.234847-1-jolsa@kernel.org>
 References: <20200524224219.234847-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -51,115 +51,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding parse_events_fake interface to parse events
-and use fake pmu event in case pmu event is parsed.
+The test goes through all metrics compiled for arch
+within pmu events and try to parse them.
 
-This way it's possible to parse events from PMUs
-which are not present in the system. It's available
-only for testing purposes coming in following
-changes.
+The test also defines its own list of metrics and
+tries to parse them. It's handy for developing.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/parse-events.c | 48 +++++++++++++++++++++++++---------
- tools/perf/util/parse-events.h |  2 ++
- 2 files changed, 37 insertions(+), 13 deletions(-)
+ tools/perf/tests/pmu-events.c | 120 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 8304f9b6e6be..89239695a728 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2082,22 +2082,15 @@ int parse_events_terms(struct list_head *terms, const char *str)
- 	return ret;
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index ab64b4a4e284..f100df025440 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -490,6 +490,122 @@ static int test_parsing(void)
+ 	return ret == 0 ? TEST_OK : TEST_SKIP;
  }
  
--int parse_events(struct evlist *evlist, const char *str,
--		 struct parse_events_error *err)
-+static int parse_events_state(struct parse_events_state *parse_state,
-+			      struct evlist *evlist, const char *str)
- {
--	struct parse_events_state parse_state = {
--		.list   = LIST_HEAD_INIT(parse_state.list),
--		.idx    = evlist->core.nr_entries,
--		.error  = err,
--		.evlist = evlist,
--		.stoken = PE_START_EVENTS,
--	};
- 	int ret;
- 
--	ret = parse_events__scanner(str, &parse_state);
-+	ret = parse_events__scanner(str, parse_state);
- 	perf_pmu__parse_cleanup();
- 
--	if (!ret && list_empty(&parse_state.list)) {
-+	if (!ret && list_empty(&parse_state->list)) {
- 		WARN_ONCE(true, "WARNING: event parser found nothing\n");
- 		return -1;
- 	}
-@@ -2105,12 +2098,12 @@ int parse_events(struct evlist *evlist, const char *str,
- 	/*
- 	 * Add list to the evlist even with errors to allow callers to clean up.
- 	 */
--	perf_evlist__splice_list_tail(evlist, &parse_state.list);
-+	perf_evlist__splice_list_tail(evlist, &parse_state->list);
- 
- 	if (!ret) {
- 		struct evsel *last;
- 
--		evlist->nr_groups += parse_state.nr_groups;
-+		evlist->nr_groups += parse_state->nr_groups;
- 		last = evlist__last(evlist);
- 		last->cmdline_group_boundary = true;
- 
-@@ -2125,6 +2118,35 @@ int parse_events(struct evlist *evlist, const char *str,
- 	return ret;
- }
- 
-+int parse_events(struct evlist *evlist, const char *str,
-+		 struct parse_events_error *err)
-+{
-+	struct parse_events_state parse_state = {
-+		.list   = LIST_HEAD_INIT(parse_state.list),
-+		.idx    = evlist->core.nr_entries,
-+		.error  = err,
-+		.evlist = evlist,
-+		.stoken = PE_START_EVENTS,
-+	};
++struct test_metric {
++	const char *str;
++};
 +
-+	return parse_events_state(&parse_state, evlist, str);
++static struct test_metric metrics[] = {
++	{ "(unc_p_power_state_occupancy.cores_c0 / unc_p_clockticks) * 100." },
++	{ "imx8_ddr0@read\\-cycles@ * 4 * 4", },
++	{ "imx8_ddr0@axid\\-read\\,axi_mask\\=0xffff\\,axi_id\\=0x0000@ * 4", },
++	{ "(cstate_pkg@c2\\-residency@ / msr@tsc@) * 100", },
++	{ "(imx8_ddr0@read\\-cycles@ + imx8_ddr0@write\\-cycles@)", },
++};
++
++static int check_id(const char *id)
++{
++	struct parse_events_error error;
++	struct evlist *evlist;
++	int ret;
++
++	/* Numbers are always valid. */
++	if (is_number(id))
++		return 0;
++
++	evlist = evlist__new();
++	if (!evlist)
++		return -1;
++
++	memset(&error, 0, sizeof(error));
++	ret = parse_events_fake(evlist, id, &error);
++	if (ret) {
++		pr_debug("str        : %s\n", error.str);
++		pr_debug("help       : %s\n", error.help);
++		pr_debug("first_str  : %s\n", error.first_str);
++		pr_debug("first_help : %s\n", error.first_help);
++	}
++
++	evlist__delete(evlist);
++	free(error.str);
++	free(error.help);
++	free(error.first_str);
++	free(error.first_help);
++	return ret;
 +}
 +
-+int parse_events_fake(struct evlist *evlist, const char *str,
-+		      struct parse_events_error *err)
++static int metric_parse_fake(const char *str)
 +{
-+	struct parse_events_state parse_state = {
-+		.list     = LIST_HEAD_INIT(parse_state.list),
-+		.idx      = evlist->core.nr_entries,
-+		.error    = err,
-+		.evlist   = evlist,
-+		.stoken   = PE_START_EVENTS,
-+		.fake_pmu = true,
-+	};
++	struct expr_parse_ctx ctx;
++	struct hashmap_entry *cur;
++	double result;
++	int ret = -1;
++	size_t bkt;
++	int i;
 +
-+	return parse_events_state(&parse_state, evlist, str);
++	pr_debug("parsing '%s'\n", str);
++
++	expr__ctx_init(&ctx);
++	if (expr__find_other(str, NULL, &ctx, 0) < 0) {
++		pr_err("expr__find_other failed\n");
++		return -1;
++	}
++
++	i = 1;
++	hashmap__for_each_entry((&ctx.ids), cur, bkt)
++		expr__add_id(&ctx, strdup(cur->key), i++);
++
++	hashmap__for_each_entry((&ctx.ids), cur, bkt) {
++		if (check_id(cur->key)) {
++			pr_err("check_id failed\n");
++			goto out;
++		}
++	}
++
++	if (!expr__parse(&result, &ctx, str, 1))
++		ret = 0;
++	else
++		pr_err("expr__parse failed\n");
++
++out:
++	expr__ctx_clear(&ctx);
++	return ret;
++
 +}
 +
- #define MAX_WIDTH 1000
- static int get_term_width(void)
- {
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 963b0ea6c448..4a23b6cd9924 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -34,6 +34,8 @@ int parse_events_option(const struct option *opt, const char *str, int unset);
- int parse_events_option_new_evlist(const struct option *opt, const char *str, int unset);
- int parse_events(struct evlist *evlist, const char *str,
- 		 struct parse_events_error *error);
-+int parse_events_fake(struct evlist *evlist, const char *str,
-+		      struct parse_events_error *error);
- int parse_events_terms(struct list_head *terms, const char *str);
- int parse_filter(const struct option *opt, const char *str, int unset);
- int exclude_perf(const struct option *opt, const char *arg, int unset);
++static int test_parsing_fake(void)
++{
++	struct pmu_events_map *map;
++	struct pmu_event *pe;
++	unsigned int i, j;
++	int err = 0;
++
++	for (i = 0; !err && i < ARRAY_SIZE(metrics); i++)
++		err = metric_parse_fake(metrics[i].str);
++
++	if (err)
++		return err;
++
++	i = 0;
++	for (;;) {
++		map = &pmu_events_map[i++];
++		if (!map->table)
++			break;
++		j = 0;
++		for (;;) {
++			pe = &map->table[j++];
++			if (!pe->name && !pe->metric_group && !pe->metric_name)
++				break;
++			if (!pe->metric_expr)
++				continue;
++			err = metric_parse_fake(pe->metric_expr);
++			if (err)
++				return err;
++		}
++	}
++
++	return 0;
++}
++
+ static const struct {
+ 	int (*func)(void);
+ 	const char *desc;
+@@ -506,6 +622,10 @@ static const struct {
+ 		.func = test_parsing,
+ 		.desc = "Parsing of PMU event table metrics",
+ 	},
++	{
++		.func = test_parsing_fake,
++		.desc = "Parsing of PMU event table metrics with fake PMUs",
++	},
+ };
+ 
+ const char *test__pmu_events_subtest_get_desc(int subtest)
 -- 
 2.25.4
 
