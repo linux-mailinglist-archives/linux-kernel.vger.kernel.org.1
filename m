@@ -2,61 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8AE1DFDD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 11:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EFC1DFDF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 11:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgEXJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 05:15:17 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:47312 "EHLO mail5.wrs.com"
+        id S1728922AbgEXJ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 05:28:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:36885 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728252AbgEXJPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 05:15:16 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 04O9EL1x030031
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Sun, 24 May 2020 02:14:32 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 24 May 2020 02:13:58 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <tj@kernel.org>
-CC:     <jiangshanlai@gmail.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] workqueue: Fix double kfree(rescuer) in destroy_workqueue()
-Date:   Sun, 24 May 2020 17:22:43 +0800
-Message-ID: <20200524092243.19083-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+        id S1727848AbgEXJ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 05:28:41 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jcmvv-0005CF-00; Sun, 24 May 2020 11:28:39 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 695BBC01D2; Sun, 24 May 2020 11:28:20 +0200 (CEST)
+Date:   Sun, 24 May 2020 11:28:20 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: DTS: Only build subdir of current platform
+Message-ID: <20200524092820.GA4874@alpha.franken.de>
+References: <1590027306-2137-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590027306-2137-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Thu, May 21, 2020 at 10:15:06AM +0800, Tiezhu Yang wrote:
+> Add config check in Makefile to only build the subdir of current platform.
+> 
+> E.g. without this patch:
+> 
+>   AR      arch/mips/built-in.a
+>   AR      arch/mips/boot/dts/brcm/built-in.a
+>   AR      arch/mips/boot/dts/cavium-octeon/built-in.a
+>   AR      arch/mips/boot/dts/img/built-in.a
+>   AR      arch/mips/boot/dts/ingenic/built-in.a
+>   AR      arch/mips/boot/dts/lantiq/built-in.a
+>   DTC     arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb
+>   DTB     arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb.S
+>   AS      arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb.o
+>   DTC     arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb
+>   DTB     arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb.S
+>   AS      arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb.o
+>   AR      arch/mips/boot/dts/loongson/built-in.a
+>   AR      arch/mips/boot/dts/mscc/built-in.a
+>   AR      arch/mips/boot/dts/mti/built-in.a
+>   AR      arch/mips/boot/dts/netlogic/built-in.a
+>   AR      arch/mips/boot/dts/ni/built-in.a
+>   AR      arch/mips/boot/dts/pic32/built-in.a
+>   AR      arch/mips/boot/dts/qca/built-in.a
+>   AR      arch/mips/boot/dts/ralink/built-in.a
+>   AR      arch/mips/boot/dts/xilfpga/built-in.a
+>   AR      arch/mips/boot/dts/built-in.a
+> 
+> With this patch:
+> 
+>   AR      arch/mips/built-in.a
+>   DTC     arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb
+>   DTB     arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb.S
+>   AS      arch/mips/boot/dts/loongson/loongson3_4core_rs780e.dtb.o
+>   DTC     arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb
+>   DTB     arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb.S
+>   AS      arch/mips/boot/dts/loongson/loongson3_8core_rs780e.dtb.o
+>   AR      arch/mips/boot/dts/loongson/built-in.a
+>   AR      arch/mips/boot/dts/built-in.a
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/boot/dts/Makefile | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
 
-When destroy_workqueue if rescuer worker exist,wq->rescuer pointer be
-kfree. if sanity checks passed. the func call_rcu(&wq->rcu, rcu_free_wq)
-will be called if the wq->flags & WQ_UNBOUND is false,in rcu_free_wq
-func wq->rescuer pointer was kfree again.
+applied to mips-next.
 
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- kernel/workqueue.c | 1 -
- 1 file changed, 1 deletion(-)
+Thomas.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 891ccad5f271..a2451cdcd503 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -3491,7 +3491,6 @@ static void rcu_free_wq(struct rcu_head *rcu)
- 	else
- 		free_workqueue_attrs(wq->unbound_attrs);
- 
--	kfree(wq->rescuer);
- 	kfree(wq);
- }
- 
 -- 
-2.17.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
