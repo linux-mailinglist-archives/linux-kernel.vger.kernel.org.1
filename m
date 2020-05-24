@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528251DFD5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 07:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0835E1DFD62
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 08:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgEXFdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 01:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgEXFdk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 01:33:40 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB0CC061A0E;
-        Sat, 23 May 2020 22:33:40 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id h16so12468137eds.5;
-        Sat, 23 May 2020 22:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:user-agent:mime-version;
-        bh=mUlXuaPdGF8MyrNkvvQ+W8qtB5P6ns9XkeFGoT1hV9g=;
-        b=du/akGfRVb0CNDOxQ2VjUqmu19WuellI8oCk2MEGLZ+NLsAAh/jVLvXIzqu9Qg+wSv
-         as4DoCMSHRpbFXQDIEn8o0tfVu4FLHTn6NYXaZZ14sbQwFroe/9chPqi8KR5tS2zRFny
-         dpNg2YpFuUhntjlF8bqBt+4IJXgds0dxj/LQq+8OSzRDlFESv2+iJyXgEuEdGdlqxFWF
-         BYq+eNFttygKKgAmiSnEhojzAHCGTsNangGDBuXJmjOFLv5+Us3ApZ1gDkQXt8aAof2b
-         0hWcTubRBuyF+javMxVQIRwj1mFRpC484aB9wcfqLbTR9mfzvSHqbTo6YTK2XUtGoxJa
-         S05w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=mUlXuaPdGF8MyrNkvvQ+W8qtB5P6ns9XkeFGoT1hV9g=;
-        b=AJ+4kvtUmCbQ7yoUxNh9iC1lT98n8bprupPnwLd1A0zN02syKarxkC35nL2TRYV1oi
-         qu91VvdThgKEqkr6o/3adQKb+MTztwYBijcDBN+Gp6UiFU5LIzexM6boxaYk0F4WU3FU
-         8JYrg8eNKO0R7y1S1gZ1iX1wOMupdVkgpW+p+Qxic0ZondyTu+3Q3fzXx5CwcAR9jW2D
-         BEHCtWXbHQZvSIENKJJ7mliXPMTy2GUZt8Fvmqpn6y5oIXLwowL9OMGwNyfpCd/YBr54
-         tu/ane3eO6OVvb979nqcStx8vh4hbmdf0oLhDXD0+9Czi8kvPD0cOTnsBJQbp24Smdzh
-         +t2A==
-X-Gm-Message-State: AOAM531EH+MsXM0tVj2T3TOgdpaOKmfCNCFNLKIWugdS6mJWbBvgQNog
-        mGEQXdLXI/IYZ7ExsrTVCm4Z5j2XCJ0=
-X-Google-Smtp-Source: ABdhPJzGvODHU1b2elyOcjbhnVj3d36TWrWRd5uO/sMjFW1GM/baq4IibwWvKOcTNfWv0SdqfR16Kg==
-X-Received: by 2002:a05:6402:946:: with SMTP id h6mr9956287edz.245.1590298418966;
-        Sat, 23 May 2020 22:33:38 -0700 (PDT)
-Received: from felia ([2001:16b8:2d08:1b00:68f5:8079:cd02:67ba])
-        by smtp.gmail.com with ESMTPSA id w14sm12607719ejk.13.2020.05.23.22.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 May 2020 22:33:38 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Sun, 24 May 2020 07:33:29 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Jonathan Corbet <corbet@lwn.net>
-cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: reference to Linux Foundation NDA program obsolete?
-Message-ID: <alpine.DEB.2.21.2005240722560.5201@felia>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727842AbgEXGC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 02:02:58 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:63402 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725782AbgEXGC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 02:02:58 -0400
+Received: from localhost.localdomain (unknown [222.205.77.158])
+        by mail-app4 (Coremail) with SMTP id cS_KCgC3nwrwDcpee6wbAg--.17220S4;
+        Sun, 24 May 2020 14:02:27 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: stm32-dmamux: Fix runtime PM imbalance on error
+Date:   Sun, 24 May 2020 14:02:23 +0800
+Message-Id: <20200524060224.16189-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgC3nwrwDcpee6wbAg--.17220S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw47Zr18AF13Cr1fXrWDArb_yoW8uFW7pr
+        W8tFWFvr4jqaySy3yDJr4kXFZa934fKr97trW8Gwn3Zw45XFyDt3WrJrWj9F18XF95Ar4D
+        Kr17A3yxCF1UuFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxE
+        wVAFwVW8AwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
+        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0
+        rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUndb1UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBlZdtORShQAbsb
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+In stm32_dmamux_route_allocate(),  pm_runtime_get_sync() increments
+the runtime PM usage counter even when it returns an error code.
+Thus a pairing decrement is needed on the error handling path to
+keep the counter balanced.
 
-while reading the process documentation, I noticed this reference to the 
-Linux Foundation NDA program in Documentation/process/3.Early-stage.rst:
+In stm32_dmamux_probe(), when platform_get_resource() returns an
+error code, a pairing runtime PM usage counter decrement is needed
+to keep the counter balanced. For error paths after this call,
+things are the same.
 
--->
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/dma/stm32-dmamux.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-That said, there are also cases where a company legitimately cannot
-disclose its plans early in the development process.  Companies with
-experienced kernel developers may choose to proceed in an open-loop manner
-on the assumption that they will be able to avoid serious integration
-problems later.  For companies without that sort of in-house expertise, 
-the best option is often to hire an outside developer to review the plans 
-undera non-disclosure agreement.  The Linux Foundation operates an NDA 
-program designed to help with this sort of situation; more information can 
-be found at:
+diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32-dmamux.c
+index 12f7637e13a1..e68e7078ff94 100644
+--- a/drivers/dma/stm32-dmamux.c
++++ b/drivers/dma/stm32-dmamux.c
+@@ -139,6 +139,7 @@ static void *stm32_dmamux_route_allocate(struct of_phandle_args *dma_spec,
+ 	spin_lock_irqsave(&dmamux->lock, flags);
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		spin_unlock_irqrestore(&dmamux->lock, flags);
+ 		goto error;
+ 	}
+@@ -246,8 +247,10 @@ static int stm32_dmamux_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	iomem = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(iomem))
++	if (IS_ERR(iomem)) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		return PTR_ERR(iomem);
++	}
+ 
+ 	spin_lock_init(&stm32_dmamux->lock);
+ 
+@@ -256,12 +259,14 @@ static int stm32_dmamux_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(stm32_dmamux->clk);
+ 		if (ret != -EPROBE_DEFER)
+ 			dev_err(&pdev->dev, "Missing clock controller\n");
++		pm_runtime_put_noidle(&pdev->dev);
+ 		return ret;
+ 	}
+ 
+ 	ret = clk_prepare_enable(stm32_dmamux->clk);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "clk_prep_enable error: %d\n", ret);
++		pm_runtime_put_noidle(&pdev->dev);
+ 		return ret;
+ 	}
+ 
+@@ -300,6 +305,7 @@ static int stm32_dmamux_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_clk:
++	pm_runtime_put_noidle(&pdev->dev);
+ 	clk_disable_unprepare(stm32_dmamux->clk);
+ 
+ 	return ret;
+-- 
+2.17.1
 
-    http://www.linuxfoundation.org/en/NDA_program
-
-This kind of review is often enough to avoid serious problems later on
-without requiring public disclosure of the project.
-
-<--
-
-The link is dead; internet search only showed some references from 
-meeting minutes in 2008, but nothing more since then.
-
-Has this LF NDA program simply been phased out?
-
-If so, I will provide a clean-up patch to remove this historic reference.
-
-Lukas
