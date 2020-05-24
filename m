@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A9E1E001D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9660D1DFFED
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388026AbgEXPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 11:44:40 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:19689 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgEXPnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 11:43:23 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 04OFgcUv017561;
-        Mon, 25 May 2020 00:42:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 04OFgcUv017561
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1590334965;
-        bh=e5cNZhuJWGjYQhLE3zJEZvqPyhXGtlqsBeU1XazTH3w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tnPE8RZMALif53DQzefYiBNlRP3kj8xK/GnBfZl+VFtFfa97wOSc+TAUR2UagNNOp
-         FnMR4ZNXjVBYeos/BHoF8DQVa5LjfUESLnaBs4LGSz4MoIfz0oKTlJbc+Kb5Nznzgc
-         8ZgB941yntaV2heZ2uZqrewLWLv/slzt+oUxCP8VewlQlPhnouoV2jVRWkwRCtlRVF
-         6zs4U2CuIVBmjZe9qKZ0d/Apj/6Rb5LaJsmJQ3OFuDkTGzEKxgwcGF4e6+pHXXK2DQ
-         EI7wWiu6DIkJa0cEeefRBrg35I5tki9sFrYIuQzV/gLVXzY4ZzVlclTOL4utthstx3
-         AxKePH1sXCiJQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/29] modpost: move external module options
-Date:   Mon, 25 May 2020 00:42:18 +0900
-Message-Id: <20200524154235.380482-13-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200524154235.380482-1-masahiroy@kernel.org>
-References: <20200524154235.380482-1-masahiroy@kernel.org>
+        id S1727998AbgEXPmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 11:42:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgEXPmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 11:42:21 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27D4220787;
+        Sun, 24 May 2020 15:42:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590334940;
+        bh=q1uE5Wi2Dr01WADubfdzI24/w+rYlLhrW7QCYzTbk/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKngrQqV+ZytRfELVjBObcT926/Qo2PdOIm07DNwTVTbhlF4SNsz2x+0qQltGn1cG
+         EtJjBsfqPdYnh8Vr2eFUqm8cK5WUJyh3aN3H+CHGPhCeKhjzJf1v6sSWepf1uKlHR5
+         gZNxcIFQWSGTPnjQGRQeeqt+9l06EujmKodqsKi4=
+Date:   Sun, 24 May 2020 11:42:19 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [GIT PULL] Driver core fixes for 5.7-rc7 - take 2
+Message-ID: <20200524154219.GU33628@sasha-vm>
+References: <20200523131759.GA55886@kroah.com>
+ <20200523152922.GA224858@kroah.com>
+ <CAHk-=wih_B_8a48Au=6B+gwFcYnM7qF02dGX3R0QN_2bzVcjVA@mail.gmail.com>
+ <20200524150018.GB11262@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200524150018.GB11262@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Separate out the external-only code for readability.
+On Sun, May 24, 2020 at 05:00:18PM +0200, Greg KH wrote:
+>On Sat, May 23, 2020 at 11:14:28AM -0700, Linus Torvalds wrote:
+>> On Sat, May 23, 2020 at 8:29 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> >
+>> > The kobject patch that was originally in here has now been reverted, as
+>> > Guenter reported boot problems with it on some of his systems.
+>>
+>> Hmm. That original patch looks obviously buggy: in kobject_cleanup()
+>> it would end up doing "kobject_put(parent)" regardless of whether it
+>> had actually done __kobject_del() or not.
+>>
+>> That _could_ have been intentional, but considering the commit
+>> message, it clearly wasn't in this case.  It might be worth re-trying
+>> to the commit, just with that fixed.
+>
+>Turns out that wasn't the real problem here, the culprit is the
+>lib/test_printf.c code trying to tear down a kobject tree from the
+>parent down to the children (i.e. in the backwards order).
+>
+>> Btw, when you end up reverting a patch that was already the top patch,
+>> you might as well just remove it entirely from that tree instead (ie
+>> "git reset --hard HEAD^" instead of "git revert HEAD").
+>>
+>> Unless somebody else uses your branches and you are afraid that the
+>> non-reverted commit escaped out in the wild that way?
+>
+>I don't like rebasing or changing the HEAD like that on a public branch.
+>As proof, syzbot started sending me a bunch of "this is the failed
+>commit" messages right after your email, based on it's testing of the
+>tree in linux-next.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+OTOH, leaving commits like this may result in confusion later on because
+of confusion around the "correct" patch.
 
-Changes in v2: None
+Consider this:
 
- scripts/Makefile.modpost | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+1. Someone writes a patch named "close memory leak when freeing XYZ"
+2. We revert it a day later with 'Revert "close memory leak when
+freeing XYZ"'
+3. Now, what would the author of the original patch do? That's right -
+re-submit a patch with an identical subject line and patch description,
+but with a subtle change in the code to fix the bug the original patch
+was reverted for.
 
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index bc5561aedb24..8321068abb31 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -44,14 +44,11 @@ include include/config/auto.conf
- include scripts/Kbuild.include
- 
- kernelsymfile := $(objtree)/Module.symvers
--modulesymfile := $(KBUILD_EXTMOD)/Module.symvers
- 
- MODPOST = scripts/mod/modpost								\
- 	$(if $(CONFIG_MODVERSIONS),-m)							\
- 	$(if $(CONFIG_MODULE_SRCVERSION_ALL),-a)					\
--	$(if $(KBUILD_EXTMOD),-i,-o) $(kernelsymfile)					\
--	$(if $(KBUILD_EXTMOD),$(addprefix -e ,$(KBUILD_EXTRA_SYMBOLS)))			\
--	$(if $(KBUILD_EXTMOD),-o $(modulesymfile))					\
-+	$(if $(KBUILD_EXTMOD),,-o $(kernelsymfile))					\
- 	$(if $(CONFIG_SECTION_MISMATCH_WARN_ONLY),,-E)					\
- 	$(if $(KBUILD_MODPOST_WARN),-w)
- 
-@@ -81,6 +78,13 @@ src := $(obj)
- # Include the module's Makefile to find KBUILD_EXTRA_SYMBOLS
- include $(if $(wildcard $(KBUILD_EXTMOD)/Kbuild), \
-              $(KBUILD_EXTMOD)/Kbuild, $(KBUILD_EXTMOD)/Makefile)
-+
-+# modpost options for external modules
-+MODPOST += \
-+	-i Module.symvers \
-+	$(addprefix -e ,$(KBUILD_EXTRA_SYMBOLS)) \
-+	-o $(KBUILD_EXTMOD)/Module.symvers
-+
- endif
- 
- # find all modules listed in modules.order
+So now we end up with two "close memory leak when freeing XYZ" commits
+in our git history that are nearly identical. Recipe for a disaster :)
+
+>What is really odd now, is that 'git log lib/kobject.c' does not show
+>the change/revert at all.  Is that because there was a revert?  Or is it
+>a git config option/default somewhere that prevents that from showing
+>up?
+>
+>Odd, 'git blame lib/kobject.c' doesn't show it either.  Yet e6764aa0e553
+>("Revert "kobject: Make sure the parent does not get released before its
+>children"") is in your tree.  What am I missing here?
+
+You need to use the '--follow' flag here:
+
+$ git log -n3 --oneline --follow lib/kobject.c
+e6764aa0e553 Revert "kobject: Make sure the parent does not get released before its children"
+4ef12f719802 kobject: Make sure the parent does not get released before its children
+122f8ec7b78e lib : kobject: fix refcount imblance on kobject_rename
+
+$ git log -n3 --oneline lib/kobject.c
+122f8ec7b78e lib : kobject: fix refcount imblance on kobject_rename
+70e16a620e07 kobject: clean up the kobject add documentation a bit more
+ed856349dc08 kobject: Fix kernel-doc comment first line
+
 -- 
-2.25.1
-
+Thanks,
+Sasha
