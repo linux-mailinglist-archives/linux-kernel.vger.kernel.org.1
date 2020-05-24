@@ -2,107 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D8E1E0202
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D891E0233
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388198AbgEXTSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 15:18:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33172 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387794AbgEXTSw (ORCPT
+        id S2388039AbgEXTWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 15:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387744AbgEXTWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 15:18:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590347931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/hcaiO8OAmzEEvBE9PTP1sm7IVt4F5J/5yjE5N6/7jM=;
-        b=bhzFKg9fh0jhhMsprnC7e6GQAyie0usRpfy+Fyx0XYkJGcAwiIt1800aYEjO8dS6KShtZN
-        U2Ek4Fb8vaC5J9OOZ0jAMzKjegOjs+lMAJ5c2nDrTLxUAW1YDNHEHIiqY7G1JfANQuBUyR
-        gR+4e6jNu+txJxHvcmxVZQn/5dF3ikg=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-isZjvzsPOcyw65ZX4ispRg-1; Sun, 24 May 2020 15:18:49 -0400
-X-MC-Unique: isZjvzsPOcyw65ZX4ispRg-1
-Received: by mail-oo1-f70.google.com with SMTP id z24so8594316ook.13
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:18:49 -0700 (PDT)
+        Sun, 24 May 2020 15:22:14 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B98C05BD43
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:13 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id v2so2857438pfv.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PRgTWBIUIof3K+e/CBH42LWEIO1ioATTUwPeCqp2UHQ=;
+        b=QoOW0b+9anaSH1PynN6EMvziqcD6SYQPSEyhxExvJ4fIbobZWkV+qjOWZY58TVG7/j
+         XFzrw/TO8ZNuU9Wy1Kf0MtJNqmALcX1/fJ/5NQp7C3CXyHN9qTAhMDHMuZ1P5N0QLICT
+         SPtZkbXpx1yp8TjNzUYVx5kDRq5UU+8wJ4/KNP5CVFR4UX6FTCLFGCgQ1D3Lsqx7QjuV
+         tYMuVOBoMg+OEnWFCvHKiMZQ4b/JUMaF2BwDINXvScHsgfWF3j0okK8Xtc5dWYKAP6mD
+         Gfl8OHlvFdVv3AnJaeKNPTRCWKLc+m5FLCtY12XqW+yTOwdElb93BOVQczWu3zRG1Tfj
+         7hbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/hcaiO8OAmzEEvBE9PTP1sm7IVt4F5J/5yjE5N6/7jM=;
-        b=CJDWaTWlvRqoJA17hVecDeC2zWl1Zk0Vi3zgXE4h57QKC+thTfmv47yy28YRlY8YRB
-         L7xnpX/DEegBNqT40Z3k1gC8fjP7tHnoCSC/XJIA01tNVrDIAVatwO7Cs09Yy0GQj8+x
-         w+g+wGlwLFJ5I6BjW5XMT5pKO+jWVUtptCd+Uno6+X9AqDj+hcHFzBDRdDGLS7+1vVV4
-         /iulXOmUCkPwAPfGNNrB96HonusaqvLWT5mLfLGNndgbVhs6JZNXQtuYItH1bKJTH5dd
-         qgL8xw4Z/dep176vzOUpruyUBYJT5lrv80TR7uSyRgL5fdYiQLZmWjndO5enQjUfxvuu
-         IkKA==
-X-Gm-Message-State: AOAM531gNPFH59y1/pdD/HeTMch8Cu4f1QomXACMNNrsuZ17m0WByKQn
-        TqJdr4WD6qVz+R8gAQ33or2sOp3TJnHOILAkEWKTeJgkJ8jvZaL7DiJp5zjQMK/w0NqAh4O4Fh4
-        YPXE/XWFh/4n/hz8JAskXlWYzRkiT6xJtQlzBebWO
-X-Received: by 2002:aca:230e:: with SMTP id e14mr8127885oie.127.1590347928490;
-        Sun, 24 May 2020 12:18:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxR67E8xiElSW8GFSVtkRz6H4YIOv3dOHo5+hRuKxFSktBuh65WLcJCA92/FZ3AbOMoVZnTpxopYyCyDrOGnzQ=
-X-Received: by 2002:aca:230e:: with SMTP id e14mr8127873oie.127.1590347928244;
- Sun, 24 May 2020 12:18:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PRgTWBIUIof3K+e/CBH42LWEIO1ioATTUwPeCqp2UHQ=;
+        b=nwhOXDoDJEekx9Sv6hNrDNp4aDHBz0cR1IC05SXuajb20eFmjsHxKzVeQ2mdxozTjw
+         /jJHHRzYeA16WtXzAyK8SXI7FVoUsHZ+61NxIWx2Gmq8PcIAMx93Qh0rGnxFlIXFdhrb
+         RJPgivbaknh0WZgcbWiaPPlLn7ra5+KSFvCexYLXhENm2QA5r/GgaNltIDn0hkEKqX3I
+         0WeW87WIJXoiFmzIys3tU3C6lxUD6dG3Dp53BfsBftIDwNEAGgoqNJNwSOhY/O5pDDS+
+         6/SZ6dVyulG1YRQbe/oET2UAhNgofN5GnP9w0n2UIiipgv0GuDGBhRTnm7SipdUYaaEb
+         8ITA==
+X-Gm-Message-State: AOAM531ePMhFiS/GO1PV1+x0G1TpLofd2JNFnpkzHM+vJHP1TAcr4RNt
+        h6Az1JRDzsdInUnRItv63qOwZcnmdwhhfg==
+X-Google-Smtp-Source: ABdhPJxpWNMA85eA4BcwCQuyHmnnwKmYr9/iXxe1Qr6NlCvQdWZu5puz/A2BlfDne/CKV/J4XCu1QA==
+X-Received: by 2002:a63:1207:: with SMTP id h7mr17624890pgl.241.1590348132344;
+        Sun, 24 May 2020 12:22:12 -0700 (PDT)
+Received: from x1.lan ([2605:e000:100e:8c61:c871:e701:52fa:2107])
+        by smtp.gmail.com with ESMTPSA id t21sm10312426pgu.39.2020.05.24.12.22.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 12:22:11 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCHSET v4 0/12] Add support for async buffered reads
+Date:   Sun, 24 May 2020 13:21:54 -0600
+Message-Id: <20200524192206.4093-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200524145034.10697-1-penguin-kernel@I-love.SAKURA.ne.jp> <d65ee15211aa69a815bdc7cc4fc9e7c2e1bcba43.camel@perches.com>
-In-Reply-To: <d65ee15211aa69a815bdc7cc4fc9e7c2e1bcba43.camel@perches.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Sun, 24 May 2020 21:18:38 +0200
-Message-ID: <CAFqZXNthJE0a3KkgZFXYSFArwRs0H_20KjT6KfAkiMo6WTp1rw@mail.gmail.com>
-Subject: Re: [PATCH] twist: allow converting pr_devel()/pr_debug() into printk(KERN_DEBUG)
-To:     Joe Perches <joe@perches.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 7:38 PM Joe Perches <joe@perches.com> wrote:
-> On Sun, 2020-05-24 at 23:50 +0900, Tetsuo Handa wrote:
-> > syzbot found a NULL pointer dereference bug inside mptcp_recvmsg() due to
-> > ssock == NULL, but this bug manifested inside selinux_socket_recvmsg()
-> > because pr_debug() was no-op [1].
-> >
-> >   pr_debug("fallback-read subflow=%p",
-> >            mptcp_subflow_ctx(ssock->sk));
-> >   copied = sock_recvmsg(ssock, msg, flags);
->
-> > Since console loglevel used by syzkaller will not print KERN_DEBUG
-> > messages to consoles, always evaluating pr_devel()/pr_debug() messages
-> > will not cause too much console output. Thus, let's allow fuzzers to
-> > always evaluate pr_devel()/pr_debug() messages.
->
-> While I think this is rather unnecessary,
-> what about dev_dbg/netdev_dbg/netif_dbg et al ?
+We technically support this already through io_uring, but it's
+implemented with a thread backend to support cases where we would
+block. This isn't ideal.
 
-I'm also not sure if this is really worth it... It would help localize
-the bug in this specific case, but there is nothing systematic about
-it. Are there that many debug print statements that dereference
-pointers that are later passed to functions, but not dereferenced
-otherwise? Maybe yes, but it seems to be quite an optimistic
-assumption... I don't consider it such a big problem that a bug in
-function X only manifests itself deeper in the callchain. There will
-always be such bugs, no matter how many moles you whack.
+After a few prep patches, the core of this patchset is adding support
+for async callbacks on page unlock. With this primitive, we can simply
+retry the IO operation. With io_uring, this works a lot like poll based
+retry for files that support it. If a page is currently locked and
+needed, -EIOCBQUEUED is returned with a callback armed. The callers
+callback is responsible for restarting the operation.
 
-That said, I'm not strongly opposed to the change either, I just
-wanted to state my opinion in case my reply to the syzbot report [1]
-gave the impression that I considered the "misattribution" as
-something that needs to be fixed :)
+With this callback primitive, we can add support for
+generic_file_buffered_read(), which is what most file systems end up
+using for buffered reads. XFS/ext4/btrfs/bdev is wired up, but probably
+trivial to add more.
 
-[1] https://lore.kernel.org/selinux/CAFqZXNvf+oJs9u4H97u7=jTL2Wo_Hkf4nZdZJLD7tNC_J0KDRg@mail.gmail.com/
+The file flags support for this by setting FMODE_BUF_RASYNC, similar
+to what we do for FMODE_NOWAIT. Open to suggestions here if this is
+the preferred method or not.
 
---
-Ondrej Mosnacek <omosnace at redhat dot com>
-Software Engineer, Security Technologies
-Red Hat, Inc.
+In terms of results, I wrote a small test app that randomly reads 4G
+of data in 4K chunks from a file hosted by ext4. The app uses a queue
+depth of 32. If you want to test yourself, you can just use buffered=1
+with ioengine=io_uring with fio. No application changes are needed to
+use the more optimized buffered async read.
+
+preadv for comparison:
+	real    1m13.821s
+	user    0m0.558s
+	sys     0m11.125s
+	CPU	~13%
+
+Mainline:
+	real    0m12.054s
+	user    0m0.111s
+	sys     0m5.659s
+	CPU	~32% + ~50% == ~82%
+
+This patchset:
+	real    0m9.283s
+	user    0m0.147s
+	sys     0m4.619s
+	CPU	~52%
+
+The CPU numbers are just a rough estimate. For the mainline io_uring
+run, this includes the app itself and all the threads doing IO on its
+behalf (32% for the app, ~1.6% per worker and 32 of them). Context
+switch rate is much smaller with the patchset, since we only have the
+one task performing IO.
+
+Also ran a simple fio based test case, varying the queue depth from 1
+to 16, doubling every time:
+
+[buf-test]
+filename=/data/file
+direct=0
+ioengine=io_uring
+norandommap
+rw=randread
+bs=4k
+iodepth=${QD}
+randseed=89
+runtime=10s
+
+QD/Test		Patchset IOPS		Mainline IOPS
+1		9046			8294
+2		19.8k			18.9k
+4		39.2k			28.5k
+8		64.4k			31.4k
+16		65.7k			37.8k
+
+Outside of my usual environment, so this is just running on a virtualized
+NVMe device in qemu, using ext4 as the file system. NVMe isn't very
+efficient virtualized, so we run out of steam at ~65K which is why we
+flatline on the patched side (nvme_submit_cmd() eats ~75% of the test app
+CPU). Before that happens, it's a linear increase. Not shown is context
+switch rate, which is massively lower with the new code. The old thread
+offload adds a blocking thread per pending IO, so context rate quickly
+goes through the roof.
+
+The goal here is efficiency. Async thread offload adds latency, and
+it also adds noticable overhead on items such as adding pages to the
+page cache. By allowing proper async buffered read support, we don't
+have X threads hammering on the same inode page cache, we have just
+the single app actually doing IO.
+
+Been beating on this and it's solid for me, and I'm now pretty happy
+with how it all turned out. Not aware of any missing bits/pieces or
+code cleanups that need doing.
+
+Series can also be found here:
+
+https://git.kernel.dk/cgit/linux-block/log/?h=async-buffered.4
+
+or pull from:
+
+git://git.kernel.dk/linux-block async-buffered.4
+
+ fs/block_dev.c            |   2 +-
+ fs/btrfs/file.c           |   2 +-
+ fs/ext4/file.c            |   2 +-
+ fs/io_uring.c             | 114 ++++++++++++++++++++++++++++++++++++++
+ fs/xfs/xfs_file.c         |   2 +-
+ include/linux/blk_types.h |   3 +-
+ include/linux/fs.h        |  10 +++-
+ include/linux/pagemap.h   |  67 ++++++++++++++++++++++
+ mm/filemap.c              | 111 ++++++++++++++++++++++++-------------
+ 9 files changed, 267 insertions(+), 46 deletions(-)
+
+Changes since v3:
+- io_uring: don't retry if REQ_F_NOWAIT is set
+- io_uring: alloc req->io if the request type didn't already
+- Add iocb->ki_waitq instead of (ab)using iocb->private
+Changes since v2:
+- Get rid of unnecessary wait_page_async struct, just use wait_page_async
+- Add another prep handler, adding wake_page_match()
+- Use wake_page_match() in both callers
+Changes since v1:
+- Fix an issue with inline page locking
+- Fix a potential race with __wait_on_page_locked_async()
+- Fix a hang related to not setting page_match, thus missing a wakeup
+
+-- 
+Jens Axboe
+
 
