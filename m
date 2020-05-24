@@ -2,61 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175151E018B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7A81E018A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgEXSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 14:52:49 -0400
-Received: from mxs.msl.ua ([185.128.235.3]:34388 "EHLO mxs.msl.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387951AbgEXSwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 14:52:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxs.msl.ua (Postfix) with ESMTP id 8282C776636;
-        Sun, 24 May 2020 21:50:17 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
-        message-id:reply-to:date:from:to:subject:content-description
-        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
-        1590346217; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=l
-        QIcWCdwsZKmPFZ+jSM82bd/L6MwtfpjXpEIyolPaiaZ9/4PkEArq7VYTdFFk0EkH
-        bSnBUUeWwUfPXBS7K9cBal8Y5m/SCpha4ZdbmaPn+v8Rlc0qXb/Siyhpd5QLWlXT
-        zTer7FrPv7YvFIe3rBchp/fw6MlGfPsYBa62iDVxUg=
-X-Virus-Scanned: amavisd-new at msl.ua
-Content-Type: text/plain; charset="utf-8"
+        id S2388038AbgEXSuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 14:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387656AbgEXSuQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 14:50:16 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB16C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 11:50:16 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id a83so3212687oob.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 11:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=YzxjXCwPZcyq3dbQlFh0CZeB6bNa68G6QL/uQ90Wtp8=;
+        b=luQNcrLvaWxW3N9dKSgbOzWHbVO2ID25t4Po1D700+18xa0egUySBpr/Qjimg6Gzol
+         uI6+rtufd0qDmaC+vqQa9pA9KOtEBqwdL5rbZUa7ZEY7FLC3PV5Xy4+1ZL8+6Wr00KCa
+         337W3yBAsaPwGRDos7xkmhKWfo9VdJ0ofKK2scl9Vf1GAKo1pJsBnkc2qbb3zi983jVT
+         ClrloMt6LI9DbVumUfwQ37QXALG/MNWv0v7nAtf2kUyr2iw39qNeu5Z4kpeIUbVQJkac
+         1O1O27M3ZQBxUy1j5Q6q650qJJCGzjP3aDpRxResDKirmpv+grqfn84eoEa8JM+V5rUb
+         G1bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=YzxjXCwPZcyq3dbQlFh0CZeB6bNa68G6QL/uQ90Wtp8=;
+        b=m7rf6N7yJCN0dN54eCerPjpji8Z+lh5MGNiDNjQ+wex/oHogsjYBFRHmVVC9fcgAFB
+         kw4euYxhoMKWIS1m1enMkq+PulwPkYDCHtsDgLyxrilZJAIrNxreoH9Sm6k+RhHp/nPE
+         hq0s9DssI7yJUNjeVJIZX55w6QUPiwn4uBwCI9mYmILwkk5LrzZ3e0YJFUQh9aCqcWAW
+         qFAn7AvvVc1XHQUXhIG0DJefLDrt9LsiGiW1iXXPRGYJAOl/9TkaKLzK+T8xvu06gYP6
+         hXrQYLpvnMVU/JgiIaWA0qnKo1YIFD7j/iL3q5Ii84wIVaxYtJEAx8hxbBVibLXqh7Wu
+         pYag==
+X-Gm-Message-State: AOAM533KMphf+6nS9/RE5fK421jk0YtYp10DfFltY98ecdtDkUnCc4TZ
+        B8f89wrD+5Jmq5UhfIRQmVGzWw==
+X-Google-Smtp-Source: ABdhPJxT8E3fKaVcGdfRYrxuKww4fxF9QYBsJduMqpCdojg6lDOKvPMuW3BAJ9XSptcthMaZ80lBPg==
+X-Received: by 2002:a4a:2809:: with SMTP id h9mr10815106ooa.36.1590346215532;
+        Sun, 24 May 2020 11:50:15 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 95sm4462886otf.72.2020.05.24.11.50.13
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sun, 24 May 2020 11:50:14 -0700 (PDT)
+Date:   Sun, 24 May 2020 11:49:58 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v2] mm: remove VM_BUG_ON(PageSlab()) from
+ page_mapcount()
+In-Reply-To: <159032779896.957378.7852761411265662220.stgit@buzz>
+Message-ID: <alpine.LSU.2.11.2005241123260.3059@eggly.anvils>
+References: <159032779896.957378.7852761411265662220.stgit@buzz>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
- =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
- =?utf-8?q?rftigen!!!?=
-To:     Recipients <o.sapelkin@msl.ua>
-From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
-Date:   Sun, 24 May 2020 20:49:47 +0200
-Reply-To: s.manuelfranco95@gmail.com
-X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200524185004.893F06E2B74D7@zimbra.msl.intranet>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
-ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
-=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
-en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
- ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
-eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
-below for an interview about my lottery win: https://www.youtube.com/watch?=
-v=3DMMC3DHoGhP8.
+On Sun, 24 May 2020, Konstantin Khlebnikov wrote:
 
-Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
+> Replace superfluous VM_BUG_ON() with comment about correct usage.
+> 
+> Technically reverts commit 1d148e218a0d0566b1c06f2f45f1436d53b049b2
+> ("mm: add VM_BUG_ON_PAGE() to page_mapcount()"), but context have changed.
+> 
+> Function isolate_migratepages_block() runs some checks out of lru_lock
+> when choose pages for migration. After checking PageLRU() it checks extra
+> page references by comparing page_count() and page_mapcount(). Between
+> these two checks page could be removed from lru, freed and taken by slab.
+> 
+> As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
+> Race window is tiny. For certain workload this happens around once a year.
+> 
+> 
+>  page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
+>  flags: 0x500000000008100(slab|head)
+>  raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
+>  raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+>  page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
+>  ------------[ cut here ]------------
+>  kernel BUG at ./include/linux/mm.h:628!
+>  invalid opcode: 0000 [#1] SMP NOPTI
+>  CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
+>  Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
+>  RIP: 0010:isolate_migratepages_block+0x986/0x9b0
+> 
+> 
+> Code in isolate_migratepages_block() was added in commit 119d6d59dcc0
+> ("mm, compaction: avoid isolating pinned pages") before adding VM_BUG_ON
+> into page_mapcount().
+> 
+> This race has been predicted in 2015 by Vlastimil Babka (see link below).
 
-Seien Sie sicher und geborgen,
-MANUEL FRANCO
-+ 1 754-231-3468 (nur Whatsapp)
+Ah, kudos to Vlastimil.
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+> 
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
+Thanks,
+Acked-by: Hugh Dickins <hughd@google.com>
+
+For the BUG deletion.  I got a bit confused by the comments at first:
+slight rewording suggested below.
+
+I had also intended a comment in page_mapcount(), on being used in
+that racy exceptional way by isolate_migratepages_block(): but now
+that the BUG is gone, I think you're right not to add that - it's
+not for the function to document its various callers, nor what's
+not in it.  That kind of info belongs to the commit message,
+as you have done.
+
+> Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
+> Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
+> Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
+> ---
+>  include/linux/mm.h |   14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 5a323422d783..95f777f482ac 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -782,6 +782,11 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+>  
+>  extern void kvfree(const void *addr);
+>  
+> +/*
+> + * Mapcount of compound page as a whole, not includes mapped sub-pages.
+
+s/not includes/does not include/
+
+> + *
+> + * Must be called only for compound pages or any their tail sub-pages.
+> + */
+>  static inline int compound_mapcount(struct page *page)
+>  {
+>  	VM_BUG_ON_PAGE(!PageCompound(page), page);
+> @@ -801,10 +806,15 @@ static inline void page_mapcount_reset(struct page *page)
+>  
+>  int __page_mapcount(struct page *page);
+>  
+> +/*
+> + * Mapcount of 0-order page, for sub-page includes compound_mapcount().
+
+s/, for sub-page/; when compound sub-page,/
+
+> + *
+> + * Result is undefined for pages which cannot be mapped into userspace.
+> + * For example SLAB or special types of pages. See function page_has_type().
+> + * They use this place in struct page differently.
+> + */
+>  static inline int page_mapcount(struct page *page)
+>  {
+> -	VM_BUG_ON_PAGE(PageSlab(page), page);
+> -
+>  	if (unlikely(PageCompound(page)))
+>  		return __page_mapcount(page);
+>  	return atomic_read(&page->_mapcount) + 1;
