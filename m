@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964371DFFDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F092D1DFFE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgEXPbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 11:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728879AbgEXPbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 11:31:08 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 534CC20826;
-        Sun, 24 May 2020 15:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590334267;
-        bh=72LIESe7ZfL82S+V55dpl4yXI9zYbHv4OcNdyudZjs4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2m9xcHrXE6vgdM905QSpm/9qeRNOifOHmZ1cQ3jJBRJwjVSc4CRVoHnBmjw7TYzd4
-         29snaNKdmUeaxlrj1+G+XDETrmj+fUG78BqH7SU15oZnxcoQyH4BADAPN/33yazwhs
-         cEwJdeVrL11sWXpG1O7LCE4rQPNAkdjBDPj34yx4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux@roeck-us.net,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH 2/2] kobject: send KOBJ_REMOVE uevent when the object is removed from sysfs
-Date:   Sun, 24 May 2020 17:30:41 +0200
-Message-Id: <20200524153041.2361-2-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200524153041.2361-1-gregkh@linuxfoundation.org>
-References: <20200524153041.2361-1-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726953AbgEXPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 11:34:06 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:60768 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbgEXPeF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 11:34:05 -0400
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04OFX9K7020749;
+        Mon, 25 May 2020 00:33:09 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Mon, 25 May 2020 00:33:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04OFX2m8020738
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 25 May 2020 00:33:09 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH] printk: Remove pr_cont_once()
+Date:   Mon, 25 May 2020 00:32:43 +0900
+Message-Id: <20200524153243.11690-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible for a KOBJ_REMOVE uevent to be sent to userspace way
-after the files are actually gone from sysfs, due to how reference
-counting for kobjects work.  This should not be a problem, but it would
-be good to properly send the information when things are going away, not
-at some later point in time in the future.
+pr_cont_once() does not make sense; at least emitting module name using
+pr_fmt() into middle of a line (after e.g. pr_info_once()) does not make
+sense. Let's remove unused pr_cont_once().
 
-Before this move, if a kobject's parent was torn down before the child,
-when the call to kobject_uevent() happened, the parent walk to try to
-reconstruct the full path of the kobject could be a total mess and cause
-crashes.  It's not good to try to tear down a kobject tree from top
-down, but let's at least try to not to crash if a user does so.
-
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Joe Perches <joe@perches.com>
 ---
- lib/kobject.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/linux/printk.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/lib/kobject.c b/lib/kobject.c
-index 83198cb37d8d..2509e22ad74a 100644
---- a/lib/kobject.c
-+++ b/lib/kobject.c
-@@ -620,6 +620,13 @@ void kobject_del(struct kobject *kobj)
- 	if (ktype)
- 		sysfs_remove_groups(kobj, ktype->default_groups);
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 2562ffb438ed..4c565871f659 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -476,8 +476,7 @@ extern int kptr_restrict;
+ 	printk_once(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
+ #define pr_info_once(fmt, ...)					\
+ 	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+-#define pr_cont_once(fmt, ...)					\
+-	printk_once(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
++/* no pr_cont_once, don't do that... */
  
-+	/* send "remove" if the caller did not do it but sent "add" */
-+	if (kobj->state_add_uevent_sent && !kobj->state_remove_uevent_sent) {
-+		pr_debug("kobject: '%s' (%p): auto cleanup 'remove' event\n",
-+			 kobject_name(kobj), kobj);
-+		kobject_uevent(kobj, KOBJ_REMOVE);
-+	}
-+
- 	sysfs_remove_dir(kobj);
- 	sysfs_put(sd);
- 
-@@ -673,13 +680,6 @@ static void kobject_cleanup(struct kobject *kobj)
- 		pr_debug("kobject: '%s' (%p): does not have a release() function, it is broken and must be fixed. See Documentation/kobject.txt.\n",
- 			 kobject_name(kobj), kobj);
- 
--	/* send "remove" if the caller did not do it but sent "add" */
--	if (kobj->state_add_uevent_sent && !kobj->state_remove_uevent_sent) {
--		pr_debug("kobject: '%s' (%p): auto cleanup 'remove' event\n",
--			 kobject_name(kobj), kobj);
--		kobject_uevent(kobj, KOBJ_REMOVE);
--	}
--
- 	/* remove from sysfs if the caller did not do it */
- 	if (kobj->state_in_sysfs) {
- 		pr_debug("kobject: '%s' (%p): auto cleanup kobject_del\n",
+ #if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
+ #define pr_devel_once(fmt, ...)					\
 -- 
-2.26.2
+2.18.2
 
