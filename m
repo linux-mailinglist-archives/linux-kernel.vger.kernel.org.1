@@ -2,148 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648FF1DFE17
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 12:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50E91DFE09
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 11:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729149AbgEXKAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 06:00:39 -0400
-Received: from mail.movency.com ([151.236.222.166]:48932 "EHLO b-6.movency.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728704AbgEXKAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 06:00:38 -0400
-X-Greylist: delayed 862 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 May 2020 06:00:36 EDT
-Received: by b-6.movency.com  with ESMTPSA id 04O9kAQW1722314; Sun, 24 May 2020 09:46:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=movency.com; s=mail;
-        t=1590313570; bh=7BbKC33g6/SJX0HzjCZQwGRQaPz1+PXkt/MsPwq9E8w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CJyLgB48NcEl+KvLnGv3WibuDbym811oaMyjEZ1ZO0MCYcDUELobQgrckBj+HTaU1
-         Mtpqgs5GhlHt6H7JbvylLaJwcvzuHBzwr4aP5P6+OwgIURhZl/i3XK5uo2W3NHrSgk
-         IGtMTKO3O0a6mhRPxmMOIIv04OHQOKa8mwtPdiQQBgVGSCXbq8wE+C275GW/KDC8RZ
-         NR5rJ/Dx2LYz9p42yoRkWLus5JkunLcR1QKgU7qJSLe/P2pnorYqlapIcXFuiqnCar
-         uTuQZbQX8V7c2WT/RR2+bGnUAYNyG71HtK5p5M/RZlvn309aJxUPszKex29bTU+xvg
-         8RDjBmlrtL6ZA==
-Subject: Re: [PATCHSET v2 0/12] Add support for async buffered reads
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200523185755.8494-1-axboe@kernel.dk>
- <2b42c0c3-5d3c-e381-4193-83cb3f971399@kernel.dk>
-From:   Chris Panayis <chris@movency.com>
-Message-ID: <43ee202c-ffd1-2276-3c8d-7d5201b60684@movency.com>
-Date:   Sun, 24 May 2020 10:46:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729048AbgEXJss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 05:48:48 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:60131 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729003AbgEXJsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 05:48:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590313727; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rWUNIe9B+jeAbe/7iaGK9kGruHhpswyMUl0f/hO15NI=; b=Ab/x9Q+hkuA+WcGxHC8lalpirwFChJjd0Q6LJ5UuVd3Ki2siCylaeMSRIvkFPP0jSvtxfKvu
+ wZ/Dnt0RLmtWf4IYQKjAhjdK3lDe6YgQ+n6LILYdAPXrhdEGSYuZmYtZOADuRbv99onTVzzu
+ qCySINdmIqp7PSJlTQTT1Ch5ApU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5eca42fb4c3faf51e2db7293 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 24 May 2020 09:48:43
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 120E1C433C9; Sun, 24 May 2020 09:48:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.104] (unknown [49.207.133.24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sivaprak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2D27C433C6;
+        Sun, 24 May 2020 09:48:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2D27C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sivaprak@codeaurora.org
+Subject: Re: [PATCH V4 5/8] clk: qcom: Add ipq apss clock controller
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, jassisinghbrar@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1588573224-3038-1-git-send-email-sivaprak@codeaurora.org>
+ <1588573224-3038-6-git-send-email-sivaprak@codeaurora.org>
+ <20200512201233.GI2165@builder.lan>
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Message-ID: <81779b92-c30a-5d4c-cce2-b444a718ee42@codeaurora.org>
+Date:   Sun, 24 May 2020 15:18:36 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <2b42c0c3-5d3c-e381-4193-83cb3f971399@kernel.dk>
+In-Reply-To: <20200512201233.GI2165@builder.lan>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes! Jens & Team! Yes!
 
-My code has never looked so beautiful, been so efficient and run so well 
-since switching to io_uring/async awesome-ness.. Really, really is a 
-game-changer in terms of software design, control, performance, 
-expressiveness... so many levels. Really, really great work! Thank you!
-
-Chris
-
-
-On 23/05/2020 20:20, Jens Axboe wrote:
-> And this one is v3, obviously, not v2...
+On 5/13/2020 1:42 AM, Bjorn Andersson wrote:
+> On Sun 03 May 23:20 PDT 2020, Sivaprakash Murugesan wrote:
 >
->
-> On 5/23/20 12:57 PM, Jens Axboe wrote:
->> We technically support this already through io_uring, but it's
->> implemented with a thread backend to support cases where we would
->> block. This isn't ideal.
+>> The CPU on Qualcomm ipq platform is clocked primarily by a aplha PLL
+>> and xo which are connected to a mux and enable block.
 >>
->> After a few prep patches, the core of this patchset is adding support
->> for async callbacks on page unlock. With this primitive, we can simply
->> retry the IO operation. With io_uring, this works a lot like poll based
->> retry for files that support it. If a page is currently locked and
->> needed, -EIOCBQUEUED is returned with a callback armed. The callers
->> callback is responsible for restarting the operation.
+>> Add support for the mux and enable block which feeds the CPU on ipq
+>> based devices.
 >>
->> With this callback primitive, we can add support for
->> generic_file_buffered_read(), which is what most file systems end up
->> using for buffered reads. XFS/ext4/btrfs/bdev is wired up, but probably
->> trivial to add more.
->>
->> The file flags support for this by setting FMODE_BUF_RASYNC, similar
->> to what we do for FMODE_NOWAIT. Open to suggestions here if this is
->> the preferred method or not.
->>
->> In terms of results, I wrote a small test app that randomly reads 4G
->> of data in 4K chunks from a file hosted by ext4. The app uses a queue
->> depth of 32. If you want to test yourself, you can just use buffered=1
->> with ioengine=io_uring with fio. No application changes are needed to
->> use the more optimized buffered async read.
->>
->> preadv for comparison:
->> 	real    1m13.821s
->> 	user    0m0.558s
->> 	sys     0m11.125s
->> 	CPU	~13%
->>
->> Mainline:
->> 	real    0m12.054s
->> 	user    0m0.111s
->> 	sys     0m5.659s
->> 	CPU	~32% + ~50% == ~82%
->>
->> This patchset:
->> 	real    0m9.283s
->> 	user    0m0.147s
->> 	sys     0m4.619s
->> 	CPU	~52%
->>
->> The CPU numbers are just a rough estimate. For the mainline io_uring
->> run, this includes the app itself and all the threads doing IO on its
->> behalf (32% for the app, ~1.6% per worker and 32 of them). Context
->> switch rate is much smaller with the patchset, since we only have the
->> one task performing IO.
->>
->> The goal here is efficiency. Async thread offload adds latency, and
->> it also adds noticable overhead on items such as adding pages to the
->> page cache. By allowing proper async buffered read support, we don't
->> have X threads hammering on the same inode page cache, we have just
->> the single app actually doing IO.
->>
->> Been beating on this and it's solid for me, and I'm now pretty happy
->> with how it all turned out. Not aware of any missing bits/pieces or
->> code cleanups that need doing.
->>
->> Series can also be found here:
->>
->> https://git.kernel.dk/cgit/linux-block/log/?h=async-buffered.3
->>
->> or pull from:
->>
->> git://git.kernel.dk/linux-block async-buffered.3
->>
->>   fs/block_dev.c            |   2 +-
->>   fs/btrfs/file.c           |   2 +-
->>   fs/ext4/file.c            |   2 +-
->>   fs/io_uring.c             |  99 ++++++++++++++++++++++++++++++++++
->>   fs/xfs/xfs_file.c         |   2 +-
->>   include/linux/blk_types.h |   3 +-
->>   include/linux/fs.h        |   5 ++
->>   include/linux/pagemap.h   |  64 ++++++++++++++++++++++
->>   mm/filemap.c              | 111 ++++++++++++++++++++++++--------------
->>   9 files changed, 245 insertions(+), 45 deletions(-)
->>
->> Changes since v2:
->> - Get rid of unnecessary wait_page_async struct, just use wait_page_async
->> - Add another prep handler, adding wake_page_match()
->> - Use wake_page_match() in both callers
->> Changes since v1:
->> - Fix an issue with inline page locking
->> - Fix a potential race with __wait_on_page_locked_async()
->> - Fix a hang related to not setting page_match, thus missing a wakeup
->>
+> As with the A53 binding, I don't believe that this driver will support
+> all past, present and future IPQ APSSs. Please make it more specific.
+
+ok. Let me make the changes to be specific for ipq6018 devices.
+
+> Regards,
+> Bjorn
 >
