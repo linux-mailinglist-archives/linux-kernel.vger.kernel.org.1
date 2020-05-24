@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8671E0218
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81CE1E022C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388266AbgEXTW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 15:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        id S2388334AbgEXTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 15:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388153AbgEXTWV (ORCPT
+        with ESMTP id S2388207AbgEXTWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 15:22:21 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB0AC061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y198so7950275pfb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:21 -0700 (PDT)
+        Sun, 24 May 2020 15:22:23 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958FCC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:22 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d3so6701270pln.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 12:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8utbws1RCqk2LlI7/gkB8i1cj/u48CIh6THWzODOXyg=;
-        b=rMshiG8EIIFNL1uMBODlvvuf94bqJViNg5UM86151u5U7d6woOiNbIvEQgdvWkip2Z
-         4g9+5vHQOuzDMROosjj+bj6Blg/CLhLK5vEV3DBUFxBJkdjuCBSJsZRKwURHWVWuMvkG
-         8jOvtNQ6v64rSK/PJ1hg5+MO4hooCsE1eQwTAJTNiMD2VkHEx49zfrV59k1lyHvzxKNm
-         tkmEJZl8YFSE/WZHCITDnBiis68jg0iqL//e/vmY2lJYseDiXfhsax3yzBXAV7qmApls
-         ZMNQZ+Ki+d8QjYjq28AecXUf5Zy5QTI48QVIQDsbVIfZPAMh4PfdChp/zHXp9Qzbt71H
-         d/xw==
+        bh=7SUIxRwptQ6YWj2W/l7Dp7FzKmS+sjQ+qLVh2r/v7CQ=;
+        b=NPeCR6emidz98WZUlUAJQJvu8yY4olakxpRVboFdYQ9gU2zAwBFJJgv8zDi2J9Q1YM
+         Z/b4UhpnuDwQvV3ZhmPICnBIzrHFiyxbMWvdinwCY6jB6sMRYGOoel9XhNrjtee5mnQ5
+         rBuzYQwJFLAAE0y5sLi2JUrEug9+S+fE/nHUGUOdY7CfJCpAReJHQGMuN8qtMuJc7GsX
+         go5TMWjy5nn8UQ5E/W9nuRIRQOaqHEr941b8sqWjEJA1JUGIPQCwN0jiwlzb5NeZnKm/
+         jEuNrO65+baf53dmU14kvWGMw+xqGw0WJypQDbPZWcbwZjTmK/SktWhKYi5H26vCKl7V
+         k3Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8utbws1RCqk2LlI7/gkB8i1cj/u48CIh6THWzODOXyg=;
-        b=XWOHG2+q34VBER9o3/GIHRwKvEEw7/42ybX9oX+6w1ujWGaqzgekoPZrDZIJK2nYzy
-         7BlHCyxf5X7S3ZPNQjUvH5VcCrD0afDJ3w6pOHz90Graww4899wex1fwUiWqNe63vpYD
-         BLen7N7GfYhQGfVjAZ4l2eZph3z+CsXtlErJRDqJ0E+LdsRHz0/FjKtunaevjsiKIEWa
-         i07dIVE9VIpdwesx1taE6xuPkLPBsXkC5goDr+Hnxo0eivvDAgMMTjBK6RtAux7I3clm
-         TzSETSYeK6bHyq6UEXnDYPDlHm70JyXG+viwqlaiH1BKBfX4p0IL9ETrUqM8d4ZG/zNp
-         lqBg==
-X-Gm-Message-State: AOAM532Aq7C1hy3ccoMduIcVZPsNw95O/X2/Qlrd0m6mPYwe5JMyNmxp
-        ftCfb1Ert0ulUWkbfCf2mUMB2g==
-X-Google-Smtp-Source: ABdhPJyYufZlJWGWTLeLNJcHAXoCD/f3jIKpvGkaNmPBexGhsJfRzmJtp4GI8lKYiNDw6AyYjV81Lg==
-X-Received: by 2002:a63:1312:: with SMTP id i18mr6502381pgl.142.1590348140858;
-        Sun, 24 May 2020 12:22:20 -0700 (PDT)
+        bh=7SUIxRwptQ6YWj2W/l7Dp7FzKmS+sjQ+qLVh2r/v7CQ=;
+        b=rxut0GWEyIswjwSOqHz/gGNJdbSXC/6qr3ca7gVkMxxzMIj/sSSgBhorRMB67NrgIk
+         Wwp/gOXs/0CCYpPJIU3iTpgEPR7s3BZSJpgJ4+hHYR6zx99HbffZeLZHZqbYdboy3y+y
+         0dIfIkB9RZVmawFwdJPngP4FQpPoZI8BcOi2OmEOgnLnH33ZuDhFpWU3KxPlNSo1FfuC
+         DPsbAiF/CwvhtiqSY/e23n/L5TRU2rTYRfIQ8dv0O+xQ0H9J0fnxfXYW5BpfdFquTUYc
+         ikdiR+u+hWQhy2qMmKw30t0plPtJ79+LlSdzqnjukiVX1oGCf6QbfeYSh4JBFKIuIBrC
+         Tc4g==
+X-Gm-Message-State: AOAM532Ra+nLWL2Fv9f8nmmwrPcIsCfjnAsWRp3DosUVlMQYHOGTQE+/
+        MzrEP4vN7LzpPAKUiYwZuVlrjg==
+X-Google-Smtp-Source: ABdhPJyVkJr3aVXSWL6AsAVEub8xJtYv78/J0qU/nA6EVR06VnyscVr47TXcn5OopxXRfYsxyeWx2w==
+X-Received: by 2002:a17:90a:d191:: with SMTP id fu17mr17281565pjb.228.1590348142170;
+        Sun, 24 May 2020 12:22:22 -0700 (PDT)
 Received: from x1.lan ([2605:e000:100e:8c61:c871:e701:52fa:2107])
-        by smtp.gmail.com with ESMTPSA id t21sm10312426pgu.39.2020.05.24.12.22.19
+        by smtp.gmail.com with ESMTPSA id t21sm10312426pgu.39.2020.05.24.12.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 12:22:20 -0700 (PDT)
+        Sun, 24 May 2020 12:22:21 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     io-uring@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 06/12] fs: add FMODE_BUF_RASYNC
-Date:   Sun, 24 May 2020 13:22:00 -0600
-Message-Id: <20200524192206.4093-7-axboe@kernel.dk>
+Subject: [PATCH 07/12] ext4: flag as supporting buffered async reads
+Date:   Sun, 24 May 2020 13:22:01 -0600
+Message-Id: <20200524192206.4093-8-axboe@kernel.dk>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200524192206.4093-1-axboe@kernel.dk>
 References: <20200524192206.4093-1-axboe@kernel.dk>
@@ -65,28 +65,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If set, this indicates that the file system supports IOCB_WAITQ for
-buffered reads.
-
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- include/linux/fs.h | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/ext4/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 5a5434ff7543..f7b1eb765c6e 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -175,6 +175,9 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
- /* File does not contribute to nr_files count */
- #define FMODE_NOACCOUNT		((__force fmode_t)0x20000000)
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 0d624250a62b..9f7d9bf427b4 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -826,7 +826,7 @@ static int ext4_file_open(struct inode * inode, struct file * filp)
+ 			return ret;
+ 	}
  
-+/* File supports async buffered reads */
-+#define FMODE_BUF_RASYNC	((__force fmode_t)0x40000000)
-+
- /*
-  * Flag for rw_copy_check_uvector and compat_rw_copy_check_uvector
-  * that indicates that they should check the contents of the iovec are
+-	filp->f_mode |= FMODE_NOWAIT;
++	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
+ 	return dquot_file_open(inode, filp);
+ }
+ 
 -- 
 2.26.2
 
