@@ -2,74 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536E91DFF70
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 16:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C671DFF74
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 16:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387602AbgEXOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 10:45:00 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46914 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727985AbgEXOpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 10:45:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=r5lP4P/zXAC9X9cI/T0QNDk1uosk4NujHsVjZWzO95Q=; b=MeBd19A0+gN1tME6e05fLVAtcy
-        n8sBeTMNhzmHBZTvAeSgIeFP5blPB74PPAJrKmYQH60kddNcsyv9QHchSENHDkhrsdv7ff6mG7cSG
-        EsOtIxLgkNnvkKGOMVg1JM8g2Mq3ptxMRCrGTNaYtphxf9kZu7aEjwKIMuqVC7uSSv0o=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jcrrt-0037ra-Lq; Sun, 24 May 2020 16:44:49 +0200
-Date:   Sun, 24 May 2020 16:44:49 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        madalin.bucur@oss.nxp.com, calvin.johnson@oss.nxp.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 08/11] net: phy: Allow mdio buses to auto-probe c45 devices
-Message-ID: <20200524144449.GP610998@lunn.ch>
-References: <20200522213059.1535892-1-jeremy.linton@arm.com>
- <20200522213059.1535892-9-jeremy.linton@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522213059.1535892-9-jeremy.linton@arm.com>
+        id S1729592AbgEXOup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 10:50:45 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57015 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727985AbgEXOup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 10:50:45 -0400
+Received: from fsav109.sakura.ne.jp (fsav109.sakura.ne.jp [27.133.134.236])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 04OEogE7084474;
+        Sun, 24 May 2020 23:50:42 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav109.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp);
+ Sun, 24 May 2020 23:50:42 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 04OEobQA084119
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 24 May 2020 23:50:42 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] twist: allow converting pr_devel()/pr_debug() into printk(KERN_DEBUG)
+Date:   Sun, 24 May 2020 23:50:34 +0900
+Message-Id: <20200524145034.10697-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +++ b/include/linux/phy.h
-> @@ -275,6 +275,11 @@ struct mii_bus {
->  	int reset_delay_us;
->  	/* RESET GPIO descriptor pointer */
->  	struct gpio_desc *reset_gpiod;
-> +	/* bus capabilities, used for probing */
-> +	enum {
-> +		MDIOBUS_C22_ONLY = 0,
-> +		MDIOBUS_C45_FIRST,
-> +	} probe_capabilities;
->  };
+syzbot found a NULL pointer dereference bug inside mptcp_recvmsg() due to
+ssock == NULL, but this bug manifested inside selinux_socket_recvmsg()
+because pr_debug() was no-op [1].
 
+  pr_debug("fallback-read subflow=%p",
+           mptcp_subflow_ctx(ssock->sk));
+  copied = sock_recvmsg(ssock, msg, flags);
 
-I'm not so keen on _FIRST. It suggest _LAST would also be valid.  But
-that then suggests this is not a bus property, but a PHY property, and
-some PHYs might need _FIRST and other phys need _LAST, and then you
-have a bus which has both sorts of PHY on it, and you have a problem.
+Since console loglevel used by syzkaller will not print KERN_DEBUG
+messages to consoles, always evaluating pr_devel()/pr_debug() messages
+will not cause too much console output. Thus, let's allow fuzzers to
+always evaluate pr_devel()/pr_debug() messages.
 
-So i think it would be better to have
+[1] https://syzkaller.appspot.com/bug?id=12be9aa373be9d8727cdd172f190de39528a413a
 
-	enum {
-		MDIOBUS_UNKNOWN = 0,
-		MDIOBUS_C22,
-		MDIOBUS_C45,
-		MDIOBUS_C45_C22,
-	} bus_capabilities;
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ondrej Mosnacek <omosnace@redhat.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+---
+ include/linux/printk.h | 25 ++++++++++++++++++-------
+ lib/Kconfig.twist      | 10 ++++++++++
+ 2 files changed, 28 insertions(+), 7 deletions(-)
 
-Describe just what the bus master can support.
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 38beb97e7018..2562ffb438ed 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -389,7 +389,7 @@ extern int kptr_restrict;
+  *
+  * It uses pr_fmt() to generate the format string.
+  */
+-#ifdef DEBUG
++#if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
+ #define pr_devel(fmt, ...) \
+ 	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+ #else
+@@ -399,7 +399,10 @@ extern int kptr_restrict;
+ 
+ 
+ /* If you are writing a driver, please use dev_dbg instead */
+-#if defined(CONFIG_DYNAMIC_DEBUG) || \
++#if defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
++#define pr_debug(fmt, ...) \
++	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#elif defined(CONFIG_DYNAMIC_DEBUG) || \
+ 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
+ #include <linux/dynamic_debug.h>
+ 
+@@ -476,7 +479,7 @@ extern int kptr_restrict;
+ #define pr_cont_once(fmt, ...)					\
+ 	printk_once(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
+ 
+-#if defined(DEBUG)
++#if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
+ #define pr_devel_once(fmt, ...)					\
+ 	printk_once(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+ #else
+@@ -485,7 +488,7 @@ extern int kptr_restrict;
+ #endif
+ 
+ /* If you are writing a driver, please use dev_dbg instead */
+-#if defined(DEBUG)
++#if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
+ #define pr_debug_once(fmt, ...)					\
+ 	printk_once(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+ #else
+@@ -528,7 +531,7 @@ extern int kptr_restrict;
+ 	printk_ratelimited(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+ /* no pr_cont_ratelimited, don't do that... */
+ 
+-#if defined(DEBUG)
++#if defined(DEBUG) || defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
+ #define pr_devel_ratelimited(fmt, ...)					\
+ 	printk_ratelimited(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+ #else
+@@ -537,7 +540,10 @@ extern int kptr_restrict;
+ #endif
+ 
+ /* If you are writing a driver, please use dev_dbg instead */
+-#if defined(CONFIG_DYNAMIC_DEBUG) || \
++#if defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
++#define pr_debug_ratelimited(fmt, ...)					\
++	printk_ratelimited(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#elif defined(CONFIG_DYNAMIC_DEBUG) || \
+ 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
+ /* descriptor check is first to prevent flooding with "callbacks suppressed" */
+ #define pr_debug_ratelimited(fmt, ...)					\
+@@ -585,7 +591,12 @@ static inline void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
+ 
+ #endif
+ 
+-#if defined(CONFIG_DYNAMIC_DEBUG) || \
++#if defined(CONFIG_TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK)
++#define print_hex_dump_debug(prefix_str, prefix_type, rowsize,		\
++			     groupsize, buf, len, ascii)		\
++	print_hex_dump(KERN_DEBUG, prefix_str, prefix_type, rowsize,	\
++		       groupsize, buf, len, ascii)
++#elif defined(CONFIG_DYNAMIC_DEBUG) || \
+ 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
+ #define print_hex_dump_debug(prefix_str, prefix_type, rowsize,	\
+ 			     groupsize, buf, len, ascii)	\
+diff --git a/lib/Kconfig.twist b/lib/Kconfig.twist
+index f20e0d003581..710202f4b15d 100644
+--- a/lib/Kconfig.twist
++++ b/lib/Kconfig.twist
+@@ -12,10 +12,20 @@ if TWIST_KERNEL_BEHAVIOR
+ 
+ config TWIST_FOR_SYZKALLER_TESTING
+        bool "Select all twist options suitable for syzkaller testing"
++       select TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK
+        select TWIST_DISABLE_KBD_K_SPEC_HANDLER
+        help
+ 	 Say N unless you are building kernels for syzkaller's testing.
+ 
++config TWIST_ALWAYS_EVALUATE_DEBUG_PRINTK
++       bool "Always evaluate pr_devel() and pr_debug()"
++       help
++	 When pr_devel()/pr_debug() are no-op, only format string is checked
++	 by compiler, and runtime bugs (such as NULL pointer dereference)
++	 cannot be reported by fuzz testing.
++	 This option will unconditionally convert pr_devel() and pr_debug()
++	 into printk(KERN_DEBUG) in order to evaluate printk() arguments.
++
+ config TWIST_DISABLE_KBD_K_SPEC_HANDLER
+        bool "Disable k_spec() function in drivers/tty/vt/keyboard.c"
+        help
+-- 
+2.18.2
 
-	 Andrew
