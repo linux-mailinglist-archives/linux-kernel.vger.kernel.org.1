@@ -2,51 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4571E026D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BC11E0274
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 21:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388437AbgEXT0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 15:26:33 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:58423 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388084AbgEXT0b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 15:26:31 -0400
-Received: from localhost.localdomain (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 4ECF3200005;
-        Sun, 24 May 2020 19:26:28 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        computersforpeace@gmail.com, kdasu.kdev@gmail.com,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sumit.semwal@linaro.org, linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 1/5] mtd: rawnand: brcmnand: rename v4 registers
-Date:   Sun, 24 May 2020 21:26:27 +0200
-Message-Id: <20200524192627.8999-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200522121524.4161539-2-noltari@gmail.com>
-References: 
+        id S2388294AbgEXT1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 15:27:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:57044 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388084AbgEXT1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 15:27:06 -0400
+IronPort-SDR: By0a9SYhJ4TZ0JTmp34WG8jdU48wtKFiM7XgPJAWNyaaXGepPb8f8+UZ65hsfFwu1lORA67o03
+ fJZ0vrn521Jw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2020 12:27:06 -0700
+IronPort-SDR: Jt1wxSweHy/gcVmjApzJ6eqN4bNznRQXVLnIg1IoO4kg/6e/ivSQzfrpA+9iAoRqDLNMEBs8k6
+ LYbv/QAMX3Jw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,430,1583222400"; 
+   d="scan'208";a="413310334"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga004.jf.intel.com with ESMTP; 24 May 2020 12:27:03 -0700
+Subject: Re: [PATCH 2/3] sdhci: sparx5: Add Sparx5 SoC eMMC driver
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, SoC Team <soc@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20200513133122.25121-1-lars.povlsen@microchip.com>
+ <20200513133122.25121-3-lars.povlsen@microchip.com>
+ <6398c7a6-ce5e-1df6-d5a6-08664a7fc123@intel.com>
+ <87v9ktoc0h.fsf@soft-dev15.microsemi.net>
+ <87wo56q2o3.fsf@soft-dev15.microsemi.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <abbd2306-55ed-014c-4b06-a5cb3f34796f@intel.com>
+Date:   Sun, 24 May 2020 22:26:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: 6b707aa37d62646d458b30471518f69d64ccceb9
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87wo56q2o3.fsf@soft-dev15.microsemi.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-05-22 at 12:15:20 UTC, =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= wrote:
-> These registers are also used on v3.3.
+On 20/05/20 2:14 pm, Lars Povlsen wrote:
 > 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Lars Povlsen writes:
+> 
+>> Adrian Hunter writes:
+>>
+>>> On 13/05/20 4:31 pm, Lars Povlsen wrote:
+>>>> This adds the eMMC driver for the Sparx5 SoC. It is based upon the
+>>>> designware IP, but requires some extra initialization and quirks.
+>>>>
+>>>> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+>>>> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+>>>> ---
+> {Snip]
+>>>> +};
+>>>> +
+>>>> +static const struct sdhci_pltfm_data sdhci_sparx5_pdata = {
+>>>> +     .quirks  = 0,
+>>>> +     .quirks2 = SDHCI_QUIRK2_HOST_NO_CMD23 | /* Card quirk */
+>>>
+>>> If this is a card quirk then it should be in drivers/mmc/core/quirks.h not here.
+>>
+> 
+> Adrian, I had a go at changing the controller quirk to a card quirk.
+> 
+> Unfortunately, SDHCI_QUIRK2_HOST_NO_CMD23 does not directly translate to
+> MMC_QUIRK_BLK_NO_CMD23, as for 'do_rel_wr' in mmc_blk_rw_rq_prep(), it
+> will *still* use MMC_SET_BLOCK_COUNT (cmd23), causing the issue.
+> 
+> We are using a ISSI "IS004G" device, and so I have gone through the
+> motions of adding it to quirks.h. The comment before the list of devices
+> using MMC_QUIRK_BLK_NO_CMD23 suggest working around a performance issue,
+> which is not exactly the issue I'm seeing. I'm seeing combinations of
+> CMD_TOUT_ERR, DATA_CRC_ERR and DATA_END_BIT_ERR whenever a cmd23 is
+> issued.
+> 
+> I have not been able to test the controller with another eMMC device
+> yet, but I expect its not the controller at fault.
+> 
+> So, I'm a little bit in doubt of how to proceed - either keep the quirk
+> as a controller quirk - or make a *new* card quirk (with
+> SDHCI_QUIRK2_HOST_NO_CMD23 semantics)?
+> 
+> Anybody else have had experience with ISSI eMMC devices?
+> 
+> I have also tried to use DT sdhci-caps-mask, but MMC_CAP_CMD23 is not
+> read from the controller just (unconditionally) set in sdhci.c - so that
+> doesn't fly either.
+> 
+> Any suggestions?
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+It is up to you.  In the future, you may want to distinguish devices that
+have this problem from ones that do not.
 
-Miquel
+If you are not sure it is the ISSI eMMC, and maybe not the host controller,
+then might it be the board?  Perhaps make SDHCI_QUIRK2_HOST_NO_CMD23
+conditional on the particular compatibility string?
+
+At a minimum, change the "/* Card quirk */" comment to a fuller explanation.
+
+> 
+>> Yes, its supposedly a card quirk. I'll see to use the card quirks
+>> methods in place.
+>>
+> 
+
