@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CABC1E0387
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 23:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1D01E0394
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388564AbgEXV6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 17:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S2388410AbgEXWFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 18:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388038AbgEXV6D (ORCPT
+        with ESMTP id S2387850AbgEXWFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 17:58:03 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0C0C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 14:58:02 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jcycy-0007Zv-HD; Sun, 24 May 2020 23:57:52 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v2 7/7] zram: Use local lock to protect per-CPU data
-Date:   Sun, 24 May 2020 23:57:39 +0200
-Message-Id: <20200524215739.551568-8-bigeasy@linutronix.de>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200524215739.551568-1-bigeasy@linutronix.de>
-References: <20200524215739.551568-1-bigeasy@linutronix.de>
+        Sun, 24 May 2020 18:05:12 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC95C061A0E;
+        Sun, 24 May 2020 15:05:11 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g12so14252203wrw.1;
+        Sun, 24 May 2020 15:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3WPDX47yX5mukN7XjjJJumJ7dmH44paobovXuGph9n8=;
+        b=tfooXd2FWuhN7uLYVtHSkzhYvhu9/Qb9dcs5exdkDJt+m3eb9yzJMeqkgGlKKFSxtT
+         Lucwqgf/yU8qMPMZlVAbwLyDH9WoX4vNN54naSELI9XguWyPlqyQI82n89ogJAwqAMfw
+         yloI0N+lJX/clOuxxQvlJcI+p1qfg8NprlrprI/bvXAF5rgDCu5rlvfPOtXen4IDqiht
+         nbC8FO+8IU1GhloKJBYuNUK+8cL/BV8KdmDEcTteIsFg/XUQWRgxOgm5s+Q3+4vPqkEu
+         LHtX7+YaMjekTVXjPTU5qiaKFc7KRyKLzCewhhRhK8tTv9OFtR8KfDtW/KGP1QizXjL7
+         bfHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3WPDX47yX5mukN7XjjJJumJ7dmH44paobovXuGph9n8=;
+        b=Yl4dbPPZrr8THWsX+n1MxFsETAvC5cOswF9E8NAPPUaabHX2ScZ1v6G0czKWNY5K1Q
+         yzbGPiut6yycDglL3wC3crHIgBb7j1IwwVxAvlRtLeC3HwjQGo7NpV2B79jNpf46hKoo
+         g2ZC12TqvcSu+AIEoabPRojbla0ofXUj844YGQqeeU55cCsXBLl78Nqef29/J9WsZ4Gz
+         tpnsOCC0s1CoVByNIOV02N0z+UPGhTlEX28HY8PrwSfDvqNvMP6A4jWoGv3X1m6ZCg0L
+         Q10ryNFezV0dld/DUmDPlxs4nuP7i9ap7EU3mEh/zpUBhAO0jhkccARbapShrVtl1AnQ
+         ItsQ==
+X-Gm-Message-State: AOAM530xyaRVvt9GJ4/NAsk1YkZmdCm5k8N+dqy4JvpuuaTMNttaagsi
+        CBZV2Xbxl8FAGxp5ouC7cn7YLS18
+X-Google-Smtp-Source: ABdhPJxZk7d4WuVelJ2261aiOJBAQDkN+XnHYGmHRqNV/ukEvINZg8skvToF73mtCuFov/EkplYmIw==
+X-Received: by 2002:adf:df03:: with SMTP id y3mr4707157wrl.376.1590357909253;
+        Sun, 24 May 2020 15:05:09 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id j190sm16722255wmb.33.2020.05.24.15.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 May 2020 15:05:08 -0700 (PDT)
+Subject: Re: [PATCH v3 1/8] dt-bindings: net: meson-dwmac: Add the
+ amlogic,rx-delay-ns property
+To:     Pavel Machek <pavel@ucw.cz>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        jianxin.pan@amlogic.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200512211103.530674-1-martin.blumenstingl@googlemail.com>
+ <20200512211103.530674-2-martin.blumenstingl@googlemail.com>
+ <20200524212843.GF1192@bug>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d3f596d7-fb7f-5da7-4406-b5c0e9e9dc3f@gmail.com>
+Date:   Sun, 24 May 2020 15:05:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200524212843.GF1192@bug>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <umgwanakikbuti@gmail.com>
 
-The zcomp driver uses per-CPU compression. The per-CPU data pointer is
-acquired with get_cpu_ptr() which implicitly disables preemption.
-It allocates memory inside the preempt disabled region which conflicts
-with the PREEMPT_RT semantics.
 
-Replace the implicit preemption control with an explicit local lock.
-This allows RT kernels to substitute it with a real per CPU lock, which
-serializes the access but keeps the code section preemptible. On non RT
-kernels this maps to preempt_disable() as before, i.e. no functional
-change.
+On 5/24/2020 2:28 PM, Pavel Machek wrote:
+> On Tue 2020-05-12 23:10:56, Martin Blumenstingl wrote:
+>> The PRG_ETHERNET registers on Meson8b and newer SoCs can add an RX
+>> delay. Add a property with the known supported values so it can be
+>> configured according to the board layout.
+>>
+>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>> ---
+>>  .../bindings/net/amlogic,meson-dwmac.yaml           | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.yaml b/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.yaml
+>> index ae91aa9d8616..66074314e57a 100644
+>> --- a/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.yaml
+>> +++ b/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.yaml
+>> @@ -67,6 +67,19 @@ allOf:
+>>              PHY and MAC are adding a delay).
+>>              Any configuration is ignored when the phy-mode is set to "rmii".
+>>  
+>> +        amlogic,rx-delay-ns:
+>> +          enum:
+> 
+> Is it likely other MACs will need rx-delay property, too? Should we get rid of the amlogic,
+> prefix?
 
-[bigeasy: Use local_lock(), description, drop reordering]
+Yes, there are several MAC bindings that already define a delay property:
 
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Nitin Gupta <ngupta@vflare.org>
-Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Signed-off-by: Mike Galbraith <umgwanakikbuti@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/block/zram/zcomp.c | 17 ++++++++++-------
- drivers/block/zram/zcomp.h |  2 ++
- 2 files changed, 12 insertions(+), 7 deletions(-)
+Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml:
+     allwinner,rx-delay-ps:
+Documentation/devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml:
+     allwinner,rx-delay-ps:
+Documentation/devicetree/bindings/net/apm-xgene-enet.txt:- rx-delay:
+Delay value for RGMII bridge RX clock.
+Documentation/devicetree/bindings/net/apm-xgene-enet.txt:       rx-delay
+= <2>;
+Documentation/devicetree/bindings/net/cavium-pip.txt:- rx-delay: Delay
+value for RGMII receive clock. Optional. Disabled if 0.
+Documentation/devicetree/bindings/net/mediatek-dwmac.txt:-
+mediatek,rx-delay-ps: RX clock delay macro value. Default is 0.
+Documentation/devicetree/bindings/net/mediatek-dwmac.txt:
+mediatek,rx-delay-ps = <1530>;
 
-diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-index ae6dc137a1ed8..fa3485309735e 100644
---- a/drivers/block/zram/zcomp.c
-+++ b/drivers/block/zram/zcomp.c
-@@ -42,11 +42,11 @@ static void zcomp_strm_free(struct zcomp_strm *zstrm)
- }
-=20
- /*
-- * allocate new zcomp_strm structure with ->tfm initialized by
-- * backend, return NULL on error
-+ * Initialize zcomp_strm structure with ->tfm initialized by
-+ * backend, and ->buffer. Return a negative value on error.
-  */
--static int zcomp_strm_alloc(struct zcomp_strm *zstrm,
--			    struct zcomp *comp)
-+static int zcomp_strm_init(struct zcomp_strm *zstrm,
-+			   struct zcomp *comp)
- {
- 	zstrm->tfm =3D crypto_alloc_comp(comp->name, 0, 0);
- 	/*
-@@ -111,12 +111,13 @@ ssize_t zcomp_available_show(const char *comp, char *=
-buf)
-=20
- struct zcomp_strm *zcomp_stream_get(struct zcomp *comp)
- {
--	return get_cpu_ptr(comp->stream);
-+	local_lock(&comp->stream->lock);
-+	return this_cpu_ptr(comp->stream);
- }
-=20
- void zcomp_stream_put(struct zcomp *comp)
- {
--	put_cpu_ptr(comp->stream);
-+	local_unlock(&comp->stream->lock);
- }
-=20
- int zcomp_compress(struct zcomp_strm *zstrm,
-@@ -160,7 +161,9 @@ int zcomp_cpu_up_prepare(unsigned int cpu, struct hlist=
-_node *node)
- 	int ret;
-=20
- 	zstrm =3D per_cpu_ptr(comp->stream, cpu);
--	ret =3D zcomp_strm_alloc(zstrm, comp);
-+	local_lock_init(&zstrm->lock);
-+
-+	ret =3D zcomp_strm_init(zstrm, comp);
- 	if (ret) {
- 		pr_err("Can't allocate a compression stream\n");
- 		return -ENOMEM;
-diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
-index 72c2ee4d843ed..45c4c1858e5a9 100644
---- a/drivers/block/zram/zcomp.h
-+++ b/drivers/block/zram/zcomp.h
-@@ -5,11 +5,13 @@
-=20
- #ifndef _ZCOMP_H_
- #define _ZCOMP_H_
-+#include <linux/locallock.h>
-=20
- struct zcomp_strm {
- 	/* compression/decompression buffer */
- 	void *buffer;
- 	struct crypto_comp *tfm;
-+	struct local_lock lock;
- };
-=20
- /* dynamic per-device compression frontend */
---=20
-2.27.0.rc0
-
+standardizing on rx-delay-ps and tx-delay-ps would make sense since that
+is the lowest resolution and the property would be correctly named with
+an unit in the name.
+-- 
+Florian
