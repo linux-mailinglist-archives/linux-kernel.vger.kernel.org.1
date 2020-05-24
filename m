@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BDD1DFEB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 13:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11871DFEB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 13:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbgEXLm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 07:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
+        id S2387617AbgEXLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 07:44:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727101AbgEXLm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 07:42:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726734AbgEXLoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 07:44:00 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77EC42075F;
-        Sun, 24 May 2020 11:42:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB2D32075F;
+        Sun, 24 May 2020 11:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590320546;
-        bh=Hsa4osmGTB+icwS6CCShOt0I44y6x7wldglePjcjJcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O6CotyABalJCSDuHY3tmlvjSdcdWp6zEG42vxCz6vzLMaQvVCPPkP07oo1RMKcnT7
-         W+/p0GUomGACS7aFMGo2SWuZLy1yJfScXh1uaRDL3HWDqB0whvkBiNcNVKE4mK2aVj
-         rLTkcwH06eeRmHlwkqhCufFoYPgiYMII/KRPA8ME=
-Date:   Sun, 24 May 2020 13:42:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] kobject: Make sure the parent does not get released
- before its children
-Message-ID: <20200524114223.GA1942568@kroah.com>
-References: <20200513151840.36400-1-heikki.krogerus@linux.intel.com>
- <20200523153643.GA226270@kroah.com>
- <7a5e4740-8099-ef70-776f-0d92ce84ab3d@infradead.org>
- <CAKdAkRQvQkC8aHUjOPdUrJTSQ8z3jK90RJ85VyTQaOfnfmj9Cg@mail.gmail.com>
+        s=default; t=1590320640;
+        bh=o6SJToLu6ZDHu0wWMseTOeGzHfMogzrCv91Eoa763Fk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YS4MpGLgOLIA+60LS/zs1BAG3NBBNsopgHBdArXjgNa+lq30E+6bEsbVVIEsXhD7h
+         Jgl7hkEBfMnwmZ0ElCV29eniU2a4cvhoP4oyvXXKY8Hl3FpzI7Z250jc+Fk6aALKvX
+         uEXIwvdQYNmA6Cx4clOyQvm2TD3Qhfxkv76GaLys=
+Date:   Sun, 24 May 2020 12:43:55 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, daniel.baluta@nxp.com,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v3 5/5] iio: imu: bmi160: added mount-matrix support
+Message-ID: <20200524124355.526af9d9@archlinux>
+In-Reply-To: <20200520194656.16218-6-jonathan.albrieux@gmail.com>
+References: <20200520194656.16218-1-jonathan.albrieux@gmail.com>
+        <20200520194656.16218-6-jonathan.albrieux@gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKdAkRQvQkC8aHUjOPdUrJTSQ8z3jK90RJ85VyTQaOfnfmj9Cg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 12:04:30PM -0700, Dmitry Torokhov wrote:
-> On Sat, May 23, 2020 at 8:48 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > On 5/23/20 8:36 AM, Greg Kroah-Hartman wrote:
-> > > On Wed, May 13, 2020 at 06:18:40PM +0300, Heikki Krogerus wrote:
-> > >> In the function kobject_cleanup(), kobject_del(kobj) is
-> > >> called before the kobj->release(). That makes it possible to
-> > >> release the parent of the kobject before the kobject itself.
-> > >>
-> > >> To fix that, adding function __kboject_del() that does
-> > >> everything that kobject_del() does except release the parent
-> > >> reference. kobject_cleanup() then calls __kobject_del()
-> > >> instead of kobject_del(), and separately decrements the
-> > >> reference count of the parent kobject after kobj->release()
-> > >> has been called.
-> > >>
-> > >> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > >> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> > >> Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
-> > >> Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
-> > >> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > >> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> > >> Tested-by: Brendan Higgins <brendanhiggins@google.com>
-> > >> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > >> ---
-> > >>  lib/kobject.c | 30 ++++++++++++++++++++----------
-> > >>  1 file changed, 20 insertions(+), 10 deletions(-)
-> > >
-> > > Stepping back, now that it turns out this patch causes more problems
-> > > than it fixes, how is everyone reproducing the original crash here?
-> >
-> > Just load lib/test_printf.ko and boom!
-> >
-> >
-> > > Is it just the KUNIT_DRIVER_PE_TEST that is causing the issue?
-> > >
-> > > In looking at 7589238a8cf3 ("Revert "software node: Simplify
-> > > software_node_release() function""), the log messages there look
-> > > correct.  sysfs can't create a duplicate file, and so when your test is
-> > > written to try to create software nodes, you always have to check the
-> > > return value.  If you run the test in parallel, or before another test
-> > > has had a chance to clean up, the function will fail, correctly.
-> > >
-> > > So what real-world thing is this test "failure" trying to show?
+On Wed, 20 May 2020 21:46:44 +0200
+Jonathan Albrieux <jonathan.albrieux@gmail.com> wrote:
+
+> Add mount-matrix binding support. As chip could have different orientations
+> a mount matrix support is needed to correctly translate these differences.
 > 
-> Well, not sure about the test, but speaking more generally, should not
-> we postpone releasing parent's reference until we are in
-> kobj->release() handler? I.e. after all child state is cleared, and
-> all memory is freed, _then_ we unpin the parent?
+> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
 
-That's what the patch was trying to do in a way.  But I think you are
-right, we should _only_ be doing it at that point in time, and no other,
-which the patch was not doing.
+Other than those bits for the binding doc, the rest of the series
+looks good to me.   Given timing this will only go into mainline in the
+next cycle now anyway so we have plenty of time to tidy up the corners.
 
-Let me go try that and see what happens...
+Thanks,
 
-thanks,
+Jonathan
 
-greg k-h
+> ---
+>  drivers/iio/imu/bmi160/bmi160.h      |  1 +
+>  drivers/iio/imu/bmi160/bmi160_core.c | 20 ++++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/iio/imu/bmi160/bmi160.h b/drivers/iio/imu/bmi160/bmi160.h
+> index 923c3b274fde..a82e040bd109 100644
+> --- a/drivers/iio/imu/bmi160/bmi160.h
+> +++ b/drivers/iio/imu/bmi160/bmi160.h
+> @@ -9,6 +9,7 @@ struct bmi160_data {
+>  	struct regmap *regmap;
+>  	struct iio_trigger *trig;
+>  	struct regulator_bulk_data supplies[2];
+> +	struct iio_mount_matrix orientation;
+>  };
+>  
+>  extern const struct regmap_config bmi160_regmap_config;
+> diff --git a/drivers/iio/imu/bmi160/bmi160_core.c b/drivers/iio/imu/bmi160/bmi160_core.c
+> index d3316ca02fbd..26d586daee26 100644
+> --- a/drivers/iio/imu/bmi160/bmi160_core.c
+> +++ b/drivers/iio/imu/bmi160/bmi160_core.c
+> @@ -110,6 +110,7 @@
+>  		.storagebits = 16,				\
+>  		.endianness = IIO_LE,				\
+>  	},							\
+> +	.ext_info = bmi160_ext_info,				\
+>  }
+>  
+>  /* scan indexes follow DATA register order */
+> @@ -265,6 +266,20 @@ static const struct  bmi160_odr_item bmi160_odr_table[] = {
+>  	},
+>  };
+>  
+> +static const struct iio_mount_matrix *
+> +bmi160_get_mount_matrix(const struct iio_dev *indio_dev,
+> +			const struct iio_chan_spec *chan)
+> +{
+> +	struct bmi160_data *data = iio_priv(indio_dev);
+> +
+> +	return &data->orientation;
+> +}
+> +
+> +static const struct iio_chan_spec_ext_info bmi160_ext_info[] = {
+> +	IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, bmi160_get_mount_matrix),
+> +	{ }
+> +};
+> +
+>  static const struct iio_chan_spec bmi160_channels[] = {
+>  	BMI160_CHANNEL(IIO_ACCEL, X, BMI160_SCAN_ACCEL_X),
+>  	BMI160_CHANNEL(IIO_ACCEL, Y, BMI160_SCAN_ACCEL_Y),
+> @@ -839,6 +854,11 @@ int bmi160_core_probe(struct device *dev, struct regmap *regmap,
+>  		return ret;
+>  	}
+>  
+> +	ret = iio_read_mount_matrix(dev, "mount-matrix",
+> +				    &data->orientation);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = bmi160_chip_init(data, use_spi);
+>  	if (ret)
+>  		return ret;
+
