@@ -2,61 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29701E0138
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 19:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE4C1E0097
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 18:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387925AbgEXRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 13:41:37 -0400
-Received: from mxs.msl.ua ([185.128.235.3]:59960 "EHLO mxs.msl.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387656AbgEXRlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 13:41:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxs.msl.ua (Postfix) with ESMTP id 20DDF6FA3B7;
-        Sun, 24 May 2020 19:26:32 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
-        message-id:reply-to:date:from:to:subject:content-description
-        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
-        1590337592; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=W
-        sCZ0EHbqMxaDy7sRkE+CIFd71TfwQSoK2SZeDKY2vovL6YaG99ivwO/aAPQME7i7
-        cCM3Zef5St45LVjlkA0rZzPB3ITohu/M5zZURS5rrFXWYoqUkT+wXSzPpVGLNCsT
-        eNOG3HzSZcG9lk0X3tLsuqD7GaOT+JUEuYYd47qld0=
-X-Virus-Scanned: amavisd-new at msl.ua
-Content-Type: text/plain; charset="utf-8"
+        id S2387703AbgEXQay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 12:30:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52695 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727899AbgEXQax (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 12:30:53 -0400
+Received: from localhost.localdomain (d28-23-45-10.dim.wideopenwest.com [23.28.10.45])
+        (authenticated bits=0)
+        (User authenticated as jaytlang@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 04OGSl7C011682
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 24 May 2020 12:28:57 -0400
+From:   Jay Lang <jaytlang@mit.edu>
+Cc:     jaytlang@mit.edu, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        yu kuai <yukuai3@huawei.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/ioperm: fix a memory leak bug
+Date:   Sun, 24 May 2020 12:27:39 -0400
+Message-Id: <20200524162742.253727-1-jaytlang@mit.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
- =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
- =?utf-8?q?rftigen!!!?=
-To:     Recipients <o.sapelkin@msl.ua>
-From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
-Date:   Sun, 24 May 2020 18:26:02 +0200
-Reply-To: s.manuelfranco95@gmail.com
-X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200524162610.CC7E76E2B74D6@zimbra.msl.intranet>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
-ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
-=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
-en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
- ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
-eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
-below for an interview about my lottery win: https://www.youtube.com/watch?=
-v=3DMMC3DHoGhP8.
+In the copy_process() routine called by _do_fork(), failure to allocate
+a PID (or further along in the function) will trigger an invocation to
+exit_thread(). This is done to clean up from an earlier call to
+copy_thread_tls(). Naturally, the child task is passed into exit_thread(),
+however during the process, io_bitmap_exit() nullifies the parent's
+io_bitmap rather than the child's.
 
-Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
+As copy_thread_tls() has been called ahead of the failure, the reference
+count on the calling thread's io_bitmap is incremented as we would expect.
+However, io_bitmap_exit() doesn't accept any arguments, and thus assumes
+it should trash the current thread's io_bitmap reference rather than the
+child's. This is pretty sneaky in practice, because in all instances but
+this one, exit_thread() is called with respect to the current task and
+everything works out.
 
-Seien Sie sicher und geborgen,
-MANUEL FRANCO
-+ 1 754-231-3468 (nur Whatsapp)
+A determined attacker can issue an appropriate ioctl (i.e. KDENABIO) to
+get a bitmap allocated, and force a clone3() syscall to fail by passing
+in a zeroed clone_args structure. The kernel handles the erroneous struct
+and the buggy code path is followed, and even though the parent's reference
+to the io_bitmap is trashed, the child still holds a reference and thus
+the structure will never be freed.
 
+Fix this by tweaking io_bitmap_exit() and its subroutines to accept a
+task_struct argument which to operate on. This may not be the most elegant
+solution, but it mitigates the trigger described above on an x86_64 kernel.
+
+Signed-off-by: Jay Lang <jaytlang@mit.edu>
+---
+ arch/x86/include/asm/io_bitmap.h |  4 ++--
+ arch/x86/kernel/ioport.c         | 22 +++++++++++-----------
+ arch/x86/kernel/process.c        |  4 ++--
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/include/asm/io_bitmap.h b/arch/x86/include/asm/io_bitmap.h
+index 07344d82e88e..ac1a99ffbd8d 100644
+--- a/arch/x86/include/asm/io_bitmap.h
++++ b/arch/x86/include/asm/io_bitmap.h
+@@ -17,7 +17,7 @@ struct task_struct;
+ 
+ #ifdef CONFIG_X86_IOPL_IOPERM
+ void io_bitmap_share(struct task_struct *tsk);
+-void io_bitmap_exit(void);
++void io_bitmap_exit(struct task_struct *tsk);
+ 
+ void native_tss_update_io_bitmap(void);
+ 
+@@ -29,7 +29,7 @@ void native_tss_update_io_bitmap(void);
+ 
+ #else
+ static inline void io_bitmap_share(struct task_struct *tsk) { }
+-static inline void io_bitmap_exit(void) { }
++static inline void io_bitmap_exit(struct task_struct *tsk) { }
+ static inline void tss_update_io_bitmap(void) { }
+ #endif
+ 
+diff --git a/arch/x86/kernel/ioport.c b/arch/x86/kernel/ioport.c
+index a53e7b4a7419..e2fab3ceb09f 100644
+--- a/arch/x86/kernel/ioport.c
++++ b/arch/x86/kernel/ioport.c
+@@ -33,15 +33,15 @@ void io_bitmap_share(struct task_struct *tsk)
+ 	set_tsk_thread_flag(tsk, TIF_IO_BITMAP);
+ }
+ 
+-static void task_update_io_bitmap(void)
++static void task_update_io_bitmap(struct task_struct *tsk)
+ {
+-	struct thread_struct *t = &current->thread;
++	struct thread_struct *t = &tsk->thread;
+ 
+ 	if (t->iopl_emul == 3 || t->io_bitmap) {
+ 		/* TSS update is handled on exit to user space */
+-		set_thread_flag(TIF_IO_BITMAP);
++		set_tsk_thread_flag(tsk, TIF_IO_BITMAP);
+ 	} else {
+-		clear_thread_flag(TIF_IO_BITMAP);
++		clear_tsk_thread_flag(tsk, TIF_IO_BITMAP);
+ 		/* Invalidate TSS */
+ 		preempt_disable();
+ 		tss_update_io_bitmap();
+@@ -49,12 +49,12 @@ static void task_update_io_bitmap(void)
+ 	}
+ }
+ 
+-void io_bitmap_exit(void)
++void io_bitmap_exit(struct task_struct *tsk)
+ {
+-	struct io_bitmap *iobm = current->thread.io_bitmap;
++	struct io_bitmap *iobm = tsk->thread.io_bitmap;
+ 
+-	current->thread.io_bitmap = NULL;
+-	task_update_io_bitmap();
++	tsk->thread.io_bitmap = NULL;
++	task_update_io_bitmap(tsk);
+ 	if (iobm && refcount_dec_and_test(&iobm->refcnt))
+ 		kfree(iobm);
+ }
+@@ -102,7 +102,7 @@ long ksys_ioperm(unsigned long from, unsigned long num, int turn_on)
+ 		if (!iobm)
+ 			return -ENOMEM;
+ 		refcount_set(&iobm->refcnt, 1);
+-		io_bitmap_exit();
++		io_bitmap_exit(current);
+ 	}
+ 
+ 	/*
+@@ -134,7 +134,7 @@ long ksys_ioperm(unsigned long from, unsigned long num, int turn_on)
+ 	}
+ 	/* All permissions dropped? */
+ 	if (max_long == UINT_MAX) {
+-		io_bitmap_exit();
++		io_bitmap_exit(current);
+ 		return 0;
+ 	}
+ 
+@@ -192,7 +192,7 @@ SYSCALL_DEFINE1(iopl, unsigned int, level)
+ 	}
+ 
+ 	t->iopl_emul = level;
+-	task_update_io_bitmap();
++	task_update_io_bitmap(current);
+ 
+ 	return 0;
+ }
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 9da70b279dad..35638f1c5791 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -96,7 +96,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+ }
+ 
+ /*
+- * Free current thread data structures etc..
++ * Free thread data structures etc..
+  */
+ void exit_thread(struct task_struct *tsk)
+ {
+@@ -104,7 +104,7 @@ void exit_thread(struct task_struct *tsk)
+ 	struct fpu *fpu = &t->fpu;
+ 
+ 	if (test_thread_flag(TIF_IO_BITMAP))
+-		io_bitmap_exit();
++		io_bitmap_exit(tsk);
+ 
+ 	free_vm86(t);
+ 
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+2.25.1
 
