@@ -2,107 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E32B1DFFF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220F41E0030
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgEXPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 11:43:29 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:19694 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728213AbgEXPnX (ORCPT
+        id S2387483AbgEXPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 11:48:11 -0400
+Received: from out28-219.mail.aliyun.com ([115.124.28.219]:59289 "EHLO
+        out28-219.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728037AbgEXPsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 11:43:23 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 04OFgcVE017561;
-        Mon, 25 May 2020 00:42:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 04OFgcVE017561
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1590334974;
-        bh=G869loiYVAwAkrK3b+xUggAjxNzU2jDd+CxSJ9Mmwlo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kIzMju7p45f/YK9ERCHG9QeZcnuhStUm/9X4Cs2KsyNAIIR7yebG0FhXhHYejv156
-         ITyNboW/upHn5IWwK2ZtzZbzywm3WGln0xvgDBbGm3pvkuun4u8C6kceFFK+goT3I8
-         VCMEea74hdIv4NJAztoUFiflb1Qg2BwYNgF7H4nFB1tClXlqTO20adanvuOwyFohGv
-         ttDqlV+aaEs6a4WoV77ZzhGO5c60hhJ92GknBxf9ZeK632hvAVSzGYP4xKqtFZy6FD
-         w49smWiSNrOw1BIjFAoTaVqG5rJw1tY46cpsZ+lx5bzLqMrSG522XvL7t8c8XdQOUp
-         oa5ZZb/TFJkdg==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 29/29] modpost: change elf_info->size to size_t
-Date:   Mon, 25 May 2020 00:42:35 +0900
-Message-Id: <20200524154235.380482-30-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200524154235.380482-1-masahiroy@kernel.org>
-References: <20200524154235.380482-1-masahiroy@kernel.org>
+        Sun, 24 May 2020 11:48:07 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4019592|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0908685-0.00108902-0.908042;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07447;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.HcyTzUM_1590335272;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HcyTzUM_1590335272)
+          by smtp.aliyun-inc.com(10.147.44.118);
+          Sun, 24 May 2020 23:47:58 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
+Subject: Add support for the X1830 and fix bugs for X1000 v9.
+Date:   Sun, 24 May 2020 23:47:22 +0800
+Message-Id: <20200524154729.30958-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align with the mmap / munmap APIs.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-Changes in v2: None
-
- scripts/mod/modpost.c | 9 ++++-----
- scripts/mod/modpost.h | 2 +-
- 2 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 527f71b662b0..a0e44991a525 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -439,7 +439,7 @@ static void sym_set_crc(const char *name, unsigned int crc)
- 	s->crc_valid = 1;
- }
- 
--static void *grab_file(const char *filename, unsigned long *size)
-+static void *grab_file(const char *filename, size_t *size)
- {
- 	struct stat st;
- 	void *map = MAP_FAILED;
-@@ -461,7 +461,7 @@ static void *grab_file(const char *filename, unsigned long *size)
- 	return map;
- }
- 
--static void release_file(void *file, unsigned long size)
-+static void release_file(void *file, size_t size)
- {
- 	munmap(file, size);
- }
-@@ -517,9 +517,8 @@ static int parse_elf(struct elf_info *info, const char *filename)
- 
- 	/* Check if file offset is correct */
- 	if (hdr->e_shoff > info->size) {
--		fatal("section header offset=%lu in file '%s' is bigger than "
--		      "filesize=%lu\n", (unsigned long)hdr->e_shoff,
--		      filename, info->size);
-+		fatal("section header offset=%lu in file '%s' is bigger than filesize=%zu\n",
-+		      (unsigned long)hdr->e_shoff, filename, info->size);
- 		return 0;
- 	}
- 
-diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-index 1df87d204c9a..efb74dba19e2 100644
---- a/scripts/mod/modpost.h
-+++ b/scripts/mod/modpost.h
-@@ -133,7 +133,7 @@ struct module {
- };
- 
- struct elf_info {
--	unsigned long size;
-+	size_t size;
- 	Elf_Ehdr     *hdr;
- 	Elf_Shdr     *sechdrs;
- 	Elf_Sym      *symtab_start;
--- 
-2.25.1
+v8->v9:
+Add Paul Cercueil's Reviewed-by, somehow his emails are not displayed
+on the mailing list and patchwork of clock framework subsystem.
 
