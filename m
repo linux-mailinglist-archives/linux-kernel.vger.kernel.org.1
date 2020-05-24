@@ -2,187 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9871E03D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 01:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CCC1E03D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 01:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388519AbgEXXA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 19:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387863AbgEXXA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 19:00:57 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1723C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 16:00:57 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id y1so1990237qtv.12
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 16:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CNPpm47b3liyB6mHkF+tklV5gK5Nn1HOeTD74qXYWbA=;
-        b=UHT8gDBwEarJYuBp/K8Rk2jAuqtG11We4C/i7dFFtURt5yV/E0vzt4Z0siFF7+KJGq
-         bJPnoyn3vrquwn9aB3sgtgoxSQ68ZPuENQis9dAgiKsFEBZ2RkjMWJVaaAv/OEz5Xyuf
-         U/aKv5u+Xkvj29v274kPtekrP6FEUozSYkeOAaGn/Sk4GAk67+r9cR2BI78AcM3lnu4j
-         Rtl0IbsvYoOPklP9yhJPABlicbq/i79wj+IvXrjjY1QidSoSFvrkKo5pcIfJnR3OM4b9
-         bLtQ9nNbsy++Yff8cpF0yacmdlBJlGqmt5Y1iKkQgGuSJ901ECQh7YDm5Aatb4iKr9tY
-         yk4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=CNPpm47b3liyB6mHkF+tklV5gK5Nn1HOeTD74qXYWbA=;
-        b=EjfXcyPXEC77f8DFyEDLJn5TDFOzVgo+FqDWr36rwnzr7fLZzrnc6h7n/Hp3RE/GnD
-         oEXF02RhI3FLE6Ys5r6rzu/b+4bRfov0uYnIyaUGYGIoT+2BbmvMWIEjs0ZwG64hKFxU
-         N24v/CG8IsmKzok3SVx/7UB61VzzgxIAuzyeHCRJfc6j5Ajtnd0Vq33DFjRSFKOx3weA
-         OfcQXb1d/sXoL+blCEgvuXjij+hKskhigqR2eI2s4lvk3HxhU8F0BAfMAf2iFyk7e3m+
-         6cPrMehdHlajPKZucvPHJtPdIygCxjlgHU7YVSqo3FHSc14DSpiGSle4GQVUA09o7YFp
-         6ZMg==
-X-Gm-Message-State: AOAM533ygqmNZLX9Ah9kwJOdcoGdF+noI2ZX3696QXskuls7MjB31j8e
-        hpmrLyC+l8kodon1J+GVZqI=
-X-Google-Smtp-Source: ABdhPJx0M+oibDZtsiiC+sR+8Sr8dqJPfLdaONrtMTe4Mq/sKCLnnKLQ3zfGAHis39I4dylHl5v5eQ==
-X-Received: by 2002:ac8:66c3:: with SMTP id m3mr23024790qtp.262.1590361256614;
-        Sun, 24 May 2020 16:00:56 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id r138sm4004478qka.56.2020.05.24.16.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 16:00:56 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sun, 24 May 2020 19:00:54 -0400
-To:     Fangrui Song <maskray@google.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] x86/boot: Add .text.startup to setup.ld
-Message-ID: <20200524230054.GA280334@rani.riverdale.lan>
-References: <CAKwvOd=qB+EoJwfAYUA9Hg7f9op4Q4W+TDnht8pLRG5bPX=29Q@mail.gmail.com>
- <20200524212816.243139-2-nivedita@alum.mit.edu>
- <20200524221326.zo6zthdqecm2ke5t@google.com>
+        id S2388432AbgEXXI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 19:08:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:34344 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387863AbgEXXI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 19:08:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D171230E;
+        Sun, 24 May 2020 16:08:55 -0700 (PDT)
+Received: from [192.168.0.129] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 351073F52E;
+        Sun, 24 May 2020 16:08:52 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH V4 12/17] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64MMFR0 register
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
+ <1589881254-10082-13-git-send-email-anshuman.khandual@arm.com>
+ <aab025fd-a9aa-0f1a-783b-eb5d3b40a327@arm.com>
+Message-ID: <4df6059d-baad-0f21-ec0d-cbb972bfabdf@arm.com>
+Date:   Mon, 25 May 2020 04:38:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
+In-Reply-To: <aab025fd-a9aa-0f1a-783b-eb5d3b40a327@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200524221326.zo6zthdqecm2ke5t@google.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 03:13:26PM -0700, Fangrui Song wrote:
-> On 2020-05-24, Arvind Sankar wrote:
-> >gcc puts the main function into .text.startup when compiled with -Os (or
-> >-O2). This results in arch/x86/boot/main.c having a .text.startup
-> >section which is currently not included explicitly in the linker script
-> >setup.ld in the same directory.
-> >
-> >The BFD linker places this orphan section immediately after .text, so
-> >this still works. However, LLD git, since [1], is choosing to place it
-> >immediately after the .bstext section instead (this is the first code
-> >section). This plays havoc with the section layout that setup.elf
-> >requires to create the setup header, for eg on 64-bit:
-> >
-> >    LD      arch/x86/boot/setup.elf
-> >  ld.lld: error: section .text.startup file range overlaps with .header
-> >  >>> .text.startup range is [0x200040, 0x2001FE]
-> >  >>> .header range is [0x2001EF, 0x20026B]
-> >
-> >  ld.lld: error: section .header file range overlaps with .bsdata
-> >  >>> .header range is [0x2001EF, 0x20026B]
-> >  >>> .bsdata range is [0x2001FF, 0x200398]
-> >
-> >  ld.lld: error: section .bsdata file range overlaps with .entrytext
-> >  >>> .bsdata range is [0x2001FF, 0x200398]
-> >  >>> .entrytext range is [0x20026C, 0x2002D3]
-> >
-> >  ld.lld: error: section .text.startup virtual address range overlaps
-> >  with .header
-> >  >>> .text.startup range is [0x40, 0x1FE]
-> >  >>> .header range is [0x1EF, 0x26B]
-> >
-> >  ld.lld: error: section .header virtual address range overlaps with
-> >  .bsdata
-> >  >>> .header range is [0x1EF, 0x26B]
-> >  >>> .bsdata range is [0x1FF, 0x398]
-> >
-> >  ld.lld: error: section .bsdata virtual address range overlaps with
-> >  .entrytext
-> >  >>> .bsdata range is [0x1FF, 0x398]
-> >  >>> .entrytext range is [0x26C, 0x2D3]
-> >
-> >  ld.lld: error: section .text.startup load address range overlaps with
-> >  .header
-> >  >>> .text.startup range is [0x40, 0x1FE]
-> >  >>> .header range is [0x1EF, 0x26B]
-> >
-> >  ld.lld: error: section .header load address range overlaps with
-> >  .bsdata
-> >  >>> .header range is [0x1EF, 0x26B]
-> >  >>> .bsdata range is [0x1FF, 0x398]
-> >
-> >  ld.lld: error: section .bsdata load address range overlaps with
-> >  .entrytext
-> >  >>> .bsdata range is [0x1FF, 0x398]
-> >  >>> .entrytext range is [0x26C, 0x2D3]
-> >
-> >Explicitly pull .text.startup into the .text output section to avoid
-> >this.
-> >
-> >[1] https://reviews.llvm.org/D75225
-> >
-> >Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> >Reviewed-by: Fangrui Song <maskray@google.com>
-> >---
-> > arch/x86/boot/setup.ld | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/arch/x86/boot/setup.ld b/arch/x86/boot/setup.ld
-> >index 24c95522f231..ed60abcdb089 100644
-> >--- a/arch/x86/boot/setup.ld
-> >+++ b/arch/x86/boot/setup.ld
-> >@@ -20,7 +20,7 @@ SECTIONS
-> > 	.initdata	: { *(.initdata) }
-> > 	__end_init = .;
-> >
-> >-	.text		: { *(.text) }
-> >+	.text		: { *(.text.startup) *(.text) }
-> > 	.text32		: { *(.text32) }
-> >
-> > 	. = ALIGN(16);
-> >-- 
-> >2.26.2
-> 
-> Should .text.startup* be used instead? If -ffunction-sections is used,
-> 
-> // a.c
-> int main() {}
-> 
-> gcc -O2 a.c                     # .text.startup
-> gcc -Os a.c                     # .text.startup
-> 
-> gcc -O2 -ffunction-sections a.c # .text.startup.main
-> gcc -Os -ffunction-sections a.c # .text.startup.main
 
-It's probably unlikely we'll use function-sections on the setup code,
-but *(.text.*) might be more future-proof, since gcc/clang might grow
-the ability to stick code into .text.hot or .text.unlikely etc
-automatically.
 
+On 05/19/2020 07:02 PM, Suzuki K Poulose wrote:
+> On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
+>> Enable EVC, FGT, EXS, TGRAN4_2, TGRAN64_2 and TGRAN16_2 features bits in
+>> ID_AA64MMFR0 register as per ARM DDI 0487F.a specification.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>>
+>> Suggested-by: Will Deacon <will@kernel.org>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > 
-> -----
+>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>> index d1433f996710..7ce19f97ba73 100644
+>> --- a/arch/arm64/kernel/cpufeature.c
+>> +++ b/arch/arm64/kernel/cpufeature.c
+>> @@ -267,6 +267,10 @@ static const struct arm64_ftr_bits ftr_id_aa64zfr0[] = {
+>>   };
+>>     static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
+>> +
 > 
-> In case anyone wants to CC a GCC dev for the citation that 
->   main compiles to `.text.startup` in -Os or -O2 mode, I have a small request
->   that `.text.startup.` probably makes more sense. See
+> minor nit: spurious new line.
 > 
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95095
+>> +    ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_ECV_SHIFT, 4, 0),
+>> +    ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_FGT_SHIFT, 4, 0),
+>> +    ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_EXS_SHIFT, 4, 0),
+>>       /*
+>>        * We already refuse to boot CPUs that don't support our configured
+>>        * page size, so we can only detect mismatches for a page size other
+>> @@ -274,6 +278,9 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
+>>        * exist in the wild so, even though we don't like it, we'll have to go
+>>        * along with it and treat them as non-strict.
+>>        */
+>> +    S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN4_2_SHIFT, 4, ID_AA64MMFR0_TGRAN4_2_NI),
+>> +    S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN64_2_SHIFT, 4, ID_AA64MMFR0_TGRAN64_2_NI),
+>> +    S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_TGRAN16_2_SHIFT, 4, ID_AA64MMFR0_TGRAN16_2_NI),
 > 
-> I made an llvm change recently https://reviews.llvm.org/D79600
+> These are not SIGNED as they don't have 0b1111 defined to represent
+> something "lower" than '0b0'. It was signed for 4K and 64K, since
+> 
+> 0b0000 => supported
+> 0b1111 => Not supported.
+> 
+> Also Please note, KVM-NV patches are adding these, so you may as well drop them.
+
+Sure, will drop all ID_AA64MMFR0_TGRAN changes along with related
+macros from arch/arm64/include/asm/sysreg.h.
