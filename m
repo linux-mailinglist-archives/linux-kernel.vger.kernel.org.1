@@ -2,61 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98701E0185
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467E21E017F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 20:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388021AbgEXSlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 14:41:35 -0400
-Received: from mxs.msl.ua ([185.128.235.3]:54432 "EHLO mxs.msl.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387656AbgEXSlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 14:41:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxs.msl.ua (Postfix) with ESMTP id 0906F767FD5;
-        Sun, 24 May 2020 21:37:51 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=msl.ua; h=
-        message-id:reply-to:date:from:to:subject:content-description
-        :content-transfer-encoding:mime-version:content-type; s=dkim; t=
-        1590345470; bh=lVmqvJvUiFqa6qLeWANj8Je/lK5X7z4VhB1Yqprfafo=; b=L
-        MwHvifpzTqjs1NxwhjGHfzvHiHnF55q0EkKeb+fYjJHg368ju5m2qd8AfS8BIttj
-        D4Zga6TNjqeU0HfEmGIoDIRWckvz4tfzCK7gob32Rdh2N2bcSv2vKgPVkmFFYS7E
-        z5aIecyy94Mem4t9mmFj6d2bygHsrlhh1+6mFfZq5A=
-X-Virus-Scanned: amavisd-new at msl.ua
-Content-Type: text/plain; charset="utf-8"
+        id S2387975AbgEXSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 14:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387656AbgEXSif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 14:38:35 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E3FC061A0E;
+        Sun, 24 May 2020 11:38:35 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a4so9311932lfh.12;
+        Sun, 24 May 2020 11:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pYT9f0p49OrTiOELlvubWq1vIb7g6shIaYTIu0Gm+zg=;
+        b=u5H9vvT5k8scDsx+POyU0shZVifa4FherTo/OapzZoNXp7Zidf7P3c5Od5c4Dd0L7Y
+         bRuxN1Mn0dqnL60ncB6+6EE8cGHbaCU7mxDPTJrC5O8UuCosT0HE4RAt44nUkkHTzEb+
+         iHThTWg3wd3gv/PMdzJdBL8ceQNRY2iCj6/p2+I+uxggEsD3jgP5OgU50yk3Qw+YCwlc
+         vQpStpZNdyvOs0zE8QRpRaIpUUf/Y0fPgaXbyO6mrwKGKLf+cGfx0GhMLt9Eqc0ggWZA
+         ZbQvFottb8EhvzKXW9E9DcTzIWIIoiaDn/ge5gjp3UXCyGYesfaCzjJmfxpEaqiUHj4X
+         W/Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pYT9f0p49OrTiOELlvubWq1vIb7g6shIaYTIu0Gm+zg=;
+        b=R4OxF7raSN7YOz8YU+c9jIvBNXIPC4Ck6w6cqXZRS1YrGCnS/Eu7fty/M/xjh3tPBp
+         AYN+ayli+YTTsGCeZwNARxIEBGbNfNuxLL4aVMDz5rD6OiX//4otvBOs6Ez7D5M6NJj/
+         kUCexg4ZlT0ch1/3S8mXlNVxgf67fXxD7qtrx/lloG4cllDToyLgE3kokZlHc/wOwl+X
+         hbU9awKjNXi6mNXPj56sHNX3WXVHra4OECSkQxGgf+YJJR3jToT6GzmOUzgawwngG5Ic
+         5A8JHXBmvTwSalcvnlPtVQZM1YXr8XKUiUxJfyRpfRm6GMa3vqCd7cXupjh93fcBxSS0
+         HjtQ==
+X-Gm-Message-State: AOAM531S2edKp28NwnOdmu2G2CYu0ieBR0tNTSAkeBqphpSbVD2gAkN9
+        3dqc3fVgsu3w7CQM20yam0CkUTai
+X-Google-Smtp-Source: ABdhPJzUNqnOTqln023qni+m9VSVMUUYbEvwMh/SkJCeg0imawJKLvbeaV3mZRh2K0yxoCmHRIUK7w==
+X-Received: by 2002:a19:be11:: with SMTP id o17mr12401587lff.187.1590345513713;
+        Sun, 24 May 2020 11:38:33 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-76-17-204.pppoe.mtu-net.ru. [91.76.17.204])
+        by smtp.gmail.com with ESMTPSA id w25sm4079428lfn.42.2020.05.24.11.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 11:38:33 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] iommu/tegra-smmu: Add missing locks around mapping operations
+Date:   Sun, 24 May 2020 21:37:55 +0300
+Message-Id: <20200524183755.3774-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?GL=C3=9CCKWUNSCH=2C_3_MILLIONEN_EURO_F=C3=9CR_SIE_UND_IHRE_GEME?=
- =?utf-8?q?INDE_AUS_MEINEN_LOTTERIEGEWINNEN=2E_=23Helfen_Sie_den_Bed=C3=BC?=
- =?utf-8?q?rftigen!!!?=
-To:     Recipients <o.sapelkin@msl.ua>
-From:   "MANUEL FRANCO" <o.sapelkin@msl.ua>
-Date:   Sun, 24 May 2020 20:37:21 +0200
-Reply-To: s.manuelfranco95@gmail.com
-X-Antivirus: Avast (VPS 200524-0, 05/24/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-Id: <20200524183733.7728C6E2B74D3@zimbra.msl.intranet>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich bin Manuel Franco. Ich bin der Gewinner des 776-millionsten Lotterie-Ja=
-ckpots. Ich beschloss, 5 zuf=C3=A4llig ausgew=C3=A4hlte Personen auszuw=C3=
-=A4hlen, die im Rahmen meines Wohlt=C3=A4tigkeitsprojekts und um den Mensch=
-en Gutes zu tun, jeweils 3.000.000,00 =E2=82=AC erhalten werden. Sie wurden=
- ausgew=C3=A4hlt, jeweils 3.000.000,00 =E2=82=AC aus meinem Wohlt=C3=A4tigk=
-eitsfonds =C3=BCber die Suchmaschine Google zu erhalten. Visit these pages =
-below for an interview about my lottery win: https://www.youtube.com/watch?=
-v=3DMMC3DHoGhP8.
+The mapping operations of the Tegra SMMU driver are subjected to a race
+condition issues because SMMU Address Space isn't allocated and freed
+atomically, while it should be. This patch makes the mapping operations
+atomic, it fixes an accidentally released Host1x Address Space problem
+which happens while running multiple graphics tests in parallel on
+Tegra30, i.e. by having multiple threads racing with each other in the
+Host1x's submission and completion code paths, performing IOVA mappings
+and unmappings in parallel.
 
-Kontaktieren Sie mich, um die Gelder f=C3=BCr Polen zu sammeln.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/iommu/tegra-smmu.c | 43 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 38 insertions(+), 5 deletions(-)
 
-Seien Sie sicher und geborgen,
-MANUEL FRANCO
-+ 1 754-231-3468 (nur Whatsapp)
-
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 7426b7666e2b..4f956a797838 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -12,6 +12,7 @@
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
++#include <linux/spinlock.h>
+ #include <linux/dma-mapping.h>
+ 
+ #include <soc/tegra/ahb.h>
+@@ -49,6 +50,7 @@ struct tegra_smmu_as {
+ 	struct iommu_domain domain;
+ 	struct tegra_smmu *smmu;
+ 	unsigned int use_count;
++	spinlock_t lock;
+ 	u32 *count;
+ 	struct page **pts;
+ 	struct page *pd;
+@@ -308,6 +310,8 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
+ 		return NULL;
+ 	}
+ 
++	spin_lock_init(&as->lock);
++
+ 	/* setup aperture */
+ 	as->domain.geometry.aperture_start = 0;
+ 	as->domain.geometry.aperture_end = 0xffffffff;
+@@ -578,7 +582,7 @@ static u32 *as_get_pte(struct tegra_smmu_as *as, dma_addr_t iova,
+ 		struct page *page;
+ 		dma_addr_t dma;
+ 
+-		page = alloc_page(GFP_KERNEL | __GFP_DMA | __GFP_ZERO);
++		page = alloc_page(GFP_ATOMIC | __GFP_DMA | __GFP_ZERO);
+ 		if (!page)
+ 			return NULL;
+ 
+@@ -655,8 +659,9 @@ static void tegra_smmu_set_pte(struct tegra_smmu_as *as, unsigned long iova,
+ 	smmu_flush(smmu);
+ }
+ 
+-static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
+-			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
++static int
++tegra_smmu_map_locked(struct iommu_domain *domain, unsigned long iova,
++		      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+ {
+ 	struct tegra_smmu_as *as = to_smmu_as(domain);
+ 	dma_addr_t pte_dma;
+@@ -685,8 +690,9 @@ static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
+ 	return 0;
+ }
+ 
+-static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
+-			       size_t size, struct iommu_iotlb_gather *gather)
++static size_t
++tegra_smmu_unmap_locked(struct iommu_domain *domain, unsigned long iova,
++			size_t size, struct iommu_iotlb_gather *gather)
+ {
+ 	struct tegra_smmu_as *as = to_smmu_as(domain);
+ 	dma_addr_t pte_dma;
+@@ -702,6 +708,33 @@ static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
+ 	return size;
+ }
+ 
++static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
++			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
++{
++	struct tegra_smmu_as *as = to_smmu_as(domain);
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&as->lock, flags);
++	ret = tegra_smmu_map_locked(domain, iova, paddr, size, prot, gfp);
++	spin_unlock_irqrestore(&as->lock, flags);
++
++	return ret;
++}
++
++static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
++			       size_t size, struct iommu_iotlb_gather *gather)
++{
++	struct tegra_smmu_as *as = to_smmu_as(domain);
++	unsigned long flags;
++
++	spin_lock_irqsave(&as->lock, flags);
++	size = tegra_smmu_unmap_locked(domain, iova, size, gather);
++	spin_unlock_irqrestore(&as->lock, flags);
++
++	return size;
++}
++
+ static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
+ 					   dma_addr_t iova)
+ {
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+2.26.0
 
