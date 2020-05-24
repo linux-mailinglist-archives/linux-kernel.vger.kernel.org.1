@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB471E03C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23571E03BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 00:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388639AbgEXWnH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 May 2020 18:43:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34383 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388597AbgEXWnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388621AbgEXWnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 24 May 2020 18:43:04 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-VhD7X1WUMXeNLNtl-4tzMg-1; Sun, 24 May 2020 18:42:56 -0400
-X-MC-Unique: VhD7X1WUMXeNLNtl-4tzMg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19359800688;
-        Sun, 24 May 2020 22:42:55 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C34F36ED9C;
-        Sun, 24 May 2020 22:42:52 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 10/14] perf tools: Add map to parse_events function
-Date:   Mon, 25 May 2020 00:42:15 +0200
-Message-Id: <20200524224219.234847-11-jolsa@kernel.org>
-In-Reply-To: <20200524224219.234847-1-jolsa@kernel.org>
-References: <20200524224219.234847-1-jolsa@kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388599AbgEXWm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 18:42:58 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94929C061A0E;
+        Sun, 24 May 2020 15:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=/LrcVT1btKqn93FHBR9FP0SUTFOHTkhJS9hiLmevHSo=; b=xecVH8CHbE83mzbEnf8mS+FMY
+        U4ieHHS01dJCZ4BuTA+QeCjdyjeOIlRgKaIX1Yx7C27ddnq741lWEIcZlX1GRqdfJB0pKlOxwUrx7
+        hLljnnD4Rt8oUazx0i/DcwQ6u9/+AytPla4NiDP7e2fxtlL/A3fREie/+cRtMgEO+oCG7gCnnBUfV
+        J3XUsAhvc5qkX5FqeiAiiEc55DsHF5NOa3lUxNBWCL/OcLTlgLl2iz/xvfo4djgvHGcVZEr0/E0+F
+        DzQsSthg8WFKYSAI5Xr4BUg0vtE1PikXo19roLmLfUe8qE23leXMDtXO4rWvb2Et4zIDHLdzC+yUb
+        LfYC6+bTg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36528)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jczK4-0003I2-Cx; Sun, 24 May 2020 23:42:29 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jczJw-0003ha-1W; Sun, 24 May 2020 23:42:16 +0100
+Date:   Sun, 24 May 2020 23:42:16 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Christian Herber <christian.herber@nxp.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        David Jander <david@protonic.nl>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        Marek Vasut <marex@denx.de>
+Subject: Re: signal quality and cable diagnostic
+Message-ID: <20200524224215.GE1551@shell.armlinux.org.uk>
+References: <AM0PR04MB7041E1F0913A90F40DFB31A386BC0@AM0PR04MB7041.eurprd04.prod.outlook.com>
+ <20200524212757.GC1192@bug>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Mimecast-Spam-Score: 4
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524212757.GC1192@bug>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For testing purposes we need to pass our own map of events
-from parse_groups through metricgroup__add_metric.
+On Sun, May 24, 2020 at 11:27:57PM +0200, Pavel Machek wrote:
+> > > The SNR seems to be most universal value, when it comes to comparing
+> > > different situations (different links and different PHYs). The
+> > > resolution of BER is not that detailed, for the NXP PHY is says only
+> > > "BER below 1e-10" or not.
+> > 
+> > The point I was trying to make is that SQI is intentionally called SQI and NOT SNR, because it is not a measure for SNR. The standard only suggest a mapping of SNR to SQI, but vendors do not need to comply to that or report that. The only mandatory requirement is linking to BER. BER is also what would be required by a user, as this is the metric that determines what happens to your traffic, not the SNR.
+> > 
+> > So when it comes to KAPI parameters, I see the following options
+> > - SQI only
+> > - SQI + plus indication of SQI level at which BER<10^-10 (this is the only required and standardized information)
+> > - SQI + BER range (best for users, but requires input from the silicon vendors)
+> 
+> Last option looks best to me... and it will mean that hopefully silicon vendors standartize
+> something in future.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/util/metricgroup.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+It already has been for > 1G PHYs, but whether they implement it is
+another question altogether.  It's a 22-bit limiting counter in the
+PCS.  There's also indications of "high BER".
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 547f83ee5c68..b8a0bd7e9297 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -597,9 +597,9 @@ static int __metricgroup__add_metric(struct list_head *group_list,
- 
- static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 				   struct strbuf *events,
--				   struct list_head *group_list)
-+				   struct list_head *group_list,
-+				   struct pmu_events_map *map)
- {
--	struct pmu_events_map *map = perf_pmu__find_map(NULL);
- 	struct pmu_event *pe;
- 	struct egroup *eg;
- 	int i, ret;
-@@ -668,7 +668,8 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
- 
- static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 					struct strbuf *events,
--				        struct list_head *group_list)
-+					struct list_head *group_list,
-+					struct pmu_events_map *map)
- {
- 	char *llist, *nlist, *p;
- 	int ret = -EINVAL;
-@@ -683,7 +684,7 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 
- 	while ((p = strsep(&llist, ",")) != NULL) {
- 		ret = metricgroup__add_metric(p, metric_no_group, events,
--					      group_list);
-+					      group_list, map);
- 		if (ret == -EINVAL) {
- 			fprintf(stderr, "Cannot find metric or group `%s'\n",
- 					p);
-@@ -713,7 +714,8 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 			bool metric_no_group,
- 			bool metric_no_merge,
- 			bool fake_pmu,
--			struct rblist *metric_events)
-+			struct rblist *metric_events,
-+			struct pmu_events_map *map)
- {
- 	struct parse_events_error parse_error;
- 	struct strbuf extra_events;
-@@ -723,7 +725,7 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 	if (metric_events->nr_entries == 0)
- 		metricgroup__rblist_init(metric_events);
- 	ret = metricgroup__add_metric_list(str, metric_no_group,
--					   &extra_events, &group_list);
-+					   &extra_events, &group_list, map);
- 	if (ret)
- 		return ret;
- 	pr_debug("adding %s\n", extra_events.buf);
-@@ -752,9 +754,10 @@ int metricgroup__parse_groups(const struct option *opt,
- 			      struct rblist *metric_events)
- {
- 	struct evlist *perf_evlist = *(struct evlist **)opt->value;
-+	struct pmu_events_map *map = perf_pmu__find_map(NULL);
- 
- 	return parse_groups(perf_evlist, str, metric_no_group,
--			    metric_no_merge, false, metric_events);
-+			    metric_no_merge, false, metric_events, map);
- }
- 
- int metricgroup__parse_groups_test(struct evlist *evlist,
 -- 
-2.25.4
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
