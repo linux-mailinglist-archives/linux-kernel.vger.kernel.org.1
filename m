@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5A31DFD7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 09:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF3A1DFD86
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 09:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgEXHA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 03:00:59 -0400
-Received: from mout.web.de ([212.227.17.12]:34365 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726331AbgEXHA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 03:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1590303631;
-        bh=Dwiv4seL8ee3C/JloOJp8AqoZ3iVO2A78wPGNVrFh6Q=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=L0J2hS910OaEKV1Wwqcx1IIuKd45X3S8K6SQ2IipLa3MKLacznvq0WYCnPwVGE/Qp
-         VR4yaZyMREH4XJwpyzMs6ClZgtWQ8ilizEruW+7mK0suXGGUv8vGq/Am+QS7W0b9wg
-         1sOyprr8fLxMEzyBFFMotLyNWvTNGoG6WwfVzQU4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.187.46]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MidDR-1j8tmi2aXP-00faTt; Sun, 24
- May 2020 09:00:31 +0200
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Barry Song <baohua@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Fabio Estevam <festevam@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
-        Coccinelle <cocci@systeme.lip6.fr>
-Subject: Re: [PATCH v2 1/2] drivers: provide devm_platform_request_irq()
-From:   Markus Elfring <Markus.Elfring@web.de>
-To:     Dejin Zheng <zhengdejin5@gmail.com>, linux-i2c@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <b0a8e1be-359a-17bf-0eb8-dcf175042811@web.de>
-Date:   Sun, 24 May 2020 09:00:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727985AbgEXHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 03:23:08 -0400
+Received: from sonic304-21.consmr.mail.ir2.yahoo.com ([77.238.179.146]:36433
+        "EHLO sonic304-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726331AbgEXHXH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 03:23:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1590304985; bh=Sq0m1vvm2SZTihycyLIp46MmEaT+M4u+5ZuM67ujUHw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=rh6eTGVy7HTShdzErON3/nnCgmZljjcPI1x8e5ez21ntfPYXzJwd+X19X6mIjOgFqT9In7ovUP53MqIRcygrp5fggmnvi0AxjQD8Q4b+0VzotQ50QTBlL80p2i5eq4MF679uOVcwMtcpGFz9H6JxvYXCYB08O18FAqqWdnLGyNlSJ7TrKKnlFg7P+Ag5Nhd+dvU0HemMug8M036dorZcR/LG0WlkMaDXsKhXUQE6jVudntNXsXQ0oDQ8BoIgKbOPUJKzsBnTseCETNMl7bkh18iFW6RD2aeXICDG0B0+JOzNBCtJfCquem1LrhNrmBFiK/HskhscW1ue/GUQk4vlgA==
+X-YMail-OSG: pqxvxHQVM1kMLxrEweZC.O3nGfGh7o51M9g1dMJABviSc2J_ThaBq_4axNxfd3u
+ curVuix5O1sv0EHex8aADZ01Vb5BB951X99pi8ixRoXmEZoMcOKpnHweW0mNP8ocFxTdBguuoNt_
+ ONqemvJHJJUODVHmyhCqLDeHwvi7mLtiMmgqmMuPCFm7DU7WYnIKAGA_UzLKcoGBDa0SPqFwHN3F
+ 62b.ArNRQ8Y4Pf_vrk1vjhcekYx8WuqttIgixyiukm5zniiabCghQdoj0EyJrfqsMLLhVJMdNBCT
+ MA1QYIFfIWzAMiX1a_vzeX02kOP95hJ2euXy_dYfgKcZ85kbDi5gKp74fusrs2yVP5AE0GcGOnLv
+ EUcrqwYTq4zfFP3iVO6Lk1c1isTQdcz9qGgYdPmfIcqYNtIKIIK0z6z6WKSS6f3nuJx8JeIxlL6f
+ X.oKnaRpB_p6qtObB488_oqP.dkGSAnMPGuPsGUsyX9fCcGX9rosclj00_vxjx1UNtMjJhzB4imt
+ KeHUJHB.9JWkIk66yk5qO1M8pJCKssT1BpRQWKnhptvvl3qg.HJpLpZ_VjKplO_5BsuelhDTPgt3
+ kawweCfIVqtIOarvk58JE8D7WkT.jEnxXVojbYc9OPEQHD26uStS6USCOZmFqmxxpZ1M3xpxIkfM
+ sptEr7K.9J1Yr1rTEDBblZqd12tAAb2XNIO1qN7xS12TsQYacbQ_7Dp6QLoWVcDS.xdS6Ebr1ruu
+ vpnS3Pmz36ItKeueIMvTHF3ge_XwHPI.k9GBKXPqBXDX0g22YTZcy7Yn8nyNu8ahw_cw_n9T2ag4
+ 2n_jLOfFsU1KV5QyGUIDDu97Ym3VCQ2EIfLbuQm6aJuXh7thcegxHnVr4I1ZcbwXbuQp8pIADqqS
+ GUkcJGUW0NwQ2XLVhvNF7TLj.LwnM.Kza_Mw_GdlSPuZa.YQktvW1man_P8wlEo6XUNh4l2eevVY
+ djXLB47nmh2mK.BDJJEA.ruMuEoNpvUyAjmygloq6U0YoVJjHrz.okT_alIvGXkFSSxHWmfhcWWo
+ ETL1Fi5rT1kXcsFSHU4gRx21TNqUKaapE9DFfHzzMM4D.mRgtZFYLudCfeG2MgoET8iEHHhzgRLI
+ r4Ld6KA8SwbWYarOqFeMrxTtappnw9qBGby_IGHMcqj.N1PRGNDsA2uwQHhblAWuBMMXWYtET3fD
+ QEQUN1qSQny_Yest.EvRux1VCLKyvNO25Gvx72fKB_CSmYqXS4UPmQE9Ze4slGcfU7MHF_J4avn1
+ u1.Clivfl3BnmB1mTzO6opg8yg12m4lUtjs6s1xHXPb_h6OU2QLKZzUGa9f_sUjMhseWw
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ir2.yahoo.com with HTTP; Sun, 24 May 2020 07:23:05 +0000
+Date:   Sun, 24 May 2020 07:23:01 +0000 (UTC)
+From:   "Mrs.A.Mina" <brunel.m@aol.com>
+Reply-To: brunelmrsminaa@gmail.com
+Message-ID: <328082788.4275567.1590304981546@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ULSRbIDGYv0TpbBixJ0D35hpO5y9lMrzoQ2VCe5oADr7pOzYlV5
- vwXwranJ0xdJ+1UGm3v5J0PW8LdhVU/gX8aQVwVKik5oVYHoE/YniUQ0rHSdmvgjgngcrj1
- CC8BHzn2RcfdRr+KzOlq6o737rK3+rl86V5nHvA8Csc/PDWvWha4M1Nyy4h7EOnPmn4vJaK
- imDbCJHjNWhbsDgmIYI4A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GnBOMT+WNFM=:/XNU8XdCn3fwkt7SaukubD
- 3XYFxWwoxuHR4sY/EFqR1ujGl0OooAeaGZzA8EO4J7luXRPKxlvBJtvKlUBRVLqLEyYR2hUSo
- OtKThrk8eQxGbvJWcNMxlXCh9faiHn+LicD7cdhyEiIfhf9xu9IBxPUR7mvqHViIBkUEjRYnj
- Lwc4/LP4iMpsrvhCfRjPhGWvrUH2qZPsQXNzp2OfFH/KBAUij0lPljmMQYcBRPRMMcT7TBN5L
- zbYRwdAzQFktYJlfvsPHLKBt9g2KnSQyosG80o+/opZBFOkLqTXWE8khIf+Cav1p/J2PFfeYy
- KbDfmZGaIoeIukwjtKMT2EVGL8UlapEbPQsvN7+PZfKIWhlKESSSm6ezhFMp2GOgE4SgqNsis
- kdBUa4KwPV0ayD+paJiBQzJifK7HswaI28jKJWvz6GNLKPMClM0ZYs2+tUQ4R5OZggRu5pi6U
- VVEbLBcmvhF4ck2el5EYCqMSc68sOOM4SW5VAYVvme1TdG51KmaSZeIRB3GEHqVJtfbNAtQlZ
- wcA/+v3uuaSEt3w3/TZM0sLbYAM58xDKv2SyCGmJC8YMGVr6T9+SUSxsJiwKZZSsPQmoB6f7d
- 2CCSb0p8R/29b2c/Jrf0IRS6PYP/R+Hpt9v5IpCUf5pxnZfybnn8neBQIWx8CUvyc1AQOlvqJ
- hkdmZuPwV17oawhEziBGjH5TbgX78UDuwmnkdUY73nlON6Pet1UVxEeIXdeYOfwEB1kR19Bhi
- ZIJzZ9Hm30aFB+RbJ3nCJaiFIKn/Lod3UwQfA2xjk2zFGDhQpzxVV4JTPcD+tG5kHkvbRFueI
- PvSFldOnRB23hqhLL2f/gLAVPVnu9SPjv14yfgtGZudiveipYU+w+MkkFRaWXty6+sOvlAZs0
- D4IJkzLSBQL8T90yJD4xZoWOjCAxevjRIeK0MKJZgNRU1iMDcPHtlKGVRNnt1JLwDmQo/Q87t
- wMwUGTmn9TH3I5+A1AMSVoMAw+9BiRV0SZkvaAYaZen/gZREko8B3oDS3pqc3PBqVUfVfVBhX
- hAsC8tNZFC2nZkn5q1IxpA+nbL3KswMWfFq46T1EUwbzJUZ7SiBk+jbqsdm8ifVtvye6lzJ8M
- 0XIxc+71U03OtQ9OZNq0iy1JSL8bHY0vSg4uFZr9wkKbq0W+TrG0wpMugW7zsCeVmQscseUN8
- 6F9THKiaWhWWsMUuEYqovSvfBe7izY1bk5SBIVeoDQ5y5Csulnhuh7hG/ffq0yKcsNXA0mqvh
- g1kjNvbuO7aQHGEpY
+References: <328082788.4275567.1590304981546.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15960 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It will call devm_request_irq() after platform_get_irq() function
-> in many drivers, sometimes, it is not right for the error handling
-> of these two functions in some drivers. so provide this function
-> to simplify the driver.
-
-I recommend to improve also this change description.
-How do you think about a wording variant like the following?
-
-   The function =E2=80=9Cdevm_request_irq=E2=80=9D is called after the
-   function =E2=80=9Cplatform_get_irq=E2=80=9D in many drivers.
-   The exception handling is incomplete there sometimes.
-   Thus add a corresponding wrapper function for the simplification
-   of the drivers.
 
 
-Will a companion script for the semantic patch language (Coccinelle softwa=
-re)
-become helpful for further support of collateral evolution?
+My Dear in the lord
 
-Regards,
-Markus
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Rome the c=
+apital city of Italy in Southern Europe. The money was from the sale of his=
+ company and death benefits payment and entitlements of my deceased husband=
+ by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
