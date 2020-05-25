@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3531E0F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE68A1E0F97
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403830AbgEYNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 09:34:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46578 "EHLO mail.kernel.org"
+        id S2403853AbgEYNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:35:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388794AbgEYNex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 09:34:53 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S2388794AbgEYNfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 09:35:36 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64B8E2078B;
-        Mon, 25 May 2020 13:34:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BE842073B;
+        Mon, 25 May 2020 13:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590413692;
-        bh=LKwcpxkHQoO3E/8QaKt2bzjocoFx3vHlcNvLz/L4MiQ=;
+        s=default; t=1590413736;
+        bh=/72aYS03PTgitMRbLEoL5VA6pHsNsvFhgWo3DmnTBUk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wemD2NKWMlvPpTU9wb/1jYNbEK71jG9+ZVcp2HTG/Glq+tRQe5vaEYi5At27yiQDK
-         VHyxpangjdAiZ6PnRhwF5BtYkaGc9vRdGDGqBU77wkA0UsYL5N8LfDmuVSGJCdDAjQ
-         rWzrLpBSyPgaXCU8+I8CcnzSbnfR42rjlbvEhp1U=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A02E840AFD; Mon, 25 May 2020 10:34:48 -0300 (-03)
-Date:   Mon, 25 May 2020 10:34:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 0/7] Share events between metrics
-Message-ID: <20200525133448.GJ14034@kernel.org>
-References: <20200520182011.32236-1-irogers@google.com>
- <20200521114325.GT157452@krava>
- <20200521172235.GD14034@kernel.org>
- <20200522101311.GA404187@krava>
- <20200522144908.GI14034@kernel.org>
- <CAP-5=fUaaNpi3RZd9-Q-uCaudop0tU5NN8HFek5e2XLoBZqt6w@mail.gmail.com>
- <CAP-5=fWZYJ2RXeXGGmFXAW9CNnb2S6cGYKc_M=hUQyCng7KJBQ@mail.gmail.com>
- <20200523221936.GA123450@krava>
+        b=M7rUk/qH6pK6wkXGpKOMB88gQbPwbxTegUUWc+4soZXGF7fZEIcCa2GiTtz1GoNXG
+         V0FCUI9SbMhnNEe1S3fODwvTXeE+5/+AelvaEHTZKHKRs6Z+/1F2CnFKi8C3jcZwPO
+         piHAKD7HSFePdX1nmuBdHKrUQKITLBgW1pxWHhtI=
+Date:   Mon, 25 May 2020 15:35:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH 2/2] usb: serial: xr_serial: Add gpiochip support
+Message-ID: <20200525133533.GA872869@kroah.com>
+References: <20200428195651.6793-1-mani@kernel.org>
+ <20200428195651.6793-3-mani@kernel.org>
+ <CACRpkdZ3b-VLvxN06H_4cDOtUEQTVbe=Zw+NA=YjssMzK2d2sQ@mail.gmail.com>
+ <20200429124918.GC6443@Mani-XPS-13-9360>
+ <20200519085703.GB27787@localhost>
+ <CACRpkdapMuMs_mEUHheGtaKYg97=nL1bH3zq4Tc3cnX9Jbw-Ew@mail.gmail.com>
+ <20200525111203.GB279021@kroah.com>
+ <CACRpkdaQLmZEDm4nFxtAiyOJVgUMp7tDgAv8-Bwk=G_SV5jf-g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200523221936.GA123450@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CACRpkdaQLmZEDm4nFxtAiyOJVgUMp7tDgAv8-Bwk=G_SV5jf-g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, May 24, 2020 at 12:19:36AM +0200, Jiri Olsa escreveu:
-> On Fri, May 22, 2020 at 10:56:59AM -0700, Ian Rogers wrote:
+On Mon, May 25, 2020 at 03:02:15PM +0200, Linus Walleij wrote:
+> On Mon, May 25, 2020 at 1:12 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 > 
-> SNIP
+> > > I remember I even referred to this myself, but I've been waning a bit
+> > > on it recently, because it turns out that userspace/users aren't very
+> > > good at parsing sysfs for topology.
+> >
+> > Which is why they could use libudev :)
 > 
-> > >> >       #11 0x00000000004b6911 in cmd_test (argc=1, argv=0x7fffffffd7f0) at tests/builtin-test.c:772
-> > >> >       #12 0x00000000004e977b in run_builtin (p=0xa7eee8 <commands+552>, argc=3, argv=0x7fffffffd7f0) at perf.c:312
-> > >> >       #13 0x00000000004e99e8 in handle_internal_command (argc=3, argv=0x7fffffffd7f0) at perf.c:364
-> > >> >       #14 0x00000000004e9b2f in run_argv (argcp=0x7fffffffd64c, argv=0x7fffffffd640) at perf.c:408
-> > >> >       #15 0x00000000004e9efb in main (argc=3, argv=0x7fffffffd7f0) at perf.c:538
-> > >> >
-> > >> > attached patch fixes it for me, but I'm not sure this
-> > >> > should be necessary
-> > >>
-> > >> ... applying the patch below makes the segfault go away. Ian, Ack? I can
-> > >> fold it into the patch introducing the problem.
-> > >
-> > >
-> > > I suspect this patch is a memory leak. The underlying issue is likely the outstanding hashmap_clear fix in libbpf. Let me check.
-> > >
-> > > Thanks,
-> > > Ian
-> > 
-> > Tested:
-> > $ git checkout -b testing acme/tmp.perf/core
-> > $ make ...
-> > $ perf test 7
-> > 7: Simple expression parser                              : FAILED!
-> > $ git cherry-pick 6bca339175bf
-> > [acme-perf-expr-testing 4614bd252003] libbpf: Fix memory leak and
-> > possible double-free in hashmap__c
-> 
-> yep, it fixes the issue for me, but I see that under different commit number:
-> 
->   229bf8bf4d91 libbpf: Fix memory leak and possible double-free in hashmap__clear
+> Yet they insist on using things like Busybox' mdev (e.g. OpenWrt)
+> or Android ... or is Android using libudev now? I'd be delighted
+> if they did.
 
-Ok, so I'll just add a note mentioning that this test will pass as soon
-as the libbpf fix gets upstream.
+No, Android is not using libudev yet, they seem to be reinventing the
+same thing, slowly, over time :(
 
-Thanks,
-
-- Arnaldo
+greg k-h
