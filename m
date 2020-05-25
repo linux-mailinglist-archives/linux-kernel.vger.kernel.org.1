@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2F71E0CE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC7A1E0CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390247AbgEYL0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
+        id S2390267AbgEYL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 07:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390170AbgEYL0l (ORCPT
+        with ESMTP id S2390170AbgEYL1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:26:41 -0400
+        Mon, 25 May 2020 07:27:02 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88B3C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:26:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0ECC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:27:02 -0700 (PDT)
 Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
         (envelope-from <bigeasy@linutronix.de>)
-        id 1jdBFe-0007Up-K5; Mon, 25 May 2020 13:26:38 +0200
-Date:   Mon, 25 May 2020 13:26:38 +0200
+        id 1jdBG0-0007Vu-P3; Mon, 25 May 2020 13:27:00 +0200
+Date:   Mon, 25 May 2020 13:27:00 +0200
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To:     Ingo Molnar <mingo@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
@@ -30,88 +30,42 @@ Cc:     linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>
 Subject: Re: [PATCH v2 1/7] locking: Introduce local_lock()
-Message-ID: <20200525112638.5p2ctr5l26uzergb@linutronix.de>
+Message-ID: <20200525112700.tev37vrovevfrxqz@linutronix.de>
 References: <20200524215739.551568-1-bigeasy@linutronix.de>
  <20200524215739.551568-2-bigeasy@linutronix.de>
  <20200525070139.GB329373@gmail.com>
+ <20200525071214.GC329373@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200525070139.GB329373@gmail.com>
+In-Reply-To: <20200525071214.GC329373@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-25 09:01:39 [+0200], Ingo Molnar wrote:
+On 2020-05-25 09:12:14 [+0200], Ingo Molnar wrote:
 > 
-> * Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> * Ingo Molnar <mingo@kernel.org> wrote:
 > 
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> > To address this PREEMPT_RT introduced the concept of local_locks which are
-> > strictly per CPU.
+> > ( The other departure from spinlocks is that the 'spinlock_t' name, 
+> >   without underscores, while making the API names such as spin_lock() 
+> >   with an underscore, was a conscious didactic choice. Applying that 
+> >   principle to local locks gives us the spinlock_t-equivalent name of 
+> >   'locallock_t' - but the double 'l' reads a bit weirdly in this 
+> >   context. So I think using 'local_lock_t' as the data structure is 
+> >   probably the better approach. )
 > 
-> > +++ b/include/linux/locallock_internal.h
-> > @@ -0,0 +1,90 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _LINUX_LOCALLOCK_H
-> > +# error "Do not include directly, include linux/locallock.h"
-> > +#endif
-> > +
-> > +#include <linux/percpu-defs.h>
-> > +#include <linux/lockdep.h>
-> > +
-> > +struct local_lock {
-> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > +	struct lockdep_map	dep_map;
-> > +	struct task_struct	*owner;
-> > +#endif
-> > +};
+> BTW., along this argument, I believe we should rename the local-lock 
+> header file from <linux/locallock.h> to <linux/local_lock.h>.
 > 
-> This this looks very nice to me, there's a minor data structure 
-> nomenclature related comment I have:
+> The reason for the <linux/spinlock.h> naming is that the main data 
+> structure is spinlock_t.
 > 
-> So local locks were supposed to be a look-alike to all the other 
-> locking constructs we have, spinlock_t in particular. Why isn't there 
-> a local_lock_t, instead of requiring 'struct local_lock'?
+> Having <linux/locallock.h> for 'struct local_lock' or 'local_lock_t' 
+> would introduce an idiosyncratic namespace quirk for no good reason.
 
-|git grep "struct \<spinlock\>"
-
-and I did convert them spinlock_t and got even asked why
-  https://lore.kernel.org/driverdev-devel/20190706100253.GA20497@kroah.com/
-
-but yes. I can stick to local_lock_t instead.
-
-> This abbreviation signals that these are 'small' data structures on 
-> mainline kernels (zero size in fact), but the other advantage is that 
-> the shorter name would prevent bloating of previously compact 
-> structure definitions, such as:
-> 
-> >  struct squashfs_stream {
-> > -	void		*stream;
-> > +	void			*stream;
-> > +	struct local_lock	lock;
-> >  };
-> 
-> This would become:
-> 
-> >  struct squashfs_stream {
-> >	void		*stream;
-> > +	locallock_t	lock;
-> >  };
-
-Wasn't aware as this is considered bloating. 
-
-> ( The other departure from spinlocks is that the 'spinlock_t' name, 
->   without underscores, while making the API names such as spin_lock() 
->   with an underscore, was a conscious didactic choice. Applying that 
->   principle to local locks gives us the spinlock_t-equivalent name of 
->   'locallock_t' - but the double 'l' reads a bit weirdly in this 
->   context. So I think using 'local_lock_t' as the data structure is 
->   probably the better approach. )
-
-Okay, okay, I'm all yours.
+agreed.
 
 > Thanks,
 > 
