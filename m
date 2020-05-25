@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D6A1E0C05
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B601E0C1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389881AbgEYKmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 06:42:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:38530 "EHLO foss.arm.com"
+        id S2389883AbgEYKsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 06:48:38 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:52778 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389484AbgEYKmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 06:42:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F6571FB;
-        Mon, 25 May 2020 03:42:04 -0700 (PDT)
-Received: from [192.168.0.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 063E93F305;
-        Mon, 25 May 2020 03:42:02 -0700 (PDT)
-Subject: Re: [PATCH V4 15/17] arm64/cpufeature: Add remaining feature bits in
- ID_AA64DFR0 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1589881254-10082-1-git-send-email-anshuman.khandual@arm.com>
- <1589881254-10082-16-git-send-email-anshuman.khandual@arm.com>
- <5bad1e13-e498-b33e-5305-336d855c2c8b@arm.com>
- <9e452a85-2ccf-50e6-d807-3f9e528b4072@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <eca9b415-c707-8d2c-7832-0bd129668e37@arm.com>
-Date:   Mon, 25 May 2020 11:46:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S2389484AbgEYKsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 06:48:37 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jdAem-0007hV-QC; Mon, 25 May 2020 12:48:32 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 2/2] phy: Remove CONFIG_ARCH_ROCKCHIP check for subdir rockchip
+Date:   Mon, 25 May 2020 12:48:32 +0200
+Message-ID: <2687194.6AVWON70EC@diego>
+In-Reply-To: <1590379739-18729-2-git-send-email-yangtiezhu@loongson.cn>
+References: <1590379739-18729-1-git-send-email-yangtiezhu@loongson.cn> <1590379739-18729-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <9e452a85-2ccf-50e6-d807-3f9e528b4072@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/24/2020 02:08 AM, Anshuman Khandual wrote:
+Am Montag, 25. Mai 2020, 06:08:59 CEST schrieb Tiezhu Yang:
+> If CONFIG_ARCH_ROCKCHIP is not set but COMPILE_TEST is set, the file in
+> the subdir rockchip can not be built due to CONFIG_ARCH_ROCKCHIP check
+> in drivers/phy/Makefile.
 > 
+> Since the related configs in drivers/phy/rockchip/Kconfig depend on
+> ARCH_ROCKCHIP, so remove CONFIG_ARCH_ROCKCHIP check for subdir rockchip
+> in drivers/phy/Makefile.
 > 
-> On 05/20/2020 07:27 PM, Suzuki K Poulose wrote:
->> On 05/19/2020 10:40 AM, Anshuman Khandual wrote:
->>> Enable MTPMU and TRACEFILT features bits in ID_AA64DFR0 register as per ARM
->>> DDI 0487F.a specification.
->>>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>>
->>> Suggested-by: Will Deacon <will@kernel.org>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>>    arch/arm64/include/asm/sysreg.h | 2 ++
->>>    arch/arm64/kernel/cpufeature.c  | 2 ++
->>>    2 files changed, 4 insertions(+)
->>>
->>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
->>> index a572069ccf6e..4bcd21cc2d68 100644
->>> --- a/arch/arm64/include/asm/sysreg.h
->>> +++ b/arch/arm64/include/asm/sysreg.h
->>> @@ -766,6 +766,8 @@
->>>    #define ID_AA64MMFR2_CNP_SHIFT        0
->>>      /* id_aa64dfr0 */
->>> +#define ID_AA64DFR0_MTPMU_SHIFT        48
->>> +#define ID_AA64DFR0_TRACEFILT_SHIFT    40
->>>    #define ID_AA64DFR0_PMSVER_SHIFT    32
->>>    #define ID_AA64DFR0_CTX_CMPS_SHIFT    28
->>>    #define ID_AA64DFR0_WRPS_SHIFT        20
->>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->>> index 6338151f263c..986974be0178 100644
->>> --- a/arch/arm64/kernel/cpufeature.c
->>> +++ b/arch/arm64/kernel/cpufeature.c
->>> @@ -366,6 +366,8 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
->>>    };
->>>      static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
->>> +    S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_MTPMU_SHIFT, 4, 0),
->>> +    ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_TRACEFILT_SHIFT, 4, 0),
->>
->> We maske both the fields for KVM in AArch32 ID registers. We should do the same here.
-> 
-> MTPMU is defined for AArch32 ID register ID_DFR1_EL1, even though the
-> entire register is hidden from KVM with ID_HIDDEN().
-> 
-> static const struct arm64_ftr_bits ftr_id_dfr1[] = {
->          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_DFR1_MTPMU_SHIFT, 4, 0),
->          ARM64_FTR_END,
-> };
-> 
-> Should the ID_AA64DFR0_EL1 be hidden from KVM as well. But it has many
-> other existing features apart from MTPMU and TRACEFILT which are being
-> added here.
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-No, you must mask out those two fields in the emulation. Other fields 
-are still relevant for guests (e.g, PMU). See, ptr-auth for e.g.
+wouldn't this make more sense to do for all subdirs?
 
-Suzuki
+- allwinner: also has arch_sunxi || compile_test in its Kconfig
+- amlogic: same
+- mediatek: same
+- renesas: same
+- tega: same
+
+So I think the right way would be to drop all the obj-$(CONFIG_ARCH_...)
+options and group the separate directories into the generic subdir
+listing below them.
+
+Heiko
+
+> ---
+>  drivers/phy/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
+> index 310c149..e5b4f58 100644
+> --- a/drivers/phy/Makefile
+> +++ b/drivers/phy/Makefile
+> @@ -12,7 +12,7 @@ obj-$(CONFIG_ARCH_SUNXI)		+= allwinner/
+>  obj-$(CONFIG_ARCH_MESON)		+= amlogic/
+>  obj-$(CONFIG_ARCH_MEDIATEK)		+= mediatek/
+>  obj-$(CONFIG_ARCH_RENESAS)		+= renesas/
+> -obj-$(CONFIG_ARCH_ROCKCHIP)		+= rockchip/
+> +obj-y					+= rockchip/
+>  obj-$(CONFIG_ARCH_TEGRA)		+= tegra/
+>  obj-y					+= broadcom/	\
+>  					   cadence/	\
+> 
+
+
+
+
