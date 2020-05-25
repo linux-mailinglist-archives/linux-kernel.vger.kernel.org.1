@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B411E047E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121291E0481
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388352AbgEYBpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 21:45:06 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:42407 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728324AbgEYBpG (ORCPT
+        id S2388437AbgEYBwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 21:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388054AbgEYBwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 21:45:06 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id ACDD278C;
-        Sun, 24 May 2020 21:45:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 24 May 2020 21:45:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=w8gtuLdhRhjlG/R+K3KScUqE3pg
-        NDvo53M+1qyJesbk=; b=kkqXywBzEe6SfCh5kXCpWUHn5r/0p3WrB/XkL3kYbgc
-        /Yzs9rzjUBej5g3GDMC8rEa19tPMjGptGBufe4xgYECp73zXbCZKqmu+RUpsI9eK
-        lExlWPNPxyrqQFgtwR4yBFR9fy/zO2Ug611xP6Ceo1wVUx65rTlDZf6COOdVm8LW
-        Hiq1Aphahf2Bk7rPgI1P3F0tWrX3mOwX5BafjbXaOImClCirQcGmEh6HoCeZtw6k
-        NLbV+Uh1IbO5mYGmWa7VCgxcn6w5hQab2merp8KsLzxiFKe0ajrrvQX/HXS58Ke4
-        9rRYjliwAH1te4ucMzhnASQav3vQwUsDrSAIjn3s7jw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=w8gtuL
-        dhRhjlG/R+K3KScUqE3pgNDvo53M+1qyJesbk=; b=rQyUpMEIuZ923uXnaBkmWp
-        q8fumpUSSS4mI6wb0VAAa9eLGtg7wzzjPt1do/I4JqxZ4heKfpt4+rHp/keN75Fi
-        gefHESPEIEwLM1Cgpg6GA+0s2i0AxumtMgCQG9T1vAxWeDfJRM2ywxyGkJx7Mfki
-        CI0GLJnKPJjKoOD9y9mcLyKWkfbN8spKTvBhkukzxcMhtLUkI9edMomhSz3+sKln
-        Q7Ic1z0uQ6u1zk/wdfoiG9hGgBHWEsZNBNsQGf3j8eKB7E7fU2vfEu8hvVOACARk
-        Bm0TCmjClBYimHDBx2IF89jYfxULx6wc5cLKwinxbCGR2phRhVJ8+DbEwzmls6iw
-        ==
-X-ME-Sender: <xms:HyPLXsO6B2wXlrpoG3Aw25ILI5-SNnPlX_pS28GFP4A-L08TtSYqMg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudduledggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
-    tddtgeetjeekvdefgeefhfenucfkphepudektddrvdefhedrfedrheegnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihes
-    shgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:HyPLXi_Tz36pYaNV4MPPjzsXMK48sdEFXUY7Wk3LeQ3UiaQdH1QPaQ>
-    <xmx:HyPLXjR97R5quMcaCIIyX5gKsldl1D0Ytsj-DNz_BhYd6fE0DiEPtg>
-    <xmx:HyPLXktzblJ3P5EeqKJqemTL7S6OAmJS8sMj7_NUz9Nm16C-VwJmSw>
-    <xmx:ICPLXj6mkXxd-0uffftvQfE6qMQFl6Jdp9htaltvYtx5PAP3DUX57Q>
-Received: from workstation (ad003054.dynamic.ppp.asahi-net.or.jp [180.235.3.54])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0511C3066544;
-        Sun, 24 May 2020 21:45:00 -0400 (EDT)
-Date:   Mon, 25 May 2020 10:44:58 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     Greg KH <greg@kroah.com>, oscar.carter@gmx.com,
-        keescook@chromium.org, kernel-hardening@lists.openwall.com,
-        linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, clemens@ladisch.de
-Subject: Re: [PATCH v2] firewire-core: remove cast of function callback
-Message-ID: <20200525014458.GA252667@workstation>
-Mail-Followup-To: Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Greg KH <greg@kroah.com>, oscar.carter@gmx.com,
-        keescook@chromium.org, kernel-hardening@lists.openwall.com,
-        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        clemens@ladisch.de
-References: <20200524132048.243223-1-o-takashi@sakamocchi.jp>
- <20200524152301.GB21163@kroah.com>
- <20200525015532.0055f9df@kant>
+        Sun, 24 May 2020 21:52:49 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EB8C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:52:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id u22so6889068plq.12
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=WgNdEEm9CKkIv8HqkMAg2kmrZY4evhUWZB5s9CtlNLI=;
+        b=IiDAf+dvMuve0czUMKQYCts2SBoBFEpkIgWQGTTd2wOSLIJaK19N0xGac9vsPJAdFz
+         Z9DjMFJvgJxMsXZOq71sHrZqBcxDqCjS0HgYHu0Kxm1WtaXWZag1Hb48Q1FE+s2VMqfa
+         UvH3o6pFdIreXxwQYqhya5gRTd4+kNnp5vRgU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=WgNdEEm9CKkIv8HqkMAg2kmrZY4evhUWZB5s9CtlNLI=;
+        b=PrKgBPG54Q9LV7+ecYfia3QsyCdepBJ8FnpngSt3NUfHYbOmwxSp1ZM5gmoxtP97ZJ
+         0IRlhMy7idxLRhpUvRls08MGPKnYUnICpPGjLS3JlLI25Soq9CnEJ23MoNgU2cnkiTeB
+         QFKl22wzGkwsvbvJ6Go7hwKB5dRVrseCTHEFqLzsx2GUsIXMEF2knrypoL5ss8WL1Y2z
+         96+hoqNQqFDChruF/pJwJkdZSccaavk1QYFdbDKeZmfMFi6fxb5MVaotZU/2/G9M+gxH
+         pjM5QJrQ73ZXSGPeWnV5KG8+gtHsG/cQWAE9FLKHXAcL7kAzkCCBhWoQRhkPYhgO/2oe
+         sEjQ==
+X-Gm-Message-State: AOAM531aNCZtyqWCpunN5V0hQdOfkVobiAd+ObJ5GeVd/t3PHfAQoUpx
+        OLHocw0thLzlhRaRPicxBxkp2Q==
+X-Google-Smtp-Source: ABdhPJzMbXmBQ7Qh18pPVQBEtsWB75q7eUQH4r1pxGBkj6Roh0fYzFLoEzjv21K/cBdToHTNpF9+bw==
+X-Received: by 2002:a17:902:6b09:: with SMTP id o9mr24576526plk.100.1590371567787;
+        Sun, 24 May 2020 18:52:47 -0700 (PDT)
+Received: from localhost (2001-44b8-1113-6700-b9bb-eae4-aa7c-e185.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b9bb:eae4:aa7c:e185])
+        by smtp.gmail.com with ESMTPSA id m15sm10436166pgv.45.2020.05.24.18.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 18:52:47 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Salvatore Bonaccorso <carnil@debian.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        ajd@linux.ibm.com, mpe@ellerman.id.au,
+        syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com,
+        syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com,
+        syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com,
+        syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2] relay: handle alloc_percpu returning NULL in relay_open
+In-Reply-To: <20200521152514.GA2868125@eldamar.local>
+References: <20191219121256.26480-1-dja@axtens.net> <alpine.DEB.2.21.1912201100400.68407@chino.kir.corp.google.com> <20200521152514.GA2868125@eldamar.local>
+Date:   Mon, 25 May 2020 11:52:43 +1000
+Message-ID: <87ftbo232s.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525015532.0055f9df@kant>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+>> > Check if alloc_percpu returns NULL.
+>> > 
+>> > This was found by syzkaller both on x86 and powerpc, and the reproducer
+>> > it found on powerpc is capable of hitting the issue as an unprivileged
+>> > user.
+>> > 
+>> > Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
+>> > Reported-by: syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com
+>> > Reported-by: syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com
+>> > Reported-by: syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com
+>> > Reported-by: syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com
+>> > Cc: Akash Goel <akash.goel@intel.com>
+>> > Cc: Andrew Donnellan <ajd@linux.ibm.com> # syzkaller-ppc64
+>> > Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+>> > Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
+>> > Cc: stable@vger.kernel.org # v4.10+
+>> > Signed-off-by: Daniel Axtens <dja@axtens.net>
+>> 
+>> Acked-by: David Rientjes <rientjes@google.com>
+>
+> It looks this one was never applied (which relates to CVE-2019-19462,
+> as pointed by Guenter in 20191223163610.GA32267@roeck-us.net).
+>
+> Whas this lost or are there any issues pending?
 
-On Mon, May 25, 2020 at 01:55:32AM +0200, Stefan Richter wrote:
-> > Why is this in a .h file?  What's wrong with just putting it in the .c
-> > file as a static function?  There's no need to make this an inline,
-> > right?
-> 
-> There is no need for this in a header.
-> Furthermore, I prefer the original switch statement over the nested if/else.
-> 
-> Here is another proposal; I will resend it later as a proper patch.
-> 
-> diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-> index 719791819c24..bece1b69b43f 100644
-> --- a/drivers/firewire/core-cdev.c
-> +++ b/drivers/firewire/core-cdev.c
-> @@ -957,7 +957,6 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->  {
->  	struct fw_cdev_create_iso_context *a = &arg->create_iso_context;
->  	struct fw_iso_context *context;
-> -	fw_iso_callback_t cb;
->  	int ret;
->  
->  	BUILD_BUG_ON(FW_CDEV_ISO_CONTEXT_TRANSMIT != FW_ISO_CONTEXT_TRANSMIT ||
-> @@ -969,20 +968,15 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->  	case FW_ISO_CONTEXT_TRANSMIT:
->  		if (a->speed > SCODE_3200 || a->channel > 63)
->  			return -EINVAL;
-> -
-> -		cb = iso_callback;
->  		break;
->  
->  	case FW_ISO_CONTEXT_RECEIVE:
->  		if (a->header_size < 4 || (a->header_size & 3) ||
->  		    a->channel > 63)
->  			return -EINVAL;
-> -
-> -		cb = iso_callback;
->  		break;
->  
->  	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
-> -		cb = (fw_iso_callback_t)iso_mc_callback;
->  		break;
->  
->  	default:
-> @@ -990,9 +984,15 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
->  	}
->  
->  	context = fw_iso_context_create(client->device->card, a->type,
-> -			a->channel, a->speed, a->header_size, cb, client);
-> +			a->channel, a->speed, a->header_size, NULL, client);
->  	if (IS_ERR(context))
->  		return PTR_ERR(context);
-> +
-> +	if (a->type == FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL)
-> +		context->callback.mc = iso_mc_callback;
-> +	else
-> +		context->callback.sc = iso_callback;
-> +
->  	if (client->version < FW_CDEV_VERSION_AUTO_FLUSH_ISO_OVERFLOW)
->  		context->drop_overflow_headers = true;
+I'm not aware of any pending issues.
 
-At first place, I wrote the similar patch but judged it's a bit ad-hoc
-way that callback functions are assigned after the call of
-fw_iso_context_create() in raw code. For explicitness in a point of things
-being declarative, I put the inline function into header, and avoid
-someone's misfortune for future even if IEEE 1394 is enough legacy.
+(But, if anyone does have any objections I'm happy to revise the patch.)
 
-Anyway, I don't mind Stefan's proposal since it works well. It depends
-on developers' fashion to choose policy to write codes.
-
-
-Thanks
-
-Takashi Sakamoto
+Regards,
+Daniel
