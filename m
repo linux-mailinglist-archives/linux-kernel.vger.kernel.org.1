@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1B01E1236
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7971E1249
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 18:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404177AbgEYP6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 11:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404076AbgEYP6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 11:58:34 -0400
-Received: from kernel.org (unknown [87.70.212.59])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1635F2071A;
-        Mon, 25 May 2020 15:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590422313;
-        bh=wiDKEyw484GXmzSpZVclCFGRQEPFTvq5irNs419nfE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aJELzVEPKY+5KMeo8hwIzuqSdQOIGJRHj/t/iF3JINZEsAtYxfFOUSrWPkz21CKEb
-         B3vg9eQI7Das73bdaUmYck2p+l4ymM+jeed8WASz0bR5SGfs0HEDOf2iFB+RvIlCur
-         jJA4oOH7cASC0Bl1E46qbLND7ovDEJmEy0zytSs4=
-Date:   Mon, 25 May 2020 18:58:25 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/mm: Fix boot with some memory above MAXMEM
-Message-ID: <20200525155825.GB13247@kernel.org>
-References: <20200511191721.1416-1-kirill.shutemov@linux.intel.com>
- <20200525044902.rsb46bxu5hdsqglt@box>
- <20200525145943.GA13247@kernel.org>
- <20200525150820.zljiamptpzi37ohx@box>
+        id S2391153AbgEYQB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 12:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388211AbgEYQB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 12:01:58 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984B9C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 09:01:58 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id 18so17724117iln.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 09:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ndTklb7/SAZk4bUIoOKID+ziy4QQzei1SxmS+QITaNQ=;
+        b=Okfa0myw3gWvHcsvCG+LrNu8vo8bECwM1NcFblymMQAiGT7+y9eHEr8NC5z6+N8JzK
+         mzlw3h7rltmPg5jkXMl04Me9kIbZlJYjsG8Urh65mRdyktu03LLIpv77czeeIpVw8Sru
+         x6DqR6REiEic6JH/kXXTOsijnyICa34jR95UnPtu86+3N8w52mTLttUjUQRtPFCY/AZA
+         vG6P/pea15LJdJxDU3EvCTPMiuu5DCbxndnPe4cnBnNZF2ZxKEZ4qbok33u/ix0NGgf/
+         NluPSBy63jZnk1Nbp5nADhjP36FybTKqPGJNjjHqjN3ow+fOetbQDP+cAHrBoMqBGVCR
+         wFmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ndTklb7/SAZk4bUIoOKID+ziy4QQzei1SxmS+QITaNQ=;
+        b=T8gGZL1J6JtU/Dgt6Fq8nWSzMpHJ+ZMnVZD3aOze/zNwS8CfF5OXnYdy4nBqTNMDLp
+         yyvNlDr5axqr+kpPDo6ukT8eFNkrHRul9i/xSqjEGFocdi6w56/5HnroQr5l1bcDZPBf
+         iN1Uvg8CB0pQyCnLevwKARVHCHO3xjTgZoP0AyzK55n2YQN01ss0tqlBzUNz+IkKFqZg
+         szoZHREiQw4RTw7rTIzF9rRBfcdmR7rU159GB6sweWau8IAIntTvQeyIk/3HG+ag07Gs
+         Ypp5wInUZnnGltWJcaBmrgeE3hyOIAjH8jtc1tIai9Zhm9yYTFcTiSWjU6j7bEfkwfLG
+         q5pQ==
+X-Gm-Message-State: AOAM53305rgUQpmu2Ad4OVTdQiAJHM7ObPtEMItx14Qy8IX+S/gp8uO+
+        sIBgy6t8s9Un53eobpTwdjLKWagfm0Tf6S6Q/6nOcg==
+X-Google-Smtp-Source: ABdhPJzdCyCnVR8DkEpN7qEDDAtmWOw4EM3xPxchVD4sgi/TBYuoYYkIjzb27DvgzVuornpYLqRjO0idnxc4E75ZQnI=
+X-Received: by 2002:a92:89cf:: with SMTP id w76mr24457702ilk.57.1590422517999;
+ Mon, 25 May 2020 09:01:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525150820.zljiamptpzi37ohx@box>
+References: <cover.1590171891.git.saiprakash.ranjan@codeaurora.org> <ccfe8a5ede0523436508e31085322ccdab8f972a.1590171891.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <ccfe8a5ede0523436508e31085322ccdab8f972a.1590171891.git.saiprakash.ranjan@codeaurora.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 25 May 2020 10:01:47 -0600
+Message-ID: <CANLsYkwhjbyspLjbnp4XYCcRNFUkBs46QjWYBTza1scGDtNSmQ@mail.gmail.com>
+Subject: Re: [PATCHv3 2/2] dt-bindings: arm: coresight: Add optional property
+ to replicators
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 06:08:20PM +0300, Kirill A. Shutemov wrote:
-> On Mon, May 25, 2020 at 05:59:43PM +0300, Mike Rapoport wrote:
-> > On Mon, May 25, 2020 at 07:49:02AM +0300, Kirill A. Shutemov wrote:
-> > > On Mon, May 11, 2020 at 10:17:21PM +0300, Kirill A. Shutemov wrote:
-> > > > A 5-level paging capable machine can have memory above 46-bit in the
-> > > > physical address space. This memory is only addressable in the 5-level
-> > > > paging mode: we don't have enough virtual address space to create direct
-> > > > mapping for such memory in the 4-level paging mode.
-> > > > 
-> > > > Currently, we fail boot completely: NULL pointer dereference in
-> > > > subsection_map_init().
-> > > > 
-> > > > Skip creating a memblock for such memory instead and notify user that
-> > > > some memory is not addressable.
-> > > > 
-> > > > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-> > > > Cc: stable@vger.kernel.org # v4.14
-> > > > ---
-> > > 
-> > > Gentle ping.
-> > > 
-> > > It's not urgent, but it's a bug fix. Please consider applying.
-> > > 
-> > > > Tested with a hacked QEMU: https://gist.github.com/kiryl/d45eb54110944ff95e544972d8bdac1d
-> > > > 
-> > > > ---
-> > > >  arch/x86/kernel/e820.c | 19 +++++++++++++++++--
-> > > >  1 file changed, 17 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-> > > > index c5399e80c59c..d320d37d0f95 100644
-> > > > --- a/arch/x86/kernel/e820.c
-> > > > +++ b/arch/x86/kernel/e820.c
-> > > > @@ -1280,8 +1280,8 @@ void __init e820__memory_setup(void)
-> > > >  
-> > > >  void __init e820__memblock_setup(void)
-> > > >  {
-> > > > +	u64 size, end, not_addressable = 0;
-> > > >  	int i;
-> > > > -	u64 end;
-> > > >  
-> > > >  	/*
-> > > >  	 * The bootstrap memblock region count maximum is 128 entries
-> > > > @@ -1307,7 +1307,22 @@ void __init e820__memblock_setup(void)
-> > > >  		if (entry->type != E820_TYPE_RAM && entry->type != E820_TYPE_RESERVED_KERN)
-> > > >  			continue;
-> > > >  
-> > > > -		memblock_add(entry->addr, entry->size);
-> > > > +		if (entry->addr >= MAXMEM) {
-> > > > +			not_addressable += entry->size;
-> > > > +			continue;
-> > > > +		}
-> > > > +
-> > > > +		end = min_t(u64, end, MAXMEM - 1);
-> > > > +		size = end - entry->addr;
-> > > > +		not_addressable += entry->size - size;
-> > > > +		memblock_add(entry->addr, size);
-> > > > +	}
-> > > > +
-> > > > +	if (not_addressable) {
-> > > > +		pr_err("%lldGB of physical memory is not addressable in the paging mode\n",
-> > > > +		       not_addressable >> 30);
-> > > > +		if (!pgtable_l5_enabled())
-> > > > +			pr_err("Consider enabling 5-level paging\n");
-> > 
-> > Could this happen at all when l5 is enabled?
-> > Does it mean we need kmap() for 64-bit?
-> 
-> It's future-profing. Who knows what paging modes we would have in the
-> future.
+On Fri, 22 May 2020 at 12:37, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Add an optional boolean property "qcom,replicator-loses-context" to
+> identify replicators which loses context when AMBA clocks are removed
+> in certain configurable replicator designs.
+>
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/arm/coresight.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
+> index 846f6daae71b..b598a5f0037d 100644
+> --- a/Documentation/devicetree/bindings/arm/coresight.txt
+> +++ b/Documentation/devicetree/bindings/arm/coresight.txt
+> @@ -121,6 +121,12 @@ its hardware characteristcs.
+>         * interrupts : Exactly one SPI may be listed for reporting the address
+>           error
+>
+> +* Optional property for configurable replicators:
+> +
+> +       * qcom,replicator-loses-context: boolean. Indicates that the replicator
+> +         will lose register context when AMBA clock is removed which is observed
+> +         in some replicator designs.
 
-Than maybe
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-	pr_err("%lldGB of physical memory is not addressable in %s the paging mode\n",
-               not_addressable >> 30, pgtable_l5_enabled() "5-level" ? "4-level");
-
-"the paging mode" on its own sounds a bit awkward to me.
-
-> -- 
->  Kirill A. Shutemov
-
--- 
-Sincerely yours,
-Mike.
+> +
+>  Graph bindings for Coresight
+>  -------------------------------
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
