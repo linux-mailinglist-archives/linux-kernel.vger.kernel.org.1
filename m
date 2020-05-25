@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DC31E0A4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887BE1E0A64
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389472AbgEYJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389192AbgEYJX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:23:29 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773EBC05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:23:29 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id x27so10135393lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:23:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qvFw6sgcsYKjmBSmepPkzby27EDEU18HnByQRkc2Nbc=;
-        b=UschULA+beUzLP+ObGINELeOVfCxrcZtlLvux9GyT6xMDrm1O3C81pZZJgPg2emSTB
-         zjvLbVB1iVWTRi9Njuy4zO0zjMC20JN4xDDiAwGR5o8d5+ZnY3qLxipWtKTGMPLCF2RU
-         g0YX1QOfRSLq+tDmO07RRzfBlScQ3x+FjS1rKPKHW/k3//WISxiDt4OJ07FU+62J7JIt
-         23qiBeVvA5uiv84cgIvwZM/uzQcosDR3l8q7/pHyqGg4AuFLgKUOeJHwtjVvRzObAsLG
-         TPXU7dzrtFJao5fxXK23z/lyrbgz3LClpciL2WGjF6OsICuRZ4x+qGDW8/JQTCA79YE7
-         hUjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvFw6sgcsYKjmBSmepPkzby27EDEU18HnByQRkc2Nbc=;
-        b=Nnuj8i4rFCL6pNSd2UhBwehCofO/of22rVGUkZxFHAOD41Dpp2ooDSEG9ncKeH8q3r
-         4Tzjy00tAajAr7Eii+znDz6/aTa9q2tnvtmDZbag9xwjw80Kz639SaR4mb7aIOT8mj9C
-         fIEk+GEz9tOl8x+ZZAMnh3vQE+JrAFMU6KswWKZPX7IqrWgIFltkgJLG5mvWVaU3Rx4f
-         78G0+YuxR6JSvKVNaGWiiNCU5WFJu8eezrwBpBLLMvkOKoyBDODUWFvDhhvv30PnYzuW
-         3uglSnX40/4dIDP7H+57OSajrBlqi1yGPsQ5pJ90wIEF1qTbKeQqbAlIkGRfrA84wwC0
-         3fxQ==
-X-Gm-Message-State: AOAM533kqLY4NR0Meb8WXnXAl7l6HmwiybLCTHb8OyRicr/Ghb847ZPB
-        /oMuOzk3YcfvNx/n7uWG3tHbtE5+NdjiUr6REIjgi7uV
-X-Google-Smtp-Source: ABdhPJzrSexekYMH/bV2liF0mWAt+tXhwKiki6esVDYqswNmkZ22r9Owk1xzLI+8jGIab6gqbPzZ8sDKq82iCW94i6I=
-X-Received: by 2002:ac2:5473:: with SMTP id e19mr13918757lfn.21.1590398607984;
- Mon, 25 May 2020 02:23:27 -0700 (PDT)
+        id S2389431AbgEYJ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:26:32 -0400
+Received: from ozlabs.org ([203.11.71.1]:38069 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389105AbgEYJ0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 05:26:31 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49VsD46c6fz9sRK;
+        Mon, 25 May 2020 19:26:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590398789;
+        bh=dpEaGF5R2kv01ZjhVoXB9HnIg8xgH3eOlPOgBNkICpo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uv6k698Im6ZT0yOU34zR9mWv7R4OYJExDdGbr3gfTQehOazrCKZqkLY1FswdkbowH
+         onwWOTCI24PpntX1StGnio1UWVRyioyeNZFDiK3EXSq2AGiWop4mTToQHyOzVVOZtN
+         its7/01J0sbxTVD740YzpQ1Nt0HOMqMRPZQmyrn8cJaLlhf7+x3r39l1ma2XfDUoey
+         Og4QinE503IL2Lv/POLXlTzb3PSc6KurJI+BO8431UP04L3MayJFPQZc2oAWucMpZY
+         eJebYZci2XlH9e2sC3bRx56X0TjUuHaAPFEMqQrJ/4/Xs62GtEsv8b1LPlaFDkUWE2
+         K8/ZAzqXI/QYg==
+Date:   Mon, 25 May 2020 19:26:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: linux-next: manual merge of the notifications tree with the vfs
+ tree
+Message-ID: <20200525192625.18ae7c9b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200508165821.GA14555@x1> <CACRpkdb+ZP6rfjGg6Ef9_wYvNf6qmSc7LZyYBVKA3XWCtxPfqQ@mail.gmail.com>
- <20200518141843.GA916914@x1> <20200520220203.GA363398@x1>
-In-Reply-To: <20200520220203.GA363398@x1>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 May 2020 11:23:17 +0200
-Message-ID: <CACRpkdYV4Pd2rL=Kha6HxL8J5+vFy_M0hV7+qMghS4AVxd9D2w@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: am33xx-bone-common: add gpio-line-names
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/5EBdVhma5iqohTziYJPk.st";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 12:02 AM Drew Fustini <drew@beagleboard.org> wrote:
+--Sig_/5EBdVhma5iqohTziYJPk.st
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> I've posted a v2 which I hope improves the intent of the line names. [0]
->
-> I'm happy to integrate any feedback and create a v3 - especially if it
-> is prefered for me to list the specific peripherial signals instead of
-> an abstract term like "[ethernet]" or "[emmc]".  This is for lines that
-> can not be used because they are not routed to the expansion headers.
->
-> [0] https://lore.kernel.org/linux-omap/20200520214757.GA362547@x1/T/#u
+Hi all,
 
-This looks good to me. FWIW
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Today's linux-next merge of the notifications tree got a conflict in:
 
-Yours,
-Linus Walleij
+  include/linux/pipe_fs_i.h
+
+between commit:
+
+  f6dd975583bd ("pipe: merge anon_pipe_buf*_ops")
+
+from the vfs tree and commits:
+
+  8cfba76383e9 ("pipe: Allow buffers to be marked read-whole-or-error for n=
+otifications")
+  e7d553d69cf6 ("pipe: Add notification lossage handling")
+
+from the notifications tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/pipe_fs_i.h
+index 0c31b9461262,6626f511de6f..000000000000
+--- a/include/linux/pipe_fs_i.h
++++ b/include/linux/pipe_fs_i.h
+@@@ -8,7 -8,10 +8,11 @@@
+  #define PIPE_BUF_FLAG_ATOMIC	0x02	/* was atomically mapped */
+  #define PIPE_BUF_FLAG_GIFT	0x04	/* page is a gift */
+  #define PIPE_BUF_FLAG_PACKET	0x08	/* read() as a packet */
+ -#define PIPE_BUF_FLAG_WHOLE	0x10	/* read() must return entire buffer or e=
+rror */
+ +#define PIPE_BUF_FLAG_CAN_MERGE	0x10	/* can merge buffers */
+++#define PIPE_BUF_FLAG_WHOLE	0x20	/* read() must return entire buffer or e=
+rror */
++ #ifdef CONFIG_WATCH_QUEUE
+ -#define PIPE_BUF_FLAG_LOSS	0x20	/* Message loss happened after this buffe=
+r */
+++#define PIPE_BUF_FLAG_LOSS	0x40	/* Message loss happened after this buffe=
+r */
++ #endif
+ =20
+  /**
+   *	struct pipe_buffer - a linux kernel pipe buffer
+
+--Sig_/5EBdVhma5iqohTziYJPk.st
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7Lj0EACgkQAVBC80lX
+0Gws6Qf/VT52rUTYi6+64RiNS7LHAqE3+FoZ7Z7+jRBSJBwW85OtSL/HDcqj+plz
+IVJTblFDTknBrw+qiii2wSrVyCOSDUumcoKeamtEMsi/3EYq6pa9qbuR8UL3fGPC
+PZUduaKYHRKCNfxmOFQ3LytQY1XJbEXtQ0PLYSkFXy6SgW2cuFdZOT0+OJN5oDzJ
+y0S6UqAj3hws11CK83Xnlb196HF8BOypUSx0ep49RMbBx4wVh3Bsd4iVMWsGVw7i
+P2OCTkeYuFJfkHnKSwUTnXPcShIyUy+VCtMTALcvdJMtQnV/SPtFeApxFGyJnCBi
+0V9VFmJ2jT3hsB91q5t+lV33KG3+CA==
+=S4cI
+-----END PGP SIGNATURE-----
+
+--Sig_/5EBdVhma5iqohTziYJPk.st--
