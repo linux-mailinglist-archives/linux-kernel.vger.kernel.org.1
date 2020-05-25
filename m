@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0A01E0828
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337551E082D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389171AbgEYHoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 03:44:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37814 "EHLO mx2.suse.de"
+        id S2389190AbgEYHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 03:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389105AbgEYHop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 03:44:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A8230AC9F;
-        Mon, 25 May 2020 07:44:46 +0000 (UTC)
-Subject: Re: [PATCH v2] mm: remove VM_BUG_ON(PageSlab()) from page_mapcount()
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <159032779896.957378.7852761411265662220.stgit@buzz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <4cd36ad8-c5f8-9222-20cf-3b5719d18b98@suse.cz>
-Date:   Mon, 25 May 2020 09:44:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2389105AbgEYHqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 03:46:13 -0400
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AA8B2084C;
+        Mon, 25 May 2020 07:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590392772;
+        bh=fgqR3OQ1PtjHSkmtV10P2hHKo5KnIbUACEU4h7/NwDY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=18NjHvk8ScXaincZb/YmfsI/QWRTplgkBTpu2YO6xlvUH9+CRSqSUsuJc+m0WsfwR
+         Hrivql4XcabyAJcADV4htQDQUsebbxcwc5z8OLIL7h17y3/Z/qxoKZaswCs2GJCXzY
+         3oijNN+ovScPzBf0r3oycDR/sgKHxZ/e5USy3VSE=
+Received: by mail-il1-f178.google.com with SMTP id c20so16572051ilk.6;
+        Mon, 25 May 2020 00:46:12 -0700 (PDT)
+X-Gm-Message-State: AOAM5313MxXw++WMcE0QOIIQ40fdcg0n1X6bed9QLLb2/OVjpx2P8Ayw
+        l9EIVcEBKV/yXjjV/qTBLE8fDOYndhxz8AEfiEg=
+X-Google-Smtp-Source: ABdhPJyznDWuSesPLw+JJ+5BL9aOApZTfftAlcgXJD7CkLN8jcHhBFDwqaPXE/x7YTJsngd0cfoo32pizca9o+KxyyU=
+X-Received: by 2002:a92:5ec1:: with SMTP id f62mr20911209ilg.80.1590392771546;
+ Mon, 25 May 2020 00:46:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159032779896.957378.7852761411265662220.stgit@buzz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200512141113.18972-1-nicolas.toromanoff@st.com>
+ <20200512141113.18972-6-nicolas.toromanoff@st.com> <CAMj1kXGs6UgkKb5+tH2B-+26=tbjHq3UUY2gxfcRfMb1nGVuFA@mail.gmail.com>
+ <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com>
+In-Reply-To: <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 25 May 2020 09:46:00 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
+Message-ID: <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
+Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
+To:     Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/20 3:43 PM, Konstantin Khlebnikov wrote:
-> Replace superfluous VM_BUG_ON() with comment about correct usage.
-> 
-> Technically reverts commit 1d148e218a0d0566b1c06f2f45f1436d53b049b2
-> ("mm: add VM_BUG_ON_PAGE() to page_mapcount()"), but context have changed.
-> 
-> Function isolate_migratepages_block() runs some checks out of lru_lock
-> when choose pages for migration. After checking PageLRU() it checks extra
-> page references by comparing page_count() and page_mapcount(). Between
-> these two checks page could be removed from lru, freed and taken by slab.
-> 
-> As a result this race triggers VM_BUG_ON(PageSlab()) in page_mapcount().
-> Race window is tiny. For certain workload this happens around once a year.
-> 
-> 
->  page:ffffea0105ca9380 count:1 mapcount:0 mapping:ffff88ff7712c180 index:0x0 compound_mapcount: 0
->  flags: 0x500000000008100(slab|head)
->  raw: 0500000000008100 dead000000000100 dead000000000200 ffff88ff7712c180
->  raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
->  page dumped because: VM_BUG_ON_PAGE(PageSlab(page))
->  ------------[ cut here ]------------
->  kernel BUG at ./include/linux/mm.h:628!
->  invalid opcode: 0000 [#1] SMP NOPTI
->  CPU: 77 PID: 504 Comm: kcompactd1 Tainted: G        W         4.19.109-27 #1
->  Hardware name: Yandex T175-N41-Y3N/MY81-EX0-Y3N, BIOS R05 06/20/2019
->  RIP: 0010:isolate_migratepages_block+0x986/0x9b0
-> 
-> 
-> Code in isolate_migratepages_block() was added in commit 119d6d59dcc0
-> ("mm, compaction: avoid isolating pinned pages") before adding VM_BUG_ON
-> into page_mapcount().
-> 
-> This race has been predicted in 2015 by Vlastimil Babka (see link below).
+On Mon, 25 May 2020 at 09:24, Nicolas TOROMANOFF
+<nicolas.toromanoff@st.com> wrote:
+>
+> Hello,
+>
+> > -----Original Message-----
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> > Sent: Friday, May 22, 2020 6:12 PM>
+> > On Tue, 12 May 2020 at 16:13, Nicolas Toromanoff
+> > <nicolas.toromanoff@st.com> wrote:
+> > >
+> > > Protect STM32 CRC device from concurrent accesses.
+> > >
+> > > As we create a spinlocked section that increase with buffer size, we
+> > > provide a module parameter to release the pressure by splitting
+> > > critical section in chunks.
+> > >
+> > > Size of each chunk is defined in burst_size module parameter.
+> > > By default burst_size=0, i.e. don't split incoming buffer.
+> > >
+> > > Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+> >
+> > Would you mind explaining the usage model here? It looks like you are sharing a
+> > CRC hardware accelerator with a synchronous interface between different users
+> > by using spinlocks? You are aware that this will tie up the waiting CPUs
+> > completely during this time, right? So it would be much better to use a mutex
+> > here. Or perhaps it would make more sense to fall back to a s/w based CRC
+> > routine if the h/w is tied up working for another task?
+>
+> I know mutex are more acceptable here, but shash _update() and _init() may be call
+> from any context, and so I cannot take a mutex.
+> And to protect my concurrent HW access I only though about spinlock. Due to possible
+> constraint on CPUs, I add a burst_size option to force slitting long buffer into smaller one,
+> and so decrease time we take the lock.
+> But I didn't though to fallback to software CRC.
+>
+> I'll do a patch on top.
+> In in the burst_update() function I'll use a spin_trylock_irqsave() and use software CRC32 if HW is already in use.
+>
 
-Huh, looks like I made that prediction only half year after that patch has been
-posted. Now if only I remembered why... I hope it was just a code inspection
-while chasing something else. I most likely didn't actually see the bug happen,
-as we don't compile with DEBUG_VM.
+Right. I didn't even notice that you were keeping interrupts disabled
+the whole time when using the h/w block. That means that any serious
+use of this h/w block will make IRQ latency go through the roof.
 
-> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Fixes: 1d148e218a0d ("mm: add VM_BUG_ON_PAGE() to page_mapcount()")
-> Link: https://lore.kernel.org/lkml/557710E1.6060103@suse.cz/
-> Link: https://lore.kernel.org/linux-mm/158937872515.474360.5066096871639561424.stgit@buzz/T/ (v1)
-
-With Hugh's wording tweaks,
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Thanks.
+I recommend that you go back to the drawing board on this driver,
+rather than papering over the issues with a spin_trylock(). Perhaps it
+would be better to model it as a ahash (even though the h/w block
+itself is synchronous) and use a kthread to feed in the data.
