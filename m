@@ -2,84 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00C01E06F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A521E0705
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388895AbgEYGak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 02:30:40 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:44998 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388631AbgEYGaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 02:30:39 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0D714C6D2510EF809AD4;
-        Mon, 25 May 2020 14:30:27 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 25 May
- 2020 14:30:26 +0800
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: avoid inifinite loop to wait for
- flushing node pages at cp_error
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20200522144752.216197-1-jaegeuk@kernel.org>
- <20200522233243.GA94020@google.com> <20200525035655.GA135148@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <565af47c-8364-d910-8d1c-93645c12e660@huawei.com>
-Date:   Mon, 25 May 2020 14:30:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S2388931AbgEYGdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 02:33:41 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:11662 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388884AbgEYGdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 02:33:41 -0400
+X-UUID: 48b26c1c68a14608a973e5b51d23e488-20200525
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=yX9DbdtxP2DzviHUTXSqqtm5djMy9Kag6CeDl4UJwgY=;
+        b=IeTfafWwPLEbAPhbQZE0+j/nMakuBQIqVw1S0a1OgGTuMqV7iDBdNv2cwTu6awEKzPxWltdd3GhBHebgfSYDFxtLWvOjD6z9RZE7A63VsBr88GENRFVOxr+6rj8IFTHG0U7NNl4Ipm8HGbkRLxaze07zEeQin9lWJ6XMzIaLk1o=;
+X-UUID: 48b26c1c68a14608a973e5b51d23e488-20200525
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 815997012; Mon, 25 May 2020 14:33:27 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 May
+ 2020 14:33:27 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 May 2020 14:33:26 +0800
+Message-ID: <1590388305.13912.16.camel@mhfsdcap03>
+Subject: Re: [PATCH v3 5/7] iommu/mediatek: Add sub_comm id in translation
+ fault
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Chao Hao <chao.hao@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        FY Yang <fy.yang@mediatek.com>, Jun Yan <jun.yan@mediatek.com>
+Date:   Mon, 25 May 2020 14:31:45 +0800
+In-Reply-To: <20200509083654.5178-6-chao.hao@mediatek.com>
+References: <20200509083654.5178-1-chao.hao@mediatek.com>
+         <20200509083654.5178-6-chao.hao@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200525035655.GA135148@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: D04CEC16514D9461F79069ADF288E5C328AE4284FF7CB22830DF0E34DCEFE93A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/25 11:56, Jaegeuk Kim wrote:
-> Shutdown test is somtimes hung, since it keeps trying to flush dirty node pages
+T24gU2F0LCAyMDIwLTA1LTA5IGF0IDE2OjM2ICswODAwLCBDaGFvIEhhbyB3cm90ZToNCj4gVGhl
+IG1heCBsYXJiIG51bWJlciB0aGF0IGEgaW9tbXUgSFcgc3VwcG9ydCBpcyA4KGxhcmIwfmxhcmI3
+IGluIHRoZSBiZWxvdw0KPiBkaWFncmFtKS4NCj4gSWYgdGhlIGxhcmIncyBudW1iZXIgaXMgb3Zl
+ciA4LCB3ZSB1c2UgYSBzdWJfY29tbW9uIGZvciBtZXJnaW5nDQo+IHNldmVyYWwgbGFyYnMgaW50
+byBvbmUgbGFyYi4gQXQgdGhpcyBjYXNlLCB3ZSB3aWxsIGV4dGVuZCBsYXJiX2lkOg0KPiBiaXRb
+MTE6OV0gbWVhbnMgY29tbW9uLWlkOw0KPiBiaXRbODo3XSBtZWFucyBzdWJjb21tb24taWQ7DQo+
+IEZyb20gdGhlc2UgdHdvIHZhcmlhYmxlLCB3ZSBjb3VsZCBnZXQgdGhlIHJlYWwgbGFyYiBudW1i
+ZXIgd2hlbg0KPiB0cmFuc2xhdGlvbiBmYXVsdCBoYXBwZW4uDQo+IFRoZSBkaWFncmFtIGlzIGFz
+IGJlbG93Og0KPiAJCSBFTUkNCj4gCQkgIHwNCj4gCQlJT01NVQ0KPiAJCSAgfA0KPiAgICAgICAg
+ICAgIC0tLS0tLS0tLS0tLS0tLS0tDQo+IAkgICB8ICAgICAgICAgICAgICAgfA0KPiAJY29tbW9u
+MSAgIAljb21tb24wDQo+IAkgICB8CQkgICB8DQo+IAkgICAtLS0tLS0tLS0tLS0tLS0tLQ0KPiAJ
+CSAgfA0KPiAgICAgICAgICAgICAgc21pIGNvbW1vbg0KPiAJCSAgfA0KPiAgIC0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgIHwgICAgICAgfCAgICAgICB8ICAgICAgIHwg
+ICAgIHwgICAgfA0KPiAgMydkMCAgICAzJ2QxICAgIDMnZDIgICAgMydkMyAgLi4uICAzJ2Q3ICAg
+PC1jb21tb25faWQobWF4IGlzIDgpDQo+ICAgfCAgICAgICB8ICAgICAgIHwgICAgICAgfCAgICAg
+fCAgICB8DQo+IExhcmIwICAgTGFyYjEgICAgIHwgICAgIExhcmIzICAuLi4gTGFyYjcNCj4gCQkg
+IHwNCj4gCSAgICBzbWkgc3ViIGNvbW1vbg0KPiAJCSAgfA0KPiAgICAgIC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tDQo+ICAgICAgfCAgICAgICAgfCAgICAgICB8ICAgICAgIHwNCj4gICAgIDIn
+ZDAgICAgIDInZDEgICAgMidkMiAgICAyJ2QzICAgPC1zdWJfY29tbW9uX2lkKG1heCBpcyA0KQ0K
+PiAgICAgIHwgICAgICAgIHwgICAgICAgfCAgICAgICB8DQo+ICAgIExhcmI4ICAgIExhcmI5ICAg
+TGFyYjEwICBMYXJiMTENCj4gDQo+IEluIHRoaXMgcGF0Y2ggd2UgZXh0ZXJuIGxhcmJfcmVtYXBb
+XSB0byBsYXJiX3JlbWFwWzhdWzRdIGZvciB0aGlzLg0KPiBsYXJiX3JlbWFwW3hdW3ldOiB4IG1l
+YW4gY29tbW9uLWlkIGFib3ZlLCB5IG1lYW5zIHN1YmNvbW1vbl9pZCBhYm92ZS4NCj4gDQo+IFdl
+IGNhbiBhbHNvIGRpc3Rpbmd1aXNoIGlmIHRoZSBNNFUgSFcgaGFzIHN1Yl9jb21tb24gYnkgaGFz
+X3N1Yl9jb21tDQo+IHByb3BlcnR5Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2hhbyBIYW8gPGNo
+YW8uaGFvQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2lvbW11L210a19pb21tdS5j
+IHwgMjAgKysrKysrKysrKysrKy0tLS0tLS0NCj4gIGRyaXZlcnMvaW9tbXUvbXRrX2lvbW11Lmgg
+fCAgMyArKy0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlv
+bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jIGIvZHJp
+dmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiBpbmRleCBkNzNkZTk4N2Y4YmUuLjM5MTRjNDE4ZDFi
+MCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiArKysgYi9kcml2
+ZXJzL2lvbW11L210a19pb21tdS5jDQo+IEBAIC05MCw2ICs5MCw4IEBADQo+ICAjZGVmaW5lIFJF
+R19NTVUxX0lOVkxEX1BBCQkJMHgxNDgNCj4gICNkZWZpbmUgUkVHX01NVTBfSU5UX0lECQkJCTB4
+MTUwDQo+ICAjZGVmaW5lIFJFR19NTVUxX0lOVF9JRAkJCQkweDE1NA0KPiArI2RlZmluZSBGX01N
+VV9JTlRfSURfQ09NTV9JRChhKQkJCSgoKGEpID4+IDkpICYgMHg3KQ0KPiArI2RlZmluZSBGX01N
+VV9JTlRfSURfU1VCX0NPTU1fSUQoYSkJCSgoKGEpID4+IDcpICYgMHgzKQ0KPiAgI2RlZmluZSBG
+X01NVV9JTlRfSURfTEFSQl9JRChhKQkJCSgoKGEpID4+IDcpICYgMHg3KQ0KPiAgI2RlZmluZSBG
+X01NVV9JTlRfSURfUE9SVF9JRChhKQkJCSgoKGEpID4+IDIpICYgMHgxZikNCj4gIA0KPiBAQCAt
+MjI4LDcgKzIzMCw3IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBtdGtfaW9tbXVfaXNyKGludCBpcnEs
+IHZvaWQgKmRldl9pZCkNCj4gIAlzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEgPSBkZXZfaWQ7
+DQo+ICAJc3RydWN0IG10a19pb21tdV9kb21haW4gKmRvbSA9IGRhdGEtPm00dV9kb207DQo+ICAJ
+dTMyIGludF9zdGF0ZSwgcmVndmFsLCBmYXVsdF9pb3ZhLCBmYXVsdF9wYTsNCj4gLQl1bnNpZ25l
+ZCBpbnQgZmF1bHRfbGFyYiwgZmF1bHRfcG9ydDsNCj4gKwl1bnNpZ25lZCBpbnQgZmF1bHRfbGFy
+YiwgZmF1bHRfcG9ydCwgc3ViX2NvbW0gPSAwOw0KPiAgCWJvb2wgbGF5ZXIsIHdyaXRlOw0KPiAg
+DQo+ICAJLyogUmVhZCBlcnJvciBpbmZvIGZyb20gcmVnaXN0ZXJzICovDQo+IEBAIC0yNDQsMTAg
+KzI0NiwxNCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgbXRrX2lvbW11X2lzcihpbnQgaXJxLCB2b2lk
+ICpkZXZfaWQpDQo+ICAJfQ0KPiAgCWxheWVyID0gZmF1bHRfaW92YSAmIEZfTU1VX0ZBVUxUX1ZB
+X0xBWUVSX0JJVDsNCj4gIAl3cml0ZSA9IGZhdWx0X2lvdmEgJiBGX01NVV9GQVVMVF9WQV9XUklU
+RV9CSVQ7DQo+IC0JZmF1bHRfbGFyYiA9IEZfTU1VX0lOVF9JRF9MQVJCX0lEKHJlZ3ZhbCk7DQo+
+ICAJZmF1bHRfcG9ydCA9IEZfTU1VX0lOVF9JRF9QT1JUX0lEKHJlZ3ZhbCk7DQo+IC0NCj4gLQlm
+YXVsdF9sYXJiID0gZGF0YS0+cGxhdF9kYXRhLT5sYXJiaWRfcmVtYXBbZmF1bHRfbGFyYl07DQo+
+ICsJaWYgKGRhdGEtPnBsYXRfZGF0YS0+aGFzX3N1Yl9jb21tKSB7DQo+ICsJCWZhdWx0X2xhcmIg
+PSBGX01NVV9JTlRfSURfQ09NTV9JRChyZWd2YWwpOw0KPiArCQlzdWJfY29tbSA9IEZfTU1VX0lO
+VF9JRF9TVUJfQ09NTV9JRChyZWd2YWwpOw0KPiArCX0gZWxzZSB7DQo+ICsJCWZhdWx0X2xhcmIg
+PSBGX01NVV9JTlRfSURfTEFSQl9JRChyZWd2YWwpOw0KPiArCX0NCj4gKwlmYXVsdF9sYXJiID0g
+ZGF0YS0+cGxhdF9kYXRhLT5sYXJiaWRfcmVtYXBbZmF1bHRfbGFyYl1bc3ViX2NvbW1dOw0KPiAg
+DQo+ICAJaWYgKHJlcG9ydF9pb21tdV9mYXVsdCgmZG9tLT5kb21haW4sIGRhdGEtPmRldiwgZmF1
+bHRfaW92YSwNCj4gIAkJCSAgICAgICB3cml0ZSA/IElPTU1VX0ZBVUxUX1dSSVRFIDogSU9NTVVf
+RkFVTFRfUkVBRCkpIHsNCj4gQEAgLTc4NSw3ICs3OTEsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IG10a19pb21tdV9wbGF0X2RhdGEgbXQyNzEyX2RhdGEgPSB7DQo+ICAJLmhhc19iY2xrICAgICA9
+IHRydWUsDQo+ICAJLmhhc192bGRfcGFfcm5nICAgPSB0cnVlLA0KPiAgCS5pbnZfc2VsX3JlZyA9
+IFJFR19NTVVfSU5WX1NFTF9HRU4xLA0KPiAtCS5sYXJiaWRfcmVtYXAgPSB7MCwgMSwgMiwgMywg
+NCwgNSwgNiwgNywgOCwgOX0sDQo+ICsJLmxhcmJpZF9yZW1hcCA9IHt7MH0sIHsxfSwgezJ9LCB7
+M30sIHs0fSwgezV9LCB7Nn0sIHs3fX0sDQoNClRoZSBvcmlnaW5hbCBtdDI3MTIgaGFzIDEwIGxh
+cmJzLCBidXQgaXQgYWN0dWFsbHkgaGFzIDIgSU9NTVUgSFdzLg0KRm9yIGVhY2ggYSBzbWktY29t
+bW9uLCBUaGUgbWF4IGxhcmIgbnVtYmVyIGNvdWxkIG9ubHkgYmUgOC4gU28gaXQgaXMNCnJpZ2h0
+IGhlcmUuDQoNClRodXMsDQpSZXZpZXdlZC1ieTogWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRlay5j
+b20+DQoNCj4gIH07DQo+ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRf
+ZGF0YSBtdDgxNzNfZGF0YSA9IHsNCj4gQEAgLTc5NCwxNCArODAwLDE0IEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSBtdDgxNzNfZGF0YSA9IHsNCj4gIAkuaGFzX2Jj
+bGsgICAgID0gdHJ1ZSwNCj4gIAkucmVzZXRfYXhpICAgID0gdHJ1ZSwNCj4gIAkuaW52X3NlbF9y
+ZWcgPSBSRUdfTU1VX0lOVl9TRUxfR0VOMSwNCj4gLQkubGFyYmlkX3JlbWFwID0gezAsIDEsIDIs
+IDMsIDQsIDV9LCAvKiBMaW5lYXIgbWFwcGluZy4gKi8NCj4gKwkubGFyYmlkX3JlbWFwID0ge3sw
+fSwgezF9LCB7Mn0sIHszfSwgezR9LCB7NX19LCAvKiBMaW5lYXIgbWFwcGluZy4gKi8NCj4gIH07
+DQo+ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSBtdDgxODNf
+ZGF0YSA9IHsNCj4gIAkubTR1X3BsYXQgICAgID0gTTRVX01UODE4MywNCj4gIAkucmVzZXRfYXhp
+ICAgID0gdHJ1ZSwNCj4gIAkuaW52X3NlbF9yZWcgPSBSRUdfTU1VX0lOVl9TRUxfR0VOMSwNCj4g
+LQkubGFyYmlkX3JlbWFwID0gezAsIDQsIDUsIDYsIDcsIDIsIDMsIDF9LA0KPiArCS5sYXJiaWRf
+cmVtYXAgPSB7ezB9LCB7NH0sIHs1fSwgezZ9LCB7N30sIHsyfSwgezN9LCB7MX19LA0KPiAgfTsN
+Cj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2lvbW11X29mX2lk
+c1tdID0gew0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaCBiL2RyaXZl
+cnMvaW9tbXUvbXRrX2lvbW11LmgNCj4gaW5kZXggYWZkN2EyZGU1YzFlLi5kNTFmZjk5YzJjNzEg
+MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmgNCj4gKysrIGIvZHJpdmVy
+cy9pb21tdS9tdGtfaW9tbXUuaA0KPiBAQCAtNDEsMTAgKzQxLDExIEBAIHN0cnVjdCBtdGtfaW9t
+bXVfcGxhdF9kYXRhIHsNCj4gIAkvKiBIVyB3aWxsIHVzZSB0aGUgRU1JIGNsb2NrIGlmIHRoZXJl
+IGlzbid0IHRoZSAiYmNsayIuICovDQo+ICAJYm9vbCAgICAgICAgICAgICAgICBoYXNfYmNsazsN
+Cj4gIAlib29sCQkgICAgaGFzX21pc2NfY3RybDsNCj4gKwlib29sCQkgICAgaGFzX3N1Yl9jb21t
+Ow0KPiAgCWJvb2wgICAgICAgICAgICAgICAgaGFzX3ZsZF9wYV9ybmc7DQo+ICAJYm9vbCAgICAg
+ICAgICAgICAgICByZXNldF9heGk7DQo+ICAJdTMyICAgICAgICAgICAgICAgICBpbnZfc2VsX3Jl
+ZzsNCj4gLQl1bnNpZ25lZCBjaGFyICAgICAgIGxhcmJpZF9yZW1hcFtNVEtfTEFSQl9OUl9NQVhd
+Ow0KPiArCXVuc2lnbmVkIGNoYXIgICAgICAgbGFyYmlkX3JlbWFwWzhdWzRdOw0KPiAgfTsNCj4g
+IA0KPiAgc3RydWN0IG10a19pb21tdV9kb21haW47DQoNCg==
 
-IMO, for umount case, we should drop dirty reference and dirty pages on meta/data
-pages like we change for node pages to avoid potential dead loop...
-
-Thanks,
-
-> in an inifinite loop. Let's drop dirty pages at umount in that case.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> v3:
->  - fix wrong unlock
-> 
-> v2:
->  - fix typos
-> 
->  fs/f2fs/node.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index e632de10aedab..e0bb0f7e0506e 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -1520,8 +1520,15 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
->  
->  	trace_f2fs_writepage(page, NODE);
->  
-> -	if (unlikely(f2fs_cp_error(sbi)))
-> +	if (unlikely(f2fs_cp_error(sbi))) {
-> +		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
-> +			ClearPageUptodate(page);
-> +			dec_page_count(sbi, F2FS_DIRTY_NODES);
-> +			unlock_page(page);
-> +			return 0;
-> +		}
->  		goto redirty_out;
-> +	}
->  
->  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
->  		goto redirty_out;
-> 
