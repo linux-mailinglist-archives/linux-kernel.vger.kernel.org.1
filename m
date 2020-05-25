@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D7B1E05A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF981E052C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgEYDrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 23:47:11 -0400
-Received: from mail-m973.mail.163.com ([123.126.97.3]:46642 "EHLO
-        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728324AbgEYDrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 23:47:11 -0400
-X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 May 2020 23:47:10 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=6IIXyf48wsHgqxd09c
-        IS/+VIQjuoiphPvmEZfA1FK2I=; b=VM98ejsh2KJDz3pcVRV6fzBVHFQbSmIFiG
-        NxRiHdZH4PeEeRGgqy9+ZXOVxTv89q5goD/dvubwCXFHPBGmLmCnPFysdYAz+Xl1
-        5Lr570BxzahWFxtLl7Y9sIilGAM50wJuNJIBbo6NTWkkYyJfJZsXtjHCEcd20rfY
-        IfztGiQ4I=
-Received: from localhost.localdomain (unknown [124.64.17.235])
-        by smtp3 (Coremail) with SMTP id G9xpCgA3pKwbPMte3DLsAg--.227S4;
-        Mon, 25 May 2020 11:31:48 +0800 (CST)
-From:   YuanJunQing <yuanjunqing66@163.com>
-To:     tsbogend@alpha.franken.de
-Cc:     paulburton@kernel.org, chenhc@lemote.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn, YuanJunQing <yuanjunqing66@163.com>
-Subject: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe()
-Date:   Mon, 25 May 2020 11:31:23 +0800
-Message-Id: <20200525033123.13114-1-yuanjunqing66@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: G9xpCgA3pKwbPMte3DLsAg--.227S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XrWUurykKryUurWrCF17KFg_yoWDXwc_Kr
-        4Iq3yj9rn8GwsxWF1xtw4rWr92gw4SgF9akryq9w4Yyr15urn09r4kWFykX3Z3Wr4SkFWI
-        y3s8CFn3CF1xtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUHUqUUUUUU==
-X-Originating-IP: [124.64.17.235]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/1tbiNgQvXFWBjPQihAAAsL
+        id S2388794AbgEYDcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 23:32:02 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48326 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388450AbgEYDcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 23:32:01 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD94sPMte3cI4AA--.386S2;
+        Mon, 25 May 2020 11:31:56 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH 1/2] clk: hisilicon: Use correct return value about hisi_reset_init()
+Date:   Mon, 25 May 2020 11:31:55 +0800
+Message-Id: <1590377516-32117-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxD94sPMte3cI4AA--.386S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3WFWfGrW8uw1rJryfXrb_yoW5XrWkpF
+        48JFW2ya4Yga17X3ZrXr90yFy5Za42gayUGFW8Z3srZwn8JrWUZr1fury8Zayqqrs3KFWa
+        9r40kr48ua1jyFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1NVyDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Register "a1" is unsaved in this function,
- when CONFIG_TRACE_IRQFLAGS is enabled,
- the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
- and this may change register "a1".
- The variment of register "a1" may send SIGFPE signal
- to task when call do_fpe(),and this may kill the task.
+The return value about hisi_reset_init() is not correct, fix it.
 
-Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/mips/kernel/genex.S | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/clk/hisilicon/clk-hi3519.c      | 4 ++--
+ drivers/clk/hisilicon/crg-hi3516cv300.c | 4 ++--
+ drivers/clk/hisilicon/crg-hi3798cv200.c | 4 ++--
+ drivers/clk/hisilicon/reset.c           | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index 8236fb291e3f..956a76429773 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -480,16 +480,18 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
- 	.set	mips1
- 	SET_HARDFLOAT
--	cfc1	a1, fcr31
-+	cfc1	s0, fcr31
- 	.set	pop
- 	CLI
- 	TRACE_IRQS_OFF
-+	move    a1,s0
- 	.endm
+diff --git a/drivers/clk/hisilicon/clk-hi3519.c b/drivers/clk/hisilicon/clk-hi3519.c
+index ad0c7f3..803fa66 100644
+--- a/drivers/clk/hisilicon/clk-hi3519.c
++++ b/drivers/clk/hisilicon/clk-hi3519.c
+@@ -149,8 +149,8 @@ static int hi3519_clk_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- 	.macro	__build_clear_msa_fpe
--	_cfcmsa	a1, MSA_CSR
-+	_cfcmsa	s0, MSA_CSR
- 	CLI
- 	TRACE_IRQS_OFF
-+	move    a1,s0
- 	.endm
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
  
- 	.macro	__build_clear_ade
+ 	crg->clk_data = hi3519_clk_register(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/crg-hi3516cv300.c b/drivers/clk/hisilicon/crg-hi3516cv300.c
+index 5d4e61c..c2af03d 100644
+--- a/drivers/clk/hisilicon/crg-hi3516cv300.c
++++ b/drivers/clk/hisilicon/crg-hi3516cv300.c
+@@ -271,8 +271,8 @@ static int hi3516cv300_crg_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
+ 
+ 	crg->clk_data = crg->funcs->register_clks(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/crg-hi3798cv200.c b/drivers/clk/hisilicon/crg-hi3798cv200.c
+index 08a19ba..66fd6a9 100644
+--- a/drivers/clk/hisilicon/crg-hi3798cv200.c
++++ b/drivers/clk/hisilicon/crg-hi3798cv200.c
+@@ -354,8 +354,8 @@ static int hi3798cv200_crg_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 
+ 	crg->rstc = hisi_reset_init(pdev);
+-	if (!crg->rstc)
+-		return -ENOMEM;
++	if (IS_ERR(crg->rstc))
++		return PTR_ERR(crg->rstc);
+ 
+ 	crg->clk_data = crg->funcs->register_clks(pdev);
+ 	if (IS_ERR(crg->clk_data)) {
+diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
+index 93cee17..f17d15f 100644
+--- a/drivers/clk/hisilicon/reset.c
++++ b/drivers/clk/hisilicon/reset.c
+@@ -93,11 +93,11 @@ struct hisi_reset_controller *hisi_reset_init(struct platform_device *pdev)
+ 
+ 	rstc = devm_kmalloc(&pdev->dev, sizeof(*rstc), GFP_KERNEL);
+ 	if (!rstc)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	rstc->membase = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(rstc->membase))
+-		return NULL;
++		return rstc->membase;
+ 
+ 	spin_lock_init(&rstc->lock);
+ 	rstc->rcdev.owner = THIS_MODULE;
 -- 
-2.17.1
+2.1.0
 
