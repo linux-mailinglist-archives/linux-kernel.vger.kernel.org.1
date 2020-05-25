@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7FE1E06C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057141E06CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbgEYGQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 02:16:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729125AbgEYGQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 02:16:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE2852071A;
-        Mon, 25 May 2020 06:16:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590387379;
-        bh=LVk87GPlRu/4Mx4FL7prPIF6kv14E4enALjMXoF8s3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ox3+DMVR+TP1ql4ww2IUcmNlgRTyuHIsitzZOsYw8csiwU0/+kBKMenZ/rH8Wb+cn
-         ExJ7DfoPXcypfY3FdVuTPOweVG5zuCfNHcXrBJgFNUjv/HfsdyoNwWvwOfC92Osl1e
-         l56JTu7WyQ4kAuDL6v/IqWwjAYbAqFn6mcpQJeTY=
-Date:   Mon, 25 May 2020 08:16:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] kernfs: proposed locking and concurrency improvement
-Message-ID: <20200525061616.GA57080@kroah.com>
-References: <159038508228.276051.14042452586133971255.stgit@mickey.themaw.net>
+        id S1730573AbgEYGQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 02:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730280AbgEYGQ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 02:16:27 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0623DC061A0E;
+        Sun, 24 May 2020 23:16:27 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t11so8286006pgg.2;
+        Sun, 24 May 2020 23:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b96SL8+sRaQd4BNuO23oq4bmCu1x+cpwG9cm6rdCDA0=;
+        b=viFVpiWHuDc+z9efiUkJdmh0VIDdJhkAiST+Q8beFUNnLgWtubZLHcJRe/qLLGg8Ip
+         oTS8O5XPHQs5ZVa21IJrk9t5LGs94tYmAROm9iFn1gJg9EDp/ugeFILzwEj705KEvBGw
+         b6JOOJ8Nw5uv/ziocgKDzhB84SwhMNSQMNaUAF+Ud1gvxPqt/eCPKpnOQcblDZXukU0k
+         +YBUM4j7kZBcaRI3PmXwDJ1y1cgi3Lpe6Krsm8Hb3yurUa3b1ux8WWYM8OKxnhdxfQ25
+         h3j2njsqK4+wVLtpj54w7bo2yq5Pakh/CDS4wsnvE8rqEgH2ggXaQJ6GUB5Z+zZZcTX0
+         lA8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b96SL8+sRaQd4BNuO23oq4bmCu1x+cpwG9cm6rdCDA0=;
+        b=WJJ8B7LrkOCkPqg9R4Jo3SeWEr1/GhkSEUvQ9UlzyPRjJVms27sYjQMFM7b0uVKfvB
+         BQNZ4qItBNDG2LIo90rXnqQXOQhb4gIbAAj/s21nok3xWv2Luq2PFAx/lyLeJoYOnzDh
+         OVa87gEVlzwCi66iSK39KKlUpvpYTnIiRysGYDYfEfdaLRGis7r/9cCeXpGZV0nEJtAJ
+         50qzs1tUuh3QcNsf6E/ZK1zt6u6LayVMvThTq5BzhFu7U1bHgTmN82O5dF/Y+lgzyygT
+         K1sdXSoTs1sHtXY7HWH0CZ5yQwnfC7ppLjRyq3LooNJ6BYtaRPTtMldnwDwKiFLT7s7R
+         nL6A==
+X-Gm-Message-State: AOAM533p+B+L7CzhGEZXE9wl0WkWoLz7tWKgwpa+Kx9CahjImJ4O9u08
+        k6TV6pcq7XRpT3l6UBRei8E=
+X-Google-Smtp-Source: ABdhPJxgBcGXY7WW27C6rn95w54bsP+6x+NYWWLJeYwxugt6XN3ID/4qT8FuaL3vxAeluC7dMnrvaA==
+X-Received: by 2002:aa7:84c6:: with SMTP id x6mr15776442pfn.46.1590387386501;
+        Sun, 24 May 2020 23:16:26 -0700 (PDT)
+Received: from localhost (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id v1sm12380566pjn.9.2020.05.24.23.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 23:16:25 -0700 (PDT)
+Date:   Sun, 24 May 2020 23:16:22 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Jianyong Wu <Jianyong.Wu@arm.com>
+Cc:     "maz@kernel.org" <maz@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "yangbo.lu@nxp.com" <yangbo.lu@nxp.com>,
+        "john.stultz@linaro.org" <john.stultz@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        Suzuki Poulose <Suzuki.Poulose@arm.com>,
+        Steven Price <Steven.Price@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Steve Capper <Steve.Capper@arm.com>,
+        Kaly Xin <Kaly.Xin@arm.com>, Justin He <Justin.He@arm.com>,
+        Wei Chen <Wei.Chen@arm.com>, nd <nd@arm.com>
+Subject: Re: [RFC PATCH v12 10/11] arm64: add mechanism to let user choose
+ which counter to return
+Message-ID: <20200525061622.GA13679@localhost>
+References: <20200522083724.38182-1-jianyong.wu@arm.com>
+ <20200522083724.38182-11-jianyong.wu@arm.com>
+ <20200524021106.GC335@localhost>
+ <HE1PR0802MB25552E7C792D3BB9CBE2D2C7F4B30@HE1PR0802MB2555.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159038508228.276051.14042452586133971255.stgit@mickey.themaw.net>
+In-Reply-To: <HE1PR0802MB25552E7C792D3BB9CBE2D2C7F4B30@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 01:46:59PM +0800, Ian Kent wrote:
-> For very large systems with hundreds of CPUs and TBs of RAM booting can
-> take a very long time.
-> 
-> Initial reports showed that booting a configuration of several hundred
-> CPUs and 64TB of RAM would take more than 30 minutes and require kernel
-> parameters of udev.children-max=1024 systemd.default_timeout_start_sec=3600
-> to prevent dropping into emergency mode.
-> 
-> Gathering information about what's happening during the boot is a bit
-> challenging. But two main issues appeared to be, a large number of path
-> lookups for non-existent files, and high lock contention in the VFS during
-> path walks particularly in the dentry allocation code path.
-> 
-> The underlying cause of this was believed to be the sheer number of sysfs
-> memory objects, 100,000+ for a 64TB memory configuration.
+On Mon, May 25, 2020 at 04:50:28AM +0000, Jianyong Wu wrote:
+> How about adding an extra argument in struct ptp_clock_info to serve as a flag, then we can control this flag using IOCTL to determine the counter type.
 
-Independant of your kernfs changes, why do we really need to represent
-all of this memory with that many different "memory objects"?  What is
-that providing to userspace?
+no, No, NO!
 
-I remember Ben Herrenschmidt did a lot of work on some of the kernfs and
-other functions to make large-memory systems boot faster to remove some
-of the complexity in our functions, but that too did not look into why
-we needed to create so many objects in the first place.
+> > From your description, this "flag" really should be a module parameter.
+> Maybe use flag as a module parameter is a better way.
 
-Perhaps you might want to look there instead?
+Yes.
 
-thanks,
-
-greg k-h
+Thanks,
+Richard
