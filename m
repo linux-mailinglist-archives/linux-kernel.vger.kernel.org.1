@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EA21E0A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26881E0A99
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389506AbgEYJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389192AbgEYJb1 (ORCPT
+        id S2389535AbgEYJbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:31:48 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:11425 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389514AbgEYJbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:31:27 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CF1C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:31:25 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id l15so9607777vsr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:31:25 -0700 (PDT)
+        Mon, 25 May 2020 05:31:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2SJy3teeS/DAEycN8FRbgylUfmtHnW0QUGPznK0vKdk=;
-        b=oOVlDGlyYvsjt9O70aWettNvYp5QuWpirQw83njS4tN9OVs1QOHpQ6l4kTXcQxSSyH
-         Nhslhcled0cALdykwKEM9G2EaYphVlW+R4mq2rsKBu1pBFetLlagvOXR8qS+HhpbLsfv
-         EfsZ8lsKt84cOgjPFwv4DmDm0ZPvnauZJpxKpOo+OpMGpvtMwjQ6XKPlh3MotvunFVL9
-         WD2yTLvNTyCG/2t90ne8LWfZc32BozQ1R2+QEeYjj/yC2M0mLjdFEr7Rpjxhx3xSEYoq
-         8v/VxK+F4xDjizjBPUPqFQu56jScEuiwTQ1LcqmVtKUa1VPGxM84KBhaYWAlwlkXpfRC
-         itEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2SJy3teeS/DAEycN8FRbgylUfmtHnW0QUGPznK0vKdk=;
-        b=gSI2OCue7c98Q/oHEGTwCW2jsBprENbcirQQIkxBFqGwH52DYDZPde6DWnYAvKc7uA
-         QiQwwlCztAAVNOHuYSNR2/LArh6wh4Lku+pGz/05U2zN37kj8c5Xxo+etwh6ZvpSV6zD
-         qLB2JCdCAWfri09XN6Pn5PKFU953u6d8a1q2FeTtPFcO1oH6CqyqCQtLimDLywstBcGK
-         uOLjKJ6qHiU5ajTEj99QRlJrY4mhA8lHRmJREwTwYTtLIGyUtuskoxRDMF814GpXQR7k
-         l9Yg+p12WD4d8vtFHraXCexYScckA/Zt1HcIFmlkLuayohspopeOK+St1PM8+Z84CSaR
-         N7/A==
-X-Gm-Message-State: AOAM533Drel2/EHVKPQWf4v1nMWbmiBBNqfV+4mPtiqvU9tJaZOQW6OR
-        uokL3uNRa1y5fFKgRvkoB4GdEC3EIihVb8Va5xew+A==
-X-Google-Smtp-Source: ABdhPJzdToedW+b7g2VJmgHmi3EXlqTSzajnqP28mVcwwaT9fRa4OEbfVkWvnBRvi/o5+XV/vwN09H2AFAdUDE1INz4=
-X-Received: by 2002:a67:1486:: with SMTP id 128mr13187332vsu.191.1590399084957;
- Mon, 25 May 2020 02:31:24 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590399107; x=1621935107;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=EhBVAsDs98qhULlRXqAfS/sAw/8j0NvB9F91fcrKmCM=;
+  b=cGJZeWd+FbcAun2LyZlL0vaEIC41vlIibEuOz/wPJrlrGlN9JAiYgZ5W
+   6Azx+rbKEUW1u9obiLYWoSN9EsGaOwr1N1Gj3Soqg7A3xoaEuUyQjoYuJ
+   0Dd+1R3PJlGR+KdmV6Km377BMzuLfIo3lBUqTEooGsq2jJOEnJ5F+bufZ
+   0=;
+IronPort-SDR: /RbCI2gbLMK/BHdAHLO4QcFAhG+IkZBT7l6kTAwS0pqcD/4K1yBUlugXwNdeSTbFpeip8zyKgu
+ NhdYf2l9I+JQ==
+X-IronPort-AV: E=Sophos;i="5.73,432,1583193600"; 
+   d="scan'208";a="47147033"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 25 May 2020 09:31:44 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (Postfix) with ESMTPS id AB695A1C81;
+        Mon, 25 May 2020 09:31:32 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 09:31:31 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.200) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 09:31:15 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
+        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
+        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
+        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
+        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
+        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v13 15/15] MAINTAINERS: Update for DAMON
+Date:   Mon, 25 May 2020 11:31:01 +0200
+Message-ID: <20200525093101.1550-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200525091512.30391-1-sjpark@amazon.com>
+References: <20200525091512.30391-1-sjpark@amazon.com>
 MIME-Version: 1.0
-References: <CGME20200521170817eucas1p13d9477a0a5d13d2df876134cf41131d8@eucas1p1.samsung.com>
- <5127441.yGvM1JjtLk@kreacher> <e9130ce8-fd22-c871-c089-585585c7133f@samsung.com>
- <CAJZ5v0j+bsHaQcxK41yph8eRpMZ3DoerqA7uwS2B8De41Jwi7Q@mail.gmail.com>
-In-Reply-To: <CAJZ5v0j+bsHaQcxK41yph8eRpMZ3DoerqA7uwS2B8De41Jwi7Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 25 May 2020 11:30:48 +0200
-Message-ID: <CAPDyKFrHcvhi+qZk-65+FpDMu6y_ZU-K=nRWQY63qMR21m9yMg@mail.gmail.com>
-Subject: Re: [PATCH] PM: runtime: clk: Fix clk_pm_runtime_get() error path
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.200]
+X-ClientProxiedBy: EX13D08UWB003.ant.amazon.com (10.43.161.186) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 May 2020 at 20:39, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Fri, May 22, 2020 at 7:19 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
-> >
-> > Hi Rafael,
-> >
-> > On 21.05.2020 19:08, Rafael J. Wysocki wrote:
-> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > clk_pm_runtime_get() assumes that the PM-runtime usage counter will
-> > > be dropped by pm_runtime_get_sync() on errors, which is not the case,
-> > > so PM-runtime references to devices acquired by the former are leaked
-> > > on errors returned by the latter.
-> > >
-> > > Fix this by modifying clk_pm_runtime_get() to drop the reference if
-> > > pm_runtime_get_sync() returns an error.
-> > >
-> > > Fixes: 9a34b45397e5 clk: Add support for runtime PM
-> > > Cc: 4.15+ <stable@vger.kernel.org> # 4.15+
-> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Frankly, I would rather fix the runtime_get_sync() instead of fixing the
-> > return path everywhere in the kernel. The current behavior of the
-> > pm_runtime_get_sync() is completely counter-intuitive then. I bet that
-> > in the 99% of the places where it is being called assume that no special
-> > fixup is needed in case of failure. This is one of the most common
-> > runtime PM related function and it is really a common pattern in the
-> > drivers to call:
-> >
-> > pm_runtime_get_sync()
-> >
-> > do something with the hardware
-> >
-> > pm_runtime_put()
-> >
-> > Do you really want to fix the error paths of the all such calls?
->
-> No, I don't, and that's why I'm proposing this patch.
->
-> The caller that does what you said above is OK now and if the behavior
-> of pm_runtime_get_sync() changed, that caller would need to be
-> updated.
->
-> OTOH, a caller that fails to drop the reference on an error returned
-> by pm_runtime_get_sync() is buggy (and has ever been so).
->
-> I'd rather update the buggy callers than the ones that are OK.
+From: SeongJae Park <sjpark@amazon.de>
 
-I agree.
+This commit updates MAINTAINERS file for DAMON related files.
 
-In hindsight we should have dropped the usage count in
-pm_runtime_get_sync(), when it fails. However, that's too late,
-especially since there are many cases having no error handling at all
-- and in those cases, that would mean the subsequent call to
-pm_runtime_put() can mess up the usage count (if pm_runtime_get_sync()
-failed and has already dropped the count).
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-So, feel free to add:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5a5332b3591d..586513e92b65 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4661,6 +4661,18 @@ F:	net/ax25/ax25_out.c
+ F:	net/ax25/ax25_timer.c
+ F:	net/ax25/sysctl_net_ax25.c
+ 
++DATA ACCESS MONITOR
++M:	SeongJae Park <sjpark@amazon.de>
++L:	linux-mm@kvack.org
++S:	Maintained
++F:	Documentation/admin-guide/mm/damon/*
++F:	include/linux/damon.h
++F:	include/trace/events/damon.h
++F:	mm/damon-test.h
++F:	mm/damon.c
++F:	tools/damon/*
++F:	tools/testing/selftests/damon/*
++
+ DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
+ L:	netdev@vger.kernel.org
+ S:	Orphan
+-- 
+2.17.1
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-[...]
-
-Kind regards
-Uffe
