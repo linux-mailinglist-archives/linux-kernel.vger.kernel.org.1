@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337551E082D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EB81E0834
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389190AbgEYHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 03:46:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389105AbgEYHqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 03:46:13 -0400
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AA8B2084C;
-        Mon, 25 May 2020 07:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590392772;
-        bh=fgqR3OQ1PtjHSkmtV10P2hHKo5KnIbUACEU4h7/NwDY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=18NjHvk8ScXaincZb/YmfsI/QWRTplgkBTpu2YO6xlvUH9+CRSqSUsuJc+m0WsfwR
-         Hrivql4XcabyAJcADV4htQDQUsebbxcwc5z8OLIL7h17y3/Z/qxoKZaswCs2GJCXzY
-         3oijNN+ovScPzBf0r3oycDR/sgKHxZ/e5USy3VSE=
-Received: by mail-il1-f178.google.com with SMTP id c20so16572051ilk.6;
-        Mon, 25 May 2020 00:46:12 -0700 (PDT)
-X-Gm-Message-State: AOAM5313MxXw++WMcE0QOIIQ40fdcg0n1X6bed9QLLb2/OVjpx2P8Ayw
-        l9EIVcEBKV/yXjjV/qTBLE8fDOYndhxz8AEfiEg=
-X-Google-Smtp-Source: ABdhPJyznDWuSesPLw+JJ+5BL9aOApZTfftAlcgXJD7CkLN8jcHhBFDwqaPXE/x7YTJsngd0cfoo32pizca9o+KxyyU=
-X-Received: by 2002:a92:5ec1:: with SMTP id f62mr20911209ilg.80.1590392771546;
- Mon, 25 May 2020 00:46:11 -0700 (PDT)
+        id S2389184AbgEYHwr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 May 2020 03:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389168AbgEYHwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 03:52:47 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DB8C061A0E;
+        Mon, 25 May 2020 00:52:46 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jd7uW-0004Sc-Se; Mon, 25 May 2020 09:52:36 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 62CEE1C0087;
+        Mon, 25 May 2020 09:52:36 +0200 (CEST)
+Date:   Mon, 25 May 2020 07:52:36 -0000
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/entry: Fix allnoconfig build warning
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-References: <20200512141113.18972-1-nicolas.toromanoff@st.com>
- <20200512141113.18972-6-nicolas.toromanoff@st.com> <CAMj1kXGs6UgkKb5+tH2B-+26=tbjHq3UUY2gxfcRfMb1nGVuFA@mail.gmail.com>
- <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com>
-In-Reply-To: <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 25 May 2020 09:46:00 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
-Message-ID: <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
-To:     Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159039315621.17951.16969252716558436781.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 May 2020 at 09:24, Nicolas TOROMANOFF
-<nicolas.toromanoff@st.com> wrote:
->
-> Hello,
->
-> > -----Original Message-----
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> > Sent: Friday, May 22, 2020 6:12 PM>
-> > On Tue, 12 May 2020 at 16:13, Nicolas Toromanoff
-> > <nicolas.toromanoff@st.com> wrote:
-> > >
-> > > Protect STM32 CRC device from concurrent accesses.
-> > >
-> > > As we create a spinlocked section that increase with buffer size, we
-> > > provide a module parameter to release the pressure by splitting
-> > > critical section in chunks.
-> > >
-> > > Size of each chunk is defined in burst_size module parameter.
-> > > By default burst_size=0, i.e. don't split incoming buffer.
-> > >
-> > > Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-> >
-> > Would you mind explaining the usage model here? It looks like you are sharing a
-> > CRC hardware accelerator with a synchronous interface between different users
-> > by using spinlocks? You are aware that this will tie up the waiting CPUs
-> > completely during this time, right? So it would be much better to use a mutex
-> > here. Or perhaps it would make more sense to fall back to a s/w based CRC
-> > routine if the h/w is tied up working for another task?
->
-> I know mutex are more acceptable here, but shash _update() and _init() may be call
-> from any context, and so I cannot take a mutex.
-> And to protect my concurrent HW access I only though about spinlock. Due to possible
-> constraint on CPUs, I add a burst_size option to force slitting long buffer into smaller one,
-> and so decrease time we take the lock.
-> But I didn't though to fallback to software CRC.
->
-> I'll do a patch on top.
-> In in the burst_update() function I'll use a spin_trylock_irqsave() and use software CRC32 if HW is already in use.
->
+The following commit has been merged into the x86/entry branch of tip:
 
-Right. I didn't even notice that you were keeping interrupts disabled
-the whole time when using the h/w block. That means that any serious
-use of this h/w block will make IRQ latency go through the roof.
+Commit-ID:     d121f9483b18c423037ce6088feba24ae83891d1
+Gitweb:        https://git.kernel.org/tip/d121f9483b18c423037ce6088feba24ae83891d1
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Mon, 25 May 2020 09:42:41 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 25 May 2020 09:45:27 +02:00
 
-I recommend that you go back to the drawing board on this driver,
-rather than papering over the issues with a spin_trylock(). Perhaps it
-would be better to model it as a ahash (even though the h/w block
-itself is synchronous) and use a kthread to feed in the data.
+x86/entry: Fix allnoconfig build warning
+
+The following commit:
+
+  095b7a3e7745 ("x86/entry: Convert double fault exception to IDTENTRY_DF")
+
+introduced a new build warning on 64-bit allnoconfig kernels, that have CONFIG_VMAP_STACK disabled:
+
+  arch/x86/kernel/traps.c:332:16: warning: unused variable ‘address’ [-Wunused-variable]
+
+This variable is only used if CONFIG_VMAP_STACK is defined, so make it
+dependent on that, not CONFIG_X86_64.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+---
+ arch/x86/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 35298c1..9e5d81c 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -328,7 +328,7 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 	static const char str[] = "double fault";
+ 	struct task_struct *tsk = current;
+ 
+-#ifdef CONFIG_X86_64
++#ifdef CONFIG_VMAP_STACK
+ 	unsigned long address = read_cr2();
+ #endif
+ 
