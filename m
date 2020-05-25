@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5871E093F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F971E094C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389264AbgEYIsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 04:48:03 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33718 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389256AbgEYIsB (ORCPT
+        id S2389292AbgEYIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 04:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388342AbgEYIs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 04:48:01 -0400
-Received: by mail-ot1-f68.google.com with SMTP id v17so13375257ote.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:48:00 -0700 (PDT)
+        Mon, 25 May 2020 04:48:28 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD499C08C5C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:48:28 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id 36so5854386uaf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8bQhRpovnI1HzxA3RnCUyYp1wNF/naeL/4Ai5nPC8gQ=;
+        b=DbTArHGBvYzYTec6ziZjmrTFpe6aYhI+pcxRwpmCO6Or3WkyytcJTCORpEY6eEIrc1
+         h70QUccD228mfZzZ9OnjeQ2HNHcEuVbiFNsKiUSlzfKjDlVmJyBp0ki4+rUaJwHalIhS
+         SKxlEpmfGQqcpXvsA1+4RfbqWQvWfdVAnt5Wei23TyCZZpxCt2QODn5eXb8fp3KroBXD
+         1Q4bJINZ2BQo/uJOdAnd59RoDWN8kH6XJomKUDJPUL/1tKy2RhkO05SrgwOYGbP6T7q5
+         dvy2dL1+89m6+GRKLn7o+9G/Eb4MaRQ9gxmgu/WcbhcjBWohOIk+0HFZpyBih29UtqeR
+         vP0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yuQmz1vbzFzRiPHZ7yHORsAflnknRq9qadTHt4E+diA=;
-        b=HdWLVD33z1Xzaf4ik+Aoyh6LkBwGDGN5Wd2YRLHUsmUHErju6cwt3qysBuGlaVt/dJ
-         EhEF0PFsnyDHgoirkX/GtkN7LgQ0he0IU2JT9YTG0vuxakBz6KwGk6PBtU8Ed08HtY/x
-         uLrzBfq9eWTHiUJIo5sbdSLkHvBZsDhgy7rCJ2Ww6N5yIn/FjBqfXK+Zin3cntV0h+zW
-         3iQu1kBCL/2VEMrGIIePSa+4zNGHQWh41eD1C1U8M+FpVE6xg+YpyN5roSlVEGAgHam7
-         QBEL2qXI9ZEoBhSx3L9xFI1a/ev/7PjrfqbwcQCbRLoayHiYYQh2DXQi/NQDqZSDEddb
-         9S6A==
-X-Gm-Message-State: AOAM532K7ZmjzjTL9zg7O8uCbNQoRgUavr/oVxOdQjEMWX11pBGAjJDt
-        FyEVwdmQfPwiso25mahYoiNOC+tRCjAfQWSLgvw=
-X-Google-Smtp-Source: ABdhPJz0vqXWtlP4TqBP+DguYlkkIuMQjwehAuzaBYeQKbfXEyZ3IBH6KLbqh8kyP7GVU0jQraapJHL7dY9LsTpjna4=
-X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr19040328ote.107.1590396480166;
- Mon, 25 May 2020 01:48:00 -0700 (PDT)
+        bh=8bQhRpovnI1HzxA3RnCUyYp1wNF/naeL/4Ai5nPC8gQ=;
+        b=t75vdeQXdmmzkB7xKWaNTVctfTnP9JbrweTmZXraeyxWz8foys0QexVr2egJzaU237
+         gCki/ES1AWDNb0EAytfqGzp+Tv9HCarOARQ+xy6CskqhjF78pJ2oFq7y8cPwcKNPPb5b
+         4PUld6uIjeOToy95zKFGG0X0sYV/vj4pc8+FWfoM//46PsucLAQTBAvNvKYZxO3GIqYx
+         toQ2+7EQTa7nHhPWag5jBrT1Q9tmqia8QbO0mJjtc62NjEVa5Nt99u1RlUb/kwzTNVVd
+         N46hdrlTZwi02xJtkTkTEJearpiFiOmVgv6ulfeTxlo2gPCjcW6KbAupkj9ac+oMoAWo
+         PuIw==
+X-Gm-Message-State: AOAM530+q/uKoVWN2uc1IBdf/ltLkWvgxZnOc8ktSanuVaKC8MmZi4Wk
+        SvKoYSrtOVaeapYKofrqIUWNAkOZ49J2V674+pXQmsnoqXE=
+X-Google-Smtp-Source: ABdhPJzaBYQscuG49zQyyECCXDLU5ZXD2rJlN26+ZR+WzP067eVMWQEhmuDuBjc6B9HyjIvj4ta+JfMi5w0vDffFbGU=
+X-Received: by 2002:a9f:3701:: with SMTP id z1mr8215995uad.100.1590396507967;
+ Mon, 25 May 2020 01:48:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200520065750.8401-1-jasowang@redhat.com>
-In-Reply-To: <20200520065750.8401-1-jasowang@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 May 2020 10:47:49 +0200
-Message-ID: <CAMuHMdW2jLKP_sbnphW_LguYfX8tVYTQofPUOkTkO1dfiaM6zA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: add missing __user annotation in get_user()
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+References: <1588838535-6050-1-git-send-email-sartgarg@codeaurora.org> <1590139950-7288-1-git-send-email-sartgarg@codeaurora.org>
+In-Reply-To: <1590139950-7288-1-git-send-email-sartgarg@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 25 May 2020 10:47:51 +0200
+Message-ID: <CAPDyKFqKZbmzpcFJxvD5R4qOc4cKghU7f2pffjFw86bnCN+vaA@mail.gmail.com>
+Subject: Re: [PATCH V2 0/8] Board specific DLL configuration for qcom SDHC
+To:     Sarthak Garg <sartgarg@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        kbuild test robot <lkp@intel.com>
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 8:58 AM Jason Wang <jasowang@redhat.com> wrote:
-> The ptr is a pointer to userspace memory. So we need annotate it with
-> __user otherwise we may get sparse warnings like:
+On Fri, 22 May 2020 at 11:33, Sarthak Garg <sartgarg@codeaurora.org> wrote:
 >
-> drivers/vhost/vhost.c:1603:13: sparse: sparse: incorrect type in initializer (different address spaces) @@    expected void const *__gu_ptr @@    got unsigned int [noderef] [usertypvoid const *__gu_ptr @@
-> drivers/vhost/vhost.c:1603:13: sparse:    expected void const *__gu_ptr
-> drivers/vhost/vhost.c:1603:13: sparse:    got unsigned int [noderef] [usertype] <asn:1> *idxp
+> Changes since V1:
+>         -Splitting documentation change into two patches to
+>                 avoid confusion
+>         -For the rest of patches retaining Andrians Ack.
 >
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-kernel@vger.kernel.org
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> Sarthak Garg (7):
+>   dt-bindings: mmc: Add new compatible string for sm8250 target
+>   dt-bindings: mmc: Add information for DLL register properties
+>   mmc: sdhci-msm: Update dll_config_3 as per HSR
+>   mmc: sdhci-msm: Update DDR_CONFIG as per device tree file
+>   mmc: sdhci-msm: Read and use DLL Config property from device tree file
+>   mmc: sdhci-msm: Introduce new ops to dump vendor specific registers
+>   mmc: sdhci-msm: dump vendor specific registers during error
+>
+> Veerabhadrarao Badiganti (1):
+>   mmc: host: sdhci-msm: Configure dll-user-control in dll init sequence
+>
+>  .../devicetree/bindings/mmc/sdhci-msm.txt          |  14 +++
+>  drivers/mmc/host/sdhci-msm.c                       | 103 ++++++++++++++++++++-
+>  drivers/mmc/host/sdhci.c                           |   3 +
+>  drivers/mmc/host/sdhci.h                           |   1 +
+>  4 files changed, 118 insertions(+), 3 deletions(-)
+>
+> --
+> 2.7.4
+>
 
-Fixes: 7124330dabe5b3cb ("m68k/uaccess: Revive 64-bit get_user()")
+Applied for next, thanks!
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.8 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards
+Uffe
