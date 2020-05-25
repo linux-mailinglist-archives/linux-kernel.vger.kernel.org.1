@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E561E0BDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F81E0BDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389774AbgEYKdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 06:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389373AbgEYKdh (ORCPT
+        id S2389802AbgEYKeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 06:34:09 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:40903 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389781AbgEYKeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 06:33:37 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E6DC05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 03:33:36 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bh7so443056plb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 03:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=footclan-ninja.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=bcIsWmmEkRWoaOrX+BaWGDzqoQqiuKveo/AD/DMmyLs=;
-        b=0CisCT68V7ucr2HapFKzya24WVrp+iCTX2mnNGSV7JVfHbSNPfE5UgX9XFcvhC3YeK
-         lzwT19u8/X2J7Gl6lbQIw4N65c+l+3gD8aSY4/RsPeIHlYAYJvZPHPdbWIZXcg49iTbQ
-         vzKwFSPxNE/Q120KjNrTQM3hd5nP+W+BybSFXzZ2+fQsVeQoqcdHlI3H+dowRiFZKoIO
-         2XCCOkB0IzkW4usH0DBj1vaiyYC66MWzYshUmvTm2eZtrJrIWFp151EeWd/HTg//tZy0
-         II4FZXgKMQyMxa18Snt+SqCb/qf9TRJJlL6MIFurKt6cp7S7vWzi7it+ZgxYg+wfcBWv
-         fekA==
+        Mon, 25 May 2020 06:34:08 -0400
+Received: by mail-oo1-f65.google.com with SMTP id f39so177043ooi.7;
+        Mon, 25 May 2020 03:34:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bcIsWmmEkRWoaOrX+BaWGDzqoQqiuKveo/AD/DMmyLs=;
-        b=gJxHHw/BlVOUTJmazupAfwk5DUhxbrRPtTz0WEHBzCnwgpjXZBec/x08Sk1ajs+dUA
-         /6F6nGdxARjoD6+mEmrtYoCHGbndh/F5MlSXcXBj7f+WH4Z6LXNx0gSJkCxNcO6MK5TC
-         IflNzqdruECOZJuUDF9YIAc120zVKYT7COe6Qg8xZ2A3Qe5NK2GtPBK8iZ8KU1C+xq6y
-         tqSlXMmn2j+gByNo0+rc9M2kevwuzGml68Ujryxt1qEnztEK2FjNFqqhAL+uWaMmoZMG
-         U5+ulD2emMq1PEQLd0N7dBTo7Z+GJ/VTyYA00axjCjAqiNufcZA2xn844JB81ycpu/Sc
-         BFVw==
-X-Gm-Message-State: AOAM532ZZk4/MVfX+BFRp5lOgLnfALZ2rtYwEter9woR4uErTIo+vvD1
-        cG/M8TTDdMSPljk9vm8As0n0HrjmsUWZCZ5oOD0sr4iNSbsdHQcZSZVdiOnwet3nfxZqEGFJToj
-        S4kizMNq4P2Bg+dxtO7dhoSqByB2WP/iKysS8OZh15CSBCjfMDUrIu8JN4r+ZRryI4+bDu91KIi
-        u3rlb9
-X-Google-Smtp-Source: ABdhPJzuzGH3bJR0NQc8zAEdKDEVVW4wg4JbVUGvXIq+RctefMv5/XpHLGjgmdCT3aJ+yevCUearCg==
-X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr19715320pjb.103.1590402816108;
-        Mon, 25 May 2020 03:33:36 -0700 (PDT)
-Received: from [192.168.8.100] (pa49-195-155-227.pa.nsw.optusnet.com.au. [49.195.155.227])
-        by smtp.gmail.com with ESMTPSA id x2sm12521503pfc.106.2020.05.25.03.33.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 03:33:35 -0700 (PDT)
-From:   Matt Jolly <kangie@footclan.ninja>
-X-Google-Original-From: Matt Jolly <Kangie@footclan.ninja>
-Subject: Re: [PATCH v2] USB: serial: qcserial: Add DW5816e QDL support
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200521004358.8949-1-Kangie@footclan.ninja>
- <20200525093951.GC5276@localhost>
-Message-ID: <d0535328-6773-4565-82b9-1975cf875a8d@footclan.ninja>
-Date:   Mon, 25 May 2020 20:33:31 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BjMPWMCD4/ms3xeffCL8OqWKsyazuZCpK4C7dZThzLM=;
+        b=nEkqjuIykSBKGe+RHXBkooG+ga/2OXGbnRJRC7fRx/a8BqBBUKZNdkCI6tdnjMbWHK
+         f8Iuz23d+m3c0nu7yDyN1fZeozcWodHu5g8h5ha3W4JSMAk2Bfyi4bSy76N73jMiZhIo
+         Wfj2SdW1Yt0B0g5Ix6ZB0BjvJbEdFpDGn8N/RGE+5BQyJhJaXznOI7Z/QD0mI+Qklk0Q
+         u/MFXXBpwf+KUKw5kR5j9P+0eipROLmaFaHO6wTdKzLVhTo5IVIZlX+rFwG9ApnPvE10
+         fsTJwUDHR25jEkecRxy3g8aq+HY8e0rh+fbCmWjmwIdvO1CKK9Dn61FtU+VrvNrpZAKT
+         wvRg==
+X-Gm-Message-State: AOAM531rtMndD7z9soqDKaK+IRIveDM4dd0rZKUIlaApcBKzRZsOHwlt
+        qUtUav1UORLaKXkk6uZesIYbDUYnFaJxq/Ena244Z2nH
+X-Google-Smtp-Source: ABdhPJzFEaaABlZi0ZZ8/w6NAJuysnEm/zE41Tzt7tOtIyxUChOExPgjQOSAL/A60gxyCB3PPxBiUKhCCSwd2CsVGJE=
+X-Received: by 2002:a4a:e759:: with SMTP id n25mr12553301oov.75.1590402846269;
+ Mon, 25 May 2020 03:34:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200525093951.GC5276@localhost>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200520074309.19366-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200520074309.19366-1-dinghao.liu@zju.edu.cn>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 25 May 2020 12:33:49 +0200
+Message-ID: <CAJZ5v0j5XB_me9YSUemUaz6URair4CtRVSU1U6F62FWCi2SRJg@mail.gmail.com>
+Subject: Re: [PATCH] power: supply: bq24190_charger: fix runtime pm imbalance
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>, Sebastian Reichel <sre@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 25/5/20 7:39 pm, Johan Hovold wrote:
->> Hmm. I'd a call a build breakage a bit more than just a "typo" as it
->> indicates this patch was never tested at all before being submitted.
-I applied, built, and tested it against the sources for the kernel I run 
-on my machine, but made several silly mistakes: both manually applying 
-the patch to my copy of the repo (which is not my running kernel), and 
-not build testing that change before submission. Not good indeed.
+On Wed, May 20, 2020 at 10:01 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> it returns an error code. Thus a pairing decrement is needed on
+> the error handling path to keep the counter balanced.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/power/supply/bq24190_charger.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
+> index 453d6332d43a..4f7c6b6abb56 100644
+> --- a/drivers/power/supply/bq24190_charger.c
+> +++ b/drivers/power/supply/bq24190_charger.c
+> @@ -481,8 +481,10 @@ static ssize_t bq24190_sysfs_store(struct device *dev,
+>                 return ret;
+>
+>         ret = pm_runtime_get_sync(bdi->dev);
+> -       if (ret < 0)
+> +       if (ret < 0) {
+> +               pm_runtime_put_autosuspend(bdi->dev);
 
-I could definitely have been more descriptive in the change notes.
+The autosuspend thing is not necessary here, because the suspend is
+not going to work anyway due to the resume error, so this can be
+_put_noidle().
 
-Consider me appropriately chastised!
+You might as well do something like
 
+count = ret;
+goto out;
+
+here and add an "out" label before the pm_runtime_mark_last_busy() call, though.
+
+>                 return ret;
+> +       }
+>
+>         ret = bq24190_write_mask(bdi, info->reg, info->mask, info->shift, v);
+>         if (ret)
+> --
+> 2.17.1
+>
