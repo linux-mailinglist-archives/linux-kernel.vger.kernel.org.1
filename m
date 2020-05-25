@@ -2,91 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11FC1E04F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 04:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD55B1E0505
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388765AbgEYCxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 22:53:25 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40800 "EHLO loongson.cn"
+        id S2388721AbgEYDFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 23:05:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4893 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388398AbgEYCxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 22:53:23 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj974MsteoL84AA--.426S5;
-        Mon, 25 May 2020 10:52:42 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v6 4/4] MIPS: mm: add page valid judgement in function pte_modify
-Date:   Mon, 25 May 2020 10:52:40 +0800
-Message-Id: <1590375160-6997-4-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1590375160-6997-1-git-send-email-maobibo@loongson.cn>
-References: <1590375160-6997-1-git-send-email-maobibo@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxj974MsteoL84AA--.426S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFW8AryxtFWfuw43ur4DJwb_yoWDWwbEkw
-        47Zw4fCr95JF13uFW7A3Z5Jry2ga4Uu3Wqva4xJw1ayFyqgr45CFW8WryUArZ8uFsFyr40
-        qa95G347CF47KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbgxYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI
-        1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
-        5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZV
-        WrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY
-        1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-        v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x
-        07j138nUUUUU=
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S2388178AbgEYDFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 23:05:09 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AA5478C8C87755055AB5;
+        Mon, 25 May 2020 11:05:03 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.154) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 25 May 2020
+ 11:04:59 +0800
+Subject: Re: [PATCH v2] xfrm: policy: Fix xfrm policy match
+To:     Xin Long <lucien.xin@gmail.com>
+References: <20200421143149.45108-1-yuehaibing@huawei.com>
+ <20200422125346.27756-1-yuehaibing@huawei.com>
+ <0015ec4c-0e9c-a9d2-eb03-4d51c5fbbe86@huawei.com>
+ <20200519085353.GE13121@gauss3.secunet.de>
+ <CADvbK_eXW24SkuLUOKkcg4JPa8XLcWpp6RNCrQT+=okaWe+GDA@mail.gmail.com>
+ <550a82f1-9cb3-2392-25c6-b2a84a00ca33@huawei.com>
+ <CADvbK_cpXOxbWzHzonrzzrrb+Vh3q8NhXnapz0yc9h4H4gN02A@mail.gmail.com>
+ <1c4c5d40-1e35-f9bb-3f17-01bb4675f3aa@huawei.com>
+ <CADvbK_e8ixjGGHRK9A4HcXDGKYcNykneUHzHiE8sQ4ojDz+e-g@mail.gmail.com>
+CC:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <f82b038f-776e-a87a-d46b-173d238531ba@huawei.com>
+Date:   Mon, 25 May 2020 11:04:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
+MIME-Version: 1.0
+In-Reply-To: <CADvbK_e8ixjGGHRK9A4HcXDGKYcNykneUHzHiE8sQ4ojDz+e-g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.154]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If original PTE has _PAGE_ACCESSED bit set, and new pte has no
-_PAGE_NO_READ bit set, we can add _PAGE_SILENT_READ bit to enable
-page valid bit.
+On 2020/5/23 17:02, Xin Long wrote:
+> On Fri, May 22, 2020 at 8:39 PM Yuehaibing <yuehaibing@huawei.com> wrote:
+>>
+>> On 2020/5/22 13:49, Xin Long wrote:
+>>> On Fri, May 22, 2020 at 9:45 AM Yuehaibing <yuehaibing@huawei.com> wrote:
+>>>>
+>>>> On 2020/5/21 14:49, Xin Long wrote:
+>>>>> On Tue, May 19, 2020 at 4:53 PM Steffen Klassert
+>>>>> <steffen.klassert@secunet.com> wrote:
+>>>>>>
+>>>>>> On Fri, May 15, 2020 at 04:39:57PM +0800, Yuehaibing wrote:
+>>>>>>>
+>>>>>>> Friendly ping...
+>>>>>>>
+>>>>>>> Any plan for this issue?
+>>>>>>
+>>>>>> There was still no consensus between you and Xin on how
+>>>>>> to fix this issue. Once this happens, I consider applying
+>>>>>> a fix.
+>>>>>>
+>>>>> Sorry, Yuehaibing, I can't really accept to do: (A->mark.m & A->mark.v)
+>>>>> I'm thinking to change to:
+>>>>>
+>>>>>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
+>>>>>                                    struct xfrm_policy *pol)
+>>>>>  {
+>>>>> -       u32 mark = policy->mark.v & policy->mark.m;
+>>>>> -
+>>>>> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+>>>>> -               return true;
+>>>>> -
+>>>>> -       if ((mark & pol->mark.m) == pol->mark.v &&
+>>>>> -           policy->priority == pol->priority)
+>>>>> +       if (policy->mark.v == pol->mark.v &&
+>>>>> +           (policy->mark.m == pol->mark.m ||
+>>>>> +            policy->priority == pol->priority))
+>>>>>                 return true;
+>>>>>
+>>>>>         return false;
+>>>>>
+>>>>> which means we consider (the same value and mask) or
+>>>>> (the same value and priority) as the same one. This will
+>>>>> cover both problems.
+>>>>
+>>>>   policy A (mark.v = 0x1011, mark.m = 0x1011, priority = 1)
+>>>>   policy B (mark.v = 0x1001, mark.m = 0x1001, priority = 1)
+>>> I'd think these are 2 different policies.
+>>>
+>>>>
+>>>>   when fl->flowi_mark == 0x12341011, in xfrm_policy_match() do check like this:
+>>>>
+>>>>         (fl->flowi_mark & pol->mark.m) != pol->mark.v
+>>>>
+>>>>         0x12341011 & 0x1011 == 0x00001011
+>>>>         0x12341011 & 0x1001 == 0x00001001
+>>>>
+>>>>  This also match different policy depends on the order of policy inserting.
+>>> Yes, this may happen when a user adds 2  policies like that.
+>>> But I think this's a problem that the user doesn't configure it well,
+>>> 'priority' should be set.
+>>> and this can not be avoided, also such as:
+>>>
+>>>    policy A (mark.v = 0xff00, mark.m = 0x1000, priority = 1)
+>>>    policy B (mark.v = 0x00ff, mark.m = 0x0011, priority = 1)
+>>>
+>>>    try with 0x12341011
+>>>
+>>> So just be it, let users decide.
+>>
+>> Ok, this make sense.
+> Thanks Yuehaibing, it's good we're on the same page now.
+> 
+> Just realized the patch I created above won't work for the case:
+> 
+>   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
+>   policy B (mark.v = 0x1,  mark.m = 0, priority = 2)
+>   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
+> 
+> when policy C is being added, the warning still occurs.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/include/asm/pgtable.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Do you means this:
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 0743087..dfe79f4 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -529,8 +529,11 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- #else
- static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- {
--	return __pte((pte_val(pte) & _PAGE_CHG_MASK) |
--		     (pgprot_val(newprot) & ~_PAGE_CHG_MASK));
-+	pte_val(pte) &= _PAGE_CHG_MASK;
-+	pte_val(pte) |= pgprot_val(newprot) & ~_PAGE_CHG_MASK;
-+	if ((pte_val(pte) & _PAGE_ACCESSED) && !(pte_val(pte) & _PAGE_NO_READ))
-+		pte_val(pte) |= _PAGE_SILENT_READ;
-+	return pte;
- }
- #endif
- 
--- 
-1.8.3.1
+   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
+   policy B (mark.v = 0x10, mark.m = 1, priority = 2)
+   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
+
+> 
+> So I will just check value and priority:
+> -       u32 mark = policy->mark.v & policy->mark.m;
+> -
+> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
+> -               return true;
+> -
+> -       if ((mark & pol->mark.m) == pol->mark.v &&
+> +       if (policy->mark.v == pol->mark.v &&
+>             policy->priority == pol->priority)
+>                 return true;
+> 
+> This allows two policies like this exist:
+> 
+>   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
+>   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
+> 
+> But I don't think it's a problem.
+
+Agreed.
+>
+> .
+> 
 
