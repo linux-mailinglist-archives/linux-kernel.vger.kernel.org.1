@@ -2,280 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007881E114A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D201E115E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404094AbgEYPIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 11:08:51 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39161 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2403996AbgEYPIv (ORCPT
+        id S2391087AbgEYPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390911AbgEYPNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 11:08:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590419328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CTLLh1uZ3rB9t96YvZiIHbsPN4kI/Teg0A2XT4qFGnM=;
-        b=S8W+1G/QGDuCSYT1mhQi8wfaUxcyYiphY8N4bc20wCZcAYDVqPmMwPhWTPIPPcYqbsJAsg
-        aGQAIA+s+s9ODLuN1/WCjjbl1Rb5BdufPnBJR0+oijrwRgDTRUfy1H8wX1YhFEy2l+BUcM
-        +jexvYDb0eAOt3ZTG+P0kUdJrT53Glw=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-3dmCYNRXOJ27IJkhPjvGzw-1; Mon, 25 May 2020 11:08:47 -0400
-X-MC-Unique: 3dmCYNRXOJ27IJkhPjvGzw-1
-Received: by mail-ed1-f72.google.com with SMTP id x11so7569395edj.21
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 08:08:47 -0700 (PDT)
+        Mon, 25 May 2020 11:13:36 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229C3C061A0E;
+        Mon, 25 May 2020 08:13:36 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n11so12228347qkn.8;
+        Mon, 25 May 2020 08:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2KfT83U5UrmH5/c9ZNzzt7t+rX5mJzkoTHiBpMUhpeo=;
+        b=L8BwDn2q4FwRlUxf1RDbJR3EXX/pLTbuOD5u2eeZZ+lglSLD3cJk1KjNPCAjX3dJvI
+         iJGr/z+ZUjmx2+fbsE2G5TNGsaqJ0TcRxUoAY9YeEngpku465+ENSzOonSKNJ9RM/w/x
+         C2j2kZS6eIJjH+sNRw4Gh1HE4Keis3biw0FZv9QxUv+r+GbGsI1hGLhgbpRl8xXnX69/
+         kq9tgHeNig0L2hADISXMeCvwl7FlTSwnpisWuNe5abnA0hU+jUlzofmIA7PJH7xYkZMt
+         RrUIryEDd873+IFnCJnlCIxINNahOEtQ329H3tVoYObui+Zv2TnYsP454c9FMqypXfG+
+         YwhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CTLLh1uZ3rB9t96YvZiIHbsPN4kI/Teg0A2XT4qFGnM=;
-        b=qG3fDIrf/2oNd93Lz7Mo3SV4XkWarKi/DDYmN3FFbDnZfcFfeaCx1YcMOYS/m3x3L1
-         VAA49h8fu6JTrrUMmvWNOYqpGy/VJ0VEzKNwuHIy4spId9bcB6+AF93vBRpXdXr3Tgp0
-         8Q5bJMS/1aBBKbWOmJnMJTVjALu9JGXaS9bQjZnO7CWe5ej4CmAd5axCsF0rtfV1xLdS
-         b7CZufpeC2CVO68+hEk9XUrGvzVzyBQKVBe4sZTI1o1Hj70y2gzVHN3qpLANNO0FhHf2
-         8wkFPVbHnDDK3X7VrIu43geyjVs0rbLaTdHgUnE70Fz1r8sPjHj5otIEAcBnBZqCEMNb
-         zs4Q==
-X-Gm-Message-State: AOAM531vdL3V4zQWvYXzpESmalitjefiRntvYqRtq414Yx6WTO+hoizR
-        nJJC9mx6iH6QoKCk27RZ0/9ZVmJeHWfql1CDN5hibwo1Tqvbufv9ocPSqgvVw46h9YyO3XptR8X
-        F+V0XAKnNxQZytfFbJjH/ZHrw
-X-Received: by 2002:a17:906:4886:: with SMTP id v6mr19876274ejq.11.1590419325745;
-        Mon, 25 May 2020 08:08:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwbBRZUjU1pInBhDziWR5Z6PRnOtkNXxRDhC3eFBRiqcIivF7wux8NTv/3xiI19Ir6SJyNR9w==
-X-Received: by 2002:a17:906:4886:: with SMTP id v6mr19876229ejq.11.1590419325389;
-        Mon, 25 May 2020 08:08:45 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o59sm11682875edb.51.2020.05.25.08.08.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2KfT83U5UrmH5/c9ZNzzt7t+rX5mJzkoTHiBpMUhpeo=;
+        b=opodKjU5+hfE5pgkq2dbVvXSI/PLqBCl4nyGzevmVv7EZSm2sofaekMn8jxqufCpLG
+         XaqJA12j7OrUSPkV8oG8DGnUSgV+HrsFh9+lMDWFLchO11INP4xFf3JXSJTZVdl2r9kI
+         IZp2Mw88fu0l4CGfzJsh8mwq4KUQ8oFo1NeNf794N4c4z8tTxC21YXOQjQLX4Tk29yxB
+         ljs83dFLd47AX0y6rasQBB+auMD5cR+G4ZIluf26BCkQSL6TY3nRgdCTuJZcyc9ogZOa
+         vumpUxzPHplqVwv7Y76e6TdJJ3R04c4A0SHY/aM/oiJw4/DQ6uBuPhcLsRE+PnQ7eG6O
+         4MMg==
+X-Gm-Message-State: AOAM530XBPVAIAhTmGluvjBg3sxP4kNuu3IYRXR52omzidSYnM1sOUU2
+        DtfAH/7IwesWhrd+DD6E39aCjg6RzQk=
+X-Google-Smtp-Source: ABdhPJzATe0nDD/zJUz7eRatm3BCMdWEKTscEBVHEqEErm9IvxvcZkEgb+SeQ9dzNLrdJDxhvDzYVQ==
+X-Received: by 2002:a37:6fc6:: with SMTP id k189mr381433qkc.289.1590419614903;
+        Mon, 25 May 2020 08:13:34 -0700 (PDT)
+Received: from ict14-OptiPlex-980.kataweb.it ([178.23.248.46])
+        by smtp.googlemail.com with ESMTPSA id m59sm15161709qtd.46.2020.05.25.08.13.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 08:08:44 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen\, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to access guest memory
-In-Reply-To: <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com> <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
-Date:   Mon, 25 May 2020 17:08:43 +0200
-Message-ID: <87a71w832c.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Mon, 25 May 2020 08:13:32 -0700 (PDT)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Hartmut Knaack <knaack.h@gmx.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: [PATCH v6 0/4] iio: magnetometer: ak8975: Add gpio reset support
+Date:   Mon, 25 May 2020 17:10:34 +0200
+Message-Id: <20200525151117.32540-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Kirill A. Shutemov" <kirill@shutemov.name> writes:
+v6:
+ - reword documentation for gpios, add interrupt documentation
 
-> New helpers copy_from_guest()/copy_to_guest() to be used if KVM memory
-> protection feature is enabled.
->
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  include/linux/kvm_host.h |  4 +++
->  virt/kvm/kvm_main.c      | 78 ++++++++++++++++++++++++++++++++++------
->  2 files changed, 72 insertions(+), 10 deletions(-)
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 131cc1527d68..bd0bb600f610 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -503,6 +503,7 @@ struct kvm {
->  	struct srcu_struct srcu;
->  	struct srcu_struct irq_srcu;
->  	pid_t userspace_pid;
-> +	bool mem_protected;
->  };
->  
->  #define kvm_err(fmt, ...) \
-> @@ -727,6 +728,9 @@ void kvm_set_pfn_dirty(kvm_pfn_t pfn);
->  void kvm_set_pfn_accessed(kvm_pfn_t pfn);
->  void kvm_get_pfn(kvm_pfn_t pfn);
->  
-> +int copy_from_guest(void *data, unsigned long hva, int len);
-> +int copy_to_guest(unsigned long hva, const void *data, int len);
-> +
->  void kvm_release_pfn(kvm_pfn_t pfn, bool dirty, struct gfn_to_pfn_cache *cache);
->  int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
->  			int len);
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 731c1e517716..033471f71dae 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -2248,8 +2248,48 @@ static int next_segment(unsigned long len, int offset)
->  		return len;
->  }
->  
-> +int copy_from_guest(void *data, unsigned long hva, int len)
-> +{
-> +	int offset = offset_in_page(hva);
-> +	struct page *page;
-> +	int npages, seg;
-> +
-> +	while ((seg = next_segment(len, offset)) != 0) {
-> +		npages = get_user_pages_unlocked(hva, 1, &page, 0);
-> +		if (npages != 1)
-> +			return -EFAULT;
-> +		memcpy(data, page_address(page) + offset, seg);
-> +		put_page(page);
-> +		len -= seg;
-> +		hva += seg;
-> +		offset = 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int copy_to_guest(unsigned long hva, const void *data, int len)
-> +{
-> +	int offset = offset_in_page(hva);
-> +	struct page *page;
-> +	int npages, seg;
-> +
-> +	while ((seg = next_segment(len, offset)) != 0) {
-> +		npages = get_user_pages_unlocked(hva, 1, &page, FOLL_WRITE);
-> +		if (npages != 1)
-> +			return -EFAULT;
-> +		memcpy(page_address(page) + offset, data, seg);
-> +		put_page(page);
-> +		len -= seg;
-> +		hva += seg;
-> +		offset = 0;
-> +	}
-> +	return 0;
-> +}
-> +
->  static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> -				 void *data, int offset, int len)
-> +				 void *data, int offset, int len,
-> +				 bool protected)
->  {
->  	int r;
->  	unsigned long addr;
-> @@ -2257,7 +2297,10 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
->  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
->  	if (kvm_is_error_hva(addr))
->  		return -EFAULT;
-> -	r = __copy_from_user(data, (void __user *)addr + offset, len);
-> +	if (protected)
-> +		r = copy_from_guest(data, addr + offset, len);
-> +	else
-> +		r = __copy_from_user(data, (void __user *)addr + offset, len);
->  	if (r)
->  		return -EFAULT;
->  	return 0;
-> @@ -2268,7 +2311,8 @@ int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
->  {
->  	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
->  
-> -	return __kvm_read_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_read_guest_page(slot, gfn, data, offset, len,
-> +				     kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_read_guest_page);
->  
-> @@ -2277,7 +2321,8 @@ int kvm_vcpu_read_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn, void *data,
->  {
->  	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->  
-> -	return __kvm_read_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_read_guest_page(slot, gfn, data, offset, len,
-> +				     vcpu->kvm->mem_protected);
+v5:
+ - add maintainer
+https://lore.kernel.org/linux-iio/20200520163417.27805-1-jonathan.albrieux@gmail.com/
 
-Personally, I would've just added 'struct kvm' pointer to 'struct
-kvm_memory_slot' to be able to extract 'mem_protected' info when
-needed. This will make the patch much smaller.
+v4:
+ - fix some typo
+ - use gpio's dt-bindings for more clarity in documentation
+ - set compatible properties without vendor prefix as deprecated
+https://lore.kernel.org/linux-iio/20200520073125.30808-1-jonathan.albrieux@gmail.com/
 
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_page);
->  
-> @@ -2350,7 +2395,8 @@ int kvm_vcpu_read_guest_atomic(struct kvm_vcpu *vcpu, gpa_t gpa,
->  EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_atomic);
->  
->  static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
-> -			          const void *data, int offset, int len)
-> +			          const void *data, int offset, int len,
-> +				  bool protected)
->  {
->  	int r;
->  	unsigned long addr;
-> @@ -2358,7 +2404,11 @@ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
->  	addr = gfn_to_hva_memslot(memslot, gfn);
->  	if (kvm_is_error_hva(addr))
->  		return -EFAULT;
-> -	r = __copy_to_user((void __user *)addr + offset, data, len);
-> +
-> +	if (protected)
-> +		r = copy_to_guest(addr + offset, data, len);
-> +	else
-> +		r = __copy_to_user((void __user *)addr + offset, data, len);
+v3:
+ - fix patch messages style
+ - align reset gpio comment to kernel doc reccomendation
+ - introduce changelog
+https://lore.kernel.org/linux-iio/20200519124402.26076-1-jonathan.albrieux@gmail.com/
 
-All users of copy_to_guest() will have to have the same 'if (protected)'
-check, right? Why not move the check to copy_to/from_guest() then?
+v2:
+ - rewording of reset gpio comment and patch messages to better clarify
+   reset gpio behaviour
+https://lore.kernel.org/linux-iio/20200518133645.19127-1-jonathan.albrieux@gmail.com/
 
->  	if (r)
->  		return -EFAULT;
->  	mark_page_dirty_in_slot(memslot, gfn);
-> @@ -2370,7 +2420,8 @@ int kvm_write_guest_page(struct kvm *kvm, gfn_t gfn,
->  {
->  	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
->  
-> -	return __kvm_write_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_write_guest_page(slot, gfn, data, offset, len,
-> +				      kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_write_guest_page);
->  
-> @@ -2379,7 +2430,8 @@ int kvm_vcpu_write_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn,
->  {
->  	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->  
-> -	return __kvm_write_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_write_guest_page(slot, gfn, data, offset, len,
-> +				      vcpu->kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_write_guest_page);
->  
-> @@ -2495,7 +2547,10 @@ int kvm_write_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
->  	if (unlikely(!ghc->memslot))
->  		return kvm_write_guest(kvm, gpa, data, len);
->  
-> -	r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
-> +	if (kvm->mem_protected)
-> +		r = copy_to_guest(ghc->hva + offset, data, len);
-> +	else
-> +		r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
->  	if (r)
->  		return -EFAULT;
->  	mark_page_dirty_in_slot(ghc->memslot, gpa >> PAGE_SHIFT);
-> @@ -2530,7 +2585,10 @@ int kvm_read_guest_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
->  	if (unlikely(!ghc->memslot))
->  		return kvm_read_guest(kvm, ghc->gpa, data, len);
->  
-> -	r = __copy_from_user(data, (void __user *)ghc->hva, len);
-> +	if (kvm->mem_protected)
-> +		r = copy_from_guest(data, ghc->hva, len);
-> +	else
-> +		r = __copy_from_user(data, (void __user *)ghc->hva, len);
->  	if (r)
->  		return -EFAULT;
+v1:
+ - initial patch submission
+https://lore.kernel.org/linux-iio/20200519065749.4624-1-jonathan.albrieux@gmail.com/
+
+Convert documentation from txt format to yaml. Add documentation about
+reset-gpio.
+
+Deassert reset on ak8975_power_on(), assert reset on ak8975_power_off().
+
+Without reset's deassertion during ak8975_power_on(), driver's probe fails
+on ak8975_who_i_am() while checking for device identity for AK09911 chip.
+
+AK09911 has an active low reset gpio to handle register's reset.
+AK09911 datasheet says that, if not used, reset pin should be connected
+to VID. This patch emulates this situation.
+
+Jonathan Albrieux (5):
+  dt-bindings: iio: magnetometer: ak8975: reword gpios, add interrupts,
+    fix style
+  dt-bindings: iio: magnetometer: ak8975: convert format to yaml, add
+    maintainer
+  dt-bindings: iio: magnetometer: ak8975: add gpio reset support
+  iio: magnetometer: ak8975: Fix typo, uniform measurement unit style
+  iio: magnetometer: ak8975: Add gpio reset support
+
+ .../bindings/iio/magnetometer/ak8975.txt      | 30 -------
+ .../iio/magnetometer/asahi-kasei,ak8975.yaml  | 85 +++++++++++++++++++
+ drivers/iio/magnetometer/ak8975.c             | 22 ++++-
+ 3 files changed, 105 insertions(+), 32 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iio/magnetometer/ak8975.txt
+ create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
 
 -- 
-Vitaly
+2.17.1
 
