@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7C41E04A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 04:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957441E04AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 04:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388662AbgEYCXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 22:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45502 "EHLO
+        id S2388696AbgEYCZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 22:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388110AbgEYCW7 (ORCPT
+        with ESMTP id S2388110AbgEYCZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 22:22:59 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B803C061A0E;
-        Sun, 24 May 2020 19:22:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 124so1843932pgi.9;
-        Sun, 24 May 2020 19:22:59 -0700 (PDT)
+        Sun, 24 May 2020 22:25:54 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9642EC061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 19:25:53 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q8so15912252iow.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 19:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d8IQtioZ7tAaGIpCYlIE9t07C1q42CfFRthXKpxFviI=;
-        b=foIFhuSaOgDhkLTKkQ4cVEJe5DECQUyGnKRSixKZTRFVC7lfc8FfrQiydZwB3Xn2nM
-         9lZ+ckp3pVnawYw3cr1LC0IMAb8P09YXKi8K7qnK+t/SVLsSM4fKnTd1AtiHh5W1sQ1o
-         oMNaLxbmeRhbsPNW4kRCR2ZHyuCj1G2Fhyfc6MwFZy6zfbnUsZVNyxAa7QF39K1ZFgbu
-         wu0lij9Bt48UcMvO0Hk6UA7Nb/eNNMP9DVcxQO216ZJp83BLzCQ1mONVWhmn4nE/ryof
-         mQRRmhrcJPoQJ4rAWDmL/vbNAFUOPxGo7OLSK0i/q+raJzLI7hOh/ztbsnEULYswMiqm
-         IIVw==
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=sExaUQG+IPyncAhsVw5lguZ0tU5GKQsX5eYb5m1nJfc=;
+        b=a7DtJGwDeRXIAvsQzFAlpmcS0vnsn60H7HaxhJCV61CkGZ7U8QrghWMLxRQ91v2xIT
+         KemEV/6bFVb6MAO/j00VYeSPOwL4XwCrfhCQaqU/LEz/zTLQO1JoqOEdj8UhjIsZlhoq
+         Sq74/QlFJ1PLHFIQmW+xwzO5PcWIdP9VJnbfttTt2dS3Tz3e6E1AH20sChQpsDWHoW1z
+         mCXTwhXPkTq0ViMyrwHK8diWJoAP68ZaLbCDN44lC1aSicREKkA9nLTCX751CVB/qAo3
+         nJhWWuNDtD4saJFzUgTXYZPP3yrw5zXA/4Ocj4CrgXwhYNFAiJ9Iyb12gQ4/eE048lQf
+         xV3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d8IQtioZ7tAaGIpCYlIE9t07C1q42CfFRthXKpxFviI=;
-        b=Ri9k6KZxV8aODHSLUiQ7kG0F2m1qztn/fiMGpHPZvHmTwhlBhi0lpZG4q9zVYr2uWQ
-         gYxgn88sRWd5ZETvQzDZMITnOp/N3fAf9wMzMXMcuByQba+i7SKwyU5QPgRCIitkG5RC
-         FH0FxqHHebSq5l7kynhFsGXDhJjuQXPDDD3RCGOuLVlini68aFSA14l4b5s+BMci4jdT
-         Cg0X4dqgh9CYP1hKDNd2lHuB8z/KvCyO0xlVrLb1qgIVo9ZX6FIcS2R9/XXni3gWaEA7
-         zFfpce/4ztafsZlpQ7PsfdVnORSPDdS56oR46ARLukZMH3oqmO5RMrg3me5ef5REzgVl
-         VFCQ==
-X-Gm-Message-State: AOAM532sw3DsDUr6ZpqPz7zrLOL/fmkYL3Yyk59j574ZMuDUCfK/r1ko
-        ynXi3KRy/JGnTOtDx0ptO2A=
-X-Google-Smtp-Source: ABdhPJzBgKrmlULrHcze0yAlriGTP7IQ7jxSKzMCpIib4b5i+hhJtVJDvqlUZ6TpjZ72dFoNNsxe7w==
-X-Received: by 2002:a65:678c:: with SMTP id e12mr23847241pgr.375.1590373378714;
-        Sun, 24 May 2020 19:22:58 -0700 (PDT)
-Received: from sol (220-235-68-201.dyn.iinet.net.au. [220.235.68.201])
-        by smtp.gmail.com with ESMTPSA id e18sm11832305pfh.75.2020.05.24.19.22.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 24 May 2020 19:22:57 -0700 (PDT)
-Date:   Mon, 25 May 2020 10:22:52 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Hector Bujanda <hector.bujanda@digi.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] gpiolib: add GPIO_SET_DEBOUNCE_IOCTL
-Message-ID: <20200525022252.GA22956@sol>
-References: <20200419001858.105281-1-hector.bujanda@digi.com>
- <CAMRc=MeHun_WEApEXP59ZszGa2n+wbU9qq3wU1VO9o590rO-Pw@mail.gmail.com>
- <CACRpkdaeXFW5K=Npy2ubWsffc7aepEQ5kSJ2HrkrESjaTy_psQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=sExaUQG+IPyncAhsVw5lguZ0tU5GKQsX5eYb5m1nJfc=;
+        b=Y2PL0Z2BFJT0gVF9/qyjOWbhDnhewoy3QNweMyqsJ6K0eyfMrWROKffqBvYiikPMZ0
+         woKqPW9ZlweyC13tJWUJeWD7FCtq4p1Cph3Kz1XqDNeJVfyIqObDxkuCiO+IIoynWT0M
+         ZH9N8PLUY62SciO1oyEHJsG2622mlgVxf604lvi55NdO6OYN6sNh73zvwEpumxfK+er6
+         6QVzw46cnKGBuM/qwi6vKiqf+c2pAR+kZyTcofn4cDP3bZmYQgnDZDfJ+DDVZMV0fkFz
+         Vvqbd+3zNTn3uLruOPBTKhEacWdag9OC/fq7t5xWok9qdYCSOim0oLfNwpv7KHPkDJ1+
+         CMBA==
+X-Gm-Message-State: AOAM530y8SXzqY2TBBCI0TMglr1uC0DfCqZ5B/hIB4lAZtdzNiuO5zet
+        B53jdq2gyEiWiZNJVcj/EoHrzaHVgRHq8DGlynE/xQ==
+X-Google-Smtp-Source: ABdhPJyzFxKYBRcaKZBDLtOOfeO+pbYT4UVYMR7Y2gxiNj+OgIjC2XGmEH3ZF6Xds/oCJO06ZO4D/W4Sa/uR6dK7peY=
+X-Received: by 2002:a5e:df49:: with SMTP id g9mr8286037ioq.153.1590373552754;
+ Sun, 24 May 2020 19:25:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdaeXFW5K=Npy2ubWsffc7aepEQ5kSJ2HrkrESjaTy_psQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Sun, 24 May 2020 22:25:17 -0400
+Message-ID: <CABV8kRxoxt3dWyAOoVjkzBTxXnJ4AQ7M0Efx=FJ8DSOj70dd9g@mail.gmail.com>
+Subject: mm: Behavior of process_vm_* with short local buffers
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Huey <khuey@pernos.co>,
+        "Robert O'Callahan" <roc@pernos.co>,
+        Valentin Churavy <vchuravy@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 02:38:13PM +0200, Linus Walleij wrote:
-> On Wed, Apr 29, 2020 at 2:06 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> 
-> > I understand the need to set debounce time to make line events
-> > reliable. As I see it: there'll be a couple steps to add this.
-> 
-> I think there is a serious user-facing problem here though, because
-> not all GPIO controllers supports debounce, so the call may return
-> "nope" (error code).
-> 
-> I think that is unavoidable with things like pull-up/down or drive
-> strength, but for debounce I think we could do better.
-> drivers/input/keyboard/gpio_keys.c contains generic
-> debounce code using kernel timers if the GPIO driver
-> cannot provide debouncing, and I have thought for a long
-> time that it would be nice if we could do this generic, so that
-> we always provide debouncing if requested, even for in-kernel
-> consumers but most certainly for userspace consumers,
-> else userspace will just start to reinvent this too.
-> 
+Hi everyone,
 
-I'm looking at implementing the software debounce you suggest here,
-using the gpio_keys example as a starting point, but find that there are
-actually two different debounce strategies in gpio_keys. For gpio pins
-that don't support debounce in hw, it uses mod_delayed_work to put off
-reading the new value until the line has settled (i.e. no interrupts
-received) for the debounce period.
-For non-gpio lines it uses timers to poll the line at the debounce
-period.
+I'm in the process of trying to port a debugging tool (http://rr-project.org/)
+from x86 to various other architectures. This tool relies on noting every
+change that was made to the memory of the process being debugged.
+As such, it has a battery of tests for corner cases of copyin/out and it
+is one of these that I saw behaving strangely when ported to non-x86
+architectures. This particular test was testing the behavior of
+process_vm_readv (and writev, but for simplicity, let's assume readv here)
+with short local buffers.
 
-You mention timers for the gpio pins that cannot provide debounce, 
-so I'm confused. Could you clarify which strategy you have in mind?
+On x86 if the buffer is short and the following page is unmapped,
+the syscall will fill the remainder of the page, and
+then return however many bytes it actually wrote. However, on other
+architectures (I mostly looked at arm64, though the same applies
+elsewhere), the behavior can be quite different.
+In general, the behavior depends strongly on factors like how close to
+the start of the copy region the page break occurs, how many bytes
+were supposed to be left after the page break and the total size of
+the region to be copied. In various situations, I'm seeing:
 
-I've also had a quick look at the possibility of providing the software
-debounce for in-kernel consumers.  Are you anticipating new API for
-that?  e.g. allowing consumers to request gpio events?  Cos, gpio_keys
-grabs the irq itself - and that would bypass the software debouncer,
-or even conflict with it.
+- Writes that end many bytes before the page break
+- Bytes being modified beyond what the syscall result would indicate
+happened.
+- Combinations thereof
 
-Thanks,
-Kent.
+I can work around this in my port, but I thought it might be valuable
+to ask where the line is between "architecture-defined behavior" and
+a bug that should be reported to the appropriate architecture
+maintainers and eventually fixed. For example, I think it would be
+nice if the syscall result actually did match the actual number of
+bytes written in all cases.
 
+I've written a small program [1] that sets up this situation for various
+parameter values and prints the results. I have access to arm64,
+powerpc and x86, so I included results for those architectures,
+but I suspect other architectures have similar issues. The
+program should be easy to run to get your own results for
+a different architecture.
+
+[1] https://gist.github.com/Keno/b247bca85219c4e3bdde9f7d7ff36c77
+
+Thanks, Keno
