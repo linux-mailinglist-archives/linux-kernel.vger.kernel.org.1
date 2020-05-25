@@ -2,192 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E831E1505
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4D91E1524
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 22:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390377AbgEYT7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 15:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390316AbgEYT7n (ORCPT
+        id S2389950AbgEYURu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 16:17:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49202 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388994AbgEYURt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 15:59:43 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF55BC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 12:59:41 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so7788302plr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 12:59:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9QyaJyq91Y21TWm2mWkWyDIqO2sYo0+Z1NrqQRUgE7I=;
-        b=ljaUWVc5kIlmJQUxPYKdrG6BE7ChLk5cxtVZHrDO/iKFgRVeR8sCGvDiLiJ7PdjYMq
-         skBIof5jY//HbHYTMpHrjUqvSqJnTaRZ2I/DRCmcSLhY7X25HgI2DyEWArWJe8zc1klo
-         i2MeTI3lRNAD4GSrXtizBZGz9MZWYzvILEzBSynARIxp/Z+5yJWcdz6Pz8Ur9tmUAbkU
-         8VoDQdnPzU0/sjPlZjuzfuqlFF7aVEcVrs5Yoj9Gn6kSZ6w6rMwivhKMWGBthwlWPre0
-         viG7280TWn22JpuLyygLzIsUTnbpQCNThKW2khSm64E2PoxFf/ihBqAqoPDH6FWcpGD/
-         66Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9QyaJyq91Y21TWm2mWkWyDIqO2sYo0+Z1NrqQRUgE7I=;
-        b=YoyE2hqzAh+eHpJY5aJY7e3kRFgPSHmqmTr669VdDputsVmSRuINDzKsXgnWikUOZ1
-         QkdSu7UvwD47xP6JLiRUIK9agNoScoEfS0mdAWsjkloftPcBq6iiLUrOlfrEc0kdEz2j
-         fIo6/JoqqFiTYt1UnmurUOPRb6sJ3A7WuZAM2T5oUYhaqtppdQenMbpOpNkzq8LLth5E
-         L+QHtGKnONxn1ko5i7gIO5lLOjZtqL5Wz7QLpVowB2tcaZPcwo2fzwQx9p0abU/bJpQ1
-         DCAmXVoT7HP8RKUBWigQH4TyestE92rtOyTHQeQNY9HZyFjSteNQQcKdZ9uVW2z2zxop
-         bjdA==
-X-Gm-Message-State: AOAM5323UFdJMo6agRcIuq0QM7gnEhz452BcN5XYG6IbmH9i2NpvXLgQ
-        qxOGEF5jzNUe5TxNh5GnY+tkAg==
-X-Google-Smtp-Source: ABdhPJyY+QwGKRIjKWxot2txvsWSCPAcuOYNxRHnVVq+NncrgyPaB5T+Hy9x86k3ekiQxKGDgZe9Hg==
-X-Received: by 2002:a17:90a:e016:: with SMTP id u22mr22462041pjy.28.1590436780796;
-        Mon, 25 May 2020 12:59:40 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:3c00:cb1c:41a3:c8d? ([2605:e000:100e:8c61:3c00:cb1c:41a3:c8d])
-        by smtp.gmail.com with ESMTPSA id q25sm13482591pfh.94.2020.05.25.12.59.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 12:59:40 -0700 (PDT)
-Subject: Re: [PATCH 12/12] io_uring: support true async buffered reads, if
- file provides it
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200523185755.8494-1-axboe@kernel.dk>
- <20200523185755.8494-13-axboe@kernel.dk>
- <8d429d6b-81ee-0a28-8533-2e1d4faa6b37@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <717e474a-5168-8e1e-2e02-c1bdff007bd9@kernel.dk>
-Date:   Mon, 25 May 2020 13:59:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 25 May 2020 16:17:49 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D8C551C02CC; Mon, 25 May 2020 22:17:46 +0200 (CEST)
+Date:   Mon, 25 May 2020 22:17:46 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        robh+dt@kernel.org, linux-amlogic@lists.infradead.org,
+        devicetree@vger.kernel.org, jianxin.pan@amlogic.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/8] dt-bindings: net: meson-dwmac: Add the
+ amlogic,rx-delay-ns property
+Message-ID: <20200525201746.GA5528@duo.ucw.cz>
+References: <20200512211103.530674-1-martin.blumenstingl@googlemail.com>
+ <20200512211103.530674-2-martin.blumenstingl@googlemail.com>
+ <20200524212843.GF1192@bug>
+ <d3f596d7-fb7f-5da7-4406-b5c0e9e9dc3f@gmail.com>
+ <20200525090718.GB16796@amd>
+ <20200525135728.GE752669@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <8d429d6b-81ee-0a28-8533-2e1d4faa6b37@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Disposition: inline
+In-Reply-To: <20200525135728.GE752669@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/20 1:29 AM, Pavel Begunkov wrote:
-> On 23/05/2020 21:57, Jens Axboe wrote:
->> If the file is flagged with FMODE_BUF_RASYNC, then we don't have to punt
->> the buffered read to an io-wq worker. Instead we can rely on page
->> unlocking callbacks to support retry based async IO. This is a lot more
->> efficient than doing async thread offload.
->>
->> The retry is done similarly to how we handle poll based retry. From
->> the unlock callback, we simply queue the retry to a task_work based
->> handler.
->>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->> ---
->>  fs/io_uring.c | 99 +++++++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 99 insertions(+)
->>
-> ...
->> +
->> +	init_task_work(&rw->task_work, io_async_buf_retry);
->> +	/* submit ref gets dropped, acquire a new one */
->> +	refcount_inc(&req->refs);
->> +	tsk = req->task;
->> +	ret = task_work_add(tsk, &rw->task_work, true);
->> +	if (unlikely(ret)) {
->> +		/* queue just for cancelation */
->> +		init_task_work(&rw->task_work, io_async_buf_cancel);
->> +		tsk = io_wq_get_task(req->ctx->io_wq);
-> 
-> IIRC, task will be put somewhere around io_free_req(). Then shouldn't here be
-> some juggling with reassigning req->task with task_{get,put}()?
 
-Not sure I follow? Yes, we'll put this task again when the request
-is freed, but not sure what you mean with juggling?
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> +		task_work_add(tsk, &rw->task_work, true);
->> +	}
->> +	wake_up_process(tsk);
->> +	return 1;
->> +}
-> ...
->>  static int io_read(struct io_kiocb *req, bool force_nonblock)
->>  {
->>  	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
->> @@ -2601,6 +2696,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
->>  	if (!ret) {
->>  		ssize_t ret2;
->>  
->> +retry:
->>  		if (req->file->f_op->read_iter)
->>  			ret2 = call_read_iter(req->file, kiocb, &iter);
->>  		else
->> @@ -2619,6 +2715,9 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
->>  			if (!(req->flags & REQ_F_NOWAIT) &&
->>  			    !file_can_poll(req->file))
->>  				req->flags |= REQ_F_MUST_PUNT;
->> +			if (io_rw_should_retry(req))
-> 
-> It looks like a state machine with IOCB_WAITQ and gotos. Wouldn't it be cleaner
-> to call call_read_iter()/loop_rw_iter() here directly instead of "goto retry" ?
+On Mon 2020-05-25 15:57:28, Andrew Lunn wrote:
+> > > standardizing on rx-delay-ps and tx-delay-ps would make sense since t=
+hat
+> > > is the lowest resolution and the property would be correctly named wi=
+th
+> > > an unit in the name.
+> >=20
+> > Seems like similar patch is already being reviewed from Dan Murphy (?)
+> > from TI.
+>=20
+> Dan is working on the PHY side. But there is probably code which can
+> be shared.
+>=20
+> One question to consider, do we want the same properties names for MAC
+> and PHY, or do we want to make them different, to avoid confusion?
 
-We could, probably making that part a separate helper then. How about the
-below incremental?
+We have same properties accross different hardware (compatible, reg),
+so same property between MAC and PHY seems to make sense.
 
-> BTW, can this async stuff return -EAGAIN ?
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Probably? Prefer not to make any definitive calls on that being possible or
-not, as it's sure to disappoint. If it does and IOCB_WAITQ is already set,
-then we'll punt to a thread like before.
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index a5a4d9602915..669dccd81207 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2677,6 +2677,13 @@ static bool io_rw_should_retry(struct io_kiocb *req)
- 	return false;
- }
- 
-+static int __io_read(struct io_kiocb *req, struct iov_iter *iter)
-+{
-+	if (req->file->f_op->read_iter)
-+		return call_read_iter(req->file, &req->rw.kiocb, iter);
-+	return loop_rw_iter(READ, req->file, &req->rw.kiocb, iter);
-+}
-+
- static int io_read(struct io_kiocb *req, bool force_nonblock)
- {
- 	struct iovec inline_vecs[UIO_FASTIOV], *iovec = inline_vecs;
-@@ -2710,11 +2717,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 	if (!ret) {
- 		ssize_t ret2;
- 
--retry:
--		if (req->file->f_op->read_iter)
--			ret2 = call_read_iter(req->file, kiocb, &iter);
--		else
--			ret2 = loop_rw_iter(READ, req->file, kiocb, &iter);
-+		ret2 = __io_read(req, &iter);
- 
- 		/* Catch -EAGAIN return for forced non-blocking submission */
- 		if (!force_nonblock || ret2 != -EAGAIN) {
-@@ -2729,8 +2732,11 @@ static int io_read(struct io_kiocb *req, bool force_nonblock)
- 			if (!(req->flags & REQ_F_NOWAIT) &&
- 			    !file_can_poll(req->file))
- 				req->flags |= REQ_F_MUST_PUNT;
--			if (io_rw_should_retry(req))
--				goto retry;
-+			if (io_rw_should_retry(req)) {
-+				ret2 = __io_read(req, &iter);
-+				if (ret2 != -EAGAIN)
-+					goto out_free;
-+			}
- 			kiocb->ki_flags &= ~IOCB_WAITQ;
- 			return -EAGAIN;
- 		}
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXswn6gAKCRAw5/Bqldv6
+8i7zAJ4jCAV144tVxiIyf3sNBn1JDz7j+QCgvR80vjeIJZeqGeR77nVrZk4D4ck=
+=JqOQ
+-----END PGP SIGNATURE-----
 
--- 
-Jens Axboe
-
+--bp/iNruPH9dso1Pn--
