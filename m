@@ -2,163 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFB51E1318
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 18:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840511E1324
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 19:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgEYQ6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 12:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S2389243AbgEYRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 13:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgEYQ6h (ORCPT
+        with ESMTP id S2388410AbgEYRDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 12:58:37 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA25C061A0E;
-        Mon, 25 May 2020 09:58:36 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n18so9027003pfa.2;
-        Mon, 25 May 2020 09:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aPMULKZDeq0BX+s9zNJj5lw/mRPJ8V62Bi00UZ2hLPQ=;
-        b=JNQq63iU315TudbF0LDZbx0/ESdXGRQ+JL6Q8ov8UoVeiVwyyIzm0oBHPCwmXZzuvs
-         xnf7opyTEzKm/Ipk769HDtPHEhmuPMBMiFybuXo2NewIjgQbZ2tUv2JRc43WWqYc3yZ9
-         xJ3nkjKYoQFJgR7tVH4OJthhyecWG5WTE9Wkuf9TRujPbxby4YVsPnrYsnNVtlMyqeAM
-         HEuiuXFX4Ezr6HR6tyzTDaNauY4TjnrvnoG/BEfOTgglxrJgVUDSP+Bc2+Xf9UcjgcAU
-         vKZaPSahzBHFnvb/FO6EtDJHqAyKBvuTicmJl4bBYl1OxTuZtbXJVmPZNzBrLshZbfPN
-         KopQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aPMULKZDeq0BX+s9zNJj5lw/mRPJ8V62Bi00UZ2hLPQ=;
-        b=Xvlc2EUH/caUJCsrjlKWXWNvCo5+z2u58lBfiIAXAQhmk8b67HBg2kUzxAVV/FpnFK
-         9GKjmwaAa+bwXDFlzsZ8CDyQx3ydT/Yb2BOJEeAGcsR+AcwNV+8qB44kSVpUCZAT9yqE
-         gSHW0Q6s4QndT7SCtfbKFMZpIZuQKjvJJrq5JeOGThkPN8OsvQ979mLqQTmYp9zi6lTK
-         CCailk6ysoyTfZDAP9l0WvhbIKbzY4MFkIUS/eP9S1BY6pRSkOpRmNzyG1qCqEGz2dSW
-         PI3+LkgntyYf47HZjK5YVD6ZOSUCZmS5tx+wfT4ditrBWgg8qcb8DJpVaEFxBwGD+n/l
-         xlQg==
-X-Gm-Message-State: AOAM5313AnsYyT5kQZ7cZWoEt7Sj7DY62n8hnW3F3teYsWQ6G5xNOp1K
-        6kdVBkAVEKhXudWRSbiMyG3+9yUg
-X-Google-Smtp-Source: ABdhPJyamdUHEpVQmhep6MniCPNxtcfAdKYfTqv1tOet1bkSJFZ/NVZIoCCC18ASwCtIF3W4ZjUrBg==
-X-Received: by 2002:a63:5116:: with SMTP id f22mr16311686pgb.100.1590425915574;
-        Mon, 25 May 2020 09:58:35 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e21sm11825840pga.71.2020.05.25.09.58.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 09:58:34 -0700 (PDT)
-Subject: Re: [PATCH 07/15] PCI: brcmstb: Add control of rescal reset
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        Philipp Zabel <pza@pengutronix.de>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200519203419.12369-1-james.quinlan@broadcom.com>
- <20200519203419.12369-8-james.quinlan@broadcom.com>
- <20200520072747.GB5213@pengutronix.de>
- <CA+-6iNxtW66QLrb5BaOOCPJwG-1fShdfZqiLSkKfi6Y669dn5w@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c76cc2e6-fcc5-5d42-5ff1-770a99cb9b13@gmail.com>
-Date:   Mon, 25 May 2020 09:58:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.1
+        Mon, 25 May 2020 13:03:35 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536E2C061A0E;
+        Mon, 25 May 2020 10:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XXwDcP3dcHVTH31ED3YGNDr9xfCF6QILoNLYHiAPWHo=; b=ycGpn/y3r7HAJ3xWO1uMSrRHOq
+        JLE/YYhMxpqwJK3nsuVG+6K5dhNTriMLZElhL9QB8zWZoMxbANDlFN+YKMVMh8NGtg1lVaj//BsWS
+        fZHpgKxDvyNSxJr/Zb1E2cpU2hfPk8zjKSk9ISh/TWl4JfvcIuYJqHQsy6Y1mj4J7UtjUmq+zpBH0
+        qjKvb9j9E26PZUWA4WMGnSLhN5Y2Xlof1vMPm2VU8sSrWekAH/wYNUyRyvPXVCNV98TmS8LNbtKEg
+        M3GLYpoH/LF0BFp0NMdQyn8fP9fczpHO9vSI98EpIeMMRGAOvSR3TUUMHMbkeKsw4dfWnroWSyDd8
+        AqILb3BA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdGVB-0003k4-4V; Mon, 25 May 2020 17:03:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83142300B38;
+        Mon, 25 May 2020 19:02:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CC8220BD4F39; Mon, 25 May 2020 19:02:57 +0200 (CEST)
+Date:   Mon, 25 May 2020 19:02:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
+Subject: Re: Some -serious- BPF-related litmus tests
+Message-ID: <20200525170257.GA325280@hirez.programming.kicks-ass.net>
+References: <20200522003850.GA32698@paulmck-ThinkPad-P72>
+ <20200522094407.GK325280@hirez.programming.kicks-ass.net>
+ <20200522143201.GB32434@rowland.harvard.edu>
+ <20200522174352.GJ2869@paulmck-ThinkPad-P72>
+ <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
+ <20200525112521.GD317569@hirez.programming.kicks-ass.net>
+ <20200525154730.GW2869@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <CA+-6iNxtW66QLrb5BaOOCPJwG-1fShdfZqiLSkKfi6Y669dn5w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525154730.GW2869@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 25, 2020 at 08:47:30AM -0700, Paul E. McKenney wrote:
+> On Mon, May 25, 2020 at 01:25:21PM +0200, Peter Zijlstra wrote:
+
+> > That is; how can you use a spinlock on the producer side at all?
+> 
+> So even trylock is now forbidden in NMI handlers?  If so, why?
+
+The litmus tests don't have trylock.
+
+But you made me look at the actual patch:
+
++static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
++{
++	unsigned long cons_pos, prod_pos, new_prod_pos, flags;
++	u32 len, pg_off;
++	struct bpf_ringbuf_hdr *hdr;
++
++	if (unlikely(size > RINGBUF_MAX_RECORD_SZ))
++		return NULL;
++
++	len = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
++	cons_pos = smp_load_acquire(&rb->consumer_pos);
++
++	if (in_nmi()) {
++		if (!spin_trylock_irqsave(&rb->spinlock, flags))
++			return NULL;
++	} else {
++		spin_lock_irqsave(&rb->spinlock, flags);
++	}
+
+And that is of course utter crap. That's like saying you don't care
+about your NMI data.
 
 
-On 5/21/2020 2:48 PM, Jim Quinlan wrote:
-> On Wed, May 20, 2020 at 3:27 AM Philipp Zabel <pza@pengutronix.de> wrote:
->>
->> Hi Jim,
->>
->> On Tue, May 19, 2020 at 04:34:05PM -0400, Jim Quinlan wrote:
->>> From: Jim Quinlan <jquinlan@broadcom.com>
->>>
->>> Some STB chips have a special purpose reset controller named
->>> RESCAL (reset calibration).  This commit adds the control
->>> of RESCAL as well as the ability to start and stop its
->>> operation for PCIe HW.
->>>
->>> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
->>> ---
->>>  drivers/pci/controller/pcie-brcmstb.c | 81 ++++++++++++++++++++++++++-
->>>  1 file changed, 80 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
->>> index 2c470104ba38..0787e8f6f7e5 100644
->>> --- a/drivers/pci/controller/pcie-brcmstb.c
->>> +++ b/drivers/pci/controller/pcie-brcmstb.c
->> [...]
->>> @@ -1100,6 +1164,21 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->>>               dev_err(&pdev->dev, "could not enable clock\n");
->>>               return ret;
->>>       }
->>> +     pcie->rescal = devm_reset_control_get_shared(&pdev->dev, "rescal");
->>> +     if (IS_ERR(pcie->rescal)) {
->>> +             if (PTR_ERR(pcie->rescal) == -EPROBE_DEFER)
->>> +                     return -EPROBE_DEFER;
->>> +             pcie->rescal = NULL;
->>
->> This is effectively an optional reset control, so it is better to use:
->> ↵
->>         pcie->rescal = devm_reset_control_get_optional_shared(&pdev->dev,
->>                                                               "rescal");↵
->>         if (IS_ERR(pcie->rescal))
->>                 return PTR_ERR(pcie->rescal);
->>
->>> +     } else {
->>> +             ret = reset_control_deassert(pcie->rescal);
->>> +             if (ret)
->>> +                     dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
->>> +     }
->>
->> reset_control_* can handle rstc == NULL parameters for optional reset
->> controls, so this can be done unconditionally:
->>
->>         ret = reset_control_deassert(pcie->rescal);↵
->>         if (ret)↵
->>                 dev_err(&pdev->dev, "failed to deassert 'rescal'\n");↵
->>
->> Is rescal handled by the reset-brcmstb-rescal driver? Since that only
->> implements the .reset op, I would expect reset_control_reset() here.
-> Where exactly?  "reset.h" says that "Calling reset_control_rese()t is
-> not allowed on a shared reset control." so I'm not sure why  you would
-> want me to invoke it.
-
-Yes this is handled by drivers/reset/reset-brcmstb-rescal.c which only
-implements a .reset() callback, what would be the appropriate API usage
-here given that this is a shared reset between AHCI and PCIe, should
-drivers/reset/reset-brcmstb-rescal.c not implement a .reset() callback
-and .assert() callback instead?
-
->> Otherwise this looks like it'd be missing a reset_control_assert in
->> remove.
-> I can add this.
-> Thanks,
-> Jim
->>
->> regards
->> Philipp
-
--- 
-Florian
