@@ -2,435 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B960E1E1102
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6484B1E1109
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403962AbgEYOvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 10:51:49 -0400
-Received: from mail.efficios.com ([167.114.26.124]:33912 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390995AbgEYOvr (ORCPT
+        id S2404017AbgEYOxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 10:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404003AbgEYOxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 10:51:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4F0D92C34A7;
-        Mon, 25 May 2020 10:51:46 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FQQgve8sak1V; Mon, 25 May 2020 10:51:45 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9BD6E2C3614;
-        Mon, 25 May 2020 10:51:45 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9BD6E2C3614
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1590418305;
-        bh=6tyb0kjx6yVZMXxyTctntKXrHwgqj474Syb1WIq7Bz0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=PXSWRH7gsmup6B2z5zyvA0dDjHB4v34akreggthfEYRKlKsWqx0WOte5aqilw0eAR
-         Nm6ls//1gF1bP0X+sbTSvp+aHb+B+3PTkflu8q8uJj840fc23+0i9oBJ0gMR1PhCR2
-         xon2ShR7PDPgmhkE8MHcinYwfHCQnIyYkfhEybIiB9Mezu1dy1YRQlmUJXOQfiK34d
-         rvcyZ/TuPOeMQBQixlIc5AaCDJoZxIPXI+rwfaNuAK1E/unMp/w1eKuXt1X0ksKiRC
-         /xdfbDxDv2YFtAoejUGxi9/8+Cx+XTjY+ONv+t+t6zl7MRapbaa4dX2/dFXLlD64E4
-         hVdyOtvfu5/aQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6plpHy_8Qu4r; Mon, 25 May 2020 10:51:45 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 7DF932C350A;
-        Mon, 25 May 2020 10:51:45 -0400 (EDT)
-Date:   Mon, 25 May 2020 10:51:45 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     libc-alpha <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Message-ID: <941087675.33347.1590418305398.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87v9kqbzse.fsf@oldenburg2.str.redhat.com>
-References: <20200501021439.2456-1-mathieu.desnoyers@efficios.com> <20200501021439.2456-2-mathieu.desnoyers@efficios.com> <87v9kqbzse.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [PATCH glibc 1/3] glibc: Perform rseq registration at C startup
- and thread creation (v19)
+        Mon, 25 May 2020 10:53:43 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF49C061A0E;
+        Mon, 25 May 2020 07:53:42 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w3so12136279qkb.6;
+        Mon, 25 May 2020 07:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xihX2vtjvrXYp9+a98LfqxQC7oojW9L+LkC9nUqDT2o=;
+        b=AERTnYYmbDigZm8DFgUZ0BeiS5xap1nOv8Q9b00yL/c7MhDn0AlmbrZNL5GVRgucRC
+         kwSRAMxJxqS4JL+KLsKP3WMIlWyhN59aWoDhq/oL2i8KkmZX2VtAzTr2xXVNMhHzty51
+         v3aO/WaeJAjwzv61Kqd1wJdkP9AesBJsEgrJfTwygccQIinr3tQG1ugMXBcLlizj8xv+
+         acEmvuUO2L9/NX82RNpryQ+DMyBIPhUctEbrO/UzFv4tfdOH7rxJDyC83F7cNoud9yVI
+         epfDJIZwBPCCbACTn/ePIIBRwoEmzKUxxv2UowDCPFWcsZrF3yUty5PTOhOFknZ0E8eZ
+         vQ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xihX2vtjvrXYp9+a98LfqxQC7oojW9L+LkC9nUqDT2o=;
+        b=t+Y5acPFMILVFJyo/3rK+pgxL+BnQG1z4kQsWUBjrhU+ATt9IFwXepXxRYYtQHWY4Y
+         iZnrvnJPi/qwfs+5ET5j8n+wxxBvDjClHWoTiF5GvHvEAY5cnUEI4F7MNW1I9nJI78zw
+         5yzwbX6CMLC9dxui79RP71aHgAZp7KlTdgXQRcmCZdN1IDqcrpVR3R3FXlk1Z9HMP0+Q
+         vWZwV3AmK5zRdbs8xMN+q6lkmQY5iLdERn3pPQv/us1b2qrUPqUfM5kq/qfAsOP1wDTc
+         9cdnHjhfdcElFFF3fphe0j1g36gKye+qBOEz5JyqQtC99F/BNkKYIeyTblWZ43xdwFMD
+         eZ9w==
+X-Gm-Message-State: AOAM5330C37FHYtEkeyxqBjD5MK1nkR2SXqaZxedijLQPPXYJJPl8Jxj
+        TpUNaGLWt6aKmwd2k1NLZmM=
+X-Google-Smtp-Source: ABdhPJy0PXHMVbuGKzSQZy/pTn8LvtO1MeTZJ/aCZl1xlT8s+XKj3RrviiFXtcc3q87xnWSoUDigtg==
+X-Received: by 2002:ae9:e319:: with SMTP id v25mr26715617qkf.311.1590418422057;
+        Mon, 25 May 2020 07:53:42 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id g1sm15327352qkm.123.2020.05.25.07.53.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 May 2020 07:53:41 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1AF2B27C0054;
+        Mon, 25 May 2020 10:53:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 25 May 2020 10:53:40 -0400
+X-ME-Sender: <xms:6dvLXmPVdrA2KibfwfgiR-LaXFVTe9Bx_mHm1BiyYVCLPVHgkLoAIg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvtddgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepueehjeejieevueeuteeileeuvddvvedvieeltddtudekgeegueelvddtkeet
+    tdevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddtuddrkeeirdegie
+    druddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    sghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtie
+    egqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhi
+    gihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:6dvLXk_pib-7170Fa0Af2ZLUloStIyuq5O4ZbMPKJNTPYElhWXLbyA>
+    <xmx:6dvLXtSoiQOJLv1N1MY-bZkl8YcEx7NNu6y8h4nq_7X-HPW9vbzzZw>
+    <xmx:6dvLXmvGnu_c8lBCCJi9rsr93fccIa3mDwHYn-NavKOlYSex9IEE1A>
+    <xmx:9NvLXu5jov4CqY1bfrMRYmw-Iw-FmFIamqnc7GhvrHIOY5Et9ZY9kYitn9c>
+Received: from localhost (unknown [101.86.46.10])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 52369306655B;
+        Mon, 25 May 2020 10:53:29 -0400 (EDT)
+Date:   Mon, 25 May 2020 22:53:25 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     paulmck@kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Peter Zijlstra <peterz@infradead.org>, parri.andrea@gmail.com,
+        will@kernel.org, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
+Subject: Re: Some -serious- BPF-related litmus tests
+Message-ID: <20200525145325.GB2066@tardis>
+References: <20200522003850.GA32698@paulmck-ThinkPad-P72>
+ <20200522094407.GK325280@hirez.programming.kicks-ass.net>
+ <20200522143201.GB32434@rowland.harvard.edu>
+ <20200522174352.GJ2869@paulmck-ThinkPad-P72>
+ <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
-Thread-Topic: glibc: Perform rseq registration at C startup and thread creation (v19)
-Thread-Index: J0ZredkxF5q54R+vKeB0Ck/we1aEyQ==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XF85m9dhOBO43t/C"
+Content-Disposition: inline
+In-Reply-To: <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 20, 2020, at 7:40 AM, Florian Weimer fweimer@redhat.com wrote:
 
-> * Mathieu Desnoyers via Libc-alpha:
->=20
->> diff --git a/NEWS b/NEWS
->> index 141078c319..c4e0370fc4 100644
->> --- a/NEWS
->> +++ b/NEWS
->> @@ -23,6 +23,16 @@ Major new features:
->>    toolchains.  It is recommended to use GCC 8 or newer when testing
->>    this option.
->> =20
->> +* Support for automatically registering threads with the Linux rseq
->> +  system call has been added.  This system call is implemented starting
->> +  from Linux 4.18.  The Restartable Sequences ABI accelerates user-spac=
-e
->> +  operations on per-cpu data.  It allows user-space to perform updates
->> +  on per-cpu data without requiring heavy-weight atomic operations.
->> +  Automatically registering threads allows all libraries, including lib=
-c,
->> +  to make immediate use of the rseq(2) support by using the documented =
-ABI.
->> +  The GNU C Library manual has details on integration of Restartable
->> +  Sequences.
->=20
-> =E2=80=9Crseq=E2=80=9D instead =E2=80=9Crseq(2)=E2=80=9D.
+--XF85m9dhOBO43t/C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK
+Hi Andrii,
 
-[...]
+On Fri, May 22, 2020 at 12:38:21PM -0700, Andrii Nakryiko wrote:
+> On 5/22/20 10:43 AM, Paul E. McKenney wrote:
+> > On Fri, May 22, 2020 at 10:32:01AM -0400, Alan Stern wrote:
+> > > On Fri, May 22, 2020 at 11:44:07AM +0200, Peter Zijlstra wrote:
+> > > > On Thu, May 21, 2020 at 05:38:50PM -0700, Paul E. McKenney wrote:
+> > > > > Hello!
+> > > > >=20
+> > > > > Just wanted to call your attention to some pretty cool and pretty=
+ serious
+> > > > > litmus tests that Andrii did as part of his BPF ring-buffer work:
+> > > > >=20
+> > > > > https://lore.kernel.org/bpf/20200517195727.279322-3-andriin@fb.co=
+m/
+> > > > >=20
+> > > > > Thoughts?
+> > > >=20
+> > > > I find:
+> > > >=20
+> > > > 	smp_wmb()
+> > > > 	smp_store_release()
+> > > >=20
+> > > > a _very_ weird construct. What is that supposed to even do?
+> > >=20
+> > > Indeed, it looks like one or the other of those is redundant (dependi=
+ng
+> > > on the context).
+> >=20
+> > Probably.  Peter instead asked what it was supposed to even do.  ;-)
 >=20
->> diff --git a/manual/threads.texi b/manual/threads.texi
->> index 0858ef8f92..a565095c43 100644
->> --- a/manual/threads.texi
->> +++ b/manual/threads.texi
->> @@ -9,8 +9,10 @@ This chapter describes functions used for managing thre=
-ads.
->>  POSIX threads.
->> =20
->>  @menu
->> -* ISO C Threads::=09Threads based on the ISO C specification.
->> -* POSIX Threads::=09Threads based on the POSIX specification.
->> +* ISO C Threads::=09=09Threads based on the ISO C specification.
->> +* POSIX Threads::=09=09Threads based on the POSIX specification.
->> +* Restartable Sequences::=09Linux-specific Restartable Sequences
->> +=09=09=09=09integration.
->>  @end menu
+> I agree, I think smp_wmb() is redundant here. Can't remember why I thought
+> that it's necessary, this algorithm went through a bunch of iterations,
+> starting as completely lockless, also using READ_ONCE/WRITE_ONCE at some
+> point, and settling on smp_read_acquire/smp_store_release, eventually. Ma=
+ybe
+> there was some reason, but might be that I was just over-cautious. See re=
+ply
+> on patch thread as well ([0]).
 >=20
-> This should go into the extensions menu (@node Non-POSIX Extensions).
+>   [0] https://lore.kernel.org/bpf/CAEf4Bza26AbRMtWcoD5+TFhnmnU6p5YJ8zO+So=
+AJCDtp1jVhcQ@mail.gmail.com/
+>=20
 
-OK
+While we are at it, could you explain a bit on why you use
+smp_store_release() on consumer_pos? I ask because IIUC, consumer_pos is
+only updated at consumer side, and there is no other write at consumer
+side that we want to order with the write to consumer_pos. So I fail
+to find why smp_store_release() is necessary.
 
->=20
-> General comment: Please wrap the lines around 72 or so characters.
-> Thanks.
+I did the following modification on litmus tests, and I didn't see
+different results (on States) between two versions of litmus tests.
 
-OK
+Regards,
+Boqun
 
->=20
->> @@ -881,3 +883,63 @@ Behaves like @code{pthread_timedjoin_np} except tha=
-t the
->> absolute time in
->>  @c pthread_spin_unlock
->>  @c pthread_testcancel
->>  @c pthread_yield
->> +
->> +@node Restartable Sequences
->> +@section Restartable Sequences
->> +@cindex Restartable Sequences
->> +
->> +This section describes Restartable Sequences integration for
->> +@theglibc{}.
->=20
-> =E2=80=9CThis functionality is only available on Linux.=E2=80=9D  (The @s=
-tandards parts
-> are not visible to readers.)
+---------------------->8
 
-OK
-
->=20
->> +
->> +@deftypevar {struct rseq} __rseq_abi
->> +@standards{Linux, sys/rseq.h}
->> +@Theglibc{} implements a @code{__rseq_abi} TLS symbol to interact with =
-the
->> +Restartable Sequences system call (Linux-specific).  The layout of this
->> +structure is defined by the @file{sys/rseq.h} header.  Registration of =
-each
->> +thread's @code{__rseq_abi} is performed by @theglibc{} at library
->> +initialization and thread creation.
->=20
-> Can drop =E2=80=9C(Linux-specific)=E2=80=9D here.
-
-OK
-
->=20
->> diff --git a/sysdeps/unix/sysv/linux/aarch64/bits/rseq.h
->> b/sysdeps/unix/sysv/linux/aarch64/bits/rseq.h
->> new file mode 100644
->> index 0000000000..37d83fcb4a
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/aarch64/bits/rseq.h
->=20
->> +#ifdef __AARCH64EB__
->> +#define RSEQ_SIG_DATA=090x00bc28d4=09/* BRK #0x45E0.  */
->> +#else
->> +#define RSEQ_SIG_DATA=09RSEQ_SIG_CODE
->> +#endif
->=20
-> Missing indentation on the #defines (sorry!).
-
-Sorry! My bad!
-
->=20
->> diff --git a/sysdeps/unix/sysv/linux/arm/bits/rseq.h
->> b/sysdeps/unix/sysv/linux/arm/bits/rseq.h
->> new file mode 100644
->> index 0000000000..c132f0327c
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/arm/bits/rseq.h
->=20
->> +#ifdef __ARMEB__
->> +#define RSEQ_SIG    0xf3def5e7      /* udf    #24035    ; 0x5de3 (ARMv6=
-+) */
->> +#else
->> +#define RSEQ_SIG    0xe7f5def3      /* udf    #24035    ; 0x5de3 */
->> +#endif
->=20
-> Likewise, missing indentation.
-
-At least I was consistently wrong. ;-)
-
->=20
->> diff --git a/sysdeps/unix/sysv/linux/bits/rseq.h
->> b/sysdeps/unix/sysv/linux/bits/rseq.h
->> new file mode 100644
->> index 0000000000..014c08fe0f
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/bits/rseq.h
->> @@ -0,0 +1,29 @@
->=20
->> +/* RSEQ_SIG is a signature required before each abort handler code.
->> +
->> +   It is a 32-bit value that maps to actual architecture code compiled
->> +   into applications and libraries.  It needs to be defined for each
->> +   architecture.  When choosing this value, it needs to be taken into
->> +   account that generating invalid instructions may have ill effects on
->> +   tools like objdump, and may also have impact on the CPU speculative
->> +   execution efficiency in some cases.  */
->=20
-> I wonder if we should say something somewhere that the correct way to
-> check for compile-time rseq support in glibc is something like this?
->=20
-> #if __has_include (<sys/rseq.h>)
-> # include <sys/rseq.h>
-> #endif
-> #ifdef RSEQ_SIG
-> =E2=80=A6
-> #endif
->=20
-> Or perhaps we should suppress installation of the headers if we only
-> have support for the stub.
->=20
-> (I think this fine tuning can be deferred to later patch.)
-
-I would prefer we keep this for a later patch.
-
-That being said, I notice that gcc prior to 4.9 has trouble compiling
-__has_include. Therefore, I would tend to recommend the following as a
-backward-compatible way of using the rseq header from external projects:
-
-- At configure time, check for availability of sys/rseq.h to ensure the
-  glibc version is recent enough. In the autotools world, this is usually
-  done with a small test program which will fail to build if the header is
-  not there.
-- At preprocessing time, include <sys/rseq.h> and check whether RSEQ_SIG
-  is defined.
-
-If a project only aims at building with gcc 4.9 or newer, then it can use
-__has_include.
+diff --git a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus b/=
+tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
+index cafd17afe11e..255b23be7fa9 100644
+--- a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
++++ b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+bounded.litmus
+@@ -46,7 +46,7 @@ P0(int *len1, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+ }
+diff --git a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus b/=
+tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
+index 84f660598015..5eecf14f87d1 100644
+--- a/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
++++ b/tools/memory-model/litmus-tests/mpsc-rb+1p1c+unbound.litmus
+@@ -44,7 +44,7 @@ P0(int *len1, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+ }
+diff --git a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus b/=
+tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
+index 900104c4933b..54da1e5d7ec0 100644
+--- a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
++++ b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+bounded.litmus
+@@ -50,7 +50,7 @@ P0(int *len1, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+=20
+@@ -68,7 +68,7 @@ P0(int *len1, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+ }
+diff --git a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus b/=
+tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
+index 83372e9eb079..fd19433f4d9b 100644
+--- a/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
++++ b/tools/memory-model/litmus-tests/mpsc-rb+2p1c+unbound.litmus
+@@ -47,7 +47,7 @@ P0(int *len1, int *len2, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+=20
+@@ -65,7 +65,7 @@ P0(int *len1, int *len2, int *cx, int *px)
+ 			rFail =3D 1;
+ 		} else if (rLen =3D=3D 1) {
+ 			rCx =3D rCx + 1;
+-			smp_store_release(cx, rCx);
++			WRITE_ONCE(*cx, rCx);
+ 		}
+ 	}
+ }
 
 >=20
->> diff --git a/sysdeps/unix/sysv/linux/mips/bits/rseq.h
->> b/sysdeps/unix/sysv/linux/mips/bits/rseq.h
->> new file mode 100644
->> index 0000000000..cbad4290cc
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/mips/bits/rseq.h
->> @@ -0,0 +1,62 @@
+> >=20
+> > > Also, what use is a spinlock that is accessed in only one thread?
+> >=20
+> > Multiple writers synchronize via the spinlock in this case.  I am
+> > guessing that his larger 16-hour test contended this spinlock.
 >=20
->> +#if defined(__nanomips__)
->> +# ifdef __MIPSEL__
->> +#  define RSEQ_SIG=090x03500010
->> +# else
->> +#  define RSEQ_SIG=090x00100350
->> +# endif
->> +#elif defined(__mips_micromips)
->> +# ifdef __MIPSEL__
->> +#  define RSEQ_SIG=090xd4070000
->> +# else
->> +#  define RSEQ_SIG=090x0000d407
->> +# endif
->> +#elif defined(__mips__)
->> +# define RSEQ_SIG=090x0350000d
->> +#else
->> +/* Unknown MIPS architecture.  */
->> +#endif
+> Yes, spinlock is for coordinating multiple producers. 2p1c cases (bounded
+> and unbounded) rely on this already. 1p1c cases are sort of subsets (but
+> very fast to verify) checking only consumer/producer interaction.
 >=20
-> Please use =E2=80=9Cdefined (=E2=80=9D, with a space.
-
-OK
-
+> >=20
+> > > Finally, I doubt that these tests belong under tools/memory-model.
+> > > Shouldn't they go under the new Documentation/ directory for litmus
+> > > tests?  And shouldn't the patch update a README file?
+> >=20
+> > Agreed, and I responded to that effect to his original patch:
+> >=20
+> > https://lore.kernel.org/bpf/20200522003433.GG2869@paulmck-ThinkPad-P72/
 >=20
->> diff --git a/sysdeps/unix/sysv/linux/rseq-internal.h
->> b/sysdeps/unix/sysv/linux/rseq-internal.h
->> new file mode 100644
->> index 0000000000..6583691285
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/rseq-internal.h
+> Yep, makes sense, I'll will move.
 >=20
->> +#ifdef RSEQ_SIG
->> +static inline void
->> +rseq_register_current_thread (void)
+> >=20
+> > 							Thanx, Paul
+> >=20
 >=20
->> +      if (msg)
->> +        __libc_fatal (msg);
->> +    }
->=20
-> =E2=80=9Cif (msg !=3D NULL)=E2=80=9D, please.
 
-OK
+--XF85m9dhOBO43t/C
+Content-Type: application/pgp-signature; name="signature.asc"
 
->=20
->> +#else
->> +static inline void
->> +rseq_register_current_thread (void)
->> +{
->> +}
->> +#endif
->=20
-> Maybe add /* RSEQ_SIG */ comments to #else/#endif here as well.
+-----BEGIN PGP SIGNATURE-----
 
-OK
+iQEzBAABCAAdFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAl7L2+EACgkQSXnow7UH
++riErgf/Wzb00Sg8hmGkgBVyjxygRexYtRXtEokGPsNEdDv76PThrk72IDghZJfW
+lBbGr8OwiUApz1WipXNWj68D+zakm1jELPtlCw/6zVn7wkpyRCFPeGUrtXjs3YIa
+VWMrwcQv4NZMFsCZ5gql3ORE6sYsRHRy2NuEwdNqhn87xpfbsUEJU4B+EjwsYL2t
+Jx+4VTnlDLs2CEWvMX3RVvcD248guxEyqz8dP9KDAZuIqu7+WU8z54iZ3i5xPusl
+ytaDcK2kji9+AlsPNHmVmrcWOS6jgK9dDGoZ/HMxbFT64x7DGOCWcfXdzk3rmL1W
+GWueVqzLuTDAeQdGMl64XqLmcJPDwQ==
+=Q0lL
+-----END PGP SIGNATURE-----
 
->=20
->> diff --git a/sysdeps/unix/sysv/linux/sys/rseq.h
->> b/sysdeps/unix/sysv/linux/sys/rseq.h
->> new file mode 100644
->> index 0000000000..ea51194bf8
->> --- /dev/null
->> +++ b/sysdeps/unix/sysv/linux/sys/rseq.h
->=20
->> +#ifdef __has_include
->> +# if __has_include ("linux/rseq.h")
->> +#   define __GLIBC_HAVE_KERNEL_RSEQ
->> +# endif
->> +#else
->> +# include <linux/version.h>
->> +# if LINUX_VERSION_CODE >=3D KERNEL_VERSION (4, 18, 0)
->> +#   define __GLIBC_HAVE_KERNEL_RSEQ
->> +# endif
->> +#endif
->=20
-> Too much indentation on the define line, I think.
-
-OK
-
->=20
-> Still missing: #ifdef __ASSEMBLER__.  .S files should be able to include
-> <sys/rseq.h> to get the definition of RSEQ_SIG.  But I think this can be
-> deferred to a follow-up.
-
-Would the plan be to only do the #include <bits/rseq.h> bits in #ifdef
-__ASSEMBLER__ and skip all the rest ?
-
->=20
->> +#ifdef __GLIBC_HAVE_KERNEL_RSEQ
->> +/* We use the structures declarations from the kernel headers.  */
->> +# include <linux/rseq.h>
->> +#else
->> +/* We use a copy of the include/uapi/linux/rseq.h kernel header.  */
->=20
-> This comment is not true, the kernel headers do not have uptr support.
->=20
-> If we revert the uptr change, we also need to update the manual, I
-> think.
-
-Ah, I get to your uptr concern now! Good :)
-
-The larger question here is: considering that we re-implement the entire
-uapi header within glibc (which includes the uptr addition), do we still
-care about using the header provided by the Linux kernel ?
-
-Having different definitions depending on whether a kernel header is
-installed or not when including a glibc header seems rather unexpected.
-
-*If* we want to use the uapi header, I think something is semantically
-missing. Here is the scheme I envision. We could rely on the kernel header
-version.h to figure out which of glibc or kernel uapi header is more
-recent. Any new concept we try to integrate into glibc (e.g. uptr)
-should go into the upstream Linux uapi header first.
-
-For the coming glibc e.g. 2.32, we use the kernel uapi header if
-kernel version is >=3D 4.18.0. Within glibc, the fallback implements
-exactly the API exposed by the kernel rseq.h header.
-
-As we eventually introduce the uptr change into the Linux kernel, and
-say it gets merged for Linux 5.9.0, we mirror this change into glibc
-(e.g. release 2.33), and bump the Linux kernel version cutoff to 5.9.0.
-So starting from that version, we use the Linux kernel header only if
-version >=3D 5.9.0, else we fallback on glibc's own implementation.
-
-This is clearly something we need to get right.
-
->=20
->> +/* Ensure the compiler supports __attribute__ ((aligned)).  */
->> +_Static_assert (__alignof__ (struct rseq_cs) >=3D 32, "alignment");
->> +_Static_assert (__alignof__ (struct rseq) >=3D 32, "alignment");
->=20
-> This needs #ifndef __cplusplus or something like that.  I'm surprised
-> that this passes the installed header tests.
-
-Would the following be ok ?
-
-#ifdef __cplusplus
-#define rseq_static_assert      static_assert
-#else
-#define rseq_static_assert      _Static_assert
-#endif
-
-/* Ensure the compiler supports __attribute__ ((aligned)).  */
-rseq_static_assert (__alignof__ (struct rseq_cs) >=3D 32, "alignment");
-rseq_static_assert (__alignof__ (struct rseq) >=3D 32, "alignment");
-
->=20
->> +/* Allocations of struct rseq and struct rseq_cs on the heap need to
->> +   be aligned on 32 bytes.  Therefore, use of malloc is discouraged
->> +   because it does not guarantee alignment.  posix_memalign should be
->> +   used instead.  */
->> +
->> +extern __thread struct rseq __rseq_abi
->> +  __attribute__ ((tls_model ("initial-exec")));
->=20
-> Should be __tls_model__.
-
-OK
-
->=20
-> We're getting really close now. 8-)
-
-Great!
-
-Thanks for the feedback!
-
-Mathieu
-
->=20
-> Thanks,
-> Florian
-
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+--XF85m9dhOBO43t/C--
