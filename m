@@ -2,133 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4624C1E0951
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A963A1E0954
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389305AbgEYIso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 04:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388342AbgEYIsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 04:48:42 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ACDC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:48:41 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id e7so9550049vsm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GeODa0YbiTjbooy9JHHC15ZmQa3mj5lyrBd83ZZUO4Y=;
-        b=h2w1oTn2afNYUAiEwaZkklboJKWXBctne83Cc9a9u+fdFQSeX+39nRiBV1k+paJgkg
-         OGpSXepJMqTiWYil+kmALPik7Qhs2kcryCnAHY/5u7nC8u8U2bG98H0wLoVZyWjOWQoR
-         ii6CgGNDtNG2SpInmFkEUL0ZpHiGrElshtenbPJA0izbisyK7lizeg7jwP3NgC5qP75U
-         vac7nz/vxymHuFoQtN+I5Yn9MDUCPClEn079BXVx83LomJXi5G8RlyF6ZjLtgIDq+MkP
-         aoQIykw/OQvXg9pgx6DJ0AjdYUyDyDUu/841HkIxdohjtDZj7+jgX2qxfybe5Hc1/aaL
-         RHDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GeODa0YbiTjbooy9JHHC15ZmQa3mj5lyrBd83ZZUO4Y=;
-        b=TxDrsrK4ox685BrdxDh2pWxlahA+y4sfgn1GIfGILRjoBWvEe1t6rCDpds2Qwb/pM6
-         BkeEe995mTM9jpZtfjGwl/4m7aYC7g43OhrD4QMIzCqgLNxO1RokEdoe+kw54O1sGQL8
-         DBrYCw76HXdObH65a39NShTB6Zy4SYUTdtMuZyzvcTaYasIaZpjcTFiBwdF5U3oa7+D8
-         59eA24hI/lQ69UTKktVNcaTGM5vkJjcT3GqRx+7BWTpC9HtP85tT4QcrtOMI4eS0BNZb
-         oYdXMij9mBWuvYwb81hXGnP2XLD4bMUE6RLnS13gDZc6NyZJFyf04fJKUeuikYyoTbbs
-         kyKQ==
-X-Gm-Message-State: AOAM530ryIdsRyPyUBOLJI9S+kWLMvPCIBj/lAemiIDSKBC3fJyBFhhI
-        LxpcItpyFuIsjYH1bVr40PAWoS3ubYI/IsdGbB/Apw==
-X-Google-Smtp-Source: ABdhPJwCcH4pYSZrf2SKmkEOCli6MSxdBz6f7xVXY4gZ5TdGNjJ0pX2ecAHPY0hqztpn3/kyrwxrYrPLPmlnUmgnX6Y=
-X-Received: by 2002:a67:2441:: with SMTP id k62mr3914343vsk.165.1590396520572;
- Mon, 25 May 2020 01:48:40 -0700 (PDT)
+        id S2389317AbgEYItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 04:49:21 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:50680 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388182AbgEYItU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 04:49:20 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Mon, 25 May 2020 16:48:47
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.77.158]
+Date:   Mon, 25 May 2020 16:48:47 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Peter Ujfalusi" <peter.ujfalusi@ti.com>
+Cc:     kjlu@umn.edu, "Jarkko Nikula" <jarkko.nikula@bitmer.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        "Mark Brown" <broonie@kernel.org>,
+        "Jaroslav Kysela" <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] ASoC: ti: Fix runtime PM imbalance in
+ omap2_mcbsp_set_clks_src
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <16f653b3-2a36-7b2c-60be-73d550e47774@ti.com>
+References: <20200525072209.6935-1-dinghao.liu@zju.edu.cn>
+ <16f653b3-2a36-7b2c-60be-73d550e47774@ti.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <HKAPR02MB429107D62F3E9F86E76AD550E0B40@HKAPR02MB4291.apcprd02.prod.outlook.com>
-In-Reply-To: <HKAPR02MB429107D62F3E9F86E76AD550E0B40@HKAPR02MB4291.apcprd02.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 25 May 2020 10:48:04 +0200
-Message-ID: <CAPDyKFqDveZ0+eh3QeXGr6gvek5YTr1chvinZN1twPT5uu7=4w@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: fix use-after-free issue
-To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-Cc:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <46a95b71.c7abd.1724b0524b8.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgDn7wdvhster6sEAA--.1278W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgEJBlZdtORShQA2s2
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbtIS07vEb7Iv0x
+        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
+        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
+        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
+        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
+        JwCS07vEFIxGxcIEc7CjxVA2Y2ka0xkIwI1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r
+        43MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS
+        07vE4x8a6x804xWlV2xY6xC20s026xCaFVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14
+        v26r1j6r18MIAIbVC20s026x8GjcxK67AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWU
+        tVW8ZwCS07vEIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIAIbVCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lV2xY6IIF0xvE
+        x4A2jsIE14v26r1j6r4UMIAIbVCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73U
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 May 2020 at 11:29, =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@opp=
-o.com> wrote:
->
->  The data structure member =E2=80=9Crpmb->md=E2=80=9D was passed to a cal=
-l of
->  the function =E2=80=9Cmmc_blk_put=E2=80=9D after a call of the function =
-=E2=80=9Cput_device=E2=80=9D.
->  Reorder these function calls to keep the data accesses consistent.
->
-> Fixes: 1c87f7357849 ("mmc: block: Fix bug when removing RPMB chardev ")
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
-
-I downloaded the patch from patchwork, but it seems like it got
-mangled somehow. Perhaps you can try to download it from patchwork and
-run checkpatch on it to see if it works for you? Otherwise the problem
-may be at my side.
-
-In any case, I manually fixed it up this time. So, applied for fixes
-and by adding a stable tag, thanks!
-
-Kind regards
-Uffe
-
-
-
-> ---
->  drivers/mmc/core/block.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8499b56..e6e025c 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2483,8 +2483,8 @@ static int mmc_rpmb_chrdev_release(struct inode *in=
-ode, struct file *filp)
->  struct mmc_rpmb_data *rpmb =3D container_of(inode->i_cdev,
->    struct mmc_rpmb_data, chrdev);
->
-> -put_device(&rpmb->dev);
->  mmc_blk_put(rpmb->md);
-> +put_device(&rpmb->dev);
->
->  return 0;
->  }
-> --
-> 2.7.4
-> ________________________________
-> OPPO
->
-> =E6=9C=AC=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=
-=E4=BB=B6=E5=90=AB=E6=9C=89OPPO=E5=85=AC=E5=8F=B8=E7=9A=84=E4=BF=9D=E5=AF=
-=86=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E9=99=90=E4=BA=8E=E9=82=AE=E4=BB=B6=
-=E6=8C=87=E6=98=8E=E7=9A=84=E6=94=B6=E4=BB=B6=E4=BA=BA=E4=BD=BF=E7=94=A8=EF=
-=BC=88=E5=8C=85=E5=90=AB=E4=B8=AA=E4=BA=BA=E5=8F=8A=E7=BE=A4=E7=BB=84=EF=BC=
-=89=E3=80=82=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E4=BA=BA=E5=9C=A8=E6=9C=AA=
-=E7=BB=8F=E6=8E=88=E6=9D=83=E7=9A=84=E6=83=85=E5=86=B5=E4=B8=8B=E4=BB=A5=E4=
-=BB=BB=E4=BD=95=E5=BD=A2=E5=BC=8F=E4=BD=BF=E7=94=A8=E3=80=82=E5=A6=82=E6=9E=
-=9C=E6=82=A8=E9=94=99=E6=94=B6=E4=BA=86=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=
-=E8=AF=B7=E7=AB=8B=E5=8D=B3=E4=BB=A5=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E9=
-=80=9A=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=B9=B6=E5=88=A0=E9=99=A4=E6=9C=
-=AC=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E3=80=82
->
-> This e-mail and its attachments contain confidential information from OPP=
-O, which is intended only for the person or entity whose address is listed =
-above. Any use of the information contained herein in any way (including, b=
-ut not limited to, total or partial disclosure, reproduction, or disseminat=
-ion) by persons other than the intended recipient(s) is prohibited. If you =
-receive this e-mail in error, please notify the sender by phone or email im=
-mediately and delete it!
+Cj4gCj4gCj4gT24gMjUvMDUvMjAyMCAxMC4yMiwgRGluZ2hhbyBMaXUgd3JvdGU6Cj4gPiBXaGVu
+IGNsa19zZXRfcGFyZW50KCkgcmV0dXJucyBhbiBlcnJvciBjb2RlLCBhIHBhaXJpbmcKPiA+IHJ1
+bnRpbWUgUE0gdXNhZ2UgY291bnRlciBpbmNyZW1lbnQgaXMgbmVlZGVkIHRvIGtlZXAgdGhlCj4g
+PiBjb3VudGVyIGJhbGFuY2VkLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5naGFvIExpdSA8
+ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIHNvdW5kL3NvYy90aS9vbWFwLW1j
+YnNwLmMgfCAxICsKPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiA+IAo+ID4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90aS9vbWFwLW1jYnNwLmMgYi9zb3VuZC9zb2MvdGkvb21h
+cC1tY2JzcC5jCj4gPiBpbmRleCAzZDQxY2EyMjM4ZDQuLjg0YjRkZTliNjcwYyAxMDA2NDQKPiA+
+IC0tLSBhL3NvdW5kL3NvYy90aS9vbWFwLW1jYnNwLmMKPiA+ICsrKyBiL3NvdW5kL3NvYy90aS9v
+bWFwLW1jYnNwLmMKPiA+IEBAIC04MCw2ICs4MCw3IEBAIHN0YXRpYyBpbnQgb21hcDJfbWNic3Bf
+c2V0X2Nsa3Nfc3JjKHN0cnVjdCBvbWFwX21jYnNwICptY2JzcCwgdTggZmNrX3NyY19pZCkKPiA+
+ICAJaWYgKHIpIHsKPiA+ICAJCWRldl9lcnIobWNic3AtPmRldiwgIkNMS1M6IGNvdWxkIG5vdCBj
+bGtfc2V0X3BhcmVudCgpIHRvICVzXG4iLAo+ID4gIAkJCXNyYyk7Cj4gPiArCQlwbV9ydW50aW1l
+X2dldF9zeW5jKG1jYnNwLT5kZXYpOwo+IAo+ID4gIAkJY2xrX3B1dChmY2tfc3JjKTsKPiA+ICAJ
+CXJldHVybiByOwo+ID4gIAl9Cj4gCj4gSSB0aGluayBpdCB3b3VsZCBiZSBjbGVhbmVyIGluIHRo
+aXMgd2F5Ogo+IAo+IHBtX3J1bnRpbWVfcHV0X3N5bmMobWNic3AtPmRldik7Cj4gCj4gciA9IGNs
+a19zZXRfcGFyZW50KG1jYnNwLT5mY2xrLCBmY2tfc3JjKTsKPiBpZiAocikKPiAJZGV2X2Vyciht
+Y2JzcC0+ZGV2LCAiQ0xLUzogY291bGQgbm90IGNsa19zZXRfcGFyZW50KCkgdG8gJXNcbiIsCj4g
+CQlzcmMpOwo+IAo+IHBtX3J1bnRpbWVfZ2V0X3N5bmMobWNic3AtPmRldik7Cj4gY2xrX3B1dChm
+Y2tfc3JjKTsKPiAKPiByZXR1cm4gcjsKPiAKPiAtIFDDqXRlcgo+IAo+IFRleGFzIEluc3RydW1l
+bnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtpLgo+IFktdHVu
+bnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtp
+CgpUaGFuayB5b3UgZm9yIHlvdXIgYWR2aWNlISBUaGlzIGlzIGJldHRlciBhbmQgSSB3aWxsIGZp
+eCB0aGlzCmluIHRoZSBuZXh0IHZlcnNpb24gb2YgcGF0Y2guCgpSZWdhcmRzLApEaW5naGFv
