@@ -2,124 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4140E1E118F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E222B1E11A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404109AbgEYPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 11:22:17 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:46301 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404004AbgEYPWQ (ORCPT
+        id S2404128AbgEYPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 11:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404016AbgEYPYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 11:22:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590420135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3TJhizQZw710Ykbd4e66mhSmTv6uHiaL8SGhqXCINH4=;
-        b=UY3ORXiqOGsLo6vSKXtCAFswteIAA8F94Rz//CV/57i0Caz7Y1USkhgMVa00kHZLWi3iY/
-        n4I3fBooRsI7W2m0Jb1MXrH5DGCU+Lm48lRWIX9BBOgSrr6OPSF66ZV/ssZGNF73vj0AxA
-        NrIiOAVYPp/F68aB5pex/z6PFbEkzhs=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-mcjKydEXN6SnVWXLEC5ICQ-1; Mon, 25 May 2020 11:22:13 -0400
-X-MC-Unique: mcjKydEXN6SnVWXLEC5ICQ-1
-Received: by mail-ej1-f69.google.com with SMTP id lk22so6451987ejb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 08:22:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=3TJhizQZw710Ykbd4e66mhSmTv6uHiaL8SGhqXCINH4=;
-        b=kbtaawptgxr8JcFEEXhIj+ujCUCs+Tt8DL2a74SGXiXR1jGZWZOf2ryU2Tw2A1zg94
-         mYuVEM/i2jdd29nFSbPEGQizZgHNvHHpUGt8E5kkI8ehusQN4oGmg7SRfPT/13x3wKos
-         uarB3jF18KRsoL74xo+D4Oh9ZlfdTxmvLPlaH8tIo1NVCxQcWmNXKYrYnIQnyOSf4PR/
-         IHYz5gHeNr/laFywyv8HAfaoPyos4sSoJLzz5YguCPbEYd1FVZuyG0B68G5/c5NNHQ/i
-         5hyjTE7wRooCwR4uZmGZFAfPmsX0lfzh3Q5RDICLIoRY/JH6g+z2b+ySdgKP/LZEfFDA
-         fmVw==
-X-Gm-Message-State: AOAM532mjXheTQSD7yxODHaj7PQQVg+V4g7NX243X83V/v1BYdcG7g6y
-        uVIK1Ow03rEzoUVgprvftENq4r69aO5maLtkxc3mzQRSeZW5nNlUJ+vdlIdp6sraHeTUKoNibsK
-        /c+8C+9IFwNqjwjhLZHkvoX0Z
-X-Received: by 2002:a17:907:392:: with SMTP id ss18mr20203737ejb.156.1590420132121;
-        Mon, 25 May 2020 08:22:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHlp16CRg1vF1duz4SE4yZIQh96KMOz7B1Iv5p6TQx/Ia7dapZMBxC7JxsIRul4uyMhi9igw==
-X-Received: by 2002:a17:907:392:: with SMTP id ss18mr20203709ejb.156.1590420131831;
-        Mon, 25 May 2020 08:22:11 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id cd12sm16045340ejb.95.2020.05.25.08.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 08:22:11 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen\, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFC 13/16] x86/kvmclock: Share hvclock memory with the host
-In-Reply-To: <20200522125214.31348-14-kirill.shutemov@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com> <20200522125214.31348-14-kirill.shutemov@linux.intel.com>
-Date:   Mon, 25 May 2020 17:22:10 +0200
-Message-ID: <875zck82fx.fsf@vitty.brq.redhat.com>
+        Mon, 25 May 2020 11:24:10 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FBAC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 08:24:10 -0700 (PDT)
+Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <a.darwish@linutronix.de>)
+        id 1jdExO-0002aw-LB; Mon, 25 May 2020 17:24:02 +0200
+Date:   Mon, 25 May 2020 17:24:01 +0200
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 02/25] mm/swap: Don't abuse the seqcount latching API
+Message-ID: <20200525152401.GA375786@debian-buster-darwi.lab.linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-3-a.darwish@linutronix.de>
+ <20200522145707.GO325280@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522145707.GO325280@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Kirill A. Shutemov" <kirill@shutemov.name> writes:
-
-> hvclock is shared between the guest and the hypervisor. It has to be
-> accessible by host.
+Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, May 19, 2020 at 11:45:24PM +0200, Ahmed S. Darwish wrote:
+> > @@ -713,10 +713,20 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
+> >   */
+> >  void lru_add_drain_all(void)
+> >  {
 >
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  arch/x86/kernel/kvmclock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Re-adding cut-out comment for context:
+
+	/*
+	 * lru_drain_gen - Current generation of pages that could be in vectors
+	 *
+	 * (A) Definition: lru_drain_gen = x implies that all generations
+	 *     0 < n <= x are already scheduled for draining.
+	 *
+	 * This is an optimization for the highly-contended use case where a
+	 * user space workload keeps constantly generating a flow of pages
+	 * for each CPU.
+	 */
+> > +	static unsigned int lru_drain_gen;
+> >  	static struct cpumask has_work;
+> > +	static DEFINE_MUTEX(lock);
+> > +	int cpu, this_gen;
+> >
+> >  	/*
+> >  	 * Make sure nobody triggers this path before mm_percpu_wq is fully
+> > @@ -725,21 +735,48 @@ void lru_add_drain_all(void)
+> >  	if (WARN_ON(!mm_percpu_wq))
+> >  		return;
+> >
 >
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index 34b18f6eeb2c..ac6c2abe0d0f 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -253,7 +253,7 @@ static void __init kvmclock_init_mem(void)
->  	 * hvclock is shared between the guest and the hypervisor, must
->  	 * be mapped decrypted.
->  	 */
-> -	if (sev_active()) {
-> +	if (sev_active() || kvm_mem_protected()) {
->  		r = set_memory_decrypted((unsigned long) hvclock_mem,
->  					 1UL << order);
->  		if (r) {
 
-Sorry if I missed something but we have other structures which KVM guest
-share with the host,
+Re-adding cut-out comment for context:
 
-sev_map_percpu_data():
-...
-	for_each_possible_cpu(cpu) {
-		__set_percpu_decrypted(&per_cpu(apf_reason, cpu), sizeof(apf_reason));
-		__set_percpu_decrypted(&per_cpu(steal_time, cpu), sizeof(steal_time));
-		__set_percpu_decrypted(&per_cpu(kvm_apic_eoi, cpu), sizeof(kvm_apic_eoi));
-	}
-...
+	/*
+	 * (B) Cache the LRU draining generation number
+	 *
+	 * smp_rmb() ensures that the counter is loaded before the mutex is
+	 * taken. It pairs with the smp_wmb() inside the mutex critical section
+	 * at (D).
+	 */
+> > +	this_gen = READ_ONCE(lru_drain_gen);
+> > +	smp_rmb();
+>
+> 	this_gen = smp_load_acquire(&lru_drain_gen);
 
-Do you handle them somehow in the patchset? (I'm probably just blind
-failing to see how 'early_set_memory_decrypted()' is wired up)
+ACK. will do.
 
--- 
-Vitaly
+> >
+> >  	mutex_lock(&lock);
+> >
+> >  	/*
+> > +	 * (C) Exit the draining operation if a newer generation, from another
+> > +	 * lru_add_drain_all(), was already scheduled for draining. Check (A).
+> >  	 */
+> > +	if (unlikely(this_gen != lru_drain_gen))
+> >  		goto done;
+> >
+>
 
+Re-adding cut-out comment for context:
+
+	/*
+	 * (D) Increment generation number
+	 *
+	 * Pairs with READ_ONCE() and smp_rmb() at (B), outside of the critical
+	 * section.
+	 *
+	 * This pairing must be done here, before the for_each_online_cpu loop
+	 * below which drains the page vectors.
+	 *
+	 * Let x, y, and z represent some system CPU numbers, where x < y < z.
+	 * Assume CPU #z is is in the middle of the for_each_online_cpu loop
+	 * below and has already reached CPU #y's per-cpu data. CPU #x comes
+	 * along, adds some pages to its per-cpu vectors, then calls
+	 * lru_add_drain_all().
+	 *
+	 * If the paired smp_wmb() below is done at any later step, e.g. after
+	 * the loop, CPU #x will just exit at (C) and miss flushing out all of
+	 * its added pages.
+	 */
+> > +	WRITE_ONCE(lru_drain_gen, lru_drain_gen + 1);
+> > +	smp_wmb();
+>
+> You can leave this smp_wmb() out and rely on the smp_mb() implied by
+> queue_work_on()'s test_and_set_bit().
+>
+
+Won't this be too implicit?
+
+Isn't it possible that, over the years, queue_work_on() impementation
+changes and the test_and_set_bit()/smp_mb() gets removed?
+
+If that happens, this commit will get *silently* broken and the local
+CPU pages won't be drained.
+
+> >  	cpumask_clear(&has_work);
+> > -
+> >  	for_each_online_cpu(cpu) {
+> >  		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
+> >
+>
+> While you're here, do:
+>
+> 	s/cpumask_set_cpu/__&/
+>
+
+ACK.
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
