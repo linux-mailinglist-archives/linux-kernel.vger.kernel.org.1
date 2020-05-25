@@ -2,111 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53BA1E14BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323E91E14B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390082AbgEYTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 15:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389460AbgEYTZ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 15:25:27 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7F1C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 12:25:25 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 124so2783623pgi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 12:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ty7oeziIm2YrFAkvwgMsB4GG1xlQWBPE2UTLhS7CAnU=;
-        b=j5oD//7+3S2G7OrkW+qjZkFSLljGWPAm5j9P92qKeXfxVFczGg4+rPIIzSH82z0q1h
-         XCyutMuFqFAIHasaRmZCs86zOPK9hV2o3Yto+RkAUO2ozL+y2WjRvgOdBOUq61ojxRv0
-         8xSkKSIn8PTWrRqdsl0EPMlBWHD2KWWY6kkhuB2HIADDYciRn08uVu7GYLHcaepsVmrX
-         +bAbdvxF7RsezU0EVnzPJrzXwHEWORmFmVdKQD74Jd4BfAcFY1HhQdPJF/M/bmjF1T/+
-         +cV4DGO5/K33Xqj5LnSQV7aw6Z/6RC8nYMreau5lq/67WA9Or7YetFhMNO5QlQQxU3z6
-         aCHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ty7oeziIm2YrFAkvwgMsB4GG1xlQWBPE2UTLhS7CAnU=;
-        b=rFqNueRrX6r4Rkdj0aHqBuVJWezuHBwAh89DOgO6YvZMW3BoyqDR/ANSrkGF/wPi08
-         pQb+amb6t6N/HFGNomow6zby9V52fwocyl/OxfFAUOErTNxK1Ga9X6NUlfZKw9Uujf2V
-         CSdueZHPbI6XNWHq5bgYbGdoGMlr2f7DeG7pgPSgBQk88gCtiZm86SdAb+qAOOblO7O4
-         IDbVTj/I6ybQEA+KfIZoPGmrFb8wUTQd9zafaHaDLLibKvIcyNa46gnkXOr3UlzPa23s
-         kyqZ7pFBz9c9CByvWdKC8AJj5b4btPpe3Oi9237UzJajsGJKWMMG1TyZpE31umsaRnew
-         rSUg==
-X-Gm-Message-State: AOAM533PdsSguRWskI1WC0Wi+a7/lb+LCYk3E2jqodn0YgiK+ugMEgep
-        aYallb6fG5N6ZNz856UymXXhTA==
-X-Google-Smtp-Source: ABdhPJyJSxde7i/uiDMJNzbAGs8+fWbMntU+2mEg84/gvbJiJIXBrJyE/gr0K7b+Idfqad0ULJo7Rg==
-X-Received: by 2002:a63:ef03:: with SMTP id u3mr27578655pgh.254.1590434725171;
-        Mon, 25 May 2020 12:25:25 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:3c00:cb1c:41a3:c8d? ([2605:e000:100e:8c61:3c00:cb1c:41a3:c8d])
-        by smtp.gmail.com with ESMTPSA id e16sm11961151pgg.8.2020.05.25.12.25.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 12:25:24 -0700 (PDT)
-Subject: Re: io_uring: BUG: kernel NULL pointer dereference
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Stefano Garzarella <sgarzare@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>
-References: <20200525103051.lztpbl33hsgv6grz@steredhat>
- <20200525134552.5dyldwmeks3t6vj6@steredhat>
- <b1689238-b236-cc93-9909-c09120e7975c@kernel.dk>
- <20200525192143.GG317569@hirez.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c9bba09b-8af7-1aea-8c09-645925c972cf@kernel.dk>
-Date:   Mon, 25 May 2020 13:25:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390024AbgEYTVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 15:21:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389460AbgEYTVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 15:21:15 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 227472070A;
+        Mon, 25 May 2020 19:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590434475;
+        bh=dOetpQWCFCq4GaGnPj9d7Xjvd6fSObj/WCvcJX9OwdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TK7NAFbFyM5EDaOkX8cTCfDbbRG+Y5iBXKvEfZGm+DTQYM0pdGKFREkAY57zOaPXP
+         EO8/UM/M1vNW31VsLqVeTGV4cWYXq/7dE1DQBcAHQ47CMYJDDnC5hVAIDAHkXHinbB
+         V9yZt7akxzGPgULyuuTxRnWjlVgYy+pmL856dgqA=
+Date:   Mon, 25 May 2020 14:26:09 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH] m68k: tools: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200525192609.GC9247@embeddedor>
+References: <20200521185707.GA3661@embeddedor>
+ <CAMuHMdUGPMrPTqypGpnhe2wdpnbtUOsdUacnrHAapBM_996F5A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200525192143.GG317569@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUGPMrPTqypGpnhe2wdpnbtUOsdUacnrHAapBM_996F5A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/20 1:21 PM, Peter Zijlstra wrote:
-> On Mon, May 25, 2020 at 08:10:27AM -0600, Jens Axboe wrote:
->> I think the odd part here is that task_tick_numa() checks for a
->> valid mm, and queues work if the task has it. But for the sqpoll
->> kthread, the mm can come and go. By the time the task work is run,
->> the mm is gone and we oops on current->mm == NULL.
->>
->> I think the below should fix it:
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 538ba5d94e99..24a8557f001f 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -2908,7 +2908,8 @@ static void task_tick_numa(struct rq *rq, struct task_struct *curr)
->>  	/*
->>  	 * We don't care about NUMA placement if we don't have memory.
->>  	 */
->> -	if (!curr->mm || (curr->flags & PF_EXITING) || work->next != work)
->> +	if (!curr->mm || (curr->flags & (PF_EXITING | PF_KTHREAD)) ||
->> +	    work->next != work)
->>  		return;
+On Mon, May 25, 2020 at 10:49:02AM +0200, Geert Uytterhoeven wrote:
+> >
+> > [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> > [2] https://github.com/KSPP/linux/issues/21
+> > [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> >
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> Ah, I think that's one more instance of '!p->mm' != is_kthread(). A
-> while ago someone went and cleaned a bunch of them up. Clearly this one
-> was missed.
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue in the m68k for-v5.8 branch.
 > 
-> I'm thinking just:
-> 
-> 	if ((curr->flags & (PF_EXITING | PF_KTHREAD)) || work->next != work)
-> 
-> should be enough.
 
-Yeah it should, no point in checking both ->mm == NULL and PF_KTHREAD.
+Thanks, Geert.
 
--- 
-Jens Axboe
-
+--
+Gustavo
