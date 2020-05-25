@@ -2,119 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977B41E09FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F3E1E0A0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389482AbgEYJRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:17:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389454AbgEYJRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:17:21 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01ED020787;
-        Mon, 25 May 2020 09:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590398241;
-        bh=dvoIblhrB6r6q1w4YgHnKBzB3u8MDjy2EHOsa4SWZok=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tXnRIYphXASv22/CWUBMA4CPRNsDbUMhgCnKjxTTC6dq9DDNazs1+GztuGsokQpEJ
-         72QM5aF0JoA15SMnoO0AX6SPOL6GCj0SXNeERYxlYPaPRT7hQ4f+IaxJUF+lIYihOX
-         pyq7Ce4X2AFg/w1e44/Sm5YB7VXDDhAc7W7i/lfo=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jd9EU-00F730-Ux; Mon, 25 May 2020 10:17:19 +0100
+        id S2389533AbgEYJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389522AbgEYJRg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 05:17:36 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3917C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:35 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id v16so19997385ljc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kO5vtDW6efTPWMJdT/IeulhOhr/Shn99sWBgLzctM/I=;
+        b=WnOIkPx9Iho6akm/1otb3bzxcZJDFFWZUf0ZjYnagW3G3rEtAz/XI2cTG4Lmrs+lh/
+         uBwn9VGTsCsRHjRxCmEv60TCrrlcOA5JJI3AxviDtqbJ3irKCEL0R27GEnM9uT5hV38f
+         bPQ3nYPD42R4MAlowsgym120v3L/+zSTn1//Guj0XdlwR8QbIwlCJmsXHhkQh3Uh1OzL
+         VFM4s9fjlUaOnjMt6dmVpCM0WDEvzScRcDxUFsq64+kCzT/z0p3pbp+kTWGfnh5Hzh2u
+         i5YHaWguB7kt6FD5BQKe5mirOW+yxm8TZl3lHm3vNw3ouA1OOyDp8ZET5jiVHRtjO2oz
+         luhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kO5vtDW6efTPWMJdT/IeulhOhr/Shn99sWBgLzctM/I=;
+        b=ZDgOizAwpcqYb76VPxz0zVPLRrgpZ1N57Nz4FPg+8aCb1gLTm6/qJb6Jr7FH2TtsxI
+         8vaarAyW6q5SpnDjJXdkpYvgvfG0lDNdy/AZ7EB9uf7//eYq1uVmdjsVLBgeTaGEDOwy
+         9CTK9o/Gn5BEZcrgjP6k600Q0Cneau9DuQnrp+vKKDXi+qjygLMeIhAh1DQpEx/NuZoK
+         l7tFPNlTaOb1A1G/5CWPuwwaJ6UjiYt0rvUkwcU9SP8lWl15f65G3iQyIA+YmH1SkILU
+         b3cjkodLhwe/Y8SBSFOIe1IwOS3iyV1wTtRUUuaS+78WjbO3njlha4ER7ZxfedxHC3sW
+         NaOg==
+X-Gm-Message-State: AOAM531Ve2d3zfAEnnZefcY+BILZ6VIK9OD/GPXHatQZAmuukMxuLbX/
+        Yasv9PVP0axTKffYHDfA2OEEecvocU5RF27jcp+5mg==
+X-Google-Smtp-Source: ABdhPJwFBs5dI5yirBLSFwiXWY52PiIXgZlGCLWwULeUThanyG8/0gUHFgUFcCvEjDwM9cabi1NMWxCRZgAoHBkp9KM=
+X-Received: by 2002:a05:651c:32d:: with SMTP id b13mr2970920ljp.283.1590398254315;
+ Mon, 25 May 2020 02:17:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 25 May 2020 10:17:18 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Jianyong Wu <jianyong.wu@arm.com>
-Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, Mark.Rutland@arm.com,
-        will@kernel.org, suzuki.poulose@arm.com, steven.price@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, Kaly.Xin@arm.com, justin.he@arm.com,
-        Wei.Chen@arm.com, nd@arm.com
-Subject: Re: [RFC PATCH v12 10/11] arm64: add mechanism to let user choose
- which counter to return
-In-Reply-To: <20200524021106.GC335@localhost>
-References: <20200522083724.38182-1-jianyong.wu@arm.com>
- <20200522083724.38182-11-jianyong.wu@arm.com>
- <20200524021106.GC335@localhost>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <306951e4945b9e486dc98818ba24466d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: richardcochran@gmail.com, jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, Kaly.Xin@arm.com, justin.he@arm.com, Wei.Chen@arm.com, nd@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200520032150.165388-1-weiyongjun1@huawei.com>
+In-Reply-To: <20200520032150.165388-1-weiyongjun1@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 May 2020 11:17:23 +0200
+Message-ID: <CACRpkdYXmziVfd0ZDTq_3ReCdcw9cWPXXD1H9jfxvLiE=7EDDA@mail.gmail.com>
+Subject: Re: [PATCH -next] bus: arm-integrator-lm: Fix return value check in integrator_ap_lm_probe()
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-24 03:11, Richard Cochran wrote:
-> On Fri, May 22, 2020 at 04:37:23PM +0800, Jianyong Wu wrote:
->> In general, vm inside will use virtual counter compered with host use
->> phyical counter. But in some special scenarios, like nested
->> virtualization, phyical counter maybe used by vm. A interface added in
->> ptp_kvm driver to offer a mechanism to let user choose which counter
->> should be return from host.
-> 
-> Sounds like you have two time sources, one for normal guest, and one
-> for nested.  Why not simply offer the correct one to user space
-> automatically?  If that cannot be done, then just offer two PHC
-> devices with descriptive names.
+Hi Wei,
 
-There is no such thing as a distinction between nested or non-nested.
-Both counters are available to the guest at all times, and said guest
-can choose whichever it wants to use. So the hypervisor (KVM) has to
-support both counters as a reference.
+On Wed, May 20, 2020 at 5:18 AM Wei Yongjun <weiyongjun1@huawei.com> wrote:
 
-For a Linux guest, we always know which reference we're using (the
-virtual counter). So it is pointless to expose the choice to userspace
-at all.
+> In case of error, the function of_find_matching_node() returns NULL
+> pointer not ERR_PTR(). The IS_ERR() test in the return value check
+> should be replaced with NULL test.
+>
+> Fixes: ccea5e8a5918 ("bus: Add driver for Integrator/AP logic modules")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-> 
->> diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
->> index fef72f29f3c8..8b0a7b328bcd 100644
->> --- a/drivers/ptp/ptp_chardev.c
->> +++ b/drivers/ptp/ptp_chardev.c
->> @@ -123,6 +123,9 @@ long ptp_ioctl(struct posix_clock *pc, unsigned 
->> int cmd, unsigned long arg)
->>  	struct timespec64 ts;
->>  	int enable, err = 0;
->> 
->> +#ifdef CONFIG_ARM64
->> +	static long flag;
-> 
-> static?  This is not going to fly.
-> 
->> +		 * In most cases, we just need virtual counter from host and
->> +		 * there is limited scenario using this to get physical counter
->> +		 * in guest.
->> +		 * Be careful to use this as there is no way to set it back
->> +		 * unless you reinstall the module.
-> 
-> How on earth is the user supposed to know this?
-> 
-> From your description, this "flag" really should be a module
-> parameter.
+I applied this and signed it off and sent it over to the ARM SoC
+maintainers.
 
-Not even that. If anything, the driver can obtain full knowledge of 
-which
-counter is in use without any help. And the hard truth is that it is
-*always* the virtual counter as far as Linux is concerned.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Yours,
+Linus Walleij
