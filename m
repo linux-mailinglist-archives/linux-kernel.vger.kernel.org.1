@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F3E1E0A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D6C1E0A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389533AbgEYJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S2389322AbgEYJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389522AbgEYJRg (ORCPT
+        with ESMTP id S1725809AbgEYJSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:17:36 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3917C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:35 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id v16so19997385ljc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kO5vtDW6efTPWMJdT/IeulhOhr/Shn99sWBgLzctM/I=;
-        b=WnOIkPx9Iho6akm/1otb3bzxcZJDFFWZUf0ZjYnagW3G3rEtAz/XI2cTG4Lmrs+lh/
-         uBwn9VGTsCsRHjRxCmEv60TCrrlcOA5JJI3AxviDtqbJ3irKCEL0R27GEnM9uT5hV38f
-         bPQ3nYPD42R4MAlowsgym120v3L/+zSTn1//Guj0XdlwR8QbIwlCJmsXHhkQh3Uh1OzL
-         VFM4s9fjlUaOnjMt6dmVpCM0WDEvzScRcDxUFsq64+kCzT/z0p3pbp+kTWGfnh5Hzh2u
-         i5YHaWguB7kt6FD5BQKe5mirOW+yxm8TZl3lHm3vNw3ouA1OOyDp8ZET5jiVHRtjO2oz
-         luhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kO5vtDW6efTPWMJdT/IeulhOhr/Shn99sWBgLzctM/I=;
-        b=ZDgOizAwpcqYb76VPxz0zVPLRrgpZ1N57Nz4FPg+8aCb1gLTm6/qJb6Jr7FH2TtsxI
-         8vaarAyW6q5SpnDjJXdkpYvgvfG0lDNdy/AZ7EB9uf7//eYq1uVmdjsVLBgeTaGEDOwy
-         9CTK9o/Gn5BEZcrgjP6k600Q0Cneau9DuQnrp+vKKDXi+qjygLMeIhAh1DQpEx/NuZoK
-         l7tFPNlTaOb1A1G/5CWPuwwaJ6UjiYt0rvUkwcU9SP8lWl15f65G3iQyIA+YmH1SkILU
-         b3cjkodLhwe/Y8SBSFOIe1IwOS3iyV1wTtRUUuaS+78WjbO3njlha4ER7ZxfedxHC3sW
-         NaOg==
-X-Gm-Message-State: AOAM531Ve2d3zfAEnnZefcY+BILZ6VIK9OD/GPXHatQZAmuukMxuLbX/
-        Yasv9PVP0axTKffYHDfA2OEEecvocU5RF27jcp+5mg==
-X-Google-Smtp-Source: ABdhPJwFBs5dI5yirBLSFwiXWY52PiIXgZlGCLWwULeUThanyG8/0gUHFgUFcCvEjDwM9cabi1NMWxCRZgAoHBkp9KM=
-X-Received: by 2002:a05:651c:32d:: with SMTP id b13mr2970920ljp.283.1590398254315;
- Mon, 25 May 2020 02:17:34 -0700 (PDT)
+        Mon, 25 May 2020 05:18:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC85CC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sb77lX+DMcqY6cREpR0MjEzbsR6ud83Odwt/z0stuhI=; b=NsVypL1ygpElBuT3GTopsIuXUZ
+        aOILjRmDHzsb1vyAEUwW83smtj4KlujTDWHIeyDfcOORYy/+9RJmt3v9n5jBgU9k0iN4XN26ggIrC
+        gh+RHCSbZR0sOjuCyMaP000NwmGZc0BcM8mfRO8tbo2d2ydRAKAwSfOygrfndfMBO1iB7ymkx+CZK
+        tKg3/kku828OUM8ahrGQLCO+6bPyEBAJs25oqdiqUCni8+7agpPgfdb2CsBzDiICojQvDEGS/mkeu
+        Ym7wpoZMQKc9j37w0Bl/9Ww45a3ZAkQyrojkg+2pVGo1c1I+j4eYcwpHEvQnTOsHG9IZD+a1XxHLN
+        rFtUddFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jd9Fi-0008Qe-DQ; Mon, 25 May 2020 09:18:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28B6C30018B;
+        Mon, 25 May 2020 11:18:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 12D81286BFC11; Mon, 25 May 2020 11:18:32 +0200 (CEST)
+Date:   Mon, 25 May 2020 11:18:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     daniel.thompson@linaro.org, x86@kernel.org
+Cc:     sumit.garg@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org, kgdb-bugreport@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, will@kernel.org
+Subject: Re: x86/entry vs kgdb
+Message-ID: <20200525091832.GE325303@hirez.programming.kicks-ass.net>
+References: <20200525083605.GB317569@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200520032150.165388-1-weiyongjun1@huawei.com>
-In-Reply-To: <20200520032150.165388-1-weiyongjun1@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 May 2020 11:17:23 +0200
-Message-ID: <CACRpkdYXmziVfd0ZDTq_3ReCdcw9cWPXXD1H9jfxvLiE=7EDDA@mail.gmail.com>
-Subject: Re: [PATCH -next] bus: arm-integrator-lm: Fix return value check in integrator_ap_lm_probe()
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525083605.GB317569@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wei,
+On Mon, May 25, 2020 at 10:36:05AM +0200, Peter Zijlstra wrote:
+> Hi!
+> 
+> Since you seem to care about kgdb, I figured you might want to fix this
+> before I mark it broken on x86 (we've been considering doing that for a
+> while).
+> 
+> AFAICT the whole debugreg usage of kgdb-x86_64 is completely hosed; it
+> doesn't respsect the normal exclusion zones as per arch_build_bp_info().
+> 
+> That is, breakpoints must never be in:
+> 
+>   - in the cpu_entry_area
+>   - in .entry.text
+>   - in .noinstr.text
+>   - in anything else marked NOKPROBE
+> 
+> by not respecting these constraints it is trivial to completely and
+> utterly hose the machine. The entry rework that is current underway will
+> explicitly not deal with #DB triggering in any of those places.
 
-On Wed, May 20, 2020 at 5:18 AM Wei Yongjun <weiyongjun1@huawei.com> wrote:
+This also very much includes single stepping those bits.  Which KGDB
+obviously also does not respects.
 
-> In case of error, the function of_find_matching_node() returns NULL
-> pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
->
-> Fixes: ccea5e8a5918 ("bus: Add driver for Integrator/AP logic modules")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-
-I applied this and signed it off and sent it over to the ARM SoC
-maintainers.
-
-Yours,
-Linus Walleij
