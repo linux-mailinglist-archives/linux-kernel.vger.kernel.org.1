@@ -2,104 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB10D1E0CD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BD01E0CC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390200AbgEYLZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:25:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47048 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390174AbgEYLZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:25:17 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8459C6C346A43648B102;
-        Mon, 25 May 2020 19:25:14 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.173.221.230) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 25 May 2020 19:25:07 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <zhengxiang9@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        Peng Liang <liangpeng10@huawei.com>
-Subject: [RFC PATCH 7/7] KVM: arm64: Enable stage2 hardware DBM
-Date:   Mon, 25 May 2020 19:24:06 +0800
-Message-ID: <20200525112406.28224-8-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20200525112406.28224-1-zhukeqian1@huawei.com>
-References: <20200525112406.28224-1-zhukeqian1@huawei.com>
+        id S2390135AbgEYLYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 07:24:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56855 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389897AbgEYLYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 07:24:15 -0400
+IronPort-SDR: p9kcU0T3xNHo0KdbTel4/+N0dwKt0kjS890xUNniRU9OGnoMO4Dh4eLgNHHdjD0OvI1Ck006dp
+ onrcCXulMJYw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 04:24:15 -0700
+IronPort-SDR: SQzU8SMO4DVlsQEdL7JernjBzFrgFoakWQ+ufSXtU/D+i3RaC/pGLFQubeq2AeHeO5DpQ/EenL
+ pBd1vtj9mOyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,433,1583222400"; 
+   d="scan'208";a="375411545"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 25 May 2020 04:24:10 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 25 May 2020 14:24:09 +0300
+Date:   Mon, 25 May 2020 14:24:09 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux@roeck-us.net,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        stable <stable@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/2] software node: implement software_node_unregister()
+Message-ID: <20200525112409.GA3208393@kuha.fi.intel.com>
+References: <20200524153041.2361-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.221.230]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524153041.2361-1-gregkh@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are ready to support hw management of dirty state, enable it if
-hardware support it.
+On Sun, May 24, 2020 at 05:30:40PM +0200, Greg Kroah-Hartman wrote:
+> Sometimes it is better to unregister individual nodes instead of trying
+> to do them all at once with software_node_unregister_nodes(), so create
+> software_node_unregister() so that you can unregister them one at a
+> time.
+> 
+> This is especially important when creating nodes in a hierarchy, with
+> parent -> children representations.  Children always need to be removed
+> before a parent is, as the swnode logic assumes this is going to be the
+> case.
+> 
+> Fix up the lib/test_printf.c fwnode_pointer() test which to use this new
+> function as it had the problem of tearing things down in the backwards
+> order.
+> 
+> Fixes: f1ce39df508d ("lib/test_printf: Add tests for %pfw printk modifier")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Cc: stable <stable@vger.kernel.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Peng Liang <liangpeng10@huawei.com>
----
- arch/arm64/include/asm/sysreg.h | 2 ++
- arch/arm64/kvm/reset.c          | 9 ++++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+FWIW:
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index ebc622432831..371ea6d65c16 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -721,6 +721,8 @@
- #define ID_AA64MMFR1_VMIDBITS_8		0
- #define ID_AA64MMFR1_VMIDBITS_16	2
- 
-+#define ID_AA64MMFR1_HADBS_DBS		2
-+
- /* id_aa64mmfr2 */
- #define ID_AA64MMFR2_E0PD_SHIFT		60
- #define ID_AA64MMFR2_FWB_SHIFT		40
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 30b7ea680f66..cb727e1fb581 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -392,7 +392,7 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
- {
- 	u64 vtcr = VTCR_EL2_FLAGS;
- 	u32 parange, phys_shift;
--	u8 lvls;
-+	u8 lvls, hadbs;
- 
- 	if (type & ~KVM_VM_TYPE_ARM_IPA_SIZE_MASK)
- 		return -EINVAL;
-@@ -428,6 +428,13 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
- 	 */
- 	vtcr |= VTCR_EL2_HA;
- 
-+	hadbs = (read_sysreg(id_aa64mmfr1_el1) >>
-+			ID_AA64MMFR1_HADBS_SHIFT) & 0xf;
-+#ifdef CONFIG_ARM64_HW_AFDBM
-+	if (hadbs == ID_AA64MMFR1_HADBS_DBS)
-+		vtcr |= VTCR_EL2_HD;
-+#endif
-+
- 	/* Set the vmid bits */
- 	vtcr |= (kvm_get_vmid_bits() == 16) ?
- 		VTCR_EL2_VS_16BIT :
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/base/swnode.c    | 27 +++++++++++++++++++++------
+>  include/linux/property.h |  1 +
+>  lib/test_printf.c        |  4 +++-
+>  3 files changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index de8d3543e8fe..770b1f47a625 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -712,17 +712,18 @@ EXPORT_SYMBOL_GPL(software_node_register_nodes);
+>   * @nodes: Zero terminated array of software nodes to be unregistered
+>   *
+>   * Unregister multiple software nodes at once.
+> + *
+> + * NOTE: Be careful using this call if the nodes had parent pointers set up in
+> + * them before registering.  If so, it is wiser to remove the nodes
+> + * individually, in the correct order (child before parent) instead of relying
+> + * on the sequential order of the list of nodes in the array.
+>   */
+>  void software_node_unregister_nodes(const struct software_node *nodes)
+>  {
+> -	struct swnode *swnode;
+>  	int i;
+>  
+> -	for (i = 0; nodes[i].name; i++) {
+> -		swnode = software_node_to_swnode(&nodes[i]);
+> -		if (swnode)
+> -			fwnode_remove_software_node(&swnode->fwnode);
+> -	}
+> +	for (i = 0; nodes[i].name; i++)
+> +		software_node_unregister(&nodes[i]);
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_unregister_nodes);
+>  
+> @@ -741,6 +742,20 @@ int software_node_register(const struct software_node *node)
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_register);
+>  
+> +/**
+> + * software_node_unregister - Unregister static software node
+> + * @node: The software node to be unregistered
+> + */
+> +void software_node_unregister(const struct software_node *node)
+> +{
+> +	struct swnode *swnode;
+> +
+> +	swnode = software_node_to_swnode(node);
+> +	if (swnode)
+> +		fwnode_remove_software_node(&swnode->fwnode);
+> +}
+> +EXPORT_SYMBOL_GPL(software_node_unregister);
+> +
+>  struct fwnode_handle *
+>  fwnode_create_software_node(const struct property_entry *properties,
+>  			    const struct fwnode_handle *parent)
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index d86de017c689..0d4099b4ce1f 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -441,6 +441,7 @@ int software_node_register_nodes(const struct software_node *nodes);
+>  void software_node_unregister_nodes(const struct software_node *nodes);
+>  
+>  int software_node_register(const struct software_node *node);
+> +void software_node_unregister(const struct software_node *node);
+>  
+>  int software_node_notify(struct device *dev, unsigned long action);
+>  
+> diff --git a/lib/test_printf.c b/lib/test_printf.c
+> index 6b1622f4d7c2..fc63b8959d42 100644
+> --- a/lib/test_printf.c
+> +++ b/lib/test_printf.c
+> @@ -637,7 +637,9 @@ static void __init fwnode_pointer(void)
+>  	test(second_name, "%pfwP", software_node_fwnode(&softnodes[1]));
+>  	test(third_name, "%pfwP", software_node_fwnode(&softnodes[2]));
+>  
+> -	software_node_unregister_nodes(softnodes);
+> +	software_node_unregister(&softnodes[2]);
+> +	software_node_unregister(&softnodes[1]);
+> +	software_node_unregister(&softnodes[0]);
+>  }
+>  
+>  static void __init
+> -- 
+> 2.26.2
+
+thanks,
+
 -- 
-2.19.1
-
+heikki
