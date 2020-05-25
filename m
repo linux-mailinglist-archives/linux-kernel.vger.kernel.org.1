@@ -2,125 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B0F1E14D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869D41E14E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390141AbgEYThy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 15:37:54 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26910 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390069AbgEYThx (ORCPT
+        id S2390193AbgEYTjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 15:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388705AbgEYTjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 15:37:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590435472;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Aw+P2gJN5/FUhrBwNIybhDRUm5TXXBpyMiHMjIF9NwY=;
-        b=XzCcfLD7q6PrU6w9voN2+GeDdZh+qnm8ck9T9WG3SCDccnCFcPDuU49w2kaLwAlRyeU3je
-        H3h7yK/f4GoyT2/d3JqRyi1ZW+i89eDd+7VsVcdgIyOkPB2B0xr9lv/nVOvyPlLUXQLgll
-        hYJGRTfht9n7Q8DTUJ8i7Y8ZhBW/sWg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-ZNJno5OdPFKuw-aydWN_Sg-1; Mon, 25 May 2020 15:37:51 -0400
-X-MC-Unique: ZNJno5OdPFKuw-aydWN_Sg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDBB48015D1;
-        Mon, 25 May 2020 19:37:49 +0000 (UTC)
-Received: from fuller.cnet (ovpn-116-16.gru2.redhat.com [10.97.116.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A921260BE1;
-        Mon, 25 May 2020 19:37:49 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id BAF35416CE4F; Mon, 25 May 2020 16:35:50 -0300 (-03)
-Date:   Mon, 25 May 2020 16:35:50 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, bhu@redhat.com,
-        Luwei Kang <luwei.kang@intel.com>, Wu Hao <hao.wu@intel.com>
-Subject: Re: [PATCH v5 7/7] Documentation: fpga: dfl: add descriptions for
- interrupt related interfaces.
-Message-ID: <20200525193550.GG22266@fuller.cnet>
-References: <1587370303-25568-1-git-send-email-yilun.xu@intel.com>
- <1587370303-25568-8-git-send-email-yilun.xu@intel.com>
+        Mon, 25 May 2020 15:39:46 -0400
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3138C061A0E;
+        Mon, 25 May 2020 12:39:45 -0700 (PDT)
+Received: from fencepost.gnu.org ([2001:470:142:3::e]:55633)
+        by eggs.gnu.org with esmtp (Exim 4.90_1)
+        (envelope-from <janneke@gnu.org>)
+        id 1jdIwo-0007Ly-Mh; Mon, 25 May 2020 15:39:42 -0400
+Received: from [2001:980:1b4f:1:42d2:832d:bb59:862] (port=35888 helo=dundal.fritz.box)
+        by fencepost.gnu.org with esmtpa (Exim 4.82)
+        (envelope-from <janneke@gnu.org>)
+        id 1jdIwo-0006mb-4U; Mon, 25 May 2020 15:39:42 -0400
+From:   "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+To:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     Danny Milosavljevic <dannym@scratchpost.org>,
+        Samuel Thibault <samuel.thibault@gnu.org>
+Subject: [PATCH v2] ext4: support xattr gnu.* namespace for the Hurd
+Date:   Mon, 25 May 2020 21:39:40 +0200
+Message-Id: <20200525193940.878-1-janneke@gnu.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587370303-25568-8-git-send-email-yilun.xu@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 04:11:43PM +0800, Xu Yilun wrote:
-> This patch adds introductions of interrupt related interfaces for FME
-> error reporting, port error reporting and AFU user interrupts features.
-> 
-> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
-> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> ----
-> v2: Update Documents cause change of irq ioctl interfaces.
-> v3: No change
-> v4: Update interrupt support part.
-> v5: No change
-> ---
->  Documentation/fpga/dfl.rst | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index 094fc8a..702bf62 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -89,6 +89,8 @@ The following functions are exposed through ioctls:
->  - Program bitstream (DFL_FPGA_FME_PORT_PR)
->  - Assign port to PF (DFL_FPGA_FME_PORT_ASSIGN)
->  - Release port from PF (DFL_FPGA_FME_PORT_RELEASE)
-> +- Get number of irqs of FME global error (DFL_FPGA_FME_ERR_GET_IRQ_NUM)
-> +- Set interrupt trigger for FME error (DFL_FPGA_FME_ERR_SET_IRQ)
->  
->  More functions are exposed through sysfs
->  (/sys/class/fpga_region/regionX/dfl-fme.n/):
-> @@ -144,6 +146,10 @@ The following functions are exposed through ioctls:
->  - Map DMA buffer (DFL_FPGA_PORT_DMA_MAP)
->  - Unmap DMA buffer (DFL_FPGA_PORT_DMA_UNMAP)
->  - Reset AFU (DFL_FPGA_PORT_RESET)
-> +- Get number of irqs of port error (DFL_FPGA_PORT_ERR_GET_IRQ_NUM)
-> +- Set interrupt trigger for port error (DFL_FPGA_PORT_ERR_SET_IRQ)
-> +- Get number of irqs of UINT (DFL_FPGA_PORT_UINT_GET_IRQ_NUM)
-> +- Set interrupt trigger for UINT (DFL_FPGA_PORT_UINT_SET_IRQ)
->  
->  DFL_FPGA_PORT_RESET:
->    reset the FPGA Port and its AFU. Userspace can do Port
-> @@ -378,6 +384,19 @@ The device nodes used for ioctl() or mmap() can be referenced through::
->  	/sys/class/fpga_region/<regionX>/<dfl-port.n>/dev
->  
->  
-> +Interrupt support
-> +=================
-> +Some FME and AFU private features are able to generate interrupts. As mentioned
-> +above, users could call ioctl (DFL_FPGA_*_GET_IRQ_NUM) to know whether or how
-> +many interrupts are supported for this private feature. Drivers also implement
-> +an eventfd based interrupt handling mechanism for users to get notified when
-> +interrupt happens. Users could set eventfds to driver via
-> +ioctl (DFL_FPGA_*_SET_IRQ), and then poll/select on these eventfds waiting for
-> +notification.
-> +In Current DFL, 3 sub features (Port error, FME global error and AFU interrupt)
-> +support interrupts.
-> +
-> +
->  Add new FIUs support
->  ====================
->  It's possible that developers made some new function blocks (FIUs) under this
-> -- 
-> 2.7.4
+The Hurd gained[0] support for moving the translator and author
+fields out of the inode and into the "gnu.*" xattr namespace.
 
+In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
+now been brought into compliance[2] with that.
 
-Reviewed-by: Marcelo Tosatti <mtosatti@redhat.com>
+This patch adds support for reading and writing such attributes from
+Linux; you can now do something like
+
+    mkdir -p hurd-root/servers/socket
+    touch hurd-root/servers/socket/1
+    setfattr --name=gnu.translator --value='"/hurd/pflocal\0"' \
+        hurd-root/servers/socket/1
+    getfattr --name=gnu.translator hurd-root/servers/socket/1
+    # file: 1
+    gnu.translator="/hurd/pflocal"
+
+to setup a pipe translator, which is being used to create[3] a
+vm-image for the Hurd from GNU Guix.
+
+[0] https://summerofcode.withgoogle.com/projects/#5869799859027968
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3980bd3b406addb327d858aebd19e229ea340b9a
+[2] https://git.savannah.gnu.org/cgit/hurd/hurd.git/commit/?id=a04c7bf83172faa7cb080fbe3b6c04a8415ca645
+[3] https://git.savannah.gnu.org/cgit/guix.git/log/?h=wip-hurd-vm
+---
+ fs/ext4/Makefile           |  3 ++-
+ fs/ext4/xattr.c            |  2 ++
+ fs/ext4/xattr.h            |  1 +
+ fs/ext4/xattr_hurd.c       | 51 ++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/xattr.h |  4 +++
+ 5 files changed, 60 insertions(+), 1 deletion(-)
+ create mode 100644 fs/ext4/xattr_hurd.c
+
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index 4ccb3c9189d8..2e42f47a7f98 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -9,7 +9,8 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+ 		extents_status.o file.o fsmap.o fsync.o hash.o ialloc.o \
+ 		indirect.o inline.o inode.o ioctl.o mballoc.o migrate.o \
+ 		mmp.o move_extent.o namei.o page-io.o readpage.o resize.o \
+-		super.o symlink.o sysfs.o xattr.o xattr_trusted.o xattr_user.o
++		super.o symlink.o sysfs.o xattr.o xattr_hurd.o xattr_trusted.o \
++		xattr_user.o
+ 
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 9b29a40738ac..7d2f6576d954 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -93,6 +93,7 @@ static const struct xattr_handler * const ext4_xattr_handler_map[] = {
+ #ifdef CONFIG_EXT4_FS_SECURITY
+ 	[EXT4_XATTR_INDEX_SECURITY]	     = &ext4_xattr_security_handler,
+ #endif
++	[EXT4_XATTR_INDEX_HURD]		     = &ext4_xattr_hurd_handler,
+ };
+ 
+ const struct xattr_handler *ext4_xattr_handlers[] = {
+@@ -105,6 +106,7 @@ const struct xattr_handler *ext4_xattr_handlers[] = {
+ #ifdef CONFIG_EXT4_FS_SECURITY
+ 	&ext4_xattr_security_handler,
+ #endif
++	&ext4_xattr_hurd_handler,
+ 	NULL
+ };
+ 
+diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
+index ffe21ac77f78..730b91fa0dd7 100644
+--- a/fs/ext4/xattr.h
++++ b/fs/ext4/xattr.h
+@@ -124,6 +124,7 @@ struct ext4_xattr_inode_array {
+ extern const struct xattr_handler ext4_xattr_user_handler;
+ extern const struct xattr_handler ext4_xattr_trusted_handler;
+ extern const struct xattr_handler ext4_xattr_security_handler;
++extern const struct xattr_handler ext4_xattr_hurd_handler;
+ 
+ #define EXT4_XATTR_NAME_ENCRYPTION_CONTEXT "c"
+ 
+diff --git a/fs/ext4/xattr_hurd.c b/fs/ext4/xattr_hurd.c
+new file mode 100644
+index 000000000000..8cfa74a56361
+--- /dev/null
++++ b/fs/ext4/xattr_hurd.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * linux/fs/ext4/xattr_hurd.c
++ * Handler for extended gnu attributes for the Hurd.
++ *
++ * Copyright (C) 2001 by Andreas Gruenbacher, <a.gruenbacher@computer.org>
++ * Copyright (C) 2020 by Jan (janneke) Nieuwenhuizen, <janneke@gnu.org>
++ */
++
++#include <linux/init.h>
++#include <linux/string.h>
++#include "ext4.h"
++#include "xattr.h"
++
++static bool
++ext4_xattr_hurd_list(struct dentry *dentry)
++{
++	return test_opt(dentry->d_sb, XATTR_USER);
++}
++
++static int
++ext4_xattr_hurd_get(const struct xattr_handler *handler,
++		    struct dentry *unused, struct inode *inode,
++		    const char *name, void *buffer, size_t size)
++{
++	if (!test_opt(inode->i_sb, XATTR_USER))
++		return -EOPNOTSUPP;
++
++	return ext4_xattr_get(inode, EXT4_XATTR_INDEX_HURD,
++			      name, buffer, size);
++}
++
++static int
++ext4_xattr_hurd_set(const struct xattr_handler *handler,
++		    struct dentry *unused, struct inode *inode,
++		    const char *name, const void *value,
++		    size_t size, int flags)
++{
++	if (!test_opt(inode->i_sb, XATTR_USER))
++		return -EOPNOTSUPP;
++
++	return ext4_xattr_set(inode, EXT4_XATTR_INDEX_HURD,
++			      name, value, size, flags);
++}
++
++const struct xattr_handler ext4_xattr_hurd_handler = {
++	.prefix	= XATTR_HURD_PREFIX,
++	.list	= ext4_xattr_hurd_list,
++	.get	= ext4_xattr_hurd_get,
++	.set	= ext4_xattr_hurd_set,
++};
+diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+index c1395b5bd432..9463db2dfa9d 100644
+--- a/include/uapi/linux/xattr.h
++++ b/include/uapi/linux/xattr.h
+@@ -7,6 +7,7 @@
+   Copyright (C) 2001 by Andreas Gruenbacher <a.gruenbacher@computer.org>
+   Copyright (c) 2001-2002 Silicon Graphics, Inc.  All Rights Reserved.
+   Copyright (c) 2004 Red Hat, Inc., James Morris <jmorris@redhat.com>
++  Copyright (c) 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+ */
+ 
+ #include <linux/libc-compat.h>
+@@ -31,6 +32,9 @@
+ #define XATTR_BTRFS_PREFIX "btrfs."
+ #define XATTR_BTRFS_PREFIX_LEN (sizeof(XATTR_BTRFS_PREFIX) - 1)
+ 
++#define XATTR_HURD_PREFIX "gnu."
++#define XATTR_HURD_PREFIX_LEN (sizeof(XATTR_HURD_PREFIX) - 1)
++
+ #define XATTR_SECURITY_PREFIX	"security."
+ #define XATTR_SECURITY_PREFIX_LEN (sizeof(XATTR_SECURITY_PREFIX) - 1)
+ 
+-- 
+2.26.2
 
