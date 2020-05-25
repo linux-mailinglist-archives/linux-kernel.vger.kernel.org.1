@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6221E0CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BA81E0CC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390102AbgEYLWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389897AbgEYLWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:22:48 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE55C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:22:47 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l11so16810198wru.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iBXFsq/YRJNCwLhfCmeFdcjlel1EZijBKcYLRzOu38Q=;
-        b=gh/9+Yv09sgbbtm3vqifgn2cPo3AJETQ4e9OZBODF204Lf4iGD8nsJqV4WvCsTgazk
-         tcXETVo/y553zKNDOEa7REnmLWD7PguAm6tPteMqfHl2jFxSEGBexwggMjO0ydFAePUK
-         B/Y83qEZoSvtMsAcKkZdzgOLIdsvhZRogL+Kn8FGa9VtVG012fC7yFS6yxnCau6/H3E8
-         URhZVGk2iN3e4nxqQ4EHWonIjP1NFtZiXJEBjCVMtAW9UMP8oR5qCb/H82/KHZYquEyX
-         0Vgw4bcLCm8FI8XnFP8ECKzzzkt8QzHENhpyOXi1aNPcyIgEo9BemP145SqWODRQziiW
-         pg0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iBXFsq/YRJNCwLhfCmeFdcjlel1EZijBKcYLRzOu38Q=;
-        b=RA7Ffv2wvDRGEa9EdR7Ya3Vj4CD/XjSpF/JjskxOt4yl3cvB8O+JInva8Mu51Yh3hC
-         9s2YhXNyuCJMbDuqiI+dgufJo+ebBlwQXIvjiB3z4H+10pG/4XE/K8ltlFy7wD1CEStL
-         Z8hwUfPCzsY+PkPNAa5jk+BONp89TC6oqCe07ydTee4ePSBfCMx4atTH/0XWgsI2steZ
-         0LB8Mgs4vwsu5kcpEfWG23A8pvrz8ZqOkybaHm8TsNu/fxAieb8GFoY4IwEWZRwnIEEl
-         sfkQpFMFo6AuEvvmQ4AaEU1iEh8FgJk6yPi0t/9qZ5+VMhZWYvZstxPD5xJ9miNHcSOW
-         220g==
-X-Gm-Message-State: AOAM532GkkTIt/AKrj30vpN6lUcnosnUjC9xqN6AyUCKz+LC2dZ8yVb8
-        IjvETMTxcZjn4mGQB96kW6ygYf6kxnM=
-X-Google-Smtp-Source: ABdhPJxFakP7sz4ZuenT+NK54SgLAYXWUyk7vZJB0US30kWhTl7TSWqOox/0c5EB1TWVM2hSe/YQUw==
-X-Received: by 2002:a5d:40d0:: with SMTP id b16mr14590871wrq.218.1590405766298;
-        Mon, 25 May 2020 04:22:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f5b2:610d:e426:c0dd? ([2a01:e34:ed2f:f020:f5b2:610d:e426:c0dd])
-        by smtp.googlemail.com with ESMTPSA id 30sm3905659wrd.47.2020.05.25.04.22.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 04:22:45 -0700 (PDT)
-Subject: Re: [PATCH v3] thermal: qoriq: Update the settings for TMUv2
-To:     Yuantian Tang <andy.tang@nxp.com>, rui.zhang@intel.com,
-        edubezval@gmail.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200525072106.12993-1-andy.tang@nxp.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <24d2d2c9-0f30-743b-dfe0-6acd2d3de367@linaro.org>
-Date:   Mon, 25 May 2020 13:22:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390153AbgEYLZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 07:25:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5279 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389897AbgEYLZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 07:25:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5A106A0EB3F34B6CB6FB;
+        Mon, 25 May 2020 19:25:04 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.173.221.230) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 25 May 2020 19:24:54 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <zhengxiang9@huawei.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [RFC PATCH 0/7] kvm: arm64: Support stage2 hardware DBM
+Date:   Mon, 25 May 2020 19:23:59 +0800
+Message-ID: <20200525112406.28224-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200525072106.12993-1-andy.tang@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/05/2020 09:21, Yuantian Tang wrote:
-> For TMU v2, TMSAR registers need to be set properly to get the
-> accurate temperature values.
-> Also the temperature read needs to be converted to degree Celsius
-> since it is in degrees Kelvin.
+This patch series add support for stage2 hardware DBM, and it is only
+used for dirty log for now.
 
-> Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
-> ---
+It works well under some migration test cases, including VM with 4K
+pages or 2M THP. I checked the SHA256 hash digest of all memory and
+they keep same for source VM and destination VM, which means no dirty
+pages is missed under hardware DBM.
 
-[ ... ]
+However, there are some known issues not solved.
 
-> @@ -202,6 +213,8 @@ static void qoriq_tmu_init_device(struct qoriq_tmu_data *data)
->  	} else {
->  		regmap_write(data->regmap, REGS_V2_TMTMIR, TMTMIR_DEFAULT);
->  		regmap_write(data->regmap, REGS_V2_TEUMR(0), TEUMR0_V2);
-> +		for (i = 0; i < 7; i++)
+1. Some mechanisms that rely on "write permission fault" become invalid,
+   such as kvm_set_pfn_dirty and "mmap page sharing".
 
-Please wrap this litteral 7 to an explicit constant name
+   kvm_set_pfn_dirty is called in user_mem_abort when guest issues write
+   fault. This guarantees physical page will not be dropped directly when
+   host kernel recycle memory. After using hardware dirty management, we
+   have no chance to call kvm_set_pfn_dirty.
 
-> +			regmap_write(data->regmap, REGS_V2_TMSAR(i), TMSARA_V2);
->  	}
->  
->  	/* Disable monitoring */
-> @@ -212,6 +225,7 @@ static const struct regmap_range qoriq_yes_ranges[] = {
->  	regmap_reg_range(REGS_TMR, REGS_TSCFGR),
->  	regmap_reg_range(REGS_TTRnCR(0), REGS_TTRnCR(3)),
->  	regmap_reg_range(REGS_V2_TEUMR(0), REGS_V2_TEUMR(2)),
-> +	regmap_reg_range(REGS_V2_TMSAR(0), REGS_V2_TMSAR(15)),
->  	regmap_reg_range(REGS_IPBRR(0), REGS_IPBRR(1)),
->  	/* Read only registers below */
->  	regmap_reg_range(REGS_TRITSR(0), REGS_TRITSR(15)),
-> 
+   For "mmap page sharing" mechanism, host kernel will allocate a new
+   physical page when guest writes a page that is shared with other page
+   table entries. After using hardware dirty management, we have no chance
+   to do this too.
 
+   I need to do some survey on how stage1 hardware DBM solve these problems.
+   It helps if anyone can figure it out.
+
+2. Page Table Modification Races: Though I have found and solved some data
+   races when kernel changes page table entries, I still doubt that there
+   are data races I am not aware of. It's great if anyone can figure them out.
+
+3. Performance: Under Kunpeng 920 platform, for every 64GB memory, KVM
+   consumes about 40ms to traverse all PTEs to collect dirty log. It will
+   cause unbearable downtime for migration if memory size is too big. I will
+   try to solve this problem in Patch v1.
+
+Keqian Zhu (7):
+  KVM: arm64: Add some basic functions for hw DBM
+  KVM: arm64: Set DBM bit of PTEs if hw DBM enabled
+  KVM: arm64: Traverse page table entries when sync dirty log
+  KVM: arm64: Steply write protect page table by mask bit
+  kvm: arm64: Modify stage2 young mechanism to support hw DBM
+  kvm: arm64: Save stage2 PTE dirty info if it is coverred
+  KVM: arm64: Enable stage2 hardware DBM
+
+ arch/arm64/include/asm/kvm_host.h     |   1 +
+ arch/arm64/include/asm/kvm_mmu.h      |  44 +++++-
+ arch/arm64/include/asm/pgtable-prot.h |   1 +
+ arch/arm64/include/asm/sysreg.h       |   2 +
+ arch/arm64/kvm/reset.c                |   9 +-
+ virt/kvm/arm/arm.c                    |   6 +-
+ virt/kvm/arm/mmu.c                    | 202 ++++++++++++++++++++++++--
+ 7 files changed, 246 insertions(+), 19 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.19.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
