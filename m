@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905661E17C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 00:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB48A1E17BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 00:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389415AbgEYWRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 18:17:24 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:7486 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389376AbgEYWRX (ORCPT
+        id S2389301AbgEYWQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 18:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgEYWQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 18:17:23 -0400
+        Mon, 25 May 2020 18:16:16 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123DEC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 15:16:16 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t16so7865750plo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 15:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590445043; x=1621981043;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZQUhc74BQTGillYV7hEL4Stk3r93yA62SoASB/NP6x8=;
-  b=saZ/kSuQAveETVnULCKw3YSYx8Swdiq+b0O2fymYIuYn1zLuekzGN7KF
-   6/nCH5EYv1R2sj/cj8ayVepP+ezRsKugnkt6R82Y26V0uZru+4rFNYlRm
-   1ccKiXtlyrgwHO8XmIzOPiyUtKmMRx1xgLIGe6kUXRaTraNTfGdzD5rE3
-   w=;
-IronPort-SDR: OKcNlkJP0J1PEykixyWOMhbc/vce3A7yVFl3zCcVTXZh1QXO0f3NW2OGezw6vy4X2Ay4VuE2tC
- HqYs1GRIe0iA==
-X-IronPort-AV: E=Sophos;i="5.73,435,1583193600"; 
-   d="scan'208";a="37543980"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 May 2020 22:17:22 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id 74A98C0B70;
-        Mon, 25 May 2020 22:17:20 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 25 May 2020 22:17:19 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.90) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 25 May 2020 22:17:11 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Bjoern Doebel" <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Martin Pohlack" <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v3 18/18] MAINTAINERS: Add entry for the Nitro Enclaves driver
-Date:   Tue, 26 May 2020 01:13:34 +0300
-Message-ID: <20200525221334.62966-19-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200525221334.62966-1-andraprs@amazon.com>
-References: <20200525221334.62966-1-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eSpEFVbG8JUdSrBIflNKicdqqYEQz8d5l9KuD7qZZcM=;
+        b=O3y125lYcfZznF8AdnHsBuu/pezAvAh4K/OW3m8ETYoqnVQqxBeNIYO5FvhJmamZKE
+         483QrLedr8lgEJr5C7+miL2JM8u5iyi1FB6qb949HD5ZZM5yF+Um7SkUE+82nlHfkRR0
+         4R+vASNN8jyTIZGeNmSy+nIz8otmu1TA7pMCiRRUglkZJoSfNSUKcrgZRVZbrPZPq0tZ
+         V1KjfzJDc0CmyQ1NyoNwuDTJZXWZwSWKdEoYu6eSRwaqnO7EJwLtzyUH7jCMNvFzjGj1
+         AU7RIOb1zFoRY4h2IygAuvvQQkEilsyBHcQrCd2JhGh9Gl6m19tw96kHWe2KJtMR6zJq
+         +eNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eSpEFVbG8JUdSrBIflNKicdqqYEQz8d5l9KuD7qZZcM=;
+        b=gTKHechZy4jco5wMHCXi4G+/VFW5LEyIG3O7FUmRvIQ0B1UTFJTdQWBlfYjWlYxlEq
+         PMmDk965/U1ivHmTVTc7sqEA42ayDxvpj/FResNoU/gNEmTjXdVPF+TPDHWwsuEbKsPh
+         cZKOBJaXyJg+SW9NGnEyzf7cqmystadz3L0TBMEu9FXOMRZlv7jTI7NezZkl7fcxbQv5
+         A86yT5/PLhBeznKBbf46YsnekAs5lIlP8pVA+OyHFIlmPBYulhg1KabsrxxpT8/Yv6Yk
+         QPFgemHCvhxb8DGcYE4Nq31lG/G8Pw7ZUnd15ppK6/52caljPGGX+rwoCC5qFTrv3sfu
+         0PTg==
+X-Gm-Message-State: AOAM530OcfnZoTHd/2j0qsrMUTFCKfkFalVQxs9qrbfKY2PxBrr8rXDI
+        2Brfr7s10bUCvyKYsLqVSqE=
+X-Google-Smtp-Source: ABdhPJzQ3P0vqWJRY6AQI6xSDmGSBZjsIw41fa3CVPrEXXshOerRfEW4ULTGkJlQo+SAqILMhumhhA==
+X-Received: by 2002:a17:90a:bf92:: with SMTP id d18mr9741928pjs.120.1590444975572;
+        Mon, 25 May 2020 15:16:15 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:e00:7571:e536:944d:12bc])
+        by smtp.gmail.com with ESMTPSA id z13sm14160865pfj.153.2020.05.25.15.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 15:16:15 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PATCH] xtensa: fix flush_icache_user_range in noMMU configs
+Date:   Mon, 25 May 2020 15:15:56 -0700
+Message-Id: <20200525221556.4270-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13D25UWC004.ant.amazon.com (10.43.162.201) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+flush_icache_user_range definition for xtensa is placed under
+preprocessor condition that is not processed in noMMU configurations,
+resulting in the following build errors:
+
+  fs/exec.c:1065:3: error: implicit declaration of function
+  ‘flush_icache_user_range’
+  fs/binfmt_flat.c:857:2: error: implicit declaration of function
+  ‘flush_icache_user_range’
+
+Move definition outside conditional compilation block.
+
+Fixes: 134d96d05d30 ("xtensa: implement flush_icache_user_range")
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
-Changelog
+ arch/xtensa/include/asm/cacheflush.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v2 -> v3
-
-* Update file entries to be in alphabetical order.
-
-v1 -> v2
-
-* No changes.
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 50659d76976b..56d529256ba4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11968,6 +11968,19 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
- F:	arch/nios2/
+diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/asm/cacheflush.h
+index 460e666ad076..cf907e5bf2f2 100644
+--- a/arch/xtensa/include/asm/cacheflush.h
++++ b/arch/xtensa/include/asm/cacheflush.h
+@@ -107,8 +107,6 @@ void flush_cache_page(struct vm_area_struct*,
+ #define flush_cache_page  local_flush_cache_page
+ #endif
  
-+NITRO ENCLAVES (NE)
-+M:	Andra Paraschiv <andraprs@amazon.com>
-+M:	Alexandru Vasile <lexnv@amazon.com>
-+M:	Alexandru Ciobotaru <alcioa@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	Documentation/nitro_enclaves/
-+F:	drivers/virt/nitro_enclaves/
-+F:	include/linux/nitro_enclaves.h
-+F:	include/uapi/linux/nitro_enclaves.h
-+F:	samples/nitro_enclaves/
+-#define flush_icache_user_range flush_icache_range
+-
+ #define local_flush_cache_all()						\
+ 	do {								\
+ 		__flush_invalidate_dcache_all();			\
+@@ -147,6 +145,8 @@ void local_flush_cache_page(struct vm_area_struct *vma,
+ 
+ #endif
+ 
++#define flush_icache_user_range flush_icache_range
 +
- NOHZ, DYNTICKS SUPPORT
- M:	Frederic Weisbecker <fweisbec@gmail.com>
- M:	Thomas Gleixner <tglx@linutronix.de>
+ /* Ensure consistency between data and instruction cache. */
+ #define local_flush_icache_range(start, end)				\
+ 	do {								\
 -- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+2.20.1
 
