@@ -2,174 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776F91E09A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA871E09AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389183AbgEYJGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388660AbgEYJGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:06:04 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0746C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:06:03 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n141so4500036qke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dPuZPyJHL9y310jCMBab1+wUqEyxBpL9sxzRpIMUcDw=;
-        b=nO2zcmFBdCWzlGqLw1pR2ThUuz31GiwsX9FmLMPWXkIRbISIRdArAGzOKpkV7Qzv10
-         5VetiQSFGmqqkEyKB7+SGACaU0qLz2m+9iyUgPiDy2IDRCPxhwFx8/5DMtWUHYRsjtlL
-         0atWQF/ahgFhsYQYAzdXXs0aRQhob0wySOVyDYs2DXpouokBCqB6slqb/TvDM+I33ev8
-         yk0brFmDMsprGHiwBPRLvyh/NVcy/OCFMiVYdFYc4bQaZFP6VvDRpzKRyp0zTf5FOVWN
-         aSAJO9abuoljXUYQUaIMlrcVwRxlonf00RVbuDaEI1E+vkonNYosmqgXcWB0HgzUmBS7
-         NMpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dPuZPyJHL9y310jCMBab1+wUqEyxBpL9sxzRpIMUcDw=;
-        b=QlPPOjlZY5++W48Uo6Yqci/xwxLYav3yJDjlPTttWZIqfU3geSzn1QlVIg6yjeTqkD
-         HPX/V9P4yptWpDfuX/BP78kJsmbDSHpDEQz97jS4fZMIthCQl34CWAPBnxt6gIEMBXyC
-         Sioa81n0Vc7F6hREvz7goTBin2gjhQN1+zP+ytJIUuy59A7OnHId+P8Qx8Ud7OGPc5hT
-         BgAmVY0GYCTvDLqLfuHZPw95oh+KOpET+T33qcHw6TZNtRfFZk99AdswBg3ekspFbyXt
-         je7CbQ6pTq3MR/l6aX0EUdrX/xJztyp4eyvLW6FNBU4YLCJKbd/TdHod7KZpqQPVsgh4
-         fwDA==
-X-Gm-Message-State: AOAM532lrqw4FvJSGNC5nVwevtCtT/Fz/p2CHJhhvXtaHTGysvREyct0
-        6JLNxzAM72U6VG4yFIN0P1lDdTP+QZV6WgCxh2TQAg==
-X-Google-Smtp-Source: ABdhPJwwogx5lD1d892oBsZ0UV12gKR+k0N+3QkhwPrACB1IANnU5OS7w1qWs680sMYLIO0JDYTSL1iYK1byj+QAdpM=
-X-Received: by 2002:a37:5b47:: with SMTP id p68mr26336785qkb.120.1590397562647;
- Mon, 25 May 2020 02:06:02 -0700 (PDT)
+        id S2389311AbgEYJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:07:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389294AbgEYJHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 05:07:23 -0400
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C1A42084C;
+        Mon, 25 May 2020 09:07:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590397642;
+        bh=xDu8dLlglr8K91hawwE4cfFpH4NGPUCe5IF8bxHut2s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=upEMwLfGG5pi9p3K+vxuXs0az7TTBHDo3uDDF39m77SbroYEeZD/9pMK4LQikloap
+         8CL2mVxo9pGdax86qxQdcF9OuLcvTsUZDZ0epvACsdnVbtxrucAkIAkdFjlth9FrD5
+         g+D4mvILxfAzLGL1l4SxRtW6mkFw/KD3ZUTdkBEs=
+Received: by mail-io1-f49.google.com with SMTP id p20so4563429iop.11;
+        Mon, 25 May 2020 02:07:22 -0700 (PDT)
+X-Gm-Message-State: AOAM5336C0Y+mSontXSUUPqg/mgEscLEZLSQvgLZuTMlykGbwjlYgXHB
+        SZZEZQVz4GgFAimIjHAvQgZJjMmzUTi9iyaREe8=
+X-Google-Smtp-Source: ABdhPJyCtr20yxFYDZawW3EBVKQBnR7JS6BmYQvfftEGhtPaFgT0QoTcn8YZlJtxk8v/BozcEBSD/6TfBBAMnfTAchU=
+X-Received: by 2002:a02:3341:: with SMTP id k1mr19168056jak.74.1590397641457;
+ Mon, 25 May 2020 02:07:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200423174543.17161-1-michael@walle.cc> <20200423174543.17161-11-michael@walle.cc>
- <CAMpxmJV3XTOxuoKeV-z2d75qWqHkgvV9419tfe3idDeKwoeoLA@mail.gmail.com> <75bff2917be1badd36af9f980cf59d2c@walle.cc>
-In-Reply-To: <75bff2917be1badd36af9f980cf59d2c@walle.cc>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 25 May 2020 11:05:51 +0200
-Message-ID: <CAMpxmJXctc5cbrjSeJxa7DfmjiVsbyhqAbEKt-gtayKhQj0Cnw@mail.gmail.com>
-Subject: Re: [PATCH v3 10/16] gpio: add a reusable generic gpio_chip using regmap
-To:     Michael Walle <michael@walle.cc>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200512141113.18972-1-nicolas.toromanoff@st.com>
+ <20200512141113.18972-6-nicolas.toromanoff@st.com> <CAMj1kXGs6UgkKb5+tH2B-+26=tbjHq3UUY2gxfcRfMb1nGVuFA@mail.gmail.com>
+ <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com> <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
+ <bd6cac3bd4c74db1a403df58082028fd@SFHDAG6NODE1.st.com>
+In-Reply-To: <bd6cac3bd4c74db1a403df58082028fd@SFHDAG6NODE1.st.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 25 May 2020 11:07:10 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFwt6cs-MJhAeMRF4-yiddm=ezq=qvSjA_sRAX+_Gdqhw@mail.gmail.com>
+Message-ID: <CAMj1kXFwt6cs-MJhAeMRF4-yiddm=ezq=qvSjA_sRAX+_Gdqhw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
+To:     Nicolas TOROMANOFF <nicolas.toromanoff@st.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 12 maj 2020 o 16:41 Michael Walle <michael@walle.cc> napisa=C5=82(a):
+(+ Eric)
+
+On Mon, 25 May 2020 at 11:01, Nicolas TOROMANOFF
+<nicolas.toromanoff@st.com> wrote:
 >
-> >> +
-> >> +MODULE_AUTHOR("Michael Walle <michael@walle.cc>");
-> >> +MODULE_DESCRIPTION("GPIO generic regmap driver core");
-> >> +MODULE_LICENSE("GPL");
-> >> diff --git a/include/linux/gpio-regmap.h b/include/linux/gpio-regmap.h
-> >> new file mode 100644
-> >> index 000000000000..a868cbcde6e9
-> >> --- /dev/null
-> >> +++ b/include/linux/gpio-regmap.h
-> >> @@ -0,0 +1,69 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0-only */
-> >> +
-> >> +#ifndef _LINUX_GPIO_REGMAP_H
-> >> +#define _LINUX_GPIO_REGMAP_H
-> >> +
-> >> +struct gpio_regmap;
-> >> +
-> >> +#define GPIO_REGMAP_ADDR_ZERO ((unsigned long)(-1))
-> >> +#define GPIO_REGMAP_ADDR(addr) ((addr) ? : GPIO_REGMAP_ADDR_ZERO)
-> >> +
+> > -----Original Message-----
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> > Sent: Monday, May 25, 2020 9:46 AM
+> > To: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
+> > Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
 > >
-> > What if the addr is actually 0?
->
-> Then the driver has to set GPIO_REGMAP_ADDR_ZERO or use the convenience
-> macro GPIO_REGMAP_ADDR.
->
-> So you can have
->
->    struct gpio_regmap_config config =3D { 0 };
->    config.reg_dat_base =3D 0x10;
->    config.reg_dir_out_base =3D 0x20;
->
-> or
->
->    config.reg_dat_base =3D GPIO_REGMAP_ADDR_ZERO;
->
-> or if you can't be sure if the RHS value might be zero:
->
->    config.reg_dat_base =3D GPIO_REGMAP_ADDR(reg);
->
->
-> > Maybe drop GPIO_REGMAP_ADDR and require users to set unused registers
-> > to GPIO_REGMAP_ADDR_ZERO?
->
-> Thats bad because:
->   * you'd have to set plenty of unused base registers for a simple driver
->   * if there will be additional properties in the future, you have to
-> touch
->     all other drivers, because they are initialized as 0 (ie. valid reg
-> 0).
->
-> >> +/**
-> >> + * struct gpio_regmap_config - Description of a generic regmap
-> >> gpio_chip.
-> >> + *
-> >> + * @parent:            The parent device
-> >> + * @regmap:            The regmap used to access the registers
-> >> + *                     given, the name of the device is used
-> >> + * @label:             (Optional) Descriptive name for GPIO
-> >> controller.
-> >> + *                     If not given, the name of the device is used.
-> >> + * @ngpio:             Number of GPIOs
-> >> + * @reg_dat_base:      (Optional) (in) register base address
-> >> + * @reg_set_base:      (Optional) set register base address
-> >> + * @reg_clr_base:      (Optional) clear register base address
-> >> + * @reg_dir_in_base:   (Optional) out setting register base address
-> >> + * @reg_dir_out_base:  (Optional) in setting register base address
+> > On Mon, 25 May 2020 at 09:24, Nicolas TOROMANOFF
+> > <nicolas.toromanoff@st.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > > -----Original Message-----
+> > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > > Sent: Friday, May 22, 2020 6:12 PM>
+> > > > On Tue, 12 May 2020 at 16:13, Nicolas Toromanoff
+> > > > <nicolas.toromanoff@st.com> wrote:
+> > > > >
+> > > > > Protect STM32 CRC device from concurrent accesses.
+> > > > >
+> > > > > As we create a spinlocked section that increase with buffer size,
+> > > > > we provide a module parameter to release the pressure by splitting
+> > > > > critical section in chunks.
+> > > > >
+> > > > > Size of each chunk is defined in burst_size module parameter.
+> > > > > By default burst_size=0, i.e. don't split incoming buffer.
+> > > > >
+> > > > > Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+> > > >
+> > > > Would you mind explaining the usage model here? It looks like you
+> > > > are sharing a CRC hardware accelerator with a synchronous interface
+> > > > between different users by using spinlocks? You are aware that this
+> > > > will tie up the waiting CPUs completely during this time, right? So
+> > > > it would be much better to use a mutex here. Or perhaps it would
+> > > > make more sense to fall back to a s/w based CRC routine if the h/w is tied up
+> > working for another task?
+> > >
+> > > I know mutex are more acceptable here, but shash _update() and _init()
+> > > may be call from any context, and so I cannot take a mutex.
+> > > And to protect my concurrent HW access I only though about spinlock.
+> > > Due to possible constraint on CPUs, I add a burst_size option to force
+> > > slitting long buffer into smaller one, and so decrease time we take the lock.
+> > > But I didn't though to fallback to software CRC.
+> > >
+> > > I'll do a patch on top.
+> > > In in the burst_update() function I'll use a spin_trylock_irqsave() and use
+> > software CRC32 if HW is already in use.
+> > >
 > >
-> > The two above are inverted I think?
-> good catch.
+> > Right. I didn't even notice that you were keeping interrupts disabled the whole
+> > time when using the h/w block. That means that any serious use of this h/w
+> > block will make IRQ latency go through the roof.
+> >
+> > I recommend that you go back to the drawing board on this driver, rather than
+> > papering over the issues with a spin_trylock(). Perhaps it would be better to
+> > model it as a ahash (even though the h/w block itself is synchronous) and use a
+> > kthread to feed in the data.
 >
-> > Also: why the limitation of only supporting one at a time?
->
-> they should be exclusive, either you have a register where you set the
-> output bits to one, or the input bits. Maybe this need a bit more
-> context
-> above. in gpio-mmio.c you can set both and both are used in
-> set_direction(), but only one is read in get_direction().
->
-> That being said, I have no strong opinion wether they should be
-> exclusive
-> or not, besides the symmetry of set_/get_direction().
->
-> -michael
+> I thought when I updated the driver to move to a ahash interface, but the main usage
+> of crc32 is the ext4 fs, that calls the shash API.
+> Commit 877b5691f27a ("crypto: shash - remove shash_desc::flags") removed possibility
+> to sleep in shash callback. (before this commit and with MAY_SLEEP option set, using
+> a mutex may have been fine).
 >
 
-Sorry for the late response, your comments make sense to me. Are you
-going to submit a v4 before the v5.8 merge window?
+According to that commit's log, sleeping is never fine for shash(),
+since it uses kmap_atomic() when iterating over the scatterlist.
 
-Bart
+> By now the solution I see is to use the spin_trylock_irqsave(), fallback to software crc *AND* capping burst_size
+> to ensure the locked section stay reasonable.
+>
+> Does this seems acceptable ?
+>
+
+If the reason for disabling interrupts is to avoid deadlocks, wouldn't
+the switch to trylock() with a software fallback allow us to keep
+interrupts enabled?
