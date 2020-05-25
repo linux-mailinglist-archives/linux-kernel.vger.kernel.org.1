@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A960A1E046A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974321E0480
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388342AbgEYB3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 21:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388104AbgEYB3f (ORCPT
+        id S2388348AbgEYBwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 21:52:38 -0400
+Received: from gateway30.websitewelcome.com ([192.185.152.11]:26985 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388054AbgEYBwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 21:29:35 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B922C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:29:34 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j3so15988776ilk.11
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R71dV7S9rJQPlMHMjk6Vu0NBsTKVA0V6AR1/+ijdTXU=;
-        b=YG0i9AGd6c2S5ULFReX3uDyCO0YWpEQCkwusIvHlXGkiFJT+GtuhdBKe9bqYDEGHPb
-         E3+x+B/bMoy6IQPVjsI7AggtSBmpul1UTgun/A+Q2EOnJlbgXz7On0eFGyvM62Jcq7TB
-         0e6p3z/qn1cDJ54BSMybkDq/gImwKoRitLte8r8ujFU5kvQuKUP/haYS5ztBh5IQkiDh
-         eBo7a6dG4doC9fuPhpq6/5Veb5dmh532DftU9nhEHXRZwxNZ3Cxd0qrGxDy/Q1dv6Smw
-         mYrc1BOsvh5Me6Ghy6A/PUZTwGaIkt67xwxK5HvPqmsw4BnfM8sJ5IpaaJ+eBhTnJ38Z
-         AM+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R71dV7S9rJQPlMHMjk6Vu0NBsTKVA0V6AR1/+ijdTXU=;
-        b=rck1+bCWeMBy0DMyFYSZY0S/7Bfqr+3OXx6dVvU00PHkduQMVz/DA3LNmbiJDrtw+Z
-         jG4T3jaUQ2suqlXskGunZDZQcZ2CNCBpKkVfZxx/s1JWSJNK10hDgReAo6eI59lom1mn
-         2eDBY7qI+ng3Jht2K/52G9rX8T7bJUwDDVpPKUy49ukNVXoZXmOn/QzcFRu90CUtsHG6
-         nkq0B/ADrv52iH6fkHlpSXs3D7tSOn2uOxJVT/AlBTG2DzmRDay9Q4+XJ6BRxWMmI/TP
-         Y+dBGK7xbw4A8VUwfT3hYj0juynk4qsjvkoMtkRA+fYDEVeYfVnyrt22ewu1WrXB0CeJ
-         fK4Q==
-X-Gm-Message-State: AOAM531R22Xk2Os5QuZPtMCdIUUWI5kQgcg3upR+P12kSPch5Y1gwYxb
-        /iCeUl72apb948kCn1kwRuc=
-X-Google-Smtp-Source: ABdhPJypDVQv9J77hH8HwSGLN96MDsXiBlnK/6+cLrJxFiV/47Xdl8IvjqMmRo6j1STXYHmMcm0URg==
-X-Received: by 2002:a92:da52:: with SMTP id p18mr23324203ilq.173.1590370173505;
-        Sun, 24 May 2020 18:29:33 -0700 (PDT)
-Received: from james-x399.localdomain (71-218-100-23.hlrn.qwest.net. [71.218.100.23])
-        by smtp.gmail.com with ESMTPSA id t10sm8396302ilq.62.2020.05.24.18.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 18:29:32 -0700 (PDT)
-From:   James Hilliard <james.hilliard1@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] drm/vc4: hdmi: Silence pixel clock error on -EPROBE_DEFER
-Date:   Sun, 24 May 2020 19:28:59 -0600
-Message-Id: <20200525012859.267433-1-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 24 May 2020 21:52:37 -0400
+X-Greylist: delayed 1334 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 May 2020 21:52:37 EDT
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id D795646F3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 20:30:21 -0500 (CDT)
+Received: from br164.hostgator.com.br ([192.185.176.180])
+        by cmsmtp with SMTP
+        id d1wbjPPvH8vkBd1wbj2VJG; Sun, 24 May 2020 20:30:21 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qyCTWA8alWH3T1OHxtqJqh8fX9ZMRzay2l/chLycdQ8=; b=DjVcPAoGwpjHhJk9TrOvDCpKVf
+        jXKI0r2K8HNoSNHSe4EqDW6qZZDhs+Mr5WcqDss632tc5TxaUzLYBJmiSwNVGTgLd7Ef67aDKlXwR
+        MTq2OXMn2bzE03r6xMGH3WhTvayuHz5HoJBj718I1j/XSV5J+FoCSzaE7TyMxan8LaLbkWQjdqZmh
+        TYOCx1acl0DD9YYAEBwOfwYQsA8xh9PkZ8JRAogjrNyhWCv2pr3u4CCPzSn+OFjKvNGoNmCGIxl5m
+        SXznW2rLj8z0G2Z1sCsHgmiQV13pQtNJMHMqnEMvUa+ghIHg9/paOw1yiScvuLMBP+r+rN0AMVI9J
+        Kevli81A==;
+Received: from [191.31.196.240] (port=34284 helo=castello.castello)
+        by br164.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <matheus@castello.eng.br>)
+        id 1jd1wb-004Dik-8u; Sun, 24 May 2020 22:30:21 -0300
+From:   Matheus Castello <matheus@castello.eng.br>
+To:     afaerber@suse.de, manivannan.sadhasivam@linaro.org,
+        mark.rutland@arm.com, robh+dt@kernel.org
+Cc:     edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org,
+        Matheus Castello <matheus@castello.eng.br>
+Subject: [PATCH v5 0/3] Add Caninos Loucos Labrador CoM and Base Board Device Tree
+Date:   Sun, 24 May 2020 22:30:05 -0300
+Message-Id: <20200525013008.108750-1-matheus@castello.eng.br>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - castello.eng.br
+X-BWhitelist: no
+X-Source-IP: 191.31.196.240
+X-Source-L: No
+X-Exim-ID: 1jd1wb-004Dik-8u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (castello.castello) [191.31.196.240]:34284
+X-Source-Auth: matheus@castello.eng.br
+X-Email-Count: 2
+X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the vc4 hdmi driver loads before the pixel clock is available we
-see a spurious "*ERROR* Failed to get pixel clock" error.
+Sorry for the delay.
+Thanks Andreas, Mani and Rob for your time reviewing it.
 
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
-no response in over 2 weeks
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Changes since v4:
+(Suggested by Rob Herring)
+- Fix issues with yaml indentation
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 340719238753..6d4ee3f6b445 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1338,8 +1338,10 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 
- 	hdmi->pixel_clock = devm_clk_get(dev, "pixel");
- 	if (IS_ERR(hdmi->pixel_clock)) {
--		DRM_ERROR("Failed to get pixel clock\n");
--		return PTR_ERR(hdmi->pixel_clock);
-+		ret = PTR_ERR(hdmi->pixel_clock);
-+		if (ret != -EPROBE_DEFER)
-+			DRM_ERROR("Failed to get pixel clock\n");
-+		return ret;
- 	}
- 	hdmi->hsm_clock = devm_clk_get(dev, "hdmi");
- 	if (IS_ERR(hdmi->hsm_clock)) {
--- 
-2.25.1
+Changes since v3:
+(Suggested by Andreas Färber)
+- Fix sort on actions.yaml
+- Change the file owl-s500-labrador-bb.dts to owl-s500-labrador-base-m.dts
+- Add description for both the SoM and Base Board
+- Add Model description for both the SoM and Base Board
+
+Matheus Castello (3):
+  dt-bindings: Add vendor prefix for Caninos Loucos
+  dt-bindings: arm: actions: Document Caninos Loucos Labrador
+  ARM: dts: Add Caninos Loucos Labrador
+
+ .../devicetree/bindings/arm/actions.yaml      |  5 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ .../arm/boot/dts/owl-s500-labrador-base-m.dts | 34 +++++++++++++++++++
+ arch/arm/boot/dts/owl-s500-labrador-v2.dtsi   | 22 ++++++++++++
+ 5 files changed, 64 insertions(+)
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+
+--
+2.26.2
 
