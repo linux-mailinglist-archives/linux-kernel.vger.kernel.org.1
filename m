@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7DB1E0A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7627D1E0A1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389510AbgEYJRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:17:33 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:42935 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389495AbgEYJRa (ORCPT
+        id S2389593AbgEYJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:18:04 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:6957 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389569AbgEYJR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:17:30 -0400
+        Mon, 25 May 2020 05:17:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590398250; x=1621934250;
+  t=1590398277; x=1621934277;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=G8CneijCkhkmAYrW5RLVj9rtVs0AB1S5RMsQ7jnOqO0=;
-  b=DGc3YkDYCdiRaw4GJHhtA0HqTbyyOOPKAIkTjJjY76JCwTMl1PyAU5Kx
-   B9MF4fC7Q0ZS5kr8YrnxxJMhqdcgTNuqkLaxxX0sWtkUObCHWyiIxQjQB
-   Q69X5+5j31L3YEm6RrB07PK1WZe5aOm9bf6Qc7HjIell8HpIFrr0lsN/U
-   o=;
-IronPort-SDR: jrZoGAqkXJG5/VEMwAsmNCk2SAcbGsB/n7uTLDUhPRMVdWy2buwdxjHwW6nEa2qv+PzUHVREiV
- og2MbuqSd/pQ==
+  bh=/sVpiSAI9YWKHrmDdfu4LmRBH1g0j8nLhCcZ0fPcouc=;
+  b=Fh9yZDJ4k9fANszGOwO2DhbYom/Apix1Y+Kw4qdOn03NqXdCoK/AAW4j
+   mgqJakQlItZ7zQKDqQqDBtdgG9KYS3Aow+CBY72XkWI5bGXhXrc5e+qrt
+   OhYVAzWnI1uKIgMfJCFmohymPuxbD0oxuhmgn2VWAAENPx7d3Pa2SpMjc
+   Q=;
+IronPort-SDR: a0SRByWhjXYJcG4RKiS7hJwpMa3ZbfSpxLzHLEV36/FORoo7hyZImF7opnbn0dOg3h4ZGEw0Q1
+ /3m95UlqmIlg==
 X-IronPort-AV: E=Sophos;i="5.73,432,1583193600"; 
-   d="scan'208";a="37413097"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 May 2020 09:17:28 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 1FC89A2391;
-        Mon, 25 May 2020 09:17:26 +0000 (UTC)
+   d="scan'208";a="47142503"
+Received: from sea32-co-svc-lb4-vlan2.sea.corp.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.47.23.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 25 May 2020 09:17:54 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id D61E1A233F;
+        Mon, 25 May 2020 09:17:52 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 25 May 2020 09:17:25 +0000
+ id 15.0.1497.2; Mon, 25 May 2020 09:17:51 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.90) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 25 May 2020 09:17:05 +0000
+ id 15.0.1497.2; Mon, 25 May 2020 09:17:36 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -55,9 +55,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <linux-damon@amazon.com>, <linux-mm@kvack.org>,
         <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v13 02/15] mm/page_ext: Export lookup_page_ext() to GPL modules
-Date:   Mon, 25 May 2020 11:14:59 +0200
-Message-ID: <20200525091512.30391-3-sjpark@amazon.com>
+Subject: [PATCH v13 03/15] mm: Introduce Data Access MONitor (DAMON)
+Date:   Mon, 25 May 2020 11:15:00 +0200
+Message-ID: <20200525091512.30391-4-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200525091512.30391-1-sjpark@amazon.com>
 References: <20200525091512.30391-1-sjpark@amazon.com>
@@ -73,26 +73,291 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit exports 'lookup_page_ext()' to GPL modules.  This will be
-used by DAMON.
+This commit introduces a kernel module named DAMON.  Note that this
+commit is implementing only the stub for the module load/unload, basic
+data structures, and simple manipulation functions of the structures to
+keep the size of commit small.  The core mechanisms of DAMON will be
+implemented one by one by following commits.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/page_ext.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/damon.h |  54 +++++++++++++
+ mm/Kconfig            |  12 +++
+ mm/Makefile           |   1 +
+ mm/damon.c            | 173 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 240 insertions(+)
+ create mode 100644 include/linux/damon.h
+ create mode 100644 mm/damon.c
 
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index 4ade843ff588..71169b45bba9 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -131,6 +131,7 @@ struct page_ext *lookup_page_ext(const struct page *page)
- 					MAX_ORDER_NR_PAGES);
- 	return get_entry(base, index);
- }
-+EXPORT_SYMBOL_GPL(lookup_page_ext);
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+new file mode 100644
+index 000000000000..0a20d7f262b5
+--- /dev/null
++++ b/include/linux/damon.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * DAMON api
++ *
++ * Copyright 2019-2020 Amazon.com, Inc. or its affiliates.
++ *
++ * Author: SeongJae Park <sjpark@amazon.de>
++ */
++
++#ifndef _DAMON_H_
++#define _DAMON_H_
++
++#include <linux/random.h>
++#include <linux/types.h>
++
++/**
++ * struct damon_region - Represents a monitoring target region of
++ * [@vm_start, @vm_end).
++ *
++ * @vm_start:		Start address of the region (inclusive).
++ * @vm_end:		End address of the region (exclusive).
++ * @sampling_addr:	Address of the sample for the next access check.
++ * @nr_accesses:	Access frequency of this region.
++ * @list:		List head for siblings.
++ */
++struct damon_region {
++	unsigned long vm_start;
++	unsigned long vm_end;
++	unsigned long sampling_addr;
++	unsigned int nr_accesses;
++	struct list_head list;
++};
++
++/**
++ * struct damon_task - Represents a monitoring target task.
++ * @pid:		Process id of the task.
++ * @regions_list:	Head of the monitoring target regions of this task.
++ * @list:		List head for siblings.
++ */
++struct damon_task {
++	int pid;
++	struct list_head regions_list;
++	struct list_head list;
++};
++
++/**
++ * struct damon_ctx - Represents a context for each monitoring.
++ * @tasks_list:		Head of monitring target tasks (&damon_task) list.
++ */
++struct damon_ctx {
++	struct list_head tasks_list;	/* 'damon_task' objects */
++};
++
++#endif
+diff --git a/mm/Kconfig b/mm/Kconfig
+index ab80933be65f..9ea49633a6df 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -739,4 +739,16 @@ config ARCH_HAS_HUGEPD
+ config MAPPING_DIRTY_HELPERS
+         bool
  
- static int __init alloc_node_page_ext(int nid)
- {
++config DAMON
++	tristate "Data Access Monitor"
++	depends on MMU
++	help
++	  Provides data access monitoring.
++
++	  DAMON is a kernel module that allows users to monitor the actual
++	  memory access pattern of specific user-space processes.  It aims to
++	  be 1) accurate enough to be useful for performance-centric domains,
++	  and 2) sufficiently light-weight so that it can be applied online.
++	  If unsure, say N.
++
+ endmenu
+diff --git a/mm/Makefile b/mm/Makefile
+index 272e66039e70..5346314edee6 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -110,3 +110,4 @@ obj-$(CONFIG_HMM_MIRROR) += hmm.o
+ obj-$(CONFIG_MEMFD_CREATE) += memfd.o
+ obj-$(CONFIG_MAPPING_DIRTY_HELPERS) += mapping_dirty_helpers.o
+ obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
++obj-$(CONFIG_DAMON) += damon.o
+diff --git a/mm/damon.c b/mm/damon.c
+new file mode 100644
+index 000000000000..a5a7820ef0ad
+--- /dev/null
++++ b/mm/damon.c
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Data Access Monitor
++ *
++ * Copyright 2019-2020 Amazon.com, Inc. or its affiliates.
++ *
++ * Author: SeongJae Park <sjpark@amazon.de>
++ */
++
++#define pr_fmt(fmt) "damon: " fmt
++
++#include <linux/damon.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#define damon_get_task_struct(t) \
++	(get_pid_task(find_vpid(t->pid), PIDTYPE_PID))
++
++#define damon_next_region(r) \
++	(container_of(r->list.next, struct damon_region, list))
++
++#define damon_prev_region(r) \
++	(container_of(r->list.prev, struct damon_region, list))
++
++#define damon_for_each_region(r, t) \
++	list_for_each_entry(r, &t->regions_list, list)
++
++#define damon_for_each_region_safe(r, next, t) \
++	list_for_each_entry_safe(r, next, &t->regions_list, list)
++
++#define damon_for_each_task(t, ctx) \
++	list_for_each_entry(t, &(ctx)->tasks_list, list)
++
++#define damon_for_each_task_safe(t, next, ctx) \
++	list_for_each_entry_safe(t, next, &(ctx)->tasks_list, list)
++
++/* Get a random number in [l, r) */
++#define damon_rand(l, r) (l + prandom_u32() % (r - l))
++
++/*
++ * Construct a damon_region struct
++ *
++ * Returns the pointer to the new struct if success, or NULL otherwise
++ */
++static struct damon_region *damon_new_region(struct damon_ctx *ctx,
++				unsigned long vm_start, unsigned long vm_end)
++{
++	struct damon_region *region;
++
++	region = kmalloc(sizeof(*region), GFP_KERNEL);
++	if (!region)
++		return NULL;
++
++	region->vm_start = vm_start;
++	region->vm_end = vm_end;
++	region->nr_accesses = 0;
++	INIT_LIST_HEAD(&region->list);
++
++	return region;
++}
++
++/*
++ * Add a region between two other regions
++ */
++static inline void damon_insert_region(struct damon_region *r,
++		struct damon_region *prev, struct damon_region *next)
++{
++	__list_add(&r->list, &prev->list, &next->list);
++}
++
++static void damon_add_region(struct damon_region *r, struct damon_task *t)
++{
++	list_add_tail(&r->list, &t->regions_list);
++}
++
++static void damon_del_region(struct damon_region *r)
++{
++	list_del(&r->list);
++}
++
++static void damon_free_region(struct damon_region *r)
++{
++	kfree(r);
++}
++
++static void damon_destroy_region(struct damon_region *r)
++{
++	damon_del_region(r);
++	damon_free_region(r);
++}
++
++/*
++ * Construct a damon_task struct
++ *
++ * Returns the pointer to the new struct if success, or NULL otherwise
++ */
++static struct damon_task *damon_new_task(int pid)
++{
++	struct damon_task *t;
++
++	t = kmalloc(sizeof(*t), GFP_KERNEL);
++	if (!t)
++		return NULL;
++
++	t->pid = pid;
++	INIT_LIST_HEAD(&t->regions_list);
++
++	return t;
++}
++
++static void damon_add_task(struct damon_ctx *ctx, struct damon_task *t)
++{
++	list_add_tail(&t->list, &ctx->tasks_list);
++}
++
++static void damon_del_task(struct damon_task *t)
++{
++	list_del(&t->list);
++}
++
++static void damon_free_task(struct damon_task *t)
++{
++	struct damon_region *r, *next;
++
++	damon_for_each_region_safe(r, next, t)
++		damon_free_region(r);
++	kfree(t);
++}
++
++static void damon_destroy_task(struct damon_task *t)
++{
++	damon_del_task(t);
++	damon_free_task(t);
++}
++
++static unsigned int nr_damon_tasks(struct damon_ctx *ctx)
++{
++	struct damon_task *t;
++	unsigned int nr_tasks = 0;
++
++	damon_for_each_task(t, ctx)
++		nr_tasks++;
++
++	return nr_tasks;
++}
++
++static unsigned int nr_damon_regions(struct damon_task *t)
++{
++	struct damon_region *r;
++	unsigned int nr_regions = 0;
++
++	damon_for_each_region(r, t)
++		nr_regions++;
++
++	return nr_regions;
++}
++
++static int __init damon_init(void)
++{
++	return 0;
++}
++
++static void __exit damon_exit(void)
++{
++}
++
++module_init(damon_init);
++module_exit(damon_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("SeongJae Park <sjpark@amazon.de>");
++MODULE_DESCRIPTION("DAMON: Data Access MONitor");
 -- 
 2.17.1
 
