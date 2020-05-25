@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E2B1E0849
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540AC1E0B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgEYH4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 03:56:23 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:44907 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgEYH4W (ORCPT
+        id S2389672AbgEYJ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389333AbgEYJ4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 03:56:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590393381; x=1621929381;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gka3xhQHdVujI+DvQjAJqTOsOu9U8CaV+bHB/w8dE/o=;
-  b=YyIwB8za8r2vJdfhDQU+5CVvtDoAlCxV2w513h3UyP0FCQ4sDaFKI4EU
-   HyEJL7a+otopljhrXC3rp9D20UNtt48Ls26mB+hBvjk2mNlE6U2EgM16W
-   h+p5OgAvFGYTwJ+uuGuOUBPfP3yD9jXn2iY3LKmasUzlOYFBYINMOyHCE
-   2vtk2VGlU+2gRQqnQwuNNTJxKFcPYzSBrv9DNhsDJexeJGb4YkgQ/ntlT
-   /KjNxduk89yYEGpQZpuWW3+uRYA5k3uxiD7rbaCVpsRRTsXDjIOvaGIzW
-   0eTaQtUhyvIBut6jS9RG4njEx0VOgs6z2Y1NAByrCxODO3oGjHbaFU51X
-   Q==;
-IronPort-SDR: Ku69RMxDc/Tw6URFoi4cr3b7iyBayER/a+CE1TVr4cboF+zCp4QXr0yIO0Pp2n7W9zFu10SaTX
- VgWUNjMsFn5BPEnc7TiTexBUrXT76fvPrFq3lL7fds7XUsH3t+jaNq2vCtUa56eqflh7LogrE+
- n7Kb9WRgi6JvSP1EyZA3OI5d1DogIajNEVhIchGkaJJXYdxtQn9SF7zT0O4hmE7vYwHfjSjnTN
- Z/djyDiR90H/vR7J3EGgBpG3mgTx4aLk+TPb7NqXHyknlvpvJU40ColsgtH7HLxEJemQbS/Bdu
- oNg=
-X-IronPort-AV: E=Sophos;i="5.73,432,1583218800"; 
-   d="scan'208";a="13408235"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2020 00:56:20 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 25 May 2020 00:56:22 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Mon, 25 May 2020 00:56:13 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        <syzbot+9c6f0f1f8e32223df9a4@syzkaller.appspotmail.com>
-Subject: [PATCH] bridge: mrp: Fix out-of-bounds read in br_mrp_parse
-Date:   Mon, 25 May 2020 09:55:41 +0000
-Message-ID: <20200525095541.46673-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 25 May 2020 05:56:23 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F188C061A0E;
+        Mon, 25 May 2020 02:56:23 -0700 (PDT)
+Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <a.darwish@linutronix.de>)
+        id 1jd9qA-0006Ec-Sg; Mon, 25 May 2020 11:56:15 +0200
+Date:   Mon, 25 May 2020 11:56:13 +0200
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Phillip Susi <psusi@ubuntu.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-block@vger.kernel.org
+Subject: Re: [PATCH v1 04/25] block: nr_sects_write(): Disable preemption on
+ seqcount write
+Message-ID: <20200525095613.GB370823@debian-buster-darwi.lab.linutronix.de>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-5-a.darwish@linutronix.de>
+ <20200522163908.GP325280@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522163908.GP325280@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue was reported by syzbot. When the function br_mrp_parse was
-called with a valid net_bridge_port, the net_bridge was an invalid
-pointer. Therefore the check br->stp_enabled could pass/fail
-depending where it was pointing in memory.
-The fix consists of setting the net_bridge pointer if the port is a
-valid pointer.
+Peter Zijlstra <peterz@infradead.org> wrote:
+> On Tue, May 19, 2020 at 11:45:26PM +0200, Ahmed S. Darwish wrote:
+> > For optimized block readers not holding a mutex, the "number of sectors"
+> > 64-bit value is protected from tearing on 32-bit architectures by a
+> > sequence counter.
+> >
+> > Disable preemption before entering that sequence counter's write side
+> > critical section. Otherwise, the read side can preempt the write side
+> > section and spin for the entire scheduler tick. If the reader belongs to
+> > a real-time scheduling class, it can spin forever and the kernel will
+> > livelock.
+> >
+> > Fixes: c83f6bf98dc1 ("block: add partition resize function to blkpg ioctl")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> > Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > ---
+> >  block/blk.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/block/blk.h b/block/blk.h
+> > index 0a94ec68af32..151f86932547 100644
+> > --- a/block/blk.h
+> > +++ b/block/blk.h
+> > @@ -470,9 +470,11 @@ static inline sector_t part_nr_sects_read(struct hd_struct *part)
+> >  static inline void part_nr_sects_write(struct hd_struct *part, sector_t size)
+> >  {
+> >  #if BITS_PER_LONG==32 && defined(CONFIG_SMP)
+> > +	preempt_disable();
+> >  	write_seqcount_begin(&part->nr_sects_seq);
+> >  	part->nr_sects = size;
+> >  	write_seqcount_end(&part->nr_sects_seq);
+> > +	preempt_enable();
+> >  #elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
+> >  	preempt_disable();
+> >  	part->nr_sects = size;
+>
+> This does look like something that include/linux/u64_stats_sync.h could
+> help with.
 
-Reported-by: syzbot+9c6f0f1f8e32223df9a4@syzkaller.appspotmail.com
-Fixes: 6536993371fa ("bridge: mrp: Integrate MRP into the bridge")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_mrp_netlink.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Correct.
 
-diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
-index 397e7f710772a..4a08a99519b04 100644
---- a/net/bridge/br_mrp_netlink.c
-+++ b/net/bridge/br_mrp_netlink.c
-@@ -27,6 +27,12 @@ int br_mrp_parse(struct net_bridge *br, struct net_bridge_port *p,
- 	struct nlattr *tb[IFLA_BRIDGE_MRP_MAX + 1];
- 	int err;
- 
-+	/* When this function is called for a port then the br pointer is
-+	 * invalid, therefor set the br to point correctly
-+	 */
-+	if (p)
-+		br = p->br;
-+
- 	if (br->stp_enabled != BR_NO_STP) {
- 		NL_SET_ERR_MSG_MOD(extack, "MRP can't be enabled if STP is already enabled");
- 		return -EINVAL;
--- 
-2.26.2
+I just felt though that this would be too much for a 'Cc: stable' patch.
 
+In another (in-progress) seqlock.h patch series, all of the seqcount_t
+call sites that are used for 64-bit values tearing protection on 32-bit
+kernels are transformed to the u64_stats_sync.h API.
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
