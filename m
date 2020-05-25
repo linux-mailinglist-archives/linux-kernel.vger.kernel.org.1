@@ -2,211 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA4E1E0DAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5721C1E0AFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390359AbgEYLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390165AbgEYLrt (ORCPT
+        id S2389658AbgEYJsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:48:30 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:54048 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389374AbgEYJsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:47:49 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F7FC05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:47:48 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g9so14758401edr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hl7IW7DWz99YomR3QOZBXmvlxAGPmsXZQwu20AX5v3s=;
-        b=buAXv4JEaQqiHrO8/RCz7HUcFTvhmEjLbUZHKrXlRHNck0Rq6D8WUDoq2L3hNja/6v
-         t1syq8JezlywvTLr95huE9K/RR3oyutUWhO1IsPHTp6b/xHwqCEXwE4xS0rtsqbZ6SEL
-         KwmqiMdE0QJSqHwNi1PaxzQDGEvLE0qUP4uaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hl7IW7DWz99YomR3QOZBXmvlxAGPmsXZQwu20AX5v3s=;
-        b=LTUEtkMKYIay1tNEwyrDGHuwuvjlv7azfwYrFtsaX3hrQRQWkL4yA57ZsK5rUjPiQd
-         ruMRrFDcK4cil6Dcwgeqp/gR6and+r550MOl1h5hPCY0MJgSLXVOqaB8h8aJsrs109Uz
-         EAawkf+A+I8nZ2qHO7NXGpiQt/S9i2e++q+GS2BYv8DawG8wvTCp867KJ2IwEH14Q3My
-         z6DOMFa+TVW48XGk1nGa1D2PihlC8gpY6my3LURO/mMXRR9phRaiY9WT79Q4Y3sLIyNM
-         5K7VEj8597IPH8g3q6NpiII9ozMOUB/35mZsAv6ERR5nV3LXgOL/oDXBHOgP4p4JmdS5
-         RdJg==
-X-Gm-Message-State: AOAM530ri7LyIi4MNozYqcIA5ASDORBfAfBStk20piuKaMlwr0QSMfBI
-        4Px3UWdI+guv0K057+CYTs/99y8/TDQ2+Q==
-X-Google-Smtp-Source: ABdhPJw4IidvW31wFrC1oKMiivgxU/hkxDXmWH5lX9bA4EB3MAV2UNKdr/KHmrWjyIgg/l93GX5ytw==
-X-Received: by 2002:a50:fc83:: with SMTP id f3mr15281795edq.138.1590407267291;
-        Mon, 25 May 2020 04:47:47 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id b62sm16066954edf.28.2020.05.25.04.47.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 04:47:46 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id x6so3201074wrm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:47:45 -0700 (PDT)
-X-Received: by 2002:adf:e543:: with SMTP id z3mr14323859wrm.385.1590407265383;
- Mon, 25 May 2020 04:47:45 -0700 (PDT)
+        Mon, 25 May 2020 05:48:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590400110; x=1621936110;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pzdPx7JJBtptXyJ27Cg1HGCXEq6YG6KTHhH6ZH3PCY0=;
+  b=gUae7FOFA1XC9I+yxVz1+qwsJXjlifx03l0WZrAYFw5mLr7H7dpsP58R
+   k9jsrzyiwonDezJ465FV1nA6fuvPC12XPy/4f0U4vQB32DhLE8QqmfylO
+   Oid81qR1YoaGbJjOIepamM3lM3yu0oR4iH5n/Pgy29KGpMMn0C+5Wh8X8
+   PApwOuYyOuGLGVHovOGyOV6SyepLDUqWyqglqMCW19eMQ6DQ4MR39EqJm
+   qjQ/D/BoKWInWPRZ5V8iKs63mvJ5T25Lnrps+xHenpxIA2+usALAXXmdW
+   LSH02JPS3yp7UDk3OFdlDjVV7Mj5N6LpWSPs+N4EK8cPqhtltDtsh0BoR
+   w==;
+IronPort-SDR: izbUyP2AtLDrW6QFy3/RCBzlNSwb3grEN3w1QZCgpBLNy3K/Cno44uevHOqUtBtkIIyNOLwGCr
+ oywkInRRb7KfB6eW1AjAT5qEos7RmmpQge4Ek3h4w0zbTXxrGr+n0+7J3J9yxOMh1zq71LTvYM
+ H5xy/h3aN1HNJs1LsxlPmxgbz9OavGIuQukOODhSxEyZrfq+tCQ1kxErEkIkMr0u1E94tON8MT
+ IIzZkQl6C3Kr8sEy/X6XSqYRI/aYTsIuZZZcSQTAF15DPftOSOlC39h9UfNUXzCo45KN+qtKRP
+ Htc=
+X-IronPort-AV: E=Sophos;i="5.73,433,1583218800"; 
+   d="scan'208";a="76964008"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2020 02:48:30 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 25 May 2020 02:48:30 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Mon, 25 May 2020 02:48:28 -0700
+Date:   Mon, 25 May 2020 11:48:07 +0000
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+CC:     <roopa@cumulusnetworks.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: MRP netlink interface
+Message-ID: <20200525114807.w7g77ybflb67en3h@soft-dev3.localdomain>
+References: <20200525112827.t4nf4lamz6g4g2c5@soft-dev3.localdomain>
+ <2176b58f-35f3-36c1-8ba7-d18649eb29f7@cumulusnetworks.com>
 MIME-Version: 1.0
-References: <20200522202130.13306-1-jonas@kwiboo.se>
-In-Reply-To: <20200522202130.13306-1-jonas@kwiboo.se>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 25 May 2020 13:47:33 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5C7SsLET_6yHNpXnG5ozb09znOpRV1Rx8-uDpy=d4+ETQ@mail.gmail.com>
-Message-ID: <CAAFQd5C7SsLET_6yHNpXnG5ozb09znOpRV1Rx8-uDpy=d4+ETQ@mail.gmail.com>
-Subject: Re: [PATCH] media: rkvdec: Fix H264 scaling list order
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <2176b58f-35f3-36c1-8ba7-d18649eb29f7@cumulusnetworks.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 22, 2020 at 10:21 PM Jonas Karlman <jonas@kwiboo.se> wrote:
->
-> The Rockchip Video Decoder driver is expecting that the values in a
-> scaling list are in zig-zag order and applies the inverse scanning process
-> to get the values in matrix order.
->
-> Commit 0b0393d59eb4 ("media: uapi: h264: clarify expected
-> scaling_list_4x4/8x8 order") clarified that the values in the scaling list
-> should already be in matrix order.
->
-> Fix this by removing the reordering and change to use two memcpy.
->
-> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> ---
->  drivers/staging/media/rkvdec/rkvdec-h264.c | 70 +++++++---------------
->  1 file changed, 22 insertions(+), 48 deletions(-)
->
+The 05/25/2020 12:33, Nikolay Aleksandrov wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On 25/05/2020 14:28, Horatiu Vultur wrote:
+> > Hi,
+> >
+> > While I was working on adding support for MRA role to MRP, I noticed that I
+> > might have some issues with the netlink interface, so it would be great if you
+> > can give me an advice on how to continue.
+> >
+> > First a node with MRA role can behave as a MRM(Manager) or as a
+> > MRC(Client). The behaviour is decided by the priority of each node. So
+> > to have this functionality I have to extend the MRP netlink interface
+> > and this brings me to my issues.
+> >
+> > My first approach was to extend the 'struct br_mrp_instance' with a field that
+> > contains the priority of the node. But this breaks the backwards compatibility,
+> > and then every time when I need to change something, I will break the backwards
+> > compatibility. Is this a way to go forward?
+> >
+> > Another approach is to restructure MRP netlink interface. What I was thinking to
+> > keep the current attributes (IFLA_BRIDGE_MRP_INSTANCE,
+> > IFLA_BRIDGE_MRP_PORT_STATE,...) but they will be nested attributes and each of
+> > this attribute to contain the fields of the structures they represents.
+> > For example:
+> > [IFLA_AF_SPEC] = {
+> >     [IFLA_BRIDGE_FLAGS]
+> >     [IFLA_BRIDGE_MRP]
+> >         [IFLA_BRIDGE_MRP_INSTANCE]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
+> >         [IFLA_BRIDGE_MRP_RING_ROLE]
+> >             [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
+> >             [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
+> >         ...
+> > }
+> > And then I can parse each field separately and then fill up the structure
+> > (br_mrp_instance, br_mrp_port_role, ...) which will be used forward.
+> > Then when this needs to be extended with the priority it would have the
+> > following format:
+> > [IFLA_AF_SPEC] = {
+> >     [IFLA_BRIDGE_FLAGS]
+> >     [IFLA_BRIDGE_MRP]
+> >         [IFLA_BRIDGE_MRP_INSTANCE]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
+> >             [IFLA_BRIDGE_MRP_INSTANCE_PRIO]
+> >         [IFLA_BRIDGE_MRP_RING_ROLE]
+> >             [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
+> >             [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
+> >         ...
+> > }
+> > And also the br_mrp_instance will have a field called prio.
+> > So now, if the userspace is not updated to have support for setting the prio
+> > then the kernel will use a default value. Then if the userspace contains a field
+> > that the kernel doesn't know about, then it would just ignore it.
+> > So in this way every time when the netlink interface will be extended it would
+> > be backwards compatible.
+> >
+> > If it is not possible to break the compatibility then the safest way is to
+> > just add more attributes under IFLA_BRIDGE_MRP but this would just complicate
+> > the kernel and the userspace and it would make it much harder to be extended in
+> > the future.
+> >
+> > My personal choice would be the second approach, even if it breaks the backwards
+> > compatibility. Because it is the easier to go forward and there are only 3
+> > people who cloned the userspace application
+> > (https://github.com/microchip-ung/mrp/graphs/traffic). And two of
+> > these unique cloners is me and Allan.
+> >
+> > So if you have any advice on how to go forward it would be great.
+> >
+> 
+> IIRC this is still in net-next only, right? If so - now would be the time to change it.
+> Once it goes into a release, we'll be stuck with workarounds. So I'd go for solution 2).
 
-+Alexandre Courbot +Jeffrey Kardatzke for visibility
+Yes, this is only in net-next. Then I should ASAP update this with
+solution 2.
 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> index cd4980d06be7..2719f0c66a4a 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> @@ -18,11 +18,16 @@
->  /* Size with u32 units. */
->  #define RKV_CABAC_INIT_BUFFER_SIZE     (3680 + 128)
->  #define RKV_RPS_SIZE                   ((128 + 128) / 4)
-> -#define RKV_SCALING_LIST_SIZE          (6 * 16 + 6 * 64 + 128)
->  #define RKV_ERROR_INFO_SIZE            (256 * 144 * 4)
->
->  #define RKVDEC_NUM_REFLIST             3
->
-> +struct rkvdec_scaling_matrix {
-> +       u8 scaling_list_4x4[6][16];
-> +       u8 scaling_list_8x8[6][64];
-> +       u8 padding[128];
-> +};
-> +
->  struct rkvdec_sps_pps_packet {
->         u32 info[8];
->  };
-> @@ -86,7 +91,7 @@ struct rkvdec_ps_field {
->  /* Data structure describing auxiliary buffer format. */
->  struct rkvdec_h264_priv_tbl {
->         s8 cabac_table[4][464][2];
-> -       u8 scaling_list[RKV_SCALING_LIST_SIZE];
-> +       struct rkvdec_scaling_matrix scaling_list;
->         u32 rps[RKV_RPS_SIZE];
->         struct rkvdec_sps_pps_packet param_set[256];
->         u8 err_info[RKV_ERROR_INFO_SIZE];
-> @@ -785,56 +790,25 @@ static void assemble_hw_rps(struct rkvdec_ctx *ctx,
->         }
->  }
->
-> -/*
-> - * NOTE: The values in a scaling list are in zig-zag order, apply inverse
-> - * scanning process to get the values in matrix order.
-> - */
-> -static const u32 zig_zag_4x4[16] = {
-> -       0, 1, 4, 8, 5, 2, 3, 6, 9, 12, 13, 10, 7, 11, 14, 15
-> -};
-> -
-> -static const u32 zig_zag_8x8[64] = {
-> -       0,  1,  8, 16,  9,  2,  3, 10, 17, 24, 32, 25, 18, 11,  4,  5,
-> -       12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13,  6,  7, 14, 21, 28,
-> -       35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51,
-> -       58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63
-> -};
-> -
-> -static void reorder_scaling_list(struct rkvdec_ctx *ctx,
-> -                                struct rkvdec_h264_run *run)
-> +static void assemble_hw_scaling_list(struct rkvdec_ctx *ctx,
-> +                                    struct rkvdec_h264_run *run)
->  {
->         const struct v4l2_ctrl_h264_scaling_matrix *scaling = run->scaling_matrix;
-> -       const size_t num_list_4x4 = ARRAY_SIZE(scaling->scaling_list_4x4);
-> -       const size_t list_len_4x4 = ARRAY_SIZE(scaling->scaling_list_4x4[0]);
-> -       const size_t num_list_8x8 = ARRAY_SIZE(scaling->scaling_list_8x8);
-> -       const size_t list_len_8x8 = ARRAY_SIZE(scaling->scaling_list_8x8[0]);
->         struct rkvdec_h264_ctx *h264_ctx = ctx->priv;
->         struct rkvdec_h264_priv_tbl *tbl = h264_ctx->priv_tbl.cpu;
-> -       u8 *dst = tbl->scaling_list;
-> -       const u8 *src;
-> -       int i, j;
-> -
-> -       BUILD_BUG_ON(ARRAY_SIZE(zig_zag_4x4) != list_len_4x4);
-> -       BUILD_BUG_ON(ARRAY_SIZE(zig_zag_8x8) != list_len_8x8);
-> -       BUILD_BUG_ON(ARRAY_SIZE(tbl->scaling_list) <
-> -                    num_list_4x4 * list_len_4x4 +
-> -                    num_list_8x8 * list_len_8x8);
-> -
-> -       src = &scaling->scaling_list_4x4[0][0];
-> -       for (i = 0; i < num_list_4x4; ++i) {
-> -               for (j = 0; j < list_len_4x4; ++j)
-> -                       dst[zig_zag_4x4[j]] = src[j];
-> -               src += list_len_4x4;
-> -               dst += list_len_4x4;
-> -       }
->
-> -       src = &scaling->scaling_list_8x8[0][0];
-> -       for (i = 0; i < num_list_8x8; ++i) {
-> -               for (j = 0; j < list_len_8x8; ++j)
-> -                       dst[zig_zag_8x8[j]] = src[j];
-> -               src += list_len_8x8;
-> -               dst += list_len_8x8;
-> -       }
-> +       BUILD_BUG_ON(sizeof(tbl->scaling_list.scaling_list_4x4) !=
-> +                    sizeof(scaling->scaling_list_4x4));
-> +       BUILD_BUG_ON(sizeof(tbl->scaling_list.scaling_list_8x8) !=
-> +                    sizeof(scaling->scaling_list_8x8));
-> +
-> +       memcpy(tbl->scaling_list.scaling_list_4x4,
-> +              scaling->scaling_list_4x4,
-> +              sizeof(scaling->scaling_list_4x4));
-> +
-> +       memcpy(tbl->scaling_list.scaling_list_8x8,
-> +              scaling->scaling_list_8x8,
-> +              sizeof(scaling->scaling_list_8x8));
->  }
->
->  /*
-> @@ -1126,7 +1100,7 @@ static int rkvdec_h264_run(struct rkvdec_ctx *ctx)
->         v4l2_h264_build_b_ref_lists(&reflist_builder, h264_ctx->reflists.b0,
->                                     h264_ctx->reflists.b1);
->
-> -       reorder_scaling_list(ctx, &run);
-> +       assemble_hw_scaling_list(ctx, &run);
->         assemble_hw_pps(ctx, &run);
->         assemble_hw_rps(ctx, &run);
->         config_registers(ctx, &run);
-> --
-> 2.17.1
->
+> 
+> I haven't cloned it, but I do sync your user-space mrp repo to check against the patches. :)
+> 
+
+-- 
+/Horatiu
