@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DCB1E067F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 07:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6161E068B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 07:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgEYFrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 01:47:06 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:40733 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725900AbgEYFrF (ORCPT
+        id S2388821AbgEYFrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 01:47:32 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:62121 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388745AbgEYFr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 01:47:05 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 0F872C1B;
-        Mon, 25 May 2020 01:47:03 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 25 May 2020 01:47:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        subject:from:to:cc:date:message-id:mime-version:content-type
-        :content-transfer-encoding; s=fm3; bh=CIllm1RQGKDnnYq/cuRGvlgqk6
-        bL4rxpvo2PzoGHqJg=; b=N1B8sTInp3grE6pWC/nOMrPTzmVfN2WCZy1EciTqgK
-        XFXjj/TpYwHNkQ0UZnTGsRvwRoAYj10wPIgHtLC822w/EojuddJUjZwBtI79evr4
-        5Bc2bB9z7c4pCPJuq2R6WNpglHYTSWj7HKbPbz4MLwT37DUUVToYMXEDuO0suWjB
-        ijlinE6A4Zl2DN6KU84GAVbZ6GOq3/P/unXeUMa5DE911ZMv2Z2Fffio0sHpT7/D
-        3ezRMTu6T/faL0LWSoDtDDjBAHXpgl7vskD15e9ouYcqOBNaE9SJ3uA/IN6TkR6e
-        l5h6rzb7Rs1bSkPY27nooYXz817eXRnce7jDOz4mgmdA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=CIllm1
-        RQGKDnnYq/cuRGvlgqk6bL4rxpvo2PzoGHqJg=; b=KMbQ2B5kP4ccBw3FVtCaBu
-        mBe7ZpfGxQWA/T7q9Z2MdB621Ta90lhFKO4y7M710fZAq6P8x2LppNhM1zLvZUUi
-        AR4SIvfsEnvGjnNjntZCzClL5XkvOdx3igrB1rLXcyotw1Fqa0nBwBD9LxGcA4LJ
-        yUc++fJQKDpIBcrCQ4dRDZd5BAeSBbOzkbCswWjs6A4hXd6W4mugNPq5grukMdeV
-        SBA3xtAD4QzSIGECgIu268nMGad6tx3kHj5ih8kYvENqgLpKX1GNCViHiSZnVLZx
-        GacnJx7W50rqj9uLcPIy0Tj7CdNsUcAp9LzeHYPz9Ra4BIQsbEDLtFzAQUYyO3sw
-        ==
-X-ME-Sender: <xms:1lvLXt68Hdg0jygQTe662_s_m0f4pXUJfj0zFdpMERVCROhpTGGUzA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudduledgleejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffhvfffkfgfgggtgfesthejredttderjeenucfhrhhomhepkfgrnhcumfgv
-    nhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpedtge
-    eghfevffeutdeviefgkefhhfeijeffgfeujeejueehgeetueffgfeifeegveenucfkphep
-    uddukedrvddtkedrudejkedrudeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:1lvLXq769qTWUDaFNpMZ8liDVSPNLZuxAATRZ9dV1JF25-gFg9bZUw>
-    <xmx:1lvLXkdoKRbWWiFkpIG9kb9KjVCKjnXzCLrL7s1mrThkjpg1eFuYQw>
-    <xmx:1lvLXmKcqJuhxEvGis3s2wIDS7BlQyrtcb11hXmbnyI7KgS811NvcA>
-    <xmx:11vLXvj_XGn5OYAmqAXLMgp94WYk3PrfjhyCd-8Rxdi0k2qRQ4fhjw>
-Received: from mickey.localdomain (unknown [118.208.178.18])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7C5413066549;
-        Mon, 25 May 2020 01:47:02 -0400 (EDT)
-Received: from mickey.themaw.net (localhost [127.0.0.1])
-        by mickey.localdomain (Postfix) with ESMTP id 90BB3A01C8;
-        Mon, 25 May 2020 13:46:59 +0800 (AWST)
-Subject: [PATCH 0/4] kernfs: proposed locking and concurrency improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 25 May 2020 13:46:59 +0800
-Message-ID: <159038508228.276051.14042452586133971255.stgit@mickey.themaw.net>
-User-Agent: StGit/0.19
+        Mon, 25 May 2020 01:47:28 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 04P5l9A0013208;
+        Mon, 25 May 2020 14:47:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 04P5l9A0013208
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1590385629;
+        bh=U5HG07zP7ca2X4TcXFbTL58H0LBgSxaGOS7/4KlXXDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tJu2whngR2eETQTKf6XrEQ1x1oU4lWGbp0+qxZY3OyjIafyL0Zqx4Dv54dXAId8AI
+         fym6mc89UU9m9IoFCIPMc0AQWbPWRCPMVSy6KigYe/Gd7TMo2plCWnzvMJ4+C7dE7f
+         sdcIysmx6GXVdbpBE1n5Qb+DALmLnTZzVcql3SBFVlVLr7FLiF7J+zkCtyOxNjApgK
+         C70Um/Z4sXJfn3O0Q4XfidDrSm2DXnpQGnz91kBUE+fMLk9GlBGvfmpUNVSNRAWkDn
+         bJEzKHwmL8mkqVdFQYaLlZ43D0OvgbadIOtTeSt5VG8Jl0sjTfHrTkV9yp4W1jOSa3
+         cuVKTbahF5QnQ==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] modpost: fix potential segmentation fault for addend_i386_rel()
+Date:   Mon, 25 May 2020 14:47:04 +0900
+Message-Id: <20200525054705.1066033-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For very large systems with hundreds of CPUs and TBs of RAM booting can
-take a very long time.
+This may not be a practical problem, but the second pass of ARCH=i386
+modpost causes segmentation fault if the -s option is not passed.
 
-Initial reports showed that booting a configuration of several hundred
-CPUs and 64TB of RAM would take more than 30 minutes and require kernel
-parameters of udev.children-max=1024 systemd.default_timeout_start_sec=3600
-to prevent dropping into emergency mode.
+    MODPOST 12 modules
+  Segmentation fault (core dumped)
+  make[2]: *** [scripts/Makefile.modpost:94: __modpost] Error 139
+  make[1]: *** [Makefile:1339: modules] Error 2
+  make[1]: *** Waiting for unfinished jobs....
 
-Gathering information about what's happening during the boot is a bit
-challenging. But two main issues appeared to be, a large number of path
-lookups for non-existent files, and high lock contention in the VFS during
-path walks particularly in the dentry allocation code path.
+The segmentation fault occurs when section_rel() is called for vmlinux,
+which is untested in regular builds. The cause of the problem is
+reloc_location() returns a wrong pointer for ET_EXEC object type.
+In this case, you need to subtract sechdr->sh_addr, otherwise it would
+get access beyond the mmap'ed memory.
 
-The underlying cause of this was believed to be the sheer number of sysfs
-memory objects, 100,000+ for a 64TB memory configuration.
+Add sym_get_data_offset() helper to avoid code duplication.
 
-This patch series tries to reduce the locking needed during path walks
-based on the assumption that there are many path walks with a fairly
-large portion of those for non-existent paths.
-
-This was done by adding kernfs negative dentry caching (non-existent
-paths) to avoid continual alloc/free cycle of dentries and a read/write
-semaphore introduced to increase kernfs concurrency during path walks.
-
-With these changes the kernel parameters of udev.children-max=2048 and
-systemd.default_timeout_start_sec=300 for are still needed to get the
-fastest boot times and result in boot time of under 5 minutes.
-
-There may be opportunities for further improvements but the series here
-has seen a fair amount of testing. And thinking about what else could be
-done, and discussing it with Rick Lindsay, I suspect improvements will
-get more difficult to implement for somewhat less improvement so I think
-what we have here is a good start for now.
-
-I think what's needed now is patch review, and if we can get through
-that, send them via linux-next for broader exposure and hopefully have
-them merged into mainline.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
-Ian Kent (4):
-      kernfs: switch kernfs to use an rwsem
-      kernfs: move revalidate to be near lookup
-      kernfs: improve kernfs path resolution
-      kernfs: use revision to identify directory node changes
+ scripts/mod/modpost.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-
- fs/kernfs/dir.c             |  283 ++++++++++++++++++++++++++++---------------
- fs/kernfs/file.c            |    4 -
- fs/kernfs/inode.c           |   16 +-
- fs/kernfs/kernfs-internal.h |   29 ++++
- fs/kernfs/mount.c           |   12 +-
- fs/kernfs/symlink.c         |    4 -
- include/linux/kernfs.h      |    5 +
- 7 files changed, 232 insertions(+), 121 deletions(-)
-
---
-Ian
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 34f2aa3a021f..a8306adb3554 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -345,19 +345,23 @@ static const char *sec_name(struct elf_info *elf, int secindex)
+ 	return sech_name(elf, &elf->sechdrs[secindex]);
+ }
+ 
+-static void *sym_get_data(const struct elf_info *info, const Elf_Sym *sym)
++static void *sym_get_data_offset(const struct elf_info *info,
++				 unsigned int secindex, unsigned long offset)
+ {
+-	unsigned int secindex = get_secindex(info, sym);
+ 	Elf_Shdr *sechdr = &info->sechdrs[secindex];
+-	unsigned long offset;
+ 
+-	offset = sym->st_value;
+ 	if (info->hdr->e_type != ET_REL)
+ 		offset -= sechdr->sh_addr;
+ 
+ 	return (void *)info->hdr + sechdr->sh_offset + offset;
+ }
+ 
++static void *sym_get_data(const struct elf_info *info, const Elf_Sym *sym)
++{
++	return sym_get_data_offset(info, get_secindex(info, sym),
++				   sym->st_value);
++}
++
+ #define strstarts(str, prefix) (strncmp(str, prefix, strlen(prefix)) == 0)
+ 
+ static enum export export_from_secname(struct elf_info *elf, unsigned int sec)
+@@ -1761,11 +1765,7 @@ static void check_section_mismatch(const char *modname, struct elf_info *elf,
+ static unsigned int *reloc_location(struct elf_info *elf,
+ 				    Elf_Shdr *sechdr, Elf_Rela *r)
+ {
+-	Elf_Shdr *sechdrs = elf->sechdrs;
+-	int section = sechdr->sh_info;
+-
+-	return (void *)elf->hdr + sechdrs[section].sh_offset +
+-		r->r_offset;
++	return sym_get_data_offset(elf, sechdr->sh_info, r->r_offset);
+ }
+ 
+ static int addend_386_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
+-- 
+2.25.1
 
