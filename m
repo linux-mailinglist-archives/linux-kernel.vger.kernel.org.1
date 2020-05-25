@@ -2,130 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A561E0A76
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6577C1E0CFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389470AbgEYJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:28:55 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:48362 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389330AbgEYJ2z (ORCPT
+        id S2390163AbgEYLaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 07:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388136AbgEYLaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:28:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1590398934; x=1621934934;
-  h=date:from:to:subject:message-id:mime-version;
-  bh=uIfaX+EQPpYkQ3H7bVFuEEKfX/tCjxDONoYFIwtAJpk=;
-  b=XuIA6QPiFQzLre4Y9H84tU7z24o6fQGtPDOx0cURrP6TEua5/0uanO3+
-   QMNPvXtplHCFvTutj+W9N0V3mtmKW25yqyExZbM0BsuSpCUE1IFOWsZ8r
-   Q34DOYwCwE/YsUHSmYQZkxTF4hVg+h9X2KSxkdPeutjpSghJ/XQKYbVEM
-   vDE+4QuHbYJls/czTpMKWkk+gJ72Wnik8yIzjqYlQybwg3gV4GhGT1YVv
-   TZBSO4MpwphYUXsyZJb0nGFq0Iuuq8g5334wvL8CUqEoW6/ALuwpl/ClS
-   55owo4jA2qhZGqpCjMcSTfWJxWlDawFqfyNGNXHg67L4H87oDjNFKXfAi
-   w==;
-IronPort-SDR: JjNAMYcmRpZ/Bc0iYhVo/n47uwehIHE6TJ9Uojq9rvVkZInGYF1YH1S7oZJJ/lv+84dqd7Efcj
- zBXBI3M2SSwSdL5tQmDJFKsGX3fkVwZhxaYds6dSvTONT6tisASBHkAh3IODgdmB4dYFU8Dy4r
- YVYVrNhHkYy/QSanww25b26atIHy0Chd1yPW3bdLoWx/S1wwOflgJDJ7ERaGBZztH8slNIJMff
- cwc8laMwE0U1zDaWZAqeBcl+qIcUI6OXou8GWVS2nVDzB5kh1TH23B2AU9V8TwmUwHsWJni5qZ
- +zk=
-X-IronPort-AV: E=Sophos;i="5.73,433,1583218800"; 
-   d="scan'208";a="76274503"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2020 02:28:53 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 25 May 2020 02:28:53 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Mon, 25 May 2020 02:28:53 -0700
-Date:   Mon, 25 May 2020 11:28:27 +0000
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
-        <UNGLinuxDriver@microchip.com>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: MRP netlink interface
-Message-ID: <20200525112827.t4nf4lamz6g4g2c5@soft-dev3.localdomain>
+        Mon, 25 May 2020 07:30:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E91FC061A0E;
+        Mon, 25 May 2020 04:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=UF+mJ0+Cs0Lv3KwU8N/ssVHfdhiaXBBwzKToK1lfStc=; b=hwt9IINn+c7e0TQ5Vb7r4OAtsU
+        QAlEQo2N7mTXfUby/97+fvfgsSnerxieE5v2HBe+1xqKCNsTHi8/0yMU6L/9Mj2LC3OshM6eRlbsB
+        dlstA2Wlfh5mzl8WV5AxDHFVu9q0SXtqDbXBOvlZXPo1pQUssuScT3hL9mgbXLsR4lM8nM5NVFez0
+        vSYqjmxcyRZjwKCdkoxDRM3FslVaTFpg9hgJpqGJkaoOveydcJNCxVcJC1PAXB4KI0ZrAAYjPcKUM
+        e/Z4IIK/4EvJZOohJQm6sV/1dERY0rxhq9t1hkeGFLR2kYD1LoXorhdJXBCv65YuXq+xsm1YyTdQQ
+        OkDNcpQQ==;
+Received: from [2001:4bb8:18c:5da7:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdBJB-0002Mu-BA; Mon, 25 May 2020 11:30:17 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: block I/O accounting improvements
+Date:   Mon, 25 May 2020 13:29:58 +0200
+Message-Id: <20200525113014.345997-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jens,
 
-While I was working on adding support for MRA role to MRP, I noticed that I
-might have some issues with the netlink interface, so it would be great if you
-can give me an advice on how to continue.
-
-First a node with MRA role can behave as a MRM(Manager) or as a
-MRC(Client). The behaviour is decided by the priority of each node. So
-to have this functionality I have to extend the MRP netlink interface
-and this brings me to my issues.
-
-My first approach was to extend the 'struct br_mrp_instance' with a field that
-contains the priority of the node. But this breaks the backwards compatibility,
-and then every time when I need to change something, I will break the backwards
-compatibility. Is this a way to go forward?
-
-Another approach is to restructure MRP netlink interface. What I was thinking to
-keep the current attributes (IFLA_BRIDGE_MRP_INSTANCE,
-IFLA_BRIDGE_MRP_PORT_STATE,...) but they will be nested attributes and each of
-this attribute to contain the fields of the structures they represents.
-For example:
-[IFLA_AF_SPEC] = {
-    [IFLA_BRIDGE_FLAGS]
-    [IFLA_BRIDGE_MRP]
-        [IFLA_BRIDGE_MRP_INSTANCE]
-            [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
-            [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
-            [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
-        [IFLA_BRIDGE_MRP_RING_ROLE]
-            [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
-            [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
-        ...
-}
-And then I can parse each field separately and then fill up the structure
-(br_mrp_instance, br_mrp_port_role, ...) which will be used forward.
-Then when this needs to be extended with the priority it would have the
-following format:
-[IFLA_AF_SPEC] = {
-    [IFLA_BRIDGE_FLAGS]
-    [IFLA_BRIDGE_MRP]
-        [IFLA_BRIDGE_MRP_INSTANCE]
-            [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
-            [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
-            [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
-            [IFLA_BRIDGE_MRP_INSTANCE_PRIO]
-        [IFLA_BRIDGE_MRP_RING_ROLE]
-            [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
-            [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
-        ...
-}
-And also the br_mrp_instance will have a field called prio.
-So now, if the userspace is not updated to have support for setting the prio
-then the kernel will use a default value. Then if the userspace contains a field
-that the kernel doesn't know about, then it would just ignore it.
-So in this way every time when the netlink interface will be extended it would
-be backwards compatible.
-
-If it is not possible to break the compatibility then the safest way is to
-just add more attributes under IFLA_BRIDGE_MRP but this would just complicate
-the kernel and the userspace and it would make it much harder to be extended in
-the future.
-
-My personal choice would be the second approach, even if it breaks the backwards
-compatibility. Because it is the easier to go forward and there are only 3
-people who cloned the userspace application
-(https://github.com/microchip-ung/mrp/graphs/traffic). And two of
-these unique cloners is me and Allan.
-
-So if you have any advice on how to go forward it would be great.
-
--- 
-/Horatiu
+they series contains various improvement for block I/O accounting.  The
+first bunch of patches switch the bio based drivers to better accounting
+helpers compared to the current mess.  The end contains a fix and various
+performanc improvements.  Most of this comes from a series Konstantin
+sent a few weeks ago, rebased on changes that landed in your tree since
+and my change to always use the percpu version of the disk stats.
