@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB48A1E17BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 00:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0EB1E17C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 00:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389301AbgEYWQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 18:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgEYWQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 18:16:16 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123DEC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 15:16:16 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t16so7865750plo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 15:16:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eSpEFVbG8JUdSrBIflNKicdqqYEQz8d5l9KuD7qZZcM=;
-        b=O3y125lYcfZznF8AdnHsBuu/pezAvAh4K/OW3m8ETYoqnVQqxBeNIYO5FvhJmamZKE
-         483QrLedr8lgEJr5C7+miL2JM8u5iyi1FB6qb949HD5ZZM5yF+Um7SkUE+82nlHfkRR0
-         4R+vASNN8jyTIZGeNmSy+nIz8otmu1TA7pMCiRRUglkZJoSfNSUKcrgZRVZbrPZPq0tZ
-         V1KjfzJDc0CmyQ1NyoNwuDTJZXWZwSWKdEoYu6eSRwaqnO7EJwLtzyUH7jCMNvFzjGj1
-         AU7RIOb1zFoRY4h2IygAuvvQQkEilsyBHcQrCd2JhGh9Gl6m19tw96kHWe2KJtMR6zJq
-         +eNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eSpEFVbG8JUdSrBIflNKicdqqYEQz8d5l9KuD7qZZcM=;
-        b=gTKHechZy4jco5wMHCXi4G+/VFW5LEyIG3O7FUmRvIQ0B1UTFJTdQWBlfYjWlYxlEq
-         PMmDk965/U1ivHmTVTc7sqEA42ayDxvpj/FResNoU/gNEmTjXdVPF+TPDHWwsuEbKsPh
-         cZKOBJaXyJg+SW9NGnEyzf7cqmystadz3L0TBMEu9FXOMRZlv7jTI7NezZkl7fcxbQv5
-         A86yT5/PLhBeznKBbf46YsnekAs5lIlP8pVA+OyHFIlmPBYulhg1KabsrxxpT8/Yv6Yk
-         QPFgemHCvhxb8DGcYE4Nq31lG/G8Pw7ZUnd15ppK6/52caljPGGX+rwoCC5qFTrv3sfu
-         0PTg==
-X-Gm-Message-State: AOAM530OcfnZoTHd/2j0qsrMUTFCKfkFalVQxs9qrbfKY2PxBrr8rXDI
-        2Brfr7s10bUCvyKYsLqVSqE=
-X-Google-Smtp-Source: ABdhPJzQ3P0vqWJRY6AQI6xSDmGSBZjsIw41fa3CVPrEXXshOerRfEW4ULTGkJlQo+SAqILMhumhhA==
-X-Received: by 2002:a17:90a:bf92:: with SMTP id d18mr9741928pjs.120.1590444975572;
-        Mon, 25 May 2020 15:16:15 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:e00:7571:e536:944d:12bc])
-        by smtp.gmail.com with ESMTPSA id z13sm14160865pfj.153.2020.05.25.15.16.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 15:16:15 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] xtensa: fix flush_icache_user_range in noMMU configs
-Date:   Mon, 25 May 2020 15:15:56 -0700
-Message-Id: <20200525221556.4270-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S2389469AbgEYWRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 18:17:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:44840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388615AbgEYWR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 18:17:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C20F31B;
+        Mon, 25 May 2020 15:17:28 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F12E3F6C4;
+        Mon, 25 May 2020 15:17:28 -0700 (PDT)
+Subject: Re: [RFC 04/11] net: phy: Handle c22 regs presence better
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org, davem@davemloft.net, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, madalin.bucur@oss.nxp.com,
+        calvin.johnson@oss.nxp.com, linux-kernel@vger.kernel.org
+References: <20200522213059.1535892-1-jeremy.linton@arm.com>
+ <20200522213059.1535892-5-jeremy.linton@arm.com>
+ <20200523183731.GZ1551@shell.armlinux.org.uk>
+ <f85e4d86-ff58-0ed2-785b-c51626916140@arm.com>
+ <20200525100612.GM1551@shell.armlinux.org.uk>
+ <63ca13e3-11ea-3ddf-e1c7-90597d4a5f8c@arm.com>
+ <20200525220614.GC768009@lunn.ch>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <8868af66-fc1a-8ec2-ab75-123bffe2d504@arm.com>
+Date:   Mon, 25 May 2020 17:17:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200525220614.GC768009@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_icache_user_range definition for xtensa is placed under
-preprocessor condition that is not processed in noMMU configurations,
-resulting in the following build errors:
+Hi,
 
-  fs/exec.c:1065:3: error: implicit declaration of function
-  ‘flush_icache_user_range’
-  fs/binfmt_flat.c:857:2: error: implicit declaration of function
-  ‘flush_icache_user_range’
+On 5/25/20 5:06 PM, Andrew Lunn wrote:
+>> Yes, we know even for the NXP reference hardware, one of the phy's doesn't
+>> probe out correctly because it doesn't respond to the ieee defined
+>> registers. I think at this point, there really isn't anything we can do
+>> about that unless we involve the (ACPI) firmware in currently nonstandard
+>> behaviors.
+>>
+>> So, my goals here have been to first, not break anything, and then do a
+>> slightly better job finding phy's that are (mostly?) responding correctly to
+>> the 802.3 spec. So we can say "if you hardware is ACPI conformant, and you
+>> have IEEE conformant phy's you should be ok". So, for your example phy, I
+>> guess the immediate answer is "use DT" or "find a conformant phy", or even
+>> "abstract it in the firmware and use a mailbox interface".
+>   
+> Hi Jeremy
+> 
+> You need to be careful here, when you say "use DT". With a c45 PHY
+> of_mdiobus_register_phy() calls get_phy_device() to see if the device
+> exists on the bus. So your changes to get_phy_device() etc, needs to
+> continue to find devices it used to find, even if they are not fully
+> complient to 802.3.
+> 
 
-Move definition outside conditional compilation block.
+Yes, that is my "don't break anything". But, in a number of cases I 
+can't tell if something is an intentional "bug", or what exactly the 
+intended side effect actually was. The c22 bit0 sanitation is in this 
+bucket, because its basically disabling the MMD0 probe..
 
-Fixes: 134d96d05d30 ("xtensa: implement flush_icache_user_range")
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/include/asm/cacheflush.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I know for sure we find phys that previously weren't found. OTOH, i'm 
+not sure how many that were previously "found" are now getting kicked 
+out by because they are doing something "bad" that looked like a bug.
 
-diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/asm/cacheflush.h
-index 460e666ad076..cf907e5bf2f2 100644
---- a/arch/xtensa/include/asm/cacheflush.h
-+++ b/arch/xtensa/include/asm/cacheflush.h
-@@ -107,8 +107,6 @@ void flush_cache_page(struct vm_area_struct*,
- #define flush_cache_page  local_flush_cache_page
- #endif
- 
--#define flush_icache_user_range flush_icache_range
--
- #define local_flush_cache_all()						\
- 	do {								\
- 		__flush_invalidate_dcache_all();			\
-@@ -147,6 +145,8 @@ void local_flush_cache_page(struct vm_area_struct *vma,
- 
- #endif
- 
-+#define flush_icache_user_range flush_icache_range
-+
- /* Ensure consistency between data and instruction cache. */
- #define local_flush_icache_range(start, end)				\
- 	do {								\
--- 
-2.20.1
 
