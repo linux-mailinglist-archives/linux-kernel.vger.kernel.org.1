@@ -2,154 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929281E1803
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 00:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0231E1806
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 01:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731353AbgEYW7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 18:59:30 -0400
-Received: from mail-qv1-f48.google.com ([209.85.219.48]:42805 "EHLO
-        mail-qv1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgEYW7Y (ORCPT
+        id S1731402AbgEYXAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 19:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgEYXAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 18:59:24 -0400
-Received: by mail-qv1-f48.google.com with SMTP id g20so8634881qvb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 15:59:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wAMjAyQp9bQBfv0jsI9bNQ7DjPHoHnMHzy3coGwiqYc=;
-        b=VzX3xFloKz7NKWBj1yHilkuUOBBWpSrMXEF2OV5xJ7IV9lW5dv1lAJVJk3zCXscDnK
-         auaFQCPI0Q0FeBYS8C4wH9Otx3YawyWXzY9VvkAUu5rlBsZdwKILtP6stT7OeWeTcEMn
-         MXV3CDEyR7d5LQHHWPo0hy7eqEA8aH6pYQAaBBgKrSWZbs7kEs3E76SAU3AQpUNHaT9w
-         AD/OZgeaS7jwK6toAM+rOAD+mxRSlk7d1b5C8cfhkF6Vfi1bFUfKjdoFlkW2+V8ELGAR
-         5s+PCGHm3CiQsHhRiyAhzDCaqQg7lrtWZL9YimeS94XzjAeQlaFWfW97gFyiN6S9NwK4
-         R6LA==
-X-Gm-Message-State: AOAM530007U6L8jxF+Yid6gsTvUlz6Df+Q86Ab4sJ+wWSc1FxoaWowJS
-        6qUxUes99b/mGQRyF5hXzV0=
-X-Google-Smtp-Source: ABdhPJzWonF+Cb8jnOfNbgjiC4f/Pbq+0vKT0uTXiu8XZ7iCy5dRECpbcAZwTkUDBxIesrFjPKf0bg==
-X-Received: by 2002:a0c:f286:: with SMTP id k6mr17583207qvl.72.1590447563545;
-        Mon, 25 May 2020 15:59:23 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id d140sm15024585qkc.22.2020.05.25.15.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 15:59:23 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] x86/boot: Check that there are no runtime relocations
-Date:   Mon, 25 May 2020 18:59:18 -0400
-Message-Id: <20200525225918.1624470-5-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200524212816.243139-1-nivedita@alum.mit.edu>
-References: <20200524212816.243139-1-nivedita@alum.mit.edu>
+        Mon, 25 May 2020 19:00:46 -0400
+X-Greylist: delayed 277 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 May 2020 16:00:45 PDT
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CBFC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 16:00:45 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 126B083640;
+        Tue, 26 May 2020 11:00:44 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1590447644;
+        bh=Xne4K3RqtbPnQ+ea6EEqddntF/BSLVnRXKCdz++ZUVs=;
+        h=From:To:Cc:Subject:Date;
+        b=DcdiVSV3snOO/4jZNyhqgCNWHeF4pdzEY1zcS148Xn/nLJzz3fN1BxyeP4BIgJJeu
+         +Sj06htHFGOyozp7Sn6aRpkW5O0YT1rkCcLLeA3ss5slwXQKnnbXaH8JFzo8En9u0u
+         Rc9+bCwmKuswhePWY1+bXHz69Aq/JBb2OSA0EVet9UtXa7s+2QM8MIo1oJzxRNzHrV
+         vzUH9aWJw3TAoTcStnBMXRxsGr4K4I68HpBm87VqOBjPAvk1Hix5bNARSDQ4l1A3Wm
+         DKvzsXPxtvtWSV3q5bKfpIb0TrAKyuKCagqjQlpGW0jAc3btnlg9ztzhGBZRGKGmAJ
+         Geakiq5O7jNOw==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5ecc4e180000>; Tue, 26 May 2020 11:00:44 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 10F2813ED4B;
+        Tue, 26 May 2020 11:00:39 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 0535228006C; Tue, 26 May 2020 11:00:40 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH] bpf: Fix spelling in comment
+Date:   Tue, 26 May 2020 11:00:24 +1200
+Message-Id: <20200525230025.14470-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a linker script check that there are no runtime relocations, and
-remove the old one that tries to check via looking for specially-named
-sections in the object files.
+Change 'handeled' to 'handled'.
 
-Drop the tests for -fPIE compiler option and -pie linker option, as they
-are available in all supported gcc and binutils versions (as well as
-clang and lld).
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
- arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
- arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
- 2 files changed, 11 insertions(+), 25 deletions(-)
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index d3e882e855ee..679a2b383bfe 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -27,7 +27,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
- 	vmlinux.bin.xz vmlinux.bin.lzo vmlinux.bin.lz4
- 
- KBUILD_CFLAGS := -m$(BITS) -O2
--KBUILD_CFLAGS += -fno-strict-aliasing $(call cc-option, -fPIE, -fPIC)
-+KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
- KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
- cflags-$(CONFIG_X86_32) := -march=i386
- cflags-$(CONFIG_X86_64) := -mcmodel=small
-@@ -49,7 +49,7 @@ UBSAN_SANITIZE :=n
- KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
- # Compressed kernel should be built as PIE since it may be loaded at any
- # address by the bootloader.
--KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
-+KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
- LDFLAGS_vmlinux := -T
- 
- hostprogs	:= mkpiggy
-@@ -84,30 +84,8 @@ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
- vmlinux-objs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
- vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
- 
--# The compressed kernel is built with -fPIC/-fPIE so that a boot loader
--# can place it anywhere in memory and it will still run. However, since
--# it is executed as-is without any ELF relocation processing performed
--# (and has already had all relocation sections stripped from the binary),
--# none of the code can use data relocations (e.g. static assignments of
--# pointer values), since they will be meaningless at runtime. This check
--# will refuse to link the vmlinux if any of these relocations are found.
--quiet_cmd_check_data_rel = DATAREL $@
--define cmd_check_data_rel
--	for obj in $(filter %.o,$^); do \
--		$(READELF) -S $$obj | grep -qF .rel.local && { \
--			echo "error: $$obj has data relocations!" >&2; \
--			exit 1; \
--		} || true; \
--	done
--endef
--
--# We need to run two commands under "if_changed", so merge them into a
--# single invocation.
--quiet_cmd_check-and-link-vmlinux = LD      $@
--      cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
--
- $(obj)/vmlinux: $(vmlinux-objs-y) FORCE
--	$(call if_changed,check-and-link-vmlinux)
-+	$(call if_changed,ld)
- 
- OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
- $(obj)/vmlinux.bin: vmlinux FORCE
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index d826ab38a8f9..f9902c6ffe29 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -42,6 +42,12 @@ SECTIONS
- 		*(.rodata.*)
- 		_erodata = . ;
- 	}
-+	.rel.dyn : {
-+		*(.rel.*)
-+	}
-+	.rela.dyn : {
-+		*(.rela.*)
-+	}
- 	.got : {
- 		*(.got)
- 	}
-@@ -83,3 +89,5 @@ ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT en
- #else
- ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
- #endif
-+
-+ASSERT(SIZEOF(.rel.dyn) == 0 && SIZEOF(.rela.dyn) == 0, "Unexpected runtime relocations detected!")
--- 
-2.26.2
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 916f5132a984..1ff8e73e9b12 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1543,7 +1543,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, co=
+nst struct bpf_insn *insn, u6
+=20
+ 		/* ARG1 at this point is guaranteed to point to CTX from
+ 		 * the verifier side due to the fact that the tail call is
+-		 * handeled like a helper, that is, bpf_tail_call_proto,
++		 * handled like a helper, that is, bpf_tail_call_proto,
+ 		 * where arg1_type is ARG_PTR_TO_CTX.
+ 		 */
+ 		insn =3D prog->insnsi;
+--=20
+2.25.1
 
