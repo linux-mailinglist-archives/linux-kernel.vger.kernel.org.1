@@ -2,218 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313511E1370
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 19:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03F21E1377
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 19:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389462AbgEYRg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 13:36:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53764 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388230AbgEYRg0 (ORCPT
+        id S2391346AbgEYRgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 13:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388230AbgEYRgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 13:36:26 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2C2622C438D;
-        Mon, 25 May 2020 13:36:25 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pof2oeGh7p-k; Mon, 25 May 2020 13:36:24 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B18F92C3FE9;
-        Mon, 25 May 2020 13:36:24 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B18F92C3FE9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1590428184;
-        bh=YJSgtXw/2qFLeYoA0bx8GuMUqdVH5+3SyAR99jrIWYo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=nesYSIuGOlTOzlctV9A+1f5gZq2DmdqudCRB03TPV1bEKvSFKu2cBQKNMr6a+bwwS
-         NwyKb2aIK8IjUApFkFY2X1F37HKFqfTQyCE+lqXj2fT+oxN8Rwi0MSKuE9TvEdKawU
-         qR+WZMvl1Is57zHOM6IgolxJH3iDK1X1n6Ed919XEGfOmErqq318ynv8zFmciGe4qL
-         GpM79nXHoPJm+FOa90ZjczwLfHTSCv12OvyK77ZyvIaVB3uH7evc3UVnSOfclgms1o
-         0eIeOrAD+q+j927i6YLDkaBIq81S3YEwEvqXfSTDrJEw6ahjYyFWpTfrdSDgOvrE7N
-         NanGh7fb/4zQA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zI1L57FqandZ; Mon, 25 May 2020 13:36:24 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9EDF52C3F76;
-        Mon, 25 May 2020 13:36:24 -0400 (EDT)
-Date:   Mon, 25 May 2020 13:36:24 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     libc-alpha <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Message-ID: <108939265.33525.1590428184533.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87367ovy6k.fsf@oldenburg2.str.redhat.com>
-References: <20200501021439.2456-1-mathieu.desnoyers@efficios.com> <20200501021439.2456-2-mathieu.desnoyers@efficios.com> <87v9kqbzse.fsf@oldenburg2.str.redhat.com> <941087675.33347.1590418305398.JavaMail.zimbra@efficios.com> <87367ovy6k.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [PATCH glibc 1/3] glibc: Perform rseq registration at C startup
- and thread creation (v19)
+        Mon, 25 May 2020 13:36:39 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E029C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 10:36:39 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id q24so206179pjd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 10:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IJjU5AD78PQmMgIoxlhUE3XdqOGH2pnJ5GvxPy/ZWeA=;
+        b=vrKxB8Ua+XZv4ykKGQgav6FhXKVJzsqZQi6l56ji2rRpxEXy+U0uFSAqqvLXB59YM0
+         2msyq81bVTgHfqK1FdOumNDJOpeqzHcN+anyUyzdYd1b44EJu0EE+KyyQGK2cmGJCoIG
+         ctxMlfJr9abZC4SFziuymzvUKKJ3ffJQ51PZUNeRBB084rim2V8/Aiq2ro76qwYi4XMO
+         eHmtL/MBn5MCH5n6wnNm607QikhtfJzzD/tQLjCxlPOyYb9rfABOUj02gOqim7FQMVPb
+         xd9nqr3CPh4Zc2mpGJTmD1gG6o+DuyFWZxpTMcTd86jxAvYgrndO34XI5WQhegqcftN7
+         iV1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IJjU5AD78PQmMgIoxlhUE3XdqOGH2pnJ5GvxPy/ZWeA=;
+        b=fNwcQASp07Xj0Jon1B75BjiKCdZRmDfONv2ns32zcbXHzRM7Y2UHu9L3bOuVfDaosf
+         CLJlM/7osUp+tdxdL6kW6paHbUpBvjs3fHOY7mgfoYZvGFH02o6eTEtdaMyjA69XNQHj
+         hHfBo0C/wlfHbpnxIU+mHTNbGlQOIq5ghsctCfYRtzgAAYBwyk7jSfNO7OObKc2sZiMh
+         MCgbicZ5ahLfVfc/GE6z1CM+F2KaeNHpy661x9fanxVdja+wmHez9xWRckcgmzLKx5sw
+         P+wiaOosl+4Gp90sMuNMt9qTaa0p2PFErzf6uRS+j4X593vfuly7TEAuM30bhOeYOWPV
+         vlXA==
+X-Gm-Message-State: AOAM533Y4i+2hecyYcE8aHht2btNTEnxXOvGpbyPIHW382oE1Rhwy8bZ
+        zBCwXK9JD6PTUN4dw3KWMCcWxE3dahGiHaBY1wCObg==
+X-Google-Smtp-Source: ABdhPJz0kSa4s6ANDBb+YqExevdOdc33aV3eoTivjXP7z1lS4l97h5suRM2uOi232ee0BDQo2/+CwFWu+Jw4ExRID7M=
+X-Received: by 2002:a17:90b:1994:: with SMTP id mv20mr21281595pjb.41.1590428198538;
+ Mon, 25 May 2020 10:36:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3928 (ZimbraWebClient - FF76 (Linux)/8.8.15_GA_3928)
-Thread-Topic: glibc: Perform rseq registration at C startup and thread creation (v19)
-Thread-Index: 6to34dl4ew/LNfoxYauNE9D4OCKBdw==
+References: <20200522015757.22267-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20200522015757.22267-1-walter-zh.wu@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 25 May 2020 19:36:27 +0200
+Message-ID: <CAAeHK+y9qz5P-WCWEGwUx__XVzPXTddcOXsFDnFvh_1-k4Opxw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] kasan: memorize and print call_rcu stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 25, 2020, at 11:20 AM, Florian Weimer fweimer@redhat.com wrote:
+On Fri, May 22, 2020 at 3:58 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> This patchset improves KASAN reports by making them to have
+> call_rcu() call stack information. It is useful for programmers
+> to solve use-after-free or double-free memory issue.
+>
+> The KASAN report was as follows(cleaned up slightly):
+>
+> BUG: KASAN: use-after-free in kasan_rcu_reclaim+0x58/0x60
+>
+> Freed by task 0:
+>  kasan_save_stack+0x24/0x50
+>  kasan_set_track+0x24/0x38
+>  kasan_set_free_info+0x18/0x20
+>  __kasan_slab_free+0x10c/0x170
+>  kasan_slab_free+0x10/0x18
+>  kfree+0x98/0x270
+>  kasan_rcu_reclaim+0x1c/0x60
+>
+> Last call_rcu():
+>  kasan_save_stack+0x24/0x50
+>  kasan_record_aux_stack+0xbc/0xd0
+>  call_rcu+0x8c/0x580
+>  kasan_rcu_uaf+0xf4/0xf8
+>
+> Generic KASAN will record the last two call_rcu() call stacks and
+> print up to 2 call_rcu() call stacks in KASAN report. it is only
+> suitable for generic KASAN.
+>
+> This feature considers the size of struct kasan_alloc_meta and
+> kasan_free_meta, we try to optimize the structure layout and size
+> , let it get better memory consumption.
+>
+> [1]https://bugzilla.kernel.org/show_bug.cgi?id=198437
+> [2]https://groups.google.com/forum/#!searchin/kasan-dev/better$20stack$20traces$20for$20rcu%7Csort:date/kasan-dev/KQsjT_88hDE/7rNUZprRBgAJ
 
-> * Mathieu Desnoyers:
-> 
->> The larger question here is: considering that we re-implement the entire
->> uapi header within glibc (which includes the uptr addition), do we still
->> care about using the header provided by the Linux kernel ?
-> 
-> We don't care, but our users do.  Eventually, they want to include
-> <sys/rseq.h> and <linux/rseq.h> to get new constants that are not yet
-> known to glibc.
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
 
-Good point!
+for the series.
 
-> 
->> Having different definitions depending on whether a kernel header is
->> installed or not when including a glibc header seems rather unexpected.
-> 
-> Indeed.
-> 
->> *If* we want to use the uapi header, I think something is semantically
->> missing. Here is the scheme I envision. We could rely on the kernel header
->> version.h to figure out which of glibc or kernel uapi header is more
->> recent. Any new concept we try to integrate into glibc (e.g. uptr)
->> should go into the upstream Linux uapi header first.
-> 
-> I think we should always prefer the uapi header.  The Linux version
-> check does not tell you anything about backports.
+Thanks!
 
-Fair enough.
-
-> 
->> For the coming glibc e.g. 2.32, we use the kernel uapi header if
->> kernel version is >= 4.18.0. Within glibc, the fallback implements
->> exactly the API exposed by the kernel rseq.h header.
-> 
-> Agreed.
-> 
->> As we eventually introduce the uptr change into the Linux kernel, and
->> say it gets merged for Linux 5.9.0, we mirror this change into glibc
->> (e.g. release 2.33), and bump the Linux kernel version cutoff to 5.9.0.
->> So starting from that version, we use the Linux kernel header only if
->> version >= 5.9.0, else we fallback on glibc's own implementation.
-> 
-> Fortunately, we don't need to settle this today. 8-)
-> 
-> Let's stick to the 4.18 definitions for the fallback for now, and
-> discuss the incorporation of future changes later.
-
-OK
-
-> 
->>>> +/* Ensure the compiler supports __attribute__ ((aligned)).  */
->>>> +_Static_assert (__alignof__ (struct rseq_cs) >= 32, "alignment");
->>>> +_Static_assert (__alignof__ (struct rseq) >= 32, "alignment");
->>> 
->>> This needs #ifndef __cplusplus or something like that.  I'm surprised
->>> that this passes the installed header tests.
->>
->> Would the following be ok ?
->>
->> #ifdef __cplusplus
->> #define rseq_static_assert      static_assert
->> #else
->> #define rseq_static_assert      _Static_assert
->> #endif
->>
->> /* Ensure the compiler supports __attribute__ ((aligned)).  */
->> rseq_static_assert (__alignof__ (struct rseq_cs) >= 32, "alignment");
->> rseq_static_assert (__alignof__ (struct rseq) >= 32, "alignment");
-> 
-> Seems reasonable, yes.  __alignof__ is still a GCC extension.  C++11 has
-> alignof, C11 has _Alignof.  So you could use something like this
-> (perhaps without indentation for the kernel header version):
-> 
-> #ifdef __cplusplus
-> # if  __cplusplus >= 201103L
-> #  define rseq_static_assert(x)      static_assert x;
-> #  define rseq_alignof alignof
-> # endif
-> #elif __STDC_VERSION__ >= 201112L
-> # define rseq_static_assert(x)      _Static_assert x;
-> # define rseq_alignof _Alignof
-> #endif
-> #ifndef rseq_static_assert
-> # define rseq_static_assert /* nothing */
-> #endif
-> rseq_static_assert ((rseq_alignof__ (struct rseq_cs) >= 32, "alignment"))
-> rseq_static_assert ((rseq_alignof (struct rseq) >= 32, "alignment"))
-
-Something like this ?
-
-#ifdef __cplusplus
-# if  __cplusplus >= 201103L
-#  define rseq_static_assert (expr, diagnostic)         static_assert (expr, diagnostic)
-#  define rseq_alignof                                  alignof
-# endif
-#elif __STDC_VERSION__ >= 201112L
-# define rseq_static_assert (expr, diagnostic)          _Static_assert (expr, diagnostic)
-# define rseq_alignof                                   _Alignof
-#endif
-
-#ifndef rseq_static_assert
-# define rseq_static_assert (expr, diagnostic)          /* nothing */
-#endif
-
-/* Ensure the compiler supports __attribute__ ((aligned)).  */
-rseq_static_assert ((rseq_alignof (struct rseq_cs) >= 32, "alignment"));
-rseq_static_assert ((rseq_alignof (struct rseq) >= 32, "alignment"));
-
-> And something similar for _Alignas/attribute aligned,
-
-I don't see where _Alignas is needed here ?
-
-For attribute aligned, what would be the oldest supported C and C++
-standards ?
-
-> with an error for
-> older standards and !__GNUC__ compilers (because neither the type nor
-> __thread can be represented there).
-
-By "type" you mean "struct rseq" here ? What does it contain that requires
-a __GNUC__ compiler ?
-
-About __thread, I recall other compilers have other means to declare it.
-In liburcu, I end up with the following:
-
-#if defined (__cplusplus) && (__cplusplus >= 201103L)
-# define URCU_TLS_STORAGE_CLASS thread_local
-#elif defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-# define URCU_TLS_STORAGE_CLASS _Thread_local
-#elif defined (_MSC_VER)
-# define URCU_TLS_STORAGE_CLASS __declspec(thread)
-#else
-# define URCU_TLS_STORAGE_CLASS __thread
-#endif
-
-Would something along those lines be OK for libc ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+>
+> Changes since v2:
+> - remove new config option, default enable it in generic KASAN
+> - test this feature in SLAB/SLUB, it is pass.
+> - modify macro to be more clearly
+> - modify documentation
+>
+> Changes since v3:
+> - change recording from first/last to the last two call stacks
+> - move free track into kasan free meta
+> - init slab_free_meta on object slot creation
+> - modify documentation
+>
+> Changes since v4:
+> - change variable name to be more clearly
+> - remove the redundant condition
+> - remove init free meta-data and increasing object condition
+>
+> Changes since v5:
+> - add a macro KASAN_KMALLOC_FREETRACK in order to check whether
+>   print free stack
+> - change printing message
+> - remove descriptions in Kocong.kasan
+>
+> Changes since v6:
+> - reuse print_stack() in print_track()
+>
+> Walter Wu (4):
+> rcu/kasan: record and print call_rcu() call stack
+> kasan: record and print the free track
+> kasan: add tests for call_rcu stack recording
+> kasan: update documentation for generic kasan
+>
+> Documentation/dev-tools/kasan.rst |  3 +++
+> include/linux/kasan.h             |  2 ++
+> kernel/rcu/tree.c                 |  2 ++
+> lib/test_kasan.c                  | 30 ++++++++++++++++++++++++++++++
+> mm/kasan/common.c                 | 26 ++++----------------------
+> mm/kasan/generic.c                | 43 +++++++++++++++++++++++++++++++++++++++++++
+> mm/kasan/generic_report.c         |  1 +
+> mm/kasan/kasan.h                  | 23 +++++++++++++++++++++--
+> mm/kasan/quarantine.c             |  1 +
+> mm/kasan/report.c                 | 54 +++++++++++++++++++++++++++---------------------------
+> mm/kasan/tags.c                   | 37 +++++++++++++++++++++++++++++++++++++
+> 11 files changed, 171 insertions(+), 51 deletions(-)
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200522015757.22267-1-walter-zh.wu%40mediatek.com.
