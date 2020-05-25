@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32391E0B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1533E1E0B0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389641AbgEYJub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:50:31 -0400
-Received: from mout.web.de ([212.227.15.4]:50595 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389356AbgEYJua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:50:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1590400221;
-        bh=P6sswJVCyID2kisGSDD8jTyeLQrShJTFR1PjTv+eZxc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=AvdK9ybJ1tADJV9pR1p0lQ0HZxOPqaf/sPyVksHLjIUi6nvluP5yqliA5p4cIu5ca
-         Uhzsvdzmi3gklEef4ML9ixSFY36l1xQ7CWy/Nr9LbBDMXYJga9t6GT4CNR3CX3cCfL
-         POdgqS0lIj7sPqzqCgYM8YPSsJTJhhchuXIYXMZM=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.135.186.124]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MJnrh-1jJA1M0SSH-00K70i; Mon, 25
- May 2020 11:50:21 +0200
-Subject: Re: [PATCH v2] workqueue: Fix double kfree for rescuer
-To:     Zhang Qiang <qiang.zhang@windriver.com>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20200525075901.12699-1-qiang.zhang@windriver.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <7d19381c-2c51-deb4-f82f-d54bc56c6ecf@web.de>
-Date:   Mon, 25 May 2020 11:50:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2389673AbgEYJxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389333AbgEYJxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 05:53:50 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C99CC061A0E;
+        Mon, 25 May 2020 02:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=TfDqog4RDttAQOCpkvIYADSKVsDf0mydvOJDMp1M4Qc=; b=ui7FSLtgjIFF1LG04NxMsXkOc
+        l8PXGeawfxrkE7xutfpP5BladqbWR0in9BTtePtImF+NfsRBKFnslnLgob2menAFTMI487ctkIiuE
+        WNSqznIfDq9Lp147Pd0TmEy3zQaBSVotKTjzCpD6jNtoC5ZAEfBpYGMlWXSk8TRfu2thsocQOJYQR
+        8K72hoGgT7JUgavXog9/7pK9Mm2VRGvIABqXqDUE5xNGvWg3Fs/gqFmYhPV7gJYRViR4O8Z0MK4l7
+        AWzmajdhgcNkJJsAO3hSo3choUiN0AkHJtqWKKr+xtqNTvbnJCwv4tDzwVwVCM+w0fucwUgaQNlBk
+        9P7/Hkp5w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36736)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jd9ni-0004tX-OV; Mon, 25 May 2020 10:53:42 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jd9nh-0004GM-BG; Mon, 25 May 2020 10:53:41 +0100
+Date:   Mon, 25 May 2020 10:53:41 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, andrew@lunn.ch,
+        f.fainelli@gmail.com, hkallweit1@gmail.com,
+        madalin.bucur@oss.nxp.com, calvin.johnson@oss.nxp.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 04/11] net: phy: Handle c22 regs presence better
+Message-ID: <20200525095341.GL1551@shell.armlinux.org.uk>
+References: <20200522213059.1535892-1-jeremy.linton@arm.com>
+ <20200522213059.1535892-5-jeremy.linton@arm.com>
+ <20200523183731.GZ1551@shell.armlinux.org.uk>
+ <f85e4d86-ff58-0ed2-785b-c51626916140@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200525075901.12699-1-qiang.zhang@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/CuB+C/LELFimNzsT2Wxe2zFsNLbNR1jiONlIHhnZsAdjmp1iQT
- 4a3Z8zTk6peY7avnTRfu6iWy4kbgAX0pKulHM1+lPvmRoQ1/1kFqiGnqVPXKR7HfxX159Nj
- aW6dvFj9avM+8KDTBIupWH1D3Ehx8TBF6hHKu24Kp9O7zUiJUIU0bAfe860Hq2L0WrkLJs9
- ysHYMIbM2OXA5O0N0e1YA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t//vjUJuSxg=:fYWUeVqWWHsoL4CYrNEAG5
- ZyGwLpyhe8VTj4MHd0nqek+8Jp9RyabwjK0IzpUf9dRnIOX81m0FzMm/8AHYSdw5exgy1Nkav
- Jer3v3P6Y1hw2xdznmcec1gtRHf7oJxzFJ+3dmDvJCHwoIpqK4qsu7yxiEUbQnrk+4ZRDJZXX
- +38utp+TVTRrdRlsyZLMPVnjZARLL11mc/935nCwyCd04WgoeYRTXsYNhJX8Ag+XrjV4sclhD
- WqYZLPmeHW2GKVaMvxj5PX7L+wjctEW6vPy4GODuGgE/5JJzwt+36zVHUB+l38G9Viv/V+mxG
- cgfC/iknm2IRWHaGTf1g+4j4KOab8h8dTWjhjT66U2TsdBOD6Z+e3gy2pzTSNb+wDeD5o3HeQ
- XMsnBPwGjy0Tc7CO0Ef3GDajYmRk2sSSX4JgFOFc9w3g99iYPWQo7phCWH4gcAgukjROZKd8G
- 2gJX6EXIcO+TYo2Aqb+4WtWIx+x/jgCEq3sfgVXZMeZN/wNFmwyMmXtYP0IKdnXU7Hbhg0Lrr
- Gc0UJbYQIMXbtRabqMbDjor/s4umXtKrClPP9HUL0ftWVYjh+HvtlrSenIKJtr1V1eCs7Aco5
- fmnwa/2PueOp+/OXWz+Y1cBgRF5JRGe1ZRqGQtrz49YrQqYqkbKCKpcnIHHvsRz2rHPdpo/Lq
- 5bDk+p9BORZE2c+4TUANTmFvzKEwXEK0F310noMq5nT8kNprcnnh7+mIVuTxlYNZYhOhMUt5H
- ejCSauQcdh1nq0It7So2lRnLadvJliq491LyGckjmjWrBDfCtSxOfmIGEokPfviKxF9ltPP0w
- cSZJfjWG21D+tnzkD8F0wAqRzCJxhiK8dFD9ndphYXqPvhxz+ZTk+zf58mFe9r5rKeVdf7XP+
- ferkBHOgyMCeUkBuzTrqGQAaDG5UjRFjc06U47T1eE5oL53j6ebrV3bxcwgFZcDkYGuj16gbN
- Q4RQu/CtepaYbXBr4WiPfS0nkRPQ7vHUJ5AKCRPm4Vd/NfQ8/ofiDK/I0Aw1G3wddlQccKu4w
- 0UpjXoM986J6Z4rsib07z6UiiDJ2FqO9wWf4QEENZyMkGq+g1nqPT+/QqsttThulIfJs0RFia
- ktxze+mZmn2uY3Pu68/URGMbLhXp3fEw1dAjPsbW3q4Vql63s4fzC39Se03WWJtuXzQijx6Ln
- CSp4qY4o5Uy9W6KIvyk2z33VeqSg/xnnL05X3hxJ36Rj0gp9m+LfywNU9X20Fsmg9+LcsUWJK
- i3+kRULGc5HuaMDLQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f85e4d86-ff58-0ed2-785b-c51626916140@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The duplicate memory release should be deleted from the implementation
-> of the callback function "rcu_free_wq".
+On Sun, May 24, 2020 at 10:34:13PM -0500, Jeremy Linton wrote:
+> Hi,
+> 
+> On 5/23/20 1:37 PM, Russell King - ARM Linux admin wrote:
+> > On Fri, May 22, 2020 at 04:30:52PM -0500, Jeremy Linton wrote:
+> > > Until this point, we have been sanitizing the c22
+> > > regs presence bit out of all the MMD device lists.
+> > > This is incorrect as it causes the 0xFFFFFFFF checks
+> > > to incorrectly fail. Further, it turns out that we
+> > > want to utilize this flag to make a determination that
+> > > there is actually a phy at this location and we should
+> > > be accessing it using c22.
+> > > 
+> > > Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> > > ---
+> > >   drivers/net/phy/phy_device.c | 16 +++++++++++++---
+> > >   1 file changed, 13 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> > > index f0761fa5e40b..2d677490ecab 100644
+> > > --- a/drivers/net/phy/phy_device.c
+> > > +++ b/drivers/net/phy/phy_device.c
+> > > @@ -689,9 +689,6 @@ static int get_phy_c45_devs_in_pkg(struct mii_bus *bus, int addr, int dev_addr,
+> > >   		return -EIO;
+> > >   	*devices_in_package |= phy_reg;
+> > > -	/* Bit 0 doesn't represent a device, it indicates c22 regs presence */
+> > > -	*devices_in_package &= ~BIT(0);
+> > > -
+> > >   	return 0;
+> > >   }
+> > > @@ -742,6 +739,8 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+> > >   	int i;
+> > >   	const int num_ids = ARRAY_SIZE(c45_ids->device_ids);
+> > >   	u32 *devs = &c45_ids->devices_in_package;
+> > > +	bool c22_present = false;
+> > > +	bool valid_id = false;
+> > >   	/* Find first non-zero Devices In package. Device zero is reserved
+> > >   	 * for 802.3 c45 complied PHYs, so don't probe it at first.
+> > > @@ -770,6 +769,10 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+> > >   		return 0;
+> > >   	}
+> > > +	/* Bit 0 doesn't represent a device, it indicates c22 regs presence */
+> > > +	c22_present = *devs & BIT(0);
+> > > +	*devs &= ~BIT(0);
+> > > +
+> > >   	/* Now probe Device Identifiers for each device present. */
+> > >   	for (i = 1; i < num_ids; i++) {
+> > >   		if (!(c45_ids->devices_in_package & (1 << i)))
+> > > @@ -778,6 +781,13 @@ static int get_phy_c45_ids(struct mii_bus *bus, int addr, u32 *phy_id,
+> > >   		ret = _get_phy_id(bus, addr, i, &c45_ids->device_ids[i], true);
+> > >   		if (ret < 0)
+> > >   			return ret;
+> > > +		if (valid_phy_id(c45_ids->device_ids[i]))
+> > > +			valid_id = true;
+> > 
+> > Here you are using your "devices in package" validator to validate the
+> > PHY ID value.  One of the things it does is mask this value with
+> > 0x1fffffff.  That means you lose some of the vendor OUI.  To me, this
+> > looks completely wrong.
+> 
+> I think in this case I was just using it like the comment in
+> get_phy_device() "if the phy_id is mostly F's, there is no device here".
 
-I tried to help with the selection of a better commit message.
-I have taken another look also at the implementation of the function =E2=
-=80=9Cdestroy_workqueue=E2=80=9D.
+Yes, that is certainly an interesting comment.  What's so magic about
+this 0x1fffffff?  If it's about the time taken for the bus to rise
+to logic 1 when not being actively driven by a PHY, then it actually
+makes little sense, because we perform two transations to read each half
+of the field, and both should have the same behaviour.  If this was the
+issue, we should be masking and testing against 0x1fff1fff rather than
+0x1fffffff.
 
-* The function call =E2=80=9Cdestroy_workqueue=E2=80=9D can be performed t=
-here in an if branch
-  after the statement =E2=80=9Cwq->rescuer =3D NULL=E2=80=9D was executed.
+> I just checked the OUI registration, and while there are a couple OUI's
+> registered that have a number of FFF's in them, none of those cases seems to
+> overlap sufficiently to cause this to throw them out. Plus a phy would also
+> have to have model+revision set to 'F's. So while might be possible, if
+> unlikely, at the moment I think the OUI registration keeps this from being a
+> problem. Particularly, if i'm reading the mapping correctly, the OUI mapping
+> guarantees that the field cannot be all '1's due to the OUI having X & M
+> bits cleared. It sort of looks like the mapping is trying to lose those
+> bits, by tossing bit 1 & 2, but the X & M are in the wrong octet (AFAIK, I
+> just read it three times cause it didn't make any sense).
 
-* This data processing is independent from a possible call of the
-  function =E2=80=9Ccall_rcu(&wq->rcu, rcu_free_wq)=E2=80=9D in another if=
- branch.
-  Thus it seems that a null pointer is intentionally passed by a data stru=
-cture
-  member to this callback function on demand.
-  The corresponding call of the function =E2=80=9Ckfree=E2=80=9D can toler=
-ate this special case.
+The most-bits-set OUI that is currently allocated is 5C-FF-FF.  This
+would result in a register value of 0x73fffc00 to 0x73ffffff, so as
+you say, it should be safe.
 
-
-Now I find that the proposed change can be inappropriate.
-
-Regards,
-Markus
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC for 0.8m (est. 1762m) line in suburbia: sync at 13.1Mbps down 424kbps up
