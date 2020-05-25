@@ -2,220 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB0E1E0C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8211E0C45
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389976AbgEYKxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 06:53:48 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1092 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389484AbgEYKxs (ORCPT
+        id S2389991AbgEYKyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 06:54:36 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:9583 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389484AbgEYKyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 06:53:48 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04PAj2pn015856;
-        Mon, 25 May 2020 06:53:41 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 316wp7xe8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 May 2020 06:53:41 -0400
-Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 04PAreJX032357
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 25 May 2020 06:53:40 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 25 May
- 2020 06:53:39 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 25 May 2020 06:53:38 -0400
-Received: from saturn.ad.analog.com ([10.48.65.112])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04PAralr015786;
-        Mon, 25 May 2020 06:53:36 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alexandre.belloni@bootlin.com>, <nicolas.ferre@microchip.com>,
-        <ludovic.desroches@microchip.com>, <eugen.hristev@microchip.com>,
-        <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: at91-sama5d2_adc: remove usage of iio_priv_to_dev() helper
-Date:   Mon, 25 May 2020 13:53:41 +0300
-Message-ID: <20200525105341.137945-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 May 2020 06:54:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590404075; x=1621940075;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=YZXVPXx8/JGG9AEhALoXW9By1UveU76YAUvx4WMsOfY=;
+  b=XZpDmpDsQ2/LwsLZTxEAPXU17FyMhmm8XPwd4tw1upKUtCuym2RK9SsM
+   AY3uyOK3eRmkHEO4LJJHj4N6aMtgxheZou7k2wbLJfhroEYkUQtqraj38
+   4lkQWA5BUlrjTQvRVLVbpA67DfRB/WG8IUeq/L1hrph9zDq9s4ldaK9MH
+   Y=;
+IronPort-SDR: kj7Azeev9qKw/dZ/3ckVrWD5Ajk4/I5HT6G6wLnEIBWl+dXCbPPvGhLnE2AJXp/doh6M99q7DI
+ UwUv2LkSv6RQ==
+X-IronPort-AV: E=Sophos;i="5.73,433,1583193600"; 
+   d="scan'208";a="37443593"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-168cbb73.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 May 2020 10:54:33 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-168cbb73.us-west-2.amazon.com (Postfix) with ESMTPS id 81CBCA2012;
+        Mon, 25 May 2020 10:54:31 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 10:54:31 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.100) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 10:54:22 +0000
+Subject: Re: [PATCH v2 04/18] nitro_enclaves: Init PCI device driver
+To:     Greg KH <greg@kroah.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Alexander Graf" <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200522062946.28973-1-andraprs@amazon.com>
+ <20200522062946.28973-5-andraprs@amazon.com>
+ <20200522070414.GB771317@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <7a3189cc-0ae4-3d3a-6070-43c2ecc9d8be@amazon.com>
+Date:   Mon, 25 May 2020 13:54:10 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-25_05:2020-05-25,2020-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
- malwarescore=0 mlxscore=0 lowpriorityscore=0 cotscore=-2147483648
- spamscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005250084
+In-Reply-To: <20200522070414.GB771317@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D11UWC002.ant.amazon.com (10.43.162.174) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We may want to get rid of the iio_priv_to_dev() helper. The reason is that
-we will hide some of the members of the iio_dev structure (to prevent
-drivers from accessing them directly), and that will also mean hiding the
-implementation of the iio_priv_to_dev() helper inside the IIO core.
-
-Hiding the implementation of iio_priv_to_dev() implies that some fast-paths
-may not be fast anymore, so a general idea is to try to get rid of the
-iio_priv_to_dev() altogether.
-The iio_priv() helper won't be affected by the rework, as the iio_dev
-struct will keep a reference to the private information.
-
-For this driver, not using iio_priv_to_dev(), means reworking some paths to
-pass the iio device and using iio_priv() to access the private information,
-and also keeping a reference to the iio device for some quirky paths.
-
-One [quirky] path is the at91_adc_workq_handler() which requires the IIO
-device & the state struct to push to buffers.
-Since this requires the back-ref to the IIO device, the
-at91_adc_touch_pos() also uses it. This simplifies the patch a bit. The
-information required in this function is mostly for debugging purposes.
-Replacing it with a reference to the IIO device would have been a slightly
-bigger change, which may not be worth it (for just the debugging purpose
-and given that we need the back-ref to the IIO device anyway).
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/at91-sama5d2_adc.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-index 9abbbdcc7420..7bce18444430 100644
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -402,6 +402,7 @@ struct at91_adc_state {
- 	wait_queue_head_t		wq_data_available;
- 	struct at91_adc_dma		dma_st;
- 	struct at91_adc_touch		touch_st;
-+	struct iio_dev			*indio_dev;
- 	u16				buffer[AT91_BUFFER_MAX_HWORDS];
- 	/*
- 	 * lock to prevent concurrent 'single conversion' requests through
-@@ -642,13 +643,13 @@ static u16 at91_adc_touch_pos(struct at91_adc_state *st, int reg)
- 	/* first half of register is the x or y, second half is the scale */
- 	val = at91_adc_readl(st, reg);
- 	if (!val)
--		dev_dbg(&iio_priv_to_dev(st)->dev, "pos is 0\n");
-+		dev_dbg(&st->indio_dev->dev, "pos is 0\n");
- 
- 	pos = val & AT91_SAMA5D2_XYZ_MASK;
- 	result = (pos << AT91_SAMA5D2_MAX_POS_BITS) - pos;
- 	scale = (val >> 16) & AT91_SAMA5D2_XYZ_MASK;
- 	if (scale == 0) {
--		dev_err(&iio_priv_to_dev(st)->dev, "scale is 0\n");
-+		dev_err(&st->indio_dev->dev, "scale is 0\n");
- 		return 0;
- 	}
- 	result /= scale;
-@@ -1204,9 +1205,9 @@ static unsigned at91_adc_startup_time(unsigned startup_time_min,
- 	return i;
- }
- 
--static void at91_adc_setup_samp_freq(struct at91_adc_state *st, unsigned freq)
-+static void at91_adc_setup_samp_freq(struct iio_dev *indio_dev, unsigned freq)
- {
--	struct iio_dev *indio_dev = iio_priv_to_dev(st);
-+	struct at91_adc_state *st = iio_priv(indio_dev);
- 	unsigned f_per, prescal, startup, mr;
- 
- 	f_per = clk_get_rate(st->per_clk);
-@@ -1275,9 +1276,9 @@ static void at91_adc_pen_detect_interrupt(struct at91_adc_state *st)
- 	st->touch_st.touching = true;
- }
- 
--static void at91_adc_no_pen_detect_interrupt(struct at91_adc_state *st)
-+static void at91_adc_no_pen_detect_interrupt(struct iio_dev *indio_dev)
- {
--	struct iio_dev *indio_dev = iio_priv_to_dev(st);
-+	struct at91_adc_state *st = iio_priv(indio_dev);
- 
- 	at91_adc_writel(st, AT91_SAMA5D2_TRGR,
- 			AT91_SAMA5D2_TRGR_TRGMOD_NO_TRIGGER);
-@@ -1297,7 +1298,7 @@ static void at91_adc_workq_handler(struct work_struct *workq)
- 					struct at91_adc_touch, workq);
- 	struct at91_adc_state *st = container_of(touch_st,
- 					struct at91_adc_state, touch_st);
--	struct iio_dev *indio_dev = iio_priv_to_dev(st);
-+	struct iio_dev *indio_dev = st->indio_dev;
- 
- 	iio_push_to_buffers(indio_dev, st->buffer);
- }
-@@ -1318,7 +1319,7 @@ static irqreturn_t at91_adc_interrupt(int irq, void *private)
- 		at91_adc_pen_detect_interrupt(st);
- 	} else if ((status & AT91_SAMA5D2_IER_NOPEN)) {
- 		/* nopen detected IRQ */
--		at91_adc_no_pen_detect_interrupt(st);
-+		at91_adc_no_pen_detect_interrupt(indio);
- 	} else if ((status & AT91_SAMA5D2_ISR_PENS) &&
- 		   ((status & rdy_mask) == rdy_mask)) {
- 		/* periodic trigger IRQ - during pen sense */
-@@ -1486,7 +1487,7 @@ static int at91_adc_write_raw(struct iio_dev *indio_dev,
- 		    val > st->soc_info.max_sample_rate)
- 			return -EINVAL;
- 
--		at91_adc_setup_samp_freq(st, val);
-+		at91_adc_setup_samp_freq(indio_dev, val);
- 		return 0;
- 	default:
- 		return -EINVAL;
-@@ -1624,8 +1625,10 @@ static int at91_adc_update_scan_mode(struct iio_dev *indio_dev,
- 	return 0;
- }
- 
--static void at91_adc_hw_init(struct at91_adc_state *st)
-+static void at91_adc_hw_init(struct iio_dev *indio_dev)
- {
-+	struct at91_adc_state *st = iio_priv(indio_dev);
-+
- 	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
- 	at91_adc_writel(st, AT91_SAMA5D2_IDR, 0xffffffff);
- 	/*
-@@ -1635,7 +1638,7 @@ static void at91_adc_hw_init(struct at91_adc_state *st)
- 	at91_adc_writel(st, AT91_SAMA5D2_MR,
- 			AT91_SAMA5D2_MR_TRANSFER(2) | AT91_SAMA5D2_MR_ANACH);
- 
--	at91_adc_setup_samp_freq(st, st->soc_info.min_sample_rate);
-+	at91_adc_setup_samp_freq(indio_dev, st->soc_info.min_sample_rate);
- 
- 	/* configure extended mode register */
- 	at91_adc_config_emr(st);
-@@ -1718,6 +1721,7 @@ static int at91_adc_probe(struct platform_device *pdev)
- 	indio_dev->num_channels = ARRAY_SIZE(at91_adc_channels);
- 
- 	st = iio_priv(indio_dev);
-+	st->indio_dev = indio_dev;
- 
- 	bitmap_set(&st->touch_st.channels_bitmask,
- 		   AT91_SAMA5D2_TOUCH_X_CHAN_IDX, 1);
-@@ -1829,7 +1833,7 @@ static int at91_adc_probe(struct platform_device *pdev)
- 		goto vref_disable;
- 	}
- 
--	at91_adc_hw_init(st);
-+	at91_adc_hw_init(indio_dev);
- 
- 	ret = clk_prepare_enable(st->per_clk);
- 	if (ret)
-@@ -1945,7 +1949,7 @@ static __maybe_unused int at91_adc_resume(struct device *dev)
- 	if (ret)
- 		goto vref_disable_resume;
- 
--	at91_adc_hw_init(st);
-+	at91_adc_hw_init(indio_dev);
- 
- 	/* reconfiguring trigger hardware state */
- 	if (!iio_buffer_enabled(indio_dev))
--- 
-2.25.1
+CgpPbiAyMi8wNS8yMDIwIDEwOjA0LCBHcmVnIEtIIHdyb3RlOgo+IE9uIEZyaSwgTWF5IDIyLCAy
+MDIwIGF0IDA5OjI5OjMyQU0gKzAzMDAsIEFuZHJhIFBhcmFzY2hpdiB3cm90ZToKPj4gKy8qKgo+
+PiArICogbmVfc2V0dXBfbXNpeCAtIFNldHVwIE1TSS1YIHZlY3RvcnMgZm9yIHRoZSBQQ0kgZGV2
+aWNlLgo+PiArICoKPj4gKyAqIEBwZGV2OiBQQ0kgZGV2aWNlIHRvIHNldHVwIHRoZSBNU0ktWCBm
+b3IuCj4+ICsgKgo+PiArICogQHJldHVybnM6IDAgb24gc3VjY2VzcywgbmVnYXRpdmUgcmV0dXJu
+IHZhbHVlIG9uIGZhaWx1cmUuCj4+ICsgKi8KPj4gK3N0YXRpYyBpbnQgbmVfc2V0dXBfbXNpeChz
+dHJ1Y3QgcGNpX2RldiAqcGRldikKPj4gK3sKPj4gKwlzdHJ1Y3QgbmVfcGNpX2RldiAqbmVfcGNp
+X2RldiA9IE5VTEw7Cj4+ICsJaW50IG5yX3ZlY3MgPSAwOwo+PiArCWludCByYyA9IC1FSU5WQUw7
+Cj4+ICsKPj4gKwlpZiAoV0FSTl9PTighcGRldikpCj4+ICsJCXJldHVybiAtRUlOVkFMOwo+IEhv
+dyBjYW4gdGhpcyBldmVyIGhhcHBlbj8gIElmIGl0IGNhbiBub3QsIGRvbid0IHRlc3QgZm9yIGl0
+LiAgSWYgaXQgY2FuLAo+IGRvbid0IHdhcm4gZm9yIGl0IGFzIHRoYXQgd2lsbCBjcmFzaCBzeXN0
+ZW1zIHRoYXQgZG8gcGFuaWMtb24td2FybiwganVzdAo+IHRlc3QgYW5kIHJldHVybiBhbiBlcnJv
+ci4KCkl0IHNob3VsZG4ndCBoYXBwZW4sIG9ubHkgdXNlZCB0aGlzIGFuZCBzdWJzZXF1ZW50IG9j
+Y3VycmVuY2VzIGluIHRoZSAKb3RoZXIgZnVuY3Rpb25zIGZvciBzYW5pdHkgY2hlY2tzLgoKSSBy
+ZW1vdmVkIHRoZSBXQVJOX09OcyBmcm9tIHRoZSBwYXRjaCBzZXJpZXMgYW5kIHVwZGF0ZWQgdGhl
+IHN0YXRpYyAKY2FsbHMgY2hlY2tzLgoKPgo+PiArCj4+ICsJbmVfcGNpX2RldiA9IHBjaV9nZXRf
+ZHJ2ZGF0YShwZGV2KTsKPj4gKwlpZiAoV0FSTl9PTighbmVfcGNpX2RldikpCj4+ICsJCXJldHVy
+biAtRUlOVkFMOwo+IFNhbWUgaGVyZSwgZG9uJ3QgdXNlIFdBUk5fT04gaWYgYXQgYWxsIHBvc3Np
+YmxlLgoKRG9uZS4KCj4KPj4gKwo+PiArCW5yX3ZlY3MgPSBwY2lfbXNpeF92ZWNfY291bnQocGRl
+dik7Cj4+ICsJaWYgKG5yX3ZlY3MgPCAwKSB7Cj4+ICsJCXJjID0gbnJfdmVjczsKPj4gKwo+PiAr
+CQlkZXZfZXJyX3JhdGVsaW1pdGVkKCZwZGV2LT5kZXYsCj4+ICsJCQkJICAgIE5FICJFcnJvciBp
+biBnZXR0aW5nIHZlYyBjb3VudCBbcmM9JWRdXG4iLAo+PiArCQkJCSAgICByYyk7Cj4+ICsKPiBX
+aHkgcmF0ZWxpbWl0ZWQsIGNhbiB0aGlzIGhhcHBlbiBvdmVyIGFuZCBvdmVyIGFuZCBvdmVyPwoK
+VGhhdCdzIGNvcnJlY3QsIG5vdCBpbiB0aGlzIGNhc2UuIEkgdXBkYXRlZCB0aGUgZGV2X2Vycm9y
+IC8gcHJfZXJyb3IgCmNhbGxzIHRvIGluY2x1ZGUgcmF0ZWxpbWl0ZWTCoCBvbmx5IGluIHRoZSBj
+YWxsIHBhdGhzIG9mIHRoZSBpb2N0bCBjb21tYW5kcy4KCj4KPj4gKwkJcmV0dXJuIHJjOwo+PiAr
+CX0KPj4gKwo+PiArCXJjID0gcGNpX2FsbG9jX2lycV92ZWN0b3JzKHBkZXYsIG5yX3ZlY3MsIG5y
+X3ZlY3MsIFBDSV9JUlFfTVNJWCk7Cj4+ICsJaWYgKHJjIDwgMCkgewo+PiArCQlkZXZfZXJyX3Jh
+dGVsaW1pdGVkKCZwZGV2LT5kZXYsCj4+ICsJCQkJICAgIE5FICJFcnJvciBpbiBhbGxvYyBNU0kt
+WCB2ZWNzIFtyYz0lZF1cbiIsCj4+ICsJCQkJICAgIHJjKTsKPiBTYW1lIGhlcmUuCgpVcGRhdGVk
+IHRvIGRldl9lcnIoKS4KCj4KPj4gKwo+PiArCQlyZXR1cm4gcmM7Cj4+ICsJfQo+PiArCj4+ICsJ
+cmV0dXJuIDA7Cj4+ICt9Cj4+ICsKPj4gKy8qKgo+PiArICogbmVfdGVhcmRvd25fbXNpeCAtIFRl
+YXJkb3duIE1TSS1YIHZlY3RvcnMgZm9yIHRoZSBQQ0kgZGV2aWNlLgo+PiArICoKPj4gKyAqIEBw
+ZGV2OiBQQ0kgZGV2aWNlIHRvIHRlYXJkb3duIHRoZSBNU0ktWCBmb3IuCj4+ICsgKi8KPj4gK3N0
+YXRpYyB2b2lkIG5lX3RlYXJkb3duX21zaXgoc3RydWN0IHBjaV9kZXYgKnBkZXYpCj4+ICt7Cj4+
+ICsJc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+ID1OVUxMIG5vdCBuZWVk
+ZWQuCgpVcGRhdGVkIHRvIGluaXQgdmlhIHBjaV9nZXRfZHJ2ZGF0YSgpIGRpcmVjdGx5LgoKPgo+
+PiArCj4+ICsJaWYgKFdBUk5fT04oIXBkZXYpKQo+PiArCQlyZXR1cm47Cj4gQWdhaW4sIHlvdSBj
+b250cm9sIHRoZSBjYWxsZXJzLCBob3cgY2FuIHRoaXMgZXZlciBiZSB0cnVlPwoKU2FuaXR5IGNo
+ZWNrLCBzaG91bGQgbmV2ZXIgaGFwcGVuLgoKPgo+PiArCj4+ICsJbmVfcGNpX2RldiA9IHBjaV9n
+ZXRfZHJ2ZGF0YShwZGV2KTsKPj4gKwlpZiAoV0FSTl9PTighbmVfcGNpX2RldikpCj4+ICsJCXJl
+dHVybjsKPiBBZ2Fpbiwgc2FtZSB0aGluZy4gIEknbSBqdXN0IGdvaW5nIHRvIGxldCB5b3UgZml4
+IHVwIGFsbCBpbnN0YW5jZXMgb2YKPiB0aGlzIHBhdHRlcm4gZnJvbSBub3cgb24gYW5kIG5vdCBj
+YWxsIGl0IG91dCBhZ2Fpbi4KClllcCwgSSB1cGRhdGVkIGFsbCB0aGUgb2NjdXJyZW5jZXMuCgo+
+Cj4+ICsKPj4gKwlwY2lfZnJlZV9pcnFfdmVjdG9ycyhwZGV2KTsKPj4gK30KPj4gKwo+PiArLyoq
+Cj4+ICsgKiBuZV9wY2lfZGV2X2VuYWJsZSAtIFNlbGVjdCBQQ0kgZGV2aWNlIHZlcnNpb24gYW5k
+IGVuYWJsZSBpdC4KPj4gKyAqCj4+ICsgKiBAcGRldjogUENJIGRldmljZSB0byBzZWxlY3QgdmVy
+c2lvbiBmb3IgYW5kIHRoZW4gZW5hYmxlLgo+PiArICoKPj4gKyAqIEByZXR1cm5zOiAwIG9uIHN1
+Y2Nlc3MsIG5lZ2F0aXZlIHJldHVybiB2YWx1ZSBvbiBmYWlsdXJlLgo+PiArICovCj4+ICtzdGF0
+aWMgaW50IG5lX3BjaV9kZXZfZW5hYmxlKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQo+PiArewo+PiAr
+CXU4IGRldl9lbmFibGVfcmVwbHkgPSAwOwo+PiArCXUxNiBkZXZfdmVyc2lvbl9yZXBseSA9IDA7
+Cj4+ICsJc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+PiArCj4+ICsJaWYg
+KFdBUk5fT04oIXBkZXYpKQo+PiArCQlyZXR1cm4gLUVJTlZBTDsKPj4gKwo+PiArCW5lX3BjaV9k
+ZXYgPSBwY2lfZ2V0X2RydmRhdGEocGRldik7Cj4+ICsJaWYgKFdBUk5fT04oIW5lX3BjaV9kZXYp
+IHx8IFdBUk5fT04oIW5lX3BjaV9kZXYtPmlvbWVtX2Jhc2UpKQo+PiArCQlyZXR1cm4gLUVJTlZB
+TDsKPj4gKwo+PiArCWlvd3JpdGUxNihORV9WRVJTSU9OX01BWCwgbmVfcGNpX2Rldi0+aW9tZW1f
+YmFzZSArIE5FX1ZFUlNJT04pOwo+PiArCj4+ICsJZGV2X3ZlcnNpb25fcmVwbHkgPSBpb3JlYWQx
+NihuZV9wY2lfZGV2LT5pb21lbV9iYXNlICsgTkVfVkVSU0lPTik7Cj4+ICsJaWYgKGRldl92ZXJz
+aW9uX3JlcGx5ICE9IE5FX1ZFUlNJT05fTUFYKSB7Cj4+ICsJCWRldl9lcnJfcmF0ZWxpbWl0ZWQo
+JnBkZXYtPmRldiwKPj4gKwkJCQkgICAgTkUgIkVycm9yIGluIHBjaSBkZXYgdmVyc2lvbiBjbWRc
+biIpOwo+IFNhbWUgaGVyZSwgd2h5IGFsbCB0aGUgcmF0ZWxpbWl0ZWQgc3R1ZmY/ICBTaG91bGQg
+anVzdCBiZSBkZXZfZXJyKCksCj4gcmlnaHQ/CgpUcnVlLCBJIG1vZGlmaWVkIHRvIGRldl9lcnIo
+KS4KCj4KPj4gKwo+PiArCQlyZXR1cm4gLUVJTzsKPj4gKwl9Cj4+ICsKPj4gKwlpb3dyaXRlOChO
+RV9FTkFCTEVfT04sIG5lX3BjaV9kZXYtPmlvbWVtX2Jhc2UgKyBORV9FTkFCTEUpOwo+PiArCj4+
+ICsJZGV2X2VuYWJsZV9yZXBseSA9IGlvcmVhZDgobmVfcGNpX2Rldi0+aW9tZW1fYmFzZSArIE5F
+X0VOQUJMRSk7Cj4+ICsJaWYgKGRldl9lbmFibGVfcmVwbHkgIT0gTkVfRU5BQkxFX09OKSB7Cj4+
+ICsJCWRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYtPmRldiwKPj4gKwkJCQkgICAgTkUgIkVycm9y
+IGluIHBjaSBkZXYgZW5hYmxlIGNtZFxuIik7Cj4+ICsKPj4gKwkJcmV0dXJuIC1FSU87Cj4+ICsJ
+fQo+PiArCj4+ICsJcmV0dXJuIDA7Cj4+ICt9Cj4+ICsKPj4gKy8qKgo+PiArICogbmVfcGNpX2Rl
+dl9kaXNhYmxlIC0gRGlzYWJsZSBQQ0kgZGV2aWNlLgo+PiArICoKPj4gKyAqIEBwZGV2OiBQQ0kg
+ZGV2aWNlIHRvIGRpc2FibGUuCj4+ICsgKi8KPj4gK3N0YXRpYyB2b2lkIG5lX3BjaV9kZXZfZGlz
+YWJsZShzdHJ1Y3QgcGNpX2RldiAqcGRldikKPj4gK3sKPj4gKwl1OCBkZXZfZGlzYWJsZV9yZXBs
+eSA9IDA7Cj4+ICsJc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+PiArCWNv
+bnN0IHVuc2lnbmVkIGludCBzbGVlcF90aW1lID0gMTA7IC8vIDEwIG1zCj4+ICsJdW5zaWduZWQg
+aW50IHNsZWVwX3RpbWVfY291bnQgPSAwOwo+PiArCj4+ICsJaWYgKFdBUk5fT04oIXBkZXYpKQo+
+PiArCQlyZXR1cm47Cj4+ICsKPj4gKwluZV9wY2lfZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYp
+Owo+PiArCWlmIChXQVJOX09OKCFuZV9wY2lfZGV2KSB8fCBXQVJOX09OKCFuZV9wY2lfZGV2LT5p
+b21lbV9iYXNlKSkKPj4gKwkJcmV0dXJuOwo+PiArCj4+ICsJaW93cml0ZTgoTkVfRU5BQkxFX09G
+RiwgbmVfcGNpX2Rldi0+aW9tZW1fYmFzZSArIE5FX0VOQUJMRSk7Cj4+ICsKPj4gKwkvKgo+PiAr
+CSAqIENoZWNrIGZvciBORV9FTkFCTEVfT0ZGIGluIGEgbG9vcCwgdG8gaGFuZGxlIGNhc2VzIHdo
+ZW4gdGhlIGRldmljZQo+PiArCSAqIHN0YXRlIGlzIG5vdCBpbW1lZGlhdGVseSBzZXQgdG8gZGlz
+YWJsZWQgYW5kIGdvaW5nIHRocm91Z2ggYQo+PiArCSAqIHRyYW5zaXRvcnkgc3RhdGUgb2YgZGlz
+YWJsaW5nLgo+PiArCSAqLwo+PiArCXdoaWxlIChzbGVlcF90aW1lX2NvdW50IDwgREVGQVVMVF9U
+SU1FT1VUX01TRUNTKSB7Cj4+ICsJCWRldl9kaXNhYmxlX3JlcGx5ID0gaW9yZWFkOChuZV9wY2lf
+ZGV2LT5pb21lbV9iYXNlICsgTkVfRU5BQkxFKTsKPj4gKwkJaWYgKGRldl9kaXNhYmxlX3JlcGx5
+ID09IE5FX0VOQUJMRV9PRkYpCj4+ICsJCQlyZXR1cm47Cj4+ICsKPj4gKwkJbXNsZWVwX2ludGVy
+cnVwdGlibGUoc2xlZXBfdGltZSk7Cj4+ICsJCXNsZWVwX3RpbWVfY291bnQgKz0gc2xlZXBfdGlt
+ZTsKPj4gKwl9Cj4+ICsKPj4gKwlkZXZfZGlzYWJsZV9yZXBseSA9IGlvcmVhZDgobmVfcGNpX2Rl
+di0+aW9tZW1fYmFzZSArIE5FX0VOQUJMRSk7Cj4+ICsJaWYgKGRldl9kaXNhYmxlX3JlcGx5ICE9
+IE5FX0VOQUJMRV9PRkYpCj4+ICsJCWRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYtPmRldiwKPj4g
+KwkJCQkgICAgTkUgIkVycm9yIGluIHBjaSBkZXYgZGlzYWJsZSBjbWRcbiIpOwo+PiArfQo+PiAr
+Cj4+ICtzdGF0aWMgaW50IG5lX3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRldiwgY29uc3Qg
+c3RydWN0IHBjaV9kZXZpY2VfaWQgKmlkKQo+PiArewo+PiArCXN0cnVjdCBuZV9wY2lfZGV2ICpu
+ZV9wY2lfZGV2ID0gTlVMTDsKPj4gKwlpbnQgcmMgPSAtRUlOVkFMOwo+PiArCj4+ICsJbmVfcGNp
+X2RldiA9IGt6YWxsb2Moc2l6ZW9mKCpuZV9wY2lfZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+ICsJaWYg
+KCFuZV9wY2lfZGV2KQo+PiArCQlyZXR1cm4gLUVOT01FTTsKPj4gKwo+PiArCXJjID0gcGNpX2Vu
+YWJsZV9kZXZpY2UocGRldik7Cj4+ICsJaWYgKHJjIDwgMCkgewo+PiArCQlkZXZfZXJyX3JhdGVs
+aW1pdGVkKCZwZGV2LT5kZXYsCj4+ICsJCQkJICAgIE5FICJFcnJvciBpbiBwY2kgZGV2IGVuYWJs
+ZSBbcmM9JWRdXG4iLCByYyk7Cj4+ICsKPj4gKwkJZ290byBmcmVlX25lX3BjaV9kZXY7Cj4+ICsJ
+fQo+PiArCj4+ICsJcmMgPSBwY2lfcmVxdWVzdF9yZWdpb25zX2V4Y2x1c2l2ZShwZGV2LCAibmVf
+cGNpX2RldiIpOwo+PiArCWlmIChyYyA8IDApIHsKPj4gKwkJZGV2X2Vycl9yYXRlbGltaXRlZCgm
+cGRldi0+ZGV2LAo+PiArCQkJCSAgICBORSAiRXJyb3IgaW4gcGNpIHJlcXVlc3QgcmVnaW9ucyBb
+cmM9JWRdXG4iLAo+PiArCQkJCSAgICByYyk7Cj4+ICsKPj4gKwkJZ290byBkaXNhYmxlX3BjaV9k
+ZXY7Cj4+ICsJfQo+PiArCj4+ICsJbmVfcGNpX2Rldi0+aW9tZW1fYmFzZSA9IHBjaV9pb21hcChw
+ZGV2LCBQQ0lfQkFSX05FLCAwKTsKPj4gKwlpZiAoIW5lX3BjaV9kZXYtPmlvbWVtX2Jhc2UpIHsK
+Pj4gKwkJcmMgPSAtRU5PTUVNOwo+PiArCj4+ICsJCWRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYt
+PmRldiwKPj4gKwkJCQkgICAgTkUgIkVycm9yIGluIHBjaSBpb21hcCBbcmM9JWRdXG4iLCByYyk7
+Cj4+ICsKPj4gKwkJZ290byByZWxlYXNlX3BjaV9yZWdpb25zOwo+PiArCX0KPj4gKwo+PiArCXBj
+aV9zZXRfZHJ2ZGF0YShwZGV2LCBuZV9wY2lfZGV2KTsKPj4gKwo+PiArCXJjID0gbmVfc2V0dXBf
+bXNpeChwZGV2KTsKPj4gKwlpZiAocmMgPCAwKSB7Cj4+ICsJCWRldl9lcnJfcmF0ZWxpbWl0ZWQo
+JnBkZXYtPmRldiwKPj4gKwkJCQkgICAgTkUgIkVycm9yIGluIHBjaSBkZXYgbXNpeCBzZXR1cCBb
+cmM9JWRdXG4iLAo+PiArCQkJCSAgICByYyk7Cj4+ICsKPj4gKwkJZ290byBpb3VubWFwX3BjaV9i
+YXI7Cj4+ICsJfQo+PiArCj4+ICsJbmVfcGNpX2Rldl9kaXNhYmxlKHBkZXYpOwo+PiArCj4+ICsJ
+cmMgPSBuZV9wY2lfZGV2X2VuYWJsZShwZGV2KTsKPj4gKwlpZiAocmMgPCAwKSB7Cj4+ICsJCWRl
+dl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYtPmRldiwKPj4gKwkJCQkgICAgTkUgIkVycm9yIGluIG5l
+X3BjaV9kZXYgZW5hYmxlIFtyYz0lZF1cbiIsCj4+ICsJCQkJICAgIHJjKTsKPj4gKwo+PiArCQln
+b3RvIHRlYXJkb3duX21zaXg7Cj4+ICsJfQo+PiArCj4+ICsJYXRvbWljX3NldCgmbmVfcGNpX2Rl
+di0+Y21kX3JlcGx5X2F2YWlsLCAwKTsKPj4gKwlpbml0X3dhaXRxdWV1ZV9oZWFkKCZuZV9wY2lf
+ZGV2LT5jbWRfcmVwbHlfd2FpdF9xKTsKPj4gKwlJTklUX0xJU1RfSEVBRCgmbmVfcGNpX2Rldi0+
+ZW5jbGF2ZXNfbGlzdCk7Cj4+ICsJbXV0ZXhfaW5pdCgmbmVfcGNpX2Rldi0+ZW5jbGF2ZXNfbGlz
+dF9tdXRleCk7Cj4+ICsJbXV0ZXhfaW5pdCgmbmVfcGNpX2Rldi0+cGNpX2Rldl9tdXRleCk7Cj4+
+ICsKPj4gKwlyZXR1cm4gMDsKPj4gKwo+PiArdGVhcmRvd25fbXNpeDoKPj4gKwluZV90ZWFyZG93
+bl9tc2l4KHBkZXYpOwo+PiAraW91bm1hcF9wY2lfYmFyOgo+PiArCXBjaV9zZXRfZHJ2ZGF0YShw
+ZGV2LCBOVUxMKTsKPj4gKwlwY2lfaW91bm1hcChwZGV2LCBuZV9wY2lfZGV2LT5pb21lbV9iYXNl
+KTsKPj4gK3JlbGVhc2VfcGNpX3JlZ2lvbnM6Cj4+ICsJcGNpX3JlbGVhc2VfcmVnaW9ucyhwZGV2
+KTsKPj4gK2Rpc2FibGVfcGNpX2RldjoKPj4gKwlwY2lfZGlzYWJsZV9kZXZpY2UocGRldik7Cj4+
+ICtmcmVlX25lX3BjaV9kZXY6Cj4+ICsJa3pmcmVlKG5lX3BjaV9kZXYpOwo+PiArCj4+ICsJcmV0
+dXJuIHJjOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgdm9pZCBuZV9wY2lfcmVtb3ZlKHN0cnVjdCBw
+Y2lfZGV2ICpwZGV2KQo+PiArewo+PiArCXN0cnVjdCBuZV9wY2lfZGV2ICpuZV9wY2lfZGV2ID0g
+cGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+PiArCj4+ICsJaWYgKCFuZV9wY2lfZGV2IHx8ICFuZV9w
+Y2lfZGV2LT5pb21lbV9iYXNlKQo+PiArCQlyZXR1cm47Cj4+ICsKPj4gKwluZV9wY2lfZGV2X2Rp
+c2FibGUocGRldik7Cj4+ICsKPj4gKwluZV90ZWFyZG93bl9tc2l4KHBkZXYpOwo+PiArCj4+ICsJ
+cGNpX3NldF9kcnZkYXRhKHBkZXYsIE5VTEwpOwo+PiArCj4+ICsJcGNpX2lvdW5tYXAocGRldiwg
+bmVfcGNpX2Rldi0+aW9tZW1fYmFzZSk7Cj4+ICsKPj4gKwlwY2lfcmVsZWFzZV9yZWdpb25zKHBk
+ZXYpOwo+PiArCj4+ICsJcGNpX2Rpc2FibGVfZGV2aWNlKHBkZXYpOwo+PiArCj4+ICsJa3pmcmVl
+KG5lX3BjaV9kZXYpOwo+IFdoeSBremZyZWUoKT8gIEl0J3MgYSBwY2kgZGV2aWNlIHN0cnVjdHVy
+ZT8gIFdoYXQgInNwZWNpYWwiIGluZm8gd2FzIGluCj4gaXQ/CgpJdCdzIGEgZGF0YSBzdHJ1Y3R1
+cmUgdGhhdCBpbmNsdWRlcyBtZXRhZGF0YSBmb3IgZW5jbGF2ZXMgYm9va2tlZXBpbmcgCmFuZCBO
+RSBQQ0kgZGV2IGFjY2VzcyBlLmcuIGlvbWVtIG9mIHRoZSBORSBQQ0kgZGV2LCBQQ0kgZGV2IGNt
+ZCByZXBseSAKd2FpdHF1ZXVlLiBJIHVwZGF0ZWQgdG8ga2ZyZWUoKS4KClRoYW5rcyBmb3IgdGhl
+IG92ZXJhbGwgcmV2aWV3LgoKQW5kcmEKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9t
+YW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJD
+NSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJl
+ZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
 
