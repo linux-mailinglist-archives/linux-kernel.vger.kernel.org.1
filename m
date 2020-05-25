@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DDE1E06C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A880F1E06C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgEYGOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 02:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729125AbgEYGOh (ORCPT
+        id S1730460AbgEYGQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 02:16:27 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:22248 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729125AbgEYGQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 02:14:37 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6348FC061A0E;
-        Sun, 24 May 2020 23:14:37 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k5so19435094lji.11;
-        Sun, 24 May 2020 23:14:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xxPp1YhKBxMDmxPDlgA3r6L4BPVtYqrACCbiDdkf2HU=;
-        b=oH0jGp/2CUEdGLq6EDmu5s+PiAb/IDEiXKtMl/yTpb3Y3fg51+Iq4kgQCw95Q9cV6e
-         DTYwCy/OywCcfPMYn5cyMejV3EqYTyRuZhqXotrPwKh3AWq/xRhhzrrRgwdJBeITWTHp
-         spvmnFufI/vuLUzULK9+q3fPphWeh6BPVRV0qBbZaUn1BZxFRO+aUi/Za0m/FqFKkQma
-         v379pALdXZRKuwU3JFSw2RZVsKj0VyGXKElz5a+wMKXOfo1gARzxdVps067fQh/WdOhG
-         WXSshs0r4TkX8K7MBUeYGLKpvju5PvJJmcIFKpd8DKvuZLs6dAsjuINXeFIyMnVM0Mfa
-         5iYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xxPp1YhKBxMDmxPDlgA3r6L4BPVtYqrACCbiDdkf2HU=;
-        b=PIdWB5zCeMhDwqcimL4YVAX7KmkC4oncnZKcadKKrsDFr0dyCccTCxmj5yBMYLZYVl
-         N2T+2/Nb7MxCFQKwhD8+22+u5b6JouRQqorch0Pu1e9Z91wIGKHpaHK5PDkJZftHlkqy
-         746G/NpiN8wjECzmNceIRe5URMvkregozzcVU86FIuSJA7pR006AC9gfbLtaPQ75T0nq
-         6w+FFC7Vhb1EfT9AQcdJ6Mi7YO2gMAbD5qdhiIc0DcLP1vK+Sq8ElpuP06H7/7dmPLOK
-         ZpRPyePNRcCnqBh8+prF8KVmHC+KIBhlDDbWV16geaQGxbIImZuj5qYqf1sgyW1F309H
-         u+2g==
-X-Gm-Message-State: AOAM530fL3p2RMVAR5kINSEMu7xraBHX/A3Y6h43oiscts5jAzgomM+Z
-        aJapJNWyigZhFnZO0jJysBD5wqSNoPVSp4VuOdc=
-X-Google-Smtp-Source: ABdhPJzaVD3W8XB8LNxW925jXvFBvaW8onNuO96IUdcvivMzSYciGrsBcQqGjF7n+6WXCtsIuyKlXvmMkqyksGWw2uM=
-X-Received: by 2002:a2e:d1a:: with SMTP id 26mr13109692ljn.160.1590387275853;
- Sun, 24 May 2020 23:14:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200517222907.1277787-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20200517222907.1277787-1-martin.blumenstingl@googlemail.com>
-From:   Thomas Graichen <thomas.graichen@googlemail.com>
-Date:   Mon, 25 May 2020 08:14:24 +0200
-Message-ID: <CAOUEw11pirqhOHTjO_xHnZpnSgKNuJk5ysh43B7jWJokuGPB2A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: host: meson-mx-sdhc: fix manual RX FIFO flushing
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        Mon, 25 May 2020 02:16:26 -0400
+X-UUID: ad783735897a4deb96e9fc9d60047f63-20200525
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3hx+xuZwk+qJ8HxGZOVEgrk/RUaXq486bK4HGdRWFOY=;
+        b=sUT1dbhdCwbCGa9wcevmxjH949p1825aQBiHBRQINul9aBnQfP+tLrzQmokyAad1O0JD8NmjAcPvTY5stKeK7ji0X704MhlSCBY7opEnfnHsM1qV04W8e8fKAKdGUZr+I0nd6HugKsWa0h1vyD9sNPNUtynrqAhMD3T0GcHSXZo=;
+X-UUID: ad783735897a4deb96e9fc9d60047f63-20200525
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 1685404416; Mon, 25 May 2020 14:16:19 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 May
+ 2020 14:16:17 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 May 2020 14:16:16 +0800
+Message-ID: <1590387275.13912.7.camel@mhfsdcap03>
+Subject: Re: [PATCH v3 3/7] iommu/mediatek: Disable STANDARD_AXI_MODE in
+ MISC_CTRL
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Chao Hao <chao.hao@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        FY Yang <fy.yang@mediatek.com>, Jun Yan <jun.yan@mediatek.com>
+Date:   Mon, 25 May 2020 14:14:35 +0800
+In-Reply-To: <20200509083654.5178-4-chao.hao@mediatek.com>
+References: <20200509083654.5178-1-chao.hao@mediatek.com>
+         <20200509083654.5178-4-chao.hao@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: A8DD666DEB4BBAC87549C627945CC7E41AC0342C681DB12F322F811B674E33472000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 18, 2020 at 12:29 AM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> For Meson8 and Meson8b SoCs the vendor driver follows the following
-> pattern:
-> - for eMMC and SD cards in .set_pdma it sets:
->   pdma->rxfifo_manual_flush = 1;
-> - for SDIO cards in .set_pdma it sets:
->   pdma->rxfifo_manual_flush = 0;
-> - before syncing the DMA read buffer is sets:
->   pdma->rxfifo_manual_flush |= 0x02;
->
-> Set the second bit of MESON_SDHC_PDMA_RXFIFO_MANUAL_FLUSH without
-> clearing the first bit before syncing the DMA read buffer. This fixes a
-> problem where Meson8 and Meson8b SoCs would read random garbage from SD
-> cards. It is not clear why it worked for eMMC cards. This manifested in
-> the following errors when plugging in an SD card:
->   unrecognised SCR structure version <random number>
->
-> Fixes: 53ded1b676d199 ("mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host")
-> Cc: Thomas Graichen <thomas.graichen@gmail.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+T24gU2F0LCAyMDIwLTA1LTA5IGF0IDE2OjM2ICswODAwLCBDaGFvIEhhbyB3cm90ZToNCj4gSW4g
+b3JkZXIgdG8gaW1wcm92ZSBwZXJmb3JtYW5jZSwgd2UgYWx3YXlzIGRpc2FibGUgU1RBTkRBUkRf
+QVhJX01PREUgaW4NCj4gTUlTQ19DVFJMLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2hhbyBIYW8g
+PGNoYW8uaGFvQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2lvbW11L210a19pb21t
+dS5jIHwgOCArKysrKysrLQ0KPiAgZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaCB8IDEgKw0KPiAg
+MiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jIGIvZHJpdmVycy9pb21tdS9tdGtf
+aW9tbXUuYw0KPiBpbmRleCBlN2U3Yzc2OTVlZDEuLjllZGUzMjdhNDE4ZCAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiArKysgYi9kcml2ZXJzL2lvbW11L210a19p
+b21tdS5jDQo+IEBAIC00Miw2ICs0Miw4IEBADQo+ICAjZGVmaW5lIEZfSU5WTERfRU4xCQkJCUJJ
+VCgxKQ0KPiAgDQo+ICAjZGVmaW5lIFJFR19NTVVfTUlTQ19DVFJMCQkJMHgwNDgNCj4gKyNkZWZp
+bmUgRl9NTVVfU1RBTkRBUkRfQVhJX01PREVfQklUCQkoQklUKDMpIHwgQklUKDE5KSkNCj4gKw0K
+PiAgI2RlZmluZSBSRUdfTU1VX0RDTV9ESVMJCQkJMHgwNTANCj4gIA0KPiAgI2RlZmluZSBSRUdf
+TU1VX0NUUkxfUkVHCQkJMHgxMTANCj4gQEAgLTU4NSw3ICs1ODcsMTEgQEAgc3RhdGljIGludCBt
+dGtfaW9tbXVfaHdfaW5pdChjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEpDQo+ICAJ
+fQ0KPiAgCXdyaXRlbF9yZWxheGVkKDAsIGRhdGEtPmJhc2UgKyBSRUdfTU1VX0RDTV9ESVMpOw0K
+PiAgDQo+IC0JaWYgKGRhdGEtPnBsYXRfZGF0YS0+cmVzZXRfYXhpKSB7DQo+ICsJaWYgKGRhdGEt
+PnBsYXRfZGF0YS0+aGFzX21pc2NfY3RybCkgew0KPiArCQlyZWd2YWwgPSByZWFkbF9yZWxheGVk
+KGRhdGEtPmJhc2UgKyBSRUdfTU1VX01JU0NfQ1RSTCk7DQo+ICsJCXJlZ3ZhbCAmPSB+Rl9NTVVf
+U1RBTkRBUkRfQVhJX01PREVfQklUOw0KPiArCQl3cml0ZWxfcmVsYXhlZChyZWd2YWwsIGRhdGEt
+PmJhc2UgKyBSRUdfTU1VX01JU0NfQ1RSTCk7DQo+ICsJfSBlbHNlIGlmIChkYXRhLT5wbGF0X2Rh
+dGEtPnJlc2V0X2F4aSkgew0KPiAgCQkvKiBUaGUgcmVnaXN0ZXIgaXMgY2FsbGVkIFNUQU5EQVJE
+X0FYSV9NT0RFIGluIHRoaXMgY2FzZSAqLw0KPiAgCQl3cml0ZWxfcmVsYXhlZCgwLCBkYXRhLT5i
+YXNlICsgUkVHX01NVV9NSVNDX0NUUkwpOw0KPiAgCX0NCg0KDQoweDQ4IGlzIGVpdGhlciBTVEFO
+REFSRF9BWElfTU9ERSBvciBNSVNDX0NUUkwuDQoNClRodXMsIA0KDQppZiAoZGF0YS0+cGxhdF9k
+YXRhLT5yZXNldF9heGkpIHsNCiAgIHh4eA0KfSBlbHNlIHsgIC8qIE1JU0NfQ1RSTCAqLw0KICAg
+eHh4DQp9DQoNCk5vIG5lZWQgYWRkICJoYXNfbWlzY19jdHJsIi4NCg0KDQo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL2lvbW11L210a19pb21tdS5oIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaA0K
+PiBpbmRleCAxYjZlYTgzOWI5MmMuLmQ3MTFhYzYzMDAzNyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
+cy9pb21tdS9tdGtfaW9tbXUuaA0KPiArKysgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5oDQo+
+IEBAIC00MCw2ICs0MCw3IEBAIHN0cnVjdCBtdGtfaW9tbXVfcGxhdF9kYXRhIHsNCj4gIA0KPiAg
+CS8qIEhXIHdpbGwgdXNlIHRoZSBFTUkgY2xvY2sgaWYgdGhlcmUgaXNuJ3QgdGhlICJiY2xrIi4g
+Ki8NCj4gIAlib29sICAgICAgICAgICAgICAgIGhhc19iY2xrOw0KPiArCWJvb2wJCSAgICBoYXNf
+bWlzY19jdHJsOw0KPiAgCWJvb2wgICAgICAgICAgICAgICAgaGFzX3ZsZF9wYV9ybmc7DQo+ICAJ
+Ym9vbCAgICAgICAgICAgICAgICByZXNldF9heGk7DQo+ICAJdW5zaWduZWQgY2hhciAgICAgICBs
+YXJiaWRfcmVtYXBbTVRLX0xBUkJfTlJfTUFYXTsNCg0K
 
-Tested-by: thomas graichen <thomas.graichen@gmail.com>
-
-BEFORE: on my meson8 based mxiii i got the above error and the sd card
-was not useable
-
-AFTER: no more error and sd cards works fine
-
-> ---
->  drivers/mmc/host/meson-mx-sdhc.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/meson-mx-sdhc.c b/drivers/mmc/host/meson-mx-sdhc.c
-> index 5c00958d7754..53e3f6a4245a 100644
-> --- a/drivers/mmc/host/meson-mx-sdhc.c
-> +++ b/drivers/mmc/host/meson-mx-sdhc.c
-> @@ -586,10 +586,17 @@ static irqreturn_t meson_mx_sdhc_irq_thread(int irq, void *irq_data)
->                     cmd->data->flags & MMC_DATA_READ) {
->                         meson_mx_sdhc_wait_cmd_ready(host->mmc);
->
-> +                       /*
-> +                        * If MESON_SDHC_PDMA_RXFIFO_MANUAL_FLUSH was
-> +                        * previously 0x1 then it has to be set to 0x3. If it
-> +                        * was 0x0 before then it has to be set to 0x2. Without
-> +                        * this reading SD cards sometimes transfers garbage,
-> +                        * which results in cards not being detected due to:
-> +                        *   unrecognised SCR structure version <random number>
-> +                        */
->                         val = FIELD_PREP(MESON_SDHC_PDMA_RXFIFO_MANUAL_FLUSH,
->                                          2);
-> -                       regmap_update_bits(host->regmap, MESON_SDHC_PDMA,
-> -                                          MESON_SDHC_PDMA_RXFIFO_MANUAL_FLUSH,
-> +                       regmap_update_bits(host->regmap, MESON_SDHC_PDMA, val,
->                                            val);
->                 }
->
-> --
-> 2.26.2
->
