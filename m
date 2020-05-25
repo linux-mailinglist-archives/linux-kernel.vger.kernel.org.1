@@ -2,178 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26B41E0CE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A561E0A76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390259AbgEYL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390170AbgEYL04 (ORCPT
+        id S2389470AbgEYJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:28:55 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:48362 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389330AbgEYJ2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:26:56 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C891C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:26:56 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c185so3049221qke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 04:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T1fKqU8yBUFbJU2PRqwWpgtp0OICg+fgV2aVzC2pyQc=;
-        b=v6YOqjskJeLREg51fQN8z62C4OyqkRKFXSpGnf29v23Buz6SoiP4y/AeQpXdUnUfID
-         AxtyaocQK41lFi0hRSydg+Okk6LTUsfSz9br5yTmS84soPguR9U+qY+EiisHstp5Mvhd
-         C4XJCCM95KStdyjD+q5CPgDeFz0X8EocdmVBL+ZQbz2dMUlHjDbqPjI3z5thA7qgA0bR
-         098+qOQ9iVKYa2uls5C4GZ3jNbSoVYfw1ZqJQ4J9DP96CrBytK5XAA36BI8ma6treTYM
-         d2TIu6fTgtURVscYqL5WbRPxc7NiUhZpTXavHCajAOQDRv9PYsnC5C1QZ3KCKmNfeHhY
-         LLaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T1fKqU8yBUFbJU2PRqwWpgtp0OICg+fgV2aVzC2pyQc=;
-        b=jLjEYJ3Bb1YYCEo85Kt4+Ndvl7CYBVRChefP5OXMNY8xIq0T0HSksmM9NR1SO0M4F4
-         N2FXl9gkOE3dWGnW1rcYBcZwlvXKYgfdXLsQLKO3wq3xWuYGBic4VHRVz4mnAOGsn9Oh
-         fTbqJBWGlRpTsQeqtRfRvbb9fPE1s9HutWqEwBdZOK5gfOuEPiDuOrjh9tBe0DObLVKA
-         tE/9nNPfbLC1aYly27z+Mpwb4I7aDK6lD2GZ6zY0yD+oiVPL+UPIdYM7uO0UlTUsTCBK
-         XTugdIf3pB9pIg2EKboR87A3jezfw7Jct/OJi+aXwRf+BFzyS5u8k/ml7Bi4ACCRbpzy
-         I0ug==
-X-Gm-Message-State: AOAM531WcdupItpW8tqTN5CycrlOQb0Dkp+MHbMnsNYa8iTx9RfPuxyT
-        o5YI11zlwyhLWXKy+TQAEoqUjA==
-X-Google-Smtp-Source: ABdhPJxpBlQiX8GNl/gIPb3yZevRM4hOesOdox3MTNk3wD1YG3ZiAmCYBxjvFhr9+2MV9uxAvSusDA==
-X-Received: by 2002:a37:de16:: with SMTP id h22mr21922901qkj.195.1590406015505;
-        Mon, 25 May 2020 04:26:55 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id w9sm14204059qtn.29.2020.05.25.04.26.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2020 04:26:54 -0700 (PDT)
-Subject: Re: [PATCH 2/6] arm64: dts: qcom: sm8250: add apps_smmu node
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-References: <20200524023815.21789-1-jonathan@marek.ca>
- <20200524023815.21789-3-jonathan@marek.ca>
- <42f39eeb2af9c82a551a417c62ea21d7@codeaurora.org>
- <0f58e2fd-ef55-cf38-d403-4782662aa89e@marek.ca>
- <2a35f3b85d8311fb4298aaea82236967@codeaurora.org>
- <c9c21e4c-fc89-5a74-fa78-203e5fb64e27@marek.ca>
- <72d771390af9a68759d3f81cb79e46a6@codeaurora.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <33b34a58-46d2-80ec-1d79-8e02aa5ae026@marek.ca>
-Date:   Mon, 25 May 2020 07:27:22 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Mon, 25 May 2020 05:28:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1590398934; x=1621934934;
+  h=date:from:to:subject:message-id:mime-version;
+  bh=uIfaX+EQPpYkQ3H7bVFuEEKfX/tCjxDONoYFIwtAJpk=;
+  b=XuIA6QPiFQzLre4Y9H84tU7z24o6fQGtPDOx0cURrP6TEua5/0uanO3+
+   QMNPvXtplHCFvTutj+W9N0V3mtmKW25yqyExZbM0BsuSpCUE1IFOWsZ8r
+   Q34DOYwCwE/YsUHSmYQZkxTF4hVg+h9X2KSxkdPeutjpSghJ/XQKYbVEM
+   vDE+4QuHbYJls/czTpMKWkk+gJ72Wnik8yIzjqYlQybwg3gV4GhGT1YVv
+   TZBSO4MpwphYUXsyZJb0nGFq0Iuuq8g5334wvL8CUqEoW6/ALuwpl/ClS
+   55owo4jA2qhZGqpCjMcSTfWJxWlDawFqfyNGNXHg67L4H87oDjNFKXfAi
+   w==;
+IronPort-SDR: JjNAMYcmRpZ/Bc0iYhVo/n47uwehIHE6TJ9Uojq9rvVkZInGYF1YH1S7oZJJ/lv+84dqd7Efcj
+ zBXBI3M2SSwSdL5tQmDJFKsGX3fkVwZhxaYds6dSvTONT6tisASBHkAh3IODgdmB4dYFU8Dy4r
+ YVYVrNhHkYy/QSanww25b26atIHy0Chd1yPW3bdLoWx/S1wwOflgJDJ7ERaGBZztH8slNIJMff
+ cwc8laMwE0U1zDaWZAqeBcl+qIcUI6OXou8GWVS2nVDzB5kh1TH23B2AU9V8TwmUwHsWJni5qZ
+ +zk=
+X-IronPort-AV: E=Sophos;i="5.73,433,1583218800"; 
+   d="scan'208";a="76274503"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2020 02:28:53 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 25 May 2020 02:28:53 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
+ Transport; Mon, 25 May 2020 02:28:53 -0700
+Date:   Mon, 25 May 2020 11:28:27 +0000
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: MRP netlink interface
+Message-ID: <20200525112827.t4nf4lamz6g4g2c5@soft-dev3.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <72d771390af9a68759d3f81cb79e46a6@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/20 7:17 AM, Sai Prakash Ranjan wrote:
-> Hi,
-> 
-> On 2020-05-25 16:38, Jonathan Marek wrote:
->> On 5/25/20 6:54 AM, Sai Prakash Ranjan wrote:
->>> On 2020-05-25 15:39, Jonathan Marek wrote:
->>>> Hi,
->>>>
->>>> On 5/25/20 5:42 AM, Sai Prakash Ranjan wrote:
->>>>> Hi Jonathan,
->>>>>
->>>>> On 2020-05-24 08:08, Jonathan Marek wrote:
->>>>>> Add the apps_smmu node for sm8250. Note that adding the iommus 
->>>>>> field for
->>>>>> UFS is required because initializing the iommu removes the bypass 
->>>>>> mapping
->>>>>> that created by the bootloader.
->>>>>>
->>>>>
->>>>> This statement doesn't seem right, you can just say since the 
->>>>> bypass is disabled
->>>>> by default now, we need to add this property to enable translation 
->>>>> and avoid global faults.
->>>>>
->>>>
->>>> If I use this patch [1] then the UFS iommu property isn't needed. In
->>>> downstream, the identity (bypass?) stream mapping is inherited from
->>>> the bootloader, and UFS is used without any iommu property. Setting
->>>> ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=n doesn't make it work on its own
->>>> (without the UFS iommu property), so there's more to it than just
->>>> "bypass is disabled by default now".
->>>>
->>>> https://patchwork.kernel.org/patch/11310757/
->>>>
->>>
->>> "iommus" property is not about inheriting stream mapping from 
->>> bootloader,
->>> it is used to enable SMMU address translation for the corresponding
->>> master when specified. So when you have disabled bypass, i.e.,
->>> ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=y or via cmdline 
->>> "arm-smmu.disable_bypass=1"
->>> and iommus property with SID and mask is not specified, then it will 
->>> result
->>> in SMMU global faults.
->>>
->>> Downstream has bypass 
->>> enabled(ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=n),so you
->>> won't see any global faults if you do not have iommus property.
->>>
->>> Patch in your link is for display because of the usecase for splash 
->>> screen
->>> on android and some other devices where the bootloader will configure 
->>> SMMU,
->>> it has not yet merged and not likely to get merged in the current state.
->>>
->>> So yes "there is *not* much more to it than bypass is disabled by 
->>> default now"
->>> and you have to specify "iommus" for the master devices or you should 
->>> enable bypass,
->>> i.e., ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=n or arm-smmu.disable_bypass=n
->>>
->>> Try without the patch in the link and without iommus for UFS and
->>> ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=y and you will see.
->>>
->>> -Sai
->>
->> I know that the "iommus" property is not about inheriting stream
->> mapping. Probing the iommu removes the stream mapping created by the
->> bootloader, the iommus property is added so that new mappings are
->> created to replace what was removed.
->>
->> You seem to be under the impression that the SM8150/SM8250 bootloader
->> does not configure SMMU. It does, for both UFS and SDHC, just like it
->> does for display/splash screen on some devices.
->>
-> 
-> It could be that bootloader does configure SMMU for UFS and SDHC, but the
-> upstream SMMU driver doesnt allow to inherit stream mapping from the 
-> bootloader
-> yet, so adding iommus property based on the assumption that it is 
-> inherited seems
-> wrong.
-> 
+Hi,
 
-I never said adding the iommus property is for inheriting stream 
-mapping. I mentioned inheriting to say UFS works without the iommus 
-property on downstream (it inherits a identity/bypass mapping).
+While I was working on adding support for MRA role to MRP, I noticed that I
+might have some issues with the netlink interface, so it would be great if you
+can give me an advice on how to continue.
 
->> With either value of ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT, it will not
->> work without the iommus property.
-> 
-> I'm pretty sure that if you have ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=n and
-> without iommus, it should work.
-> 
+First a node with MRA role can behave as a MRM(Manager) or as a
+MRC(Client). The behaviour is decided by the priority of each node. So
+to have this functionality I have to extend the MRP netlink interface
+and this brings me to my issues.
 
-It doesn't work, with either ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=n or 
-ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT=y.
+My first approach was to extend the 'struct br_mrp_instance' with a field that
+contains the priority of the node. But this breaks the backwards compatibility,
+and then every time when I need to change something, I will break the backwards
+compatibility. Is this a way to go forward?
 
-> -Sai
-> 
+Another approach is to restructure MRP netlink interface. What I was thinking to
+keep the current attributes (IFLA_BRIDGE_MRP_INSTANCE,
+IFLA_BRIDGE_MRP_PORT_STATE,...) but they will be nested attributes and each of
+this attribute to contain the fields of the structures they represents.
+For example:
+[IFLA_AF_SPEC] = {
+    [IFLA_BRIDGE_FLAGS]
+    [IFLA_BRIDGE_MRP]
+        [IFLA_BRIDGE_MRP_INSTANCE]
+            [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
+            [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
+            [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
+        [IFLA_BRIDGE_MRP_RING_ROLE]
+            [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
+            [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
+        ...
+}
+And then I can parse each field separately and then fill up the structure
+(br_mrp_instance, br_mrp_port_role, ...) which will be used forward.
+Then when this needs to be extended with the priority it would have the
+following format:
+[IFLA_AF_SPEC] = {
+    [IFLA_BRIDGE_FLAGS]
+    [IFLA_BRIDGE_MRP]
+        [IFLA_BRIDGE_MRP_INSTANCE]
+            [IFLA_BRIDGE_MRP_INSTANCE_RING_ID]
+            [IFLA_BRIDGE_MRP_INSTANCE_P_IFINDEX]
+            [IFLA_BRIDGE_MRP_INSTANCE_S_IFINDEX]
+            [IFLA_BRIDGE_MRP_INSTANCE_PRIO]
+        [IFLA_BRIDGE_MRP_RING_ROLE]
+            [IFLA_BRIDGE_MRP_RING_ROLE_RING_ID]
+            [IFLA_BRIDGE_MRP_RING_ROLE_ROLE]
+        ...
+}
+And also the br_mrp_instance will have a field called prio.
+So now, if the userspace is not updated to have support for setting the prio
+then the kernel will use a default value. Then if the userspace contains a field
+that the kernel doesn't know about, then it would just ignore it.
+So in this way every time when the netlink interface will be extended it would
+be backwards compatible.
+
+If it is not possible to break the compatibility then the safest way is to
+just add more attributes under IFLA_BRIDGE_MRP but this would just complicate
+the kernel and the userspace and it would make it much harder to be extended in
+the future.
+
+My personal choice would be the second approach, even if it breaks the backwards
+compatibility. Because it is the easier to go forward and there are only 3
+people who cloned the userspace application
+(https://github.com/microchip-ung/mrp/graphs/traffic). And two of
+these unique cloners is me and Allan.
+
+So if you have any advice on how to go forward it would be great.
+
+-- 
+/Horatiu
