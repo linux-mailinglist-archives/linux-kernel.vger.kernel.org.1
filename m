@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887951E0F3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0371E0F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390753AbgEYNQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 09:16:12 -0400
-Received: from mga18.intel.com ([134.134.136.126]:64597 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388757AbgEYNQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 09:16:11 -0400
-IronPort-SDR: gFHRJKf/fzgIkRWbiRwQ2XSMYXB/UwWQlvks7Qjuvw81DiGAx6fXNJa7e+QLXifs6GBibN5hzl
- Fzb8HExQv0hw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 06:16:11 -0700
-IronPort-SDR: 29F1ZN30wZD0n3NYF9s7La+3jVNm76brsOCh1moocqg5VGKKI5v9XVZenm7WyJTxli7pWH8e+R
- a2bJsIDr/DYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,433,1583222400"; 
-   d="scan'208";a="266147156"
-Received: from mylly.fi.intel.com (HELO [10.237.72.67]) ([10.237.72.67])
-  by orsmga003.jf.intel.com with ESMTP; 25 May 2020 06:16:06 -0700
-Subject: Re: [PATCH v2 08/12] i2c: designware: Introduce platform drivers glue
- layer interface
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20200306132001.1B875803087C@mail.baikalelectronics.ru>
- <20200510095019.20981-1-Sergey.Semin@baikalelectronics.ru>
- <20200510095019.20981-9-Sergey.Semin@baikalelectronics.ru>
- <4950bb1e-302f-947e-1924-452a8169b504@linux.intel.com>
- <20200521023735.mja62ujmxebgwyef@mobilestation>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <80cf1d67-5de1-f3f1-27a0-b88cc105b228@linux.intel.com>
-Date:   Mon, 25 May 2020 16:16:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2403813AbgEYNSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:18:06 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57672 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2403779AbgEYNSG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 09:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590412684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MJttDWRjUB0iYxqsplzNq2BTjGePNN+JTxhPLsQCxlQ=;
+        b=NHBKsrIYKHmzC90qHZMJdi57JFMW1oxFhbTvbIjQ7I2ThXtgPhXjnfTNnOo7/3yoZ4qewr
+        6Kqsja6U7jLB2pIpqy2cVLSvv9W1CkFw+ZesSEWLA0SYNTT4TJeRm5AR8CusoCOVnbCUdo
+        Hwdi5p7VUMFsp/YJm1o+YY5AbOphFpY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-jG5GRwolOYeYfIkBpcRzNw-1; Mon, 25 May 2020 09:18:00 -0400
+X-MC-Unique: jG5GRwolOYeYfIkBpcRzNw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 823521005512;
+        Mon, 25 May 2020 13:17:57 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 85F6310013D6;
+        Mon, 25 May 2020 13:17:44 +0000 (UTC)
+Date:   Mon, 25 May 2020 09:17:41 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Amol Grover <frextrite@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jann Horn <jannh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        linux-audit@redhat.com, Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 1/3 RESEND] sched: Remove __rcu annotation from cred
+ pointer
+Message-ID: <20200525131741.s6lgb263fpo5uszk@madcap2.tricolour.ca>
+References: <20200402055640.6677-1-frextrite@gmail.com>
+ <20200524081117.GA29@workstation-LAP.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20200521023735.mja62ujmxebgwyef@mobilestation>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524081117.GA29@workstation-LAP.localdomain>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 5/21/20 5:37 AM, Serge Semin wrote:
-> On Wed, May 20, 2020 at 03:46:11PM +0300, Jarkko Nikula wrote:
->> Hi
->>
->> On 5/10/20 12:50 PM, Serge Semin wrote:
->>> Seeing the DW I2C platform driver is getting overcomplicated with a lot of
->>> vendor-specific configs let's introduce a glue-layer interface so new
->>> platforms which equipped with Synopsys Designware APB I2C IP-core would
->>> be able to handle their peculiarities in the dedicated objects.
->>>
->> Comment to this patch and patches 9/12 and 12/12:
->>
->> Currently i2c-designware-platdrv.c is about 500 lines of code so I don't
->> think it's too overcomplicated. But I feel we have already too many Kconfig
->> options and source modules for i2c-designware and obviously would like to
->> push back a little from adding more.
->>
->> I don't think i2c-designware-platdrv.c becomes yet too complicated if Baikal
->> related code is added there, perhaps under #ifdef CONFIG_OF like MSCC Ocelot
->> code is currently.
+On 2020-05-24 13:41, Amol Grover wrote:
+> On Thu, Apr 02, 2020 at 11:26:38AM +0530, Amol Grover wrote:
+> > task_struct::cred (subjective credentials) is *always* used
+> > task-synchronously, hence, does not require RCU semantics.
+> > 
+> > task_struct::real_cred (objective credentials) can be used in
+> > RCU context and its __rcu annotation is retained.
+> > 
+> > However, task_struct::cred and task_struct::real_cred *may*
+> > point to the same object, hence, the object pointed to by
+> > task_struct::cred *may* have RCU delayed freeing.
+> > 
+> > Suggested-by: Jann Horn <jannh@google.com>
+> > Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Amol Grover <frextrite@gmail.com>
 > 
-> Well, it's up to you to decide, what solution is more suitable for you to
-> maintain. My idea of detaching the MSCC and Baikal-T1 code to the dedicated
-> source files was to eventually move the whole i2c-designware-* set of files
-> into a dedicated directory drivers/i2c/buses/dw as it's done for some others
-> Synopsys DesignWare controllers: drivers/pci/controller/dwc/, drivers/usb/dwc2,
-> drivers/usb/dwc3, drivers/net/ethernet/synopsys/ . If you think, that it's too
-> early for Dw I2C code to live in a dedicated directory, fine with me. I can
-> merge the MSCC and Baikal-T1 code back into the i2c-designware-platdrv.c .
-> So what's your final word in this matter?
+> Hello everyone,
 > 
-I think sub directory decision under each subsystem is more subsystem 
-rather than vendor/driver specific. Good point anyway.
+> Could you please go through patches 1/3 and 2/3 and if deemed OK, give
+> your acks. I sent the original patch in beginning of February (~4 months
+> back) and resent the patches again in beginning of April due to lack of
+> traffic. Paul Moore was kind enough to ack twice - the 3/3 and its
+> resend patch. However these 2 patches still remain. I'd really
+> appreciate if someone reviewed them.
 
-For this patchset I'd like more if changes are done to 
-i2c-designware-platdrv.c since it's not too complicated yet :-)
+I asked on April 3 which upstream tree you expect this patchset to go
+through and I did not see a reply.  Do you have a specific target or is
+the large addressee list assuming someone else is taking this set?  All
+we have seen is that it is not intended to go through the audit tree.
 
-If it starts to look too messy in the future then it's time split I think.
+> Thanks
+> Amol
 
-Jarkko
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
