@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1FF1E1067
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41ED41E1069
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403963AbgEYOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 10:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60576 "EHLO mail.kernel.org"
+        id S2403982AbgEYOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 10:23:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46655 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388714AbgEYOXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 10:23:05 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C9092071C;
-        Mon, 25 May 2020 14:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590416584;
-        bh=si05xKx2ayGiuMaa3p/hhp+LjCgDQcldQfzcnOm34uI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ft8UfmHxwSgWTAU8oeokB5qd9p5bARRU3idPeR75mBXvJoSIwO6kAxQJJK1P4TobB
-         fHPFWwx3VFEHE/x784zVWf7FjtpXnN8AhJxdeZ7lsgfn96JIrsRyXKl3/Lr0o16MrJ
-         g3EgyGVFpUMXy8rnDCpZUMdVn3B4LaHJK36PlVas=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 72DEA40AFD; Mon, 25 May 2020 11:23:00 -0300 (-03)
-Date:   Mon, 25 May 2020 11:23:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S2403968AbgEYOXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 10:23:09 -0400
+IronPort-SDR: dOZ2r4ip5fYrWWUr07pD81MO+vKgFfhQ9pslAd9xjiXLrO2r1WItXpGBX85GRxSGPTNooyBpbN
+ ZTWb+Pz6jVHg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 07:23:07 -0700
+IronPort-SDR: CiyCL70qIehdpzsAeNpC5I0Mrs8zvoafG8AiGtMU9s0QGajGtjgoibzJSJjODWTqnW74vbIUS4
+ Gq+pi/Imh22A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,433,1583222400"; 
+   d="scan'208";a="441746220"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 25 May 2020 07:23:08 -0700
+Received: from [10.249.227.191] (abudanko-mobl.ccr.corp.intel.com [10.249.227.191])
+        by linux.intel.com (Postfix) with ESMTP id 25A7558056A;
+        Mon, 25 May 2020 07:23:05 -0700 (PDT)
+Subject: [PATCH v4 09/10] perf record: implement control commands handling
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [RFC 00/14] perf tests: Check on subtest for user specified test
-Message-ID: <20200525142300.GK14034@kernel.org>
-References: <20200524224219.234847-1-jolsa@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <e885da31-6f25-5061-e20b-6f257203a174@linux.intel.com>
+Date:   Mon, 25 May 2020 17:23:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200524224219.234847-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, May 25, 2020 at 12:42:05AM +0200, Jiri Olsa escreveu:
-> hi,
-> changes for using metric result in another metric seem
-> to change lot of core metric code, so it's better we
-> have some more tests before we do that.
-> 
-> Sending as RFC as it's still alive and you guys might
-> have some other idea of how to do this.
-> 
-> Also available in here:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   perf/fixes
 
-I applied the first three patches, will wait a bit for Ian and others to
-have some time to look at it, but one thing I thought was that instead
-of having parse_state->fake_pmu as a bool, you could have it as a
-pointer to the fake pmu, this way we would do away with that static
-thing in the middle of the parsing code.
+Implement handling of 'enable' and 'disable' control commands
+coming from control file descriptor.
 
-+static int check_id(const char *id)
-+{
-+	struct parse_events_error error;
-+	struct evlist *evlist;
-+	int ret;
-+
-+	/* Numbers are always valid. */
-+	if (is_number(id))
-+               return 0;
-+
-+	evlist = evlist__new();
-+	if (!evlist)
-+               return -1;
-+
-+	memset(&error, 0, sizeof(error));
-+       ret = parse_events_fake(evlist, id, &error);
-+       if (ret) {
-+               pr_debug("str        : %s\n", error.str);
-+               pr_debug("help       : %s\n", error.help);
-+               pr_debug("first_str  : %s\n", error.first_str);
-+               pr_debug("first_help : %s\n", error.first_help);
-+       }
-+
-+       evlist__delete(evlist);
-+       free(error.str);
-+	free(error.help);
-+       free(error.first_str);
-+       free(error.first_help);
-+	return ret;
-+}
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-
-Would read:
-
-	struct perf_pmu fake = { 0, };
-	.
-	.
-	.
-	ret = parse_events_fake_pmu(evlist, id, &fake, &error);
-	.
-	.
-	.
-
-
-That also renames parse_events_fake() to parse_events_fake_pmu().
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 8c3ec29e7e80..1ff3b7a77283 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1526,6 +1526,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	bool disabled = false, draining = false;
+ 	int fd;
+ 	float ratio = 0;
++	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
  
-> jirka
-> 
-> 
-> ---
-> Jiri Olsa (14):
->       perf tests: Check on subtest for user specified test
->       perf tools: Do not pass avg to generic_metric
->       perf tools: Add struct parse_events_state pointer to scanner
->       perf tools: Add fake pmu support
->       perf tools: Add parse_events_fake interface
->       perf tests: Add another pmu-events tests
->       perf tools: Factor out parse_groups function
->       perf tools: Add metricgroup__parse_groups_test function
->       perf tools: Add fake_pmu to parse_events function
->       perf tools: Add map to parse_events function
->       perf tools: Factor out prepare_metric function
->       perf tools: Add test_generic_metric function
->       perf tests: Add parse metric test for ipc metric
->       perf tests: Add parse metric test for frontend metric
-> 
->  tools/perf/tests/Build          |   1 +
->  tools/perf/tests/builtin-test.c |  38 ++++++++++++++++++++++------
->  tools/perf/tests/parse-metric.c | 163 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/perf/tests/pmu-events.c   | 120 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/perf/tests/tests.h        |   1 +
->  tools/perf/util/metricgroup.c   |  53 ++++++++++++++++++++++++++++++---------
->  tools/perf/util/metricgroup.h   |   9 +++++++
->  tools/perf/util/parse-events.c  |  73 ++++++++++++++++++++++++++++++++++++++---------------
->  tools/perf/util/parse-events.h  |   6 ++++-
->  tools/perf/util/parse-events.l  |  16 +++++++-----
->  tools/perf/util/parse-events.y  |  37 +++++++++++++++++++++++++--
->  tools/perf/util/stat-shadow.c   |  77 ++++++++++++++++++++++++++++++++++++--------------------
->  tools/perf/util/stat.h          |   3 +++
->  13 files changed, 521 insertions(+), 76 deletions(-)
->  create mode 100644 tools/perf/tests/parse-metric.c
-> 
-
+ 	atexit(record__sig_exit);
+ 	signal(SIGCHLD, sig_handler);
+@@ -1842,6 +1843,21 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 				alarm(rec->switch_output.time);
+ 		}
+ 
++		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
++			switch (cmd) {
++			case EVLIST_CTL_CMD_ENABLE:
++				pr_info(EVLIST_ENABLED_MSG);
++				break;
++			case EVLIST_CTL_CMD_DISABLE:
++				pr_info(EVLIST_DISABLED_MSG);
++				break;
++			case EVLIST_CTL_CMD_ACK:
++			case EVLIST_CTL_CMD_UNSUPPORTED:
++			default:
++				break;
++			}
++		}
++
+ 		if (hits == rec->samples) {
+ 			if (done || draining)
+ 				break;
 -- 
+2.24.1
 
-- Arnaldo
