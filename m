@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531C21E10C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05771E10D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 16:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404098AbgEYOmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 10:42:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:36119 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404068AbgEYOmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 10:42:14 -0400
-IronPort-SDR: dgT/YHtvCvbhb6DJqKB22y/obrccDhXNjQPsXrXMV358D2tGQHGePY2nLyc56+2t3XmBpUEn+/
- tKYeklgkbR2w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 07:42:13 -0700
-IronPort-SDR: m+ECazrk/RFy6x8os4mhKDVlQlSovraROTC+d9UpXtCAfP0yzrdDvoREiIZhb8VeFNlNvlYjXG
- teZy/peLXXrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,433,1583222400"; 
-   d="scan'208";a="266165414"
-Received: from bpawlows-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.40.57])
-  by orsmga003.jf.intel.com with ESMTP; 25 May 2020 07:42:10 -0700
-Subject: Re: [PATCH] MAINTAINERS: adjust entry in XDP SOCKETS to actual file
- name
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        maciej.fijalkowski@intel.com, Alexei Starovoitov <ast@kernel.org>,
-        bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200525141553.7035-1-lukas.bulwahn@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <9d930e0e-5c77-11b8-6a8b-982fac711f6d@intel.com>
-Date:   Mon, 25 May 2020 16:42:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390953AbgEYOnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 10:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390911AbgEYOnP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 10:43:15 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF16C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 07:43:15 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id n24so20714695ejd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 07:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2r86WacDGnUCOO6WwYKfUAcxSZc3UkZYsl//tDZGyco=;
+        b=TIpFkyqrsZozNMDnMDecOEO1Kwr52zfLkT29smqMJ458sFuesfF+NlDp8nWPP3iKNY
+         iQ3pbZI56DUArWx6cGULkb9ds6Oa41l7CgEefz/eLpkX9rciOtBx0bMMNFFdtMgz01qA
+         XZ6BuMg7m+ExGPHJuMbQXEZJtbtyykWN3zO3IxAZDIV73FdChDTKS5XkvKXdUw67xleK
+         fOt5TzJh/hm1anIY79rREZTfdiZdVAbcojzu8+j29dLxFIHqhWXOagMeGOpi3VyugB/k
+         qiIw823HQEve7OEBJaZwp1cwzLrYXLMLTn1kBdxESnkAgT7EsRROvebutkd4YLhfWez8
+         vfWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2r86WacDGnUCOO6WwYKfUAcxSZc3UkZYsl//tDZGyco=;
+        b=Mwp2f/Ey5JHQZmwSkYaEt3FnJozGX8K3MSdQ9hdupL2rIP5wVcItEyfmvS4hdQ8uAy
+         dZqI9cJm3JIlsULy8S2sEZPj5Yx2fi55EmokDJURw6lvEphgnf59ePbnsEpmVDvHt0gs
+         VRQMKhqLurZ3MLY6Ik0ag3aVPD8DY8Pz/r+8g0gRIyV1lEPtP7GDrxca/d9KvtidrWSR
+         LSwlerEbU9FQiklwXnuVzMj1A6Z2D+T/kCR2aAgtqzu670XE1TVd6IFDg3HSzycRtJ1i
+         9uTezwxZy5PlByHPNTJD4zSu3oDjfi4LoeO1MrrtNMbiRYQoJpdqAgqLKmDrXFkvXL9/
+         Ff+g==
+X-Gm-Message-State: AOAM533CEMFkuvaBPOjXhk6Jp+xgt0KCLEvV2YitNHyoPBdSyE6grQAD
+        d/Bir/OOooV+UVsltumc1D4=
+X-Google-Smtp-Source: ABdhPJwAnyYJCFxXY/QFwaXxT5pa85gzlaago7+k2z9kTK1twyb8XgigApjgp6Zyygkhuxar8UMa4g==
+X-Received: by 2002:a17:906:4e87:: with SMTP id v7mr18526978eju.384.1590417794085;
+        Mon, 25 May 2020 07:43:14 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id h25sm15826846ejx.7.2020.05.25.07.43.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 May 2020 07:43:13 -0700 (PDT)
+Date:   Mon, 25 May 2020 14:43:12 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bitops: simplify get_count_order_long()
+Message-ID: <20200525144312.mbw2z3ydncyasvss@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20200524123551.9469-1-richard.weiyang@gmail.com>
+ <20200525091458.GK1634618@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200525141553.7035-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525091458.GK1634618@smile.fi.intel.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-05-25 16:15, Lukas Bulwahn wrote:
-> Commit 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API") added a
-> new header file include/net/xsk_buff_pool.h, but commit 28bee21dc04b
-> ("MAINTAINERS, xsk: Update AF_XDP section after moves/adds") added a file
-> entry referring to include/net/xsk_buffer_pool.h.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> 
->    warning: no file matches  F:  include/net/xsk_buffer_pool.h
-> 
-> Adjust the entry in XDP SOCKETS to the actual file name.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Björn, please pick this minor non-urgent patch.
-> 
-> applies to next-20200525 on top of the commits mentioned above
+On Mon, May 25, 2020 at 12:14:58PM +0300, Andy Shevchenko wrote:
+>On Sun, May 24, 2020 at 12:35:51PM +0000, Wei Yang wrote:
+>> These two cases could be unified into one.
+>
+>Care to provide a test case which supports your change?
 >
 
-Thanks Lukas!
+Hmm.. where should I put the test? tools/testing/selftests/ ?
 
-Daniel/Alexei, this should go to the bpf-next tree.
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+>> ---
+>>  include/linux/bitops.h | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>> 
+>> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+>> index 9acf654f0b19..5b5609e81a84 100644
+>> --- a/include/linux/bitops.h
+>> +++ b/include/linux/bitops.h
+>> @@ -206,10 +206,7 @@ static inline int get_count_order_long(unsigned long l)
+>>  {
+>>  	if (l == 0UL)
+>>  		return -1;
+>> -	else if (l & (l - 1UL))
+>> -		return (int)fls_long(l);
+>> -	else
+>> -		return (int)fls_long(l) - 1;
+>> +	return (int)fls_long(--l);
+>>  }
+>
+>-- 
+>With Best Regards,
+>Andy Shevchenko
+>
 
-
-Thanks!
-Björn
-
-
->   MAINTAINERS | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7a442b48f24b..895c5202fe9b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18667,7 +18667,7 @@ L:	netdev@vger.kernel.org
->   L:	bpf@vger.kernel.org
->   S:	Maintained
->   F:	include/net/xdp_sock*
-> -F:	include/net/xsk_buffer_pool.h
-> +F:	include/net/xsk_buff_pool.h
->   F:	include/uapi/linux/if_xdp.h
->   F:	net/xdp/
->   F:	samples/bpf/xdpsock*
-> 
+-- 
+Wei Yang
+Help you, Help me
