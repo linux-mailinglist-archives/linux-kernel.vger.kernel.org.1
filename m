@@ -2,212 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68221E051F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC3F1E0539
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388774AbgEYD1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 23:27:03 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:42264 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388466AbgEYD1D (ORCPT
+        id S2388685AbgEYDlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 23:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388397AbgEYDlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 23:27:03 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200525032700epoutp0479b4cd9fde878b84f4b8d40b89ec5a18~SJ6fvobkC0254102541epoutp041
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 03:27:00 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200525032700epoutp0479b4cd9fde878b84f4b8d40b89ec5a18~SJ6fvobkC0254102541epoutp041
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1590377220;
-        bh=o3gUq4zFJOh5zKx/sCBYzTJGdBWtSZiG4a6vdbeS3A4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=TxOpB36OWIqw3qRo5BHLTO5R807oTq5JIMi4vCAuJScoFB1RAO8X1qRgX9zOXE4mv
-         pGSKU0KR6JvlKtV6KWGEMLGDxsJGj6heZFp9FIL1uQ+uR9HN9mlZucb+/DhMS+HGSz
-         4q3DilBJTfltOHdhIxv05WN50Ebhrae4yHBxu/qc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200525032700epcas1p462d628ccfc5371e8af29379b916c9bd5~SJ6fhFN7e1340113401epcas1p4W;
-        Mon, 25 May 2020 03:27:00 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 49VjFG0XSTzMqYkj; Mon, 25 May
-        2020 03:26:58 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        98.5C.04395.CFA3BCE5; Mon, 25 May 2020 12:26:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200525032652epcas1p3aa7e62b1308ed517d2ce9b4bd64b4a03~SJ6YG_4ub1059810598epcas1p3r;
-        Mon, 25 May 2020 03:26:52 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200525032652epsmtrp1200b47bbf84187d1e453c7e1b6e40b07~SJ6YGYFr62020820208epsmtrp1Q;
-        Mon, 25 May 2020 03:26:52 +0000 (GMT)
-X-AuditID: b6c32a39-f63ff7000000112b-2a-5ecb3afcbad3
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        25.6D.08382.CFA3BCE5; Mon, 25 May 2020 12:26:52 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200525032652epsmtip13dd0b6700c5e5aa42cba7467c330e55d~SJ6X7z5Hi1511015110epsmtip1E;
-        Mon, 25 May 2020 03:26:52 +0000 (GMT)
-Subject: Re: [PATCH] [v2] extcon: arizona: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <4a97ca96-0c0c-e895-ba03-9987b59229da@samsung.com>
-Date:   Mon, 25 May 2020 12:37:16 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20200523061726.25903-1-dinghao.liu@zju.edu.cn>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmru4fq9NxBl9e61ts/97IYnFi3ll2
-        i8u75rBZ3G5cwWbx+f1+VgdWj+lz/jN69G1ZxehxdWETu8fnTXIenbvesgWwRmXbZKQmpqQW
-        KaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gAtV1IoS8wpBQoFJBYX
-        K+nb2RTll5akKmTkF5fYKqUWpOQUWBboFSfmFpfmpesl5+daGRoYGJkCFSZkZ5zeM5O9YKlE
-        xa7JC9kaGCcIdzFyckgImEg0fTnIAmILCexglDg8O6KLkQvI/sQocfbUATYI5xujRNv9naww
-        HZ8ObWGFSOxllLj3bx8ThPOeUeL5mzVgs4QFfCRuNUxgA7FFBMwkts9exQhiMwtkSTzccg9s
-        EpuAlsT+FzfAavgFFCWu/ngMVsMrYCdxY+oWsDiLgKpEy7PNzCC2qECYxMltLVA1ghInZz4B
-        2sXBwSlgI/HwlyvEeHGJW0/mM0HY8hLb385hBrlNQqCTQ+L//aUsEB+4SDx6/p0dwhaWeHV8
-        C5QtJfGyvw3KrpZYefIIG0RzB6PElv0XoN43lti/dDITyGJmAU2J9bv0IcKKEjt/z4X6kU/i
-        3dceVpASCQFeiY42IYgSZYnLD+4yQdiSEovbO9kmMCrNQvLNLCQvzELywiyEZQsYWVYxiqUW
-        FOempxYbFpgiR/YmRnC61LLcwXjsnM8hRgEORiUe3oCpp+KEWBPLiitzDzFKcDArifC6uwGF
-        eFMSK6tSi/Lji0pzUosPMZoCA3sis5Rocj4wleeVxBuaGhkbG1uYGJqZGhoqifNOvZ4TJySQ
-        nliSmp2aWpBaBNPHxMEp1cA4+dvdiUF+3O83SARv6V17cOLifWusv/AtesHL+vy0pfa6Zcuu
-        6J1tzDfrP7Ka9+aBmLtzVl5gE1E6ca/6feyTE9zXJJyfhxyfcKpL/72kLHPUkgVOD9+f2WRR
-        7rxirXzGesXMgs9NYlyPjv67wvWC8e2RVUX/FgXGKfheeJuluE3/09dcI9GvtkosxRmJhlrM
-        RcWJAC5vbjitAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSnO4fq9NxBt8WiVls/97IYnFi3ll2
-        i8u75rBZ3G5cwWbx+f1+VgdWj+lz/jN69G1ZxehxdWETu8fnTXIenbvesgWwRnHZpKTmZJal
-        FunbJXBlnN4zk71gqUTFrskL2RoYJwh3MXJySAiYSHw6tIUVxBYS2M0ocXKvAERcUmLaxaPM
-        XYwcQLawxOHDxV2MXEAlbxklPq1axwRSIyzgI3GrYQIbiC0iYCaxffYqRhCbWSBLouf6NEaI
-        hn5GicYH85lBEmwCWhL7X9wAa+AXUJS4+uMxWAOvgJ3EjalbwOIsAqoSLc82g9WLCoRJ7Fzy
-        mAmiRlDi5MwnLCAHcQrYSDz85QqxS13iz7xLzBC2uMStJ/OZIGx5ie1v5zBPYBSehaR7FpKW
-        WUhaZiFpWcDIsopRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85P3cTIzhutDR3MG5f9UHvECMT
-        B+MhRgkOZiURXne3U3FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeW8ULowTEkhPLEnNTk0tSC2C
-        yTJxcEo1MF1cIcauuU9VSuzyDxte1kpXjq7LZzTCQia5+wlM9ytc6FtudmzDSuW1Se53tgut
-        3Ph4QkaoZMGbP09eHTVO8nIPZnLnmVpn/e3fjE+bNiksP59xPOzozr1hjtcKDt0++KiHeYvY
-        ta+utRu7lXd8NnDeFzCXT6nhclDpzRz3XYd41TOMmzS5Ky94nL12cr/nYxbzxj0vd5UdL1Kv
-        9xQRn3lT2H7tNBavivXt1nExszICOJ22HDhhH3N30mvHw33ywoqhL5m29OpoC+Twzr2xWTdv
-        2fQ7FWXvbJ9wyp7jL7J8ev+r4ye++T7FDwq29PrULbr37u41BjMTkZdtiTY8u6W4OM8zL/y+
-        M2ryI8NMcSWW4oxEQy3mouJEABTmTP4KAwAA
-X-CMS-MailID: 20200525032652epcas1p3aa7e62b1308ed517d2ce9b4bd64b4a03
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200523061738epcas1p3de3e68c28c0dc34f1ef7c873ff396cd5
-References: <CGME20200523061738epcas1p3de3e68c28c0dc34f1ef7c873ff396cd5@epcas1p3.samsung.com>
-        <20200523061726.25903-1-dinghao.liu@zju.edu.cn>
+        Sun, 24 May 2020 23:41:10 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBA4C061A0E;
+        Sun, 24 May 2020 20:41:10 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e11so7320594pfn.3;
+        Sun, 24 May 2020 20:41:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=V6bHngqzBjjcimyp4HxH/p2UMJo9dJvIc8PwFZSC+CA=;
+        b=aOeC/Nr/acFM3HuR/Lo9ZtaRnMkQ5S0uv2LDWJyAYXFdzmUzRE3n13Fhl8x4FV8Q8E
+         XQB+9W906G96KSwV1kx6VsFfQY6MqD7Ui7+3z4+jtPFDQ7+LOeTQYXLj0MWSk8qTP2ln
+         jlHo8yQ8AHp4Bjd7pefU72K2UID80/OCDtoEW7OibLN/DTbpSCdMSY/TkzGql8LzJVAB
+         mEycMb7WC82ZzHF7G2vU2NH2LfKkw0z6nGy+hcWjTLQvl+uAX7szl0b7kwB54MWAAeb2
+         NKSfqm7qnS6u6e7MwNcGSG2Vfisjk1AL9YvtF6veVWeuIy94iOrXs4qo3tEksUCm6LSM
+         rj9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=V6bHngqzBjjcimyp4HxH/p2UMJo9dJvIc8PwFZSC+CA=;
+        b=IidyZrs6gtG3YAn3+iX5/6KkTTUNDXwZZk+UXKyXLYUKI7Tsxz+uPclT1UOVEdpzDZ
+         6mPFHeq7WJ1LR3neGE7EgoxMc5zPp1uerI0fPoo53hB9lTbt4ktBYSx2uHkU2dJyWzsz
+         savzLcjDSWjjU6DDKDIebXCnB5afMLwV9yt1fyU8Rz3Sf8VpVxS6C43vnH9+ip8pf5Ou
+         wfCqSCu+6QAubYkZMwGS8bnaw9LK0tAJD+CFNalqBQLPFU8v7vAuajAG/s3nt2tzY7TJ
+         f6Z1ptFSnK9/uMRcQDD4VMaw6ho1r0jZXn+PRXCi2L0xw8AS++w5ibWJ8shgAVORR4sd
+         Tk7A==
+X-Gm-Message-State: AOAM531ylpjnuY33v34cq2P3nfBPmh9m1dnCSJVhiVDNyKQSx8mzMf/M
+        JqmkCFc3ETwi+NFO0Zo44WE=
+X-Google-Smtp-Source: ABdhPJxqLStyPNMFpP3TVYD0bkPBn6i+JD/A+HI8Eb7EY3tJVFtPEv203Lr79ePRqbSvGJDs5dnPYA==
+X-Received: by 2002:aa7:99cc:: with SMTP id v12mr15435085pfi.279.1590378070073;
+        Sun, 24 May 2020 20:41:10 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([103.206.191.44])
+        by smtp.gmail.com with ESMTPSA id 7sm11981695pfc.203.2020.05.24.20.41.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 May 2020 20:41:09 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     robh+dt@kernel.org, p.zabel@pengutronix.de,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, mturquette@baylibre.com, sboyd@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
+        dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v5 0/8] Enable ili9341 and l3gd20 on stm32f429-disco
+Date:   Mon, 25 May 2020 11:40:54 +0800
+Message-Id: <1590378062-7965-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <broonie@kernel.org>
+References: <broonie@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinghao Liu,
+From: dillon min <dillon.minfei@gmail.com>
 
-On 5/23/20 3:17 PM, Dinghao Liu wrote:
-> When arizona_request_irq() returns an error code, a
-> pairing runtime PM usage counter decrement is needed
-> to keep the counter balanced. For error paths after
-> this function, things are the same.
-> 
-> Also, remove calls to pm_runtime_disable() when
-> pm_runtime_enable() has not been executed.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
-> 
-> Changelog:
-> 
-> v2: - Add a new label "err_pm" to balance refcount.
->       Remove 3 calls to pm_runtime_disable().
->       Move pm_runtime_put() from the front of
->       input_register_device() to the back.
-> ---
->  drivers/extcon/extcon-arizona.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-> index 7401733db08b..aae82db542a5 100644
-> --- a/drivers/extcon/extcon-arizona.c
-> +++ b/drivers/extcon/extcon-arizona.c
-> @@ -1460,7 +1460,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  	if (!info->input) {
->  		dev_err(arizona->dev, "Can't allocate input dev\n");
->  		ret = -ENOMEM;
-> -		goto err_register;
-> +		return ret;
->  	}
->  
->  	info->input->name = "Headset";
-> @@ -1492,7 +1492,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  		if (ret != 0) {
->  			dev_err(arizona->dev, "Failed to request GPIO%d: %d\n",
->  				pdata->micd_pol_gpio, ret);
-> -			goto err_register;
-> +			return ret;
->  		}
->  
->  		info->micd_pol_gpio = gpio_to_desc(pdata->micd_pol_gpio);
-> @@ -1515,7 +1515,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  			dev_err(arizona->dev,
->  				"Failed to get microphone polarity GPIO: %d\n",
->  				ret);
-> -			goto err_register;
-> +			return ret;
->  		}
->  	}
->  
-> @@ -1672,7 +1672,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  	if (ret != 0) {
->  		dev_err(&pdev->dev, "Failed to get JACKDET rise IRQ: %d\n",
->  			ret);
-> -		goto err_gpio;
-> +		goto err_pm;
->  	}
->  
->  	ret = arizona_set_irq_wake(arizona, jack_irq_rise, 1);
-> @@ -1721,14 +1721,14 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  		dev_warn(arizona->dev, "Failed to set MICVDD to bypass: %d\n",
->  			 ret);
->  
-> -	pm_runtime_put(&pdev->dev);
-> -
->  	ret = input_register_device(info->input);
->  	if (ret) {
->  		dev_err(&pdev->dev, "Can't register input device: %d\n", ret);
->  		goto err_hpdet;
->  	}
->  
-> +	pm_runtime_put(&pdev->dev);
-> +
->  	return 0;
->  
->  err_hpdet:
-> @@ -1743,10 +1743,11 @@ static int arizona_extcon_probe(struct platform_device *pdev)
->  	arizona_set_irq_wake(arizona, jack_irq_rise, 0);
->  err_rise:
->  	arizona_free_irq(arizona, jack_irq_rise, info);
-> +err_pm:
-> +	pm_runtime_put(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  err_gpio:
->  	gpiod_put(info->micd_pol_gpio);
-> -err_register:
-> -	pm_runtime_disable(&pdev->dev);
->  	return ret;
->  }
->  
-> 
+V5's update based on Mark Brown's suggestion, use 'SPI_MASTER_MUST_RX'
+for SPI_SIMPLEX_RX mode on stm32 spi controller.
 
-Applied it. Thanks. 
+V5:
+1 instead of add send dummy data out under SIMPLEX_RX mode,
+   add flags 'SPI_CONTROLLER_MUST_TX' for stm32 spi driver
+2 bypass 'SPI_CONTROLLER_MUST_TX' and 'SPI_CONTROLLER_MUST_RX' under
+'SPI_3WIRE' mode
+
+V4:
+According to alexandre torgue's suggestion, combine ili9341 and
+l3gd20's modification on stm32f429-disco board to one patchset.
+
+Changes:
+
+ili9341:
+
+1 update ili9341 panel driver according to Linus's suggestion
+2 drop V1's No.5 patch, sumbit new changes for clk-stm32f4
+3 merge l3gd20's change to this patchset
+
+V3:
+1 merge original tiny/ili9341.c driver to panel/panel-ilitek-ili9341.c
+  to support serial spi & parallel rgb interface in one driver.
+2 update ilitek,ili9341.yaml dts binding documentation.
+3 update stm32f429-disco dts binding
+
+V2:
+1 verify ilitek,ili9341.yaml with make O=../linux-stm32
+  dt_binding_check
+  DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/panel/
+  ilitek,ili9341.yaml
+
+V1:
+1 add ili9341 drm panel driver
+2 add ltdc, spi5 controller for stm32f429-disco
+3 add ltdc, spi5 pin map for stm32f429-disco
+4 add docs about ili9341
+5 fix ltdc driver loading hang in clk set rate bug
+
+
+L3gd20:
+V3:
+1 merge stm32f429-disco dtbs binding with ili9341 part
+
+V2:
+1 insert blank line at stm32f420-disco.dts line 143
+2 add more description for l3gd20 in commit message
+
+V1:
+1 enable spi5 controller on stm32f429-disco (dts)
+2 add spi5 pinmap for stm32f429-disco  (dts)
+3 add SPI_SIMPLEX_RX, SPI_3WIRE_RX support for stm32f4
+
+
+dillon min (8):
+  ARM: dts: stm32: Add dma config for spi5
+  ARM: dts: stm32: Add pin map for ltdc & spi5 on stm32f429-disco board
+  ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on    
+    stm32429-disco board
+  dt-bindings: display: panel: Add ilitek ili9341 panel bindings
+  clk: stm32: Fix stm32f429's ltdc driver hang in set clock rate,    
+    fix duplicated ltdc clock register to 'clk_core' case ltdc's clock  
+      turn off by clk_disable_unused()
+  drm/panel: Add ilitek ili9341 panel driver
+  spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX' support for stm32f4
+  spi: flags 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX' can't
+    be     coexit with 'SPI_3WIRE' mode
+
+ .../bindings/display/panel/ilitek,ili9341.yaml     |   69 ++
+ arch/arm/boot/dts/stm32f4-pinctrl.dtsi             |   67 +
+ arch/arm/boot/dts/stm32f429-disco.dts              |   48 +
+ arch/arm/boot/dts/stm32f429.dtsi                   |    3 +
+ drivers/clk/clk-stm32f4.c                          |    7 +-
+ drivers/gpu/drm/panel/Kconfig                      |   12 +
+ drivers/gpu/drm/panel/Makefile                     |    1 +
+ drivers/gpu/drm/panel/panel-ilitek-ili9341.c       | 1301 ++++++++++++++++++++
+ drivers/spi/spi-stm32.c                            |   19 +-
+ drivers/spi/spi.c                                  |    3 +-
+ 10 files changed, 1521 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9341.c
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.7.4
+
