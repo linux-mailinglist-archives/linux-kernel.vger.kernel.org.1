@@ -2,186 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5931E123F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 18:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F6B1E1234
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391124AbgEYQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 12:00:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47206 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388494AbgEYQAm (ORCPT
+        id S2404040AbgEYP61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 11:58:27 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:55722 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725969AbgEYP61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 12:00:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04PFwghJ129757;
-        Mon, 25 May 2020 15:59:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Y0KNdejFsfkVxkixHd4qUi3/9lIVbUPFXxLx2tMB3mo=;
- b=ktt0B1DHcMRPvUUhQIHh+XEmZH4NOxqhRe6nehGlGe6jWE0wP/BKZz6JEMgAEzDgr4Wt
- Iyw2VMRvZgMlAMUPTq1xWQNlvHNIQS9Hk3zTqSdffRXf5mV7hA6z5WHxk6GB/6HyB/zQ
- 51jwLGiQCLXMbGUesZSNUg71QQxsrm082PQgdMQkm+jHvJ5iwhpa4nL7UvoNyapqmpQW
- g7iyh42jaEG3tha5rot3T7+WEyCSd7fsSajvSIfQKeIQe0mEQ6IoQXkD4BNCMPKkSjC4
- hISIz4pP5LzYrh0UZJHOsSXum9iprA2Sk1BD+A4AkSaZD/Phl7WyugXVyCvpQ+/wSsGS nw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 316vfn6096-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 May 2020 15:59:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04PFrU0i025028;
-        Mon, 25 May 2020 15:57:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 317j5jjg0w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 May 2020 15:57:12 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04PFv3EO022146;
-        Mon, 25 May 2020 15:57:08 GMT
-Received: from [192.168.14.112] (/79.178.199.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 May 2020 08:57:03 -0700
-Subject: Re: [RFC 00/16] KVM protected memory extension
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Mon, 25 May 2020 11:58:27 -0400
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id F0E232E14CF;
+        Mon, 25 May 2020 18:58:22 +0300 (MSK)
+Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id IdVU2kUvOZ-wLYqGBqd;
+        Mon, 25 May 2020 18:58:22 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1590422302; bh=+Wx5/AWc9Y8FAGbaZzHjbam1591EUl99Lphd2VHtxV4=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=Ry64Fww0loGobvdS75y1z+FlRi1IpwX88QXJiP5aUClrQpyTaiClCbrnxR3Z4xW8s
+         /sZDgLi3mRI5WKLYWmHEQZVTu0xnU+fc/oh76oxfspQ3OIsgrEebmSs5ooLzJdAW7g
+         voMlnqIUPzd2almNRcEjSg68n0LLRt+EyRBKZR4Y=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:603::1:c])
+        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id EzI23gM1tH-wLXSIA4M;
+        Mon, 25 May 2020 18:58:21 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] mm: dump_page: add debugfs file for dumping page state by
+ pfn
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <42685c32-a7a9-b971-0cf4-e8af8d9a40c6@oracle.com>
- <20200525144656.phfxjp2qip6736fj@box>
-From:   Liran Alon <liran.alon@oracle.com>
-Message-ID: <29c62691-0d50-8a02-5f43-761fa56ab551@oracle.com>
-Date:   Mon, 25 May 2020 18:56:57 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <159041635119.987025.7321864888027213705.stgit@buzz>
+ <cccdc0a9-0f13-232d-cdc9-9e81f90c914b@suse.cz>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <e262f198-4092-1228-13f5-a0d40b29dc6c@yandex-team.ru>
+Date:   Mon, 25 May 2020 18:58:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200525144656.phfxjp2qip6736fj@box>
+In-Reply-To: <cccdc0a9-0f13-232d-cdc9-9e81f90c914b@suse.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxlogscore=804 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005250124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 impostorscore=0
- mlxlogscore=835 lowpriorityscore=0 bulkscore=0 adultscore=0 suspectscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2005250125
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 25/05/2020 17:46, Kirill A. Shutemov wrote:
-> On Mon, May 25, 2020 at 04:47:18PM +0300, Liran Alon wrote:
->> On 22/05/2020 15:51, Kirill A. Shutemov wrote:
->>> == Background / Problem ==
->>>
->>> There are a number of hardware features (MKTME, SEV) which protect guest
->>> memory from some unauthorized host access. The patchset proposes a purely
->>> software feature that mitigates some of the same host-side read-only
->>> attacks.
->>>
->>>
->>> == What does this set mitigate? ==
->>>
->>>    - Host kernel ”accidental” access to guest data (think speculation)
->> Just to clarify: This is any host kernel memory info-leak vulnerability. Not
->> just speculative execution memory info-leaks. Also architectural ones.
+On 25/05/2020 18.35, Vlastimil Babka wrote:
+> On 5/25/20 4:19 PM, Konstantin Khlebnikov wrote:
+>> Tool 'page-types' could list pages mapped by process or file cache pages,
+>> but it shows only limited amount of state exported via procfs.
 >>
->> In addition, note that removing guest data from host kernel VA space also
->> makes guest<->host memory exploits more difficult.
->> E.g. Guest cannot use already available memory buffer in kernel VA space for
->> ROP or placing valuable guest-controlled code/data in general.
+>> Let's employ existing helper dump_page() to reach remaining information:
+>> writing pfn into /sys/kernel/debug/dump_page dumps state into kernel log.
+> 
+> Yeah that's indeed useful, however I'm less sure if kernel log is the proper way
+> to extract the data. For example IIRC with the page_owner file can "seek to pfn"
+> to dump it, although that makes it somewhat harder to use.
+> 
+> Or we could write pfn to one file and read the dump from another one? But that's
+> not atomic.
+> 
+> Perhaps if we could do something like "cat /sys/kernel/debug/dump_page/<pfn>"
+> without all the pfns being actually listed in the dump_page directory with "ls"?
+> Is that possible?
+
+Too much code for me. =)
+
+This could be kind of ftrace tracer which iterates over pages and dumps them,
+but anyway looks ridiculously overengineered.
+
+This one hack connects existing 'pagemap' with existing 'dump_page', so almost free.
+
+For complicated cases there is gdb and special tool drgn https://github.com/osandov/drgn
+
+Writing script which parses all that stuff from kernel log isn't big deal either.
+I have one with 100+ lines regexp for all kinds of kernel splats.
+Will publish when find time for polishing.
+
+> 
+>> # echo 0x37c43c > /sys/kernel/debug/dump_page
+>> # dmesg | tail -6
+>>   page:ffffcb0b0df10f00 refcount:1 mapcount:0 mapping:000000007755d3d9 index:0x30
+>>   0xffffffffae4239e0 name:"libGeoIP.so.1.6.9"
+>>   flags: 0x200000000020014(uptodate|lru|mappedtodisk)
+>>   raw: 0200000000020014 ffffcb0b187fd288 ffffcb0b189e6248 ffff9528a04afe10
+>>   raw: 0000000000000030 0000000000000000 00000001ffffffff 0000000000000000
+>>   page dumped because: debugfs request
 >>
->>>    - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
->>>
->>>    - Host userspace access to guest data (compromised qemu)
->> I don't quite understand what is the benefit of preventing userspace VMM
->> access to guest data while the host kernel can still access it.
-> Let me clarify: the guest memory mapped into host userspace is not
-> accessible by both host kernel and userspace. Host still has way to access
-> it via a new interface: GUP(FOLL_KVM). The GUP will give you struct page
-> that kernel has to map (temporarily) if need to access the data. So only
-> blessed codepaths would know how to deal with the memory.
-Yes, I understood that. I meant explicit host kernel access.
->
-> It can help preventing some host->guest attack on the compromised host.
-> Like if an VM has successfully attacked the host it cannot attack other
-> VMs as easy.
-
-We have mechanisms to sandbox the userspace VMM process for that.
-
-You need to be more specific on what is the attack scenario you attempt 
-to address
-here that is not covered by existing mechanisms. i.e. Be crystal clear 
-on the extra value
-of the feature of not exposing guest data to userspace VMM.
-
->
-> It would also help to protect against guest->host attack by removing one
-> more places where the guest's data is mapped on the host.
-Because guest have explicit interface to request which guest pages can 
-be mapped in userspace VMM, the value of this is very small.
-
-Guest already have ability to map guest controlled code/data in 
-userspace VMM either via this interface or via forcing userspace VMM
-to create various objects during device emulation handling. The only 
-extra property this patch-series provides, is that only a
-small portion of guest pages will be mapped to host userspace instead of 
-all of it. Resulting in smaller regions for exploits that require
-guessing a virtual address. But: (a) Userspace VMM device emulation may 
-still allow guest to spray userspace heap with objects containing
-guest controlled data. (b) How is userspace VMM suppose to limit which 
-guest pages should not be mapped to userspace VMM even though guest have
-explicitly requested them to be mapped? (E.g. Because they are valid DMA 
-sources/targets for virtual devices or because it's vGPU frame-buffer).
->> QEMU is more easily compromised than the host kernel because it's
->> guest<->host attack surface is larger (E.g. Various device emulation).
->> But this compromise comes from the guest itself. Not other guests. In
->> contrast to host kernel attack surface, which an info-leak there can
->> be exploited from one guest to leak another guest data.
-> Consider the case when unprivileged guest user exploits bug in a QEMU
-> device emulation to gain access to data it cannot normally have access
-> within the guest. With the feature it would able to see only other shared
-> regions of guest memory such as DMA and IO buffers, but not the rest.
-This is a scenario where an unpriviledged guest userspace have direct 
-access to a virtual device
-and is able to exploit a bug in device emulation handling such that it 
-will allow it to compromise
-the security *inside* the guest. i.e. Leak guest kernel data or other 
-guest userspace processes data.
-
-That's true. Good point. This is a very important missing argument from 
-the cover-letter.
-
-Now it's crystal clear on the trade-off considered here:
-Is the extra complication and perf cost provided by the mechanism of 
-this patch-series worth
-to protect against the scenario of a userspace VMM vulnerability that 
-may be accessible to unpriviledged
-guest userspace process to leak other *in-guest* data that is not 
-otherwise accessible to that process?
-
--Liran
-
-
+>> With CONFIG_PAGE_OWNER=y shows also stacks for last page alloc and free:
+>>
+>>   page:ffffea0018fff480 refcount:1 mapcount:1 mapping:0000000000000000 index:0x7f9f28f62
+>>   anon flags: 0x100000000080034(uptodate|lru|active|swapbacked)
+>>   raw: 0100000000080034 ffffea00184140c8 ffffea0018517d88 ffff8886076ba161
+>>   raw: 00000007f9f28f62 0000000000000000 0000000100000000 ffff888bfc79f000
+>>   page dumped because: debugfs request
+>>   page->mem_cgroup:ffff888bfc79f000
+>>   page_owner tracks the page as allocated
+>>   page last allocated via order 0, migratetype Movable, gfp_mask 0x100dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO)
+>>    prep_new_page+0x139/0x1a0
+>>    get_page_from_freelist+0xde9/0x14e0
+>>    __alloc_pages_nodemask+0x18b/0x360
+>>    alloc_pages_vma+0x7c/0x270
+>>    __handle_mm_fault+0xd40/0x12b0
+>>    handle_mm_fault+0xe7/0x1e0
+>>    do_page_fault+0x2d5/0x610
+>>    page_fault+0x2f/0x40
+>>   page last free stack trace:
+>>    free_pcp_prepare+0x11e/0x1c0
+>>    free_unref_page_list+0x71/0x180
+>>    release_pages+0x31e/0x480
+>>    tlb_flush_mmu+0x44/0x150
+>>    tlb_finish_mmu+0x3d/0x70
+>>    exit_mmap+0xdd/0x1a0
+>>    mmput+0x70/0x140
+>>    do_exit+0x33f/0xc40
+>>    do_group_exit+0x3a/0xa0
+>>    __x64_sys_exit_group+0x14/0x20
+>>    do_syscall_64+0x48/0x130
+>>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+>> ---
+>>   Documentation/admin-guide/mm/pagemap.rst |    3 +++
+>>   Documentation/vm/page_owner.rst          |   10 ++++++++++
+>>   mm/debug.c                               |   27 +++++++++++++++++++++++++++
+>>   3 files changed, 40 insertions(+)
+>>
+>> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+>> index 340a5aee9b80..663ad5490d72 100644
+>> --- a/Documentation/admin-guide/mm/pagemap.rst
+>> +++ b/Documentation/admin-guide/mm/pagemap.rst
+>> @@ -205,3 +205,6 @@ Before Linux 3.11 pagemap bits 55-60 were used for "page-shift" (which is
+>>   always 12 at most architectures). Since Linux 3.11 their meaning changes
+>>   after first clear of soft-dirty bits. Since Linux 4.2 they are used for
+>>   flags unconditionally.
+>> +
+>> +Page state could be dumped into kernel log by writing pfn in text form
+>> +into /sys/kernel/debug/dump_page.
+>> diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
+>> index 0ed5ab8c7ab4..d4d4dc64c19d 100644
+>> --- a/Documentation/vm/page_owner.rst
+>> +++ b/Documentation/vm/page_owner.rst
+>> @@ -88,3 +88,13 @@ Usage
+>>   
+>>      See the result about who allocated each page
+>>      in the ``sorted_page_owner.txt``.
+>> +
+>> +Notes
+>> +=====
+>> +
+>> +To lookup pages in file cache or mapped in process you could use interface
+>> +pagemap documented in Documentation/admin-guide/mm/pagemap.rst or tool
+>> +page-types in the tools/vm directory.
+>> +
+>> +Page state could be dumped into kernel log by writing pfn in text form
+>> +into /sys/kernel/debug/dump_page.
+>> diff --git a/mm/debug.c b/mm/debug.c
+>> index 2189357f0987..5803f2b63d95 100644
+>> --- a/mm/debug.c
+>> +++ b/mm/debug.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/migrate.h>
+>>   #include <linux/page_owner.h>
+>>   #include <linux/ctype.h>
+>> +#include <linux/debugfs.h>
+>>   
+>>   #include "internal.h"
+>>   
+>> @@ -147,6 +148,32 @@ void dump_page(struct page *page, const char *reason)
+>>   }
+>>   EXPORT_SYMBOL(dump_page);
+>>   
+>> +#ifdef CONFIG_DEBUG_FS
+>> +static int dump_page_set(void *data, u64 pfn)
+>> +{
+>> +	struct page *page;
+>> +
+>> +	if (!capable(CAP_SYS_ADMIN))
+>> +		return -EPERM;
+>> +
+>> +	page = pfn_to_online_page(pfn);
+>> +	if (!page)
+>> +		return -ENXIO;
+>> +
+>> +	dump_page(page, "debugfs request");
+>> +	return 0;
+>> +}
+>> +DEFINE_DEBUGFS_ATTRIBUTE(dump_page_fops, NULL, dump_page_set, "%llx\n");
+>> +
+>> +static int __init dump_page_debugfs(void)
+>> +{
+>> +	debugfs_create_file_unsafe("dump_page", 0200, NULL, NULL,
+>> +				   &dump_page_fops);
+>> +	return 0;
+>> +}
+>> +late_initcall(dump_page_debugfs);
+>> +#endif /* CONFIG_DEBUG_FS */
+>> +
+>>   #ifdef CONFIG_DEBUG_VM
+>>   
+>>   void dump_vma(const struct vm_area_struct *vma)
+>>
+> 
