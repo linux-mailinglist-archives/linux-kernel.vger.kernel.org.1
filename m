@@ -2,160 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD55B1E0505
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56B41E050E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388721AbgEYDFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 23:05:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4893 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388178AbgEYDFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 23:05:09 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AA5478C8C87755055AB5;
-        Mon, 25 May 2020 11:05:03 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.154) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 25 May 2020
- 11:04:59 +0800
-Subject: Re: [PATCH v2] xfrm: policy: Fix xfrm policy match
-To:     Xin Long <lucien.xin@gmail.com>
-References: <20200421143149.45108-1-yuehaibing@huawei.com>
- <20200422125346.27756-1-yuehaibing@huawei.com>
- <0015ec4c-0e9c-a9d2-eb03-4d51c5fbbe86@huawei.com>
- <20200519085353.GE13121@gauss3.secunet.de>
- <CADvbK_eXW24SkuLUOKkcg4JPa8XLcWpp6RNCrQT+=okaWe+GDA@mail.gmail.com>
- <550a82f1-9cb3-2392-25c6-b2a84a00ca33@huawei.com>
- <CADvbK_cpXOxbWzHzonrzzrrb+Vh3q8NhXnapz0yc9h4H4gN02A@mail.gmail.com>
- <1c4c5d40-1e35-f9bb-3f17-01bb4675f3aa@huawei.com>
- <CADvbK_e8ixjGGHRK9A4HcXDGKYcNykneUHzHiE8sQ4ojDz+e-g@mail.gmail.com>
-CC:     Steffen Klassert <steffen.klassert@secunet.com>,
+        id S2388744AbgEYDMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 23:12:30 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45320 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388575AbgEYDM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 23:12:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590376348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cnz+SecxbJF4VB67gTuVQUxZ7oOwMLV+o3t+dmPe5pU=;
+        b=GIlJUKzzlS9LB2JX9KtglBoDkMHN/kiSeRLdq/IRBCyKt++bA0Oh84vp2wda9xfj5DBba/
+        RnnPme8mGPOM6JyOsxXDYlWUC5Mf5r140iWczvu2Mty/TolXRJbAlWSA2EDhbjf2dkUBwl
+        BukRfNWZ9TnJvVbJoR3rJSJn+KIGNKE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-nEBiy2TBMrq5N4laMrxC4w-1; Sun, 24 May 2020 23:12:26 -0400
+X-MC-Unique: nEBiy2TBMrq5N4laMrxC4w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0919C1009440;
+        Mon, 25 May 2020 03:12:24 +0000 (UTC)
+Received: from [10.72.13.226] (ovpn-13-226.pek2.redhat.com [10.72.13.226])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B1C4B5D9DC;
+        Mon, 25 May 2020 03:12:16 +0000 (UTC)
+Subject: Re: [PATCH 1/2] crypto: virtio: fix src/dst scatterlist calculation
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>,
+        linux-crypto@vger.kernel.org
+Cc:     Gonglei <arei.gonglei@huawei.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
-        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <f82b038f-776e-a87a-d46b-173d238531ba@huawei.com>
-Date:   Mon, 25 May 2020 11:04:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, LABBE Corentin <clabbe@baylibre.com>
+References: <20200525005627.707-1-longpeng2@huawei.com>
+ <20200525005627.707-2-longpeng2@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <25cff618-601c-e899-a3cc-b289863a7407@redhat.com>
+Date:   Mon, 25 May 2020 11:12:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CADvbK_e8ixjGGHRK9A4HcXDGKYcNykneUHzHiE8sQ4ojDz+e-g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200525005627.707-2-longpeng2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/23 17:02, Xin Long wrote:
-> On Fri, May 22, 2020 at 8:39 PM Yuehaibing <yuehaibing@huawei.com> wrote:
->>
->> On 2020/5/22 13:49, Xin Long wrote:
->>> On Fri, May 22, 2020 at 9:45 AM Yuehaibing <yuehaibing@huawei.com> wrote:
->>>>
->>>> On 2020/5/21 14:49, Xin Long wrote:
->>>>> On Tue, May 19, 2020 at 4:53 PM Steffen Klassert
->>>>> <steffen.klassert@secunet.com> wrote:
->>>>>>
->>>>>> On Fri, May 15, 2020 at 04:39:57PM +0800, Yuehaibing wrote:
->>>>>>>
->>>>>>> Friendly ping...
->>>>>>>
->>>>>>> Any plan for this issue?
->>>>>>
->>>>>> There was still no consensus between you and Xin on how
->>>>>> to fix this issue. Once this happens, I consider applying
->>>>>> a fix.
->>>>>>
->>>>> Sorry, Yuehaibing, I can't really accept to do: (A->mark.m & A->mark.v)
->>>>> I'm thinking to change to:
->>>>>
->>>>>  static bool xfrm_policy_mark_match(struct xfrm_policy *policy,
->>>>>                                    struct xfrm_policy *pol)
->>>>>  {
->>>>> -       u32 mark = policy->mark.v & policy->mark.m;
->>>>> -
->>>>> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
->>>>> -               return true;
->>>>> -
->>>>> -       if ((mark & pol->mark.m) == pol->mark.v &&
->>>>> -           policy->priority == pol->priority)
->>>>> +       if (policy->mark.v == pol->mark.v &&
->>>>> +           (policy->mark.m == pol->mark.m ||
->>>>> +            policy->priority == pol->priority))
->>>>>                 return true;
->>>>>
->>>>>         return false;
->>>>>
->>>>> which means we consider (the same value and mask) or
->>>>> (the same value and priority) as the same one. This will
->>>>> cover both problems.
->>>>
->>>>   policy A (mark.v = 0x1011, mark.m = 0x1011, priority = 1)
->>>>   policy B (mark.v = 0x1001, mark.m = 0x1001, priority = 1)
->>> I'd think these are 2 different policies.
->>>
->>>>
->>>>   when fl->flowi_mark == 0x12341011, in xfrm_policy_match() do check like this:
->>>>
->>>>         (fl->flowi_mark & pol->mark.m) != pol->mark.v
->>>>
->>>>         0x12341011 & 0x1011 == 0x00001011
->>>>         0x12341011 & 0x1001 == 0x00001001
->>>>
->>>>  This also match different policy depends on the order of policy inserting.
->>> Yes, this may happen when a user adds 2  policies like that.
->>> But I think this's a problem that the user doesn't configure it well,
->>> 'priority' should be set.
->>> and this can not be avoided, also such as:
->>>
->>>    policy A (mark.v = 0xff00, mark.m = 0x1000, priority = 1)
->>>    policy B (mark.v = 0x00ff, mark.m = 0x0011, priority = 1)
->>>
->>>    try with 0x12341011
->>>
->>> So just be it, let users decide.
->>
->> Ok, this make sense.
-> Thanks Yuehaibing, it's good we're on the same page now.
-> 
-> Just realized the patch I created above won't work for the case:
-> 
->   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
->   policy B (mark.v = 0x1,  mark.m = 0, priority = 2)
->   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
-> 
-> when policy C is being added, the warning still occurs.
 
-Do you means this:
-
-   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
-   policy B (mark.v = 0x10, mark.m = 1, priority = 2)
-   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
-
-> 
-> So I will just check value and priority:
-> -       u32 mark = policy->mark.v & policy->mark.m;
-> -
-> -       if (policy->mark.v == pol->mark.v && policy->mark.m == pol->mark.m)
-> -               return true;
-> -
-> -       if ((mark & pol->mark.m) == pol->mark.v &&
-> +       if (policy->mark.v == pol->mark.v &&
->             policy->priority == pol->priority)
->                 return true;
-> 
-> This allows two policies like this exist:
-> 
->   policy A (mark.v = 0x10, mark.m = 0, priority = 1)
->   policy C (mark.v = 0x10, mark.m = 0, priority = 2)
-> 
-> But I don't think it's a problem.
-
-Agreed.
+On 2020/5/25 上午8:56, Longpeng(Mike) wrote:
+> The system will crash when we insmod crypto/tcrypt.ko whit mode=38.
 >
-> .
-> 
+> Usually the next entry of one sg will be @sg@ + 1, but if this sg element
+> is part of a chained scatterlist, it could jump to the start of a new
+> scatterlist array. Let's fix it by sg_next() on calculation of src/dst
+> scatterlist.
+>
+> BTW I add a check for sg_nents_for_len() its return value since
+> sg_nents_for_len() function could fail.
+>
+> Cc: Gonglei <arei.gonglei@huawei.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: linux-kernel@vger.kernel.org
+>
+> Reported-by: LABBE Corentin <clabbe@baylibre.com>
+> Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+> ---
+>   drivers/crypto/virtio/virtio_crypto_algs.c | 14 ++++++++++----
+>   1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
+> index 372babb44112..2fa1129f96d6 100644
+> --- a/drivers/crypto/virtio/virtio_crypto_algs.c
+> +++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+> @@ -359,8 +359,14 @@ __virtio_crypto_skcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
+>   	unsigned int num_out = 0, num_in = 0;
+>   	int sg_total;
+>   	uint8_t *iv;
+> +	struct scatterlist *sg;
+>   
+>   	src_nents = sg_nents_for_len(req->src, req->cryptlen);
+> +	if (src_nents < 0) {
+> +		pr_err("Invalid number of src SG.\n");
+> +		return src_nents;
+> +	}
+> +
+>   	dst_nents = sg_nents(req->dst);
+>   
+>   	pr_debug("virtio_crypto: Number of sgs (src_nents: %d, dst_nents: %d)\n",
+> @@ -446,12 +452,12 @@ __virtio_crypto_skcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
+>   	vc_sym_req->iv = iv;
+>   
+>   	/* Source data */
+> -	for (i = 0; i < src_nents; i++)
+> -		sgs[num_out++] = &req->src[i];
+> +	for (sg = req->src, i = 0; sg && i < src_nents; sg = sg_next(sg), i++)
+
+
+Any reason sg is checked here?
+
+I believe it should be checked in sg_nents_for_len().
+
+
+> +		sgs[num_out++] = sg;
+>   
+>   	/* Destination data */
+> -	for (i = 0; i < dst_nents; i++)
+> -		sgs[num_out + num_in++] = &req->dst[i];
+> +	for (sg = req->dst, i = 0; sg && i < dst_nents; sg = sg_next(sg), i++)
+> +		sgs[num_out + num_in++] = sg;
+
+
+I believe sg should be checked in sg_nents().
+
+Thanks
+
+
+>   
+>   	/* Status */
+>   	sg_init_one(&status_sg, &vc_req->status, sizeof(vc_req->status));
 
