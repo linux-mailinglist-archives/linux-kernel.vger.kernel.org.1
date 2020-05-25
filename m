@@ -2,225 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B881E1177
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3068C1E117F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 17:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391099AbgEYPP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 11:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S2404013AbgEYPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 11:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390911AbgEYPP1 (ORCPT
+        with ESMTP id S2390998AbgEYPRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 11:15:27 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA94BC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 08:15:26 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id u16so8924594lfl.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 08:15:26 -0700 (PDT)
+        Mon, 25 May 2020 11:17:43 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45459C061A0E;
+        Mon, 25 May 2020 08:17:43 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 131so561044pfv.13;
+        Mon, 25 May 2020 08:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kYBoEhN96Rd2bTOOCtpwhH5a3zXfbXb8vg+QY2lOxCg=;
-        b=kOFxbK1SPD4S5SY6soHeM+HeZetfnuSzhji+qxwHWT0CnYGiTqbZyd5Pheqma0e875
-         +MeqLFtQktc2cDAhBp28exGqp9SwAbHfgwh33X7Te8RypMFK9HWnQkL2MrzsNAqCScK6
-         JNLnQru0CXvZL1fQ60ltcd37sXmyjoIIwuA3QVgq6EEAGQFDP28U90KbysSCsAeJrZU+
-         l4sNaJTOLAogUGRzOYArKj/L5yRHfKyz6aiMa9ry//yHODMO8hQzJ+4yZO8KA70LH7Du
-         MKZy5UHT00e34txu1vJGIP8KP5A9zj1TgpxR4Y3ffECpWvGwe+FB9ovaeS2dyXSdWvZK
-         Ptqw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=JgdxX2C74TdDmjeVY9HQN2a/yq7wOSbOdwxkkYCYXyQ=;
+        b=N9adz5zOwkTSECpw8gScK2pWCHzS2JXKrK0SWR5uk5+0ARWhw5rdzsPascizMaKx5J
+         Mi5jklMWhTLlXpSZWJPhU8KLwex4X+dJUT8dpDlpb5vwIcWUPbBNi3uz38tNQZKXPSX5
+         SLdsG+G5/FitBcp28xwyWZXm+CnuzG/428JvNVcXov2lVq3dd9vNC6mx7j1tgByf2SYl
+         Op8bvijIDGefF5eWmo4yx5mh8TbKlHwdmi96W5eqaF3eZm/Wge/ZCZxL8nPIvXaNI19h
+         iZMjs0rjfgJ+26iiQK02Hzvvxz9FcTe3qgtqTIkHEchq6EXIVJdjg6xv+6qe3WG/qfVl
+         7REg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kYBoEhN96Rd2bTOOCtpwhH5a3zXfbXb8vg+QY2lOxCg=;
-        b=eGJ3K7HMsDF8Yq1FfDo2j2vEfHiJJUEJbJzUh/FoY5s+x/8qPqAWI27BSOuoemCjbm
-         TeQhkHpdO3TuAtumfVpuJ5I2PCg1hF9jIuIbp4NL/HCVhTv3G+8TWhL3L/414y21JWxx
-         hlg4LtIFe9ewtF0A+VNmzOCxQruQAuY9XJ98BLrtqz0AmuVSBjiLoY7brcXjJNUw4Lzs
-         9PBJI+7JKM8zfO6T5x7cRWzuDIeQuKJJgDKkJ9XmZgNYXy9rJ0tqI3kOsJnm3otBMDun
-         Ctt9BsNTBH5WbaQD+LjOyhDsw3eqtNj9HpypNUMk8k7PRccK1IxgaVajDeIYoq265pDd
-         FlzQ==
-X-Gm-Message-State: AOAM532NwZn0IiO2xts1LwekYOf3tRvZ/Ts6AHhMuRGfB5cWGmvkPPyY
-        BWpMAX0QF0Yv5bK6CC0Ekift7A==
-X-Google-Smtp-Source: ABdhPJzXLUWIYgQQ8mQTCK0ROPNDbamXhbZpVXtVtJCcCUP29y0cVktOsqQ6gbXEx34Ez3amGKFUwA==
-X-Received: by 2002:a19:c505:: with SMTP id w5mr2287001lfe.201.1590419725196;
-        Mon, 25 May 2020 08:15:25 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f6sm4673999ljn.91.2020.05.25.08.15.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 08:15:24 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 79D1410230F; Mon, 25 May 2020 18:15:25 +0300 (+03)
-Date:   Mon, 25 May 2020 18:15:25 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFC 02/16] x86/kvm: Introduce KVM memory protection feature
-Message-ID: <20200525151525.qmfvzxbl7sq46cdq@box>
-References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
- <20200522125214.31348-3-kirill.shutemov@linux.intel.com>
- <87d06s83is.fsf@vitty.brq.redhat.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JgdxX2C74TdDmjeVY9HQN2a/yq7wOSbOdwxkkYCYXyQ=;
+        b=b67OcIOQKKuPYSF99W6jaYxI8/D/XsC9D7komow8yw+8w4QUEursWOKJHA/Haz8yIY
+         OOgKGknbvKsgeao86SQ5xVkVQfpFCjvZ8/+naknou0PZ91c7UOy2ryL3En2vcVowT8/o
+         jVh+V2yz7VaJgDjDMvSXfzSSWrX+M+TdoRib9PHKdDEskj95PUDVFibm5MMGTsezyV4r
+         8b33dJM/lTWz0AIrXkm+kcJFMJRj/J++x/8jtPcUEz21D2ASlSHsdh/PH0JKTM7eFkS9
+         1sv8HoRKsDdnijPzWIcSpJlENfOaCxxyzlTG0xJjBfd31RD3JuJSQX3sS4uBpdRmzSMY
+         /+kA==
+X-Gm-Message-State: AOAM5324RIA6JBslBR7EWctrWYHPOHvla2VdVLPOHoJlDBmetoMJqXY+
+        2zk18GI8qEwMd2wQoNFCeLYh41CDbWA=
+X-Google-Smtp-Source: ABdhPJzyrvfjMW1Z89guWcSUG6SP/b4006FtLKB7GKkz56yag7CQCPbh+mpzA+Z+rDjLdjAdA6JcQw==
+X-Received: by 2002:aa7:9aa8:: with SMTP id x8mr16954629pfi.182.1590419862613;
+        Mon, 25 May 2020 08:17:42 -0700 (PDT)
+Received: from sol (220-235-68-201.dyn.iinet.net.au. [220.235.68.201])
+        by smtp.gmail.com with ESMTPSA id k4sm5288767pfp.173.2020.05.25.08.17.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 May 2020 08:17:41 -0700 (PDT)
+Date:   Mon, 25 May 2020 23:17:36 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Hector Bujanda <hector.bujanda@digi.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gpiolib: add GPIO_SET_DEBOUNCE_IOCTL
+Message-ID: <20200525151736.GA32461@sol>
+References: <20200419001858.105281-1-hector.bujanda@digi.com>
+ <CAMRc=MeHun_WEApEXP59ZszGa2n+wbU9qq3wU1VO9o590rO-Pw@mail.gmail.com>
+ <CACRpkdaeXFW5K=Npy2ubWsffc7aepEQ5kSJ2HrkrESjaTy_psQ@mail.gmail.com>
+ <20200525022252.GA22956@sol>
+ <CACRpkdagkhbULGVGJqcS55m=X2EaH_iK0Khr8+6M7ATWrC3hOQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87d06s83is.fsf@vitty.brq.redhat.com>
+In-Reply-To: <CACRpkdagkhbULGVGJqcS55m=X2EaH_iK0Khr8+6M7ATWrC3hOQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 04:58:51PM +0200, Vitaly Kuznetsov wrote:
-> "Kirill A. Shutemov" <kirill@shutemov.name> writes:
+On Mon, May 25, 2020 at 02:17:41PM +0200, Linus Walleij wrote:
+> On Mon, May 25, 2020 at 4:22 AM Kent Gibson <warthog618@gmail.com> wrote:
 > 
-> > Provide basic helpers, KVM_FEATURE and a hypercall.
-> >
-> > Host side doesn't provide the feature yet, so it is a dead code for now.
-> >
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/include/asm/kvm_para.h      |  5 +++++
-> >  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
-> >  arch/x86/kernel/kvm.c                | 16 ++++++++++++++++
-> >  include/uapi/linux/kvm_para.h        |  3 ++-
-> >  4 files changed, 25 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-> > index 9b4df6eaa11a..3ce84fc07144 100644
-> > --- a/arch/x86/include/asm/kvm_para.h
-> > +++ b/arch/x86/include/asm/kvm_para.h
-> > @@ -10,11 +10,16 @@ extern void kvmclock_init(void);
-> >  
-> >  #ifdef CONFIG_KVM_GUEST
-> >  bool kvm_check_and_clear_guest_paused(void);
-> > +bool kvm_mem_protected(void);
-> >  #else
-> >  static inline bool kvm_check_and_clear_guest_paused(void)
-> >  {
-> >  	return false;
-> >  }
-> > +static inline bool kvm_mem_protected(void)
-> > +{
-> > +	return false;
-> > +}
-> >  #endif /* CONFIG_KVM_GUEST */
-> >  
-> >  #define KVM_HYPERCALL \
-> > diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> > index 2a8e0b6b9805..c3b499acc98f 100644
-> > --- a/arch/x86/include/uapi/asm/kvm_para.h
-> > +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> > @@ -28,9 +28,10 @@
-> >  #define KVM_FEATURE_PV_UNHALT		7
-> >  #define KVM_FEATURE_PV_TLB_FLUSH	9
-> >  #define KVM_FEATURE_ASYNC_PF_VMEXIT	10
-> > -#define KVM_FEATURE_PV_SEND_IPI	11
-> > +#define KVM_FEATURE_PV_SEND_IPI		11
+> > You mention timers for the gpio pins that cannot provide debounce,
+> > so I'm confused. Could you clarify which strategy you have in mind?
 > 
-> Nit: spurrious change
+> My idea is that the callback gpiod_set_debounce() for in-kernel consumers
+> should more or less always return success. Either the hardware does
+> the debounce,  or gpiolib sets up a timer.
+> 
+> > I've also had a quick look at the possibility of providing the software
+> > debounce for in-kernel consumers.
+> 
+> That is where I think it should start.
+> 
+> >  Are you anticipating new API for
+> > that?  e.g. allowing consumers to request gpio events?  Cos, gpio_keys
+> > grabs the irq itself - and that would bypass the software debouncer,
+> > or even conflict with it.
+> 
+> It may be hard or impossible.
+> 
+> I suppose gpiolib would have to steal or intercept the interrupt
+> by using e.g. IRQF_SHARED and then just return IRQ_HANDLED
+> on the first IRQ so the underlying irq handler does not get called.
 > 
 
-I fixed indentation while there. (Look at the file, not the diff to see
-what I mean).
+And how would gpiolib ensure that it was first in the chain?
 
-> >  #define KVM_FEATURE_POLL_CONTROL	12
-> >  #define KVM_FEATURE_PV_SCHED_YIELD	13
-> > +#define KVM_FEATURE_MEM_PROTECTED	14
-> >  
-> >  #define KVM_HINTS_REALTIME      0
-> >  
-> > diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> > index 6efe0410fb72..bda761ca0d26 100644
-> > --- a/arch/x86/kernel/kvm.c
-> > +++ b/arch/x86/kernel/kvm.c
-> > @@ -35,6 +35,13 @@
-> >  #include <asm/tlb.h>
-> >  #include <asm/cpuidle_haltpoll.h>
-> >  
-> > +static bool mem_protected;
-> > +
-> > +bool kvm_mem_protected(void)
-> > +{
-> > +	return mem_protected;
-> > +}
-> > +
+> After the timer times out it needs to retrigger the IRQ.
 > 
-> Honestly, I don't see a need for kvm_mem_protected(), just rename the
-> bool if you need kvm_ prefix :-)
-
-For !CONFIG_KVM_GUEST it would not be a variable. We may want to change it
-to static branch or something in the future.
-
-> >  static int kvmapf = 1;
-> >  
-> >  static int __init parse_no_kvmapf(char *arg)
-> > @@ -727,6 +734,15 @@ static void __init kvm_init_platform(void)
-> >  {
-> >  	kvmclock_init();
-> >  	x86_platform.apic_post_init = kvm_apic_init;
-> > +
-> > +	if (kvm_para_has_feature(KVM_FEATURE_MEM_PROTECTED)) {
-> > +		if (kvm_hypercall0(KVM_HC_ENABLE_MEM_PROTECTED)) {
-> > +			pr_err("Failed to enable KVM memory protection\n");
-> > +			return;
-> > +		}
-> > +
-> > +		mem_protected = true;
-> > +	}
-> >  }
+> So the consuming driver would se a "debounced and ready"
+> IRQ so when it gets this IRQ it knows for sure there is
+> no bounciness on it because gpiolib already took care
+> of that.
 > 
-> Personally, I'd prefer to do this via setting a bit in a KVM-specific
-> MSR instead. The benefit is that the guest doesn't need to remember if
-> it enabled the feature or not, it can always read the config msr. May
-> come handy for e.g. kexec/kdump.
-
-I think we would need to remember it anyway. Accessing MSR is somewhat
-expensive. But, okay, I can rework it MSR if needed.
-
-Note, that we can avoid the enabling algother, if we modify BIOS to deal
-with private/shared memory. Currently BIOS get system crash if we enable
-the feature from time zero.
-
-> >  const __initconst struct hypervisor_x86 x86_hyper_kvm = {
-> > diff --git a/include/uapi/linux/kvm_para.h b/include/uapi/linux/kvm_para.h
-> > index 8b86609849b9..1a216f32e572 100644
-> > --- a/include/uapi/linux/kvm_para.h
-> > +++ b/include/uapi/linux/kvm_para.h
-> > @@ -27,8 +27,9 @@
-> >  #define KVM_HC_MIPS_EXIT_VM		7
-> >  #define KVM_HC_MIPS_CONSOLE_OUTPUT	8
-> >  #define KVM_HC_CLOCK_PAIRING		9
-> > -#define KVM_HC_SEND_IPI		10
-> > +#define KVM_HC_SEND_IPI			10
-> 
-> Same spurrious change detected.
-
-The same justification :)
-
-> >  #define KVM_HC_SCHED_YIELD		11
-> > +#define KVM_HC_ENABLE_MEM_PROTECTED	12
-> >  
-> >  /*
-> >   * hypercalls use architecture specific
-> 
-> -- 
-> Vitaly
-> 
+> The above is in no way trivial, but it follows the design pattern
+> of "narrow and deep" APIs.
 > 
 
--- 
- Kirill A. Shutemov
+Totally agree with the concept - just trying to work out how to
+implement it seemlessly given the existing API and usage, and given my
+limited knowledge of the kernel internals.
+
+> Failure is an option! Sorry if I push too complex ideas.
+> 
+
+I'm not as concerned about complexity as I am about fragility.
+
+I don't see any problem adding debounce for gpiolib-cdev.
+Adding a more complete solution to gpiolib itself is certainly
+non-trivial, if it is possible at all. 
+
+The path I'll probably be taking is adding a debouncer to gpiolib-cdev,
+so at least we have a solution for userspace, then take a longer look at
+the more general solution.
+
+Cheers,
+Kent.
