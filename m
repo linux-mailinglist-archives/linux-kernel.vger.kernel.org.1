@@ -2,168 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C991E14FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054FE1E1511
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 22:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390349AbgEYT4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 15:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388737AbgEYT4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 15:56:55 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E423CC061A0E;
-        Mon, 25 May 2020 12:56:54 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 82so11072430lfh.2;
-        Mon, 25 May 2020 12:56:54 -0700 (PDT)
+        id S2390720AbgEYUHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 16:07:04 -0400
+Received: from mail-db5eur03hn2211.outbound.protection.outlook.com ([52.100.12.211]:3649
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388794AbgEYUHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 16:07:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kfF9JXatG8F636xHE46X2rbbzRwYj5yxyo7iDxkiXMmqEKgq09QTsgt0vgQ6OVHI55QfkEk88aWIGM7TkMcer50QqELtiX6ZGagnFdv73sr0UvRftdM/L1RXm5qjwWDwyoxn8wPn6lY++8oHXuZTtePdp1TQsNatysKeAKkyfIT1HDsTpXKkgsqz0vFjldO23tOV+BRFlKK06C7RQ1xtlhMW50WSPqh92HIZQkf92ozmf505WRan9WaDt9m9t2woYZJVG2nicOiMeiRpkgEa4otv7B9w5m0jwb92ZclKiS2SrEh1f69o70e1leyny1Bik0/T1ua6rxlC1ayR22c/4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U/pS1cIeIVfkEniXMCE/fhuUO2Qc8spGTHmgfh9zKaY=;
+ b=ZbxnHa+ZNq1A0V5+3xjY3Bl2Pb3Uutbb6j6ofu+HLnwulu/tqYGxVviemL9G+izYui//PMYAlGYcmF/CxDSMzQIRLgbzKL1jkYaUqv3V9fV2KaA2XUifsVF+uFkbLC/Xl8iFL4EwKbEnDgHH8QUxhQY3v2LIbm7HZQxaTZFAq0e2KkzTGJumaRyM4lzddABHvSXrqLKU0ss0P5mIKeJRd1J+W2SGV83ZD0zzGy+CB+VmzNcs16G5yQKT73NL/mSBSi2AFjch/MNWufLF40AbhTOBH8WrJreP0f2AUhlIKdr1LdBmlpavAY5dtOY3c2BMQ2i+lvuX8IFiYCt9OynEug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silexinsight.com; dmarc=pass action=none
+ header.from=silexinsight.com; dkim=pass header.d=silexinsight.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RfuCHKTNwaWG0c1gzxYwDnFHu5cJwWR/Dhzr/q0GiRw=;
-        b=lgLthuD3Ld85JCIhPPZXcc8lF1lDUPUO+ueiGkF5X/sPrWlsszmqCWXWampG6miusl
-         2srBFOe/fjJeFzZmwUgt11DY8EbMcLLXXrdQ1G6zKKGZ27Z2pSTMSd4fc5JRHQJOVFDf
-         59dDsbf+UBIgFc7MFm6J756ZyXChxi2jkBRBu3VQ9Lee8bqOSih4bu9PbojTTjFSC/A7
-         iejiNvUCmFneoMP+Iyf+QH08DCm1Rul7fHjltQQBFeqPE4lruc3ybApD/n2TX21mMc5V
-         6JfHsyESU+9A3DlDrryCvFL8zZLvJrZvEB+eSMpyQNWE+fiwvlDqqdv7rQtksK3zrkaR
-         hdmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RfuCHKTNwaWG0c1gzxYwDnFHu5cJwWR/Dhzr/q0GiRw=;
-        b=H44WCMk5qff/uNGs8VYKy6UmC+7sv4oNHM8FdpzX2hCPSUOtSJfuOiIIB4d5716veB
-         CnAyDSpbGUTawicPZYiSLtIlFJ6gxHZAxJJzZsN8T2KIfqajqBQIc7aFmgfBlfXvv0C3
-         eYBazea9EJeWHfs/fdnUhtDF89POt/1CyQaLLMBMY5joB1k7EHSwHYe32rIbfJ+5tCvM
-         vWmRcVYccwD0I4uYO3iARwccmmIJX+7TfXOwk4KkKUevWWUfmVBxC41QG+ucKQQPh1/5
-         syqgIRqqhwjJKvb74Mb4ffPXPe0pIdumRspyADB+ieRACrw3SFCrgtq2uFL76hCBm030
-         bFcw==
-X-Gm-Message-State: AOAM532KIkviL9fEe32h6RS6ucVQP74nKwQ2ugr160qqENL2F0el9Nxl
-        vHFT9GZg73NzJzc0h/NYBMQ=
-X-Google-Smtp-Source: ABdhPJx9UAHgWJ2dxnysys+OcIQSSLPgoqP+qo2oC8iiHOzMR+KSp1wVnhO5Hq7jBtEyUsruf78VQg==
-X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr15253609lfq.118.1590436613238;
-        Mon, 25 May 2020 12:56:53 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-76-17-204.pppoe.mtu-net.ru. [91.76.17.204])
-        by smtp.gmail.com with ESMTPSA id u4sm2889969lfl.18.2020.05.25.12.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 12:56:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+ d=silexinside.onmicrosoft.com; s=selector2-silexinside-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U/pS1cIeIVfkEniXMCE/fhuUO2Qc8spGTHmgfh9zKaY=;
+ b=Fec02xZdfu+d+ySE4k1LBmDbazH3JN1Lz3vqCizz/UyxnS/rdpFkNY3K1kU3ziTYjCOcVaW1RQDvFyLmhP7cw42cmDiL1ZdZXy4wy9v0gYqdaMeUnvYzOeUigDNTwZLJXUGupTomcTfqtCVKL6J100nNFb/riugInJJahGOZmdk=
+Authentication-Results: selenic.com; dkim=none (message not signed)
+ header.d=none;selenic.com; dmarc=none action=none
+ header.from=silexinsight.com;
+Received: from AM7PR09MB3621.eurprd09.prod.outlook.com (2603:10a6:20b:10d::15)
+ by AM7PR09MB3735.eurprd09.prod.outlook.com (2603:10a6:20b:dc::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Mon, 25 May
+ 2020 20:06:58 +0000
+Received: from AM7PR09MB3621.eurprd09.prod.outlook.com
+ ([fe80::e902:acdf:8750:e9e2]) by AM7PR09MB3621.eurprd09.prod.outlook.com
+ ([fe80::e902:acdf:8750:e9e2%7]) with mapi id 15.20.3021.029; Mon, 25 May 2020
+ 20:06:58 +0000
+From:   Olivier Sobrie <olivier.sobrie@silexinsight.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iommu/tegra-smmu: Add missing locks around mapping operations
-Date:   Mon, 25 May 2020 22:54:37 +0300
-Message-Id: <20200525195437.14341-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
+Cc:     Olivier Sobrie <olivier.sobrie@silexinsight.com>,
+        Waleed Ziad <waleed94ziad@gmail.com>,
+        sebastien.rabou@silexinsight.com
+Subject: [PATCH 0/3] hwrng: add support for Silex Insight BA431
+Date:   Mon, 25 May 2020 21:56:03 +0200
+Message-Id: <20200525195606.2941649-1-olivier.sobrie@silexinsight.com>
+X-Mailer: git-send-email 2.26.2
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR04CA0072.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::49) To AM7PR09MB3621.eurprd09.prod.outlook.com
+ (2603:10a6:20b:10d::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2a02:a03f:a7df:f300:30f9:36cf:6713:51ae) by AM0PR04CA0072.eurprd04.prod.outlook.com (2603:10a6:208:1::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Mon, 25 May 2020 20:06:58 +0000
+X-Mailer: git-send-email 2.26.2
+X-Originating-IP: [2a02:a03f:a7df:f300:30f9:36cf:6713:51ae]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f19eab8d-3ad7-4a82-cc2b-08d800e72dfa
+X-MS-TrafficTypeDiagnostic: AM7PR09MB3735:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR09MB3735DB76BE43DB83F85425DFF4B30@AM7PR09MB3735.eurprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 0414DF926F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ThPY/RbO9T7swwQ8S5YnksqMdOkFrYI9NmePoR2b9ArXvlsVVEZlgfhRU/cUZZcSgZZBplRA1CLIcdCnK/3FpeuIhlnS6rirPgvtDH1HMMsilbRx9SnjLB9bpm6jjWODN3NxR6iEm588R4XOuhADJ4mvQMGo8flANfTdlhqz+uGs+9WRLqyOTma7O29y7lElMoOLqC4FOw49f8voX5EkmLPwZpgHNHuanRWmj5WEeI5um2jY6kaT5HK1+JRVi1hhRAwYhWG2V24pHzLp3kznRz2Vkjwz+DH3AvASsZz+4aLaQ5weNOTq5RVoLa1jrvxgHhN+cIWxhMerJ5A7QCQQh6HcimGW6tNDmpw1cx6r88D3+AxdMucMBnx5e3ksOI8Nww4/rIq6hVB58J8anlVa/C5f+X8PbBeYghj+m5dvLNQoEQWiRDe/e18spkm1/rZ5R3UUOLzWiIN3jjYfmS3SnC4ToUFIul41RZJlYFtFlHWNqpf0/Ot26/mJr+NVfZNpupCEyMA3UZygBIiE3Nsyo6XFfVOO7wLhN5s0fY/YuKGfWZNjBLWWUxIlhe9IuHEiFY9bF0QqxatXKgjWXlr0N7tpT7+XM2ra34kqThs4h9ONrtBn1rJcSzoGWbDWdN1vSTzZG+uSjqYxKPU9jzB8YqsSM8hT+mPltAoM3+ptz30lWNmLS9PSUyVsZ63k/fJZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:AM7PR09MB3621.eurprd09.prod.outlook.com;PTR:;CAT:OSPM;SFTY:;SFS:(396003)(39840400004)(136003)(376002)(346002)(366004)(186003)(16526019)(66556008)(52116002)(2616005)(2906002)(66476007)(6496006)(107886003)(44832011)(4744005)(66946007)(54906003)(110136005)(316002)(508600001)(6486002)(8936002)(36756003)(1076003)(6666004)(4326008)(5660300002)(8676002)(86362001)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData: DvDAuYDoTRAEFxCwQCuFab1ms52vDM/DX/SrRTm9qRuDhIsIbJkmihm16pn/ZkHbH4vDGxmGbbP9b//ELtxhDjXX7eiXBVWPOeLBDFu0EkDFKb90YM2ik0sPgInwI4EBAVhGhYFChCacyWqoBrR+qmt71u7yJgksP4HTt6+9XR/xMmzpyvK5W/g1ANOxYpfMuQPETVdIRVKCn8XmO1AjES0s4jfjbEs2R7/5L/twgnFPJYcmHUfR2jlI5dFeVx263lPuGI0SZt2pPWMGSj46Eq+3Lh+XC5NZDrXeZU29ZZsJ4zIFs8feYfokHwRapQLjs9MtQiUr1JNxDFULlmM3UvSdxz4RldN3KipiYubWq/817ZMqJ+k6J4334n0CX/fdOjyTxKovgXQ2loiF2yKnYKQ/auT0DIxirnQ3ig1EC0R8/Lo8HVvH2WIW1Y+t1K8x0ppETDs5Tjl+WqjECxmdeFWx4SN2H+q1DjRtymp02jbZ3FvlwFRpd/eeOU9en6tutCw92Vbu+VpA55GWm+wLTLeHv+cuZ9VKiS7zXxlMAy4=
+X-OriginatorOrg: silexinsight.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f19eab8d-3ad7-4a82-cc2b-08d800e72dfa
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2020 20:06:58.3095
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a02f6f9b-0f64-4420-b881-fca545d421d8
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PxFiTZdtFwzTFiZF6WUO9JPzcM25JUa1Vzz25GnMjAAmOurYCgAmIlrGeX15JNz5FzJm9fhQlxDwngESuLpB6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR09MB3735
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mapping operations of the Tegra SMMU driver are subjected to a race
-condition issues because SMMU Address Space isn't allocated and freed
-atomically, while it should be. This patch makes the mapping operations
-atomic, it fixes an accidentally released Host1x Address Space problem
-which happens while running multiple graphics tests in parallel on
-Tegra30, i.e. by having multiple threads racing with each other in the
-Host1x's submission and completion code paths, performing IOVA mappings
-and unmappings in parallel.
+Hello all,
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+This set of patches aims at introducing a linux hwrng driver for the
+Silex Insight BA431 IP which is available for various FPGA.
+This hardware is for instance present in Silex Insight Viper OEM boards.
 
-Changelog:
+The two first patches are documenting the device tree bindings.
+The last one contains the BA431 hwrng driver.
 
-v2: - Now using mutex instead of spinlock.
+Olivier Sobrie (3):
+  dt-bindings: vendor-prefixes: Add Silex Insight vendor prefix
+  dt-bindings: rng: document Silex Insight BA431 hwrng
+  hwrng: ba431-rng: add support for BA431 hwrng
 
-    - The _locked postfix is replaced with the underscores prefix.
+ .../bindings/rng/silex-insight,ba431-rng.yaml |  33 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/char/hw_random/Kconfig                |  10 +
+ drivers/char/hw_random/Makefile               |   1 +
+ drivers/char/hw_random/ba431-rng.c            | 241 ++++++++++++++++++
+ 5 files changed, 287 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rng/silex-insight,ba431-rng.yaml
+ create mode 100644 drivers/char/hw_random/ba431-rng.c
 
- drivers/iommu/tegra-smmu.c | 38 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 7426b7666e2b..9cf06acb00ce 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -49,6 +49,7 @@ struct tegra_smmu_as {
- 	struct iommu_domain domain;
- 	struct tegra_smmu *smmu;
- 	unsigned int use_count;
-+	struct mutex lock;
- 	u32 *count;
- 	struct page **pts;
- 	struct page *pd;
-@@ -308,6 +309,8 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
- 		return NULL;
- 	}
- 
-+	mutex_init(&as->lock);
-+
- 	/* setup aperture */
- 	as->domain.geometry.aperture_start = 0;
- 	as->domain.geometry.aperture_end = 0xffffffff;
-@@ -655,8 +658,9 @@ static void tegra_smmu_set_pte(struct tegra_smmu_as *as, unsigned long iova,
- 	smmu_flush(smmu);
- }
- 
--static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
--			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-+static int
-+__tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
-+		 phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
- {
- 	struct tegra_smmu_as *as = to_smmu_as(domain);
- 	dma_addr_t pte_dma;
-@@ -685,8 +689,9 @@ static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
- 	return 0;
- }
- 
--static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
--			       size_t size, struct iommu_iotlb_gather *gather)
-+static size_t
-+__tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
-+		   size_t size, struct iommu_iotlb_gather *gather)
- {
- 	struct tegra_smmu_as *as = to_smmu_as(domain);
- 	dma_addr_t pte_dma;
-@@ -702,6 +707,31 @@ static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
- 	return size;
- }
- 
-+static int tegra_smmu_map(struct iommu_domain *domain, unsigned long iova,
-+			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-+{
-+	struct tegra_smmu_as *as = to_smmu_as(domain);
-+	int ret;
-+
-+	mutex_lock(&as->lock);
-+	ret = __tegra_smmu_map(domain, iova, paddr, size, prot, gfp);
-+	mutex_unlock(&as->lock);
-+
-+	return ret;
-+}
-+
-+static size_t tegra_smmu_unmap(struct iommu_domain *domain, unsigned long iova,
-+			       size_t size, struct iommu_iotlb_gather *gather)
-+{
-+	struct tegra_smmu_as *as = to_smmu_as(domain);
-+
-+	mutex_lock(&as->lock);
-+	size = __tegra_smmu_unmap(domain, iova, size, gather);
-+	mutex_unlock(&as->lock);
-+
-+	return size;
-+}
-+
- static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
- 					   dma_addr_t iova)
- {
 -- 
-2.26.0
+2.26.2
 
