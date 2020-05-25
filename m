@@ -2,142 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E2A1E0846
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA2B1E0830
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgEYHzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 03:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgEYHzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 03:55:01 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73410C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 00:55:01 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x12so13222564qts.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 00:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8YX/FjgODFHrbyU0YnhV8IiHyHZk2RhYHJIXiYFKBgI=;
-        b=Rhb0XBmBCwPkw4V0ECSGwY/AlQuJiNbMYJG3p92NtXWscZ2MiRuXXnDQNDEpvuOnOu
-         61BWBPNeHTtpAT0R2XhhtTInt1+vdbvp++jrdI+/0a3Z/fEvEFrmG5kIq6fBquA2YgJj
-         g7pXW7ov73tCWIBBUDEwBmbcKJOqGpadbH3d3PWqNWXE4lh/skzfhCnF16dka9zc3FQC
-         rXYELeQTRgQWH7XgtvuPgbQUjcvcJIAYboHHslYHLCV4FsqjfyfycQ+I0BoSZqJJCxlC
-         4EBvHwIS3pzv5/e6R1vpxsepuIFLL/qK59SEScMUiMByfwGNBqimCUAFDTF8Uez+mlVN
-         Hx5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8YX/FjgODFHrbyU0YnhV8IiHyHZk2RhYHJIXiYFKBgI=;
-        b=QrPajsSA8xqNmsBR0dB/HPWrhuw1kiZnlOf6I3GXfIhZKfDKhnC3GWiBMq7TaC0TTL
-         ln/CsMdesgHkDXrA+0du0So1bl6CCoDlB+iHpYEiNCBsQcV6m+RBwBYA3wMav87EfWkX
-         USHjx+AxJnzRMkmUiWFhA4S2yz0A9Z8eNzfPgZTi5rif+kze97ILLnjrJs+VhC2fHuAw
-         oKGiuNMDqXqdpSlDiZPGgBAX5qHOXka7jUwf9cp+xpuS4Cop1j5Dr7oDY+FC7GS+65Qe
-         cYAA2VIq+SWHMg2+zONzDYnw4iWp6D6TLsqwTFmsOQrHGty5VNGpvszNK+M81ppB7100
-         pifw==
-X-Gm-Message-State: AOAM531ns0XoSvPg+6T+cYMZPnoiGnfSXjtxvg0+xQDECwb/lqHy7VFR
-        ajuqBlUT5I2pAUcP4W2CVcH+IYkD/r25eQs0CFc=
-X-Google-Smtp-Source: ABdhPJwpqRqDrN/UVFsFodcequ9Idqfu89HPWaqIzbpq4OgPV9FKWGm8uMFsVcBzj8G/S4x7YNH4cwpeIBZrR93ZpBg=
-X-Received: by 2002:ac8:2c44:: with SMTP id e4mr28004200qta.13.1590393300730;
- Mon, 25 May 2020 00:55:00 -0700 (PDT)
+        id S2389161AbgEYHvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 03:51:32 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:37948 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389142AbgEYHvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 03:51:32 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 04P7oSSN009368
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 25 May 2020 00:50:39 -0700
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 25 May 2020 00:50:18 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tj@kernel.org>
+CC:     <jiangshanlai@gmail.com>, <markus.elfring@web.de>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] workqueue: Fix double kfree for rescuer
+Date:   Mon, 25 May 2020 15:59:01 +0800
+Message-ID: <20200525075901.12699-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <0186c22a8a6be1516df0703c421faaa581041774.camel@linux.intel.com>
- <20200515164013.GF29995@sasha-vm> <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
- <20200518153407.GA499505@tassilo.jf.intel.com> <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
- <87v9ksvoaq.fsf@nanos.tec.linutronix.de> <20200519164853.GA19706@linux.intel.com>
- <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu> <87h7w7qy18.fsf@nanos.tec.linutronix.de>
- <A9483B8B-C0DD-46CB-AD5D-D12EC61BB331@zytor.com> <20200524211945.GX33628@sasha-vm>
-In-Reply-To: <20200524211945.GX33628@sasha-vm>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Mon, 25 May 2020 09:54:49 +0200
-Message-ID: <CAFLxGvxeg6+DY1LMTzvJe3=iW=zLyUj4xTRda99DurKdS6TDWw@mail.gmail.com>
-Subject: Re: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Don Porter <porter@cs.unc.edu>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        chang.seok.bae@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 24, 2020 at 11:20 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> On Sun, May 24, 2020 at 12:45:18PM -0700, hpa@zytor.com wrote:
-> >There are legitimate reasons to write a root-hole module, the main one b=
-eing able to test security features like SMAP. I have requested before a TA=
-INT flag specifically for this purpose, because TAINT_CRAP is nowhere near =
-explicit enough, and is also used for staging drivers. Call it TAINT_TOXIC =
-or TAINT_ROOTHOLE; it should always be accompanied with a CRIT level alert.
->
-> What I don't like about our current system of TAINT_* flags is that
-> while we can improve it as much as we want, no one outside of the kernel
-> tree seems to be using it. While Thomas may have been commenting on
-> Graphene's behaviour, look at any other code that did the same thing:
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Even if these modules would set TAINT_ROOTHOLE/TOXIC, the vast majority of =
-users
-have no clue what these flags really mean nor bother to take them seriously=
-.
+The duplicate memory release should be deleted from the implementation
+of the callback function "rcu_free_wq".
 
-Almost every customer system I get my hands on has the following flags set:
-C: Some driver from staging was "needed", mostly media or wifi stuff.
-O: Customer did a custom module.
-W: Random warning from vendor kernel at bootup because of a slightly
-configured device-tree, etc.
-P: Sadly too. Mostly because customer has custom module and forgot to set i=
-t GPL
+Fixes: 6ba94429c8e7 ("workqueue: Reorder sysfs code")
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+---
+ kernel/workqueue.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-All this trained users to believe that a few taint flags don't hurt
-and only in a perfect world
-none are set.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 891ccad5f271..a2451cdcd503 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3491,7 +3491,6 @@ static void rcu_free_wq(struct rcu_head *rcu)
+ 	else
+ 		free_workqueue_attrs(wq->unbound_attrs);
+ 
+-	kfree(wq->rescuer);
+ 	kfree(wq);
+ }
+ 
+-- 
+2.24.1
 
-What works and raises attention is Steve's trace_printk() warning:
-
-        pr_warn("**********************************************************=
-\n");
-        pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **=
-\n");
-        pr_warn("**                                                      **=
-\n");
-        pr_warn("** trace_printk() being used. Allocating extra memory.  **=
-\n");
-        pr_warn("**                                                      **=
-\n");
-        pr_warn("** This means that this is a DEBUG kernel and it is     **=
-\n");
-        pr_warn("** unsafe for production use.                           **=
-\n");
-        pr_warn("**                                                      **=
-\n");
-        pr_warn("** If you see this message and you are not debugging    **=
-\n");
-        pr_warn("** the kernel, report this immediately to your vendor!  **=
-\n");
-        pr_warn("**                                                      **=
-\n");
-        pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **=
-\n");
-        pr_warn("**********************************************************=
-\n");
-
-Maybe we can add something like this for taints too? :-)
-
---=20
-Thanks,
-//richard
