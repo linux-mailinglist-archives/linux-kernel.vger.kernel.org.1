@@ -2,180 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FADD1E14E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15461E14CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 21:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390258AbgEYTiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 15:38:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55416 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390153AbgEYTh7 (ORCPT
+        id S2390110AbgEYTev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 15:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389904AbgEYTev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 15:37:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590435477;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/qzPb+rigzdeEpxfy8/9J5YI6QH1NmXqrwZrz57pB0=;
-        b=NV7Xwp09IagT94JZkQGtwQ6hshBBLHnq/n5R0T5jdJxs8pTDCJ2rTlWPgBdyOARb9XhoHO
-        6afv91rVOoy4yg0u9SOCmdpBB9gyWcp4MnWjU8hNbsR0vnHvdvAcm5i3N7F0wAezHZ7SnC
-        oanLYvuugW5C6Ej88onoi0oyNTDvvYg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-7EgWKUoIO_OheqLYDoSj0g-1; Mon, 25 May 2020 15:37:53 -0400
-X-MC-Unique: 7EgWKUoIO_OheqLYDoSj0g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B23D100726B;
-        Mon, 25 May 2020 19:37:52 +0000 (UTC)
-Received: from fuller.cnet (ovpn-116-16.gru2.redhat.com [10.97.116.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D310682A20;
-        Mon, 25 May 2020 19:37:51 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 35C89416CE4E; Mon, 25 May 2020 16:34:32 -0300 (-03)
-Date:   Mon, 25 May 2020 16:34:32 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, bhu@redhat.com,
-        Luwei Kang <luwei.kang@intel.com>, Wu Hao <hao.wu@intel.com>
-Subject: Re: [PATCH v5 6/7] fpga: dfl: afu: add AFU interrupt support
-Message-ID: <20200525193432.GF22266@fuller.cnet>
-References: <1587370303-25568-1-git-send-email-yilun.xu@intel.com>
- <1587370303-25568-7-git-send-email-yilun.xu@intel.com>
+        Mon, 25 May 2020 15:34:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A6DC061A0E;
+        Mon, 25 May 2020 12:34:50 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q2so21826637ljm.10;
+        Mon, 25 May 2020 12:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A4jmYZdU5ozBMAXAqmyk44sUjgV6hYrwfu6KlXmyOS8=;
+        b=ftDR4Ed6/4/UwzMezVOfDErK3teieIpd8y1f/Lb84PRLBTlN2umIzX2SO8oKktyN9e
+         JxqTIRfCcwtNJ4LX6lpD5nFObH6vKi8me1zNJN2kX0e/Ds+WWtXr18qRSpTMPB0N3sFB
+         G/5DZBl3ODACPw5Kn8rNvy5XQJ+dXJV4nbAAH60KeUSkUsb0/uzkDK1xlRgvrrY5bpxl
+         93EZYzGzrqMt273yWJxW3MjIEed6niJeHEs7XgHwqirnTBQ0SbEQkOut+XXIIdb1X09J
+         yArmCxgNS8p9Zw4vCLki32tJeRME3xZ9o7Q9tp2OASJD2psnlzoldExpvY3lyJ4ER2pW
+         AK7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A4jmYZdU5ozBMAXAqmyk44sUjgV6hYrwfu6KlXmyOS8=;
+        b=YzBy3kTpi7ie1ss5FwXN8H3ZYPyqXguC3KnITa/YWhHGaBBfe+vATuMYNkWKrbLoS6
+         bE1quObLmCd1J+dNrREj5lHxHV/fsC51pY2pQoF6A21ueVTIe0o9IfIyb246x+nvmrHC
+         bA1FTWdxM3ySy4NDFk3f4OAn0K52RvhLZaiiybdB5HH3Hfz1G9ZahUJGNF3O0eQASYhU
+         /ABCzjlq3E2KROFBt/D03tqGMLYxi0YKCNBQzrd3DLxZq9bnKdkFvkVp41XbRJQak7mm
+         HxsstD+tN6kHSe+etNnqgZzXQzujZ+DcH08jCGAA+tITWKILaNUAHEmsjK5qHaT18sKU
+         d3Aw==
+X-Gm-Message-State: AOAM5308A/UBgi2vhd0YIjpbvVufEqH+jvcv1ez26zuPEN7w35rzdMv9
+        7iW8FYJKDmD00bg54qogv9XuyGCh
+X-Google-Smtp-Source: ABdhPJxMGuM6N/f4LC792sPrhgWYvy5nLWumLbUsFmsrQl5S04rMvyYu8zXeOAyUN4d60W1isrrMrg==
+X-Received: by 2002:a2e:701a:: with SMTP id l26mr15350495ljc.50.1590435289168;
+        Mon, 25 May 2020 12:34:49 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-76-17-204.pppoe.mtu-net.ru. [91.76.17.204])
+        by smtp.googlemail.com with ESMTPSA id j9sm5339418lfe.24.2020.05.25.12.34.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 May 2020 12:34:48 -0700 (PDT)
+Subject: Re: [PATCH v1] iommu/tegra-smmu: Add missing locks around mapping
+ operations
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200524183755.3774-1-digetx@gmail.com>
+ <20200525083556.GA2382769@ulmo>
+ <ffa2f98f-1809-e4f0-009e-d06dcde0ed49@gmail.com>
+ <20200525122016.GB2393266@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c6819193-6200-b7a6-57e4-c763d1a7129e@gmail.com>
+Date:   Mon, 25 May 2020 22:34:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587370303-25568-7-git-send-email-yilun.xu@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200525122016.GB2393266@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 04:11:42PM +0800, Xu Yilun wrote:
-> AFU (Accelerated Function Unit) is dynamic region of the DFL based FPGA,
-> and always defined by users. Some DFL based FPGA cards allow users to
-> implement their own interrupts in AFU. In order to support this,
-> hardware implements a new UINT (AFU Interrupt) private feature with
-> related capability register which describes the number of supported
-> AFU interrupts as well as the local index of the interrupts for
-> software enumeration, and from software side, driver follows the common
-> DFL interrupt notification and handling mechanism, and it implements
-> two ioctls below for user to query number of irqs supported and set/unset
-> interrupt triggers.
-> 
->  Ioctls:
->  * DFL_FPGA_PORT_UINT_GET_IRQ_NUM
->    get the number of irqs, which is used to determine how many interrupts
->    UINT feature supports.
-> 
->  * DFL_FPGA_PORT_UINT_SET_IRQ
->    set/unset eventfds as AFU interrupt triggers.
-> 
-> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
-> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> ----
-> v2: use DFL_FPGA_PORT_UINT_GET_IRQ_NUM instead of
->     DFL_FPGA_PORT_UINT_GET_INFO
->     Delete flags field for DFL_FPGA_PORT_UINT_SET_IRQ
-> v3: put_user() instead of copy_to_user()
->     improves comments
-> v4: use common functions to handle irq ioctls
-> v5: Minor fixes for Hao's comments
-> ---
->  drivers/fpga/dfl-afu-main.c   | 28 ++++++++++++++++++++++++++++
->  include/uapi/linux/fpga-dfl.h | 23 +++++++++++++++++++++++
->  2 files changed, 51 insertions(+)
-> 
-> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-> index b1ed7b4..753cda4 100644
-> --- a/drivers/fpga/dfl-afu-main.c
-> +++ b/drivers/fpga/dfl-afu-main.c
-> @@ -530,6 +530,30 @@ static const struct dfl_feature_ops port_stp_ops = {
->  	.init = port_stp_init,
->  };
->  
-> +static long
-> +port_uint_ioctl(struct platform_device *pdev, struct dfl_feature *feature,
-> +		unsigned int cmd, unsigned long arg)
-> +{
-> +	switch (cmd) {
-> +	case DFL_FPGA_PORT_UINT_GET_IRQ_NUM:
-> +		return dfl_feature_ioctl_get_num_irqs(pdev, feature, arg);
-> +	case DFL_FPGA_PORT_UINT_SET_IRQ:
-> +		return dfl_feature_ioctl_set_irq(pdev, feature, arg);
-> +	default:
-> +		dev_dbg(&pdev->dev, "%x cmd not handled", cmd);
-> +		return -ENODEV;
-> +	}
-> +}
-> +
-> +static const struct dfl_feature_id port_uint_id_table[] = {
-> +	{.id = PORT_FEATURE_ID_UINT,},
-> +	{0,}
-> +};
-> +
-> +static const struct dfl_feature_ops port_uint_ops = {
-> +	.ioctl = port_uint_ioctl,
-> +};
-> +
->  static struct dfl_feature_driver port_feature_drvs[] = {
->  	{
->  		.id_table = port_hdr_id_table,
-> @@ -548,6 +572,10 @@ static struct dfl_feature_driver port_feature_drvs[] = {
->  		.ops = &port_stp_ops,
->  	},
->  	{
-> +		.id_table = port_uint_id_table,
-> +		.ops = &port_uint_ops,
-> +	},
-> +	{
->  		.ops = NULL,
->  	}
->  };
-> diff --git a/include/uapi/linux/fpga-dfl.h b/include/uapi/linux/fpga-dfl.h
-> index b6495ea..1621b07 100644
-> --- a/include/uapi/linux/fpga-dfl.h
-> +++ b/include/uapi/linux/fpga-dfl.h
-> @@ -187,6 +187,29 @@ struct dfl_fpga_irq_set {
->  					     DFL_PORT_BASE + 6,	\
->  					     struct dfl_fpga_irq_set)
->  
-> +/**
-> + * DFL_FPGA_PORT_UINT_GET_IRQ_NUM - _IOR(DFL_FPGA_MAGIC, DFL_PORT_BASE + 7,
-> + *								__u32 num_irqs)
-> + *
-> + * Get the number of irqs supported by the fpga AFU interrupt private
-> + * feature.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +#define DFL_FPGA_PORT_UINT_GET_IRQ_NUM	_IOR(DFL_FPGA_MAGIC,	\
-> +					     DFL_PORT_BASE + 7, __u32)
-> +
-> +/**
-> + * DFL_FPGA_PORT_UINT_SET_IRQ - _IOW(DFL_FPGA_MAGIC, DFL_PORT_BASE + 8,
-> + *						struct dfl_fpga_irq_set)
-> + *
-> + * Set fpga AFU interrupt trigger if evtfds[n] is valid.
-> + * Unset related interrupt trigger if evtfds[n] is a negative value.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +#define DFL_FPGA_PORT_UINT_SET_IRQ	_IOW(DFL_FPGA_MAGIC,	\
-> +					     DFL_PORT_BASE + 8,	\
-> +					     struct dfl_fpga_irq_set)
-> +
->  /* IOCTLs for FME file descriptor */
->  
->  /**
-> -- 
-> 2.7.4
+25.05.2020 15:20, Thierry Reding пишет:
+...
+> Do we have a good way to find out how bad exactly the contention would
+> be when using a mutex?
 
+I'm now having a second thought about it. We don't need to care about
+that scenario at all because it's a software-design defect of the
+upstream Host1x driver that it maps gathers dynamically. The defect can
+be fixed and then the potential problem won't exist at all.
 
-Reviewed-by: Marcelo Tosatti <mtosatti@redhat.com>
-
+Neither of the drivers that are using Tegra SMMU need the IOMMU mapping
+operations to be performed under spinlock, so mutex will be good a
+variant. I'll make a v2 with a mutex, thank you for the suggestion.
