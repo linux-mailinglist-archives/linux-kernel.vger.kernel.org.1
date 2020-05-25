@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121291E0481
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0F91E048A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 03:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388437AbgEYBwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 21:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388054AbgEYBwt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 21:52:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EB8C061A0E
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:52:48 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u22so6889068plq.12
-        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 18:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=WgNdEEm9CKkIv8HqkMAg2kmrZY4evhUWZB5s9CtlNLI=;
-        b=IiDAf+dvMuve0czUMKQYCts2SBoBFEpkIgWQGTTd2wOSLIJaK19N0xGac9vsPJAdFz
-         Z9DjMFJvgJxMsXZOq71sHrZqBcxDqCjS0HgYHu0Kxm1WtaXWZag1Hb48Q1FE+s2VMqfa
-         UvH3o6pFdIreXxwQYqhya5gRTd4+kNnp5vRgU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=WgNdEEm9CKkIv8HqkMAg2kmrZY4evhUWZB5s9CtlNLI=;
-        b=PrKgBPG54Q9LV7+ecYfia3QsyCdepBJ8FnpngSt3NUfHYbOmwxSp1ZM5gmoxtP97ZJ
-         0IRlhMy7idxLRhpUvRls08MGPKnYUnICpPGjLS3JlLI25Soq9CnEJ23MoNgU2cnkiTeB
-         QFKl22wzGkwsvbvJ6Go7hwKB5dRVrseCTHEFqLzsx2GUsIXMEF2knrypoL5ss8WL1Y2z
-         96+hoqNQqFDChruF/pJwJkdZSccaavk1QYFdbDKeZmfMFi6fxb5MVaotZU/2/G9M+gxH
-         pjM5QJrQ73ZXSGPeWnV5KG8+gtHsG/cQWAE9FLKHXAcL7kAzkCCBhWoQRhkPYhgO/2oe
-         sEjQ==
-X-Gm-Message-State: AOAM531aNCZtyqWCpunN5V0hQdOfkVobiAd+ObJ5GeVd/t3PHfAQoUpx
-        OLHocw0thLzlhRaRPicxBxkp2Q==
-X-Google-Smtp-Source: ABdhPJzMbXmBQ7Qh18pPVQBEtsWB75q7eUQH4r1pxGBkj6Roh0fYzFLoEzjv21K/cBdToHTNpF9+bw==
-X-Received: by 2002:a17:902:6b09:: with SMTP id o9mr24576526plk.100.1590371567787;
-        Sun, 24 May 2020 18:52:47 -0700 (PDT)
-Received: from localhost (2001-44b8-1113-6700-b9bb-eae4-aa7c-e185.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b9bb:eae4:aa7c:e185])
-        by smtp.gmail.com with ESMTPSA id m15sm10436166pgv.45.2020.05.24.18.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 May 2020 18:52:47 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        David Rientjes <rientjes@google.com>
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        ajd@linux.ibm.com, mpe@ellerman.id.au,
-        syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com,
-        syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com,
-        syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com,
-        syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2] relay: handle alloc_percpu returning NULL in relay_open
-In-Reply-To: <20200521152514.GA2868125@eldamar.local>
-References: <20191219121256.26480-1-dja@axtens.net> <alpine.DEB.2.21.1912201100400.68407@chino.kir.corp.google.com> <20200521152514.GA2868125@eldamar.local>
-Date:   Mon, 25 May 2020 11:52:43 +1000
-Message-ID: <87ftbo232s.fsf@dja-thinkpad.axtens.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2388574AbgEYB7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 21:59:18 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56642 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388090AbgEYB7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 21:59:17 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2hlJstexro4AA--.1093S2;
+        Mon, 25 May 2020 09:59:01 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH] thermal: sprd: Fix return value of sprd_thm_probe()
+Date:   Mon, 25 May 2020 09:59:01 +0800
+Message-Id: <1590371941-25430-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxn2hlJstexro4AA--.1093S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw18Zw1xXFykArW3GF45Wrg_yoWDJrg_Cw
+        1fZr4xXr1rZr1jy3W2yw43u39FkFZ09Fs5GanYy3yak34UWay3Xrn8Zrn0vayDZ3yfAry2
+        k3srGrs2vw1xujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6w4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbF1v3UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> > Check if alloc_percpu returns NULL.
->> > 
->> > This was found by syzkaller both on x86 and powerpc, and the reproducer
->> > it found on powerpc is capable of hitting the issue as an unprivileged
->> > user.
->> > 
->> > Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
->> > Reported-by: syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com
->> > Reported-by: syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com
->> > Reported-by: syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com
->> > Reported-by: syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com
->> > Cc: Akash Goel <akash.goel@intel.com>
->> > Cc: Andrew Donnellan <ajd@linux.ibm.com> # syzkaller-ppc64
->> > Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
->> > Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
->> > Cc: stable@vger.kernel.org # v4.10+
->> > Signed-off-by: Daniel Axtens <dja@axtens.net>
->> 
->> Acked-by: David Rientjes <rientjes@google.com>
->
-> It looks this one was never applied (which relates to CVE-2019-19462,
-> as pointed by Guenter in 20191223163610.GA32267@roeck-us.net).
->
-> Whas this lost or are there any issues pending?
+When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-I'm not aware of any pending issues.
+Fixes: 554fdbaf19b1 ("thermal: sprd: Add Spreadtrum thermal driver support")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/thermal/sprd_thermal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-(But, if anyone does have any objections I'm happy to revise the patch.)
+diff --git a/drivers/thermal/sprd_thermal.c b/drivers/thermal/sprd_thermal.c
+index a340374..4cde70d 100644
+--- a/drivers/thermal/sprd_thermal.c
++++ b/drivers/thermal/sprd_thermal.c
+@@ -348,8 +348,8 @@ static int sprd_thm_probe(struct platform_device *pdev)
+ 
+ 	thm->var_data = pdata;
+ 	thm->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (!thm->base)
+-		return -ENOMEM;
++	if (IS_ERR(thm->base))
++		return PTR_ERR(thm->base);
+ 
+ 	thm->nr_sensors = of_get_child_count(np);
+ 	if (thm->nr_sensors == 0 || thm->nr_sensors > SPRD_THM_MAX_SENSOR) {
+-- 
+2.1.0
 
-Regards,
-Daniel
