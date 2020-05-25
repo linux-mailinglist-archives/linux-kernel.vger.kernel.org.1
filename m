@@ -2,100 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5F31E0688
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 07:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1021E0683
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 07:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388798AbgEYFr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 01:47:28 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:62120 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388743AbgEYFr1 (ORCPT
+        id S2388586AbgEYFrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 01:47:16 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:46009 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388508AbgEYFrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 01:47:27 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 04P5l9A1013208;
-        Mon, 25 May 2020 14:47:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 04P5l9A1013208
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1590385630;
-        bh=0uTKdW1KbUmtGYeOi/qQd7Taz/4BizcEeyoYfCw1RgQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vVbOCC+QI3UNPkBYtTTGyY+sFEk9ccI3jons1o/CoGQ1wWDz0lYwYbr1cfmhEHNoj
-         LqSKxcvue3yJRwVbDLUcJpqFN/4cDuJ8ZXq1hFM0Idg965qxCPijV2i/Hek5D4GlwC
-         R3UZf94I4xibS7241/Og2YFVhB1vdL4F80VhHfpbMf31K742saq7Gxn8xVmERIxIqq
-         5RPrAeWSAN3I7kadidHG0u04EIA9Oo46hE03OP2HEN2p7iSBRxWiIu+eYN6HDFoVva
-         wnzEKpkB4AcxgiX7NImOvp+WbE85U41eZ8hshxBMaxoSrqNLOvpZtfhYuc7adDp8sD
-         2lqrBWjHTMw8g==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] modpost: refactor sech_name()
-Date:   Mon, 25 May 2020 14:47:05 +0900
-Message-Id: <20200525054705.1066033-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200525054705.1066033-1-masahiroy@kernel.org>
-References: <20200525054705.1066033-1-masahiroy@kernel.org>
+        Mon, 25 May 2020 01:47:14 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id DE73AEC0;
+        Mon, 25 May 2020 01:47:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 25 May 2020 01:47:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        subject:from:to:cc:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
+        FtR+UgOOZLBiQrxLIVMV0q/xz8NJCgPfEh2OWV3jrgA=; b=u0qmfAHxIMHVRI0N
+        ZTFLJ3BxnZMG0HEatOhEhb4Xg9/co4Y4hOoiZkW5qwF5YRDOJIpkmlbzdivWun2n
+        RbteUJx4HHE0283zBlb6GkvNihLxTVI65D64O3KFAajbm9DaYBCgKDoB2s92O6am
+        FOTATTr/fPChVcCoVqDfCYEpDD+6LGMArgfYnoo/UGZmCygZvfaBQAynSwVw1DOP
+        v+DND6hrpCttdZW4doSIBpGC9+5+RVeFfVh/llNYJEK8mzAc4TMMwe+LsqDyKXSK
+        8E1BjYaSC1npJjGXFF/nbjlNW69Czxql8wXRrRdseCH2XObpT5xlVn4N88QIZlul
+        saPhgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=FtR+UgOOZLBiQrxLIVMV0q/xz8NJCgPfEh2OWV3jr
+        gA=; b=EJbduoMHGLUcTCmwBkosAXbtfWOJmbs4OauGGGo+rXXreutVzElhQr2d8
+        yBGvwl1mhadY6HEsUVJ+1vlwE/CTscrj3LlPHGJhccCFQVssZoA0AhDo26M/zyQD
+        4vvSDn3IS9Zu2dn2pucoX7MG9hWqwz/U0fKNVGd5USv4aqbBFv9xrFcq/dte9yYR
+        Eugfn/g3aqxFrqrskD6HogUEaXXueeM6x97tAmiuVWsNioFoCzccc2Ry2Td4QsV2
+        T9r6eEtBWg86WCUi4qXFbkAkgkgwIYgD1Uay1Ct9nRsHzLbr388OIP7UCTG0P+Mw
+        b0gUInD0XSpQ/RhfhG5u0fSaLgjnw==
+X-ME-Sender: <xms:4FvLXjTyjl1j7CmkHTK_mUqq4rIwtrgGoKjKHUKdkkWA58DUpBJuxg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudduledgleejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffhvfffkfgjfhgfgggtgfesthejredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    egveeuudffieeiffefieehvdetieeiteelheetueekledtledugeffheffieduieenucfk
+    phepuddukedrvddtkedrudejkedrudeknecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:4FvLXkz0Xeub3fRHwiz4PBO91KI6-GSZp0K8jM1f3YXy_Pp5q8q00g>
+    <xmx:4FvLXo2k7bVelzsHfezieAD7qJdVd7ufLSePlcMko2eKTjGFxH0tKA>
+    <xmx:4FvLXjAq5TRCGecgldV92qicrv4nORokkLjcRPc8LST1HotLPXWszw>
+    <xmx:4FvLXmaEOwZGq7t_eB7Yw-yl7ExzDUsDK0RzNuZ4FQF6fDOyUPgkog>
+Received: from mickey.localdomain (unknown [118.208.178.18])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 266F6306654C;
+        Mon, 25 May 2020 01:47:12 -0400 (EDT)
+Received: from mickey.themaw.net (localhost [127.0.0.1])
+        by mickey.localdomain (Postfix) with ESMTP id B01C0A01C8;
+        Mon, 25 May 2020 13:47:09 +0800 (AWST)
+Subject: [PATCH 2/4] kernfs: move revalidate to be near lookup
+From:   Ian Kent <raven@themaw.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 25 May 2020 13:47:09 +0800
+Message-ID: <159038562968.276051.1536156625429513766.stgit@mickey.themaw.net>
+In-Reply-To: <159038508228.276051.14042452586133971255.stgit@mickey.themaw.net>
+References: <159038508228.276051.14042452586133971255.stgit@mickey.themaw.net>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use sym_get_data_offset() helper to get access to the .shstrtab
-section data. No functional change is intended because
-elf->sechdrs[elf->secindex_strings].sh_addr is 0 for both ET_REL
-and ET_EXEC object types.
+While the dentry operation kernfs_dop_revalidate() is grouped with
+dentry'ish functions it also has a strong afinity to the inode
+operation ->lookup(). And when path walk improvements are applied
+it will need to call kernfs_find_ns() so move it to be near
+kernfs_iop_lookup() to avoid the need for a forward declaration.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+There's no functional change from this patch.
+
+Signed-off-by: Ian Kent <raven@themaw.net>
 ---
+ fs/kernfs/dir.c |   86 ++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 43 insertions(+), 43 deletions(-)
 
- scripts/mod/modpost.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index a8306adb3554..a5f3908bc9e4 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -333,18 +333,6 @@ static enum export export_no(const char *s)
- 	return export_unknown;
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index d8213fc65eba..9b315f3b20ee 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -559,49 +559,6 @@ void kernfs_put(struct kernfs_node *kn)
  }
+ EXPORT_SYMBOL_GPL(kernfs_put);
  
--static const char *sech_name(struct elf_info *elf, Elf_Shdr *sechdr)
+-static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
 -{
--	return (void *)elf->hdr +
--		elf->sechdrs[elf->secindex_strings].sh_offset +
--		sechdr->sh_name;
+-	struct kernfs_node *kn;
+-
+-	if (flags & LOOKUP_RCU)
+-		return -ECHILD;
+-
+-	/* Always perform fresh lookup for negatives */
+-	if (d_really_is_negative(dentry))
+-		goto out_bad_unlocked;
+-
+-	kn = kernfs_dentry_node(dentry);
+-	down_read(&kernfs_rwsem);
+-
+-	/* The kernfs node has been deactivated */
+-	if (!kernfs_active_read(kn))
+-		goto out_bad;
+-
+-	/* The kernfs node has been moved? */
+-	if (kernfs_dentry_node(dentry->d_parent) != kn->parent)
+-		goto out_bad;
+-
+-	/* The kernfs node has been renamed */
+-	if (strcmp(dentry->d_name.name, kn->name) != 0)
+-		goto out_bad;
+-
+-	/* The kernfs node has been moved to a different namespace */
+-	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
+-	    kernfs_info(dentry->d_sb)->ns != kn->ns)
+-		goto out_bad;
+-
+-	up_read(&kernfs_rwsem);
+-	return 1;
+-out_bad:
+-	up_read(&kernfs_rwsem);
+-out_bad_unlocked:
+-	return 0;
 -}
 -
--static const char *sec_name(struct elf_info *elf, int secindex)
--{
--	return sech_name(elf, &elf->sechdrs[secindex]);
--}
+-const struct dentry_operations kernfs_dops = {
+-	.d_revalidate	= kernfs_dop_revalidate,
+-};
 -
- static void *sym_get_data_offset(const struct elf_info *info,
- 				 unsigned int secindex, unsigned long offset)
- {
-@@ -362,6 +350,16 @@ static void *sym_get_data(const struct elf_info *info, const Elf_Sym *sym)
- 				   sym->st_value);
+ /**
+  * kernfs_node_from_dentry - determine kernfs_node associated with a dentry
+  * @dentry: the dentry in question
+@@ -1085,6 +1042,49 @@ struct kernfs_node *kernfs_create_empty_dir(struct kernfs_node *parent,
+ 	return ERR_PTR(rc);
  }
  
-+static const char *sech_name(struct elf_info *elf, Elf_Shdr *sechdr)
++static int kernfs_dop_revalidate(struct dentry *dentry, unsigned int flags)
 +{
-+	return sym_get_data_offset(elf, elf->secindex_strings, sechdr->sh_name);
++	struct kernfs_node *kn;
++
++	if (flags & LOOKUP_RCU)
++		return -ECHILD;
++
++	/* Always perform fresh lookup for negatives */
++	if (d_really_is_negative(dentry))
++		goto out_bad_unlocked;
++
++	kn = kernfs_dentry_node(dentry);
++	down_read(&kernfs_rwsem);
++
++	/* The kernfs node has been deactivated */
++	if (!kernfs_active_read(kn))
++		goto out_bad;
++
++	/* The kernfs node has been moved? */
++	if (kernfs_dentry_node(dentry->d_parent) != kn->parent)
++		goto out_bad;
++
++	/* The kernfs node has been renamed */
++	if (strcmp(dentry->d_name.name, kn->name) != 0)
++		goto out_bad;
++
++	/* The kernfs node has been moved to a different namespace */
++	if (kn->parent && kernfs_ns_enabled(kn->parent) &&
++	    kernfs_info(dentry->d_sb)->ns != kn->ns)
++		goto out_bad;
++
++	up_read(&kernfs_rwsem);
++	return 1;
++out_bad:
++	up_read(&kernfs_rwsem);
++out_bad_unlocked:
++	return 0;
 +}
 +
-+static const char *sec_name(struct elf_info *elf, int secindex)
-+{
-+	return sech_name(elf, &elf->sechdrs[secindex]);
-+}
++const struct dentry_operations kernfs_dops = {
++	.d_revalidate	= kernfs_dop_revalidate,
++};
 +
- #define strstarts(str, prefix) (strncmp(str, prefix, strlen(prefix)) == 0)
- 
- static enum export export_from_secname(struct elf_info *elf, unsigned int sec)
--- 
-2.25.1
+ static struct dentry *kernfs_iop_lookup(struct inode *dir,
+ 					struct dentry *dentry,
+ 					unsigned int flags)
+
 
