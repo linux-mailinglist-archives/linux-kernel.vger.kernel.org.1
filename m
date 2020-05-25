@@ -2,94 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C861E0952
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225541E0955
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 10:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389308AbgEYItP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 04:49:15 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:41412 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388773AbgEYItO (ORCPT
+        id S2389327AbgEYItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 04:49:23 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:42965 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388182AbgEYItW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 04:49:14 -0400
-Received: by mail-oo1-f67.google.com with SMTP id z26so3453326oog.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 01:49:13 -0700 (PDT)
+        Mon, 25 May 2020 04:49:22 -0400
+Received: by mail-oi1-f171.google.com with SMTP id l6so15447015oic.9;
+        Mon, 25 May 2020 01:49:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M+PuH/pTGAFDoL2hcME8N+/oYCZf4CIdiqezjAv2DZ0=;
-        b=jAocEbMXtiBYW6J0Lky0SwLf38n9GXNy6eDeQFxaduUV2vjPLuSHs/BrkrLQyOrizJ
-         uurvnNfLGgKwSgeQCA4eeH8xX0H+pSSCQ5+SqL+5UlTY4DDUkS+GPe9v/ekGw3MeSh7x
-         q8OJIJt46DrMpwNjrDCPwXp0DeNu2s5w9RQuR492UYLc+5jqpbW4gEe+hxAFx3beVmfO
-         rJxsxkz4tSM4tk0qo+rQB3ECEfb3lDFmNE6IZUoamwPAw2VvjbPYvCksAET1OZgmSpFI
-         VGv+BRLqj5h3X5DGrWyKF6CQASHZStCTcaxjrj2LnKiSpIlVnk7XPoDKoZOvhLYkJMcj
-         utZw==
-X-Gm-Message-State: AOAM5339hV8wvvR6w5Nc/TYnGY3uH+ryC25lZWfhcsCbYnjDeznLJfHp
-        VN//Ziy7SvgMQ0ZoCWPJXKlS9BG5Qw0axO4BMGw=
-X-Google-Smtp-Source: ABdhPJwx++7vr09NOyjF/OrUTnNC3we2My4ZE1fNWT4N/UM+Ioatv7uIPOceNSYDHBQKEw3b7wBE7TZ7HQRP/gO1ySY=
-X-Received: by 2002:a4a:95d0:: with SMTP id p16mr12463896ooi.40.1590396553331;
- Mon, 25 May 2020 01:49:13 -0700 (PDT)
+        bh=5qd4JhElAe3z091uS7e1GwYMBB8ObuPCQBDSxEgdKVQ=;
+        b=LXU9Fo5RGtzNk+9BrnDFd0pmWSXZRiUn6QQGQ8TVkWqbuUp5n57jdOdnG8776h3vRk
+         QXeQrPWY3Q6B293ScWXnaAvWxh/nfgQ80BqOVeq2V3TuwAl0GNEahTQd7HfkTQ47JDwX
+         H96xeA7BO3nj8v0j4D7YXK+5I0YC0N6mkFxlOeMrJrkTKtlzVabkwbyfhKO7ULA2evj2
+         ZVp8D/M1SDXCJvFXrWnCn8pA8Lq1jtRyAs4h430hgjs74szsjLG5FyIvuhfOmJiVOtRr
+         m1X9PbuCPuXMgbEOVNuUrWrDbQ0Sn8fJ7J8Rq6JyGoItG4XuI9nsxNVEvAtPk1bFg2aQ
+         6mBw==
+X-Gm-Message-State: AOAM5314O82UfF4Ck1ocrsGqu1CtXS93t8O1c0dHLB8LrhqM+w3j0DL1
+        UfLc2asjKmxlqKS8gprQAH9kkLJFYiCbaIJ+NHESJw==
+X-Google-Smtp-Source: ABdhPJw6Spt4qqKfu2lRfdhTsKwOc4XO0GKpo/Kd1MOA5Wn8wzEu38xyveRCXSUkPYZZWyOce0+T4n6Uo42MYkhp4I0=
+X-Received: by 2002:aca:4254:: with SMTP id p81mr10082895oia.68.1590396561724;
+ Mon, 25 May 2020 01:49:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200521185707.GA3661@embeddedor>
-In-Reply-To: <20200521185707.GA3661@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 May 2020 10:49:02 +0200
-Message-ID: <CAMuHMdUGPMrPTqypGpnhe2wdpnbtUOsdUacnrHAapBM_996F5A@mail.gmail.com>
-Subject: Re: [PATCH] m68k: tools: Replace zero-length array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+References: <7bf4d518-5772-9615-f925-8f9af4751d10@linuxfoundation.org>
+In-Reply-To: <7bf4d518-5772-9615-f925-8f9af4751d10@linuxfoundation.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 25 May 2020 10:49:05 +0200
+Message-ID: <CAJZ5v0jDUvLuq8Zhj+Dx_=rd75Y9mg28yDyX76=mrQoC5bqAhw@mail.gmail.com>
+Subject: Re: [GIT PULL] cpupower update for Linux 5.8-rc1
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 21, 2020 at 8:52 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+On Sat, May 23, 2020 at 1:15 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
+> Hi Rafael,
 >
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
+> Please pull the following cpupower update for Linux 5.8-rc1.
 >
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
+> This cpupower update for Linux 5.8-rc1 consists of a single
+> patch to fix coccicheck unneeded semicolon warning.
 >
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> diff is attached.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.8 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Pulled, thanks!
