@@ -2,171 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584741E0E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 14:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D91E1E0EA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 14:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403766AbgEYMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 08:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390488AbgEYMlo (ORCPT
+        id S2390621AbgEYMoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 08:44:00 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51476 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390595AbgEYMn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 08:41:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F3CC061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 05:41:44 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1jdCQC-0003QO-Tc; Mon, 25 May 2020 14:41:36 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:d406:10d7:6286:51e5] (unknown [IPv6:2a03:f580:87bc:d400:d406:10d7:6286:51e5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 732AB505B77;
-        Mon, 25 May 2020 12:41:33 +0000 (UTC)
-Subject: Re: [PATCH] can: mcp251x: convert to half-duplex SPI
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        =?UTF-8?Q?Timo_Schl=c3=bc=c3=9fler?= <schluessler@krause.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-spi@vger.kernel.org, Jan Glauber <jglauber@marvell.com>,
-        Robert Richter <rrichter@marvell.com>
-References: <1582655734-20890-1-git-send-email-tharvey@gateworks.com>
- <0ac77abd-0df5-e437-ea46-f6c77f59b81c@pengutronix.de>
- <CAJ+vNU3vk92_1UnrYH72QgD3-q9Oy9As=jCiup42jzx_2LG9FA@mail.gmail.com>
- <0b351fe3-8fe9-572f-fd85-e2aed22873e3@pengutronix.de>
- <7b85e098-b9a9-dd14-203f-100cdf2e703e@pengutronix.de>
- <CAJ+vNU06DHVS25OQR1Kqyzy2ZxLVq-HdwenGv-jN5Rb3r8F86Q@mail.gmail.com>
- <e0f641bc-5473-792d-fea9-0a2e81fe1e38@pengutronix.de>
- <20200525113106.GB4544@sirena.org.uk>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUsSbBQkM366zAAoJECte4hHF
- iupUgkAP/2RdxKPZ3GMqag33jKwKAbn/fRqAFWqUH9TCsRH3h6+/uEPnZdzhkL4a9p/6OeJn
- Z6NXqgsyRAOTZsSFcwlfxLNHVxBWm8pMwrBecdt4lzrjSt/3ws2GqxPsmza1Gs61lEdYvLST
- Ix2vPbB4FAfE0kizKAjRZzlwOyuHOr2ilujDsKTpFtd8lV1nBNNn6HBIBR5ShvJnwyUdzuby
- tOsSt7qJEvF1x3y49bHCy3uy+MmYuoEyG6zo9udUzhVsKe3hHYC2kfB16ZOBjFC3lH2U5An+
- yQYIIPZrSWXUeKjeMaKGvbg6W9Oi4XEtrwpzUGhbewxCZZCIrzAH2hz0dUhacxB201Y/faY6
- BdTS75SPs+zjTYo8yE9Y9eG7x/lB60nQjJiZVNvZ88QDfVuLl/heuIq+fyNajBbqbtBT5CWf
- mOP4Dh4xjm3Vwlz8imWW/drEVJZJrPYqv0HdPbY8jVMpqoe5jDloyVn3prfLdXSbKPexlJaW
- 5tnPd4lj8rqOFShRnLFCibpeHWIumqrIqIkiRA9kFW3XMgtU6JkIrQzhJb6Tc6mZg2wuYW0d
- Wo2qvdziMgPkMFiWJpsxM9xPk9BBVwR+uojNq5LzdCsXQ2seG0dhaOTaaIDWVS8U/V8Nqjrl
- 6bGG2quo5YzJuXKjtKjZ4R6k762pHJ3tnzI/jnlc1sXz
-Message-ID: <a337c8ea-66e2-13c2-f625-fbe93e367d44@pengutronix.de>
-Date:   Mon, 25 May 2020 14:41:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 25 May 2020 08:43:58 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200525124356euoutp013dbce197ddc411583f2ad76c68030187~SRgw-RSOt0293702937euoutp013
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 12:43:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200525124356euoutp013dbce197ddc411583f2ad76c68030187~SRgw-RSOt0293702937euoutp013
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1590410636;
+        bh=WSbY84KbUGFbLyo6SUqTrYaZH9Ab/qZiVUsKoLI42iw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=nU79SSkESRoSeFaLsdTqupsE9qSA1wJhg2vElk9ARFXXq2/JGPWtc9+pgKQYb6hsA
+         50WJlf35pMJNO0+Sz6Igorq7izAUsb16oEz/rAcI6gmPfQw/zGxKowNn8b7UAZRQfR
+         Q3ozL8bnCUhOBR6Bm3z4mYBIC3bGz0iCtfbsb2gk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200525124356eucas1p1d14dd0b7bf2919bdbe1f1bef094c0634~SRgwvW9Yk1354113541eucas1p10;
+        Mon, 25 May 2020 12:43:56 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id B4.CC.61286.C8DBBCE5; Mon, 25
+        May 2020 13:43:56 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200525124355eucas1p28f232f83f79fee234635a64270e4dd32~SRgwFl-M92127721277eucas1p2J;
+        Mon, 25 May 2020 12:43:55 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200525124355eusmtrp27a65ce5361bfea56fc7aeda010be4b81~SRgwE6aPp0100701007eusmtrp2j;
+        Mon, 25 May 2020 12:43:55 +0000 (GMT)
+X-AuditID: cbfec7f2-f0bff7000001ef66-41-5ecbbd8cbbf3
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 60.43.08375.B8DBBCE5; Mon, 25
+        May 2020 13:43:55 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200525124355eusmtip2f220baba69d595fe546ae2255a0cf363~SRgvfJiAM0854808548eusmtip2D;
+        Mon, 25 May 2020 12:43:55 +0000 (GMT)
+Subject: Re: [PATCH] i2c: core: fix NULL pointer dereference in
+ suspend/resume callbacks
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <77f41c67-cd6f-59c5-15b4-c7d8756ca28a@samsung.com>
+Date:   Mon, 25 May 2020 14:43:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200525113106.GB4544@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAAFQd5DdiKDGsodJF_KW8H6YYwAkeaJLE7CoJ=cEX5KeTzO5mw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djP87o9e0/HGew4Km2xccZ6Vosvc0+x
+        WMzcMIPFouPvF0aLy7vmsFl87j3CaDHj/D4mi+l3hSw+t/5js1h5YhazA5fH+xut7B6zGy6y
+        eLSc3M/i0bdlFaPHyVNPWDw+b5ILYIvisklJzcksSy3St0vgyphzaCFLwQmuil2HZrA1MJ7n
+        6GLk5JAQMJHofzWfrYuRi0NIYAWjxLx9JxkhnC+MEhtXtLBCOJ8ZJQ43TAZyOMBaZnXlQMSX
+        M0r8PHufHcJ5zyjx/Pk3NpAiYYEoiSMf+UBWiAj4SPyf2AA2lVmgiVni2s0XTCAJNgFDia63
+        XWwgNq+AncTH60uZQWwWAVWJBbMXgdmiArESpxdvZoSoEZQ4OfMJC4jNKRAo8ezdMbAaZgF5
+        ie1v50DZ4hK3nsxnAlkmIXCOXeLV/gcsEI+6SJx+/IMJwhaWeHV8CzuELSPxfydMQzOjxMNz
+        a9khnB5GictNMxghqqwl7pz7BfYas4CmxPpd+hBhR4lNf68wQ4KFT+LGW0GII/gkJm2bDhXm
+        lehoE4KoVpOYdXwd3NqDFy4xT2BUmoXktVlI3pmF5J1ZCHsXMLKsYhRPLS3OTU8tNsxLLdcr
+        TswtLs1L10vOz93ECExVp/8d/7SD8eulpEOMAhyMSjy8FmtOxwmxJpYVV+YeYpTgYFYS4W1z
+        BwrxpiRWVqUW5ccXleakFh9ilOZgURLnNV70MlZIID2xJDU7NbUgtQgmy8TBKdXAuG15bZfZ
+        HL3lrx/mT018MSVK2dFvQzf7iaWt8TdbFOQWiJQ6xV1nd+vcVrSjMidSereW7QXutru2hjY8
+        cmmCuoLr4pVWHOf567g+2GvPsy8/52yY9UvA80NduPrlI9tkv7lum6RT0c6UsJL714q9Lq1T
+        n54rL41cnf5mEaN8xsJKm4WGtlOjlViKMxINtZiLihMBFpiN7VEDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsVy+t/xe7rde0/HGfxZpmexccZ6Vosvc0+x
+        WMzcMIPFouPvF0aLy7vmsFl87j3CaDHj/D4mi+l3hSw+t/5js1h5YhazA5fH+xut7B6zGy6y
+        eLSc3M/i0bdlFaPHyVNPWDw+b5ILYIvSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaP
+        tTIyVdK3s0lJzcksSy3St0vQy5hzaCFLwQmuil2HZrA1MJ7n6GLk4JAQMJGY1ZXTxcjFISSw
+        lFFi+5sPbF2MnEBxGYmT0xpYIWxhiT/Xutggit4ySsyY0cYCkhAWiJKYfuAAO4gtIuAj8X9i
+        AyNIEbNAC7PEqTcrmCA6epkkLuyZDdbBJmAo0fW2C2wFr4CdxMfrS5lBbBYBVYkFsxeB2aIC
+        sRKrr7UyQtQISpyc+QSsl1MgUOLZu2NgNcwCZhLzNj+EsuUltr+dA2WLS9x6Mp9pAqPQLCTt
+        s5C0zELSMgtJywJGllWMIqmlxbnpucWGesWJucWleel6yfm5mxiB0bnt2M/NOxgvbQw+xCjA
+        wajEw2ux5nScEGtiWXFl7iFGCQ5mJRHeNnegEG9KYmVValF+fFFpTmrxIUZToOcmMkuJJucD
+        E0deSbyhqaG5haWhubG5sZmFkjhvh8DBGCGB9MSS1OzU1ILUIpg+Jg5OqQbGmozVvptYUpQS
+        8vY9Mjp+qW+/5ImiRZ4izufSygILmFQ2ZC5jseXTkZ1+Xu7V6d3beD7XTjUTWFMhd6nOVUHn
+        zu/UngqZxz23nwi93ms3wdVALHvfquu2P3JFYx1fy015KTX5tajSpPzWbyLfS25XxlwVP7Y+
+        v0v6zZaIjd+3fz4+zdPKX5FDiaU4I9FQi7moOBEAlwxD7eQCAAA=
+X-CMS-MailID: 20200525124355eucas1p28f232f83f79fee234635a64270e4dd32
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7
+References: <CGME20200522101524eucas1p1aeef4a054a80b5d822ed3dc4b16139d7@eucas1p1.samsung.com>
+        <20200522101327.13456-1-m.szyprowski@samsung.com>
+        <34736047-3fc8-385b-cdea-79b061deb7b4@samsung.com>
+        <CAAFQd5DdiKDGsodJF_KW8H6YYwAkeaJLE7CoJ=cEX5KeTzO5mw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/20 1:31 PM, Mark Brown wrote:
->>> Should I be submitting this patch with logic that only does
->>> half-duplex if the spi controller doesn't support it (if
->>> (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX)) or is it
->>> acceptable to simply make the driver half-duplex like this for all
->>> cases?
-> 
->> Please make half duplex transfers depending on SPI_CONTROLLER_HALF_DUPLEX as
->> most drivers have a considerable overhead at the end of a transfer.
-> 
->> Most of them wait for a transfer complete interrupt. Which might take longer
->> than the actual SPI transfer. Splitting one full duplex read-register transfer
->> (which is a write followed by a read) into two half duplex transfers would kill
->> performance on full duplex capable controllers.
-> 
-> This isn't something that every individual driver should be doing, such
-> rewriting should happen in the core so that everything sees the benefit.
+Hi Tomasz
 
-The core could merge several half duplex transfers (until there's as cs_change)
-into a single full duplex transfer.
+On 25.05.2020 14:28, Tomasz Figa wrote:
+> On Fri, May 22, 2020 at 1:15 PM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
+>> On 22.05.2020 12:13, Marek Szyprowski wrote:
+>>> Commit 6fe12cdbcfe3 ("i2c: core: support bus regulator controlling in
+>>> adapter") added generic suspend and resume functions for i2c devices.
+>>> Those functions unconditionally access an i2c_client structure assigned
+>>> to the given i2c device. However, there exist i2c devices in the system
+>>> without a valid i2c_client. Add the needed check before accessing the
+>>> i2c_client.
+>> Just one more comment. The devices without i2c_client structure are the
+>> i2c 'devices' associated with the respective i2c bus. They are visible
+>> in /sys:
+>>
+>> ls -l /sys/bus/i2c/devices/i2c-*
+>>
+>> I wonder if this patch has been ever tested with system suspend/resume,
+>> as those devices are always available in the system...
+> Sorry for the trouble and thanks a lot for the fix. We'll make sure to
+> do more thorough testing, including suspend/resume before relanding
+> this change.
+>
+> Since the patch was reverted, can we squash your fix with the next
+> revision together with your Co-developed-by and Signed-off-by tags?
+Sure, no problem. The fix is trivial.
 
-I think it's not easy to detect and reliable to split a full duplex transfer
-into half duplex ones. How can you tell, if the controller is supposed to tx 0x0
-or actually receive.
-
-I think spi_write_then_read() can be extended to generate one full duplex
-transfer instead on two half duplex ones it does a memcpy() anyways.
-
-To get a feeling for the use cases, this is what I do in the regmap read
-function of a (not yet mainlined) CAN SPI driver.
-
-> static int
-> mcp25xxfd_regmap_nocrc_read(void *context,
-> 			    const void *reg, size_t reg_len,
-> 			    void *val_buf, size_t val_len)
-> {
-> 	struct spi_device *spi = context;
-> 	struct mcp25xxfd_priv *priv = spi_get_drvdata(spi);
-> 	struct mcp25xxfd_map_buf_nocrc *buf_rx = priv->map_buf_nocrc_rx;
-> 	struct mcp25xxfd_map_buf_nocrc *buf_tx = priv->map_buf_nocrc_tx;
-> 	struct spi_transfer xfer[2] = { };
-> 	struct spi_message msg;
-> 	int err;
-> 
-> 	spi_message_init(&msg);
-> 	spi_message_add_tail(&xfer[0], &msg);
-> 
-> 	if (priv->devtype_data.quirks & MCP25XXFD_QUIRK_HALF_DUPLEX) {
-> 		xfer[0].tx_buf = reg;
-> 		xfer[0].len = sizeof(buf_tx->cmd);
-> 
-> 		xfer[1].rx_buf = val_buf;
-> 		xfer[1].len = val_len;
-> 		spi_message_add_tail(&xfer[1], &msg);
-> 	} else {
-> 		xfer[0].tx_buf = buf_tx;
-> 		xfer[0].rx_buf = buf_rx;
-> 		xfer[0].len = sizeof(buf_tx->cmd) + val_len;
-> 		memcpy(&buf_tx->cmd, reg, sizeof(buf_tx->cmd));
-> 	};
-> 
-> 	err = spi_sync(spi, &msg);
-> 	if (err)
-> 		return err;
-> 
-> 	if (!(priv->devtype_data.quirks & MCP25XXFD_QUIRK_HALF_DUPLEX))
-> 		memcpy(val_buf, buf_rx->data, val_len);
-> 
-> 	return 0;
-> }
-
-The tradeoff here is two transfers vs. the the memcpy(). As CAN frames are quite
-small the memcpy() is usually faster. Even on the rpi, where the driver is
-optimized for small transfers.
-
-regards
-Marc
-
+Best regards
 -- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
