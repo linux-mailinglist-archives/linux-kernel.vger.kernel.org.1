@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8F71E0EE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 14:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE111E0EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403780AbgEYM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 08:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390596AbgEYM7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 08:59:48 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CF8C08C5C1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 05:59:48 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w15so10433098lfe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 05:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EXtqB8Wun/tgjNkBpbPrNbEYBqWbgFsLrLS2OmL1m/M=;
-        b=JqXkjdW/TwAhV/+ZstLcQDiGkcnh2vaThxK4UuXw1ZT4EbewRbqEMxF8cLo9srENSG
-         y2bzMe8eVT4GRDrV5lIfGsLezcWERXdbNA0we0XcZSk7s/wgI/0Bg36o+Q5s+WrQwFnR
-         9Ezeei8Zk5ZuBxczU7luJMzFJL4NWTdRSEvpgnxSVbeH3cK/DSXlN9Tdbn/KKHl0ElRF
-         1c79At+nt2Qv3ftKSagmriY4yHRJuT3SfL5MLqCGu+N67fiYVIz6F+xk123QNykV4Ed1
-         Wi4Uy6bedneHNi7QQrkTEzS6GmgrbN7iai2K6CwtEDX6745b9xMfceJdYvhJEE/s2F96
-         nJvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EXtqB8Wun/tgjNkBpbPrNbEYBqWbgFsLrLS2OmL1m/M=;
-        b=bR4FX6bYE+rjbMp2Dmw7p6UBakPYbmG65Izh/dtdEcxT+0DKx1u7V7C0u+8pqqV/6i
-         vdbfC+To0Mc+Jya4eigCMMAg57ZU+vk/LhnXMwRE8limNW0lebU8xpSnkIbboL91Wyvz
-         vbBOrdWYa9/08hi5UnxTz+JMLIvWHwckeiMAHBY4eqBWaCw0dpEM0sdi6N5sdq4XyUp/
-         XAFbW3oagpNgp796irveySU6D5BlMUJj+Bmij39Znz3PHjTbqKETmmARq1wTYvC7UHPT
-         C8P02FQAlM0yHjd2tzvOR81JFUS5l0s2OOwyyD+g6K4eZa88Bu2k0gZ+SATIypU5/Er8
-         SJUA==
-X-Gm-Message-State: AOAM5302JkwC5WOlNbieryW0fa4nYSoQGgIn/RD6/zj+aIXskLY2jQvl
-        bC6RBnPkvSJH9j0XnMqiw/6rqBMZGcU1qMK8ZLFX4A==
-X-Google-Smtp-Source: ABdhPJxD2+KgVOK9WTwoquq8HqW2c21+zgJ2wXOdh5XtNRaWnyUiVdw++6s8JUaftb7+v3ytf4RuSWtwx/6fIhWUhyk=
-X-Received: by 2002:ac2:5a07:: with SMTP id q7mr14490822lfn.77.1590411586745;
- Mon, 25 May 2020 05:59:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200423174543.17161-1-michael@walle.cc> <20200423174543.17161-11-michael@walle.cc>
- <CAMpxmJV3XTOxuoKeV-z2d75qWqHkgvV9419tfe3idDeKwoeoLA@mail.gmail.com>
- <75bff2917be1badd36af9f980cf59d2c@walle.cc> <CAMpxmJXctc5cbrjSeJxa7DfmjiVsbyhqAbEKt-gtayKhQj0Cnw@mail.gmail.com>
- <951244aab2ff553a463f7431ba09bf27@walle.cc>
-In-Reply-To: <951244aab2ff553a463f7431ba09bf27@walle.cc>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 May 2020 14:59:36 +0200
-Message-ID: <CACRpkdZYEZk7o+Y2-AqnHGsY8N7KGGmPGSuSS=H7YY8VLZ3jZw@mail.gmail.com>
-Subject: Re: [PATCH v3 10/16] gpio: add a reusable generic gpio_chip using regmap
-To:     Michael Walle <michael@walle.cc>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2390649AbgEYNBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:01:32 -0400
+Received: from 8bytes.org ([81.169.241.247]:44532 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388763AbgEYNBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 09:01:32 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 4D934327; Mon, 25 May 2020 15:01:29 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <jroedel@suse.de>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] iommu: Don't take group reference in iommu_alloc_default_domain()
+Date:   Mon, 25 May 2020 15:01:22 +0200
+Message-Id: <20200525130122.380-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 12:20 PM Michael Walle <michael@walle.cc> wrote:
+From: Joerg Roedel <jroedel@suse.de>
 
-> If you like I could submit this patch on its own. But then there
-> wouldn't be a user for it.
+The iommu_alloc_default_domain() function takes a reference to an IOMMU
+group without releasing it. This causes the group to never be released,
+with undefined side effects.
 
-I'm pretty much fine with that, we do merge code that has no
-users if we anticipate they will be around the corner.
+The function has only one call-site, which takes a group reference on
+its own, so to fix this leak, do not take another reference in
+iommu_alloc_default_domain() and pass the group as a function parameter
+instead.
 
-Yours,
-Linus Walleij
+Reference: https://lore.kernel.org/lkml/20200522130145.30067-1-saiprakash.ranjan@codeaurora.org/
+Reported-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Fixes: 6e1aa2049154 ("iommu: Move default domain allocation to iommu_probe_device()")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/iommu/iommu.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 374b34fd6fac..bf20674769e0 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -80,7 +80,8 @@ static bool iommu_cmd_line_dma_api(void)
+ 	return !!(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API);
+ }
+ 
+-static int iommu_alloc_default_domain(struct device *dev);
++static int iommu_alloc_default_domain(struct iommu_group *group,
++				      struct device *dev);
+ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+ 						 unsigned type);
+ static int __iommu_attach_device(struct iommu_domain *domain,
+@@ -251,17 +252,17 @@ int iommu_probe_device(struct device *dev)
+ 	if (ret)
+ 		goto err_out;
+ 
++	group = iommu_group_get(dev);
++	if (!group)
++		goto err_release;
++
+ 	/*
+ 	 * Try to allocate a default domain - needs support from the
+ 	 * IOMMU driver. There are still some drivers which don't
+ 	 * support default domains, so the return value is not yet
+ 	 * checked.
+ 	 */
+-	iommu_alloc_default_domain(dev);
+-
+-	group = iommu_group_get(dev);
+-	if (!group)
+-		goto err_release;
++	iommu_alloc_default_domain(group, dev);
+ 
+ 	if (group->default_domain)
+ 		ret = __iommu_attach_device(group->default_domain, dev);
+@@ -1478,15 +1479,11 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
+ 	return 0;
+ }
+ 
+-static int iommu_alloc_default_domain(struct device *dev)
++static int iommu_alloc_default_domain(struct iommu_group *group,
++				      struct device *dev)
+ {
+-	struct iommu_group *group;
+ 	unsigned int type;
+ 
+-	group = iommu_group_get(dev);
+-	if (!group)
+-		return -ENODEV;
+-
+ 	if (group->default_domain)
+ 		return 0;
+ 
+-- 
+2.26.2
+
