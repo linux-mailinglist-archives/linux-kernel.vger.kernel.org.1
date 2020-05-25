@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DB31E0F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C581E0F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403800AbgEYNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 09:10:46 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:21549 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390609AbgEYNKo (ORCPT
+        id S2390720AbgEYNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:10:34 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:28886 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388757AbgEYNKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 09:10:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590412243; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aF4c3OruqF54AfZxTOJsQX65D8kLmu7DWi/fjq3WVJo=;
- b=NyibLdzbwAJsdbUvk06k4BEgYyqv1hIKC6hiM7qHKfqWIXcUR68xbOrnSbUl6bnPLqFiXk7X
- mSE+D5yB9TJi1APoEi+0rxKYU7k64ytTG2qxvQU25O928nMn/b3bs+yWY5GWtRhwXFJxAWG1
- zwtSu4YuVvIYCcbTDlR2kDC8LSQ=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5ecbc3bc9d4cf4d3ef77c128 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 May 2020 13:10:20
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 273B3C433C9; Mon, 25 May 2020 13:10:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D3D6C433C6;
-        Mon, 25 May 2020 13:10:19 +0000 (UTC)
+        Mon, 25 May 2020 09:10:34 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04PD7c4t027485;
+        Mon, 25 May 2020 09:10:32 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3170r5xecg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 May 2020 09:10:32 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 04PDAVWt032470
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 25 May 2020 09:10:31 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 25 May 2020 09:10:30 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 25 May 2020 09:10:30 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 25 May 2020 09:10:30 -0400
+Received: from saturn.ad.analog.com ([10.48.65.112])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 04PDASNt016371;
+        Mon, 25 May 2020 09:10:29 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: dac: ad5592r: remove usage of iio_priv_to_dev() helper
+Date:   Mon, 25 May 2020 16:10:34 +0300
+Message-ID: <20200525131034.230738-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 25 May 2020 18:40:19 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu: Fix group refcount in iommu_alloc_default_domain()
-In-Reply-To: <20200525130253.GH5075@suse.de>
-References: <20200522130145.30067-1-saiprakash.ranjan@codeaurora.org>
- <20200525130253.GH5075@suse.de>
-Message-ID: <132bf1acfb685d34db9caef6f55265de@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-25_08:2020-05-25,2020-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 cotscore=-2147483648 adultscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005250101
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+This was partially removed when the mlock cleanup was done. Only one more
+call is left in the ad5592r_alloc_channels() function.
+This one is simple. We just need to pass the iio_dev object and get the
+state via iio_priv().
 
-On 2020-05-25 18:32, Joerg Roedel wrote:
-> Hi,
-> 
-> On Fri, May 22, 2020 at 06:31:45PM +0530, Sai Prakash Ranjan wrote:
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index a4c2f122eb8b..05f7b77c432f 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -1491,6 +1491,7 @@ static int iommu_alloc_default_domain(struct 
->> device *dev)
->>  {
->>  	struct iommu_group *group;
->>  	unsigned int type;
->> +	int ret;
->> 
->>  	group = iommu_group_get(dev);
->>  	if (!group)
->> @@ -1501,7 +1502,11 @@ static int iommu_alloc_default_domain(struct 
->> device *dev)
->> 
->>  	type = iommu_get_def_domain_type(dev);
->> 
->> -	return iommu_group_alloc_default_domain(dev->bus, group, type);
->> +	ret = iommu_group_alloc_default_domain(dev->bus, group, type);
->> +
->> +	iommu_group_put(group);
->> +
->> +	return ret;
->>  }
->> 
->>  /**
-> 
-> Thanks for the report and the fix. I think it is better to fix this by
-> not taking a group reference in iommu_alloc_default_domain() at all and
-> pass group as a parameter. Please see the patch I just sent out.
-> 
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/dac/ad5592r-base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks for the patch, it looks like the right thing to do. Testing it
-out now.
-
-Thanks,
-Sai
-
+diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
+index 410e90e5f75f..272c97bb841c 100644
+--- a/drivers/iio/dac/ad5592r-base.c
++++ b/drivers/iio/dac/ad5592r-base.c
+@@ -508,11 +508,11 @@ static void ad5592r_setup_channel(struct iio_dev *iio_dev,
+ 	chan->ext_info = ad5592r_ext_info;
+ }
+ 
+-static int ad5592r_alloc_channels(struct ad5592r_state *st)
++static int ad5592r_alloc_channels(struct iio_dev *iio_dev)
+ {
++	struct ad5592r_state *st = iio_priv(iio_dev);
+ 	unsigned i, curr_channel = 0,
+ 		 num_channels = st->num_channels;
+-	struct iio_dev *iio_dev = iio_priv_to_dev(st);
+ 	struct iio_chan_spec *channels;
+ 	struct fwnode_handle *child;
+ 	u32 reg, tmp;
+@@ -636,7 +636,7 @@ int ad5592r_probe(struct device *dev, const char *name,
+ 	if (ret)
+ 		goto error_disable_reg;
+ 
+-	ret = ad5592r_alloc_channels(st);
++	ret = ad5592r_alloc_channels(iio_dev);
+ 	if (ret)
+ 		goto error_disable_reg;
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
+
