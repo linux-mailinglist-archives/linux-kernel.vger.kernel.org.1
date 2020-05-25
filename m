@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA9C1E0C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683D41E0CA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 13:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390085AbgEYLO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 07:14:26 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39018 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389897AbgEYLOZ (ORCPT
+        id S2390124AbgEYLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 07:15:24 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:15585 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389897AbgEYLPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 07:14:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590405263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4DIBFUKTnV/sNAw24yAunbzsBW3j3CpAWlHvSRmXTYM=;
-        b=MKpn6oPofWbZlPKgL3H9NuJvc/KiJCiHs68GoasiibsteWOCZ+HdPVrCC/yWK5XCnUuV/s
-        we3K2UecU/dIx4VWgMNWPHiVpWi0sxqS5uN9nvulCrVXNs9EtAP9ENgqZ5sD0mPRC1An0T
-        miLcY6/j5b7WPAgq68VusdFqfgIxWOs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-XJsd2jnlPH-LDz5-rTlsVg-1; Mon, 25 May 2020 07:14:16 -0400
-X-MC-Unique: XJsd2jnlPH-LDz5-rTlsVg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 808CD835B44;
-        Mon, 25 May 2020 11:14:14 +0000 (UTC)
-Received: from ovpn-114-122.ams2.redhat.com (ovpn-114-122.ams2.redhat.com [10.36.114.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4009860F8A;
-        Mon, 25 May 2020 11:14:10 +0000 (UTC)
-Message-ID: <ec916f7b351589c9d86cbfff25ba86d748912d19.camel@redhat.com>
-Subject: Re: general protection fault in sock_recvmsg
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     syzbot <syzbot+d7cface3f90b13edf5b0@syzkaller.appspotmail.com>,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.01.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Date:   Mon, 25 May 2020 13:14:09 +0200
-In-Reply-To: <000000000000b5f39305a6705fd3@google.com>
-References: <000000000000b5f39305a6705fd3@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        Mon, 25 May 2020 07:15:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590405323; x=1621941323;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=FQoNC3ACJjy2r4SC1nWNDrTuHvYpfnKuYAOFLdtZyPA=;
+  b=Mwylmx8zmgVUkFjbSGVeiEzRNZsDbyks3Jt2CeP6JXasSbDq5P2ilATF
+   7YY4ryBqZHa6D2t1La/63eNeIcX4iwHdqJrLXUKS1Jns4LR1IHnDz0bqY
+   zf+XJeaV0gUUyPOVFBbUET+E/xuHixtdaI3r8hMedx0BlitPqUdHFzE9f
+   M=;
+IronPort-SDR: UwKIpxQKZVeNmqAwu7Uu5PkPbE2BydfyUbj/Qv3MvP4I3P8AGoeMb6gU1yE+jZe5C3wmR9bKdw
+ 2/l9406a7FUw==
+X-IronPort-AV: E=Sophos;i="5.73,433,1583193600"; 
+   d="scan'208";a="37449369"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 May 2020 11:15:22 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 821E5A1F05;
+        Mon, 25 May 2020 11:15:20 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 11:15:20 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.50) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 May 2020 11:15:11 +0000
+Subject: Re: [PATCH v2 04/18] nitro_enclaves: Init PCI device driver
+To:     Greg KH <greg@kroah.com>, Alexander Graf <graf@amazon.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Martin Pohlack" <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200522062946.28973-1-andraprs@amazon.com>
+ <20200522062946.28973-5-andraprs@amazon.com>
+ <20200522070414.GB771317@kroah.com>
+ <68b86d32-1255-f9ce-4366-12219ce07ba6@amazon.de>
+ <20200524063210.GA1369260@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <c86d5b9e-778f-9357-1519-64ef59b8cfcc@amazon.com>
+Date:   Mon, 25 May 2020 14:15:02 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20200524063210.GA1369260@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.50]
+X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-05-24 at 20:14 -0700, syzbot wrote:
-> syzbot found the following crash on:
-> 
-> HEAD commit:    caffb99b Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15a74441100000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c33c7f7c5471fd39
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d7cface3f90b13edf5b0
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141034ba100000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119cd016100000
-> 
-> The bug was bisected to:
-> 
-> commit 263e1201a2c324b60b15ecda5de9ebf1e7293e31
-> Author: Paolo Abeni <pabeni@redhat.com>
-> Date:   Thu Apr 30 13:01:51 2020 +0000
-> 
->     mptcp: consolidate synack processing.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119d8626100000
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=139d8626100000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=159d8626100000
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+d7cface3f90b13edf5b0@syzkaller.appspotmail.com
-> Fixes: 263e1201a2c3 ("mptcp: consolidate synack processing.")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-> CPU: 1 PID: 7226 Comm: syz-executor523 Not tainted 5.7.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:sock_recvmsg_nosec net/socket.c:886 [inline]
-> RIP: 0010:sock_recvmsg+0x92/0x110 net/socket.c:904
-> Code: 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 6c 24 04 e8 53 18 1d fb 4d 8d 6f 20 4c 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 4c 89 ef e8 20 12 5b fb bd a0 00 00 00 49 03 6d
-> RSP: 0018:ffffc90001077b98 EFLAGS: 00010202
-> RAX: 0000000000000004 RBX: ffffc90001077dc0 RCX: dffffc0000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: ffffffff86565e59 R09: ffffed10115afeaa
-> R10: ffffed10115afeaa R11: 0000000000000000 R12: 1ffff9200020efbc
-> R13: 0000000000000020 R14: ffffc90001077de0 R15: 0000000000000000
-> FS:  00007fc6a3abe700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004d0050 CR3: 00000000969f0000 CR4: 00000000001406e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  mptcp_recvmsg+0x18d5/0x19b0 net/mptcp/protocol.c:891
->  inet_recvmsg+0xf6/0x1d0 net/ipv4/af_inet.c:838
->  sock_recvmsg_nosec net/socket.c:886 [inline]
->  sock_recvmsg net/socket.c:904 [inline]
->  __sys_recvfrom+0x2f3/0x470 net/socket.c:2057
->  __do_sys_recvfrom net/socket.c:2075 [inline]
->  __se_sys_recvfrom net/socket.c:2071 [inline]
->  __x64_sys_recvfrom+0xda/0xf0 net/socket.c:2071
->  do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
->  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> RIP: 0033:0x448ef9
-> Code: e8 cc 14 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 0c fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fc6a3abdda8 EFLAGS: 00000246 ORIG_RAX: 000000000000002d
-> RAX: ffffffffffffffda RBX: 00000000006dec28 RCX: 0000000000448ef9
-> RDX: 0000000000001000 RSI: 00000000200004c0 RDI: 0000000000000003
-> RBP: 00000000006dec20 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000040000000 R11: 0000000000000246 R12: 00000000006dec2c
-> R13: 00007ffe4730174f R14: 00007fc6a3abe9c0 R15: 00000000006dec2c
-> Modules linked in:
-> ---[ end trace 097bdf143c3a60db ]---
-> RIP: 0010:sock_recvmsg_nosec net/socket.c:886 [inline]
-> RIP: 0010:sock_recvmsg+0x92/0x110 net/socket.c:904
-> Code: 5b 41 5c 41 5d 41 5e 41 5f 5d c3 44 89 6c 24 04 e8 53 18 1d fb 4d 8d 6f 20 4c 89 e8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 4c 89 ef e8 20 12 5b fb bd a0 00 00 00 49 03 6d
-> RSP: 0018:ffffc90001077b98 EFLAGS: 00010202
-> RAX: 0000000000000004 RBX: ffffc90001077dc0 RCX: dffffc0000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: ffffffff86565e59 R09: ffffed10115afeaa
-> R10: ffffed10115afeaa R11: 0000000000000000 R12: 1ffff9200020efbc
-> R13: 0000000000000020 R14: ffffc90001077de0 R15: 0000000000000000
-> FS:  00007fc6a3abe700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004d0050 CR3: 00000000969f0000 CR4: 00000000001406e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this bug, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-> 
-
-#syz dup: general protection fault in selinux_socket_recvmsg
-
-
+CgpPbiAyNC8wNS8yMDIwIDA5OjMyLCBHcmVnIEtIIHdyb3RlOgo+IE9uIFNhdCwgTWF5IDIzLCAy
+MDIwIGF0IDEwOjI1OjI1UE0gKzAyMDAsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBIZXkgR3Jl
+ZywKPj4KPj4gT24gMjIuMDUuMjAgMDk6MDQsIEdyZWcgS0ggd3JvdGU6Cj4+PiBPbiBGcmksIE1h
+eSAyMiwgMjAyMCBhdCAwOToyOTozMkFNICswMzAwLCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+
+Pj4gKy8qKgo+Pj4+ICsgKiBuZV9zZXR1cF9tc2l4IC0gU2V0dXAgTVNJLVggdmVjdG9ycyBmb3Ig
+dGhlIFBDSSBkZXZpY2UuCj4+Pj4gKyAqCj4+Pj4gKyAqIEBwZGV2OiBQQ0kgZGV2aWNlIHRvIHNl
+dHVwIHRoZSBNU0ktWCBmb3IuCj4+Pj4gKyAqCj4+Pj4gKyAqIEByZXR1cm5zOiAwIG9uIHN1Y2Nl
+c3MsIG5lZ2F0aXZlIHJldHVybiB2YWx1ZSBvbiBmYWlsdXJlLgo+Pj4+ICsgKi8KPj4+PiArc3Rh
+dGljIGludCBuZV9zZXR1cF9tc2l4KHN0cnVjdCBwY2lfZGV2ICpwZGV2KQo+Pj4+ICt7Cj4+Pj4g
+KyAgICAgc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+Pj4+ICsgICAgIGlu
+dCBucl92ZWNzID0gMDsKPj4+PiArICAgICBpbnQgcmMgPSAtRUlOVkFMOwo+Pj4+ICsKPj4+PiAr
+ICAgICBpZiAoV0FSTl9PTighcGRldikpCj4+Pj4gKyAgICAgICAgICAgICByZXR1cm4gLUVJTlZB
+TDsKPj4+IEhvdyBjYW4gdGhpcyBldmVyIGhhcHBlbj8gIElmIGl0IGNhbiBub3QsIGRvbid0IHRl
+c3QgZm9yIGl0LiAgSWYgaXQgY2FuLAo+Pj4gZG9uJ3Qgd2FybiBmb3IgaXQgYXMgdGhhdCB3aWxs
+IGNyYXNoIHN5c3RlbXMgdGhhdCBkbyBwYW5pYy1vbi13YXJuLCBqdXN0Cj4+PiB0ZXN0IGFuZCBy
+ZXR1cm4gYW4gZXJyb3IuCj4+IEkgdGhpbmsgdGhlIHBvaW50IGhlcmUgaXMgdG8gY2F0Y2ggc2l0
+dWF0aW9ucyB0aGF0IHNob3VsZCBuZXZlciBoYXBwZW4sIGJ1dAo+PiBrZWVwIGEgc2FuaXR5IGNo
+ZWNrIGluIGluIGNhc2UgdGhleSBkbyBoYXBwZW4uIFRoaXMgd291bGQndmUgdXN1YWxseSBiZWVu
+IGEKPj4gQlVHX09OLCBidXQgcGVvcGxlIHRlbmQgdG8gZGlzbGlrZSB0aG9zZSB0aGVzZSBkYXlz
+IGJlY2F1c2UgdGhleSBjYW4gYnJpbmcKPj4gZG93biB5b3VyIHN5c3RlbSAuLi4KPiBTYW1lIGZv
+ciBXQVJOX09OIHdoZW4geW91IHJ1biB3aXRoIHBhbmljLW9uLXdhcm4gZW5hYmxlZCA6KAo+Cj4+
+IFNvIGluIHRoaXMgcGFydGljdWxhciBjYXNlIGhlcmUgSSBhZ3JlZSB0aGF0IGl0J3MgYSBiaXQg
+c2lsbHkgdG8gY2hlY2sKPj4gd2hldGhlciBwZGV2IGlzICE9IE5VTEwuIEluIG90aGVyIGRldmlj
+ZSBjb2RlIGludGVybmFsIEFQSXMgdGhvdWdoIGl0J3Mgbm90Cj4+IHF1aXRlIGFzIGNsZWFyIG9m
+IGEgY3V0LiBJIGJ5IGZhciBwcmVmZXIgY29kZSB0aGF0IHRlbGxzIG1lIGl0J3MgYnJva2VuIG92
+ZXIKPj4gcmV2ZXJzZSBlbmdpbmVlcmluZyBzdHJheSBwb2ludGVyIGFjY2Vzc2VzIC4uLgo+IEZv
+ciBzdGF0aWMgY2FsbHMgd2hlcmUgeW91IGNvbnRyb2wgdGhlIGNhbGxlcnMsIGRvbid0IGRvIGNo
+ZWNrcyBsaWtlCj4gdGhpcy4gIE90aGVyd2lzZSB0aGUga2VybmVsIHdvdWxkIGp1c3QgYmUgZnVs
+bCBvZiB0aGVzZSBhbGwgb3ZlciB0aGUKPiBwbGFjZSBhbmQgdGhpbmdzIHdvdWxkIHNsb3cgZG93
+bi4gIEl0J3MganVzdCBub3QgbmVlZGVkLgo+Cj4+Pj4gKyAgICAgbmVfcGNpX2RldiA9IHBjaV9n
+ZXRfZHJ2ZGF0YShwZGV2KTsKPj4+PiArICAgICBpZiAoV0FSTl9PTighbmVfcGNpX2RldikpCj4+
+Pj4gKyAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKPj4+IFNhbWUgaGVyZSwgZG9uJ3QgdXNl
+IFdBUk5fT04gaWYgYXQgYWxsIHBvc3NpYmxlLgo+Pj4KPj4+PiArCj4+Pj4gKyAgICAgbnJfdmVj
+cyA9IHBjaV9tc2l4X3ZlY19jb3VudChwZGV2KTsKPj4+PiArICAgICBpZiAobnJfdmVjcyA8IDAp
+IHsKPj4+PiArICAgICAgICAgICAgIHJjID0gbnJfdmVjczsKPj4+PiArCj4+Pj4gKyAgICAgICAg
+ICAgICBkZXZfZXJyX3JhdGVsaW1pdGVkKCZwZGV2LT5kZXYsCj4+Pj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIE5FICJFcnJvciBpbiBnZXR0aW5nIHZlYyBjb3VudCBbcmM9JWRd
+XG4iLAo+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByYyk7Cj4+Pj4gKwo+
+Pj4gV2h5IHJhdGVsaW1pdGVkLCBjYW4gdGhpcyBoYXBwZW4gb3ZlciBhbmQgb3ZlciBhbmQgb3Zl
+cj8KPj4gSW4gdGhpcyBwYXJ0aWN1bGFyIGZ1bmN0aW9uLCBubywgc28gaGVyZSBpdCByZWFsbHkg
+c2hvdWxkIGp1c3QgYmUgZGV2X2Vyci4KPj4gT3RoZXIgZnVuY3Rpb25zIGFyZSBpbXBsaWNpdGx5
+IGNhbGxhYmxlIGZyb20gdXNlciBzcGFjZSB0aHJvdWdoIGFuIGlvY3RsLAo+PiB3aGljaCBtZWFu
+cyB0aGV5IHJlYWxseSBuZWVkIHRvIHN0YXkgcmF0ZSBsaW1pdGVkLgo+IFRoaW5rIHRocm91Z2gg
+dGhlc2UgYXMgdGhlIGRyaXZlciBzZWVtcyB0byBPTkxZIHVzZSB0aGVzZSByYXRlbGltaXRlZAo+
+IGNhbGxzIHJpZ2h0IG5vdywgd2hpY2ggaXMgbm90IGNvcnJlY3QuCj4KPiBBbHNvLCBpZiBhIHVz
+ZXIgY2FuIGNyZWF0ZSBhIHByaW50aywgdGhhdCBhbG1vc3QgYWx3YXlzIGlzIG5vdCBhIGdvb2QK
+PiBpZGVhLiAgQnV0IHllcywgdGhvc2Ugc2hvdWxkIGJlIHJhdGVsaW1pdGVkLgoKSSB1cGRhdGVk
+IHRoZSBzdGF0aWMgY2FsbHMgY2hlY2tzIGFuZCByZW1vdmVkIHRoZSBXQVJOX09Ocy4gQW5kIApy
+YXRlbGltaXRlZCBpcyB1c2VkIG5vdyBvbmx5IGluIHRoZSBpb2N0bCBjYWxsIHBhdGhzLgoKVGhh
+bmsgeW91IGJvdGguCgpBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlh
+KSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBm
+bG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGlu
+IFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
