@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8B01E0767
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 08:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30F21E076E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 09:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388959AbgEYG6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 02:58:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4894 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388942AbgEYG6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 02:58:09 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 968702E8603D2EE3E816;
-        Mon, 25 May 2020 14:58:07 +0800 (CST)
-Received: from [127.0.0.1] (10.173.220.25) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 25 May 2020
- 14:58:00 +0800
-Subject: Re: [PATCH v2 3/6] arm64: Add tlbi_user_level TLB invalidation helper
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <peterz@infradead.org>, <mark.rutland@arm.com>, <will@kernel.org>,
-        <aneesh.kumar@linux.ibm.com>, <akpm@linux-foundation.org>,
-        <npiggin@gmail.com>, <arnd@arndb.de>, <rostedt@goodmis.org>,
-        <maz@kernel.org>, <suzuki.poulose@arm.com>, <tglx@linutronix.de>,
-        <yuzhao@google.com>, <Dave.Martin@arm.com>, <steven.price@arm.com>,
-        <broonie@kernel.org>, <guohanjun@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-References: <20200423135656.2712-1-yezhenyu2@huawei.com>
- <20200423135656.2712-4-yezhenyu2@huawei.com> <20200522154925.GE26492@gaia>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <67ac92a2-d37b-d472-3cbc-0bc855235c3f@huawei.com>
-Date:   Mon, 25 May 2020 14:57:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S2388937AbgEYHBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 03:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388385AbgEYHBn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 03:01:43 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F513C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 00:01:43 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l26so214861wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 00:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lZzNqsJGnsh/CdW96KJIXrKNAiVHBcLSWjlO9MoQR0M=;
+        b=XeRb5o0FBrCBuiu8PIqtZsvppRM5JzxBJmCsOwXrUMuNq79fXzvyzxC51BVVORg8yH
+         4fGmoSfiUK3gTOklqjCsBq44+AUwsEen/wgTF2YmxTmgPJIj66s5QErrHtbGwCL/Wu3j
+         rluS4XwZzc/GdanLHefRC9ycslqbFQRgs4Fo/WHHtkeMQh5aGIzNHlopi/auuJAtVpSr
+         MDWgnscM2eu/XR4BWkmLq4YB1ooVn6HwFdPRRG2facfrae5d8TOpLSoYIrqGzAx1GJ/6
+         d0GkQbW9/bOxHmTe9oitpCN5WSQR4w5IZtkR6VbNBZo1D7y2PJKV4nw8JXws/5G/LzFy
+         pSKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lZzNqsJGnsh/CdW96KJIXrKNAiVHBcLSWjlO9MoQR0M=;
+        b=fpx0nkkg8DDdbFN8TrHEFGPX0ta5RGCgR0dP/C2K+ksZTqfVCIK4gMOgRr/LYvhmRS
+         4O+zxReIW2YpPWtGy0KMeGWV1pHr4KUaHDi00vQJtCvuOxo2jHXa8hK7xoEqkRCglvTj
+         ekmlNm+teA37C53joVo268mo3TixGvrbtgBeJPpQGGN7gPhNULMFjzJx2IuEf3tEUiRq
+         loZAZ9m+Kut+WhTrkMBv3WmB3F0fKqaCRjwU+ViEa/b876ywYKmy3GNSYUQqKjlPOSxj
+         /TYmvmT7Aq/jL0n6BVAPqDxWKltk1kDpWrfT6oa7ujtS1iHVuDs9yDL8NOw1Ih+5eekq
+         lsbQ==
+X-Gm-Message-State: AOAM531jz/29x9tTcoEm+bu/yy1sHVF4qkA/FaoyPwezW/6lXj/PUD5T
+        0VrQc0YlQWEOh47BC1dpuAs9JTOb
+X-Google-Smtp-Source: ABdhPJynla8teKvEbsxo4udolvAhgdDcJ7xSdXmjMYF4DH5ncg0ivKhS4C+qVnCPohed8tVHcYlW9w==
+X-Received: by 2002:a7b:c086:: with SMTP id r6mr23250197wmh.29.1590390102014;
+        Mon, 25 May 2020 00:01:42 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id g187sm17214209wmf.30.2020.05.25.00.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 00:01:41 -0700 (PDT)
+Date:   Mon, 25 May 2020 09:01:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 1/7] locking: Introduce local_lock()
+Message-ID: <20200525070139.GB329373@gmail.com>
+References: <20200524215739.551568-1-bigeasy@linutronix.de>
+ <20200524215739.551568-2-bigeasy@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200522154925.GE26492@gaia>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.220.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200524215739.551568-2-bigeasy@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/5/22 23:49, Catalin Marinas wrote:
-> On Thu, Apr 23, 2020 at 09:56:53PM +0800, Zhenyu Ye wrote:
->> @@ -190,8 +196,8 @@ static inline void flush_tlb_page_nosync(struct vm_area_struct *vma,
->>  	unsigned long addr = __TLBI_VADDR(uaddr, ASID(vma->vm_mm));
->>  
->>  	dsb(ishst);
->> -	__tlbi(vale1is, addr);
->> -	__tlbi_user(vale1is, addr);
->> +	__tlbi_level(vale1is, addr, 0);
->> +	__tlbi_user_level(vale1is, addr, 0);
->>  }
-> 
-> This one remains with a level 0 throughout the series. Is this
-> intentional? If we can't guarantee the level here, better to use the
-> non-level __tlbi().
-> 
 
-OK, I will change it back to non-level __tlbi().
+* Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> To address this PREEMPT_RT introduced the concept of local_locks which are
+> strictly per CPU.
+
+> +++ b/include/linux/locallock_internal.h
+> @@ -0,0 +1,90 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_LOCALLOCK_H
+> +# error "Do not include directly, include linux/locallock.h"
+> +#endif
+> +
+> +#include <linux/percpu-defs.h>
+> +#include <linux/lockdep.h>
+> +
+> +struct local_lock {
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +	struct lockdep_map	dep_map;
+> +	struct task_struct	*owner;
+> +#endif
+> +};
+
+This this looks very nice to me, there's a minor data structure 
+nomenclature related comment I have:
+
+So local locks were supposed to be a look-alike to all the other 
+locking constructs we have, spinlock_t in particular. Why isn't there 
+a local_lock_t, instead of requiring 'struct local_lock'?
+
+This abbreviation signals that these are 'small' data structures on 
+mainline kernels (zero size in fact), but the other advantage is that 
+the shorter name would prevent bloating of previously compact 
+structure definitions, such as:
+
+>  struct squashfs_stream {
+> -	void		*stream;
+> +	void			*stream;
+> +	struct local_lock	lock;
+>  };
+
+This would become:
+
+>  struct squashfs_stream {
+>	void		*stream;
+> +	locallock_t	lock;
+>  };
+
+( The other departure from spinlocks is that the 'spinlock_t' name, 
+  without underscores, while making the API names such as spin_lock() 
+  with an underscore, was a conscious didactic choice. Applying that 
+  principle to local locks gives us the spinlock_t-equivalent name of 
+  'locallock_t' - but the double 'l' reads a bit weirdly in this 
+  context. So I think using 'local_lock_t' as the data structure is 
+  probably the better approach. )
 
 Thanks,
-Zhenyu
 
+	Ingo
