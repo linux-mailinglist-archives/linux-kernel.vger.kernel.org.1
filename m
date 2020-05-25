@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671101E0415
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 02:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157331E0419
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 02:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388622AbgEYAGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 20:06:01 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:32873 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388149AbgEYAGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 20:06:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49VcnH5lthz9sRW;
-        Mon, 25 May 2020 10:05:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590365158;
-        bh=ZPoQ9H7598MG3VJm/FsLWVPvUIh344SeS7b3kjd5eTM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=q9CZtlCub2egh6+STWYRlDd2jtOIHYsMrn4fohvYElcUkxyqH64pCobJv3wIpinNh
-         X/I8bRUc7m37Hmi5tPchmxq75VFz/Vo+89KGPC/xSMTLb9yvKsGOpkZx9BhN/N/ZL0
-         /sWIDNXx3JrZ3WFWp7mFqS7nqgQ7znbQ3fdNOV/YH4fhqwFCbYY98gCocpF5HhbyZA
-         FA+ti1BetPeuSHSSMfkRquz/bv7THONZF6c0X6XgaCdBROMrbrgBh2I/5FBRgVc6Vv
-         RBHSI3ZzKdA+xGnvT0S75dUZJFfQ1L7D+t1jFhHpLxo+BsBA9jphzeIOSIw7EV/q5Q
-         uQOQuYg2jrEMg==
-Date:   Mon, 25 May 2020 10:05:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Subject: linux-next: manual merge of the mips tree with Linus' tree
-Message-ID: <20200525100545.227d2ccc@canb.auug.org.au>
+        id S2388615AbgEYAI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 20:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388149AbgEYAI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 20:08:26 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A97C061A0E
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 17:08:26 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bg4so1538583plb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 May 2020 17:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fLmpoD63Wkrg+yURw4XYTgo2n2dC+nGZvrliSW+tuR4=;
+        b=kp5ms/fZdnITiLr0QTttnHAKSMMOOUv0WriqtUF+q7GmeK+tBB4av3vQ81fruRbfCt
+         NQ0C520AeSsoxhem3ShPISe56m/LL8I1lVphkLs48w1TFLfan8f8qTrgfMh6ETzP+wr+
+         ta+yyJQk+d8UXcQ6ZOeIe2yYD2qxl8hyznSg0A/s5up+ledXXxH6KywarHKtni6NqMJt
+         ibF62IO8cFwzAXxDxzMLPSFyjG9OFFXUs1dmqa2Expm/iZkEfvzvkXHMwrsIvGOdlVnx
+         LVqer2dd9BvjYIuCeHA7b/Jx8WMezgnQW4y8wha0c6EgbdBso5441RPjbgQTUzjhJ+Sq
+         g+jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fLmpoD63Wkrg+yURw4XYTgo2n2dC+nGZvrliSW+tuR4=;
+        b=O29USr1/8YNJffILdXclNVOni1RAuPJlQZs1Tlu9ez8Hov/1YyYh4IxE/tjIlXXpFX
+         o2pYwRDezQT2D/b4PHfdOR47LJkdSokpu7L5AddfAzsZg/Jva81cgp4LMeSZkjE/MO8K
+         HV+/Tz7J48dSbB8FRrHVH7qhSa2HFKq20p+bjwPJft8nmDYT30yF+wn1IG45wp17vFh0
+         EdpJwFcqQEmOA7mQNg2HP6YMwXl7juWbCmIsbq+dEn2QAXFlXQclPiAm3onXP6wDXl2B
+         fx3cspct+/TiurY0vG/4uLDz+YvO/5ddvCowte1GFrvjlC5Z+ZIngbqj6m1M5iFZiEN3
+         Xq3w==
+X-Gm-Message-State: AOAM530iI2ihvszKaCu8CqqS0U3YJdskvJ9kBFw60OYiO5KZ+AAx13tR
+        GsEqP8JbazIpDe7MiVqMiNY=
+X-Google-Smtp-Source: ABdhPJxYE6XVonT8hpej+vl0YGzZf0bRdm5Mmuna8txuSCikF+W6txzD9NAFUK3ZLDqgnMFvbB9Eiw==
+X-Received: by 2002:a17:90a:348e:: with SMTP id p14mr12749123pjb.235.1590365305887;
+        Sun, 24 May 2020 17:08:25 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
+        by smtp.gmail.com with ESMTPSA id k4sm3644478pfp.173.2020.05.24.17.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 May 2020 17:08:25 -0700 (PDT)
+Date:   Sun, 24 May 2020 17:08:23 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Kyungtae Kim <kt0755@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Tian <dave.jing.tian@gmail.com>
+Subject: Re: [PATCH v2] vt: keyboard: avoid integer overflow in k_ascii
+Message-ID: <20200525000823.GE89269@dtor-ws>
+References: <20200523230928.GA17074@pizza01>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WlB=6X48LSgxOBXSqLaVlwt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200523230928.GA17074@pizza01>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WlB=6X48LSgxOBXSqLaVlwt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, May 23, 2020 at 11:09:35PM +0000, Kyungtae Kim wrote:
+> @@ -884,8 +884,11 @@ static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
+>  
+>  	if (npadch == -1)
+>  		npadch = value;
+> +	else if (!check_mul_overflow(npadch, base, &new_npadch) &&
+> +	    !check_add_overflow(new_npadch, value, &new_npadch))
+> +		npadch = new_npadch;
+>  	else
+> -		npadch = npadch * base + value;
+> +		return;
+>  }
 
-Hi all,
+So thinking about it some more, if we use unsigned types, then there is
+no issue with overflow UB, and thus maybe we should do something like
+this:
 
-Today's linux-next merge of the mips tree got a conflict in:
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 15d33fa0c925..568b2171f335 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -127,7 +127,11 @@ static DEFINE_SPINLOCK(func_buf_lock); /* guard 'func_buf'  and friends */
+ static unsigned long key_down[BITS_TO_LONGS(KEY_CNT)];	/* keyboard key bitmap */
+ static unsigned char shift_down[NR_SHIFT];		/* shift state counters.. */
+ static bool dead_key_next;
+-static int npadch = -1;					/* -1 or number assembled on pad */
++
++/* Handles a number being assembled on the number pad */
++static bool npadch_active;
++static unsigned int npadch_value;
++
+ static unsigned int diacr;
+ static char rep;					/* flag telling character repeat */
+ 
+@@ -845,12 +849,12 @@ static void k_shift(struct vc_data *vc, unsigned char value, char up_flag)
+ 		shift_state &= ~(1 << value);
+ 
+ 	/* kludge */
+-	if (up_flag && shift_state != old_state && npadch != -1) {
++	if (up_flag && shift_state != old_state && npadch_active) {
+ 		if (kbd->kbdmode == VC_UNICODE)
+-			to_utf8(vc, npadch);
++			to_utf8(vc, npadch_value);
+ 		else
+-			put_queue(vc, npadch & 0xff);
+-		npadch = -1;
++			put_queue(vc, npadch_value & 0xff);
++		npadch_active = false;
+ 	}
+ }
+ 
+@@ -868,7 +872,7 @@ static void k_meta(struct vc_data *vc, unsigned char value, char up_flag)
+ 
+ static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
+ {
+-	int base;
++	unsigned int base;
+ 
+ 	if (up_flag)
+ 		return;
+@@ -882,10 +886,12 @@ static void k_ascii(struct vc_data *vc, unsigned char value, char up_flag)
+ 		base = 16;
+ 	}
+ 
+-	if (npadch == -1)
+-		npadch = value;
+-	else
+-		npadch = npadch * base + value;
++	if (!npadch_active) {
++		npadch_value = 0;
++		npadch_active = true;
++	}
++
++	npadch_value = npadch_value * base + value;
+ }
+ 
+ static void k_lock(struct vc_data *vc, unsigned char value, char up_flag)
 
-  arch/mips/include/asm/module.h
 
-between commit:
+I think if we stop overloading what npadch means, the code becomes more
+clear. What do you think?
 
-  62d0fd591db1 ("arch: split MODULE_ARCH_VERMAGIC definitions out to <asm/v=
-ermagic.h>")
+Thanks.
 
-from Linus' tree and commits:
-
-  ab7c01fdc3cf ("mips: Add MIPS Release 5 support")
-  281e3aea35e5 ("mips: Add MIPS Warrior P5600 support")
-
-from the mips tree.
-
-I fixed it up (I used the former version fo this file and added the
-patch below) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 25 May 2020 10:03:07 +1000
-Subject: [PATCH] mips: vermagic updates
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/mips/include/asm/vermagic.h | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/mips/include/asm/vermagic.h b/arch/mips/include/asm/verma=
-gic.h
-index 24dc3d35161c..4d2dae0c7c57 100644
---- a/arch/mips/include/asm/vermagic.h
-+++ b/arch/mips/include/asm/vermagic.h
-@@ -8,12 +8,16 @@
- #define MODULE_PROC_FAMILY "MIPS32_R1 "
- #elif defined CONFIG_CPU_MIPS32_R2
- #define MODULE_PROC_FAMILY "MIPS32_R2 "
-+#elif defined CONFIG_CPU_MIPS32_R5
-+#define MODULE_PROC_FAMILY "MIPS32_R5 "
- #elif defined CONFIG_CPU_MIPS32_R6
- #define MODULE_PROC_FAMILY "MIPS32_R6 "
- #elif defined CONFIG_CPU_MIPS64_R1
- #define MODULE_PROC_FAMILY "MIPS64_R1 "
- #elif defined CONFIG_CPU_MIPS64_R2
- #define MODULE_PROC_FAMILY "MIPS64_R2 "
-+#elif defined CONFIG_CPU_MIPS64_R5
-+#define MODULE_PROC_FAMILY "MIPS64_R5 "
- #elif defined CONFIG_CPU_MIPS64_R6
- #define MODULE_PROC_FAMILY "MIPS64_R6 "
- #elif defined CONFIG_CPU_R3000
-@@ -46,6 +50,8 @@
- #define MODULE_PROC_FAMILY "LOONGSON64 "
- #elif defined CONFIG_CPU_CAVIUM_OCTEON
- #define MODULE_PROC_FAMILY "OCTEON "
-+#elif defined CONFIG_CPU_P5600
-+#define MODULE_PROC_FAMILY "P5600 "
- #elif defined CONFIG_CPU_XLR
- #define MODULE_PROC_FAMILY "XLR "
- #elif defined CONFIG_CPU_XLP
---=20
-2.26.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WlB=6X48LSgxOBXSqLaVlwt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7LC9kACgkQAVBC80lX
-0GzQ7AgApgDpcM21Lyk3zKpaGn3T9YapcHWVidzVrr2QUHyj+mvV1OCxZeqc6+1s
-3OVupwvmoIqD5hZKWxFcU4Avqe6ubZ6pvcQyCpCGzXdMYuRMt6Cyr2FutCYeHxb3
-CDubD5vBAAOH4UXQ4nE7FaZUOjTDALas6BiTcbYYWWC3fOvQ90SkA60LVqtMINFL
-U0tWol262pwJpCiwUDsaJ+8ZlMc0AYFz292xcmAhu59LLnqsmmZBXI0B0N2q4maW
-YIMKnuYxefaEG8ydtZXs3dzuyY3qQJXWcpiGSG6quNSMz1Clqh/8QqGwjCYIGlDA
-JX716Wimbug21rgK3/of+/qEmpLntA==
-=p3YC
------END PGP SIGNATURE-----
-
---Sig_/WlB=6X48LSgxOBXSqLaVlwt--
+-- 
+Dmitry
