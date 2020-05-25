@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BA41E0F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E02C1E0F0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390733AbgEYNDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 09:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
+        id S2390755AbgEYNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388757AbgEYNDn (ORCPT
+        with ESMTP id S2390747AbgEYNED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 09:03:43 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CEBC05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 06:03:42 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id a23so13732541qto.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 06:03:42 -0700 (PDT)
+        Mon, 25 May 2020 09:04:03 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EB5C05BD43
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 06:04:03 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k5so20639866lji.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 06:04:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l8DtLHa85gJVAwQ0kwg15axaycizXM27g5I12GoSRmo=;
-        b=TQHZ1bseJ27nGYaagMlYvaDubSiL2Uit4y2PJfMQznPas6SqYWT9TulWbeGas5mJ9v
-         2yytZorNLW6P6j4w5oYubQzVbRge+VdVCBHL7HlqQXXFNNLjq9NYzmLUNfVOEAUNGgLz
-         1oWKuiBoq9InlofxCd75JtdreffEadOMEM3MmiJBZWuSzbLkWS8BcmYMeNdidRkFV28t
-         KdmyLWruCFvuGTI2xuxUFYhycaGjGvROPZE1pcZBIsQA4tVGgLQvZEytnjQ/+QpS2TSP
-         7R+HtJoBYF5Cg93n5Hm35ytWNR0ocSGcr4KG/IIk4vFz2X+VE2T+ZYZKqWE1BuGGx8Hy
-         Cbow==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qbKlh9rvr/ToxEMzUAmGtxv+hAZbxzL0uknOsgFGASk=;
+        b=Aau+5lIM+AAKCnFmFHUwdB2fv88scc7+W1ocRo4djN5kn3UtOI9CaWpntIC4SIhSvO
+         nbtEPvrzVgr8JhykJWbfZQI9hYmyzl5rY3zYQo8yxf5aqx7+0+B4XcTA3UHq32QEJR3M
+         bY1nbC+YgbUoM624DQJ6nPudjKipLU5yDLoFsH+bZmAfrzDuJLPhcpO368a8wwNWdGlN
+         Viys9iWK5f0YOtkmcBTIqXxRisLghvb6jwdu+HPh3f0BUyJSgxmYz3Th+4VrncZ2SQoR
+         5jARHOVzaQIIZQX8Y9ea8DeTwsX95QwZihQlcRBHE2IkGCohhYDRZrxRcYUcJM20QB8+
+         EqUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l8DtLHa85gJVAwQ0kwg15axaycizXM27g5I12GoSRmo=;
-        b=WrGlskTcjdvME6o+WUf9S3NAiKcsuIfgEzKphYwaRBq1Fhh2ME9eWQx4SJBKXlwRI/
-         QZFXfwKPGe34/HMAmzW/mLwfEoBtZ1pEmrWH9zmRG2ND+sZQjOFwDHPBQEK/jTL38wIL
-         5OGsehlNfh3k8tRET9JCtks5M/mnz8S9U4zZIQMayazK699K4QbdlcAiIkWow893E7xl
-         7Fb+w8lkwV79qADy3IfoNFGyFmlXLdWKxCwJPea78+qyI0OYUtToMZPhKERTV1T1gcc7
-         OL5a52N3pKkdcASyCmDS0Vrv988e5/wwg5OUd9+CK0mNVYGZVBrc0435hybhAh/X5iCC
-         /K8w==
-X-Gm-Message-State: AOAM53365FKwzRaeTCAK7iU21x7Z9bS24yQSPfZVVZvpIsjzTuh8feYn
-        0sG28D3OzImYdbCbCIdQRHKY6A==
-X-Google-Smtp-Source: ABdhPJyZ4IT+0r7ySKwikREH5gDy81VkOMFbpJ1aybPDtbwvirwWq0ysKv73Xy77i+ZrWhpQ00H17A==
-X-Received: by 2002:ac8:6e82:: with SMTP id c2mr28826003qtv.155.1590411822178;
-        Mon, 25 May 2020 06:03:42 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x205sm14649646qka.12.2020.05.25.06.03.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 May 2020 06:03:41 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jdClY-0008JS-Mx; Mon, 25 May 2020 10:03:40 -0300
-Date:   Mon, 25 May 2020 10:03:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     wu000273@umn.edu
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kjlu@umn.edu
-Subject: Re: [PATCH] RDMA/core: fix missing release in add_port.
-Message-ID: <20200525130340.GD744@ziepe.ca>
-References: <20200525060656.2478-1-wu000273@umn.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qbKlh9rvr/ToxEMzUAmGtxv+hAZbxzL0uknOsgFGASk=;
+        b=lALTZRntCCeQPluGtNLoFKY3JmMVPvPq1hw780AjR18QkO3AYMGUw+ibEOP7J2uoN4
+         sy1TWfiFlynlhShFEOT+3wUBHIJQSxQm3YJ9+mL7I+S/kyU5/KP+krNWc9ZOPs+8FAil
+         RLXCFIIhKkPbP7sYvq0MP7MebJo0zDfW5Zm9QWVjUen7Xb7OCm6SxyZhH/KtZ31FbiiT
+         QUIRWwMx29hn/QodwbpqFx1+ySD4GPJMPex7ufIbp/hmpkHkXq3Qj+iS9gHAOrxmPlkv
+         x89v8ZTXH7VCLzw9CRVfYV6TRYsRBbOc1ZYMzyRqRn6/BBVwsKp2Kro55kvuIquNmg78
+         y1Vw==
+X-Gm-Message-State: AOAM531CC6fabp/4nXqsHaub7pwRHh80ebRrWHiQ7B0LJpLfyL5VDYGv
+        dbNEKcfVH4rH7QxAOUVHtdsxsNgUYlxAzzqyyZR6mw==
+X-Google-Smtp-Source: ABdhPJxaHb2+gGS6W87P/n0XsJZ033bv/Oc6w4sdtxU1dzhwlkkN3Kp7Vteg43GSp/rNBOXzokfNg43+fcFtvQ0PwGk=
+X-Received: by 2002:a2e:8e91:: with SMTP id z17mr10887714ljk.144.1590411841474;
+ Mon, 25 May 2020 06:04:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525060656.2478-1-wu000273@umn.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200508165821.GA14555@x1> <CACRpkdb+ZP6rfjGg6Ef9_wYvNf6qmSc7LZyYBVKA3XWCtxPfqQ@mail.gmail.com>
+ <20200518141843.GA916914@x1> <20200520220203.GA363398@x1> <CACRpkdYV4Pd2rL=Kha6HxL8J5+vFy_M0hV7+qMghS4AVxd9D2w@mail.gmail.com>
+ <20200525120710.GA898135@x1>
+In-Reply-To: <20200525120710.GA898135@x1>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 May 2020 15:03:50 +0200
+Message-ID: <CACRpkdZLRjcE0FGwVR-Q7a50aEmpB=xO4q6H8_EaV199fGr0OA@mail.gmail.com>
+Subject: Re: [PATCH] arm: dts: am33xx-bone-common: add gpio-line-names
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 01:06:56AM -0500, wu000273@umn.edu wrote:
-> From: Qiushi Wu <wu000273@umn.edu>
-> 
-> In function add_port(), pointer p is not released in error paths.
-> Fix this issue by adding a kfree(p) into the end of error path.
-> 
-> Signed-off-by: Qiushi Wu <wu000273@umn.edu>
->  drivers/infiniband/core/sysfs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-> index 087682e6969e..04a003378dfc 100644
-> +++ b/drivers/infiniband/core/sysfs.c
-> @@ -1202,6 +1202,7 @@ static int add_port(struct ib_core_device *coredev, int port_num)
->  
->  err_put:
->  	kobject_put(&p->kobj);
-> +	kfree(p);
->  	return ret;
->  }
+On Mon, May 25, 2020 at 2:07 PM Drew Fustini <drew@beagleboard.org> wrote:
+> On Mon, May 25, 2020 at 11:23:17AM +0200, Linus Walleij wrote:
+> > On Thu, May 21, 2020 at 12:02 AM Drew Fustini <drew@beagleboard.org> wrote:
+> >
+> > > I've posted a v2 which I hope improves the intent of the line names. [0]
+> > >
+> > > I'm happy to integrate any feedback and create a v3 - especially if it
+> > > is prefered for me to list the specific peripherial signals instead of
+> > > an abstract term like "[ethernet]" or "[emmc]".  This is for lines that
+> > > can not be used because they are not routed to the expansion headers.
+> > >
+> > > [0] https://lore.kernel.org/linux-omap/20200520214757.GA362547@x1/T/#u
+> >
+> > This looks good to me. FWIW
+> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> >
+> > Yours,
+> > Linus Walleij
+>
+> Linus -
+>
+> I have posted a newer patch that targets am335x-beagleblack.dts [0]
+> instead of am335x-bone-common.dtsi as Grygorii Strashko pointed out
+> that these line names are not applicable to all BeagleBone models.
+>
+> The gpio line naming scheme is the same, is it ok to add your Ack?
 
-Er, no, kobject_put does the kfree
+Yes FWIW
+Acked-by.
 
-There is a bug here, it is calling kfree() after kobject_init_and_add
-fails, which is wrong, it should be goto err_put
-
-Jason
+Linus Walleij
