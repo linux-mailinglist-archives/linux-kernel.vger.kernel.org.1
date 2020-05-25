@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BBC1E09D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E131E09F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389265AbgEYJP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        id S2389456AbgEYJRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgEYJP7 (ORCPT
+        with ESMTP id S2389438AbgEYJRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:15:59 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D73C05BD43
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:15:58 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c185so2822392qke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:15:58 -0700 (PDT)
+        Mon, 25 May 2020 05:17:09 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BECC061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:09 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q8so468225qkm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 02:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=HeEd+c60FRjGCeCKuVMamBqIVW2/NUYQpKTyT80oXTI=;
-        b=Yg8gdfXs5pSQWW3x56xKtevqhewuVztrJEEaWdVsBMSME6Y4Ypd+c0CaOMO7MvTRyr
-         g+JpjYkMg4Q3dkKT82pppC7RJ3yTmqWIUXQBMUdnx8jc9479XEnY16QMqC5bbWnCOcXz
-         paO0kg2XqvfByl1uiK5D5/Kl8V3ms8mQJWyQzv6c7auJdXSfLnuCEcqInEuUbb0GFiBa
-         kOM0sLLwClsMN0yrx5zwAH7APBAplrB1EskhAIzgaSv5Awtv3YR2vkQIJuQE4xSBgiQt
-         1ZdeIYLDmKyQtjMy9QfLYhoHgClU1DbP1TVhfzlTJbkDhWMFpSz67Jcx/rCNFHgjUWsF
-         Dz4w==
+        bh=UPKAWDXzbYpZcHZzE/jvh4sEsCXtgHO9Rviklrj4c2Y=;
+        b=h5iYImghCJhux6GT4d2kO7zNAoMA8fEcSSkSURRXarw2tjaLULyyfuxuVY/52g3yz3
+         6kODCAB7qd44fe7EVjnkJU3QcnefChDGILeJaBR5sIW1L+egXZ2DLr3hDAzLUtLQunwG
+         eqrRDW/LuS29vX5ageDRPa2c1Q+vCrhIvkwv1bCPNoLEwhFuSZ7BlyChZ3sLdPgj6AsV
+         f6185DEYuUvH2iZYAvOotSKaTIPDe5z0godcIwSgpxDxjypOqtTjTWq6RvDxhSEe9Wpz
+         me/D89KNUT8EGL6Cm9qTKEdA8QRqR+5vNgWnR26pw4j2W5iKOzr8y7mulkdGIvYx2ViZ
+         No9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HeEd+c60FRjGCeCKuVMamBqIVW2/NUYQpKTyT80oXTI=;
-        b=mC/oCe47La1jZmbfyu2GUPln9TgolLlVa5HU21bamNxUyk/hXF+SkV4//SjGnOQgWO
-         HT2Atf2aYj1tJ+0lB96EBDOZP9bJkwTyjPOuwUtB4dV7/sa88Xrq14dEHAy5twzyc5gZ
-         /g6YP131uNcc7HVHUpWJa7LYwJbqo8UU40xyiXwe/ItKeoJdJO3G0EPbsi5MvSf7J+U9
-         jiwNnvIp4bT0mSjFrD0svPlonmYt/92idcPr+vFeoxu0Fc3eln6zu2BpVfYkBJWWN1pv
-         9gYSeWB0P+YgT37tKclr6ibzA+BM13kaNwejAUUAJSMyBn7LHeROiGoYG5yTOKtNELOB
-         utTQ==
-X-Gm-Message-State: AOAM5339TMdYluDtBP3lqGtCVDWyMhkUF16O8J0mvWx9snOg3nyqo+jb
-        aAhU+Sh6UAGPVaBmF9lILKpi5lA0naxrEY8V68s6hA==
-X-Google-Smtp-Source: ABdhPJzjF8ca/F3GtrPX5cQlziDTJ+OtNvbSnNvXlyUUOgKecmUmnXFY1qvK2H2gwGkFhjLE4WIVslhe6eabeLda+qQ=
-X-Received: by 2002:a37:9487:: with SMTP id w129mr23848650qkd.21.1590398158172;
- Mon, 25 May 2020 02:15:58 -0700 (PDT)
+        bh=UPKAWDXzbYpZcHZzE/jvh4sEsCXtgHO9Rviklrj4c2Y=;
+        b=YTQjLDh1QHSYrUOa2GA2vIvoClrql3fStVxfrzLbftNj0HMrhWlV33fr/e+cFpnJx7
+         W5moqtxnOmrGy2P9Ukk0xCe8WTgGWBXP13QXnEdwHGEBguKg/HWdwwnUAT5wWrdR/Szt
+         /ioZ09u1Zml+JZFyd/AXD6PQ7laUHeEeSU8dGExHPYjOBgIUm3KzvVLHx0RtOH+Cvf26
+         kDYS+OadnAHyY15NnNPv7+4PjywNqtux/tCuFVdJ3y6Khlmofpcaz8wFMcAHEG5bvwPI
+         upKy2FR0DkvymR4teysqorV1XKc1ULa900LMtjbWM2KP9JzbJDAPuAOvTxmJQNTXG6XV
+         59AA==
+X-Gm-Message-State: AOAM533fNrZPXItfANCWRMciOlffWupegcpnfiyLihYRboQ50qUgU2Lc
+        Ezbb82h14UI9Q5yHZSRXlpqASlRdtqKNiDvhRx/pOg==
+X-Google-Smtp-Source: ABdhPJz7FwnxTWiLNqiIZD5a8zZv3R4oMP54vdsGuztkluwJWwXSbqlfJg38I7TnuuwobKL54EcMhe/ah8LeU9964M4=
+X-Received: by 2002:a37:dd6:: with SMTP id 205mr3484622qkn.323.1590398228936;
+ Mon, 25 May 2020 02:17:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn> <1590120740-22912-3-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1590120740-22912-3-git-send-email-yangtiezhu@loongson.cn>
+References: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1590120740-22912-1-git-send-email-yangtiezhu@loongson.cn>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 25 May 2020 11:15:47 +0200
-Message-ID: <CAMpxmJW9po_hp64yV73R4fLMQ3_5SbJuvE7Rva8hOvzjAFVHrA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpio: pxa: Add COMPILE_TEST support
+Date:   Mon, 25 May 2020 11:16:58 +0200
+Message-ID: <CAMpxmJVYPweUL9J5uitp6zCAniQAZ2+EBuxt-pYcDarLJkcqDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: bcm-kona: Fix return value of bcm_kona_gpio_probe()
 To:     Tiezhu Yang <yangtiezhu@loongson.cn>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Ray Jui <rjui@broadcom.com>,
@@ -69,31 +69,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 pt., 22 maj 2020 o 06:12 Tiezhu Yang <yangtiezhu@loongson.cn> napisa=C5=82(=
 a):
 >
-> Add COMPILE_TEST support to the PXA GPIO driver for better compile
-> testing coverage.
+> When call function devm_platform_ioremap_resource(), we should use IS_ERR=
+()
+> to check the return value and return PTR_ERR() if failed.
 >
+> Fixes: 72d8cb715477 ("drivers: gpio: bcm-kona: use devm_platform_ioremap_=
+resource()")
 > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  drivers/gpio/Kconfig | 2 +-
+>  drivers/gpio/gpio-bcm-kona.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index 03c01f4..5e90aad 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -439,7 +439,7 @@ config GPIO_PMIC_EIC_SPRD
+> diff --git a/drivers/gpio/gpio-bcm-kona.c b/drivers/gpio/gpio-bcm-kona.c
+> index baee8c3..cf3687a 100644
+> --- a/drivers/gpio/gpio-bcm-kona.c
+> +++ b/drivers/gpio/gpio-bcm-kona.c
+> @@ -625,7 +625,7 @@ static int bcm_kona_gpio_probe(struct platform_device=
+ *pdev)
 >
->  config GPIO_PXA
->         bool "PXA GPIO support"
-> -       depends on ARCH_PXA || ARCH_MMP
-> +       depends on ARCH_PXA || ARCH_MMP || COMPILE_TEST
->         help
->           Say yes here to support the PXA GPIO device
+>         kona_gpio->reg_base =3D devm_platform_ioremap_resource(pdev, 0);
+>         if (IS_ERR(kona_gpio->reg_base)) {
+> -               ret =3D -ENXIO;
+> +               ret =3D PTR_ERR(kona_gpio->reg_base);
+>                 goto err_irq_domain;
+>         }
 >
 > --
 > 2.1.0
 >
 
-Patch applied.
+I fixed the commit message, since this patch addresses the error code
+propagation, not the checking itself. Applied for fixes.
 
-Bart
+Bartosz
