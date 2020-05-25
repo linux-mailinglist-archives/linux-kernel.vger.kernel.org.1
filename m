@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDF41E0FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88FE1E0FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 15:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390843AbgEYNoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 09:44:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48106 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388794AbgEYNoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 09:44:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=PtR/dH41IdZFMrM9InEe2c8NiLO+/7TaFVVfFphYl9o=; b=5hrh4SOk9bO+X9UiZF0HjY22rm
-        /zyNhffA9uT5pewe1vxrfZCr7Vz3bx8tPtHRXHC6r+AIpe9eDlMYYuIx3P5PApz65/fQuW5vclUS+
-        2oWZafxIkoKBbYf8B4W8+hCy6BCMHK6mnJrVo+81gvudQqqgRz58+3kvBdwFZ2nyJp+U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jdDON-003C1w-CI; Mon, 25 May 2020 15:43:47 +0200
-Date:   Mon, 25 May 2020 15:43:47 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Jeremy Linton <jeremy.linton@arm.com>, netdev@vger.kernel.org,
-        davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        madalin.bucur@oss.nxp.com, calvin.johnson@oss.nxp.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 08/11] net: phy: Allow mdio buses to auto-probe c45 devices
-Message-ID: <20200525134347.GA752669@lunn.ch>
-References: <20200522213059.1535892-1-jeremy.linton@arm.com>
- <20200522213059.1535892-9-jeremy.linton@arm.com>
- <20200524144449.GP610998@lunn.ch>
- <ec63b0d4-2abc-0d32-69c0-ed1a822162cf@arm.com>
- <20200525082510.GH1551@shell.armlinux.org.uk>
+        id S2390860AbgEYNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 09:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388794AbgEYNo6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 09:44:58 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81A1C061A0E;
+        Mon, 25 May 2020 06:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+/9EB+gqUSTCQhVlgwmYHPpqEaICAppIqnpJ4LPwD8U=; b=Vu/F9Dss7kuI+g7DVtxcOSePVc
+        EZi7fra/CTyTCjXy2K8r4Jebv5UwcmZorzPld1lnp1vj2529Ccm7MeesYZyDC95euECiec839L96e
+        ioig9ELPpt1To0X6XLFHP1dUQ66Lfp+ce5DdwiJV8CuQcTcvyZp8GfM2rElQTY8GLkfEayeSCUcZw
+        ACzYIH7tAgjck1ntkBCqrjP+qJGWJQxe4UTy+uJFBD7gFpCW5HuWzUg7r+SYePXuuQNrfx0z3Oy9L
+        MgYA+UzKytPYdwwz+k/9lQQYFnf5gJlFC2xv2ynloQy30JaLRVih8I7yFXnn2ReXuzJY79iD3/PUw
+        OZiRo4QA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdDP6-00087O-2X; Mon, 25 May 2020 13:44:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 654DB300B38;
+        Mon, 25 May 2020 15:44:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 145ED20962E29; Mon, 25 May 2020 15:44:29 +0200 (CEST)
+Date:   Mon, 25 May 2020 15:44:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1 10/25] seqlock: Add RST directives to kernel-doc code
+ samples and notes
+Message-ID: <20200525134429.GE317569@hirez.programming.kicks-ass.net>
+References: <20200519214547.352050-1-a.darwish@linutronix.de>
+ <20200519214547.352050-11-a.darwish@linutronix.de>
+ <20200522180254.GS325280@hirez.programming.kicks-ass.net>
+ <20200522180336.GD325303@hirez.programming.kicks-ass.net>
+ <871rnbsu57.fsf@nanos.tec.linutronix.de>
+ <20200522183216.GT325280@hirez.programming.kicks-ass.net>
+ <20200525093649.GA370823@debian-buster-darwi.lab.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200525082510.GH1551@shell.armlinux.org.uk>
+In-Reply-To: <20200525093649.GA370823@debian-buster-darwi.lab.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > So i think it would be better to have
-> > > 
-> > > 	enum {
-> > > 		MDIOBUS_UNKNOWN = 0,
-> > > 		MDIOBUS_C22,
-> > > 		MDIOBUS_C45,
-> > > 		MDIOBUS_C45_C22,
-> > > 	} bus_capabilities;
-> > > 
-> > > Describe just what the bus master can support.
-> > 
-> > Yes, the naming is reasonable and I will update it in the next patch. I went
-> > around a bit myself with this naming early on, and the problem I saw was
-> > that a C45 capable master, can have C45 electrical phy's that only respond
-> > to c22 requests (AFAIK).
-> 
-> If you have a master that can only generate clause 45 cycles, and
-> someone is daft enough to connect a clause 22 only PHY to it, the
-> result is hardware that doesn't work - there's no getting around
-> that.  The MDIO interface can't generate the appropriate cycles to
-> access the clause 22 PHY.  So, this is not something we need care
-> about.
-> 
-> > So the MDIOBUS_C45 (I think I was calling it
-> > C45_ONLY) is an invalid selection. Not, that it wouldn't be helpful to have
-> > a C45_ONLY case, but that the assumption is that you wouldn't try and probe
-> > c22 registers, which I thought was a mistake.
-> 
-> MDIOBUS_C45 means "I can generate clause 45 cycles".
-> MDIOBUS_C22 means "I can generate clause 22 cycles".
-> MDIOBUS_C45_C22 means "I can generate both clause 45 and clause 22
-> cycles."
-> 
-> Notice carefully the values these end up with - MDIOBUS_C22 = BIT(0),
-> MDIOBUS_C45 = BIT(1), MDIOBUS_C45_C22 = BIT(0) | BIT(1).  I suspect
-> that was no coincidence in Andrew's suggestion.
+On Mon, May 25, 2020 at 11:36:49AM +0200, Ahmed S. Darwish wrote:
+> Peter Zijlstra <peterz@infradead.org> wrote:
 
-Hi Russell
+> > I will not let sensible code comments deteriorate to the benefit of some
+> > external piece of crap.
+> >
+> > As a programmer the primary interface to all this is a text editor, not
+> > a web broswer or a pdf file or whatever other bullshit.
+> >
+> > If comments are unreadable in your text editor, they're useless.
+> 
+> Wait.
+> 
+> Most of the patch in question is just substituting the code snippet's
+> leading white spaces to tabs. For illustration purposes, if we remove
+> these white space hunks from the diff, it becomes:
+> 
+>   --- a/include/linux/seqlock.h
+>   +++ b/include/linux/seqlock.h
+>   @@ -232,6 +232,8 @@ static inline void raw_write_seqcount_end(seqcount_t *s)
+>   + * .. code-block:: c
+>   ...
+>   + * .. code-block:: c
+>   ...
+>   - * NOTE: The non-requirement for atomic modifications does _NOT_ include
+>   - *       the publishing of new entries in the case where data is a dynamic
+>   - *       data structure.
+>   + * .. attention::
+>   + *
+>   + *     The non-requirement for atomic modifications does _NOT_ include
+>   + *     the publishing of new entries in the case where data is a dynamic
+>   + *     data structure.
+>   ...
+> 
+> Are you trying to tell me that, good heavens, these directives are
+> really hurting your eyes so much?
 
-What was a nice side affect. Since i doubt Jeremy is going to go
-through every MDIO driver and set the capabilities correctly, i wanted
-0 to have a safe meaning. In the code we should treat MDIOBUS_UNKNOWN
-and MDIOBUS_C22 identically. But maybe some time in the distant
-future, we can make 0 issue a warning.
+Yep, they're a distraction and serve absolutely no purpose. They're also
+utterly moronic, of course it's code and of course it's bloody well C.
 
-  Andrew
+> Putting kernel-doc aside... That huge raw_write_seqcount_latch() comment
+> is actually *way more readable from any text editor* after applying this
+> patch. Go figure.
+
+I don't mind the re-indent.
+
+> >>> The correct fix is, as always, to remove the kernel-doc marker.
+> 
+> Sorry, that's not the correct fix.
+
+Of course it is, if kerneldoc complains that a perfectly good comment
+is no good, then the fault lies with kerneldoc.
+
+It's like checkpatch; assume it is wrong :-)
+
+> In the following patches, kernel-doc for the entire seqlock.h API is
+> added. Singling out raw_write_seqcount_latch() doesn't make any sense.
+
+% s/\/\*\*/\/\*/g -- tada!!
+
+> If you look at the top of this patch series, a lot of seqlock.h
+> seqcount_t call sites were badly broken. The 0day kernel test bot sent
+> me even more erroneous call sites due to the added lockdep checks. This
+> is an extra argument for the added documentation: the existing one is
+> horrible.
+
+I've nothing against improving comments, I'm just saying that RST is
+absolute atrocious shite and has nothing to do with good comments.
+
+If sphinx doesn't like "NOTE:' when go teach it.
+
+> So, please, don't claim that the current situation is fine. It is not.
+
+I've never claimed that. My claim is that RST is shite and has no added
+value.
