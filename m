@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D704F1E1758
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 23:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D147C1E1751
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 23:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389124AbgEYVs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 17:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S2388907AbgEYVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 17:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731548AbgEYVs0 (ORCPT
+        with ESMTP id S1731557AbgEYVs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 17:48:26 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61F0C05BD43;
-        Mon, 25 May 2020 14:48:25 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id o14so22215850ljp.4;
-        Mon, 25 May 2020 14:48:25 -0700 (PDT)
+        Mon, 25 May 2020 17:48:27 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7F6C061A0E;
+        Mon, 25 May 2020 14:48:26 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c11so20000225ljn.2;
+        Mon, 25 May 2020 14:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ma6ozjce0VsxuWEnBAmau4C36oX126QKppp7v2kR4Bo=;
-        b=NXSy4DSx5DHkmao9iem3wyRQf7BFcvkq9BZwo4Xn7fNoonCwaGlYttBUNSK7XZyiKk
-         MvFXMOtTnUGYIiaM2GCWi6QC4BB2er3giLKzJQugD8tGOH3BD2sbvjtj+V2aKbwzKrNM
-         pfrFQpL9uwJZYM0QgCNtSI/PamuNUIIdOcIGu6z8qFvWUQZ7vQI11gTVpRK5fJqKQost
-         VWHqXAs4hJla7bwSnB5QWpSyt8y3wvGhKapGaJz6UPZBpbC4cD74DqwzDp+LilFb/yCH
-         ZYUO0x9KmNL3FPcmKukuuHe14Jr4U2Q1xo+/C+9lzW5T1P6m/bAMyKbWJcVeQSOqGIWR
-         YdfA==
+        bh=ik17svU3U29XQbLhqwF9DkU8YQ7sw6ADmoig1ExIl5o=;
+        b=oK0yLXUMmFF5FfsG8+ulkLizK0+hpY4rBoPTkb7nV7T2QcpjbXrOHWDLqpXlwRu3m4
+         cpHEgZHagoLqggB6XZw3U7Z5EMBXyn73WUlxG4szDEy/5NdBis46mpdYaavBV7lVEr53
+         pL6JUMTe6iYJ9MXw18DSPO0y7fTGv+/w/D40aGkLANqs0eGSKrLL35ML73DOuS3iOIAu
+         QxrYZ3+zUPz1Ive73j2u0d2N6NK7xon/ewslNnjgO8FPz7vY5iX55mBVziN6qlT1OBSU
+         m0jOzr7OyI5uGSzkJ4MqvCculzjhE4w9LptHuuSMtyZf8ybSgnHIIbZ3ug8CNI5wmhPb
+         qcCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ma6ozjce0VsxuWEnBAmau4C36oX126QKppp7v2kR4Bo=;
-        b=m0vWUBjxOiaaA0z5owi40OW5icLg+1j4LCtPagvWPm3drwnoSEZT+/c5TV+PnMQlIS
-         lQxWMXYM/Tm/25wo/wY7MRxSdzNg6PMMKne2JeXYldlgBM76QUHyfm905d8+ciDySiBI
-         xTXl5w2A4jJnHWuZkhHG58zSqmCDQSm31uTkzOYzd9ckqFM8pGFagqqd5T51vAfIb24K
-         JbGAOArNcAESMb8FVi+OfgzpFsM5/C7N0qpMARtAmDJ2pl1x/NqRY1A6+extLwudZRYp
-         ablIxTiO3fHRQZYwKA1JjT0VOBeU3X4iXAEki72qG9R+zC7Sh0gmSAWzysOtEqWrHgn3
-         iTLw==
-X-Gm-Message-State: AOAM533wrm6G89q55PH+tB1MbdXg9i/gl3sBbdtJ6Wv9eF6zWM70snY4
-        mFMBlFueFKsns9hca4sCNnrBjQg4OO4WmQ==
-X-Google-Smtp-Source: ABdhPJzX7B4hxYlADv9D7q19Ax/D4dz4rbE7H3yxDwhkpf8rQ+Y8wFTVlnlYRsZU/BydGVrMJi0gTg==
-X-Received: by 2002:a2e:9891:: with SMTP id b17mr11934960ljj.320.1590443303981;
-        Mon, 25 May 2020 14:48:23 -0700 (PDT)
+        bh=ik17svU3U29XQbLhqwF9DkU8YQ7sw6ADmoig1ExIl5o=;
+        b=S04GZSKIhTmQ/FzVqZWuUpbTOSAT7pUfv7YeA46F9MiLvCxOdNvABeS6VvvzzxcK7U
+         GtHyTijKCqmcPGjpFEuPjwmbU9df5zfggc67sK26rKY9e0dFHVN6pxEis2mSk8zfsdCY
+         bb1MxuZ+xDZzMKZARWlVzCt44acow7le95dGhRn8hKakcHvjtj9u98Z281Xj6iCk7m9e
+         zNDNsA24A+EhjlVO0GAEz5V4vpWckt1rHAMqZnJ2zYAOGoXJe4sMDfcaucY0r+7ljHLZ
+         NhvQHc2drmBwmZDIGySb5BHUA4WMXCMVpQLCdbttZgq8sRAJD6my/oIxfx0oLqOyOrMt
+         8IcA==
+X-Gm-Message-State: AOAM532SGw7S9I//luH+UZLGxCNFJd46Fm876GHQeE+hIPFUvjP/9xpx
+        2ZaHShLpPyearkNkiiczPEU555wy/my5yw==
+X-Google-Smtp-Source: ABdhPJzaf0nFKQVcNe6lFV+Hv17Rsr7GTfoxNLsSnpb8/RGK0v1mlJ5VKEs+R3jKwSb+XhwZeNmY6A==
+X-Received: by 2002:a2e:9586:: with SMTP id w6mr14219809ljh.274.1590443305005;
+        Mon, 25 May 2020 14:48:25 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id a6sm2280044lji.29.2020.05.25.14.48.23
+        by smtp.gmail.com with ESMTPSA id a6sm2280044lji.29.2020.05.25.14.48.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 14:48:23 -0700 (PDT)
+        Mon, 25 May 2020 14:48:24 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -57,9 +57,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH v2 12/16] mm/list_lru.c: Rename kvfree_rcu() to local variant
-Date:   Mon, 25 May 2020 23:47:56 +0200
-Message-Id: <20200525214800.93072-13-urezki@gmail.com>
+Subject: [PATCH v2 13/16] rcu: Introduce 2 arg kvfree_rcu() interface
+Date:   Mon, 25 May 2020 23:47:57 +0200
+Message-Id: <20200525214800.93072-14-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200525214800.93072-1-urezki@gmail.com>
 References: <20200525214800.93072-1-urezki@gmail.com>
@@ -70,51 +70,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename kvfree_rcu() function to the kvfree_rcu_local() one.
-The purpose is to prevent a conflict of two same function
-declarations. The kvfree_rcu() will be globally visible
-what would lead to a build error. No functional change.
+kvmalloc() can allocate two types of objects: SLAB backed
+and vmalloc backed. How it behaves depends on requested
+object's size and memory pressure.
 
-Cc: linux-mm@kvack.org
-Cc: rcu@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Add a kvfree_rcu() interface that can free memory allocated
+via kvmalloc(). It is a simple alias to kfree_rcu() which
+can now handle either type of object.
+
+<snip>
+    struct test_kvfree_rcu {
+        struct rcu_head rcu;
+        unsigned char array[100];
+    };
+
+    struct test_kvfree_rcu *p;
+
+    p = kvmalloc(10 * PAGE_SIZE);
+    if (p)
+        kvfree_rcu(p, rcu);
+<snip>
+
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- mm/list_lru.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/rcupdate.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 4d5294c39bba..42c95bcb53ca 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -373,14 +373,14 @@ static void memcg_destroy_list_lru_node(struct list_lru_node *nlru)
- 	struct list_lru_memcg *memcg_lrus;
- 	/*
- 	 * This is called when shrinker has already been unregistered,
--	 * and nobody can use it. So, there is no need to use kvfree_rcu().
-+	 * and nobody can use it. So, there is no need to use kvfree_rcu_local().
- 	 */
- 	memcg_lrus = rcu_dereference_protected(nlru->memcg_lrus, true);
- 	__memcg_destroy_list_lru_node(memcg_lrus, 0, memcg_nr_cache_ids);
- 	kvfree(memcg_lrus);
- }
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index b344fc800a9b..51b26ab02878 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -875,6 +875,15 @@ do {									\
+ 		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+ } while (0)
  
--static void kvfree_rcu(struct rcu_head *head)
-+static void kvfree_rcu_local(struct rcu_head *head)
- {
- 	struct list_lru_memcg *mlru;
- 
-@@ -419,7 +419,7 @@ static int memcg_update_list_lru_node(struct list_lru_node *nlru,
- 	rcu_assign_pointer(nlru->memcg_lrus, new);
- 	spin_unlock_irq(&nlru->lock);
- 
--	call_rcu(&old->rcu, kvfree_rcu);
-+	call_rcu(&old->rcu, kvfree_rcu_local);
- 	return 0;
- }
- 
++/**
++ * kvfree_rcu() - kvfree an object after a grace period.
++ * @ptr:	pointer to kvfree
++ * @rhf:	the name of the struct rcu_head within the type of @ptr.
++ *
++ * Same as kfree_rcu(), just simple alias.
++ */
++#define kvfree_rcu(ptr, rhf) kfree_rcu(ptr, rhf)
++
+ /*
+  * Place this after a lock-acquisition primitive to guarantee that
+  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
 -- 
 2.20.1
 
