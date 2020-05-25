@@ -2,229 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC521E125F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 18:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF10B1E1263
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 18:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388929AbgEYQKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 12:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388556AbgEYQKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 12:10:50 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA83C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 09:10:50 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=vostro)
-        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <john.ogness@linutronix.de>)
-        id 1jdFgY-00059p-Mv; Mon, 25 May 2020 18:10:43 +0200
-From:   John Ogness <john.ogness@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 02/25] mm/swap: Don't abuse the seqcount latching API
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
-        <20200519214547.352050-3-a.darwish@linutronix.de>
-        <20200522145707.GO325280@hirez.programming.kicks-ass.net>
-Date:   Mon, 25 May 2020 18:10:40 +0200
-In-Reply-To: <20200522145707.GO325280@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Fri, 22 May 2020 16:57:07 +0200")
-Message-ID: <87y2pg9erj.fsf@vostro.fn.ogness.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S2391210AbgEYQK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 12:10:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388556AbgEYQK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 12:10:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D9A41AEC9;
+        Mon, 25 May 2020 16:10:58 +0000 (UTC)
+Subject: Re: [PATCH v3 09/19] mm: memcg/slab: charge individual slab objects
+ instead of pages
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-10-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <75328f78-117b-5042-f42e-5ef01dd93086@suse.cz>
+Date:   Mon, 25 May 2020 18:10:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+In-Reply-To: <20200422204708.2176080-10-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On 4/22/20 10:46 PM, Roman Gushchin wrote:
+> Switch to per-object accounting of non-root slab objects.
+> 
+> Charging is performed using obj_cgroup API in the pre_alloc hook.
+> Obj_cgroup is charged with the size of the object and the size
+> of metadata: as now it's the size of an obj_cgroup pointer.
+> If the amount of memory has been charged successfully, the actual
+> allocation code is executed. Otherwise, -ENOMEM is returned.
+> 
+> In the post_alloc hook if the actual allocation succeeded,
+> corresponding vmstats are bumped and the obj_cgroup pointer is saved.
+> Otherwise, the charge is canceled.
+> 
+> On the free path obj_cgroup pointer is obtained and used to uncharge
+> the size of the releasing object.
+> 
+> Memcg and lruvec counters are now representing only memory used
+> by active slab objects and do not include the free space. The free
+> space is shared and doesn't belong to any specific cgroup.
+> 
+> Global per-node slab vmstats are still modified from (un)charge_slab_page()
+> functions. The idea is to keep all slab pages accounted as slab pages
+> on system level.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Hi,
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-This optimization is broken. The main concern here: Is it possible that
-lru_add_drain_all() _would_ have drained pagevec X, but then aborted
-because another lru_add_drain_all() is underway and that other task will
-_not_ drain pagevec X? I claim the answer is yes!
+Suggestion below:
 
-My suggested changes are inline below.
+> @@ -568,32 +548,33 @@ static __always_inline int charge_slab_page(struct page *page,
+>  					    gfp_t gfp, int order,
+>  					    struct kmem_cache *s)
+>  {
+> -	int ret;
+> -
+> -	if (is_root_cache(s)) {
+> -		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+> -				    PAGE_SIZE << order);
+> -		return 0;
+> -	}
+> +#ifdef CONFIG_MEMCG_KMEM
+> +	if (!is_root_cache(s)) {
 
-I attached a litmus test to verify it.
+This could also benefit from memcg_kmem_enabled() static key test AFAICS. Maybe
+even have a wrapper for both tests together?
 
-On 2020-05-22, Peter Zijlstra <peterz@infradead.org> wrote:
-> On Tue, May 19, 2020 at 11:45:24PM +0200, Ahmed S. Darwish wrote:
->> @@ -713,10 +713,20 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
->>   */
->>  void lru_add_drain_all(void)
->>  {
->
->> +	static unsigned int lru_drain_gen;
->>  	static struct cpumask has_work;
->> +	static DEFINE_MUTEX(lock);
->> +	int cpu, this_gen;
->>  
->>  	/*
->>  	 * Make sure nobody triggers this path before mm_percpu_wq is fully
->> @@ -725,21 +735,48 @@ void lru_add_drain_all(void)
->>  	if (WARN_ON(!mm_percpu_wq))
->>  		return;
->>  
+> +		int ret;
+>  
+> -	ret = memcg_alloc_page_obj_cgroups(page, gfp, objs_per_slab(s));
+> -	if (ret)
+> -		return ret;
+> +		ret = memcg_alloc_page_obj_cgroups(page, gfp, objs_per_slab(s));
 
-An smp_mb() is needed here.
+You created memcg_alloc_page_obj_cgroups() empty variant for !CONFIG_MEMCG_KMEM
+but now the only caller is under CONFIG_MEMCG_KMEM.
 
-	/*
-	 * Guarantee the pagevec counter stores visible by
-	 * this CPU are visible to other CPUs before loading
-	 * the current drain generation.
-	 */
-	smp_mb();
+> +		if (ret)
+> +			return ret;
+>  
+> -	return memcg_charge_slab(page, gfp, order, s);
+> +		percpu_ref_get_many(&s->memcg_params.refcnt, 1 << order);
 
->> +	this_gen = READ_ONCE(lru_drain_gen);
->> +	smp_rmb();
->
-> 	this_gen = smp_load_acquire(&lru_drain_gen);
->>  
->>  	mutex_lock(&lock);
->>  
->>  	/*
->> +	 * (C) Exit the draining operation if a newer generation, from another
->> +	 * lru_add_drain_all(), was already scheduled for draining. Check (A).
->>  	 */
->> +	if (unlikely(this_gen != lru_drain_gen))
->>  		goto done;
->>  
->
->> +	WRITE_ONCE(lru_drain_gen, lru_drain_gen + 1);
->> +	smp_wmb();
+Perhaps moving this refcount into memcg_alloc_page_obj_cgroups() (maybe the name
+should be different then) will allow you to not add #ifdef CONFIG_MEMCG_KMEM in
+this function.
 
-Instead of smp_wmb(), this needs to be a full memory barrier.
+Maybe this is all moot after patch 12/19, will find out :)
 
-	/*
-	 * Guarantee the new drain generation is stored before
-	 * loading the pagevec counters.
-	 */
-	smp_mb();
+> +	}
+> +#endif
+> +	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+> +			    PAGE_SIZE << order);
+> +	return 0;
+>  }
+>  
+>  static __always_inline void uncharge_slab_page(struct page *page, int order,
+>  					       struct kmem_cache *s)
+>  {
+> -	if (is_root_cache(s)) {
+> -		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+> -				    -(PAGE_SIZE << order));
+> -		return;
+> +#ifdef CONFIG_MEMCG_KMEM
+> +	if (!is_root_cache(s)) {
 
-> You can leave this smp_wmb() out and rely on the smp_mb() implied by
-> queue_work_on()'s test_and_set_bit().
->
->>  	cpumask_clear(&has_work);
->> -
->>  	for_each_online_cpu(cpu) {
->>  		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
->>  
->
-> While you're here, do:
->
-> 	s/cpumask_set_cpu/__&/
->
->> @@ -766,7 +803,7 @@ void lru_add_drain_all(void)
->>  {
->>  	lru_add_drain();
->>  }
->> -#endif
->> +#endif /* CONFIG_SMP */
->>  
->>  /**
->>   * release_pages - batched put_page()
+Everything from above also applies here.
 
-For the litmus test:
-
-1:rx=0             (P1 did not see the pagevec counter)
-2:rx=1             (P2 _would_ have seen the pagevec counter)
-2:ry1=0 /\ 2:ry2=1 (P2 aborted due to optimization)
-
-Changing the smp_mb() back to smp_wmb() in P1 and removing the smp_mb()
-in P2 represents this patch. And it shows that sometimes P2 will abort
-even though it would have drained the pagevec and P1 did not drain the
-pagevec.
-
-This is ugly as hell. And there maybe other memory barrier types to make
-it pretty. But as is, memory barriers are missing.
-
-John Ogness
+> +		memcg_free_page_obj_cgroups(page);
+> +		percpu_ref_put_many(&s->memcg_params.refcnt, 1 << order);
+>  	}
+> -
+> -	memcg_free_page_obj_cgroups(page);
+> -	memcg_uncharge_slab(page, order, s);
+> +#endif
+> +	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+> +			    -(PAGE_SIZE << order));
+>  }
+>  
+>  static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
 
 
---=-=-=
-Content-Type: text/plain
-Content-Disposition: attachment; filename=lru_add_drain_all.litmus
-
-C lru_add_drain_all
-
-(*
- * x is a pagevec counter
- * y is @lru_drain_gen
- * z is @lock
- *)
-
-{ }
-
-P0(int *x)
-{
-	// mark pagevec for draining
-	WRITE_ONCE(*x, 1);
-}
-
-P1(int *x, int *y, int *z)
-{
-	int rx;
-	int rz;
-
-	// mutex_lock(&lock);
-	rz = cmpxchg_acquire(z, 0, 1);
-	if (rz == 0) {
-
-		// WRITE_ONCE(lru_drain_gen, lru_drain_gen + 1);
-		WRITE_ONCE(*y, 1);
-
-		// guarantee lru_drain_gen store before loading pagevec
-		smp_mb();
-
-		// if (pagevec_count(...))
-		rx = READ_ONCE(*x);
-
-		// mutex_unlock(&lock);
-		rz = cmpxchg_release(z, 1, 2);
-	}
-}
-
-P2(int *x, int *y, int *z)
-{
-	int rx;
-	int ry1;
-	int ry2;
-	int rz;
-
-	// the pagevec counter as visible now to this CPU
-	rx = READ_ONCE(*x);
-
-	// guarantee pagevec store before loading lru_drain_gen
-	smp_mb();
-
-	// this_gen = READ_ONCE(lru_drain_gen); smp_rmb();
-	ry1 = smp_load_acquire(y);
-
-	// mutex_lock(&lock) - acquired after P1
-	rz = cmpxchg_acquire(z, 2, 3);
-	if (rz == 2) {
-
-		// if (unlikely(this_gen != lru_drain_gen))
-		ry2 = READ_ONCE(*y);
-	}
-}
-
-locations [x; y; z]
-exists (1:rx=0 /\ 2:rx=1 /\ 2:ry1=0 /\ 2:ry2=1)
-
---=-=-=--
