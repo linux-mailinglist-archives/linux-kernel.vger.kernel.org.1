@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145791E0564
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249621E056E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 05:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388862AbgEYDlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 23:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388397AbgEYDlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 23:41:50 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F6FC05BD43;
-        Sun, 24 May 2020 20:41:49 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d10so8128056pgn.4;
-        Sun, 24 May 2020 20:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Eu+Ho/X9r7MZN52F/RomcQQtgjiQ+X/m9AkGhdRXtC0=;
-        b=PmqbvbjfQbPp8aCgYV4adtOizlxzzoYkkP3BmW00smgp2fP0Bgb6gdyaUQ4hSIboyv
-         v17woXHMmCbO+WITpNoew3ZTtwk+GINDY8hwKAcYqbhKR5mfY5n8Sx6wOC3DKlVsJ254
-         LC94GQMZAP7XMrauRY3joLeFA5EyYlu3MTIORwdh5K6lKQ4XbdESZQCBS+FTPbumlf4A
-         WElSv97Cre7PEAgs33dgrOqpa7Caw6r+g2WUAH+gf6a6dTsV05j64XII4l4nOrXjlXB5
-         lVAnOeQ9wLz5J4uOpLCjlTipqGfMETbFE4vqCnbX2n8GsVykhRXpzBRU8Xuzqeu9NO5H
-         w0GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Eu+Ho/X9r7MZN52F/RomcQQtgjiQ+X/m9AkGhdRXtC0=;
-        b=kciVcyo6R/errJzOSD3k5B6E1NqdfC2Wv7xo1WrvNL2JTNHO0uZQk2xWBMIT3amg8v
-         itxZJxbhvSXZ1wO1LtsLoFqeQsE0LhUDx3RjURQkCDB7ePZ3NT89jSCHvG2M45koCnPC
-         v4iwlMekVYx10W5Ly8nt4oCh57VPcVwX0mW638fKH8eqgTsbJ/uiG28wJcs+uOePMIs3
-         n/pDZ9PESdlizYCYOj/OQR10dG0VXBHKDgEgqkBiQnj0ahhKqFVCYaiuLL/bVJ+Jmi0a
-         vrcxB5ZClh85CIGFdudoujLJ2f+4u/jCq0CV1mRoiCSjDS6fIkpNZia9o4D9k0DvCp+h
-         EM4Q==
-X-Gm-Message-State: AOAM533UwijgiZdDcHhBVgxbZmUYniLRkYp5sjdDdbn/AFFlrhstz/se
-        qXd2FAkCHj0mV2wnRUKfUsk=
-X-Google-Smtp-Source: ABdhPJxIuHMaJzv5SBEYVh6aGCYw3zkHcCsCQujjuOk1hJAg5OSAvXpvA0RjBvenltA1HqrMvGbYhQ==
-X-Received: by 2002:a65:41c8:: with SMTP id b8mr23889318pgq.265.1590378108951;
-        Sun, 24 May 2020 20:41:48 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([103.206.191.44])
-        by smtp.gmail.com with ESMTPSA id 7sm11981695pfc.203.2020.05.24.20.41.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 24 May 2020 20:41:48 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     robh+dt@kernel.org, p.zabel@pengutronix.de,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, mturquette@baylibre.com, sboyd@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
-        dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v5 8/8] spi: flags 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX' can't be coexit with 'SPI_3WIRE' mode
-Date:   Mon, 25 May 2020 11:41:02 +0800
-Message-Id: <1590378062-7965-9-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1590378062-7965-1-git-send-email-dillon.minfei@gmail.com>
-References: <broonie@kernel.org>
- <1590378062-7965-1-git-send-email-dillon.minfei@gmail.com>
+        id S2388543AbgEYDpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 23:45:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5276 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388211AbgEYDpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 23:45:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 55077FD852DCAC4B1805;
+        Mon, 25 May 2020 11:45:32 +0800 (CST)
+Received: from [10.174.151.115] (10.174.151.115) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 25 May
+ 2020 11:45:24 +0800
+Subject: Re: [PATCH 1/2] crypto: virtio: fix src/dst scatterlist calculation
+To:     Jason Wang <jasowang@redhat.com>, <linux-crypto@vger.kernel.org>
+CC:     Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        LABBE Corentin <clabbe@baylibre.com>
+References: <20200525005627.707-1-longpeng2@huawei.com>
+ <20200525005627.707-2-longpeng2@huawei.com>
+ <25cff618-601c-e899-a3cc-b289863a7407@redhat.com>
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+Message-ID: <bd31398c-e81b-993f-99ae-37dc364b0e40@huawei.com>
+Date:   Mon, 25 May 2020 11:45:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <25cff618-601c-e899-a3cc-b289863a7407@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.151.115]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+Hi Jason,
 
-since chip spi driver need get the transfer direction by 'tx_buf' and
-'rx_buf' of 'struct spi_transfer' in 'SPI_3WIRE' mode.
+On 2020/5/25 11:12, Jason Wang wrote:
+> 
+> On 2020/5/25 上午8:56, Longpeng(Mike) wrote:
+>> The system will crash when we insmod crypto/tcrypt.ko whit mode=38.
+>>
+>> Usually the next entry of one sg will be @sg@ + 1, but if this sg element
+>> is part of a chained scatterlist, it could jump to the start of a new
+>> scatterlist array. Let's fix it by sg_next() on calculation of src/dst
+>> scatterlist.
+>>
+>> BTW I add a check for sg_nents_for_len() its return value since
+>> sg_nents_for_len() function could fail.
+>>
+>> Cc: Gonglei <arei.gonglei@huawei.com>
+>> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: virtualization@lists.linux-foundation.org
+>> Cc: linux-kernel@vger.kernel.org
+>>
+>> Reported-by: LABBE Corentin <clabbe@baylibre.com>
+>> Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+>> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+>> ---
+>>   drivers/crypto/virtio/virtio_crypto_algs.c | 14 ++++++++++----
+>>   1 file changed, 10 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c
+>> b/drivers/crypto/virtio/virtio_crypto_algs.c
+>> index 372babb44112..2fa1129f96d6 100644
+>> --- a/drivers/crypto/virtio/virtio_crypto_algs.c
+>> +++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+>> @@ -359,8 +359,14 @@ __virtio_crypto_skcipher_do_req(struct
+>> virtio_crypto_sym_request *vc_sym_req,
+>>       unsigned int num_out = 0, num_in = 0;
+>>       int sg_total;
+>>       uint8_t *iv;
+>> +    struct scatterlist *sg;
+>>         src_nents = sg_nents_for_len(req->src, req->cryptlen);
+>> +    if (src_nents < 0) {
+>> +        pr_err("Invalid number of src SG.\n");
+>> +        return src_nents;
+>> +    }
+>> +
+>>       dst_nents = sg_nents(req->dst);
+>>         pr_debug("virtio_crypto: Number of sgs (src_nents: %d, dst_nents: %d)\n",
+>> @@ -446,12 +452,12 @@ __virtio_crypto_skcipher_do_req(struct
+>> virtio_crypto_sym_request *vc_sym_req,
+>>       vc_sym_req->iv = iv;
+>>         /* Source data */
+>> -    for (i = 0; i < src_nents; i++)
+>> -        sgs[num_out++] = &req->src[i];
+>> +    for (sg = req->src, i = 0; sg && i < src_nents; sg = sg_next(sg), i++)
+> 
+> 
+> Any reason sg is checked here?
+> 
+> I believe it should be checked in sg_nents_for_len().
+> 
+Do you means：
+for (sg = req->src, i = 0; i < src_nents; sg = sg_next(sg), i++) ?
 
-so, we need bypass 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX'
-feature in 'SPI_3WIRE' mode
+> 
+>> +        sgs[num_out++] = sg;
+>>         /* Destination data */
+>> -    for (i = 0; i < dst_nents; i++)
+>> -        sgs[num_out + num_in++] = &req->dst[i];
+>> +    for (sg = req->dst, i = 0; sg && i < dst_nents; sg = sg_next(sg), i++)
+>> +        sgs[num_out + num_in++] = sg;
+> 
+> 
+> I believe sg should be checked in sg_nents().
+>
+How about
+for (sg = req->dst; sg; sg = sg_next(sg)) ?
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
- drivers/spi/spi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Thanks
+> 
+> 
+>>         /* Status */
+>>       sg_init_one(&status_sg, &vc_req->status, sizeof(vc_req->status));
+> 
+> .
+> 
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index c92c894..f884411 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1023,7 +1023,8 @@ static int spi_map_msg(struct spi_controller *ctlr, struct spi_message *msg)
- 	void *tmp;
- 	unsigned int max_tx, max_rx;
- 
--	if (ctlr->flags & (SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX)) {
-+	if ((ctlr->flags & (SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX))
-+		&& !(msg->spi->mode & SPI_3WIRE)) {
- 		max_tx = 0;
- 		max_rx = 0;
- 
 -- 
-2.7.4
-
+---
+Regards,
+Longpeng(Mike)
