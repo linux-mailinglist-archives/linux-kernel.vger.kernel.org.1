@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7DB1E0C04
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109191E0C08
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 12:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389840AbgEYKl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 06:41:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60988 "EHLO mx2.suse.de"
+        id S2389885AbgEYKmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 06:42:33 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:44040 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389484AbgEYKl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 06:41:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 45BB8AF0B;
-        Mon, 25 May 2020 10:41:58 +0000 (UTC)
-Subject: Re: [PATCH v5 2/3] dt-bindings: arm: actions: Document Caninos Loucos
- Labrador
-To:     Matheus Castello <matheus@castello.eng.br>,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org
-Cc:     mark.rutland@arm.com, edgar.righi@lsitec.org.br,
-        igor.lima@lsitec.org.br, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org, Rob Herring <robh@kernel.org>
-References: <20200525013008.108750-1-matheus@castello.eng.br>
- <20200525013008.108750-3-matheus@castello.eng.br>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <8fc7b0d0-6516-ecd4-ce9c-a63a3cba7e9a@suse.de>
-Date:   Mon, 25 May 2020 12:41:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2389484AbgEYKma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 06:42:30 -0400
+Received: from zn.tnic (p200300ec2f06f3002884bb6a9703d441.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:f300:2884:bb6a:9703:d441])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 219B11EC01E0;
+        Mon, 25 May 2020 12:42:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1590403349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=gH4bP3FpmGz5Nq14hw3N4EAS3Ec269uNGGdhLGzkanY=;
+        b=IZ6yJIsvSqBQS9ojamiaHizLB7UOt0spNwu14VXHC8MyvLLRre6+r8SQcCVRy0fsSTrNlG
+        QcAyMmRuqFUdYT5EbzFb2lWjO8LDP9xO9cFgdFmqLw1qD6g3pcJgSQAIRobS7eegmmKelq
+        0z6xPIO1gaxGn6NFrZYWFnCVSMcMBb4=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/apic: Make TSC deadline timer detection message visible
+Date:   Mon, 25 May 2020 12:42:18 +0200
+Message-Id: <20200525104218.27018-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200525013008.108750-3-matheus@castello.eng.br>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Borislav Petkov <bp@suse.de>
 
-Am 25.05.20 um 03:30 schrieb Matheus Castello:
-> Update the documentation to add the Caninos Loucos Labrador. Labrador
-> project consists of a computer on module based on the Actions Semi S500
-> processor and the Labrador base board.
-> 
-> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->   Documentation/devicetree/bindings/arm/actions.yaml | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
-> index ace3fdaa8396..2187e1c5bc73 100644
-> --- a/Documentation/devicetree/bindings/arm/actions.yaml
-> +++ b/Documentation/devicetree/bindings/arm/actions.yaml
-> @@ -19,6 +19,11 @@ properties:
->                 - allo,sparky # Allo.com Sparky
->                 - cubietech,cubieboard6 # Cubietech CubieBoard6
->             - const: actions,s500
-> +      - items:
-> +          - enum:
-> +              - caninos,labrador-v2 # Labrador Core v2
-> +              - caninos,labrador-base-m # Labrador Base Board M v1
+The commit
 
-This enum still strikes me as wrong, it means either-or. (Was planning 
-to look into it myself, but no time yet...) caninos,labrador-v2 should 
-be a const one level down: board, SoM, SoC from most specific to most 
-generic. Compare Guitar below.
+  c84cb3735fd5 ("x86/apic: Move TSC deadline timer debug printk")
 
-> +          - const: actions,s500
->         - items:
->             - enum:
->                 - lemaker,guitar-bb-rev-b # LeMaker Guitar Base Board rev. B
+removed the message which said that the deadline timer was enabled.
+It added a pr_debug() message which is issued when deadline timer
+validation succeeds.
 
-Regards,
-Andreas
+Well, issued only when CONFIG_DYNAMIC_DEBUG is enabled - otherwise
+pr_debug() calls get optimized away if DEBUG is not defined in the
+compilation unit.
 
+Therefore, make the above message pr_info() so that it is visible in
+dmesg.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/kernel/apic/apic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 4b1d31be50b4..bf4acb0b5365 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2060,7 +2060,7 @@ void __init init_apic_mappings(void)
+ 	unsigned int new_apicid;
+ 
+ 	if (apic_validate_deadline_timer())
+-		pr_debug("TSC deadline timer available\n");
++		pr_info("TSC deadline timer available\n");
+ 
+ 	if (x2apic_mode) {
+ 		boot_cpu_physical_apicid = read_apic_id();
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+2.21.0
+
