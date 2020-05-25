@@ -2,173 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FADB1E0424
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 02:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10F31E042B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 02:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388427AbgEYAXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 20:23:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        id S2388675AbgEYA2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 May 2020 20:28:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:42278 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388300AbgEYAX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 20:23:28 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6BBA208A7;
-        Mon, 25 May 2020 00:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590366207;
-        bh=3fQWdb2Uv3qePojZmO+4tSxfnjltQG0nFeUsHQam6o4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SSsZhLY9EfC5qU/BYZB5juZ2bjSbJoVAyMNtCB7kiCirQUkaYGHR55KJ0c1fF7/Ef
-         VbIV+wO8v8USBpPo7WhacJSxyY2972LW49K4/yNGsQd4kX8QkJ8G82crzuzRp9LtTq
-         tAeBF9wRdr/GFOIc6eBUm4nZKEJx0SEgWEXwPRpQ=
-Received: by mail-ej1-f50.google.com with SMTP id a2so18816543ejb.10;
-        Sun, 24 May 2020 17:23:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530S26jD8Jr8H/JpKR5g8LM3hmU2WPPknN709idSyIpM0dG2A4p0
-        AUrN7kwYg33mzU3mLZEey2lI130fXxGH/RyjHQ==
-X-Google-Smtp-Source: ABdhPJwUQS45aN6Ho1zx5rWy7SPdbMvS7/nnetQcqChrnsfFeME43g1GOq9VgR+o2PMTCTxZRcZhBKuPj3a+20kllCw=
-X-Received: by 2002:a17:906:3041:: with SMTP id d1mr17295243ejd.7.1590366205137;
- Sun, 24 May 2020 17:23:25 -0700 (PDT)
+        id S2388431AbgEYA2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 May 2020 20:28:38 -0400
+IronPort-SDR: Q+sqmPFbY7fsEz7fM8NCqg+lF9nsInxVQd/08HZCZau7Zp+w/IpDb+MblGW9Y05j9hV4uMA7U4
+ KZ+Ye/1N2CGw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2020 17:28:37 -0700
+IronPort-SDR: mfQ0w6jUhO2PVXTR+MJRnWR4nIYaT5bMdEZggBXRsFlEdbilxTciLj1zp3to+hjJnFNHOh2vpv
+ fCb2m4PYJHmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,431,1583222400"; 
+   d="scan'208";a="265995906"
+Received: from shuliang-mobl1.ccr.corp.intel.com (HELO yhuang-mobile.ccr.corp.intel.com) ([10.254.212.13])
+  by orsmga003.jf.intel.com with ESMTP; 24 May 2020 17:28:34 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH -V3] swap: Reduce lock contention on swap cache from swap slots allocation
+Date:   Mon, 25 May 2020 08:26:48 +0800
+Message-Id: <20200525002648.336325-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1583664775-19382-1-git-send-email-dennis-yc.hsieh@mediatek.com>
- <1583664775-19382-11-git-send-email-dennis-yc.hsieh@mediatek.com> <5d6b61b2-23c9-647f-fa22-73e779010bd8@gmail.com>
-In-Reply-To: <5d6b61b2-23c9-647f-fa22-73e779010bd8@gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 25 May 2020 08:23:13 +0800
-X-Gmail-Original-Message-ID: <CAAOTY___HNcRPr8Jq-wNPO_G9pLVjf2D7ezbpPcGbXVNYy1_nA@mail.gmail.com>
-Message-ID: <CAAOTY___HNcRPr8Jq-wNPO_G9pLVjf2D7ezbpPcGbXVNYy1_nA@mail.gmail.com>
-Subject: Re: [PATCH v5 10/13] soc: mediatek: cmdq: export finalize function
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        wsd_upstream@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        HS Liao <hs.liao@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+In some swap scalability test, it is found that there are heavy lock
+contention on swap cache even if we have split one swap cache radix
+tree per swap device to one swap cache radix tree every 64 MB trunk in
+commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks").
 
-Matthias Brugger <matthias.bgg@gmail.com> =E6=96=BC 2020=E5=B9=B45=E6=9C=88=
-17=E6=97=A5 =E9=80=B1=E6=97=A5 =E4=B8=8A=E5=8D=882:22=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
->
->
-> On 08/03/2020 11:52, Dennis YC Hsieh wrote:
-> > Export finalize function to client which helps append eoc and jump
-> > command to pkt. Let client decide call finalize or not.
-> >
-> > Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-> > Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> > ---
-> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 1 +
-> >  drivers/soc/mediatek/mtk-cmdq-helper.c  | 7 ++-----
-> >  include/linux/soc/mediatek/mtk-cmdq.h   | 8 ++++++++
-> >  3 files changed, 11 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/=
-mediatek/mtk_drm_crtc.c
-> > index 0dfcd1787e65..7daaabc26eb1 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> > @@ -490,6 +490,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_c=
-rtc *mtk_crtc)
-> >               cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
-> >               cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event);
-> >               mtk_crtc_ddp_config(crtc, cmdq_handle);
-> > +             cmdq_pkt_finalize(cmdq_handle);
-> >               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handl=
-e);
-> >       }
-> >  #endif
->
-> This should be a independent patch.
-> Other then that patch looks good.
+The reason is as follow.  After the swap device becomes fragmented so
+that there's no free swap cluster, the swap device will be scanned
+linearly to find the free swap slots.  swap_info_struct->cluster_next
+is the next scanning base that is shared by all CPUs.  So nearby free
+swap slots will be allocated for different CPUs.  The probability for
+multiple CPUs to operate on the same 64 MB trunk is high.  This causes
+the lock contention on the swap cache.
 
-Apply only drm part or only cmdq helpr part, it would be abnormal.
-Shall we seperate this patch?
-Or seperate it but make sure these two patches be in the same tree?
+To solve the issue, in this patch, for SSD swap device, a percpu
+version next scanning base (cluster_next_cpu) is added.  Every CPU
+will use its own per-cpu next scanning base.  And after finishing
+scanning a 64MB trunk, the per-cpu scanning base will be changed to
+the beginning of another randomly selected 64MB trunk.  In this way,
+the probability for multiple CPUs to operate on the same 64 MB trunk
+is reduced greatly.  Thus the lock contention is reduced too.  For
+HDD, because sequential access is more important for IO performance,
+the original shared next scanning base is used.
 
-Regards,
-Chun-Kuang.
+To test the patch, we have run 16-process pmbench memory benchmark on
+a 2-socket server machine with 48 cores.  One ram disk is configured
+as the swap device per socket.  The pmbench working-set size is much
+larger than the available memory so that swapping is triggered.  The
+memory read/write ratio is 80/20 and the accessing pattern is random.
+In the original implementation, the lock contention on the swap cache
+is heavy.  The perf profiling data of the lock contention code path is
+as following,
 
->
-> > diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/media=
-tek/mtk-cmdq-helper.c
-> > index a9ebbabb7439..59bc1164b411 100644
-> > --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> > +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> > @@ -372,7 +372,7 @@ int cmdq_pkt_assign(struct cmdq_pkt *pkt, u16 reg_i=
-dx, u32 value)
-> >  }
-> >  EXPORT_SYMBOL(cmdq_pkt_assign);
-> >
-> > -static int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
-> > +int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
-> >  {
-> >       struct cmdq_instruction inst =3D { {0} };
-> >       int err;
-> > @@ -392,6 +392,7 @@ static int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
-> >
-> >       return err;
-> >  }
-> > +EXPORT_SYMBOL(cmdq_pkt_finalize);
-> >
-> >  static void cmdq_pkt_flush_async_cb(struct cmdq_cb_data data)
-> >  {
-> > @@ -426,10 +427,6 @@ int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmd=
-q_async_flush_cb cb,
-> >       unsigned long flags =3D 0;
-> >       struct cmdq_client *client =3D (struct cmdq_client *)pkt->cl;
-> >
-> > -     err =3D cmdq_pkt_finalize(pkt);
-> > -     if (err < 0)
-> > -             return err;
-> > -
-> >       pkt->cb.cb =3D cb;
-> >       pkt->cb.data =3D data;
-> >       pkt->async_cb.cb =3D cmdq_pkt_flush_async_cb;
-> > diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/=
-mediatek/mtk-cmdq.h
-> > index fec292aac83c..99e77155f967 100644
-> > --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> > +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> > @@ -213,6 +213,14 @@ int cmdq_pkt_poll_mask(struct cmdq_pkt *pkt, u8 su=
-bsys,
-> >   */
-> >  int cmdq_pkt_assign(struct cmdq_pkt *pkt, u16 reg_idx, u32 value);
-> >
-> > +/**
-> > + * cmdq_pkt_finalize() - Append EOC and jump command to pkt.
-> > + * @pkt:     the CMDQ packet
-> > + *
-> > + * Return: 0 for success; else the error code is returned
-> > + */
-> > +int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
-> > +
-> >  /**
-> >   * cmdq_pkt_flush_async() - trigger CMDQ to asynchronously execute the=
- CMDQ
-> >   *                          packet and call back at the end of done pa=
-cket
-> >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+_raw_spin_lock_irq.add_to_swap_cache.add_to_swap.shrink_page_list:      7.91
+_raw_spin_lock_irqsave.__remove_mapping.shrink_page_list:               7.11
+_raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 2.51
+_raw_spin_lock_irqsave.swap_cgroup_record.mem_cgroup_uncharge_swap:     1.66
+_raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:      1.29
+_raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages:         1.03
+_raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node:        0.93
+
+After applying this patch, it becomes,
+
+_raw_spin_lock.swapcache_free_entries.free_swap_slot.__swap_entry_free: 3.58
+_raw_spin_lock_irq.shrink_inactive_list.shrink_lruvec.shrink_node:      2.3
+_raw_spin_lock_irqsave.swap_cgroup_record.mem_cgroup_uncharge_swap:     2.26
+_raw_spin_lock_irq.shrink_active_list.shrink_lruvec.shrink_node:        1.8
+_raw_spin_lock.free_pcppages_bulk.drain_pages_zone.drain_pages:         1.19
+
+The lock contention on the swap cache is almost eliminated.
+
+And the pmbench score increases 18.5%.  The swapin throughput
+increases 18.7% from 2.96 GB/s to 3.51 GB/s.  While the swapout
+throughput increases 18.5% from 2.99 GB/s to 3.54 GB/s.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+---
+
+Changelog:
+
+v3:
+
+- Fix cluster_next_cpu allocation and freeing.  Thanks Daniel's comments!
+
+v2:
+
+- Rebased on latest mmotm tree (v5.7-rc5-mmots-2020-05-15-16-36), the
+  mem cgroup change has influence on performance data.
+
+- Fix cluster_next_cpu initialization per Andrew and Daniel's comments.
+
+- Change per-cpu scan base every 64MB per Andrew's comments.
+
+---
+ include/linux/swap.h |  1 +
+ mm/swapfile.c        | 58 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 55 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index b42fb47d8cbe..e96820fb7472 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -252,6 +252,7 @@ struct swap_info_struct {
+ 	unsigned int inuse_pages;	/* number of those currently in use */
+ 	unsigned int cluster_next;	/* likely index for next allocation */
+ 	unsigned int cluster_nr;	/* countdown to next cluster search */
++	unsigned int __percpu *cluster_next_cpu; /*percpu index for next allocation */
+ 	struct percpu_cluster __percpu *percpu_cluster; /* per cpu's swap location */
+ 	struct rb_root swap_extent_root;/* root of the swap extent rbtree */
+ 	struct block_device *bdev;	/* swap device or bdev of swap file */
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 423c234aca15..0abd93d2a4fc 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -615,7 +615,8 @@ static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+ 			 * discarding, do discard now and reclaim them
+ 			 */
+ 			swap_do_scheduled_discard(si);
+-			*scan_base = *offset = si->cluster_next;
++			*scan_base = this_cpu_read(*si->cluster_next_cpu);
++			*offset = *scan_base;
+ 			goto new_cluster;
+ 		} else
+ 			return false;
+@@ -721,6 +722,34 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+ 	}
+ }
+ 
++static void set_cluster_next(struct swap_info_struct *si, unsigned long next)
++{
++	unsigned long prev;
++
++	if (!(si->flags & SWP_SOLIDSTATE)) {
++		si->cluster_next = next;
++		return;
++	}
++
++	prev = this_cpu_read(*si->cluster_next_cpu);
++	/*
++	 * Cross the swap address space size aligned trunk, choose
++	 * another trunk randomly to avoid lock contention on swap
++	 * address space if possible.
++	 */
++	if ((prev >> SWAP_ADDRESS_SPACE_SHIFT) !=
++	    (next >> SWAP_ADDRESS_SPACE_SHIFT)) {
++		/* No free swap slots available */
++		if (si->highest_bit <= si->lowest_bit)
++			return;
++		next = si->lowest_bit +
++			prandom_u32_max(si->highest_bit - si->lowest_bit + 1);
++		next = ALIGN(next, SWAP_ADDRESS_SPACE_PAGES);
++		next = max_t(unsigned int, next, si->lowest_bit);
++	}
++	this_cpu_write(*si->cluster_next_cpu, next);
++}
++
+ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 			       unsigned char usage, int nr,
+ 			       swp_entry_t slots[])
+@@ -745,7 +774,16 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	 */
+ 
+ 	si->flags += SWP_SCANNING;
+-	scan_base = offset = si->cluster_next;
++	/*
++	 * Use percpu scan base for SSD to reduce lock contention on
++	 * cluster and swap cache.  For HDD, sequential access is more
++	 * important.
++	 */
++	if (si->flags & SWP_SOLIDSTATE)
++		scan_base = this_cpu_read(*si->cluster_next_cpu);
++	else
++		scan_base = si->cluster_next;
++	offset = scan_base;
+ 
+ 	/* SSD algorithm */
+ 	if (si->cluster_info) {
+@@ -834,7 +872,6 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	unlock_cluster(ci);
+ 
+ 	swap_range_alloc(si, offset, 1);
+-	si->cluster_next = offset + 1;
+ 	slots[n_ret++] = swp_entry(si->type, offset);
+ 
+ 	/* got enough slots or reach max slots? */
+@@ -883,6 +920,7 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 	}
+ 
+ done:
++	set_cluster_next(si, offset + 1);
+ 	si->flags -= SWP_SCANNING;
+ 	return n_ret;
+ 
+@@ -2646,6 +2684,8 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 	mutex_unlock(&swapon_mutex);
+ 	free_percpu(p->percpu_cluster);
+ 	p->percpu_cluster = NULL;
++	free_percpu(p->cluster_next_cpu);
++	p->cluster_next_cpu = NULL;
+ 	vfree(swap_map);
+ 	kvfree(cluster_info);
+ 	kvfree(frontswap_map);
+@@ -3198,11 +3238,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		unsigned long ci, nr_cluster;
+ 
+ 		p->flags |= SWP_SOLIDSTATE;
++		p->cluster_next_cpu = alloc_percpu(unsigned int);
++		if (!p->cluster_next_cpu) {
++			error = -ENOMEM;
++			goto bad_swap_unlock_inode;
++		}
+ 		/*
+ 		 * select a random position to start with to help wear leveling
+ 		 * SSD
+ 		 */
+-		p->cluster_next = 1 + prandom_u32_max(p->highest_bit);
++		for_each_possible_cpu(cpu) {
++			per_cpu(*p->cluster_next_cpu, cpu) =
++				1 + prandom_u32_max(p->highest_bit);
++		}
+ 		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+ 
+ 		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+@@ -3318,6 +3366,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ bad_swap:
+ 	free_percpu(p->percpu_cluster);
+ 	p->percpu_cluster = NULL;
++	free_percpu(p->cluster_next_cpu);
++	p->cluster_next_cpu = NULL;
+ 	if (inode && S_ISBLK(inode->i_mode) && p->bdev) {
+ 		set_blocksize(p->bdev, p->old_block_size);
+ 		blkdev_put(p->bdev, FMODE_READ | FMODE_WRITE | FMODE_EXCL);
+-- 
+2.26.2
+
