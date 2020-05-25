@@ -2,140 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA871E09AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11E91E09A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 11:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389311AbgEYJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 05:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60894 "EHLO mail.kernel.org"
+        id S2389242AbgEYJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 05:07:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57230 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389294AbgEYJHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 05:07:23 -0400
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C1A42084C;
-        Mon, 25 May 2020 09:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590397642;
-        bh=xDu8dLlglr8K91hawwE4cfFpH4NGPUCe5IF8bxHut2s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=upEMwLfGG5pi9p3K+vxuXs0az7TTBHDo3uDDF39m77SbroYEeZD/9pMK4LQikloap
-         8CL2mVxo9pGdax86qxQdcF9OuLcvTsUZDZ0epvACsdnVbtxrucAkIAkdFjlth9FrD5
-         g+D4mvILxfAzLGL1l4SxRtW6mkFw/KD3ZUTdkBEs=
-Received: by mail-io1-f49.google.com with SMTP id p20so4563429iop.11;
-        Mon, 25 May 2020 02:07:22 -0700 (PDT)
-X-Gm-Message-State: AOAM5336C0Y+mSontXSUUPqg/mgEscLEZLSQvgLZuTMlykGbwjlYgXHB
-        SZZEZQVz4GgFAimIjHAvQgZJjMmzUTi9iyaREe8=
-X-Google-Smtp-Source: ABdhPJyCtr20yxFYDZawW3EBVKQBnR7JS6BmYQvfftEGhtPaFgT0QoTcn8YZlJtxk8v/BozcEBSD/6TfBBAMnfTAchU=
-X-Received: by 2002:a02:3341:: with SMTP id k1mr19168056jak.74.1590397641457;
- Mon, 25 May 2020 02:07:21 -0700 (PDT)
+        id S2388611AbgEYJHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 05:07:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7B9BCACAC;
+        Mon, 25 May 2020 09:07:19 +0000 (UTC)
+Date:   Mon, 25 May 2020 11:07:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] printk: Remove pr_cont_once()
+Message-ID: <20200525090714.GD5300@linux-b0ei>
+References: <20200524153243.11690-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200525084110.GE755@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-References: <20200512141113.18972-1-nicolas.toromanoff@st.com>
- <20200512141113.18972-6-nicolas.toromanoff@st.com> <CAMj1kXGs6UgkKb5+tH2B-+26=tbjHq3UUY2gxfcRfMb1nGVuFA@mail.gmail.com>
- <67c25d90d9714a85b52f3d9c2070af88@SFHDAG6NODE1.st.com> <CAMj1kXGo+9aXeYppGSheqhC-pNeJCcEie+SAnWy_sAiooEDMsQ@mail.gmail.com>
- <bd6cac3bd4c74db1a403df58082028fd@SFHDAG6NODE1.st.com>
-In-Reply-To: <bd6cac3bd4c74db1a403df58082028fd@SFHDAG6NODE1.st.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 25 May 2020 11:07:10 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFwt6cs-MJhAeMRF4-yiddm=ezq=qvSjA_sRAX+_Gdqhw@mail.gmail.com>
-Message-ID: <CAMj1kXFwt6cs-MJhAeMRF4-yiddm=ezq=qvSjA_sRAX+_Gdqhw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
-To:     Nicolas TOROMANOFF <nicolas.toromanoff@st.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525084110.GE755@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Eric)
+On Mon 2020-05-25 17:41:10, Sergey Senozhatsky wrote:
+> On (20/05/25 00:32), Tetsuo Handa wrote:
+> > pr_cont_once() does not make sense; at least emitting module name using
+> > pr_fmt() into middle of a line (after e.g. pr_info_once()) does not make
+> > sense. Let's remove unused pr_cont_once().
+> > 
+> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > Cc: Joe Perches <joe@perches.com>
+> 
+> Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-On Mon, 25 May 2020 at 11:01, Nicolas TOROMANOFF
-<nicolas.toromanoff@st.com> wrote:
->
-> > -----Original Message-----
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> > Sent: Monday, May 25, 2020 9:46 AM
-> > To: Nicolas TOROMANOFF <nicolas.toromanoff@st.com>
-> > Subject: Re: [PATCH 5/5] crypto: stm32/crc: protect from concurrent accesses
-> >
-> > On Mon, 25 May 2020 at 09:24, Nicolas TOROMANOFF
-> > <nicolas.toromanoff@st.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > > -----Original Message-----
-> > > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > > Sent: Friday, May 22, 2020 6:12 PM>
-> > > > On Tue, 12 May 2020 at 16:13, Nicolas Toromanoff
-> > > > <nicolas.toromanoff@st.com> wrote:
-> > > > >
-> > > > > Protect STM32 CRC device from concurrent accesses.
-> > > > >
-> > > > > As we create a spinlocked section that increase with buffer size,
-> > > > > we provide a module parameter to release the pressure by splitting
-> > > > > critical section in chunks.
-> > > > >
-> > > > > Size of each chunk is defined in burst_size module parameter.
-> > > > > By default burst_size=0, i.e. don't split incoming buffer.
-> > > > >
-> > > > > Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-> > > >
-> > > > Would you mind explaining the usage model here? It looks like you
-> > > > are sharing a CRC hardware accelerator with a synchronous interface
-> > > > between different users by using spinlocks? You are aware that this
-> > > > will tie up the waiting CPUs completely during this time, right? So
-> > > > it would be much better to use a mutex here. Or perhaps it would
-> > > > make more sense to fall back to a s/w based CRC routine if the h/w is tied up
-> > working for another task?
-> > >
-> > > I know mutex are more acceptable here, but shash _update() and _init()
-> > > may be call from any context, and so I cannot take a mutex.
-> > > And to protect my concurrent HW access I only though about spinlock.
-> > > Due to possible constraint on CPUs, I add a burst_size option to force
-> > > slitting long buffer into smaller one, and so decrease time we take the lock.
-> > > But I didn't though to fallback to software CRC.
-> > >
-> > > I'll do a patch on top.
-> > > In in the burst_update() function I'll use a spin_trylock_irqsave() and use
-> > software CRC32 if HW is already in use.
-> > >
-> >
-> > Right. I didn't even notice that you were keeping interrupts disabled the whole
-> > time when using the h/w block. That means that any serious use of this h/w
-> > block will make IRQ latency go through the roof.
-> >
-> > I recommend that you go back to the drawing board on this driver, rather than
-> > papering over the issues with a spin_trylock(). Perhaps it would be better to
-> > model it as a ahash (even though the h/w block itself is synchronous) and use a
-> > kthread to feed in the data.
->
-> I thought when I updated the driver to move to a ahash interface, but the main usage
-> of crc32 is the ext4 fs, that calls the shash API.
-> Commit 877b5691f27a ("crypto: shash - remove shash_desc::flags") removed possibility
-> to sleep in shash callback. (before this commit and with MAY_SLEEP option set, using
-> a mutex may have been fine).
->
+The patch is committed into printk/linux.git, branch for-5.8.
 
-According to that commit's log, sleeping is never fine for shash(),
-since it uses kmap_atomic() when iterating over the scatterlist.
-
-> By now the solution I see is to use the spin_trylock_irqsave(), fallback to software crc *AND* capping burst_size
-> to ensure the locked section stay reasonable.
->
-> Does this seems acceptable ?
->
-
-If the reason for disabling interrupts is to avoid deadlocks, wouldn't
-the switch to trylock() with a software fallback allow us to keep
-interrupts enabled?
+Best Regards,
+Petr
