@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D147C1E1751
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 23:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D0A1E1754
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 23:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388907AbgEYVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 17:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S2389018AbgEYVsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 17:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731557AbgEYVs1 (ORCPT
+        with ESMTP id S1731563AbgEYVs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 17:48:27 -0400
+        Mon, 25 May 2020 17:48:28 -0400
 Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7F6C061A0E;
-        Mon, 25 May 2020 14:48:26 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c11so20000225ljn.2;
-        Mon, 25 May 2020 14:48:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88B0C061A0E;
+        Mon, 25 May 2020 14:48:27 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id v16so22189532ljc.8;
+        Mon, 25 May 2020 14:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ik17svU3U29XQbLhqwF9DkU8YQ7sw6ADmoig1ExIl5o=;
-        b=oK0yLXUMmFF5FfsG8+ulkLizK0+hpY4rBoPTkb7nV7T2QcpjbXrOHWDLqpXlwRu3m4
-         cpHEgZHagoLqggB6XZw3U7Z5EMBXyn73WUlxG4szDEy/5NdBis46mpdYaavBV7lVEr53
-         pL6JUMTe6iYJ9MXw18DSPO0y7fTGv+/w/D40aGkLANqs0eGSKrLL35ML73DOuS3iOIAu
-         QxrYZ3+zUPz1Ive73j2u0d2N6NK7xon/ewslNnjgO8FPz7vY5iX55mBVziN6qlT1OBSU
-         m0jOzr7OyI5uGSzkJ4MqvCculzjhE4w9LptHuuSMtyZf8ybSgnHIIbZ3ug8CNI5wmhPb
-         qcCQ==
+        bh=Eb8xq22KfAG6fp/WMem/0LimDG8xrTCxTTXXT11xHa8=;
+        b=HjVzJp58HalgeSnFZ8TYNJeitRlinF1ZZkF3izRhYWt6NkUIcYxLzlJoz83pHJ1BhQ
+         qs7zVnTCqZK7GtdZZCXle1gps0THusL1zrgZuTx63iamYpvBISPkP3J+gCTt7J0waglJ
+         zm6U8EcJ2YZkrdedr9Tk4x2qU8xN8p24IB4in/1jru8iH50Eimv+4CTLSncK2ktoMFdU
+         uWKFdC5LLSdFDv62aEdiJ3wzU26JFCT7Ptb+MgN8FySCeLwTLU23zrKdzH8jwuMmJZHx
+         bGD0ZnkiqXtvi9Ld5J/siBePtEoJQpWfh0L8ooWrKPC1xSV+PoF4VAhi4MNb9zv/aJDy
+         mgWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ik17svU3U29XQbLhqwF9DkU8YQ7sw6ADmoig1ExIl5o=;
-        b=S04GZSKIhTmQ/FzVqZWuUpbTOSAT7pUfv7YeA46F9MiLvCxOdNvABeS6VvvzzxcK7U
-         GtHyTijKCqmcPGjpFEuPjwmbU9df5zfggc67sK26rKY9e0dFHVN6pxEis2mSk8zfsdCY
-         bb1MxuZ+xDZzMKZARWlVzCt44acow7le95dGhRn8hKakcHvjtj9u98Z281Xj6iCk7m9e
-         zNDNsA24A+EhjlVO0GAEz5V4vpWckt1rHAMqZnJ2zYAOGoXJe4sMDfcaucY0r+7ljHLZ
-         NhvQHc2drmBwmZDIGySb5BHUA4WMXCMVpQLCdbttZgq8sRAJD6my/oIxfx0oLqOyOrMt
-         8IcA==
-X-Gm-Message-State: AOAM532SGw7S9I//luH+UZLGxCNFJd46Fm876GHQeE+hIPFUvjP/9xpx
-        2ZaHShLpPyearkNkiiczPEU555wy/my5yw==
-X-Google-Smtp-Source: ABdhPJzaf0nFKQVcNe6lFV+Hv17Rsr7GTfoxNLsSnpb8/RGK0v1mlJ5VKEs+R3jKwSb+XhwZeNmY6A==
-X-Received: by 2002:a2e:9586:: with SMTP id w6mr14219809ljh.274.1590443305005;
-        Mon, 25 May 2020 14:48:25 -0700 (PDT)
+        bh=Eb8xq22KfAG6fp/WMem/0LimDG8xrTCxTTXXT11xHa8=;
+        b=sNX/wMMq2XWIHeE53z/Z+IL0NBUWaLRBJw82BYsS/aa9EFBQvkYgzzRqN7Xl9qzHqN
+         9F6dSGNPDpmiU+EamrEm+j/C9oq7DPr85OfKgCjikGXRlP9kgBujorVetpQKWYMf+giR
+         1w6DsVZl/VZexDgw8RSi4nv2eY76rhRuOQ45W6XkIJOc0zREZpPjBw+43nkGo+iztNx1
+         fs8tfNO3+CmemkaVlzan97h4/XujYJeWHMY8xxRL51TW+8yLG79HTNrFsJ4KHepfd9Wp
+         9RJfErNJKm2l6QUu/wC6X1tBJMUU493iVtPc5Xe3hIIUjCB+6QSMEeUj1Q5rzc041cLw
+         iUkg==
+X-Gm-Message-State: AOAM530cmLYZ2+g3s+0SN3ur8EwYL2Ng+14LqJf5R/7f0OK7XRlf2x5O
+        dbrGPHFZCCKSHd7TDwpVC9HKEj1vCLiOmQ==
+X-Google-Smtp-Source: ABdhPJxfYdA2lsbxwcu/cCC/8bfQhOexs2m2EigiwkWGZU776Hnc0bXM379NuIVU5PU462pBuLiVPQ==
+X-Received: by 2002:a2e:9818:: with SMTP id a24mr1882342ljj.161.1590443306082;
+        Mon, 25 May 2020 14:48:26 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id a6sm2280044lji.29.2020.05.25.14.48.24
+        by smtp.gmail.com with ESMTPSA id a6sm2280044lji.29.2020.05.25.14.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 May 2020 14:48:24 -0700 (PDT)
+        Mon, 25 May 2020 14:48:25 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -57,9 +57,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH v2 13/16] rcu: Introduce 2 arg kvfree_rcu() interface
-Date:   Mon, 25 May 2020 23:47:57 +0200
-Message-Id: <20200525214800.93072-14-urezki@gmail.com>
+Subject: [PATCH v2 14/16] rcu: Support reclaim for head-less object
+Date:   Mon, 25 May 2020 23:47:58 +0200
+Message-Id: <20200525214800.93072-15-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200525214800.93072-1-urezki@gmail.com>
 References: <20200525214800.93072-1-urezki@gmail.com>
@@ -70,55 +70,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvmalloc() can allocate two types of objects: SLAB backed
-and vmalloc backed. How it behaves depends on requested
-object's size and memory pressure.
+Update the kvfree_call_rcu() function with head-less support.
+This allows RCU to reclaim objects without an embedded rcu_head.
 
-Add a kvfree_rcu() interface that can free memory allocated
-via kvmalloc(). It is a simple alias to kfree_rcu() which
-can now handle either type of object.
+tree-RCU:
+We introduce two chains of arrays to store SLAB-backed and vmalloc
+pointers, each.  Storage in either of these arrays does not require
+embedding an rcu_head within the object.
 
-<snip>
-    struct test_kvfree_rcu {
-        struct rcu_head rcu;
-        unsigned char array[100];
-    };
+Maintaining the arrays may become impossible due to high memory
+pressure. For such cases there is an emergency path. Objects with
+rcu_head inside are just queued on a backup rcu_head list. Later on
+that list is drained. As for the head-less variant, as the current
+context can sleep, the following emergency measures are applied:
+   a) Synchronously wait until a grace period has elapsed.
+   b) Call kvfree().
 
-    struct test_kvfree_rcu *p;
+tiny-RCU:
+For double argument calls, there are no new changes in behavior. For
+single argument call, kvfree() is directly inlined on the current
+stack after a synchronize_rcu() call. Note that for tiny-RCU, any
+call to synchronize_rcu() is actually a quiescent state, therefore
+it does nothing.
 
-    p = kvmalloc(10 * PAGE_SIZE);
-    if (p)
-        kvfree_rcu(p, rcu);
-<snip>
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/rcupdate.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/linux/rcutiny.h | 18 ++++++++++++++++-
+ kernel/rcu/tree.c       | 45 +++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 60 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b344fc800a9b..51b26ab02878 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -875,6 +875,15 @@ do {									\
- 		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
- } while (0)
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 00bbd0e328c8..e7e4ec5938af 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -31,9 +31,25 @@ static inline void synchronize_rcu_expedited(void)
+ 	synchronize_rcu();
+ }
  
-+/**
-+ * kvfree_rcu() - kvfree an object after a grace period.
-+ * @ptr:	pointer to kvfree
-+ * @rhf:	the name of the struct rcu_head within the type of @ptr.
-+ *
-+ * Same as kfree_rcu(), just simple alias.
++/*
++ * Add one more declaration of kvfree() here. It is
++ * not so straight forward to just include <linux/mm.h>
++ * where it is defined due to getting many compile
++ * errors caused by that include.
 + */
-+#define kvfree_rcu(ptr, rhf) kfree_rcu(ptr, rhf)
++extern void kvfree(const void *addr);
 +
- /*
-  * Place this after a lock-acquisition primitive to guarantee that
-  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
+ static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+-	call_rcu(head, func);
++	if (head) {
++		call_rcu(head, func);
++		return;
++	}
++
++	// kvfree_rcu(one_arg) call.
++	might_sleep();
++	synchronize_rcu();
++	kvfree((void *) func);
+ }
+ 
+ void rcu_qs(void);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index da29e6078392..2459830a3851 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3180,6 +3180,13 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 				return false;
+ 
++			/*
++			 * NOTE: For one argument of kvfree_rcu() we can
++			 * drop the lock and get the page in sleepable
++			 * context. That would allow to maintain an array
++			 * for the CONFIG_PREEMPT_RT as well if no cached
++			 * pages are available.
++			 */
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+ 		}
+@@ -3219,16 +3226,33 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
++	bool success;
+ 	void *ptr;
+ 
++	if (head) {
++		ptr = (void *) head - (unsigned long) func;
++	} else {
++		/*
++		 * Please note there is a limitation for the head-less
++		 * variant, that is why there is a clear rule for such
++		 * objects: it can be used from might_sleep() context
++		 * only. For other places please embed an rcu_head to
++		 * your data.
++		 */
++		might_sleep();
++		ptr = (unsigned long *) func;
++	}
++
+ 	krcp = krc_this_cpu_lock(&flags);
+-	ptr = (void *)head - (unsigned long)func;
+ 
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
++
++		// Mark as success and leave.
++		success = true;
+ 		goto unlock_return;
+ 	}
+ 
+@@ -3236,10 +3260,16 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	 * Under high memory pressure GFP_NOWAIT can fail,
+ 	 * in that case the emergency path is maintained.
+ 	 */
+-	if (unlikely(!kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr))) {
++	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	if (!success) {
++		if (head == NULL)
++			// Inline if kvfree_rcu(one_arg) call.
++			goto unlock_return;
++
+ 		head->func = func;
+ 		head->next = krcp->head;
+ 		krcp->head = head;
++		success = true;
+ 	}
+ 
+ 	WRITE_ONCE(krcp->count, krcp->count + 1);
+@@ -3253,6 +3283,17 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ unlock_return:
+ 	krc_this_cpu_unlock(krcp, flags);
++
++	/*
++	 * Inline kvfree() after synchronize_rcu(). We can do
++	 * it from might_sleep() context only, so the current
++	 * CPU can pass the QS state.
++	 */
++	if (!success) {
++		debug_rcu_head_unqueue((struct rcu_head *) ptr);
++		synchronize_rcu();
++		kvfree(ptr);
++	}
+ }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+ 
 -- 
 2.20.1
 
