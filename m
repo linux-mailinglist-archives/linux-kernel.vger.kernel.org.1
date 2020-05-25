@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA67C1E0E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 14:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CA51E0E9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 May 2020 14:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390611AbgEYMkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 08:40:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:42251 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390488AbgEYMkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 08:40:09 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49VxWV3Xlxz9sRK;
-        Mon, 25 May 2020 22:40:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1590410407;
-        bh=SIXnrJVGIYrpCA6xXe+g8H4GEg7e+3xj4JbzuCi7X78=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Tx8W6wjSrI3PcZU0AdK1doXqNKoEVepAF7l+antr/CgiWl3JcjgmfmzAa7JdoIY21
-         Tlhv0OGXS7lNzkltpfgtcAtokfO+XgltCt5RRFKNhfkBlDjTllJ45uTDrxKjg2dQhB
-         QhdzteFMPTpvV8s+GZ2K39ZhQyet9ToQqp8GBHrAJW8ECnRcyiWvBLnRO5TP9n92VP
-         8HEESvpB8d3ECVpm4oFyJNABitLF1QvUMHvErf3w2+aclWd+Hp9k/4FGr+PEBguoc7
-         kUfPo9JZcGpZx61agIXqwFBJpMSmNGi1AMhc+feIQUy8KPSJfh97ERo59BgBE0I0+V
-         G8Z7yt+5V9I8w==
-Date:   Mon, 25 May 2020 22:40:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vitaly Lifshits <vitaly.lifshits@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: linux-next: build warning after merge of the net-next tree
-Message-ID: <20200525224004.799f54d4@canb.auug.org.au>
+        id S2403778AbgEYMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 08:41:48 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45538 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2403768AbgEYMlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 08:41:47 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04PCX5Ta020540;
+        Mon, 25 May 2020 14:41:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=ChULY1QgKwE4f/d6zUXepILX21n8fYToZxGhGbwvtdU=;
+ b=vAUCFGxD86/MhLh7yzlXoaybtvtKDU3bv6fGkkfNXo4ci18h/1hl1xI2oRbO+ALqnNYn
+ 1HCvcol7GeTu8Yw8Pwlpe+9pRaKCsIvz1KjEBZnRtT6hf1E0BX/cDOywTmVntHSThhP2
+ leIquisqFDDnAxLSZsuYdT/vSFWrOpnyj9oYjl9JK4C3U8Qv9MofuD/fFPKVpbUOZg4p
+ rucC0ZS/ZM37mGcKmenY29ZwW3Duh7yxUTEklxQVoviCiZl52kUWgS3I/LvWn4nSQTQg
+ L7xbqvaX7b5Xi6J+wMVacTvyVIhFBwnqpf2pawq4+TcBA9ZNwwrdcWcVkf+HpCxjqDkg 5w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 316tqgt0hs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 May 2020 14:41:19 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E9DCE100034;
+        Mon, 25 May 2020 14:41:18 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag5node1.st.com [10.75.127.13])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DD8D6221C76;
+        Mon, 25 May 2020 14:41:18 +0200 (CEST)
+Received: from SFHDAG5NODE3.st.com (10.75.127.15) by SFHDAG5NODE1.st.com
+ (10.75.127.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 May
+ 2020 14:41:18 +0200
+Received: from SFHDAG5NODE3.st.com ([fe80::7c09:5d6b:d2c7:5f47]) by
+ SFHDAG5NODE3.st.com ([fe80::7c09:5d6b:d2c7:5f47%20]) with mapi id
+ 15.00.1473.003; Mon, 25 May 2020 14:41:18 +0200
+From:   Fabien DESSENNE <fabien.dessenne@st.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, "kjlu@umn.edu" <kjlu@umn.edu>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: bdisp: Fix runtime PM imbalance on error
+Thread-Topic: [PATCH] media: bdisp: Fix runtime PM imbalance on error
+Thread-Index: AQHWL1arwAZV4b7b6Uaa5LImasJTuqi4o1yA
+Date:   Mon, 25 May 2020 12:41:18 +0000
+Message-ID: <85657433-659c-ca96-b77b-697eb8b9d702@st.com>
+References: <20200521100021.12461-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200521100021.12461-1-dinghao.liu@zju.edu.cn>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.50]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <028C62B8CDA0654AAFF3B9F8FB75A63C@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zlsE2YCsTCA+CgfAxSH6Bx6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-25_07:2020-05-25,2020-05-25 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zlsE2YCsTCA+CgfAxSH6Bx6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the net-next tree, today's linux-next build (sparc64
-defconfig) produced this warning:
-
-drivers/net/ethernet/intel/e1000e/netdev.c:137:13: warning: 'e1000e_check_m=
-e' defined but not used [-Wunused-function]
- static bool e1000e_check_me(u16 device_id)
-             ^~~~~~~~~~~~~~~
-
-Introduced by commit
-
-  e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
-
-CONFIG_PM_SLEEP is not set for this build.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zlsE2YCsTCA+CgfAxSH6Bx6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7LvKQACgkQAVBC80lX
-0GyZzgf8C+lkDVy18hMKiT6pA9n0fv25c81YhdcZ9S4WIf77Mx1Qtt155yfgr2qS
-juqboOU1glbuqCGaZYV8pSeESe2nfLkN9RLMVvxREaiUkAT7b+EIMYXfQmkwu+mA
-4sT6gzjumSeWzhXNb3EjVb+MowW/nRswbKaiOGdUQ0ZxUYQYPju8By3kN+I5iN1M
-fAOQgsVa1gN4j88JrFdxuFLCuAizuituwIuc6+07F2ZdSF5lmzHZjpJXAE8RHpB7
-hOcy9Cbxio56s2VNGppeyo6sTvIcxwzt6JwNVDyk+TH4JicVeIHEAkJ6hnDVf5Ii
-CYFzldz0i9HaplbntKflrHddmRZHaw==
-=M8lk
------END PGP SIGNATURE-----
-
---Sig_/zlsE2YCsTCA+CgfAxSH6Bx6--
+SGksDQoNCkxvb2tzIGdvb2QgdG8gbWUuDQoNClJldmlld2VkLWJ5OiBGYWJpZW4gRGVzc2VubmUg
+PGZhYmllbi5kZXNzZW5uZUBzdC5jb20+DQoNCkJSDQoNCkZhYmllbg0KDQoNCk9uIDIxLzA1LzIw
+MjAgMTI6MDAgcG0sIERpbmdoYW8gTGl1IHdyb3RlOg0KPiBwbV9ydW50aW1lX2dldF9zeW5jKCkg
+aW5jcmVtZW50cyB0aGUgcnVudGltZSBQTSB1c2FnZSBjb3VudGVyIGV2ZW4NCj4gd2hlbiBpdCBy
+ZXR1cm5zIGFuIGVycm9yIGNvZGUuIFRodXMgYSBwYWlyaW5nIGRlY3JlbWVudCBpcyBuZWVkZWQg
+b24NCj4gdGhlIGVycm9yIGhhbmRsaW5nIHBhdGggdG8ga2VlcCB0aGUgY291bnRlciBiYWxhbmNl
+ZC4NCj4NCj4gU2lnbmVkLW9mZi1ieTogRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1QHpqdS5lZHUu
+Y24+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vc3RpL2JkaXNwL2JkaXNwLXY0
+bDIuYyB8IDMgKy0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAyIGRlbGV0
+aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9zdGkvYmRp
+c3AvYmRpc3AtdjRsMi5jIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9zdGkvYmRpc3AvYmRpc3At
+djRsMi5jDQo+IGluZGV4IGFmMmQ1ZWI3ODJjZS4uZTFkMTUwNTg0YmRjIDEwMDY0NA0KPiAtLS0g
+YS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL3N0aS9iZGlzcC9iZGlzcC12NGwyLmMNCj4gKysrIGIv
+ZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9zdGkvYmRpc3AvYmRpc3AtdjRsMi5jDQo+IEBAIC0xMzcx
+LDcgKzEzNzEsNyBAQCBzdGF0aWMgaW50IGJkaXNwX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKnBkZXYpDQo+ICAgCXJldCA9IHBtX3J1bnRpbWVfZ2V0X3N5bmMoZGV2KTsNCj4gICAJaWYg
+KHJldCA8IDApIHsNCj4gICAJCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIHNldCBQTVxuIik7DQo+
+IC0JCWdvdG8gZXJyX2RiZzsNCj4gKwkJZ290byBlcnJfcG07DQo+ICAgCX0NCj4gICANCj4gICAJ
+LyogRmlsdGVycyAqLw0KPiBAQCAtMTM5OSw3ICsxMzk5LDYgQEAgc3RhdGljIGludCBiZGlzcF9w
+cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgIAliZGlzcF9od19mcmVlX2Zp
+bHRlcnMoYmRpc3AtPmRldik7DQo+ICAgZXJyX3BtOg0KPiAgIAlwbV9ydW50aW1lX3B1dChkZXYp
+Ow0KPiAtZXJyX2RiZzoNCj4gICAJYmRpc3BfZGVidWdmc19yZW1vdmUoYmRpc3ApOw0KPiAgIGVy
+cl92NGwyOg0KPiAgIAl2NGwyX2RldmljZV91bnJlZ2lzdGVyKCZiZGlzcC0+djRsMl9kZXYpOw==
