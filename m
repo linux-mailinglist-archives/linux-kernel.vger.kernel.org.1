@@ -2,180 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514871E1F90
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80301E1F9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731853AbgEZKXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 06:23:24 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:22910 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726944AbgEZKXW (ORCPT
+        id S1731888AbgEZK1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 06:27:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31442 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731815AbgEZK1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 06:23:22 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04QALs08009674;
-        Tue, 26 May 2020 12:23:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=STMicroelectronics;
- bh=p3D8tRzx5yi3dtudAYjOJKQoizPNsipgyxf+bvB/VrM=;
- b=OyLNlCe1CWQeq2gKXTCrGyYEX9CZYQP6JsUgiRs9gGBKD2v2mCcnxRx4grsbzE1p50KE
- jRozQrfLn0LDTOrO2vLJJnPBgLm8vLQE6RrIZRTUHW8pIAxdIGHqbhuOGWk12V3c3uGW
- gjizCURYNy6w8wc7OEcgVrnt217nPDapCs2+nDf+nld2qBGCwJ7/EFwzAomPOdUNSMDP
- rOTfRAoKZr5qd+TLx4kU/p8J1JYYole3YKqbPPRQ2HWO7oxE96ath2dCZwb5cXG+LOJm
- KjV3X+/ERIB02bwxj9RbdAEy31XO1uf7lODvHcWLpWw6xex1vM/6He4MV0Y3YqDEfTB+ dg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 316sa1y741-1
+        Tue, 26 May 2020 06:27:00 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04QA5xxx057571;
+        Tue, 26 May 2020 06:25:20 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 316wyrpry4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 May 2020 12:23:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 52FDB10002A;
-        Tue, 26 May 2020 12:23:07 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2213C21BDB7;
-        Tue, 26 May 2020 12:23:07 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 26 May
- 2020 12:23:06 +0200
-Date:   Tue, 26 May 2020 12:23:01 +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     Wolfram Sang <wsa@kernel.org>
-CC:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        Pierre Yves MORDRET <pierre-yves.mordret@st.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fabrice GASNIER <fabrice.gasnier@st.com>
-Subject: Re: [PATCH 1/4] i2c: smbus: add core function handling SMBus
- host-notify
-Message-ID: <20200526102301.GA14423@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        Pierre Yves MORDRET <pierre-yves.mordret@st.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fabrice GASNIER <fabrice.gasnier@st.com>
-References: <1588657871-14747-1-git-send-email-alain.volmat@st.com>
- <1588657871-14747-2-git-send-email-alain.volmat@st.com>
- <20200523104624.GB3459@ninjato>
+        Tue, 26 May 2020 06:25:20 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04QALbLM089259;
+        Tue, 26 May 2020 06:25:20 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 316wyrprxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 May 2020 06:25:19 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04QALwVn011238;
+        Tue, 26 May 2020 10:25:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 316uf8a9qn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 May 2020 10:25:17 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04QAPFY2000510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 May 2020 10:25:15 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FB46A404D;
+        Tue, 26 May 2020 10:25:15 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2F65A4051;
+        Tue, 26 May 2020 10:25:11 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 26 May 2020 10:25:11 +0000 (GMT)
+Date:   Tue, 26 May 2020 15:55:11 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     john mathew <john.mathew@unikie.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, tsbogend@alpha.franken.de,
+        lukas.bulwahn@gmail.com, x86@kernel.org,
+        linux-mips@vger.kernel.org, tglx@linutronix.de,
+        mostafa.chamanara@gmail.com, willy@infradead.org,
+        valentin.schneider@arm.com, rdunlap@infradead.org,
+        Mostafa Chamanara <mostafa.chamanara@basemark.com>,
+        Oleg Tsymbal <oleg.tsymbal@unikie.com>
+Subject: Re: [RFC PATCH v5 3/3] docs: scheduler: Add introduction to
+ scheduler context-switch
+Message-ID: <20200526102511.GA5681@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200514092637.15684-1-John.Mathew@unikie.com>
+ <20200514092637.15684-4-John.Mathew@unikie.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200523104624.GB3459@ninjato>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE2.st.com
- (10.75.127.8)
+In-Reply-To: <20200514092637.15684-4-John.Mathew@unikie.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-05-26_01:2020-05-26,2020-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 adultscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 spamscore=0
+ mlxscore=0 bulkscore=0 cotscore=-2147483648 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 23, 2020 at 10:46:25AM +0000, Wolfram Sang wrote:
-> 
-> Adding Benjamin who mainly implemented this.
-> 
-> On Tue, May 05, 2020 at 07:51:08AM +0200, Alain Volmat wrote:
-> > SMBus Host-Notify protocol, from the adapter point of view
-> > consist of receiving a message from a client, including the
-> > client address and some other data.
-> > 
-> > It can be simply handled by creating a new slave device
-> > and registering a callback performing the parsing of the
-> > message received from the client.
-> > 
-> > This commit introduces two new core functions
-> >   * i2c_new_smbus_host_notify_device
-> >   * i2c_free_smbus_host_notify_device
-> > that take care of registration of the new slave device and
-> > callback and will call i2c_handle_smbus_host_notify once a
-> > Host-Notify event is received.
-> 
-> Yay, cool idea to use the slave interface. I like it a lot!
-> 
-> > +static int i2c_smbus_host_notify_cb(struct i2c_client *client,
-> > +				    enum i2c_slave_event event, u8 *val)
-> > +{
-> > +	struct i2c_smbus_host_notify_status *status = client->dev.platform_data;
-> > +	int ret;
-> > +
-> > +	switch (event) {
-> > +	case I2C_SLAVE_WRITE_REQUESTED:
-> > +		status->notify_start = true;
-> > +		break;
-> > +	case I2C_SLAVE_WRITE_RECEIVED:
-> > +		/* We only retrieve the first byte received (addr)
-> > +		 * since there is currently no way to retrieve the data
-> > +		 * parameter from the client.
-> 
-> Maybe s/no way/no support/ ? I still wonder if we couldn't add it
-> somehow. Once we find a device which needs this, of course.
+* john mathew <john.mathew@unikie.com> [2020-05-14 12:26:37]:
 
-Indeed. Such support can be added later on once such device is found. For the
-time being I will state "no support"
+> +
+> +Context Switching
+> +-----------------
+> +
+> +Context switching, the switching from a running task to another,
+> +is done by the context_switch() function defined in kernel/sched.c.
 
-> 
-> > +		 */
-> > +		if (!status->notify_start)
-> > +			break;
-> > +		status->addr = *val;
-> > +		status->notify_start = false;
-> > +		break;
-> > +	case I2C_SLAVE_STOP:
-> 
-> What about setting 'notify_start' to false here as well? In the case of
-> an incomplete write?
+context_switch is defined in kernel/sched/core.c 
 
-Ok. I will check that notify_start is false before calling host_notify
-(since otherwise it will call i2c_handle_smbus_host_notify with a bad addr
-value) and reset notify_start to false if it is still true.
+> +It is called by __schedule() when a new process has been selected to run.
+> +The execution flow is as follows:
+> +
+> +
+> +  For a kernel task switching to a user task, switch_mm_irqs_off()
+> +  replaces the address space of prev kernel task with the next from the user
+> +  task. Same as for exiting process in this case, the context_switch()
 
-> 
-> > +		ret = i2c_handle_smbus_host_notify(client->adapter,
-> > +						   status->addr);
-> > +		if (ret < 0) {
-> > +			dev_warn(&client->adapter->dev, "failed to handle host_notify (%d)\n",
-> > +				ret);
-> 
-> I think we should rather add such error strings to the core if we think
-> they are needed. I am not convinced they are, though.
+Did you mean existing instead of exiting?
 
-Agreed, this error can be removed.
-
-> 
-> > +			return ret;
-> > +		}
-> > +		break;
-> > +	default:
-> > +		/* Only handle necessary events */
-> > +		break;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> 
-> Rest of the code looks good. Maybe we should compile all this only when
-> I2C_SLAVE is enabled?
-> 
-
-Yes, I will enclose that around I2C_SLAVE support check.
-
-
+> +  function saves the pointer to the memory descriptor used by prev in the
+> +  runqueue???s prev_mm field and resets prev task active address space.
+> +
+-- 
+Thanks and Regards
+Srikar Dronamraju
