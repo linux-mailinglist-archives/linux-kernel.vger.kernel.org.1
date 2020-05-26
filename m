@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE391E2376
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 15:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0498F1E23B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbgEZN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 09:59:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:51254 "EHLO foss.arm.com"
+        id S1728088AbgEZOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 10:11:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728558AbgEZN72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 09:59:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D719E1FB;
-        Tue, 26 May 2020 06:59:27 -0700 (PDT)
-Received: from [10.37.8.5] (unknown [10.37.8.5])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13CD43F6C4;
-        Tue, 26 May 2020 06:59:25 -0700 (PDT)
-Subject: Re: [PATCH V2] arm64/cpufeature: Add get_arm64_ftr_reg_nowarn()
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        broonie@kernel.org, linux-kernel@vger.kernel.org
-References: <1590500353-28082-1-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <0726a5b9-fff6-a15c-e705-db7abd4b1abd@arm.com>
-Date:   Tue, 26 May 2020 15:04:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
-MIME-Version: 1.0
-In-Reply-To: <1590500353-28082-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726761AbgEZOLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 10:11:38 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CD55207CB;
+        Tue, 26 May 2020 14:11:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590502297;
+        bh=hUhxPDQEnB3ocs2Pc0Otn9EbQkR7u6VZynngvzWLlQo=;
+        h=Date:From:To:To:To:CC:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Subject:
+         In-Reply-To:From;
+        b=aoP4NGgL2sf7xzhONd9/L/eW4ICnImWF8csowjAu2bcSQWSpZ3mlyk4jOg65n1IW8
+         fk5dXliSYcoKb2jOY6coNXCwwou3w5u2b1BvsJ8ASI7vY7iI9e3vz+FQDHn8hduHGM
+         6YLDxg/17GudyJysTQkisEzns2RUx5gOjnpiJdpY=
+Date:   Tue, 26 May 2020 14:11:36 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <linux-crypto@vger.kernel.org>
+CC:     "Longpeng(Mike)" <longpeng2@huawei.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>
+Cc:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     virtualization@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] crypto: virtio: Fix src/dst scatterlist calculation in __virtio_crypto_skcipher_do_req()
+In-Reply-To: <20200526031956.1897-2-longpeng2@huawei.com>
+Message-Id: <20200526141137.6CD55207CB@mail.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/26/2020 02:39 PM, Anshuman Khandual wrote:
-> There is no way to proceed when requested register could not be searched in
-> arm64_ftr_reg[]. Requesting for a non present register would be an error as
-> well. Hence lets just WARN_ON() when search fails in get_arm64_ftr_reg()
-> rather than checking for return value and doing a BUG_ON() instead in some
-> individual callers. But there are also caller instances that dont error out
-> when register search fails. Add a new helper get_arm64_ftr_reg_nowarn() for
-> such cases.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in V2:
-> 
-> - Added get_arm64_ftr_reg_nowarn() per Will
-> - read_sanitised_ftr_reg() returns 0 when register search fails per Catalin
-> 
-> Changes in V1: (https://patchwork.kernel.org/patch/11559083/)
-> 
->   arch/arm64/kernel/cpufeature.c | 42 +++++++++++++++++++++++-----------
->   1 file changed, 29 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index bc5048f152c1..f4555b9d145c 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -548,16 +548,16 @@ static int search_cmp_ftr_reg(const void *id, const void *regp)
->   }
->   
+<20200123101000.GB24255@Red>
+References: <20200526031956.1897-2-longpeng2@huawei.com>
+<20200123101000.GB24255@Red>
 
-...
+Hi
 
->   static u64 arm64_ftr_set_value(const struct arm64_ftr_bits *ftrp, s64 reg,
->   			       s64 ftr_val)
->   {
-> @@ -632,8 +654,6 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
->   	const struct arm64_ftr_bits *ftrp;
->   	struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
->   
-> -	BUG_ON(!reg);
-> -
->   	for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
->   		u64 ftr_mask = arm64_ftr_mask(ftrp);
->   		s64 ftr_new = arm64_ftr_value(ftrp, new);
-> @@ -762,7 +782,6 @@ static int check_update_ftr_reg(u32 sys_id, int cpu, u64 val, u64 boot)
->   {
->   	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(sys_id);
->   
-> -	BUG_ON(!regp);
->   	update_cpu_ftr_reg(regp, val);
->   	if ((boot & regp->strict_mask) == (val & regp->strict_mask))
->   		return 0;
-> @@ -776,9 +795,6 @@ static void relax_cpu_ftr_reg(u32 sys_id, int field)
->   	const struct arm64_ftr_bits *ftrp;
->   	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(sys_id);
->   
-> -	if (WARN_ON(!regp))
-> -		return;
-> -
+[This is an automated email]
 
-You need to return here, on !regp. Rest looks fine to me.
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: dbaf0624ffa5 ("crypto: add virtio-crypto driver").
 
-Suzuki
+The bot has tested the following trees: v5.6.14, v5.4.42, v4.19.124, v4.14.181.
+
+v5.6.14: Build OK!
+v5.4.42: Failed to apply! Possible dependencies:
+    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
+
+v4.19.124: Failed to apply! Possible dependencies:
+    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
+
+v4.14.181: Failed to apply! Possible dependencies:
+    500e6807ce93 ("crypto: virtio - implement missing support for output IVs")
+    67189375bb3a ("crypto: virtio - convert to new crypto engine API")
+    d0d859bb87ac ("crypto: virtio - Register an algo only if it's supported")
+    e02b8b43f55a ("crypto: virtio - pr_err() strings should end with newlines")
+    eee1d6fca0a0 ("crypto: virtio - switch to skcipher API")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
