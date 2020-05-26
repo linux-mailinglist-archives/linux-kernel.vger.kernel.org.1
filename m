@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB86F1E2C86
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDA51E2E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404279AbgEZTPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47322 "EHLO mail.kernel.org"
+        id S2390650AbgEZT1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:27:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404265AbgEZTPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:33 -0400
+        id S2390273AbgEZTEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:04:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF6B20776;
-        Tue, 26 May 2020 19:15:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F87920849;
+        Tue, 26 May 2020 19:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520533;
-        bh=BqWOzCDmMrAFz2dz3SAGPUMEexLeAFZfpbfaMsSt4IU=;
+        s=default; t=1590519875;
+        bh=hrbJyOLEuxk36OPNi1fKCASFHtlHY4Zp1pnVLXNnWFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ci6nwUiiS7JluaUHqmzEeDoZxqUEwpQfVqMzSJe+8GsT+PM+rM9g+zFM6nXns/5xb
-         c+tokrGsIRYrOf80g9/AGNPGPk7oGhN1rmIpsuo5mgh8K4kaRMlHEReiT10eD8UcTA
-         WyUy3ei/iwGX5ANpbhwDTUM8WTXfnQnysC7hIfHs=
+        b=z/3lB3vEz1sKEpO09avOvLf73ordnElXrDEl1HPHfiQqxcb1ZWlyRtOrH1cPll6dj
+         V8F+Oduhwx+fkEW4iIHb4SD6eK65fBGN4GpNryM0QKfSIy3VeBHT60LTWsrxZnSA8E
+         SepBQxqLIdPLCgzQ4zgtKVngoluAfrLYPCeOoN1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 067/126] ALSA: hda/realtek - Add more fixup entries for Clevo machines
+        stable@vger.kernel.org, Russell Currey <ruscur@russell.cc>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 49/81] powerpc: Remove STRICT_KERNEL_RWX incompatibility with RELOCATABLE
 Date:   Tue, 26 May 2020 20:53:24 +0200
-Message-Id: <20200526183943.818281383@linuxfoundation.org>
+Message-Id: <20200526183932.664564063@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: PeiSen Hou <pshou@realtek.com>
+From: Russell Currey <ruscur@russell.cc>
 
-commit 259eb82475316672a5d682a94dc8bdd53cf8d8c3 upstream.
+[ Upstream commit c55d7b5e64265fdca45c85b639013e770bde2d0e ]
 
-A few known Clevo machines (PC50, PC70, X170) with ALC1220 codec need
-the existing quirk for pins for PB51 and co.
+I have tested this with the Radix MMU and everything seems to work, and
+the previous patch for Hash seems to fix everything too.
+STRICT_KERNEL_RWX should still be disabled by default for now.
 
-Signed-off-by: PeiSen Hou <pshou@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200519065012.13119-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Please test STRICT_KERNEL_RWX + RELOCATABLE!
 
+Signed-off-by: Russell Currey <ruscur@russell.cc>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20191224064126.183670-2-ruscur@russell.cc
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2473,6 +2473,9 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1558, 0x97e1, "Clevo P970[ER][CDFN]", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x65d1, "Clevo PB51[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x50d3, "Clevo PC50[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", ALC882_FIXUP_LENOVO_Y530),
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 6f475dc5829b..da48a2ca272e 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -139,7 +139,7 @@ config PPC
+ 	select ARCH_HAS_MEMBARRIER_CALLBACKS
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE
+ 	select ARCH_HAS_SG_CHAIN
+-	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !RELOCATABLE && !HIBERNATION)
++	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE	if PPC64
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-- 
+2.25.1
+
 
 
