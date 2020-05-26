@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125F31E1ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B9C1E1A74
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgEZFoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 01:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725263AbgEZFoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 01:44:39 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A9CC061A0E;
-        Mon, 25 May 2020 22:44:39 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 49WNFb23Kfz9sRY; Tue, 26 May 2020 15:44:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1590471875; bh=j0PNgC0xr6mRDHCZ2htDfbQsT0XH5gFzuCdilAoQCBw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H05nUKbvRSIH+7O5N9VUsnkHeRklB48VujBczf2Xtd7k/msK8glVNwOfwKFhBxaM2
-         RMEhFP3061zuW6+4Tyn4tcDNAEbnpgE5y/GbpnLgkqD9inO7dRTJ8JdJazRZlG5By1
-         dDTw25f7q0+rjMvV86X6zTMCLnL9GISRBtWJGAOBofFztGdhMaHaSDnzVJeKDOeTRr
-         P/gT1fm1rSHSwWvDzu+Yy/x7JV3Y4U7YJfxqHFYoVKLC8zIAnftSk9Bv7oB4+ke1/z
-         t+6gHdzDMsO3E/gW5yqaeDf4mGpMKKUTqOEkTCh4o4CEB+cdOrXQUL3itzvvSsvIix
-         ogkCA1YC4CmqQ==
-Date:   Tue, 26 May 2020 14:36:56 +1000
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/7] KVM: PPC: Remove redundant kvm_run from vcpu_arch
-Message-ID: <20200526043656.GA282305@thinks.paulus.ozlabs.org>
-References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
- <20200427043514.16144-4-tianjia.zhang@linux.alibaba.com>
+        id S1725905AbgEZEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 00:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725747AbgEZEjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 00:39:05 -0400
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59C52208B3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 04:39:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590467944;
+        bh=qcaKmI4fvRBY3YN+p3LJ2ANFZnuN83WNUpjNp3A1Ujw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RmlSdhv+dSvKI9hlbRJKaNnTOWmyu3cZDTqQM8ikQebw1NbwU9dgg6R8AFmTF5ZZO
+         ZgpeWsNJftiF+T6ys5oO2G+1d4imJ1mHpy7f8zo9YfaCmoycP1jkhJ0B0GC3NTe9r/
+         NqalKYT7cB0fKOPNKaYjYkLppXuRhQxzjrrvcgK8=
+Received: by mail-wr1-f49.google.com with SMTP id x13so4385386wrv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 21:39:04 -0700 (PDT)
+X-Gm-Message-State: AOAM531SyFwevUcDt99wJYYx9j8ZrZsPuBkE5G1R5FRcNSVO0+un6+CI
+        A36yHj9gdZlrewXqBRFnoiRu+3GAHq4MXRMcGqdyGQ==
+X-Google-Smtp-Source: ABdhPJx5RGhYX6nKGk1B5a57xXXKXzkKRexSu+Efxo1Skiy5fG7LRt7/mJn57txrauT2IYdRkzMraOjrZaqL8ppDdbE=
+X-Received: by 2002:adf:ea11:: with SMTP id q17mr16122724wrm.75.1590467942702;
+ Mon, 25 May 2020 21:39:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427043514.16144-4-tianjia.zhang@linux.alibaba.com>
+References: <20200525152517.GY325280@hirez.programming.kicks-ass.net>
+ <20200526014221.2119-1-laijs@linux.alibaba.com> <20200526014221.2119-5-laijs@linux.alibaba.com>
+ <CALCETrWyMY-0Z_NJ7DnF4PsSnhnbNsgt14X1GWkajcms-ZUSQA@mail.gmail.com> <CAJhGHyC82f+=YXYmv8zC=zPxZmk+TW_n+5pjcBE-2T8S9t5K0g@mail.gmail.com>
+In-Reply-To: <CAJhGHyC82f+=YXYmv8zC=zPxZmk+TW_n+5pjcBE-2T8S9t5K0g@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 25 May 2020 21:38:51 -0700
+X-Gmail-Original-Message-ID: <CALCETrW6mazV1JVXYtGW7tUXveNvMKnFwi4zqWUgwMXax_Ea_Q@mail.gmail.com>
+Message-ID: <CALCETrW6mazV1JVXYtGW7tUXveNvMKnFwi4zqWUgwMXax_Ea_Q@mail.gmail.com>
+Subject: Re: [RFC PATCH V2 4/7] x86/hw_breakpoint: Prevent data breakpoints on user_pcid_flush_mask
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 12:35:10PM +0800, Tianjia Zhang wrote:
-> The 'kvm_run' field already exists in the 'vcpu' structure, which
-> is the same structure as the 'kvm_run' in the 'vcpu_arch' and
-> should be deleted.
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+On Mon, May 25, 2020 at 9:31 PM Lai Jiangshan
+<jiangshanlai+lkml@gmail.com> wrote:
+>
+> On Tue, May 26, 2020 at 12:21 PM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On Mon, May 25, 2020 at 6:42 PM Lai Jiangshan <laijs@linux.alibaba.com> wrote:
+> > >
+> > > The percpu user_pcid_flush_mask is used for CPU entry
+> > > If a data breakpoint on it, it will cause an unwanted #DB.
+> > > Protect the full cpu_tlbstate structure to be sure.
+> > >
+> > > There are some other percpu data used in CPU entry, but they are
+> > > either in already-protected cpu_tss_rw or are safe to trigger #DB
+> > > (espfix_waddr, espfix_stack).
+> >
+> > How hard would it be to rework this to have DECLARE_PERCPU_NODEBUG()
+> > and DEFINE_PERCPU_NODEBUG() or similar?
+>
+>
+> I don't know, but it is an excellent idea. Although the patchset
+> protects only 2 or 3 portions of percpu data, but there is many
+> percpu data used in tracing or kprobe code. They are needed to be
+> protected too.
+>
+> Adds CC:
+> Steven Rostedt <rostedt@goodmis.org>
+> Masami Hiramatsu <mhiramat@kernel.org>
 
-This looks fine.
+PeterZ is moving things in the direction of more aggressively
+disabling hardware breakpoints in the nasty paths where we won't
+survive a hardware breakpoint.  Does the tracing code have portions
+that won't survive a limited amount of recursion?
 
-I assume each architecture sub-maintainer is taking the relevant
-patches from this series via their tree - is that right?
+I'm hoping that we can keep the number of no-breakpoint-here percpu
+variables low.  Maybe we could recruit objtool to help make sure we
+got all of them, but that would be a much larger project.
 
-Reviewed-by: Paul Mackerras <paulus@ozlabs.org>
+Would we currently survive a breakpoint on the thread stack?  I don't
+see any extremely obvious reason that we wouldn't.  Blocking such a
+breakpoint would be annoying.
