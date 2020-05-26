@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8921E2A51
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30DA1E2A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389184AbgEZSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
+        id S2389449AbgEZSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387398AbgEZSyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:54:49 -0400
+        id S2389398AbgEZSzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CD9C207FB;
-        Tue, 26 May 2020 18:54:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E7EF208C3;
+        Tue, 26 May 2020 18:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519288;
-        bh=ndlsGo9CG4KB47l0cX6yHBs/uO2HRZHZPAYIShWTe5s=;
+        s=default; t=1590519315;
+        bh=K997vUReKo1Eu7O2mp1JLzaOpovFSgasgP9aL7NtB+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhcA+pWnFNNDEX1LsncMvO6Prbl13HLTAyFMJ4qXnJd33GyhxuI/sg4UGhVm5J3+r
-         IG/nfTXewka3Q9uZe4r1LPZJlV3sB0X20oP4OMfsceSFb+C8QREQcDHYgupnHg+J+2
-         /BcwmqNCU4LbdyYfJIK6/4rwxChdkLAoBdUkaS34=
+        b=H3PRGKScyKupNgRntLWzDv5HK48gz3XRiaBBDAUCgT+giABNVXxKM8KzbAVGW3Ts+
+         nyPZyHVMkvXq/Z7GsKGkB1NpE38qlx57ZEoKbBjmQylaLgQROzpTiS2rIVXrfgAHTg
+         d3jGmubKeVhzM4HBmn7HfatbT2hVUh0jx0ZfnPM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.4 02/65] padata: Remove unused but set variables
-Date:   Tue, 26 May 2020 20:52:21 +0200
-Message-Id: <20200526183907.344060994@linuxfoundation.org>
+Subject: [PATCH 4.4 03/65] padata: get_next is never NULL
+Date:   Tue, 26 May 2020 20:52:22 +0200
+Message-Id: <20200526183907.627545971@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
 References: <20200526183905.988782958@linuxfoundation.org>
@@ -45,45 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Klauser <tklauser@distanz.ch>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit 119a0798dc42ed4c4f96d39b8b676efcea73aec6 upstream.
+commit 69b348449bda0f9588737539cfe135774c9939a7 upstream.
 
-Remove the unused but set variable pinst in padata_parallel_worker to
-fix the following warning when building with 'W=1':
+Per Dan's static checker warning, the code that returns NULL was removed
+in 2010, so this patch updates the comments and fixes the code
+assumptions.
 
-  kernel/padata.c: In function ‘padata_parallel_worker’:
-  kernel/padata.c:68:26: warning: variable ‘pinst’ set but not used [-Wunused-but-set-variable]
-
-Also remove the now unused variable pd which is only used to set pinst.
-
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/padata.c |    4 ----
- 1 file changed, 4 deletions(-)
+ kernel/padata.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -65,15 +65,11 @@ static int padata_cpu_hash(struct parall
- static void padata_parallel_worker(struct work_struct *parallel_work)
- {
- 	struct padata_parallel_queue *pqueue;
--	struct parallel_data *pd;
--	struct padata_instance *pinst;
- 	LIST_HEAD(local_list);
+@@ -155,8 +155,6 @@ EXPORT_SYMBOL(padata_do_parallel);
+  * A pointer to the control struct of the next object that needs
+  * serialization, if present in one of the percpu reorder queues.
+  *
+- * NULL, if all percpu reorder queues are empty.
+- *
+  * -EINPROGRESS, if the next object that needs serialization will
+  *  be parallel processed by another cpu and is not yet present in
+  *  the cpu's reorder queue.
+@@ -183,8 +181,6 @@ static struct padata_priv *padata_get_ne
+ 	cpu = padata_index_to_cpu(pd, next_index);
+ 	next_queue = per_cpu_ptr(pd->pqueue, cpu);
  
- 	local_bh_disable();
- 	pqueue = container_of(parallel_work,
- 			      struct padata_parallel_queue, work);
--	pd = pqueue->pd;
--	pinst = pd->pinst;
+-	padata = NULL;
+-
+ 	reorder = &next_queue->reorder;
  
- 	spin_lock(&pqueue->parallel.lock);
- 	list_replace_init(&pqueue->parallel.list, &local_list);
+ 	spin_lock(&reorder->lock);
+@@ -236,12 +232,11 @@ static void padata_reorder(struct parall
+ 		padata = padata_get_next(pd);
+ 
+ 		/*
+-		 * All reorder queues are empty, or the next object that needs
+-		 * serialization is parallel processed by another cpu and is
+-		 * still on it's way to the cpu's reorder queue, nothing to
+-		 * do for now.
++		 * If the next object that needs serialization is parallel
++		 * processed by another cpu and is still on it's way to the
++		 * cpu's reorder queue, nothing to do for now.
+ 		 */
+-		if (!padata || PTR_ERR(padata) == -EINPROGRESS)
++		if (PTR_ERR(padata) == -EINPROGRESS)
+ 			break;
+ 
+ 		/*
 
 
