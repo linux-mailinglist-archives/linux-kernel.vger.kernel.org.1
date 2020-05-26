@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6B11E26DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04E01E26BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 18:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388681AbgEZQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 12:24:29 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:35178 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbgEZQYZ (ORCPT
+        id S2388524AbgEZQTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 12:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388447AbgEZQTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 12:24:25 -0400
+        Tue, 26 May 2020 12:19:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9910C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 09:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=Kdhc7G0MOHSHyTSs18tW/2Sp/VNPCGM39F2FG5g0xA0=; b=fMkz3cuyOKIigiaOFaLhqZGDoc
-        yuG4u+ptyI23uLEzyZQYTdoNve9a/ohhhnF3SGysE8oOYoQmTiy45J++y05Sy+YRXtK2dG4DJfr7A
-        VZZ72S6aevWhlSdR/o8Uha0DNmbX/ylhhmNP+5sY4Cd6qRzzxyGJgr/3FTSa8sbIcxM8roujI6FnT
-        t/Iq5yNJYuMrz3j6QW5l5Fhf/1gzvJ9KW0NeWzBRCdbZ5uKA7dwA45tm5448WrvcA2zncOJBO4pC/
-        1VXPu9rTYwUN+MGSNZmj6U1AtFSpCmVcgslboaIxOvOPqkpNR6BaruXhvp+8NhdfcBHD2rB9dbQmn
-        eAUy2XDA==;
+        bh=eTj/YKIAMK7fb6FVAI9IceIEjbd82P7TPKgwouRg/6A=; b=oBFndTeQgox8Nl5acIDWn8jwu9
+        XEc/ZafAoLGwjtvHJz438itg0enR/9IR1q82VLJDy7R9zmtl/g1YjpPqxXJQb6VT24Pv/TPi38TDb
+        QtQIfVMdBYha+4erAy4OuvgKJ/n7XimQ3vmVVf7pEgF793xHSM7/rX5TvTm1un3Ztg88DbOs5XDWh
+        88PLll7epxOVQT7/K/FiDOrmAHXoNFNipChdgI9O/HaxdbR1tVN2Rv17U5F6K1bC2+6VP8CX2lprm
+        KQ5UMyJ49MhutjGor1itwYcc/YLE6dahEofMqq6uyncSFlg11IjusGtw/Lhk47u/Xs+k30VgCCEVU
+        umG34+yA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdcIv-0005Tf-8K; Tue, 26 May 2020 16:19:49 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdcIs-0000HW-93; Tue, 26 May 2020 16:19:46 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72A8E3062EA;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFC353069A4;
         Tue, 26 May 2020 18:19:41 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 55EE320FF793C; Tue, 26 May 2020 18:19:41 +0200 (CEST)
-Message-ID: <20200526161907.953304789@infradead.org>
+        id 5BF8020FF793D; Tue, 26 May 2020 18:19:41 +0200 (CEST)
+Message-ID: <20200526161908.011635912@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 26 May 2020 18:11:01 +0200
+Date:   Tue, 26 May 2020 18:11:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, frederic@kernel.org
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
         mgorman@techsingularity.net, peterz@infradead.org
-Subject: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
+Subject: [RFC][PATCH 5/7] irq_work, smp: Allow irq_work on call_single_queue
 References: <20200526161057.531933155@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,95 +51,399 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like the ttwu_queue_remote() IPI, make use of _TIF_POLLING_NRFLAG
-to avoid sending IPIs to idle CPUs.
+Currently irq_work_queue_on() will issue an unconditional
+arch_send_call_function_single_ipi() and has the handler do
+irq_work_run().
+
+This is unfortunate in that it makes the IPI handler look at a second
+cacheline and it misses the opportunity to avoid the IPI. Instead note
+that struct irq_work and struct __call_single_data are very similar in
+layout, so use a few bits in the flags word to encode a type and stick
+the irq_work on the call_single_queue list.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |   10 ++++++++++
- kernel/sched/idle.c  |    1 +
- kernel/sched/sched.h |    2 ++
- kernel/smp.c         |   16 +++++++++++++++-
- 4 files changed, 28 insertions(+), 1 deletion(-)
+ include/linux/irq_work.h |    7 ++
+ include/linux/smp.h      |   23 ++++++++-
+ kernel/irq_work.c        |   53 +++++++++++---------
+ kernel/smp.c             |  119 ++++++++++++++++++++++++++++-------------------
+ 4 files changed, 130 insertions(+), 72 deletions(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2296,6 +2296,16 @@ static void wake_csd_func(void *info)
- 	sched_ttwu_pending();
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -13,6 +13,8 @@
+  * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
+  */
+ 
++/* flags share CSD_FLAG_ space */
++
+ #define IRQ_WORK_PENDING	BIT(0)
+ #define IRQ_WORK_BUSY		BIT(1)
+ 
+@@ -23,9 +25,12 @@
+ 
+ #define IRQ_WORK_CLAIMED	(IRQ_WORK_PENDING | IRQ_WORK_BUSY)
+ 
++/*
++ * structure shares layout with single_call_data_t.
++ */
+ struct irq_work {
+-	atomic_t flags;
+ 	struct llist_node llnode;
++	atomic_t flags;
+ 	void (*func)(struct irq_work *);
+ };
+ 
+--- a/include/linux/smp.h
++++ b/include/linux/smp.h
+@@ -16,17 +16,38 @@
+ 
+ typedef void (*smp_call_func_t)(void *info);
+ typedef bool (*smp_cond_func_t)(int cpu, void *info);
++
++enum {
++	CSD_FLAG_LOCK		= 0x01,
++
++	/* IRQ_WORK_flags */
++
++	CSD_TYPE_ASYNC		= 0x00,
++	CSD_TYPE_SYNC		= 0x10,
++	CSD_TYPE_IRQ_WORK	= 0x20,
++	CSD_FLAG_TYPE_MASK	= 0xF0,
++};
++
++/*
++ * structure shares (partial) layout with struct irq_work
++ */
+ struct __call_single_data {
+ 	struct llist_node llist;
++	unsigned int flags;
+ 	smp_call_func_t func;
+ 	void *info;
+-	unsigned int flags;
+ };
+ 
+ /* Use __aligned() to avoid to use 2 cache lines for 1 csd */
+ typedef struct __call_single_data call_single_data_t
+ 	__aligned(sizeof(struct __call_single_data));
+ 
++/*
++ * Enqueue a llist_node on the call_single_queue; be very careful, read
++ * flush_smp_call_function_queue() in detail.
++ */
++extern void __smp_call_single_queue(int cpu, struct llist_node *node);
++
+ /* total number of cpus in this system (may exceed NR_CPUS) */
+ extern unsigned int total_cpus;
+ 
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -31,7 +31,7 @@ static bool irq_work_claim(struct irq_wo
+ {
+ 	int oflags;
+ 
+-	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED, &work->flags);
++	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->flags);
+ 	/*
+ 	 * If the work is already pending, no need to raise the IPI.
+ 	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
+@@ -102,8 +102,7 @@ bool irq_work_queue_on(struct irq_work *
+ 	if (cpu != smp_processor_id()) {
+ 		/* Arch remote IPI send/receive backend aren't NMI safe */
+ 		WARN_ON_ONCE(in_nmi());
+-		if (llist_add(&work->llnode, &per_cpu(raised_list, cpu)))
+-			arch_send_call_function_single_ipi(cpu);
++		__smp_call_single_queue(cpu, &work->llnode);
+ 	} else {
+ 		__irq_work_queue_local(work);
+ 	}
+@@ -131,6 +130,31 @@ bool irq_work_needs_cpu(void)
+ 	return true;
  }
  
-+void send_call_function_single_ipi(int cpu)
++void irq_work_single(void *arg)
 +{
-+	struct rq *rq = cpu_rq(cpu);
++	struct irq_work *work = arg;
++	int flags;
 +
-+	if (!set_nr_if_polling(rq->idle))
-+		arch_send_call_function_single_ipi(cpu);
-+	else
-+		trace_sched_wake_idle_without_ipi(cpu);
++	/*
++	 * Clear the PENDING bit, after this point the @work
++	 * can be re-used.
++	 * Make it immediately visible so that other CPUs trying
++	 * to claim that work don't rely on us to handle their data
++	 * while we are in the middle of the func.
++	 */
++	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
++
++	lockdep_irq_work_enter(work);
++	work->func(work);
++	lockdep_irq_work_exit(work);
++	/*
++	 * Clear the BUSY bit and return to the free state if
++	 * no-one else claimed it meanwhile.
++	 */
++	flags &= ~IRQ_WORK_PENDING;
++	(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
 +}
 +
- /*
-  * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
-  * necessary. The wakee CPU on receipt of the IPI will queue the task
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -289,6 +289,7 @@ static void do_idle(void)
- 	 */
- 	smp_mb__after_atomic();
+ static void irq_work_run_list(struct llist_head *list)
+ {
+ 	struct irq_work *work, *tmp;
+@@ -142,27 +166,8 @@ static void irq_work_run_list(struct lli
+ 		return;
  
-+	flush_smp_call_function_from_idle();
- 	sched_ttwu_pending();
- 	schedule_idle();
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1506,6 +1506,8 @@ static inline void unregister_sched_doma
+ 	llnode = llist_del_all(list);
+-	llist_for_each_entry_safe(work, tmp, llnode, llnode) {
+-		int flags;
+-		/*
+-		 * Clear the PENDING bit, after this point the @work
+-		 * can be re-used.
+-		 * Make it immediately visible so that other CPUs trying
+-		 * to claim that work don't rely on us to handle their data
+-		 * while we are in the middle of the func.
+-		 */
+-		flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
+-
+-		lockdep_irq_work_enter(work);
+-		work->func(work);
+-		lockdep_irq_work_exit(work);
+-		/*
+-		 * Clear the BUSY bit and return to the free state if
+-		 * no-one else claimed it meanwhile.
+-		 */
+-		flags &= ~IRQ_WORK_PENDING;
+-		(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
+-	}
++	llist_for_each_entry_safe(work, tmp, llnode, llnode)
++		irq_work_single(work);
  }
- #endif
  
-+extern void flush_smp_call_function_from_idle(void);
-+
- #else
- 
- static inline void sched_ttwu_pending(void) { }
+ /*
 --- a/kernel/smp.c
 +++ b/kernel/smp.c
-@@ -135,6 +135,8 @@ static __always_inline void csd_unlock(c
+@@ -23,10 +23,8 @@
  
- static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+ #include "smpboot.h"
  
-+extern void send_call_function_single_ipi(int cpu);
+-enum {
+-	CSD_FLAG_LOCK		= 0x01,
+-	CSD_FLAG_SYNCHRONOUS	= 0x02,
+-};
++
++#define CSD_TYPE(_csd)	((_csd)->flags & CSD_FLAG_TYPE_MASK)
+ 
+ struct call_function_data {
+ 	call_single_data_t	__percpu *csd;
+@@ -137,15 +135,33 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(cal
+ 
+ extern void send_call_function_single_ipi(int cpu);
+ 
++void __smp_call_single_queue(int cpu, struct llist_node *node)
++{
++	/*
++	 * The list addition should be visible before sending the IPI
++	 * handler locks the list to pull the entry off it because of
++	 * normal cache coherency rules implied by spinlocks.
++	 *
++	 * If IPIs can go out of order to the cache coherency protocol
++	 * in an architecture, sufficient synchronisation should be added
++	 * to arch code to make it appear to obey cache coherency WRT
++	 * locking and barrier primitives. Generic code isn't really
++	 * equipped to do the right thing...
++	 */
++	if (llist_add(node, &per_cpu(call_single_queue, cpu)))
++		send_call_function_single_ipi(cpu);
++}
 +
  /*
   * Insert a previously allocated call_single_data_t element
   * for execution on the given CPU. data must already have
-@@ -178,7 +180,7 @@ static int generic_exec_single(int cpu,
- 	 * equipped to do the right thing...
- 	 */
- 	if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
--		arch_send_call_function_single_ipi(cpu);
-+		send_call_function_single_ipi(cpu);
+  * ->func, ->info, and ->flags set.
+  */
+-static int generic_exec_single(int cpu, call_single_data_t *csd,
+-			       smp_call_func_t func, void *info)
++static int generic_exec_single(int cpu, call_single_data_t *csd)
+ {
+ 	if (cpu == smp_processor_id()) {
++		smp_call_func_t func = csd->func;
++		void *info = csd->info;
+ 		unsigned long flags;
+ 
+ 		/*
+@@ -159,28 +175,12 @@ static int generic_exec_single(int cpu,
+ 		return 0;
+ 	}
+ 
+-
+ 	if ((unsigned)cpu >= nr_cpu_ids || !cpu_online(cpu)) {
+ 		csd_unlock(csd);
+ 		return -ENXIO;
+ 	}
+ 
+-	csd->func = func;
+-	csd->info = info;
+-
+-	/*
+-	 * The list addition should be visible before sending the IPI
+-	 * handler locks the list to pull the entry off it because of
+-	 * normal cache coherency rules implied by spinlocks.
+-	 *
+-	 * If IPIs can go out of order to the cache coherency protocol
+-	 * in an architecture, sufficient synchronisation should be added
+-	 * to arch code to make it appear to obey cache coherency WRT
+-	 * locking and barrier primitives. Generic code isn't really
+-	 * equipped to do the right thing...
+-	 */
+-	if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
+-		send_call_function_single_ipi(cpu);
++	__smp_call_single_queue(cpu, &csd->llist);
  
  	return 0;
  }
-@@ -278,6 +280,18 @@ static void flush_smp_call_function_queu
+@@ -194,16 +194,10 @@ static int generic_exec_single(int cpu,
+ void generic_smp_call_function_single_interrupt(void)
+ {
+ 	flush_smp_call_function_queue(true);
+-
+-	/*
+-	 * Handle irq works queued remotely by irq_work_queue_on().
+-	 * Smp functions above are typically synchronous so they
+-	 * better run first since some other CPUs may be busy waiting
+-	 * for them.
+-	 */
+-	irq_work_run();
+ }
+ 
++extern void irq_work_single(void *);
++
+ /**
+  * flush_smp_call_function_queue - Flush pending smp-call-function callbacks
+  *
+@@ -241,9 +235,21 @@ static void flush_smp_call_function_queu
+ 		 * We don't have to use the _safe() variant here
+ 		 * because we are not invoking the IPI handlers yet.
+ 		 */
+-		llist_for_each_entry(csd, entry, llist)
+-			pr_warn("IPI callback %pS sent to offline CPU\n",
+-				csd->func);
++		llist_for_each_entry(csd, entry, llist) {
++			switch (CSD_TYPE(csd)) {
++			case CSD_TYPE_ASYNC:
++			case CSD_TYPE_SYNC:
++			case CSD_TYPE_IRQ_WORK:
++				pr_warn("IPI callback %pS sent to offline CPU\n",
++					csd->func);
++				break;
++
++			default:
++				pr_warn("IPI callback, unknown type %d, sent to offline CPU\n",
++					CSD_TYPE(csd));
++				break;
++			}
++		}
+ 	}
+ 
+ 	/*
+@@ -251,16 +257,17 @@ static void flush_smp_call_function_queu
+ 	 */
+ 	prev = NULL;
+ 	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
+-		smp_call_func_t func = csd->func;
+-		void *info = csd->info;
+-
+ 		/* Do we wait until *after* callback? */
+-		if (csd->flags & CSD_FLAG_SYNCHRONOUS) {
++		if (CSD_TYPE(csd) == CSD_TYPE_SYNC) {
++			smp_call_func_t func = csd->func;
++			void *info = csd->info;
++
+ 			if (prev) {
+ 				prev->next = &csd_next->llist;
+ 			} else {
+ 				entry = &csd_next->llist;
+ 			}
++
+ 			func(info);
+ 			csd_unlock(csd);
+ 		} else {
+@@ -272,11 +279,17 @@ static void flush_smp_call_function_queu
+ 	 * Second; run all !SYNC callbacks.
+ 	 */
+ 	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
+-		smp_call_func_t func = csd->func;
+-		void *info = csd->info;
++		int type = CSD_TYPE(csd);
+ 
+-		csd_unlock(csd);
+-		func(info);
++		if (type == CSD_TYPE_ASYNC) {
++			smp_call_func_t func = csd->func;
++			void *info = csd->info;
++
++			csd_unlock(csd);
++			func(info);
++		} else if (type == CSD_TYPE_IRQ_WORK) {
++			irq_work_single(csd);
++		}
  	}
  }
  
-+void flush_smp_call_function_from_idle(void)
-+{
-+	unsigned long flags;
+@@ -305,7 +318,7 @@ int smp_call_function_single(int cpu, sm
+ {
+ 	call_single_data_t *csd;
+ 	call_single_data_t csd_stack = {
+-		.flags = CSD_FLAG_LOCK | CSD_FLAG_SYNCHRONOUS,
++		.flags = CSD_FLAG_LOCK | CSD_TYPE_SYNC,
+ 	};
+ 	int this_cpu;
+ 	int err;
+@@ -339,7 +352,10 @@ int smp_call_function_single(int cpu, sm
+ 		csd_lock(csd);
+ 	}
+ 
+-	err = generic_exec_single(cpu, csd, func, info);
++	csd->func = func;
++	csd->info = info;
 +
-+	if (llist_empty(this_cpu_ptr(&call_single_queue)))
-+		return;
++	err = generic_exec_single(cpu, csd);
+ 
+ 	if (wait)
+ 		csd_lock_wait(csd);
+@@ -385,7 +401,7 @@ int smp_call_function_single_async(int c
+ 	csd->flags = CSD_FLAG_LOCK;
+ 	smp_wmb();
+ 
+-	err = generic_exec_single(cpu, csd, csd->func, csd->info);
++	err = generic_exec_single(cpu, csd);
+ 
+ out:
+ 	preempt_enable();
+@@ -500,7 +516,7 @@ static void smp_call_function_many_cond(
+ 
+ 		csd_lock(csd);
+ 		if (wait)
+-			csd->flags |= CSD_FLAG_SYNCHRONOUS;
++			csd->flags |= CSD_TYPE_SYNC;
+ 		csd->func = func;
+ 		csd->info = info;
+ 		if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
+@@ -632,6 +648,17 @@ void __init smp_init(void)
+ {
+ 	int num_nodes, num_cpus;
+ 
++	/*
++	 * Ensure struct irq_work layout matches so that
++	 * flush_smp_call_function_queue() can do horrible things.
++	 */
++	BUILD_BUG_ON(offsetof(struct irq_work, llnode) !=
++		     offsetof(struct __call_single_data, llist));
++	BUILD_BUG_ON(offsetof(struct irq_work, func) !=
++		     offsetof(struct __call_single_data, func));
++	BUILD_BUG_ON(offsetof(struct irq_work, flags) !=
++		     offsetof(struct __call_single_data, flags));
 +
-+	local_irq_save(flags);
-+	flush_smp_call_function_queue(true);
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * smp_call_function_single - Run a function on a specific CPU
-  * @func: The function to run. This must be fast and non-blocking.
+ 	idle_threads_init();
+ 	cpuhp_threads_init();
+ 
 
 
