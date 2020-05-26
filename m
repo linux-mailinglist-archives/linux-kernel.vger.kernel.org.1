@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E4C1E1F7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414BA1E1F81
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 12:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731814AbgEZKQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 06:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgEZKQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 06:16:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCFCC2071A;
-        Tue, 26 May 2020 10:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590488166;
-        bh=DzkBbf5oeb0cdW/wBmldy6tJQZjMEl25csjKMddYnIg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yZXVYDMwFyOehlszO1skMSh1i+h/5sEoMPwspgXHpC8k3/QQFMt3DrpNM3W3/MUmv
-         o0BjSup1f2WZNzuWf82VDHZXpDpIIfENe2npzqEclr3Rjr0gQyLdR9t98+h9OKRPtf
-         OVO/lXIBLdJ0HZkW1fVSLDuTMVO3t7jR9Hszdrkk=
-Date:   Tue, 26 May 2020 12:16:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-crypto@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Gonglei <arei.gonglei@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [v2 2/2] crypto: virtio: Fix use-after-free in
- virtio_crypto_skcipher_finalize_req()
-Message-ID: <20200526101604.GB2759907@kroah.com>
-References: <20200526031956.1897-1-longpeng2@huawei.com>
- <20200526031956.1897-3-longpeng2@huawei.com>
- <0248e0f6-7648-f08d-afa2-170ad2e724b7@web.de>
- <03d3387f-c886-4fb9-e6f2-9ff8dc6bb80a@huawei.com>
- <8aab4c6b-7d41-7767-4945-e8af1dec902b@web.de>
- <321c79df-6397-bbf1-0047-b0b10e5af353@huawei.com>
+        id S1731868AbgEZKR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 06:17:56 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59820 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731857AbgEZKRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 06:17:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04QAC4dm102952;
+        Tue, 26 May 2020 10:16:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=6z4UXbxpSB4DLFidU7cgyywd9E0B1auRRbxxbHOd0lw=;
+ b=gAkFY+lAo2pSNT4dx/FYBl7382fK97ukzDFOsmwnT1jUOh9zi55UYj1sx19BsHvSst2f
+ dv9pSPtFIenT9+Z/m3NPVIlQKkeKC3nPmA7LwGKXAnOh9Z+5YZ0AmBA9BzhnP0qjCppL
+ MCyrjIRMuWP+m8vJ4mlB5Y/NwNtiy3ZDJM7e8QLqWnJZHbz1A5+Rm6Wz4/WvidKuZj9m
+ b5WmZyzIV1mfPHmh0NXx7tdw7cfCNWX+3tEjuHf3gJITyHsYU3NCQbQX9aMa7BOgCSNr
+ U80aAvtVxyM33SE+nPmQwTkBZNCTdjgLI76p3pgQzCYI8R5Re0XCrMR6bJ/45E0NVLNn Ug== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 318xe18wue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 May 2020 10:16:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04QADV5p185253;
+        Tue, 26 May 2020 10:16:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 317j5myx0p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 May 2020 10:16:27 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04QAGLTa030926;
+        Tue, 26 May 2020 10:16:23 GMT
+Received: from [192.168.14.112] (/79.178.199.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 May 2020 03:16:21 -0700
+Subject: Re: [RFC 00/16] KVM protected memory extension
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <42685c32-a7a9-b971-0cf4-e8af8d9a40c6@oracle.com>
+ <20200526061721.GB48741@kernel.org>
+From:   Liran Alon <liran.alon@oracle.com>
+Message-ID: <8866ff79-e8fd-685d-9a1d-72acff5bf6bb@oracle.com>
+Date:   Tue, 26 May 2020 13:16:14 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <321c79df-6397-bbf1-0047-b0b10e5af353@huawei.com>
+In-Reply-To: <20200526061721.GB48741@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 cotscore=-2147483648 mlxscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 malwarescore=0
+ clxscore=1011 impostorscore=0 suspectscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260077
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 05:24:03PM +0800, Longpeng (Mike, Cloud Infrastructure Service Product Dept.) wrote:
-> 
-> 
-> On 2020/5/26 17:01, Markus Elfring wrote:
-> >>>> … Thus release specific resources before
-> >>>
-> >>> Is there a need to improve also this information another bit?
-> >>>
-> >> You mean the last two paragraph is redundant ?
-> > 
-> > No.
-> > 
-> > I became curious if you would like to choose a more helpful information
-> > according to the wording “specific resources”.
-> > 
-> > Regards,
-> > Markus
-> > 
-> Hi Markus,
-> 
-> I respect your work, but please let us to focus on the code itself. I think
-> experts in this area know what these patches want to solve after look at the code.
-> 
-> I hope experts in the thread could review the code when you free, thanks :)
 
-Please note that you are responding to someone who is known to be a pain
-in patch reviews and has been blocked by many kernel
-developers/maintainers because they just waste people's time.
+On 26/05/2020 9:17, Mike Rapoport wrote:
+> On Mon, May 25, 2020 at 04:47:18PM +0300, Liran Alon wrote:
+>> On 22/05/2020 15:51, Kirill A. Shutemov wrote:
+>>
+>> Furthermore, I would like to point out that just unmapping guest data from
+>> kernel direct-map is not sufficient to prevent all
+>> guest-to-guest info-leaks via a kernel memory info-leak vulnerability. This
+>> is because host kernel VA space have other regions
+>> which contains guest sensitive data. For example, KVM per-vCPU struct (which
+>> holds vCPU state) is allocated on slab and therefore
+>> still leakable.
+> Objects allocated from slab use the direct map, vmalloc() is another story.
+It doesn't matter. This patch series, like XPFO, only removes guest 
+memory pages from direct-map.
+Not things such as KVM per-vCPU structs. That's why Julian & Marius 
+(AWS), created the "Process local kernel VA region" patch-series
+that declare a single PGD entry, which maps a kernelspace region, to 
+have different PFN between different tasks.
+For more information, see my KVM Forum talk slides I gave in previous 
+reply and related AWS patch-series:
+https://patchwork.kernel.org/cover/10990403/
+>
+>>>    - Touching direct mapping leads to fragmentation. We need to be able to
+>>>      recover from it. I have a buggy patch that aims at recovering 2M/1G page.
+>>>      It has to be fixed and tested properly
+>> As I've mentioned above, not mapping all guest memory from 1GB hugetlbfs
+>> will lead to holes in kernel direct-map which force it to not be mapped
+>> anymore as a series of 1GB huge-pages.
+>> This have non-trivial performance cost. Thus, I am not sure addressing this
+>> use-case is valuable.
+> Out of curiosity, do we actually have some numbers for the "non-trivial
+> performance cost"? For instance for KVM usecase?
+>
+Dig into XPFO mailing-list discussions to find out...
+I just remember that this was one of the main concerns regarding XPFO.
 
-I suggest you all do the same here, and just ignore them, like I do :)
+-Liran
 
-thanks,
-
-greg k-h
