@@ -2,104 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6871F1E24C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D7F1E249B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731470AbgEZO6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 10:58:42 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46269 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731370AbgEZO6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 10:58:30 -0400
-Received: by mail-pg1-f193.google.com with SMTP id p21so10173164pgm.13;
-        Tue, 26 May 2020 07:58:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lLNCK+WRq9ug4fTBP9sca/wv2hUwl+4zOX5ypfLbsKY=;
-        b=PRMSnGv9mhb+gmul9y6X87lLu6mjkdHuyfsamDsv/WYlYlThgQF+6/BczFv24RQh28
-         L+lPITIjmSkrk6wO/uGPYzBFd051KF8qqDjWhbeq03/yWGLdoP4l9tRxJdU9cqFxWzL6
-         mAuGdVIF39YP0xprXcM6hmG1QqsjR6pg/QBW7CNrkMEli2D/AYgvM/8ojuoS/cRwuZlL
-         Ml7n2KKTUSPikvIvcZJBOCIk8yb0KkfMeqIb4bb5AGTyQZ1PbA2vUYH2JE7kPFtkNwbT
-         rPAc2V4aiI1fcRhcenz8Y4biGUhhM6hoKIb6IhkZmypmQAatrLMQINzOHFZGJD368FFW
-         A9SQ==
-X-Gm-Message-State: AOAM531CVFYwY2upikhvWtfK+f73PfZfGgyeWTNQY3cMXddcYpMPgvJZ
-        tSx713+1uVf6O4LOkQQdqEOBIsDQD70g4w==
-X-Google-Smtp-Source: ABdhPJztJRZpLHdtJV036fTHC1B9gsIyCD7HAHmajg7pNI3kRXEq9jRzWhS4XEoXuX2KgzB1H0zWTA==
-X-Received: by 2002:a65:41c8:: with SMTP id b8mr1383705pgq.265.1590505109347;
-        Tue, 26 May 2020 07:58:29 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id y14sm15686666pfr.11.2020.05.26.07.58.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 07:58:25 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id D804142309; Tue, 26 May 2020 14:58:18 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     jeyu@kernel.org, davem@davemloft.net, kuba@kernel.org
-Cc:     michael.chan@broadcom.com, dchickles@marvell.com,
-        sburla@marvell.com, fmanlunas@marvell.com, aelior@marvell.com,
-        GR-everest-linux-l2@marvell.com, kvalo@codeaurora.org,
-        johannes@sipsolutions.net, akpm@linux-foundation.org,
-        arnd@arndb.de, rostedt@goodmis.org, mingo@redhat.com,
-        aquini@redhat.com, cai@lca.pw, dyoung@redhat.com, bhe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de, gpiccoli@canonical.com,
-        pmladek@suse.com, tiwai@suse.de, schlad@suse.de,
-        andriy.shevchenko@linux.intel.com, derosier@gmail.com,
-        keescook@chromium.org, daniel.vetter@ffwll.ch, will@kernel.org,
-        mchehab+samsung@kernel.org, vkoul@kernel.org,
-        mchehab+huawei@kernel.org, robh@kernel.org, mhiramat@kernel.org,
-        sfr@canb.auug.org.au, linux@dominikbrodowski.net,
-        glider@google.com, paulmck@kernel.org, elver@google.com,
-        bauerman@linux.ibm.com, yamada.masahiro@socionext.com,
-        samitolvanen@google.com, yzaikin@google.com, dvyukov@google.com,
-        rdunlap@infradead.org, corbet@lwn.net, dianders@chromium.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v3 7/8] liquidio: use new taint_firmware_crashed()
-Date:   Tue, 26 May 2020 14:58:14 +0000
-Message-Id: <20200526145815.6415-8-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
-In-Reply-To: <20200526145815.6415-1-mcgrof@kernel.org>
-References: <20200526145815.6415-1-mcgrof@kernel.org>
+        id S1729675AbgEZO4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 10:56:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:12103 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726939AbgEZO4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 10:56:05 -0400
+IronPort-SDR: xadmTCFUBRPIJ+tXYpMfhKNPqHj1Q11gXgD2hV3has3QE3yRWl4p/mG0XzuutuBhbj0nPqNdOo
+ 0xlCpzVXXBzw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 07:56:04 -0700
+IronPort-SDR: jqZ+tLf1islW1l+9enfHOXh8olOhqqefZ1/MQqusWt3goPcHrGuWVjrroCOTGRiFws8bnx1gUl
+ lYEvKqDwEwJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="468326431"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by fmsmga005.fm.intel.com with ESMTP; 26 May 2020 07:56:01 -0700
+Date:   Tue, 26 May 2020 23:05:47 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Christophe de Dinechin <dinechin@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>, peterx@redhat.com
+Subject: Re: [PATCH v9 07/14] KVM: Don't allocate dirty bitmap if dirty ring
+ is enabled
+Message-ID: <20200526150547.GC30967@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200523225659.1027044-8-peterx@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes use of the new taint_firmware_crashed() to help
-annotate when firmware for device drivers crash. When firmware
-crashes devices can sometimes become unresponsive, and recovery
-sometimes requires a driver unload / reload and in the worst cases
-a reboot.
+Hi Peter,
 
-Using a taint flag allows us to annotate when this happens clearly.
+Thank you for the patch! Perhaps something to improve:
 
-Cc: Derek Chickles <dchickles@marvell.com>
-Cc: Satanand Burla <sburla@marvell.com>
-Cc: Felix Manlunas <fmanlunas@marvell.com>
-Acked-by: Rafael Aquini <aquini@redhat.com>
-Reviewed-by: Derek Chickles <dchickles@marvell.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+[auto build test WARNING on vhost/linux-next]
+[also build test WARNING on linus/master v5.7-rc7]
+[cannot apply to kvm/linux-next tip/auto-latest linux/master next-20200522]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Peter-Xu/KVM-Dirty-ring-interface/20200524-070926
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
+:::::: branch date: 2 days ago
+:::::: commit date: 2 days ago
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build):
+        # save the attached .config to linux build tree
+        make W=1 ARCH=x86_64 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+cppcheck warnings: (new ones prefixed by >>)
+
+>> arch/x86/kvm/mmu/mmu.c:1280:3: warning: Returning an integer in a function with pointer return type is not portable. [CastIntegerToAddressAtReturn]
+     return false;
+     ^
+   arch/x86/kvm/mmu/mmu.c:3725:9: warning: Redundant initialization for 'root'. The initialized value is overwritten before it is read. [redundantInitialization]
+      root = __pa(sp->spt);
+           ^
+   arch/x86/kvm/mmu/mmu.c:3715:15: note: root is initialized
+      hpa_t root = vcpu->arch.mmu->pae_root[i];
+                 ^
+   arch/x86/kvm/mmu/mmu.c:3725:9: note: root is overwritten
+      root = __pa(sp->spt);
+           ^
+   arch/x86/kvm/mmu/mmu.c:3769:8: warning: Redundant initialization for 'root'. The initialized value is overwritten before it is read. [redundantInitialization]
+     root = __pa(sp->spt);
+          ^
+   arch/x86/kvm/mmu/mmu.c:3758:14: note: root is initialized
+     hpa_t root = vcpu->arch.mmu->root_hpa;
+                ^
+   arch/x86/kvm/mmu/mmu.c:3769:8: note: root is overwritten
+     root = __pa(sp->spt);
+          ^
+   arch/x86/kvm/mmu/mmu.c:4670:15: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+    const u8 x = BYTE_MASK(ACC_EXEC_MASK);
+                 ^
+   arch/x86/kvm/mmu/mmu.c:4671:15: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+    const u8 w = BYTE_MASK(ACC_WRITE_MASK);
+                 ^
+   arch/x86/kvm/mmu/mmu.c:4672:15: warning: Clarify calculation precedence for '&' and '?'. [clarifyCalculation]
+    const u8 u = BYTE_MASK(ACC_USER_MASK);
+
+# https://github.com/0day-ci/linux/commit/2c23bd2b96e30ae3814e3e56f01a6234131cb531
+git remote add linux-review https://github.com/0day-ci/linux
+git remote update linux-review
+git checkout 2c23bd2b96e30ae3814e3e56f01a6234131cb531
+vim +1280 arch/x86/kvm/mmu/mmu.c
+
+b8e8c8303ff28c arch/x86/kvm/mmu.c     Paolo Bonzini   2019-11-04  1269  
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1270  static struct kvm_memory_slot *
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1271  gfn_to_memslot_dirty_bitmap(struct kvm_vcpu *vcpu, gfn_t gfn,
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1272  			    bool no_dirty_log)
+05da45583de9b3 arch/x86/kvm/mmu.c     Marcelo Tosatti 2008-02-23  1273  {
+05da45583de9b3 arch/x86/kvm/mmu.c     Marcelo Tosatti 2008-02-23  1274  	struct kvm_memory_slot *slot;
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1275  
+54bf36aac52031 arch/x86/kvm/mmu.c     Paolo Bonzini   2015-04-08  1276  	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+91b0d268a59dd9 arch/x86/kvm/mmu/mmu.c Paolo Bonzini   2020-01-21  1277  	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
+91b0d268a59dd9 arch/x86/kvm/mmu/mmu.c Paolo Bonzini   2020-01-21  1278  		return NULL;
+2c23bd2b96e30a arch/x86/kvm/mmu/mmu.c Peter Xu        2020-05-23  1279  	if (no_dirty_log && kvm_slot_dirty_track_enabled(slot))
+2c23bd2b96e30a arch/x86/kvm/mmu/mmu.c Peter Xu        2020-05-23 @1280  		return false;
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1281  
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1282  	return slot;
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1283  }
+5d163b1c9d6e55 arch/x86/kvm/mmu.c     Xiao Guangrong  2011-03-09  1284  
+
 ---
- drivers/net/ethernet/cavium/liquidio/lio_main.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-index 66d31c018c7e..ee1796ea4818 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-@@ -801,6 +801,7 @@ static int liquidio_watchdog(void *param)
- 			continue;
- 
- 		WRITE_ONCE(oct->cores_crashed, true);
-+		taint_firmware_crashed();
- 		other_oct = get_other_octeon_device(oct);
- 		if (other_oct)
- 			WRITE_ONCE(other_oct->cores_crashed, true);
--- 
-2.26.2
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
