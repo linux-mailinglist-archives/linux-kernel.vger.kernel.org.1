@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470361E1CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EA91E1C9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731643AbgEZIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:06:02 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:3845 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgEZIGB (ORCPT
+        id S1731684AbgEZH50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731406AbgEZH5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:06:01 -0400
+        Tue, 26 May 2020 03:57:25 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379FCC03E97E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:57:25 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e1so19428291wrt.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 00:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1590480361; x=1622016361;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=b5EEY//uUmxww4MeXLoOfsSYKFHirbB/BqQ/qTWvUzg=;
-  b=kS51WY3wYdFV2isbpXSual6S4L0dTc1YeTMpXqcYXG4H66ujafeh8rZn
-   JTV4ue6r+CmzO+aaGiR+jUyeAdTOrBydpaYi0LfQgrEUtyOZ/yCAAgkXI
-   MZvvI/KByXgJIVLddK1jssbrThCKBYIbDTlpYMMu2TQGdM9vJBMnTgvaH
-   0=;
-IronPort-SDR: JGSgXW91GlHfvDpYgAJRisz/UJ9GoGeEZUhiLQtz7TQAioUa99AGJ723Stx848YZIKW3b6ZrYZ
- XjX4aRH0lNbQ==
-X-IronPort-AV: E=Sophos;i="5.73,436,1583193600"; 
-   d="scan'208";a="37617179"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 May 2020 08:05:57 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 212EDA1BE7;
-        Tue, 26 May 2020 08:05:45 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 26 May 2020 08:05:45 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.193) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 26 May 2020 08:05:30 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v9 6/8] mm/damon/selftests: Add 'schemes' debugfs tests
-Date:   Tue, 26 May 2020 09:57:00 +0200
-Message-ID: <20200526075702.27339-7-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200526075702.27339-1-sjpark@amazon.com>
-References: <20200526075702.27339-1-sjpark@amazon.com>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=f4CVXpIwbYA1/rSO3By0QAy5Aok5IdKGfU45oFxadek=;
+        b=t5FQ5+tazNQZsu+Wc06IXbeyHxcZj04wOnM1WAOZod74jk0nVN+HvZzxoUv6Dz7tsI
+         EApI6/nxS/j2UONJ+N8D/YNKcNnNSA6Xm5bRC28FTWy46oex7A7mQ6BMELMNQs4wc3Fq
+         9yI0xDi7xVi7P9vfcei2EAKKljYXwHgjtiHk9yeXjLTW0DjfQYLbUiUMYkueG8npr5YO
+         ZN+HNILf+FzKYTZ2Wk/Wkg5PVV6F9ejS/1DWzrGFd4q3EWqxBxUMdXLUSuqsBA2+XJDN
+         VOiJtBaucsQF58wwW0ai/ukJlm72bo7w0CD+ufxxLvroTcQEKIOCU2Sh+yO81YHi3v3G
+         D1jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=f4CVXpIwbYA1/rSO3By0QAy5Aok5IdKGfU45oFxadek=;
+        b=Wnnd8LgQJgOspMmGhy6MKYUttBTsEaNZy3br5JWYv3C+ATM4K7vazWi+dkt9oC/Bnp
+         bOZ/iyLHOwyoVZor0JBko+BaarbtXje0kW4abUi1XHLSD2DbQ0I2ZhV+dwFZH2fW1UWJ
+         gECSxRrYhCP2HPAVbfnYbXq52J/Z+dHEWsWSFgr1K3ah5BpZC6na8mi7QD8qvsktCfbt
+         Ce2jxCG5gFIUFO2VgkrM0QPgElS55diiQzz85t5Z05ObNZe8/wjcWFDKf/Dx26DlUX2l
+         0Bl0IzQ3sOiOF1f+4dtu1+6kOVHnAm++r9/RRClDq7Ldbnx6sdD6IMfc1k7jcJaNU65E
+         awDg==
+X-Gm-Message-State: AOAM533T2o3ZhF2nzlDDIY04FfWxp2SNVUKQQXhUBNR5Y2UiPtSitL0q
+        KouJirOCCzM5NzUDT4eAg8eFucjxfrI=
+X-Google-Smtp-Source: ABdhPJzl4RWw8izusLBGpeBBKAIALyCyKMKS4tx46Usuii5EVZ40Iz2jybqnYKnh8NS7Yl2OGR4tvg==
+X-Received: by 2002:adf:fd49:: with SMTP id h9mr19360150wrs.67.1590479843845;
+        Tue, 26 May 2020 00:57:23 -0700 (PDT)
+Received: from dell ([95.149.164.102])
+        by smtp.gmail.com with ESMTPSA id j68sm217211wrj.28.2020.05.26.00.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 00:57:22 -0700 (PDT)
+Date:   Tue, 26 May 2020 08:57:21 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mfd: stmfx: reset chip on resume as supply was
+ disabled
+Message-ID: <20200526075721.GE3628@dell>
+References: <20200422090833.9743-1-amelie.delaunay@st.com>
+ <20200422090833.9743-2-amelie.delaunay@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.193]
-X-ClientProxiedBy: EX13D08UWB004.ant.amazon.com (10.43.161.232) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200422090833.9743-2-amelie.delaunay@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Wed, 22 Apr 2020, Amelie Delaunay wrote:
 
-This commit adds simple selftets for 'schemes' debugfs file of DAMON.
+> STMFX supply is disabled during suspend. To avoid a too early access to
+> the STMFX firmware on resume, reset the chip and wait for its firmware to
+> be loaded.
+> 
+> Fixes: 06252ade9156 ("mfd: Add ST Multi-Function eXpander (STMFX) core driver")
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> ---
+>  drivers/mfd/stmfx.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- .../testing/selftests/damon/debugfs_attrs.sh  | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Applied, thanks.
 
-diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
-index d5188b0f71b1..4aeb2037a67e 100755
---- a/tools/testing/selftests/damon/debugfs_attrs.sh
-+++ b/tools/testing/selftests/damon/debugfs_attrs.sh
-@@ -97,6 +97,35 @@ fi
- 
- echo $ORIG_CONTENT > $file
- 
-+# Test schemes file
-+file="$DBGFS/schemes"
-+
-+ORIG_CONTENT=$(cat $file)
-+echo "1 2 3 4 5 6 3" > $file
-+if [ $? -ne 0 ]
-+then
-+	echo "$file write fail"
-+	echo $ORIG_CONTENT > $file
-+	exit 1
-+fi
-+
-+echo "1 2
-+3 4 5 6 3" > $file
-+if [ $? -eq 0 ]
-+then
-+	echo "$file multi line write success (expected fail)"
-+	echo $ORIG_CONTENT > $file
-+	exit 1
-+fi
-+
-+echo > $file
-+if [ $? -ne 0 ]
-+then
-+	echo "$file empty string writing fail"
-+	echo $ORIG_CONTENT > $file
-+	exit 1
-+fi
-+
- # Test pids file
- file="$DBGFS/pids"
- 
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
