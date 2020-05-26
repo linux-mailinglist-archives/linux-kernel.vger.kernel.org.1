@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB971E32FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0851E3318
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404565AbgEZWvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:51:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404557AbgEZWvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:51:21 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S2392257AbgEZWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:52:21 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:46597 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392228AbgEZWwT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 18:52:19 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A8E82075F;
-        Tue, 26 May 2020 22:51:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590533481;
-        bh=Iwnq+0PLVIW/wTxxSSJYZn9hBX0RhzrKVgiIaqvXdfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kkne23X7TYidyChop6jl4HJ/ZaMCUsL0eWZd64FhOjF3Dq2q+3h6oo3uB+7cs7j0Z
-         8/hZvshsLWwMkPOSG1RBW7cY3PIIVQtJXbcNnMtXXv9mSHznFUiBDL8FY7HelCQbId
-         44b/CwtAsYtFyjiHBw2r+vFL68b+04mQQ2DLKslU=
-Date:   Tue, 26 May 2020 18:51:20 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Don Porter <porter@cs.unc.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200526225120.GH33628@sasha-vm>
-References: <c566b89cc3ef6c164160cc56a820abac3fd70839.camel@linux.intel.com>
- <20200518153407.GA499505@tassilo.jf.intel.com>
- <371e6a92cad25cbe7a8489785efa7d3457ecef3b.camel@linux.intel.com>
- <87v9ksvoaq.fsf@nanos.tec.linutronix.de>
- <20200519164853.GA19706@linux.intel.com>
- <7eb45e02-03bf-0af0-c915-794bf49d66d7@cs.unc.edu>
- <87h7w7qy18.fsf@nanos.tec.linutronix.de>
- <c5fffcd1-c262-7046-a047-67de2bbccd78@cs.unc.edu>
- <20200526202739.GG33628@sasha-vm>
- <7a25e82a-9ef1-f13b-be42-2d7a693592b4@cs.unc.edu>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 11DB42304C;
+        Wed, 27 May 2020 00:52:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1590533538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HUf5XK6R2KfvkP9eLz0vv0T3BRvy2B2hHBQ4hWKx/eA=;
+        b=ZNsMK0VIC/TT8DiDSHVWoCKy4YS3ivtrtc1Fwgz3feGkbTu1aB8Gop+0eNVQ351kqsh8hV
+        TZSVX0lzcgVB4NVNxW/yOgRlDZJiDFPQMGwtC8WLnuyeNlUTJ3nmq9lMf62Hs7vvNRVLss
+        SYA7m5IqQo1oLRPxQ7Rq8PmoIteBuls=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a25e82a-9ef1-f13b-be42-2d7a693592b4@cs.unc.edu>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 27 May 2020 00:52:18 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Subject: Re: [PATCH net-next v2 0/2] net: enetc: remove bootloader dependency
+In-Reply-To: <20200526225050.5997-1-michael@walle.cc>
+References: <20200526225050.5997-1-michael@walle.cc>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <8b6054895d6d843a22cf046966645f5b@walle.cc>
+X-Sender: michael@walle.cc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 06:03:35PM -0400, Don Porter wrote:
->On 5/26/20 4:27 PM, Sasha Levin wrote:
->>I'm really worried about the disconnect between how you view the current
->>state of Graphene (and the industry) vs Intel and the various cloud
->>providers.
->>
->>You keep suggesting that its just past the academic research state,
->>while Intel and the big cloud providers are already pushing it to
->>external customers.  Every one of those cloud providers has a preview/GA
->>secure enclave offering.
->>
->
->I wonder if you are conflating Graphene with SGX?  I understand that 
->many cloud vendors are offering SGX in preview/GA, but there are other 
->frameworks to build these offerings on, such as Intel's SGX SDK or 
->Haven.  It would be news to me if every major cloud vendor were 
->putting Graphene in production.
+> These patches were picked from the following series:
+> https://lore.kernel.org/netdev/1567779344-30965-1-git-send-email-claudiu.manoil@nxp.com/
+> They have never been resent. I've picked them up, addressed Andrews
+> comments, fixed some more bugs and asked Claudiu if I can keep their 
+> SOB
+> tags; he agreed. I've tested this on our board which happens to have a
+> bootloader which doesn't do the enetc setup in all cases.
 
-Sorry, I wasn't trying to suggest that all cloud vendors are pushing
-Graphene, but rather than SGX enabled platforms became a commodity
-product, users will end up using Graphene-like applications.
+If my SOB is wrong in the patches, please let me know.
 
-Let me provide an example:
-https://www.alibabacloud.com/blog/protecting-go-language-applications-with-the-graphene-library-os-on-intel%C2%AE-sgx%C2%AE-secured-alibaba-cloud_594889
-- a "practical" guide on how to run Graphene in production environment
-   on one of the big cloud vendor platforms. 
-
--- 
-Thanks,
-Sasha
+-michael
