@@ -2,166 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CF81E3213
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D829C1E320F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391900AbgEZWKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:10:30 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62188 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391578AbgEZWK1 (ORCPT
+        id S2391769AbgEZWJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389342AbgEZWJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:10:27 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04QM8g6p006561;
-        Tue, 26 May 2020 15:08:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
- b=Lisgty72EiZbHbrBlLCs2i/Gl8yKDjvlQJxs4kuEu/aoPWm4MNs/oVg2ry/bm7HVViAj
- RyGRQLh1zdIjqdKXAN7QY6Z62goehMvy1N+VcOIN3oqyGTnyAH34TEVyr4FN/5xQLmqn
- Qf+UDN7mCI4zzIdglvKn7sY4hfldXngc1K0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 316ygpnmqe-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 May 2020 15:08:45 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 May 2020 15:08:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gCCmI4pSjbN89GGdP/EkuZRXgwEWwYgiamZieJ/Kct/1bqiRq7vOlPYOUCjlik22ssug9Dr2hdD59FO/q/xnGrukrIT0a3sUbybsldCHpZXYW/ZRG1vkJ6+/0uQ9108QFB36EkSpY4dN/Cc+NJIUjN3R/3mAFx4QescdMVc+/M7KxU9N3UPqNiQRqfo6YJmE1HIq7XAgJySVNFq+L6r/vly1s5y5Sen+7iwHp8Ocu3wGymc/FxwzHinV6fNw+YE0oJ3/jRZeqp49CBp9GcZOV+ODBzII4ednK5keYVZKvGPktDqr/puRb2sWlgj1yhoFbqULPlLGQbiTavgoIF6KTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
- b=h+yCMoA+pNV5p7+B55vX/7mqCRr0vKM9uGK5zAsPdLysEVUk2vo4pfYSvkOn+UwA9py9LltmSsFR6yyq9BGxb9N5KCGN9AxqR5ytPJjqlw14Fi7NZaZX2fVptjldQmDqtst2Sa/qZruoYr5BLgko9ARQleJ2UhnQ3Zh/omScq/oWGlLYGHiahXL9NDeGDQI1d1FSNVqLiXcGXrArFaveKohZja6s+YYEDDc0iRRj9gw1eaNdXZp66Dlkf8b2cpsf5Pc9I7MxUpyGc05Ce4E50sGBTyrLVo6AvW0aJDrE5cToMHZOxIHUSBt57cJK5P+W1TJ91iR0FE3q8tSCTOmFlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lLrqFXOa2xXI54ecWTnzNhJNwm/ZGZtyng1ZSlrdymg=;
- b=MoR0AyYxS5m6LwofwZh3iK45MpH7rWrVnQL9HmnbVzHaqgG9BbK3vm0U3usFTrqlxcZ8fFf28V+wKWYB5cD9leVtjnfMsaI6ysogSXLxWnwi3H0St+8asq/SiDxVC3QMrWaE1myW5/jmnFsu3s0QJq+RNWHx5Hm89G794sPF+hs=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2917.namprd15.prod.outlook.com (2603:10b6:a03:f5::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Tue, 26 May
- 2020 22:08:38 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.3045.016; Tue, 26 May 2020
- 22:08:37 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] perf/core: allow ftrace for functions in
- kernel/event/core.c
-Thread-Topic: [RFC] perf/core: allow ftrace for functions in
- kernel/event/core.c
-Thread-Index: AQHWM6ViVS5deg/n5kWgZSYX+yJPDqi65OeAgAACB4CAAAIsgIAABAOA
-Date:   Tue, 26 May 2020 22:08:37 +0000
-Message-ID: <226406AB-1245-4F4E-879C-B3B0320811DD@fb.com>
-References: <20200526212826.4097888-1-songliubraving@fb.com>
- <20200526213913.GG2483@worktop.programming.kicks-ass.net>
- <A9B20D93-748B-4789-801E-91720E2D4F28@fb.com>
- <20200526215415.GH2483@worktop.programming.kicks-ass.net>
-In-Reply-To: <20200526215415.GH2483@worktop.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:7e06]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1ddd179c-52a1-43ef-f20b-08d801c1576a
-x-ms-traffictypediagnostic: BYAPR15MB2917:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB29171B1CC082B2BBA8A055E1B3B00@BYAPR15MB2917.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 041517DFAB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9SYAsdiAxpeYQ6PShRXEqBahByQnRWUHD1HGKHxJkrjt+UakPW6Aun1lsFkHdIhkOCePgHIV/k9dR3JSopW5Ld66s9jkvox0b7ycBe3JqCgOZqQ/ehy5Bel0aIrnVxhrNrVi3TU4CCfNczzJeWPS0KPRKatWqCqShr/F/YA0X9EF2RxMRDG3cWX5dHDd5qByocNCoAkSkCxvAGkQTPbnwlF9tvgI+YH/4afbLPbZI2yN7JvaHZh6gN/YzdClrPUfZM++404Fsd8sNOqakJcw4OLpBDfHxDjqNik/T9vTOi3GcEPO+rffJcCPrYWJxWCB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(346002)(396003)(366004)(66946007)(6512007)(54906003)(53546011)(71200400001)(6506007)(186003)(86362001)(4326008)(316002)(6486002)(5660300002)(2616005)(478600001)(64756008)(2906002)(6916009)(66446008)(66556008)(76116006)(36756003)(33656002)(8676002)(8936002)(66476007)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: nZX0pTOPUh1RNsIyxZQk1/F4LiYkgKdTGCDo7T7qFZWVJsj8Q5ar2DdMgjnkCrqsCqYH3cGjsBGppiK4pDEvw9NwFb9gkTGc9wleNuqtD4WCM3Qr2tIjlrqjhzRLGcHzNuRdrLa3vDIM3orm6ScQkrXC7e9R908nEgO5h0FVHlNQ76GdPJWmjyDUMxnEWW50I2zlpLX0L49P1Ot2YwieaESqAjCRA7O8DDrIFTM9m4dWj88NEnRQABefoPWy+mPYPxCP9v54tQGjs03X1I/mYZYTsraWNKuRPIfPZw9eC2ykNMe50YeNuZHHVdGO2f8rKupKy0VOFcCpnZNce1P2iUHko6Dza53+NEtLAYoWxNcpF8PL3ViYTPXf8W3qf3ckD8f5GU1dlswOiLTAnfGmwQ0F6qDG7I090v0A0YE2ZJv0dAhK5WpPT+zIoGZAVuE3llmJm7yxkFvuxgLu8AelBhfBmXdBvC/rhaWB6MVgEyu84ffFb4nXo6u6FjjUUMmbz9nP0EvDV2z1KIZyKGFA9g==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0CB12D5A4073D946B2F7E1764B231177@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ddd179c-52a1-43ef-f20b-08d801c1576a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2020 22:08:37.8288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: j2f6nC6Hiu7d1kdd6ZNMkIodVdeVHs77qeQUTAHj+f60PWvLIs8dH19r5b6zUBIPEOfdkZh0QQdypB5wk5OFyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2917
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 mlxscore=0 bulkscore=0 cotscore=-2147483648 mlxlogscore=999
- phishscore=0 adultscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005260171
-X-FB-Internal: deliver
+        Tue, 26 May 2020 18:09:34 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15F1C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:09:33 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id e8so2637138qtq.22
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:subject:from:to:cc;
+        bh=76RnCrYuIkxjPD/67W4gWQzeBexPbh4E4FGax1pg7M8=;
+        b=v4zrrqUCHGjAdSRZM8NUPTODZaC9BulTFTPNq4ikigV9FNcXtVQAVGLhc8M36bhvwM
+         X/ShDKCg/PBndpbavZqQCgT/GSTPKKjFedavuiBfn4wg7HZp1o8sPwSCohXErk/nyE62
+         DEI61v5Gepabha43pMC72mKQmQ6vlUKD7JQmpno/x8Y5YxXPlzAEU1PqNlQ6z9jN1ea3
+         izE8HTWlJANcpx8BrsLedFpwNLvMpfGyXhukAsS8HL/oinP+pIm6tfF5KwFatdpkvg8Z
+         pjp3G5NO+/9RtopQxKyEEXeND71MEhLCgg2PT4iKupbLZIKaKn29JJ93YyS1bGrP0/V+
+         Q9cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version:subject
+         :from:to:cc;
+        bh=76RnCrYuIkxjPD/67W4gWQzeBexPbh4E4FGax1pg7M8=;
+        b=ThywOYtKFGXf/x8Rcg8JH7UVHsEUC1gSfCjP4SXtnoNWIPBcIpZp24SdalymzH88FR
+         ZLzFP8cMKlCf0i2eiEHuvDDDAsEstnhmKoo6m2BOdi4ijW6dBCaj5GERSvF1ct+emi0B
+         dQy2tV4nyMDgKhW9iT82ySPbSWB2O+5JOLnFb5Avm+tdQksWJS329pJNxhylxm/yaows
+         z3AlyXNE0gZFGu4oqtEEEaXTcaKfEZKKaaHr2Tl+tYgAm6rCNzw030HUQtFBimgnQPcO
+         JSPTk5egJLFn0VUd2SxH4gzBy4ynd0NKS2Jqb9Mn5BPB7jgKn/S2t7Kfm8cx2+ZYCHXS
+         +y9Q==
+X-Gm-Message-State: AOAM533rn8ejZKgJ1HFTNNoBxJgaO+CZoZL++dVbSpWfIa05JM6LDsTE
+        p0lhrckj5FLvFupCF8WI1tFkkCnxjsDLxCU=
+X-Google-Smtp-Source: ABdhPJwd/fhrf0rDUhLOAH8yaPymFMnZy4V2MHeWC/+UdErTwcsr+XenVM4ID8s4+rLSowndXcEYmrAnon+uWW0=
+X-Received: by 2002:a0c:8b99:: with SMTP id r25mr20979191qva.174.1590530972841;
+ Tue, 26 May 2020 15:09:32 -0700 (PDT)
+Date:   Tue, 26 May 2020 15:09:27 -0700
+In-Reply-To: <6144404cb26d1f797fd7e87b124bcaf8@walle.cc>
+Message-Id: <20200526220928.49939-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.rc0.183.gde8f92d652-goog
+Subject: [PATCH v3] driver core: Update device link status correctly for
+ SYNC_STATE_ONLY links
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Michael Walle <michael@walle.cc>, kernel-team@android.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
+core: Add device link support for SYNC_STATE_ONLY flag"),
+SYNC_STATE_ONLY links were treated similar to STATELESS links in terms
+of not blocking consumer probe if the supplier hasn't probed yet.
 
+That caused a SYNC_STATE_ONLY device link's status to not get updated.
+Since SYNC_STATE_ONLY device link is no longer useful once the
+consumer probes, commit 21c27f06587d ("driver core: Fix
+SYNC_STATE_ONLY device link implementation") addresses the status
+update issue by deleting the SYNC_STATE_ONLY device link instead of
+complicating the status update code.
 
-> On May 26, 2020, at 2:54 PM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
-> On Tue, May 26, 2020 at 09:46:29PM +0000, Song Liu wrote:
->>=20
->>=20
->>> On May 26, 2020, at 2:39 PM, Peter Zijlstra <peterz@infradead.org> wrot=
-e:
->>>=20
->>> On Tue, May 26, 2020 at 02:28:26PM -0700, Song Liu wrote:
->>>> It is useful to trace functions in kernel/event/core.c. Allow ftrace f=
-or
->>>> them by removing $(CC_FLAGS_FTRACE) from Makefile.
->>>=20
->>> Did you try using the ftrace event with perf with this on?
->>=20
->> I have tried a few things, like=20
->>=20
->>  perf stat -e probe:perf_read -I 1000
->>  perf record -e probe:__x64_sys_perf_event_open -aR
->>=20
->> They all work fine.=20
->>=20
->> Do you have some tricky functions that we should double check?
->=20
-> I've no idea what probe: does. iirc there's something like
-> ftrace:function that is like regular function tracing.
+However, there are still some cases where we need to update the status
+of a SYNC_STATE_ONLY device link. This is because a SYNC_STATE_ONLY
+device link can later get converted into a normal MANAGED device link
+when a normal MANAGED device link is created between a supplier and
+consumer that already have a SYNC_STATE_ONLY device link between them.
 
-Those are kprobes. I have CONFIG_HAVE_KPROBES_ON_FTRACE=3Dy in .config.=20
+If a SYNC_STATE_ONLY device link's status isn't maintained correctly
+till it's converted to a normal MANAGED device link, then the normal
+MANAGED device link will end up with a wrong link status. This can cause
+a warning stack trace[1] when the consumer device probes successfully.
 
->=20
-> At some point using that made the kernel really sick due to recursion
-> between ftrace and perf. Quite possibly that's been fixed, dunno.
+This commit fixes the SYNC_STATE_ONLY device link status update issue
+where it wouldn't transition correctly from DL_STATE_DORMANT or
+DL_STATE_AVAILABLE to DL_STATE_CONSUMER_PROBE. It also resets the status
+back to DL_STATE_DORMANT or DL_STATE_AVAILABLE if the consumer probe
+fails.
 
-I also tried on ctx_sched_out() and event_sched_out(). They also work
-as expected.=20
+[1] - https://lore.kernel.org/lkml/20200522204120.3b3c9ed6@apollo/
+Fixes: 05ef983e0d65 ("driver core: Add device link support for SYNC_STATE_ONLY flag")
+Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link implementation")
+Reported-by: Michael Walle <michael@walle.cc>
+Tested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+v1->v2:
+- Added code to "revert" the link status if consumer probe fails
 
-Thanks,
-Song
+v2->v3:
+- Fixed copy-pasta where I was checking link->status instead of
+  link->flags.
+
+ drivers/base/core.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 791b7530599f..9a76dd44cb37 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -646,9 +646,17 @@ static void device_links_missing_supplier(struct device *dev)
+ {
+ 	struct device_link *link;
+ 
+-	list_for_each_entry(link, &dev->links.suppliers, c_node)
+-		if (link->status == DL_STATE_CONSUMER_PROBE)
++	list_for_each_entry(link, &dev->links.suppliers, c_node) {
++		if (link->status != DL_STATE_CONSUMER_PROBE)
++			continue;
++
++		if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
+ 			WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
++		} else {
++			WARN_ON(!(link->flags & DL_FLAG_SYNC_STATE_ONLY));
++			WRITE_ONCE(link->status, DL_STATE_DORMANT);
++		}
++	}
+ }
+ 
+ /**
+@@ -687,11 +695,11 @@ int device_links_check_suppliers(struct device *dev)
+ 	device_links_write_lock();
+ 
+ 	list_for_each_entry(link, &dev->links.suppliers, c_node) {
+-		if (!(link->flags & DL_FLAG_MANAGED) ||
+-		    link->flags & DL_FLAG_SYNC_STATE_ONLY)
++		if (!(link->flags & DL_FLAG_MANAGED))
+ 			continue;
+ 
+-		if (link->status != DL_STATE_AVAILABLE) {
++		if (link->status != DL_STATE_AVAILABLE &&
++		    !(link->flags & DL_FLAG_SYNC_STATE_ONLY)) {
+ 			device_links_missing_supplier(dev);
+ 			ret = -EPROBE_DEFER;
+ 			break;
+@@ -952,11 +960,21 @@ static void __device_links_no_driver(struct device *dev)
+ 		if (!(link->flags & DL_FLAG_MANAGED))
+ 			continue;
+ 
+-		if (link->flags & DL_FLAG_AUTOREMOVE_CONSUMER)
++		if (link->flags & DL_FLAG_AUTOREMOVE_CONSUMER) {
+ 			device_link_drop_managed(link);
+-		else if (link->status == DL_STATE_CONSUMER_PROBE ||
+-			 link->status == DL_STATE_ACTIVE)
++			continue;
++		}
++
++		if (link->status != DL_STATE_CONSUMER_PROBE &&
++		    link->status != DL_STATE_ACTIVE)
++			continue;
++
++		if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
+ 			WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
++		} else {
++			WARN_ON(!(link->flags & DL_FLAG_SYNC_STATE_ONLY));
++			WRITE_ONCE(link->status, DL_STATE_DORMANT);
++		}
+ 	}
+ 
+ 	dev->links.status = DL_DEV_NO_DRIVER;
+-- 
+2.27.0.rc0.183.gde8f92d652-goog
 
