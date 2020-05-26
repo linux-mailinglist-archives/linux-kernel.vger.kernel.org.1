@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326C81E2DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3111E2C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391728AbgEZTYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:24:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36588 "EHLO mail.kernel.org"
+        id S2392121AbgEZTMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:12:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390824AbgEZTHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:46 -0400
+        id S2392109AbgEZTMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:12:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCB8F20776;
-        Tue, 26 May 2020 19:07:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE5A3208A7;
+        Tue, 26 May 2020 19:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520066;
-        bh=tp/HQEMAxy6eE4ZBdZZxf6X4ju8GZ6SIyB/TvQ0Vugc=;
+        s=default; t=1590520359;
+        bh=WPj0jjv6Ts+fStz7KcOL0WNWp4wINcRRJV6yd0QuEiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZDPkKNv9yISIP8o+7WiKpaxLr42zHywnS/dnt2m2lLzUsPjSt/R+Q8NYre3U0zc80
-         R1m8UIoQYcAkXlROVWv8dieIDSkATSysDbOJccAzqexAr2ZAS1x2yxL4EP6lk7B+lB
-         x2OWdKCmpXE4qXUPXtMxV2PRo6XmG1k9b0pUU2Yg=
+        b=rc65seZHXTw+r1+VSCyKXpAqhDeG5308PCmc3QWazfekV9oWaN08E+eHSMLY1Chnq
+         m31z8Ldg0CCUPxyPqFtozMtRvyWpcvEfyGvWmpFn02YpIuJjMgm3cPdon35+TPwhgz
+         g1TW0dt8u8m8JuTwvHI+nyxGrHLb2Ny3Rtz417q4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/111] ARM: futex: Address build warning
-Date:   Tue, 26 May 2020 20:53:04 +0200
-Message-Id: <20200526183937.278552623@linuxfoundation.org>
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Qian Cai <cai@lca.pw>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 048/126] iommu/amd: Do not loop forever when trying to increase address space
+Date:   Tue, 26 May 2020 20:53:05 +0200
+Message-Id: <20200526183942.060883968@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit 8101b5a1531f3390b3a69fa7934c70a8fd6566ad ]
+[ Upstream commit 5b8a9a047b6cad361405c7900c1e1cdd378c4589 ]
 
-Stephen reported the following build warning on a ARM multi_v7_defconfig
-build with GCC 9.2.1:
+When increase_address_space() fails to allocate memory, alloc_pte()
+will call it again until it succeeds. Do not loop forever while trying
+to increase the address space and just return an error instead.
 
-kernel/futex.c: In function 'do_futex':
-kernel/futex.c:1676:17: warning: 'oldval' may be used uninitialized in this function [-Wmaybe-uninitialized]
- 1676 |   return oldval == cmparg;
-      |          ~~~~~~~^~~~~~~~~
-kernel/futex.c:1652:6: note: 'oldval' was declared here
- 1652 |  int oldval, ret;
-      |      ^~~~~~
-
-introduced by commit a08971e9488d ("futex: arch_futex_atomic_op_inuser()
-calling conventions change").
-
-While that change should not make any difference it confuses GCC which
-fails to work out that oldval is not referenced when the return value is
-not zero.
-
-GCC fails to properly analyze arch_futex_atomic_op_inuser(). It's not the
-early return, the issue is with the assembly macros. GCC fails to detect
-that those either set 'ret' to 0 and set oldval or set 'ret' to -EFAULT
-which makes oldval uninteresting. The store to the callsite supplied oldval
-pointer is conditional on ret == 0.
-
-The straight forward way to solve this is to make the store unconditional.
-
-Aside of addressing the build warning this makes sense anyway because it
-removes the conditional from the fastpath. In the error case the stored
-value is uninteresting and the extra store does not matter at all.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/87pncao2ph.fsf@nanos.tec.linutronix.de
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Tested-by: Qian Cai <cai@lca.pw>
+Link: https://lore.kernel.org/r/20200504125413.16798-3-joro@8bytes.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/futex.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/iommu/amd_iommu.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/include/asm/futex.h b/arch/arm/include/asm/futex.h
-index 83c391b597d4..fdc4ae3e7378 100644
---- a/arch/arm/include/asm/futex.h
-+++ b/arch/arm/include/asm/futex.h
-@@ -164,8 +164,13 @@ arch_futex_atomic_op_inuser(int op, int oparg, int *oval, u32 __user *uaddr)
- 	preempt_enable();
- #endif
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index 1d8634250afc..18c995a16d80 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -1500,8 +1500,19 @@ static u64 *alloc_pte(struct protection_domain *domain,
+ 	amd_iommu_domain_get_pgtable(domain, &pgtable);
  
--	if (!ret)
--		*oval = oldval;
-+	/*
-+	 * Store unconditionally. If ret != 0 the extra store is the least
-+	 * of the worries but GCC cannot figure out that __futex_atomic_op()
-+	 * is either setting ret to -EFAULT or storing the old value in
-+	 * oldval which results in a uninitialized warning at the call site.
-+	 */
-+	*oval = oldval;
+ 	while (address > PM_LEVEL_SIZE(pgtable.mode)) {
+-		*updated = increase_address_space(domain, address, gfp) || *updated;
++		bool upd = increase_address_space(domain, address, gfp);
++
++		/* Read new values to check if update was successful */
+ 		amd_iommu_domain_get_pgtable(domain, &pgtable);
++
++		/*
++		 * Return an error if there is no memory to update the
++		 * page-table.
++		 */
++		if (!upd && (address > PM_LEVEL_SIZE(pgtable.mode)))
++			return NULL;
++
++		*updated = *updated || upd;
+ 	}
  
- 	return ret;
- }
+ 
 -- 
 2.25.1
 
