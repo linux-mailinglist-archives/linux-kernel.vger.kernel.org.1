@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154591E2AAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FE21E2A68
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390236AbgEZS6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51210 "EHLO mail.kernel.org"
+        id S2389587AbgEZSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390178AbgEZS5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:57:53 -0400
+        id S2389568AbgEZSzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A86432086A;
-        Tue, 26 May 2020 18:57:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 943F820849;
+        Tue, 26 May 2020 18:55:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519472;
-        bh=osn5tQKATtrvLfOBUR18uCnujF4TcwMDgvASyZLXTM0=;
+        s=default; t=1590519335;
+        bh=osILlKdBPmKTG7DuLyKPwMcch155Kbo9VL5ROpVJETI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rAxk50T+E+L9+qjpErNJnmx7uPW/Gjl5NpZTu1CNX8HlacMi4fLHzFyvT7cflsJez
-         9xP01tksvZT7rlWjpzh+9ejAEtwdgCMCh3iicgUbN0oue1VpzBYWjkjI6FudQXHeOr
-         p65zh+QYn4X0QcvZSuDRz7EXsh1cawiRsvu6HfdY=
+        b=hGANQ/zuQWqKOT8/ktwx9KBeH2+I+MaftC0h3rchDghP+4DNXUjM9j4EBW69z1HuQ
+         QMiUfwVwxDkAcXa7+853dBBlpXxg2MXVdipLEtiTawQJWAhVhU12Fjob2XPb+nlwDo
+         gnyc63SalOQG/sauwRh8B4LdR73KMm4QlIF3tbUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 17/64] USB: core: Fix misleading driver bug report
-Date:   Tue, 26 May 2020 20:52:46 +0200
-Message-Id: <20200526183918.873869296@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 28/65] padata: initialize pd->cpu with effective cpumask
+Date:   Tue, 26 May 2020 20:52:47 +0200
+Message-Id: <20200526183916.633671914@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +45,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-[ Upstream commit ac854131d9844f79e2fdcef67a7707227538d78a ]
+[ Upstream commit ec9c7d19336ee98ecba8de80128aa405c45feebb ]
 
-The syzbot fuzzer found a race between URB submission to endpoint 0
-and device reset.  Namely, during the reset we call usb_ep0_reinit()
-because the characteristics of ep0 may have changed (if the reset
-follows a firmware update, for example).  While usb_ep0_reinit() is
-running there is a brief period during which the pointers stored in
-udev->ep_in[0] and udev->ep_out[0] are set to NULL, and if an URB is
-submitted to ep0 during that period, usb_urb_ep_type_check() will
-report it as a driver bug.  In the absence of those pointers, the
-routine thinks that the endpoint doesn't exist.  The log message looks
-like this:
+Exercising CPU hotplug on a 5.2 kernel with recent padata fixes from
+cryptodev-2.6.git in an 8-CPU kvm guest...
 
-------------[ cut here ]------------
-usb 2-1: BOGUS urb xfer, pipe 2 != type 2
-WARNING: CPU: 0 PID: 9241 at drivers/usb/core/urb.c:478
-usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
+    # modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
+    # echo 0 > /sys/devices/system/cpu/cpu1/online
+    # echo c > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+    # modprobe tcrypt mode=215
 
-Now, although submitting an URB while the device is being reset is a
-questionable thing to do, it shouldn't count as a driver bug as severe
-as submitting an URB for an endpoint that doesn't exist.  Indeed,
-endpoint 0 always exists, even while the device is in its unconfigured
-state.
+...caused the following crash:
 
-To prevent these misleading driver bug reports, this patch updates
-usb_disable_endpoint() to avoid clearing the ep_in[] and ep_out[]
-pointers when the endpoint being disabled is ep0.  There's no danger
-of leaving a stale pointer in place, because the usb_host_endpoint
-structure being pointed to is stored permanently in udev->ep0; it
-doesn't get deallocated until the entire usb_device structure does.
+    BUG: kernel NULL pointer dereference, address: 0000000000000000
+    #PF: supervisor read access in kernel mode
+    #PF: error_code(0x0000) - not-present page
+    PGD 0 P4D 0
+    Oops: 0000 [#1] SMP PTI
+    CPU: 2 PID: 134 Comm: kworker/2:2 Not tainted 5.2.0-padata-base+ #7
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-<snip>
+    Workqueue: pencrypt padata_parallel_worker
+    RIP: 0010:padata_reorder+0xcb/0x180
+    ...
+    Call Trace:
+     padata_do_serial+0x57/0x60
+     pcrypt_aead_enc+0x3a/0x50 [pcrypt]
+     padata_parallel_worker+0x9b/0xe0
+     process_one_work+0x1b5/0x3f0
+     worker_thread+0x4a/0x3c0
+     ...
 
-Reported-and-tested-by: syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+In padata_alloc_pd, pd->cpu is set using the user-supplied cpumask
+instead of the effective cpumask, and in this case cpumask_first picked
+an offline CPU.
 
-Link: https://lore.kernel.org/r/Pine.LNX.4.44L0.2005011558590.903-100000@netrider.rowland.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The offline CPU's reorder->list.next is NULL in padata_reorder because
+the list wasn't initialized in padata_init_pqueues, which only operates
+on CPUs in the effective mask.
+
+Fix by using the effective mask in padata_alloc_pd.
+
+Fixes: 6fc4dbcf0276 ("padata: Replace delayed timer with immediate workqueue in padata_reorder")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/message.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/padata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 2e541a029657..e33d23c2f6ea 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1081,11 +1081,11 @@ void usb_disable_endpoint(struct usb_device *dev, unsigned int epaddr,
+diff --git a/kernel/padata.c b/kernel/padata.c
+index e5966eedfa36..43b72f5dfe07 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -449,7 +449,7 @@ static struct parallel_data *padata_alloc_pd(struct padata_instance *pinst,
+ 	atomic_set(&pd->refcnt, 1);
+ 	pd->pinst = pinst;
+ 	spin_lock_init(&pd->lock);
+-	pd->cpu = cpumask_first(pcpumask);
++	pd->cpu = cpumask_first(pd->cpumask.pcpu);
+ 	INIT_WORK(&pd->reorder_work, invoke_padata_reorder);
  
- 	if (usb_endpoint_out(epaddr)) {
- 		ep = dev->ep_out[epnum];
--		if (reset_hardware)
-+		if (reset_hardware && epnum != 0)
- 			dev->ep_out[epnum] = NULL;
- 	} else {
- 		ep = dev->ep_in[epnum];
--		if (reset_hardware)
-+		if (reset_hardware && epnum != 0)
- 			dev->ep_in[epnum] = NULL;
- 	}
- 	if (ep) {
+ 	return pd;
 -- 
 2.25.1
 
