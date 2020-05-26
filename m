@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BFD1E2D9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08341E2BED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391941AbgEZTW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39354 "EHLO mail.kernel.org"
+        id S2391928AbgEZTKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:10:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390048AbgEZTKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:10:12 -0400
+        id S2391921AbgEZTKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:10:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCAAF208B3;
-        Tue, 26 May 2020 19:10:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6562320888;
+        Tue, 26 May 2020 19:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520212;
-        bh=GU2D2mRPFvVsOoMBcRg66MyY3nXhu9te59IzEmrUMN8=;
+        s=default; t=1590520214;
+        bh=M0EFsdENE1P9qddgZ9+RqpFDagZZYF2QDoBnYdkJz8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLMc7xtUFONavf120fZnPFi6Q6PiRiEV3RceEHLrKnVeZnQ7WIljHYnBTSYzIbIv9
-         6hRgS0d//LZSKN6DIRvBT1euNy7i2bTt1/30po6G8KdokZOgr4mNyh+cSspEuw8vxU
-         YFGBYKlWSws1x1SkYAFUTBHHA/EYtLuesgvX+a4U=
+        b=JPZ8X7D1DJ07oPzxE+bgDuz0Y2J6MuHVTs9/cs19twk5FzSAokIOgylyENB2MS3B1
+         6FJPWCNmBOOJoAe+2V+fzT3XLjrkSkl82eBekRX/W73SBYvd8vk8bWW7P2zl7Jhcpc
+         /vYHbqvA+yA5HxOC7xu3kloJ0FuuUBESJ9SUgpUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 101/111] x86/unwind/orc: Fix unwind_get_return_address_ptr() for inactive tasks
-Date:   Tue, 26 May 2020 20:53:59 +0200
-Message-Id: <20200526183942.478236620@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 102/111] iio: adc: stm32-adc: Use dma_request_chan() instead dma_request_slave_channel()
+Date:   Tue, 26 May 2020 20:54:00 +0200
+Message-Id: <20200526183942.559041461@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
 References: <20200526183932.245016380@linuxfoundation.org>
@@ -45,70 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-commit 187b96db5ca79423618dfa29a05c438c34f9e1f0 upstream.
+[ Upstream commit 735404b846dffcb320264f62b76e6f70012214dd ]
 
-Normally, show_trace_log_lvl() scans the stack, looking for text
-addresses to print.  In parallel, it unwinds the stack with
-unwind_next_frame().  If the stack address matches the pointer returned
-by unwind_get_return_address_ptr() for the current frame, the text
-address is printed normally without a question mark.  Otherwise it's
-considered a breadcrumb (potentially from a previous call path) and it's
-printed with a question mark to indicate that the address is unreliable
-and typically can be ignored.
+dma_request_slave_channel() is a wrapper on top of dma_request_chan()
+eating up the error code.
 
-Since the following commit:
+By using dma_request_chan() directly the driver can support deferred
+probing against DMA.
 
-  f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
-
-... for inactive tasks, show_trace_log_lvl() prints *only* unreliable
-addresses (prepended with '?').
-
-That happens because, for the first frame of an inactive task,
-unwind_get_return_address_ptr() returns the wrong return address
-pointer: one word *below* the task stack pointer.  show_trace_log_lvl()
-starts scanning at the stack pointer itself, so it never finds the first
-'reliable' address, causing only guesses to being printed.
-
-The first frame of an inactive task isn't a normal stack frame.  It's
-actually just an instance of 'struct inactive_task_frame' which is left
-behind by __switch_to_asm().  Now that this inactive frame is actually
-exposed to callers, fix unwind_get_return_address_ptr() to interpret it
-properly.
-
-Fixes: f1d9a2abff66 ("x86/unwind/orc: Don't skip the first frame for inactive tasks")
-Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200522135435.vbxs7umku5pyrdbk@treble
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/unwind_orc.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/iio/adc/stm32-adc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -311,12 +311,19 @@ EXPORT_SYMBOL_GPL(unwind_get_return_addr
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index 9f63ceb15865..a2279cccb584 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -1763,9 +1763,21 @@ static int stm32_adc_dma_request(struct iio_dev *indio_dev)
+ 	struct dma_slave_config config;
+ 	int ret;
  
- unsigned long *unwind_get_return_address_ptr(struct unwind_state *state)
- {
-+	struct task_struct *task = state->task;
+-	adc->dma_chan = dma_request_slave_channel(&indio_dev->dev, "rx");
+-	if (!adc->dma_chan)
++	adc->dma_chan = dma_request_chan(&indio_dev->dev, "rx");
++	if (IS_ERR(adc->dma_chan)) {
++		ret = PTR_ERR(adc->dma_chan);
++		if (ret != -ENODEV) {
++			if (ret != -EPROBE_DEFER)
++				dev_err(&indio_dev->dev,
++					"DMA channel request failed with %d\n",
++					ret);
++			return ret;
++		}
 +
- 	if (unwind_done(state))
- 		return NULL;
- 
- 	if (state->regs)
- 		return &state->regs->ip;
- 
-+	if (task != current && state->sp == task->thread.sp) {
-+		struct inactive_task_frame *frame = (void *)task->thread.sp;
-+		return &frame->ret_addr;
++		/* DMA is optional: fall back to IRQ mode */
++		adc->dma_chan = NULL;
+ 		return 0;
 +	}
-+
- 	if (state->sp)
- 		return (unsigned long *)state->sp - 1;
  
+ 	adc->rx_buf = dma_alloc_coherent(adc->dma_chan->device->dev,
+ 					 STM32_DMA_BUFFER_SIZE,
+-- 
+2.25.1
+
 
 
