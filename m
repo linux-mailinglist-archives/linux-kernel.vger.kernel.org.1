@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EB21E31E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854841E31E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391493AbgEZWBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389442AbgEZWBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:01:10 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DEEC061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:10 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ci23so425120pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zZVgy2vaY7jEFsggwCG3LBMwvCBMjEaLZHkHxTnDDvk=;
-        b=K9gsZ8zT3cxt3GfgIQHanpf/B7CYXSinl0fcm7TRKezmf7jNWFWuXK+2GFdvo43dDr
-         of6KBrANKEoFtQEfW+djWPeH0LH0Zm5gZVqc5NlYGuR8lsDDUg7oBlRqifrDnq48XVov
-         upxTuDkTmsiG1WqlkzqjLLUjlrUNGDYqVlHzuP6bFTEV2/moAaELS2MB1SlvtcOat8mW
-         0JI/GSptTLODrg0ShTKIf4XF/8jQEDrlqDGYM9Gp71cATmHJkoAYvxo9V1kYEFn3wmFb
-         8cxmiU5tvOI7O2/Z7M3F2d7B4v1eVkWH/NXTE+aCVDQHPP7DS3JXcwP0CA8UziWFDWE8
-         pISA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zZVgy2vaY7jEFsggwCG3LBMwvCBMjEaLZHkHxTnDDvk=;
-        b=BECuVi9kZA9K4qQP1H/5iMOMiIEI9eJFVP/41onWnd2W+ChvJgy00KCpADwMKIpY6E
-         sVzuDCCoSOdUQadcYmW3xQZnz9agbSoHw3PVg+XTHmeekPKQoaM8QyQuNHT/umCssR41
-         78txYZyu43+sMu3dEJ3fPwUPYezF4fcNaQufmFSLx66kyfXIdrFLO+1tcQeDeeLa+mGf
-         wO6ctqUrE88kd9IHcvKVlfRmJbUOfPFwNpfxE5EZGmutd8xrtrvA8TgtXfTTPl5eRcvI
-         8zIgtZpHdQwQu9quJVv738/7EyEwkioMg/3E1LtEvy0OgeuuMGem+MldaiEXsljFrKNm
-         Je2w==
-X-Gm-Message-State: AOAM532XqhRFkBu40n1SpYrtlXCzoIs4VV6ebMZZMrWdoU1EpdoxJzXk
-        uzdYIC2PqcVVjTc3PFm6niKxcL7/e0SDYA==
-X-Google-Smtp-Source: ABdhPJxLoWUFI2rzzX/tNrCylqa6XrMiWoTpJfv3EtVvMY4+UBWsKa7NQ24TWARybP1JK1WaB1gM2A==
-X-Received: by 2002:a17:90a:8404:: with SMTP id j4mr1339430pjn.12.1590530469655;
-        Tue, 26 May 2020 15:01:09 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:4922:2226:8cd7:a61e? ([2605:e000:100e:8c61:4922:2226:8cd7:a61e])
-        by smtp.gmail.com with ESMTPSA id d195sm442643pfd.52.2020.05.26.15.01.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 15:01:09 -0700 (PDT)
-Subject: Re: [PATCH 04/12] mm: add support for async page locking
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-References: <20200526195123.29053-1-axboe@kernel.dk>
- <20200526195123.29053-5-axboe@kernel.dk> <20200526215925.GC6781@cmpxchg.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <152529a5-adb4-fd7b-52ac-967500c011c9@kernel.dk>
-Date:   Tue, 26 May 2020 16:01:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2391720AbgEZWBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:01:33 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50520 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389799AbgEZWBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 18:01:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Ic9korQKPModNIisuiJMxCn+f02tNtVOzvQqeZQE5kU=; b=beoqdleFIBmKIcGYnN27TTlPSy
+        zWSwbh20ovaLnM1XaPd+X91ds1or2HRE7q1dsXHm7bipBAwmSic1R3rUpuwnpjVYYiOTJT/Z6JnF3
+        kXuGswWcXQmBQ8G8+gSb1G9ommatXdVW7dO+c+kHDq/dnLGag2gU5pPB/ZeKJtqU9xM8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jdhdX-003KKA-Kg; Wed, 27 May 2020 00:01:27 +0200
+Date:   Wed, 27 May 2020 00:01:27 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Antoine Tenart <antoine.tenart@bootlin.com>, davem@davemloft.net,
+        hkallweit1@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
+        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com
+Subject: Re: [PATCH net-next 4/4] net: phy: mscc-miim: read poll when high
+ resolution timers are disabled
+Message-ID: <20200526220127.GS768009@lunn.ch>
+References: <20200526162256.466885-1-antoine.tenart@bootlin.com>
+ <20200526162256.466885-5-antoine.tenart@bootlin.com>
+ <e95bbdb6-a6db-be02-660e-7318b9bb5f01@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200526215925.GC6781@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e95bbdb6-a6db-be02-660e-7318b9bb5f01@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 3:59 PM, Johannes Weiner wrote:
-> On Tue, May 26, 2020 at 01:51:15PM -0600, Jens Axboe wrote:
->> Normally waiting for a page to become unlocked, or locking the page,
->> requires waiting for IO to complete. Add support for lock_page_async()
->> and wait_on_page_locked_async(), which are callback based instead. This
+> > +/* When high resolution timers aren't built-in: we can't use usleep_range() as
+> > + * we would sleep way too long. Use udelay() instead.
+> > + */
+> > +#define mscc_readl_poll_timeout(addr, val, cond, delay_us, timeout_us)	\
+> > +({									\
+> > +	if (!IS_ENABLED(CONFIG_HIGH_RES_TIMERS))			\
+> > +		readl_poll_timeout_atomic(addr, val, cond, delay_us,	\
+> > +					  timeout_us);			\
+> > +	readl_poll_timeout(addr, val, cond, delay_us, timeout_us);	\
+> > +})
+> > +
 > 
-> wait_on_page_locked_async() is actually in the next patch, requiring
-> some back and forth to review. I wonder if this and the next patch
-> could be merged to have the new API and callers introduced together?
+> I would make this a regular function which would not harm the compiler's
+> ability to optimize it, but would give you type checking. With that fixed:
 
-I'm fine with that, if that is preferable. Don't feel strongly about
-that at all, just tried to do it as piecemeal as possible to make
-it easier to review.
+Hi Florian
 
--- 
-Jens Axboe
+cond makes that difficult, since it is not a parameter in the usual
+sense, but an expression to evaluate if the polling should terminate.
 
+readl_poll_timeout() and readl_poll_timeout_atomic() themselves are
+#define's, and there are more levels of macros under them.
+
+	   Andrew
