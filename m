@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E161E2B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559DA1E2DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391449AbgEZTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:05:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60946 "EHLO mail.kernel.org"
+        id S2391687AbgEZTZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391440AbgEZTE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:58 -0400
+        id S2391691AbgEZTHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:07:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AE7920776;
-        Tue, 26 May 2020 19:04:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 036BE208A7;
+        Tue, 26 May 2020 19:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519897;
-        bh=fQ0DWWGOqMI2LHCgElUKESIoUuz8FVVSSn09zsHcakU=;
+        s=default; t=1590520021;
+        bh=sfEmZzYhPeVOloIwz/2tq/ZwALlDcCqLPWzA6mRKkUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zby7Ct47lAZWYr028qjFEEMk+rLy4ADnOrxl7xZNTf2Byg1k/lgUOWfZc8AWEIofi
-         P+65YofK2Ls5fUpE+FVKZLvFvpFocPmRvbd0hunt8d8PaxlNaGKPq4cYLs2bEDZIwU
-         7X4v6X1F8QrH0yT5UCvKA08Ticts9tERDJkupeoM=
+        b=YRCQk5LEIkComvvvm+RuWnhBoVshRlDiLvexxzM23LAB6SqFN7+O6v/16C9i3i8lC
+         TwMYjqV1AO8eqW8FreyAk26YpxaFwDjKPQQ74i+mXtVCthWpZQlR/nwyh1cFnOpqFn
+         pl+0tAz4g8LR3/cdDSRBmRHUMgU3enTj92HG6+Lw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/81] mtd: spinand: Propagate ECC information to the MTD structure
-Date:   Tue, 26 May 2020 20:52:44 +0200
-Message-Id: <20200526183926.164686852@linuxfoundation.org>
+Subject: [PATCH 5.4 027/111] vhost/vsock: fix packet delivery order to monitoring devices
+Date:   Tue, 26 May 2020 20:52:45 +0200
+Message-Id: <20200526183935.318980223@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-[ Upstream commit 3507273d5a4d3c2e46f9d3f9ed9449805f5dff07 ]
+[ Upstream commit 107bc0766b9feb5113074c753735a3f115c2141f ]
 
-This is done by default in the raw NAND core (nand_base.c) but was
-missing in the SPI-NAND core. Without these two lines the ecc_strength
-and ecc_step_size values are not exported to the user through sysfs.
+We want to deliver packets to monitoring devices before it is
+put in the virtqueue, to avoid that replies can appear in the
+packet capture before the transmitted packet.
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/vhost/vsock.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index a2f38b3b9776..1d61ae7aaa66 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1045,6 +1045,10 @@ static int spinand_init(struct spinand_device *spinand)
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index 6c089f655707..ca68a27b98ed 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -181,14 +181,14 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+ 			break;
+ 		}
  
- 	mtd->oobavail = ret;
+-		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
+-		added = true;
+-
+-		/* Deliver to monitoring devices all correctly transmitted
+-		 * packets.
++		/* Deliver to monitoring devices all packets that we
++		 * will transmit.
+ 		 */
+ 		virtio_transport_deliver_tap_pkt(pkt);
  
-+	/* Propagate ECC information to mtd_info */
-+	mtd->ecc_strength = nand->eccreq.strength;
-+	mtd->ecc_step_size = nand->eccreq.step_size;
++		vhost_add_used(vq, head, sizeof(pkt->hdr) + payload_len);
++		added = true;
 +
- 	return 0;
+ 		pkt->off += payload_len;
+ 		total_len += payload_len;
  
- err_cleanup_nanddev:
 -- 
 2.25.1
 
