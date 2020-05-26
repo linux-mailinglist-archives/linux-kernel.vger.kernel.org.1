@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580F01E2CED
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353F21E2AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404205AbgEZTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
+        id S2390819AbgEZTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391970AbgEZTNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:37 -0400
+        id S2390802AbgEZTAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FDB2208B3;
-        Tue, 26 May 2020 19:13:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB1B420849;
+        Tue, 26 May 2020 19:00:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520416;
-        bh=ONsYDddsZTVKtfoCed08ZnVV6GO76273vrFEOVSs5A8=;
+        s=default; t=1590519644;
+        bh=gwkqAzjGrhQwjEY4Kl61JQADH910vNWzOGnYmmZvHsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GRehLAe0vCwcgZZhg8JG2mlo9ZIFxGrnPZgecrPv9NI1q5hNgJY6pfb/jUAaVQFlB
-         knIV3X3Zp2uXBcQMtomhhhlJWwwpU6XhH/p6mLa/Y+kkpf3lOBLrU2zDwXzOcwp5/S
-         LKC5OpVSfNqwOuZw8GMfqcurH8Snmhf/XYSqbW44=
+        b=mX8RZCykvll2uWTvvLOV7dPjt+MuPd3Ubf6K0/kdNeteHuukOv1PDYkr9v1bqiueU
+         W45QZsmukaqbitvNCn/PQo/FS7OUDPwJVSUR6YvKcGMJBhXhfdshMVzz7KEMh/4i5g
+         zv4t4iVtSPYhmJ4h+cCFNkiRE17peQdLG4kNaIkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 030/126] scsi: qla2xxx: Delete all sessions before unregister local nvme port
+        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.14 02/59] watchdog: Fix the race between the release of watchdog_core_data and cdev
 Date:   Tue, 26 May 2020 20:52:47 +0200
-Message-Id: <20200526183940.315220710@linuxfoundation.org>
+Message-Id: <20200526183907.854621404@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,66 +45,277 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Kevin Hao <haokexin@gmail.com>
 
-[ Upstream commit c48f849d3f7a4ec1025105f446e29d395c4dcc2f ]
+commit 72139dfa2464e43957d330266994740bb7be2535 upstream.
 
-Delete all sessions before unregistering local nvme port.  This allows nvme
-layer to decrement all active rport count down to zero.  Once the count is
-down to zero, nvme would call qla to continue with the npiv port deletion.
+The struct cdev is embedded in the struct watchdog_core_data. In the
+current code, we manage the watchdog_core_data with a kref, but the
+cdev is manged by a kobject. There is no any relationship between
+this kref and kobject. So it is possible that the watchdog_core_data is
+freed before the cdev is entirely released. We can easily get the
+following call trace with CONFIG_DEBUG_KOBJECT_RELEASE and
+CONFIG_DEBUG_OBJECTS_TIMERS enabled.
+  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x38
+  WARNING: CPU: 23 PID: 1028 at lib/debugobjects.c:481 debug_print_object+0xb0/0xf0
+  Modules linked in: softdog(-) deflate ctr twofish_generic twofish_common camellia_generic serpent_generic blowfish_generic blowfish_common cast5_generic cast_common cmac xcbc af_key sch_fq_codel openvswitch nsh nf_conncount nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+  CPU: 23 PID: 1028 Comm: modprobe Not tainted 5.3.0-next-20190924-yoctodev-standard+ #180
+  Hardware name: Marvell OcteonTX CN96XX board (DT)
+  pstate: 00400009 (nzcv daif +PAN -UAO)
+  pc : debug_print_object+0xb0/0xf0
+  lr : debug_print_object+0xb0/0xf0
+  sp : ffff80001cbcfc70
+  x29: ffff80001cbcfc70 x28: ffff800010ea2128
+  x27: ffff800010bad000 x26: 0000000000000000
+  x25: ffff80001103c640 x24: ffff80001107b268
+  x23: ffff800010bad9e8 x22: ffff800010ea2128
+  x21: ffff000bc2c62af8 x20: ffff80001103c600
+  x19: ffff800010e867d8 x18: 0000000000000060
+  x17: 0000000000000000 x16: 0000000000000000
+  x15: ffff000bd7240470 x14: 6e6968207473696c
+  x13: 5f72656d6974203a x12: 6570797420746365
+  x11: 6a626f2029302065 x10: 7461747320657669
+  x9 : 7463612820657669 x8 : 3378302f3078302b
+  x7 : 0000000000001d7a x6 : ffff800010fd5889
+  x5 : 0000000000000000 x4 : 0000000000000000
+  x3 : 0000000000000000 x2 : ffff000bff948548
+  x1 : 276a1c9e1edc2300 x0 : 0000000000000000
+  Call trace:
+   debug_print_object+0xb0/0xf0
+   debug_check_no_obj_freed+0x1e8/0x210
+   kfree+0x1b8/0x368
+   watchdog_cdev_unregister+0x88/0xc8
+   watchdog_dev_unregister+0x38/0x48
+   watchdog_unregister_device+0xa8/0x100
+   softdog_exit+0x18/0xfec4 [softdog]
+   __arm64_sys_delete_module+0x174/0x200
+   el0_svc_handler+0xd0/0x1c8
+   el0_svc+0x8/0xc
 
-PID: 27448  TASK: ffff9e34b777c1c0  CPU: 0   COMMAND: "qaucli"
- 0 [ffff9e25e84abbd8] __schedule at ffffffff977858ca
- 1 [ffff9e25e84abc68] schedule at ffffffff97785d79
- 2 [ffff9e25e84abc78] schedule_timeout at ffffffff97783881
- 3 [ffff9e25e84abd28] wait_for_completion at ffffffff9778612d
- 4 [ffff9e25e84abd88] qla_nvme_delete at ffffffffc0e3024e [qla2xxx]
- 5 [ffff9e25e84abda8] qla24xx_vport_delete at ffffffffc0e024b9 [qla2xxx]
- 6 [ffff9e25e84abdf0] fc_vport_terminate at ffffffffc011c247 [scsi_transport_fc]
- 7 [ffff9e25e84abe28] store_fc_host_vport_delete at ffffffffc011cd94 [scsi_transport_fc]
- 8 [ffff9e25e84abe70] dev_attr_store at ffffffff974b376b
- 9 [ffff9e25e84abe80] sysfs_kf_write at ffffffff972d9a92
-10 [ffff9e25e84abe90] kernfs_fop_write at ffffffff972d907b
-11 [ffff9e25e84abec8] vfs_write at ffffffff9724c790
-12 [ffff9e25e84abf08] sys_write at ffffffff9724d55f
-13 [ffff9e25e84abf50] system_call_fastpath at ffffffff97792ed2
-    RIP: 00007fc0bd81a6fd  RSP: 00007ffff78d9648  RFLAGS: 00010202
-    RAX: 0000000000000001  RBX: 0000000000000022  RCX: 00007ffff78d96e0
-    RDX: 0000000000000022  RSI: 00007ffff78d94e0  RDI: 0000000000000008
-    RBP: 00007ffff78d9440   R8: 0000000000000000   R9: 00007fc0bd48b2cd
-    R10: 0000000000000017  R11: 0000000000000293  R12: 0000000000000000
-    R13: 00005624e4dac840  R14: 00005624e4da9a10  R15: 0000000000000000
-    ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
+This is a common issue when using cdev embedded in a struct.
+Fortunately, we already have a mechanism to solve this kind of issue.
+Please see commit 233ed09d7fda ("chardev: add helper function to
+register char devs with a struct device") for more detail.
 
-Link: https://lore.kernel.org/r/20200331104015.24868-4-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In this patch, we choose to embed the struct device into the
+watchdog_core_data, and use the API provided by the commit 233ed09d7fda
+to make sure that the release of watchdog_core_data and cdev are
+in sequence.
+
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20191008112934.29669-1-haokexin@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+[bwh: Backported to 4.14:
+ - There's no reboot notifier here
+ - Adjust context]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_attr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/watchdog_dev.c |   67 +++++++++++++++++-----------------------
+ 1 file changed, 30 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index d7e7043f9eab..9556392652e3 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -2928,11 +2928,11 @@ qla24xx_vport_delete(struct fc_vport *fc_vport)
- 	    test_bit(FCPORT_UPDATE_NEEDED, &vha->dpc_flags))
- 		msleep(1000);
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -38,7 +38,6 @@
+ #include <linux/init.h>		/* For __init/__exit/... */
+ #include <linux/jiffies.h>	/* For timeout functions */
+ #include <linux/kernel.h>	/* For printk/panic/... */
+-#include <linux/kref.h>		/* For data references */
+ #include <linux/miscdevice.h>	/* For handling misc devices */
+ #include <linux/module.h>	/* For module stuff/... */
+ #include <linux/mutex.h>	/* For mutexes */
+@@ -53,14 +52,14 @@
  
--	qla_nvme_delete(vha);
+ /*
+  * struct watchdog_core_data - watchdog core internal data
+- * @kref:	Reference count.
++ * @dev:	The watchdog's internal device
+  * @cdev:	The watchdog's Character device.
+  * @wdd:	Pointer to watchdog device.
+  * @lock:	Lock for watchdog core.
+  * @status:	Watchdog core internal status bits.
+  */
+ struct watchdog_core_data {
+-	struct kref kref;
++	struct device dev;
+ 	struct cdev cdev;
+ 	struct watchdog_device *wdd;
+ 	struct mutex lock;
+@@ -802,7 +801,7 @@ static int watchdog_open(struct inode *i
+ 	file->private_data = wd_data;
  
- 	qla24xx_disable_vp(vha);
- 	qla2x00_wait_for_sess_deletion(vha);
+ 	if (!hw_running)
+-		kref_get(&wd_data->kref);
++		get_device(&wd_data->dev);
  
-+	qla_nvme_delete(vha);
- 	vha->flags.delete_progress = 1;
+ 	/* dev/watchdog is a virtual (and thus non-seekable) filesystem */
+ 	return nonseekable_open(inode, file);
+@@ -814,11 +813,11 @@ out_clear:
+ 	return err;
+ }
  
- 	qlt_remove_target(ha, vha);
--- 
-2.25.1
-
+-static void watchdog_core_data_release(struct kref *kref)
++static void watchdog_core_data_release(struct device *dev)
+ {
+ 	struct watchdog_core_data *wd_data;
+ 
+-	wd_data = container_of(kref, struct watchdog_core_data, kref);
++	wd_data = container_of(dev, struct watchdog_core_data, dev);
+ 
+ 	kfree(wd_data);
+ }
+@@ -878,7 +877,7 @@ done:
+ 	 */
+ 	if (!running) {
+ 		module_put(wd_data->cdev.owner);
+-		kref_put(&wd_data->kref, watchdog_core_data_release);
++		put_device(&wd_data->dev);
+ 	}
+ 	return 0;
+ }
+@@ -897,17 +896,22 @@ static struct miscdevice watchdog_miscde
+ 	.fops		= &watchdog_fops,
+ };
+ 
++static struct class watchdog_class = {
++	.name =		"watchdog",
++	.owner =	THIS_MODULE,
++	.dev_groups =	wdt_groups,
++};
++
+ /*
+  *	watchdog_cdev_register: register watchdog character device
+  *	@wdd: watchdog device
+- *	@devno: character device number
+  *
+  *	Register a watchdog character device including handling the legacy
+  *	/dev/watchdog node. /dev/watchdog is actually a miscdevice and
+  *	thus we set it up like that.
+  */
+ 
+-static int watchdog_cdev_register(struct watchdog_device *wdd, dev_t devno)
++static int watchdog_cdev_register(struct watchdog_device *wdd)
+ {
+ 	struct watchdog_core_data *wd_data;
+ 	int err;
+@@ -915,7 +919,6 @@ static int watchdog_cdev_register(struct
+ 	wd_data = kzalloc(sizeof(struct watchdog_core_data), GFP_KERNEL);
+ 	if (!wd_data)
+ 		return -ENOMEM;
+-	kref_init(&wd_data->kref);
+ 	mutex_init(&wd_data->lock);
+ 
+ 	wd_data->wdd = wdd;
+@@ -942,23 +945,33 @@ static int watchdog_cdev_register(struct
+ 		}
+ 	}
+ 
++	device_initialize(&wd_data->dev);
++	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
++	wd_data->dev.class = &watchdog_class;
++	wd_data->dev.parent = wdd->parent;
++	wd_data->dev.groups = wdd->groups;
++	wd_data->dev.release = watchdog_core_data_release;
++	dev_set_drvdata(&wd_data->dev, wdd);
++	dev_set_name(&wd_data->dev, "watchdog%d", wdd->id);
++
+ 	/* Fill in the data structures */
+ 	cdev_init(&wd_data->cdev, &watchdog_fops);
+-	wd_data->cdev.owner = wdd->ops->owner;
+ 
+ 	/* Add the device */
+-	err = cdev_add(&wd_data->cdev, devno, 1);
++	err = cdev_device_add(&wd_data->cdev, &wd_data->dev);
+ 	if (err) {
+ 		pr_err("watchdog%d unable to add device %d:%d\n",
+ 			wdd->id,  MAJOR(watchdog_devt), wdd->id);
+ 		if (wdd->id == 0) {
+ 			misc_deregister(&watchdog_miscdev);
+ 			old_wd_data = NULL;
+-			kref_put(&wd_data->kref, watchdog_core_data_release);
++			put_device(&wd_data->dev);
+ 		}
+ 		return err;
+ 	}
+ 
++	wd_data->cdev.owner = wdd->ops->owner;
++
+ 	/* Record time of most recent heartbeat as 'just before now'. */
+ 	wd_data->last_hw_keepalive = jiffies - 1;
+ 
+@@ -968,7 +981,7 @@ static int watchdog_cdev_register(struct
+ 	 */
+ 	if (watchdog_hw_running(wdd)) {
+ 		__module_get(wdd->ops->owner);
+-		kref_get(&wd_data->kref);
++		get_device(&wd_data->dev);
+ 		if (handle_boot_enabled)
+ 			queue_delayed_work(watchdog_wq, &wd_data->work, 0);
+ 		else
+@@ -991,7 +1004,7 @@ static void watchdog_cdev_unregister(str
+ {
+ 	struct watchdog_core_data *wd_data = wdd->wd_data;
+ 
+-	cdev_del(&wd_data->cdev);
++	cdev_device_del(&wd_data->cdev, &wd_data->dev);
+ 	if (wdd->id == 0) {
+ 		misc_deregister(&watchdog_miscdev);
+ 		old_wd_data = NULL;
+@@ -1009,15 +1022,9 @@ static void watchdog_cdev_unregister(str
+ 
+ 	cancel_delayed_work_sync(&wd_data->work);
+ 
+-	kref_put(&wd_data->kref, watchdog_core_data_release);
++	put_device(&wd_data->dev);
+ }
+ 
+-static struct class watchdog_class = {
+-	.name =		"watchdog",
+-	.owner =	THIS_MODULE,
+-	.dev_groups =	wdt_groups,
+-};
+-
+ /*
+  *	watchdog_dev_register: register a watchdog device
+  *	@wdd: watchdog device
+@@ -1029,27 +1036,14 @@ static struct class watchdog_class = {
+ 
+ int watchdog_dev_register(struct watchdog_device *wdd)
+ {
+-	struct device *dev;
+-	dev_t devno;
+ 	int ret;
+ 
+-	devno = MKDEV(MAJOR(watchdog_devt), wdd->id);
+-
+-	ret = watchdog_cdev_register(wdd, devno);
++	ret = watchdog_cdev_register(wdd);
+ 	if (ret)
+ 		return ret;
+ 
+-	dev = device_create_with_groups(&watchdog_class, wdd->parent,
+-					devno, wdd, wdd->groups,
+-					"watchdog%d", wdd->id);
+-	if (IS_ERR(dev)) {
+-		watchdog_cdev_unregister(wdd);
+-		return PTR_ERR(dev);
+-	}
+-
+ 	ret = watchdog_register_pretimeout(wdd);
+ 	if (ret) {
+-		device_destroy(&watchdog_class, devno);
+ 		watchdog_cdev_unregister(wdd);
+ 	}
+ 
+@@ -1067,7 +1061,6 @@ int watchdog_dev_register(struct watchdo
+ void watchdog_dev_unregister(struct watchdog_device *wdd)
+ {
+ 	watchdog_unregister_pretimeout(wdd);
+-	device_destroy(&watchdog_class, wdd->wd_data->cdev.dev);
+ 	watchdog_cdev_unregister(wdd);
+ }
+ 
 
 
