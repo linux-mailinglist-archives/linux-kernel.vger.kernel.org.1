@@ -2,115 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCC51E3145
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437521E3150
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389980AbgEZVgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388740AbgEZVgN (ORCPT
+        id S2390310AbgEZVlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:41:52 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:36790 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390013AbgEZVlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:36:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B238C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:36:13 -0700 (PDT)
+        Tue, 26 May 2020 17:41:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pPz4T1JqBnfA3eSrgPWLUIAddODK4bFj5VmukAoBfaI=; b=iuLiKeXA0OG2Ud39pacyc8ST9w
-        Cp52vIzq6HBov+mPZGS9QysSkt3nJMInXOkXbWKe8lH2hezVRnSW2s/3c/3Ua8zQCiWFRCthi2XxT
-        1cBWRa1u/eaH1xBd2uJIRZn2DMJqf3ma8yYOEoc9ciUHWnPVFqeMvN7rkP8yyHPCV2Xg5kRhbbzpQ
-        NWCpx/i6X/Itpbn5GUg1XB96lvFXNyW8mzlLg9kLLKREnj7JLvF5FdQwMhzcif+iTZUP2OXYhHtAf
-        BrdQZmc/HRmUs+/3SuSm6RnoTv3beg57NKej89Ood5/kpee+1mxjAYIrYeCAumUuVW06xVNF2c5WD
-        a/yUQILw==;
+        bh=YfUnwlF87BHKUnjZClLXeqPvxvA2sw0C8ADZZj9RRFA=; b=YGrPpPgePF7qfhH/HLM3Fx26ql
+        Q9L0tUaFmEzyxty8+CCxLqK4pKy10xWivwJ8xD89SzqmebHFka3ag5klQ7X9XSQhlHOxTZrTqCFOk
+        dql936h8Y6onfgcozl1GxKANkSzcphger8ckqFtKGRA0Z1byzIKsGPSe3OcntMpe8eyapEyyqcDIj
+        jYWGR9AqHV3RE+uJq694fMqFST6Gnop7gX+eospUZmF70NpsbEwh5o0KVOEmbyeNNwXhMfqPy+8co
+        S1o2uqrkvqzoRhodaxClGS3BodMYSxJDJ7JapulRb4ixf3HGD2ygqYydIV1onj1YYRRkrVUZf9kb+
+        oO7MykAg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdhEx-0005So-Ma; Tue, 26 May 2020 21:36:03 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jdhIC-0007q1-DT; Tue, 26 May 2020 21:39:24 +0000
 Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA9B89834AB; Tue, 26 May 2020 23:36:01 +0200 (CEST)
-Date:   Tue, 26 May 2020 23:36:01 +0200
+        id 56F669834AB; Tue, 26 May 2020 23:39:13 +0200 (CEST)
+Date:   Tue, 26 May 2020 23:39:13 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH -tip v3 09/11] data_race: Avoid nested statement
- expression
-Message-ID: <20200526213601.GF2483@worktop.programming.kicks-ass.net>
-References: <20200521142047.169334-1-elver@google.com>
- <20200521142047.169334-10-elver@google.com>
- <CAKwvOdnR7BXw_jYS5PFTuUamcwprEnZ358qhOxSu6wSSSJhxOA@mail.gmail.com>
- <CAK8P3a0RJtbVi1JMsfik=jkHCNFv+DJn_FeDg-YLW+ueQW3tNg@mail.gmail.com>
- <20200526120245.GB27166@willie-the-truck>
- <CAK8P3a29BNwvdN1YNzoN966BF4z1QiSxdRXTP+BzhM9H07LoYQ@mail.gmail.com>
- <CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com>
- <20200526173312.GA30240@google.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [RFC] perf/core: allow ftrace for functions in
+ kernel/event/core.c
+Message-ID: <20200526213913.GG2483@worktop.programming.kicks-ass.net>
+References: <20200526212826.4097888-1-songliubraving@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526173312.GA30240@google.com>
+In-Reply-To: <20200526212826.4097888-1-songliubraving@fb.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 07:33:12PM +0200, Marco Elver wrote:
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 5faf68eae204..a529fa263906 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -245,7 +245,9 @@ struct ftrace_likely_data {
->  /*
->   * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
->   *			       non-scalar types unchanged.
-> - *
-> + */
-> +#if defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900
-> +/*
->   * We build this out of a couple of helper macros in a vain attempt to
->   * help you keep your lunch down while reading it.
->   */
-> @@ -267,6 +269,24 @@ struct ftrace_likely_data {
->  			__pick_integer_type(x, int,				\
->  				__pick_integer_type(x, long,			\
->  					__pick_integer_type(x, long long, x))))))
-> +#else
-> +/*
-> + * If supported, prefer C11 _Generic for better compile-times. As above, 'char'
-> + * is not type-compatible with 'signed char', and we define a separate case.
-> + */
-> +#define __scalar_type_to_expr_cases(type)				\
-> +		type: (type)0, unsigned type: (unsigned type)0
-> +
-> +#define __unqual_scalar_typeof(x) typeof(				\
-> +		_Generic((x),						\
-> +			 __scalar_type_to_expr_cases(char),		\
-> +			 signed char: (signed char)0,			\
-> +			 __scalar_type_to_expr_cases(short),		\
-> +			 __scalar_type_to_expr_cases(int),		\
-> +			 __scalar_type_to_expr_cases(long),		\
-> +			 __scalar_type_to_expr_cases(long long),	\
-> +			 default: (x)))
-> +#endif
->  
->  /* Is this type a native word size -- useful for atomic operations */
->  #define __native_word(t) \
-> 
+On Tue, May 26, 2020 at 02:28:26PM -0700, Song Liu wrote:
+> It is useful to trace functions in kernel/event/core.c. Allow ftrace for
+> them by removing $(CC_FLAGS_FTRACE) from Makefile.
 
-Yeah, this shaves around 5% off of my kernel builds. The _Atomic hack is
-every so slightly faster on GCC but apparently doesn't work on clang --
-also, it's disguisting :-)
-
-Ack!
+Did you try using the ftrace event with perf with this on?
