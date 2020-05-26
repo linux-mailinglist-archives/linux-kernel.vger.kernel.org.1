@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AC41E1925
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 03:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDF21E1927
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 03:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388504AbgEZBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 21:42:43 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40486 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388442AbgEZBml (ORCPT
+        id S2388550AbgEZBmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 21:42:49 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:56611 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388515AbgEZBmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 21:42:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TzfuFzj_1590457357;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TzfuFzj_1590457357)
+        Mon, 25 May 2020 21:42:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Tzg5ulH_1590457362;
+Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Tzg5ulH_1590457362)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 May 2020 09:42:37 +0800
+          Tue, 26 May 2020 09:42:42 +0800
 From:   Lai Jiangshan <laijs@linux.alibaba.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -24,12 +24,16 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Martin Molnar <martin.molnar.programming@gmail.com>
-Subject: [RFC PATCH V2 6/7] x86/entry: is_debug_stack() don't check of DB1 stack
-Date:   Tue, 26 May 2020 01:42:20 +0000
-Message-Id: <20200526014221.2119-7-laijs@linux.alibaba.com>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: [RFC PATCH V2 7/7] x86/entry: remove DB1 stack and DB2 hole from cpu entry area
+Date:   Tue, 26 May 2020 01:42:21 +0000
+Message-Id: <20200526014221.2119-8-laijs@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200526014221.2119-1-laijs@linux.alibaba.com>
 References: <20200525152517.GY325280@hirez.programming.kicks-ass.net>
@@ -41,9 +45,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IST-shift code is removed from entry code, #DB will not
-at DB1 stack. So we remove the check of DB1 stack in
-is_debug_stack().
+IST-shift code is removed from entry code, #DB will stick to
+DB stack only. So we remove the DB1 stack and the DB2 hole.
 
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
@@ -51,30 +54,136 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: x86@kernel.org
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/kernel/nmi.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/x86/include/asm/cpu_entry_area.h | 12 +++---------
+ arch/x86/kernel/asm-offsets_64.c      |  4 ----
+ arch/x86/kernel/dumpstack_64.c        | 10 +++-------
+ arch/x86/mm/cpu_entry_area.c          |  4 +---
+ 4 files changed, 7 insertions(+), 23 deletions(-)
 
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 1c58454ac5fb..2f463f5880c6 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -500,15 +500,10 @@ static noinstr bool is_debug_stack(unsigned long addr)
- {
- 	struct cea_exception_stacks *cs = __this_cpu_read(cea_exception_stacks);
- 	unsigned long top = CEA_ESTACK_TOP(cs, DB);
--	unsigned long bot = CEA_ESTACK_BOT(cs, DB1);
-+	unsigned long bot = CEA_ESTACK_BOT(cs, DB);
+diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
+index 02c0078d3787..8902fdb7de13 100644
+--- a/arch/x86/include/asm/cpu_entry_area.h
++++ b/arch/x86/include/asm/cpu_entry_area.h
+@@ -11,15 +11,11 @@
+ #ifdef CONFIG_X86_64
  
- 	if (__this_cpu_read(debug_stack_usage))
- 		return true;
--	/*
--	 * Note, this covers the guard page between DB and DB1 as well to
--	 * avoid two checks. But by all means @addr can never point into
--	 * the guard page.
--	 */
- 	return addr >= bot && addr < top;
+ /* Macro to enforce the same ordering and stack sizes */
+-#define ESTACKS_MEMBERS(guardsize, db2_holesize)\
++#define ESTACKS_MEMBERS(guardsize)		\
+ 	char	DF_stack_guard[guardsize];	\
+ 	char	DF_stack[EXCEPTION_STKSZ];	\
+ 	char	NMI_stack_guard[guardsize];	\
+ 	char	NMI_stack[EXCEPTION_STKSZ];	\
+-	char	DB2_stack_guard[guardsize];	\
+-	char	DB2_stack[db2_holesize];	\
+-	char	DB1_stack_guard[guardsize];	\
+-	char	DB1_stack[EXCEPTION_STKSZ];	\
+ 	char	DB_stack_guard[guardsize];	\
+ 	char	DB_stack[EXCEPTION_STKSZ];	\
+ 	char	MCE_stack_guard[guardsize];	\
+@@ -28,12 +24,12 @@
+ 
+ /* The exception stacks' physical storage. No guard pages required */
+ struct exception_stacks {
+-	ESTACKS_MEMBERS(0, 0)
++	ESTACKS_MEMBERS(0)
+ };
+ 
+ /* The effective cpu entry area mapping with guard pages. */
+ struct cea_exception_stacks {
+-	ESTACKS_MEMBERS(PAGE_SIZE, EXCEPTION_STKSZ)
++	ESTACKS_MEMBERS(PAGE_SIZE)
+ };
+ 
+ /*
+@@ -42,8 +38,6 @@ struct cea_exception_stacks {
+ enum exception_stack_ordering {
+ 	ESTACK_DF,
+ 	ESTACK_NMI,
+-	ESTACK_DB2,
+-	ESTACK_DB1,
+ 	ESTACK_DB,
+ 	ESTACK_MCE,
+ 	N_EXCEPTION_STACKS
+diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
+index 472378330169..4b4974d91d90 100644
+--- a/arch/x86/kernel/asm-offsets_64.c
++++ b/arch/x86/kernel/asm-offsets_64.c
+@@ -57,10 +57,6 @@ int main(void)
+ 	BLANK();
+ #undef ENTRY
+ 
+-	DEFINE(DB_STACK_OFFSET, offsetof(struct cea_exception_stacks, DB_stack) -
+-	       offsetof(struct cea_exception_stacks, DB1_stack));
+-	BLANK();
+-
+ #ifdef CONFIG_STACKPROTECTOR
+ 	DEFINE(stack_canary_offset, offsetof(struct fixed_percpu_data, stack_canary));
+ 	BLANK();
+diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
+index 460ae7f66818..6b7051fa3669 100644
+--- a/arch/x86/kernel/dumpstack_64.c
++++ b/arch/x86/kernel/dumpstack_64.c
+@@ -22,15 +22,13 @@
+ static const char * const exception_stack_names[] = {
+ 		[ ESTACK_DF	]	= "#DF",
+ 		[ ESTACK_NMI	]	= "NMI",
+-		[ ESTACK_DB2	]	= "#DB2",
+-		[ ESTACK_DB1	]	= "#DB1",
+ 		[ ESTACK_DB	]	= "#DB",
+ 		[ ESTACK_MCE	]	= "#MC",
+ };
+ 
+ const char *stack_type_name(enum stack_type type)
+ {
+-	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
++	BUILD_BUG_ON(N_EXCEPTION_STACKS != 4);
+ 
+ 	if (type == STACK_TYPE_IRQ)
+ 		return "IRQ";
+@@ -72,14 +70,12 @@ struct estack_pages {
+ /*
+  * Array of exception stack page descriptors. If the stack is larger than
+  * PAGE_SIZE, all pages covering a particular stack will have the same
+- * info. The guard pages including the not mapped DB2 stack are zeroed
+- * out.
++ * info. The guard pages are zeroed out.
+  */
+ static const
+ struct estack_pages estack_pages[CEA_ESTACK_PAGES] ____cacheline_aligned = {
+ 	EPAGERANGE(DF),
+ 	EPAGERANGE(NMI),
+-	EPAGERANGE(DB1),
+ 	EPAGERANGE(DB),
+ 	EPAGERANGE(MCE),
+ };
+@@ -91,7 +87,7 @@ static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
+ 	struct pt_regs *regs;
+ 	unsigned int k;
+ 
+-	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
++	BUILD_BUG_ON(N_EXCEPTION_STACKS != 4);
+ 
+ 	begin = (unsigned long)__this_cpu_read(cea_exception_stacks);
+ 	/*
+diff --git a/arch/x86/mm/cpu_entry_area.c b/arch/x86/mm/cpu_entry_area.c
+index 5199d8a1daf1..686af163be20 100644
+--- a/arch/x86/mm/cpu_entry_area.c
++++ b/arch/x86/mm/cpu_entry_area.c
+@@ -102,12 +102,10 @@ static void __init percpu_setup_exception_stacks(unsigned int cpu)
+ 
+ 	/*
+ 	 * The exceptions stack mappings in the per cpu area are protected
+-	 * by guard pages so each stack must be mapped separately. DB2 is
+-	 * not mapped; it just exists to catch triple nesting of #DB.
++	 * by guard pages so each stack must be mapped separately.
+ 	 */
+ 	cea_map_stack(DF);
+ 	cea_map_stack(NMI);
+-	cea_map_stack(DB1);
+ 	cea_map_stack(DB);
+ 	cea_map_stack(MCE);
  }
- #endif
 -- 
 2.20.1
 
