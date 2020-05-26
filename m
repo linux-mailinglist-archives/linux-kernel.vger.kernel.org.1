@@ -2,406 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52A51E1A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46E71E1A8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgEZFG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 01:06:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42947 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgEZFGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 01:06:24 -0400
-IronPort-SDR: pCrEWUjmYrggOGeypUR7IjbX5O6AQFXFo0SauP0Q7sb30f7YPII+3dOJBb65WmzDTTe+2I4+Qt
- a9qKSeKOPuqQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 22:06:24 -0700
-IronPort-SDR: CHzOSO6v2oVuCvh4aXxdTE4hunBnndGgmfBajEBqZXL1jqeYKmWpDNyG0K5c9jCmfrKdI6txPQ
- 8d7v29AEPFBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,436,1583222400"; 
-   d="scan'208";a="255059522"
-Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
-  by fmsmga007.fm.intel.com with ESMTP; 25 May 2020 22:06:21 -0700
-From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, adrian.hunter@intel.com,
-        wan.ahmad.zainie.wan.mohamad@intel.com
-Subject: [PATCH v2 2/2] phy: intel: Add Keem Bay eMMC PHY support
-Date:   Tue, 26 May 2020 13:04:52 +0800
-Message-Id: <20200526050452.8837-3-wan.ahmad.zainie.wan.mohamad@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200526050452.8837-1-wan.ahmad.zainie.wan.mohamad@intel.com>
-References: <20200526050452.8837-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+        id S1726641AbgEZFGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 01:06:13 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10483 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgEZFGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 01:06:13 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ecca36c0000>; Mon, 25 May 2020 22:04:44 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 25 May 2020 22:06:12 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 25 May 2020 22:06:12 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 May
+ 2020 05:06:12 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 26 May 2020 05:06:12 +0000
+Received: from sandipan-pc.nvidia.com (Not Verified[10.24.42.163]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ecca3c00000>; Mon, 25 May 2020 22:06:11 -0700
+From:   Sandipan Patra <spatra@nvidia.com>
+To:     <treding@nvidia.com>, <jonathanh@nvidia.com>,
+        <u.kleine-koenig@pengutronix.de>, <kamil@wypas.org>,
+        <jdelvare@suse.com>, <linux@roeck-us.net>, <robh+dt@kernel.org>
+CC:     <bbasu@nvidia.com>, <bbiswas@nvidia.com>,
+        <linux-pwm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sandipan Patra <spatra@nvidia.com>
+Subject: [PATCH 1/2] hwmon: pwm-fan: Add profile support and add remove module support
+Date:   Tue, 26 May 2020 10:36:04 +0530
+Message-ID: <1590469565-14953-1-git-send-email-spatra@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
+MIME-Version: 1.0
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1590469484; bh=YNG08g8NnR/+zB8mCjRyNEMkFDmY+YHQZPfszu7vlRU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=QJTlDTnceYS2J34I7iRMFfYK2CYe10VK6NMuTxJQZBoooYRyUKE12HKCU2sswxDCQ
+         ifEpevlvL3eBaDVkiWbDEUE8LpyiINY4oX9JpJTnW/TIgdGR1TyA4cXnM0JU7p/1Tp
+         Y2nYyLiEQ7GeGuoQ/YWP9T27luL6BB1xqiW5Ag0fgLj5VYwW1xnylRdhX1AIbzJt64
+         7bQiubyFZ0+GW4TtA+fMoLSMqbjirsBlRYwh6FzExvVgenMo1IxalBu7e9uK6NQus6
+         BqBL5dbWm2JenHevUxYitomVWMRuNnybwweUJRt+bmQk3x7NPOs6wCZ0hlD35GQGyw
+         Beo3fsxLdc/ew==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for eMMC PHY on Intel Keem Bay SoC.
+This change has 2 parts:
+1. Add support for profiles mode settings.
+    This allows different fan settings for trip point temp/hyst/pwm.
+    T194 has multiple fan-profiles support.
 
-Signed-off-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+2. Add pwm-fan remove support. This is essential since the config is
+    tristate capable.
+
+Signed-off-by: Sandipan Patra <spatra@nvidia.com>
 ---
- drivers/phy/intel/Kconfig            |   8 +
- drivers/phy/intel/Makefile           |   1 +
- drivers/phy/intel/phy-keembay-emmc.c | 321 +++++++++++++++++++++++++++
- 3 files changed, 330 insertions(+)
- create mode 100644 drivers/phy/intel/phy-keembay-emmc.c
+ drivers/hwmon/pwm-fan.c | 112 ++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 100 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/phy/intel/Kconfig b/drivers/phy/intel/Kconfig
-index 7b47682a4e0e..5f5497d1624a 100644
---- a/drivers/phy/intel/Kconfig
-+++ b/drivers/phy/intel/Kconfig
-@@ -22,3 +22,11 @@ config PHY_INTEL_EMMC
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the Intel EMMC PHY
+diff --git a/drivers/hwmon/pwm-fan.c b/drivers/hwmon/pwm-fan.c
+index 30b7b3e..26db589 100644
+--- a/drivers/hwmon/pwm-fan.c
++++ b/drivers/hwmon/pwm-fan.c
+@@ -3,8 +3,10 @@
+  * pwm-fan.c - Hwmon driver for fans connected to PWM lines.
+  *
+  * Copyright (c) 2014 Samsung Electronics Co., Ltd.
++ * Copyright (c) 2020, NVIDIA Corporation.
+  *
+  * Author: Kamil Debski <k.debski@samsung.com>
++ * Author: Sandipan Patra <spatra@nvidia.com>
+  */
+ 
+ #include <linux/hwmon.h>
+@@ -21,6 +23,8 @@
+ #include <linux/timer.h>
+ 
+ #define MAX_PWM 255
++/* Based on OF max device tree node name length */
++#define MAX_PROFILE_NAME_LENGTH	31
+ 
+ struct pwm_fan_ctx {
+ 	struct mutex lock;
+@@ -38,6 +42,12 @@ struct pwm_fan_ctx {
+ 	unsigned int pwm_fan_state;
+ 	unsigned int pwm_fan_max_state;
+ 	unsigned int *pwm_fan_cooling_levels;
 +
-+config PHY_KEEMBAY_EMMC
-+	tristate "Intel Keem Bay EMMC PHY Driver"
-+	depends on OF
-+	select GENERIC_PHY
-+	select REGMAP_MMIO
-+	help
-+	  Enable this to support the Keem Bay EMMC PHY.
-diff --git a/drivers/phy/intel/Makefile b/drivers/phy/intel/Makefile
-index 233d530dadde..6566334e7b77 100644
---- a/drivers/phy/intel/Makefile
-+++ b/drivers/phy/intel/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_PHY_INTEL_COMBO)		+= phy-intel-combo.o
- obj-$(CONFIG_PHY_INTEL_EMMC)            += phy-intel-emmc.o
-+obj-$(CONFIG_PHY_KEEMBAY_EMMC)		+= phy-keembay-emmc.o
-diff --git a/drivers/phy/intel/phy-keembay-emmc.c b/drivers/phy/intel/phy-keembay-emmc.c
-new file mode 100644
-index 000000000000..546854cdbb0c
---- /dev/null
-+++ b/drivers/phy/intel/phy-keembay-emmc.c
-@@ -0,0 +1,321 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel Keem Bay eMMC PHY driver
-+ * Copyright (C) 2020 Intel Corporation
-+ */
++	unsigned int pwm_fan_profiles;
++	const char **fan_profile_names;
++	unsigned int **fan_profile_cooling_levels;
++	unsigned int fan_current_profile;
 +
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
+ 	struct thermal_cooling_device *cdev;
+ };
+ 
+@@ -227,28 +237,86 @@ static int pwm_fan_of_get_cooling_data(struct device *dev,
+ 				       struct pwm_fan_ctx *ctx)
+ {
+ 	struct device_node *np = dev->of_node;
++	struct device_node *base_profile = NULL;
++	struct device_node *profile_np = NULL;
++	const char *default_profile = NULL;
+ 	int num, i, ret;
+ 
+-	if (!of_find_property(np, "cooling-levels", NULL))
+-		return 0;
++	num = of_property_count_u32_elems(np, "cooling-levels");
++	if (num <= 0) {
++		base_profile = of_get_child_by_name(np, "profiles");
++		if (!base_profile) {
++			dev_err(dev, "Wrong Data\n");
++			return -EINVAL;
++		}
++	}
 +
-+/* eMMC/SD/SDIO core/phy configuration registers */
-+#define PHY_CFG_0		0x24
-+#define  SEL_DLY_TXCLK_MASK	BIT(29)
-+#define  SEL_DLY_TXCLK(x)	(((x) << 29) & SEL_DLY_TXCLK_MASK)
-+#define  OTAP_DLY_ENA_MASK	BIT(27)
-+#define  OTAP_DLY_ENA(x)	(((x) << 27) & OTAP_DLY_ENA_MASK)
-+#define  OTAP_DLY_SEL_MASK	GENMASK(26, 23)
-+#define  OTAP_DLY_SEL(x)	(((x) << 23) & OTAP_DLY_SEL_MASK)
-+#define  DLL_EN_MASK		BIT(10)
-+#define  DLL_EN(x)		(((x) << 10) & DLL_EN_MASK)
-+#define  PWR_DOWN_MASK		BIT(0)
-+#define  PWR_DOWN(x)		(((x) << 0) & PWR_DOWN_MASK)
++	if (base_profile) {
++		ctx->pwm_fan_profiles =
++			of_get_available_child_count(base_profile);
 +
-+#define PHY_CFG_2		0x2c
-+#define  SEL_FREQ_MASK		GENMASK(12, 10)
-+#define  SEL_FREQ(x)		(((x) << 10) & SEL_FREQ_MASK)
++		if (ctx->pwm_fan_profiles <= 0) {
++			dev_err(dev, "Profiles used but not defined\n");
++			return -EINVAL;
++		}
+ 
+-	ret = of_property_count_u32_elems(np, "cooling-levels");
+-	if (ret <= 0) {
+-		dev_err(dev, "Wrong data!\n");
+-		return ret ? : -EINVAL;
++		ctx->fan_profile_names = devm_kzalloc(dev,
++			sizeof(const char *) * ctx->pwm_fan_profiles,
++							GFP_KERNEL);
++		ctx->fan_profile_cooling_levels = devm_kzalloc(dev,
++			sizeof(int *) * ctx->pwm_fan_profiles,
++							GFP_KERNEL);
 +
-+#define PHY_STAT		0x40
-+#define  CAL_DONE_MASK		BIT(6)
-+#define  IS_CALDONE(x)		((x) & CAL_DONE_MASK)
-+#define  DLL_RDY_MASK		BIT(5)
-+#define  IS_DLLRDY(x)		((x) & DLL_RDY_MASK)
++		if (!ctx->fan_profile_names
++				|| !ctx->fan_profile_cooling_levels)
++			return -ENOMEM;
 +
-+/* From ACS_eMMC51_16nFFC_RO1100_Userguide_v1p0.pdf p17 */
-+#define FREQSEL_200M_170M	0x0
-+#define FREQSEL_170M_140M	0x1
-+#define FREQSEL_140M_110M	0x2
-+#define FREQSEL_110M_80M	0x3
-+#define FREQSEL_80M_50M		0x4
++		ctx->fan_current_profile = 0;
++		i = 0;
++		for_each_available_child_of_node(base_profile, profile_np) {
++			num = of_property_count_u32_elems(profile_np,
++							"cooling-levels");
++			if (num <= 0) {
++				dev_err(dev, "No data in cooling-levels inside profile node!\n");
++				return -EINVAL;
++			}
 +
-+struct keembay_emmc_phy {
-+	struct regmap *syscfg;
-+	struct clk *emmcclk;
-+};
++			of_property_read_string(profile_np, "name",
++						&ctx->fan_profile_names[i]);
++			if (default_profile &&
++				!strncmp(default_profile,
++				ctx->fan_profile_names[i],
++				MAX_PROFILE_NAME_LENGTH))
++				ctx->fan_current_profile = i;
 +
-+static const struct regmap_config keembay_regmap_config = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+};
++			ctx->fan_profile_cooling_levels[i] =
++				devm_kzalloc(dev, sizeof(int) * num,
++							GFP_KERNEL);
++			if (!ctx->fan_profile_cooling_levels[i])
++				return -ENOMEM;
 +
-+static int keembay_emmc_phy_power(struct phy *phy, bool on_off)
++			of_property_read_u32_array(profile_np, "cooling-levels",
++				ctx->fan_profile_cooling_levels[i], num);
++			i++;
++		}
+ 	}
+ 
+-	num = ret;
+ 	ctx->pwm_fan_cooling_levels = devm_kcalloc(dev, num, sizeof(u32),
+ 						   GFP_KERNEL);
+ 	if (!ctx->pwm_fan_cooling_levels)
+ 		return -ENOMEM;
+ 
+-	ret = of_property_read_u32_array(np, "cooling-levels",
+-					 ctx->pwm_fan_cooling_levels, num);
+-	if (ret) {
+-		dev_err(dev, "Property 'cooling-levels' cannot be read!\n");
+-		return ret;
++	if (base_profile) {
++		memcpy(ctx->pwm_fan_cooling_levels,
++		  ctx->fan_profile_cooling_levels[ctx->fan_current_profile],
++						num);
++	} else {
++		ret = of_property_read_u32_array(np, "cooling-levels",
++				ctx->pwm_fan_cooling_levels, num);
++		if (ret) {
++			dev_err(dev, "Property 'cooling-levels' cannot be read!\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	for (i = 0; i < num; i++) {
+@@ -390,6 +458,25 @@ static int pwm_fan_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int pwm_fan_remove(struct platform_device *pdev)
 +{
-+	struct keembay_emmc_phy *priv = phy_get_drvdata(phy);
-+	unsigned int caldone;
-+	unsigned int dllrdy;
-+	unsigned int freqsel;
-+	unsigned int mhz;
-+	int ret;
++	struct pwm_fan_ctx *ctx = platform_get_drvdata(pdev);
++	struct pwm_args args;
 +
-+	/*
-+	 * Keep phyctrl_pdb and phyctrl_endll low to allow
-+	 * initialization of CALIO state M/C DFFs
-+	 */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, PWR_DOWN_MASK,
-+				 PWR_DOWN(0));
-+	if (ret) {
-+		dev_err(&phy->dev, "CALIO power down bar failed: %d\n", ret);
-+		return ret;
-+	}
++	if (!ctx)
++		return -EINVAL;
 +
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, DLL_EN_MASK,
-+				 DLL_EN(0));
-+	if (ret) {
-+		dev_err(&phy->dev, "turn off the dll failed: %d\n", ret);
-+		return ret;
-+	}
++	if (IS_ENABLED(CONFIG_THERMAL))
++		thermal_cooling_device_unregister(ctx->cdev);
 +
-+	/* Already finish power off above */
-+	if (!on_off)
-+		return 0;
-+
-+	mhz = DIV_ROUND_CLOSEST(clk_get_rate(priv->emmcclk), 1000000);
-+	if (mhz <= 200 && mhz >= 170)
-+		freqsel = FREQSEL_200M_170M;
-+	else if (mhz <= 170 && mhz >= 140)
-+		freqsel = FREQSEL_170M_140M;
-+	else if (mhz <= 140 && mhz >= 110)
-+		freqsel = FREQSEL_140M_110M;
-+	else if (mhz <= 110 && mhz >= 80)
-+		freqsel = FREQSEL_110M_80M;
-+	else if (mhz <= 80 && mhz >= 50)
-+		freqsel = FREQSEL_80M_50M;
-+	else
-+		freqsel = 0x0;
-+
-+	if (mhz < 50 || mhz > 200)
-+		dev_warn(&phy->dev, "Unsupported rate: %d MHz\n", mhz);
-+
-+	/*
-+	 * According to the user manual, calpad calibration
-+	 * cycle takes more than 2us without the minimal recommended
-+	 * value, so we may need a little margin here
-+	 */
-+	udelay(5);
-+
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, PWR_DOWN_MASK,
-+				 PWR_DOWN(1));
-+	if (ret) {
-+		dev_err(&phy->dev, "CALIO power down bar failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * According to the user manual, it asks driver to wait 5us for
-+	 * calpad busy trimming. However it is documented that this value is
-+	 * PVT(A.K.A. process, voltage and temperature) relevant, so some
-+	 * failure cases are found which indicates we should be more tolerant
-+	 * to calpad busy trimming.
-+	 */
-+	ret = regmap_read_poll_timeout(priv->syscfg, PHY_STAT,
-+				       caldone, IS_CALDONE(caldone),
-+				       0, 50);
-+	if (ret) {
-+		dev_err(&phy->dev, "caldone failed, ret=%d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Set the frequency of the DLL operation */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_2, SEL_FREQ_MASK,
-+				 SEL_FREQ(freqsel));
-+	if (ret) {
-+		dev_err(&phy->dev, "set the frequency of dll failed:%d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Turn on the DLL */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, DLL_EN_MASK,
-+				 DLL_EN(1));
-+	if (ret) {
-+		dev_err(&phy->dev, "turn on the dll failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * We turned on the DLL even though the rate was 0 because we the
-+	 * clock might be turned on later.  ...but we can't wait for the DLL
-+	 * to lock when the rate is 0 because it will never lock with no
-+	 * input clock.
-+	 *
-+	 * Technically we should be checking the lock later when the clock
-+	 * is turned on, but for now we won't.
-+	 */
-+	if (mhz == 0)
-+		return 0;
-+
-+	/*
-+	 * After enabling analog DLL circuits docs say that we need 10.2 us if
-+	 * our source clock is at 50 MHz and that lock time scales linearly
-+	 * with clock speed. If we are powering on the PHY and the card clock
-+	 * is super slow (like 100kHz) this could take as long as 5.1 ms as
-+	 * per the math: 10.2 us * (50000000 Hz / 100000 Hz) => 5.1 ms
-+	 * hopefully we won't be running at 100 kHz, but we should still make
-+	 * sure we wait long enough.
-+	 *
-+	 * NOTE: There appear to be corner cases where the DLL seems to take
-+	 * extra long to lock for reasons that aren't understood. In some
-+	 * extreme cases we've seen it take up to over 10ms (!). We'll be
-+	 * generous and give it 50ms.
-+	 */
-+	ret = regmap_read_poll_timeout(priv->syscfg, PHY_STAT,
-+				       dllrdy, IS_DLLRDY(dllrdy),
-+				       0, 50 * USEC_PER_MSEC);
-+	if (ret) {
-+		dev_err(&phy->dev, "dllrdy failed, ret=%d\n", ret);
-+		return ret;
-+	}
++	pwm_get_args(ctx->pwm, &args);
++	pwm_config(ctx->pwm, 0, args.period);
++	pwm_disable(ctx->pwm);
 +
 +	return 0;
 +}
 +
-+static int keembay_emmc_phy_init(struct phy *phy)
-+{
-+	struct keembay_emmc_phy *priv = phy_get_drvdata(phy);
 +
-+	/*
-+	 * We purposely get the clock here and not in probe to avoid the
-+	 * circular dependency problem. We expect:
-+	 * - PHY driver to probe
-+	 * - SDHCI driver to start probe
-+	 * - SDHCI driver to register it's clock
-+	 * - SDHCI driver to get the PHY
-+	 * - SDHCI driver to init the PHY
-+	 *
-+	 * The clock is optional, so upon any error just return it like
-+	 * any other error to user.
-+	 */
-+	priv->emmcclk = clk_get_optional(&phy->dev, "emmcclk");
-+	if (IS_ERR(priv->emmcclk)) {
-+		dev_err(&phy->dev, "ERROR: getting emmcclk\n");
-+		return PTR_ERR(priv->emmcclk);
-+	}
-+
-+	return 0;
-+}
-+
-+static int keembay_emmc_phy_exit(struct phy *phy)
-+{
-+	struct keembay_emmc_phy *priv = phy_get_drvdata(phy);
-+
-+	clk_put(priv->emmcclk);
-+
-+	return 0;
-+};
-+
-+static int keembay_emmc_phy_power_on(struct phy *phy)
-+{
-+	struct keembay_emmc_phy *priv = phy_get_drvdata(phy);
-+	int ret;
-+
-+	/* Delay chain based txclk: enable */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, SEL_DLY_TXCLK_MASK,
-+				 SEL_DLY_TXCLK(1));
-+	if (ret) {
-+		dev_err(&phy->dev, "ERROR: delay chain txclk set: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Output tap delay: enable */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, OTAP_DLY_ENA_MASK,
-+				 OTAP_DLY_ENA(1));
-+	if (ret) {
-+		dev_err(&phy->dev, "ERROR: output tap delay set: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Output tap delay */
-+	ret = regmap_update_bits(priv->syscfg, PHY_CFG_0, OTAP_DLY_SEL_MASK,
-+				 OTAP_DLY_SEL(2));
-+	if (ret) {
-+		dev_err(&phy->dev, "ERROR: output tap delay select: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Power up eMMC phy analog blocks */
-+	return keembay_emmc_phy_power(phy, true);
-+}
-+
-+static int keembay_emmc_phy_power_off(struct phy *phy)
-+{
-+	/* Power down eMMC phy analog blocks */
-+	return keembay_emmc_phy_power(phy, false);
-+}
-+
-+static const struct phy_ops ops = {
-+	.init		= keembay_emmc_phy_init,
-+	.exit		= keembay_emmc_phy_exit,
-+	.power_on	= keembay_emmc_phy_power_on,
-+	.power_off	= keembay_emmc_phy_power_off,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int keembay_emmc_phy_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct keembay_emmc_phy *priv;
-+	struct phy *generic_phy;
-+	struct phy_provider *phy_provider;
-+	void __iomem *base;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	priv->syscfg = devm_regmap_init_mmio(dev, base,
-+					     &keembay_regmap_config);
-+	if (IS_ERR(priv->syscfg))
-+		return PTR_ERR(priv->syscfg);
-+
-+	generic_phy = devm_phy_create(dev, np, &ops);
-+	if (IS_ERR(generic_phy)) {
-+		dev_err(dev, "failed to create PHY\n");
-+		return PTR_ERR(generic_phy);
-+	}
-+
-+	phy_set_drvdata(generic_phy, priv);
-+	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id keembay_emmc_phy_dt_ids[] = {
-+	{ .compatible = "intel,keembay-emmc-phy" },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(of, keembay_emmc_phy_dt_ids);
-+
-+static struct platform_driver keembay_emmc_phy_driver = {
-+	.probe		= keembay_emmc_phy_probe,
-+	.driver		= {
-+		.name	= "keembay-emmc-phy",
-+		.of_match_table = keembay_emmc_phy_dt_ids,
-+	},
-+};
-+module_platform_driver(keembay_emmc_phy_driver);
-+
-+MODULE_AUTHOR("Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>");
-+MODULE_DESCRIPTION("Intel Keem Bay eMMC PHY driver");
-+MODULE_LICENSE("GPL v2");
+ static int pwm_fan_disable(struct device *dev)
+ {
+ 	struct pwm_fan_ctx *ctx = dev_get_drvdata(dev);
+@@ -465,6 +552,7 @@ MODULE_DEVICE_TABLE(of, of_pwm_fan_match);
+ 
+ static struct platform_driver pwm_fan_driver = {
+ 	.probe		= pwm_fan_probe,
++	.remove         = pwm_fan_remove,
+ 	.shutdown	= pwm_fan_shutdown,
+ 	.driver	= {
+ 		.name		= "pwm-fan",
 -- 
-2.17.1
+2.7.4
 
