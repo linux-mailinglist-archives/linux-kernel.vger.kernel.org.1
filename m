@@ -2,201 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C231B1E1D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A121E1D0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgEZIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgEZIPB (ORCPT
+        id S1729913AbgEZIQv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 May 2020 04:16:51 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22048 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726926AbgEZIQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:15:01 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBF9C03E97E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 01:15:01 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id n5so2343242wmd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 01:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/Lbw+7slKXAlWjtLEKLR+76MIuZ9sac+BvYMoV5Lxqw=;
-        b=YbZ/C77tdqriEgHiZE6DZzpZvP2zAzMxV90zMvPieWt4NtA/a93ffI+Yht2mF728Ey
-         Cgkc0aJ9rY4dhxP+9wxZPXnZmJ3MvSK56+ePSqJtErg6Z38bHMWLuYFr1fGEy8lYImLs
-         X+vHLOvmxvHKP6aIMExGZCOEexakRmOgVfOab3Ps2YdOWZasqSpOSXXMiueK2uzSR2hy
-         1ozYaIwFMaMxUGiRLQi7Vy+8cGYTowgG9l1n6Du9vyS5Tv90g370mzTrVBDuv6O5ABaN
-         /O+jvpZwht5l3QTcWyjVjww3mIE0ob8DmvxE3mJUH88+fJDVkuaa5LV3nYLwff+ioGu9
-         LTuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/Lbw+7slKXAlWjtLEKLR+76MIuZ9sac+BvYMoV5Lxqw=;
-        b=Rf1JaxpadaHTm8qt5GrrweaEh+hxGkJtsn+KC30DyLJbxOPcGBLvd2pUNh6oOVBMOD
-         8E0uTsaDXUxZFxnFcY7a3gZWnQRHQ1lGCFmzBiHbWcbxETdUnkz13Mh7hxycfaakI7qz
-         fE0PuRUG7l0KtTX0+BcKLOwoerZMWuL+6fiFGH4r7DuaeWoZILnAM28iVzJVjREWTLd7
-         NM6sWX04tFHgJrDMgKgKygatof6UN3h444Xgi/NkW7KDcKj1PEZbJ1tzDh/5uCNm6KuS
-         4vDGByRB0Xfir7yqc7es0t9+H2/Y0RlmFSvRTiMB+GCsJ+yOQxLoip9Cz4HFYpYCZqKh
-         o4kA==
-X-Gm-Message-State: AOAM530LFLLntM9Pad7nh+d4gLyRaVhknjrbvcWHvhKx8DzsPuLhJYyT
-        aPbr1l3tJhIhhZECNzKRdLLhLoR0
-X-Google-Smtp-Source: ABdhPJw8cH/fjPJxxaaTB8X2hrnos0KNusW99o75M4aqMYss1jYSz9fye2C1C8uQ/514tdPUu+y90A==
-X-Received: by 2002:a1c:7712:: with SMTP id t18mr233566wmi.182.1590480899851;
-        Tue, 26 May 2020 01:14:59 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id a16sm6037950wrx.8.2020.05.26.01.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 01:14:58 -0700 (PDT)
-Date:   Tue, 26 May 2020 10:14:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        X86 ML <x86@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Jason Chen CJ <jason.cj.chen@intel.com>,
-        Zhao Yakui <yakui.zhao@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V9 02/39] rcu: Abstract out rcu_irq_enter_check_tick()
- from rcu_nmi_enter()
-Message-ID: <20200526081456.GA35238@gmail.com>
-References: <20200521200513.656533920@linutronix.de>
- <20200521202116.996113173@linutronix.de>
- <20200521210339.GC2869@paulmck-ThinkPad-P72>
+        Tue, 26 May 2020 04:16:49 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-272-m1JOel9CNVyNzDk7C8tOAg-1; Tue, 26 May 2020 09:16:46 +0100
+X-MC-Unique: m1JOel9CNVyNzDk7C8tOAg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 26 May 2020 09:16:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 26 May 2020 09:16:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Machek' <pavel@ucw.cz>, "Dr. Greg" <greg@enjellic.com>
+CC:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "npmccallum@redhat.com" <npmccallum@redhat.com>,
+        "haitao.huang@intel.com" <haitao.huang@intel.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "kai.svahn@intel.com" <kai.svahn@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "kai.huang@intel.com" <kai.huang@intel.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "cedric.xing@intel.com" <cedric.xing@intel.com>,
+        "puiterwijk@redhat.com" <puiterwijk@redhat.com>
+Subject: RE: [PATCH v29 00/20] Intel SGX foundations
+Thread-Topic: [PATCH v29 00/20] Intel SGX foundations
+Thread-Index: AQHWMhIeab+zFDSEIUyJtVV397qBpKi6Bwlw
+Date:   Tue, 26 May 2020 08:16:45 +0000
+Message-ID: <d8df2f130c5a4957acc56eecb18895b8@AcuMS.aculab.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+ <20200426165753.GA11046@wind.enjellic.com>
+ <87d07gk24l.fsf@nanos.tec.linutronix.de>
+ <20200508190226.GA31465@wind.enjellic.com>
+ <20200508195635.GR27052@linux.intel.com>
+ <20200514091637.GA25156@wind.enjellic.com> <20200524212719.GA1192@bug>
+In-Reply-To: <20200524212719.GA1192@bug>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200521210339.GC2869@paulmck-ThinkPad-P72>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Pavel Machek
+> Sent: 24 May 2020 22:27
+..
+> It provides false sense of security, and I'm afraid big companies will try to force
+> people to use it. "DRM, now with hardware support". "Finally advertisments you can
+> not skip". "Just run this piece of code on your machine to access your bank account.
+> Trust us!"
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
+Hey malware guys, here is somewhere you can hide your code
+making it very difficult to find.
+You can then use the hardware disk encryption that people think
+gives them security to encrypt all the files.
 
-> > +	if (!tick_nohz_full_cpu(rdp->cpu) ||
-> > +	    !READ_ONCE(rdp->rcu_urgent_qs) ||
-> > +	    READ_ONCE(rdp->rcu_forced_tick)) {
-> > +		// RCU doesn't need nohz_full help from this CPU, or it is
-> > +		// already getting that help.
-> > +		return;
-> > +	}
-> > +
-> > +	// We get here only when not in an extended quiescent state and
-> > +	// from interrupts (as opposed to NMIs).  Therefore, (1) RCU is
-> > +	// already watching and (2) The fact that we are in an interrupt
-> > +	// handler and that the rcu_node lock is an irq-disabled lock
-> > +	// prevents self-deadlock.  So we can safely recheck under the lock.
-> > +	// Note that the nohz_full state currently cannot change.
-> > +	raw_spin_lock_rcu_node(rdp->mynode);
-> > +	if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
-> > +		// A nohz_full CPU is in the kernel and RCU needs a
-> > +		// quiescent state.  Turn on the tick!
-> > +		WRITE_ONCE(rdp->rcu_forced_tick, true);
-> > +		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
-> > +	}
-> > +	raw_spin_unlock_rcu_node(rdp->mynode);
+Job done...
 
-BTW., can we please not ever use this weird comment style in the future?
+	David
 
-Linus gave an exception to single-line C++ style comments - but I 
-don't think that should be extrapolated to a license to uglify the 
-kernel with inconsistent muck like this. :-/
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-I've sanitized it via the patch below.
-
-( I also fixed the whitespace damage and a capitalization typo while 
-  at it, and fixed the spelling in the big comment explaining 
-  __rcu_irq_enter_check_tick(). )
-
-Thanks,
-
-	Ingo
-
---- tip.orig/kernel/rcu/tree.c
-+++ tip/kernel/rcu/tree.c
-@@ -850,14 +850,14 @@ void noinstr rcu_user_exit(void)
- }
- 
- /**
-- * __rcu_irq_enter_check_tick - Enable scheduler tick on CPU if RCU needs it.
-+ * __rcu_irq_enter_check_tick - Enable the scheduler tick on a CPU if RCU needs it.
-  *
-  * The scheduler tick is not normally enabled when CPUs enter the kernel
-  * from nohz_full userspace execution.  After all, nohz_full userspace
-  * execution is an RCU quiescent state and the time executing in the kernel
-- * is quite short.  Except of course when it isn't.  And it is not hard to
-+ * is quite short.  Except of course when it isn't: it is not hard to
-  * cause a large system to spend tens of seconds or even minutes looping
-- * in the kernel, which can cause a number of problems, include RCU CPU
-+ * in the kernel, which can cause a number of problems, including RCU CPU
-  * stall warnings.
-  *
-  * Therefore, if a nohz_full CPU fails to report a quiescent state
-@@ -879,7 +879,7 @@ void __rcu_irq_enter_check_tick(void)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
--	 // Enabling the tick is unsafe in NMI handlers.
-+	/* Enabling the tick is unsafe in NMI handlers. */
- 	if (WARN_ON_ONCE(in_nmi()))
- 		return;
- 
-@@ -889,21 +889,27 @@ void __rcu_irq_enter_check_tick(void)
- 	if (!tick_nohz_full_cpu(rdp->cpu) ||
- 	    !READ_ONCE(rdp->rcu_urgent_qs) ||
- 	    READ_ONCE(rdp->rcu_forced_tick)) {
--		// RCU doesn't need nohz_full help from this CPU, or it is
--		// already getting that help.
-+		/*
-+		 * RCU doesn't need nohz_full help from this CPU, or it is
-+		 * already getting that help.
-+		 */
- 		return;
- 	}
- 
--	// We get here only when not in an extended quiescent state and
--	// from interrupts (as opposed to NMIs).  Therefore, (1) RCU is
--	// already watching and (2) The fact that we are in an interrupt
--	// handler and that the rcu_node lock is an irq-disabled lock
--	// prevents self-deadlock.  So we can safely recheck under the lock.
--	// Note that the nohz_full state currently cannot change.
-+	/*
-+	 * We get here only when not in an extended quiescent state and
-+	 * from interrupts (as opposed to NMIs).  Therefore, (1) RCU is
-+	 * already watching and (2) the fact that we are in an interrupt
-+	 * handler and that the rcu_node lock is an irq-disabled lock
-+	 * prevents self-deadlock.  So we can safely recheck under the lock.
-+	 * Note that the nohz_full state currently cannot change.
-+	 */
- 	raw_spin_lock_rcu_node(rdp->mynode);
- 	if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
--		// A nohz_full CPU is in the kernel and RCU needs a
--		// quiescent state.  Turn on the tick!
-+		/*
-+		 * A nohz_full CPU is in the kernel and RCU needs a
-+		 * quiescent state.  Turn on the tick!
-+		 */
- 		WRITE_ONCE(rdp->rcu_forced_tick, true);
- 		tick_dep_set_cpu(rdp->cpu, TICK_DEP_BIT_RCU);
- 	}
