@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0851E3318
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFCC1E3331
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392257AbgEZWwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:52:21 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:46597 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392228AbgEZWwT (ORCPT
+        id S2392296AbgEZWxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:53:06 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:42446 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390428AbgEZWxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:52:19 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 11DB42304C;
-        Wed, 27 May 2020 00:52:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1590533538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HUf5XK6R2KfvkP9eLz0vv0T3BRvy2B2hHBQ4hWKx/eA=;
-        b=ZNsMK0VIC/TT8DiDSHVWoCKy4YS3ivtrtc1Fwgz3feGkbTu1aB8Gop+0eNVQ351kqsh8hV
-        TZSVX0lzcgVB4NVNxW/yOgRlDZJiDFPQMGwtC8WLnuyeNlUTJ3nmq9lMf62Hs7vvNRVLss
-        SYA7m5IqQo1oLRPxQ7Rq8PmoIteBuls=
+        Tue, 26 May 2020 18:53:06 -0400
+Received: by mail-io1-f65.google.com with SMTP id d5so14404184ios.9;
+        Tue, 26 May 2020 15:53:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kF+vRBfnhOkmQvA5KLQ4cDaPOVZ28rGc0O0qwy5RLx8=;
+        b=P32b7cIs61bWGQKO+vQfRMx78GBXXufAz5+lymJb8v/BLQiAw3GLKhroiWOh7g6vKJ
+         ICdZbXcu62p6ev8/3dXEwFcfmwj9mRoCzBd0+a58xQBN8C7S8vYCPmGHdimDigWb3h9D
+         fM2K38PLu4zAqEJJrmWoDfhzhGwfF8Hv1ZC0tWnoLFRQfgmVyAGY4jIjHR/NluUL80YH
+         IyKjL8lOFZZTkrpdTjzGiBGlfRKhoG4Lb3gTDe1jhC7vk4pn5yYMIJlDws6H2yBUy/sP
+         bmGTrlE/WvCW5ojFM1YX21Yc3WFwPzfMV1j11qwU/L2CfWNyZOscVyks2AmwHkebHWix
+         qdcw==
+X-Gm-Message-State: AOAM530ySfiiCluWycmTP3K8+2WJUnOwNWRAZQB4zlwp0Rpe/qi7cTbJ
+        rOq8Y4/3GdT2/wp7p3rLCw==
+X-Google-Smtp-Source: ABdhPJyeoVtuZCUkjCMNR8Y6ccXH320ipxK5P3DJiUPsweubOQS/CFyKLVhwUqzve4pZavKBpEp3dg==
+X-Received: by 2002:a02:93a1:: with SMTP id z30mr3149527jah.25.1590533583588;
+        Tue, 26 May 2020 15:53:03 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id p1sm632821ilq.67.2020.05.26.15.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 15:53:03 -0700 (PDT)
+Received: (nullmailer pid 538555 invoked by uid 1000);
+        Tue, 26 May 2020 22:53:02 -0000
+Date:   Tue, 26 May 2020 16:53:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH v5 06/14] dt-bindings: PCI: cadence: Remove "mem" from
+ reg binding
+Message-ID: <20200526225302.GA538495@bogus>
+References: <20200522033631.32574-1-kishon@ti.com>
+ <20200522033631.32574-7-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 May 2020 00:52:18 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: Re: [PATCH net-next v2 0/2] net: enetc: remove bootloader dependency
-In-Reply-To: <20200526225050.5997-1-michael@walle.cc>
-References: <20200526225050.5997-1-michael@walle.cc>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <8b6054895d6d843a22cf046966645f5b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200522033631.32574-7-kishon@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> These patches were picked from the following series:
-> https://lore.kernel.org/netdev/1567779344-30965-1-git-send-email-claudiu.manoil@nxp.com/
-> They have never been resent. I've picked them up, addressed Andrews
-> comments, fixed some more bugs and asked Claudiu if I can keep their 
-> SOB
-> tags; he agreed. I've tested this on our board which happens to have a
-> bootloader which doesn't do the enetc setup in all cases.
+On Fri, 22 May 2020 09:06:23 +0530, Kishon Vijay Abraham I wrote:
+> "mem" is not a memory resource and it overlaps with PCIe config space
+> and memory region. Removve "mem" from reg binding.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../devicetree/bindings/pci/cdns,cdns-pcie-host.yaml      | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
 
-If my SOB is wrong in the patches, please let me know.
-
--michael
+Reviewed-by: Rob Herring <robh@kernel.org>
