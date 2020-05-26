@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB261E2DD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF261E2E2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392505AbgEZTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36086 "EHLO mail.kernel.org"
+        id S2391331AbgEZTEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391601AbgEZTHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:23 -0400
+        id S2391321AbgEZTEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:04:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21A34208A7;
-        Tue, 26 May 2020 19:07:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA3C6208B3;
+        Tue, 26 May 2020 19:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520043;
-        bh=XFxzq4P6z49YtyaR0tqdRHJYwkOdYoyVEmIvsv0RGxE=;
+        s=default; t=1590519845;
+        bh=iOAwMRBSlHy9XiMQy0/QkkEIEB2ri9V80CPULmrxMVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lO28p79K/Xou/nMN4DyQ2/dPTLmRKLgd7QE6Ltgw2rBb+oKPuxHFZOAt0MpvZ/YnJ
-         x/gln4TuCYR6lcBJBAVIfl34kWDp8SCrTNUJ0OeWG8FlNaN1wAPJrxdPOMlPB0t/a6
-         5WcWfOqXRt5C27Z6F4zKvtxj7PoFS8ZsMpoIYSDc=
+        b=uygF6mnmu44+2LXYNRceyW+TN36NBtQTgyvjz0SOBjvv77JxjDDUDg7jDJ9VzW1zQ
+         6118+ll/58SGgEifAKaHw5Jhhx49jrBkeliDy9wkg/PXPVLrieXxfXPfJb0Oni8nFZ
+         Epiap2+T8yvheLW5zodJnSntRk5XEYpO9Lb8rDEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Hilliard <james.hilliard1@gmail.com>,
+        stable@vger.kernel.org, Alexander Monakov <amonakov@ispras.ru>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <jroedel@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 029/111] component: Silence bind error on -EPROBE_DEFER
+Subject: [PATCH 4.19 12/81] iommu/amd: Fix over-read of ACPI UID from IVRS table
 Date:   Tue, 26 May 2020 20:52:47 +0200
-Message-Id: <20200526183935.555291617@linuxfoundation.org>
+Message-Id: <20200526183927.467526457@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+From: Alexander Monakov <amonakov@ispras.ru>
 
-[ Upstream commit 7706b0a76a9697021e2bf395f3f065c18f51043d ]
+[ Upstream commit e461b8c991b9202b007ea2059d953e264240b0c9 ]
 
-If a component fails to bind due to -EPROBE_DEFER we should not log an
-error as this is not a real failure.
+IVRS parsing code always tries to read 255 bytes from memory when
+retrieving ACPI device path, and makes an assumption that firmware
+provides a zero-terminated string. Both of those are bugs: the entry
+is likely to be shorter than 255 bytes, and zero-termination is not
+guaranteed.
 
-Fixes messages like:
-vc4-drm soc:gpu: failed to bind 3f902000.hdmi (ops vc4_hdmi_ops): -517
-vc4-drm soc:gpu: master bind failed: -517
+With Acer SF314-42 firmware these issues manifest visibly in dmesg:
 
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-Link: https://lore.kernel.org/r/20200411190241.89404-1-james.hilliard1@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR0\xf0\xa5, rdevid:160
+AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR1\xf0\xa5, rdevid:160
+AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR2\xf0\xa5, rdevid:160
+AMD-Vi: ivrs, add hid:AMDI0020, uid:\_SB.FUR3>\x83e\x8d\x9a\xd1...
+
+The first three lines show how the code over-reads adjacent table
+entries into the UID, and in the last line it even reads garbage data
+beyond the end of the IVRS table itself.
+
+Since each entry has the length of the UID (uidl member of ivhd_entry
+struct), use that for memcpy, and manually add a zero terminator.
+
+Avoid zero-filling hid and uid arrays up front, and instead ensure
+the uid array is always zero-terminated. No change needed for the hid
+array, as it was already properly zero-terminated.
+
+Fixes: 2a0cb4e2d423c ("iommu/amd: Add new map for storing IVHD dev entry type HID")
+
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: iommu@lists.linux-foundation.org
+Link: https://lore.kernel.org/r/20200511102352.1831-1-amonakov@ispras.ru
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/component.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/iommu/amd_iommu_init.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/component.c b/drivers/base/component.c
-index 1fdbd6ff2058..b9f20ada68b0 100644
---- a/drivers/base/component.c
-+++ b/drivers/base/component.c
-@@ -257,7 +257,8 @@ static int try_to_bring_up_master(struct master *master,
- 	ret = master->ops->bind(master->dev);
- 	if (ret < 0) {
- 		devres_release_group(master->dev, NULL);
--		dev_info(master->dev, "master bind failed: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_info(master->dev, "master bind failed: %d\n", ret);
- 		return ret;
- 	}
+diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
+index 2557ed112bc2..c7d0bb3b4a30 100644
+--- a/drivers/iommu/amd_iommu_init.c
++++ b/drivers/iommu/amd_iommu_init.c
+@@ -1334,8 +1334,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
+ 		}
+ 		case IVHD_DEV_ACPI_HID: {
+ 			u16 devid;
+-			u8 hid[ACPIHID_HID_LEN] = {0};
+-			u8 uid[ACPIHID_UID_LEN] = {0};
++			u8 hid[ACPIHID_HID_LEN];
++			u8 uid[ACPIHID_UID_LEN];
+ 			int ret;
  
-@@ -611,8 +612,9 @@ static int component_bind(struct component *component, struct master *master,
- 		devres_release_group(component->dev, NULL);
- 		devres_release_group(master->dev, NULL);
+ 			if (h->type != 0x40) {
+@@ -1352,6 +1352,7 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
+ 				break;
+ 			}
  
--		dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
--			dev_name(component->dev), component->ops, ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(master->dev, "failed to bind %s (ops %ps): %d\n",
-+				dev_name(component->dev), component->ops, ret);
- 	}
++			uid[0] = '\0';
+ 			switch (e->uidf) {
+ 			case UID_NOT_PRESENT:
  
- 	return ret;
+@@ -1366,8 +1367,8 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
+ 				break;
+ 			case UID_IS_CHARACTER:
+ 
+-				memcpy(uid, (u8 *)(&e->uid), ACPIHID_UID_LEN - 1);
+-				uid[ACPIHID_UID_LEN - 1] = '\0';
++				memcpy(uid, &e->uid, e->uidl);
++				uid[e->uidl] = '\0';
+ 
+ 				break;
+ 			default:
 -- 
 2.25.1
 
