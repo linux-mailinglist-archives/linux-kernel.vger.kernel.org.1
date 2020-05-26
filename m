@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03D51E2C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14C61E2D04
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404168AbgEZTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:12:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42514 "EHLO mail.kernel.org"
+        id S2404247AbgEZTNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392133AbgEZTMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:12:52 -0400
+        id S2404202AbgEZTNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3B62208A7;
-        Tue, 26 May 2020 19:12:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEF44208B6;
+        Tue, 26 May 2020 19:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520372;
-        bh=jfyz9oqs6eHVNMoOj+ndiLbYCz73HTyt7i3ncvxZRBI=;
+        s=default; t=1590520399;
+        bh=O0RPL3irJhWBZ5F2H3BdlvfzT93fhcXBDbqTToK9uYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K8knQnHPPlx91aTgGBYuTouyZFgMwA44QQTBMceAWCeVA9CJEBgWtNrPHvWp5f1h3
-         rAM/qa8SZ7RtZhTrzY31kK6i3JtMpDSYXcZoq8RqKd9N47EDSuSQKDWi9qci6u/qhs
-         sZJyTAM3Q32L14/mps3M5DqURDEWDO+cWgUhR7hw=
+        b=iREhB2WHabqupBHJTM4z6VnmcNH13fDlzCn9nftkYn2VBS1CvRymtKAbOmoSNvrzz
+         nmDp8mDUa14F7wiUzguCehej5jz27Y7pPkVhi/kaJzdlL77avX5AbsN/PvQhi3Hx3U
+         Qmmi27riace2Lb5x1ZCvcVG6zemX3GTpSwbhXfhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabian Schindlatz <fabian.schindlatz@fau.de>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Artem Borisov <dedsa2002@gmail.com>,
         Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 026/126] HID: logitech: Add support for Logitech G11 extra keys
-Date:   Tue, 26 May 2020 20:52:43 +0200
-Message-Id: <20200526183939.926776792@linuxfoundation.org>
+Subject: [PATCH 5.6 027/126] HID: alps: Add AUI1657 device ID
+Date:   Tue, 26 May 2020 20:52:44 +0200
+Message-Id: <20200526183940.032179250@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
 References: <20200526183937.471379031@linuxfoundation.org>
@@ -45,53 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Schindlatz <fabian.schindlatz@fau.de>
+From: Artem Borisov <dedsa2002@gmail.com>
 
-[ Upstream commit b1bd0f75288f60e8d142a1b3e979ed0192c04931 ]
+[ Upstream commit 640e403b1fd24e7f31ac6f29f0b6a21d285ed729 ]
 
-The Logitech G11 keyboard is a cheap variant of the G15 without the LCD
-screen. It uses the same layout for its extra and macro keys (G1 - G18,
-M1-M3, MR) and - from the input subsystem's perspective - behaves just
-like the G15, so we can treat it as such.
+This device is used on Lenovo V130-15IKB variants and uses
+the same registers as U1.
 
-Tested it with my own keyboard.
-
-Signed-off-by: Fabian Schindlatz <fabian.schindlatz@fau.de>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
 Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-lg-g15.c | 4 ++++
- 2 files changed, 5 insertions(+)
+ drivers/hid/hid-alps.c | 1 +
+ drivers/hid/hid-ids.h  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index fa704153cb00..c2a2bd528890 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -802,6 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ 		break;
+ 	case HID_DEVICE_ID_ALPS_U1_DUAL:
+ 	case HID_DEVICE_ID_ALPS_U1:
++	case HID_DEVICE_ID_ALPS_1657:
+ 		data->dev_type = U1;
+ 		break;
+ 	default:
 diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 309510a72c5e..40697af0ca35 100644
+index 40697af0ca35..7d769ca864a7 100644
 --- a/drivers/hid/hid-ids.h
 +++ b/drivers/hid/hid-ids.h
-@@ -756,6 +756,7 @@
- #define USB_DEVICE_ID_LOGITECH_RUMBLEPAD2	0xc218
- #define USB_DEVICE_ID_LOGITECH_RUMBLEPAD2_2	0xc219
- #define USB_DEVICE_ID_LOGITECH_G15_LCD		0xc222
-+#define USB_DEVICE_ID_LOGITECH_G11		0xc225
- #define USB_DEVICE_ID_LOGITECH_G15_V2_LCD	0xc227
- #define USB_DEVICE_ID_LOGITECH_G510		0xc22d
- #define USB_DEVICE_ID_LOGITECH_G510_USB_AUDIO	0xc22e
-diff --git a/drivers/hid/hid-lg-g15.c b/drivers/hid/hid-lg-g15.c
-index ad4b5412a9f4..ef0cbcd7540d 100644
---- a/drivers/hid/hid-lg-g15.c
-+++ b/drivers/hid/hid-lg-g15.c
-@@ -872,6 +872,10 @@ error_hw_stop:
- }
+@@ -81,7 +81,7 @@
+ #define HID_DEVICE_ID_ALPS_U1		0x1215
+ #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
+ #define HID_DEVICE_ID_ALPS_1222		0x1222
+-
++#define HID_DEVICE_ID_ALPS_1657         0x121E
  
- static const struct hid_device_id lg_g15_devices[] = {
-+	/* The G11 is a G15 without the LCD, treat it as a G15 */
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
-+		USB_DEVICE_ID_LOGITECH_G11),
-+		.driver_data = LG_G15 },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
- 			 USB_DEVICE_ID_LOGITECH_G15_LCD),
- 		.driver_data = LG_G15 },
+ #define USB_VENDOR_ID_AMI		0x046b
+ #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
 -- 
 2.25.1
 
