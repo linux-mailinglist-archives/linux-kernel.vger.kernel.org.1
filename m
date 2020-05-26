@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7CD1E2DB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580F01E2CED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404311AbgEZTXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:23:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S2404205AbgEZTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390768AbgEZTJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:09:12 -0400
+        id S2391970AbgEZTNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ECED208A7;
-        Tue, 26 May 2020 19:09:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FDB2208B3;
+        Tue, 26 May 2020 19:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520151;
-        bh=WSzkrlDsgyHyUqYsjlT2GuY6nmqpoJAM07KjStN4fTU=;
+        s=default; t=1590520416;
+        bh=ONsYDddsZTVKtfoCed08ZnVV6GO76273vrFEOVSs5A8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hbbmluy+4YJY88bwyCN+UV7HgB73fnt8VmnepJg3RFJF2HxJkV2gmkIeuFgd2BX/a
-         jo7KJjb/qKJjFnZ3NfawRL12+2YZlPb65fzAaJjaoPIW8ggdWzP8Ajdiygw3U9wGYC
-         9eG2hUFQSRuE2t8qFuZ34odB/KhMIAMbs006A7is=
+        b=GRehLAe0vCwcgZZhg8JG2mlo9ZIFxGrnPZgecrPv9NI1q5hNgJY6pfb/jUAaVQFlB
+         knIV3X3Zp2uXBcQMtomhhhlJWwwpU6XhH/p6mLa/Y+kkpf3lOBLrU2zDwXzOcwp5/S
+         LKC5OpVSfNqwOuZw8GMfqcurH8Snmhf/XYSqbW44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Richard Clark <richard.xnu.clark@gmail.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 028/111] aquantia: Fix the media type of AQC100 ethernet controller in the driver
-Date:   Tue, 26 May 2020 20:52:46 +0200
-Message-Id: <20200526183935.420426970@linuxfoundation.org>
+Subject: [PATCH 5.6 030/126] scsi: qla2xxx: Delete all sessions before unregister local nvme port
+Date:   Tue, 26 May 2020 20:52:47 +0200
+Message-Id: <20200526183940.315220710@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +47,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Clark <richard.xnu.clark@gmail.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit 6de556c31061e3b9c36546ffaaac5fdb679a2f14 ]
+[ Upstream commit c48f849d3f7a4ec1025105f446e29d395c4dcc2f ]
 
-The Aquantia AQC100 controller enables a SFP+ port, so the driver should
-configure the media type as '_TYPE_FIBRE' instead of '_TYPE_TP'.
+Delete all sessions before unregistering local nvme port.  This allows nvme
+layer to decrement all active rport count down to zero.  Once the count is
+down to zero, nvme would call qla to continue with the npiv port deletion.
 
-Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
-Cc: Igor Russkikh <irusskikh@marvell.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Acked-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+PID: 27448  TASK: ffff9e34b777c1c0  CPU: 0   COMMAND: "qaucli"
+ 0 [ffff9e25e84abbd8] __schedule at ffffffff977858ca
+ 1 [ffff9e25e84abc68] schedule at ffffffff97785d79
+ 2 [ffff9e25e84abc78] schedule_timeout at ffffffff97783881
+ 3 [ffff9e25e84abd28] wait_for_completion at ffffffff9778612d
+ 4 [ffff9e25e84abd88] qla_nvme_delete at ffffffffc0e3024e [qla2xxx]
+ 5 [ffff9e25e84abda8] qla24xx_vport_delete at ffffffffc0e024b9 [qla2xxx]
+ 6 [ffff9e25e84abdf0] fc_vport_terminate at ffffffffc011c247 [scsi_transport_fc]
+ 7 [ffff9e25e84abe28] store_fc_host_vport_delete at ffffffffc011cd94 [scsi_transport_fc]
+ 8 [ffff9e25e84abe70] dev_attr_store at ffffffff974b376b
+ 9 [ffff9e25e84abe80] sysfs_kf_write at ffffffff972d9a92
+10 [ffff9e25e84abe90] kernfs_fop_write at ffffffff972d907b
+11 [ffff9e25e84abec8] vfs_write at ffffffff9724c790
+12 [ffff9e25e84abf08] sys_write at ffffffff9724d55f
+13 [ffff9e25e84abf50] system_call_fastpath at ffffffff97792ed2
+    RIP: 00007fc0bd81a6fd  RSP: 00007ffff78d9648  RFLAGS: 00010202
+    RAX: 0000000000000001  RBX: 0000000000000022  RCX: 00007ffff78d96e0
+    RDX: 0000000000000022  RSI: 00007ffff78d94e0  RDI: 0000000000000008
+    RBP: 00007ffff78d9440   R8: 0000000000000000   R9: 00007fc0bd48b2cd
+    R10: 0000000000000017  R11: 0000000000000293  R12: 0000000000000000
+    R13: 00005624e4dac840  R14: 00005624e4da9a10  R15: 0000000000000000
+    ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
+
+Link: https://lore.kernel.org/r/20200331104015.24868-4-njavali@marvell.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c | 2 +-
+ drivers/scsi/qla2xxx/qla_attr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-index 74b9f3f1da81..0e8264c0b308 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-@@ -56,7 +56,7 @@ static const struct aq_board_revision_s hw_atl_boards[] = {
- 	{ AQ_DEVICE_ID_D108,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc108, },
- 	{ AQ_DEVICE_ID_D109,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc109, },
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index d7e7043f9eab..9556392652e3 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -2928,11 +2928,11 @@ qla24xx_vport_delete(struct fc_vport *fc_vport)
+ 	    test_bit(FCPORT_UPDATE_NEEDED, &vha->dpc_flags))
+ 		msleep(1000);
  
--	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
-+	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc100, },
- 	{ AQ_DEVICE_ID_AQC107,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
- 	{ AQ_DEVICE_ID_AQC108,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc108, },
- 	{ AQ_DEVICE_ID_AQC109,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc109, },
+-	qla_nvme_delete(vha);
+ 
+ 	qla24xx_disable_vp(vha);
+ 	qla2x00_wait_for_sess_deletion(vha);
+ 
++	qla_nvme_delete(vha);
+ 	vha->flags.delete_progress = 1;
+ 
+ 	qlt_remove_target(ha, vha);
 -- 
 2.25.1
 
