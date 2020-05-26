@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E507A1E2B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EA51E2B9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391573AbgEZTGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S2390493AbgEZTGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391118AbgEZTGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:14 -0400
+        id S2391615AbgEZTGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5895920776;
-        Tue, 26 May 2020 19:06:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31AA9208A7;
+        Tue, 26 May 2020 19:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519973;
-        bh=aDrwgCU8ouEkJ6ABWOC/pRvB0wx0ZNVgq5yd+DrmsL8=;
+        s=default; t=1590520001;
+        bh=zLWuKfdOMv5Vm2wkPGbl40+ScNFyWiRzHsIAtytfIco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUEm88Ioo+XRncUlxPbYYp4BZtLSs31ANapznd2EtBwg1TDeBLVdQutY5oHjtDsCs
-         hmWll0wv/MHfB5eESxxTVq/vVj5J3PcNq5V5Lslwi1/8n4D8jKS7VPRJX7RyXh2run
-         W32DizZgWck+v1VLWalAODQkL2zYC3AyKOw4Fps8=
+        b=WS02iwiawGZZUFnB+5dr49ZcGyObWIlY4RE5PAc0QmIxeRHfNuz6jYbhGNLjC9y3g
+         XcUDBgrYmVnBoOll067WDF5J09UxdoZrYR69iJcTFGcKKzAKMXTf7d1fNMiBQbK+P4
+         qT8JxO0rmi1VObIwEaLj5vKGjtg39b+1i/RunSGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Hao <haokexin@gmail.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
+        stable@vger.kernel.org, Liran Alon <liran.alon@oracle.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 5.4 001/111] i2c: dev: Fix the race between the release of i2c_dev and cdev
-Date:   Tue, 26 May 2020 20:52:19 +0200
-Message-Id: <20200526183932.599055503@linuxfoundation.org>
+Subject: [PATCH 5.4 002/111] KVM: SVM: Fix potential memory leak in svm_cpu_init()
+Date:   Tue, 26 May 2020 20:52:20 +0200
+Message-Id: <20200526183932.677280469@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
 References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,184 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hao <haokexin@gmail.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-commit 1413ef638abae4ab5621901cf4d8ef08a4a48ba6 upstream.
+commit d80b64ff297e40c2b6f7d7abc1b3eba70d22a068 upstream.
 
-The struct cdev is embedded in the struct i2c_dev. In the current code,
-we would free the i2c_dev struct directly in put_i2c_dev(), but the
-cdev is manged by a kobject, and the release of it is not predictable.
-So it is very possible that the i2c_dev is freed before the cdev is
-entirely released. We can easily get the following call trace with
-CONFIG_DEBUG_KOBJECT_RELEASE and CONFIG_DEBUG_OBJECTS_TIMERS enabled.
-  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x38
-  WARNING: CPU: 19 PID: 1 at lib/debugobjects.c:325 debug_print_object+0xb0/0xf0
-  Modules linked in:
-  CPU: 19 PID: 1 Comm: swapper/0 Tainted: G        W         5.2.20-yocto-standard+ #120
-  Hardware name: Marvell OcteonTX CN96XX board (DT)
-  pstate: 80c00089 (Nzcv daIf +PAN +UAO)
-  pc : debug_print_object+0xb0/0xf0
-  lr : debug_print_object+0xb0/0xf0
-  sp : ffff00001292f7d0
-  x29: ffff00001292f7d0 x28: ffff800b82151788
-  x27: 0000000000000001 x26: ffff800b892c0000
-  x25: ffff0000124a2558 x24: 0000000000000000
-  x23: ffff00001107a1d8 x22: ffff0000116b5088
-  x21: ffff800bdc6afca8 x20: ffff000012471ae8
-  x19: ffff00001168f2c8 x18: 0000000000000010
-  x17: 00000000fd6f304b x16: 00000000ee79de43
-  x15: ffff800bc0e80568 x14: 79616c6564203a74
-  x13: 6e6968207473696c x12: 5f72656d6974203a
-  x11: ffff0000113f0018 x10: 0000000000000000
-  x9 : 000000000000001f x8 : 0000000000000000
-  x7 : ffff0000101294cc x6 : 0000000000000000
-  x5 : 0000000000000000 x4 : 0000000000000001
-  x3 : 00000000ffffffff x2 : 0000000000000000
-  x1 : 387fc15c8ec0f200 x0 : 0000000000000000
-  Call trace:
-   debug_print_object+0xb0/0xf0
-   __debug_check_no_obj_freed+0x19c/0x228
-   debug_check_no_obj_freed+0x1c/0x28
-   kfree+0x250/0x440
-   put_i2c_dev+0x68/0x78
-   i2cdev_detach_adapter+0x60/0xc8
-   i2cdev_notifier_call+0x3c/0x70
-   notifier_call_chain+0x8c/0xe8
-   blocking_notifier_call_chain+0x64/0x88
-   device_del+0x74/0x380
-   device_unregister+0x54/0x78
-   i2c_del_adapter+0x278/0x2d0
-   unittest_i2c_bus_remove+0x3c/0x80
-   platform_drv_remove+0x30/0x50
-   device_release_driver_internal+0xf4/0x1c0
-   driver_detach+0x58/0xa0
-   bus_remove_driver+0x84/0xd8
-   driver_unregister+0x34/0x60
-   platform_driver_unregister+0x20/0x30
-   of_unittest_overlay+0x8d4/0xbe0
-   of_unittest+0xae8/0xb3c
-   do_one_initcall+0xac/0x450
-   do_initcall_level+0x208/0x224
-   kernel_init_freeable+0x2d8/0x36c
-   kernel_init+0x18/0x108
-   ret_from_fork+0x10/0x1c
-  irq event stamp: 3934661
-  hardirqs last  enabled at (3934661): [<ffff00001009fa04>] debug_exception_exit+0x4c/0x58
-  hardirqs last disabled at (3934660): [<ffff00001009fb14>] debug_exception_enter+0xa4/0xe0
-  softirqs last  enabled at (3934654): [<ffff000010081d94>] __do_softirq+0x46c/0x628
-  softirqs last disabled at (3934649): [<ffff0000100b4a1c>] irq_exit+0x104/0x118
+When kmalloc memory for sd->sev_vmcbs failed, we forget to free the page
+held by sd->save_area. Also get rid of the var r as '-ENOMEM' is actually
+the only possible outcome here.
 
-This is a common issue when using cdev embedded in a struct.
-Fortunately, we already have a mechanism to solve this kind of issue.
-Please see commit 233ed09d7fda ("chardev: add helper function to
-register char devs with a struct device") for more detail.
-
-In this patch, we choose to embed the struct device into the i2c_dev,
-and use the API provided by the commit 233ed09d7fda to make sure that
-the release of i2c_dev and cdev are in sequence.
-
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+Reviewed-by: Liran Alon <liran.alon@oracle.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Cc: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/i2c-dev.c |   48 ++++++++++++++++++++++++++----------------------
- 1 file changed, 26 insertions(+), 22 deletions(-)
+ arch/x86/kvm/svm.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -40,7 +40,7 @@
- struct i2c_dev {
- 	struct list_head list;
- 	struct i2c_adapter *adap;
--	struct device *dev;
-+	struct device dev;
- 	struct cdev cdev;
- };
- 
-@@ -84,12 +84,14 @@ static struct i2c_dev *get_free_i2c_dev(
- 	return i2c_dev;
- }
- 
--static void put_i2c_dev(struct i2c_dev *i2c_dev)
-+static void put_i2c_dev(struct i2c_dev *i2c_dev, bool del_cdev)
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -998,33 +998,32 @@ static void svm_cpu_uninit(int cpu)
+ static int svm_cpu_init(int cpu)
  {
- 	spin_lock(&i2c_dev_list_lock);
- 	list_del(&i2c_dev->list);
- 	spin_unlock(&i2c_dev_list_lock);
--	kfree(i2c_dev);
-+	if (del_cdev)
-+		cdev_device_del(&i2c_dev->cdev, &i2c_dev->dev);
-+	put_device(&i2c_dev->dev);
- }
+ 	struct svm_cpu_data *sd;
+-	int r;
  
- static ssize_t name_show(struct device *dev,
-@@ -628,6 +630,14 @@ static const struct file_operations i2cd
+ 	sd = kzalloc(sizeof(struct svm_cpu_data), GFP_KERNEL);
+ 	if (!sd)
+ 		return -ENOMEM;
+ 	sd->cpu = cpu;
+-	r = -ENOMEM;
+ 	sd->save_area = alloc_page(GFP_KERNEL);
+ 	if (!sd->save_area)
+-		goto err_1;
++		goto free_cpu_data;
  
- static struct class *i2c_dev_class;
- 
-+static void i2cdev_dev_release(struct device *dev)
-+{
-+	struct i2c_dev *i2c_dev;
-+
-+	i2c_dev = container_of(dev, struct i2c_dev, dev);
-+	kfree(i2c_dev);
-+}
-+
- static int i2cdev_attach_adapter(struct device *dev, void *dummy)
- {
- 	struct i2c_adapter *adap;
-@@ -644,27 +654,23 @@ static int i2cdev_attach_adapter(struct
- 
- 	cdev_init(&i2c_dev->cdev, &i2cdev_fops);
- 	i2c_dev->cdev.owner = THIS_MODULE;
--	res = cdev_add(&i2c_dev->cdev, MKDEV(I2C_MAJOR, adap->nr), 1);
--	if (res)
--		goto error_cdev;
--
--	/* register this i2c device with the driver core */
--	i2c_dev->dev = device_create(i2c_dev_class, &adap->dev,
--				     MKDEV(I2C_MAJOR, adap->nr), NULL,
--				     "i2c-%d", adap->nr);
--	if (IS_ERR(i2c_dev->dev)) {
--		res = PTR_ERR(i2c_dev->dev);
--		goto error;
-+
-+	device_initialize(&i2c_dev->dev);
-+	i2c_dev->dev.devt = MKDEV(I2C_MAJOR, adap->nr);
-+	i2c_dev->dev.class = i2c_dev_class;
-+	i2c_dev->dev.parent = &adap->dev;
-+	i2c_dev->dev.release = i2cdev_dev_release;
-+	dev_set_name(&i2c_dev->dev, "i2c-%d", adap->nr);
-+
-+	res = cdev_device_add(&i2c_dev->cdev, &i2c_dev->dev);
-+	if (res) {
-+		put_i2c_dev(i2c_dev, false);
-+		return res;
+ 	if (svm_sev_enabled()) {
+-		r = -ENOMEM;
+ 		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
+ 					      sizeof(void *),
+ 					      GFP_KERNEL);
+ 		if (!sd->sev_vmcbs)
+-			goto err_1;
++			goto free_save_area;
  	}
  
- 	pr_debug("i2c-dev: adapter [%s] registered as minor %d\n",
- 		 adap->name, adap->nr);
+ 	per_cpu(svm_data, cpu) = sd;
+ 
  	return 0;
--error:
--	cdev_del(&i2c_dev->cdev);
--error_cdev:
--	put_i2c_dev(i2c_dev);
--	return res;
+ 
+-err_1:
++free_save_area:
++	__free_page(sd->save_area);
++free_cpu_data:
+ 	kfree(sd);
+-	return r;
++	return -ENOMEM;
+ 
  }
  
- static int i2cdev_detach_adapter(struct device *dev, void *dummy)
-@@ -680,9 +686,7 @@ static int i2cdev_detach_adapter(struct
- 	if (!i2c_dev) /* attach_adapter must have failed */
- 		return 0;
- 
--	cdev_del(&i2c_dev->cdev);
--	put_i2c_dev(i2c_dev);
--	device_destroy(i2c_dev_class, MKDEV(I2C_MAJOR, adap->nr));
-+	put_i2c_dev(i2c_dev, true);
- 
- 	pr_debug("i2c-dev: adapter [%s] unregistered\n", adap->name);
- 	return 0;
 
 
