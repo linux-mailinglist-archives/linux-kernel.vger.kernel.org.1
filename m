@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D981E2AF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CDF1E2DF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390797AbgEZTAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:00:41 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:41755 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390758AbgEZTAj (ORCPT
+        id S2392569AbgEZTZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391649AbgEZTGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:00:39 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MHWzP-1jqYz61nhB-00DWzw for <linux-kernel@vger.kernel.org>; Tue, 26 May
- 2020 21:00:37 +0200
-Received: by mail-qt1-f172.google.com with SMTP id z1so4970154qtn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:00:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533FP+3xy5hEgTc6kzXBQ37uL+tJvBpF1gubijXOwzz56oKi1jfr
-        OAcaKIo+hejGlvUo2is1mtFEMYXWkB+kiLC0Otk=
-X-Google-Smtp-Source: ABdhPJyxFIBjrso5flwbMzskJ0iFERf9bCDL1IHkg8XbIOolDiFbZCM5y+BlNca+wOzMJlz82Rirzft1rGNKPreeS40=
-X-Received: by 2002:ac8:1844:: with SMTP id n4mr300518qtk.142.1590519636182;
- Tue, 26 May 2020 12:00:36 -0700 (PDT)
+        Tue, 26 May 2020 15:06:34 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87DC03E96D;
+        Tue, 26 May 2020 12:06:33 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id bh7so2146745plb.11;
+        Tue, 26 May 2020 12:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GRcaB+mIzfLDLlFG78mKyVuPh26Fe+lvp5hkpJeot3s=;
+        b=Nqynxx6PjGvEUZ1vtdBukxxUlM6ZSXnf+QzDLWfl+huq9Bf6ZSVBiPnYfUBC9Dm8qI
+         /YHuV8Ukd1QPbrbMm1BaQRDqMZJKOKzQBA795QM0k1YDFT0WAC+i7zjw2PRJZiDXDdQ2
+         BbUxqeqtNKM1TJTdMA7ERT3IRA1HFK6NQjZ2X3X33quoU+tMoTGq+FbMWjPuRbPHSSfP
+         u22Kd9dK22J+1vfq2qmx6QYQvBoBhUhts04C/Ya9NKP6eL67/4Dn9Cl43sOvYNNasjgi
+         7b266JVDDOmQQgGmWUcj6idaoJHHU6hTILO6Z9oYrNUIGCN3PjGiQYRAWASkHnSdhY3X
+         xGDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GRcaB+mIzfLDLlFG78mKyVuPh26Fe+lvp5hkpJeot3s=;
+        b=e3qDmNQ5ewExzFSuFpCrQqPt680oaerEbRKvlQ7O81qMi0OWWRscMT5T0rd1CMbuuP
+         Dg0qgn3dVIwc9mKTVgm4PcjXCnZzXExBt3c3v5Mm8CJHH6Ur8dpJR18Ey9qKjACISNAr
+         ufeo8oYG7yI2BmFtYHsliA/9obSQ/8CCqCZTMh/T55mOmPKzlVAdVojIq8NRQCA/maLt
+         yE8+l2VU3d5hUA366bhXwqsHYtw9bb+5IE07ZGFTGnqko2n6qPKWD2R9RtQyUvDsEh1p
+         iEjMwO3zWyv0+PNkhbn47U3QWiUSea8vyI8Ug7fTzwdmRCnJZ/ibF31Se4C6yBl2YRXc
+         38Jw==
+X-Gm-Message-State: AOAM530j0twft7uQg8u+v1iw1FWjzr2L79imGHmfXfTJkISkS9R8Gc/F
+        k618p2qJlG7ZvAO2vANQQ3o=
+X-Google-Smtp-Source: ABdhPJyj7v5wDj7jxE/+gZB0RtFsKRceZTkA3pyRGaDUaeRtW5SFdh5wW2q4rDfjAwUOuIi02wPtug==
+X-Received: by 2002:a17:902:47:: with SMTP id 65mr2284406pla.54.1590519993316;
+        Tue, 26 May 2020 12:06:33 -0700 (PDT)
+Received: from [192.168.208.37] ([49.206.126.69])
+        by smtp.gmail.com with ESMTPSA id s123sm242456pfs.170.2020.05.26.12.06.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 12:06:32 -0700 (PDT)
+Subject: Re: [ANNOUNCE] Git v2.27.0-rc2
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     git@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+References: <xmqqtv02mt2m.fsf@gitster.c.googlers.com>
+From:   Kaartic Sivaraam <kaartic.sivaraam@gmail.com>
+Message-ID: <e66ea483-5e7f-4ebd-5ba8-91227efa454a@gmail.com>
+Date:   Wed, 27 May 2020 00:36:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200521142047.169334-1-elver@google.com> <20200521142047.169334-10-elver@google.com>
- <CAKwvOdnR7BXw_jYS5PFTuUamcwprEnZ358qhOxSu6wSSSJhxOA@mail.gmail.com>
- <CAK8P3a0RJtbVi1JMsfik=jkHCNFv+DJn_FeDg-YLW+ueQW3tNg@mail.gmail.com>
- <20200526120245.GB27166@willie-the-truck> <CAK8P3a29BNwvdN1YNzoN966BF4z1QiSxdRXTP+BzhM9H07LoYQ@mail.gmail.com>
- <CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com> <20200526173312.GA30240@google.com>
-In-Reply-To: <20200526173312.GA30240@google.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 26 May 2020 21:00:20 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
-Message-ID: <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
-Subject: Re: [PATCH -tip v3 09/11] data_race: Avoid nested statement expression
-To:     Marco Elver <elver@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:YZvZtYzPL/ad9yexnmdrNznL+6Kj7ZbcdRnrfB6SJ6T3EEGT3S2
- 1eZZL4jOMAVQMUSFSBEq6hpa87+1QwMQ0GGLzBKA/gpyJX3TDL0E0TN0QVzba/RTcJ2/fvG
- 40MgQOmvi5nEEWeQ4yBoYAHqLzEfwOLrWkaHqh8WwPTsOaQbBVn81rOKdEsgrtbClT4NFaW
- chuPy9zVoZmuxh+bwXgdQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kgXZ+s1WhxA=:j4tArGneAtjwl0yJKAWwBc
- yi3MVuFvE7LnXEgNrHZW3f+eHQaS/ssYpHTnuE3egIWG4ZTScgWkYnigUpl62Kex4A/8hTquW
- JrOHIshNbWkEiF5Xrgy9SGk1CZ5Dd9J8dAQk3tqt+c0Jjw9E8Cw7OnyJWNKV5LeK0XJFrcgtb
- Nx3KYK3q7W71sTh6XbKSDxUng2giWHY0nJq5ErFb0/L89Dv1pNWnZMAcNFoicYPPpJ+XjxGDq
- tRKyHqDnQRBw0LIVP//J7SHqq7S8h2Fm12tBkQVSQXCIxgF6XTtF5VdcUa5ns2R7JBcxhE1LG
- qKolhuXVGyxoGpCEI9+rF4K2GYXhfe4jRoLarZ8V7aTM1kDSfi+kcWsm3P3XVHGLTLZ97bKv/
- bSKHxL76gfRx/VSLfRRzOM5MSBihiOEmf8A/q2XEy6vLNhw/ed0Lun98pFJKqFKALwihrdNyd
- GD/hibBnWWySRJ6C/Rlzn9XbXh3f/D1F78HK5ygtwlmCjnXJDRPJXYECwQ2dALUue9o26sYqL
- GXMrIe+y8ZtSilfYHg4blo7wpQ7HNpWKmwQZ31snQA41u6f+P7GKcTdaDiZZyXbPgf4HfWMfv
- ojePz5MIKUrWTxuJMydE4LGAwRqHks/vryh6il680wuvvbu6EIxmeG2whycUOSs8PGG49SX4c
- hEIGV3rtdLSo1xxu4S4+qHW4AFXjCfL+bcNMFfY0elQH2CjnZTPyVPeGuK2tRwB2EqK0RR1KJ
- ZBRxjKxhF13CH1RqgW8L3x8gilZSbuIx15X4A7TJlj2cDa4NG4ocXx0ikGf8kJOc686uyxdKZ
- 4g5elRdpIp4oEIgspvrJ5D68769mW3UlU5j6zo6N9USY3yV7HA=
+In-Reply-To: <xmqqtv02mt2m.fsf@gitster.c.googlers.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 7:33 PM 'Marco Elver' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
-> On Tue, 26 May 2020, Marco Elver wrote:
-> > On Tue, 26 May 2020 at 14:19, Arnd Bergmann <arnd@arndb.de> wrote:
-> > Note that an 'allyesconfig' selects KASAN and not KCSAN by default.
-> > But I think that's not relevant, since KCSAN-specific code was removed
-> > from ONCEs. In general though, it is entirely expected that we have a
-> > bit longer compile times when we have the instrumentation passes
-> > enabled.
-> >
-> > But as you pointed out, that's irrelevant, and the significant
-> > overhead is from parsing and pre-processing. FWIW, we can probably
-> > optimize Clang itself a bit:
-> > https://github.com/ClangBuiltLinux/linux/issues/1032#issuecomment-633712667
->
-> Found that optimizing __unqual_scalar_typeof makes a noticeable
-> difference. We could use C11's _Generic if the compiler supports it (and
-> all supported versions of Clang certainly do).
->
-> Could you verify if the below patch improves compile-times for you? E.g.
-> on fs/ocfs2/journal.c I was able to get ~40% compile-time speedup.
+Hi Junio,
 
-Yes, that brings both the preprocessed size and the time to preprocess it
-with clang-11 back to where it is in mainline, and close to the speed with
-gcc-10 for this particular file.
+On 27-05-2020 00:17, Junio C Hamano wrote:
+> Shourya Shukla (4):
+>        submodule--helper.c: Rename 'cb_foreach' to 'foreach_cb'
+>        gitfaq: files in .gitignore are tracked
+>        gitfaq: fetching and pulling a repository
+>        submodule: port subcommand 'set-url' from shell to C
 
-I also cross-checked with gcc-4.9 and gcc-10 and found that they do see
-the same increase in the preprocessor output, but it makes little difference
-for preprocessing performance on gcc.
+This is the only place where the `set-url` conversion from Shell to C is 
+mentioned. I wonder if it's enough or if it needs a little bit more 
+attention may be in the "Performance, Internal Implementation, 
+Development Support etc." as it is a conversion of a submodule sub-command?
 
-       Arnd
+I'm not sure about the importance that these kinds of conversion 
+require, thus the question :)
+
+-- 
+Sivaraam
