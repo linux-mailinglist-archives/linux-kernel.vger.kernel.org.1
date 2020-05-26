@@ -2,82 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB401E1E3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98601E1E45
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731780AbgEZJTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 05:19:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731600AbgEZJTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 05:19:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A7C82073B;
-        Tue, 26 May 2020 09:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590484760;
-        bh=pQ9fSIsd2546ytSpDQuQx2cfrsXYFihGA5BoJ2QU+ds=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=n+3mDJ0XDwFUiVHYZkKbTC2uE5yIjCtnlRYbS8jwqSCDc7Cui5pUHoUegUZePsW4s
-         WYWFddgcOpEBwGbXLF71WExMKCgY+mOfSOpeozhUTOWCMV8y+uE4U2O1rnDSa+oHvG
-         LIzJVsrejlOYQFvW4u31p/rSDKJa9NMjmAPjb++4=
-Date:   Tue, 26 May 2020 10:19:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
-        linus.walleij@linaro.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-spi@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-In-Reply-To: <1590378348-8115-1-git-send-email-dillon.minfei@gmail.com>
-References: <1590378348-8115-1-git-send-email-dillon.minfei@gmail.com>
-Subject: Re: [PATCH v5 0/8] Enable ili9341 and l3gd20 on stm32f429-disco
-Message-Id: <159048475756.7363.2129939912077382888.b4-ty@kernel.org>
+        id S1731786AbgEZJU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 05:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731662AbgEZJU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 05:20:58 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484D6C03E97E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:20:57 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id c11so21443772ljn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tjIxLurGAZl3ClrqkcDTUozxTD1nDew3Brnlr2xXLqY=;
+        b=JCqyYSiMdYS1eYDRtnDeEiedABn2SLAJ9eHMlUwpGPm+5yJt1v4LCf6UvpJc84XRbE
+         1cfRRQoLViCSj/Ef6G2XQ1MnDs8XRyleZi6kQTJgM4lW4Eyurn8txIZenaHRroS5F4Ii
+         zqWLfi1rIGTUwxWPo6NxZWKxgXdkIdm6Z/9uTNfehAxFi1FZ5QXiVI/oLvhWfxfBZP04
+         64YHr1ZbYww9BFPrJ+2zK2C1+oW+dLlk/sZkNNq4aRcvkJ5DbIEeA679CTRIvnoSxtQM
+         qA8qkXqWSIUdnpytsjCspoXtwgmZPFRfsVg7QYO2gGDE+hSnc8P9Dw8ZhWPx2fnwvwsb
+         qrxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tjIxLurGAZl3ClrqkcDTUozxTD1nDew3Brnlr2xXLqY=;
+        b=OhSB2WrDzQKo5REKJ5pgfPIJQoZ8KceGGFUxIzA2EDg+LLQprQ6UN5grvx1hmGycw2
+         yk2xfRv7HxD825l4wj81b3HYa88Yp2gETZfedKiPS22KaESyxnpM/dFaFE2K7G9XhTwk
+         iZxoHbNQtsOybjOY4rKThrfnWLihc0hTDhOocPuVhbBk/QwYWcTuRKnpnbv3OXt8rQ77
+         XniQL3+ojlO0NgLqlh7JPjA62A3jT7LYI7PdiXooElf6C2qInQDQZsHA9x7I/OsNSUYd
+         rmo+Y1Rvyi/6abyIEw1jUZEkXPi5wtB/qiE0vJctD5K3TJXMN3meQWLf9I9M4QfrHiuo
+         FyfA==
+X-Gm-Message-State: AOAM530kFfYwry4qLsX4c9f8i/dTy8rGx0Qv+IR2wQQaBU8Z2N9nnzq4
+        nLhhnim+DpFd/A8kw7FveuYN22Vtzjye4K7NIerVbA==
+X-Google-Smtp-Source: ABdhPJwg6A/TEx1rm0SmH/Tfvf7jOImMZnrbm86NXCtz4hLlqpfrcSfkYxR6Rag1WIB7c/CsQ4iUICjgpzIFIhw1xII=
+X-Received: by 2002:a2e:711c:: with SMTP id m28mr162302ljc.104.1590484855739;
+ Tue, 26 May 2020 02:20:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200513141134.25819-1-lars.povlsen@microchip.com>
+ <20200513141134.25819-2-lars.povlsen@microchip.com> <CACRpkdZa7OM3bqB+zRprEQ3M4m9hG3uPCoYxrdH_O=oxD8zi8Q@mail.gmail.com>
+ <87pnb1nf2j.fsf@soft-dev15.microsemi.net> <CACRpkdYesD9sRQZXQNEaBY2Ouu3bjKKGWpRtU-Lpa4AcjyPwXw@mail.gmail.com>
+ <87r1v8oz9f.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87r1v8oz9f.fsf@soft-dev15.microsemi.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 May 2020 11:20:44 +0200
+Message-ID: <CACRpkdaJvaqPptPD-A1DriVgBOZGZ4Qf0UsbsjG39ptx6bSJKg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: pinctrl: Add bindings for mscc,ocelot-sgpio
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 May 2020 11:45:40 +0800, dillon.minfei@gmail.com wrote:
-> V5's update based on Mark Brown's suggestion, use 'SPI_MASTER_MUST_RX'
-> for SPI_SIMPLEX_RX mode on stm32 spi controller.
-> 
-> V5:
-> 1 instead of add send dummy data out under SIMPLEX_RX mode,
->    add flags 'SPI_CONTROLLER_MUST_TX' for stm32 spi driver
-> 2 bypass 'SPI_CONTROLLER_MUST_TX' and 'SPI_CONTROLLER_MUST_RX' under
-> 'SPI_3WIRE' mode
-> 
-> [...]
+On Mon, May 25, 2020 at 4:38 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-Applied to
+> Yes, the problem is they're not in sequence. F.ex. you could have ports
+> 0,1 enabled, skip 2,3,4 and have 5,6,7 enabled.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Just use disabled nodes.
 
-Thanks!
+That would look like this in my idea of a device tree:
 
-[1/2] spi: stm32: Add 'SPI_SIMPLEX_RX', 'SPI_3WIRE_RX' support for stm32f4
-      commit: 61367d0b8f5edf5146059ba8b79ce4e4485340b2
-[2/2] spi: flags 'SPI_CONTROLLER_MUST_RX' and 'SPI_CONTROLLER_MUST_TX' can't be coexit with 'SPI_3WIRE' mode
-      commit: aee67fe879e5030a2f5e1d9af3cb5b2a1027e78a
+pinctrl@nnn {
+    gpio0: gpio@0 {
+        compatible = "foo";
+        status = "ok";
+        ....
+    };
+    gpio1: gpio@1 {
+        compatible = "foo";
+        status = "ok";
+        ....
+    };
+    gpio2: gpio@2 {
+        compatible = "foo";
+        status = "disabled";
+        ....
+    };
+    gpio3: gpio@3 {
+        compatible = "foo";
+        status = "disabled";
+        ....
+    };
+    gpio4: gpio@4 {
+        compatible = "foo";
+        status = "disabled";
+        ....
+    };
+    gpio5: gpio@5 {
+        compatible = "foo";
+        status = "ok";
+        ....
+    };
+    gpio6: gpio@6 {
+        compatible = "foo";
+        status = "ok";
+        ....
+    };
+    gpio7: gpio@7 {
+        compatible = "foo";
+        status = "ok";
+        ....
+    };
+};
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+It is common to use the status to enable/disable nodes like this.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+In the Linux kernel is is possible to iterate over these subnodes and
+check which ones are enabled and disabled while keeping the
+index by using something like:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+i = 0;
+struct device_node *np, *child;
+for_each_child_of_node(np, child) {
+    if (of_device_is_available(child)) {
+        pr_info("populating device %d\n", i);
+    }
+    i++;
+}
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Certainly you can use i in the above loop to populate your registers
+etc from an indexed array.
 
-Thanks,
-Mark
+This way the consumers can pick their GPIO from the right port
+and everything just using e.g.
+my-gpios = <&gpio6 4 GPIO_OUT_LOW>;
+
+Yours,
+Linus Walleij
