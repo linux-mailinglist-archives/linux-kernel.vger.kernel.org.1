@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD821E2ED0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127201E2EC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390324AbgEZS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51724 "EHLO mail.kernel.org"
+        id S2390343AbgEZS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:58:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389585AbgEZS6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:58:15 -0400
+        id S2390308AbgEZS6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:58:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81EB22086A;
-        Tue, 26 May 2020 18:58:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B0AF2086A;
+        Tue, 26 May 2020 18:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519495;
-        bh=tkjXbCIZU4cnQZYUNnAN08QTrDRjEyW2tJ4zBswjrrc=;
+        s=default; t=1590519499;
+        bh=xE5aZIstMBB2VgftsNKnCNd85SFqZ0Fspg9GZnXYNk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oPwKrZNBE/u7E3u/HcN9LTG4SWOobp93N4KZyBWdTzbzFKiwGSWUOLeH4l8kSIiYu
-         JScghD6tdFJpdk3oP6vxyimYFiMqNLztKYkio2tNeMHNYdUrH3Q23PJivlRb0H10Lf
-         iIszysVHjVUvGO7H/bw5Z6juKgB+iyIop4xTdSaU=
+        b=vKSrmIvMIIEhq5vEIy1BpnvT4Ht0hNVSalKymmpVWctXrubWLnXZ+vY/sifXBgxXN
+         hF27eAY1fqpvjRu645bmKzXiLe0yZ/7LAuYzqVuvM/+LaA55mc7r7S0AdWpTUgJvgp
+         qBqEwunlJKf3lbZfvIdZonC0dGgtFDqN0hWZYqr8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 25/64] arm64: fix the flush_icache_range arguments in machine_kexec
-Date:   Tue, 26 May 2020 20:52:54 +0200
-Message-Id: <20200526183920.689522330@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giuliano Procida <gprocida@google.com>
+Subject: [PATCH 4.9 27/64] net: l2tp: export debug flags to UAPI
+Date:   Tue, 26 May 2020 20:52:56 +0200
+Message-Id: <20200526183921.452774132@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
 References: <20200526183913.064413230@linuxfoundation.org>
@@ -44,37 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Asbjørn Sloth Tønnesen <asbjorn@asbjorn.st>
 
-Commit d51c214541c5154dda3037289ee895ea3ded5ebd upstream.
+commit 41c43fbee68f4f9a2a9675d83bca91c77862d7f0 upstream.
 
-The second argument is the end "pointer", not the length.
+Move the L2TP_MSG_* definitions to UAPI, as it is part of
+the netlink API.
 
-Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
-Cc: <stable@vger.kernel.org> # 4.8.x-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Asbjoern Sloth Toennesen <asbjorn@asbjorn.st>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Giuliano Procida <gprocida@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/machine_kexec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/uapi/linux/l2tp.h |   17 ++++++++++++++++-
+ net/l2tp/l2tp_core.h      |   10 ----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index bc96c8a7fc79..3e4b778f16a5 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -177,7 +177,8 @@ void machine_kexec(struct kimage *kimage)
- 	/* Flush the reboot_code_buffer in preparation for its execution. */
- 	__flush_dcache_area(reboot_code_buffer, arm64_relocate_new_kernel_size);
- 	flush_icache_range((uintptr_t)reboot_code_buffer,
--		arm64_relocate_new_kernel_size);
-+			   (uintptr_t)reboot_code_buffer +
-+			   arm64_relocate_new_kernel_size);
+--- a/include/uapi/linux/l2tp.h
++++ b/include/uapi/linux/l2tp.h
+@@ -108,7 +108,7 @@ enum {
+ 	L2TP_ATTR_VLAN_ID,		/* u16 */
+ 	L2TP_ATTR_COOKIE,		/* 0, 4 or 8 bytes */
+ 	L2TP_ATTR_PEER_COOKIE,		/* 0, 4 or 8 bytes */
+-	L2TP_ATTR_DEBUG,		/* u32 */
++	L2TP_ATTR_DEBUG,		/* u32, enum l2tp_debug_flags */
+ 	L2TP_ATTR_RECV_SEQ,		/* u8 */
+ 	L2TP_ATTR_SEND_SEQ,		/* u8 */
+ 	L2TP_ATTR_LNS_MODE,		/* u8 */
+@@ -175,6 +175,21 @@ enum l2tp_seqmode {
+ 	L2TP_SEQ_ALL = 2,
+ };
  
- 	/* Flush the kimage list and its buffers. */
- 	kexec_list_flush(kimage);
--- 
-2.25.1
-
++/**
++ * enum l2tp_debug_flags - debug message categories for L2TP tunnels/sessions
++ *
++ * @L2TP_MSG_DEBUG: verbose debug (if compiled in)
++ * @L2TP_MSG_CONTROL: userspace - kernel interface
++ * @L2TP_MSG_SEQ: sequence numbers
++ * @L2TP_MSG_DATA: data packets
++ */
++enum l2tp_debug_flags {
++	L2TP_MSG_DEBUG		= (1 << 0),
++	L2TP_MSG_CONTROL	= (1 << 1),
++	L2TP_MSG_SEQ		= (1 << 2),
++	L2TP_MSG_DATA		= (1 << 3),
++};
++
+ /*
+  * NETLINK_GENERIC related info
+  */
+--- a/net/l2tp/l2tp_core.h
++++ b/net/l2tp/l2tp_core.h
+@@ -23,16 +23,6 @@
+ #define L2TP_HASH_BITS_2	8
+ #define L2TP_HASH_SIZE_2	(1 << L2TP_HASH_BITS_2)
+ 
+-/* Debug message categories for the DEBUG socket option */
+-enum {
+-	L2TP_MSG_DEBUG		= (1 << 0),	/* verbose debug (if
+-						 * compiled in) */
+-	L2TP_MSG_CONTROL	= (1 << 1),	/* userspace - kernel
+-						 * interface */
+-	L2TP_MSG_SEQ		= (1 << 2),	/* sequence numbers */
+-	L2TP_MSG_DATA		= (1 << 3),	/* data packets */
+-};
+-
+ struct sk_buff;
+ 
+ struct l2tp_stats {
 
 
