@@ -2,164 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7506C1E338C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FB71E3396
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389603AbgEZXRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 19:17:50 -0400
-Received: from mga18.intel.com ([134.134.136.126]:47878 "EHLO mga18.intel.com"
+        id S2389880AbgEZXSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 19:18:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56936 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389108AbgEZXRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 19:17:50 -0400
-IronPort-SDR: vD9UFwr+l8tkj33JbXT3740Rr01xLFDsjYMxdg6BDj55FA8X1XdLhfMZNkjHk8BwXHNW1HWEhg
- k+7fbxFtQrLw==
+        id S2389709AbgEZXSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 19:18:41 -0400
+IronPort-SDR: PDLdGCUmwFUFd/WsIREBQAwnqGyfilP7n37QujhabXSSzBv2ghg2JHzd5En3m6LpW/CBberDcT
+ 4yl6eEHbqFUQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 16:17:49 -0700
-IronPort-SDR: ZEj5vLTq1uO2xDmoujf6h2LwavFw6tN444rjmOs2pVu+Gq4fWEm8267WXnL+deRzdMICsnBsR7
- aaVlqM8VD1DA==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 16:18:40 -0700
+IronPort-SDR: Li330vBe6ISt2pvFdqKegpO1Sndq+68bSDB5BLBY2Px7m46MYPkStA2Dp0wC9BHNS/AdPnm65I
+ 9eAJ1dAPEcXA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,439,1583222400"; 
-   d="scan'208";a="291378478"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 26 May 2020 16:17:47 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jdipP-000F6S-5l; Wed, 27 May 2020 07:17:47 +0800
-Date:   Wed, 27 May 2020 07:17:22 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 67d631b7c05eff955ccff4139327f0f92a5117e5
-Message-ID: <5ecda382.5leWxpvd7tgvEePx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="291378667"
+Received: from zalvear-mobl.amr.corp.intel.com (HELO localhost.localdomain) ([10.254.67.58])
+  by fmsmga004.fm.intel.com with ESMTP; 26 May 2020 16:18:40 -0700
+From:   sathyanarayanan.kuppuswamy@linux.intel.com
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: [PATCH v4 0/5] Remove AER HEST table parser
+Date:   Tue, 26 May 2020 16:18:24 -0700
+Message-Id: <cover.1590534843.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: 67d631b7c05eff955ccff4139327f0f92a5117e5  x86/mm: Stop printing BRK addresses
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-elapsed time: 5068m
+Commit c100beb9ccfb ("PCI/AER: Use only _OSC to determine AER ownership")
+removed HEST dependency in determining the AER ownership status. The
+following patch set cleansup rest of the HEST table related code from
+AER driver.
 
-configs tested: 105
-configs skipped: 1
+This patchset also includes some minor AER driver fixes.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Changes since v3:
+ * Fixed compilation issues reported by kbuild test robot.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-sh                          landisk_defconfig
-arc                              allyesconfig
-c6x                        evmc6472_defconfig
-mips                          ath25_defconfig
-arm                         s3c2410_defconfig
-h8300                       h8s-sim_defconfig
-arm                         ebsa110_defconfig
-arc                        vdk_hs38_defconfig
-mips                          lasat_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200526
-i386                 randconfig-a004-20200526
-i386                 randconfig-a003-20200526
-i386                 randconfig-a002-20200526
-i386                 randconfig-a005-20200526
-i386                 randconfig-a006-20200526
-x86_64               randconfig-a015-20200526
-x86_64               randconfig-a013-20200526
-x86_64               randconfig-a016-20200526
-x86_64               randconfig-a012-20200526
-x86_64               randconfig-a014-20200526
-x86_64               randconfig-a011-20200526
-i386                 randconfig-a013-20200526
-i386                 randconfig-a015-20200526
-i386                 randconfig-a012-20200526
-i386                 randconfig-a011-20200526
-i386                 randconfig-a016-20200526
-i386                 randconfig-a014-20200526
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc                            allyesconfig
-sparc64                             defconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+Changes since v2:
+ * Fixed commit sha id for patch "PCI/AER: Use only _OSC to determine AER ownership".
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Kuppuswamy Sathyanarayanan (5):
+  PCI/AER: Remove redundant pci_is_pcie() checks.
+  PCI/AER: Remove redundant dev->aer_cap checks.
+  ACPI/PCI: Ignore _OSC negotiation result if pcie_ports_native is set.
+  ACPI/PCI: Ignore _OSC DPC negotiation result if pcie_ports_dpc_native
+    is set.
+  PCI/AER: Replace pcie_aer_get_firmware_first() with
+    pcie_aer_is_native()
+
+ drivers/acpi/pci_root.c    |  28 ++++----
+ drivers/pci/pcie/aer.c     | 139 ++++---------------------------------
+ drivers/pci/pcie/dpc.c     |   2 +-
+ drivers/pci/pcie/portdrv.h |  15 +---
+ include/linux/pci.h        |   2 +
+ 5 files changed, 34 insertions(+), 152 deletions(-)
+
+-- 
+2.17.1
+
