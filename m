@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6D51E2B16
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA7D1E2D9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390345AbgEZTB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
+        id S2392152AbgEZTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403815AbgEZTBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:01:54 -0400
+        id S2391912AbgEZTKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:10:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 798FD2086A;
-        Tue, 26 May 2020 19:01:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4760C20873;
+        Tue, 26 May 2020 19:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519713;
-        bh=oeb9h+mRVHc937kL8iuwiC4mgKe3Vtv93O9lCFxirD4=;
+        s=default; t=1590520209;
+        bh=XSQb4Zp5cDsFHLtoAkY8MQ1hc/uoWgOtYUAeCqjEU30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a1MddTAwcS64JhfWRyHWmfNwahFuPBDQlDxDkainzIxWt8SxMNHc2caNikxM9Nquc
-         2nM7eprQA69xkWS/10NMuiqPg2fMIz8TvQXD1rCqTrbNB8Tr5Ajb2BtvwsfixA1uh2
-         OwVGlESaWnRHDQqSYZbaBa+cYneQFAHp203ihOxU=
+        b=eQ1tzH2AraEMXV0NW/y1Rik0di3J1CZcOPJS4DBOzY6LK1ne7kaCJBcBi5xzjxD7F
+         IEuzKIarOo3U9WyY5liAKNHF7dsJzGWrLBP8SoR1tHm27ZmZobHDX4SvJO4PX/R8xd
+         EXe77+eprVvE84O0Iro+nVmaf7FbMgsRT7u037ns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arjun Vynipadath <arjun@chelsio.com>,
-        Ganesh Goudar <ganeshgr@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 47/59] cxgb4: free mac_hlist properly
+        stable@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Colin Xu <colin.xu@intel.com>
+Subject: [PATCH 5.4 074/111] drm/i915/gvt: Init DPLL/DDI vreg for virtual display instead of inheritance.
 Date:   Tue, 26 May 2020 20:53:32 +0200
-Message-Id: <20200526183921.945710265@linuxfoundation.org>
+Message-Id: <20200526183939.874072051@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +43,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arjun Vynipadath <arjun@chelsio.com>
+From: Colin Xu <colin.xu@intel.com>
 
-[ Upstream commit 2a8d84bf513823ba398f4b2dec41b8decf4041af ]
+commit f965b68188ab59a40a421ced1b05a2fea638465c upstream.
 
-The locally maintained list for tracking hash mac table was
-not freed during driver remove.
+Init value of some display vregs rea inherited from host pregs. When
+host display in different status, i.e. all monitors unpluged, different
+display configurations, etc., GVT virtual display setup don't consistent
+thus may lead to guest driver consider display goes malfunctional.
 
-Signed-off-by: Arjun Vynipadath <arjun@chelsio.com>
-Signed-off-by: Ganesh Goudar <ganeshgr@chelsio.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The added init vreg values are based on PRMs and fixed by calcuation
+from current configuration (only PIPE_A) and the virtual EDID.
+
+Fixes: 04d348ae3f0a ("drm/i915/gvt: vGPU display virtualization")
+Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Signed-off-by: Colin Xu <colin.xu@intel.com>
+Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20200508060506.216250-1-colin.xu@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/i915/gvt/display.c |   49 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 44 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-index 0e13989608f1..9d1438c3c3ca 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -2256,6 +2256,8 @@ static int cxgb_up(struct adapter *adap)
+--- a/drivers/gpu/drm/i915/gvt/display.c
++++ b/drivers/gpu/drm/i915/gvt/display.c
+@@ -207,14 +207,41 @@ static void emulate_monitor_status_chang
+ 				SKL_FUSE_PG_DIST_STATUS(SKL_PG0) |
+ 				SKL_FUSE_PG_DIST_STATUS(SKL_PG1) |
+ 				SKL_FUSE_PG_DIST_STATUS(SKL_PG2);
+-		vgpu_vreg_t(vgpu, LCPLL1_CTL) |=
+-				LCPLL_PLL_ENABLE |
+-				LCPLL_PLL_LOCK;
+-		vgpu_vreg_t(vgpu, LCPLL2_CTL) |= LCPLL_PLL_ENABLE;
+-
++		/*
++		 * Only 1 PIPE enabled in current vGPU display and PIPE_A is
++		 *  tied to TRANSCODER_A in HW, so it's safe to assume PIPE_A,
++		 *   TRANSCODER_A can be enabled. PORT_x depends on the input of
++		 *   setup_virtual_dp_monitor, we can bind DPLL0 to any PORT_x
++		 *   so we fixed to DPLL0 here.
++		 * Setup DPLL0: DP link clk 1620 MHz, non SSC, DP Mode
++		 */
++		vgpu_vreg_t(vgpu, DPLL_CTRL1) =
++			DPLL_CTRL1_OVERRIDE(DPLL_ID_SKL_DPLL0);
++		vgpu_vreg_t(vgpu, DPLL_CTRL1) |=
++			DPLL_CTRL1_LINK_RATE(DPLL_CTRL1_LINK_RATE_1620, DPLL_ID_SKL_DPLL0);
++		vgpu_vreg_t(vgpu, LCPLL1_CTL) =
++			LCPLL_PLL_ENABLE | LCPLL_PLL_LOCK;
++		vgpu_vreg_t(vgpu, DPLL_STATUS) = DPLL_LOCK(DPLL_ID_SKL_DPLL0);
++		/*
++		 * Golden M/N are calculated based on:
++		 *   24 bpp, 4 lanes, 154000 pixel clk (from virtual EDID),
++		 *   DP link clk 1620 MHz and non-constant_n.
++		 * TODO: calculate DP link symbol clk and stream clk m/n.
++		 */
++		vgpu_vreg_t(vgpu, PIPE_DATA_M1(TRANSCODER_A)) = 63 << TU_SIZE_SHIFT;
++		vgpu_vreg_t(vgpu, PIPE_DATA_M1(TRANSCODER_A)) |= 0x5b425e;
++		vgpu_vreg_t(vgpu, PIPE_DATA_N1(TRANSCODER_A)) = 0x800000;
++		vgpu_vreg_t(vgpu, PIPE_LINK_M1(TRANSCODER_A)) = 0x3cd6e;
++		vgpu_vreg_t(vgpu, PIPE_LINK_N1(TRANSCODER_A)) = 0x80000;
+ 	}
  
- static void cxgb_down(struct adapter *adapter)
- {
-+	struct hash_mac_addr *entry, *tmp;
-+
- 	cancel_work_sync(&adapter->tid_release_task);
- 	cancel_work_sync(&adapter->db_full_task);
- 	cancel_work_sync(&adapter->db_drop_task);
-@@ -2264,6 +2266,12 @@ static void cxgb_down(struct adapter *adapter)
+ 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_B)) {
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
++			~DPLL_CTRL2_DDI_CLK_OFF(PORT_B);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_B);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_B);
+ 		vgpu_vreg_t(vgpu, SFUSE_STRAP) |= SFUSE_STRAP_DDIB_DETECTED;
+ 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
+ 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
+@@ -235,6 +262,12 @@ static void emulate_monitor_status_chang
+ 	}
  
- 	t4_sge_stop(adapter);
- 	t4_free_sge_resources(adapter);
-+
-+	list_for_each_entry_safe(entry, tmp, &adapter->mac_hlist, list) {
-+		list_del(&entry->list);
-+		kfree(entry);
-+	}
-+
- 	adapter->flags &= ~FULL_INIT_DONE;
- }
+ 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_C)) {
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
++			~DPLL_CTRL2_DDI_CLK_OFF(PORT_C);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_C);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_C);
+ 		vgpu_vreg_t(vgpu, SDEISR) |= SDE_PORTC_HOTPLUG_CPT;
+ 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
+ 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
+@@ -255,6 +288,12 @@ static void emulate_monitor_status_chang
+ 	}
  
--- 
-2.25.1
-
+ 	if (intel_vgpu_has_monitor_on_port(vgpu, PORT_D)) {
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) &=
++			~DPLL_CTRL2_DDI_CLK_OFF(PORT_D);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_CLK_SEL(DPLL_ID_SKL_DPLL0, PORT_D);
++		vgpu_vreg_t(vgpu, DPLL_CTRL2) |=
++			DPLL_CTRL2_DDI_SEL_OVERRIDE(PORT_D);
+ 		vgpu_vreg_t(vgpu, SDEISR) |= SDE_PORTD_HOTPLUG_CPT;
+ 		vgpu_vreg_t(vgpu, TRANS_DDI_FUNC_CTL(TRANSCODER_A)) &=
+ 			~(TRANS_DDI_BPC_MASK | TRANS_DDI_MODE_SELECT_MASK |
 
 
