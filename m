@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6FB1E1D6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7450E1E1D75
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbgEZIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:35:11 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:42973 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgEZIfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:35:10 -0400
-X-Originating-IP: 50.39.163.217
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id ADCF2240017;
-        Tue, 26 May 2020 08:35:03 +0000 (UTC)
-Date:   Tue, 26 May 2020 01:35:01 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Maxim Kochetkov <fido_max@inbox.ru>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, gregkh@linuxfoundation.org,
-        linux-serial@vger.kernel.org, jslaby@suse.com,
-        andriy.shevchenko@linux.intel.com, lukas@wunner.de,
-        heikki.krogerus@linux.intel.com, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org, radu-andrei.bulie@nxp.com
-Subject: Re: [PATCH] serial: 8250: probe all 16550A variants by default
-Message-ID: <20200526083501.GA464555@localhost>
-References: <20200525130238.3614179-1-olteanv@gmail.com>
- <20200525172815.GA445190@localhost>
- <d989c5fe-451d-e6b4-a2f1-f6330809af99@inbox.ru>
+        id S1731577AbgEZIhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 04:37:53 -0400
+Received: from smtp.asem.it ([151.1.184.197]:50217 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729611AbgEZIhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 04:37:51 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000280135.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 10:37:47 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1261.35; Tue, 26
+ May 2020 10:37:44 +0200
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1261.35 via Frontend
+ Transport; Tue, 26 May 2020 10:37:44 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] dt-bindings: leds: fix macro names for pca955x
+Date:   Tue, 26 May 2020 10:37:43 +0200
+Message-ID: <20200526083743.21372-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d989c5fe-451d-e6b4-a2f1-f6330809af99@inbox.ru>
+Content-Type: text/plain
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090207.5ECCD559.0079,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:05:25AM +0300, Maxim Kochetkov wrote:
-> This change breaks all my devices: OMAP-L138 (davinci based), LS1021A,
-> T1040, Marvell (kirkwood2 based). Only enabling VARIANTS on all my devices
-> fix the issue.
+The documentation reports the wrong macro names
+related to the pca9532 instead of the pca955x
 
-Preparing a patch right now, with the appropriate Fixes tag so it should
-end up on any kernel that has the original patch.
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ Documentation/devicetree/bindings/leds/leds-pca955x.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-- Josh Triplett
+diff --git a/Documentation/devicetree/bindings/leds/leds-pca955x.txt b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
+index 7984efb767b4..7a5830f8d5ab 100644
+--- a/Documentation/devicetree/bindings/leds/leds-pca955x.txt
++++ b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
+@@ -26,9 +26,9 @@ LED sub-node properties:
+ 		from 0 to 15 for the pca9552
+ 		from 0 to  3 for the pca9553
+ - type: (optional) either
+-	PCA9532_TYPE_NONE
+-	PCA9532_TYPE_LED
+-	PCA9532_TYPE_GPIO
++	PCA955X_TYPE_NONE
++	PCA955X_TYPE_LED
++	PCA955X_TYPE_GPIO
+ 	see dt-bindings/leds/leds-pca955x.h (default to LED)
+ - label : (optional)
+ 	see Documentation/devicetree/bindings/leds/common.txt
+-- 
+2.17.1
+
