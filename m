@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657941E252C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC751E2549
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbgEZPQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        id S1729602AbgEZPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727921AbgEZPQ1 (ORCPT
+        with ESMTP id S1729311AbgEZPTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:16:27 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2AEC03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:16:26 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id f89so9588334qva.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:16:26 -0700 (PDT)
+        Tue, 26 May 2020 11:19:30 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B73EC03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:19:30 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id p12so16357889qtn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:19:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rvmRiO1axYsyxr5K067CYVfJq2RYqnnENI5i0SPdwNw=;
-        b=AYG5ZcBZg7DPNpdTYajmW8KMUjpQ97F75lHITc3mGrWGudUS7txKYRUe9Lf2xl5kMT
-         uQT0D1rrWGXEscQM+Qkdcyid7H/CNvz1XGnJrsQ9/EVLJ37aIF25kSQllRiDZAgw5+Y2
-         wpIpC1yt/rsAuDgTh6sD3eIM87JUBvOAkonat0cFNU5rSsyrg0YqRa8GN2FETQAW+RNy
-         BMqeLYt/qMF7EbybSHBp6+W8hqr4eYMU5yMaXvUQz0b5wiW0pX2oblojpsEsQYlrb9ov
-         u4bn9TvMhHPOyQFa/nkNiggh9WllA+MrPf3N1FlLjyQfkBZ0pMHgPrxBKmcuVqZ7Y8L3
-         484Q==
+        bh=hDH2DFAglXWP9IvsKwaFfTJwRoZ4ZUxT5xU4AOWlNtc=;
+        b=ew3v7vK1IiRYKmBo4BlEfAQV0X7Vle4ysiILIAaUadDtUs9RZVZjCFWeVNxUuxzqjw
+         V3J53Ve4+4oHwHSttgYhLJOjAlcixkAfLhcM9hafOeetwThu/J10+z15s9Zh2drODxq2
+         +46Z1+jn0AXkV/K1D7KAjt8B+tqWuySU5D3GWW/Ao+PnsXgFhIJBGYMIRPnZlfmsw2gs
+         KEfuSHDeMej4tQyV3a4FqvPTyUvSP0+1C0Qu61/wsa0bG5PbrORM9tQ9lH8lKzXR2kA5
+         tuztnNH/+5eqraX3pXjo20jap70rt8AW9cVFHkUtD4EwCBzgii229NXnLkzIhnamct60
+         ve5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rvmRiO1axYsyxr5K067CYVfJq2RYqnnENI5i0SPdwNw=;
-        b=LV36rJfkcmxm8agIGM0mMxsU2zDfZGCtprO/9o5/rgjwYQPrCapKcovQD/Q26hGBfm
-         46uKww79xy2ZeuQmEyUHmt2aSJ0KNZ5hU52D7sYqhI5yoXywjpsMBm4WBO3CbUjQxSvy
-         CN2GIEj01I/OyYGZVHNh2LnWVCSrjDW8aqV7B4e7XpuXSOhBV395w3JdZYtgIH41J1NG
-         OmjQ1fv0cIwcChl7MdMKft+U6fI83o0n9Wzrh2lPNUQ1UtEuL+2w4QY6BqKZ/LGg2PTA
-         72QHkbJx8XCthQColb2tb55dfl39Jp6nYlp1M+a+fMtN5C4Wbouln8XvMek3ooRgWLSZ
-         YoWA==
-X-Gm-Message-State: AOAM533FVmO4FQVMJh9oLot5MTWB7TrhmfAf8mwSHOO8q+ZtTsqc7J3e
-        Kvfb1WOJLz+dtv4pBSSxSLSCErSB
-X-Google-Smtp-Source: ABdhPJzBt3A987E2PyRC75PuhxUBsfQgYzwSjDBfR5Udgo6yButsxXR6+us3d5tX43L9+RAFKDKxLg==
-X-Received: by 2002:ad4:4e6f:: with SMTP id ec15mr20989235qvb.88.1590506185506;
-        Tue, 26 May 2020 08:16:25 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m19sm9295311qtn.38.2020.05.26.08.16.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hDH2DFAglXWP9IvsKwaFfTJwRoZ4ZUxT5xU4AOWlNtc=;
+        b=OdUjpYEJEJjH4WvVLiXmriHzzX/tXV/v6a6FC3GyKRnX4NOWn2vw3L5bz3pEubnwKa
+         QF61dp/i1tzNvd9QLxGo/zZQkVHccHI+/a8O0MmkgDvJyZNLYwg/8xlj7hdwFkk1XodV
+         vQvjWYhwO+K0yNp9mVtMfl9g9xxmIIf4eoXWJCqbAH2VByxJNPYgedLBNOPAsSAkQY8p
+         j+1DyRv6NeaHw70cMDaKpWfhKsRNvaRVT4piPXMl6KcJ2Be/eQAf3ill9A1x7MzEzzQF
+         YgJkvB/3p2ZvzO23D4FjfYWpRs/QxckE6zdBAFwR4mU1nWl4N6i+oFpkTjNDMp1zL8UA
+         Ft5A==
+X-Gm-Message-State: AOAM5320lDLB5ZSj+Z8S+jwcqB8W9ggnjU/sBLBS1hN83Nn9B6iseSTU
+        Ybtz+IjQggXRg4PFy31y/tnVjA==
+X-Google-Smtp-Source: ABdhPJwhJhErE+oCuvfF7C1a9gRtveLbj48wq2YUhRCdsjoG2NGVY4fhqnkQCC2jFoUae1lHzjzsdw==
+X-Received: by 2002:ac8:2bc4:: with SMTP id n4mr1823482qtn.222.1590506369531;
+        Tue, 26 May 2020 08:19:29 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 10sm11741905qkv.136.2020.05.26.08.19.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 08:16:24 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 26 May 2020 11:16:23 -0400
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] x86/boot: Check that there are no runtime
- relocations
-Message-ID: <20200526151623.GB2190602@rani.riverdale.lan>
-References: <20200524212816.243139-1-nivedita@alum.mit.edu>
- <20200525225918.1624470-5-nivedita@alum.mit.edu>
- <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
+        Tue, 26 May 2020 08:19:28 -0700 (PDT)
+Date:   Tue, 26 May 2020 11:19:26 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Don Brace <don.brace@microsemi.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Scott Teel <scott.teel@microsemi.com>,
+        Kevin Barnett <kevin.barnett@microsemi.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
+Message-ID: <20200526151926.GC991@lca.pw>
+References: <20200526151416.GB991@lca.pw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
+In-Reply-To: <20200526151416.GB991@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 08:11:56AM +0200, Ard Biesheuvel wrote:
-> On Tue, 26 May 2020 at 00:59, Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >  # Compressed kernel should be built as PIE since it may be loaded at any
-> >  # address by the bootloader.
-> > -KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
-> > +KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
-> 
-> Do we still need -pie linking with these changes applied?
-> 
+Sorry, adding a missing subject line.
 
-I think it's currently not strictly necessary -- eg the 64bit kernel
-doesn't get linked as pie right now with LLD or old binutils. However,
-it is safer to do so to ensure that the result remains PIC with future
-versions of the linker. There are linker optimizations that can convert
-certain PIC instructions when PIE is disabled. While I think they
-currently all focus on eliminating indirection through the GOT (and thus
-wouldn't be applicable any more), it's easy to imagine that they could
-get extended to, for eg, convert
-	leaq	foo(%rip), %rax
-to
-	movl	$foo, %eax
-with some nop padding, etc.
-
-Also, the relocation check that's being added here would only work with
-PIE linking.
+On Tue, May 26, 2020 at 11:14:16AM -0400, Qian Cai wrote:
+> The commit 64ce60cab246 ("hpsa: correct skipping masked peripherals")
+> trigger an UBSAN warning below.
+> 
+> When i == 0 in hpsa_update_scsi_devices(),
+> 
+> for (i = 0; i < nphysicals + nlogicals + 1; i++) {
+> ...
+>         int phys_dev_index = i - (raid_ctlr_position == 0);
+> 
+> It ends up calling LUN[-1].
+> 
+> &physdev_list->LUN[phys_dev_index]
+> 
+> Should there by a test of underflow to set phys_dev_index == 0 in this case?
+> 
+> [  118.395557][   T13] hpsa can't handle SMP requests
+> [  118.444870][   T13] ================================================================================
+> [  118.486725][   T13] UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
+> [  118.521606][   T13] index -1 is out of range for type 'struct ext_report_lun_entry [1024]'
+> [  118.559481][   T13] CPU: 0 PID: 13 Comm: kworker/0:1 Not tainted 5.7.0-rc6-next-20200522+ #3
+> [  118.598179][   T13] Hardware name: HP ProLiant BL660c Gen9, BIOS I38 10/17/2018
+> [  118.632882][   T13] Workqueue: events work_for_cpu_fn
+> [  118.656492][   T13] Call Trace:
+> [  118.670899][   T13]  dump_stack+0x10b/0x17f
+> [  118.690216][   T13]  __ubsan_handle_out_of_bounds+0xd2/0x110
+> [  118.712593][  T378] bnx2x 0000:41:00.1: 63.008 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x8 link)
+> [  118.716249][   T13]  hpsa_update_scsi_devices+0x28e3/0x2cc0 [hpsa]
+> [  118.786774][   T13]  hpsa_scan_start+0x228/0x260 [hpsa]
+> [  118.810663][   T13]  ? _raw_spin_unlock_irqrestore+0x6a/0x80
+> [  118.836529][   T13]  do_scsi_scan_host+0x8a/0x110
+> [  118.858104][   T13]  scsi_scan_host+0x222/0x280
+> [  118.879287][   T13]  ? hpsa_scsi_do_inquiry+0xcd/0xe0 [hpsa]
+> [  118.907707][   T13]  hpsa_init_one+0x1b79/0x27c0 [hpsa]
+> [  118.934818][   T13]  ? hpsa_find_device_by_sas_rphy+0xd0/0xd0 [hpsa]
+> [  118.964279][   T13]  local_pci_probe+0x82/0xe0
+> [  118.985405][   T13]  ? pci_name+0x70/0x70
+> [  119.004244][   T13]  work_for_cpu_fn+0x3a/0x60
+> [  119.024672][   T13]  process_one_work+0x49f/0x8f0
+> [  119.046431][   T13]  process_scheduled_works+0x72/0xa0
+> [  119.069906][   T13]  worker_thread+0x463/0x5b0
+> [  119.090347][   T13]  kthread+0x21d/0x240
+> [  119.108531][   T13]  ? pr_cont_work+0xa0/0xa0
+> [  119.128450][   T13]  ? __write_once_size+0x30/0x30
+> [  119.150405][   T13]  ret_from_fork+0x27/0x40
