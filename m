@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2BB1E2C5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECB61E2DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392163AbgEZTOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:14:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45058 "EHLO mail.kernel.org"
+        id S2404216AbgEZTXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404345AbgEZTOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:14:18 -0400
+        id S2391877AbgEZTJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:09:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 223CB20776;
-        Tue, 26 May 2020 19:14:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E996208A7;
+        Tue, 26 May 2020 19:09:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520457;
-        bh=ROkDuAVEAX5iprg27/OAqxRmFR4g+xJwM9tn3TX5o7U=;
+        s=default; t=1590520169;
+        bh=k+YJJ6yOkeJ06tDzGsR90+nsSlSeKWffhRIO39r9/5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Izso1PozQOLxXMT7JbzGCU8SlFIRfxz/EKQebsEaNcvVHO4iCoFgKNEr2sTwtZAnM
-         bpr1jb7fkAIhjLswOfRJnTK/Grq3hBIHGw71zzm61ACBYRmv46syk1GYscoMG1ayGY
-         DRrVrvK39xiLYQtfI6pNeU7jXmADDp8D8yi59VQk=
+        b=2CMVgzkTY2AbWEUkKaB5QHCxw3FXodM0yzTH/KFfRMljHPaRclsisVCfITe57xsqW
+         iJURsMovV2MiDPKSRinIu/xQLwCYbUP5fqrQzRBiero7hsVJyTYp3AmqbwfCJ6wqXq
+         I6qicQaiZEFDlge+/0fr9y1uMncTaiQnK7C6YvzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Ludovic Barre <ludovic.barre@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 087/126] Revert "driver core: platform: Initialize dma_parms for platform devices"
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 086/111] iio: dac: vf610: Fix an error handling path in vf610_dac_probe()
 Date:   Tue, 26 May 2020 20:53:44 +0200
-Message-Id: <20200526183945.302867078@linuxfoundation.org>
+Message-Id: <20200526183941.078900013@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,54 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 1d2a14649ef5b5eb64ea5ce276d7df502bac4dbe ]
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 885a64715fd81e6af6d94a038556e0b2e6deb19c ]
+commit aad4742fbf0a560c25827adb58695a4497ffc204 upstream.
 
-This reverts commit 7c8978c0837d40c302f5e90d24c298d9ca9fc097, a new
-version will come in the next release cycle.
+A call to 'vf610_dac_exit()' is missing in an error handling path.
 
-Cc: <stable@vger.kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Ludovic Barre <ludovic.barre@st.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 1b983bf42fad ("iio: dac: vf610_dac: Add IIO DAC driver for Vybrid SoC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/base/platform.c         | 2 --
- include/linux/platform_device.h | 1 -
- 2 files changed, 3 deletions(-)
+ drivers/iio/dac/vf610_dac.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index c81b68d5d66d..b5ce7b085795 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -361,8 +361,6 @@ struct platform_object {
-  */
- static void setup_pdev_dma_masks(struct platform_device *pdev)
- {
--	pdev->dev.dma_parms = &pdev->dma_parms;
--
- 	if (!pdev->dev.coherent_dma_mask)
- 		pdev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
- 	if (!pdev->dev.dma_mask) {
-diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
-index 81900b3cbe37..041bfa412aa0 100644
---- a/include/linux/platform_device.h
-+++ b/include/linux/platform_device.h
-@@ -25,7 +25,6 @@ struct platform_device {
- 	bool		id_auto;
- 	struct device	dev;
- 	u64		platform_dma_mask;
--	struct device_dma_parameters dma_parms;
- 	u32		num_resources;
- 	struct resource	*resource;
+--- a/drivers/iio/dac/vf610_dac.c
++++ b/drivers/iio/dac/vf610_dac.c
+@@ -225,6 +225,7 @@ static int vf610_dac_probe(struct platfo
+ 	return 0;
  
--- 
-2.25.1
-
+ error_iio_device_register:
++	vf610_dac_exit(info);
+ 	clk_disable_unprepare(info->clk);
+ 
+ 	return ret;
 
 
