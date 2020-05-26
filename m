@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974441E2C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFAF1E2C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391956AbgEZTPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47406 "EHLO mail.kernel.org"
+        id S2404612AbgEZTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:16:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404452AbgEZTPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:37 -0400
+        id S2404596AbgEZTP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:15:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13C2F2053B;
-        Tue, 26 May 2020 19:15:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DFF0208B3;
+        Tue, 26 May 2020 19:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520536;
-        bh=bPHmpQ8rFupKag+rTlVDUEQCWtq4WfdatvEyugg2Ya0=;
+        s=default; t=1590520556;
+        bh=8EHIuE6iYwokYmh63YQ56iTYoT3GD4uGo80Ycpl/vbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rBKm3sdS5Ej7o9Zq+MG0e59LGhcqwciE+LPaNEyAPoVugJprtzbv3AzCXdidsNLJp
-         22if9sHaFmFQh1iphHlKl3J2tIkGwD9nSx3m3CG+d7+1KkMuBQV80doWjAI+Nx32bI
-         wNNrZdnwIkiHOeXoyx7TW3gcrRmQM8XvLIOzf0YI=
+        b=KNWetRJgnzAwhULPOOHFxPXjsB36ZkuOBOIQ/4B2TQUATDZ3Pniftk6ibgvDMBYNU
+         VnyZHD6JPiI5hvLddsjgsCIcwkOvEvFxVkg2o5iqiMAYwqUMELSJutMeD9UHS7uoPu
+         iHSx8aPgyGEq9jpUiadCSr3LIsgBA7H4A8DS8V9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Anatoly Pugachev <matorola@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.6 111/126] sparc32: use PUD rather than PGD to get PMD in srmmu_nocache_init()
-Date:   Tue, 26 May 2020 20:54:08 +0200
-Message-Id: <20200526183946.883633639@linuxfoundation.org>
+Subject: [PATCH 5.6 112/126] sparc32: fix page table traversal in srmmu_nocache_init()
+Date:   Tue, 26 May 2020 20:54:09 +0200
+Message-Id: <20200526183946.948924707@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
 References: <20200526183937.471379031@linuxfoundation.org>
@@ -49,48 +47,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit c2bc26f7ca1ff1165bb6669a7a4cccc20ffd2ced upstream.
+commit 0cfc8a8d70dcd51db783e8e87917e02149c71458 upstream.
 
-The kbuild test robot reported the following warning:
+The srmmu_nocache_init() uses __nocache_fix() macro to add an offset to
+page table entry to access srmmu_nocache_pool.
 
-  arch/sparc/mm/srmmu.c: In function 'srmmu_nocache_init': arch/sparc/mm/srmmu.c:300:9: error: variable 'pud' set but not used [-Werror=unused-but-set-variable]
-  300 |  pud_t *pud;
+But since sparc32 has only three actual page table levels, pgd, p4d and
+pud are essentially the same thing and pgd_offset() and p4d_offset() are
+no-ops, the __nocache_fix() should be done only at PUD level.
 
-This warning is caused by misprint in the page table traversal in
-srmmu_nocache_init() function which accessed a PMD entry using PGD
-rather than PUD.
+Remove __nocache_fix() for p4d_offset() and pud_offset() and keep it
+only for PUD and lower levels.
 
-Since sparc32 has only 3 page table levels, the PGD and PUD are
-essentially the same and usage of __nocache_fix() removed the type
-checking.
-
-Use PUD for the consistency and to silence the compiler warning.
-
-Fixes: 7235db268a2777bc38 ("sparc32: use pgtable-nopud instead of 4level-fixup")
-Reported-by: kbuild test robot <lkp@intel.com>
+Fixes: c2bc26f7ca1f ("sparc32: use PUD rather than PGD to get PMD in srmmu_nocache_init()")
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Cc: David S. Miller <davem@davemloft.net>
 Cc: Anatoly Pugachev <matorola@gmail.com>
 Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200520132005.GM1059226@linux.ibm.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sparc/mm/srmmu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/mm/srmmu.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/arch/sparc/mm/srmmu.c
 +++ b/arch/sparc/mm/srmmu.c
-@@ -333,7 +333,7 @@ static void __init srmmu_nocache_init(vo
+@@ -331,8 +331,8 @@ static void __init srmmu_nocache_init(vo
+ 
+ 	while (vaddr < srmmu_nocache_end) {
  		pgd = pgd_offset_k(vaddr);
- 		p4d = p4d_offset(__nocache_fix(pgd), vaddr);
- 		pud = pud_offset(__nocache_fix(p4d), vaddr);
--		pmd = pmd_offset(__nocache_fix(pgd), vaddr);
-+		pmd = pmd_offset(__nocache_fix(pud), vaddr);
+-		p4d = p4d_offset(__nocache_fix(pgd), vaddr);
+-		pud = pud_offset(__nocache_fix(p4d), vaddr);
++		p4d = p4d_offset(pgd, vaddr);
++		pud = pud_offset(p4d, vaddr);
+ 		pmd = pmd_offset(__nocache_fix(pud), vaddr);
  		pte = pte_offset_kernel(__nocache_fix(pmd), vaddr);
  
- 		pteval = ((paddr >> 4) | SRMMU_ET_PTE | SRMMU_PRIV);
 
 
