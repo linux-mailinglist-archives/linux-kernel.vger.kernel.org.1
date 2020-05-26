@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6081E29C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D581E29CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgEZSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgEZSL5 (ORCPT
+        id S2388586AbgEZSMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:12:55 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59356 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728285AbgEZSMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:11:57 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22299C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:11:57 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n15so122933pjt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=XMJPsfrPwL4udIgNX9sd/5hcecE1GbPrvJExtmMB778=;
-        b=XLbEotUGWPUSVr5vWk2fim05qClEhsltJrxucG9Q/iXw8jS8O4OQ0wf9/JhaHbIliE
-         O8zjHXdJzq1/lwIkYGys9V9WFGRWmxNWn7wkzpEud3rHX7z5L7E6Ue3jLCWmwc0A/0p9
-         Kjem93QOZwvmI9fwvMtlLeHTQeKd4jUaSB26Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=XMJPsfrPwL4udIgNX9sd/5hcecE1GbPrvJExtmMB778=;
-        b=qrwOrEYnA3AgmotM+JFyLuhE0j0lCEZK/MGulhA3C8PTxAMEQjcxryoc2e48fpMjXj
-         aeQkL1bjgsShrt37JScjQF7zoa4uI43s7q5joo2yJGs/vxB3yeh+03tD6pdUyvkwkuR4
-         KEfCbP4IwUcmLDic5PhUWMa4jTrMd7Hvd7FEuADTQCSdg1FnCDdYe4VLhIz/8TzYRlRg
-         GNOZvUF2KJffU4rO0v41sxF3FtUmWaYiQ95dhp4/S2rSfKYkebD0p1jYWwNP3US7L+za
-         hnPdCS4R8KpgfabI0DOcqAulKKtSZBsVsn5wvhlIa4krcLcG/qGJ3X6Nqh5kULmoeIR1
-         tV0g==
-X-Gm-Message-State: AOAM531e9VoQl9DquyWNFb1I7rmaVQcR6xBQZ5d0xnQU16XKLEyrvS3l
-        r+1BpOQYesvfDkNR0/xTCNSyAw==
-X-Google-Smtp-Source: ABdhPJwdZ8Qi45vV5nv0Y779scaCmcpVjQFUxY9Z915uZ5yPMZ26WnuvlXLfxhSr/HtBf7b7gO2bjQ==
-X-Received: by 2002:a17:90a:fe97:: with SMTP id co23mr498961pjb.96.1590516716568;
-        Tue, 26 May 2020 11:11:56 -0700 (PDT)
-Received: from [10.230.185.151] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y138sm214647pfb.33.2020.05.26.11.11.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 11:11:55 -0700 (PDT)
-Subject: Re: [PATCH] scsi: lpfc: Fix lpfc_nodelist leak when processing
- unsolicited event
-To:     Daniel Wagner <dwagner@suse.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
-        Xin Tan <tanxin.ctf@gmail.com>
-References: <1590416184-52592-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20200525151220.rtwmlobnkmhwhxn5@beryllium.lan>
-From:   James Smart <james.smart@broadcom.com>
-Message-ID: <dd782e33-db86-9457-983e-59bb75b805b4@broadcom.com>
-Date:   Tue, 26 May 2020 11:11:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 26 May 2020 14:12:54 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8BD278030869;
+        Tue, 26 May 2020 18:12:51 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CAN1Ygd7HhR8; Tue, 26 May 2020 21:12:50 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-mips@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/3] serial: 8250_dw: Fix ref clock usage
+Date:   Tue, 26 May 2020 21:12:23 +0300
+Message-ID: <20200526181227.1889-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20200525151220.rtwmlobnkmhwhxn5@beryllium.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Greg, Jiri, the merge window is upon us, please review/merge in/whatever
+the rest of the patches.
 
+It might be dangerous if an UART port reference clock rate is suddenly
+changed. In particular the 8250 port drivers (and AFAICS most of the tty
+drivers using common clock framework clocks) rely either on the
+exclusive reference clock utilization or on the ref clock rate being
+always constant. Needless to say that it turns out not true and if some
+other service suddenly changes the clock rate behind an UART port driver
+back it's no good. So the port might not only end up with an invalid
+uartclk value saved, but may also experience a distorted output/input
+data since such action will effectively update the programmed baud-clock.
+We discovered such problem on Baikal-T1 SoC where two DW 8250 ports have
+got a shared reference clock. Allwinner SoC is equipped with an UART,
+which clock is derived from the CPU PLL clock source, so the CPU frequency
+change might be propagated down up to the serial port reference clock.
+This patchset provides a way to fix the problem to the 8250 serial port
+controllers and mostly fixes it for the DW 8250-compatible UART. I say
+mostly because due to not having a facility to pause/stop and resume/
+restart on-going transfers we implemented the UART clock rate update
+procedure executed post factum of the actual reference clock rate change.
 
-On 5/25/2020 8:12 AM, Daniel Wagner wrote:
-> Hi,
->
-> On Mon, May 25, 2020 at 10:16:24PM +0800, Xiyu Yang wrote:
->> In order to create or activate a new node, lpfc_els_unsol_buffer()
->> invokes lpfc_nlp_init() or lpfc_enable_node() or lpfc_nlp_get(), all of
->> them will return a reference of the specified lpfc_nodelist object to
->> "ndlp" with increased refcnt.
-> lpfc_enable_node() is not changing the refcnt.
->
->> When lpfc_els_unsol_buffer() returns, local variable "ndlp" becomes
->> invalid, so the refcount should be decreased to keep refcount balanced.
->>
->> The reference counting issue happens in one exception handling path of
->> lpfc_els_unsol_buffer(). When "ndlp" in DEV_LOSS, the function forgets
->> to decrease the refcnt increased by lpfc_nlp_init() or
->> lpfc_enable_node() or lpfc_nlp_get(), causing a refcnt leak.
->>
->> Fix this issue by calling lpfc_nlp_put() when "ndlp" in DEV_LOSS.
-> This sounds reasonable. At least the lpfc_nlp_init() and lpfc_nlp_get() case
-> needs this. And I suppose this is also ok for the lfpc_enable_node().
->
-> Reviewed-by: Daniel Wagner <dwagner@suse.de>
->
-> Thanks,
-> Daniel
+In addition the patchset includes a few fixes we discovered when were
+working the issue. First one concerns the maximum baud rate setting used
+to determine a serial port baud based on the current UART port clock rate.
+Another one simplifies the ref clock rate setting procedure a bit.
 
-Looked at it here and it looks good.
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-Reviewed-by: James Smart <james.smart@broadcom.com>
+Changelog v3:
+- Refactor the original patch to adjust the UART port divisor instead of
+  requesting an exclusive ref clock utilization.
 
--- james
+Changelog v4:
+- Discard commit b426bf0fb085 ("serial: 8250: Fix max baud limit in generic
+  8250 port") since Greg has already merged it into the tty-next branch.
+- Use EXPORT_SYMBOL_GPL() for the serial8250_update_uartclk() method.
 
+Changelog v5:
+- Refactor dw8250_clk_work_cb() function cheking the clk_get_rate()
+  return value for being erroneous and exit if it is.
+- Don't update p->uartclk in the port startup. It will be updated later in
+  the same procedure at the set_termios() function being invoked by the
+  serial_core anyway.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (3):
+  serial: 8250: Add 8250 port clock update method
+  serial: 8250_dw: Simplify the ref clock rate setting procedure
+  serial: 8250_dw: Fix common clocks usage race condition
+
+ drivers/tty/serial/8250/8250_dw.c   | 116 +++++++++++++++++++++++++---
+ drivers/tty/serial/8250/8250_port.c |  38 +++++++++
+ include/linux/serial_8250.h         |   2 +
+ 3 files changed, 144 insertions(+), 12 deletions(-)
+
+-- 
+2.26.2
 
