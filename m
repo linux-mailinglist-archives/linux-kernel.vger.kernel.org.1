@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3F31E2528
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4015A1E2538
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 17:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbgEZPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 11:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgEZPOT (ORCPT
+        id S1729493AbgEZPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 11:17:18 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:24236 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728088AbgEZPRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 11:14:19 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ECDC03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:14:19 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id l3so9576988qvo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 08:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:message-id:mime-version:content-disposition;
-        bh=ZDO8NXyaQFNCEy6nCSy2VSUmYSTkbpyph4TcP4XLFw8=;
-        b=sAilYivZH/ALD5MndGVZInwDWu6gaOe6BKZRJt7rgFNzUhWtMnXtgvzdX8Hfp7TNdp
-         JxVzzJc8DnEEWQ3CxZYzvspXykqt/b/tvq8FjrC3vLL+DPBc/Ql62udXMkHqkLZgzPiF
-         u5vz4Xfr3yHI2ac4nRkjUiJeqn4m5UEHTj7zT6JscfWRpZ3qcdRq1I2nYlKtNQfp2EU5
-         9BpSFqGum87sW21kiX20vn6vg11qboXWoOMa6ffilOrYAeESnuzCrD8/SEYmI/DsoMh3
-         vNku898sZThWe2QW/MCQqRMDO27zirhckN//AvrkWFqfdy8Xq+euhxGtK+rL46CFjgjj
-         kTJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:mime-version
-         :content-disposition;
-        bh=ZDO8NXyaQFNCEy6nCSy2VSUmYSTkbpyph4TcP4XLFw8=;
-        b=pqOKCZQEMVXY+K+GfTHYBymDmV2BkNxAtVV9vJ6q7eNkfJLsbXRTDmhjUdX9JvnzgI
-         Qxdmv4uGtNyQRX9djXZp4AGS8e7XYzyXLmGhyc9r6wr1GaMqnT6DBluVA0j5hvT/jTDu
-         6SZf07AnOVRqHU1ZONwWTGyJtlHG2m+rM+3cM73zKbKNdpjhISG4uoDK6R14YVr0mmwO
-         brXJmLrdxBsI5yz20ATKLQXohm+tU+9VhSC4VxzPIfO1RoqmkBimH3N2DD3mjbF1mPwT
-         ma0SA91ZGtBeJB48gWugBT1QOBBybGLuRuruTfxGk2xKrOIRvlNw8MW+nVNFRW6Rnym8
-         9jcg==
-X-Gm-Message-State: AOAM533KRoAsLKPqMsOrqGdb0e3SCAHnsBJg4nY2mT0IRN5N9NQZzWZn
-        yNxjH/JDKpWLGx2rSv+/wi/CTA==
-X-Google-Smtp-Source: ABdhPJwIJStGcpYnqcYMyonjLhLE1BbZdOwREeA7Z1YtSWh+/WhigYcKRIkR4+RI9gtyIRYmdYp56w==
-X-Received: by 2002:a0c:dc83:: with SMTP id n3mr21074687qvk.42.1590506058577;
-        Tue, 26 May 2020 08:14:18 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id u7sm1977011qku.119.2020.05.26.08.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 08:14:18 -0700 (PDT)
-Date:   Tue, 26 May 2020 11:14:16 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Don Brace <don.brace@microsemi.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Scott Teel <scott.teel@microsemi.com>,
-        Kevin Barnett <kevin.barnett@microsemi.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <20200526151416.GB991@lca.pw>
+        Tue, 26 May 2020 11:17:17 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04QFBuJc017743;
+        Tue, 26 May 2020 17:16:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=799GJcMpL2LNU/Tm5lFInudYnzHhcFshxvnKZptqkbM=;
+ b=oxdsZGrxKp0SO7XEMvJ8Yvlq8g0WKFQAg87HbE/QqERMb5eh488/eNTbrNOOUJLEXHYL
+ sw1sp0a1SkfYe/2vG7UEfAZwPaOSFyhjaLCrJ/T2TqkEBt2g73TRIOK2N9Kiyf22HbaV
+ rdLb35QPuV6UkPY/VkTxVMU1XuqBZxKObokv3xdNIS397Fr5O1KTaArl1Sjk2FF3Ps3D
+ zYFGs7PvV58mjc9MePvXw8mgt3OOa09IZcFzTcUV+1HC37y2coTiqNppxUf+O9/lwQxg
+ KGvlbBjS3ZaVbrTI+GIXwn3gJPR1G+AYDrdFUyGKxVsROhOKVMR6mPSJsjg5MRvsK3Qj Dw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 316rya8feu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 May 2020 17:16:26 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E8E010002A;
+        Tue, 26 May 2020 17:16:25 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 312E02C1D9F;
+        Tue, 26 May 2020 17:16:25 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG3NODE3.st.com (10.75.127.9)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 26 May 2020 17:16:24
+ +0200
+From:   Benjamin Gaignard <benjamin.gaignard@st.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <hugues.fruchet@st.com>, <mchehab@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <pavel@ucw.cz>, <len.brown@intel.com>,
+        <valentin.schneider@arm.com>, <vincent.guittot@linaro.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>
+Subject: [RFC RESEND 0/3] Introduce cpufreq minimum load QoS
+Date:   Tue, 26 May 2020 17:16:16 +0200
+Message-ID: <20200526151619.8779-1-benjamin.gaignard@st.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE3.st.com
+ (10.75.127.9)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bcc: 
-Subject: UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
-Reply-To: 
+A first round [1] of discussions and suggestions have already be done on 
+this series but without found a solution to the problem. I resend it to
+progress on this topic.
 
-The commit 64ce60cab246 ("hpsa: correct skipping masked peripherals")
-trigger an UBSAN warning below.
+When start streaming from the sensor the CPU load could remain very low 
+because almost all the capture pipeline is done in hardware (i.e. without 
+using the CPU) and let believe to cpufreq governor that it could use lower 
+frequencies. If the governor decides to use a too low frequency that 
+becomes a problem when we need to acknowledge the interrupt during the 
+blanking time.
+The delay to ack the interrupt and perform all the other actions before
+the next frame is very short and doesn't allow to the cpufreq governor to
+provide the required burst of power. That led to drop the half of the frames.
 
-When i == 0 in hpsa_update_scsi_devices(),
+To avoid this problem, DCMI driver informs the cpufreq governors by adding
+a cpufreq minimum load QoS resquest.
 
-for (i = 0; i < nphysicals + nlogicals + 1; i++) {
-...
-        int phys_dev_index = i - (raid_ctlr_position == 0);
+Benjamin 
 
-It ends up calling LUN[-1].
+[1] https://lkml.org/lkml/2020/4/24/360
 
-&physdev_list->LUN[phys_dev_index]
+Benjamin Gaignard (3):
+  PM: QoS: Introduce cpufreq minimum load QoS
+  cpufreq: governor: Use minimum load QoS
+  media: stm32-dcmi: Inform cpufreq governors about cpu load needs
 
-Should there by a test of underflow to set phys_dev_index == 0 in this case?
+ drivers/cpufreq/cpufreq_governor.c        |   5 +
+ drivers/media/platform/stm32/stm32-dcmi.c |   8 ++
+ include/linux/pm_qos.h                    |  12 ++
+ kernel/power/qos.c                        | 213 ++++++++++++++++++++++++++++++
+ 4 files changed, 238 insertions(+)
 
-[  118.395557][   T13] hpsa can't handle SMP requests
-[  118.444870][   T13] ================================================================================
-[  118.486725][   T13] UBSAN: array-index-out-of-bounds in drivers/scsi/hpsa.c:4421:7
-[  118.521606][   T13] index -1 is out of range for type 'struct ext_report_lun_entry [1024]'
-[  118.559481][   T13] CPU: 0 PID: 13 Comm: kworker/0:1 Not tainted 5.7.0-rc6-next-20200522+ #3
-[  118.598179][   T13] Hardware name: HP ProLiant BL660c Gen9, BIOS I38 10/17/2018
-[  118.632882][   T13] Workqueue: events work_for_cpu_fn
-[  118.656492][   T13] Call Trace:
-[  118.670899][   T13]  dump_stack+0x10b/0x17f
-[  118.690216][   T13]  __ubsan_handle_out_of_bounds+0xd2/0x110
-[  118.712593][  T378] bnx2x 0000:41:00.1: 63.008 Gb/s available PCIe bandwidth (8.0 GT/s PCIe x8 link)
-[  118.716249][   T13]  hpsa_update_scsi_devices+0x28e3/0x2cc0 [hpsa]
-[  118.786774][   T13]  hpsa_scan_start+0x228/0x260 [hpsa]
-[  118.810663][   T13]  ? _raw_spin_unlock_irqrestore+0x6a/0x80
-[  118.836529][   T13]  do_scsi_scan_host+0x8a/0x110
-[  118.858104][   T13]  scsi_scan_host+0x222/0x280
-[  118.879287][   T13]  ? hpsa_scsi_do_inquiry+0xcd/0xe0 [hpsa]
-[  118.907707][   T13]  hpsa_init_one+0x1b79/0x27c0 [hpsa]
-[  118.934818][   T13]  ? hpsa_find_device_by_sas_rphy+0xd0/0xd0 [hpsa]
-[  118.964279][   T13]  local_pci_probe+0x82/0xe0
-[  118.985405][   T13]  ? pci_name+0x70/0x70
-[  119.004244][   T13]  work_for_cpu_fn+0x3a/0x60
-[  119.024672][   T13]  process_one_work+0x49f/0x8f0
-[  119.046431][   T13]  process_scheduled_works+0x72/0xa0
-[  119.069906][   T13]  worker_thread+0x463/0x5b0
-[  119.090347][   T13]  kthread+0x21d/0x240
-[  119.108531][   T13]  ? pr_cont_work+0xa0/0xa0
-[  119.128450][   T13]  ? __write_once_size+0x30/0x30
-[  119.150405][   T13]  ret_from_fork+0x27/0x40
+-- 
+2.15.0
+
