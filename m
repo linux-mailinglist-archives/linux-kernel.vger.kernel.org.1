@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9775A1E2EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F081E2EC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729203AbgEZTbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51986 "EHLO mail.kernel.org"
+        id S2390361AbgEZS6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:58:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390346AbgEZS61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:58:27 -0400
+        id S2389676AbgEZS6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:58:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B375F208B3;
-        Tue, 26 May 2020 18:58:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BACB2084C;
+        Tue, 26 May 2020 18:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519507;
-        bh=Q0mdcF2oU/bh0nji/h7eSWN/ItT2o83JBEzU6HfSmMM=;
+        s=default; t=1590519522;
+        bh=XJJyoQtDvFZe4chBEWSdTN/XbaT92U3oizYWFpXeESA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P1DhE66ceFT8Sf/fe7qDF9RCWNTlUe5MsxGOX0o9SkYZuwwveAwQaLCu/mmgpzaYB
-         RZseVXnYiKKinEfaarnmM0ohL6be0zugcjBAKf5ZgwnzdvsFN0qnjCzxgSAt3C2GhM
-         0tPBBw2HhusjzUVWRmfE8FBAxCpMRJuBkvym7Ppc=
+        b=gYhk37g0FtsyxZxpoRhpbsHM6xBZjyL7FcVoWHBAG9VhDEwSbJz3ywYtCaZtJYMEV
+         hX+CBCwBj9KP6Vdy+L3/JlHI0DDdbNuU/8kbx/0NUxVxaZiY11JEb6AenYjZJFauMM
+         onDPHGUHeP6KHQx2HvkAmAOqsF+Y2hl/gU6gArAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Mathias Krause <minipli@googlemail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 03/64] padata: get_next is never NULL
-Date:   Tue, 26 May 2020 20:52:32 +0200
-Message-Id: <20200526183914.315757266@linuxfoundation.org>
+Subject: [PATCH 4.9 05/64] padata: ensure padata_do_serial() runs on the correct CPU
+Date:   Tue, 26 May 2020 20:52:34 +0200
+Message-Id: <20200526183914.952284064@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
 References: <20200526183913.064413230@linuxfoundation.org>
@@ -46,61 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Mathias Krause <minipli@googlemail.com>
 
-commit 69b348449bda0f9588737539cfe135774c9939a7 upstream.
+commit 350ef88e7e922354f82a931897ad4a4ce6c686ff upstream.
 
-Per Dan's static checker warning, the code that returns NULL was removed
-in 2010, so this patch updates the comments and fixes the code
-assumptions.
+If the algorithm we're parallelizing is asynchronous we might change
+CPUs between padata_do_parallel() and padata_do_serial(). However, we
+don't expect this to happen as we need to enqueue the padata object into
+the per-cpu reorder queue we took it from, i.e. the same-cpu's parallel
+queue.
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+Ensure we're not switching CPUs for a given padata object by tracking
+the CPU within the padata object. If the serial callback gets called on
+the wrong CPU, defer invoking padata_reorder() via a kernel worker on
+the CPU we're expected to run on.
+
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/padata.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ include/linux/padata.h |    2 ++
+ kernel/padata.c        |   20 +++++++++++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
 
+--- a/include/linux/padata.h
++++ b/include/linux/padata.h
+@@ -37,6 +37,7 @@
+  * @list: List entry, to attach to the padata lists.
+  * @pd: Pointer to the internal control structure.
+  * @cb_cpu: Callback cpu for serializatioon.
++ * @cpu: Cpu for parallelization.
+  * @seq_nr: Sequence number of the parallelized data object.
+  * @info: Used to pass information from the parallel to the serial function.
+  * @parallel: Parallel execution function.
+@@ -46,6 +47,7 @@ struct padata_priv {
+ 	struct list_head	list;
+ 	struct parallel_data	*pd;
+ 	int			cb_cpu;
++	int			cpu;
+ 	int			info;
+ 	void                    (*parallel)(struct padata_priv *padata);
+ 	void                    (*serial)(struct padata_priv *padata);
 --- a/kernel/padata.c
 +++ b/kernel/padata.c
-@@ -156,8 +156,6 @@ EXPORT_SYMBOL(padata_do_parallel);
-  * A pointer to the control struct of the next object that needs
-  * serialization, if present in one of the percpu reorder queues.
-  *
-- * NULL, if all percpu reorder queues are empty.
-- *
-  * -EINPROGRESS, if the next object that needs serialization will
-  *  be parallel processed by another cpu and is not yet present in
-  *  the cpu's reorder queue.
-@@ -184,8 +182,6 @@ static struct padata_priv *padata_get_ne
- 	cpu = padata_index_to_cpu(pd, next_index);
- 	next_queue = per_cpu_ptr(pd->pqueue, cpu);
+@@ -133,6 +133,7 @@ int padata_do_parallel(struct padata_ins
+ 	padata->cb_cpu = cb_cpu;
  
--	padata = NULL;
--
- 	reorder = &next_queue->reorder;
+ 	target_cpu = padata_cpu_hash(pd);
++	padata->cpu = target_cpu;
+ 	queue = per_cpu_ptr(pd->pqueue, target_cpu);
  
- 	spin_lock(&reorder->lock);
-@@ -237,12 +233,11 @@ static void padata_reorder(struct parall
- 		padata = padata_get_next(pd);
+ 	spin_lock(&queue->parallel.lock);
+@@ -376,10 +377,21 @@ void padata_do_serial(struct padata_priv
+ 	int cpu;
+ 	struct padata_parallel_queue *pqueue;
+ 	struct parallel_data *pd;
++	int reorder_via_wq = 0;
  
- 		/*
--		 * All reorder queues are empty, or the next object that needs
--		 * serialization is parallel processed by another cpu and is
--		 * still on it's way to the cpu's reorder queue, nothing to
--		 * do for now.
-+		 * If the next object that needs serialization is parallel
-+		 * processed by another cpu and is still on it's way to the
-+		 * cpu's reorder queue, nothing to do for now.
- 		 */
--		if (!padata || PTR_ERR(padata) == -EINPROGRESS)
-+		if (PTR_ERR(padata) == -EINPROGRESS)
- 			break;
+ 	pd = padata->pd;
  
- 		/*
+ 	cpu = get_cpu();
++
++	/* We need to run on the same CPU padata_do_parallel(.., padata, ..)
++	 * was called on -- or, at least, enqueue the padata object into the
++	 * correct per-cpu queue.
++	 */
++	if (cpu != padata->cpu) {
++		reorder_via_wq = 1;
++		cpu = padata->cpu;
++	}
++
+ 	pqueue = per_cpu_ptr(pd->pqueue, cpu);
+ 
+ 	spin_lock(&pqueue->reorder.lock);
+@@ -396,7 +408,13 @@ void padata_do_serial(struct padata_priv
+ 
+ 	put_cpu();
+ 
+-	padata_reorder(pd);
++	/* If we're running on the wrong CPU, call padata_reorder() via a
++	 * kernel worker.
++	 */
++	if (reorder_via_wq)
++		queue_work_on(cpu, pd->pinst->wq, &pqueue->reorder_work);
++	else
++		padata_reorder(pd);
+ }
+ EXPORT_SYMBOL(padata_do_serial);
+ 
 
 
