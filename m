@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ED01E2DC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702171E2B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391459AbgEZTYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:24:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37420 "EHLO mail.kernel.org"
+        id S2391142AbgEZTCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:02:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391402AbgEZTI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:08:28 -0400
+        id S2391115AbgEZTCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:02:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3516520873;
-        Tue, 26 May 2020 19:08:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 659FE208C3;
+        Tue, 26 May 2020 19:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520107;
-        bh=VNNTZ+tHJRLYRmbvvddtQu3W8kD7fUtrchDsBp/rkY0=;
+        s=default; t=1590519756;
+        bh=icfMV+3Qw8xRr0W9Ef+XkW1RsearV5WsBG6CAr3JNew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YF27Pm1zSDXRUw0oq62F2iU+AaRNcN/4Mto4QclUQy9okSTpQagkGCAFk98ifnATr
-         WDPJW9xOecbdfQYhWjEjD+VdQ5eu75KTmI97oL61D2s7jtBnD7CPYfKIPGx1AdrRwH
-         8kDGCpX3Lo4peSFXctr4ziwBR9Pw1iwUZfL/L1GE=
+        b=RKRnTGZ7gXPMvNd1u9fTI8M2JqMyGS1+TxBBDLeL9RNNjAKLlAzX/FFTZ/BJA+1YE
+         bLeRZoVK+4We908Pk0d95koBylEbKqTB8EhLHUZYDG67L9hZ38oTTpp1wZTyhAvsXT
+         1oHg/pkZv5wRBsNyv6IS5civ4wdfdbnYIT39Hw00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Lachner <gladiac@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 060/111] ALSA: hda/realtek - Fix silent output on Gigabyte X570 Aorus Xtreme
-Date:   Tue, 26 May 2020 20:53:18 +0200
-Message-Id: <20200526183938.536401093@linuxfoundation.org>
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giuliano Procida <gprocida@google.com>
+Subject: [PATCH 4.14 34/59] l2tp: initialise PPP sessions before registering them
+Date:   Tue, 26 May 2020 20:53:19 +0200
+Message-Id: <20200526183918.894935065@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Lachner <gladiac@gmail.com>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-commit d9e8fe0cffbfdd18de96fa68ee2a8b667a0b046e upstream.
+commit f98be6c6359e7e4a61aaefb9964c1db31cb9ec0c upstream.
 
-The Gigabyte X570 Aorus Xtreme motherboard with ALC1220 codec
-requires a similar workaround for Clevo laptops to enforce the
-DAC/mixer connection path. Set up a quirk entry for that.
+pppol2tp_connect() initialises L2TP sessions after they've been exposed
+to the rest of the system by l2tp_session_register(). This puts
+sessions into transient states that are the source of several races, in
+particular with session's deletion path.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
-Signed-off-by: Christian Lachner <gladiac@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200518053844.42743-2-gladiac@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This patch centralises the initialisation code into
+pppol2tp_session_init(), which is called before the registration phase.
+The only field that can't be set before session registration is the
+pppol2tp socket pointer, which has already been converted to RCU. So
+pppol2tp_connect() should now be race-free.
+
+The session's .session_close() callback is now set before registration.
+Therefore, it's always called when l2tp_core deletes the session, even
+if it was created by pppol2tp_session_create() and hasn't been plugged
+to a pppol2tp socket yet. That'd prevent session free because the extra
+reference taken by pppol2tp_session_close() wouldn't be dropped by the
+socket's ->sk_destruct() callback (pppol2tp_session_destruct()).
+We could set .session_close() only while connecting a session to its
+pppol2tp socket, or teach pppol2tp_session_close() to avoid grabbing a
+reference when the session isn't connected, but that'd require adding
+some form of synchronisation to be race free.
+
+Instead of that, we can just let the pppol2tp socket hold a reference
+on the session as soon as it starts depending on it (that is, in
+pppol2tp_connect()). Then we don't need to utilise
+pppol2tp_session_close() to hold a reference at the last moment to
+prevent l2tp_core from dropping it.
+
+When releasing the socket, pppol2tp_release() now deletes the session
+using the standard l2tp_session_delete() function, instead of merely
+removing it from hash tables. l2tp_session_delete() drops the reference
+the sessions holds on itself, but also makes sure it doesn't remove a
+session twice. So it can safely be called, even if l2tp_core already
+tried, or is concurrently trying, to remove the session.
+Finally, pppol2tp_session_destruct() drops the reference held by the
+socket.
+
+Fixes: fd558d186df2 ("l2tp: Split pppol2tp patch into separate l2tp and ppp parts")
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/l2tp/l2tp_ppp.c |   69 ++++++++++++++++++++++++++++------------------------
+ 1 file changed, 38 insertions(+), 31 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2457,6 +2457,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
+--- a/net/l2tp/l2tp_ppp.c
++++ b/net/l2tp/l2tp_ppp.c
+@@ -449,9 +449,6 @@ static void pppol2tp_session_close(struc
+ 			inet_shutdown(sk->sk_socket, SEND_SHUTDOWN);
+ 		sock_put(sk);
+ 	}
+-
+-	/* Don't let the session go away before our socket does */
+-	l2tp_session_inc_refcount(session);
+ }
+ 
+ /* Really kill the session socket. (Called from sock_put() if
+@@ -507,8 +504,7 @@ static int pppol2tp_release(struct socke
+ 	if (session != NULL) {
+ 		struct pppol2tp_session *ps;
+ 
+-		__l2tp_session_unhash(session);
+-		l2tp_session_queue_purge(session);
++		l2tp_session_delete(session);
+ 
+ 		ps = l2tp_session_priv(session);
+ 		mutex_lock(&ps->sk_lock);
+@@ -600,6 +596,35 @@ static void pppol2tp_show(struct seq_fil
+ }
+ #endif
+ 
++static void pppol2tp_session_init(struct l2tp_session *session)
++{
++	struct pppol2tp_session *ps;
++	struct dst_entry *dst;
++
++	session->recv_skb = pppol2tp_recv;
++	session->session_close = pppol2tp_session_close;
++#if IS_ENABLED(CONFIG_L2TP_DEBUGFS)
++	session->show = pppol2tp_show;
++#endif
++
++	ps = l2tp_session_priv(session);
++	mutex_init(&ps->sk_lock);
++	ps->tunnel_sock = session->tunnel->sock;
++	ps->owner = current->pid;
++
++	/* If PMTU discovery was enabled, use the MTU that was discovered */
++	dst = sk_dst_get(session->tunnel->sock);
++	if (dst) {
++		u32 pmtu = dst_mtu(dst);
++
++		if (pmtu) {
++			session->mtu = pmtu - PPPOL2TP_HEADER_OVERHEAD;
++			session->mru = pmtu - PPPOL2TP_HEADER_OVERHEAD;
++		}
++		dst_release(dst);
++	}
++}
++
+ /* connect() handler. Attach a PPPoX socket to a tunnel UDP socket
+  */
+ static int pppol2tp_connect(struct socket *sock, struct sockaddr *uservaddr,
+@@ -611,7 +636,6 @@ static int pppol2tp_connect(struct socke
+ 	struct l2tp_session *session = NULL;
+ 	struct l2tp_tunnel *tunnel;
+ 	struct pppol2tp_session *ps;
+-	struct dst_entry *dst;
+ 	struct l2tp_session_cfg cfg = { 0, };
+ 	int error = 0;
+ 	u32 tunnel_id, peer_tunnel_id;
+@@ -763,8 +787,8 @@ static int pppol2tp_connect(struct socke
+ 			goto end;
+ 		}
+ 
++		pppol2tp_session_init(session);
+ 		ps = l2tp_session_priv(session);
+-		mutex_init(&ps->sk_lock);
+ 		l2tp_session_inc_refcount(session);
+ 
+ 		mutex_lock(&ps->sk_lock);
+@@ -777,26 +801,6 @@ static int pppol2tp_connect(struct socke
+ 		drop_refcnt = true;
+ 	}
+ 
+-	ps->owner	     = current->pid;
+-	ps->tunnel_sock = tunnel->sock;
+-
+-	session->recv_skb	= pppol2tp_recv;
+-	session->session_close	= pppol2tp_session_close;
+-#if IS_ENABLED(CONFIG_L2TP_DEBUGFS)
+-	session->show		= pppol2tp_show;
+-#endif
+-
+-	/* If PMTU discovery was enabled, use the MTU that was discovered */
+-	dst = sk_dst_get(tunnel->sock);
+-	if (dst != NULL) {
+-		u32 pmtu = dst_mtu(dst);
+-
+-		if (pmtu != 0)
+-			session->mtu = session->mru = pmtu -
+-				PPPOL2TP_HEADER_OVERHEAD;
+-		dst_release(dst);
+-	}
+-
+ 	/* Special case: if source & dest session_id == 0x0000, this
+ 	 * socket is being created to manage the tunnel. Just set up
+ 	 * the internal context for use by ioctl() and sockopt()
+@@ -830,6 +834,12 @@ out_no_ppp:
+ 	rcu_assign_pointer(ps->sk, sk);
+ 	mutex_unlock(&ps->sk_lock);
+ 
++	/* Keep the reference we've grabbed on the session: sk doesn't expect
++	 * the session to disappear. pppol2tp_session_destruct() is responsible
++	 * for dropping it.
++	 */
++	drop_refcnt = false;
++
+ 	sk->sk_state = PPPOX_CONNECTED;
+ 	l2tp_info(session, L2TP_MSG_CONTROL, "%s: created\n",
+ 		  session->name);
+@@ -853,7 +863,6 @@ static int pppol2tp_session_create(struc
+ {
+ 	int error;
+ 	struct l2tp_session *session;
+-	struct pppol2tp_session *ps;
+ 
+ 	/* Error if tunnel socket is not prepped */
+ 	if (!tunnel->sock) {
+@@ -876,9 +885,7 @@ static int pppol2tp_session_create(struc
+ 		goto err;
+ 	}
+ 
+-	ps = l2tp_session_priv(session);
+-	mutex_init(&ps->sk_lock);
+-	ps->tunnel_sock = tunnel->sock;
++	pppol2tp_session_init(session);
+ 
+ 	error = l2tp_session_register(session, tunnel);
+ 	if (error < 0)
 
 
