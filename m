@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7114C1E2AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74AC1E2ACA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390132AbgEZS5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50688 "EHLO mail.kernel.org"
+        id S2390466AbgEZS7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390097AbgEZS51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:57:27 -0400
+        id S2390457AbgEZS7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:59:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3595B2084C;
-        Tue, 26 May 2020 18:57:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D17820849;
+        Tue, 26 May 2020 18:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519446;
-        bh=bmlsxv+N3TcFOcb7zS5XtzRbKchaHa1eCorZE2uIo0M=;
+        s=default; t=1590519543;
+        bh=4xrfH+sv45WGOsOPPbPW3FK1rvunu9p+Fl83Nkco5cI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1IuuxAlvXkvgC2BdODlhSPBBE86N+DsGDrG9Y+LuCRtulevx/Uf02Jdv248iUz7Je
-         TFQsbpa4UhrJn/XkDvyvuGI+zHDTDOt2kCi9MfTQk8DqQc9LMHqU+Vp4cWnATwxrdh
-         qAp3+DX+OGBfxerf5mUvQYCCSkf2xDp721UV74kE=
+        b=W0moH9Ed4IqiDAKB400pLUE/JoYnYfYtyUNp+MNKK8F+qq66n5EGSvmr3lrCkOrO6
+         fNcp0UB+AMkJIstBdT+xltQBnhOcxEI1qdhbczi9Gl7lE6VCiN0FW8aKvsYl+D7MzR
+         OYIxveQ415pKRI/DfwQZer+devGYIQNUvJSq4NbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.4 54/65] l2tp: prevent creation of sessions on terminated tunnels
-Date:   Tue, 26 May 2020 20:53:13 +0200
-Message-Id: <20200526183925.529138839@linuxfoundation.org>
+Subject: [PATCH 4.9 45/64] l2tp: dont register sessions in l2tp_session_create()
+Date:   Tue, 26 May 2020 20:53:14 +0200
+Message-Id: <20200526183928.528073757@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
-References: <20200526183905.988782958@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,163 +46,199 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guillaume Nault <g.nault@alphalink.fr>
 
-commit f3c66d4e144a0904ea9b95d23ed9f8eb38c11bfb upstream.
+commit 3953ae7b218df4d1e544b98a393666f9ae58a78c upstream.
 
-l2tp_tunnel_destruct() sets tunnel->sock to NULL, then removes the
-tunnel from the pernet list and finally closes all its sessions.
-Therefore, it's possible to add a session to a tunnel that is still
-reachable, but for which tunnel->sock has already been reset. This can
-make l2tp_session_create() dereference a NULL pointer when calling
-sock_hold(tunnel->sock).
+Sessions created by l2tp_session_create() aren't fully initialised:
+some pseudo-wire specific operations need to be done before making the
+session usable. Therefore the PPP and Ethernet pseudo-wires continue
+working on the returned l2tp session while it's already been exposed to
+the rest of the system.
+This can lead to various issues. In particular, the session may enter
+the deletion process before having been fully initialised, which will
+confuse the session removal code.
 
-This patch adds the .acpt_newsess field to struct l2tp_tunnel, which is
-used by l2tp_tunnel_closeall() to prevent addition of new sessions to
-tunnels. Resetting tunnel->sock is done after l2tp_tunnel_closeall()
-returned, so that l2tp_session_add_to_tunnel() can safely take a
-reference on it when .acpt_newsess is true.
+This patch moves session registration out of l2tp_session_create(), so
+that callers can control when the session is exposed to the rest of the
+system. This is done by the new l2tp_session_register() function.
 
-The .acpt_newsess field is modified in l2tp_tunnel_closeall(), rather
-than in l2tp_tunnel_destruct(), so that it benefits all tunnel removal
-mechanisms. E.g. on UDP tunnels, a session could be added to a tunnel
-after l2tp_udp_encap_destroy() proceeded. This would prevent the tunnel
-from being removed because of the references held by this new session
-on the tunnel and its socket. Even though the session could be removed
-manually later on, this defeats the purpose of
-commit 9980d001cec8 ("l2tp: add udp encap socket destroy handler").
+Only pppol2tp_session_create() can be easily converted to avoid
+modifying its session after registration (the debug message is dropped
+in order to avoid the need for holding a reference on the session).
 
-Fixes: fd558d186df2 ("l2tp: Split pppol2tp patch into separate l2tp and ppp parts")
+For pppol2tp_connect() and l2tp_eth_create()), more work is needed.
+That'll be done in followup patches. For now, let's just register the
+session right after its creation, like it was done before. The only
+difference is that we can easily take a reference on the session before
+registering it, so, at least, we're sure it's not going to be freed
+while we're working on it.
+
 Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/l2tp/l2tp_core.c |   41 ++++++++++++++++++++++++++++-------------
- net/l2tp/l2tp_core.h |    4 ++++
- 2 files changed, 32 insertions(+), 13 deletions(-)
+ net/l2tp/l2tp_core.c |   21 +++++++--------------
+ net/l2tp/l2tp_core.h |    3 +++
+ net/l2tp/l2tp_eth.c  |    9 +++++++++
+ net/l2tp/l2tp_ppp.c  |   27 +++++++++++++++++++--------
+ 4 files changed, 38 insertions(+), 22 deletions(-)
 
 --- a/net/l2tp/l2tp_core.c
 +++ b/net/l2tp/l2tp_core.c
-@@ -328,13 +328,21 @@ static int l2tp_session_add_to_tunnel(st
+@@ -321,8 +321,8 @@ struct l2tp_session *l2tp_session_get_by
+ }
+ EXPORT_SYMBOL_GPL(l2tp_session_get_by_ifname);
+ 
+-static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
+-				      struct l2tp_session *session)
++int l2tp_session_register(struct l2tp_session *session,
++			  struct l2tp_tunnel *tunnel)
+ {
+ 	struct l2tp_session *session_walk;
  	struct hlist_head *g_head;
- 	struct hlist_head *head;
- 	struct l2tp_net *pn;
-+	int err;
- 
- 	head = l2tp_session_id_hash(tunnel, session->session_id);
- 
- 	write_lock_bh(&tunnel->hlist_lock);
-+	if (!tunnel->acpt_newsess) {
-+		err = -ENODEV;
-+		goto err_tlock;
-+	}
-+
- 	hlist_for_each_entry(session_walk, head, hlist)
--		if (session_walk->session_id == session->session_id)
--			goto exist;
-+		if (session_walk->session_id == session->session_id) {
-+			err = -EEXIST;
-+			goto err_tlock;
-+		}
- 
- 	if (tunnel->version == L2TP_HDR_VER_3) {
- 		pn = l2tp_pernet(tunnel->l2tp_net);
-@@ -342,12 +350,21 @@ static int l2tp_session_add_to_tunnel(st
- 						session->session_id);
- 
- 		spin_lock_bh(&pn->l2tp_session_hlist_lock);
-+
- 		hlist_for_each_entry(session_walk, g_head, global_hlist)
--			if (session_walk->session_id == session->session_id)
--				goto exist_glob;
-+			if (session_walk->session_id == session->session_id) {
-+				err = -EEXIST;
-+				goto err_tlock_pnlock;
-+			}
- 
-+		l2tp_tunnel_inc_refcount(tunnel);
-+		sock_hold(tunnel->sock);
- 		hlist_add_head_rcu(&session->global_hlist, g_head);
-+
- 		spin_unlock_bh(&pn->l2tp_session_hlist_lock);
-+	} else {
-+		l2tp_tunnel_inc_refcount(tunnel);
-+		sock_hold(tunnel->sock);
- 	}
- 
+@@ -370,6 +370,10 @@ static int l2tp_session_add_to_tunnel(st
  	hlist_add_head(&session->hlist, head);
-@@ -355,12 +372,12 @@ static int l2tp_session_add_to_tunnel(st
- 
- 	return 0;
- 
--exist_glob:
-+err_tlock_pnlock:
- 	spin_unlock_bh(&pn->l2tp_session_hlist_lock);
--exist:
-+err_tlock:
  	write_unlock_bh(&tunnel->hlist_lock);
  
--	return -EEXIST;
-+	return err;
++	/* Ignore management session in session count value */
++	if (session->session_id != 0)
++		atomic_inc(&l2tp_session_count);
++
+ 	return 0;
+ 
+ err_tlock_pnlock:
+@@ -379,6 +383,7 @@ err_tlock:
+ 
+ 	return err;
  }
++EXPORT_SYMBOL_GPL(l2tp_session_register);
  
  /* Lookup a tunnel by id
-@@ -1251,7 +1268,6 @@ static void l2tp_tunnel_destruct(struct
- 	/* Remove hooks into tunnel socket */
- 	sk->sk_destruct = tunnel->old_sk_destruct;
- 	sk->sk_user_data = NULL;
--	tunnel->sock = NULL;
+  */
+@@ -1788,7 +1793,6 @@ EXPORT_SYMBOL_GPL(l2tp_session_set_heade
+ struct l2tp_session *l2tp_session_create(int priv_size, struct l2tp_tunnel *tunnel, u32 session_id, u32 peer_session_id, struct l2tp_session_cfg *cfg)
+ {
+ 	struct l2tp_session *session;
+-	int err;
  
- 	/* Remove the tunnel struct from the tunnel list */
- 	pn = l2tp_pernet(tunnel->l2tp_net);
-@@ -1261,6 +1277,8 @@ static void l2tp_tunnel_destruct(struct
- 	atomic_dec(&l2tp_tunnel_count);
+ 	session = kzalloc(sizeof(struct l2tp_session) + priv_size, GFP_KERNEL);
+ 	if (session != NULL) {
+@@ -1845,17 +1849,6 @@ struct l2tp_session *l2tp_session_create
  
- 	l2tp_tunnel_closeall(tunnel);
-+
-+	tunnel->sock = NULL;
- 	l2tp_tunnel_dec_refcount(tunnel);
+ 		l2tp_session_inc_refcount(session);
  
- 	/* Call the original destructor */
-@@ -1285,6 +1303,7 @@ void l2tp_tunnel_closeall(struct l2tp_tu
- 		  tunnel->name);
- 
- 	write_lock_bh(&tunnel->hlist_lock);
-+	tunnel->acpt_newsess = false;
- 	for (hash = 0; hash < L2TP_HASH_SIZE; hash++) {
- again:
- 		hlist_for_each_safe(walk, tmp, &tunnel->session_hlist[hash]) {
-@@ -1588,6 +1607,7 @@ int l2tp_tunnel_create(struct net *net,
- 	tunnel->magic = L2TP_TUNNEL_MAGIC;
- 	sprintf(&tunnel->name[0], "tunl %u", tunnel_id);
- 	rwlock_init(&tunnel->hlist_lock);
-+	tunnel->acpt_newsess = true;
- 
- 	/* The net we belong to */
- 	tunnel->l2tp_net = net;
-@@ -1838,11 +1858,6 @@ struct l2tp_session *l2tp_session_create
- 			return ERR_PTR(err);
- 		}
- 
--		l2tp_tunnel_inc_refcount(tunnel);
+-		err = l2tp_session_add_to_tunnel(tunnel, session);
+-		if (err) {
+-			kfree(session);
 -
--		/* Ensure tunnel socket isn't deleted */
--		sock_hold(tunnel->sock);
+-			return ERR_PTR(err);
+-		}
 -
- 		/* Ignore management session in session count value */
- 		if (session->session_id != 0)
- 			atomic_inc(&l2tp_session_count);
+-		/* Ignore management session in session count value */
+-		if (session->session_id != 0)
+-			atomic_inc(&l2tp_session_count);
+-
+ 		return session;
+ 	}
+ 
 --- a/net/l2tp/l2tp_core.h
 +++ b/net/l2tp/l2tp_core.h
-@@ -165,6 +165,10 @@ struct l2tp_tunnel {
+@@ -259,6 +259,9 @@ struct l2tp_session *l2tp_session_create
+ 					 struct l2tp_tunnel *tunnel,
+ 					 u32 session_id, u32 peer_session_id,
+ 					 struct l2tp_session_cfg *cfg);
++int l2tp_session_register(struct l2tp_session *session,
++			  struct l2tp_tunnel *tunnel);
++
+ void __l2tp_session_unhash(struct l2tp_session *session);
+ int l2tp_session_delete(struct l2tp_session *session);
+ void l2tp_session_free(struct l2tp_session *session);
+--- a/net/l2tp/l2tp_eth.c
++++ b/net/l2tp/l2tp_eth.c
+@@ -267,6 +267,13 @@ static int l2tp_eth_create(struct net *n
+ 		goto out;
+ 	}
  
- 	struct rcu_head rcu;
- 	rwlock_t		hlist_lock;	/* protect session_hlist */
-+	bool			acpt_newsess;	/* Indicates whether this
-+						 * tunnel accepts new sessions.
-+						 * Protected by hlist_lock.
-+						 */
- 	struct hlist_head	session_hlist[L2TP_HASH_SIZE];
- 						/* hashed list of sessions,
- 						 * hashed by id */
++	l2tp_session_inc_refcount(session);
++	rc = l2tp_session_register(session, tunnel);
++	if (rc < 0) {
++		kfree(session);
++		goto out;
++	}
++
+ 	dev = alloc_netdev(sizeof(*priv), name, NET_NAME_UNKNOWN,
+ 			   l2tp_eth_dev_setup);
+ 	if (!dev) {
+@@ -298,6 +305,7 @@ static int l2tp_eth_create(struct net *n
+ 	__module_get(THIS_MODULE);
+ 	/* Must be done after register_netdev() */
+ 	strlcpy(session->ifname, dev->name, IFNAMSIZ);
++	l2tp_session_dec_refcount(session);
+ 
+ 	dev_hold(dev);
+ 
+@@ -308,6 +316,7 @@ out_del_dev:
+ 	spriv->dev = NULL;
+ out_del_session:
+ 	l2tp_session_delete(session);
++	l2tp_session_dec_refcount(session);
+ out:
+ 	return rc;
+ }
+--- a/net/l2tp/l2tp_ppp.c
++++ b/net/l2tp/l2tp_ppp.c
+@@ -722,6 +722,14 @@ static int pppol2tp_connect(struct socke
+ 			error = PTR_ERR(session);
+ 			goto end;
+ 		}
++
++		l2tp_session_inc_refcount(session);
++		error = l2tp_session_register(session, tunnel);
++		if (error < 0) {
++			kfree(session);
++			goto end;
++		}
++		drop_refcnt = true;
+ 	}
+ 
+ 	/* Associate session with its PPPoL2TP socket */
+@@ -807,7 +815,7 @@ static int pppol2tp_session_create(struc
+ 	/* Error if tunnel socket is not prepped */
+ 	if (!tunnel->sock) {
+ 		error = -ENOENT;
+-		goto out;
++		goto err;
+ 	}
+ 
+ 	/* Default MTU values. */
+@@ -822,18 +830,21 @@ static int pppol2tp_session_create(struc
+ 				      peer_session_id, cfg);
+ 	if (IS_ERR(session)) {
+ 		error = PTR_ERR(session);
+-		goto out;
++		goto err;
+ 	}
+ 
+ 	ps = l2tp_session_priv(session);
+ 	ps->tunnel_sock = tunnel->sock;
+ 
+-	l2tp_info(session, L2TP_MSG_CONTROL, "%s: created\n",
+-		  session->name);
+-
+-	error = 0;
+-
+-out:
++	error = l2tp_session_register(session, tunnel);
++	if (error < 0)
++		goto err_sess;
++
++	return 0;
++
++err_sess:
++	kfree(session);
++err:
+ 	return error;
+ }
+ 
 
 
