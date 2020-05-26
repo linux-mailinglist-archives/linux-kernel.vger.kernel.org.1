@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED71C1E2E1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D7B1E2DAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403909AbgEZT0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32978 "EHLO mail.kernel.org"
+        id S2392387AbgEZTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390840AbgEZTFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:05:09 -0400
+        id S2391847AbgEZTJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:09:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9D7D208B3;
-        Tue, 26 May 2020 19:05:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37B2E208A7;
+        Tue, 26 May 2020 19:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519908;
-        bh=rFP8p2t9V1tathkMCAdLBHRoFCWbEz2WeWGI5ORolCs=;
+        s=default; t=1590520159;
+        bh=QaKC/aax4G83a5/xHH+1SHXQu1XZhb2umndWLuaw1hI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vp5GUUKCehXBeoo9F/ef87PWArab8bA9aGdQmgxp8biXHH/N+2pzicVaBARyrJc40
-         7e0c8x7og7JitCTcsYjE12F/u42MtcF+RqMbOvZvAz+qjfsYsZRyAjSRMUyJIVkOjA
-         i6OAEJYgOlnh+weyoHGhbGz3vENkXn3VnW7gvOPA=
+        b=F6KkU4ae9Vk86i7G8ZYvRtIWIEVyZWef+fMQmapGeTBg+/NKks37MM3cBm2f70xGO
+         3PjAvqnPrs5sZJTnvoAPyX7yOeUW+1bKeDnv5neFjI3dLmA02vRrnARvGZ/xPYaobt
+         FKPrra20jGy2lG3QetzYXzHYu1JD3X1WJnb/cze0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 65/81] staging: iio: ad2s1210: Fix SPI reading
+Subject: [PATCH 5.4 082/111] staging: iio: ad2s1210: Fix SPI reading
 Date:   Tue, 26 May 2020 20:53:40 +0200
-Message-Id: <20200526183934.270943125@linuxfoundation.org>
+Message-Id: <20200526183940.662314539@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,7 +73,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/staging/iio/resolver/ad2s1210.c
 +++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -114,17 +114,24 @@ static int ad2s1210_config_write(struct
+@@ -130,17 +130,24 @@ static int ad2s1210_config_write(struct
  static int ad2s1210_config_read(struct ad2s1210_state *st,
  				unsigned char address)
  {
