@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693261E2AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37131E2E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390695AbgEZTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
+        id S2391562AbgEZT2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390664AbgEZTAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:00:14 -0400
+        id S2391231AbgEZTDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:03:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA3F52084C;
-        Tue, 26 May 2020 19:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A83120873;
+        Tue, 26 May 2020 19:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519613;
-        bh=kik3Qx3CFXylBjXJOWdBex/IgBTrkggAbEtn0sCLsv8=;
+        s=default; t=1590519815;
+        bh=qIYiUvaKyT6yKbzKqazvPY4D3CtMCuQdze1olFzRzxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hvCUOHSqz5cX5JZqA3N96CZFEAuDdNVKUl2DcjR7jm0TC2LE1h4F0snc2xzRa57JA
-         oj4gi8OfcbF8JaY3EkE56JcW45FFje01Rrn8gyA15rjkdClmrjQwq4Qtuc47KwUFjq
-         JBlspio/FSH2EzEU9VncK1O06xKbP+AGX894NF4A=
+        b=RExq8b4wCTr9/ybZmqYshPTBYL5W96RyE1yZdq+Tympeahz0BrmzU+YoSJGPZoWZO
+         77R+doxoVswXsFitjMbt5iVAYo/4CdPVzIj/L+JylTuJIeqxukaP6Py+lpug+xthMX
+         ImBquV/7bwIkZ7+78QISQ5Kxs7u1/7J8w7N1Rg6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, greg@kroah.com
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
+        stable@vger.kernel.org,
+        Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.9 34/64] l2tp: define parameters of l2tp_session_get*() as "const"
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/81] gtp: set NLM_F_MULTI flag in gtp_genl_dump_pdp()
 Date:   Tue, 26 May 2020 20:53:03 +0200
-Message-Id: <20200526183923.990064664@linuxfoundation.org>
+Message-Id: <20200526183930.618910925@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <g.nault@alphalink.fr>
+From: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
 
-commit 9aaef50c44f132e040dcd7686c8e78a3390037c5 upstream.
+[ Upstream commit 846c68f7f1ac82c797a2f1db3344a2966c0fe2e1 ]
 
-Make l2tp_pernet()'s parameter constant, so that l2tp_session_get*() can
-declare their "net" variable as "const".
-Also constify "ifname" in l2tp_session_get_by_ifname().
+In drivers/net/gtp.c, gtp_genl_dump_pdp() should set NLM_F_MULTI
+flag since it returns multipart message.
+This patch adds a new arg "flags" in gtp_genl_fill_info() so that
+flags can be set by the callers.
 
-Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
+Signed-off-by: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Giuliano Procida <gprocida@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/l2tp/l2tp_core.c |    7 ++++---
- net/l2tp/l2tp_core.h |    5 +++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/net/gtp.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -119,7 +119,7 @@ static inline struct l2tp_tunnel *l2tp_t
- 	return sk->sk_user_data;
- }
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index eab9984f73a8..d73850ebb671 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -1177,11 +1177,11 @@ out_unlock:
+ static struct genl_family gtp_genl_family;
  
--static inline struct l2tp_net *l2tp_pernet(struct net *net)
-+static inline struct l2tp_net *l2tp_pernet(const struct net *net)
+ static int gtp_genl_fill_info(struct sk_buff *skb, u32 snd_portid, u32 snd_seq,
+-			      u32 type, struct pdp_ctx *pctx)
++			      int flags, u32 type, struct pdp_ctx *pctx)
  {
- 	BUG_ON(!net);
+ 	void *genlh;
  
-@@ -231,7 +231,7 @@ l2tp_session_id_hash(struct l2tp_tunnel
- /* Lookup a session. A new reference is held on the returned session.
-  * Optionally calls session->ref() too if do_ref is true.
-  */
--struct l2tp_session *l2tp_session_get(struct net *net,
-+struct l2tp_session *l2tp_session_get(const struct net *net,
- 				      struct l2tp_tunnel *tunnel,
- 				      u32 session_id, bool do_ref)
- {
-@@ -306,7 +306,8 @@ EXPORT_SYMBOL_GPL(l2tp_session_get_nth);
- /* Lookup a session by interface name.
-  * This is very inefficient but is only used by management interfaces.
-  */
--struct l2tp_session *l2tp_session_get_by_ifname(struct net *net, char *ifname,
-+struct l2tp_session *l2tp_session_get_by_ifname(const struct net *net,
-+						const char *ifname,
- 						bool do_ref)
- {
- 	struct l2tp_net *pn = l2tp_pernet(net);
---- a/net/l2tp/l2tp_core.h
-+++ b/net/l2tp/l2tp_core.h
-@@ -231,12 +231,13 @@ out:
- 	return tunnel;
- }
+-	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, 0,
++	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, flags,
+ 			    type);
+ 	if (genlh == NULL)
+ 		goto nlmsg_failure;
+@@ -1235,8 +1235,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
+ 		goto err_unlock;
+ 	}
  
--struct l2tp_session *l2tp_session_get(struct net *net,
-+struct l2tp_session *l2tp_session_get(const struct net *net,
- 				      struct l2tp_tunnel *tunnel,
- 				      u32 session_id, bool do_ref);
- struct l2tp_session *l2tp_session_get_nth(struct l2tp_tunnel *tunnel, int nth,
- 					  bool do_ref);
--struct l2tp_session *l2tp_session_get_by_ifname(struct net *net, char *ifname,
-+struct l2tp_session *l2tp_session_get_by_ifname(const struct net *net,
-+						const char *ifname,
- 						bool do_ref);
- struct l2tp_tunnel *l2tp_tunnel_find(struct net *net, u32 tunnel_id);
- struct l2tp_tunnel *l2tp_tunnel_find_nth(struct net *net, int nth);
+-	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid,
+-				 info->snd_seq, info->nlhdr->nlmsg_type, pctx);
++	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid, info->snd_seq,
++				 0, info->nlhdr->nlmsg_type, pctx);
+ 	if (err < 0)
+ 		goto err_unlock_free;
+ 
+@@ -1279,6 +1279,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
+ 				    gtp_genl_fill_info(skb,
+ 					    NETLINK_CB(cb->skb).portid,
+ 					    cb->nlh->nlmsg_seq,
++					    NLM_F_MULTI,
+ 					    cb->nlh->nlmsg_type, pctx)) {
+ 					cb->args[0] = i;
+ 					cb->args[1] = j;
+-- 
+2.25.1
+
 
 
