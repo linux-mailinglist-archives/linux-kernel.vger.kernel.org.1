@@ -2,398 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB481E23F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB1C1E240A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 16:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729519AbgEZOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 10:19:03 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:49615 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726882AbgEZOTC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 10:19:02 -0400
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 04QEHaQe008690;
-        Tue, 26 May 2020 17:17:36 +0300
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
-        id 86600639BE; Tue, 26 May 2020 17:17:36 +0300 (IDT)
-From:   amirmizi6@gmail.com
-To:     Eyal.Cohen@nuvoton.com, jarkko.sakkinen@linux.intel.com,
-        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
-        robh+dt@kernel.org,
-        "benoit.houyere@st.com--to=mark.rutland"@arm.com,
-        peterhuewe@gmx.de, christophe-h.richard@st.com, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Amir Mizinski <amirmizi6@gmail.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH v9 8/8] tpm: tpm_tis: add tpm_tis_i2c driver
-Date:   Tue, 26 May 2020 17:16:58 +0300
-Message-Id: <20200526141658.157801-9-amirmizi6@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200526141658.157801-1-amirmizi6@gmail.com>
-References: <20200526141658.157801-1-amirmizi6@gmail.com>
+        id S1727926AbgEZO1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 10:27:20 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59467 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726977AbgEZO1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 10:27:19 -0400
+IronPort-SDR: MPqD5XQNZa6cWcAkH8qg9f7H2W1BXQxZnzyRJMqtA1LmerOC9MWT8rYeFSun8w31c1y7E+sJDT
+ +6ZqH5uwhhyQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 07:27:18 -0700
+IronPort-SDR: /fPLTvP78h2RWnJMt4xjcAHdwuLSywhnJWkIx+9CoRUeL5PFSEtha9CEwsMgtJip8N/6IrMW0o
+ wXDecb4YTvag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="270090230"
+Received: from mashaikh-mobl1.amr.corp.intel.com (HELO [10.255.1.194]) ([10.255.1.194])
+  by orsmga006.jf.intel.com with ESMTP; 26 May 2020 07:27:16 -0700
+Subject: Re: [PATCH] x86/mm: Fix boot with some memory above MAXMEM
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20200511191721.1416-1-kirill.shutemov@linux.intel.com>
+ <20200525044902.rsb46bxu5hdsqglt@box> <20200525145943.GA13247@kernel.org>
+ <20200525150820.zljiamptpzi37ohx@box>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <24b51944-bfba-a937-484a-5d9ec54fdf01@intel.com>
+Date:   Tue, 26 May 2020 07:27:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200525150820.zljiamptpzi37ohx@box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Mizinski <amirmizi6@gmail.com>
+On 5/25/20 8:08 AM, Kirill A. Shutemov wrote:
+>>>> +	if (not_addressable) {
+>>>> +		pr_err("%lldGB of physical memory is not addressable in the paging mode\n",
+>>>> +		       not_addressable >> 30);
+>>>> +		if (!pgtable_l5_enabled())
+>>>> +			pr_err("Consider enabling 5-level paging\n");
+>> Could this happen at all when l5 is enabled?
+>> Does it mean we need kmap() for 64-bit?
+> It's future-profing. Who knows what paging modes we would have in the
+> future.
 
-Implements the functionality needed to communicate with an I2C TPM
-according to the TCG TPM I2C Interface Specification.
+Future-proofing and firmware-proofing. :)
 
-Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
-Tested-by: Eddie James <eajames@linux.ibm.com>
-Tested-by: Joel Stanley <joel@jms.id.au>
----
- drivers/char/tpm/Kconfig       |  12 ++
- drivers/char/tpm/Makefile      |   1 +
- drivers/char/tpm/tpm_tis_i2c.c | 292 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 305 insertions(+)
- create mode 100644 drivers/char/tpm/tpm_tis_i2c.c
+In any case, are we *really* limited to 52 bits of physical memory with
+5-level paging?  Previously, we said we were limited to 46 bits, and now
+we're saying that the limit is 52 with 5-level paging:
 
-diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-index aacdeed..2116d94 100644
---- a/drivers/char/tpm/Kconfig
-+++ b/drivers/char/tpm/Kconfig
-@@ -74,6 +74,18 @@ config TCG_TIS_SPI_CR50
- 	  If you have a H1 secure module running Cr50 firmware on SPI bus,
- 	  say Yes and it will be accessible from within Linux.
- 
-+config TCG_TIS_I2C
-+	tristate "TPM I2C Interface Specification"
-+	depends on I2C
-+	select CRC_CCITT
-+	select TCG_TIS_CORE
-+	help
-+	  If you have a TPM security chip which is connected to a regular
-+	  I2C master (i.e. most embedded platforms) that is compliant with the
-+	  TCG TPM I2C Interface Specification say Yes and it will be accessible from
-+	  within Linux. To compile this driver as a module, choose  M here;
-+	  the module will be called tpm_tis_i2c.
-+
- config TCG_TIS_I2C_ATMEL
- 	tristate "TPM Interface Specification 1.2 Interface (I2C - Atmel)"
- 	depends on I2C
-diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
-index 9567e51..97999cf 100644
---- a/drivers/char/tpm/Makefile
-+++ b/drivers/char/tpm/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
- tpm_tis_spi-y := tpm_tis_spi_main.o
- tpm_tis_spi-$(CONFIG_TCG_TIS_SPI_CR50) += tpm_tis_spi_cr50.o
- 
-+obj-$(CONFIG_TCG_TIS_I2C) += tpm_tis_i2c.o
- obj-$(CONFIG_TCG_TIS_I2C_ATMEL) += tpm_i2c_atmel.o
- obj-$(CONFIG_TCG_TIS_I2C_INFINEON) += tpm_i2c_infineon.o
- obj-$(CONFIG_TCG_TIS_I2C_NUVOTON) += tpm_i2c_nuvoton.o
-diff --git a/drivers/char/tpm/tpm_tis_i2c.c b/drivers/char/tpm/tpm_tis_i2c.c
-new file mode 100644
-index 0000000..4c9bad0
---- /dev/null
-+++ b/drivers/char/tpm/tpm_tis_i2c.c
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2014-2019 Nuvoton Technology corporation
-+ *
-+ * TPM TIS I2C
-+ *
-+ * TPM TIS I2C Device Driver Interface for devices that implement the TPM I2C
-+ * Interface defined by TCG PC Client Platform TPM Profile (PTP) Specification
-+ * Revision 01.03 v22 at www.trustedcomputinggroup.org
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/slab.h>
-+#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+#include <linux/acpi.h>
-+#include <linux/freezer.h>
-+#include <linux/crc-ccitt.h>
-+
-+#include <linux/module.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_gpio.h>
-+#include <linux/tpm.h>
-+#include "tpm.h"
-+#include "tpm_tis_core.h"
-+
-+#define TPM_LOC_SEL                    0x04
-+#define TPM_I2C_INTERFACE_CAPABILITY   0x30
-+#define TPM_I2C_DEVICE_ADDRESS         0x38
-+#define TPM_DATA_CSUM_ENABLE           0x40
-+#define TPM_DATA_CSUM                  0x44
-+#define TPM_I2C_DID_VID                        0x48
-+#define TPM_I2C_RID                    0x4C
-+
-+//#define I2C_IS_TPM2 1
-+
-+struct tpm_tis_i2c_phy {
-+	struct tpm_tis_data priv;
-+	struct i2c_client *i2c_client;
-+	bool data_csum;
-+	u8 *iobuf;
-+};
-+
-+static inline struct tpm_tis_i2c_phy *to_tpm_tis_i2c_phy(struct tpm_tis_data
-+							 *data)
-+{
-+	return container_of(data, struct tpm_tis_i2c_phy, priv);
-+}
-+
-+static u8 address_to_register(u32 addr)
-+{
-+	addr &= 0xFFF;
-+
-+	switch (addr) {
-+		// adapt register addresses that have changed compared to
-+		// older TIS versions
-+	case TPM_ACCESS(0):
-+		return 0x04;
-+	case TPM_LOC_SEL:
-+		return 0x00;
-+	case TPM_DID_VID(0):
-+		return 0x48;
-+	case TPM_RID(0):
-+		return 0x4C;
-+	default:
-+		return addr;
-+	}
-+}
-+
-+static int tpm_tis_i2c_read_bytes(struct tpm_tis_data *data, u32 addr,
-+				  u16 len, u8 *result)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	int ret = 0;
-+	int i = 0;
-+	u8 reg = address_to_register(addr);
-+	struct i2c_msg msgs[] = {
-+		{
-+			.addr = phy->i2c_client->addr,
-+			.len = sizeof(reg),
-+			.buf = &reg,
-+		},
-+		{
-+			.addr = phy->i2c_client->addr,
-+			.len = len,
-+			.buf = result,
-+			.flags = I2C_M_RD,
-+		},
-+	};
-+
-+	do {
-+		ret = i2c_transfer(phy->i2c_client->adapter, msgs,
-+				   ARRAY_SIZE(msgs));
-+		usleep_range(250, 300); // wait default GUARD_TIME of 250µs
-+
-+	} while (ret < 0 && i++ < TPM_RETRY);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int tpm_tis_i2c_write_bytes(struct tpm_tis_data *data, u32 addr,
-+				   u16 len, const u8 *value)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	int ret = 0;
-+	int i = 0;
-+
-+	if (phy->iobuf) {
-+		if (len > TPM_BUFSIZE - 1)
-+			return -EIO;
-+
-+		phy->iobuf[0] = address_to_register(addr);
-+		memcpy(phy->iobuf + 1, value, len);
-+
-+		{
-+			struct i2c_msg msgs[] = {
-+				{
-+					.addr = phy->i2c_client->addr,
-+					.len = len + 1,
-+					.buf = phy->iobuf,
-+				},
-+			};
-+
-+			do {
-+				ret = i2c_transfer(phy->i2c_client->adapter,
-+						   msgs, ARRAY_SIZE(msgs));
-+				// wait default GUARD_TIME of 250µs
-+				usleep_range(250, 300);
-+			} while (ret < 0 && i++ < TPM_RETRY);
-+		}
-+	} else {
-+		u8 reg = address_to_register(addr);
-+
-+		struct i2c_msg msgs[] = {
-+			{
-+				.addr = phy->i2c_client->addr,
-+				.len = sizeof(reg),
-+				.buf = &reg,
-+			},
-+			{
-+				.addr = phy->i2c_client->addr,
-+				.len = len,
-+				.buf = (u8 *)value,
-+				.flags = I2C_M_NOSTART,
-+			},
-+		};
-+		do {
-+			ret = i2c_transfer(phy->i2c_client->adapter, msgs,
-+					   ARRAY_SIZE(msgs));
-+			// wait default GUARD_TIME of 250µs
-+			usleep_range(250, 300);
-+		} while (ret < 0 && i++ < TPM_RETRY);
-+	}
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static bool tpm_tis_i2c_verify_data_integrity(struct tpm_tis_data *data,
-+					      const u8 *buf, size_t len)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	u16 crc, crc_tpm;
-+	int rc;
-+
-+	if (phy->data_csum) {
-+		crc = crc_ccitt(0x0000, buf, len);
-+		rc = tpm_tis_read16(data, TPM_DATA_CSUM, &crc_tpm);
-+		if (rc < 0)
-+			return false;
-+
-+		crc_tpm = be16_to_cpu(crc_tpm);
-+		return crc == crc_tpm;
-+	}
-+
-+	return true;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(tpm_tis_pm, tpm_pm_suspend, tpm_tis_resume);
-+
-+static int csum_state_store(struct tpm_tis_data *data, u8 new_state)
-+{
-+	struct tpm_tis_i2c_phy *phy = to_tpm_tis_i2c_phy(data);
-+	u8 cur_state;
-+	int rc;
-+
-+	rc = tpm_tis_i2c_write_bytes(&phy->priv, TPM_DATA_CSUM_ENABLE,
-+				     1, &new_state);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = tpm_tis_i2c_read_bytes(&phy->priv, TPM_DATA_CSUM_ENABLE,
-+				    1, &cur_state);
-+	if (rc < 0)
-+		return rc;
-+
-+	if (new_state == cur_state)
-+		phy->data_csum = (bool)new_state;
-+
-+	return rc;
-+}
-+
-+static const struct tpm_tis_phy_ops tpm_i2c_phy_ops = {
-+	.read_bytes = tpm_tis_i2c_read_bytes,
-+	.write_bytes = tpm_tis_i2c_write_bytes,
-+	.verify_data_integrity = tpm_tis_i2c_verify_data_integrity,
-+};
-+
-+static int tpm_tis_i2c_probe(struct i2c_client *dev,
-+			     const struct i2c_device_id *id)
-+{
-+	struct tpm_tis_i2c_phy *phy;
-+	int rc;
-+	int crc_checksum = 0;
-+	const u8 loc_init = 0;
-+	struct device_node *np;
-+
-+	phy = devm_kzalloc(&dev->dev, sizeof(struct tpm_tis_i2c_phy),
-+			   GFP_KERNEL);
-+	if (!phy)
-+		return -ENOMEM;
-+
-+	phy->i2c_client = dev;
-+
-+	if (!i2c_check_functionality(dev->adapter, I2C_FUNC_NOSTART)) {
-+		phy->iobuf = devm_kmalloc(&dev->dev, TPM_BUFSIZE, GFP_KERNEL);
-+		if (!phy->iobuf)
-+			return -ENOMEM;
-+	}
-+
-+	// select locality 0 (the driver will access only via locality 0)
-+	rc = tpm_tis_i2c_write_bytes(&phy->priv, TPM_LOC_SEL, 1, &loc_init);
-+	if (rc < 0)
-+		return rc;
-+
-+	// set CRC checksum calculation enable
-+	np = dev->dev.of_node;
-+	if (of_property_read_bool(np, "crc-checksum"))
-+		crc_checksum = 1;
-+
-+	rc = csum_state_store(&phy->priv, crc_checksum);
-+	if (rc < 0)
-+		return rc;
-+
-+	return tpm_tis_core_init(&dev->dev, &phy->priv, -1, &tpm_i2c_phy_ops,
-+					NULL);
-+}
-+
-+static const struct i2c_device_id tpm_tis_i2c_id[] = {
-+	{"tpm_tis_i2c", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, tpm_tis_i2c_id);
-+
-+static const struct of_device_id of_tis_i2c_match[] = {
-+	{ .compatible = "nuvoton,npct75x", },
-+	{ .compatible = "tcg,tpm-tis-i2c", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_tis_i2c_match);
-+
-+static const struct acpi_device_id acpi_tis_i2c_match[] = {
-+	{"SMO0768", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, acpi_tis_i2c_match);
-+
-+static struct i2c_driver tpm_tis_i2c_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "tpm_tis_i2c",
-+		.pm = &tpm_tis_pm,
-+		.of_match_table = of_match_ptr(of_tis_i2c_match),
-+		.acpi_match_table = ACPI_PTR(acpi_tis_i2c_match),
-+	},
-+	.probe = tpm_tis_i2c_probe,
-+	.id_table = tpm_tis_i2c_id,
-+};
-+
-+module_i2c_driver(tpm_tis_i2c_driver);
-+
-+MODULE_DESCRIPTION("TPM Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.7.4
+#define MAX_PHYSMEM_BITS (pgtable_l5_enabled() ? 52 : 46)
 
+The 46 was fine with the 48 bits of address space on 4-level paging
+systems since we need 1/2 of the address space for userspace, 1/4 for
+the direct map and 1/4 for the vmalloc-and-friends area.  At 46 bits of
+address space, we fill up the direct map.
+
+The hardware designers know this and never enumerated a MAXPHYADDR from
+CPUID which was higher than what we could cover with 46 bits.  It was
+nice and convenient that these two separate things matched:
+1. The amount of physical address space addressable in a direct map
+   consuming 1/4 of the virtual address space.
+2. The CPU-enumerated MAXPHYADDR which among other things dictates how
+   much physical address space is addressable in a PTE.
+
+But, with 5-level paging, things are a little different.  The limit in
+addressable memory because of running out of the direct map actually
+happens at 55 bits (57-2=55, analogous to the 4-level 48-2=46).
+
+So shouldn't it technically be this:
+
+#define MAX_PHYSMEM_BITS (pgtable_l5_enabled() ? 55 : 46)
+
+?
