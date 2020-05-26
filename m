@@ -2,145 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076651E30C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CA41E304D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390035AbgEZU61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S2404004AbgEZUv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389243AbgEZU60 (ORCPT
+        with ESMTP id S2403963AbgEZUv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:58:26 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCB3C061A0F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:58:26 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t8so345345pju.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:58:26 -0700 (PDT)
+        Tue, 26 May 2020 16:51:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5199DC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:51:57 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 185so2419958pgb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:51:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=F26zeW4GLWARSnrEORKnMOfqslBUHMfZSurQbAYAbuo=;
-        b=AXnthfloxC/4AXUlFHH90V2umIGLCyr5SggMMUdHfjzW/7kgSaqq1Cba1ifxqYrMwU
-         zeP5xqq6XDqWiCbT8FOZdvCZTEFjT5IX67nobdkf93pvIKdHjORCIG2xIfGrrA3pq/2X
-         akiYTNWIMKaZ0lya4pHtg5xc/HQv+w9NwO7mTJ7iuEodH2AZeyMkjFzRhApvO3iXiagT
-         8SICmy7Fl+S7VYeA7yZHTTX0d7KPVE8WPSObV1orm3R9AtjG3h7DhMYqgjLZmkHW+ZvU
-         IBfjN6ButVSsuWTFGZkOuxo7GTaV++mxzRTPsub0CtW5Iryc2KDSgEUN96gKjsj4aAXn
-         eCjw==
+        h=from:to:cc:subject:date:message-id;
+        bh=84c4yBEfXJR9rBcq5OPzXonTT8+NleW6lQ5k1QA/SLU=;
+        b=ADDgO1yJRKDfKrGbkZJ9Xr9tGv3Rlpo6s7dhDWnowov+fTczDmRjlZ8m7luMhkwmEv
+         phefTQDM8DcjAtqX+1hjqSLZEFpLEN6zcLXzUGxjhhG1P+QZui7TitfW0z91ggcqO4dm
+         xYuQKIzB2ZPYMkYHDnV5GdRLxeKmbJrHncpFTM1MqLsKzsrd4la/sHAOiI0gV3pDgp/I
+         QPTAuOxTnBbs5Z4j+EdHy7avfJNZ3GsSSGQKcILDa41Idlnau5+NyIP0iZRkFa6OUdWp
+         UAHKpjTDv//bLiUMEM+EYtUsptnVpyeB67qSDBmyF2iY6BS08Xk8OprKXnKCZEP5000A
+         PBFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F26zeW4GLWARSnrEORKnMOfqslBUHMfZSurQbAYAbuo=;
-        b=q43U5s4pjV9gSVQ0QFL1O0q6GVQozUuETQbm+igq4wZ53OtYAJVCjec+RlDxA/+RGi
-         rMNSzrcT8/O/eqKrwfMe41yS3H3HbUmZYlOmHo47H22R2A7Y9JmQGSwLGuGWZuEipZP0
-         rWGaH8jKTGvvofDA43+305g4sHP44ZFOm3HZe903xBcmLxGbuEYaLiz4k1cRx5rTHQjD
-         4l2vFSMKt/PrcpuRk+8tcyOnfKIUWpHutiNtCLZJheT3I0TcjKFzroH6UstiHPQ2vSnS
-         itLvRwucS4hUZQ/lt62KDHR9HFulLKbLt78vjeBRpHcjc38ImWzyJX0+hwPjQxEODIdJ
-         192w==
-X-Gm-Message-State: AOAM532TLQPIEFaWvwEKl1oka1XHOvwSOyQ6wrQ1oZDAhkTLb2ttkAyg
-        JvSlFpdWWPkrnK/ts+3iV8XPGmvf
-X-Google-Smtp-Source: ABdhPJzIPs3U/H/hy/IdG5CS11VpSpxr/KBY8qOG3iHdT7E7cluhT5dkHhRLjCB21iwigA3gOl4U/w==
-X-Received: by 2002:a17:90a:8814:: with SMTP id s20mr1174769pjn.74.1590526705804;
-        Tue, 26 May 2020 13:58:25 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id i11sm383619pfq.2.2020.05.26.13.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 13:58:25 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        kbuild test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2] powerpc/wii: Fix declaration made after definition
-Date:   Tue, 26 May 2020 13:57:57 -0700
-Message-Id: <20200526205756.2952882-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200413190644.16757-1-natechancellor@gmail.com>
-References: <20200413190644.16757-1-natechancellor@gmail.com>
-MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=84c4yBEfXJR9rBcq5OPzXonTT8+NleW6lQ5k1QA/SLU=;
+        b=WRjWIJuJyh7nBo3W1PRD/UdmuljDqCS2OqXkG879JVaR6sDQNJCkOD6YbYLcwLiiXE
+         LSO6VTk3lnYcrwh/oNpNvAhb9HVTqiJwWt6926xzdlfq1SeZbfo0lZOAXWvXIDcEP6qe
+         r5dgrqEJl10MU//6ZMp7gdP4uUPfC67xDnRwgTrwvI7QZ5+BjpWdY+uGj9ZX4nwI0GOl
+         U+4V3to+PYUgPnqSOfkQWWTwgumrrZDMDEC6RsCuNh8bYQ1b015uo7PtTHIJw2LAPc0T
+         901DVW2rPqEYWQtm/lJ9IHxYoDMRApK8rJOKDwmhTDGebcTKTv0jNjzM1BwSZ8bkKu7m
+         CXzw==
+X-Gm-Message-State: AOAM531Ph9q8YN8+F8nM924omsSUhWxOPiJbCTvNA59GBnZKcD/JTcBC
+        rgQaLBko+HbazfI7cfMFyDo=
+X-Google-Smtp-Source: ABdhPJzgMbTszipak4xmw5QtemttiLGjdNZ+kzvDA9nvx2w0FqIaoOqfVu1/VzcOknAOPsTgO1cTow==
+X-Received: by 2002:a05:6a00:46:: with SMTP id i6mr647621pfk.146.1590526316742;
+        Tue, 26 May 2020 13:51:56 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([171.48.17.249])
+        by smtp.gmail.com with ESMTPSA id v22sm380239pfu.172.2020.05.26.13.51.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 May 2020 13:51:56 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        David1.Zhou@amd.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH] drm/radeon: Convert get_user_pages() --> pin_user_pages()
+Date:   Wed, 27 May 2020 02:30:02 +0530
+Message-Id: <1590526802-3008-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A 0day randconfig uncovered an error with clang, trimmed for brevity:
+This code was using get_user_pages(), in a "Case 2" scenario
+(DMA/RDMA), using the categorization from [1]. That means that it's
+time to convert the get_user_pages() + release_pages() calls to
+pin_user_pages() + unpin_user_pages() calls.
 
-arch/powerpc/platforms/embedded6xx/wii.c:195:7: error: attribute
-declaration must precede definition [-Werror,-Wignored-attributes]
-        if (!machine_is(wii))
-             ^
+There is some helpful background in [2]: basically, this is a small
+part of fixing a long-standing disconnect between pinning pages, and
+file systems' use of those pages.
 
-The macro machine_is declares mach_##name but define_machine actually
-defines mach_##name, hence the warning.
+[1] Documentation/core-api/pin_user_pages.rst
 
-To fix this, move define_machine after the machine_is usage.
+[2] "Explicit pinning of user-space pages":
+    https://lwn.net/Articles/807108/
 
-Fixes: 5a7ee3198dfa ("powerpc: wii: platform support")
-Reported-by: kbuild test robot <lkp@intel.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/989
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+
+Hi,
+
+I'm compile tested this, but unable to run-time test, so any testing
+help is much appriciated.
 ---
+ drivers/gpu/drm/radeon/radeon_ttm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-v1 -> v2:
-
-* s/is_machine/machine_is/ (Nick)
-
-* Add Nick's reviewed-by tag.
-
- arch/powerpc/platforms/embedded6xx/wii.c | 25 ++++++++++++------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/arch/powerpc/platforms/embedded6xx/wii.c b/arch/powerpc/platforms/embedded6xx/wii.c
-index 67e48b0a164e..a802ef957d63 100644
---- a/arch/powerpc/platforms/embedded6xx/wii.c
-+++ b/arch/powerpc/platforms/embedded6xx/wii.c
-@@ -172,19 +172,6 @@ static void wii_shutdown(void)
- 	flipper_quiesce();
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index 5d50c9e..e927de2 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -506,7 +506,7 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_tt *ttm)
+ 		uint64_t userptr = gtt->userptr + pinned * PAGE_SIZE;
+ 		struct page **pages = ttm->pages + pinned;
+ 
+-		r = get_user_pages(userptr, num_pages, write ? FOLL_WRITE : 0,
++		r = pin_user_pages(userptr, num_pages, write ? FOLL_WRITE : 0,
+ 				   pages, NULL);
+ 		if (r < 0)
+ 			goto release_pages;
+@@ -535,7 +535,7 @@ static int radeon_ttm_tt_pin_userptr(struct ttm_tt *ttm)
+ 	kfree(ttm->sg);
+ 
+ release_pages:
+-	release_pages(ttm->pages, pinned);
++	unpin_user_pages(ttm->pages, pinned);
+ 	return r;
  }
  
--define_machine(wii) {
--	.name			= "wii",
--	.probe			= wii_probe,
--	.setup_arch		= wii_setup_arch,
--	.restart		= wii_restart,
--	.halt			= wii_halt,
--	.init_IRQ		= wii_pic_probe,
--	.get_irq		= flipper_pic_get_irq,
--	.calibrate_decr		= generic_calibrate_decr,
--	.progress		= udbg_progress,
--	.machine_shutdown	= wii_shutdown,
--};
--
- static const struct of_device_id wii_of_bus[] = {
- 	{ .compatible = "nintendo,hollywood", },
- 	{ },
-@@ -200,3 +187,15 @@ static int __init wii_device_probe(void)
- }
- device_initcall(wii_device_probe);
+@@ -562,7 +562,7 @@ static void radeon_ttm_tt_unpin_userptr(struct ttm_tt *ttm)
+ 			set_page_dirty(page);
  
-+define_machine(wii) {
-+	.name			= "wii",
-+	.probe			= wii_probe,
-+	.setup_arch		= wii_setup_arch,
-+	.restart		= wii_restart,
-+	.halt			= wii_halt,
-+	.init_IRQ		= wii_pic_probe,
-+	.get_irq		= flipper_pic_get_irq,
-+	.calibrate_decr		= generic_calibrate_decr,
-+	.progress		= udbg_progress,
-+	.machine_shutdown	= wii_shutdown,
-+};
-
-base-commit: b0523c7b1c9d0edcd6c0fe6d2cb558a9ad5c60a8
+ 		mark_page_accessed(page);
+-		put_page(page);
++		unpin_user_page(page);
+ 	}
+ 
+ 	sg_free_table(ttm->sg);
 -- 
-2.27.0.rc0
+1.9.1
 
