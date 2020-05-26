@@ -2,183 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B401B1E2C5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1AA1E2CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390676AbgEZTOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:14:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392143AbgEZTOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:14:09 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96B9A20776;
-        Tue, 26 May 2020 19:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520448;
-        bh=nEsdctgoBHpl4HUz6UKxnPRnw8aRpNQAiRd1il2EC4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bIqbO9Tqwv9fc7v819nhEw6MWuw6lBcXUbnnkH5hG4VAln3xQsmaek5sA6M7oAYPO
-         btNX5BN4JFnyU6u2kjO24WL67YH5LtZ8s4J1OPwAxsqz9p+UNT84K3LxktL2JkO7jn
-         VKW0n5H2DZoX6JPSA1Fl5ePDSMeAghhb5DcsGxn8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7ACC23522A8B; Tue, 26 May 2020 12:14:08 -0700 (PDT)
-Date:   Tue, 26 May 2020 12:14:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        x86 <x86@kernel.org>
-Subject: Re: [PATCH] rcu/performance: Fix kfree_perf_init() build warning on
- 32-bit kernels
-Message-ID: <20200526191408.GN2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <158923078019.390.12609597570329519463.tip-bot2@tip-bot2>
- <20200526182744.GA3722128@gmail.com>
+        id S2392343AbgEZTRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404340AbgEZTOP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:14:15 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24202C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:14:15 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s1so21804360qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AGRR8LANYx1vusOdI6o+XaJhETZ0bUiJLjthC+zTia0=;
+        b=GXiRcXq7i/cErYLHCq2gWMPsKOylH2aGDJEIV7Uhwi9bH+Zw1q2xJ6HIHpg7h/RYh/
+         fu/kV5ovtxbDpl9I1XJp5tPbvjLeV2hGQM3UIdn+rUbWyfVuqMABnPDAkzhL7KKaPhNr
+         /Uy75wCN01T3pYMtm4uAe0pbK69uImIgaDZSXxIhGj3Wo+PhoqilcAjODsxCUYFudx2b
+         +84U/xXoYyEIoH5OGgATjHTPgW1k9XsbK7que7w3YRpe3foCZWTn6Iqgf512r5kx8uJm
+         e0sYKjbtoAbxTnhev2hHBDT5TYW49rjlI0WyFFghepBqpFE86ad5dolsngXk6lk0iR4P
+         ulKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=AGRR8LANYx1vusOdI6o+XaJhETZ0bUiJLjthC+zTia0=;
+        b=DQ2pA96+ci6vJ9zeel+t2t0TnU+2eZd5lcjIJXwCOoUc93m5Ipyj0Y2hqQao68BOsI
+         sdbJRSoJOUSv/8H0xJi5pHAS6C8zfG04BJBAYlSnx18s+J0h8odJwpqfAM2ubRWHRH2/
+         J9hxVAc32wlgbmsIyEybGFx9Fg7JVqhTkA7pwwv2KDynV9jWyy1usRYjnCdbBFD29ccB
+         kFQ23F+VC6aRYgQoarREXW3J6na0GVUZ29edk6BryxjS0UX+uI7Bpdcm6u+kuHunlSVl
+         bNi13uhsG2MktiY2LXD+J6BFM+jE09oLnKkg2oJydt1Q3f9FKHcmxjHeZbawo//KBifx
+         wesg==
+X-Gm-Message-State: AOAM531JtrHt+5DtC97ogeVXl0le8oeCJoTVY2eFnRaJyrnijZ0q9GNK
+        4XpVvdTTbn3tK1TrQf20Jf4PAgye
+X-Google-Smtp-Source: ABdhPJwzeXg78GejYrTf1eOdhS3tJAa+GaOmeavhiqfI3uOa8H6+9ILy4CyT9+BISQsxZveAKj0Tmg==
+X-Received: by 2002:a05:620a:1261:: with SMTP id b1mr288614qkl.377.1590520454251;
+        Tue, 26 May 2020 12:14:14 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c17sm454252qtw.48.2020.05.26.12.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 12:14:13 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 26 May 2020 15:14:11 -0400
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] x86/boot: Check that there are no runtime
+ relocations
+Message-ID: <20200526191411.GA2380966@rani.riverdale.lan>
+References: <20200524212816.243139-1-nivedita@alum.mit.edu>
+ <20200525225918.1624470-5-nivedita@alum.mit.edu>
+ <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
+ <20200526151623.GB2190602@rani.riverdale.lan>
+ <20200526171340.pdbautbix5ygdvgp@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200526182744.GA3722128@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200526171340.pdbautbix5ygdvgp@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 08:27:44PM +0200, Ingo Molnar wrote:
+On Tue, May 26, 2020 at 10:13:40AM -0700, Fangrui Song wrote:
 > 
-> * tip-bot2 for Joel Fernandes (Google) <tip-bot2@linutronix.de> wrote:
+> On 2020-05-26, Arvind Sankar wrote:
+> >On Tue, May 26, 2020 at 08:11:56AM +0200, Ard Biesheuvel wrote:
+> >> On Tue, 26 May 2020 at 00:59, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >> >  # Compressed kernel should be built as PIE since it may be loaded at any
+> >> >  # address by the bootloader.
+> >> > -KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
+> >> > +KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
+> >>
+> >> Do we still need -pie linking with these changes applied?
+> >>
+> >
+> >I think it's currently not strictly necessary -- eg the 64bit kernel
+> >doesn't get linked as pie right now with LLD or old binutils. However,
+> >it is safer to do so to ensure that the result remains PIC with future
+> >versions of the linker. There are linker optimizations that can convert
+> >certain PIC instructions when PIE is disabled. While I think they
+> >currently all focus on eliminating indirection through the GOT (and thus
+> >wouldn't be applicable any more),
 > 
-> > The following commit has been merged into the core/rcu branch of tip:
-> > 
-> > Commit-ID:     f87dc808009ac86c790031627698ef1a34c31e25
-> > Gitweb:        https://git.kernel.org/tip/f87dc808009ac86c790031627698ef1a34c31e25
-> > Author:        Joel Fernandes (Google) <joel@joelfernandes.org>
-> > AuthorDate:    Mon, 16 Mar 2020 12:32:26 -04:00
-> > Committer:     Paul E. McKenney <paulmck@kernel.org>
-> > CommitterDate: Mon, 27 Apr 2020 11:02:50 -07:00
-> > 
-> > rcuperf: Add ability to increase object allocation size
-> > 
-> > This allows us to increase memory pressure dynamically using a new
-> > rcuperf boot command line parameter called 'rcumult'.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/rcuperf.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-> > index a4a8d09..16dd1e6 100644
-> > --- a/kernel/rcu/rcuperf.c
-> > +++ b/kernel/rcu/rcuperf.c
-> > @@ -88,6 +88,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
-> >  torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
-> >  torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
-> >  torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() perf test?");
-> > +torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
-> >  
-> >  static char *perf_type = "rcu";
-> >  module_param(perf_type, charp, 0444);
-> > @@ -635,7 +636,7 @@ kfree_perf_thread(void *arg)
-> >  		}
-> >  
-> >  		for (i = 0; i < kfree_alloc_num; i++) {
-> > -			alloc_ptr = kmalloc(sizeof(struct kfree_obj), GFP_KERNEL);
-> > +			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> >  			if (!alloc_ptr)
-> >  				return -ENOMEM;
-> >  
-> > @@ -722,6 +723,8 @@ kfree_perf_init(void)
-> >  		schedule_timeout_uninterruptible(1);
-> >  	}
-> >  
-> > +	pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
+> There are 3 forms described by x86-64 psABI B.2 Optimize GOTPCRELX Relocations
 > 
-> There's a new build warning on certain 32-bit kernel builds due to 
-> this commit:
+> (1) movq foo@GOTPCREL(%rip), %reg -> leaq foo(%rip), %reg
+> (2) call *foo@GOTPCREL(%rip) -> nop; call foo
+> (3) jmp *foo@GOTPCREL(%rip) -> jmp foo; nop
 > 
-> In file included from ./include/linux/printk.h:7,
->                  from ./include/linux/kernel.h:15,
->                  from kernel/rcu/rcuperf.c:13:
-> kernel/rcu/rcuperf.c: In function ‘kfree_perf_init’:
-> ./include/linux/kern_levels.h:5:18: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
->     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->       |                  ^~~~~~
-> ./include/linux/kern_levels.h:9:20: note: in expansion of macro ‘KERN_SOH’
->     9 | #define KERN_ALERT KERN_SOH "1" /* action must be taken immediately */
->       |                    ^~~~~~~~
-> ./include/linux/printk.h:295:9: note: in expansion of macro ‘KERN_ALERT’
->   295 |  printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
->       |         ^~~~~~~~~~
-> kernel/rcu/rcuperf.c:726:2: note: in expansion of macro ‘pr_alert’
->   726 |  pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
->       |  ^~~~~~~~
-> kernel/rcu/rcuperf.c:726:32: note: format string is defined here
->   726 |  pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
->       |                              ~~^
->       |                                |
->       |                                long unsigned int
->       |                              %u
+> ld.bfd and gold perform (1) even for R_X86_64_GOTPCREL. LLD requires R_X86_64_[REX_]GOTPCRELX
+
+The psABI says (1) can be relaxed into mov $foo, %reg if PIC is disabled
+and foo lives below 4Gb. Similarly for the "test and binop" cases. Such
+a relaxation would produce code that's not PIC any more, and wouldn't
+boot.
+
 > 
+> >it's easy to imagine that they could
+> >get extended to, for eg, convert
+> >	leaq	foo(%rip), %rax
+> >to
+> >	movl	$foo, %eax
+> >with some nop padding, etc.
 > 
-> The reason for the warning is that both kfree_mult and sizeof() are 
-> 'int' types on 32-bit kernels, while the format string expects a long.
+> Not with NOP padding, but probably with instruction prefixes. It is
+> unclear the rewriting will be beneficial. Rewriting instructions definitely requires a
+> dedicated relocation type like R_X86_64_[REX_]GOTPCRELX.
+
+It ought to be faster: according to Agner Fog's tables, upto 4x higher
+throughput than the RIP-relative LEA, and movq $foo, %rax is actually
+the same size.
+
+To take a step back, there isn't any *point* in not specifying -pie
+after these changes: it would be lying to the toolchain just for the
+sake of lying. It is inherently fragile, and would work only because the
+toolchain isn't sophisticated enough to do some optimizations.
+
+Eg, consider that if you ask for the address of an external function,
+the compiler will generate
+	movq f@GOTPCREL(%rip), %reg
+if f has default visibility, and
+	leaq f(%rip), %reg
+if f has hidden visibility.
+
+If you then link without -pie, the former gets relaxed into the non-PIC
+	movq $f, %reg
+by the BFD linker, but the latter isn't relaxed. This is a missed
+optimization, which happens because there's the GOTPCRELX to tell the
+linker that the first form can be relaxed, and there's no special
+relaxable relocation type for the second form.
+
+The 64-bit kernel actually contains one of these relocations, prior to
+Ard's patches to add hiddden visibility for everything. It currently
+works with LLD (which can't use -pie) only because LLD doesn't appear to
+perform the relaxation of
+	movq f@GOTPCREL(%rip), %reg
+all the way to
+	movq $f, %reg
+Binutils-2.34, which does do that relaxation, produces an unbootable
+kernel if you leave out the -pie.
+
 > 
-> Instead of casting the type to long or tweaking the format string, the 
-> most straightforward solution is to upgrade kfree_mult to a long. 
-> Since this depends on CONFIG_RCU_PERF_TEST
-
-Makes sense, and I have queued the patch below, which I am assuming
-that you want in the upcoming merge window.  If you don't tell me
-otherwise, I will send you an urgent pull request later today.
-Or, if you just put it directly into -tip yourself:
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-Either way, please let me know.
-
-> BTW., could we please also rename this code from 'PERF_TEST'/'perf test'
-> to 'PERFORMANCE_TEST'/'performance test'? At first glance I always
-> mistakenly believe that it's somehow related to perf, while it isn't. =B-)
-
-Fair enough, especially given that perf was there first and is also way
-more heavily used.  ;-)
-
-But I am guessing that this one is OK for the v5.9 merge window.
-Either way, I will update as you say.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 2fbc7d67a2ed108e3ac63296670fecb3a42fddd0
-Author: Ingo Molnar <mingo@kernel.org>
-Date:   Tue May 26 12:10:01 2020 -0700
-
-    rcuperf: Fix kfree_mult to match printk() format
-    
-    This commit changes the type of kfree_mult from int to long in order
-    to match the printk() format on 32-bit systems.
-    
-    Reported-by: kbuild test robot <lkp@intel.com>
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
-index d906ca9..fb3a1f0 100644
---- a/kernel/rcu/rcuperf.c
-+++ b/kernel/rcu/rcuperf.c
-@@ -93,7 +93,7 @@ torture_param(bool, shutdown, RCUPERF_SHUTDOWN,
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(int, writer_holdoff, 0, "Holdoff (us) between GPs, zero to disable");
- torture_param(int, kfree_rcu_test, 0, "Do we run a kfree_rcu() perf test?");
--torture_param(int, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
-+torture_param(long, kfree_mult, 1, "Multiple of kfree_obj size to allocate.");
- 
- static char *perf_type = "rcu";
- module_param(perf_type, charp, 0444);
+> >Also, the relocation check that's being added here would only work with
+> >PIE linking.
