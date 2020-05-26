@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453711E1942
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 04:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1661E1946
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 04:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388479AbgEZCF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 22:05:56 -0400
-Received: from mail-eopbgr760055.outbound.protection.outlook.com ([40.107.76.55]:9058
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S2388547AbgEZCJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 22:09:13 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46804 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388351AbgEZCFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 22:05:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g1ZahTXVjJSdeshGIvGTJOO7PL6wv8uajsXuLvlcY4iNS8DNYORMN8omoiDzs/lDfQCCm0PhbVK943heg2Uy2hNUxez7mJB6QIPSeULCpqCxYBCUN1IgGwN6hewlGGpBW4wzDzG7mPQSuLcnArsRSBwGisJpZ0jqQbguo1OCnuSdaJOIW63fgbh+W4PFnOlCNhZqgtJBn6/UKkOGYeVFLfeMqdeLWP3xN05ZmIOg9OCkZapSVIoZ+/diZ3u85vfbKacWyCsUdKwJOHeJJhLklZo/udF5K2hPehNns3XahE/lel43UxQWDknRhfddI809zIXEicege++IA2qy9FuyVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wA0Zuzc81+5+/vQtKDNM2wy2C1JezaYXOGTQmpmLBCE=;
- b=JDRqzzCsSUzOMvTtbFwF6MYduuUFWNSMM2EMFIeyZAYOefUS0Fopq5DIooSlty1Zf7fH/WHfm77vsm+yKcEDcc7S9L4GJeWHm/1t2xZtJ2KAs/GIHfpDNZ+ASG53CZHyNmv1f5+6IpApAz+5RED4vax1GIJJJxIIWMSDgJ6S9o5a1B21gz/QW+LqoScCm32lu6oP6Cy0aGusI6vhZBYcr/EycYgDkUgP8Cvrj7uzLQguqdlHT/nvBnIH+2SrB91V/n2xJ/J96VkEWNI2BRtREOuVWvsdGib+K4z4Q2UcYQNQAZ4jJCpUOoRHwAFxFJ7VNSpeCbFN3VWD7ydKT2BwZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wA0Zuzc81+5+/vQtKDNM2wy2C1JezaYXOGTQmpmLBCE=;
- b=kcNctyIVgcHDs3AuPfJjRdK9rjZ3+21bubL1DuLrsPBqlWevS/Rn2GNoytD9MketACu4/Ixim4Pw4CiTXbEugCuQ6wZGAkINTyM8wpBJdVk0GbzbZ6LWE/HpcfIVKquM4Ju7LLhRs5sjIm5ntI69b0KbhhyorFrmsA9GA43PJfU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BYAPR11MB3253.namprd11.prod.outlook.com (2603:10b6:a03:77::31)
- by BYAPR11MB3687.namprd11.prod.outlook.com (2603:10b6:a03:ff::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24; Tue, 26 May
- 2020 02:05:53 +0000
-Received: from BYAPR11MB3253.namprd11.prod.outlook.com
- ([fe80::18e7:4cfc:e31:8ccd]) by BYAPR11MB3253.namprd11.prod.outlook.com
- ([fe80::18e7:4cfc:e31:8ccd%5]) with mapi id 15.20.3021.029; Tue, 26 May 2020
- 02:05:52 +0000
-Subject: Re: [v2] workqueue: Fix double kfree for rescuer
-To:     Markus Elfring <Markus.Elfring@web.de>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20200525075901.12699-1-qiang.zhang@windriver.com>
- <7d19381c-2c51-deb4-f82f-d54bc56c6ecf@web.de>
- <bee86d19-6c14-1fd9-eead-24e63af6cf8e@windriver.com>
- <8b67c327-e70c-1e96-6a99-a5fd2667f666@web.de>
-From:   qzhang2 <qiang.zhang@windriver.com>
-Message-ID: <e002d552-b161-0cc3-88ea-daee541ee6f4@windriver.com>
-Date:   Tue, 26 May 2020 10:05:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-In-Reply-To: <8b67c327-e70c-1e96-6a99-a5fd2667f666@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: HK2PR06CA0002.apcprd06.prod.outlook.com
- (2603:1096:202:2e::14) To BYAPR11MB3253.namprd11.prod.outlook.com
- (2603:10b6:a03:77::31)
+        id S2388351AbgEZCJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 22:09:12 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id F30B0F64F7B95E6413C3;
+        Tue, 26 May 2020 10:09:10 +0800 (CST)
+Received: from [10.173.221.230] (10.173.221.230) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 26 May 2020 10:09:04 +0800
+Subject: Re: [RFC PATCH 0/7] kvm: arm64: Support stage2 hardware DBM
+To:     Marc Zyngier <maz@kernel.org>
+References: <20200525112406.28224-1-zhukeqian1@huawei.com>
+ <4b8a939172395bf38e581634abecf925@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <zhengxiang9@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <66deb797-726f-242b-82fb-0ddee975ef15@huawei.com>
+Date:   Tue, 26 May 2020 10:08:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.183] (60.247.85.82) by HK2PR06CA0002.apcprd06.prod.outlook.com (2603:1096:202:2e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Tue, 26 May 2020 02:05:50 +0000
-X-Originating-IP: [60.247.85.82]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0d07f479-5fc6-40df-cb46-08d8011950ea
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3687:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3687179E4BF79468EF508092FFB00@BYAPR11MB3687.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 041517DFAB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TnP98BctUDqIAFqUDjhtB4rXxmNSBOIvv3j+tzJb4+vCuo/7IfrBHhU+HO29kUFAGe1spyl8KbFx2NfL3rlab3RYRMEbhq1eN5Dvk0HPiwPzCPKhaeg9HnIPepzyL+0g42l1EL35UbZLEZ1OcsvSoUcykeUtAMprnU3qGJuuC9tmqk3H1vsdwbGV/lTRlXvDYHCZEarEotx4Rp4nAEYXwLNzZzyJrIsbG3FIdZKjOLvwzzmDiJFhuqs+atPKI4+8SwPccuRu+lzP7kAPZpLBWD5eeNosUtuzBO6Rwu2ofzFzKbo0egauMt72y0+AyUm4mSRhwKQmXQKvuL82x7kjSh3QUmQFlRzjJrbhVsZJZvXuyoiMPX7Go6r5mMVfyO2pjq6mDnWdlAwl/spvlR7+oHNJ7Ah0J5rZxeak6FaxoWIVldvKdIr3G/WlFADxlvU/pDw/ojiDR7O0i69z7YYZ+EHC3zSUQR0G055m6eQF1kk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3253.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(396003)(366004)(376002)(346002)(136003)(956004)(2616005)(31686004)(8676002)(16576012)(478600001)(8936002)(66946007)(316002)(4326008)(53546011)(6666004)(66556008)(66476007)(16526019)(86362001)(4744005)(6706004)(31696002)(110136005)(2906002)(5660300002)(26005)(6486002)(52116002)(36756003)(186003)(78286006)(43062003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 74tclJ0sUNzJhB+nS31luU14eq2x9gq3dU+Yc0iiNDKUvffpWE0raOtD9nmmKkOhYpgf5on7CYE/ug4FhKkUWLmhbAqNPzkyfIOevvgHUJa3WlcUXb8+A0GPJ+vEf1sps3dBL/QaZ92yZZtJQCwmKhlVbnfqFGL2YMgvBGqgTqIxcCefY895+DLCRcF9gZPqZUWsCf08XvHRjNGEKaYs1kMfVBa2Kklied1hyic8C8lK0v7pD6yYQF4Gjf/I4nZijV8TZjpHdCovQegskE+rHu5/EuAk3vfRi9/Q212rBFQSFwq133QqkH/mVfbN1soOtRvCJqHDFOKsveo+qQAIGvH6OXF+4FCGQEPnSUv/DjDV0v/jh3O6wNk4gzF1JNonL8CdK/xLw5M3zqYNvuyvQ9m1JEw63c0dx1bx8snv0BwejlkugUxPFShlwcRhuPU3ixS0PsdHq1axZ/T7bF3R5slUdr4V5/OYtfUJpGV0kYo=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d07f479-5fc6-40df-cb46-08d8011950ea
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 02:05:52.7413
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ahFfhuzJhkT+449WgyTZ5rSyk65VrW2bcMzNWmbFUXPnLXCijbFmQgTnAK38tGMcKqtnlP3cfbzSFvEBe6wUgHkZPWXyxCTFbGYdYj+rk18=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3687
+In-Reply-To: <4b8a939172395bf38e581634abecf925@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.221.230]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your advice.
-The rescuer null pointer is intentionally passed by a data structure?
-and also I read the code of workqueue again, when destroy_workqueue is
-called, after "wq->rescuer = NULL" was executed, The scenario described 
-below does not happen
+Hi Marc,
 
-"if non-null pointers (according to valid rescuer objects) are 
-occasionally passed by the corresponding data structure member
-for the callback function "rcu_free_wq"."
+On 2020/5/25 23:44, Marc Zyngier wrote:
+> On 2020-05-25 12:23, Keqian Zhu wrote:
+>> This patch series add support for stage2 hardware DBM, and it is only
+>> used for dirty log for now.
+>>
+>> It works well under some migration test cases, including VM with 4K
+>> pages or 2M THP. I checked the SHA256 hash digest of all memory and
+>> they keep same for source VM and destination VM, which means no dirty
+>> pages is missed under hardware DBM.
+>>
+>> However, there are some known issues not solved.
+>>
+>> 1. Some mechanisms that rely on "write permission fault" become invalid,
+>>    such as kvm_set_pfn_dirty and "mmap page sharing".
+>>
+>>    kvm_set_pfn_dirty is called in user_mem_abort when guest issues write
+>>    fault. This guarantees physical page will not be dropped directly when
+>>    host kernel recycle memory. After using hardware dirty management, we
+>>    have no chance to call kvm_set_pfn_dirty.
+> 
+> Then you will end-up with memory corruption under memory pressure.
+> This also breaks things like CoW, which we depend on.
+>
+Yes, these problems looks knotty. But I think x86 PML support will face these
+problems too. I believe there must be some methods to solve them.
+>>
+>>    For "mmap page sharing" mechanism, host kernel will allocate a new
+>>    physical page when guest writes a page that is shared with other page
+>>    table entries. After using hardware dirty management, we have no chance
+>>    to do this too.
+>>
+>>    I need to do some survey on how stage1 hardware DBM solve these problems.
+>>    It helps if anyone can figure it out.
+>>
+>> 2. Page Table Modification Races: Though I have found and solved some data
+>>    races when kernel changes page table entries, I still doubt that there
+>>    are data races I am not aware of. It's great if anyone can figure them out.
+>>
+>> 3. Performance: Under Kunpeng 920 platform, for every 64GB memory, KVM
+>>    consumes about 40ms to traverse all PTEs to collect dirty log. It will
+>>    cause unbearable downtime for migration if memory size is too big. I will
+>>    try to solve this problem in Patch v1.
+> 
+> This, in my opinion, is why Stage-2 DBM is fairly useless.
+> From a performance perspective, this is the worse possible
+> situation. You end up continuously scanning page tables, at
+> an arbitrary rate, without a way to evaluate the fault rate.
+> 
+> One thing S2-DBM would be useful for is SVA, where a device
+> write would mark the S2 PTs dirty as they are shared between
+> CPU and SMMU. Another thing is SPE, which is essentially a DMA
+> agent using the CPU's PTs.
+> 
+> But on its own, and just to log the dirty pages, S2-DBM is
+> pretty rubbish. I wish arm64 had something like Intel's PML,
+> which looks far more interesting for the purpose of tracking
+> accesses.
+
+Sure, PML is a better solution on hardware management of dirty state.
+However, compared to optimizing hardware, optimizing software is with
+shorter cycle time.
+
+Here I have an optimization in mind to solve it. Scanning page tables
+can be done parallel, which can greatly reduce time consumption. For there
+is no communication between parallel CPUs, we can achieve high speedup
+ratio.
 
 
-On 5/25/20 6:40 PM, Markus Elfring wrote:
->> I see, kfree does nothing with null pointers and direct return.
->> but again kfree is not a good suggestion.
 > 
-> I have got the impression that the implementation detail is important here
-> if non-null pointers (according to valid rescuer objects) are occasionally
-> passed by the corresponding data structure member for the callback
-> function “rcu_free_wq”.
-> Can another clarification attempt reduce unwanted confusion for this patch review?
+> Thanks,
 > 
-> Regards,
-> Markus
-> 
+>         M.
+Thanks,
+Keqian
