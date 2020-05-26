@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1D61E2BDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF771E2B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391859AbgEZTJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:09:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38348 "EHLO mail.kernel.org"
+        id S2390377AbgEZTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391837AbgEZTJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:09:15 -0400
+        id S2390347AbgEZTBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9AD8208E4;
-        Tue, 26 May 2020 19:09:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08A022086A;
+        Tue, 26 May 2020 19:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520154;
-        bh=h3nanM41ukwymtF8exi7HnqTu4nfJo7K4MCWXtWxfmo=;
+        s=default; t=1590519706;
+        bh=KypJwFIz/vzWZNXCRkyD48q9Lx03p7GF7t2fIGPVXEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D561jYbp40cVHAkKYjOKtcN3aA/iEz1iu1bU6Eexx7DAHiLNV11w/MzeXQ4k2MJd2
-         L0tKjr+XP+xvaD4tijehL6Pp8mQ246oFF3jSyJ7xFpTCVg4Uu+Wo/Vp/1DgniIwYl/
-         CI1+r5EIFVBmFaqbsAP1UPAzUdsfVJF4ddFAHsTA=
+        b=chb4HGiT9ivYtTKixwLWR36J4/YaWwj93kjJ9sP5EOtA2Ozjhf0RjnD/sIpZZiclh
+         hhwHm4d9PuzuMpkupNpIHYYu554B75pN5PzwWe+N0sZhmQlS8TBMCEYxjbgDp9AeMS
+         kawIIYjaljVL8MdnBjDdqfwl+jycP7RqaHMg9qc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.4 072/111] dmaengine: owl: Use correct lock in owl_dma_get_pchan()
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Pedro dAquino Filocre F S Barbuda 
+        <pbarbuda@microsoft.com>, Vishal Verma <vishal.l.verma@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 45/59] libnvdimm/btt: Fix LBA masking during free list population
 Date:   Tue, 26 May 2020 20:53:30 +0200
-Message-Id: <20200526183939.696726405@linuxfoundation.org>
+Message-Id: <20200526183921.484936862@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,98 +46,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Vishal Verma <vishal.l.verma@intel.com>
 
-commit f8f482deb078389b42768b2193e050a81aae137d upstream.
+[ Upstream commit 9dedc73a4658ebcc0c9b58c3cb84e9ac80122213 ]
 
-When the kernel is built with lockdep support and the owl-dma driver is
-used, the following message is shown:
+The Linux BTT implementation assumes that log entries will never have
+the 'zero' flag set, and indeed it never sets that flag for log entries
+itself.
 
-[    2.496939] INFO: trying to register non-static key.
-[    2.501889] the code is fine but needs lockdep annotation.
-[    2.507357] turning off the locking correctness validator.
-[    2.512834] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.6.3+ #15
-[    2.519084] Hardware name: Generic DT based system
-[    2.523878] Workqueue: events_freezable mmc_rescan
-[    2.528681] [<801127f0>] (unwind_backtrace) from [<8010da58>] (show_stack+0x10/0x14)
-[    2.536420] [<8010da58>] (show_stack) from [<8080fbe8>] (dump_stack+0xb4/0xe0)
-[    2.543645] [<8080fbe8>] (dump_stack) from [<8017efa4>] (register_lock_class+0x6f0/0x718)
-[    2.551816] [<8017efa4>] (register_lock_class) from [<8017b7d0>] (__lock_acquire+0x78/0x25f0)
-[    2.560330] [<8017b7d0>] (__lock_acquire) from [<8017e5e4>] (lock_acquire+0xd8/0x1f4)
-[    2.568159] [<8017e5e4>] (lock_acquire) from [<80831fb0>] (_raw_spin_lock_irqsave+0x3c/0x50)
-[    2.576589] [<80831fb0>] (_raw_spin_lock_irqsave) from [<8051b5fc>] (owl_dma_issue_pending+0xbc/0x120)
-[    2.585884] [<8051b5fc>] (owl_dma_issue_pending) from [<80668cbc>] (owl_mmc_request+0x1b0/0x390)
-[    2.594655] [<80668cbc>] (owl_mmc_request) from [<80650ce0>] (mmc_start_request+0x94/0xbc)
-[    2.602906] [<80650ce0>] (mmc_start_request) from [<80650ec0>] (mmc_wait_for_req+0x64/0xd0)
-[    2.611245] [<80650ec0>] (mmc_wait_for_req) from [<8065aa10>] (mmc_app_send_scr+0x10c/0x144)
-[    2.619669] [<8065aa10>] (mmc_app_send_scr) from [<80659b3c>] (mmc_sd_setup_card+0x4c/0x318)
-[    2.628092] [<80659b3c>] (mmc_sd_setup_card) from [<80659f0c>] (mmc_sd_init_card+0x104/0x430)
-[    2.636601] [<80659f0c>] (mmc_sd_init_card) from [<8065a3e0>] (mmc_attach_sd+0xcc/0x16c)
-[    2.644678] [<8065a3e0>] (mmc_attach_sd) from [<8065301c>] (mmc_rescan+0x3ac/0x40c)
-[    2.652332] [<8065301c>] (mmc_rescan) from [<80143244>] (process_one_work+0x2d8/0x780)
-[    2.660239] [<80143244>] (process_one_work) from [<80143730>] (worker_thread+0x44/0x598)
-[    2.668323] [<80143730>] (worker_thread) from [<8014b5f8>] (kthread+0x148/0x150)
-[    2.675708] [<8014b5f8>] (kthread) from [<801010b4>] (ret_from_fork+0x14/0x20)
-[    2.682912] Exception stack(0xee8fdfb0 to 0xee8fdff8)
-[    2.687954] dfa0:                                     00000000 00000000 00000000 00000000
-[    2.696118] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    2.704277] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+However, the UEFI spec is ambiguous on the exact format of the LBA field
+of a log entry, specifically as to whether it should include the
+additional flag bits or not. While a zero bit doesn't make sense in the
+context of a log entry, other BTT implementations might still have it set.
 
-The obvious fix would be to use 'spin_lock_init()' on 'pchan->lock'
-before attempting to call 'spin_lock_irqsave()' in 'owl_dma_get_pchan()'.
+If an implementation does happen to have it set, we would happily read
+it in as the next block to write to for writes. Since a high bit is set,
+it pushes the block number out of the range of an 'arena', and we fail
+such a write with an EIO.
 
-However, according to Manivannan Sadhasivam, 'pchan->lock' was supposed
-to only protect 'pchan->vchan' while 'od->lock' does a similar job in
-'owl_dma_terminate_pchan()'.
+Follow the robustness principle, and tolerate such implementations by
+stripping out the zero flag when populating the free list during
+initialization. Additionally, use the same stripped out entries for
+detection of incomplete writes and map restoration that happens at this
+stage.
 
-Therefore, this patch substitutes 'pchan->lock' with 'od->lock' and
-removes the 'lock' attribute in 'owl_dma_pchan' struct.
+Add a sysfs file 'log_zero_flags' that indicates the ability to accept
+such a layout to userspace applications. This enables 'ndctl
+check-namespace' to recognize whether the kernel is able to handle zero
+flags, or whether it should attempt a fix-up under the --repair option.
 
-Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Acked-by: Andreas Färber <afaerber@suse.de>
-Link: https://lore.kernel.org/r/c6e6cdaca252b5364bd294093673951036488cf0.1588439073.git.cristian.ciocaltea@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Dan Williams <dan.j.williams@intel.com>
+Reported-by: Dexuan Cui <decui@microsoft.com>
+Reported-by: Pedro d'Aquino Filocre F S Barbuda <pbarbuda@microsoft.com>
+Tested-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/owl-dma.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/nvdimm/btt.c      | 25 +++++++++++++++++++------
+ drivers/nvdimm/btt.h      |  2 ++
+ drivers/nvdimm/btt_devs.c |  8 ++++++++
+ 3 files changed, 29 insertions(+), 6 deletions(-)
 
---- a/drivers/dma/owl-dma.c
-+++ b/drivers/dma/owl-dma.c
-@@ -175,13 +175,11 @@ struct owl_dma_txd {
-  * @id: physical index to this channel
-  * @base: virtual memory base for the dma channel
-  * @vchan: the virtual channel currently being served by this physical channel
-- * @lock: a lock to use when altering an instance of this struct
-  */
- struct owl_dma_pchan {
- 	u32			id;
- 	void __iomem		*base;
- 	struct owl_dma_vchan	*vchan;
--	spinlock_t		lock;
- };
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index 61e519f1d768..c46b7e1b0132 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -541,8 +541,8 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
+ static int btt_freelist_init(struct arena_info *arena)
+ {
+ 	int new, ret;
+-	u32 i, map_entry;
+ 	struct log_entry log_new;
++	u32 i, map_entry, log_oldmap, log_newmap;
  
- /**
-@@ -437,14 +435,14 @@ static struct owl_dma_pchan *owl_dma_get
- 	for (i = 0; i < od->nr_pchans; i++) {
- 		pchan = &od->pchans[i];
+ 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
+ 					GFP_KERNEL);
+@@ -554,16 +554,22 @@ static int btt_freelist_init(struct arena_info *arena)
+ 		if (new < 0)
+ 			return new;
  
--		spin_lock_irqsave(&pchan->lock, flags);
-+		spin_lock_irqsave(&od->lock, flags);
- 		if (!pchan->vchan) {
- 			pchan->vchan = vchan;
--			spin_unlock_irqrestore(&pchan->lock, flags);
-+			spin_unlock_irqrestore(&od->lock, flags);
- 			break;
++		/* old and new map entries with any flags stripped out */
++		log_oldmap = ent_lba(le32_to_cpu(log_new.old_map));
++		log_newmap = ent_lba(le32_to_cpu(log_new.new_map));
++
+ 		/* sub points to the next one to be overwritten */
+ 		arena->freelist[i].sub = 1 - new;
+ 		arena->freelist[i].seq = nd_inc_seq(le32_to_cpu(log_new.seq));
+-		arena->freelist[i].block = le32_to_cpu(log_new.old_map);
++		arena->freelist[i].block = log_oldmap;
+ 
+ 		/*
+ 		 * FIXME: if error clearing fails during init, we want to make
+ 		 * the BTT read-only
+ 		 */
+-		if (ent_e_flag(log_new.old_map)) {
++		if (ent_e_flag(log_new.old_map) &&
++				!ent_normal(log_new.old_map)) {
++			arena->freelist[i].has_err = 1;
+ 			ret = arena_clear_freelist_error(arena, i);
+ 			if (ret)
+ 				dev_err_ratelimited(to_dev(arena),
+@@ -571,7 +577,7 @@ static int btt_freelist_init(struct arena_info *arena)
  		}
  
--		spin_unlock_irqrestore(&pchan->lock, flags);
-+		spin_unlock_irqrestore(&od->lock, flags);
- 	}
+ 		/* This implies a newly created or untouched flog entry */
+-		if (log_new.old_map == log_new.new_map)
++		if (log_oldmap == log_newmap)
+ 			continue;
  
- 	return pchan;
+ 		/* Check if map recovery is needed */
+@@ -579,8 +585,15 @@ static int btt_freelist_init(struct arena_info *arena)
+ 				NULL, NULL, 0);
+ 		if (ret)
+ 			return ret;
+-		if ((le32_to_cpu(log_new.new_map) != map_entry) &&
+-				(le32_to_cpu(log_new.old_map) == map_entry)) {
++
++		/*
++		 * The map_entry from btt_read_map is stripped of any flag bits,
++		 * so use the stripped out versions from the log as well for
++		 * testing whether recovery is needed. For restoration, use the
++		 * 'raw' version of the log entries as that captured what we
++		 * were going to write originally.
++		 */
++		if ((log_newmap != map_entry) && (log_oldmap == map_entry)) {
+ 			/*
+ 			 * Last transaction wrote the flog, but wasn't able
+ 			 * to complete the map write. So fix up the map.
+diff --git a/drivers/nvdimm/btt.h b/drivers/nvdimm/btt.h
+index 2609683c4167..c3e6a5da2ec7 100644
+--- a/drivers/nvdimm/btt.h
++++ b/drivers/nvdimm/btt.h
+@@ -44,6 +44,8 @@
+ #define ent_e_flag(ent) (!!(ent & MAP_ERR_MASK))
+ #define ent_z_flag(ent) (!!(ent & MAP_TRIM_MASK))
+ #define set_e_flag(ent) (ent |= MAP_ERR_MASK)
++/* 'normal' is both e and z flags set */
++#define ent_normal(ent) (ent_e_flag(ent) && ent_z_flag(ent))
+ 
+ enum btt_init_state {
+ 	INIT_UNCHECKED = 0,
+diff --git a/drivers/nvdimm/btt_devs.c b/drivers/nvdimm/btt_devs.c
+index e610dd890263..76a74e292fd7 100644
+--- a/drivers/nvdimm/btt_devs.c
++++ b/drivers/nvdimm/btt_devs.c
+@@ -159,11 +159,19 @@ static ssize_t size_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(size);
+ 
++static ssize_t log_zero_flags_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Y\n");
++}
++static DEVICE_ATTR_RO(log_zero_flags);
++
+ static struct attribute *nd_btt_attributes[] = {
+ 	&dev_attr_sector_size.attr,
+ 	&dev_attr_namespace.attr,
+ 	&dev_attr_uuid.attr,
+ 	&dev_attr_size.attr,
++	&dev_attr_log_zero_flags.attr,
+ 	NULL,
+ };
+ 
+-- 
+2.25.1
+
 
 
