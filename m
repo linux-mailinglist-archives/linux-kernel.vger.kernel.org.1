@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326851E2E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FCD1E2E36
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392557AbgEZT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57046 "EHLO mail.kernel.org"
+        id S2392146AbgEZT1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390433AbgEZTCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:19 -0400
+        id S2391319AbgEZTEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:04:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB75520873;
-        Tue, 26 May 2020 19:02:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C293E20849;
+        Tue, 26 May 2020 19:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519739;
-        bh=vD3ADbr1Zccmx5ykNzvoraO+GxJdQixrS8frIfvHzRo=;
+        s=default; t=1590519850;
+        bh=oXcHXb6dsSUvMpO8NE2tgJlKh/jHYLMsINJNQtFNX/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D3o6r4UcgQwkBzPnRielqR7X/2kN/OrTd2vejfJwLk7D+2ltxuKZwOaD2RlwdPyHD
-         ejOk2dBpDR77cp9tzhwOIalWQDomyO/IaHkoytsowJ7Fsk2i/E6jvD7DRTRUYWncN6
-         i2EIbbaHlza39X4YNvbPnQuaiLGIWrI2Mmm2+oao=
+        b=a/do5Po24igzrLrMRgzpLx4wIkC8UUC3rculzuxlYixFyMf7MNIR8wayRDx7UI92b
+         3FEHk13KpA41h7GegkcsYRiv2+Y1CibmblkmOY1dduN3+BZJlO4Kp2xuBlsM6C2HRm
+         bRP7pN0ilXPpdZz+mfQlvVlVg7nggJnABYHs+JxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/59] arm64: fix the flush_icache_range arguments in machine_kexec
+        stable@vger.kernel.org, Christian Lachner <gladiac@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 40/81] ALSA: hda/realtek - Fix silent output on Gigabyte X570 Aorus Xtreme
 Date:   Tue, 26 May 2020 20:53:15 +0200
-Message-Id: <20200526183917.984927337@linuxfoundation.org>
+Message-Id: <20200526183931.653439338@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,32 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Christian Lachner <gladiac@gmail.com>
 
-Commit d51c214541c5154dda3037289ee895ea3ded5ebd upstream.
+commit d9e8fe0cffbfdd18de96fa68ee2a8b667a0b046e upstream.
 
-The second argument is the end "pointer", not the length.
+The Gigabyte X570 Aorus Xtreme motherboard with ALC1220 codec
+requires a similar workaround for Clevo laptops to enforce the
+DAC/mixer connection path. Set up a quirk entry for that.
 
-Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
-Cc: <stable@vger.kernel.org> # 4.8.x-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205275
+Signed-off-by: Christian Lachner <gladiac@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200518053844.42743-2-gladiac@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/kernel/machine_kexec.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -184,7 +184,8 @@ void machine_kexec(struct kimage *kimage
- 	/* Flush the reboot_code_buffer in preparation for its execution. */
- 	__flush_dcache_area(reboot_code_buffer, arm64_relocate_new_kernel_size);
- 	flush_icache_range((uintptr_t)reboot_code_buffer,
--		arm64_relocate_new_kernel_size);
-+			   (uintptr_t)reboot_code_buffer +
-+			   arm64_relocate_new_kernel_size);
- 
- 	/* Flush the kimage list and its buffers. */
- 	kexec_list_flush(kimage);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2443,6 +2443,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
++	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
 
 
