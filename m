@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692951E2E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBFE1E2BAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391196AbgEZTDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:03:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58494 "EHLO mail.kernel.org"
+        id S2391300AbgEZTHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:07:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391184AbgEZTDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:03:17 -0400
+        id S2391595AbgEZTH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:07:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C9A92086A;
-        Tue, 26 May 2020 19:03:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B140208A7;
+        Tue, 26 May 2020 19:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519797;
-        bh=/E1gjTXH8TUAn0tdJdqEaHfqZRnnrnwDEH0bruPbu3s=;
+        s=default; t=1590520046;
+        bh=p/kD97CnOeMeRL3Fn5Ilb8Pd8geHH2/wtSlHkM34lzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sTifHLpwbO1sz3bRV6+rPVUnIJnJgBX/g/QOE2ilaDQTxWhPAP0hZOMThedB6sobi
-         UrP/14RRTtJMF9O9C50cD1NlpeOGheIHVUmSpiUIiYjTCZNmd+eyQgVldvsIpyvI7Y
-         TXYdJV2hffCs4BgZaH6RZ9H9k6axKWAXNVL7An0o=
+        b=vamclqLnQjkUoHxtskVPq6oXzq6mIcC00kRIDoAnuc1zq3J9oa1/0PQZqjqm9lxCG
+         6TbQgHsHznuWxKmg12mGgyvmzeNjyQVp+QC/fzFdIz7Wzw271kQBbid4BXJDQ7UkKE
+         ZnhZ49Ri4WgJ3XN4TILXIXJxEz//nK2a/OEltYLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/81] configfs: fix config_item refcnt leak in configfs_rmdir()
+        stable@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 038/111] HID: quirks: Add HID_QUIRK_NO_INIT_REPORTS quirk for Dell K12A keyboard-dock
 Date:   Tue, 26 May 2020 20:52:56 +0200
-Message-Id: <20200526183929.132351497@linuxfoundation.org>
+Message-Id: <20200526183936.519942191@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 8aebfffacfa379ba400da573a5bf9e49634e38cb ]
+[ Upstream commit 1e189f267015a098bdcb82cc652d13fbf2203fa0 ]
 
-configfs_rmdir() invokes configfs_get_config_item(), which returns a
-reference of the specified config_item object to "parent_item" with
-increased refcnt.
+Add a HID_QUIRK_NO_INIT_REPORTS quirk for the Dell K12A keyboard-dock,
+which can be used with various Dell Venue 11 models.
 
-When configfs_rmdir() returns, local variable "parent_item" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+Without this quirk the keyboard/touchpad combo works fine when connected
+at boot, but when hotplugged 9 out of 10 times it will not work properly.
+Adding the quirk fixes this.
 
-The reference counting issue happens in one exception handling path of
-configfs_rmdir(). When down_write_killable() fails, the function forgets
-to decrease the refcnt increased by configfs_get_config_item(), causing
-a refcnt leak.
-
-Fix this issue by calling config_item_put() when down_write_killable()
-fails.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cc: Mario Limonciello <mario.limonciello@dell.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/configfs/dir.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-quirks.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index 2cc6b1c49d34..f9628fc20fec 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -1537,6 +1537,7 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
- 		spin_lock(&configfs_dirent_lock);
- 		configfs_detach_rollback(dentry);
- 		spin_unlock(&configfs_dirent_lock);
-+		config_item_put(parent_item);
- 		return -EINTR;
- 	}
- 	frag->frag_dead = true;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 3341133df3a8..13b7222ef2c9 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -1106,6 +1106,7 @@
+ #define USB_DEVICE_ID_SYNAPTICS_LTS2	0x1d10
+ #define USB_DEVICE_ID_SYNAPTICS_HD	0x0ac3
+ #define USB_DEVICE_ID_SYNAPTICS_QUAD_HD	0x1ac3
++#define USB_DEVICE_ID_SYNAPTICS_DELL_K12A	0x2819
+ #define USB_DEVICE_ID_SYNAPTICS_ACER_SWITCH5_012	0x2968
+ #define USB_DEVICE_ID_SYNAPTICS_TP_V103	0x5710
+ #define USB_DEVICE_ID_SYNAPTICS_ACER_SWITCH5	0x81a7
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index ae64a286a68f..90ec2390ef68 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -163,6 +163,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_LTS2), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_QUAD_HD), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_TP_V103), HID_QUIRK_NO_INIT_REPORTS },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_DELL_K12A), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_TOPMAX, USB_DEVICE_ID_TOPMAX_COBRAPAD), HID_QUIRK_BADPAD },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_TOUCHPACK, USB_DEVICE_ID_TOUCHPACK_RTS), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_TPV, USB_DEVICE_ID_TPV_OPTICAL_TOUCHSCREEN_8882), HID_QUIRK_NOGET },
 -- 
 2.25.1
 
