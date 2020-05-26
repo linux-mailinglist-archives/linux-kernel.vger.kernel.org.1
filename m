@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CDF1E2DF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E911E2BDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392569AbgEZTZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S2391893AbgEZTJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391649AbgEZTGe (ORCPT
+        with ESMTP id S2390459AbgEZTJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:34 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87DC03E96D;
-        Tue, 26 May 2020 12:06:33 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bh7so2146745plb.11;
-        Tue, 26 May 2020 12:06:33 -0700 (PDT)
+        Tue, 26 May 2020 15:09:37 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EB9C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:09:36 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id w15so12940090lfe.11
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:09:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GRcaB+mIzfLDLlFG78mKyVuPh26Fe+lvp5hkpJeot3s=;
-        b=Nqynxx6PjGvEUZ1vtdBukxxUlM6ZSXnf+QzDLWfl+huq9Bf6ZSVBiPnYfUBC9Dm8qI
-         /YHuV8Ukd1QPbrbMm1BaQRDqMZJKOKzQBA795QM0k1YDFT0WAC+i7zjw2PRJZiDXDdQ2
-         BbUxqeqtNKM1TJTdMA7ERT3IRA1HFK6NQjZ2X3X33quoU+tMoTGq+FbMWjPuRbPHSSfP
-         u22Kd9dK22J+1vfq2qmx6QYQvBoBhUhts04C/Ya9NKP6eL67/4Dn9Cl43sOvYNNasjgi
-         7b266JVDDOmQQgGmWUcj6idaoJHHU6hTILO6Z9oYrNUIGCN3PjGiQYRAWASkHnSdhY3X
-         xGDQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pi7IfY8EL+u6ttkRQz4iCrS9Fa10FeMQvAFvCPT5Q1o=;
+        b=d4/CJAZZ4MGGFhSRIPRhWDkI9hNgjugJ81vx1Pai5jXBREs/3FdcNld4cAowD7a77m
+         rDrWSV/dLZRqrcxqc/fWmo3wipA5zOocQdPUxfi/9hs6bsQW8gqWqpMc2MVLF2kzLc66
+         wDFSaBIu7gdvdelSIp294R4Os1XqDz8Dull78=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GRcaB+mIzfLDLlFG78mKyVuPh26Fe+lvp5hkpJeot3s=;
-        b=e3qDmNQ5ewExzFSuFpCrQqPt680oaerEbRKvlQ7O81qMi0OWWRscMT5T0rd1CMbuuP
-         Dg0qgn3dVIwc9mKTVgm4PcjXCnZzXExBt3c3v5Mm8CJHH6Ur8dpJR18Ey9qKjACISNAr
-         ufeo8oYG7yI2BmFtYHsliA/9obSQ/8CCqCZTMh/T55mOmPKzlVAdVojIq8NRQCA/maLt
-         yE8+l2VU3d5hUA366bhXwqsHYtw9bb+5IE07ZGFTGnqko2n6qPKWD2R9RtQyUvDsEh1p
-         iEjMwO3zWyv0+PNkhbn47U3QWiUSea8vyI8Ug7fTzwdmRCnJZ/ibF31Se4C6yBl2YRXc
-         38Jw==
-X-Gm-Message-State: AOAM530j0twft7uQg8u+v1iw1FWjzr2L79imGHmfXfTJkISkS9R8Gc/F
-        k618p2qJlG7ZvAO2vANQQ3o=
-X-Google-Smtp-Source: ABdhPJyj7v5wDj7jxE/+gZB0RtFsKRceZTkA3pyRGaDUaeRtW5SFdh5wW2q4rDfjAwUOuIi02wPtug==
-X-Received: by 2002:a17:902:47:: with SMTP id 65mr2284406pla.54.1590519993316;
-        Tue, 26 May 2020 12:06:33 -0700 (PDT)
-Received: from [192.168.208.37] ([49.206.126.69])
-        by smtp.gmail.com with ESMTPSA id s123sm242456pfs.170.2020.05.26.12.06.31
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pi7IfY8EL+u6ttkRQz4iCrS9Fa10FeMQvAFvCPT5Q1o=;
+        b=UiDYiTUsL9HMhd9LQ87YFd1FeDnf8A5FxasTlEyROMks4myXUUUcMWIrfB5/8mce65
+         HsSfM4cOxNTPLw/18G1NqNIb7JuNwqD6BJov1MGyfALaA9snUGpGC0CGSbcoP6ULfXKs
+         azxnAqpcafjJPv07tPaoLDYwoCvaQLmcHvwM+soUA50ZdEdOTwt+IQ7qPp7LpPNA8nza
+         jIAfHjP/gQgoBa6uEYdT/fu9Wamlf9oFRudSdUN1M9e7vcWNNrg28+H9nhl22TLb4dDq
+         L0tnC32Ao6Fg3H0OmlM8vsNLaqx7+Lp/nqwQP/a0tdx69vhLdnutYxP69Vtbnxtr3OmT
+         rSaA==
+X-Gm-Message-State: AOAM5339ZHnzqtvT2/oiEVS8W4Y8vzlxhRza5kMfbNzQI+d8Ge3dkRMN
+        qBbh+rnwcXLW//1wrc2GGfbasdMWsYs=
+X-Google-Smtp-Source: ABdhPJzlAuSvfHcSBhKdPAoY3VFkY4CFAudPVWBi4QjbQ+vGRzJwTmKc2oRPS83xmneT1ZJzmPiRkw==
+X-Received: by 2002:ac2:48b7:: with SMTP id u23mr1217452lfg.86.1590520174130;
+        Tue, 26 May 2020 12:09:34 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id 72sm174361lfa.52.2020.05.26.12.09.33
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 12:06:32 -0700 (PDT)
-Subject: Re: [ANNOUNCE] Git v2.27.0-rc2
-To:     Junio C Hamano <gitster@pobox.com>
-Cc:     git@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-References: <xmqqtv02mt2m.fsf@gitster.c.googlers.com>
-From:   Kaartic Sivaraam <kaartic.sivaraam@gmail.com>
-Message-ID: <e66ea483-5e7f-4ebd-5ba8-91227efa454a@gmail.com>
-Date:   Wed, 27 May 2020 00:36:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Tue, 26 May 2020 12:09:33 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id h188so12997647lfd.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:09:33 -0700 (PDT)
+X-Received: by 2002:a05:6512:62:: with SMTP id i2mr1167668lfo.152.1590520172727;
+ Tue, 26 May 2020 12:09:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <xmqqtv02mt2m.fsf@gitster.c.googlers.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <871rn6a6e5.fsf@x220.int.ebiederm.org>
+In-Reply-To: <871rn6a6e5.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 26 May 2020 12:09:16 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh5cddDjyS2Av57Oc=qaowkx0XrtuJN=sErcq08qpnb7w@mail.gmail.com>
+Message-ID: <CAHk-=wh5cddDjyS2Av57Oc=qaowkx0XrtuJN=sErcq08qpnb7w@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull exec fix for v5.7
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Junio,
+On Tue, May 26, 2020 at 11:42 AM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> While working on my exec cleanups I found a bug in exec that winds
+> up miscomputing the ambient credentials during exec.  Andy appears
+> as to credentials are computed for both the script and the interpreter.
 
-On 27-05-2020 00:17, Junio C Hamano wrote:
-> Shourya Shukla (4):
->        submodule--helper.c: Rename 'cb_foreach' to 'foreach_cb'
->        gitfaq: files in .gitignore are tracked
->        gitfaq: fetching and pulling a repository
->        submodule: port subcommand 'set-url' from shell to C
+Can you rephrase that?
 
-This is the only place where the `set-url` conversion from Shell to C is 
-mentioned. I wonder if it's enough or if it needs a little bit more 
-attention may be in the "Performance, Internal Implementation, 
-Development Support etc." as it is a conversion of a submodule sub-command?
+I tried to figure out what you were trying to say, and I can't. I
+suspect a whole line or two is missing, or you were re-writing that
+thing and stopped in the middle or something.
 
-I'm not sure about the importance that these kinds of conversion 
-require, thus the question :)
+I'm also somewhat confused by your placement of that
 
--- 
-Sivaraam
+        new->cap_ambient = old->cap_ambient;
+
+which doesn't seem to make a lot of sense. It's before the code even
+checks that the old ambient is valid, which I guess doesn't really
+matter (an error is an error, and the newly set state will not be used
+in that case), but aside from that it's just in an odd place.
+
+It's not near any other code that affects the new capabilities.
+Wouldn't it have made more sense to do this where we then clear
+cap_ambient if it's a setid binary?
+
+So this pull just confuses me for a couple of reasons - I'm not saying
+it's wrong, but at a minimum I'd like to get a merge message that
+makes more sense..
+
+               Linus
