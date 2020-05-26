@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1921E30E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A691E30D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391692AbgEZVC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        id S2391571AbgEZVCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391617AbgEZVCv (ORCPT
+        with ESMTP id S2389124AbgEZVCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:02:51 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F0AC061A0F;
-        Tue, 26 May 2020 14:02:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id z6so26261632ljm.13;
-        Tue, 26 May 2020 14:02:50 -0700 (PDT)
+        Tue, 26 May 2020 17:02:45 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1367C061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:02:44 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s1so22207019qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lfsjZT426GKLsEKLOHm0vE4g7kNwoUqMKolXj8tX534=;
-        b=UYfdLIFiF0TBj26Y6CXXL6PlhSM4MXzndI50oF6mJOStBsg70LU8TVUhTvvar5tLxl
-         u9Iy8BLVgJvAjKVA8F/RHQxkb2Z5rgr5OTTzNqdV1wtGdYlTrKm5YdDb8eEPqL1v+Ej1
-         ZKSFKoTW6RgFJ+hr9eZck239uXWXXIHKyRqy+DSg0mFoKwZqYd4wRlXjTTZqtynDVnvw
-         uc909ij9JzLYXhTf4cHEf8yJ/9zNBpFKnWINyWivrkMd1+FeOlVZ+LHEk4dPuvVOdsjN
-         KDfUPMjqg+LHxQ+VBpqBWkOWhttpMIylE1Ech5UEczVl/OuaTFDuyoDCsQ5c6xf4wac9
-         aVNg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PYvRBfRL1Chxl6N02AVU3ob8SeK5Em8eIPxgIgFZVfM=;
+        b=TbpZRzX63dJ2+Ocj8xjAqu83TXAj654ic7kUQQn6sWS1KWcK9gwcqjgZsyZcUIifNm
+         y3WmFIKT2TCVYWOhVk7VoVhncFO6EXhqjqKMvkCcxtQhgi0bGMCnqPds7h09Bqr5YHfo
+         uicADVWEac+ikHItmqbtxBydLHlwflxYNmoXHhIDzZ/r9Q2c3oMrB/w1kPlJ6E7QvNgI
+         M/PSAdTcXnkGIRETpLeFBzvgnIv6v19LIZh7DUAHIUtzaQ4pMhVM8K3oonrgaRuUiJ+F
+         hS2gO+7lSvlwQ3iS6VTPyFS/IW42kEqEHkUuRW7RTyDUHz3EZasnQtYKqJAf39e428Ko
+         hxWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lfsjZT426GKLsEKLOHm0vE4g7kNwoUqMKolXj8tX534=;
-        b=qUCYjqFJbQrC68M06ESkoLomxYI6ke0r5gj8Lt6Wl/L+ScwgdyQmMw8WB5Hs+C/tMq
-         fPxKGn1z5wA4y6GZ9NMkesxAmayd4wmAk+zYKHfpG9jSWGhiHiYgqLQcrlZ5MmEpwg1R
-         FXMJEPc2aK+6DvMUU31fiK7UGn1HS0NusqmWutbZHP9XOWI3FKUIZnZOl79guU3cLPHn
-         ThyL4fHdgAY+etN5ZscgZ3xDcT0b28Klo+T7zhtr4r7ntHYCUUGtL+XqlpMAJIGuHeTp
-         /4qhNda9LG2x78ehhJGf0TPDbFntrldNbQn5s9wSNr4+mlZALL+MwIIT4LEKhBGOZS11
-         MEWg==
-X-Gm-Message-State: AOAM5333hYAnrECRX7mGmYV7ME9a9noTQUUdEz/DLnlvhhCNw+K+xXEN
-        ZtOX1juWvIGHQjVyAX0kLYpyOCWlXeA=
-X-Google-Smtp-Source: ABdhPJzOPnQEwPIP4LdvZgD5d14UmeD+LVhP76Cy57jge574gl/aorWTKpOBohC/DxzVspisSzgsCw==
-X-Received: by 2002:a2e:85c4:: with SMTP id h4mr1447604ljj.43.1590526969284;
-        Tue, 26 May 2020 14:02:49 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-22.NA.cust.bahnhof.se. [158.174.22.22])
-        by smtp.gmail.com with ESMTPSA id z133sm240443lfa.41.2020.05.26.14.02.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PYvRBfRL1Chxl6N02AVU3ob8SeK5Em8eIPxgIgFZVfM=;
+        b=fcCB2R/VNnL29woGpQE+YJALIjN6+PyEkoK7J8SwH1rxX9IOWDORW72EnpCkUKdwPC
+         OjRWl9IxSnxFBRUhnpLEDr/quJ0O9qrPavhrrt3XJeun0zGd4MLLQiEM83Esv/dqRzV2
+         muAcucLIibXZrmFuCKxYaaJx4DijTO1FCBiVrrMUQz25EkR8cUHihCGkH0f4mIacNYR1
+         n6oCzaGPz82xf1/+v3yTP/BqBaZetDLNgGB4MbpQXJ0H3cQBYLbB4seWVs+JRzETx6uo
+         GdbmlSS4OvR3Ni7RFUVjn2xqOfYXZgRLM1oF5f9ZflExPYFuRLsBgP/kBEqwALLQyZo/
+         Rs1w==
+X-Gm-Message-State: AOAM532EOjacgdJG/gwCwQVOiLz8C/Inx3ec1BmcJEH5QalKeNuDErHT
+        6b5b5dixOA+RgXfmlAwHgf4ezQ==
+X-Google-Smtp-Source: ABdhPJzOoMAaa/N7eYEB2bm3jnQJnePbljNoUWleNJ1ftEKJ5QLQcvc9lRiUScEF1va75YvzjLbyeg==
+X-Received: by 2002:a37:9dc5:: with SMTP id g188mr750928qke.193.1590526964151;
+        Tue, 26 May 2020 14:02:44 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:2921])
+        by smtp.gmail.com with ESMTPSA id 66sm717594qtg.84.2020.05.26.14.02.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 14:02:48 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: [PATCH 3/6] iio: dac: ad5592r-base: Constify struct iio_chan_spec_ext_info
-Date:   Tue, 26 May 2020 23:02:20 +0200
-Message-Id: <20200526210223.1672-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526210223.1672-1-rikard.falkeborn@gmail.com>
-References: <20200526210223.1672-1-rikard.falkeborn@gmail.com>
+        Tue, 26 May 2020 14:02:43 -0700 (PDT)
+Date:   Tue, 26 May 2020 17:02:20 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH 03/12] mm: abstract out wake_page_match() from
+ wake_page_function()
+Message-ID: <20200526210220.GB6781@cmpxchg.org>
+References: <20200526195123.29053-1-axboe@kernel.dk>
+ <20200526195123.29053-4-axboe@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526195123.29053-4-axboe@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ad5592r_ext_info is not modified and can be made const to allow the
-compiler to put it in read-only memory.
+On Tue, May 26, 2020 at 01:51:14PM -0600, Jens Axboe wrote:
+> No functional changes in this patch, just in preparation for allowing
+> more callers.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-Before:
-   text    data     bss     dec     hex filename
-  13293    2088     256   15637    3d15 drivers/iio/dac/ad5592r-base.o
-
-After:
-   text    data     bss     dec     hex filename
-  13421    1960     256   15637    3d15 drivers/iio/dac/ad5592r-base.o
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/iio/dac/ad5592r-base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
-index 410e90e5f75f..7402f67a551d 100644
---- a/drivers/iio/dac/ad5592r-base.c
-+++ b/drivers/iio/dac/ad5592r-base.c
-@@ -484,7 +484,7 @@ static ssize_t ad5592r_show_scale_available(struct iio_dev *iio_dev,
- 		st->scale_avail[1][0], st->scale_avail[1][1]);
- }
- 
--static struct iio_chan_spec_ext_info ad5592r_ext_info[] = {
-+static const struct iio_chan_spec_ext_info ad5592r_ext_info[] = {
- 	{
- 	 .name = "scale_available",
- 	 .read = ad5592r_show_scale_available,
--- 
-2.26.2
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
