@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D62B1E2C09
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD9D1E2DF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404059AbgEZTLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40616 "EHLO mail.kernel.org"
+        id S2391656AbgEZTGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:06:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389286AbgEZTLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:11:16 -0400
+        id S2391615AbgEZTG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD76E20888;
-        Tue, 26 May 2020 19:11:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CB63208A7;
+        Tue, 26 May 2020 19:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520275;
-        bh=BJ0tO64MAidki1KuaMNtI00MVaxBlWf8j4Gm2u/+cZo=;
+        s=default; t=1590519989;
+        bh=7aRW87m6EIHEtIfH685cdeFH9ykaBvHaUsl8sCOyeJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tDLJrjAGUTFJNdaTSQLPkNq23QtyJ49jNo6v/r0chzTCDTmrZhiCdLl1Mvy5YURFU
-         Uof7dMqRF5ChDM0DmeMH7q0NUgY8rJvYW5ulxAmvjjNztFxxZlO+aQcnENkuCJC/0w
-         QYFK5f+dUV2a2C4TzrjfpUEjEhfBcC7FcwS8TgoU=
+        b=QKi7yNUm9B39AwRItpoDA3ye1dxlAENtFWhnlKef/y8hgvH2Eeps26XlPlfb5fbhF
+         FT6kuGV/PBV0VIoeslfljOZwWV4WfX7RiaCeOdUtqTgWAv0pnEGn9XQtbLFpUNUlpE
+         Aa3LbPad1nl8M9np8n2OekcQ9ClKmaOlGilunTy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 016/126] evm: Fix a small race in init_desc()
+Subject: [PATCH 5.4 015/111] ubi: Fix seq_file usage in detailed_erase_block_info debugfs file
 Date:   Tue, 26 May 2020 20:52:33 +0200
-Message-Id: <20200526183938.974820180@linuxfoundation.org>
+Message-Id: <20200526183934.037307639@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,96 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Richard Weinberger <richard@nod.at>
 
-[ Upstream commit 8433856947217ebb5697a8ff9c4c9cad4639a2cf ]
+[ Upstream commit 0e7572cffe442290c347e779bf8bd4306bb0aa7c ]
 
-The IS_ERR_OR_NULL() function has two conditions and if we got really
-unlucky we could hit a race where "ptr" started as an error pointer and
-then was set to NULL.  Both conditions would be false even though the
-pointer at the end was NULL.
+3bfa7e141b0b ("fs/seq_file.c: seq_read(): add info message about buggy .next functions")
+showed that we don't use seq_file correctly.
+So make sure that our ->next function always updates the position.
 
-This patch fixes the problem by ensuring that "*tfm" can only be NULL
-or valid.  I have introduced a "tmp_tfm" variable to make that work.  I
-also reversed a condition and pulled the code in one tab.
-
-Reported-by: Roberto Sassu <roberto.sassu@huawei.com>
-Fixes: 53de3b080d5e ("evm: Check also if *tfm is an error pointer in init_desc()")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Roberto Sassu <roberto.sassu@huawei.com>
-Acked-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: 7bccd12d27b7 ("ubi: Add debugfs file for tracking PEB state")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/evm/evm_crypto.c | 44 ++++++++++++++---------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ drivers/mtd/ubi/debug.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 302adeb2d37b..cc826c2767a3 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -75,7 +75,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index a1dff92ceedf..8a83072401a7 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -392,9 +392,6 @@ static void *eraseblk_count_seq_start(struct seq_file *s, loff_t *pos)
  {
- 	long rc;
- 	const char *algo;
--	struct crypto_shash **tfm;
-+	struct crypto_shash **tfm, *tmp_tfm;
- 	struct shash_desc *desc;
+ 	struct ubi_device *ubi = s->private;
  
- 	if (type == EVM_XATTR_HMAC) {
-@@ -93,31 +93,31 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
- 		algo = hash_algo_name[hash_algo];
- 	}
- 
--	if (IS_ERR_OR_NULL(*tfm)) {
--		mutex_lock(&mutex);
--		if (*tfm)
--			goto out;
--		*tfm = crypto_alloc_shash(algo, 0, CRYPTO_NOLOAD);
--		if (IS_ERR(*tfm)) {
--			rc = PTR_ERR(*tfm);
--			pr_err("Can not allocate %s (reason: %ld)\n", algo, rc);
--			*tfm = NULL;
-+	if (*tfm)
-+		goto alloc;
-+	mutex_lock(&mutex);
-+	if (*tfm)
-+		goto unlock;
-+
-+	tmp_tfm = crypto_alloc_shash(algo, 0, CRYPTO_NOLOAD);
-+	if (IS_ERR(tmp_tfm)) {
-+		pr_err("Can not allocate %s (reason: %ld)\n", algo,
-+		       PTR_ERR(tmp_tfm));
-+		mutex_unlock(&mutex);
-+		return ERR_CAST(tmp_tfm);
-+	}
-+	if (type == EVM_XATTR_HMAC) {
-+		rc = crypto_shash_setkey(tmp_tfm, evmkey, evmkey_len);
-+		if (rc) {
-+			crypto_free_shash(tmp_tfm);
- 			mutex_unlock(&mutex);
- 			return ERR_PTR(rc);
- 		}
--		if (type == EVM_XATTR_HMAC) {
--			rc = crypto_shash_setkey(*tfm, evmkey, evmkey_len);
--			if (rc) {
--				crypto_free_shash(*tfm);
--				*tfm = NULL;
--				mutex_unlock(&mutex);
--				return ERR_PTR(rc);
--			}
--		}
--out:
--		mutex_unlock(&mutex);
- 	}
+-	if (*pos == 0)
+-		return SEQ_START_TOKEN;
 -
-+	*tfm = tmp_tfm;
-+unlock:
-+	mutex_unlock(&mutex);
-+alloc:
- 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
- 			GFP_KERNEL);
- 	if (!desc)
+ 	if (*pos < ubi->peb_count)
+ 		return pos;
+ 
+@@ -408,8 +405,6 @@ static void *eraseblk_count_seq_next(struct seq_file *s, void *v, loff_t *pos)
+ {
+ 	struct ubi_device *ubi = s->private;
+ 
+-	if (v == SEQ_START_TOKEN)
+-		return pos;
+ 	(*pos)++;
+ 
+ 	if (*pos < ubi->peb_count)
+@@ -431,11 +426,8 @@ static int eraseblk_count_seq_show(struct seq_file *s, void *iter)
+ 	int err;
+ 
+ 	/* If this is the start, print a header */
+-	if (iter == SEQ_START_TOKEN) {
+-		seq_puts(s,
+-			 "physical_block_number\terase_count\tblock_status\tread_status\n");
+-		return 0;
+-	}
++	if (*block_number == 0)
++		seq_puts(s, "physical_block_number\terase_count\n");
+ 
+ 	err = ubi_io_is_bad(ubi, *block_number);
+ 	if (err)
 -- 
 2.25.1
 
