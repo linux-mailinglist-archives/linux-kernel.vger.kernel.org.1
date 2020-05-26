@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3991E2A7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34A61E2AD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389810AbgEZS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49112 "EHLO mail.kernel.org"
+        id S2389892AbgEZS7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:59:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389789AbgEZS4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:56:20 -0400
+        id S2389923AbgEZS70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:59:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC32820870;
-        Tue, 26 May 2020 18:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18843208DB;
+        Tue, 26 May 2020 18:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519380;
-        bh=/Gw1qP01JOnZ5X12K7E0+YS8po1KWPSRMJgK+BuvE0M=;
+        s=default; t=1590519565;
+        bh=s5uIdwHoq0DUL8XtbeEATZDxARzNHyHj8OxFlLF9QVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bR2treJU2PgmnknWsu9myNrfzwIdNLV2gL5AkjCfP5NjDjUi0Qxhps7Ug+lyX7hSF
-         YOfEfcGG5Spg+KoFnmUfw45CK9Sy9LZhsYLKMqwi0dcL0tlG+VVLtsm9p/dgrxbKwN
-         JJA8zjbUjCPJnuuw16uRlhxEisBs2ZHj5+Vmrf68=
+        b=Mc/uEHXFU1sQS+HDuHMhzVMNcZtN2GipUXXTfI7sxKjS3/moCL+L/ZJuvWunxuvBx
+         pCCdigEC2B+9rl62jMaZn0x1e2KSSGysM+umWz6c5nAgzQDg9/XVbG5e+E72uiMoYo
+         LBWVs23GyyRFZe0nmrOMFeR4chfDw59MFXt481CU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Giuliano Procida <gprocida@google.com>
-Subject: [PATCH 4.4 44/65] l2tp: remove useless duplicate session detection in l2tp_netlink
-Date:   Tue, 26 May 2020 20:53:03 +0200
-Message-Id: <20200526183921.196186290@linuxfoundation.org>
+Subject: [PATCH 4.9 36/64] l2tp: initialise sessions refcount before making it reachable
+Date:   Tue, 26 May 2020 20:53:05 +0200
+Message-Id: <20200526183924.899863279@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
-References: <20200526183905.988782958@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,37 +46,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guillaume Nault <g.nault@alphalink.fr>
 
-commit af87ae465abdc070de0dc35d6c6a9e7a8cd82987 upstream.
+commit 9ee369a405c57613d7c83a3967780c3e30c52ecc upstream.
 
-There's no point in checking for duplicate sessions at the beginning of
-l2tp_nl_cmd_session_create(); the ->session_create() callbacks already
-return -EEXIST when the session already exists.
+Sessions must be fully initialised before calling
+l2tp_session_add_to_tunnel(). Otherwise, there's a short time frame
+where partially initialised sessions can be accessed by external users.
 
-Furthermore, even if l2tp_session_find() returns NULL, a new session
-might be created right after the test. So relying on ->session_create()
-to avoid duplicate session is the only sane behaviour.
+Backporting Notes
 
+l2tp_core.c: moving code that had been converted from atomic to
+refcount_t by an earlier change (which isn't being included in this
+patch series).
+
+Fixes: dbdbc73b4478 ("l2tp: fix duplicate session creation")
 Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/l2tp/l2tp_netlink.c |    5 -----
- 1 file changed, 5 deletions(-)
+ net/l2tp/l2tp_core.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/l2tp/l2tp_netlink.c
-+++ b/net/l2tp/l2tp_netlink.c
-@@ -505,11 +505,6 @@ static int l2tp_nl_cmd_session_create(st
- 		goto out;
- 	}
- 	session_id = nla_get_u32(info->attrs[L2TP_ATTR_SESSION_ID]);
--	session = l2tp_session_find(net, tunnel, session_id);
--	if (session) {
--		ret = -EEXIST;
--		goto out;
--	}
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -1847,6 +1847,8 @@ struct l2tp_session *l2tp_session_create
  
- 	if (!info->attrs[L2TP_ATTR_PEER_SESSION_ID]) {
- 		ret = -EINVAL;
+ 		l2tp_session_set_header_len(session, tunnel->version);
+ 
++		l2tp_session_inc_refcount(session);
++
+ 		err = l2tp_session_add_to_tunnel(tunnel, session);
+ 		if (err) {
+ 			kfree(session);
+@@ -1854,10 +1856,6 @@ struct l2tp_session *l2tp_session_create
+ 			return ERR_PTR(err);
+ 		}
+ 
+-		/* Bump the reference count. The session context is deleted
+-		 * only when this drops to zero.
+-		 */
+-		l2tp_session_inc_refcount(session);
+ 		l2tp_tunnel_inc_refcount(tunnel);
+ 
+ 		/* Ensure tunnel socket isn't deleted */
 
 
