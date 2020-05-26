@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AE71E2A62
+	by mail.lfdr.de (Postfix) with ESMTP id 80EEE1E2A63
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389497AbgEZSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47654 "EHLO mail.kernel.org"
+        id S2389513AbgEZSz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389430AbgEZSzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:55:18 -0400
+        id S2389467AbgEZSzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78365208B3;
-        Tue, 26 May 2020 18:55:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59BC320849;
+        Tue, 26 May 2020 18:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519317;
-        bh=9082s8SwAhFTbqFbYa/4fyiheRIflpQhujxpR+8RCdw=;
+        s=default; t=1590519322;
+        bh=Wwkq3HttPZDyE/FF5UyUIlAIhjy0c5qM67sxP1MaqhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxCFbhJToac1nmxpXLkbWuXNa5vGsMx55UUGQlIqpihcg9D/eyW5lgg5IJVE48l6j
-         PU6hbCq5KrjR6TBWDlxqgKKb31Hd+v20sToWYMzUSShqvTklE661s5SM7YSXZ6LdXC
-         nXHM55D7JKMiZ6NCrveUeHUESkEBbAHx7o383D/8=
+        b=e9AATBCVxAyYMMM7aHxFIa6gqR+LyuoX+GzYZQ4w7E0LSSy1xf5+dDirPIR5FFtXv
+         RGW8iHX6OkoG9waU0m3j9BNLMm20OzNsJGgkbrR9x9GeA2RO3F0cgaXMcOhRYTHv8p
+         7JOzYPGT8oxW0fadymkf7MlJfOjefvP7HiQvoick=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+        stable@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Jean Delvare <jdelvare@suse.de>,
+        Wolfram Sang <wsa@the-dreams.de>,
         Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 21/65] i2c: dev: dont start function name with return
-Date:   Tue, 26 May 2020 20:52:40 +0200
-Message-Id: <20200526183914.141946514@linuxfoundation.org>
+Subject: [PATCH 4.4 23/65] i2c-dev: dont get i2c adapter via i2c_dev
+Date:   Tue, 26 May 2020 20:52:42 +0200
+Message-Id: <20200526183914.867893581@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
 References: <20200526183905.988782958@linuxfoundation.org>
@@ -44,51 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa@the-dreams.de>
+From: viresh kumar <viresh.kumar@linaro.org>
 
-commit 72a71f869c95dc11b73f09fe18c593d4a0618c3f upstream.
+commit 5136ed4fcb05cd4981cc6034a11e66370ed84789 upstream.
 
-I stumbled multiple times over 'return_i2c_dev', especially before the
-actual 'return res'. It makes the code hard to read, so reanme the
-function to 'put_i2c_dev' which also better matches 'get_free_i2c_dev'.
+There is no code protecting i2c_dev to be freed after it is returned
+from i2c_dev_get_by_minor() and using it to access the value which we
+already have (minor) isn't safe really.
 
+Avoid using it and get the adapter directly from 'minor'.
+
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
+Tested-by: Jean Delvare <jdelvare@suse.de>
 Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-dev.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/i2c/i2c-dev.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index 5fecc1d9e0a1..382c66d5a470 100644
+index e5cd307ebfc9..5543b49e2e05 100644
 --- a/drivers/i2c/i2c-dev.c
 +++ b/drivers/i2c/i2c-dev.c
-@@ -91,7 +91,7 @@ static struct i2c_dev *get_free_i2c_dev(struct i2c_adapter *adap)
- 	return i2c_dev;
- }
+@@ -492,13 +492,8 @@ static int i2cdev_open(struct inode *inode, struct file *file)
+ 	unsigned int minor = iminor(inode);
+ 	struct i2c_client *client;
+ 	struct i2c_adapter *adap;
+-	struct i2c_dev *i2c_dev;
+-
+-	i2c_dev = i2c_dev_get_by_minor(minor);
+-	if (!i2c_dev)
+-		return -ENODEV;
  
--static void return_i2c_dev(struct i2c_dev *i2c_dev)
-+static void put_i2c_dev(struct i2c_dev *i2c_dev)
- {
- 	spin_lock(&i2c_dev_list_lock);
- 	list_del(&i2c_dev->list);
-@@ -582,7 +582,7 @@ static int i2cdev_attach_adapter(struct device *dev, void *dummy)
- error:
- 	cdev_del(&i2c_dev->cdev);
- error_cdev:
--	return_i2c_dev(i2c_dev);
-+	put_i2c_dev(i2c_dev);
- 	return res;
- }
- 
-@@ -599,7 +599,7 @@ static int i2cdev_detach_adapter(struct device *dev, void *dummy)
- 	if (!i2c_dev) /* attach_adapter must have failed */
- 		return 0;
- 
--	return_i2c_dev(i2c_dev);
-+	put_i2c_dev(i2c_dev);
- 	device_destroy(i2c_dev_class, MKDEV(I2C_MAJOR, adap->nr));
- 	cdev_del(&i2c_dev->cdev);
+-	adap = i2c_get_adapter(i2c_dev->adap->nr);
++	adap = i2c_get_adapter(minor);
+ 	if (!adap)
+ 		return -ENODEV;
  
 -- 
 2.25.1
