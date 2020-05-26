@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A121E1D0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAA81E1D15
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgEZIQv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 May 2020 04:16:51 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22048 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726926AbgEZIQt (ORCPT
+        id S1731329AbgEZIR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 04:17:58 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:6767 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbgEZIR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:16:49 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-272-m1JOel9CNVyNzDk7C8tOAg-1; Tue, 26 May 2020 09:16:46 +0100
-X-MC-Unique: m1JOel9CNVyNzDk7C8tOAg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 26 May 2020 09:16:45 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 26 May 2020 09:16:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Pavel Machek' <pavel@ucw.cz>, "Dr. Greg" <greg@enjellic.com>
-CC:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "npmccallum@redhat.com" <npmccallum@redhat.com>,
-        "haitao.huang@intel.com" <haitao.huang@intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "kai.svahn@intel.com" <kai.svahn@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "kai.huang@intel.com" <kai.huang@intel.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "cedric.xing@intel.com" <cedric.xing@intel.com>,
-        "puiterwijk@redhat.com" <puiterwijk@redhat.com>
-Subject: RE: [PATCH v29 00/20] Intel SGX foundations
-Thread-Topic: [PATCH v29 00/20] Intel SGX foundations
-Thread-Index: AQHWMhIeab+zFDSEIUyJtVV397qBpKi6Bwlw
-Date:   Tue, 26 May 2020 08:16:45 +0000
-Message-ID: <d8df2f130c5a4957acc56eecb18895b8@AcuMS.aculab.com>
-References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
- <20200426165753.GA11046@wind.enjellic.com>
- <87d07gk24l.fsf@nanos.tec.linutronix.de>
- <20200508190226.GA31465@wind.enjellic.com>
- <20200508195635.GR27052@linux.intel.com>
- <20200514091637.GA25156@wind.enjellic.com> <20200524212719.GA1192@bug>
-In-Reply-To: <20200524212719.GA1192@bug>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 26 May 2020 04:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1590481076; x=1622017076;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=YuHwdN8HqSyt2rwlrNv4QewZD9qbjngQahz+l0HDz1U=;
+  b=pzWZOeYx0tFeZO+kfYlaWI6UJNrhBfUb34vzIDXxWt1QwTuh5MWKrZSv
+   cuNL8v68TtO/TpyTEASMYQzqvOjtPFcNVId+z3c8vUz1RMzA5GrLtyfvX
+   kxONLvfgdlmHTOHHYwC7hzY13eos5cC4EPco4iHs/11fVVvkrNSuXDoa7
+   4=;
+IronPort-SDR: YEJC/bEhVyt+dqxhDujvHJzh0YafG1QvIz3nMyXnoKJvII3+YlbO87+LK9KEyaPG5MC3ywvXay
+ 69bTv0HtyLSg==
+X-IronPort-AV: E=Sophos;i="5.73,436,1583193600"; 
+   d="scan'208";a="37619369"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 May 2020 08:17:54 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 283CBA18BE;
+        Tue, 26 May 2020 08:17:53 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 26 May 2020 08:17:52 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.90) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 26 May 2020 08:17:43 +0000
+Subject: Re: [PATCH v2 07/18] nitro_enclaves: Init misc device providing the
+ ioctl interface
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Alexander Graf" <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200522062946.28973-1-andraprs@amazon.com>
+ <20200522062946.28973-8-andraprs@amazon.com>
+ <20200522070708.GC771317@kroah.com>
+ <fa3a72ef-ba0a-ada9-48bf-bd7cef0a8174@amazon.com>
+ <20200526064243.GB2580410@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <e4d48349-ff54-77e3-8a87-8f320d702d7f@amazon.com>
+Date:   Tue, 26 May 2020 11:17:38 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200526064243.GB2580410@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.90]
+X-ClientProxiedBy: EX13D37UWC001.ant.amazon.com (10.43.162.33) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek
-> Sent: 24 May 2020 22:27
-..
-> It provides false sense of security, and I'm afraid big companies will try to force
-> people to use it. "DRM, now with hardware support". "Finally advertisments you can
-> not skip". "Just run this piece of code on your machine to access your bank account.
-> Trust us!"
-
-Hey malware guys, here is somewhere you can hide your code
-making it very difficult to find.
-You can then use the hardware disk encryption that people think
-gives them security to encrypt all the files.
-
-Job done...
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+CgpPbiAyNi8wNS8yMDIwIDA5OjQyLCBHcmVnIEtIIHdyb3RlOgo+IE9uIE1vbiwgTWF5IDI1LCAy
+MDIwIGF0IDExOjQ5OjUwUE0gKzAzMDAsIFBhcmFzY2hpdiwgQW5kcmEtSXJpbmEgd3JvdGU6Cj4+
+Cj4+IE9uIDIyLzA1LzIwMjAgMTA6MDcsIEdyZWcgS0ggd3JvdGU6Cj4+PiBPbiBGcmksIE1heSAy
+MiwgMjAyMCBhdCAwOToyOTozNUFNICswMzAwLCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+Pj4g
+K3N0YXRpYyBjaGFyICpuZV9jcHVzOwo+Pj4+ICttb2R1bGVfcGFyYW0obmVfY3B1cywgY2hhcnAs
+IDA2NDQpOwo+Pj4+ICtNT0RVTEVfUEFSTV9ERVNDKG5lX2NwdXMsICI8Y3B1LWxpc3Q+IC0gQ1BV
+IHBvb2wgdXNlZCBmb3IgTml0cm8gRW5jbGF2ZXMiKTsKPj4+IFRoaXMgaXMgbm90IHRoZSAxOTkw
+J3MsIGRvbid0IHVzZSBtb2R1bGUgcGFyYW1ldGVycyBpZiB5b3UgY2FuIGhlbHAgaXQuCj4+PiBX
+aHkgaXMgdGhpcyBuZWVkZWQsIGFuZCB3aGVyZSBpcyBpdCBkb2N1bWVudGVkPwo+PiBUaGlzIGlz
+IGEgQ1BVIHBvb2wgdGhhdCBjYW4gYmUgc2V0IGJ5IHRoZSByb290IHVzZXIgYW5kIHRoYXQgaW5j
+bHVkZXMgQ1BVcwo+PiBzZXQgYXNpZGUgdG8gYmUgdXNlZCBmb3IgdGhlIGVuY2xhdmUocykgc2V0
+dXA7IHRoZXNlIENQVXMgYXJlIG9mZmxpbmVkLiBGcm9tCj4+IHRoaXMgQ1BVIHBvb2wsIHRoZSBr
+ZXJuZWwgbG9naWMgY2hvb3NlcyB0aGUgQ1BVcyB0aGF0IGFyZSBzZXQgZm9yIHRoZQo+PiBjcmVh
+dGVkIGVuY2xhdmUocykuCj4+Cj4+IFRoZSBjcHUtbGlzdCBmb3JtYXQgaXMgbWF0Y2hpbmcgdGhl
+IHNhbWUgdGhhdCBpcyBkb2N1bWVudGVkIGhlcmU6Cj4+Cj4+IGh0dHBzOi8vd3d3Lmtlcm5lbC5v
+cmcvZG9jL2h0bWwvbGF0ZXN0L2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLmh0bWwKPj4K
+Pj4gSSd2ZSBhbHNvIHRob3VnaHQgb2YgaGF2aW5nIGEgc3lzZnMgZW50cnkgZm9yIHRoZSBzZXR1
+cCBvZiB0aGlzIGVuY2xhdmUgQ1BVCj4+IHBvb2wuCj4gT2ssIGJ1dCBhZ2FpbiwgZG8gbm90IHVz
+ZSBhIG1vZHVsZSBwYXJhbWV0ZXIsIHRoZXkgYXJlIGhhcmQgdG8gdXNlLAo+IHRvdWdoIHRvIGRv
+Y3VtZW50LCBhbmQgZ2xvYmFsLiAgQWxsIHRoaW5ncyB3ZSBtb3ZlZCBhd2F5IGZyb20gYSBsb25n
+Cj4gdGltZSBhZ28uICBQbGVhc2UgdXNlIHNvbWV0aGluZyBlbHNlIGZvciB0aGlzIChzeXNmcywg
+Y29uZmlnZnMsIGV0Yy4pCj4gaW5zdGVhZC4KCkFscmlnaHQsIGdvdCBpdCwgd2lsbCBtb3ZlIG9u
+IHRoZW4gd2l0aCB0aGUgb3RoZXIgb3B0aW9uIGZvciB2NC4KClRoYW5rIHlvdS4KCkFuZHJhCgoK
+CgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBv
+ZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENv
+dW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlv
+biBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
