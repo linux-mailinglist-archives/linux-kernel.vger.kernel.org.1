@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F841E2D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB401E2BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404290AbgEZTWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
+        id S2404016AbgEZTKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391944AbgEZTKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:10:33 -0400
+        id S2403989AbgEZTKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:10:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B271B20888;
-        Tue, 26 May 2020 19:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27F7C20776;
+        Tue, 26 May 2020 19:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520232;
-        bh=VC4Bv9HXXuWdCyESRJnXGXY9Lh5TYXispNRAl3SqAuw=;
+        s=default; t=1590520234;
+        bh=9acOtv4KC3duxoHSeM86NeKSDTxTvOvBPOBPYuW2Srg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tux5KwsnvfRJpNb9B2nzCSsaq0ea7D4pRo6mq47Sqnf4e6pfi4G+5DZFlTxe8RqrR
-         1bcHG7ASCedSVdKl5bhNWS7bAPq0ywoRWFY9dIr4cFukDJW2/iEcV3xJRB+L6FuyQl
-         0hrVew69ejAMuNgwVaw7zdN/XPA0kIEON8PoRHs4=
+        b=Wmn/jmaZyLi4UYh+KswzS+rebjGyu3kpg7gVOPuIojAO7hbpLLcOF5UdniRWQh5Pf
+         r9TTEpENZTU1Q6lQrJ1xZLiG+cCVRvioVaGU7Us3mYaq8AdPt1v9gbiRVyq73VgHBH
+         lFKEIuLJzbEtJesiP+W8SYclCksL2a5RZrooyndM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 109/111] sched/fair: Reorder enqueue/dequeue_task_fair path
-Date:   Tue, 26 May 2020 20:54:07 +0200
-Message-Id: <20200526183943.226370333@linuxfoundation.org>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 110/111] sched/fair: Fix reordering of enqueue/dequeue_task_fair()
+Date:   Tue, 26 May 2020 20:54:08 +0200
+Message-Id: <20200526183943.334089577@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
 References: <20200526183932.245016380@linuxfoundation.org>
@@ -52,133 +47,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincent Guittot <vincent.guittot@linaro.org>
 
-[ Upstream commit 6d4d22468dae3d8757af9f8b81b848a76ef4409d ]
+[ Upstream commit 5ab297bab984310267734dfbcc8104566658ebef ]
 
-The walk through the cgroup hierarchy during the enqueue/dequeue of a task
-is split in 2 distinct parts for throttled cfs_rq without any added value
-but making code less readable.
+Even when a cgroup is throttled, the group se of a child cgroup can still
+be enqueued and its gse->on_rq stays true. When a task is enqueued on such
+child, we still have to update the load_avg and increase
+h_nr_running of the throttled cfs. Nevertheless, the 1st
+for_each_sched_entity() loop is skipped because of gse->on_rq == true and the
+2nd loop because the cfs is throttled whereas we have to update both
+load_avg with the old h_nr_running and increase h_nr_running in such case.
 
-Change the code ordering such that everything related to a cfs_rq
-(throttled or not) will be done in the same loop.
+The same sequence can happen during dequeue when se moves to parent before
+breaking in the 1st loop.
 
-In addition, the same steps ordering is used when updating a cfs_rq:
-
- - update_load_avg
- - update_cfs_group
- - update *h_nr_running
-
-This reordering enables the use of h_nr_running in PELT algorithm.
-
-No functional and performance changes are expected and have been noticed
-during tests.
+Note that the update of load_avg will effectively happen only once in order
+to sync up to the throttled time. Next call for updating load_avg will stop
+early because the clock stays unchanged.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: "Dietmar Eggemann <dietmar.eggemann@arm.com>"
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Phil Auld <pauld@redhat.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Link: https://lore.kernel.org/r/20200224095223.13361-5-mgorman@techsingularity.net
+Fixes: 6d4d22468dae ("sched/fair: Reorder enqueue/dequeue_task_fair path")
+Link: https://lkml.kernel.org/r/20200306084208.12583-1-vincent.guittot@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 42 ++++++++++++++++++++----------------------
- 1 file changed, 20 insertions(+), 22 deletions(-)
+ kernel/sched/fair.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index eeaf34d65742..0e042e847ed3 100644
+index 0e042e847ed3..42cc3de24dcc 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -5232,32 +5232,31 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+@@ -5245,15 +5245,15 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 	for_each_sched_entity(se) {
  		cfs_rq = cfs_rq_of(se);
- 		enqueue_entity(cfs_rq, se, flags);
  
--		/*
--		 * end evaluation on encountering a throttled cfs_rq
--		 *
--		 * note: in the case of encountering a throttled cfs_rq we will
--		 * post the final h_nr_running increment below.
--		 */
+-		/* end evaluation on encountering a throttled cfs_rq */
 -		if (cfs_rq_throttled(cfs_rq))
--			break;
+-			goto enqueue_throttle;
+-
+ 		update_load_avg(cfs_rq, se, UPDATE_TG);
+ 		update_cfs_group(se);
+ 
  		cfs_rq->h_nr_running++;
  		cfs_rq->idle_h_nr_running += idle_h_nr_running;
- 
++
 +		/* end evaluation on encountering a throttled cfs_rq */
 +		if (cfs_rq_throttled(cfs_rq))
 +			goto enqueue_throttle;
-+
- 		flags = ENQUEUE_WAKEUP;
  	}
  
+ enqueue_throttle:
+@@ -5341,15 +5341,16 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
  	for_each_sched_entity(se) {
  		cfs_rq = cfs_rq_of(se);
--		cfs_rq->h_nr_running++;
--		cfs_rq->idle_h_nr_running += idle_h_nr_running;
  
-+		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
--			break;
-+			goto enqueue_throttle;
- 
+-		/* end evaluation on encountering a throttled cfs_rq */
+-		if (cfs_rq_throttled(cfs_rq))
+-			goto dequeue_throttle;
+-
  		update_load_avg(cfs_rq, se, UPDATE_TG);
  		update_cfs_group(se);
-+
-+		cfs_rq->h_nr_running++;
-+		cfs_rq->idle_h_nr_running += idle_h_nr_running;
- 	}
  
-+enqueue_throttle:
- 	if (!se) {
- 		add_nr_running(rq, 1);
- 		/*
-@@ -5317,17 +5316,13 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		cfs_rq = cfs_rq_of(se);
- 		dequeue_entity(cfs_rq, se, flags);
- 
--		/*
--		 * end evaluation on encountering a throttled cfs_rq
--		 *
--		 * note: in the case of encountering a throttled cfs_rq we will
--		 * post the final h_nr_running decrement below.
--		*/
--		if (cfs_rq_throttled(cfs_rq))
--			break;
  		cfs_rq->h_nr_running--;
  		cfs_rq->idle_h_nr_running -= idle_h_nr_running;
- 
++
 +		/* end evaluation on encountering a throttled cfs_rq */
 +		if (cfs_rq_throttled(cfs_rq))
 +			goto dequeue_throttle;
 +
- 		/* Don't dequeue parent if it has other entities besides us */
- 		if (cfs_rq->load.weight) {
- 			/* Avoid re-evaluating load for this entity: */
-@@ -5345,16 +5340,19 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
--		cfs_rq->h_nr_running--;
--		cfs_rq->idle_h_nr_running -= idle_h_nr_running;
- 
-+		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
--			break;
-+			goto dequeue_throttle;
- 
- 		update_load_avg(cfs_rq, se, UPDATE_TG);
- 		update_cfs_group(se);
-+
-+		cfs_rq->h_nr_running--;
-+		cfs_rq->idle_h_nr_running -= idle_h_nr_running;
  	}
  
-+dequeue_throttle:
- 	if (!se)
- 		sub_nr_running(rq, 1);
- 
+ dequeue_throttle:
 -- 
 2.25.1
 
