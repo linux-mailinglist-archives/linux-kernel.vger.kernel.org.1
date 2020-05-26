@@ -2,157 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1451E1AFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608FC1E1B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgEZGK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 02:10:29 -0400
-Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:39136
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726207AbgEZGK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 02:10:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oVM5xHMTq7eu2xPtIBszwAdtDXd/6lMZaqrMlFJyMCVmr4vLQFPGL0T2DJ0be3TA4rNtEO0GkC4de6J8TgDEV23ak2nyF8UHY2GgZoDqU0jxCYfod5pqhFLlsxJeo9HjgDRBwhM/qi/Ggusg7VuX+cwGNMQX90QWuisZEJoFBxCWnlSaDI79FJCrjQLqoSHLUgwenGcESbmpRlMrzHtHrP0u66daZQ+GAjTSupWNddsrwO4sKPHHeRscGkBr/WS6qmG3+TOdKK+vpjWXzJ4hVUQecHw035nLUc/Eykq4x1qc+MZjsvB/oTj9b0FLdcWSsXGslP+aeku3v2y6BJ0fyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IVdE3LEia6LaEeCUMw1Ox1io46n8dusWNR4GW1NtiBM=;
- b=drTwubObJJgowZuLkVeQmBH2lQVwgxaMWHleWzEDx+6QMQCgORO9neWV6/0BbUbFg2653QKBa4i8jSXF7GltrZSNy10j1Fz6gYW1ZmdrW6faedRhx/TcXeyQWHGxGdsKoo0/6M7Jc0S3G+0KvPgJz434Hr5ppplc9B2seGLSmw2gyPmR2L3m3SKopXE3RUw7cdDx7Yvpzae0LuUJVb/YNEXcg3uLZnKv34v9ge9mvGCji/Nzrb6JruEdvBbGYtnbe9Gycd0f5F8EKT+P7w5aEH4QIAoNDKJKWXlnToACNCO6qP6C7cu/8mT6aBNH0xozMK8tIWiM0aa1eMht0Pluhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IVdE3LEia6LaEeCUMw1Ox1io46n8dusWNR4GW1NtiBM=;
- b=eqK3SQsgRZ1Me6bzbPShbipk+xmIGYvnmu5uxZbV6zaJR6Hk3kj2yVq135eXjy/RtV+n8e8SATgkt1dIyry5Qwc0aiFKbjJw0zBEfvim43NNe1hPE/qHqMEtfbLilkBpDqm5Xob1o5P7Z7RjL0m+IHkoMkB2EVMo/SHSpE9225w=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3420.namprd12.prod.outlook.com (2603:10b6:5:3a::27) by
- DM6PR12MB3291.namprd12.prod.outlook.com (2603:10b6:5:186::32) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3021.24; Tue, 26 May 2020 06:10:24 +0000
-Received: from DM6PR12MB3420.namprd12.prod.outlook.com
- ([fe80::d007:1b50:9d7c:632f]) by DM6PR12MB3420.namprd12.prod.outlook.com
- ([fe80::d007:1b50:9d7c:632f%5]) with mapi id 15.20.3021.029; Tue, 26 May 2020
- 06:10:24 +0000
-Subject: Re: [PATCH v4 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
- information
-To:     Vinod Koul <vkoul@kernel.org>, Sanjay R Mehta <Sanju.Mehta@amd.com>
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <1588108416-49050-1-git-send-email-Sanju.Mehta@amd.com>
- <1588108416-49050-4-git-send-email-Sanju.Mehta@amd.com>
- <20200504062002.GL1375924@vkoul-mobl>
-From:   Sanjay R Mehta <sanmehta@amd.com>
-Message-ID: <280220fd-9780-e2b4-7a5a-26f3a0119c43@amd.com>
-Date:   Tue, 26 May 2020 11:40:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200504062002.GL1375924@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXPR01CA0061.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:2c::25) To DM6PR12MB3420.namprd12.prod.outlook.com
- (2603:10b6:5:3a::27)
+        id S1729550AbgEZGMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 02:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726363AbgEZGMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 02:12:08 -0400
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A71FA20EDD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 06:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590473527;
+        bh=ySEa+3x56DEhXDsJ/5BxjWyMNs8ZHKcIGhjiyVJvg+Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wYzi42jJMIcztM9lOAVmyApIDg2YsU4yqUmxwqz5SZYzeoYOr1L/7rW32T5YrVb4F
+         5vtCOpzRXR5Rwz8Fo70V9JvsTZsBhTz8AUCiCbns36n7aaWZFsB/BX7h9ui3I1Nr+Z
+         sMVCw3KZApN4kp/Oor+fxolkBAKxnNEt8qb+UT9M=
+Received: by mail-io1-f53.google.com with SMTP id d7so20768748ioq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 23:12:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5328II0QKuEjjN7nwYm25qzi+W2lbm4pDVxtRcHU2PFUdnNS29Zt
+        3EGjywKniMxi+I1Fs0i58nJBt1WQ6E98biDeC30=
+X-Google-Smtp-Source: ABdhPJwWkzq/+TpvYaSSsedLrS+kmTbhs9gJOSZa3GxF6wEZ6Odb8i1gOPUnwbRqugb9RVr8B4A1r7wQkAUSG7B2N/8=
+X-Received: by 2002:a02:956f:: with SMTP id y102mr9289995jah.68.1590473526930;
+ Mon, 25 May 2020 23:12:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:7400:70:65d3::1] (2406:7400:70:65d3::1) by BMXPR01CA0061.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:2c::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24 via Frontend Transport; Tue, 26 May 2020 06:10:18 +0000
-X-Originating-IP: [2406:7400:70:65d3::1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0aa435aa-2cad-4522-e4e0-08d8013b7a73
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3291:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB329175B0D9E64EE28C4DD9DDE5B00@DM6PR12MB3291.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 041517DFAB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5sqVS8LgW5zwGpRWyKjRhEF0eW8fmeVc1U2DoEvSgtLGCz/lSzpbS3yUEjGFPkey52A4FVNEfhIF33i1IVMKDdf/c7S3Fi6/kcz+2ZqghTThHPgUw7mdzC0lJB7F2tMOilwOi0BUC47a0JJCI5/qS8ohAGkDoV3QTR/8MIdcPFRjcf5WlCjAzenZ8zDZecvn7wCXegk/SrU9tECYKWyB2jEdJqqzhyaQ9D4gETD9Wh83wtI+uv2QJ7HKWTb3tD3+0INtHUnYaEcuByVteH/9TOto/lE42WSDQLS/TJYccXAHQfL/bARccoQXOL1z/BYoSCU032XQq8Unw9sYLqWnRj+7ELMHbIeK1DBMF0Hrh1Jb/sPv9N0/S7G1bclrV0oz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3420.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(36756003)(8936002)(2616005)(110136005)(8676002)(316002)(4326008)(478600001)(2906002)(31696002)(6666004)(6486002)(6636002)(66556008)(66476007)(66946007)(52116002)(5660300002)(16526019)(186003)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: roIws0FCNRzp0/2Nqt1CZTQRM2olUAatpl427LEl/5xlZoNKoJcT5zQCtLBCFWuGGRUHYsfgyQb1a94JVIQtmQ/jwbuypmSPex9Sc6mTTcHyFZ3qlMtT+uq7PkwntNht5dPDQyrJuapODiUK+5R+xqjbtaUxKb5X2SFSkjunPQLDRW0uGYlKvk+WwCtRUFtUKJRJ9jwAP/G9lD4dTpslKAKXD704ttnC9TYAJ5opD//mDQv7F7LaLgwD3M5A4cKhNrjZv0/idDF9Y8ThmuB1ryh3W6FsqXhDp95k70KB17/dVslFbtWyfZcvkUrGKp10pNCqrEabcxbkevRHUN0qAl1e4BHEdWlFfzACX8z1VNdTfkzacJcGFxmw2O3RdxOO5I8sNGmG89SYeLcExSr+DK5+BNP0S99JCeFji7VNeRdta3hzwaXVvK/cjaAOTk56y4kfSNyTaBaDRz3+q90WEdpfADlvs82FXqCFbgceqz5twuz2ZtIDEFrmZG48Jds/
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0aa435aa-2cad-4522-e4e0-08d8013b7a73
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 06:10:24.3188
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OjEnk7euP4VqtFCbQe5FcU5KSmYa22Nq3qEb3bnavcB/LztiakpbxmWl0Aldi1zVxuMLDTcXS3ufkDQICJlTDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3291
+References: <20200524212816.243139-1-nivedita@alum.mit.edu> <20200525225918.1624470-5-nivedita@alum.mit.edu>
+In-Reply-To: <20200525225918.1624470-5-nivedita@alum.mit.edu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 26 May 2020 08:11:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
+Message-ID: <CAMj1kXHc4o91VkaChoyVzr4w-HOaashMPtkCKLaszMGCxhR_2A@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] x86/boot: Check that there are no runtime relocations
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> +static const struct file_operations pt_debugfs_info_ops = {
->> +     .owner = THIS_MODULE,
->> +     .open = simple_open,
->> +     .read = ptdma_debugfs_info_read,
->> +     .write = NULL,
->> +};
->> +
->> +static const struct file_operations pt_debugfs_queue_ops = {
->> +     .owner = THIS_MODULE,
->> +     .open = simple_open,
->> +     .read = ptdma_debugfs_queue_read,
->> +     .write = ptdma_debugfs_queue_write,
->> +};
->> +
->> +static const struct file_operations pt_debugfs_stats_ops = {
->> +     .owner = THIS_MODULE,
->> +     .open = simple_open,
->> +     .read = ptdma_debugfs_stats_read,
->> +     .write = ptdma_debugfs_stats_write,
->> +};
-> 
-> pls convert to use DEFINE_SHOW_ATTRIBUTE()
-> 
-Sure, will incorporate the changes in next version of patch.
+On Tue, 26 May 2020 at 00:59, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Add a linker script check that there are no runtime relocations, and
+> remove the old one that tries to check via looking for specially-named
+> sections in the object files.
+>
+> Drop the tests for -fPIE compiler option and -pie linker option, as they
+> are available in all supported gcc and binutils versions (as well as
+> clang and lld).
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  arch/x86/boot/compressed/Makefile      | 28 +++-----------------------
+>  arch/x86/boot/compressed/vmlinux.lds.S |  8 ++++++++
+>  2 files changed, 11 insertions(+), 25 deletions(-)
+>
+> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> index d3e882e855ee..679a2b383bfe 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -27,7 +27,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
+>         vmlinux.bin.xz vmlinux.bin.lzo vmlinux.bin.lz4
+>
+>  KBUILD_CFLAGS := -m$(BITS) -O2
+> -KBUILD_CFLAGS += -fno-strict-aliasing $(call cc-option, -fPIE, -fPIC)
+> +KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
+>  KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
+>  cflags-$(CONFIG_X86_32) := -march=i386
+>  cflags-$(CONFIG_X86_64) := -mcmodel=small
+> @@ -49,7 +49,7 @@ UBSAN_SANITIZE :=n
+>  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+>  # Compressed kernel should be built as PIE since it may be loaded at any
+>  # address by the bootloader.
+> -KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
+> +KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
 
->> +void ptdma_debugfs_setup(struct pt_device *pt)
->> +{
->> +     struct pt_cmd_queue *cmd_q;
->> +     char name[MAX_NAME_LEN + 1];
->> +     struct dentry *debugfs_q_instance;
->> +
->> +     if (!debugfs_initialized())
->> +             return;
->> +
->> +     mutex_lock(&pt_debugfs_lock);
->> +     if (!pt_debugfs_dir)
->> +             pt_debugfs_dir = debugfs_create_dir(KBUILD_MODNAME, NULL);
->> +     mutex_unlock(&pt_debugfs_lock);
->> +
->> +     pt->debugfs_instance = debugfs_create_dir(pt->name, pt_debugfs_dir);
->> +
->> +     debugfs_create_file("info", 0400, pt->debugfs_instance, pt,
->> +                         &pt_debugfs_info_ops);
->> +
->> +     debugfs_create_file("stats", 0600, pt->debugfs_instance, pt,
->> +                         &pt_debugfs_stats_ops);
->> +
->> +     cmd_q = &pt->cmd_q;
->> +
->> +     snprintf(name, MAX_NAME_LEN - 1, "q");
->> +
->> +     debugfs_q_instance =
->> +             debugfs_create_dir(name, pt->debugfs_instance);
->> +
->> +     debugfs_create_file("stats", 0600, debugfs_q_instance, cmd_q,
->> +                         &pt_debugfs_queue_ops);
-> 
-> Pls use dbg_dev_root in struct dma_device as root for your own debugfs
-> 
-Sure, will incorporate the changes in next version of patch.
+Do we still need -pie linking with these changes applied?
 
-> Thanks
+>  LDFLAGS_vmlinux := -T
+>
+>  hostprogs      := mkpiggy
+> @@ -84,30 +84,8 @@ vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
+>  vmlinux-objs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+>  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+>
+> -# The compressed kernel is built with -fPIC/-fPIE so that a boot loader
+> -# can place it anywhere in memory and it will still run. However, since
+> -# it is executed as-is without any ELF relocation processing performed
+> -# (and has already had all relocation sections stripped from the binary),
+> -# none of the code can use data relocations (e.g. static assignments of
+> -# pointer values), since they will be meaningless at runtime. This check
+> -# will refuse to link the vmlinux if any of these relocations are found.
+> -quiet_cmd_check_data_rel = DATAREL $@
+> -define cmd_check_data_rel
+> -       for obj in $(filter %.o,$^); do \
+> -               $(READELF) -S $$obj | grep -qF .rel.local && { \
+> -                       echo "error: $$obj has data relocations!" >&2; \
+> -                       exit 1; \
+> -               } || true; \
+> -       done
+> -endef
+> -
+> -# We need to run two commands under "if_changed", so merge them into a
+> -# single invocation.
+> -quiet_cmd_check-and-link-vmlinux = LD      $@
+> -      cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
+> -
+>  $(obj)/vmlinux: $(vmlinux-objs-y) FORCE
+> -       $(call if_changed,check-and-link-vmlinux)
+> +       $(call if_changed,ld)
+>
+>  OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
+>  $(obj)/vmlinux.bin: vmlinux FORCE
+> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> index d826ab38a8f9..f9902c6ffe29 100644
+> --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> @@ -42,6 +42,12 @@ SECTIONS
+>                 *(.rodata.*)
+>                 _erodata = . ;
+>         }
+> +       .rel.dyn : {
+> +               *(.rel.*)
+> +       }
+> +       .rela.dyn : {
+> +               *(.rela.*)
+> +       }
+>         .got : {
+>                 *(.got)
+>         }
+> @@ -83,3 +89,5 @@ ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT en
+>  #else
+>  ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
+>  #endif
+> +
+> +ASSERT(SIZEOF(.rel.dyn) == 0 && SIZEOF(.rela.dyn) == 0, "Unexpected runtime relocations detected!")
 > --
-> ~Vinod
-> 
+> 2.26.2
+>
