@@ -2,66 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D88B1E1A2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221021E1A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgEZERq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 00:17:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725271AbgEZERq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 00:17:46 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C8AA208A7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 04:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590466665;
-        bh=x1WAXI2MxxnLa4yFnZKA0idaQEQ3kvC3jplhuJpq+Gg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CkJNgSWspGqG+zaxQZ+W/RVZ0+lyQy4xHJ/F/ea1z9YYkY4tLlJW265/socMYUrY8
-         VWT6rzvAKyCjKdoqQQt46fRKpzrSf6tOCo8gxNYnlz1gcl5P4aVK6834J7LSL+XyFU
-         ti05uGY+z0cbUYoLQxCwgkgKP20z9CIZD/UDijNU=
-Received: by mail-wm1-f48.google.com with SMTP id c71so1823845wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 21:17:45 -0700 (PDT)
-X-Gm-Message-State: AOAM5328dz7YWHeFcsscOpKOwEEaM2//s9SAfPEEOw2URh82FqGFFwf0
-        Umi1e/oYz+Hee6GjinBwGVNxUjjlc8FKLVfKUXppCg==
-X-Google-Smtp-Source: ABdhPJxoSKfl0wLy1PGLUAYJSGayeMvkqz+7rtpj8a/C3XPWp7v4VscBOW71yibIv8x1Vq81BlZsKdJWI0tHr39eA6Q=
-X-Received: by 2002:a1c:7f96:: with SMTP id a144mr22008255wmd.176.1590466664042;
- Mon, 25 May 2020 21:17:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200525152517.GY325280@hirez.programming.kicks-ass.net>
- <20200526014221.2119-1-laijs@linux.alibaba.com> <20200526014221.2119-5-laijs@linux.alibaba.com>
-In-Reply-To: <20200526014221.2119-5-laijs@linux.alibaba.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 25 May 2020 21:17:32 -0700
-X-Gmail-Original-Message-ID: <CALCETrWyMY-0Z_NJ7DnF4PsSnhnbNsgt14X1GWkajcms-ZUSQA@mail.gmail.com>
-Message-ID: <CALCETrWyMY-0Z_NJ7DnF4PsSnhnbNsgt14X1GWkajcms-ZUSQA@mail.gmail.com>
-Subject: Re: [RFC PATCH V2 4/7] x86/hw_breakpoint: Prevent data breakpoints on user_pcid_flush_mask
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725775AbgEZE27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 00:28:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43364 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgEZE27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 00:28:59 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04Q4STAA134806;
+        Tue, 26 May 2020 04:28:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=LEC5BMJyMpqnL+4zEPOD2chl5tT/X4c/Dejm+NTrDL8=;
+ b=GMeZ+WNp82wO+CvShHc2K3V1Shdhsy/qipiI+rqTixdRx76kP4ptR2IH/fvfLZLG/kgG
+ GJRQ4uRiw8Hxr5moU0mXC0D5TqsFty5HuvVyKN87UjA8bdlBmQMaBNBbQRDWMurpvX8V
+ 7kK0xJAlW7b1oW/jnp4lHwa7VhRWqWU6oS6ZZOGsKcURhYxjII64QeUh2LzeHDYs9ikn
+ ToQdZt2kNOElJg8wkKd1JnhjaEuLJwoInAFEtPT0n+WYrS4jrnqWdRSrIiSYoTt1uQ3/
+ /EmPpVOtPPuCMCMouDBJsjMcb4YoYEgY7NO6ixMSM4g4m7i8zvz/SdCBRBvx0ZSPxlz5 OA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 316uskqe7r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 May 2020 04:28:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04Q4IvpM145515;
+        Tue, 26 May 2020 04:28:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 317ddn7g5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 May 2020 04:28:28 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04Q4SOrw008176;
+        Tue, 26 May 2020 04:28:26 GMT
+Received: from localhost.localdomain (/10.211.9.80)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 25 May 2020 21:28:24 -0700
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     linux-nvme@lists.infradead.org
+Cc:     james.smart@broadcom.com, hch@lst.de, sagi@grimberg.me,
+        chaitanya.kulkarni@wdc.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] nvme-fcloop: verify wwnn and wwpn format
+Date:   Mon, 25 May 2020 21:21:18 -0700
+Message-Id: <20200526042118.17836-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=3 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260031
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9632 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 lowpriorityscore=0
+ suspectscore=3 spamscore=0 priorityscore=1501 clxscore=1011
+ impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ cotscore=-2147483648 adultscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260032
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 25, 2020 at 6:42 PM Lai Jiangshan <laijs@linux.alibaba.com> wrote:
->
-> The percpu user_pcid_flush_mask is used for CPU entry
-> If a data breakpoint on it, it will cause an unwanted #DB.
-> Protect the full cpu_tlbstate structure to be sure.
->
-> There are some other percpu data used in CPU entry, but they are
-> either in already-protected cpu_tss_rw or are safe to trigger #DB
-> (espfix_waddr, espfix_stack).
+The nvme host and target verify the wwnn and wwpn format via
+nvme_fc_parse_traddr(). For instance, it is required that the length of
+wwnn to be either 21 ("nn-0x") or 19 (nn-).
 
-How hard would it be to rework this to have DECLARE_PERCPU_NODEBUG()
-and DEFINE_PERCPU_NODEBUG() or similar?
+Add this verification to nvme-fcloop so that the input should always be in
+hex and the length of input should always be 18.
+
+Otherwise, the user may use e.g. 0x2 to create fcloop local port, while
+0x0000000000000002 is required for nvme host and target. This makes the
+requirement of format confusing.
+
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+ drivers/nvme/target/fcloop.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/nvme/target/fcloop.c b/drivers/nvme/target/fcloop.c
+index f69ce66e2d44..14124e6d4bf2 100644
+--- a/drivers/nvme/target/fcloop.c
++++ b/drivers/nvme/target/fcloop.c
+@@ -43,6 +43,17 @@ static const match_table_t opt_tokens = {
+ 	{ NVMF_OPT_ERR,		NULL		}
+ };
+ 
++static int fcloop_verify_addr(substring_t *s)
++{
++	size_t blen = s->to - s->from + 1;
++
++	if (strnlen(s->from, blen) != NVME_FC_TRADDR_HEXNAMELEN + 2 ||
++	    strncmp(s->from, "0x", 2))
++		return -EINVAL;
++
++	return 0;
++}
++
+ static int
+ fcloop_parse_options(struct fcloop_ctrl_options *opts,
+ 		const char *buf)
+@@ -64,14 +75,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
+ 		opts->mask |= token;
+ 		switch (token) {
+ 		case NVMF_OPT_WWNN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+ 			opts->wwnn = token64;
+ 			break;
+ 		case NVMF_OPT_WWPN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+@@ -92,14 +105,16 @@ fcloop_parse_options(struct fcloop_ctrl_options *opts,
+ 			opts->fcaddr = token;
+ 			break;
+ 		case NVMF_OPT_LPWWNN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+ 			opts->lpwwnn = token64;
+ 			break;
+ 		case NVMF_OPT_LPWWPN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+@@ -141,14 +156,16 @@ fcloop_parse_nm_options(struct device *dev, u64 *nname, u64 *pname,
+ 		token = match_token(p, opt_tokens, args);
+ 		switch (token) {
+ 		case NVMF_OPT_WWNN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+ 			*nname = token64;
+ 			break;
+ 		case NVMF_OPT_WWPN:
+-			if (match_u64(args, &token64)) {
++			if (fcloop_verify_addr(args) ||
++			    match_u64(args, &token64)) {
+ 				ret = -EINVAL;
+ 				goto out_free_options;
+ 			}
+-- 
+2.17.1
+
