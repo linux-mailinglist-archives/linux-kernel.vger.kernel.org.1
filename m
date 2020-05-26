@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D871E2C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4298A1E2AF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392072AbgEZTMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:12:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41858 "EHLO mail.kernel.org"
+        id S2389268AbgEZTA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391420AbgEZTMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:12:19 -0400
+        id S2390735AbgEZTA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6392520888;
-        Tue, 26 May 2020 19:12:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB8B520849;
+        Tue, 26 May 2020 19:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520338;
-        bh=kvu8gkuaANniHdNAzUeEpmxkiBaA2Cxw0Kev4T4ncjk=;
+        s=default; t=1590519626;
+        bh=mDrZBD+hytFrgtujsLQeA7fVJW7W+PKEYS2rt3PjoIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQ5x/ZylYqL2srioGDHojso+OClqSvOaySJz/DHe9kK+nuy8PYtWQXWFQMndTZ9w+
-         ay76kFs9QuTJT6kI8xjFKYLg5el4xrkCJieFZk2ZteQJLeiL8qjOCdHFRNNH1SWJOk
-         Dwc+Judi356QapZOre3Wgdo4YXgcUCBr6eVBPF0w=
+        b=NfGw+B0Olxj/0Gssc8l/zXRDK4J0lFY0lq7rvYNXiM5KKp/ddfXZNziSs2QfGCu+t
+         eh9W3IsrSPeydY+DzXXavAeTDETIJehnyvVme3EjBhXYjAsJ8kKp+B0jNzenbG8KOL
+         ZF20vAsR8O9P6qtj5Ijr5YLHBOoC8RV+3vxLoxYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20 ?= 
+        <frederic.pierret@qubes-os.org>, Kees Cook <keescook@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 041/126] x86/apic: Move TSC deadline timer debug printk
+Subject: [PATCH 4.14 13/59] gcc-common.h: Update for GCC 10
 Date:   Tue, 26 May 2020 20:52:58 +0200
-Message-Id: <20200526183941.420289531@linuxfoundation.org>
+Message-Id: <20200526183912.392359745@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,130 +45,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
 
-[ Upstream commit c84cb3735fd53c91101ccdb191f2e3331a9262cb ]
+[ Upstream commit c7527373fe28f97d8a196ab562db5589be0d34b9 ]
 
-Leon reported that the printk_once() in __setup_APIC_LVTT() triggers a
-lockdep splat due to a lock order violation between hrtimer_base::lock and
-console_sem, when the 'once' condition is reset via
-/sys/kernel/debug/clear_warn_once after boot.
+Remove "params.h" include, which has been dropped in GCC 10.
 
-The initial printk cannot trigger this because that happens during boot
-when the local APIC timer is set up on the boot CPU.
+Remove is_a_helper() macro, which is now defined in gimple.h, as seen
+when running './scripts/gcc-plugin.sh g++ g++ gcc':
 
-Prevent it by moving the printk to a place which is guaranteed to be only
-called once during boot.
+In file included from <stdin>:1:
+./gcc-plugins/gcc-common.h:852:13: error: redefinition of ‘static bool is_a_helper<T>::test(U*) [with U = const gimple; T = const ggoto*]’
+  852 | inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ./gcc-plugins/gcc-common.h:125,
+                 from <stdin>:1:
+/usr/lib/gcc/x86_64-redhat-linux/10/plugin/include/gimple.h:1037:1: note: ‘static bool is_a_helper<T>::test(U*) [with U = const gimple; T = const ggoto*]’ previously declared here
+ 1037 | is_a_helper <const ggoto *>::test (const gimple *gs)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Mark the deadline timer check related functions and data __init while at
-it.
+Add -Wno-format-diag to scripts/gcc-plugins/Makefile to avoid
+meaningless warnings from error() formats used by plugins:
 
-Reported-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/87y2qhoshi.fsf@nanos.tec.linutronix.de
+scripts/gcc-plugins/structleak_plugin.c: In function ‘int plugin_init(plugin_name_args*, plugin_gcc_version*)’:
+scripts/gcc-plugins/structleak_plugin.c:253:12: warning: unquoted sequence of 2 consecutive punctuation characters ‘'-’ in format [-Wformat-diag]
+  253 |   error(G_("unknown option '-fplugin-arg-%s-%s'"), plugin_name, argv[i].key);
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
+Link: https://lore.kernel.org/r/20200407113259.270172-1-frederic.pierret@qubes-os.org
+[kees: include -Wno-format-diag for plugin builds]
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/apic/apic.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ scripts/gcc-plugins/Makefile     | 1 +
+ scripts/gcc-plugins/gcc-common.h | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 5f973fed3c9f..e289722b04f6 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -352,8 +352,6 @@ static void __setup_APIC_LVTT(unsigned int clocks, int oneshot, int irqen)
- 		 * According to Intel, MFENCE can do the serialization here.
- 		 */
- 		asm volatile("mfence" : : : "memory");
--
--		printk_once(KERN_DEBUG "TSC deadline timer enabled\n");
- 		return;
- 	}
+diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
+index e2ff425f4c7e..c404d7628039 100644
+--- a/scripts/gcc-plugins/Makefile
++++ b/scripts/gcc-plugins/Makefile
+@@ -10,6 +10,7 @@ else
+   HOST_EXTRACXXFLAGS += -I$(GCC_PLUGINS_DIR)/include -I$(src) -std=gnu++98 -fno-rtti
+   HOST_EXTRACXXFLAGS += -fno-exceptions -fasynchronous-unwind-tables -ggdb
+   HOST_EXTRACXXFLAGS += -Wno-narrowing -Wno-unused-variable
++  HOST_EXTRACXXFLAGS += -Wno-format-diag
+   export HOST_EXTRACXXFLAGS
+ endif
  
-@@ -552,7 +550,7 @@ static DEFINE_PER_CPU(struct clock_event_device, lapic_events);
- #define DEADLINE_MODEL_MATCH_REV(model, rev)	\
- 	{ X86_VENDOR_INTEL, 6, model, X86_FEATURE_ANY, (unsigned long)rev }
+diff --git a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
+index 797e3786b415..01312b1d6294 100644
+--- a/scripts/gcc-plugins/gcc-common.h
++++ b/scripts/gcc-plugins/gcc-common.h
+@@ -35,7 +35,9 @@
+ #include "ggc.h"
+ #include "timevar.h"
  
--static u32 hsx_deadline_rev(void)
-+static __init u32 hsx_deadline_rev(void)
- {
- 	switch (boot_cpu_data.x86_stepping) {
- 	case 0x02: return 0x3a; /* EP */
-@@ -562,7 +560,7 @@ static u32 hsx_deadline_rev(void)
- 	return ~0U;
++#if BUILDING_GCC_VERSION < 10000
+ #include "params.h"
++#endif
+ 
+ #if BUILDING_GCC_VERSION <= 4009
+ #include "pointer-set.h"
+@@ -841,6 +843,7 @@ static inline gimple gimple_build_assign_with_ops(enum tree_code subcode, tree l
+ 	return gimple_build_assign(lhs, subcode, op1, op2 PASS_MEM_STAT);
  }
  
--static u32 bdx_deadline_rev(void)
-+static __init u32 bdx_deadline_rev(void)
++#if BUILDING_GCC_VERSION < 10000
+ template <>
+ template <>
+ inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
+@@ -854,6 +857,7 @@ inline bool is_a_helper<const greturn *>::test(const_gimple gs)
  {
- 	switch (boot_cpu_data.x86_stepping) {
- 	case 0x02: return 0x00000011;
-@@ -574,7 +572,7 @@ static u32 bdx_deadline_rev(void)
- 	return ~0U;
+ 	return gs->code == GIMPLE_RETURN;
  }
++#endif
  
--static u32 skx_deadline_rev(void)
-+static __init u32 skx_deadline_rev(void)
+ static inline gasm *as_a_gasm(gimple stmt)
  {
- 	switch (boot_cpu_data.x86_stepping) {
- 	case 0x03: return 0x01000136;
-@@ -587,7 +585,7 @@ static u32 skx_deadline_rev(void)
- 	return ~0U;
- }
- 
--static const struct x86_cpu_id deadline_match[] = {
-+static const struct x86_cpu_id deadline_match[] __initconst = {
- 	DEADLINE_MODEL_MATCH_FUNC( INTEL_FAM6_HASWELL_X,	hsx_deadline_rev),
- 	DEADLINE_MODEL_MATCH_REV ( INTEL_FAM6_BROADWELL_X,	0x0b000020),
- 	DEADLINE_MODEL_MATCH_FUNC( INTEL_FAM6_BROADWELL_D,	bdx_deadline_rev),
-@@ -609,18 +607,19 @@ static const struct x86_cpu_id deadline_match[] = {
- 	{},
- };
- 
--static void apic_check_deadline_errata(void)
-+static __init bool apic_validate_deadline_timer(void)
- {
- 	const struct x86_cpu_id *m;
- 	u32 rev;
- 
--	if (!boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER) ||
--	    boot_cpu_has(X86_FEATURE_HYPERVISOR))
--		return;
-+	if (!boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER))
-+		return false;
-+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		return true;
- 
- 	m = x86_match_cpu(deadline_match);
- 	if (!m)
--		return;
-+		return true;
- 
- 	/*
- 	 * Function pointers will have the MSB set due to address layout,
-@@ -632,11 +631,12 @@ static void apic_check_deadline_errata(void)
- 		rev = (u32)m->driver_data;
- 
- 	if (boot_cpu_data.microcode >= rev)
--		return;
-+		return true;
- 
- 	setup_clear_cpu_cap(X86_FEATURE_TSC_DEADLINE_TIMER);
- 	pr_err(FW_BUG "TSC_DEADLINE disabled due to Errata; "
- 	       "please update microcode to version: 0x%x (or later)\n", rev);
-+	return false;
- }
- 
- /*
-@@ -2098,7 +2098,8 @@ void __init init_apic_mappings(void)
- {
- 	unsigned int new_apicid;
- 
--	apic_check_deadline_errata();
-+	if (apic_validate_deadline_timer())
-+		pr_debug("TSC deadline timer available\n");
- 
- 	if (x2apic_mode) {
- 		boot_cpu_physical_apicid = read_apic_id();
 -- 
 2.25.1
 
