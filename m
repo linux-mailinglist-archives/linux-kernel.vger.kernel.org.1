@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DAF1E2C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F85C1E2E77
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404396AbgEZTPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:15:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46672 "EHLO mail.kernel.org"
+        id S2403780AbgEZTBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404196AbgEZTPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:11 -0400
+        id S2390975AbgEZTBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:01:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30ABD208B3;
-        Tue, 26 May 2020 19:15:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BB6B2086A;
+        Tue, 26 May 2020 19:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520510;
-        bh=zcyVS/NHVYgcarFW3W2ZpzEq8bYzC9EzovUz+I2DAyw=;
+        s=default; t=1590519704;
+        bh=4c0Dilxy/m4zNS9uxSrxfs0CPMb4M2smHfnv6POAEWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSZIA+gafZ33oeMDnYNIekdQHiYkWZG/SE0R7XCNo3GlJ/QDi/iA4nPtDekMB+9Is
-         qyyn78euZ7YRNsAppnPncBtHYvTs4H0ky3SKiklh163mg5bGE9GnlRyo/MYY1Zxz+l
-         NigwDByTjIokYRv+7V30awp/DLnjCe4zfUU300Ww=
+        b=PQ5gzDXr5P5IXtjdKrxEHxJ+3A73KASQDfKpTM0cmnI3GR2Yb4SBSRzwrfCgAgO8c
+         WhyC/eQscMRNkjaERd2WTvsXOKXIgel/qjJO0KLBn7+vpMaxXTnVl/0KU0xc0R62sS
+         vHMD1+iTrPIkREycrB8MCTMCiUJ7vMEH+C5WhLYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.6 071/126] powerpc/64s: Disable STRICT_KERNEL_RWX
-Date:   Tue, 26 May 2020 20:53:28 +0200
-Message-Id: <20200526183944.154484688@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 44/59] libnvdimm/btt: Remove unnecessary code in btt_freelist_init
+Date:   Tue, 26 May 2020 20:53:29 +0200
+Message-Id: <20200526183921.286541733@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
+References: <20200526183907.123822792@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Vishal Verma <vishal.l.verma@intel.com>
 
-commit 8659a0e0efdd975c73355dbc033f79ba3b31e82c upstream.
+[ Upstream commit 2f8c9011151337d0bc106693f272f9bddbccfab2 ]
 
-Several strange crashes have been eventually traced back to
-STRICT_KERNEL_RWX and its interaction with code patching.
+We call btt_log_read() twice, once to get the 'old' log entry, and again
+to get the 'new' entry. However, we have no use for the 'old' entry, so
+remove it.
 
-Various paths in our ftrace, kprobes and other patching code need to
-be hardened against patching failures, otherwise we can end up running
-with partially/incorrectly patched ftrace paths, kprobes or jump
-labels, which can then cause strange crashes.
-
-Although fixes for those are in development, they're not -rc material.
-
-There also seem to be problems with the underlying strict RWX logic,
-which needs further debugging.
-
-So for now disable STRICT_KERNEL_RWX on 64-bit to prevent people from
-enabling the option and tripping over the bugs.
-
-Fixes: 1e0fc9d1eb2b ("powerpc/Kconfig: Enable STRICT_KERNEL_RWX for some configs")
-Cc: stable@vger.kernel.org # v4.13+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200520133605.972649-1-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvdimm/btt.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -129,7 +129,7 @@ config PPC
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_MEMBARRIER_CALLBACKS
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
--	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
-+	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC32 && !HIBERNATION)
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
- 	select ARCH_HAS_UACCESS_MCSAFE		if PPC64
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index 471498469d0a..61e519f1d768 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -540,9 +540,9 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
+ 
+ static int btt_freelist_init(struct arena_info *arena)
+ {
+-	int old, new, ret;
++	int new, ret;
+ 	u32 i, map_entry;
+-	struct log_entry log_new, log_old;
++	struct log_entry log_new;
+ 
+ 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
+ 					GFP_KERNEL);
+@@ -550,10 +550,6 @@ static int btt_freelist_init(struct arena_info *arena)
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < arena->nfree; i++) {
+-		old = btt_log_read(arena, i, &log_old, LOG_OLD_ENT);
+-		if (old < 0)
+-			return old;
+-
+ 		new = btt_log_read(arena, i, &log_new, LOG_NEW_ENT);
+ 		if (new < 0)
+ 			return new;
+-- 
+2.25.1
+
 
 
