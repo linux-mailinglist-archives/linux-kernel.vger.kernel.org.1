@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CB51E2F07
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39171E2EE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389387AbgEZSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47506 "EHLO mail.kernel.org"
+        id S2391309AbgEZTcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389338AbgEZSzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:55:11 -0400
+        id S2390114AbgEZS5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:57:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E372208C7;
-        Tue, 26 May 2020 18:55:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2049920849;
+        Tue, 26 May 2020 18:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519310;
-        bh=ENfyGguspCD34AD0RQik4lsmnT2YnKEPit8iBaMEZpo=;
+        s=default; t=1590519454;
+        bh=qZOa3QCG6Q7VYmQ5DXa9APsPepPjLcBPZrx7nlr/bxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lkZpgQUQ4JM5j49lWC6en+tBii/8RbpJPkfVum6p8ds9A6GcnprErivMIN7sfE7K/
-         qScyLqVxATifJrqE8G+RR65JO735b6hAW0q5cIRhFyILEbzoRSC0p9pMajHCENZvtR
-         17qSkVX/5WPRAjgwyzv8pF2m2Z+4/J2vEvRfdIQk=
+        b=Myfq9dL1xUjIZK9be66pW/cDJcUdCtDdNV/gevSV58nyAS1ujj1glLGYco4NWM5a2
+         ByPf/L1S52EsXX3dN6cF6c6/yVRkVqcVK20kQLJolUreNgeDgDgZQE4TnUSvhNQGUg
+         SZcslVenHJCIvDkpxOZtbn0g5O5FiludUOiGNkXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
-        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 19/65] media: fix media devnode ioctl/syscall and unregister race
-Date:   Tue, 26 May 2020 20:52:38 +0200
-Message-Id: <20200526183913.346146501@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 10/64] i2c: mux: demux-pinctrl: Fix an error handling path in i2c_demux_pinctrl_probe()
+Date:   Tue, 26 May 2020 20:52:39 +0200
+Message-Id: <20200526183917.502540404@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
-References: <20200526183905.988782958@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,184 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <shuahkh@osg.samsung.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 6f0dd24a084a17f9984dd49dffbf7055bf123993 upstream.
+[ Upstream commit e9d1a0a41d4486955e96552293c1fcf1fce61602 ]
 
-Media devnode open/ioctl could be in progress when media device unregister
-is initiated. System calls and ioctls check media device registered status
-at the beginning, however, there is a window where unregister could be in
-progress without changing the media devnode status to unregistered.
+A call to 'i2c_demux_deactivate_master()' is missing in the error handling
+path, as already done in the remove function.
 
-process 1				process 2
-fd = open(/dev/media0)
-media_devnode_is_registered()
-	(returns true here)
-
-					media_device_unregister()
-						(unregister is in progress
-						and devnode isn't
-						unregistered yet)
-					...
-ioctl(fd, ...)
-__media_ioctl()
-media_devnode_is_registered()
-	(returns true here)
-					...
-					media_devnode_unregister()
-					...
-					(driver releases the media device
-					memory)
-
-media_device_ioctl()
-	(By this point
-	devnode->media_dev does not
-	point to allocated memory.
-	use-after free in in mutex_lock_nested)
-
-BUG: KASAN: use-after-free in mutex_lock_nested+0x79c/0x800 at addr
-ffff8801ebe914f0
-
-Fix it by clearing register bit when unregister starts to avoid the race.
-
-process 1                               process 2
-fd = open(/dev/media0)
-media_devnode_is_registered()
-        (could return true here)
-
-                                        media_device_unregister()
-                                                (clear the register bit,
-						 then start unregister.)
-                                        ...
-ioctl(fd, ...)
-__media_ioctl()
-media_devnode_is_registered()
-        (return false here, ioctl
-	 returns I/O error, and
-	 will not access media
-	 device memory)
-                                        ...
-                                        media_devnode_unregister()
-                                        ...
-                                        (driver releases the media device
-					 memory)
-
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
-Suggested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reported-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Tested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-[bwh: Backported to 4.4: adjut filename, context]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: 50a5ba876908 ("i2c: mux: demux-pinctrl: add driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/media-device.c  | 15 ++++++++-------
- drivers/media/media-devnode.c | 19 ++++++++++++-------
- include/media/media-devnode.h | 14 ++++++++++++++
- 3 files changed, 34 insertions(+), 14 deletions(-)
+ drivers/i2c/muxes/i2c-demux-pinctrl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 5d79cd481730..0ca9506f4654 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -405,6 +405,7 @@ int __must_check __media_device_register(struct media_device *mdev,
- 	if (ret < 0) {
- 		/* devnode free is handled in media_devnode_*() */
- 		mdev->devnode = NULL;
-+		media_devnode_unregister_prepare(devnode);
- 		media_devnode_unregister(devnode);
- 		return ret;
- 	}
-@@ -423,16 +424,16 @@ void media_device_unregister(struct media_device *mdev)
- 	struct media_entity *entity;
- 	struct media_entity *next;
- 
-+	/* Clear the devnode register bit to avoid races with media dev open */
-+	media_devnode_unregister_prepare(mdev->devnode);
-+
- 	list_for_each_entry_safe(entity, next, &mdev->entities, list)
- 		media_device_unregister_entity(entity);
- 
--	/* Check if mdev devnode was registered */
--	if (media_devnode_is_registered(mdev->devnode)) {
--		device_remove_file(&mdev->devnode->dev, &dev_attr_model);
--		media_devnode_unregister(mdev->devnode);
--		/* devnode free is handled in media_devnode_*() */
--		mdev->devnode = NULL;
--	}
-+	device_remove_file(&mdev->devnode->dev, &dev_attr_model);
-+	media_devnode_unregister(mdev->devnode);
-+	/* devnode free is handled in media_devnode_*() */
-+	mdev->devnode = NULL;
- }
- EXPORT_SYMBOL_GPL(media_device_unregister);
- 
-diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
-index 45bb70d27224..e887120d19aa 100644
---- a/drivers/media/media-devnode.c
-+++ b/drivers/media/media-devnode.c
-@@ -302,6 +302,17 @@ int __must_check media_devnode_register(struct media_device *mdev,
- 	return ret;
- }
- 
-+void media_devnode_unregister_prepare(struct media_devnode *devnode)
-+{
-+	/* Check if devnode was ever registered at all */
-+	if (!media_devnode_is_registered(devnode))
-+		return;
-+
-+	mutex_lock(&media_devnode_lock);
-+	clear_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
-+	mutex_unlock(&media_devnode_lock);
-+}
-+
- /**
-  * media_devnode_unregister - unregister a media device node
-  * @devnode: the device node to unregister
-@@ -309,17 +320,11 @@ int __must_check media_devnode_register(struct media_device *mdev,
-  * This unregisters the passed device. Future open calls will be met with
-  * errors.
-  *
-- * This function can safely be called if the device node has never been
-- * registered or has already been unregistered.
-+ * Should be called after media_devnode_unregister_prepare()
-  */
- void media_devnode_unregister(struct media_devnode *devnode)
- {
--	/* Check if devnode was ever registered at all */
--	if (!media_devnode_is_registered(devnode))
--		return;
--
- 	mutex_lock(&media_devnode_lock);
--	clear_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
- 	/* Delete the cdev on this minor as well */
- 	cdev_del(&devnode->cdev);
- 	mutex_unlock(&media_devnode_lock);
-diff --git a/include/media/media-devnode.h b/include/media/media-devnode.h
-index 8b854c044032..d5ff95bf2d4b 100644
---- a/include/media/media-devnode.h
-+++ b/include/media/media-devnode.h
-@@ -93,6 +93,20 @@ struct media_devnode {
- int __must_check media_devnode_register(struct media_device *mdev,
- 					struct media_devnode *devnode,
- 					struct module *owner);
-+
-+/**
-+ * media_devnode_unregister_prepare - clear the media device node register bit
-+ * @devnode: the device node to prepare for unregister
-+ *
-+ * This clears the passed device register bit. Future open calls will be met
-+ * with errors. Should be called before media_devnode_unregister() to avoid
-+ * races with unregister and device file open calls.
-+ *
-+ * This function can safely be called if the device node has never been
-+ * registered or has already been unregistered.
-+ */
-+void media_devnode_unregister_prepare(struct media_devnode *devnode);
-+
- void media_devnode_unregister(struct media_devnode *devnode);
- 
- static inline struct media_devnode *media_devnode_data(struct file *filp)
+diff --git a/drivers/i2c/muxes/i2c-demux-pinctrl.c b/drivers/i2c/muxes/i2c-demux-pinctrl.c
+index 3e6fe1760d82..a86c511c29e0 100644
+--- a/drivers/i2c/muxes/i2c-demux-pinctrl.c
++++ b/drivers/i2c/muxes/i2c-demux-pinctrl.c
+@@ -270,6 +270,7 @@ static int i2c_demux_pinctrl_probe(struct platform_device *pdev)
+ err_rollback_available:
+ 	device_remove_file(&pdev->dev, &dev_attr_available_masters);
+ err_rollback:
++	i2c_demux_deactivate_master(priv);
+ 	for (j = 0; j < i; j++) {
+ 		of_node_put(priv->chan[j].parent_np);
+ 		of_changeset_destroy(&priv->chan[j].chgset);
 -- 
 2.25.1
 
