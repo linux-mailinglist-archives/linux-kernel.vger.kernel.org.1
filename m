@@ -2,179 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FFE1E21D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 14:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB3A1E21E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 14:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388761AbgEZM2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 08:28:12 -0400
-Received: from mail-eopbgr130108.outbound.protection.outlook.com ([40.107.13.108]:27904
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726437AbgEZM2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 08:28:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WYrtLlCcLcEvuM1fd2OpF5enCfiVuLwushvMco6TqHeNVIQSivHMKTM0QofMrhzfkXb94sL8RSBBXD6a8/MMfQUhJO86hR28c75Mwd3Ed+oRIvDHWmINz375Tyl0X1wTexKDnxxpZ8wB3oTpt9fKwt0G8b8uLXYJ9kUgbBKVabTmMU6HW1F96LtgDiQp4JnO6e3hORBLac9+P7zT7nlBIMkl9fPShp3dFiHxqgG5Nn9dUaxoADGiJT33Jq5Dg+3c5ngPuMwJ0yFzcfSOja1BcunZJlIDAdzjQS2sLyLpcsdk+fO/Q4L6G1D0M2DnNLDU/S5q1Y+pr6b6HcYFiJXraQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=asBaxkY48HPwqYMczS6U0a5yZjLj4CRDkTzC4wCxeQM=;
- b=nnWnvOX1MRBbioYXaSiImkrZq5oYCMFQiPdwDj6c93jWbb9WWkE4Zrxa47NLeXM0Ng/QLUM/P2R8vxezx5i7U6BgOb77tjuOGFDeHnyEnn6swPpXD/W/EvwUXP9vP1bfIU5SrInToi9mu0ypXFQRIgSfDbvm/e1wW6rtGa6JK0rxTnwl4vZt5DJE0diT0uocnz4Y23fBUHArX3h732qx8wfh3wBjZJxM3CaVKRWmEStIf+wx8L4KWWDn6JhNmuBRKgfbLcUkEosM/YSPVUThwvza1XO+09+OzPfv0lj/f3g4zM5LnEL2Ocr/6I19ZiPAJDJ77kpBfP+7Z0kORI7wsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=asBaxkY48HPwqYMczS6U0a5yZjLj4CRDkTzC4wCxeQM=;
- b=ld08dpCm7NtaM1yg4hv5UTkkrzMDNWXHPJpF2i8hVRgrAYCdn8WCBybOz0rSbkDaLhD5v2lk5okvMrvm/wUF2uizzPKD97jDWthtlYPWx8u7bLhUQQuyG4qCNd9hQfOSnAQlRTaiOAcMFx/ZbOiKwZzu6tgSfpSNPjvqsEusemI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB3937.eurprd07.prod.outlook.com (2603:10a6:208:4c::20)
- by AM0PR07MB5618.eurprd07.prod.outlook.com (2603:10a6:208:fb::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.8; Tue, 26 May
- 2020 12:28:07 +0000
-Received: from AM0PR07MB3937.eurprd07.prod.outlook.com
- ([fe80::55f1:90c6:a5ae:2c82]) by AM0PR07MB3937.eurprd07.prod.outlook.com
- ([fe80::55f1:90c6:a5ae:2c82%4]) with mapi id 15.20.3045.012; Tue, 26 May 2020
- 12:28:07 +0000
-From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-To:     netdev@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] macvlan: Skip loopback packets in RX handler
-Date:   Tue, 26 May 2020 14:27:51 +0200
-Message-Id: <20200526122751.409917-1-alexander.sverdlin@nokia.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HE1PR05CA0319.eurprd05.prod.outlook.com
- (2603:10a6:7:92::14) To AM0PR07MB3937.eurprd07.prod.outlook.com
- (2603:10a6:208:4c::20)
+        id S2389007AbgEZM3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 08:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728195AbgEZM3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 08:29:40 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21862C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 05:29:40 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id d7so21739831ioq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 05:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=PHdiDb5Mr94WWWQ3Mnyn3fpsR2uXfxFeRBM2541NcjE=;
+        b=RUDwiQ8S/8SJMjtICUN/A7+hhlOyeFxe4X2MJc6ughX1N2Mqe5tRaN2sstGPyfaZW8
+         wOn8sOrmTMwEsWfWs7C6J03EKDFVg/6wSfSZ57LMIpZsDxRdLU6R4FVV7eiU1dt0PfM2
+         YW61zSmNzmnpkAAf7GV0vOvFLGryVmQ0xkoE0Uor9rIlMFyjc9/MdBhOX9PeDfnvEEne
+         En4ykExbAHKQ1EKQ/OAQshQu1XeGFP5e3BaiUxxHxtEWQ21burD+cFW/aKTHii2Aky9Y
+         yOi3JsoYDLu4coL758Wyiwis3KJ2F1w5TRrQQftO0xLHwDOKzRSJpj+4XrcHOUaejNlL
+         yHxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=PHdiDb5Mr94WWWQ3Mnyn3fpsR2uXfxFeRBM2541NcjE=;
+        b=Q56dnG8JBM/QB8rfjHiBczaXeV9yaQLG26E3OkmHTLzE/1Q+9BRx0gUiu4JYdRsJ12
+         QG7qruO8AsHkFyNVKuqw29SCYFwhoyO9vnxwTAxi4Oxz7tW5a7VJZJI8BFRYkdisJsvj
+         Ciou94aKzusAerBYwi8wvhxiRGy8lXSX7K3PyBffJrME5B4TQoWYdhkDwPY3MKE/z0Ui
+         qz9JQLR3QWzrgUVqKh96jOSoFgBgxLGZ3hNtrDmqiSxVy5B60SBLBnb44BNKVl4ysyJp
+         Bn1vAs5i3/0RwBl0uRHt2qqJh7ow16j9qOZ4tbCBh0+Zl2HwG1eolw2NqecU7clcUomM
+         dKRw==
+X-Gm-Message-State: AOAM531P71uBlEw9IXQlTCG/jk+g5fpI1Y8tDFCpR5c3hFWvT8btq1LX
+        JRJG4NWKJa3Tmb+Udb0m60GvrdUMsTtj/QzJ/qk=
+X-Google-Smtp-Source: ABdhPJz092CIn1swlaEjty8qDGM37LW/qzCfFW8c6juBp/HbDtGs8w1WFdbgXt1AwenZDkdOvZUIHxM4oaePLV1NVAc=
+X-Received: by 2002:a02:ca18:: with SMTP id i24mr742148jak.70.1590496177978;
+ Tue, 26 May 2020 05:29:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.2.0) by HE1PR05CA0319.eurprd05.prod.outlook.com (2603:10a6:7:92::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Tue, 26 May 2020 12:28:06 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [131.228.2.0]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: dd6d0462-2d93-472f-54aa-08d801703e7f
-X-MS-TrafficTypeDiagnostic: AM0PR07MB5618:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR07MB561869894C0431DAA3DE16C288B00@AM0PR07MB5618.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 041517DFAB
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /D3k8jj1XKeAJb+64M+b/Wy8Q0zXgYTbXMaulCCC759U2uRRpAVvy7D9fA9qBu/Mkg1iIGYy34BB/HpBwU9VOP5FUnN2LUH3fuQfMdLH2zcAA88rdxqyl2B/u6tpcI2cRgu6xbDguiY1TG70/m3DtTdKpFuoWD7jNWQ0gYAMNNx8uG79vbvP3GX8hpzDwD47I4etB1F8h46oeTmXleJnXyHRIG7xIKQAcRg9zICQjL+bfnFYsNeFOz/T3CYN77mtV3xuSgPsi824hILQuTpajQJZ/Rsin+56rBVTzEC+etZPN56NaVpKKK8syMa/0SHO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB3937.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(2616005)(956004)(6512007)(6506007)(6916009)(86362001)(52116002)(478600001)(36756003)(16526019)(186003)(26005)(1076003)(4326008)(8936002)(66476007)(66946007)(66556008)(6486002)(5660300002)(8676002)(2906002)(6666004)(54906003)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Nx+jxjq41bNskmahzGCQym7978+R+fuZTT0IYDHxa/OFcMU1ht3glx2QQadcnGRV55Qnngwn7AHOYVC/bsNLehSCWcWSmqN/ZuAEn4uEoRRrL1vHLbjPxxvHSxMhNvBZGC/ES9W6m03+RWbn7RJqyo8uHsMc4I0mJJXBiV2w2IZ4nWvIU+MFZI9/pCSHZxm7PHHc1/a6Rxc1QUWUjaOgJGQuw/WLRUQ1CVjynJRPw/GGMAHm8DDOuSReN59Zu8KV7w4VzdEdUKqSy/YIvwv3y21XHTqIZ8Rnc+X9IYLv15w1lFyLuUhARnj1WJh+PGH/9UH/BotogiZ4CeqytRI8dCud+jOgarPRE0IOhmw4GUs9t1TgJKXVw0+/txrEYOEIBStDZ1xEIzpkeYy+pt6t3REJ/wJBPlIUFdywGuU3ZA65u2bugoRHkUgAfsHaVEPrDZFf0VABTnWcKuS0JYO0itwn/vPS1MCWzrwdOQiOaxk=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd6d0462-2d93-472f-54aa-08d801703e7f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 12:28:07.1011
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ad75G8VguW47b+ESHiaLyeLxvGhbgb9Tuxnq5B30SCAIVTBDHMMknVMaihFgleyn9yyEaCTEdVkQICr0J/HYdrfyLabaaoaUYZryFAYGbrQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB5618
+References: <20200524212816.243139-1-nivedita@alum.mit.edu> <20200525225918.1624470-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200525225918.1624470-1-nivedita@alum.mit.edu>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 26 May 2020 14:29:27 +0200
+Message-ID: <CA+icZUVa8FhhwHgXn1o_hFmgqFG6-KE1F+qvkdCzQjmSSSDWDw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] x86/boot: Remove runtime relocations from
+ compressed kernel
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Tue, May 26, 2020 at 12:59 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> The compressed kernel currently contains bogus runtime relocations in
+> the startup code in head_{32,64}.S, which are generated by the linker,
+> but must not actually be processed at runtime.
+>
+> This generates warnings when linking with the BFD linker, and errors
+> with LLD, which defaults to erroring on runtime relocations in read-only
+> sections. It also requires the -z noreloc-overflow hack for the 64-bit
+> kernel, which prevents us from linking it as -pie on an older BFD linker
+> (<= 2.26) or on LLD, because the locations that are to be apparently
+> relocated are only 32-bits in size and so cannot normally have
+> R_X86_64_RELATIVE relocations.
+>
+> This series aims to get rid of these relocations. It is based on
+> efi/next, where the latest patches touch the head code to eliminate the
+> global offset table.
+>
+> The first patch is an independent fix for LLD, to avoid an orphan
+> section in arch/x86/boot/setup.elf.
+>
+> The second patch gets rid of almost all the relocations. It uses
+> standard PIC addressing technique for 32-bit, i.e. loading a register
+> with the address of _GLOBAL_OFFSET_TABLE_ and then using GOTOFF
+> references to access variables. For 64-bit, there is 32-bit code that
+> cannot use RIP-relative addressing, and also cannot use the 32-bit
+> method, since GOTOFF references are 64-bit only. This is instead handled
+> using a macro to replace a reference like gdt with (gdt-startup_32)
+> instead. The assembler will generate a PC32 relocation entry, with
+> addend set to (.-startup_32), and these will be replaced with constants
+> at link time. This works as long as all the code using such references
+> lives in the same section as startup_32, i.e. in .head.text.
+>
+> The third patch addresses a remaining issue with the BFD linker, which
+> insists on generating runtime relocations for absolute symbols. We use
+> z_input_len and z_output_len, defined in the generated piggy.S file, as
+> symbols whose absolute "addresses" are actually the size of the
+> compressed payload and the size of the decompressed kernel image
+> respectively. LLD does not generate relocations for these two symbols,
+> but the BFD linker does, prior to the upcoming 2.35. To get around this,
+> piggy.S is extended to also define two u32 variables (in .rodata) with
+> the lengths, and the head code is modified to use those instead of the
+> symbol addresses.
+>
+> An alternative way to handle z_input_len/z_output_len would be to just
+> include piggy.S in head_{32,64}.S instead of as a separate object file,
+> since the GNU assembler doesn't generate relocations for symbols set to
+> constants.
+>
+> The last patch adds a check in the linker script to ensure that no
+> runtime relocations get reintroduced. Since the GOT has been eliminated
+> as well, the compressed kernel has no runtime relocations whatsoever any
+> more.
+>
+> Changes from v1:
+> - Add .text.* to setup.ld instead of just .text.startup
+> - Rename the la() macro introduced in the second patch for 64-bit to
+>   rva(), and rework the explanatory comment.
+> - In the last patch, check both .rel.dyn and .rela.dyn, instead of just
+>   one per arch.
+>
 
-Ignore loopback-originatig packets soon enough and don't try to process L2
-header where it doesn't exist. The very similar br_handle_frame() in bridge
-code performs exactly the same check.
+Hi,
 
-This is an example of such ICMPv6 packet:
+I would like to test this patchset v2 on top of Linux v5.7-rc7 together with:
 
-skb len=96 headroom=40 headlen=96 tailroom=56
-mac=(40,0) net=(40,40) trans=80
-shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
-csum(0xae2e9a2f ip_summed=1 complete_sw=0 valid=0 level=0)
-hash(0xc97ebd88 sw=1 l4=1) proto=0x86dd pkttype=5 iif=24
-dev name=etha01.212 feat=0x0x0000000040005000
-skb headroom: 00000000: 00 7c 86 52 84 88 ff ff 00 00 00 00 00 00 08 00
-skb headroom: 00000010: 45 00 00 9e 5d 5c 40 00 40 11 33 33 00 00 00 01
-skb headroom: 00000020: 02 40 43 80 00 00 86 dd
-skb linear:   00000000: 60 09 88 bd 00 38 3a ff fe 80 00 00 00 00 00 00
-skb linear:   00000010: 00 40 43 ff fe 80 00 00 ff 02 00 00 00 00 00 00
-skb linear:   00000020: 00 00 00 00 00 00 00 01 86 00 61 00 40 00 00 2d
-skb linear:   00000030: 00 00 00 00 00 00 00 00 03 04 40 e0 00 00 01 2c
-skb linear:   00000040: 00 00 00 78 00 00 00 00 fd 5f 42 68 23 87 a8 81
-skb linear:   00000050: 00 00 00 00 00 00 00 00 01 01 02 40 43 80 00 00
-skb tailroom: 00000000: ...
-skb tailroom: 00000010: ...
-skb tailroom: 00000020: ...
-skb tailroom: 00000030: ...
+[1] x86/boot: Discard .discard.unreachable for arch/x86/boot/compressed/vmlinux
+[2] x86/boot: Correct relocation destination on old linkers
 
-Call Trace, how it happens exactly:
- ...
- macvlan_handle_frame+0x321/0x425 [macvlan]
- ? macvlan_forward_source+0x110/0x110 [macvlan]
- __netif_receive_skb_core+0x545/0xda0
- ? enqueue_task_fair+0xe5/0x8e0
- ? __netif_receive_skb_one_core+0x36/0x70
- __netif_receive_skb_one_core+0x36/0x70
- process_backlog+0x97/0x140
- net_rx_action+0x1eb/0x350
- ? __hrtimer_run_queues+0x136/0x2e0
- __do_softirq+0xe3/0x383
- do_softirq_own_stack+0x2a/0x40
- </IRQ>
- do_softirq.part.4+0x4e/0x50
- netif_rx_ni+0x60/0xd0
- dev_loopback_xmit+0x83/0xf0
- ip6_finish_output2+0x575/0x590 [ipv6]
- ? ip6_cork_release.isra.1+0x64/0x90 [ipv6]
- ? __ip6_make_skb+0x38d/0x680 [ipv6]
- ? ip6_output+0x6c/0x140 [ipv6]
- ip6_output+0x6c/0x140 [ipv6]
- ip6_send_skb+0x1e/0x60 [ipv6]
- rawv6_sendmsg+0xc4b/0xe10 [ipv6]
- ? proc_put_long+0xd0/0xd0
- ? rw_copy_check_uvector+0x4e/0x110
- ? sock_sendmsg+0x36/0x40
- sock_sendmsg+0x36/0x40
- ___sys_sendmsg+0x2b6/0x2d0
- ? proc_dointvec+0x23/0x30
- ? addrconf_sysctl_forward+0x8d/0x250 [ipv6]
- ? dev_forward_change+0x130/0x130 [ipv6]
- ? _raw_spin_unlock+0x12/0x30
- ? proc_sys_call_handler.isra.14+0x9f/0x110
- ? __call_rcu+0x213/0x510
- ? get_max_files+0x10/0x10
- ? trace_hardirqs_on+0x2c/0xe0
- ? __sys_sendmsg+0x63/0xa0
- __sys_sendmsg+0x63/0xa0
- do_syscall_64+0x6c/0x1e0
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+I tried to pull efi/next on top of Linux v5.7-rc7 and cleaned up the
+merge problems, but I am not sure I did it correctly.
+So, which patches are really relevant from efi/next?
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/net/macvlan.c | 4 ++++
- 1 file changed, 4 insertions(+)
+What's your suggestions?
 
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index e7289d6..7cea2fa 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -447,6 +447,10 @@ static rx_handler_result_t macvlan_handle_frame(struct sk_buff **pskb)
- 	int ret;
- 	rx_handler_result_t handle_res;
- 
-+	/* Packets from dev_loopback_xmit() do not have L2 header, bail out */
-+	if (unlikely(skb->pkt_type == PACKET_LOOPBACK))
-+		return RX_HANDLER_PASS;
-+
- 	port = macvlan_port_get_rcu(skb->dev);
- 	if (is_multicast_ether_addr(eth->h_dest)) {
- 		unsigned int hash;
--- 
-2.10.2
+Regards,
+- Sedat -
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/patch/?id=d6ee6529436a15a0541aff6e1697989ee7dc2c44
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/patch/?id=5214028dd89e49ba27007c3ee475279e584261f0
+
+> Arvind Sankar (4):
+>   x86/boot: Add .text.* to setup.ld
+>   x86/boot: Remove run-time relocations from .head.text code
+>   x86/boot: Remove runtime relocations from head_{32,64}.S
+>   x86/boot: Check that there are no runtime relocations
+>
+>  arch/x86/boot/compressed/Makefile      |  36 +--------
+>  arch/x86/boot/compressed/head_32.S     |  59 +++++++-------
+>  arch/x86/boot/compressed/head_64.S     | 108 +++++++++++++++----------
+>  arch/x86/boot/compressed/mkpiggy.c     |   6 ++
+>  arch/x86/boot/compressed/vmlinux.lds.S |   8 ++
+>  arch/x86/boot/setup.ld                 |   2 +-
+>  6 files changed, 115 insertions(+), 104 deletions(-)
+>
+> --
+> 2.26.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200525225918.1624470-1-nivedita%40alum.mit.edu.
