@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A1C1E19B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 05:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933A41E19BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 05:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388571AbgEZDMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 23:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388460AbgEZDMP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 23:12:15 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA903C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 20:12:13 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z206so7819267lfc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 20:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=CknBwaUFtv0qxcVtdA7R6Jj4nDGs83jnlaCAHY8tFtSKP1xCU7pzaNlKPl8Tuzr6Ur
-         vSH43RyRXnD80fgK+5tXGSGbhXwMMjLTu4Csncj1uGERJ2SjbHNSHb+LuGvY6EYwCOyX
-         RWV+ji7MYgpakoMt9kdkX9yZqifYO55ScahlCTG1u4+NYXw7gZzI3L1dSe7kcUHcQKsF
-         pq0rpUA4hTUL9875uQ9b0gjd+IG/gdM0TK/wZHQZMJ1yEiID2bRJt/WGX2M4cK86RvZE
-         A1JARcnVJYfsfo1h0fSWgpJMyOWRFwFncmtzBhxSZpYKj9yzdQrdvtx465LsOPaV5Qpv
-         i6rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=ox/GO1htr/T53lLnaHdvCqxofADmQCTRD8zu7CIoccgA0gn+NSK3mHnku+ShgsP2j3
-         JkW3cUP/pQk0L6hevR760QCdc6dVis2bw2qVegs/t66+MELNJI9uhwmm9hIxquw7noEu
-         Bc8PLyH6NIj02Ej0vf/Oetuo1jlsJ48NhbZl/zWF4iQvE2F9JsEDPrGxCdaAN/hcCoZW
-         z3CPptx6+aOfqLn57Niab3kvycnUfT5mCCaxFXY8Zf4XX6J0bpR3u4kl5jnbZDOrd8Mt
-         NypS7o93X+9TiU7OmAKYC4gVIJpf0yUst38fsKCvA9FdnCdOIM5UjodsuZOTe5eu3JN1
-         E86w==
-X-Gm-Message-State: AOAM532MHgImJPe0kO9vVWQtGQ2fUgUqEnaOYHIkyjpnf6Yh5Ctvtm2D
-        nKTRyt164Te0pwVFmcgeIxtZqV+yNHu2Mzh/vFU=
-X-Google-Smtp-Source: ABdhPJy2qPB46BILmPyKqosm8Z7szM2RrpD11173aPrpY4SjufCQmGWqqjboWELjfnGcjKpIgv8pYh937w8d074ItNg=
-X-Received: by 2002:a19:6e0e:: with SMTP id j14mr4718488lfc.155.1590462731699;
- Mon, 25 May 2020 20:12:11 -0700 (PDT)
+        id S2388601AbgEZDMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 23:12:50 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37779 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388460AbgEZDMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 May 2020 23:12:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49WJtQ6Mthz9sRW;
+        Tue, 26 May 2020 13:12:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590462768;
+        bh=ibjYOJ+mjGcTQ7SK0V45i01JnzyGkUrx46Df39/IMCM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Qt5OhoU57GhRKI5+nV9xTdZiUCDsydy1/brpQKpbkAWDkZmxifs59xK7MWvqHTVUV
+         Uyg5LBXVAmnHMPr+/iZluxJobEjwErOwTO2GftS1zxy8UiiRWQHAyGLArvgFIyXxPI
+         /dX7Bx9ORysmevIB9gH6Kq0HapKaBkO5mKmVbF/lXK7rXD6+CTls/UT9inGJ2k0Zfc
+         et/uiTHbeTA6/cX6CLSjmLnGu1Xz376Lsd+vNsum9vBmlkBTyd7GOqvEZTu0nragW6
+         UkHRmzCIybbZSdjQwLVcaThDSIt/ECzPqnQLzCqz/hlZS8lGTB1d0hCl3DqNoL5erT
+         GGv2IDBwGh3DA==
+Date:   Tue, 26 May 2020 13:12:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
+        <bjorn.topel@intel.com>
+Subject: linux-next: manual merge of the net-next tree with the bpf tree
+Message-ID: <20200526131243.0915e58c@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:a05:6504:11d9:0:0:0:0 with HTTP; Mon, 25 May 2020 20:12:11
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <bunny2320123@gmail.com>
-Date:   Mon, 25 May 2020 20:12:11 -0700
-Message-ID: <CA+z0umGrhjTnmwKm_p=TV=2zRBA2F_qwUvgFOWGTCtzBoDZuGQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/hcL6WG8dNvQARE_6wapKFfn";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/hcL6WG8dNvQARE_6wapKFfn
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  net/xdp/xdp_umem.c
+
+between commit:
+
+  b16a87d0aef7 ("xsk: Add overflow check for u64 division, stored into u32")
+
+from the bpf tree and commit:
+
+  2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
 --=20
-Lieber Freund (Assalamu Alaikum),
+Cheers,
+Stephen Rothwell
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+diff --cc net/xdp/xdp_umem.c
+index 3889bd9aec46,19e59d1a5e9f..000000000000
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@@ -389,13 -349,10 +353,10 @@@ static int xdp_umem_reg(struct xdp_ume
+  	if (headroom >=3D chunk_size - XDP_PACKET_HEADROOM)
+  		return -EINVAL;
+ =20
+- 	umem->address =3D (unsigned long)addr;
+- 	umem->chunk_mask =3D unaligned_chunks ? XSK_UNALIGNED_BUF_ADDR_MASK
+- 					    : ~((u64)chunk_size - 1);
+  	umem->size =3D size;
+  	umem->headroom =3D headroom;
+- 	umem->chunk_size_nohr =3D chunk_size - headroom;
++ 	umem->chunk_size =3D chunk_size;
+ -	umem->npgs =3D size / PAGE_SIZE;
+ +	umem->npgs =3D (u32)npgs;
+  	umem->pgs =3D NULL;
+  	umem->user =3D NULL;
+  	umem->flags =3D mr->flags;
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+--Sig_/hcL6WG8dNvQARE_6wapKFfn
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+-----BEGIN PGP SIGNATURE-----
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7MiSsACgkQAVBC80lX
+0GzFOgf8DouWICsguEs8Ast+8L7nS6YDM+TWtX6ZH+95i3RHscLa0clIZ3dcBqoq
+YwPG6GVT5/8buiMD+GvcJfoyssMsSMcy2L81QEs/OJDnI225g/i7IE7HnAXNQOAD
+0C+D8lfzCcl8vdjp2EJ5VMHsqxzhEzc0dsma3gmH2wDaBfir/O6ZiXQaT1I4BuB1
+9zZs9KdM+A5JfKGZkAG26JTUFXyqcTXlURVv5E+bqiUftlxJnX9vUQ7K4KS7kJPt
+Fg/oR8kayjBCZjxWaWO4rBFYx4Nt9uvwTRGooT2EPkvNrqWgy9i3AJqCT4ULD5LT
+Ah9TZlb1tz2I8SHxSfphISmXK9hofQ==
+=v5to
+-----END PGP SIGNATURE-----
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+--Sig_/hcL6WG8dNvQARE_6wapKFfn--
