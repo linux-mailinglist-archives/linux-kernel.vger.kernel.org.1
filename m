@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29AD1E2FCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A111E2FD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390657AbgEZUOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        id S2391028AbgEZUQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389641AbgEZUN7 (ORCPT
+        with ESMTP id S2390995AbgEZUQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:13:59 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B3FC03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:13:59 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id h21so25219961ejq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 13:13:59 -0700 (PDT)
+        Tue, 26 May 2020 16:16:02 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15E3C03E96D;
+        Tue, 26 May 2020 13:16:01 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n141so9641695qke.2;
+        Tue, 26 May 2020 13:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=yS1DoO/K1G+meTRAQqLkUWF4N4+Wqw/IwFwkXLkuTd8=;
-        b=HKVR2q9JAXogkKSM9GCjIMO45dD/mqr+8Qm4/bhisxoqsjyY1VCl3gTKI+zI2MR+g6
-         zNeE+aaTEDjb1GAWD0JxMAtB1o9ZlT4+edenoQNwE/NxJScGPJHWzyQpnU+PKPaUddic
-         b8g7RoKAEL4Qwt3xUnps/M8ts30bRF1Qo4n8YjzgtHa48pSQO+Q0berSafuUNJEPIylJ
-         VYYLnbVcy+Rj+0tkyzOyVbyb9woutUyic3Gd7f7bYhoOiz3+I6zFquEz3rEAPewBTjXs
-         RhFoGU7VfdQIfL9sf7VDWNqt85P/xt2tc8B8Cv6EYADszYvM0wt2AL+YaobhMHEH+1lY
-         fpMw==
+        bh=OPSTz3+9sL2j3CNpWrd73Z+W3szJ+Rl89CpGrZfEGXY=;
+        b=D7OGT7lwvBc9ui6tQG2wQjKXvF4bduIo/Gh4TwJYBME2EKlurLMFbr9vrt9hpc9RFI
+         GWZNCavsf9YAg3OvTW+qXMOQtr9o/CzG8k8cEhSzF7XDHjoI3zsTr8DhfDLuD28GNdxy
+         +RG5BQlpeQ+7ua+bb194hjapymfbrlv27YmsHDLT7G8dsuDmb+QiJglndoCNk4mHxmX5
+         4EFAQczSFX3MRNZLtEp87sdxpg4KWoD/9xgcHLcUSRFKtj9QQcIsXeUH2aVuEL5kEkdm
+         6uqq63WTVb7uPGOjb8Y6+Zj/S02Yw/yRwdCg1pwcUSHc1FC6tol2aZP7Cip/lyWCxwwi
+         qJpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yS1DoO/K1G+meTRAQqLkUWF4N4+Wqw/IwFwkXLkuTd8=;
-        b=ZJ7lBSc0Eel6BuSr1QzTxpMhDRxuDHDGuvsOLH0EAFW6zMgc8dvdhrRgpDD0L8icw7
-         A3isJ/EO408BeHNxYY07yPoXVzuNko+2lnPF4IiWDlTt6ec+kJgusr8eKWMZs3ZAAIwQ
-         hwieLgFcHldGqhKdnINOBcpEw1VEJ6UrAIgqvgbscEzDt4BUSM+BwWC/32STq7g/hG3h
-         +erGj+15I7wZ5vvkGguzjjRik8bitj/3v5rvwaZPJMNREOxEIxUY6gpiATW+MOeNPyRD
-         5R1g8FBd+/+Dns0FxRLUr/dCq5FK3o1u8pr5y3IuGHY93yxOFP95x3/oN/18bLO4bPkp
-         3uDg==
-X-Gm-Message-State: AOAM530sL73qysXwchKa8oTLFgH50lnuOGNQCXK0/BkcWoSACNxC07uS
-        uBZCErQcW08N1l5gIr4YWeOaydKWHTqsH5bF2mcci3+H
-X-Google-Smtp-Source: ABdhPJzpzWLcOzK/mcamYh7hMdwPFJxWohAZZvqCy13eksOwUBACePxXGwAuK6thRgZsyhCoJQ8SNUlw7i+8nB9iXR4=
-X-Received: by 2002:a17:906:abce:: with SMTP id kq14mr2513446ejb.187.1590524037659;
- Tue, 26 May 2020 13:13:57 -0700 (PDT)
+        bh=OPSTz3+9sL2j3CNpWrd73Z+W3szJ+Rl89CpGrZfEGXY=;
+        b=lBRYHmhK0lq/LwELzafmXT7xTDdEOjnDfrUW+dPXr8qkM/bKyEtX1GMcX2Ieqnlws5
+         O9uJOmNuEstYC2jD03hWB6Jq6oy9/YqfMfVX3SX4CtEcxvguBwRZgGTKtTKmX2J3HZuE
+         Urpcjv01jxfKmsgVjiI030e5PxIOdxisLFJ0/rUzK8vrZckDXTDK5t65c6VlBPDKNXMd
+         +/p4jbtXnBIY0W7dnsmzmQPc2CtbgiX0QSsn2fY2Ob9U9QzFAHNFFWdfOFyTV0WjZiEn
+         RU6bEIgODfiijcXLMJZG+A6MYpjBoyQGwL/KKRRmWOztNp2YFtN1CqOif5nGDDEP3TxG
+         C8Cw==
+X-Gm-Message-State: AOAM530qdSzJVISNrJT8sEb8Ijvl05UrMZkHu7SsS/3jRAJHNnD8l77C
+        lHir1UDAW/aovPRht9oMxOSEZMyiQG0/G4rCKKM=
+X-Google-Smtp-Source: ABdhPJy5uHT1787SR+PrHNYauXfRq8ltIDeLGSPFWzi22Fq05bz0Li/ElEv6zxIqs6ZD25P328y26fcrZ1KcatNwfYU=
+X-Received: by 2002:a37:a89:: with SMTP id 131mr635420qkk.92.1590524161143;
+ Tue, 26 May 2020 13:16:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <bcefba5b-107c-716b-bb60-5b4b2476894b@o2online.de>
- <CAFBinCD8-tr97GCVhBi5R1nzxLhy=_6VuLY8ubUO1SDTFjiELw@mail.gmail.com>
- <22af498b-44a0-ced3-86f3-114427a73910@o2online.de> <CAFBinCCGAkhPCwOW=mAvsV2qdixq8Gf8yQw1gYErHpz7KmuAZg@mail.gmail.com>
- <5de6db87-a71f-d14c-390d-b0caeab5d650@o2online.de> <CAFBinCDB9c2uMRXO9DKSX4hC7EBgnRfBa+BM5-VdEPZeieKn_w@mail.gmail.com>
- <813dfc08-f13a-dcac-0bd9-821d188bba08@o2online.de> <CAFBinCCgZF5Pu944q-_+V0yQ-nc6q82xDjJHjsnj6=uOQL+DEw@mail.gmail.com>
- <8cbbf90c-54ba-8fa3-3386-022c9c997a20@o2online.de> <CAFBinCBukGbzgO-Y1dCRYXZHhX2PcSEQQ_XvhHqLcnw0fGDP8w@mail.gmail.com>
- <a95f5fe1-4376-f872-961a-c2237c36811c@o2online.de> <CAFBinCCgFtv=u4ZKW3rdoDPZ_jh3jU03MDxHoDk=pbi+4pxB_w@mail.gmail.com>
- <c244b34f-8958-0cbd-38e6-a786aef56e7c@o2online.de> <CAFBinCDvwy7xCYdJzRHV0ACJ=CF+A5efD-WpPvyE62gfUribUw@mail.gmail.com>
- <fb9d8d57-2958-4023-2a95-af240714d5df@o2online.de>
-In-Reply-To: <fb9d8d57-2958-4023-2a95-af240714d5df@o2online.de>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 26 May 2020 22:13:46 +0200
-Message-ID: <CAFBinCCpVCLHQ6TPegKjy+32nKGbJKKeQyjCSgnCNBMDgs2kpg@mail.gmail.com>
-Subject: Re: RTL8723BS driver doesn't work for,me but I can help testing
-To:     Tobias Baumann <017623705678@o2online.de>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
+References: <20200522003850.GA32698@paulmck-ThinkPad-P72> <20200522094407.GK325280@hirez.programming.kicks-ass.net>
+ <20200522143201.GB32434@rowland.harvard.edu> <20200522174352.GJ2869@paulmck-ThinkPad-P72>
+ <006e2bc6-7516-1584-3d8c-e253211c157e@fb.com> <ac799c98-45dd-d056-386f-cbebc7270c0c@gmail.com>
+ <CAEf4BzYGbLfGA=NN=dP1RqDj7yp_Fnu0L-1bgQojPMt0-Y_X=g@mail.gmail.com>
+ <69ed3604-4275-d73e-a5d6-2b70dd877104@gmail.com> <CAEf4BzajE6jCkbBQ+f0cG=Y+vAEPWGNhfOMFVVhoDZWjNV-oGA@mail.gmail.com>
+ <d1113b47-a920-c0e4-9aa4-88781368a26f@gmail.com>
+In-Reply-To: <d1113b47-a920-c0e4-9aa4-88781368a26f@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 26 May 2020 13:15:49 -0700
+Message-ID: <CAEf4BzZ0mCmUomn0poLk_ADJs9J-fZ0Um6QEqwg1TUL86TtgUg@mail.gmail.com>
+Subject: Re: Some -serious- BPF-related litmus tests
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     luc.maranget@inria.fr, Andrii Nakryiko <andriin@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Zijlstra <peterz@infradead.org>, parri.andrea@gmail.com,
+        will@kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        dlustig@nvidia.com, Joel Fernandes <joel@joelfernandes.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,71 +73,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tobias,
-
-
-On Thu, May 21, 2020 at 1:17 PM Tobias Baumann <017623705678@o2online.de> w=
-rote:
-[...]
->>> with my patch and oleg RC5 hotstart(shutdown now)  do not work with my
->>> box ( wlan goes back to sleep mode always)
->>
->> I'm not sure what you mean here.
->> if you run "shutdown now" then the system does not shut down and only
->> wifi goes to sleep mode?
+On Tue, May 26, 2020 at 3:50 AM Akira Yokosawa <akiyks@gmail.com> wrote:
 >
-> i meant  that after a reboot with "shutdown now" my box restart but the w=
-ifi chip is back in sleep mode ,  while the wifi chip was online befor the =
-restart .
-I don't know how sleep mode is controlled (some GPIO or through SDIO
-communication) so I can't comment on that
-
-[...]
->  i read also the AP6330 and BCM4330 Datasheet  for both of them is a star=
-t order inside the datashet ( i think that RTL8723BS should have same timmi=
-ng) . the time between 32k clock and WLAN_dis should be more than minimum 2=
- clock cycle (1/32kHZ * 2cycle =3D 0.06ms )
+> On Mon, 25 May 2020 16:31:05 -0700, Andrii Nakryiko wrote:
+> > On Mon, May 25, 2020 at 3:01 PM Akira Yokosawa <akiyks@gmail.com> wrote=
+:
+> >>
+> [...]
+> >> Yes, that should work.
+> >
+> > Ok, assigning to zero didn't work (it still complained about
+> > uninitialized read), but using a separate int *lenFail to assign to
+> > rLenPtr worked. Curiously, if I used rLenPtr =3D len1; in error case, i=
+t
+> > actually takes a bit more time to verify.
+> >
+> > So I've converted everything else as you suggested. I compiled latest
+> > herd7 and it doesn't produce any warnings. But it's also extremely
+> > slow, compared to the herd7 that I get by default. Validating simple
+> > 1p1c cases takes about 2.5x times longer (0.03s vs 0.07), but trying
+> > to validate 2p1c case, which normally validates in 42s (unbounded) and
+> > 110s (bounded), it took more than 20 minutes and hasn't finished,
+> > before I gave up. So I don't know what's going on there...
 >
-> also that AP6330 has most identical  pinout as RTL8723BS ( i did not get =
-the pinout of BCM4330 because datasheet only has information to the chip an=
-d not the small extra pcb where the chip is mount)
-I don't have any additional comments on this one
-
-> on Android 4.4 my box told me that GPIOAO_6 ist chip enable and GPIOX_11 =
-ist wlan enable
+> herdtools7 has recently been heavily restructured.
+> On the performance regression, I must defer to Luc.
 >
-> mybe a clue is that in the HArdkernel S805 Datasheet the GPIOAO_6 is also=
- a 32k clock  output (site 42 table 10 Func1 maybe  (but i also found some =
-Dts file from old S805 RTL8723bs box they use only GPIOX_11 and powerPin2 w=
-as comment out )
-do you have an oscilloscope or does your multimeter support frequency
-measurements (based on what I understand it would only have to be
-capable of measuring 32kHz)?
-then you can prove or refute this :-)
+> Luc, do you have any idea?
+>
+> >
+> > As for klitmus7, I managed to generate everything without warnings,
+> > but couldn't make it build completely due to:
+> >
+> > $ make
+> > make -C /lib/modules/5.6.13-01802-g938d64da97c6/build/
+>
+> So you are on Linux 5.6.x which requires cutting-edge klitmus7.
+>
 
-> i have another question , do we use the same wifi.c file for the meson8m2=
- boxes as for endless mini ? i have taken a closer look at the file and the=
- two delay information you are mention are not  in the wifi. c is neither a=
- function nor an instance, it just takes two fixed values "mdelay(200)" lin=
-e 156 , furthermore we ignore the output level of wifi_power_gpio2 and auto=
-matically set it to "1" line 378 , so it is important which of the two pins=
- is passed to the header file first (translate with DEEPL)
-Endless Mini has the CHIP_EN signal hard-wired to 3.3V
-This is the .dts from the Endless Mini:
-https://github.com/endlessm/linux-meson/blob/d628bf1242928927a41f7482ba5ef7=
-295e01a9ff/arch/arm/boot/dts/meson8b-ec100.dts
+Right, so I retried with the klitmus7 built from sources:
 
-[...]
-> You are right the chip has only wifi wake host and that should be GPIOX_2=
-1 as input ; maybe on your box the pin is alway high  on the board  ( direk=
-t an 3.3V verdrahtet)
-on the Endless Mini GPIOX_21 is also WIFI_WAKE_HOST
-I haven't tested any reboot / shutdown / etc. cycles with RTL8723BS
-there yet because I typically use the sdio controller to access the
-internal SD card (and at the time of writing the MMC subsystem in
-Linux doesn't support two different cards with one MMC controller). So
-only because of your email I did a quick test on the Endless Mini.
+$ klitmus7 -version
 
+                                    7.55+01(dev)
 
-Best regards,
-Martin
+Still can't compile, though task_struct problem went away, proc_ops
+error is still present:
+
+$ make
+grep: /lib/modules/5.7.0-rc5-02014-gb16540c748e9/build/include/linux/proc_f=
+s.h:
+No such file or directory
+make -C /lib/modules/5.7.0-rc5-02014-gb16540c748e9/build/
+M=3D/home/andriin/local/linux-trees/tools/memory-model/mymodules modules
+make[1]: Entering directory `/data/users/andriin/linux-build/fb-config'
+make[2]: Entering directory `/data/users/andriin/linux-build/default-x86_64=
+'
+grep: /lib/modules/5.7.0-rc5-02014-gb16540c748e9/build/include/linux/proc_f=
+s.h:
+No such file or directory
+  CC [M]  /home/andriin/local/linux-trees/tools/memory-model/mymodules/litm=
+us000.o
+/home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.c:
+In function =E2=80=98litmus_init=E2=80=99:
+/home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.c:62=
+1:67:
+error: passing argument 4 of =E2=80=98proc_create=E2=80=99 from incompatibl=
+e pointer
+type [-Werror=3Dincompatible-pointer-types]
+   struct proc_dir_entry *litmus_pde =3D
+proc_create("litmus",0,NULL,&litmus_proc_ops);
+
+^~~~~~~~~~~~~~~~
+In file included from
+/home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.c:15=
+:
+/data/users/andriin/linux/include/linux/proc_fs.h:79:24: note:
+expected =E2=80=98const struct proc_ops *=E2=80=99 but argument is of type =
+=E2=80=98const
+struct file_operations *=E2=80=99
+ struct proc_dir_entry *proc_create(const char *name, umode_t mode,
+struct proc_dir_entry *parent, const struct proc_ops *proc_ops);
+                        ^~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[3]: *** [/home/andriin/local/linux-trees/tools/memory-model/mymodules/=
+litmus000.o]
+Error 1
+make[2]: *** [/home/andriin/local/linux-trees/tools/memory-model/mymodules]
+Error 2
+make[2]: Leaving directory `/data/users/andriin/linux-build/default-x86_64'
+make[1]: *** [sub-make] Error 2
+make[1]: Leaving directory `/data/users/andriin/linux-build/fb-config'
+make: *** [all] Error 2
+
+Don't know if I'm missing some headers or whatever.
+
+> > M=3D/home/andriin/local/linux-trees/tools/memory-model/mymodules module=
+s
+> > make[1]: Entering directory `/data/users/andriin/linux-build/fb-config'
+> > make[2]: Entering directory `/data/users/andriin/linux-build/default-x8=
+6_64'
+> >   CC [M]  /home/andriin/local/linux-trees/tools/memory-model/mymodules/=
+litmus000.o
+> > /home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.=
+c:
+> > In function =E2=80=98zyva=E2=80=99:
+> > /home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.=
+c:507:12:
+> > warning: ISO C90 forbids variable length array =E2=80=98th=E2=80=99 [-W=
+vla]
+> >      struct task_struct *th[nth];
+> >             ^~~~~~~~~~~
+> > /home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.=
+c:
+> > In function =E2=80=98litmus_init=E2=80=99:
+> > /home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.=
+c:605:67:
+> > error: passing argument 4 of =E2=80=98proc_create=E2=80=99 from incompa=
+tible pointer
+> > type [-Werror=3Dincompatible-pointer-types]
+> >    struct proc_dir_entry *litmus_pde =3D
+> > proc_create("litmus",0,NULL,&litmus_proc_fops);
+> >
+> > ^~~~~~~~~~~~~~~~~
+> > In file included from
+> > /home/andriin/local/linux-trees/tools/memory-model/mymodules/litmus000.=
+c:15:
+> > /data/users/andriin/linux-fb/include/linux/proc_fs.h:64:24: note:
+> > expected =E2=80=98const struct proc_ops *=E2=80=99 but argument is of t=
+ype =E2=80=98const
+> > struct file_operations *=E2=80=99
+> >  struct proc_dir_entry *proc_create(const char *name, umode_t mode,
+> > struct proc_dir_entry *parent, const struct proc_ops *proc_ops);
+> >                         ^~~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> > make[3]: *** [/home/andriin/local/linux-trees/tools/memory-model/mymodu=
+les/litmus000.o]
+> > Error 1
+> > make[2]: *** [/home/andriin/local/linux-trees/tools/memory-model/mymodu=
+les]
+> > Error 2
+> > make[2]: Leaving directory `/data/users/andriin/linux-build/default-x86=
+_64'
+> > make[1]: *** [sub-make] Error 2
+> > make[1]: Leaving directory `/data/users/andriin/linux-build/fb-config'
+> > make: *** [all] Error 2
+> >
+>
+> These errors suggest the klitmus7 you used is version 7.52 or some such.
+> You said you have built herd7 from the source.  Have you also built klitm=
+us7?
+
+I did, but it wasn't in the PATH. I retried with latest klitmus7 and
+still run into problems.
+
+>
+> The up-to-date klitmus7 should generate code compatible with Linux 5.6.x.
+>
+> Could you try with the latest one?
+>
+>         Thanks, Akira
+>
+> >
+> > But at least it doesn't complain about atomic_t anymore. So anyways,
+> > I'm going to post updated litmus tests separately from BPF ringbuf
+> > patches, because Documentation/litmus-tests is not yet present in
+> > bpf-next.
+> >
+> >>
+> >> You can find a basic introduction of klitmus7 in tools/memory-model/RE=
+ADME.
+> >>
+> >>         Thanks, Akira
+> >>
+> >>>
+> >>>>
+> >>>> Please note that if you are on Linux 5.6 (or later), you need an up-=
+to-date
+> >>>> klitmus7 due to a change in kernel API.
+> >>>>
+> >>>> Any question is welcome!
+> >>>>
+> >>>>         Thanks, Akira
+> >>>>
+> >
+> > [...]
+> >
+>
