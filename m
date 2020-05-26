@@ -2,206 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F581E2EC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DB71E2EE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403899AbgEZTbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S2391117AbgEZTc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgEZTbp (ORCPT
+        with ESMTP id S2391003AbgEZTcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:31:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C758C03E96D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:31:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j21so10528947pgb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:31:45 -0700 (PDT)
+        Tue, 26 May 2020 15:32:24 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3451C03E96E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:32:23 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y11so805918plt.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:32:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YFRI8Pzmi8Hkgh9xlFXYHyu3aYx5I7yE+6THkxrPB8I=;
-        b=vS7fMYrrAgg3oUBGa3cYcSiEpyRDaWgj11jtVR7CjRp4pnKrHNU7NTOnemnYkB25eH
-         2vlyjn5eK/YrvhhtNTGrdGOtMzQtXOFGCeDNsTVjIdts8nhNoF//GK8Uk4zkQJZ3l/FE
-         jwjFlTFdVaxtBWbXt1VQcFnYhGZYrxybxa3sysnJVEs1ztOhd8JnIvTA25P7TbsI2Urk
-         Vst1Z2KUJ2TwNHGQlj2QR6AioGdlYUileOiWYqvlKJrm5FllyzZseAWzHHGcTlC8jMjt
-         oASNMVbCiQkQ5RvIvbvkOBTKbyGva0jrx6L7Rs0VKJ2ljfP7VVb67hqEaZdQKNSYIwRi
-         6rlQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=mPMBSEoFG86rRhFkn52ippvpiiEp7k8qBw0SEV6Hwgk=;
+        b=aQdEXYgWnpFMIdZ08nHk9kPfqgbCMAss4Khem6x2kPel3ySPuXs9salp24OuZ41WyQ
+         fy/vR17C00aDRAvoC8WucIRTchIRjt7yZ/j+f5o+LiQk+tNp5DOVzt9sM/YwzzbURIQz
+         FE8lN9TD6Brz+iwZI0XWn1ZkXBxnucTstQIZbHOfrRN2V8TwjG4xlb8gmLBBl5haz63R
+         5W3HqOfzUVxq7AV+rYEW+fYlmVYEqFGioKV5WSDgoUICH5TPlCMLiL17N6sB6gCcKBiu
+         TAEN1opbo0YbMqX6l7DjDw8BlsZdfjE8dji6pvKUeMJncgplbIsETcJLCMa11ct3Iawv
+         7EUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=YFRI8Pzmi8Hkgh9xlFXYHyu3aYx5I7yE+6THkxrPB8I=;
-        b=cQr1+5/lLxKZcSsRIfq3h0nRh639RCMEWV7DslOrEOdLcw/aaQ1ws7gIvI5VgYFd60
-         /7rFPALrkPSiEk/gTNReEftAUC+UG/tLNZMsiBDvxcasngjC+3AIHNdB254UyxBoty5F
-         aiMshscui1lsHlnmg9C6N0C6nf+kVpNNNtg8lmGPQk3kCQ/xwJuf9j5Gwp9nRoNe7jCK
-         dlaHo5c/ZVmB5HPAh5yiO8K2nQrwFUwUaJLf+NxTp8tpOv3SpBf+8KktsyRED4cnOtlp
-         eGkVNHLn3owo/lkT8itbdkOFCrhO5HDRheLOEbFSawzWr+VX+u4ODRaNIxI1MzwOd8aT
-         w8fQ==
-X-Gm-Message-State: AOAM5329qPttoEYe64rj6nCNUIIZNsveQRlBZQy8rNsTQxcsTK8P1LJO
-        nnJ+CVXdiDzm/5onS+F0JIZ6kw==
-X-Google-Smtp-Source: ABdhPJx7PaDMUCSP3dWG8db1wbzMCLv5XsRADqttAo+C1oTetQidFR58rZotM4lHGR9W7RN7Be9DSA==
-X-Received: by 2002:a63:de06:: with SMTP id f6mr475817pgg.238.1590521504497;
-        Tue, 26 May 2020 12:31:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d18sm238566pjv.34.2020.05.26.12.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 12:31:43 -0700 (PDT)
-Date:   Tue, 26 May 2020 12:31:43 -0700 (PDT)
-X-Google-Original-Date: Tue, 26 May 2020 12:31:41 PDT (-0700)
-Subject:     Re: [PATCH 1/1] riscv: sort select statements alphanumerically
-In-Reply-To: <0609f8f0c0c7182fda08fc395161ec11309c63fb.1589859647.git.zong.li@sifive.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     zong.li@sifive.com
-Message-ID: <mhng-7c33e65d-d59d-400e-a056-cd44958c9222@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mPMBSEoFG86rRhFkn52ippvpiiEp7k8qBw0SEV6Hwgk=;
+        b=dgi9VuIu3IrytKJKZ0pMU6dXq477y3ApO+pX3Q6dzu178BljhYyXC/0LT/6zaZQj/a
+         fwga2Xp7NuEbRbIcV+agqcFuXIOZas6T6J6wHXea6Wl1Sp9yJr8ooQpYKWasUeIY5oiS
+         a7LB7MCR3y8C+lS70bVASE6x3iwddjsk2MY8lU/Iu7qG0CGNPvSRVBtVuq9FS13pvLLw
+         VaTR6EmWT8vgVLE9n+LjPmtNEx96Sj8KFrVyWvMxs6KKrXVy+h+vGgICeoyvD7t4MGsh
+         2zZtmOivq+Tp9lrS7WQg8BpGaevZdhNp386CQh3dsIMybRE+8XeYL4keOMblmsDyKx8q
+         E/YA==
+X-Gm-Message-State: AOAM533ziUnvtJ5eZ5/OlzrWF4O00q/wgC57NvfvreT+Ag9HxajLyG8f
+        jyCcRKzjZ3Hh5kvzHW4NpAkJ+ioXAD7e7A==
+X-Google-Smtp-Source: ABdhPJz1+9mdYhlnOaOdqKsnmVPgb0+czO05jZqAokJjqgkvwtR2WA5G3WY3OLtL0JaaXWVfZ60U6g==
+X-Received: by 2002:a17:902:8d87:: with SMTP id v7mr2444717plo.153.1590521543229;
+        Tue, 26 May 2020 12:32:23 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:94bb:59d2:caf6:70e1? ([2605:e000:100e:8c61:94bb:59d2:caf6:70e1])
+        by smtp.gmail.com with ESMTPSA id y138sm310164pfb.33.2020.05.26.12.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 May 2020 12:32:22 -0700 (PDT)
+Subject: Re: [PATCH 0/6] random patches for 5.8
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1590513806.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ff8f6fa6-e05a-5ac9-1d77-a8a96ca823db@kernel.dk>
+Date:   Tue, 26 May 2020 13:32:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <cover.1590513806.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 May 2020 20:42:04 PDT (-0700), zong.li@sifive.com wrote:
-> Like patch b1b3f49 ("ARM: config: sort select statements alphanumerically")
-> , we sort all our select statements alphanumerically by using the perl
-> script in patch b1b3f49 as above.
->
-> As suggested by Andrew Morton:
->
->   This is a pet peeve of mine.  Any time there's a long list of items
->   (header file inclusions, kconfig entries, array initalisers, etc) and
->   someone wants to add a new item, they *always* go and stick it at the
->   end of the list.
->
->   Guys, don't do this.  Either put the new item into a randomly-chosen
->   position or, probably better, alphanumerically sort the list.
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  arch/riscv/Kconfig | 70 +++++++++++++++++++++++-----------------------
->  1 file changed, 35 insertions(+), 35 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 74ce5c5249e9..8244b8f7e7c3 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -12,64 +12,64 @@ config 32BIT
->
->  config RISCV
->  	def_bool y
-> -	select OF
-> -	select OF_EARLY_FLATTREE
-> -	select OF_IRQ
->  	select ARCH_HAS_BINFMT_FLAT
-> +	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-> +	select ARCH_HAS_DEBUG_WX
-> +	select ARCH_HAS_GCOV_PROFILE_ALL
-> +	select ARCH_HAS_GIGANTIC_PAGE
-> +	select ARCH_HAS_MMIOWB
-> +	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_SET_DIRECT_MAP
-> +	select ARCH_HAS_SET_MEMORY
-> +	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
-> +	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
->  	select ARCH_WANT_FRAME_POINTERS
-> +	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
->  	select CLONE_BACKWARDS
->  	select COMMON_CLK
-> +	select EDAC_SUPPORT
-> +	select GENERIC_ARCH_TOPOLOGY if SMP
-> +	select GENERIC_ATOMIC64 if !64BIT
->  	select GENERIC_CLOCKEVENTS
-> +	select GENERIC_IOREMAP
-> +	select GENERIC_IRQ_MULTI_HANDLER
->  	select GENERIC_IRQ_SHOW
->  	select GENERIC_PCI_IOMAP
-> +	select GENERIC_PTDUMP if MMU
->  	select GENERIC_SCHED_CLOCK
-> +	select GENERIC_SMP_IDLE_THREAD
->  	select GENERIC_STRNCPY_FROM_USER if MMU
->  	select GENERIC_STRNLEN_USER if MMU
-> -	select GENERIC_SMP_IDLE_THREAD
-> -	select GENERIC_ATOMIC64 if !64BIT
-> -	select GENERIC_IOREMAP
-> -	select GENERIC_PTDUMP if MMU
->  	select HAVE_ARCH_AUDITSYSCALL
-> +	select HAVE_ARCH_KASAN if MMU && 64BIT
-> +	select HAVE_ARCH_KGDB
-> +	select HAVE_ARCH_KGDB_QXFER_PKT
-> +	select HAVE_ARCH_MMAP_RND_BITS if MMU
->  	select HAVE_ARCH_SECCOMP_FILTER
-> +	select HAVE_ARCH_TRACEHOOK
->  	select HAVE_ASM_MODVERSIONS
-> +	select HAVE_COPY_THREAD_TLS
->  	select HAVE_DMA_CONTIGUOUS if MMU
-> +	select HAVE_EBPF_JIT if MMU
->  	select HAVE_FUTEX_CMPXCHG if FUTEX
-> +	select HAVE_PCI
->  	select HAVE_PERF_EVENTS
->  	select HAVE_PERF_REGS
->  	select HAVE_PERF_USER_STACK_DUMP
->  	select HAVE_SYSCALL_TRACEPOINTS
->  	select IRQ_DOMAIN
-> -	select SPARSE_IRQ
-> -	select SYSCTL_EXCEPTION_TRACE
-> -	select HAVE_ARCH_TRACEHOOK
-> -	select HAVE_PCI
->  	select MODULES_USE_ELF_RELA if MODULES
->  	select MODULE_SECTIONS if MODULES
-> -	select THREAD_INFO_IN_TASK
-> +	select OF
-> +	select OF_EARLY_FLATTREE
-> +	select OF_IRQ
->  	select PCI_DOMAINS_GENERIC if PCI
->  	select PCI_MSI if PCI
->  	select RISCV_TIMER
-> -	select GENERIC_IRQ_MULTI_HANDLER
-> -	select GENERIC_ARCH_TOPOLOGY if SMP
-> -	select ARCH_HAS_PTE_SPECIAL
-> -	select ARCH_HAS_MMIOWB
-> -	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-> -	select HAVE_EBPF_JIT if MMU
-> -	select EDAC_SUPPORT
-> -	select ARCH_HAS_GIGANTIC_PAGE
-> -	select ARCH_HAS_SET_DIRECT_MAP
-> -	select ARCH_HAS_SET_MEMORY
-> -	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
-> -	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
->  	select SPARSEMEM_STATIC if 32BIT
-> -	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-> -	select HAVE_ARCH_MMAP_RND_BITS if MMU
-> -	select ARCH_HAS_GCOV_PROFILE_ALL
-> -	select HAVE_COPY_THREAD_TLS
-> -	select HAVE_ARCH_KASAN if MMU && 64BIT
-> -	select HAVE_ARCH_KGDB
-> -	select HAVE_ARCH_KGDB_QXFER_PKT
-> -	select ARCH_HAS_DEBUG_WX
-> +	select SPARSE_IRQ
-> +	select SYSCTL_EXCEPTION_TRACE
-> +	select THREAD_INFO_IN_TASK
->
->  config ARCH_MMAP_RND_BITS_MIN
->  	default 18 if 64BIT
-> @@ -196,11 +196,11 @@ config ARCH_RV64I
->  	bool "RV64I"
->  	select 64BIT
->  	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
-> -	select HAVE_FUNCTION_TRACER
-> -	select HAVE_FUNCTION_GRAPH_TRACER
-> -	select HAVE_FTRACE_MCOUNT_RECORD
->  	select HAVE_DYNAMIC_FTRACE if MMU
->  	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
-> +	select HAVE_FTRACE_MCOUNT_RECORD
-> +	select HAVE_FUNCTION_GRAPH_TRACER
-> +	select HAVE_FUNCTION_TRACER
->  	select SWIOTLB if MMU
->
->  endchoice
+On 5/26/20 11:34 AM, Pavel Begunkov wrote:
+> Nothing insteresting in particular, just start flushing stashed patches.
+> Ones in this series are pretty easy and short.
+> 
+> Pavel Begunkov (6):
+>   io_uring: fix flush req->refs underflow
+>   io_uring: simplify io_timeout locking
+>   io_uring: don't re-read sqe->off in timeout_prep()
+>   io_uring: separate DRAIN flushing into a cold path
+>   io_uring: get rid of manual punting in io_close
+>   io_uring: let io_req_aux_free() handle fixed files
+> 
+>  fs/io_uring.c | 64 ++++++++++++++++++++-------------------------------
+>  1 file changed, 25 insertions(+), 39 deletions(-)
 
-Thanks.  This is on for-next, except I re-ran the script as there have been
-some changes.
+Applied 1-5, thanks.
+
+-- 
+Jens Axboe
+
