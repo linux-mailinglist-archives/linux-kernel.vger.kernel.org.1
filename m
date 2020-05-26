@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8191E1D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0291E1D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 10:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731414AbgEZImz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 04:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgEZImy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 04:42:54 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B2C03E97E;
-        Tue, 26 May 2020 01:42:54 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id i9so4068359ool.5;
-        Tue, 26 May 2020 01:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=by3wyV0ECJVMLMRZBirFTqDbHUkcFdAgys+Jcbd3iFQ=;
-        b=I2fmC5YMGeuL0DC2lGNDNFrXiaS7yPv5hlAAducVtoCAXNmj8mWzD06tjY9nTvy3Pw
-         sHx/AbnKnZB5TkRyi0OUJwC0C7wsZmeWrX1na2IstfAf/ejGw4lj6IUngzUJPIzeaFY8
-         DwhJh2+vCliH4UGUKQQi3pUteChXy8GGr4FDwZxjaVVF8jUNTG4NnpoJ5ZirDMINOs6b
-         B2cjN/1BuTI9nRx21nSAB1FK0su9KIJitAuZnfOLOKW/6YYE4Q3BxT7vZgLt2fOX6Sb1
-         7Pjl0ajF1NdsFNGLQRPqax0zDUb43D/g50m+zWdo/3Qif6T3TAysOqFYEYOq+I5CnLOj
-         Nw7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=by3wyV0ECJVMLMRZBirFTqDbHUkcFdAgys+Jcbd3iFQ=;
-        b=RvN9fKTNosmhSARV0Zk+Zovtd3n5XTIM41DMDbroQridUcZt6y6nHzmHkhkh8RC45x
-         a6Gfj0nxF9oWuT0KXEXZMGAtJgDha/9SsBqp+RnvZgS/itypaEbU1s34NCCu8CkFjloP
-         PdyM6RjQ4cU5+sM0BfMLZUpojHLD6+4T9WDkS8EOd7CRWyzFbth9p4ym+KR41MAroMAF
-         vCxkLuyf4nS6N75gftv1j8ODbpx4mXcLQEV97hZuBMA7pzw1o13h82FueQ3JQMaKly76
-         YVbReTbYcVAQTd5G30oe1o5glH9omqgYZuMVNPgYZ1N7v0mb//cLrgR62+Rajje/v5qM
-         8C8Q==
-X-Gm-Message-State: AOAM531QIareps+clQkySO/tsLJnHkn4catuqvmYugKUHDxpn/By9vJy
-        4GHZo/bWdfiYctzjL05dRAXLRzzNSzZwBvo8W9w=
-X-Google-Smtp-Source: ABdhPJxhhnv0+0VClviGVBAhLXqhn1cyS0y0hGt1fYZclGfTLBKjChSPAPTdABy6HP7VKFzhy/XimkvLk1WWOsSYfF8=
-X-Received: by 2002:a05:6820:21c:: with SMTP id i28mr15915509oob.42.1590482573864;
- Tue, 26 May 2020 01:42:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <1590420129-7531-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1590420129-7531-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWjGX43EDnwxu0xp3U7aedWHuW5MLQo==1d5v_mV-1R9A@mail.gmail.com>
-In-Reply-To: <CAMuHMdWjGX43EDnwxu0xp3U7aedWHuW5MLQo==1d5v_mV-1R9A@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 26 May 2020 09:42:27 +0100
-Message-ID: <CA+V-a8vOuHr4_+EX_Atfv7-ZbqQLkj_qHowa57QUUFPamC0N+g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ARM: dts: r8a7742-iwg21d-q7: Enable SDHI2 controller
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728521AbgEZIpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 04:45:01 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61868 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727948AbgEZIpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 04:45:01 -0400
+IronPort-SDR: Ki3z+1WgNfjC7KKxRHuOhd0bqIatf55tOjxbrrlj56DsEM/Xb5Q64esk5W4+WKjrq8e8Bmft4W
+ u7QIp15zG8sw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 01:45:00 -0700
+IronPort-SDR: pIW+1899icms35CvI7TILPT9rghumRkDFUatvOV23OOrQX/R/d2NRPuQm96VvFE6oYqk5Ysfwx
+ U7Ckdc4wua7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,436,1583222400"; 
+   d="scan'208";a="442003884"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga005.jf.intel.com with ESMTP; 26 May 2020 01:44:58 -0700
+From:   Dilip Kota <eswara.kota@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
+Cc:     andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, Dilip Kota <eswara.kota@linux.intel.com>
+Subject: [PATCH 1/1] phy: intel: Fix compilation error on FIELD_PREP usage
+Date:   Tue, 26 May 2020 16:43:20 +0800
+Message-Id: <d8a71fafa408f273fe63b64481448c29c450fa83.1590477581.git.eswara.kota@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+FIELD_PREP expects mask variable datatype as unsigned long and constant.
+Make the mask argument in combo_phy_w32_off_mask () as unsigned long const
+datatype.
 
-On Tue, May 26, 2020 at 8:58 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, May 25, 2020 at 5:23 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Enable the SDHI2 controller on iWave RZ/G1H carrier board.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.9.
->
-Thank you for the review.
+Error reported as:
+In file included from include/linux/build_bug.h:5,
+from include/linux/bitfield.h:10,
+from drivers/phy/intel/phy-intel-combo.c:8:
+drivers/phy/intel/phy-intel-combo.c: In function 'combo_phy_w32_off_mask':
+include/linux/bitfield.h:52:28: warning: comparison is always false due to limited range of data type [-Wtype-limits]
 
-> BTW, perhaps you want to add an LED trigger for SDIO_LED, connected
-> to GP5_22?
->
-Sure I'll add this as a separate patch.
+include/linux/compiler.h:350:38: error: call to '__compiletime_assert_37' declared with attribute error: FIELD_PREP: mask is not constant
+94 |   __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");          |   ^~~~~~~~~~~~~~~~
+drivers/phy/intel/phy-intel-combo.c:137:13: note: in expansion of macro 'FIELD_PREP'
+137 |  reg_val |= FIELD_PREP(mask, val);
+|             ^~~~~~~~~~
 
-Cheers,
---Prabhakar
+Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
+Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+---
+ drivers/phy/intel/phy-intel-combo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
+index c2a35be4cdfb..05b7d724ceb0 100644
+--- a/drivers/phy/intel/phy-intel-combo.c
++++ b/drivers/phy/intel/phy-intel-combo.c
+@@ -128,7 +128,7 @@ static int intel_cbphy_pcie_refclk_cfg(struct intel_cbphy_iphy *iphy, bool set)
+ }
+ 
+ static inline void combo_phy_w32_off_mask(void __iomem *base, unsigned int reg,
+-					  u32 mask, u32 val)
++					  unsigned long const mask, u32 val)
+ {
+ 	u32 reg_val;
+ 
+-- 
+2.11.0
+
