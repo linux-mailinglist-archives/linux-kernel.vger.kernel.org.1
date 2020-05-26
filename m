@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A801E2E59
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427B91E2D12
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391679AbgEZT2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57576 "EHLO mail.kernel.org"
+        id S2392414AbgEZTTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391135AbgEZTCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:02:40 -0400
+        id S2404202AbgEZTNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4804720849;
-        Tue, 26 May 2020 19:02:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EACE208B3;
+        Tue, 26 May 2020 19:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519759;
-        bh=egsL6AH/ANsTTekNKP3t3n4xT4+RurSQuBnpdQfJb/c=;
+        s=default; t=1590520401;
+        bh=RgtwO8P4ThNDooONmVCNihMiiHEBUmQW2apUetaPoEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPovLgUOgIVMFD5jet8oYmakFYiyBxEoOwgcmbugFrilP4DG+qTh7A77C/X6dfJri
-         kVIsaU595UD37ofyFXFKbg95rW+Wjchjehh23w5mTv9+BKTF70+FH11Vb85BUtf6XT
-         7qIfGUQphpztuGUvkbI0n58LU1CjldJ8tQ/66Xg0=
+        b=VkMzTTWWnBYENAit+Zv2Jf+Ut2C1UMnfbVnbl6VE19s7dscGlt+XYEOeIc1fwZjIl
+         XGgQNhPD/bqEX9DZUUJu5H9SxtKotOgTzvmcBDhs99524M7nfDOjI7hp5QgVlLOpXM
+         74aOxtSaO8pgWrWB71HiCjg2Vr/v4xnskcHicTeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Bahling <sbahling@suse.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 35/59] ALSA: iec1712: Initialize STDSP24 properly when using the model=staudio option
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH 5.6 063/126] bpf: Add bpf_probe_read_{user, kernel}_str() to do_refine_retval_range
 Date:   Tue, 26 May 2020 20:53:20 +0200
-Message-Id: <20200526183919.093179911@linuxfoundation.org>
+Message-Id: <20200526183943.453926113@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Bahling <sbahling@suse.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit b0cb099062b0c18246c3a20caaab4c0afc303255 upstream.
+commit 47cc0ed574abcbbde0cf143ddb21a0baed1aa2df upstream.
 
-The ST Audio ADCIII is an STDSP24 card plus extension box. With commit
-e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII") we
-enabled the ADCIII ports using the model=staudio option but forgot
-this part to ensure the STDSP24 card is initialized properly.
+Given bpf_probe_read{,str}() BPF helpers are now only available under
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE, we need to add the drop-in
+replacements of bpf_probe_read_{kernel,user}_str() to do_refine_retval_range()
+as well to avoid hitting the same issue as in 849fa50662fbc ("bpf/verifier:
+refine retval R0 state for bpf_get_stack helper").
 
-Fixes: e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII")
-Signed-off-by: Scott Bahling <sbahling@suse.com>
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1048934
-Link: https://lore.kernel.org/r/20200518175728.28766-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200515101118.6508-3-daniel@iogearbox.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/ice1712/ice1712.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/verifier.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -2377,7 +2377,8 @@ static int snd_ice1712_chip_init(struct
- 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
- 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
- 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
--	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24) {
-+	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24 &&
-+	    ice->eeprom.subvendor != ICE1712_SUBDEVICE_STAUDIO_ADCIII) {
- 		ice->gpio.write_mask = ice->eeprom.gpiomask;
- 		ice->gpio.direction = ice->eeprom.gpiodir;
- 		snd_ice1712_write(ice, ICE1712_IREG_GPIO_WRITE_MASK,
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4113,7 +4113,9 @@ static int do_refine_retval_range(struct
+ 
+ 	if (ret_type != RET_INTEGER ||
+ 	    (func_id != BPF_FUNC_get_stack &&
+-	     func_id != BPF_FUNC_probe_read_str))
++	     func_id != BPF_FUNC_probe_read_str &&
++	     func_id != BPF_FUNC_probe_read_kernel_str &&
++	     func_id != BPF_FUNC_probe_read_user_str))
+ 		return 0;
+ 
+ 	/* Error case where ret is in interval [S32MIN, -1]. */
 
 
