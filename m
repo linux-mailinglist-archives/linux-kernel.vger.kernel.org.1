@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233761E2BB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693261E2AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391363AbgEZTHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:07:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36540 "EHLO mail.kernel.org"
+        id S2390695AbgEZTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391717AbgEZTHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:44 -0400
+        id S2390664AbgEZTAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D2F320873;
-        Tue, 26 May 2020 19:07:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA3F52084C;
+        Tue, 26 May 2020 19:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520063;
-        bh=GluYg6YNLbgPi1tsQ9ZyUD0io62+jfKVlka4WBOKCLE=;
+        s=default; t=1590519613;
+        bh=kik3Qx3CFXylBjXJOWdBex/IgBTrkggAbEtn0sCLsv8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqQh26ZjWWGzI862mxhQWRRbTPRVmP7k26Z4x/isv5trl1FRYDm6oDO0Xvk6kvALk
-         KzIg2USs4Smox1b1lsjgtAXpQ9HSxn4qTSlOj54rCvoP6lfljZQhi8Rf3oDQw++23b
-         7Q7thORhPskcVzKgN2kqi3QTfzApmy3GIWbY4TYE=
+        b=hvCUOHSqz5cX5JZqA3N96CZFEAuDdNVKUl2DcjR7jm0TC2LE1h4F0snc2xzRa57JA
+         oj4gi8OfcbF8JaY3EkE56JcW45FFje01Rrn8gyA15rjkdClmrjQwq4Qtuc47KwUFjq
+         JBlspio/FSH2EzEU9VncK1O06xKbP+AGX894NF4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, greg@kroah.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/111] KVM: selftests: Fix build for evmcs.h
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giuliano Procida <gprocida@google.com>
+Subject: [PATCH 4.9 34/64] l2tp: define parameters of l2tp_session_get*() as "const"
 Date:   Tue, 26 May 2020 20:53:03 +0200
-Message-Id: <20200526183937.193886055@linuxfoundation.org>
+Message-Id: <20200526183923.990064664@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
+References: <20200526183913.064413230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-[ Upstream commit 8ffdaf9155ebe517cdec5edbcca19ba6e7ee9c3c ]
+commit 9aaef50c44f132e040dcd7686c8e78a3390037c5 upstream.
 
-I got this error when building kvm selftests:
+Make l2tp_pernet()'s parameter constant, so that l2tp_session_get*() can
+declare their "net" variable as "const".
+Also constify "ifname" in l2tp_session_get_by_ifname().
 
-/usr/bin/ld: /home/xz/git/linux/tools/testing/selftests/kvm/libkvm.a(vmx.o):/home/xz/git/linux/tools/testing/selftests/kvm/include/evmcs.h:222: multiple definition of `current_evmcs'; /tmp/cco1G48P.o:/home/xz/git/linux/tools/testing/selftests/kvm/include/evmcs.h:222: first defined here
-/usr/bin/ld: /home/xz/git/linux/tools/testing/selftests/kvm/libkvm.a(vmx.o):/home/xz/git/linux/tools/testing/selftests/kvm/include/evmcs.h:223: multiple definition of `current_vp_assist'; /tmp/cco1G48P.o:/home/xz/git/linux/tools/testing/selftests/kvm/include/evmcs.h:223: first defined here
-
-I think it's because evmcs.h is included both in a test file and a lib file so
-the structs have multiple declarations when linking.  After all it's not a good
-habit to declare structs in the header files.
-
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Message-Id: <20200504220607.99627-1-peterx@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Giuliano Procida <gprocida@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/kvm/include/evmcs.h  | 4 ++--
- tools/testing/selftests/kvm/lib/x86_64/vmx.c | 3 +++
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ net/l2tp/l2tp_core.c |    7 ++++---
+ net/l2tp/l2tp_core.h |    5 +++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/evmcs.h b/tools/testing/selftests/kvm/include/evmcs.h
-index 4912d23844bc..e31ac9c5ead0 100644
---- a/tools/testing/selftests/kvm/include/evmcs.h
-+++ b/tools/testing/selftests/kvm/include/evmcs.h
-@@ -217,8 +217,8 @@ struct hv_enlightened_vmcs {
- #define HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_MASK	\
- 		(~((1ull << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) - 1))
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -119,7 +119,7 @@ static inline struct l2tp_tunnel *l2tp_t
+ 	return sk->sk_user_data;
+ }
  
--struct hv_enlightened_vmcs *current_evmcs;
--struct hv_vp_assist_page *current_vp_assist;
-+extern struct hv_enlightened_vmcs *current_evmcs;
-+extern struct hv_vp_assist_page *current_vp_assist;
+-static inline struct l2tp_net *l2tp_pernet(struct net *net)
++static inline struct l2tp_net *l2tp_pernet(const struct net *net)
+ {
+ 	BUG_ON(!net);
  
- int vcpu_enable_evmcs(struct kvm_vm *vm, int vcpu_id);
+@@ -231,7 +231,7 @@ l2tp_session_id_hash(struct l2tp_tunnel
+ /* Lookup a session. A new reference is held on the returned session.
+  * Optionally calls session->ref() too if do_ref is true.
+  */
+-struct l2tp_session *l2tp_session_get(struct net *net,
++struct l2tp_session *l2tp_session_get(const struct net *net,
+ 				      struct l2tp_tunnel *tunnel,
+ 				      u32 session_id, bool do_ref)
+ {
+@@ -306,7 +306,8 @@ EXPORT_SYMBOL_GPL(l2tp_session_get_nth);
+ /* Lookup a session by interface name.
+  * This is very inefficient but is only used by management interfaces.
+  */
+-struct l2tp_session *l2tp_session_get_by_ifname(struct net *net, char *ifname,
++struct l2tp_session *l2tp_session_get_by_ifname(const struct net *net,
++						const char *ifname,
+ 						bool do_ref)
+ {
+ 	struct l2tp_net *pn = l2tp_pernet(net);
+--- a/net/l2tp/l2tp_core.h
++++ b/net/l2tp/l2tp_core.h
+@@ -231,12 +231,13 @@ out:
+ 	return tunnel;
+ }
  
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/vmx.c b/tools/testing/selftests/kvm/lib/x86_64/vmx.c
-index f6ec97b7eaef..8cc4a59ff369 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/vmx.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/vmx.c
-@@ -17,6 +17,9 @@
- 
- bool enable_evmcs;
- 
-+struct hv_enlightened_vmcs *current_evmcs;
-+struct hv_vp_assist_page *current_vp_assist;
-+
- struct eptPageTableEntry {
- 	uint64_t readable:1;
- 	uint64_t writable:1;
--- 
-2.25.1
-
+-struct l2tp_session *l2tp_session_get(struct net *net,
++struct l2tp_session *l2tp_session_get(const struct net *net,
+ 				      struct l2tp_tunnel *tunnel,
+ 				      u32 session_id, bool do_ref);
+ struct l2tp_session *l2tp_session_get_nth(struct l2tp_tunnel *tunnel, int nth,
+ 					  bool do_ref);
+-struct l2tp_session *l2tp_session_get_by_ifname(struct net *net, char *ifname,
++struct l2tp_session *l2tp_session_get_by_ifname(const struct net *net,
++						const char *ifname,
+ 						bool do_ref);
+ struct l2tp_tunnel *l2tp_tunnel_find(struct net *net, u32 tunnel_id);
+ struct l2tp_tunnel *l2tp_tunnel_find_nth(struct net *net, int nth);
 
 
