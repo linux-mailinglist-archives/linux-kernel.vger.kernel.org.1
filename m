@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983701E2F22
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CB51E2F07
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389323AbgEZSzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47396 "EHLO mail.kernel.org"
+        id S2389387AbgEZSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389296AbgEZSzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:55:07 -0400
+        id S2389338AbgEZSzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1607E2070A;
-        Tue, 26 May 2020 18:55:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E372208C7;
+        Tue, 26 May 2020 18:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519305;
-        bh=RFQHU8ppshZ34+/Hgd0H57iQCdEBzNIhkBiqtOAvyqQ=;
+        s=default; t=1590519310;
+        bh=ENfyGguspCD34AD0RQik4lsmnT2YnKEPit8iBaMEZpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zbjsCgdcVDr5oUQzd93PFFxZLxqKu9JLtEtLuuZX8I5fHrimMu53UwXbzM6OVR40D
-         q83IugFm7iyEalsxh+yxtvYKlWxZHCG7FOPiRc9dKSI4utMi13eI+H/i+4wx82yDzP
-         AAJxciomPLkQl3wgXiAxoHjuTruwW48eX0nwY8pU=
+        b=lkZpgQUQ4JM5j49lWC6en+tBii/8RbpJPkfVum6p8ds9A6GcnprErivMIN7sfE7K/
+         qScyLqVxATifJrqE8G+RR65JO735b6hAW0q5cIRhFyILEbzoRSC0p9pMajHCENZvtR
+         17qSkVX/5WPRAjgwyzv8pF2m2Z+4/J2vEvRfdIQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Shuah Khan <shuahkh@osg.samsung.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
         Mauro Carvalho Chehab <mchehab@s-opensource.com>,
         Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 17/65] media-device: dynamically allocate struct media_devnode
-Date:   Tue, 26 May 2020 20:52:36 +0200
-Message-Id: <20200526183912.438531575@linuxfoundation.org>
+Subject: [PATCH 4.4 19/65] media: fix media devnode ioctl/syscall and unregister race
+Date:   Tue, 26 May 2020 20:52:38 +0200
+Message-Id: <20200526183913.346146501@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
 References: <20200526183905.988782958@linuxfoundation.org>
@@ -46,263 +47,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
 
-commit a087ce704b802becbb4b0f2a20f2cb3f6911802e upstream.
+commit 6f0dd24a084a17f9984dd49dffbf7055bf123993 upstream.
 
-struct media_devnode is currently embedded at struct media_device.
+Media devnode open/ioctl could be in progress when media device unregister
+is initiated. System calls and ioctls check media device registered status
+at the beginning, however, there is a window where unregister could be in
+progress without changing the media devnode status to unregistered.
 
-While this works fine during normal usage, it leads to a race
-condition during devnode unregister. the problem is that drivers
-assume that, after calling media_device_unregister(), the struct
-that contains media_device can be freed. This is not true, as it
-can't be freed until userspace closes all opened /dev/media devnodes.
+process 1				process 2
+fd = open(/dev/media0)
+media_devnode_is_registered()
+	(returns true here)
 
-In other words, if the media devnode is still open, and media_device
-gets freed, any call to an ioctl will make the core to try to access
-struct media_device, with will cause an use-after-free and even GPF.
+					media_device_unregister()
+						(unregister is in progress
+						and devnode isn't
+						unregistered yet)
+					...
+ioctl(fd, ...)
+__media_ioctl()
+media_devnode_is_registered()
+	(returns true here)
+					...
+					media_devnode_unregister()
+					...
+					(driver releases the media device
+					memory)
 
-Fix this by dynamically allocating the struct media_devnode and only
-freeing it when it is safe.
+media_device_ioctl()
+	(By this point
+	devnode->media_dev does not
+	point to allocated memory.
+	use-after free in in mutex_lock_nested)
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+BUG: KASAN: use-after-free in mutex_lock_nested+0x79c/0x800 at addr
+ffff8801ebe914f0
+
+Fix it by clearing register bit when unregister starts to avoid the race.
+
+process 1                               process 2
+fd = open(/dev/media0)
+media_devnode_is_registered()
+        (could return true here)
+
+                                        media_device_unregister()
+                                                (clear the register bit,
+						 then start unregister.)
+                                        ...
+ioctl(fd, ...)
+__media_ioctl()
+media_devnode_is_registered()
+        (return false here, ioctl
+	 returns I/O error, and
+	 will not access media
+	 device memory)
+                                        ...
+                                        media_devnode_unregister()
+                                        ...
+                                        (driver releases the media device
+					 memory)
+
+Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+Suggested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reported-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Tested-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-[bwh: Backported to 4.4:
- - Drop change in au0828
- - Include <linux/slab.h> in media-device.c
- - Adjust context]
+[bwh: Backported to 4.4: adjut filename, context]
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/media-device.c       | 40 +++++++++++++++++++++---------
- drivers/media/media-devnode.c      |  8 +++++-
- drivers/media/usb/uvc/uvc_driver.c |  2 +-
- include/media/media-device.h       |  5 +---
- include/media/media-devnode.h      | 10 +++++++-
- 5 files changed, 46 insertions(+), 19 deletions(-)
+ drivers/media/media-device.c  | 15 ++++++++-------
+ drivers/media/media-devnode.c | 19 ++++++++++++-------
+ include/media/media-devnode.h | 14 ++++++++++++++
+ 3 files changed, 34 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 7b39440192d6..fb018fe1a8f7 100644
+index 5d79cd481730..0ca9506f4654 100644
 --- a/drivers/media/media-device.c
 +++ b/drivers/media/media-device.c
-@@ -24,6 +24,7 @@
- #include <linux/export.h>
- #include <linux/ioctl.h>
- #include <linux/media.h>
-+#include <linux/slab.h>
- #include <linux/types.h>
- 
- #include <media/media-device.h>
-@@ -234,7 +235,7 @@ static long media_device_ioctl(struct file *filp, unsigned int cmd,
- 			       unsigned long arg)
- {
- 	struct media_devnode *devnode = media_devnode_data(filp);
--	struct media_device *dev = to_media_device(devnode);
-+	struct media_device *dev = devnode->media_dev;
- 	long ret;
- 
- 	switch (cmd) {
-@@ -303,7 +304,7 @@ static long media_device_compat_ioctl(struct file *filp, unsigned int cmd,
- 				      unsigned long arg)
- {
- 	struct media_devnode *devnode = media_devnode_data(filp);
--	struct media_device *dev = to_media_device(devnode);
-+	struct media_device *dev = devnode->media_dev;
- 	long ret;
- 
- 	switch (cmd) {
-@@ -344,7 +345,8 @@ static const struct media_file_operations media_device_fops = {
- static ssize_t show_model(struct device *cd,
- 			  struct device_attribute *attr, char *buf)
- {
--	struct media_device *mdev = to_media_device(to_media_devnode(cd));
-+	struct media_devnode *devnode = to_media_devnode(cd);
-+	struct media_device *mdev = devnode->media_dev;
- 
- 	return sprintf(buf, "%.*s\n", (int)sizeof(mdev->model), mdev->model);
- }
-@@ -372,6 +374,7 @@ static void media_device_release(struct media_devnode *mdev)
- int __must_check __media_device_register(struct media_device *mdev,
- 					 struct module *owner)
- {
-+	struct media_devnode *devnode;
- 	int ret;
- 
- 	if (WARN_ON(mdev->dev == NULL || mdev->model[0] == 0))
-@@ -382,17 +385,27 @@ int __must_check __media_device_register(struct media_device *mdev,
- 	spin_lock_init(&mdev->lock);
- 	mutex_init(&mdev->graph_mutex);
- 
-+	devnode = kzalloc(sizeof(*devnode), GFP_KERNEL);
-+	if (!devnode)
-+		return -ENOMEM;
-+
- 	/* Register the device node. */
--	mdev->devnode.fops = &media_device_fops;
--	mdev->devnode.parent = mdev->dev;
--	mdev->devnode.release = media_device_release;
--	ret = media_devnode_register(&mdev->devnode, owner);
--	if (ret < 0)
-+	mdev->devnode = devnode;
-+	devnode->fops = &media_device_fops;
-+	devnode->parent = mdev->dev;
-+	devnode->release = media_device_release;
-+	ret = media_devnode_register(mdev, devnode, owner);
-+	if (ret < 0) {
-+		mdev->devnode = NULL;
-+		kfree(devnode);
- 		return ret;
-+	}
- 
--	ret = device_create_file(&mdev->devnode.dev, &dev_attr_model);
-+	ret = device_create_file(&devnode->dev, &dev_attr_model);
+@@ -405,6 +405,7 @@ int __must_check __media_device_register(struct media_device *mdev,
  	if (ret < 0) {
--		media_devnode_unregister(&mdev->devnode);
-+		mdev->devnode = NULL;
-+		media_devnode_unregister(devnode);
-+		kfree(devnode);
+ 		/* devnode free is handled in media_devnode_*() */
+ 		mdev->devnode = NULL;
++		media_devnode_unregister_prepare(devnode);
+ 		media_devnode_unregister(devnode);
  		return ret;
  	}
+@@ -423,16 +424,16 @@ void media_device_unregister(struct media_device *mdev)
+ 	struct media_entity *entity;
+ 	struct media_entity *next;
  
-@@ -413,8 +426,11 @@ void media_device_unregister(struct media_device *mdev)
++	/* Clear the devnode register bit to avoid races with media dev open */
++	media_devnode_unregister_prepare(mdev->devnode);
++
  	list_for_each_entry_safe(entity, next, &mdev->entities, list)
  		media_device_unregister_entity(entity);
  
--	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
--	media_devnode_unregister(&mdev->devnode);
-+	/* Check if mdev devnode was registered */
-+	if (media_devnode_is_registered(mdev->devnode)) {
-+		device_remove_file(&mdev->devnode->dev, &dev_attr_model);
-+		media_devnode_unregister(mdev->devnode);
-+	}
+-	/* Check if mdev devnode was registered */
+-	if (media_devnode_is_registered(mdev->devnode)) {
+-		device_remove_file(&mdev->devnode->dev, &dev_attr_model);
+-		media_devnode_unregister(mdev->devnode);
+-		/* devnode free is handled in media_devnode_*() */
+-		mdev->devnode = NULL;
+-	}
++	device_remove_file(&mdev->devnode->dev, &dev_attr_model);
++	media_devnode_unregister(mdev->devnode);
++	/* devnode free is handled in media_devnode_*() */
++	mdev->devnode = NULL;
  }
  EXPORT_SYMBOL_GPL(media_device_unregister);
  
 diff --git a/drivers/media/media-devnode.c b/drivers/media/media-devnode.c
-index 98211c570e11..000efb17b95b 100644
+index 45bb70d27224..e887120d19aa 100644
 --- a/drivers/media/media-devnode.c
 +++ b/drivers/media/media-devnode.c
-@@ -44,6 +44,7 @@
- #include <linux/uaccess.h>
- 
- #include <media/media-devnode.h>
-+#include <media/media-device.h>
- 
- #define MEDIA_NUM_DEVICES	256
- #define MEDIA_NAME		"media"
-@@ -74,6 +75,8 @@ static void media_devnode_release(struct device *cd)
- 	/* Release media_devnode and perform other cleanups as needed. */
- 	if (devnode->release)
- 		devnode->release(devnode);
-+
-+	kfree(devnode);
+@@ -302,6 +302,17 @@ int __must_check media_devnode_register(struct media_device *mdev,
+ 	return ret;
  }
  
- static struct bus_type media_bus_type = {
-@@ -221,6 +224,7 @@ static const struct file_operations media_devnode_fops = {
- 
++void media_devnode_unregister_prepare(struct media_devnode *devnode)
++{
++	/* Check if devnode was ever registered at all */
++	if (!media_devnode_is_registered(devnode))
++		return;
++
++	mutex_lock(&media_devnode_lock);
++	clear_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
++	mutex_unlock(&media_devnode_lock);
++}
++
  /**
-  * media_devnode_register - register a media device node
-+ * @media_dev: struct media_device we want to register a device node
-  * @devnode: media device node structure we want to register
+  * media_devnode_unregister - unregister a media device node
+  * @devnode: the device node to unregister
+@@ -309,17 +320,11 @@ int __must_check media_devnode_register(struct media_device *mdev,
+  * This unregisters the passed device. Future open calls will be met with
+  * errors.
   *
-  * The registration code assigns minor numbers and registers the new device node
-@@ -233,7 +237,8 @@ static const struct file_operations media_devnode_fops = {
-  * the media_devnode structure is *not* called, so the caller is responsible for
-  * freeing any data.
+- * This function can safely be called if the device node has never been
+- * registered or has already been unregistered.
++ * Should be called after media_devnode_unregister_prepare()
   */
--int __must_check media_devnode_register(struct media_devnode *devnode,
-+int __must_check media_devnode_register(struct media_device *mdev,
-+					struct media_devnode *devnode,
- 					struct module *owner)
+ void media_devnode_unregister(struct media_devnode *devnode)
  {
- 	int minor;
-@@ -252,6 +257,7 @@ int __must_check media_devnode_register(struct media_devnode *devnode,
- 	mutex_unlock(&media_devnode_lock);
- 
- 	devnode->minor = minor;
-+	devnode->media_dev = mdev;
- 
- 	/* Part 2: Initialize and register the character device */
- 	cdev_init(&devnode->cdev, &media_devnode_fops);
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 9cd0268b2767..f353ab569b8e 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -1800,7 +1800,7 @@ static void uvc_delete(struct uvc_device *dev)
- 	if (dev->vdev.dev)
- 		v4l2_device_unregister(&dev->vdev);
- #ifdef CONFIG_MEDIA_CONTROLLER
--	if (media_devnode_is_registered(&dev->mdev.devnode))
-+	if (media_devnode_is_registered(dev->mdev.devnode))
- 		media_device_unregister(&dev->mdev);
- #endif
- 
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index 6e6db78f1ee2..00bbd679864a 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -60,7 +60,7 @@ struct device;
- struct media_device {
- 	/* dev->driver_data points to this struct. */
- 	struct device *dev;
--	struct media_devnode devnode;
-+	struct media_devnode *devnode;
- 
- 	char model[32];
- 	char serial[40];
-@@ -84,9 +84,6 @@ struct media_device {
- #define MEDIA_DEV_NOTIFY_PRE_LINK_CH	0
- #define MEDIA_DEV_NOTIFY_POST_LINK_CH	1
- 
--/* media_devnode to media_device */
--#define to_media_device(node) container_of(node, struct media_device, devnode)
+-	/* Check if devnode was ever registered at all */
+-	if (!media_devnode_is_registered(devnode))
+-		return;
 -
- int __must_check __media_device_register(struct media_device *mdev,
- 					 struct module *owner);
- #define media_device_register(mdev) __media_device_register(mdev, THIS_MODULE)
+ 	mutex_lock(&media_devnode_lock);
+-	clear_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
+ 	/* Delete the cdev on this minor as well */
+ 	cdev_del(&devnode->cdev);
+ 	mutex_unlock(&media_devnode_lock);
 diff --git a/include/media/media-devnode.h b/include/media/media-devnode.h
-index 79f702d26d1f..8b854c044032 100644
+index 8b854c044032..d5ff95bf2d4b 100644
 --- a/include/media/media-devnode.h
 +++ b/include/media/media-devnode.h
-@@ -33,6 +33,8 @@
- #include <linux/device.h>
- #include <linux/cdev.h>
- 
-+struct media_device;
-+
- /*
-  * Flag to mark the media_devnode struct as registered. Drivers must not touch
-  * this flag directly, it will be set and cleared by media_devnode_register and
-@@ -67,6 +69,8 @@ struct media_file_operations {
-  * before registering the node.
-  */
- struct media_devnode {
-+	struct media_device *media_dev;
-+
- 	/* device ops */
- 	const struct media_file_operations *fops;
- 
-@@ -86,7 +90,8 @@ struct media_devnode {
- /* dev to media_devnode */
- #define to_media_devnode(cd) container_of(cd, struct media_devnode, dev)
- 
--int __must_check media_devnode_register(struct media_devnode *devnode,
-+int __must_check media_devnode_register(struct media_device *mdev,
-+					struct media_devnode *devnode,
+@@ -93,6 +93,20 @@ struct media_devnode {
+ int __must_check media_devnode_register(struct media_device *mdev,
+ 					struct media_devnode *devnode,
  					struct module *owner);
++
++/**
++ * media_devnode_unregister_prepare - clear the media device node register bit
++ * @devnode: the device node to prepare for unregister
++ *
++ * This clears the passed device register bit. Future open calls will be met
++ * with errors. Should be called before media_devnode_unregister() to avoid
++ * races with unregister and device file open calls.
++ *
++ * This function can safely be called if the device node has never been
++ * registered or has already been unregistered.
++ */
++void media_devnode_unregister_prepare(struct media_devnode *devnode);
++
  void media_devnode_unregister(struct media_devnode *devnode);
  
-@@ -97,6 +102,9 @@ static inline struct media_devnode *media_devnode_data(struct file *filp)
- 
- static inline int media_devnode_is_registered(struct media_devnode *devnode)
- {
-+	if (!devnode)
-+		return false;
-+
- 	return test_bit(MEDIA_FLAG_REGISTERED, &devnode->flags);
- }
- 
+ static inline struct media_devnode *media_devnode_data(struct file *filp)
 -- 
 2.25.1
 
