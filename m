@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF4B1E1B92
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFA81E1B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 08:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgEZGwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 02:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726921AbgEZGwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 02:52:50 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F335720776;
-        Tue, 26 May 2020 06:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590475970;
-        bh=578soxxNM+PnpJUnfjZmqXmt3ZxJDXb6cTa7vdFmkcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g7coDl//s2uasgScprZvqTGdHz9UH43heVbj6kHs/iGNFEDGnZZgINJ+E7JBBjU5G
-         bQdpkdiR0e3rb41nkUV+c7SWzdj37hX9b+HVhxj81n4zDUi4a+lCFZwo134OGw28h6
-         dqGVB0xzHP4NVcbL/rC+KyxYUAg9XWJNAnuKIA5o=
-Date:   Tue, 26 May 2020 08:52:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
-        ne-devel-upstream@amazon.com
-Subject: Re: [PATCH v3 16/18] nitro_enclaves: Add sample for ioctl interface
- usage
-Message-ID: <20200526065248.GE2580530@kroah.com>
-References: <20200525221334.62966-1-andraprs@amazon.com>
- <20200525221334.62966-17-andraprs@amazon.com>
+        id S1730948AbgEZGxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 02:53:22 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:62936 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgEZGxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 02:53:22 -0400
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="35739056"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 26 May 2020 14:53:18 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(20967:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Tue, 26 May 2020 14:53:18 +0800 (CST)
+Received: from 192.168.33.11
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2484:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Tue, 26 May 2020 14:53:16 +0800 (CST)
+From:   "jingle" <jingle.wu@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <phoenix@emc.com.tw>, <dave.wang@emc.com.tw>,
+        <josh.chen@emc.com.tw>
+References: <20200526022246.4542-1-jingle.wu@emc.com.tw> <20200526041719.GH89269@dtor-ws>
+In-Reply-To: <20200526041719.GH89269@dtor-ws>
+Subject: RE: [PATCH] Input: elantech - Remove read/write registers in attr.
+Date:   Tue, 26 May 2020 14:53:15 +0800
+Message-ID: <001701d6332a$54ebc970$fec35c50$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200525221334.62966-17-andraprs@amazon.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+thread-index: AQJkLPP72s3DFgLZomzEGNYQSBUd1gGlmuz5p5DNyNA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy05MjgyY2JmMi05ZjFkLTExZWEtODRlNy1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcOTI4MmNiZjQtOWYxZC0xMWVhLTg0ZTctZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSI4MzkiIHQ9IjEzMjM0OTQ5NTk1OTI5MDgzNCIgaD0ib3RDQzJqWjlMUTZzMGFZWHQ1Q2ZNVkdvdGVFPSIgaWQ9IiIgYmw9IjAiIGJvPSIxIi8+PC9tZXRhPg==
+x-dg-rorf: true
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 01:13:32AM +0300, Andra Paraschiv wrote:
-> Signed-off-by: Alexandru Vasile <lexnv@amazon.com>
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+HI Dmitry:
 
-Again, I can't take patches without any changelog text, and you
-shouldn't be writing them, as they are just lazy :)
+These changes would not affect all the behavior of the old IC, including all
+the TP functions
 
-thanks,
+THANKS
+JINGLE
 
-greg k-h
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
+Sent: Tuesday, May 26, 2020 12:17 PM
+To: Jingle.Wu
+Cc: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
+phoenix@emc.com.tw; dave.wang@emc.com.tw; josh.chen@emc.com.tw
+Subject: Re: [PATCH] Input: elantech - Remove read/write registers in attr.
+
+Hi Jingle,
+
+On Tue, May 26, 2020 at 10:22:46AM +0800, Jingle.Wu wrote:
+> New Elan IC would not be accessed with the specific regiters.
+
+What about older Elaan parts? We can't simply drop compatibility with older
+chips in newer kernels.
+
+Thanks.
+
+--
+Dmitry
+
