@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24AD1E1A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E581E1A73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 06:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgEZEfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 00:35:18 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60945 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726380AbgEZEfR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 00:35:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TzgeTgw_1590467713;
-Received: from localhost(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0TzgeTgw_1590467713)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 May 2020 12:35:13 +0800
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 2/2] x86/entry: always flush user CR3 in RESTORE_CR3
-Date:   Tue, 26 May 2020 04:35:07 +0000
-Message-Id: <20200526043507.51977-3-laijs@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200526043507.51977-1-laijs@linux.alibaba.com>
-References: <20200526043507.51977-1-laijs@linux.alibaba.com>
+        id S1726048AbgEZEgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 00:36:36 -0400
+Received: from ozlabs.org ([203.11.71.1]:59261 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725773AbgEZEgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 00:36:36 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49WLl50fF7z9sRK;
+        Tue, 26 May 2020 14:36:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1590467794;
+        bh=4v8ocGM/APo2sSgppiU/a6nI3q4TeGO4rhe21S8OGMo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V5Uh8HJBzGV7gcBzXAj8zRUgdsUcf4HxCOU4Fwqb2ObX2nf/TFqzbFgXYhx85LoTq
+         dxT277ChkPmq147KLwFVatU9YyVLPr4En646pqvi8T4NuqUqHCPzttLvknIIhTQdoo
+         4CbsVgsjR8qbRXpx908nBDiUMXdexy5CtcNTWlPNu5dsEzGWQAJVOI/xnUOFJMT0an
+         iJaTRq6aT/r/m8ZhVuAqFGToaMk2ra6wcB0shi+Pp8dZicO7MB9xwPNuFtCYPSgtAq
+         l0OU9lYL5dpeS0gum+9XqlTGVetUQJLJCx6tXhAjAH7rJ6+tQMf0pWOjnDrLC68RrF
+         ex0qYuxE8keGw==
+Date:   Tue, 26 May 2020 14:36:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: linux-next: build failure after merge of the block tree
+Message-ID: <20200526143630.7e7fbc79@canb.auug.org.au>
+In-Reply-To: <c0e6af76-46d8-ccf0-3874-0751f7622caf@kernel.dk>
+References: <20200525150837.54fe6977@canb.auug.org.au>
+        <c0e6af76-46d8-ccf0-3874-0751f7622caf@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/pxLirPxGa6MugXWK9gm1DQd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RESTORE_CR3 is called when CPL==0 or #DF, it is unlikely
-CPL==0&cr3==userCR3 and #DF itself is unlikely case.
-There is no much overhead to always flush userCR3.
+--Sig_/pxLirPxGa6MugXWK9gm1DQd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/entry/calling.h  | 27 ++++++---------------------
- arch/x86/entry/entry_64.S |  6 +++---
- 2 files changed, 9 insertions(+), 24 deletions(-)
+Hi all,
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index 505246185624..ff26e4eb7063 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -265,33 +265,18 @@ For 32-bit we have the following conventions - kernel is built with
- .Ldone_\@:
- .endm
- 
--.macro RESTORE_CR3 scratch_reg:req save_reg:req
-+.macro RESTORE_CR3 save_reg:req
- 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
- 
- 	/*
- 	 * Skip resuming KERNEL pages since it is already KERNEL CR3.
-+	 *
-+	 * RESTORE_CR3 is called when CPL==0 or #DF, it is unlikely
-+	 * CPL==0&cr3==userCR3 and #DF itself is unlikely case.
-+	 * There is no much overhead to always flush userCR3.
- 	 */
- 	bt	$PTI_USER_PGTABLE_BIT, \save_reg
- 	jnc	.Lend_\@
--
--	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
--
--	/*
--	 * Check if there's a pending flush for the user ASID we're
--	 * about to set.
--	 */
--	movq	\save_reg, \scratch_reg
--	andq	$(0x7FF), \scratch_reg
--	bt	\scratch_reg, THIS_CPU_user_pcid_flush_mask
--	jnc	.Lnoflush_\@
--
--	btr	\scratch_reg, THIS_CPU_user_pcid_flush_mask
--	jmp	.Lwrcr3_\@
--
--.Lnoflush_\@:
--	SET_NOFLUSH_BIT \save_reg
--
--.Lwrcr3_\@:
- 	movq	\save_reg, %cr3
- .Lend_\@:
- .endm
-@@ -306,7 +291,7 @@ For 32-bit we have the following conventions - kernel is built with
- .endm
- .macro SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg:req save_reg:req
- .endm
--.macro RESTORE_CR3 scratch_reg:req save_reg:req
-+.macro RESTORE_CR3 save_reg:req
- .endm
- 
- #endif
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index d983a0d4bc73..46efa842a45e 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1283,13 +1283,13 @@ SYM_CODE_START_LOCAL(paranoid_exit)
- 	jnz	.Lparanoid_exit_no_swapgs
- 	TRACE_IRQS_IRETQ
- 	/* Always restore stashed CR3 value (see paranoid_entry) */
--	RESTORE_CR3	scratch_reg=%rbx save_reg=%r14
-+	RESTORE_CR3	save_reg=%r14
- 	SWAPGS_UNSAFE_STACK
- 	jmp	restore_regs_and_return_to_kernel
- .Lparanoid_exit_no_swapgs:
- 	TRACE_IRQS_IRETQ_DEBUG
- 	/* Always restore stashed CR3 value (see paranoid_entry) */
--	RESTORE_CR3	scratch_reg=%rbx save_reg=%r14
-+	RESTORE_CR3	save_reg=%r14
- 	jmp restore_regs_and_return_to_kernel
- SYM_CODE_END(paranoid_exit)
- 
-@@ -1703,7 +1703,7 @@ end_repeat_nmi:
- 	call	exc_nmi
- 
- 	/* Always restore stashed CR3 value (see paranoid_entry) */
--	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
-+	RESTORE_CR3 save_reg=%r14
- 
- 	testl	%ebx, %ebx			/* swapgs needed? */
- 	jnz	nmi_restore
--- 
-2.20.1
+On Mon, 25 May 2020 13:03:44 -0600 Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 5/24/20 11:08 PM, Stephen Rothwell wrote:
+> >=20
+> > After merging the block tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >=20
+> > mm/filemap.c: In function 'generic_file_buffered_read':
+> > mm/filemap.c:2075:9: error: 'written' undeclared (first use in this fun=
+ction); did you mean 'writeb'?
+> >  2075 |     if (written) {
+> >       |         ^~~~~~~
+> >       |         writeb
+> >=20
+> > Caused by commit
+> >=20
+> >   23d513106fd8 ("mm: support async buffered reads in generic_file_buffe=
+red_read()")
+> >=20
+> > from the block tree interacting with commit
+> >=20
+> >   6e66f10f2cac ("fs: export generic_file_buffered_read()")
+> >=20
+> > from the btrfs tree.
+> >=20
+> > [Aside: that btrfs tree commit talks about "correct the comments and va=
+riable
+> >     names", but changes "written" to "copied" in the function definition
+> >     but to "already_read" in the header file declaration ...]
+> >=20
+> > I ave applied the following merge fix patch: =20
+>=20
+> Looks like a frivolous change... Thanks for fixing this up Stephen.
 
+The variable name change has been removed from the btrfs tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/pxLirPxGa6MugXWK9gm1DQd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7MnM4ACgkQAVBC80lX
+0GxN0QgAkrTNBQkQoE+E8c1r8/lTP6z3sg4vMtkaNdAvj1KqOvGJ8nDw99s4APYR
+v4KnZ64ZjgK6Rc0mTwK05QRG80OvzLLTewpyINAT5bMzq9SjP3TIbKeYu1gINDZC
+nZD6mhryuq56q5gL4ifP+yshLjVg4kH8kn5rkREH+DK1uK1q4nUD+mfO871wUtCY
+CMVMC5pvRf+jOpgpYzAq+mLuEXfoVVkNCrBnqZuXpAKi29e878NTsrz9t9QkblxD
+1XZFaymjGGQ2f+nTSdjcBbhur/io3fQsrdpt5J/WgTlMnJMXK8yHPhRWPRZ98OjG
+cehbze+Hm6NMqtV9mN9wYanu//NgVA==
+=HJ9b
+-----END PGP SIGNATURE-----
+
+--Sig_/pxLirPxGa6MugXWK9gm1DQd--
