@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7BE1E2C41
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14301E2BC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404286AbgEZTNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:13:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
+        id S2403913AbgEZTIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:08:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404264AbgEZTNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:25 -0400
+        id S2391804AbgEZTIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:08:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A93120888;
-        Tue, 26 May 2020 19:13:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9006C20873;
+        Tue, 26 May 2020 19:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520404;
-        bh=XvJDTNIF45o9UFGQKYua3tOzrBKSO1492EQJkze+mBE=;
+        s=default; t=1590520115;
+        bh=3bJ9YBKBBnNebZDvA3t8ZGRSL8tqIXgvPp+50KDPZhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XSfo6/N/jWFQguyr9yQzeamwDTmqm+3oF3Yq27pvCjUabQ4aTpju4mWmS34qqjZtp
-         KPi01VIUXZKU0joC/nrWQZWraRKdLJ1X/yq1WA4FDuU5bGtCy8TPPGoab64aVCQqR9
-         j22It7fWQ9gX59UA2O4jkhKzHuwzkFFyM5eLVTYE=
+        b=a3CP4Ttn7aO39XRVip2c0il/gtAhkbFtILv0cjz7uXGCReAgZ19wILtY+gux/V7Y2
+         hjrqCrMYWijI0qHshRjnwfqukPIDtYo+RiTbZyxw7xzQo3ZULJ0ACSUc4gewYt9mLN
+         07gTczVF+U1NcEstpAunX6PSJD1sYywHHzZX2mfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Bahling <sbahling@suse.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 064/126] ALSA: iec1712: Initialize STDSP24 properly when using the model=staudio option
+        stable@vger.kernel.org, "Bryant G. Ly" <bryangly@gmail.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 063/111] scsi: target: Put lun_ref at end of tmr processing
 Date:   Tue, 26 May 2020 20:53:21 +0200
-Message-Id: <20200526183943.534486974@linuxfoundation.org>
+Message-Id: <20200526183938.840421842@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Bahling <sbahling@suse.com>
+From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
 
-commit b0cb099062b0c18246c3a20caaab4c0afc303255 upstream.
+commit f2e6b75f6ee82308ef7b00f29e71e5f1c6b3d52a upstream.
 
-The ST Audio ADCIII is an STDSP24 card plus extension box. With commit
-e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII") we
-enabled the ADCIII ports using the model=staudio option but forgot
-this part to ensure the STDSP24 card is initialized properly.
+Testing with Loopback I found that, after a Loopback LUN has executed a
+TMR, I can no longer unlink the LUN.  The rm command hangs in
+transport_clear_lun_ref() at wait_for_completion(&lun->lun_shutdown_comp)
+The reason is, that transport_lun_remove_cmd() is not called at the end of
+target_tmr_work().
 
-Fixes: e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII")
-Signed-off-by: Scott Bahling <sbahling@suse.com>
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1048934
-Link: https://lore.kernel.org/r/20200518175728.28766-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+It seems, that in other fabrics this call happens implicitly when the
+fabric drivers call transport_generic_free_cmd() during their
+->queue_tm_rsp().
+
+Unfortunately Loopback seems to not comply to the common way
+of calling transport_generic_free_cmd() from ->queue_*().
+Instead it calls transport_generic_free_cmd() from its
+  ->check_stop_free() only.
+
+But the ->check_stop_free() is called by
+transport_cmd_check_stop_to_fabric() after it has reset the se_cmd->se_lun
+pointer.  Therefore the following transport_generic_free_cmd() skips the
+transport_lun_remove_cmd().
+
+So this patch re-adds the transport_lun_remove_cmd() at the end of
+target_tmr_work(), which was removed during commit 2c9fa49e100f ("scsi:
+target/core: Make ABORT and LUN RESET handling synchronous").
+
+For fabrics using transport_generic_free_cmd() in the usual way the double
+call to transport_lun_remove_cmd() doesn't harm, as
+transport_lun_remove_cmd() checks for this situation and does not release
+lun_ref twice.
+
+Link: https://lore.kernel.org/r/20200513153443.3554-1-bstroesser@ts.fujitsu.com
+Fixes: 2c9fa49e100f ("scsi: target/core: Make ABORT and LUN RESET handling synchronous")
+Cc: stable@vger.kernel.org
+Tested-by: Bryant G. Ly <bryangly@gmail.com>
+Reviewed-by: Bart van Assche <bvanassche@acm.org>
+Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/ice1712/ice1712.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/target/target_core_transport.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -2332,7 +2332,8 @@ static int snd_ice1712_chip_init(struct
- 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
- 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
- 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
--	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24) {
-+	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24 &&
-+	    ice->eeprom.subvendor != ICE1712_SUBDEVICE_STAUDIO_ADCIII) {
- 		ice->gpio.write_mask = ice->eeprom.gpiomask;
- 		ice->gpio.direction = ice->eeprom.gpiodir;
- 		snd_ice1712_write(ice, ICE1712_IREG_GPIO_WRITE_MASK,
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -3336,6 +3336,7 @@ static void target_tmr_work(struct work_
+ 
+ 	cmd->se_tfo->queue_tm_rsp(cmd);
+ 
++	transport_lun_remove_cmd(cmd);
+ 	transport_cmd_check_stop_to_fabric(cmd);
+ 	return;
+ 
 
 
