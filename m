@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33451E31FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5B61E31FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391797AbgEZWEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390566AbgEZWEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:04:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABDE22088E;
-        Tue, 26 May 2020 22:04:38 +0000 (UTC)
-Date:   Tue, 26 May 2020 18:04:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        id S2391826AbgEZWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:04:51 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:38005 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389342AbgEZWEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 18:04:50 -0400
+Received: by mail-il1-f194.google.com with SMTP id q18so963007ilm.5;
+        Tue, 26 May 2020 15:04:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4+Nqzubi5qDcEFVMZS+DoVAaOhv2OcfcUjqNZ5zEgxk=;
+        b=ApQ484SjAVTbtkk3xEGy0H8dXWY2tucMnYvAZz0ZcICl+D2nyEAsX4TW8ZrhKNH1P0
+         N+iBaVTuJmz0vTeWIOktTDvQ4wzreGRilOLx8AqYxX/gbJgycjLJBJkGrfenn6nkwiqM
+         UQJOo87EjOy/hhoN3yqAnEPnzieXLe7KIWskbzkoraAFgEjtNlwG04E+p6Qh7Jgy7JMh
+         g611Y0Q7qHhqoNDen8WicQScOmc/xtSdiC99F+oe7sIJUtmrcaIw3OPGPu5Yyxw1v4Ch
+         1Ff4hsgte8OlEgYGjaq6jbdMPY1XJyrSYP5CKYc33CrDcWKOC58g6C2p9cU17uAzjj76
+         TD5w==
+X-Gm-Message-State: AOAM531lKTsed/Ao0XoNq2bf2uZrTR/TFZwmMw2Fjsa6rBu7ygx6zWx/
+        fuMhG9n+IldFiMW5ncLDWA==
+X-Google-Smtp-Source: ABdhPJyiuvVFoCmUphZsk18kZQgyM8mMz45CmBlDHyye6pc29KhRfabK1MRa6/KBIPfc4+r0IKwvCA==
+X-Received: by 2002:a05:6e02:801:: with SMTP id u1mr3249749ilm.295.1590530689080;
+        Tue, 26 May 2020 15:04:49 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id p1sm578883ilq.67.2020.05.26.15.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 15:04:48 -0700 (PDT)
+Received: (nullmailer pid 461819 invoked by uid 1000);
+        Tue, 26 May 2020 22:04:47 -0000
+Date:   Tue, 26 May 2020 16:04:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] perf/core: allow ftrace for functions in
- kernel/event/core.c
-Message-ID: <20200526180437.45aed950@gandalf.local.home>
-In-Reply-To: <20200526215415.GH2483@worktop.programming.kicks-ass.net>
-References: <20200526212826.4097888-1-songliubraving@fb.com>
-        <20200526213913.GG2483@worktop.programming.kicks-ass.net>
-        <A9B20D93-748B-4789-801E-91720E2D4F28@fb.com>
-        <20200526215415.GH2483@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v7 2/2] dt-bindings: usb: qcom,dwc3: Add compatible for
+ SC7180
+Message-ID: <20200526220447.GA461055@bogus>
+References: <1590075499-21350-1-git-send-email-sanm@codeaurora.org>
+ <1590075499-21350-3-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590075499-21350-3-git-send-email-sanm@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 May 2020 23:54:15 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Tue, May 26, 2020 at 09:46:29PM +0000, Song Liu wrote:
-> > 
-> >   
-> > > On May 26, 2020, at 2:39 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > > 
-> > > On Tue, May 26, 2020 at 02:28:26PM -0700, Song Liu wrote:  
-> > >> It is useful to trace functions in kernel/event/core.c. Allow ftrace for
-> > >> them by removing $(CC_FLAGS_FTRACE) from Makefile.  
-> > > 
-> > > Did you try using the ftrace event with perf with this on?  
-> > 
-> > I have tried a few things, like 
-> > 
-> >   perf stat -e probe:perf_read -I 1000
-> >   perf record -e probe:__x64_sys_perf_event_open -aR
-> > 
-> > They all work fine. 
-> > 
-> > Do you have some tricky functions that we should double check?  
+On Thu, May 21, 2020 at 09:08:19PM +0530, Sandeep Maheswaram wrote:
+> Add compatible for SC7180 in usb dwc3 bindings.
 > 
-> I've no idea what probe: does. iirc there's something like
-> ftrace:function that is like regular function tracing.
-> 
-> At some point using that made the kernel really sick due to recursion
-> between ftrace and perf. Quite possibly that's been fixed, dunno.
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-In the early days there was a lot of issues with recursions, but I added a
-lot of recursion protection since then. I'll give this patch a spin and see
-if I can make it crash.
-
--- Steve
+Applied, thanks!
