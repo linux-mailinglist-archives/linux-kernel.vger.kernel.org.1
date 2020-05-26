@@ -2,244 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB711E319C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5D31E31B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 23:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390951AbgEZV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 17:56:03 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:60018 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389641AbgEZVzy (ORCPT
+        id S2391391AbgEZV40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 17:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390131AbgEZV4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 17:55:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A887E803087F;
-        Tue, 26 May 2020 21:55:45 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PWEOSNhYxOhX; Wed, 27 May 2020 00:55:45 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 12/12] i2c: designware: Add Baikal-T1 System I2C support
-Date:   Wed, 27 May 2020 00:55:28 +0300
-Message-ID: <20200526215528.16417-13-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
+        Tue, 26 May 2020 17:56:24 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75564C03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:56:24 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z13so16779692ljn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 14:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KxA9UmGJJnl7Bb+4Hp5hGEl722cKfUNLx8ou3ZEhvTQ=;
+        b=Rdj07d1EbBsd4yaGts4o+yqzcD6soXFmwEnvmWnKKkkMxr4IzXZCRjUTJqQ0b010v3
+         QCViqtYyatK+6gpTvUUspFrQ+zruGqU7KH44vMYy2OZ3Zz/zaly4trhle/tcrtMgZMnm
+         LnEITkjaw/mB9K1DttC+YgzADHQ/izR/asILurcN7rLch/r/ZUjle2DQa17WJYFuL7H9
+         yfWZ+EOFZPbQkSb/D/+GXzEViwlKYd4HKr0NRPce3hroQ0JffQtCKP79tgSShlUSHbm7
+         UkQQ0zKl4bK/mvTBH0UJYqgNftgHENuCLJzhnIk6dqfK20eYm7k60qJVlizWE2dv5ebi
+         QR6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KxA9UmGJJnl7Bb+4Hp5hGEl722cKfUNLx8ou3ZEhvTQ=;
+        b=qz9acLiS1q5pLgIZwUdGzigoYZWMi3FzVkKOK2ZqKvETOffkZAhAczDmex5lrXadW0
+         u2rgaJ1c+6Au6I+6OOlWL9nL/p9cQxuW0h3JPtuGR0ORWS5u0XJScyILDY9/LexPUSX+
+         sSA6geER44tG5QVhb8k6/NloCnMMUNQhLw4cPSpD7s1ePlzsBGrkcKiqJ/QVW1W/beP0
+         wQTAjJ3rIeCltQSeBDbEJ8PshHYOk7QQrndoU9Irs41fE9HLGY29Ga/y814b2mBhfK8r
+         ol6tzVNKZ8X2Ki0upGl4d9tv3O1pkudWpVeO+Aa7sh91N+9wPN89tDVY0So7hNn3vv1r
+         LZMQ==
+X-Gm-Message-State: AOAM533ZUgWhiP/uT5QLeLiOdkwpZXhDQHiP8tr5rqM3BZdbPxS2lVgA
+        RBNI95S+UkYSGBS92t3TeNewMw==
+X-Google-Smtp-Source: ABdhPJyBJffVuN8Gxouh7odL35w4h73NN8hmaj17eT0JxNv7QR2g36h9/tqS3jaVBhyIz8dNFQkR1g==
+X-Received: by 2002:a2e:8091:: with SMTP id i17mr1625888ljg.141.1590530182839;
+        Tue, 26 May 2020 14:56:22 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id w24sm218345ljo.136.2020.05.26.14.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 14:56:22 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 850B710230F; Wed, 27 May 2020 00:56:22 +0300 (+03)
+Date:   Wed, 27 May 2020 00:56:22 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC 06/16] KVM: Use GUP instead of copy_from/to_user() to
+ access guest memory
+Message-ID: <20200526215622.r455gfohtufr45vj@box>
+References: <20200522125214.31348-1-kirill.shutemov@linux.intel.com>
+ <20200522125214.31348-7-kirill.shutemov@linux.intel.com>
+ <20200526061459.GC13247@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526061459.GC13247@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baikal-T1 System Controller is equipped with a dedicated I2C Controller
-which functionality is based on the DW APB I2C IP-core, the only
-difference in a way it' registers are accessed. There are three access
-register provided in the System Controller registers map, which indirectly
-address the normal DW APB I2C registers space. So in order to have the
-Baikal-T1 System I2C Controller supported by the common DW APB I2C driver
-we created a dedicated Dw I2C controller model quirk, which retrieves the
-syscon regmap from the parental dt node and creates a new regmap based on
-it.
+On Tue, May 26, 2020 at 09:14:59AM +0300, Mike Rapoport wrote:
+> On Fri, May 22, 2020 at 03:52:04PM +0300, Kirill A. Shutemov wrote:
+> > New helpers copy_from_guest()/copy_to_guest() to be used if KVM memory
+> > protection feature is enabled.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >  include/linux/kvm_host.h |  4 +++
+> >  virt/kvm/kvm_main.c      | 78 ++++++++++++++++++++++++++++++++++------
+> >  2 files changed, 72 insertions(+), 10 deletions(-)
+> > 
+> >  static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+> > -				 void *data, int offset, int len)
+> > +				 void *data, int offset, int len,
+> > +				 bool protected)
+> >  {
+> >  	int r;
+> >  	unsigned long addr;
+> > @@ -2257,7 +2297,10 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+> >  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
+> >  	if (kvm_is_error_hva(addr))
+> >  		return -EFAULT;
+> > -	r = __copy_from_user(data, (void __user *)addr + offset, len);
+> > +	if (protected)
+> > +		r = copy_from_guest(data, addr + offset, len);
+> > +	else
+> > +		r = __copy_from_user(data, (void __user *)addr + offset, len);
+> 
+> Maybe always use copy_{from,to}_guest() and move the 'if (protected)'
+> there?
+> If kvm is added to memory slot, it cab be the passed to copy_{to,from}_guest.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+Right, Vitaly has pointed me to this already.
 
----
-
-Changelog v3:
-- This is a new patch, which has been created due to declining the
-  glue-layer approach.
----
- drivers/i2c/busses/Kconfig                  |  3 +-
- drivers/i2c/busses/i2c-designware-core.h    |  3 +
- drivers/i2c/busses/i2c-designware-platdrv.c | 81 ++++++++++++++++++++-
- 3 files changed, 83 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index adaaf5679266..9924e8ad697b 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -530,8 +530,9 @@ config I2C_DESIGNWARE_CORE
- 
- config I2C_DESIGNWARE_PLATFORM
- 	tristate "Synopsys DesignWare Platform"
--	select I2C_DESIGNWARE_CORE
- 	depends on (ACPI && COMMON_CLK) || !ACPI
-+	select I2C_DESIGNWARE_CORE
-+	select MFD_SYSCON if MIPS_BAIKAL_T1
- 	help
- 	  If you say yes to this option, support will be included for the
- 	  Synopsys DesignWare I2C adapter.
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 4a54ec1ce6e3..422554416fde 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -174,6 +174,7 @@
-  * struct dw_i2c_dev - private i2c-designware data
-  * @dev: driver model device node
-  * @map: IO registers map
-+ * @sysmap: System controller registers map
-  * @base: IO registers pointer
-  * @ext: Extended IO registers pointer
-  * @cmd_complete: tx completion indicator
-@@ -226,6 +227,7 @@
- struct dw_i2c_dev {
- 	struct device		*dev;
- 	struct regmap		*map;
-+	struct regmap		*sysmap;
- 	void __iomem		*base;
- 	void __iomem		*ext;
- 	struct completion	cmd_complete;
-@@ -282,6 +284,7 @@ struct dw_i2c_dev {
- #define ACCESS_NO_IRQ_SUSPEND	0x00000008
- 
- #define MODEL_MSCC_OCELOT	0x00000100
-+#define MODEL_BAIKAL_BT1	0x00000200
- #define MODEL_MASK		0x00000f00
- 
- int i2c_dw_init_regmap(struct dw_i2c_dev *dev);
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index 93bdcfae57df..e3be46147315 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -19,6 +19,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_data/i2c-designware.h>
-@@ -26,6 +27,7 @@
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
-+#include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
-@@ -142,6 +144,66 @@ static inline int dw_i2c_acpi_configure(struct platform_device *pdev)
- #endif
- 
- #ifdef CONFIG_OF
-+#define BT1_I2C_CTL			0x100
-+#define BT1_I2C_CTL_ADDR_MASK		GENMASK(7, 0)
-+#define BT1_I2C_CTL_WR			BIT(8)
-+#define BT1_I2C_CTL_GO			BIT(31)
-+#define BT1_I2C_DI			0x104
-+#define BT1_I2C_DO			0x108
-+
-+static int bt1_i2c_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct dw_i2c_dev *dev = context;
-+	int ret;
-+
-+	/*
-+	 * Note these methods shouldn't ever fail because the system controller
-+	 * registers are memory mapped. We check the return value just in case.
-+	 */
-+	ret = regmap_write(dev->sysmap, BT1_I2C_CTL,
-+			   BT1_I2C_CTL_GO | (reg & BT1_I2C_CTL_ADDR_MASK));
-+	if (ret)
-+		return ret;
-+
-+	return regmap_read(dev->sysmap, BT1_I2C_DO, val);
-+}
-+
-+static int bt1_i2c_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct dw_i2c_dev *dev = context;
-+	int ret;
-+
-+	ret = regmap_write(dev->sysmap, BT1_I2C_DI, val);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_write(dev->sysmap, BT1_I2C_CTL,
-+		BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
-+}
-+
-+static struct regmap_config bt1_i2c_cfg = {
-+	.reg_bits = 32,
-+	.val_bits = 32,
-+	.reg_stride = 4,
-+	.fast_io = true,
-+	.reg_read = bt1_i2c_read,
-+	.reg_write = bt1_i2c_write,
-+	.max_register = DW_IC_COMP_TYPE
-+};
-+
-+static int bt1_i2c_request_regs(struct dw_i2c_dev *dev)
-+{
-+	dev->sysmap = syscon_node_to_regmap(dev->dev->of_node->parent);
-+	if (IS_ERR(dev->sysmap))
-+		return PTR_ERR(dev->sysmap);
-+
-+	dev->map = devm_regmap_init(dev->dev, NULL, dev, &bt1_i2c_cfg);
-+	if (IS_ERR(dev->map))
-+		return PTR_ERR(dev->map);
-+
-+	return 0;
-+}
-+
- #define MSCC_ICPU_CFG_TWI_DELAY		0x0
- #define MSCC_ICPU_CFG_TWI_DELAY_ENABLE	BIT(0)
- #define MSCC_ICPU_CFG_TWI_SPIKE_FILTER	0x4
-@@ -176,10 +238,16 @@ static int dw_i2c_of_configure(struct platform_device *pdev)
- static const struct of_device_id dw_i2c_of_match[] = {
- 	{ .compatible = "snps,designware-i2c", },
- 	{ .compatible = "mscc,ocelot-i2c", .data = (void *)MODEL_MSCC_OCELOT },
-+	{ .compatible = "baikal,bt1-sys-i2c", .data = (void *)MODEL_BAIKAL_BT1 },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, dw_i2c_of_match);
- #else
-+static int bt1_i2c_request_regs(struct dw_i2c_dev *dev)
-+{
-+	return -ENODEV;
-+}
-+
- static inline int dw_i2c_of_configure(struct platform_device *pdev)
- {
- 	return -ENODEV;
-@@ -239,9 +307,16 @@ static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
- 	struct platform_device *pdev = to_platform_device(dev->dev);
- 	int ret = 0;
- 
--	dev->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
--	if (IS_ERR(dev->base))
--		ret = PTR_ERR(dev->base);
-+	switch (dev->flags & MODEL_MASK) {
-+	case MODEL_BAIKAL_BT1:
-+		ret = bt1_i2c_request_regs(dev);
-+		break;
-+	default:
-+		dev->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-+		if (IS_ERR(dev->base))
-+			ret = PTR_ERR(dev->base);
-+		break;
-+	}
- 
- 	return ret;
- }
 -- 
-2.26.2
-
+ Kirill A. Shutemov
