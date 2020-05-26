@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39871E2DEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57441E2CE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391119AbgEZTGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34082 "EHLO mail.kernel.org"
+        id S2392373AbgEZTSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391639AbgEZTGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:01 -0400
+        id S2404331AbgEZTNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C587C20776;
-        Tue, 26 May 2020 19:06:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 525A3208B3;
+        Tue, 26 May 2020 19:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519961;
-        bh=1LLrEfPfAV+cGfCNECNu52XXltkAInRVKK30NZ1an0I=;
+        s=default; t=1590520429;
+        bh=5DSkam4qSpPOCtTfMpJff906uNdwjLVc5YIigu8a1XM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugslCmFevgxOCDsWJq7V5LY1cw3QQS2ZfqZtkMXkHr1O2WpA1e5eVZuqvaG69gzl0
-         1Q2smdXGMJB70NBx5GjR56kHzXirGjHVYDMvM5d2lHdLl524nhJZjtuGVsJY7e5kOv
-         938IZ/lt/SGGp30mR8FoioBmBYEVaCck62TZn+m0=
+        b=BAb8UeVuDTNjrcMf5A1FH1DshI11jCj/PfJhhjkGDLnAY64OEZVuEqdVyyLANBDrE
+         Kp2F5syxm0HpehjQQC472efD/1JeFScGTJukOHc3uqm0n/DBZB/KhnCbWM/CQw23iv
+         F0/LQiYpSnqi3kpm9qkq4cevKc/buQJMgBYBmLnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 59/81] net: bcmgenet: abort suspend on error
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.6 077/126] dmaengine: tegra210-adma: Fix an error handling path in tegra_adma_probe()
 Date:   Tue, 26 May 2020 20:53:34 +0200
-Message-Id: <20200526183933.620315588@linuxfoundation.org>
+Message-Id: <20200526183944.643969579@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c5a54bbcececa36852807c36157a86d808b62310 ]
+commit 3a5fd0dbd87853f8bd2ea275a5b3b41d6686e761 upstream.
 
-If an error occurs during suspension of the driver the driver should
-restore the hardware configuration and return an error to force the
-system to resume.
+Commit b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
+has moved some code in the probe function and reordered the error handling
+path accordingly.
+However, a goto has been missed.
 
-Fixes: 0db55093b566 ("net: bcmgenet: return correct value 'ret' from bcmgenet_power_down")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix it and goto the right label if 'dma_async_device_register()' fails, so
+that all resources are released.
+
+Fixes: b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20200516214205.276266-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c     | 3 +++
- drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c | 6 ++++++
- 2 files changed, 9 insertions(+)
+ drivers/dma/tegra210-adma.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 60abf9fab810..047fc0cf0263 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3722,6 +3722,9 @@ static int bcmgenet_suspend(struct device *d)
- 	/* Turn off the clocks */
- 	clk_disable_unprepare(priv->clk);
- 
-+	if (ret)
-+		bcmgenet_resume(d);
-+
- 	return ret;
- }
- #endif /* CONFIG_PM_SLEEP */
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-index 2fbd027f0148..b3596e0ee47b 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-@@ -186,9 +186,15 @@ void bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -900,7 +900,7 @@ static int tegra_adma_probe(struct platf
+ 	ret = dma_async_device_register(&tdma->dma_dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "ADMA registration failed: %d\n", ret);
+-		goto irq_dispose;
++		goto rpm_put;
  	}
  
- 	reg = bcmgenet_umac_readl(priv, UMAC_MPD_CTRL);
-+	if (!(reg & MPD_EN))
-+		return;	/* already powered up so skip the rest */
- 	reg &= ~MPD_EN;
- 	bcmgenet_umac_writel(priv, reg, UMAC_MPD_CTRL);
- 
-+	reg = bcmgenet_hfb_reg_readl(priv, HFB_CTRL);
-+	reg &= ~(RBUF_HFB_EN | RBUF_ACPI_EN);
-+	bcmgenet_hfb_reg_writel(priv, reg, HFB_CTRL);
-+
- 	/* Disable CRC Forward */
- 	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
- 	reg &= ~CMD_CRC_FWD;
--- 
-2.25.1
-
+ 	ret = of_dma_controller_register(pdev->dev.of_node,
 
 
