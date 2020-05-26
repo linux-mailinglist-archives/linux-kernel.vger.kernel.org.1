@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00F51E2D2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9761E2B4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392313AbgEZTUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
+        id S2391277AbgEZTDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392115AbgEZTMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:12:41 -0400
+        id S2391252AbgEZTDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:03:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DE1B20888;
-        Tue, 26 May 2020 19:12:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC7B420849;
+        Tue, 26 May 2020 19:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520361;
-        bh=8cvxJMJFDcmUm/5T5Iw939tVnqpy6rotxOWw3C4jB4A=;
+        s=default; t=1590519825;
+        bh=FVRhLzacGoEhzd4mO/2FsiTrK9j4U0vluiHtXiSMJ1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kC1drTAIp4oQFo/3Ky9m02ulvf89CQpo88GrTVViPlBYeWs7bgGzGqulMCx0I5IFb
-         TlgDh/64BBJxfGWMo8D2MeZMSwxm/nFl+dq0utQ1lTPM8V313OzMqOcmYwAMoTipq4
-         Zf/mI4C9qTsDELg1uwz3oj4sXYZZ4auYrrGANiiQ=
+        b=sfPa+2Jb29EczjX9LfKwxVp0WGgq8Mtz5cGHCTnCQxMOZBQvdhZHqNKW6tOGmE5up
+         iKf4z68bWkc6gprw6XLEX2RWf5PVtizzD/MnY96PDr9fHnoOj+rDjHzEmDUfbCSGd1
+         n3iavfpTQxAkVsBSsk8Ogqg3PswLgFobSczNe5o8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Qian Cai <cai@lca.pw>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 049/126] iommu/amd: Call domain_flush_complete() in update_domain()
+        stable@vger.kernel.org, Maxim Petrov <mmrmaximuzz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 31/81] stmmac: fix pointer check after utilization in stmmac_interrupt
 Date:   Tue, 26 May 2020 20:53:06 +0200
-Message-Id: <20200526183942.154803551@linuxfoundation.org>
+Message-Id: <20200526183930.897646125@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Maxim Petrov <mmrmaximuzz@gmail.com>
 
-[ Upstream commit f44a4d7e4f1cdef73c90b1dc749c4d8a7372a8eb ]
+[ Upstream commit f42234ffd531ca6b13d9da02faa60b72eccf8334 ]
 
-The update_domain() function is expected to also inform the hardware
-about domain changes. This needs a COMPLETION_WAIT command to be sent
-to all IOMMUs which use the domain.
+The paranoidal pointer check in IRQ handler looks very strange - it
+really protects us only against bogus drivers which request IRQ line
+with null pointer dev_id. However, the code fragment is incorrect
+because the dev pointer is used before the actual check which leads
+to undefined behavior. Remove the check to avoid confusing people
+with incorrect code.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Tested-by: Qian Cai <cai@lca.pw>
-Link: https://lore.kernel.org/r/20200504125413.16798-4-joro@8bytes.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Maxim Petrov <mmrmaximuzz@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 18c995a16d80..2aa46a6de172 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -2345,6 +2345,7 @@ static void update_domain(struct protection_domain *domain)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9c7b1d8e8220..c41879a955b5 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3684,7 +3684,7 @@ static int stmmac_set_features(struct net_device *netdev,
+ /**
+  *  stmmac_interrupt - main ISR
+  *  @irq: interrupt number.
+- *  @dev_id: to pass the net device pointer.
++ *  @dev_id: to pass the net device pointer (must be valid).
+  *  Description: this is the main driver interrupt service routine.
+  *  It can call:
+  *  o DMA service routine (to manage incoming frame reception and transmission
+@@ -3708,11 +3708,6 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
+ 	if (priv->irq_wake)
+ 		pm_wakeup_event(priv->device, 0);
  
- 	/* Flush domain TLB(s) and wait for completion */
- 	domain_flush_tlb_pde(domain);
-+	domain_flush_complete(domain);
- }
- 
- int __init amd_iommu_init_api(void)
+-	if (unlikely(!dev)) {
+-		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
+-		return IRQ_NONE;
+-	}
+-
+ 	/* Check if adapter is up */
+ 	if (test_bit(STMMAC_DOWN, &priv->state))
+ 		return IRQ_HANDLED;
 -- 
 2.25.1
 
