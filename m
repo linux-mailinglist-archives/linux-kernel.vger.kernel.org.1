@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14C61E2D04
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F021E2BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404247AbgEZTNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43172 "EHLO mail.kernel.org"
+        id S2391695AbgEZTHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:07:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404202AbgEZTNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:19 -0400
+        id S2389901AbgEZTG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:06:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEF44208B6;
-        Tue, 26 May 2020 19:13:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A9C2208B3;
+        Tue, 26 May 2020 19:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520399;
-        bh=O0RPL3irJhWBZ5F2H3BdlvfzT93fhcXBDbqTToK9uYg=;
+        s=default; t=1590520019;
+        bh=4VPdxXWjr16mx7dly3zIokwM4xa2s8mgnV64LSzfatA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iREhB2WHabqupBHJTM4z6VnmcNH13fDlzCn9nftkYn2VBS1CvRymtKAbOmoSNvrzz
-         nmDp8mDUa14F7wiUzguCehej5jz27Y7pPkVhi/kaJzdlL77avX5AbsN/PvQhi3Hx3U
-         Qmmi27riace2Lb5x1ZCvcVG6zemX3GTpSwbhXfhs=
+        b=okNSGQKFxtfTd/7RoLv8Oc16G6PVNdKMNDCWbwCokQc6ZCxB9zHYxA6Pm1jrYW07O
+         gGSvJRazMQCJ0vj0all4ucGPGPVOM/WMQgVsIEiRZxORSVGLkZM0/qaYh48Kr84SuC
+         VLwKXIx5RrlpFCB+h4p0zDYeOlDBVFW1Fn7QQkzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Artem Borisov <dedsa2002@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 027/126] HID: alps: Add AUI1657 device ID
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 026/111] configfs: fix config_item refcnt leak in configfs_rmdir()
 Date:   Tue, 26 May 2020 20:52:44 +0200
-Message-Id: <20200526183940.032179250@linuxfoundation.org>
+Message-Id: <20200526183935.217763918@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artem Borisov <dedsa2002@gmail.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 640e403b1fd24e7f31ac6f29f0b6a21d285ed729 ]
+[ Upstream commit 8aebfffacfa379ba400da573a5bf9e49634e38cb ]
 
-This device is used on Lenovo V130-15IKB variants and uses
-the same registers as U1.
+configfs_rmdir() invokes configfs_get_config_item(), which returns a
+reference of the specified config_item object to "parent_item" with
+increased refcnt.
 
-Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+When configfs_rmdir() returns, local variable "parent_item" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling path of
+configfs_rmdir(). When down_write_killable() fails, the function forgets
+to decrease the refcnt increased by configfs_get_config_item(), causing
+a refcnt leak.
+
+Fix this issue by calling config_item_put() when down_write_killable()
+fails.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-alps.c | 1 +
- drivers/hid/hid-ids.h  | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ fs/configfs/dir.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index fa704153cb00..c2a2bd528890 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -802,6 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		break;
- 	case HID_DEVICE_ID_ALPS_U1_DUAL:
- 	case HID_DEVICE_ID_ALPS_U1:
-+	case HID_DEVICE_ID_ALPS_1657:
- 		data->dev_type = U1;
- 		break;
- 	default:
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 40697af0ca35..7d769ca864a7 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -81,7 +81,7 @@
- #define HID_DEVICE_ID_ALPS_U1		0x1215
- #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
- #define HID_DEVICE_ID_ALPS_1222		0x1222
--
-+#define HID_DEVICE_ID_ALPS_1657         0x121E
- 
- #define USB_VENDOR_ID_AMI		0x046b
- #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
+diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+index cf7b7e1d5bd7..cb733652ecca 100644
+--- a/fs/configfs/dir.c
++++ b/fs/configfs/dir.c
+@@ -1519,6 +1519,7 @@ static int configfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 		spin_lock(&configfs_dirent_lock);
+ 		configfs_detach_rollback(dentry);
+ 		spin_unlock(&configfs_dirent_lock);
++		config_item_put(parent_item);
+ 		return -EINTR;
+ 	}
+ 	frag->frag_dead = true;
 -- 
 2.25.1
 
