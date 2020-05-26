@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9046D1E2AFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00F51E2D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390841AbgEZTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
+        id S2392313AbgEZTUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389278AbgEZTAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:00:49 -0400
+        id S2392115AbgEZTMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:12:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C22FA2084C;
-        Tue, 26 May 2020 19:00:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DE1B20888;
+        Tue, 26 May 2020 19:12:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519649;
-        bh=HrJ7dk/KEOxJ70ikgJD4PGE32Y9kGWnE1mdgx33TaiE=;
+        s=default; t=1590520361;
+        bh=8cvxJMJFDcmUm/5T5Iw939tVnqpy6rotxOWw3C4jB4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0EAkrGIK6gFpQxJSuAuGcrdLpnKjwz1NQoy1QWW25bnW8gtu5nHGM4lZ7NV/dankN
-         GNelgeH2kq6/2e2cibCYnCDstm3C6kLBrkqhaNkjy5gbFWnrAsrqtB2/RW/fGdz4h3
-         wWoPNkdtle8qQFjOFJaHdKhRXEnyi0o2xVEz2XDM=
+        b=kC1drTAIp4oQFo/3Ky9m02ulvf89CQpo88GrTVViPlBYeWs7bgGzGqulMCx0I5IFb
+         TlgDh/64BBJxfGWMo8D2MeZMSwxm/nFl+dq0utQ1lTPM8V313OzMqOcmYwAMoTipq4
+         Zf/mI4C9qTsDELg1uwz3oj4sXYZZ4auYrrGANiiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 21/59] gtp: set NLM_F_MULTI flag in gtp_genl_dump_pdp()
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Qian Cai <cai@lca.pw>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 049/126] iommu/amd: Call domain_flush_complete() in update_domain()
 Date:   Tue, 26 May 2020 20:53:06 +0200
-Message-Id: <20200526183915.283373387@linuxfoundation.org>
+Message-Id: <20200526183942.154803551@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183907.123822792@linuxfoundation.org>
-References: <20200526183907.123822792@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit 846c68f7f1ac82c797a2f1db3344a2966c0fe2e1 ]
+[ Upstream commit f44a4d7e4f1cdef73c90b1dc749c4d8a7372a8eb ]
 
-In drivers/net/gtp.c, gtp_genl_dump_pdp() should set NLM_F_MULTI
-flag since it returns multipart message.
-This patch adds a new arg "flags" in gtp_genl_fill_info() so that
-flags can be set by the callers.
+The update_domain() function is expected to also inform the hardware
+about domain changes. This needs a COMPLETION_WAIT command to be sent
+to all IOMMUs which use the domain.
 
-Signed-off-by: Yoshiyuki Kurauchi <ahochauwaaaaa@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Tested-by: Qian Cai <cai@lca.pw>
+Link: https://lore.kernel.org/r/20200504125413.16798-4-joro@8bytes.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/gtp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/iommu/amd_iommu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index 92e4e5d53053..090607e725a2 100644
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -1177,11 +1177,11 @@ out_unlock:
- static struct genl_family gtp_genl_family;
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index 18c995a16d80..2aa46a6de172 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -2345,6 +2345,7 @@ static void update_domain(struct protection_domain *domain)
  
- static int gtp_genl_fill_info(struct sk_buff *skb, u32 snd_portid, u32 snd_seq,
--			      u32 type, struct pdp_ctx *pctx)
-+			      int flags, u32 type, struct pdp_ctx *pctx)
- {
- 	void *genlh;
+ 	/* Flush domain TLB(s) and wait for completion */
+ 	domain_flush_tlb_pde(domain);
++	domain_flush_complete(domain);
+ }
  
--	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, 0,
-+	genlh = genlmsg_put(skb, snd_portid, snd_seq, &gtp_genl_family, flags,
- 			    type);
- 	if (genlh == NULL)
- 		goto nlmsg_failure;
-@@ -1235,8 +1235,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
- 		goto err_unlock;
- 	}
- 
--	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid,
--				 info->snd_seq, info->nlhdr->nlmsg_type, pctx);
-+	err = gtp_genl_fill_info(skb2, NETLINK_CB(skb).portid, info->snd_seq,
-+				 0, info->nlhdr->nlmsg_type, pctx);
- 	if (err < 0)
- 		goto err_unlock_free;
- 
-@@ -1279,6 +1279,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
- 				    gtp_genl_fill_info(skb,
- 					    NETLINK_CB(cb->skb).portid,
- 					    cb->nlh->nlmsg_seq,
-+					    NLM_F_MULTI,
- 					    cb->nlh->nlmsg_type, pctx)) {
- 					cb->args[0] = i;
- 					cb->args[1] = j;
+ int __init amd_iommu_init_api(void)
 -- 
 2.25.1
 
