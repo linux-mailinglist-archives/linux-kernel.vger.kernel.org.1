@@ -2,77 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE4D1E1A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB87B1E1A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 07:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgEZFGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 01:06:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42947 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgEZFGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 01:06:20 -0400
-IronPort-SDR: +LHUp/ev/fC01KoCDc4N3lIjolK5UrgyQNqlPBkpUIGAwOzrMWrFgRiPUk4T6J+AALUcmAV7bN
- 4Uo3mf4GNhRQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2020 22:06:19 -0700
-IronPort-SDR: ucfUPh8XPtGtKHP3jL+4IsikV7JBLKIicpnKhi4u1JAL6hom0EThRi5NH02ISxdTOKWDxjQLln
- IFbuMMLGNGHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,436,1583222400"; 
-   d="scan'208";a="255059506"
-Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
-  by fmsmga007.fm.intel.com with ESMTP; 25 May 2020 22:06:17 -0700
-From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, adrian.hunter@intel.com,
-        wan.ahmad.zainie.wan.mohamad@intel.com
-Subject: [PATCH v2 0/2] phy: intel: Add Keem Bay eMMC PHY support
-Date:   Tue, 26 May 2020 13:04:50 +0800
-Message-Id: <20200526050452.8837-1-wan.ahmad.zainie.wan.mohamad@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726580AbgEZFFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 01:05:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52931 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725872AbgEZFFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 01:05:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590469505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oz1sdMnNcBOEuR7TbEaLiAqhkVwdoF5waHE5jMnmydI=;
+        b=BIhrzCXihiywmMXzUO4YLoQlDruUjWrTrIul82kKOGZ1RSsXw12aCbSL5KetwZuaIdqYmM
+        SBrNZ91YPJY1gARmOEVauVr5Jnt7K20YJaJjVUlaIEbjKHv4k/TSGOPlXbvfbHZDRS+iqG
+        h/q3bUyav7ckVamayMGRw6D9CcFZwcw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-uOahTH1bPmq4J7iQyeUFcA-1; Tue, 26 May 2020 01:05:01 -0400
+X-MC-Unique: uOahTH1bPmq4J7iQyeUFcA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDEC210082EA;
+        Tue, 26 May 2020 05:04:59 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-170.pek2.redhat.com [10.72.12.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F1E501BCBE;
+        Tue, 26 May 2020 05:04:55 +0000 (UTC)
+Date:   Tue, 26 May 2020 13:04:51 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Lianbo Jiang <lijiang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        ebiederm@xmission.com, jbohac@suse.cz, jmorris@namei.org,
+        mjg59@google.com, bhe@redhat.com
+Subject: Re: [PATCH] kexec: Do not verify the signature without the lockdown
+ or mandatory signature
+Message-ID: <20200526050451.GA74334@dhcp-128-65.nay.redhat.com>
+References: <20200525052351.24134-1-lijiang@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525052351.24134-1-lijiang@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On 05/25/20 at 01:23pm, Lianbo Jiang wrote:
+> Signature verification is an important security feature, to protect
+> system from being attacked with a kernel of unknown origin. Kexec
+> rebooting is a way to replace the running kernel, hence need be
+> secured carefully.
+> 
+> In the current code of handling signature verification of kexec kernel,
+> the logic is very twisted. It mixes signature verification, IMA signature
+> appraising and kexec lockdown.
+> 
+> If there is no KEXEC_SIG_FORCE, kexec kernel image doesn't have one of
+> signature, the supported crypto, and key, we don't think this is wrong,
+> Unless kexec lockdown is executed. IMA is considered as another kind of
+> signature appraising method.
+> 
+> If kexec kernel image has signature/crypto/key, it has to go through the
+> signature verification and pass. Otherwise it's seen as verification
+> failure, and won't be loaded.
+> 
+> Seems kexec kernel image with an unqualified signature is even worse than
+> those w/o signature at all, this sounds very unreasonable. E.g. If people
+> get a unsigned kernel to load, or a kernel signed with expired key, which
+> one is more dangerous?
+> 
+> So, here, let's simplify the logic to improve code readability. If the
+> KEXEC_SIG_FORCE enabled or kexec lockdown enabled, signature verification
+> is mandated. Otherwise, we lift the bar for any kernel image.
+> 
+> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+> ---
+>  kernel/kexec_file.c | 37 ++++++-------------------------------
+>  1 file changed, 6 insertions(+), 31 deletions(-)
+> 
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index faa74d5f6941..e4bdf0c42f35 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -181,52 +181,27 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+>  static int
+>  kimage_validate_signature(struct kimage *image)
+>  {
+> -	const char *reason;
+>  	int ret;
+>  
+>  	ret = arch_kexec_kernel_verify_sig(image, image->kernel_buf,
+>  					   image->kernel_buf_len);
+> -	switch (ret) {
+> -	case 0:
+> -		break;
+> +	if (ret) {
+> +		pr_debug("kernel signature verification failed (%d).\n", ret);
+>  
+> -		/* Certain verification errors are non-fatal if we're not
+> -		 * checking errors, provided we aren't mandating that there
+> -		 * must be a valid signature.
+> -		 */
+> -	case -ENODATA:
+> -		reason = "kexec of unsigned image";
+> -		goto decide;
+> -	case -ENOPKG:
+> -		reason = "kexec of image with unsupported crypto";
+> -		goto decide;
+> -	case -ENOKEY:
+> -		reason = "kexec of image with unavailable key";
+> -	decide:
+> -		if (IS_ENABLED(CONFIG_KEXEC_SIG_FORCE)) {
+> -			pr_notice("%s rejected\n", reason);
+> +		if (IS_ENABLED(CONFIG_KEXEC_SIG_FORCE))
+>  			return ret;
+> -		}
+>  
+> -		/* If IMA is guaranteed to appraise a signature on the kexec
+> +		/*
+> +		 * If IMA is guaranteed to appraise a signature on the kexec
+>  		 * image, permit it even if the kernel is otherwise locked
+>  		 * down.
+>  		 */
+>  		if (!ima_appraise_signature(READING_KEXEC_IMAGE) &&
+>  		    security_locked_down(LOCKDOWN_KEXEC))
+>  			return -EPERM;
+> -
+> -		return 0;
+> -
+> -		/* All other errors are fatal, including nomem, unparseable
+> -		 * signatures and signature check failures - even if signatures
+> -		 * aren't required.
+> -		 */
+> -	default:
+> -		pr_notice("kernel signature verification failed (%d).\n", ret);
+>  	}
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  #endif
+>  
+> -- 
+> 2.17.1
+> 
 
-The first part is to document DT bindings for Keem Bay eMMC PHY.
 
-The second is the driver file, loosely based on phy-rockchip-emmc.c
-and phy-intel-emmc.c. The latter is not being reused as there are
-quite a number of differences i.e. registers offset, supported clock
-rates, bitfield to set.
+Acked-by: Dave Young <dyoung@redhat.com>
 
-The patch was tested with Keem Bay evaluation module board.
-
-Thank you.
-
-Best regards,
-Zainie
-
-Changes since v1:
-- Rework phy-keembay-emmc.c to make it similar to phy-intel-emmc.c.
-- Use regmap_mmio, and remove reference to intel,syscon.
-- Use node name phy@....
-- Update license i.e. use dual license.
-
-
-Wan Ahmad Zainie (2):
-  dt-bindings: phy: intel: Add Keem Bay eMMC PHY bindings
-  phy: intel: Add Keem Bay eMMC PHY support
-
- .../bindings/phy/intel,keembay-emmc-phy.yaml  |  45 +++
- drivers/phy/intel/Kconfig                     |   8 +
- drivers/phy/intel/Makefile                    |   1 +
- drivers/phy/intel/phy-keembay-emmc.c          | 321 ++++++++++++++++++
- 4 files changed, 375 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
- create mode 100644 drivers/phy/intel/phy-keembay-emmc.c
-
--- 
-2.17.1
+Thanks
+Dave
 
