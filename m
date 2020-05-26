@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A479A1E2AE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0291E2A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390635AbgEZS77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389977AbgEZS74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:59:56 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59B3220849;
-        Tue, 26 May 2020 18:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519595;
-        bh=NebaGoNend4UooMfkkfS/aWjy97aPsiF5iAluBswIgI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FzS/gNIFFTUI7nCISV3Ig91/4H1DA0yXd65z6YfRiBHNAhNvv+enMSK5/LzeBMxKN
-         cgYiyviXi8VBdQ3QeziPMIoEG3zVIMExoHqiIFAUNHQ3CNUnPl5S94QDdPFrmvzhDO
-         wVg9yCPWH0d/zKfdYnHbof6WKQqup7CmcqGNcUyY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 64/64] iio: sca3000: Remove an erroneous get_device()
-Date:   Tue, 26 May 2020 20:53:33 +0200
-Message-Id: <20200526183931.808755173@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2389653AbgEZSzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389623AbgEZSzp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:55:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4772CC03E96D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:55:45 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id nu7so184522pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 11:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=mP6Cu0mgfRIdytKJmT/JbpqFGV5hti6hDDcYjXsp/n8=;
+        b=csLBG7MWmFDFdyDmAAKhK0DYdONM8BHZYeFGTC879KpVj6Y5Xk9doyuUkTKGKdCiHi
+         HfmAj4dC0cDcFBzY60F/ZTZbf47RRLBKsfVyQ+yGxEpMt/1nTlSUAcKXI8s+ieYL+zUU
+         X8wuWyyDODagttgQCaEPsRv5TGBmu1cP5EwDA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=mP6Cu0mgfRIdytKJmT/JbpqFGV5hti6hDDcYjXsp/n8=;
+        b=IvPqnlSGmQ5uuf4X0jsHmU7jknaqRcdEyUPXvLWgLS/5G0rofZjwlMr3+mBZ9d9dL9
+         ZL0W7658yMgzzkju9zAof7l04fkqczf0CXUM6wncXX1jat/Eh0f74GZa5H0XM8Na9aUQ
+         rtZTCGs4xvYDXkK1reYzMdJSKV5pkjLoDwrh/OXVV5zLrko8Dz9+X2F21nAqPsAGVTew
+         Jx+3ToDNSsJi7xD+sIwNAm+FSKRtXJ7ZFULLV6fyMH6uliIFN2rQ+pIC+3XFNQAu2bB5
+         NhbqneBk50b8nZdHc+BasR2vr/WEUbigNzVizrHiVpsmfF8fPTaJ8GJi/vqyIiJLvjqw
+         +QuQ==
+X-Gm-Message-State: AOAM531V5JZHoArtoPaOx6tDzK1Wb7t+vW43La/2IiA/isJtFUeufaip
+        wP8ya5m5J2JOGv0r+qkJWts3+g==
+X-Google-Smtp-Source: ABdhPJwQICMwBntB9aeujLedOj2O9kL1o7DOX7kSwX8RdQ0FSeMECkQjs44736Z3YvI7DbRdr2NpLg==
+X-Received: by 2002:a17:90a:e016:: with SMTP id u22mr707865pjy.28.1590519344815;
+        Tue, 26 May 2020 11:55:44 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id x191sm263045pfd.37.2020.05.26.11.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 11:55:44 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200526173117.155339-1-ndesaulniers@google.com>
+References: <20200526173117.155339-1-ndesaulniers@google.com>
+Subject: Re: [PATCH] arm64: vdso32: force vdso32 to be compiled as -marm
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
+        Stephen Boyd <swboyd@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>
+Date:   Tue, 26 May 2020 11:55:43 -0700
+Message-ID: <159051934304.88029.10469584232447870375@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Quoting Nick Desaulniers (2020-05-26 10:31:14)
+> Custom toolchains that modify the default target to -mthumb cannot
+> compile the arm64 compat vdso32, as
+> arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> contains assembly that's invalid in -mthumb.  Force the use of -marm,
+> always.
+>=20
+> Link: https://bugs.chromium.org/p/chromium/issues/detail?id=3D1084372
+> Cc: Stephen Boyd <swboyd@google.com>
+> Reported-by: Luis Lozano <llozano@google.com>
+> Tested-by: Manoj Gupta <manojgupta@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
 
-[ Upstream commit 928edefbc18cd8433f7df235c6e09a9306e7d580 ]
-
-This looks really unusual to have a 'get_device()' hidden in a 'dev_err()'
-call.
-Remove it.
-
-While at it add a missing \n at the end of the message.
-
-Fixes: 574fb258d636 ("Staging: IIO: VTI sca3000 series accelerometer driver (spi)")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/staging/iio/accel/sca3000_ring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/iio/accel/sca3000_ring.c b/drivers/staging/iio/accel/sca3000_ring.c
-index d1cb9b9cf22b..391cbcc4ed77 100644
---- a/drivers/staging/iio/accel/sca3000_ring.c
-+++ b/drivers/staging/iio/accel/sca3000_ring.c
-@@ -56,7 +56,7 @@ static int sca3000_read_data(struct sca3000_state *st,
- 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
- 	ret = spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
- 	if (ret) {
--		dev_err(get_device(&st->us->dev), "problem reading register");
-+		dev_err(&st->us->dev, "problem reading register");
- 		goto error_free_rx;
- 	}
- 
--- 
-2.25.1
-
-
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
