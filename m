@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CD41E2DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE021E2CEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389023AbgEZTG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35240 "EHLO mail.kernel.org"
+        id S2403943AbgEZTS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391666AbgEZTGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:49 -0400
+        id S2404009AbgEZTNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABA40208A7;
-        Tue, 26 May 2020 19:06:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8C63208A7;
+        Tue, 26 May 2020 19:13:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520009;
-        bh=VqLCUw1tF9OI3LKI55H06kmqwDcftiQXKBWpE2hQ+e0=;
+        s=default; t=1590520424;
+        bh=r/ZhJS3TFnJvUkfTEaJFVxbdWUpnvSUCDvWHnEm187c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5VhhB/zxunFUyYSlTs7J7tHnxhbtK1KUrjr7c4AGPE2WldbAWcckTZrvhUawiADa
-         o9qOpyhggOg/U3D2fm/N5dVurpiiNfwc9UhTWvBJh4ct3L0E9vhkl2CXKUkWoIlaZk
-         1SSAB1mKYxuvhVh6yJkiLyhA9/a+0CxzAp1l+qAE=
+        b=WXkVyfP7W2BGzkHNPelHtcGiF/uhkFNq4bfPII5L9N8oY95nBBB9OPJA+HGBDEHwe
+         7ghh+qv9Jm1OJXJBMZ8ykAXRUm5Gx9GjjOc+vTi0+eIov3cv5CGxaHOHXFb8267Sx/
+         nnwSngGblbSsSP5WHUZ47Cxb2itF5jdyUjg6kjOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Artem Borisov <dedsa2002@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 022/111] HID: alps: Add AUI1657 device ID
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 023/126] net: drop_monitor: use IS_REACHABLE() to guard net_dm_hw_report()
 Date:   Tue, 26 May 2020 20:52:40 +0200
-Message-Id: <20200526183934.808194624@linuxfoundation.org>
+Message-Id: <20200526183939.637663293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Artem Borisov <dedsa2002@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 640e403b1fd24e7f31ac6f29f0b6a21d285ed729 ]
+[ Upstream commit 1cd9b3abf5332102d4d967555e7ed861a75094bf ]
 
-This device is used on Lenovo V130-15IKB variants and uses
-the same registers as U1.
+In net/Kconfig, NET_DEVLINK implies NET_DROP_MONITOR.
 
-Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+The original behavior of the 'imply' keyword prevents NET_DROP_MONITOR
+from being 'm' when NET_DEVLINK=y.
+
+With the planned Kconfig change that relaxes the 'imply', the
+combination of NET_DEVLINK=y and NET_DROP_MONITOR=m would be allowed.
+
+Use IS_REACHABLE() to avoid the vmlinux link error for this case.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: Neil Horman <nhorman@tuxdriver.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-alps.c | 1 +
- drivers/hid/hid-ids.h  | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ include/net/drop_monitor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index fa704153cb00..c2a2bd528890 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -802,6 +802,7 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		break;
- 	case HID_DEVICE_ID_ALPS_U1_DUAL:
- 	case HID_DEVICE_ID_ALPS_U1:
-+	case HID_DEVICE_ID_ALPS_1657:
- 		data->dev_type = U1;
- 		break;
- 	default:
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index ecb5ff8202ef..cc2b6f497f53 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -81,7 +81,7 @@
- #define HID_DEVICE_ID_ALPS_U1		0x1215
- #define HID_DEVICE_ID_ALPS_T4_BTNLESS	0x120C
- #define HID_DEVICE_ID_ALPS_1222		0x1222
--
-+#define HID_DEVICE_ID_ALPS_1657         0x121E
+diff --git a/include/net/drop_monitor.h b/include/net/drop_monitor.h
+index 2ab668461463..f68bc373544a 100644
+--- a/include/net/drop_monitor.h
++++ b/include/net/drop_monitor.h
+@@ -19,7 +19,7 @@ struct net_dm_hw_metadata {
+ 	struct net_device *input_dev;
+ };
  
- #define USB_VENDOR_ID_AMI		0x046b
- #define USB_DEVICE_ID_AMI_VIRT_KEYBOARD_AND_MOUSE	0xff10
+-#if IS_ENABLED(CONFIG_NET_DROP_MONITOR)
++#if IS_REACHABLE(CONFIG_NET_DROP_MONITOR)
+ void net_dm_hw_report(struct sk_buff *skb,
+ 		      const struct net_dm_hw_metadata *hw_metadata);
+ #else
 -- 
 2.25.1
 
