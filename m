@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0F31E1EBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7355E1E1ECD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 11:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388501AbgEZJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 05:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388460AbgEZJhp (ORCPT
+        id S2388664AbgEZJiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 05:38:55 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:38137 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388460AbgEZJiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 05:37:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD08C08C5C2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:37:45 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j10so4105998wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 02:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zKgkx1RN+yOQz5t5MmLQDLEnUMA9zwlAKS6pKOreKZY=;
-        b=FNc4aIV0nhulL4pN4Z88kKa4a79yXjgO7FI8T76etE4vtRUUh9t/HH+YRM7VFHS2ay
-         n/0LqPWK9UNVH2Bo5dEVeRHWvrn9fdBi/z1hUfb4jujqGmcwAfK/QDngGUkWTLdrndf1
-         wDucR67QFkeCQd6TGpLQNakoGmVGAW5tGG/DWWSwlGcL+CG0VhJB2QhjW1NK0XlUUjE7
-         Ni/VX5WekMngIpi6qy6WlEHLTXQ1TweR2TG+w+B4Nq0qjvxFf7LB0FYa60tPDK+Z/hTq
-         dMmrq1HFfkc06E/JUaNF6K5/iPT/K3W3d51vq/yLUXYz/p3/t31o1IeGTczThkCuX9NC
-         7xoA==
+        Tue, 26 May 2020 05:38:54 -0400
+Received: by mail-wr1-f66.google.com with SMTP id e1so19724897wrt.5;
+        Tue, 26 May 2020 02:38:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zKgkx1RN+yOQz5t5MmLQDLEnUMA9zwlAKS6pKOreKZY=;
-        b=tSWYtvcxmXEl3f66MP/bp7MIYhPttxoRBiqzrEBRGUsUDK1sf2dVxVaqVVcYnhX1lb
-         rS0+lz1CW4dhba0i5p9RMpB3Z54GZRAUdQQNE5juhlZfuk6trvSVnPn/PPSsjTIdkbA4
-         19TkPMQFew9HOgg/cjP1lUzhDignCiMCUz7tclpT9bewtIRz/gmiAjgpVwd1JVaxMlpi
-         xd3zZ9YH8GYZSThG9fjNudimZQ61cS4iYqDtTzdHZcGR+h7J/1PahFe6lTEsirQnrAQG
-         bLCNB3yH+nq5ZT4rycyvNxtfUoq713oqxwpVx9xscympMe1Pklcqp9cc/srRHvo+MhTj
-         9LhA==
-X-Gm-Message-State: AOAM532pnFRYNk+DYC0tCwn4lngm5Aj+Ra95v7i7oAR3z8l9Z0FYoJrp
-        GbWgtY1V0OGa26TZPQwrvK2PbUcThdA=
-X-Google-Smtp-Source: ABdhPJzfEXYdCF/DEyjlvvWvfNcMNSgFSqWgMZJUcODo9tJ+VjhsEhG1votkhojXE9haIoAN3q15Tw==
-X-Received: by 2002:a5d:4d01:: with SMTP id z1mr18065341wrt.29.1590485864008;
-        Tue, 26 May 2020 02:37:44 -0700 (PDT)
-Received: from [192.168.0.38] ([176.61.57.127])
-        by smtp.gmail.com with ESMTPSA id b185sm388031wmd.3.2020.05.26.02.37.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 02:37:43 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] clk: qcom: gcc-msm8939: Add MSM8939 Generic Clock
- Controller
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, p.zabel@pengutronix.de,
-        vincent.knecht@mailoo.org, konradybcio@gmail.com
-References: <20200517131348.688405-1-bryan.odonoghue@linaro.org>
- <20200517131348.688405-3-bryan.odonoghue@linaro.org>
-From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
-Message-ID: <af35d732-08bf-fe95-3c98-063b32fe992a@nexus-software.ie>
-Date:   Tue, 26 May 2020 10:38:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ok53FF3ob85NQ3kaOmkDOVfvfrQyMjF4yDCUjHtVYOU=;
+        b=MVqw4cpdBpWPt3uLAFe87iH4rvDwliMVgA9OKx1x3+ZIuOWXY5rK3X99Mv5Mz/xfBG
+         mC9Sk2axRxKKQb1O85Voc2bT5wZhaSLE0GdXdAlOe+BGgvoPjMlC9H6TWUjy2ZQbgu18
+         9cmEMHc+DxyVcwHjfbOx4ANhanT3AxspWAej9jikvP2tw1QZW0j4yhqnXLX4DIlvZQf2
+         1uvnUyQJnSW6z6YHhdZpQQOm4dpWN6t8ged0/W/yGJUwvXCZL7HiDq6B11AvRiowLYdi
+         1+Im300UugfQn1tjU254KEnT9HnLxiK0noVYDaum589hOKKGIvzNxBoiy2FWXl7pWRGI
+         uTeg==
+X-Gm-Message-State: AOAM530HXBN+o/klPkoqZ0xwDzMytwX4cuyPPJQH9Fmys5Frn9EpexQU
+        ER8PLuAe/EUa9M6+35N2QAjAqqEg
+X-Google-Smtp-Source: ABdhPJyx1bwlQiUXpBhsXKw9pC/WSAdrM9iOef2uVPf7AY+mlydpS0OKd3PhkTqLeC/FiDOn0YvykA==
+X-Received: by 2002:adf:a396:: with SMTP id l22mr18769444wrb.76.1590485932051;
+        Tue, 26 May 2020 02:38:52 -0700 (PDT)
+Received: from debian (82.149.115.87.dyn.plus.net. [87.115.149.82])
+        by smtp.gmail.com with ESMTPSA id w15sm142131wmk.30.2020.05.26.02.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 02:38:51 -0700 (PDT)
+Date:   Tue, 26 May 2020 10:38:49 +0100
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] PCI: hv: Use struct_size() helper
+Message-ID: <20200526093849.keva4hp775m4dzuo@debian>
+References: <20200525164319.GA13596@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200517131348.688405-3-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200525164319.GA13596@embeddedor>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/05/2020 14:13, Bryan O'Donoghue wrote:
-> This patch adds support for the MSM8939 GCC. The MSM8939 is based on the
-> MSM8916. MSM8939 is compatible in several ways with MSM8916 but, has
-> additional functional blocks added which require additional PLL sources. In
-> some cases functional blocks from the MSM8916 have different clock sources
-> or different supported frequencies.
+On Mon, May 25, 2020 at 11:43:19AM -0500, Gustavo A. R. Silva wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
 > 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Co-developed-by: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Tested-by: Vincent Knecht <vincent.knecht@mailoo.org>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> struct hv_dr_state {
+> 	...
+>         struct hv_pcidev_description func[];
+> };
+> 
+> struct pci_bus_relations {
+> 	...
+>         struct pci_function_description func[];
+> } __packed;
+> 
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+> 
+> So, replace the following forms:
+> 
+> offsetof(struct hv_dr_state, func) +
+> 	(sizeof(struct hv_pcidev_description) *
+> 	(relations->device_count))
+> 
+> offsetof(struct pci_bus_relations, func) +
+> 	(sizeof(struct pci_function_description) *
+> 	(bus_rel->device_count))
+> 
+> with:
+> 
+> struct_size(dr, func, relations->device_count)
+> 
+> and
+> 
+> struct_size(bus_rel, func, bus_rel->device_count)
+> 
+> respectively.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-ping
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
 
-just sending a reminder on this one
-
+FAOD I expect this patch to go through pci tree.
