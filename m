@@ -2,482 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697471E309C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4421E30BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 22:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404453AbgEZUyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 16:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391424AbgEZUxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 16:53:53 -0400
-Received: from smtp-8fab.mail.infomaniak.ch (smtp-8fab.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E003C03E96D;
-        Tue, 26 May 2020 13:53:53 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49WmQl52yZzlhMKj;
-        Tue, 26 May 2020 22:53:51 +0200 (CEST)
-Received: from localhost (unknown [94.23.54.103])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 49WmQl1Z02zlhDwt;
-        Tue, 26 May 2020 22:53:51 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v18 12/12] landlock: Add user and kernel documentation
-Date:   Tue, 26 May 2020 22:53:22 +0200
-Message-Id: <20200526205322.23465-13-mic@digikod.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526205322.23465-1-mic@digikod.net>
-References: <20200526205322.23465-1-mic@digikod.net>
+        id S2404548AbgEZUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 16:55:09 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28958 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404477AbgEZUy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 16:54:56 -0400
+IronPort-SDR: EZeKOtgfhyNEqldIeuCndAmYY/No4P2I3ysU2vOAfSFnjj7V2KlsGqM7GlODthgms5J3Cw7f3b
+ CEQul2aIxmeA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 13:54:52 -0700
+IronPort-SDR: f3L56atARRLEE/U2lZMBHr2nLocFVXVdKnAmhBfTF32t3UGNYHpLKEGdVLFgMORNI544HNQKFZ
+ ldzumOMBclpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,437,1583222400"; 
+   d="scan'208";a="442238477"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005.jf.intel.com with ESMTP; 26 May 2020 13:54:46 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jdgb2-0094ug-CN; Tue, 26 May 2020 23:54:48 +0300
+Date:   Tue, 26 May 2020 23:54:48 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Oliver Neukum <oneukum@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Corey Minyard <minyard@acm.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 09/14] device core: Add ability to handle multiple dma
+ offsets
+Message-ID: <20200526205448.GA1634618@smile.fi.intel.com>
+References: <20200526191303.1492-1-james.quinlan@broadcom.com>
+ <20200526191303.1492-10-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526191303.1492-10-james.quinlan@broadcom.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documentation can be built with the Sphinx framework.
+On Tue, May 26, 2020 at 03:12:48PM -0400, Jim Quinlan wrote:
+> The new field in struct device 'dma_pfn_offset_map' is used to facilitate
+> the use of multiple pfn offsets between cpu addrs and dma addrs.  It is
+> similar to 'dma_pfn_offset' except that the offset chosen depends on the
+> cpu or dma address involved.
+> 
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
+>  drivers/of/address.c        | 65 +++++++++++++++++++++++++++++++++++--
+>  drivers/usb/core/message.c  |  3 ++
+>  drivers/usb/core/usb.c      |  3 ++
+>  include/linux/device.h      | 10 +++++-
+>  include/linux/dma-direct.h  | 10 ++++--
+>  include/linux/dma-mapping.h | 46 ++++++++++++++++++++++++++
+>  kernel/dma/Kconfig          | 13 ++++++++
+>  7 files changed, 144 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/of/address.c b/drivers/of/address.c
+> index 96d8cfb14a60..a01afffcde7d 100644
+> --- a/drivers/of/address.c
+> +++ b/drivers/of/address.c
+> @@ -918,6 +918,47 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index,
+>  }
+>  EXPORT_SYMBOL(of_io_request_and_map);
+>  
+> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
+> +static int attach_dma_pfn_offset_map(struct device *dev,
+> +				     struct device_node *node, int num_ranges)
+> +{
+> +	struct of_range_parser parser;
+> +	struct of_range range;
+> +	size_t r_size = (num_ranges + 1)
+> +		* sizeof(struct dma_pfn_offset_region);
+> +	struct dma_pfn_offset_region *r;
+> +
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Reviewed-by: Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Serge E. Hallyn <serge@hallyn.com>
----
+> +	r = devm_kzalloc(dev, r_size, GFP_KERNEL);
 
-Changes since v15:
-* Add current limitations.
+devm_?!
 
-Changes since v14:
-* Fix spelling (contributed by Randy Dunlap).
-* Extend documentation about inheritance and explain layer levels.
-* Remove the use of now-removed access rights.
-* Use GitHub links.
-* Improve kernel documentation.
-* Add section for tests.
-* Update example.
+Looking at r_size it should be rather kcalloc().
 
-Changes since v13:
-* Rewrote the documentation according to the major revamp.
+> +	if (!r)
+> +		return -ENOMEM;
+> +	dev->dma_pfn_offset_map = r;
+> +	of_dma_range_parser_init(&parser, node);
+> +
+> +	/*
+> +	 * Record all info for DMA ranges array.  We could
+> +	 * just use the of_range struct, but if we did that it
+> +	 * would require more calculations for phys_to_dma and
+> +	 * dma_to_phys conversions.
+> +	 */
+> +	for_each_of_range(&parser, &range) {
+> +		r->cpu_beg = range.cpu_addr;
+> +		r->cpu_end = r->cpu_beg + range.size;
+> +		r->dma_beg = range.bus_addr;
+> +		r->dma_end = r->dma_beg + range.size;
+> +		r->pfn_offset = PFN_DOWN(range.cpu_addr)
+> +			- PFN_DOWN(range.bus_addr);
+> +		r++;
+> +	}
+> +	return 0;
+> +}
+> +#else
+> +static int attach_dma_pfn_offset_map(struct device *dev,
+> +				     struct device_node *node, int num_ranges)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  /**
+>   * of_dma_get_range - Get DMA range info
+>   * @dev:	device pointer; only needed for a corner case.
+> @@ -947,6 +988,8 @@ int of_dma_get_range(struct device *dev, struct device_node *np, u64 *dma_addr,
+>  	struct of_range_parser parser;
+>  	struct of_range range;
+>  	u64 dma_start = U64_MAX, dma_end = 0, dma_offset = 0;
+> +	bool dma_multi_pfn_offset = false;
+> +	int num_ranges = 0;
+>  
+>  	while (node) {
+>  		ranges = of_get_property(node, "dma-ranges", &len);
+> @@ -977,10 +1020,19 @@ int of_dma_get_range(struct device *dev, struct device_node *np, u64 *dma_addr,
+>  		pr_debug("dma_addr(%llx) cpu_addr(%llx) size(%llx)\n",
+>  			 range.bus_addr, range.cpu_addr, range.size);
+>  
+> +		num_ranges++;
+>  		if (dma_offset && range.cpu_addr - range.bus_addr != dma_offset) {
+> -			pr_warn("Can't handle multiple dma-ranges with different offsets on node(%pOF)\n", node);
+> -			/* Don't error out as we'd break some existing DTs */
+> -			continue;
+> +			if (!IS_ENABLED(CONFIG_DMA_PFN_OFFSET_MAP)) {
+> +				pr_warn("Can't handle multiple dma-ranges with different offsets on node(%pOF)\n", node);
+> +				pr_warn("Perhaps set DMA_PFN_OFFSET_MAP=y?\n");
+> +				/*
+> +				 * Don't error out as we'd break some existing
+> +				 * DTs that are using configs w/o
+> +				 * CONFIG_DMA_PFN_OFFSET_MAP set.
+> +				 */
+> +				continue;
+> +			}
+> +			dma_multi_pfn_offset = true;
+>  		}
+>  		dma_offset = range.cpu_addr - range.bus_addr;
+>  
+> @@ -991,6 +1043,13 @@ int of_dma_get_range(struct device *dev, struct device_node *np, u64 *dma_addr,
+>  			dma_end = range.bus_addr + range.size;
+>  	}
+>  
+> +	if (dma_multi_pfn_offset) {
+> +		dma_offset = 0;
+> +		ret = attach_dma_pfn_offset_map(dev, node, num_ranges);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	if (dma_start >= dma_end) {
+>  		ret = -EINVAL;
+>  		pr_debug("Invalid DMA ranges configuration on node(%pOF)\n",
+> diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+> index 6197938dcc2d..aaa3e58f5eb4 100644
+> --- a/drivers/usb/core/message.c
+> +++ b/drivers/usb/core/message.c
+> @@ -1960,6 +1960,9 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
+>  		 */
+>  		intf->dev.dma_mask = dev->dev.dma_mask;
+>  		intf->dev.dma_pfn_offset = dev->dev.dma_pfn_offset;
+> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
+> +		intf->dev.dma_pfn_offset_map = dev->dev.dma_pfn_offset_map;
+> +#endif
+>  		INIT_WORK(&intf->reset_ws, __usb_queue_reset_device);
+>  		intf->minor = -1;
+>  		device_initialize(&intf->dev);
+> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> index f16c26dc079d..d2ed4d90e56e 100644
+> --- a/drivers/usb/core/usb.c
+> +++ b/drivers/usb/core/usb.c
+> @@ -612,6 +612,9 @@ struct usb_device *usb_alloc_dev(struct usb_device *parent,
+>  	 */
+>  	dev->dev.dma_mask = bus->sysdev->dma_mask;
+>  	dev->dev.dma_pfn_offset = bus->sysdev->dma_pfn_offset;
+> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
+> +	dev->dev.dma_pfn_offset_map = bus->sysdev->dma_pfn_offset_map;
+> +#endif
+>  	set_dev_node(&dev->dev, dev_to_node(bus->sysdev));
+>  	dev->state = USB_STATE_ATTACHED;
+>  	dev->lpm_disable_count = 1;
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index ac8e37cd716a..67a240ad4fc5 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -493,6 +493,8 @@ struct dev_links_info {
+>   * @bus_dma_limit: Limit of an upstream bridge or bus which imposes a smaller
+>   *		DMA limit than the device itself supports.
+>   * @dma_pfn_offset: offset of DMA memory range relatively of RAM
+> + * @dma_pfn_offset_map:	Like dma_pfn_offset but used when there are multiple
+> + *		pfn offsets for multiple dma-ranges.
+>   * @dma_parms:	A low level driver may set these to teach IOMMU code about
+>   * 		segment limitations.
+>   * @dma_pools:	Dma pools (if dma'ble device).
+> @@ -578,7 +580,13 @@ struct device {
+>  					     allocations such descriptors. */
+>  	u64		bus_dma_limit;	/* upstream dma constraint */
+>  	unsigned long	dma_pfn_offset;
+> -
+> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
+> +	const struct dma_pfn_offset_region *dma_pfn_offset_map;
 
-Previous changes:
-https://lore.kernel.org/lkml/20191104172146.30797-8-mic@digikod.net/
----
- Documentation/security/index.rst           |   1 +
- Documentation/security/landlock/index.rst  |  18 ++
- Documentation/security/landlock/kernel.rst |  69 ++++++
- Documentation/security/landlock/user.rst   | 268 +++++++++++++++++++++
- 4 files changed, 356 insertions(+)
- create mode 100644 Documentation/security/landlock/index.rst
- create mode 100644 Documentation/security/landlock/kernel.rst
- create mode 100644 Documentation/security/landlock/user.rst
+> +					/* Like dma_pfn_offset, but for
+> +					 * the unlikely case of multiple
+> +					 * offsets. If non-null, dma_pfn_offset
+> +					 * will be set to 0. */
 
-diff --git a/Documentation/security/index.rst b/Documentation/security/index.rst
-index fc503dd689a7..4d213e76ddf4 100644
---- a/Documentation/security/index.rst
-+++ b/Documentation/security/index.rst
-@@ -15,3 +15,4 @@ Security Documentation
-    self-protection
-    siphash
-    tpm/index
-+   landlock/index
-diff --git a/Documentation/security/landlock/index.rst b/Documentation/security/landlock/index.rst
-new file mode 100644
-index 000000000000..2520f8f33f5e
---- /dev/null
-+++ b/Documentation/security/landlock/index.rst
-@@ -0,0 +1,18 @@
-+=========================================
-+Landlock LSM: unprivileged access control
-+=========================================
-+
-+:Author: Mickaël Salaün
-+
-+The goal of Landlock is to enable to restrict ambient rights (e.g.  global
-+filesystem access) for a set of processes.  Because Landlock is a stackable
-+LSM, it makes possible to create safe security sandboxes as new security layers
-+in addition to the existing system-wide access-controls. This kind of sandbox
-+is expected to help mitigate the security impact of bugs or
-+unexpected/malicious behaviors in user-space applications. Landlock empowers
-+any process, including unprivileged ones, to securely restrict themselves.
-+
-+.. toctree::
-+
-+    user
-+    kernel
-diff --git a/Documentation/security/landlock/kernel.rst b/Documentation/security/landlock/kernel.rst
-new file mode 100644
-index 000000000000..ca15073c7a06
---- /dev/null
-+++ b/Documentation/security/landlock/kernel.rst
-@@ -0,0 +1,69 @@
-+==============================
-+Landlock: kernel documentation
-+==============================
-+
-+Landlock's goal is to create scoped access-control (i.e. sandboxing).  To
-+harden a whole system, this feature should be available to any process,
-+including unprivileged ones.  Because such process may be compromised or
-+backdoored (i.e. untrusted), Landlock's features must be safe to use from the
-+kernel and other processes point of view.  Landlock's interface must therefore
-+expose a minimal attack surface.
-+
-+Landlock is designed to be usable by unprivileged processes while following the
-+system security policy enforced by other access control mechanisms (e.g. DAC,
-+LSM).  Indeed, a Landlock rule shall not interfere with other access-controls
-+enforced on the system, only add more restrictions.
-+
-+Any user can enforce Landlock rulesets on their processes.  They are merged and
-+evaluated according to the inherited ones in a way that ensures that only more
-+constraints can be added.
-+
-+Guiding principles for safe access controls
-+===========================================
-+
-+* A Landlock rule shall be focused on access control on kernel objects instead
-+  of syscall filtering (i.e. syscall arguments), which is the purpose of
-+  seccomp-bpf.
-+* To avoid multiple kinds of side-channel attacks (e.g. leak of security
-+  policies, CPU-based attacks), Landlock rules shall not be able to
-+  programmatically communicate with user space.
-+* Kernel access check shall not slow down access request from unsandboxed
-+  processes.
-+* Computation related to Landlock operations (e.g. enforce a ruleset) shall
-+  only impact the processes requesting them.
-+
-+Tests
-+=====
-+
-+Userspace tests for backward compatibility, ptrace restrictions and filesystem
-+support can be found here: `tools/testing/selftests/landlock/`_.
-+
-+Kernel structures
-+=================
-+
-+Object
-+------
-+
-+.. kernel-doc:: security/landlock/object.h
-+    :identifiers:
-+
-+Ruleset and domain
-+------------------
-+
-+A domain is a read-only ruleset tied to a set of subjects (i.e. tasks'
-+credentials).  Each time a ruleset is enforced on a task, the current domain is
-+duplicated and the ruleset is imported as a new layer of rules in the new
-+domain.  Indeed, once in a domain, each rule is tied to a layer level.  To
-+grant access to an object, at least one rule of each layer must allow the
-+requested action on the object.  A task can then only transit to a new domain
-+which is the intersection of the constraints from the current domain and those
-+of a ruleset provided by the task.
-+
-+The definition of a subject is implicit for a task sandboxing itself, which
-+makes the reasoning much easier and helps avoid pitfalls.
-+
-+.. kernel-doc:: security/landlock/ruleset.h
-+    :identifiers:
-+
-+.. Links
-+.. _tools/testing/selftests/landlock/: https://github.com/landlock-lsm/linux/tree/landlock-v18/tools/testing/selftests/landlock/
-diff --git a/Documentation/security/landlock/user.rst b/Documentation/security/landlock/user.rst
-new file mode 100644
-index 000000000000..e5174738e2a7
---- /dev/null
-+++ b/Documentation/security/landlock/user.rst
-@@ -0,0 +1,268 @@
-+=================================
-+Landlock: userspace documentation
-+=================================
-+
-+Landlock rules
-+==============
-+
-+A Landlock rule enables to describe an action on an object.  An object is
-+currently a file hierarchy, and the related filesystem actions are defined in
-+`Access rights`_.  A set of rules is aggregated in a ruleset, which can then
-+restrict the thread enforcing it, and its future children.
-+
-+Defining and enforcing a security policy
-+----------------------------------------
-+
-+Before defining a security policy, an application should first probe for the
-+features supported by the running kernel, which is important to be compatible
-+with older kernels.  This can be done thanks to the `landlock` syscall (cf.
-+:ref:`syscall`).
-+
-+.. code-block:: c
-+
-+    struct landlock_attr_features attr_features;
-+
-+    if (landlock(LANDLOCK_CMD_GET_FEATURES, LANDLOCK_OPT_GET_FEATURES,
-+            sizeof(attr_features), &attr_features)) {
-+        perror("Failed to probe the Landlock supported features");
-+        return 1;
-+    }
-+
-+Then, we need to create the ruleset that will contain our rules.  For this
-+example, the ruleset will contain rules which only allow read actions, but
-+write actions will be denied.  The ruleset then needs to handle both of these
-+kind of actions.  To have a backward compatibility, these actions should be
-+ANDed with the supported ones.
-+
-+.. code-block:: c
-+
-+    int ruleset_fd;
-+    struct landlock_attr_ruleset ruleset = {
-+        .handled_access_fs =
-+            LANDLOCK_ACCESS_FS_EXECUTE |
-+            LANDLOCK_ACCESS_FS_WRITE_FILE |
-+            LANDLOCK_ACCESS_FS_READ_FILE |
-+            LANDLOCK_ACCESS_FS_READ_DIR |
-+            LANDLOCK_ACCESS_FS_REMOVE_DIR |
-+            LANDLOCK_ACCESS_FS_REMOVE_FILE |
-+            LANDLOCK_ACCESS_FS_MAKE_CHAR |
-+            LANDLOCK_ACCESS_FS_MAKE_DIR |
-+            LANDLOCK_ACCESS_FS_MAKE_REG |
-+            LANDLOCK_ACCESS_FS_MAKE_SOCK |
-+            LANDLOCK_ACCESS_FS_MAKE_FIFO |
-+            LANDLOCK_ACCESS_FS_MAKE_BLOCK |
-+            LANDLOCK_ACCESS_FS_MAKE_SYM,
-+    };
-+
-+    ruleset.handled_access_fs &= attr_features.access_fs;
-+    ruleset_fd = landlock(LANDLOCK_CMD_CREATE_RULESET,
-+                    LANDLOCK_OPT_CREATE_RULESET, sizeof(ruleset), &ruleset);
-+    if (ruleset_fd < 0) {
-+        perror("Failed to create a ruleset");
-+        return 1;
-+    }
-+
-+We can now add a new rule to this ruleset thanks to the returned file
-+descriptor referring to this ruleset.  The rule will only enable to read the
-+file hierarchy ``/usr``.  Without another rule, write actions would then be
-+denied by the ruleset.  To add ``/usr`` to the ruleset, we open it with the
-+``O_PATH`` flag and fill the &struct landlock_attr_path_beneath with this file
-+descriptor.
-+
-+.. code-block:: c
-+
-+    int err;
-+    struct landlock_attr_path_beneath path_beneath = {
-+        .ruleset_fd = ruleset_fd,
-+        .allowed_access =
-+            LANDLOCK_ACCESS_FS_EXECUTE |
-+            LANDLOCK_ACCESS_FS_READ_FILE |
-+            LANDLOCK_ACCESS_FS_READ_DIR,
-+    };
-+
-+    path_beneath.allowed_access &= attr_features.access_fs;
-+    path_beneath.parent_fd = open("/usr", O_PATH | O_CLOEXEC);
-+    if (path_beneath.parent_fd < 0) {
-+        perror("Failed to open file");
-+        close(ruleset_fd);
-+        return 1;
-+    }
-+    err = landlock(LANDLOCK_CMD_ADD_RULE, LANDLOCK_OPT_ADD_RULE_PATH_BENEATH,
-+            sizeof(path_beneath), &path_beneath);
-+    close(path_beneath.parent_fd);
-+    if (err) {
-+        perror("Failed to update ruleset");
-+        close(ruleset_fd);
-+        return 1;
-+    }
-+
-+We now have a ruleset with one rule allowing read access to ``/usr`` while
-+denying all accesses featured in ``attr_features.access_fs`` to everything else
-+on the filesystem.  The next step is to restrict the current thread from
-+gaining more privileges (e.g. thanks to a SUID binary).
-+
-+.. code-block:: c
-+
-+    if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-+        perror("Failed to restrict privileges");
-+        close(ruleset_fd);
-+        return 1;
-+    }
-+
-+The current thread is now ready to sandbox itself with the ruleset.
-+
-+.. code-block:: c
-+
-+    struct landlock_attr_enforce attr_enforce = {
-+        .ruleset_fd = ruleset_fd,
-+    };
-+
-+    if (landlock(LANDLOCK_CMD_ENFORCE_RULESET, LANDLOCK_OPT_ENFORCE_RULESET,
-+            sizeof(attr_enforce), &attr_enforce)) {
-+        perror("Failed to enforce ruleset");
-+        close(ruleset_fd);
-+        return 1;
-+    }
-+    close(ruleset_fd);
-+
-+If the last `landlock` system call succeeds, the current thread is now
-+restricted and this policy will be enforced on all its subsequently created
-+children as well.  Once a thread is landlocked, there is no way to remove its
-+security policy; only adding more restrictions is allowed.  These threads are
-+now in a new Landlock domain, merge of their parent one (if any) with the new
-+ruleset.
-+
-+Full working code can be found in `samples/landlock/sandboxer.c`_.
-+
-+Inheritance
-+-----------
-+
-+Every new thread resulting from a :manpage:`clone(2)` inherits Landlock domain
-+restrictions from its parent.  This is similar to the seccomp inheritance (cf.
-+:doc:`/userspace-api/seccomp_filter`) or any other LSM dealing with task's
-+:manpage:`credentials(7)`.  For instance, one process's thread may apply
-+Landlock rules to itself, but they will not be automatically applied to other
-+sibling threads (unlike POSIX thread credential changes, cf.
-+:manpage:`nptl(7)`).
-+
-+When a thread sandbox itself, we have the grantee that the related security
-+policy will stay enforced on all this thread's descendants.  This enables to
-+create standalone and modular security policies per application, which will
-+automatically be composed between themselves according to their runtime parent
-+policies.
-+
-+Ptrace restrictions
-+-------------------
-+
-+A sandboxed process has less privileges than a non-sandboxed process and must
-+then be subject to additional restrictions when manipulating another process.
-+To be allowed to use :manpage:`ptrace(2)` and related syscalls on a target
-+process, a sandboxed process should have a subset of the target process rules,
-+which means the tracee must be in a sub-domain of the tracer.
-+
-+.. _syscall:
-+
-+The `landlock` syscall and its arguments
-+========================================
-+
-+.. kernel-doc:: security/landlock/syscall.c
-+    :identifiers: sys_landlock
-+
-+Commands
-+--------
-+
-+.. kernel-doc:: include/uapi/linux/landlock.h
-+    :identifiers: landlock_cmd
-+
-+Options
-+-------
-+
-+.. kernel-doc:: include/uapi/linux/landlock.h
-+    :identifiers: options_intro
-+                  options_get_features options_create_ruleset
-+                  options_add_rule options_enforce_ruleset
-+
-+Attributes
-+----------
-+
-+.. kernel-doc:: include/uapi/linux/landlock.h
-+    :identifiers: landlock_attr_features landlock_attr_ruleset
-+                  landlock_attr_path_beneath landlock_attr_enforce
-+
-+Access rights
-+-------------
-+
-+.. kernel-doc:: include/uapi/linux/landlock.h
-+    :identifiers: fs_access
-+
-+Current limitations
-+===================
-+
-+File renaming and linking
-+-------------------------
-+
-+Because Landlock targets unprivileged access controls, it is needed to properly
-+handle composition of rules.  Such property also implies rules nesting.
-+Properly handling multiple layers of ruleset, each one of them able to restrict
-+access to files, also imply to inherit the ruleset restrictions from a parent
-+to its hierarchy.  Because files are identified and restricted by their
-+hierarchy, moving or linking a file from one directory to another imply to
-+propagate the hierarchy constraints.  To protect against privilege escalations
-+through renaming or linking, and for the sack of simplicity, Landlock currently
-+limits linking and renaming to the same directory.  Future Landlock evolutions
-+will enable more flexibility for renaming and linking, with dedicated ruleset
-+options.
-+
-+OverlayFS
-+---------
-+
-+An OverlayFS mount point consists of upper and lower layers.  It is currently
-+not possible to reliably infer which underlying file hierarchy matches an
-+OverlayFS path composed of such layers.  It is then not currently possible to
-+track the source of an indirect access-request, and then not possible to
-+properly identify and allow an unified OverlayFS hierarchy.  Restricting files
-+in an OverlayFS mount point works, but files allowed in one layer may not be
-+allowed in a related OverlayFS mount point.  A future Landlock evolution will
-+make possible to properly work with OverlayFS, according to a dedicated ruleset
-+option.
-+
-+
-+Special filesystems
-+-------------------
-+
-+Access to regular files and directories can be restricted by Landlock,
-+according to the handled accesses of a ruleset.  However, files which do not
-+come from a user-visible filesystem (e.g. pipe, socket), but can still be
-+accessed through /proc/self/fd/, cannot currently be restricted.  Likewise,
-+some special kernel filesystems such as nsfs which can be accessed through
-+/proc/self/ns/, cannot currently be restricted.  For now, these kind of special
-+paths are then always allowed.  Future Landlock evolutions will enable to
-+restrict such paths, with dedicated ruleset options.
-+
-+Questions and answers
-+=====================
-+
-+What about user space sandbox managers?
-+---------------------------------------
-+
-+Using user space process to enforce restrictions on kernel resources can lead
-+to race conditions or inconsistent evaluations (i.e. `Incorrect mirroring of
-+the OS code and state
-+<https://www.ndss-symposium.org/ndss2003/traps-and-pitfalls-practical-problems-system-call-interposition-based-security-tools/>`_).
-+
-+What about namespaces and containers?
-+-------------------------------------
-+
-+Namespaces can help create sandboxes but they are not designed for
-+access-control and then miss useful features for such use case (e.g. no
-+fine-grained restrictions).  Moreover, their complexity can lead to security
-+issues, especially when untrusted processes can manipulate them (cf.
-+`Controlling access to user namespaces <https://lwn.net/Articles/673597/>`_).
-+
-+Additional documentation
-+========================
-+
-+See https://landlock.io
-+
-+.. Links
-+.. _samples/landlock/sandboxer.c: https://github.com/landlock-lsm/linux/tree/landlock-v18/samples/landlock/sandboxer.c
+A bit harder to read comment indented too much and located after the declared variable.
+
+> +#endif
+>  	struct device_dma_parameters *dma_parms;
+>  
+>  	struct list_head	dma_pools;	/* dma pools (if dma'ble) */
+> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+> index 24b8684aa21d..03110a57eabc 100644
+> --- a/include/linux/dma-direct.h
+> +++ b/include/linux/dma-direct.h
+> @@ -14,15 +14,21 @@ extern unsigned int zone_dma_bits;
+>  static inline dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+>  {
+>  	dma_addr_t dev_addr = (dma_addr_t)paddr;
+> +	/* The compiler should remove the 2nd term if !DMA_PFN_OFFSET_MAP */
+> +	unsigned long dma_pfn_offset = dev->dma_pfn_offset
+> +		+ dma_pfn_offset_from_phys_addr(dev, paddr);
+>  
+> -	return dev_addr - ((dma_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
+> +	return dev_addr - ((dma_addr_t)dma_pfn_offset << PAGE_SHIFT);
+>  }
+>  
+>  static inline phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dev_addr)
+>  {
+>  	phys_addr_t paddr = (phys_addr_t)dev_addr;
+> +	/* The compiler should remove the 2nd term if !DMA_PFN_OFFSET_MAP */
+> +	unsigned long dma_pfn_offset = dev->dma_pfn_offset
+> +		+ dma_pfn_offset_from_dma_addr(dev, paddr);
+>  
+> -	return paddr + ((phys_addr_t)dev->dma_pfn_offset << PAGE_SHIFT);
+> +	return paddr + ((phys_addr_t)dma_pfn_offset << PAGE_SHIFT);
+>  }
+>  #endif /* !CONFIG_ARCH_HAS_PHYS_TO_DMA */
+>  
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index 330ad58fbf4d..91940bba2229 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -256,6 +256,52 @@ static inline void dma_direct_sync_sg_for_cpu(struct device *dev,
+>  size_t dma_direct_max_mapping_size(struct device *dev);
+>  
+>  #ifdef CONFIG_HAS_DMA
+> +#ifdef CONFIG_DMA_PFN_OFFSET_MAP
+> +struct dma_pfn_offset_region {
+
+> +	phys_addr_t	cpu_beg;
+> +	phys_addr_t	cpu_end;
+> +	dma_addr_t	dma_beg;
+> +	dma_addr_t	dma_end;
+
+Perhaps
+	s,beg,start,
+in above names
+
+> +	unsigned long	pfn_offset;
+> +};
+> +
+> +static inline unsigned long dma_pfn_offset_from_dma_addr(struct device *dev,
+> +							 dma_addr_t dma_addr)
+> +{
+> +	const struct dma_pfn_offset_region *m = dev->dma_pfn_offset_map;
+
+> +	if (m)
+> +		for (; m->cpu_end; m++)
+
+Why not simple
+
+	while (m) {
+		...
+	}
+
+?
+
+
+> +			if (dma_addr >= m->dma_beg && dma_addr < m->dma_end)
+> +				return m->pfn_offset;
+> +	return 0;
+> +}
+> +
+> +static inline unsigned long dma_pfn_offset_from_phys_addr(struct device *dev,
+> +							  phys_addr_t paddr)
+> +{
+> +	const struct dma_pfn_offset_region *m = dev->dma_pfn_offset_map;
+> +
+
+> +	if (m)
+> +		for (; m->cpu_end; m++)
+
+Ditto.
+
+> +			if (paddr >= m->cpu_beg && paddr < m->cpu_end)
+> +				return m->pfn_offset;
+> +	return 0;
+> +}
+> +#else  /* CONFIG_DMA_PFN_OFFSET_MAP */
+> +static inline unsigned long dma_pfn_offset_from_dma_addr(struct device *dev,
+> +							 dma_addr_t dma_addr)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline unsigned long dma_pfn_offset_from_phys_addr(struct device *dev,
+> +							  phys_addr_t paddr)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_DMA_PFN_OFFSET_MAP */
+> +
+>  #include <asm/dma-mapping.h>
+>  
+>  static inline const struct dma_map_ops *get_dma_ops(struct device *dev)
+> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+> index 4c103a24e380..ceb7e5e8f501 100644
+> --- a/kernel/dma/Kconfig
+> +++ b/kernel/dma/Kconfig
+> @@ -195,3 +195,16 @@ config DMA_API_DEBUG_SG
+>  	  is technically out-of-spec.
+>  
+>  	  If unsure, say N.
+> +
+> +config DMA_PFN_OFFSET_MAP
+> +	bool "Uses a DMA range map to calculate PFN offset"
+> +	depends on PCIE_BRCMSTB
+
+> +	default n
+
+Redundant.
+
+> +	help
+> +	  Some devices have a dma-range that gets converted to
+> +	  a dev->dma_pfn_offset value.  This option is for the
+> +	  atypical case of there being multiple dma-ranges requiring
+> +	  multiple pfn offsets, which are selected from when
+> +	  converting to phys to dma and vice versa.
+> +
+> +	  If unsure, say N.
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 
