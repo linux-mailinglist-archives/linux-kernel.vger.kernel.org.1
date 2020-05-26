@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BFF1E2AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714451E2A93
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389350AbgEZS7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:59:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52972 "EHLO mail.kernel.org"
+        id S2389996AbgEZS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390483AbgEZS7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:59:15 -0400
+        id S2389982AbgEZS44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:56:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E379E2084C;
-        Tue, 26 May 2020 18:59:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DB4A20870;
+        Tue, 26 May 2020 18:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519555;
-        bh=14eDN6iWkvLygluEYtdkN4nLLdQl8xArd15UGUNLXjM=;
+        s=default; t=1590519416;
+        bh=DYY57umynyFAZK/twDxMmZVr1Hq81x9GD9DqV30xJ0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SY5DIdQBN9zX+cxVptq5apKsdoGBozi/spCV5nDrEoIp3CepU8L6cBSfrseu/EvRo
-         deD97NoX+IAb5zuSEXEse5jirQL5gOhthZi0wFwicjeswvS+z4OtxpkYmvqq5IL8EQ
-         wLlLjUw/pTmQbO+X9kyZgz9VIx4Nq0ZA7XPNkhEA=
+        b=K98ZDr4/O4fbhbBB9CNtMYtY8VCQPlMO8+BmhcRCLsnjvVXtusegq3y7km+FelGRI
+         v+emOVPGKocSxm5GLzi5cfqR+Rrx9YdfnL4Bjp2cQhoV2Q7/yJP8kK0FQXekuG35j1
+         K4k5rHdbLNCE4iw0iSZFZxJrW9VN5FzIwASZHxa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 4.9 50/64] dmaengine: tegra210-adma: Fix an error handling path in tegra_adma_probe()
-Date:   Tue, 26 May 2020 20:53:19 +0200
-Message-Id: <20200526183930.291900499@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 61/65] Revert "gfs2: Dont demote a glock until its revokes are written"
+Date:   Tue, 26 May 2020 20:53:20 +0200
+Message-Id: <20200526183928.499403894@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183913.064413230@linuxfoundation.org>
-References: <20200526183913.064413230@linuxfoundation.org>
+In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
+References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 3a5fd0dbd87853f8bd2ea275a5b3b41d6686e761 upstream.
+[ Upstream commit b14c94908b1b884276a6608dea3d0b1b510338b7 ]
 
-Commit b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-has moved some code in the probe function and reordered the error handling
-path accordingly.
-However, a goto has been missed.
+This reverts commit df5db5f9ee112e76b5202fbc331f990a0fc316d6.
 
-Fix it and goto the right label if 'dma_async_device_register()' fails, so
-that all resources are released.
+This patch fixes a regression: patch df5db5f9ee112 allowed function
+run_queue() to bypass its call to do_xmote() if revokes were queued for
+the glock. That's wrong because its call to do_xmote() is what is
+responsible for calling the go_sync() glops functions to sync both
+the ail list and any revokes queued for it. By bypassing the call,
+gfs2 could get into a stand-off where the glock could not be demoted
+until its revokes are written back, but the revokes would not be
+written back because do_xmote() was never called.
 
-Fixes: b53611fb1ce9 ("dmaengine: tegra210-adma: Fix crash during probe")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Link: https://lore.kernel.org/r/20200516214205.276266-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It "sort of" works, however, because there are other mechanisms like
+the log flush daemon (logd) that can sync the ail items and revokes,
+if it deems it necessary. The problem is: without file system pressure,
+it might never deem it necessary.
 
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/tegra210-adma.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/glock.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/dma/tegra210-adma.c
-+++ b/drivers/dma/tegra210-adma.c
-@@ -793,7 +793,7 @@ static int tegra_adma_probe(struct platf
- 	ret = dma_async_device_register(&tdma->dma_dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "ADMA registration failed: %d\n", ret);
--		goto irq_dispose;
-+		goto rpm_put;
- 	}
- 
- 	ret = of_dma_controller_register(pdev->dev.of_node,
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index f80ffccb0316..1eb737c466dd 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -541,9 +541,6 @@ __acquires(&gl->gl_lockref.lock)
+ 			goto out_unlock;
+ 		if (nonblock)
+ 			goto out_sched;
+-		smp_mb();
+-		if (atomic_read(&gl->gl_revokes) != 0)
+-			goto out_sched;
+ 		set_bit(GLF_DEMOTE_IN_PROGRESS, &gl->gl_flags);
+ 		GLOCK_BUG_ON(gl, gl->gl_demote_state == LM_ST_EXCLUSIVE);
+ 		gl->gl_target = gl->gl_demote_state;
+-- 
+2.25.1
+
 
 
