@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5317E1E33B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA3C1E33BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 01:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgEZXaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 19:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        id S1726161AbgEZXbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 19:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgEZXaO (ORCPT
+        with ESMTP id S1725896AbgEZXbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 19:30:14 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E830C03E96E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:30:13 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c185so8511260qke.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:30:13 -0700 (PDT)
+        Tue, 26 May 2020 19:31:14 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB3AC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:31:14 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b6so26697356ljj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 16:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=muYolnYZmufgcHzMuhz5medXrKFllBeZIV0QKir0gLA=;
-        b=s75QVjRxg1JImvQV+OJMPp/TgNXfTCYbs0KzsaS+JyUdWLHTSXt07wIK/DyhXy/4Fw
-         ngwEw8trvE9ofv4Ss5sJt27CBrf6KW2qUPLwCI/JMw1oVicsBcyjtwRhnDWvtOussLU7
-         l3R5cDpM58uiYnvcA9/wD64TafQp+MRCs/7EsFnYX9wKOGZvNQg+IvyyF/TNz3MCCYVq
-         wF0QPWYk4znAPrklYVi6kQTnaQfF5hbZkgWHLvBuyHKOOoHlnEe9LBlrN83sDLtZGmS+
-         lvTCicmEhZm8xyceiNENWlVhycsgTzO5q9yVOIrDW3ZvhEDeVzmsqQy4TaT6tEy/qtaH
-         B26g==
+        d=guzman.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NUHQ87HXBhNLKdg5M4S8WpnQd9u0DanCJ6FWlFhn50g=;
+        b=kMBEkytO421Sme01FUYPg/RhFeCsWxOBXVi7dHrRMP/yX14dsQeccuifaus5xaz/9e
+         wjjpnmeM9D+ccEq+VUAB48plmUqyKLQSBCKqiLDJ28D9pzenSdcyuoNl08yWm5uNOqIg
+         AR2sai4gvUcXNsVVu12PJ6aQYJhyLkKAXuNqY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=muYolnYZmufgcHzMuhz5medXrKFllBeZIV0QKir0gLA=;
-        b=o3UdlpJaU/nxEYEDnlAUhaTct4fDPIb3eKGCKCSFZOlHolFbaCMbUzbxtlXPYv4ZRy
-         OgniEy3NwmVq0hNGpY0eGS2ifqu+USbhKY+d0I4g9+3FA80BOm/EuCkP5EJ1vw2DaGko
-         +XAALAw7Sxe1pmaXia6O9HfQv+sq0jMRfmAPQIlOLcYeGqCspYnruycsMRKH0nTflz88
-         /JIZLgDmC6eUeE2bCyucSjsGjd5Tl+UQkghaULOszDpoeYA7in6KjdPeQPOCIFxrDcLx
-         wdu9r9Kkq05duZ7IdqcLqPcHYClsPA/zr+upbXelNV4F998IQIkd79F8VV22jNT9iR6C
-         DKPw==
-X-Gm-Message-State: AOAM530uBY1XGCthkvwdAYfeenZN4vDJgnFTNNKHE3tT9KcSCwyYVkEj
-        QdaS89xccO5CgjoIYvmyPtXDuduGZyjHIQ==
-X-Google-Smtp-Source: ABdhPJwz3LWDpaFCddkPLoA/lLv2hAE0TJMt/S/YcrFyegb0aLfFp9jP+WvWm8sKW3V0K3dLSRV2FQ==
-X-Received: by 2002:a37:684:: with SMTP id 126mr1338066qkg.486.1590535812308;
-        Tue, 26 May 2020 16:30:12 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id v1sm906851qkb.19.2020.05.26.16.30.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 16:30:11 -0700 (PDT)
-Subject: Re: [PATCH 01/10] clk: qcom: clk-alpha-pll: remove unused/incorrect
- PLL_CAL_VAL
-To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200524210615.17035-1-jonathan@marek.ca>
- <20200524210615.17035-2-jonathan@marek.ca>
- <159053527806.88029.14584721858766224777@swboyd.mtv.corp.google.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <86a7c49f-44ea-11d3-2983-8443ad7ec309@marek.ca>
-Date:   Tue, 26 May 2020 19:30:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NUHQ87HXBhNLKdg5M4S8WpnQd9u0DanCJ6FWlFhn50g=;
+        b=EFPma9yCXNzUJzZ3aS39JYzgB6C4IHTLxnwQswyGyGyu0XVSSsmDwHKlnqwwMEg4ik
+         26NoPMXxRvWfv4MBYJwd+fl35jwYQJuFaa00IbgXrCMiY+MOUCRUywUU79b/3A8WYoT9
+         MVUGfXrTXh0CSRLLl1rcGFteg9m89hbflV78q7uKVfVOYAJoDnreMEaTkF9Udy+TVWUx
+         YQfrwqEr0+KWMzoTpiY6dxx23IfmSFfh86GRl9p5QHYQFaw9XJ7F7vDSZ/Ck+1VVFlhp
+         tdfMgC2s3qkirI/TsnvWn1AO/Ct5zp8gPbH0d7OD+zBoUHqymW9B6AoLzuViOiPoaDn1
+         iG6g==
+X-Gm-Message-State: AOAM533GZCd7Gky5y1BcCz0qbL0t4zDgqWtu1X5DMlW2xIRnPY2RBOE7
+        HLJ7ZqnBYQJtOUgXC0cK1JFyeA7kcEznsPPU2U4HYQ==
+X-Google-Smtp-Source: ABdhPJyR5HMQaW5UuV5jbkhlc66/+xKqzQdlsnkgoPumeuNFswLStR1xI7PXaz9cnvI14E06uxSyqrbryw1y/M5jLZ4=
+X-Received: by 2002:a2e:8654:: with SMTP id i20mr1474327ljj.79.1590535872825;
+ Tue, 26 May 2020 16:31:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159053527806.88029.14584721858766224777@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200526183213.20720-1-mario.limonciello@dell.com>
+ <1590520454.11810.40.camel@HansenPartnership.com> <ccf055cbf1a14f28bc95a6b02e29a2f6@AUSX13MPC105.AMER.DELL.COM>
+ <1590521924.15108.1.camel@HansenPartnership.com> <da3027a2aa9d1b7110a65de919e88f42ef2e13bb.camel@guzman.io>
+ <1590534370.15108.17.camel@HansenPartnership.com>
+In-Reply-To: <1590534370.15108.17.camel@HansenPartnership.com>
+From:   Alex Guzman <alex@guzman.io>
+Date:   Tue, 26 May 2020 16:31:01 -0700
+Message-ID: <CAJ7-PMaoFyi89OFgYsNknc2d0Fr4RHLmmHo-puNiKchM=0mU6w@mail.gmail.com>
+Subject: Re: [PATCH] tpm: Revert "tpm: fix invalid locking in NONBLOCKING mode"
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Mario Limonciello <Mario.Limonciello@dell.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/20 7:21 PM, Stephen Boyd wrote:
-> Quoting Jonathan Marek (2020-05-24 14:06:02)
->> 0x44 isn't a register offset, it is the value that goes into CAL_L_VAL.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
-> 
-> Any fixes tag?
-> 
+On Tue, May 26, 2020 at 4:06 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Tue, 2020-05-26 at 15:19 -0700, Alex Guzman wrote:
+> [...]
+> > When using your patch, I get a hang when trying to use tpm2_getcap,
+> > and dmesg shows some info.
+>
+> Are you sure it's all applied?  This
+>
+> > [  570.913803]  tpm_tcg_write_bytes+0x2f/0x40
+> > [  570.913805]  release_locality+0x49/0x220
+> > [  570.913807]  tpm_relinquish_locality+0x1f/0x40
+> > [  570.913808]  tpm_chip_stop+0x21/0x40
+> > [  570.913810]  tpm_put_ops+0x9/0x30
+> > [  570.913811]  tpm_common_write+0x179/0x190
+> > [  570.913813]  vfs_write+0xb1/0x1a0
+>
+> Implies an unmatched tpm_put_ops() in the async write path, as though
+> this hunk:
+>
+> > @@ -211,11 +202,19 @@ ssize_t tpm_common_write(struct file *file,
+> > const char __user *buf,
+> >         if (file->f_flags & O_NONBLOCK) {
+> >                 priv->command_enqueued = true;
+> >                 queue_work(tpm_dev_wq, &priv->async_work);
+> > -               tpm_put_ops(priv->chip);
+> >                 mutex_unlock(&priv->buffer_mutex);
+> >                 return size;
+> >         }
+>
+> Is missing.  I actually booted the patch in my TPM based VM and it all
+> seems to work OK when I execute tpm2_getcap (I verified it's using
+> O_NONBLOCK) and tssgetcapability in sync mode.
+>
+> James
+>
 
-This doesn't fix anything (its unused as the commit message says), does 
-that still qualify for a fixes tag?
+Oh, I did miss that bit. The patch had issues applying for some reason
+and I missed the single-line removal when I was looking at the diff.
+
+I gave it a spin on my machine again. getcap seems to work correctly
+with and without having the async config flag set for tpm2-tss. The
+pkcs11 plugin seems to work correctly again too. :)
