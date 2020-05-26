@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488D51E1C9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C326C1E1CA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 09:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgEZH5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 03:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731406AbgEZH5s (ORCPT
+        id S1729628AbgEZH6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 03:58:20 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36120 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726971AbgEZH6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 03:57:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6922CC08C5C0;
-        Tue, 26 May 2020 00:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R5qQvczynsAgfGpBqLmrdkhBv7EbYOge1iugVDT5SBA=; b=TE//yoNU7+3UOMY3O60qcivn8i
-        sZ3MnaWQtU9hZ2Qo3MhIJmOUtCiv6O3ZcG1Tsi8Hz1VMx9j1zQ0TxV/YT2FhskgmFKR2xjU6B9OdW
-        bpis4SfDnCWwt1BhW0SYlcgQnsrzPaaTVISdrJjCzTZkaKlZBkdUCBCa60+cDdl11SFiJavhylT1t
-        rjUm4J6lqpyylhU5qBeAt42mB6HNTXXyOcGp6iSDuQwpcIBSobd8LnuwvOzebFrrc04h8AkYOVZ2H
-        HfYk7eu/QFgf+v8NhYuLShFW9xsYjvitpuMY59+eqpNnj5ylqeiXH2WbSL/kuLwgcNzvLy+AWmzbi
-        RODjFOFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdUSx-0008AQ-TD; Tue, 26 May 2020 07:57:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1000930280E;
-        Tue, 26 May 2020 09:57:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F277320BE0DF0; Tue, 26 May 2020 09:57:36 +0200 (CEST)
-Date:   Tue, 26 May 2020 09:57:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andi Kleen <andi@firstfloor.org>, x86@kernel.org,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        sashal@kernel.org, Andi Kleen <ak@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v1] x86: Pin cr4 FSGSBASE
-Message-ID: <20200526075736.GH317569@hirez.programming.kicks-ass.net>
-References: <20200526052848.605423-1-andi@firstfloor.org>
- <20200526065618.GC2580410@kroah.com>
+        Tue, 26 May 2020 03:58:19 -0400
+Received: by mail-ot1-f65.google.com with SMTP id h7so15588562otr.3;
+        Tue, 26 May 2020 00:58:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SQz/g1UQo2PLzZue916rto+4fVizs6mX0h0IORmeiK0=;
+        b=BMpO/DQPMIDCK5RSnRFDmaVNOlR8KrVFFMYvVFSsOsyWOhmRcfvNHwszEFap24xxQj
+         3vzHMuvCKdmkUlqp1fkNEUuA241d2qQzXSrTHjiDnfsSLxaQIBT6lDTrEMQX0tAL/z76
+         lgXfENByj8urcYxrZg6o4HK1PaGQ3dbT+b45XoLia5ik3Ig0zD/uVohTq7NbJUqT6MQ2
+         ov6h472GwXJcReydSrV0lr1onsQNj7+/zFfHk3H/MeUBnaWTACIbSgh9kpeCErSY0lpe
+         AQXBxTOJrzrhC/4RkwfzbI09cRRzwup29CEZaggNuFCCVuPcsmFXaSWWgDIrMT5B/lBH
+         KF3A==
+X-Gm-Message-State: AOAM533HydBs7iDNDMZEyA0ZBLQgQUJdUGnloVn397hJVaiyMQgeF10j
+        +YHKwGezA9IZK4bGQb34XIl8Q2jp6R2CnhGmR90AvQ==
+X-Google-Smtp-Source: ABdhPJyuK6xwILTTOZRjRZdK8dk8+wKmTSvqQijuIOWWRVWKbQR78bFQXvGUvPSmgY/YJKHrRp9PMVfS0D5qbVByH/g=
+X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr22222885ote.107.1590479897644;
+ Tue, 26 May 2020 00:58:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526065618.GC2580410@kroah.com>
+References: <1590420129-7531-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1590420129-7531-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1590420129-7531-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 May 2020 09:58:06 +0200
+Message-ID: <CAMuHMdWjGX43EDnwxu0xp3U7aedWHuW5MLQo==1d5v_mV-1R9A@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ARM: dts: r8a7742-iwg21d-q7: Enable SDHI2 controller
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 08:56:18AM +0200, Greg KH wrote:
-> On Mon, May 25, 2020 at 10:28:48PM -0700, Andi Kleen wrote:
-> > From: Andi Kleen <ak@linux.intel.com>
-> > 
-> > Since there seem to be kernel modules floating around that set
-> > FSGSBASE incorrectly, prevent this in the CR4 pinning. Currently
-> > CR4 pinning just checks that bits are set, this also checks
-> > that the FSGSBASE bit is not set, and if it is clears it again.
-> 
-> So we are trying to "protect" ourselves from broken out-of-tree kernel
-> modules now?  Why stop with this type of check, why not just forbid them
-> entirely if we don't trust them?  :)
+Hi Prabhakar,
 
-Oh, I have a bunch of patches pending for that :-)
+On Mon, May 25, 2020 at 5:23 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable the SDHI2 controller on iWave RZ/G1H carrier board.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-It will basically decode the module text and refuse to load the module
-for most CPL0 instruction.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.9.
+
+BTW, perhaps you want to add an LED trigger for SDIO_LED, connected
+to GP5_22?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
