@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AD21E2B56
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B7B1E2D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391322AbgEZTEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59546 "EHLO mail.kernel.org"
+        id S2404250AbgEZTT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:19:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391311AbgEZTED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:04:03 -0400
+        id S2389413AbgEZTNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:13:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45E0A20849;
-        Tue, 26 May 2020 19:04:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 606C220B80;
+        Tue, 26 May 2020 19:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519842;
-        bh=egsL6AH/ANsTTekNKP3t3n4xT4+RurSQuBnpdQfJb/c=;
+        s=default; t=1590520381;
+        bh=Ej8mWoOChq7PjXcObSOQxnaN6N39Bk2hipAMIBDrJSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjfHb5fo+EuccdmIlnykeAX3PAeQMW82bL5yQE8kjBJTCIn89qjbtpAmGJ4BRTrYn
-         kDBiXnCob1EjUpecB17tmF/IYEHx2RCc614tUREds95aC9ENR5yJI5rccIFkOgwzlD
-         J7PNBfRg1SXxIRrqKj2+0bCPNdhP25OOO3hFy5v4=
+        b=s2dDWXkvGaTsSOp+iFklZJp/tG7v661GOvtE6wZvN8pGN2DOqZRSjoQIWgsSk8adA
+         d+YhP+K36bVIDVK0ywxFQ3M7UOuHHsFdpxwfjf4gvQs01W0SoqxT8AQFVnOIJkL7aZ
+         H0o5M2NGBSXcWiYGbPiApMjmt/FieglUGYb1HEhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Bahling <sbahling@suse.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 38/81] ALSA: iec1712: Initialize STDSP24 properly when using the model=staudio option
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 056/126] ALSA: hda/realtek - Add supported new mute Led for HP
 Date:   Tue, 26 May 2020 20:53:13 +0200
-Message-Id: <20200526183931.488199190@linuxfoundation.org>
+Message-Id: <20200526183942.781300237@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
-References: <20200526183923.108515292@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Bahling <sbahling@suse.com>
+From: Kailang Yang <kailang@realtek.com>
 
-commit b0cb099062b0c18246c3a20caaab4c0afc303255 upstream.
+[ Upstream commit 431e76c3edd76d84a0ed1eb81a286b2ddecc5ee4 ]
 
-The ST Audio ADCIII is an STDSP24 card plus extension box. With commit
-e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII") we
-enabled the ADCIII ports using the model=staudio option but forgot
-this part to ensure the STDSP24 card is initialized properly.
+HP Note Book supported new mute Led.
+Hardware PIN was not enough to meet old LED rule.
+JD2 to control playback mute led.
+GPO3 to control capture mute led.
+(ALC285 didn't control GPO3 via verb command)
+This two PIN just could control by COEF registers.
 
-Fixes: e8a91ae18bdc ("ALSA: ice1712: Add support for STAudio ADCIII")
-Signed-off-by: Scott Bahling <sbahling@suse.com>
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1048934
-Link: https://lore.kernel.org/r/20200518175728.28766-1-tiwai@suse.de
+[ corrected typos by tiwai ]
+
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Link: https://lore.kernel.org/r/6741211598ba499687362ff2aa30626b@realtek.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/ice1712/ice1712.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 81 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
 
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -2377,7 +2377,8 @@ static int snd_ice1712_chip_init(struct
- 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
- 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
- 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
--	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24) {
-+	if (ice->eeprom.subvendor != ICE1712_SUBDEVICE_STDSP24 &&
-+	    ice->eeprom.subvendor != ICE1712_SUBDEVICE_STAUDIO_ADCIII) {
- 		ice->gpio.write_mask = ice->eeprom.gpiomask;
- 		ice->gpio.direction = ice->eeprom.gpiodir;
- 		snd_ice1712_write(ice, ICE1712_IREG_GPIO_WRITE_MASK,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d73c814358bf..44fbd5d2d89c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -86,6 +86,14 @@ struct alc_spec {
+ 
+ 	unsigned int gpio_mute_led_mask;
+ 	unsigned int gpio_mic_led_mask;
++	unsigned int mute_led_coef_idx;
++	unsigned int mute_led_coefbit_mask;
++	unsigned int mute_led_coefbit_on;
++	unsigned int mute_led_coefbit_off;
++	unsigned int mic_led_coef_idx;
++	unsigned int mic_led_coefbit_mask;
++	unsigned int mic_led_coefbit_on;
++	unsigned int mic_led_coefbit_off;
+ 
+ 	hda_nid_t headset_mic_pin;
+ 	hda_nid_t headphone_mic_pin;
+@@ -4182,6 +4190,73 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 	}
+ }
+ 
++/* update mute-LED according to the speaker mute state via COEF bit */
++static void alc_fixup_mute_led_coefbit_hook(void *private_data, int enabled)
++{
++	struct hda_codec *codec = private_data;
++	struct alc_spec *spec = codec->spec;
++
++	if (spec->mute_led_polarity)
++		enabled = !enabled;
++
++	/* temporarily power up/down for setting COEF bit */
++	enabled ? alc_update_coef_idx(codec, spec->mute_led_coef_idx,
++		spec->mute_led_coefbit_mask, spec->mute_led_coefbit_off) :
++		  alc_update_coef_idx(codec, spec->mute_led_coef_idx,
++		spec->mute_led_coefbit_mask, spec->mute_led_coefbit_on);
++}
++
++static void alc285_fixup_hp_mute_led_coefbit(struct hda_codec *codec,
++					  const struct hda_fixup *fix,
++					  int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mute_led_polarity = 0;
++		spec->mute_led_coef_idx = 0x0b;
++		spec->mute_led_coefbit_mask = 1<<3;
++		spec->mute_led_coefbit_on = 1<<3;
++		spec->mute_led_coefbit_off = 0;
++		spec->gen.vmaster_mute.hook = alc_fixup_mute_led_coefbit_hook;
++		spec->gen.vmaster_mute_enum = 1;
++	}
++}
++
++/* turn on/off mic-mute LED per capture hook by coef bit */
++static void alc_hp_cap_micmute_update(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (spec->gen.micmute_led.led_value)
++		alc_update_coef_idx(codec, spec->mic_led_coef_idx,
++			spec->mic_led_coefbit_mask, spec->mic_led_coefbit_on);
++	else
++		alc_update_coef_idx(codec, spec->mic_led_coef_idx,
++			spec->mic_led_coefbit_mask, spec->mic_led_coefbit_off);
++}
++
++static void alc285_fixup_hp_coef_micmute_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->mic_led_coef_idx = 0x19;
++		spec->mic_led_coefbit_mask = 1<<13;
++		spec->mic_led_coefbit_on = 1<<13;
++		spec->mic_led_coefbit_off = 0;
++		snd_hda_gen_add_micmute_led(codec, alc_hp_cap_micmute_update);
++	}
++}
++
++static void alc285_fixup_hp_mute_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	alc285_fixup_hp_mute_led_coefbit(codec, fix, action);
++	alc285_fixup_hp_coef_micmute_led(codec, fix, action);
++}
++
+ #if IS_REACHABLE(CONFIG_INPUT)
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+@@ -5980,6 +6055,7 @@ enum {
+ 	ALC294_FIXUP_ASUS_HPE,
+ 	ALC294_FIXUP_ASUS_COEF_1B,
+ 	ALC285_FIXUP_HP_GPIO_LED,
++	ALC285_FIXUP_HP_MUTE_LED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7128,6 +7204,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_hp_gpio_led,
+ 	},
++	[ALC285_FIXUP_HP_MUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_mute_led,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7273,6 +7353,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-- 
+2.25.1
+
 
 
