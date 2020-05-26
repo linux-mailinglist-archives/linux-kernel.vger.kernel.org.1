@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E016C1E280F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB96A1E281C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 19:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgEZRNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 13:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728503AbgEZRNW (ORCPT
+        id S1730142AbgEZRN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 13:13:56 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49574 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728138AbgEZRNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 13:13:22 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B4FC03E96D;
-        Tue, 26 May 2020 10:13:22 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id q8so10446014pfu.5;
-        Tue, 26 May 2020 10:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F1Q0365fQcCdID2kLoD71mWg1BqQGJpoHfozbnd6CZc=;
-        b=G93tJd93hLmaoT/aqbZdcPYPDjj+69hVL/nYU9NuDv8vJYlGr1uvLmZfdmFlCfih+F
-         uUaTNz24k3eX5ISGzDL9OG64MQ48hvOBQASoJaYIFVworZ28Fa8DeyElhu1uECrDMjfz
-         KTW4TVQzLQ3WpfAhJwQkymTuW7Xqj1PkJZEM7bR1EJOxwJf0HTTQERezzoueCeNDs7WT
-         t7+s1g76ekGrhBvAvrMrFtcaVsM06qSUy95npV1gLlbr8SpuRjdnD5ZHany8FdqKsOno
-         FnsSlPpeY2y4Oq7NBIOiEYJCrLujbnIAqvFxTe17BsPYzOBqsN//+WZOHHfjsO+dsu6T
-         tC1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F1Q0365fQcCdID2kLoD71mWg1BqQGJpoHfozbnd6CZc=;
-        b=UcGhiJpLPfFNGR1EuwsMpd8oxIihTKe0c9+sHVIizsR5vinIMTDZEhDOGT5AirsPuS
-         QwfNubsKrp3uVL4+pzdv9V3cTqzC+rd2xG2hawlv/zV5oKUmh4iVCy4N/IvTo1ABmknK
-         hPycWXNIji+tfAnjzf+1iwqLed/AX2oP9foyNZ6e3oj7/Dlbk2bve7iq3xTXDippEdpD
-         rgcGEGqZ/Yp7xSqN/FqEP8dsrLevOv79NaRL8c4zq/DU0haf5o+nRkN9vmKhjST5UZ9y
-         hZY+3K6VXyEJc8VmFhW0Rc9vRUx6lX2hxPqqeVns52lnqAmRoysQpju/oK7WHZfzcnSM
-         kN4w==
-X-Gm-Message-State: AOAM530/fagNDLDvLoL60DYgB940SGpvgKJRiO1PIlKctkK5l5DFzADw
-        jlotEbCEDid7JYq3NY24bIM=
-X-Google-Smtp-Source: ABdhPJy6qnu3WKbboaapp37lyLqmDYBXjUJcrBs4IPyQ0TWCoI/A9XkzSFJfpV+fDfaBdlrk3WenwA==
-X-Received: by 2002:aa7:95a5:: with SMTP id a5mr22174411pfk.151.1590513201862;
-        Tue, 26 May 2020 10:13:21 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z29sm119304pff.120.2020.05.26.10.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 May 2020 10:13:20 -0700 (PDT)
-Subject: Re: [PATCH ethtool v1] netlink: add LINKSTATE SQI support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        "John W. Linville" <linville@tuxdriver.com>
-Cc:     David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>,
-        Christian Herber <christian.herber@nxp.com>,
-        Amit Cohen <amitc@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>
-References: <20200526082942.28073-1-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8c167a35-c49f-9fc1-d53a-6970d4c95e75@gmail.com>
-Date:   Tue, 26 May 2020 10:13:18 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.8.1
+        Tue, 26 May 2020 13:13:54 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 04QHDUvn063142;
+        Tue, 26 May 2020 12:13:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1590513210;
+        bh=ejlDgcPP3cXkKRJfCcQk8SnvedIMryuVsn7rTYr6g6A=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=rX7IYOaiZRS795auwmZ93DPJry/1eKaDZtP+TGY07q0yt3Bq7GMsbZpzUi9q2jND2
+         NB9OkVGNTr3/qYWGV2IKhHEwLZz4aanUsBhfIwEusBOl8udEaYBDpPt4bpoBuVwYl8
+         28sTfFmw6IIyOfSOyzpPdPKk6d3EFpxolD+Egeoo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 04QHDUuE077132
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 May 2020 12:13:30 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ May 2020 12:13:30 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 26 May 2020 12:13:30 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 04QHDP4q025611;
+        Tue, 26 May 2020 12:13:26 -0500
+Subject: Re: [PATCH v2 0/2] drivers: provide devm_platform_request_irq()
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <f.fainelli@gmail.com>, <rjui@broadcom.com>,
+        <sbranden@broadcom.com>, <baruch@tkos.co.il>,
+        <paul@crapouillou.net>, <khilman@baylibre.com>,
+        <shawnguo@kernel.org>, <festevam@gmail.com>, <vz@mleia.com>,
+        <heiko@sntech.de>, <linus.walleij@linaro.org>, <baohua@kernel.org>,
+        <ardb@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200523145157.16257-1-zhengdejin5@gmail.com>
+ <20200523160828.GE3459@ninjato> <20200523170933.GA16771@nuc8i5>
+ <ad90d9b5-5906-fef3-85b8-00c7eff70e61@xilinx.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <52fdb5f6-2108-4857-8d0f-3f17ee863781@ti.com>
+Date:   Tue, 26 May 2020 20:13:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200526082942.28073-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ad90d9b5-5906-fef3-85b8-00c7eff70e61@xilinx.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -83,17 +70,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/26/2020 1:29 AM, Oleksij Rempel wrote:
-> Some PHYs provide Signal Quality Index (SQI) if the link is in active
-> state. This information can help to diagnose cable and system design
-> related issues.
+On 25/05/2020 10:05, Michal Simek wrote:
+> On 23. 05. 20 19:09, Dejin Zheng wrote:
+>> On Sat, May 23, 2020 at 06:08:29PM +0200, Wolfram Sang wrote:
+>>> On Sat, May 23, 2020 at 10:51:55PM +0800, Dejin Zheng wrote:
+>>>> It will call devm_request_irq() after platform_get_irq() function
+>>>> in many drivers, sometimes, it is not right for the error handling
+>>>> of these two functions in some drivers. so provide this function
+>>>> to simplify the driver.
+>>>>
+>>>> the first patch will provide devm_platform_request_irq(), and the
+>>>> other patch will convert to devm_platform_request_irq() in some
+>>>> i2c bus dirver.
+>>>>
+>>>> v1 -> v2:
+>>>> 	- I give up this series of patches in v1 version. I resend this
+>>>> 	  patches v2 by that discussion:
+>>>> 	  https://patchwork.ozlabs.org/project/linux-i2c/patch/20200520144821.8069-1-zhengdejin5@gmail.com/
+>>>> 	  The patch content has not changed.
+>>>
+>>> I don't understand. v1 has been nacked because of technical reasons. How
+>>> did the discussion above change the situation? Am I missing something?
+>>>
+>> No, you are not missing something. Maybe I did not explain clearly.
+>>
+>> The v1 has been nacked because Grygorii told me that the
+>> function platform_get_irq() should be done as early as possible to avoid
+>> unnecessary initialization steps, and the function devm_request_irq()
+>> should be done late in probe when driver and HW are actually ready to
+>> handle IRQs. It can do the other things between the two funtions. I agree
+>> with him that it may be necessary in some complex drives. So abandon the
+>> patch v1.
+>>
+>> Base on the discussion of you and Michal, I think maybe this patch is also
+>> needed for the simple driver or the driver of already use it like that:
+>> 	
+>> 	irq = platform_get_irq(pdev, 0);
+>> 	if (irq < 0)
+>> 		return irq;
+>> 	ret = devm_request_irq()
+>>
+>> It provides a common error handling and reduce one function call for each
+>> drivers, more easier to use and simplify code. So resend it.
+>>
+>> BR,
+>> Dejin
+>>
+>>>>
+>>>> Dejin Zheng (2):
+>>>>    drivers: provide devm_platform_request_irq()
+>>>>    i2c: busses: convert to devm_platform_request_irq()
+>>>>
+>>>>   drivers/base/platform.c            | 33 ++++++++++++++++++++++++++++++
+>>>>   drivers/i2c/busses/i2c-bcm-kona.c  | 16 +++------------
+>>>>   drivers/i2c/busses/i2c-cadence.c   | 10 +++------
+>>>>   drivers/i2c/busses/i2c-digicolor.c | 10 +++------
+>>>>   drivers/i2c/busses/i2c-emev2.c     |  5 ++---
+>>>>   drivers/i2c/busses/i2c-jz4780.c    |  5 ++---
+>>>>   drivers/i2c/busses/i2c-meson.c     | 13 ++++--------
+>>>>   drivers/i2c/busses/i2c-mxs.c       |  9 +++-----
+>>>>   drivers/i2c/busses/i2c-pnx.c       |  9 ++------
+>>>>   drivers/i2c/busses/i2c-rcar.c      |  9 +++-----
+>>>>   drivers/i2c/busses/i2c-rk3x.c      | 14 +++----------
+>>>>   drivers/i2c/busses/i2c-sirf.c      | 10 ++-------
+>>>>   drivers/i2c/busses/i2c-stu300.c    |  4 ++--
+>>>>   drivers/i2c/busses/i2c-synquacer.c | 12 +++--------
+>>>>   include/linux/platform_device.h    |  4 ++++
+>>>>   15 files changed, 72 insertions(+), 91 deletions(-)
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> If you look at all driver except for cadence one it doesn't do any
+> change and I can't see any issue with it because sequences are the same
+> as were before.
+> 
+> Regarding Cadence and Grygorii's comments:
+> We are not checking that id->irq is valid that's why even if that fails
+> driver continues to work. Which means that this change doesn't increase
+> boot time or change code flow.
+> On Xilinx devices cadence i2c is connected to ARM GIC which is
+> initialized very early and IRC controller should be up and running all
+> the time.
+> That's why I can't see any issue which this change on Cadence driver too.
 
 
-The uapi updates should be separate commits as pointed out by Michal,
-with that:
+My main point was to pay attention on changes, which may be risky
+especially when they are part of bulk changes (such optimization tend to spread
+fast and all over the kernel without proper review).
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Sry, if i introduced some misunderstanding, but it seems worked and this patch has got more attention.
+There are no objection from my side to use devm_platform_get_and_ioremap_resource() if driver
+owners find it acceptable.
+
 -- 
-Florian
+Best regards,
+grygorii
