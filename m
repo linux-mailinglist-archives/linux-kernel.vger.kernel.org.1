@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414751E2A88
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8921E2A51
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 20:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389900AbgEZS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 14:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
+        id S2389184AbgEZSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 14:54:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389878AbgEZS4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 14:56:36 -0400
+        id S2387398AbgEZSyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 14:54:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5374120849;
-        Tue, 26 May 2020 18:56:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CD9C207FB;
+        Tue, 26 May 2020 18:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519395;
-        bh=adv0QSe3iiSbjP1Ge3btRJ6xjH+WMLX/YiNT23xUmiM=;
+        s=default; t=1590519288;
+        bh=ndlsGo9CG4KB47l0cX6yHBs/uO2HRZHZPAYIShWTe5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C2KADdKw7/Q5qbboXZvxEOlCyHCH+0U6uY5qLmHsyO45fVEbP7tQ2lNkNiKMjfFkj
-         v+WMoQlHbjxB5qQKaHtzQ1YaxZ4WfMlQZDyHNVpU1JUFCcgu2QuN2dypCjWimf3yeH
-         OJ69KvAKC6NNKGTBYiEPOpWDIIGu/Did/ESNQGbE=
+        b=qhcA+pWnFNNDEX1LsncMvO6Prbl13HLTAyFMJ4qXnJd33GyhxuI/sg4UGhVm5J3+r
+         IG/nfTXewka3Q9uZe4r1LPZJlV3sB0X20oP4OMfsceSFb+C8QREQcDHYgupnHg+J+2
+         /BcwmqNCU4LbdyYfJIK6/4rwxChdkLAoBdUkaS34=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cao jin <caoj.fnst@cn.fujitsu.com>,
-        Alexander Duyck <alexander.h.duyck@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 01/65] igb: use igb_adapter->io_addr instead of e1000_hw->hw_addr
-Date:   Tue, 26 May 2020 20:52:20 +0200
-Message-Id: <20200526183907.044923689@linuxfoundation.org>
+        stable@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.4 02/65] padata: Remove unused but set variables
+Date:   Tue, 26 May 2020 20:52:21 +0200
+Message-Id: <20200526183907.344060994@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200526183905.988782958@linuxfoundation.org>
 References: <20200526183905.988782958@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,70 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cao jin <caoj.fnst@cn.fujitsu.com>
+From: Tobias Klauser <tklauser@distanz.ch>
 
-commit 629823b872402451b42462414da08dddd0e2c93d upstream.
+commit 119a0798dc42ed4c4f96d39b8b676efcea73aec6 upstream.
 
-When running as guest, under certain condition, it will oops as following.
-writel() in igb_configure_tx_ring() results in oops, because hw->hw_addr
-is NULL. While other register access won't oops kernel because they use
-wr32/rd32 which have a defense against NULL pointer.
+Remove the unused but set variable pinst in padata_parallel_worker to
+fix the following warning when building with 'W=1':
 
-    [  141.225449] pcieport 0000:00:1c.0: AER: Multiple Uncorrected (Fatal)
-    error received: id=0101
-    [  141.225523] igb 0000:01:00.1: PCIe Bus Error:
-    severity=Uncorrected (Fatal), type=Unaccessible,
-    id=0101(Unregistered Agent ID)
-    [  141.299442] igb 0000:01:00.1: broadcast error_detected message
-    [  141.300539] igb 0000:01:00.0 enp1s0f0: PCIe link lost, device now
-    detached
-    [  141.351019] igb 0000:01:00.1 enp1s0f1: PCIe link lost, device now
-    detached
-    [  143.465904] pcieport 0000:00:1c.0: Root Port link has been reset
-    [  143.465994] igb 0000:01:00.1: broadcast slot_reset message
-    [  143.466039] igb 0000:01:00.0: enabling device (0000 -> 0002)
-    [  144.389078] igb 0000:01:00.1: enabling device (0000 -> 0002)
-    [  145.312078] igb 0000:01:00.1: broadcast resume message
-    [  145.322211] BUG: unable to handle kernel paging request at
-    0000000000003818
-    [  145.361275] IP: [<ffffffffa02fd38d>]
-    igb_configure_tx_ring+0x14d/0x280 [igb]
-    [  145.400048] PGD 0
-    [  145.438007] Oops: 0002 [#1] SMP
+  kernel/padata.c: In function ‘padata_parallel_worker’:
+  kernel/padata.c:68:26: warning: variable ‘pinst’ set but not used [-Wunused-but-set-variable]
 
-A similar issue & solution could be found at:
-    http://patchwork.ozlabs.org/patch/689592/
+Also remove the now unused variable pd which is only used to set pinst.
 
-Signed-off-by: Cao jin <caoj.fnst@cn.fujitsu.com>
-Acked-by: Alexander Duyck <alexander.h.duyck@intel.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/intel/igb/igb_main.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/padata.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -3296,7 +3296,7 @@ void igb_configure_tx_ring(struct igb_ad
- 	     tdba & 0x00000000ffffffffULL);
- 	wr32(E1000_TDBAH(reg_idx), tdba >> 32);
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -65,15 +65,11 @@ static int padata_cpu_hash(struct parall
+ static void padata_parallel_worker(struct work_struct *parallel_work)
+ {
+ 	struct padata_parallel_queue *pqueue;
+-	struct parallel_data *pd;
+-	struct padata_instance *pinst;
+ 	LIST_HEAD(local_list);
  
--	ring->tail = hw->hw_addr + E1000_TDT(reg_idx);
-+	ring->tail = adapter->io_addr + E1000_TDT(reg_idx);
- 	wr32(E1000_TDH(reg_idx), 0);
- 	writel(0, ring->tail);
+ 	local_bh_disable();
+ 	pqueue = container_of(parallel_work,
+ 			      struct padata_parallel_queue, work);
+-	pd = pqueue->pd;
+-	pinst = pd->pinst;
  
-@@ -3652,7 +3652,7 @@ void igb_configure_rx_ring(struct igb_ad
- 	     ring->count * sizeof(union e1000_adv_rx_desc));
- 
- 	/* initialize head and tail */
--	ring->tail = hw->hw_addr + E1000_RDT(reg_idx);
-+	ring->tail = adapter->io_addr + E1000_RDT(reg_idx);
- 	wr32(E1000_RDH(reg_idx), 0);
- 	writel(0, ring->tail);
- 
+ 	spin_lock(&pqueue->parallel.lock);
+ 	list_replace_init(&pqueue->parallel.list, &local_list);
 
 
