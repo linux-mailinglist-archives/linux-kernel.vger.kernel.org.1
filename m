@@ -2,79 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E271E31DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB9B1E31E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 May 2020 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391170AbgEZWBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 18:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        id S2403826AbgEZWBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 18:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389442AbgEZWBA (ORCPT
+        with ESMTP id S2391369AbgEZWBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 18:01:00 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F4DC03E96E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:00 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id w3so16897047qkb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:00 -0700 (PDT)
+        Tue, 26 May 2020 18:01:14 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535CDC061A0F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:14 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id x22so17653738otq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 15:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZwwzxO17+0f92xu+E65BbQScQx/AP5VwvKaIskut9zM=;
-        b=rFVM4x23qV4X2fbjmMbDbfW8BE//O63dwEI83+nf9RiCn82u2vgmzBe6uxrjX9diHX
-         Xis+D4mIpGZRy+VlXibr+nvav1bnmleWViRSlsBZbD6wO47YqoG+xJKzT0DyENfn2Cf3
-         6eH0qeuBR+szG69rgDH9mR+95W9t/Easz1XIfT4+usugiBihB/u2LH+4KhvPlPSr6Pl2
-         aJHuPtBN+BCaPr1W1q6XU+kLH6gjPHrEtOY6dFLu/uf9aVt8HRLBgSZGW2/0FvllyUIc
-         dOIHqAcLpDPd/13wn4sX0h2UaZVOwpuQqu30SmaFsjuZkRUvfkp8ypGkNZ9dK7vl6fsD
-         RWYw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/VlpaYUhwEI/I32vvBlSwvLxzIetWxNm2XLY10DomkQ=;
+        b=MNJbkJcA+B4ZtRXMO6Em7+gOBYXmuDbyMa6jq2eYWOkAIAc65egerJmeHN5Q25g/oo
+         PKKvM0KQcEXtSLAILhx0BWLKyZ9ENKa7hIrNmDdsZ7Co7XqO7Ozh8LJPQuyb0wbsn8FX
+         HV91XhCMwim4cbim/vLRVh/zDXp699KbfVEL5m003E9ErksZ82tLJPyAP5rkwGdVRMhk
+         dGvitNJhsyd7r6+HEOng6FP4l6LtkWXoL5rRprlPOWQ0swZI61+kHv4wK5/tHJtRADSg
+         hioJ0oElXduB5VylLKkMDQHXk28/WOlVLyzhlr23ItuJvqLWPf3VvdWsNnUiAlYutWVj
+         D/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZwwzxO17+0f92xu+E65BbQScQx/AP5VwvKaIskut9zM=;
-        b=JbsegHLaojGJrP0gMzUwV0hUYl7CsJ8P57gMqvXn2Q/H37/NeIN2g8ssVQk+Aefi+e
-         GmsGEYYNTyOCtutFpm9W5NHUlWUUAM1YozAX9nHHceH6p65eC/MvqJSfA3ePyJVuHv42
-         XSRtMiW+Y0NqMcUsbRtAIyel8gZE05gcJwAjDkO5csrr+BkADBZncuDTlQeBH+zaATDG
-         v2KYLP75+Ktr2comkAr9fk56vkqnxohq76khsI9W9/r0wdzdNmi9rKkKJO90ysHbxocy
-         wbFWueE65AL4tGR7lP5AnZMmdOsh9jxPPULzwowf2QgZjEb8fY5NkQVBbgpa4vB3hFfj
-         H7tA==
-X-Gm-Message-State: AOAM5332UWwSnX/Gu4BCLWbZIlqgP5BbsrVMWJSubyoSrI3rtFYioJK/
-        YU3LGi7k+2j6+5Q4rPfBEfHkVQ==
-X-Google-Smtp-Source: ABdhPJwcs2lIFlebvMOJB532DIwuMysc4GxK7bOpNwv2KuUaNVUQmNah4iqFU4gIgoC9RjiPlBugyw==
-X-Received: by 2002:a05:620a:13b0:: with SMTP id m16mr1032459qki.292.1590530459566;
-        Tue, 26 May 2020 15:00:59 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2921])
-        by smtp.gmail.com with ESMTPSA id a7sm841053qth.61.2020.05.26.15.00.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 15:00:58 -0700 (PDT)
-Date:   Tue, 26 May 2020 18:00:35 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH 05/12] mm: support async buffered reads in
- generic_file_buffered_read()
-Message-ID: <20200526220035.GD6781@cmpxchg.org>
-References: <20200526195123.29053-1-axboe@kernel.dk>
- <20200526195123.29053-6-axboe@kernel.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/VlpaYUhwEI/I32vvBlSwvLxzIetWxNm2XLY10DomkQ=;
+        b=OmTKrfHDZjk+Z8OtOJk6OQR0GMeyR2R3CDlAT44aQikTurUnmuiFZL47ZLVyOZO/Vk
+         QyoL3wFuldcrZqpRy4dLIkSCGJ8XN+97XziLO3bEK3SmDCBrK+MTpZVIEfoKX3iG9Uga
+         YY/e3x5sPTWdr9L08k9nVTFYE6MC25cD89saX99rmbrYt2bfJDqBbI9bNMXRQwrimAdO
+         tRC5hibBECsLuYgKZc2IZ1n0MXf5GEkvMm291/aRwW1io1+1k5DjePtXIL64ChGK25cT
+         4csx/6/3eHdm/n5Ck5L1yX61KUIyNYGJ35R8NZVXXSKE0g714imTDT4mD6mUru1z4cc4
+         SUUw==
+X-Gm-Message-State: AOAM5333R6LRLqH64Je+YRxytetrjpZHyD4Cac/eYb/n95LcjB796wxw
+        PgY2+Kd8zLCJyX3cG4WtSxbLUEKhEXbsqyCpvK1/jg==
+X-Google-Smtp-Source: ABdhPJxgBumWB6Z4+yBCSPNlRMzc62QkDPJa6XLwZUUst/z0X5iCY8lXE0eDCU7QnaA7v+QKBHQXuGsSfg+B4LbDcYA=
+X-Received: by 2002:a05:6830:18ec:: with SMTP id d12mr2564065otf.139.1590530473444;
+ Tue, 26 May 2020 15:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526195123.29053-6-axboe@kernel.dk>
+References: <20200526194328.258722-1-saravanak@google.com> <66f871c4c457d908ea86545c1aa871bf@walle.cc>
+ <CAGETcx_jyE2UyP4ovT3KXhjOenRhpUPQAqDtTcgfgenW5NGQgA@mail.gmail.com> <0b68cbd8169d1c88a850b0fda3b1cf3f@walle.cc>
+In-Reply-To: <0b68cbd8169d1c88a850b0fda3b1cf3f@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 26 May 2020 15:00:37 -0700
+Message-ID: <CAGETcx_CPmznZYXy9By=Br0AN44XAZ+R4Yu6K-F4SfjDhPCKsQ@mail.gmail.com>
+Subject: Re: [PATCH v2] driver core: Update device link status correctly for
+ SYNC_STATE_ONLY links
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 26, 2020 at 01:51:16PM -0600, Jens Axboe wrote:
-> Use the async page locking infrastructure, if IOCB_WAITQ is set in the
-> passed in iocb. The caller must expect an -EIOCBQUEUED return value,
-> which means that IO is started but not done yet. This is similar to how
-> O_DIRECT signals the same operation. Once the callback is received by
-> the caller for IO completion, the caller must retry the operation.
-> 
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+On Tue, May 26, 2020 at 2:53 PM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2020-05-26 23:45, schrieb Saravana Kannan:
+> > On Tue, May 26, 2020 at 2:13 PM Michael Walle <michael@walle.cc> wrote:
+> >>
+> >> Am 2020-05-26 21:43, schrieb Saravana Kannan:
+> >> > When SYNC_STATE_ONLY support was added in commit 05ef983e0d65 ("driver
+> >> > core: Add device link support for SYNC_STATE_ONLY flag"),
+> >> > SYNC_STATE_ONLY links were treated similar to STATELESS links in terms
+> >> > of not blocking consumer probe if the supplier hasn't probed yet.
+> >> >
+> >> > That caused a SYNC_STATE_ONLY device link's status to not get updated.
+> >> > Since SYNC_STATE_ONLY device link is no longer useful once the
+> >> > consumer probes, commit 21c27f06587d ("driver core: Fix
+> >> > SYNC_STATE_ONLY device link implementation") addresses the status
+> >> > update issue by deleting the SYNC_STATE_ONLY device link instead of
+> >> > complicating the status update code.
+> >> >
+> >> > However, there are still some cases where we need to update the status
+> >> > of a SYNC_STATE_ONLY device link. This is because a SYNC_STATE_ONLY
+> >> > device link can later get converted into a normal MANAGED device link
+> >> > when a normal MANAGED device link is created between a supplier and
+> >> > consumer that already have a SYNC_STATE_ONLY device link between them.
+> >> >
+> >> > If a SYNC_STATE_ONLY device link's status isn't maintained correctly
+> >> > till it's converted to a normal MANAGED device link, then the normal
+> >> > MANAGED device link will end up with a wrong link status. This can
+> >> > cause
+> >> > a warning stack trace[1] when the consumer device probes successfully.
+> >> >
+> >> > This commit fixes the SYNC_STATE_ONLY device link status update issue
+> >> > where it wouldn't transition correctly from DL_STATE_DORMANT or
+> >> > DL_STATE_AVAILABLE to DL_STATE_CONSUMER_PROBE. It also resets the
+> >> > status
+> >> > back to DL_STATE_DORMANT or DL_STATE_AVAILABLE if the consumer probe
+> >> > fails.
+> >> >
+> >> > [1] - https://lore.kernel.org/lkml/20200522204120.3b3c9ed6@apollo/
+> >> > Fixes: 05ef983e0d65 ("driver core: Add device link support for
+> >> > SYNC_STATE_ONLY flag")
+> >> > Fixes: 21c27f06587d ("driver core: Fix SYNC_STATE_ONLY device link
+> >> > implementation")
+> >> > Reported-by: Michael Walle <michael@walle.cc>
+> >> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> > ---
+> >> >
+> >> > v1->v2:
+> >> > - Added code to "revert" the link status if consumer probe fails
+> >> >
+> >> > Greg,
+> >> >
+> >> > I think this is the issue Michael ran into. I'd like him to test the
+> >> > fix
+> >> > before it's pulled in.
+> >> >
+> >> > Michael,
+> >> >
+> >> > If you can test this on the branch you saw the issue in and give a
+> >> > Tested-by if it works, that'd be great.
+> >>
+> >> with v2 I'm triggering the
+> >>    WARN_ON(!(link->status & DL_FLAG_SYNC_STATE_ONLY));
+> >> in __device_links_no_driver().
+> >
+> > Thanks for the logs! The WARNING is due to a dump typo in this line. I
+> > should be checking link->flags, not link->status here. I'll send out a
+> > v3, but you can test with this change too.
+>
+> Ahh, right. With that fix you can add:
+>
+> Tested-by: Michael Walle <michael@walle.cc>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Phew! Finally! Thanks.
+
+-Saravana
