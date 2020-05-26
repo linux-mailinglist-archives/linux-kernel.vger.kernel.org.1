@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A266E1E19EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 05:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D831E1A06
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 05:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388580AbgEZDZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 23:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388478AbgEZDZS (ORCPT
+        id S2388658AbgEZDfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 23:35:18 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:57053 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388634AbgEZDfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 23:25:18 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681E4C061A0E
-        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 20:25:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 25 May 2020 23:35:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1590464116; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=PVVBvwC+Tvjc3HogjrsgVETQLb6LhmmPRAVYzJBvsRw=; b=O3HjhkoFV0HEJtkMpqGrE/m991oqWullCIDlq07mlmYVSc37BbLiq1+fcj8rNSqAjR2PY+lE
+ 3NupZ6ni9G0u4lb9xIaQHAB1g/wF2TUeP50CtAlLyX3Ex0uIztk8X022MrNj2ALMK87ETDC9
+ d2ZK2mrV42N5S/ABjfSGlfWuWLs=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ecc8e7342288e951f8ae6a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 May 2020 03:35:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 61296C433C9; Tue, 26 May 2020 03:35:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49WK8n41JWz9sRW;
-        Tue, 26 May 2020 13:25:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1590463515;
-        bh=EuyE1DTbxcWhCkVOvnT3Nye5fIuEnQS303Y4ecOW4aA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=c7I+JSwBWE0cUqbYPa7xs6INyMPaS3afiQUhP1Q8CifNu73WVZJZkdgXYlEpvgf5G
-         4oMnFAYK94XPOwaYcNgAn2hZ4PQwEqAxkVi5Or3xztH9tLXdnDiN0auD/x/+SmEPi4
-         dmlMdr1Yp1nfgXh4PT7/J4osQZTadbUmReJfdQh331dCHKkji6h63JXkG4ve0WpHKE
-         kbr2J4c1Z6khtVD4eAuvfaFify7x78t1cLOlrRgk0iNONukXge0RhDYDrLD6I7MRyq
-         gT1Df0FkqzKti0Rr+WXOe8Ksfq3YFvW9VThe+R9godADWqeevOTbxuBRV0h30kkjq1
-         pbm687WNakNqA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        ajd@linux.ibm.com,
-        syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com,
-        syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com,
-        syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com,
-        syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Axtens <dja@axtens.net>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH v2] relay: handle alloc_percpu returning NULL in relay_open
-In-Reply-To: <87ftbo232s.fsf@dja-thinkpad.axtens.net>
-References: <20191219121256.26480-1-dja@axtens.net> <alpine.DEB.2.21.1912201100400.68407@chino.kir.corp.google.com> <20200521152514.GA2868125@eldamar.local> <87ftbo232s.fsf@dja-thinkpad.axtens.net>
-Date:   Tue, 26 May 2020 13:25:36 +1000
-Message-ID: <878shffkcv.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD196C433C6;
+        Tue, 26 May 2020 03:35:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD196C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: [PATCH v1] Bluetooth: hci_qca: Improve controller ID info log level
+Date:   Tue, 26 May 2020 11:35:08 +0800
+Message-Id: <1590464108-1333-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ + akpm ]
+Controller ID info got by VSC EDL_PATCH_GETVER is very
+important, so improve its log level from DEBUG to INFO.
 
-Daniel Axtens <dja@axtens.net> writes:
->>> > Check if alloc_percpu returns NULL.
->>> > 
->>> > This was found by syzkaller both on x86 and powerpc, and the reproducer
->>> > it found on powerpc is capable of hitting the issue as an unprivileged
->>> > user.
->>> > 
->>> > Fixes: 017c59c042d0 ("relay: Use per CPU constructs for the relay channel buffer pointers")
->>> > Reported-by: syzbot+1e925b4b836afe85a1c6@syzkaller-ppc64.appspotmail.com
->>> > Reported-by: syzbot+587b2421926808309d21@syzkaller-ppc64.appspotmail.com
->>> > Reported-by: syzbot+58320b7171734bf79d26@syzkaller.appspotmail.com
->>> > Reported-by: syzbot+d6074fb08bdb2e010520@syzkaller.appspotmail.com
->>> > Cc: Akash Goel <akash.goel@intel.com>
->>> > Cc: Andrew Donnellan <ajd@linux.ibm.com> # syzkaller-ppc64
->>> > Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
->>> > Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
->>> > Cc: stable@vger.kernel.org # v4.10+
->>> > Signed-off-by: Daniel Axtens <dja@axtens.net>
->>> 
->>> Acked-by: David Rientjes <rientjes@google.com>
->>
->> It looks this one was never applied (which relates to CVE-2019-19462,
->> as pointed by Guenter in 20191223163610.GA32267@roeck-us.net).
->>
->> Whas this lost or are there any issues pending?
->
-> I'm not aware of any pending issues.
->
-> (But, if anyone does have any objections I'm happy to revise the patch.)
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+ drivers/bluetooth/btqca.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It looks like kernel/relay.c is lacking a maintainer?
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index 3ea866d..49e5aeb 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -74,10 +74,10 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+ 
+ 	ver = (struct qca_btsoc_version *)(edl->data);
+ 
+-	BT_DBG("%s: Product:0x%08x", hdev->name, le32_to_cpu(ver->product_id));
+-	BT_DBG("%s: Patch  :0x%08x", hdev->name, le16_to_cpu(ver->patch_ver));
+-	BT_DBG("%s: ROM    :0x%08x", hdev->name, le16_to_cpu(ver->rom_ver));
+-	BT_DBG("%s: SOC    :0x%08x", hdev->name, le32_to_cpu(ver->soc_id));
++	bt_dev_info(hdev, "QCA Product:0x%08x", le32_to_cpu(ver->product_id));
++	bt_dev_info(hdev, "QCA Patch  :0x%08x", le16_to_cpu(ver->patch_ver));
++	bt_dev_info(hdev, "QCA ROM    :0x%08x", le16_to_cpu(ver->rom_ver));
++	bt_dev_info(hdev, "QCA SOC    :0x%08x", le32_to_cpu(ver->soc_id));
+ 
+ 	/* QCA chipset version can be decided by patch and SoC
+ 	 * version, combination with upper 2 bytes from SoC
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-Andrew are you able to pick this up for v5.8? It's pretty obviously
-correct, and has David's ack.
-
-Original is here if that helps:
-  https://lore.kernel.org/lkml/20191219121256.26480-1-dja@axtens.net/
-
-
-cheers
