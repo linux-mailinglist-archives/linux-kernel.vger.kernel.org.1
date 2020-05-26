@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B32C1E2BAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2458C1E2B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391701AbgEZTHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
+        id S2390641AbgEZTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391604AbgEZTHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:07:31 -0400
+        id S2391184AbgEZTDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:03:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6579A208A7;
-        Tue, 26 May 2020 19:07:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFB1D2086A;
+        Tue, 26 May 2020 19:03:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520050;
-        bh=oD6QkaIiaB6T+NAYwiJNPKDUYhK9EsRqwVgi97qBXfM=;
+        s=default; t=1590519802;
+        bh=O1++ku7X7vO63YjWqVg15Ay2i4S7GYq4slZXrtov+qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qb/o+04Dw7kGmgwvbeawwp7+5AcLoXWLAGQjUg2VKtJmyeEjEDyWnyj7RCHdYo0uS
-         N0nBE+0KAQHIjqXsGs3euU+9X+fPb0HE97UsykTl4Slks1P3RmL/6qurFlnWLRuNHp
-         w8JAvMzvHsI0z8rnWUxz0MFdXm33LfhqUzgeO760=
+        b=pXZVpIZXt/cmv+tQxPvHmbEjHvV2l00v890X+4AUWpPVa0dxanfx4WAEeyhgm+TCl
+         5quHNZtduLd+qGkK3ulcdKe/ZGjrn1uexU4zcL6LJH/r7C81UBRBTJIzPfJxsecdAB
+         uK2DHdvZVVlq91qm7aesNiglnMV5oXb1ywOFLyOo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Petrov <mmrmaximuzz@gmail.com>,
+        stable@vger.kernel.org,
+        Richard Clark <richard.xnu.clark@gmail.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/111] stmmac: fix pointer check after utilization in stmmac_interrupt
+Subject: [PATCH 4.19 23/81] aquantia: Fix the media type of AQC100 ethernet controller in the driver
 Date:   Tue, 26 May 2020 20:52:58 +0200
-Message-Id: <20200526183936.724509476@linuxfoundation.org>
+Message-Id: <20200526183929.588416841@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183923.108515292@linuxfoundation.org>
+References: <20200526183923.108515292@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Petrov <mmrmaximuzz@gmail.com>
+From: Richard Clark <richard.xnu.clark@gmail.com>
 
-[ Upstream commit f42234ffd531ca6b13d9da02faa60b72eccf8334 ]
+[ Upstream commit 6de556c31061e3b9c36546ffaaac5fdb679a2f14 ]
 
-The paranoidal pointer check in IRQ handler looks very strange - it
-really protects us only against bogus drivers which request IRQ line
-with null pointer dev_id. However, the code fragment is incorrect
-because the dev pointer is used before the actual check which leads
-to undefined behavior. Remove the check to avoid confusing people
-with incorrect code.
+The Aquantia AQC100 controller enables a SFP+ port, so the driver should
+configure the media type as '_TYPE_FIBRE' instead of '_TYPE_TP'.
 
-Signed-off-by: Maxim Petrov <mmrmaximuzz@gmail.com>
+Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
+Cc: Igor Russkikh <irusskikh@marvell.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Acked-by: Igor Russkikh <irusskikh@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 89a6ae2b17e3..1623516efb17 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3832,7 +3832,7 @@ static int stmmac_set_features(struct net_device *netdev,
- /**
-  *  stmmac_interrupt - main ISR
-  *  @irq: interrupt number.
-- *  @dev_id: to pass the net device pointer.
-+ *  @dev_id: to pass the net device pointer (must be valid).
-  *  Description: this is the main driver interrupt service routine.
-  *  It can call:
-  *  o DMA service routine (to manage incoming frame reception and transmission
-@@ -3856,11 +3856,6 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
- 	if (priv->irq_wake)
- 		pm_wakeup_event(priv->device, 0);
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
+index 750007513f9d..43dbfb228b0e 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
+@@ -60,7 +60,7 @@ static const struct aq_board_revision_s hw_atl_boards[] = {
+ 	{ AQ_DEVICE_ID_D108,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc108, },
+ 	{ AQ_DEVICE_ID_D109,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc109, },
  
--	if (unlikely(!dev)) {
--		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
--		return IRQ_NONE;
--	}
--
- 	/* Check if adapter is up */
- 	if (test_bit(STMMAC_DOWN, &priv->state))
- 		return IRQ_HANDLED;
+-	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
++	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc100, },
+ 	{ AQ_DEVICE_ID_AQC107,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
+ 	{ AQ_DEVICE_ID_AQC108,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc108, },
+ 	{ AQ_DEVICE_ID_AQC109,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc109, },
 -- 
 2.25.1
 
