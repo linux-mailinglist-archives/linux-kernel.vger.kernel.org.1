@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB581E2B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7BA1E2D8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391199AbgEZTGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:06:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34982 "EHLO mail.kernel.org"
+        id S2404361AbgEZTVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403815AbgEZTGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:06:39 -0400
+        id S2404079AbgEZTLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:11:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C59C20873;
-        Tue, 26 May 2020 19:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8409220888;
+        Tue, 26 May 2020 19:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590519998;
-        bh=r/ZhJS3TFnJvUkfTEaJFVxbdWUpnvSUCDvWHnEm187c=;
+        s=default; t=1590520291;
+        bh=tKXQmljvVS67CsXNIjd1NAZlest5cr4b3g4C5vd/z5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pWFyoEKShB8j7mse37uxZiz4IpO1xvYs2vGg7v7YCpyck0n1kfKkmHEi1aPy9guXn
-         6X3iPMEuTHkRtBGbSp+Z5P/G+eqU7WuEissMO39k4TF2rz2QmZZGBuyQV0iNifNv57
-         AaNwMrsPeNA0TH3R7HP0LhrxFiIcnoELZQnV2eh8=
+        b=dFQbviB7SYEkvihwSxFgx2m9C5PbGoxGpouApP3JqWjOThcAEDhAtZyj1d9m0MwJY
+         ojCgql0KH0i1QtrfQRBXIgMVPZPvBqkwXi4eRVbKklJG8eNYFv+LbD8QkdgyfHbqZO
+         sLcBGyk9z+tgFm+UB2KeKnEbagq41gSuHO0Rnvjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>,
+        stable@vger.kernel.org, Jerry Snitselaar <jsnitsel@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <jroedel@suse.de>, Tom Murphy <murphyt7@tcd.ie>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 019/111] net: drop_monitor: use IS_REACHABLE() to guard net_dm_hw_report()
-Date:   Tue, 26 May 2020 20:52:37 +0200
-Message-Id: <20200526183934.486055216@linuxfoundation.org>
+Subject: [PATCH 5.6 021/126] iommu: Fix deferred domain attachment
+Date:   Tue, 26 May 2020 20:52:38 +0200
+Message-Id: <20200526183939.443147529@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
-References: <20200526183932.245016380@linuxfoundation.org>
+In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
+References: <20200526183937.471379031@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +45,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-[ Upstream commit 1cd9b3abf5332102d4d967555e7ed861a75094bf ]
+[ Upstream commit bd421264ed307dd296eab036851221b225071a32 ]
 
-In net/Kconfig, NET_DEVLINK implies NET_DROP_MONITOR.
+The IOMMU core code has support for deferring the attachment of a domain
+to a device. This is needed in kdump kernels where the new domain must
+not be attached to a device before the device driver takes it over.
 
-The original behavior of the 'imply' keyword prevents NET_DROP_MONITOR
-from being 'm' when NET_DEVLINK=y.
+When the AMD IOMMU driver got converted to use the dma-iommu
+implementation, the deferred attaching got lost. The code in
+dma-iommu.c has support for deferred attaching, but it calls into
+iommu_attach_device() to actually do it. But iommu_attach_device()
+will check if the device should be deferred in it code-path and do
+nothing, breaking deferred attachment.
 
-With the planned Kconfig change that relaxes the 'imply', the
-combination of NET_DEVLINK=y and NET_DROP_MONITOR=m would be allowed.
+Move the is_deferred_attach() check out of the attach_device path and
+into iommu_group_add_device() to make deferred attaching work from the
+dma-iommu code.
 
-Use IS_REACHABLE() to avoid the vmlinux link error for this case.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
+Fixes: 795bbbb9b6f8 ("iommu/dma-iommu: Handle deferred devices")
+Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Tested-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Cc: Jerry Snitselaar <jsnitsel@redhat.com>
+Cc: Tom Murphy <murphyt7@tcd.ie>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/20200519130340.14564-1-joro@8bytes.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/drop_monitor.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/iommu.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/drop_monitor.h b/include/net/drop_monitor.h
-index 2ab668461463..f68bc373544a 100644
---- a/include/net/drop_monitor.h
-+++ b/include/net/drop_monitor.h
-@@ -19,7 +19,7 @@ struct net_dm_hw_metadata {
- 	struct net_device *input_dev;
- };
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 8d2477941fd9..22b28076d48e 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -692,6 +692,15 @@ out:
+ 	return ret;
+ }
  
--#if IS_ENABLED(CONFIG_NET_DROP_MONITOR)
-+#if IS_REACHABLE(CONFIG_NET_DROP_MONITOR)
- void net_dm_hw_report(struct sk_buff *skb,
- 		      const struct net_dm_hw_metadata *hw_metadata);
- #else
++static bool iommu_is_attach_deferred(struct iommu_domain *domain,
++				     struct device *dev)
++{
++	if (domain->ops->is_attach_deferred)
++		return domain->ops->is_attach_deferred(domain, dev);
++
++	return false;
++}
++
+ /**
+  * iommu_group_add_device - add a device to an iommu group
+  * @group: the group into which to add the device (reference should be held)
+@@ -746,7 +755,7 @@ rename:
+ 
+ 	mutex_lock(&group->mutex);
+ 	list_add_tail(&device->list, &group->devices);
+-	if (group->domain)
++	if (group->domain  && !iommu_is_attach_deferred(group->domain, dev))
+ 		ret = __iommu_attach_device(group->domain, dev);
+ 	mutex_unlock(&group->mutex);
+ 	if (ret)
+@@ -1652,9 +1661,6 @@ static int __iommu_attach_device(struct iommu_domain *domain,
+ 				 struct device *dev)
+ {
+ 	int ret;
+-	if ((domain->ops->is_attach_deferred != NULL) &&
+-	    domain->ops->is_attach_deferred(domain, dev))
+-		return 0;
+ 
+ 	if (unlikely(domain->ops->attach_dev == NULL))
+ 		return -ENODEV;
+@@ -1726,8 +1732,7 @@ EXPORT_SYMBOL_GPL(iommu_sva_unbind_gpasid);
+ static void __iommu_detach_device(struct iommu_domain *domain,
+ 				  struct device *dev)
+ {
+-	if ((domain->ops->is_attach_deferred != NULL) &&
+-	    domain->ops->is_attach_deferred(domain, dev))
++	if (iommu_is_attach_deferred(domain, dev))
+ 		return;
+ 
+ 	if (unlikely(domain->ops->detach_dev == NULL))
 -- 
 2.25.1
 
