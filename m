@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8FB1E2CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D981E2AF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404602AbgEZTP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:15:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404586AbgEZTPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:15:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96E972053B;
-        Tue, 26 May 2020 19:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520554;
-        bh=kx3TrV2JbUKa+5KdldsNkanjDhdA6+qB50fP9MVXPMs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0LCkiAIX3fgb96TCU9aVjxiybcfxRU97RkjJPiMjqPfr4gw7PydF2TxBCpMfJgdRT
-         m9kAbt/LDkK88SCvvJxHIkQk4e3R1vjvCM0TU3/6RbvKu1fkiTDjXWarIuzKGczO3N
-         p/DRFGbf+N0urO5emhLBVzBKAUBnWxDJby7WPX+0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 126/126] sched/fair: Fix enqueue_task_fair() warning some more
-Date:   Tue, 26 May 2020 20:54:23 +0200
-Message-Id: <20200526183947.858661331@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2390797AbgEZTAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:00:41 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:41755 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390758AbgEZTAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:00:39 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MHWzP-1jqYz61nhB-00DWzw for <linux-kernel@vger.kernel.org>; Tue, 26 May
+ 2020 21:00:37 +0200
+Received: by mail-qt1-f172.google.com with SMTP id z1so4970154qtn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 May 2020 12:00:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533FP+3xy5hEgTc6kzXBQ37uL+tJvBpF1gubijXOwzz56oKi1jfr
+        OAcaKIo+hejGlvUo2is1mtFEMYXWkB+kiLC0Otk=
+X-Google-Smtp-Source: ABdhPJyxFIBjrso5flwbMzskJ0iFERf9bCDL1IHkg8XbIOolDiFbZCM5y+BlNca+wOzMJlz82Rirzft1rGNKPreeS40=
+X-Received: by 2002:ac8:1844:: with SMTP id n4mr300518qtk.142.1590519636182;
+ Tue, 26 May 2020 12:00:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200521142047.169334-1-elver@google.com> <20200521142047.169334-10-elver@google.com>
+ <CAKwvOdnR7BXw_jYS5PFTuUamcwprEnZ358qhOxSu6wSSSJhxOA@mail.gmail.com>
+ <CAK8P3a0RJtbVi1JMsfik=jkHCNFv+DJn_FeDg-YLW+ueQW3tNg@mail.gmail.com>
+ <20200526120245.GB27166@willie-the-truck> <CAK8P3a29BNwvdN1YNzoN966BF4z1QiSxdRXTP+BzhM9H07LoYQ@mail.gmail.com>
+ <CANpmjNOUdr2UG3F45=JaDa0zLwJ5ukPc1MMKujQtmYSmQnjcXg@mail.gmail.com> <20200526173312.GA30240@google.com>
+In-Reply-To: <20200526173312.GA30240@google.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 26 May 2020 21:00:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
+Message-ID: <CAK8P3a3ZawPnzmzx4q58--M1h=v4X-1GtQLiwL1=G6rDK8=Wpg@mail.gmail.com>
+Subject: Re: [PATCH -tip v3 09/11] data_race: Avoid nested statement expression
+To:     Marco Elver <elver@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:YZvZtYzPL/ad9yexnmdrNznL+6Kj7ZbcdRnrfB6SJ6T3EEGT3S2
+ 1eZZL4jOMAVQMUSFSBEq6hpa87+1QwMQ0GGLzBKA/gpyJX3TDL0E0TN0QVzba/RTcJ2/fvG
+ 40MgQOmvi5nEEWeQ4yBoYAHqLzEfwOLrWkaHqh8WwPTsOaQbBVn81rOKdEsgrtbClT4NFaW
+ chuPy9zVoZmuxh+bwXgdQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kgXZ+s1WhxA=:j4tArGneAtjwl0yJKAWwBc
+ yi3MVuFvE7LnXEgNrHZW3f+eHQaS/ssYpHTnuE3egIWG4ZTScgWkYnigUpl62Kex4A/8hTquW
+ JrOHIshNbWkEiF5Xrgy9SGk1CZ5Dd9J8dAQk3tqt+c0Jjw9E8Cw7OnyJWNKV5LeK0XJFrcgtb
+ Nx3KYK3q7W71sTh6XbKSDxUng2giWHY0nJq5ErFb0/L89Dv1pNWnZMAcNFoicYPPpJ+XjxGDq
+ tRKyHqDnQRBw0LIVP//J7SHqq7S8h2Fm12tBkQVSQXCIxgF6XTtF5VdcUa5ns2R7JBcxhE1LG
+ qKolhuXVGyxoGpCEI9+rF4K2GYXhfe4jRoLarZ8V7aTM1kDSfi+kcWsm3P3XVHGLTLZ97bKv/
+ bSKHxL76gfRx/VSLfRRzOM5MSBihiOEmf8A/q2XEy6vLNhw/ed0Lun98pFJKqFKALwihrdNyd
+ GD/hibBnWWySRJ6C/Rlzn9XbXh3f/D1F78HK5ygtwlmCjnXJDRPJXYECwQ2dALUue9o26sYqL
+ GXMrIe+y8ZtSilfYHg4blo7wpQ7HNpWKmwQZ31snQA41u6f+P7GKcTdaDiZZyXbPgf4HfWMfv
+ ojePz5MIKUrWTxuJMydE4LGAwRqHks/vryh6il680wuvvbu6EIxmeG2whycUOSs8PGG49SX4c
+ hEIGV3rtdLSo1xxu4S4+qHW4AFXjCfL+bcNMFfY0elQH2CjnZTPyVPeGuK2tRwB2EqK0RR1KJ
+ ZBRxjKxhF13CH1RqgW8L3x8gilZSbuIx15X4A7TJlj2cDa4NG4ocXx0ikGf8kJOc686uyxdKZ
+ 4g5elRdpIp4oEIgspvrJ5D68769mW3UlU5j6zo6N9USY3yV7HA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Auld <pauld@redhat.com>
+On Tue, May 26, 2020 at 7:33 PM 'Marco Elver' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+> On Tue, 26 May 2020, Marco Elver wrote:
+> > On Tue, 26 May 2020 at 14:19, Arnd Bergmann <arnd@arndb.de> wrote:
+> > Note that an 'allyesconfig' selects KASAN and not KCSAN by default.
+> > But I think that's not relevant, since KCSAN-specific code was removed
+> > from ONCEs. In general though, it is entirely expected that we have a
+> > bit longer compile times when we have the instrumentation passes
+> > enabled.
+> >
+> > But as you pointed out, that's irrelevant, and the significant
+> > overhead is from parsing and pre-processing. FWIW, we can probably
+> > optimize Clang itself a bit:
+> > https://github.com/ClangBuiltLinux/linux/issues/1032#issuecomment-633712667
+>
+> Found that optimizing __unqual_scalar_typeof makes a noticeable
+> difference. We could use C11's _Generic if the compiler supports it (and
+> all supported versions of Clang certainly do).
+>
+> Could you verify if the below patch improves compile-times for you? E.g.
+> on fs/ocfs2/journal.c I was able to get ~40% compile-time speedup.
 
-[ Upstream commit b34cb07dde7c2346dec73d053ce926aeaa087303 ]
+Yes, that brings both the preprocessed size and the time to preprocess it
+with clang-11 back to where it is in mainline, and close to the speed with
+gcc-10 for this particular file.
 
-sched/fair: Fix enqueue_task_fair warning some more
+I also cross-checked with gcc-4.9 and gcc-10 and found that they do see
+the same increase in the preprocessor output, but it makes little difference
+for preprocessing performance on gcc.
 
-The recent patch, fe61468b2cb (sched/fair: Fix enqueue_task_fair warning)
-did not fully resolve the issues with the rq->tmp_alone_branch !=
-&rq->leaf_cfs_rq_list warning in enqueue_task_fair. There is a case where
-the first for_each_sched_entity loop exits due to on_rq, having incompletely
-updated the list.  In this case the second for_each_sched_entity loop can
-further modify se. The later code to fix up the list management fails to do
-what is needed because se does not point to the sched_entity which broke out
-of the first loop. The list is not fixed up because the throttled parent was
-already added back to the list by a task enqueue in a parallel child hierarchy.
-
-Address this by calling list_add_leaf_cfs_rq if there are throttled parents
-while doing the second for_each_sched_entity loop.
-
-Fixes: fe61468b2cb ("sched/fair: Fix enqueue_task_fair warning")
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Phil Auld <pauld@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20200512135222.GC2201@lorien.usersys.redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/sched/fair.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 7cd86641b44b..603d3d3cbf77 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5298,6 +5298,13 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto enqueue_throttle;
-+
-+               /*
-+                * One parent has been throttled and cfs_rq removed from the
-+                * list. Add it back to not break the leaf list.
-+                */
-+               if (throttled_hierarchy(cfs_rq))
-+                       list_add_leaf_cfs_rq(cfs_rq);
- 	}
- 
- enqueue_throttle:
--- 
-2.25.1
-
-
-
+       Arnd
