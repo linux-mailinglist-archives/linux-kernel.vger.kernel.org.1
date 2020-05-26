@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A801E19B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 04:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A1C1E19B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 05:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388523AbgEZC6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 May 2020 22:58:00 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:21744 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388439AbgEZC6A (ORCPT
+        id S2388571AbgEZDMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 May 2020 23:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388460AbgEZDMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 May 2020 22:58:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1590461879; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=2lSQnTFuuDSH2tOGPsTeclalbej5l5YcEl5RqjPT5w4=; b=X0aiFsF4oCbTcLoeQpjfShrRXs24CyIEhxbRqXDwgfUce89IL7cfXQODJIub/XbISys4U6OJ
- /Vh1QnNvHg8MzQIDo36jJnF683bvf+liCKJXVFCylTBvcsoLOuq9Gw1qA5xqN3gD8iBR6BVh
- BLVT8ecfRp/hxJUr5/o47CsyO0Q=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5ecc85a344a25e0052e20db6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 May 2020 02:57:39
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39C55C433CA; Tue, 26 May 2020 02:57:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C385C433C6;
-        Tue, 26 May 2020 02:57:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C385C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org
-Subject: [PATCH v2] bluetooth: hci_qca: Fix qca6390 enable failure after warm reboot
-Date:   Tue, 26 May 2020 10:57:30 +0800
-Message-Id: <1590461850-9908-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 25 May 2020 23:12:15 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA903C061A0E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 20:12:13 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z206so7819267lfc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 May 2020 20:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=CknBwaUFtv0qxcVtdA7R6Jj4nDGs83jnlaCAHY8tFtSKP1xCU7pzaNlKPl8Tuzr6Ur
+         vSH43RyRXnD80fgK+5tXGSGbhXwMMjLTu4Csncj1uGERJ2SjbHNSHb+LuGvY6EYwCOyX
+         RWV+ji7MYgpakoMt9kdkX9yZqifYO55ScahlCTG1u4+NYXw7gZzI3L1dSe7kcUHcQKsF
+         pq0rpUA4hTUL9875uQ9b0gjd+IG/gdM0TK/wZHQZMJ1yEiID2bRJt/WGX2M4cK86RvZE
+         A1JARcnVJYfsfo1h0fSWgpJMyOWRFwFncmtzBhxSZpYKj9yzdQrdvtx465LsOPaV5Qpv
+         i6rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=ox/GO1htr/T53lLnaHdvCqxofADmQCTRD8zu7CIoccgA0gn+NSK3mHnku+ShgsP2j3
+         JkW3cUP/pQk0L6hevR760QCdc6dVis2bw2qVegs/t66+MELNJI9uhwmm9hIxquw7noEu
+         Bc8PLyH6NIj02Ej0vf/Oetuo1jlsJ48NhbZl/zWF4iQvE2F9JsEDPrGxCdaAN/hcCoZW
+         z3CPptx6+aOfqLn57Niab3kvycnUfT5mCCaxFXY8Zf4XX6J0bpR3u4kl5jnbZDOrd8Mt
+         NypS7o93X+9TiU7OmAKYC4gVIJpf0yUst38fsKCvA9FdnCdOIM5UjodsuZOTe5eu3JN1
+         E86w==
+X-Gm-Message-State: AOAM532MHgImJPe0kO9vVWQtGQ2fUgUqEnaOYHIkyjpnf6Yh5Ctvtm2D
+        nKTRyt164Te0pwVFmcgeIxtZqV+yNHu2Mzh/vFU=
+X-Google-Smtp-Source: ABdhPJy2qPB46BILmPyKqosm8Z7szM2RrpD11173aPrpY4SjufCQmGWqqjboWELjfnGcjKpIgv8pYh937w8d074ItNg=
+X-Received: by 2002:a19:6e0e:: with SMTP id j14mr4718488lfc.155.1590462731699;
+ Mon, 25 May 2020 20:12:11 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6504:11d9:0:0:0:0 with HTTP; Mon, 25 May 2020 20:12:11
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <bunny2320123@gmail.com>
+Date:   Mon, 25 May 2020 20:12:11 -0700
+Message-ID: <CA+z0umGrhjTnmwKm_p=TV=2zRBA2F_qwUvgFOWGTCtzBoDZuGQ@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Warm reboot can not restore qca6390 controller baudrate
-to default due to lack of controllable BT_EN pin or power
-supply, so fails to download firmware after warm reboot.
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-Fixed by sending EDL_SOC_RESET VSC to reset controller
-within added device shutdown implementation.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
----
- drivers/bluetooth/hci_qca.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index e4a6823..b479e51 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1975,6 +1975,32 @@ static void qca_serdev_remove(struct serdev_device *serdev)
- 	hci_uart_unregister_device(&qcadev->serdev_hu);
- }
- 
-+static void qca_serdev_shutdown(struct device *dev)
-+{
-+	int res;
-+	int timeout = msecs_to_jiffies(CMD_TRANS_TIMEOUT_MS);
-+	struct serdev_device *serdev = to_serdev_device(dev);
-+	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
-+	const u8 ibs_wake_cmd[] = { 0xFD };
-+	const u8 edl_reset_soc_cmd[] = { 0x01, 0x00, 0xFC, 0x01, 0x05 };
-+
-+	if (qcadev->btsoc_type == QCA_QCA6390) {
-+		serdev_device_write_flush(serdev);
-+		res = serdev_device_write_buf(serdev,
-+				ibs_wake_cmd, sizeof(ibs_wake_cmd));
-+		BT_DBG("%s: send ibs_wake_cmd res = %d", __func__, res);
-+		serdev_device_wait_until_sent(serdev, timeout);
-+		usleep_range(8000, 10000);
-+
-+		serdev_device_write_flush(serdev);
-+		res = serdev_device_write_buf(serdev,
-+				edl_reset_soc_cmd, sizeof(edl_reset_soc_cmd));
-+		BT_DBG("%s: send edl_reset_soc_cmd res = %d", __func__, res);
-+		serdev_device_wait_until_sent(serdev, timeout);
-+		usleep_range(8000, 10000);
-+	}
-+}
-+
- static int __maybe_unused qca_suspend(struct device *dev)
- {
- 	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
-@@ -2100,6 +2126,7 @@ static struct serdev_device_driver qca_serdev_driver = {
- 		.name = "hci_uart_qca",
- 		.of_match_table = of_match_ptr(qca_bluetooth_of_match),
- 		.acpi_match_table = ACPI_PTR(qca_bluetooth_acpi_match),
-+		.shutdown = qca_serdev_shutdown,
- 		.pm = &qca_pm_ops,
- 	},
- };
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
