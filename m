@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22631E2CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53BF1E2C33
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 May 2020 21:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392359AbgEZTSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 May 2020 15:18:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
+        id S2404191AbgEZTND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 May 2020 15:13:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392004AbgEZTN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 May 2020 15:13:57 -0400
+        id S2391763AbgEZTKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 May 2020 15:10:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 950E5208C3;
-        Tue, 26 May 2020 19:13:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0473520888;
+        Tue, 26 May 2020 19:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590520437;
-        bh=aE1R5VaeXY/7No8XOaYL5qSng5iIu55Y54sVmyyaUHE=;
+        s=default; t=1590520249;
+        bh=RDs0EHoSj58AyDLREChCLispvr2WG8bK1kLx4UlzD8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UP2EUTK4B9XlJBT0JUfxvnE1SFU8npAcLciRhHZYraElh8gSQ/zjDkzUD9ReNzS3B
-         T7lU3QmRvva5zHDu6qSF+tgA8kCVwm6Oyzs5iH8jy78PcwI8vW/OBYKfgGt5Crazwj
-         vyrCXHzui19Y4byx+wsJbX6u37h8YHZ6Z/SJJQh8=
+        b=I9Rv0uSvH1yGhF+rbxMeCa5eK7SP7P3iga8P49272K4BzVocCSZfrBOXJch3K1psQ
+         nbOLES/5nlyBK7YEzHn3kU6NGtGzdDHwy7/r0zNQpwSTueVZqyfuIjAmSfZ98YplgN
+         1/Zfwsj7AqEgd8hH5U7YVyRNENjyLZHQIn1SzNf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sanjay Kumar <sanjay.k.kumar@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.6 080/126] dmaengine: idxd: fix interrupt completion after unmasking
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 079/111] kbuild: Remove debug info from kallsyms linking
 Date:   Tue, 26 May 2020 20:53:37 +0200
-Message-Id: <20200526183944.843946067@linuxfoundation.org>
+Message-Id: <20200526183940.374546582@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200526183937.471379031@linuxfoundation.org>
-References: <20200526183937.471379031@linuxfoundation.org>
+In-Reply-To: <20200526183932.245016380@linuxfoundation.org>
+References: <20200526183932.245016380@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,106 +45,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jiang <dave.jiang@intel.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit 4f302642b70c1348773fe7e3ded9fc315fa92990 upstream.
+[ Upstream commit af73d78bd384aa9b8789aa6e7ddbb165f971276f ]
 
-The current implementation may miss completions after we unmask the
-interrupt. In order to make sure we process all competions, we need to:
-1. Do an MMIO read from the device as a barrier to ensure that all PCI
-   writes for completions have arrived.
-2. Check for any additional completions that we missed.
+When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
+time collecting and writing the dwarf sections to the temporary output
+files. kallsyms does not need this information, and leaving it off
+halves their linking time. This is especially noticeable without
+CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
+need those details.
 
-Fixes: 8f47d1a5e545 ("dmaengine: idxd: connect idxd to dmaengine subsystem")
+Refactor the BTF and kallsyms generation stages slightly for more
+regularized temporary names. Skip debug during kallsyms links.
+Additionally move "info BTF" to the correct place since commit
+8959e39272d6 ("kbuild: Parameterize kallsyms generation and correct
+reporting"), which added "info LD ..." to vmlinux_link calls.
 
-Reported-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/158834641769.35613.1341160109892008587.stgit@djiang5-desk3.ch.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For a full debug info build with BTF, my link time goes from 1m06s to
+0m54s, saving about 12 seconds, or 18%.
 
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/202003031814.4AEA3351@keescook
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/idxd/device.c |    7 +++++++
- drivers/dma/idxd/irq.c    |   26 +++++++++++++++++++-------
- 2 files changed, 26 insertions(+), 7 deletions(-)
+ scripts/link-vmlinux.sh | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
---- a/drivers/dma/idxd/device.c
-+++ b/drivers/dma/idxd/device.c
-@@ -62,6 +62,13 @@ int idxd_unmask_msix_vector(struct idxd_
- 	perm.ignore = 0;
- 	iowrite32(perm.bits, idxd->reg_base + offset);
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 408b5c0b99b1..aa1386079f0c 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -63,12 +63,18 @@ vmlinux_link()
+ 	local lds="${objtree}/${KBUILD_LDS}"
+ 	local output=${1}
+ 	local objects
++	local strip_debug
  
-+	/*
-+	 * A readback from the device ensures that any previously generated
-+	 * completion record writes are visible to software based on PCI
-+	 * ordering rules.
-+	 */
-+	perm.bits = ioread32(idxd->reg_base + offset);
+ 	info LD ${output}
+ 
+ 	# skip output file argument
+ 	shift
+ 
++	# The kallsyms linking does not need debug symbols included.
++	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
++		strip_debug=-Wl,--strip-debug
++	fi
 +
- 	return 0;
- }
+ 	if [ "${SRCARCH}" != "um" ]; then
+ 		objects="--whole-archive			\
+ 			${KBUILD_VMLINUX_OBJS}			\
+@@ -79,6 +85,7 @@ vmlinux_link()
+ 			${@}"
  
---- a/drivers/dma/idxd/irq.c
-+++ b/drivers/dma/idxd/irq.c
-@@ -173,6 +173,7 @@ static int irq_process_pending_llist(str
- 	struct llist_node *head;
- 	int queued = 0;
+ 		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
++			${strip_debug#-Wl,}			\
+ 			-o ${output}				\
+ 			-T ${lds} ${objects}
+ 	else
+@@ -91,6 +98,7 @@ vmlinux_link()
+ 			${@}"
  
-+	*processed = 0;
- 	head = llist_del_all(&irq_entry->pending_llist);
- 	if (!head)
- 		return 0;
-@@ -197,6 +198,7 @@ static int irq_process_work_list(struct
- 	struct list_head *node, *next;
- 	int queued = 0;
- 
-+	*processed = 0;
- 	if (list_empty(&irq_entry->work_list))
- 		return 0;
- 
-@@ -218,10 +220,9 @@ static int irq_process_work_list(struct
- 	return queued;
- }
- 
--irqreturn_t idxd_wq_thread(int irq, void *data)
-+static int idxd_desc_process(struct idxd_irq_entry *irq_entry)
+ 		${CC} ${CFLAGS_vmlinux}				\
++			${strip_debug}				\
+ 			-o ${output}				\
+ 			-Wl,-T,${lds}				\
+ 			${objects}				\
+@@ -106,6 +114,8 @@ gen_btf()
  {
--	struct idxd_irq_entry *irq_entry = data;
--	int rc, processed = 0, retry = 0;
-+	int rc, processed, total = 0;
+ 	local pahole_ver
+ 	local bin_arch
++	local bin_format
++	local bin_file
  
- 	/*
- 	 * There are two lists we are processing. The pending_llist is where
-@@ -244,15 +245,26 @@ irqreturn_t idxd_wq_thread(int irq, void
- 	 */
- 	do {
- 		rc = irq_process_work_list(irq_entry, &processed);
--		if (rc != 0) {
--			retry++;
-+		total += processed;
-+		if (rc != 0)
- 			continue;
--		}
+ 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+ 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+@@ -118,8 +128,9 @@ gen_btf()
+ 		return 1
+ 	fi
  
- 		rc = irq_process_pending_llist(irq_entry, &processed);
--	} while (rc != 0 && retry != 10);
-+		total += processed;
-+	} while (rc != 0);
+-	info "BTF" ${2}
+ 	vmlinux_link ${1}
 +
-+	return total;
-+}
-+
-+irqreturn_t idxd_wq_thread(int irq, void *data)
-+{
-+	struct idxd_irq_entry *irq_entry = data;
-+	int processed;
++	info "BTF" ${2}
+ 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
  
-+	processed = idxd_desc_process(irq_entry);
- 	idxd_unmask_msix_vector(irq_entry->idxd, irq_entry->id);
-+	/* catch anything unprocessed after unmasking */
-+	processed += idxd_desc_process(irq_entry);
+ 	# dump .BTF section into raw binary file to link with final vmlinux
+@@ -127,11 +138,12 @@ gen_btf()
+ 		cut -d, -f1 | cut -d' ' -f2)
+ 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+ 		awk '{print $4}')
++	bin_file=.btf.vmlinux.bin
+ 	${OBJCOPY} --change-section-address .BTF=0 \
+ 		--set-section-flags .BTF=alloc -O binary \
+-		--only-section=.BTF ${1} .btf.vmlinux.bin
++		--only-section=.BTF ${1} $bin_file
+ 	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+-		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
++		--rename-section .data=.BTF $bin_file ${2}
+ }
  
- 	if (processed == 0)
- 		return IRQ_NONE;
+ # Create ${2} .o file with all symbols from the ${1} object file
+@@ -166,8 +178,8 @@ kallsyms()
+ kallsyms_step()
+ {
+ 	kallsymso_prev=${kallsymso}
+-	kallsymso=.tmp_kallsyms${1}.o
+-	kallsyms_vmlinux=.tmp_vmlinux${1}
++	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
++	kallsymso=${kallsyms_vmlinux}.o
+ 
+ 	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
+ 	kallsyms ${kallsyms_vmlinux} ${kallsymso}
+@@ -190,7 +202,6 @@ cleanup()
+ {
+ 	rm -f .btf.*
+ 	rm -f .tmp_System.map
+-	rm -f .tmp_kallsyms*
+ 	rm -f .tmp_vmlinux*
+ 	rm -f System.map
+ 	rm -f vmlinux
+@@ -253,9 +264,8 @@ ${OBJCOPY} -j .modinfo -O binary vmlinux.o modules.builtin.modinfo
+ 
+ btf_vmlinux_bin_o=""
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+-	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+-		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
+-	else
++	btf_vmlinux_bin_o=.btf.vmlinux.bin.o
++	if ! gen_btf .tmp_vmlinux.btf $btf_vmlinux_bin_o ; then
+ 		echo >&2 "Failed to generate BTF for vmlinux"
+ 		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
+ 		exit 1
+-- 
+2.25.1
+
 
 
